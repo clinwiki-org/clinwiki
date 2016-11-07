@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <h1>Update Review</h1>
+
+  <div class="col-md-3 bs-docs-sidebar">
+    <dl>
+      <dt>Study Title</dt>
+      <dd><%= @study.brief_title %></dd>
+    </dl>
+    <%= render 'layouts/study_sidebar' %>
+    <%= link_to 'Back', reviews_path(:nct_id=>@study.nct_id), class: "btn btn-primary" %>
+  </div>
+  <div class="col-md-9 bs-docs-sidebar">
+    <%= render 'form' %>
+  </div>
+</div>

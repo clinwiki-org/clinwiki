@@ -1,0 +1,16 @@
+.bundle/
+log/*.log
+search_results/*
+public/studies/*
+public/imported/*
+public/downloaded/*
+db/*.sqlite3
+vendor/*
+tmp/*
+config/database.yml
+config/database_local.yml
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

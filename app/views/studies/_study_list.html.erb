@@ -1,0 +1,69 @@
+<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="/assets/jquery.raty.js" type="text/javascript"></script>
+<script>
+  $(document).ready(function() {
+    $('#sortTable').dataTable({
+        "oLanguage": { "sSearch": "Filter results" }});
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $(".star-rating").raty({
+           path: '/assets/',
+           readOnly: true,
+           score: function() {
+             return $(this).attr('data-score');
+           }
+        });
+    })
+</script>
+
+<div class="container-fluid">
+
+  <div class='table-responsive'>
+    <div class='container-fluid'>
+      <div class='row'>
+      <table id="sortTable" class='table dataTable data-table table-striped table-condensed table-hover'>
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>rating</th>
+            <th>status</th>
+            <th>title</th>
+            <th>started</th>
+            <th>source</th>
+          </tr>
+        </thead>
+        <colgroup>
+          <col class="col-md-1">
+          <col class="col-md-1">
+          <col class="col-md-1">
+          <col class="col-md-4">
+          <col class="col-md-1">
+          <col class="col-md-2">
+        </colgroup>
+
+        <tbody>
+          <% @studies.each do |study| %>
+            <tr onClick=location.href="/studies/<%= study.nct_id %>">
+             <td><%= study.nct_id %></td>
+             <td><span style="display:none"><%= study.average_rating %></span><div class="star-rating" data-score= <%= study.average_rating %> ></div></td>
+              <td><%= study.overall_status %></td>
+              <td><%= study.brief_title %></td>
+              <td><%= study.start_month_year %></td>
+              <td><%= study.source %></td>
+            </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+      <div class="col-md-12 text-center">
+        <ul class="pagination" id="myPager"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Cache-Control" content="no-store" />
+        <title>Tableau Web Data Connector Host</title>
+        <link rel="stylesheet" type="text/css" href="css/tableau.css">
+        <!-- Use the local version of jquery in case we are offline -->
+        <!-- <script src="js/jquery-1.11.1.min.js" type="text/javascript"></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
+        <script src="js/tableau.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+        <h2>&nbsp;&nbsp;&nbsp;&nbsp;Tableau Web Data Connector</h2>
+        <!-- Tools Menu -->
+        <div class="tools">
+            <div id="tableauObject">
+            </div>
+        </div>
+
+        <!-- Web Data Connector iframe -->
+        <div class="main">
+           <iframe id="host-iframe" onload="iframeLoaded()" frameborder="0" style="width: 80%; height:50px;"></iframe>
+        </div>
+
+        <!-- Web Data Connector Results -->
+        <div id="fetchedData"></div>
+
+        <!-- Console / Log spacer -->
+        <div id="footerSpacer"></div>
+
+        <!-- Console / Log -->
+        <div id="footerHolder">
+            <div class="footerHead">
+                <button type="button" id="clearLog">Clear Log</button>
+            </div>
+
+            <div class="log" id="footer">
+                <div id="log"></div>
+            </div>
+        </div>
+    </body>
+</html>

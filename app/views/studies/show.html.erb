@@ -1,0 +1,88 @@
+<div class="container-fluid">
+
+  <div class="col-md-3 bs-docs-sidebar">
+    <div>
+      <% if @study.reviews.length == 0 %>
+        <%= link_to "Write a Review", new_review_path(:nct_id=>@study.nct_id), class: "btn btn-default btn-mini" %>
+      <% else %>
+        <%= link_to "View/Add Reviews", reviews_path(:nct_id=>@study.nct_id), class: "btn btn-default btn-mini" %>
+      <% end %>
+    </div>
+    <%= render 'layouts/study_sidebar' %>
+  </div>
+
+  <div class="container col-md-9 well">
+    <dl class="dl-horizontal">
+      <dt>Title</dt>
+      <dd><%= @study.brief_title %></dd>
+      <br>
+      <% if !@study.acronym.blank? %>
+        <dt>Acronym</dt>
+        <dd><%= @study.acronym %></dd>
+        <br>
+      <% end %>
+      <dt>Brief Summary</dt>
+      <dd><%= @study.brief_summary.description %></dd>
+      <br>
+      <dt>Eligibility Criteria</dt>
+      <dd><%= @study.eligibility.criteria %></dd>
+      <br>
+      <dt>Design</dt>
+      <dd><%= @study.design.description %></dd>
+      <br>
+      <dt>Description</dt>
+      <dd><%= @study.detailed_description.description %></dd>
+    </dl>
+
+    <% if @study.responsible_parties.size > 0 %>
+      <br>
+      <div class='table-responsive container-fluid row'>
+        <table id="responsiblePartyTable" class='table dataTable data-table table-striped table-condensed table-hover'>
+            <thead>
+              <tr>
+                <th>responsible parties</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @study.responsible_parties.sort_by {|f| f.name }.each do |f| %>
+                <tr>
+                  <td><%= f.name %>
+                     <% if !f.title.blank? %>
+                       , <%= f.title %>
+                     <% end %>
+                  </td>
+                  <td><%= f.responsible_party_type %></td>
+                  <td><%= f.affiliation %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </table>
+      </div>
+    <% end %>
+
+    <div class='table-responsive container-fluid row'>
+      <table id="facilityTable" class='table dataTable data-table table-striped table-condensed table-hover'>
+          <thead>
+            <tr>
+              <th>facilities</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @study.facilities.sort_by {|f| f.name }.each do |f| %>
+              <tr>
+                <td><%= f.name %></td>
+                <td><%= f.city %></td>
+                <td><%= f.state %></td>
+                <td><%= f.country %></td>
+              </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </table>
+    </div>
+
+  </div>
+</div>
+

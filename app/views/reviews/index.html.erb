@@ -1,0 +1,56 @@
+<div class="row">
+
+  <div class="col-md-3 bs-docs-sidebar">
+
+    <dl>
+      <dt>Study Title</dt>
+      <dd><%= @study.brief_title %></dd>
+    </dl>
+    <p>
+      <%= link_to "Write a Review", new_review_path(:nct_id=>@study.nct_id), class: "btn btn-default btn-mini" %>
+    </p>
+    <%= render 'layouts/study_sidebar' %>
+    <p>
+      <%= link_to 'Return to Study',study_path(:id=>@study.nct_id), :class => "btn btn-default btn-mini" %>
+    </p>
+
+  </div>
+
+  <div class="col-md-9">
+    <% if @study.reviews.empty? %>
+      <h3>No reviews yet. Be the first to write one!</h3>
+    <% else %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="col-md-3"></th>
+            <th class="col-md-9"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @study.reviews.each do |review| %>
+            <tr>
+              <td>
+                <h4>
+                  <%= "#{review.user.first_name.capitalize} #{review.user.last_name.capitalize[0]}." %>
+                </h4>
+                <p><%= review.created_at.strftime("%-m/%-d/%y") %></p>
+              </td>
+
+              <td>
+                <div class="star-rating" data-score= <%=review.rating %> ></div>
+                <p><%= h(review.comment).gsub(/\n/, '<br/>').html_safe %></p>
+                <% if user_signed_in? %>
+                  <td><%= link_to 'Edit', edit_review_path(review), data: {:id=>review.id}, class: "btn btn-link" %></td>
+                  <td><%= link_to 'Remove', review, method: :delete, data: {confirm: 'Are you sure?',:id=>review.id}, class: "btn btn-link" %></td>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>
+

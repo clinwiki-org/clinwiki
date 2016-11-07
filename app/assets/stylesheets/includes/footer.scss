@@ -1,0 +1,45 @@
+
+footer {
+  z-index: 1000;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  font-size: 0px;
+
+  nav {
+    display: block;
+    padding: 10px;
+  }
+
+  a {
+    padding: 0px 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1rem;
+  }
+
+  nav.social {
+    width: 33.33%;
+    padding: 10px 30px;
+  }
+
+
+  div.contact {
+    padding: 2rem 0px;
+  }
+
+  nav.footerBar {
+      padding: 2rem 0px;
+      margin-bottom: 2rem;
+  }
+
+  div.disclaimer {
+    padding-bottom: 2rem;
+  }
+
+  div.copyright {
+    text-align: center;
+  }
+}

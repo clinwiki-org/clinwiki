@@ -1,0 +1,87 @@
+@import "variables";
+@import "library";
+@import "grid";
+@import "buttons";
+@import "forms";
+
+* {
+  @include border-box;
+}
+
+.form-control { border-radius: 4px }
+
+html {
+  height: 100%;
+  padding-left: 100px;
+  padding-right: 100px;
+  font-family: 'Lato', sans-serif;
+}
+
+a.link-action {
+  color:  #007488;
+  font-size: 14px;
+}
+
+button, input[type="submit"], a.button {
+  margin-bottom: 0.1rem;
+  padding: 0.6rem 1rem 0.8rem;
+  font-size: 1.2rem;
+  text-transform: lowercase;
+}
+
+body {
+    font-family: Lato,Helvetica,Arial,sans-serif;
+    font-size: 16px;
+}
+
+.navbar-default .navbar-brand {
+  color: #008aa1;
+}
+
+.navbar-brand {
+  font-family: 'Lato', sans-serif;
+  font-size: 90px;
+  padding: 5rem 2rem;
+  margin-bottom: 2rem;
+}
+
+div.wrap {
+  position: relative;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0px;
+  margin-bottom: 1rem;
+  padding-top: .5rem;
+  font-family: $font-sans;
+}
+
+p {
+  margin: 0px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 300;
+  font-family: $font-sans-secondary;
+}
+
+b {
+  margin: 0px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+  font-family: $font-sans-secondary;
+}
+
+a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: $link-color;
+  font-family: $font-sans;
+
+  &:hover {
+    color: $link-hover-color;
+  }
+}
+

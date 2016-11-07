@@ -1,0 +1,36 @@
+  <% if user_signed_in? %>
+    <div class="nav navbar-nav navbar-right">
+      <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          Logged in as <%= current_user.full_name %>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="userMenu">
+          <% if user_signed_in? %>
+            <li><%= link_to "Edit Profile", edit_user_registration_path, class: 'link-action' %></li>
+            <li><%= link_to "Sign out", destroy_user_session_path, method: :delete, class: 'link-action' %></li>
+          <% else %>
+            <li><%= link_to "Sign up", new_user_registration_path %></li>
+            <li><%= link_to "Sign in", new_user_session_path %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+<div class="container-fluid">
+  <%= form_tag search_studies_path, method: :get, class: "form-inline navbar-form" do %>
+    <div class='form-horizontal row'>
+       <div class='row col-xs-8 navbar-left'>
+         <p><%= link_to "clinwiki", root_path, class: 'clinwiki-header' %></p>
+       </div>
+       <% if user_signed_in? %>
+          <div class='col-xs-offset-2 navbar navbar-right'>
+            <%= text_field_tag :search, params[:search], class: "form-control" %>
+            <%= submit_tag "Retrieve Studies", name: nil, class: "btn btn-default search-button" %>
+          </div>
+       <% end %>
+    </div>
+  <% end %>
+</div>
+
