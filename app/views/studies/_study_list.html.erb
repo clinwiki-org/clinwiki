@@ -1,12 +1,6 @@
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="/assets/jquery.raty.js" type="text/javascript"></script>
-<script>
-  $(document).ready(function() {
-    $('#sortTable').dataTable({
-        "oLanguage": { "sSearch": "Filter results" }});
-    });
-</script>
 
 <script>
     $(document).ready(function() {
@@ -17,7 +11,9 @@
              return $(this).attr('data-score');
            }
         });
-    })
+    $('#sortTable').dataTable({
+        "oLanguage": { "sSearch": "Filter results" }});
+    });
 </script>
 
 <div class="container-fluid">
