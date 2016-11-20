@@ -18,19 +18,9 @@
     </div>
   <% end %>
 
-<div class="container-fluid">
-  <%= form_tag search_studies_path, method: :get, class: "form-inline navbar-form" do %>
     <div class='form-horizontal row'>
        <div class='row col-xs-8 navbar-left'>
          <p><%= link_to "clinwiki", root_path, class: 'clinwiki-header' %></p>
        </div>
-       <% if user_signed_in? %>
-          <div class='col-xs-offset-2 navbar navbar-right'>
-            <%= text_field_tag :search, params[:search], class: "form-control" %>
-            <%= submit_tag "Retrieve Studies", name: nil, class: "btn btn-default search-button" %>
-          </div>
-       <% end %>
     </div>
-  <% end %>
-</div>
 
