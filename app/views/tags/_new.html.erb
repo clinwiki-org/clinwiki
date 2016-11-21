@@ -1,0 +1,24 @@
+<form>
+    <div class="form-group">
+        <input type="text" class="form-control" id='newTag' aria-describedby="tagHelp" placeholder="add a tag">
+        <small id="tagHelp" class="form-text text-muted">Enter a string to help identify the study.</small>
+   </div>
+
+  <script>
+  $('#newTag').blur(function() {
+    new_tag=$(this).val();
+    nct_id = '<%= @study.nct_id %>';
+    $.ajax({
+        type: "POST",
+        url: "/tags",
+        data: {new_tag: new_tag, nct_id: nct_id },
+        dataType: "script",
+        success:    function(response, status) {
+          console.log(status);
+        }
+    });
+  });
+</script>
+
+</form>
+

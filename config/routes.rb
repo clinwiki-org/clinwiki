@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  resources :reviews
   root 'studies#index'
+  resources :reviews
+  resources :tags
+
   get 'pages/about'
   get 'pages/contact'
 
