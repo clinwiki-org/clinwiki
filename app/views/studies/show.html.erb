@@ -1,6 +1,7 @@
 <div class="container-fluid">
 
   <div class="col-md-3 bs-docs-sidebar">
+    <%= render 'layouts/study_star_rating' %>
     <div>
       <% if @study.reviews.length == 0 %>
         <%= link_to "Write a Review", new_review_path(:nct_id=>@study.nct_id), class: "btn btn-default btn-mini" %>
@@ -8,6 +9,7 @@
         <%= link_to "View/Add Reviews", reviews_path(:nct_id=>@study.nct_id), class: "btn btn-default btn-mini" %>
       <% end %>
     </div>
+    <br>
     <%= render 'layouts/study_sidebar' %>
   </div>
 
