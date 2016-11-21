@@ -1,11 +1,19 @@
+<script src="/assets/jquery.raty.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function() {
+        $(".star-rating").raty({
+           path: '/assets/',
+           readOnly: true,
+           score: function() {
+             return $(this).attr('data-score');
+           }
+        });
+    })
+</script>
+
 <div class="row">
 
   <div class="col-md-3 bs-docs-sidebar">
-
-    <dl>
-      <dt>Study Title</dt>
-      <dd><%= @study.brief_title %></dd>
-    </dl>
     <p>
       <%= link_to "Write a Review", new_review_path(:nct_id=>@study.nct_id), class: "btn btn-default btn-mini" %>
     </p>
@@ -13,10 +21,14 @@
     <p>
       <%= link_to 'Return to Study',study_path(:id=>@study.nct_id), :class => "btn btn-default btn-mini" %>
     </p>
-
   </div>
 
   <div class="col-md-9">
+    <dl>
+      <dt><div class='study-title'>Study Title</div></dt>
+      <dd><%= @study.brief_title %></dd>
+    </dl>
+
     <% if @study.reviews.empty? %>
       <h3>No reviews yet. Be the first to write one!</h3>
     <% else %>

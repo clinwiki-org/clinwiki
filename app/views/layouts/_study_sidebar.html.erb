@@ -1,48 +1,34 @@
-<script src="/assets/jquery.raty.js" type="text/javascript"></script>
-<script>
-    $(document).ready(function() {
-        $(".star-rating").raty({
-           path: '/assets/',
-           readOnly: true,
-           score: function() {
-             return $(this).attr('data-score');
-           }
-        });
-    })
-</script>
-
 <dl>
-    <br>
     <dt><%= @study.nct_id %></dt>
     <br>
-    <dd>
-      <div class="star-rating" data-score= <%= @study.average_rating %> ></div>
-      <p><%= "#{@study.reviews.length} reviews" %></p>
-    </dd>
     <dd><%= @study.study_type %></dd>
     <dd><%= @study.overall_status %></dd>
-    <br>
-    <dt>Phase</dt>
+    <% if !@study.phase == 'N/A' %>
+      <dt>Phase</dt>
+    <% end %>
     <dd><%= @study.phase %></dd>
+    <br>
     <dt>Started</dt>
     <dd><%= @study.start_month_year %></dd>
     <dt>Completed
-      <% if !@study.completion_date_type.blank? %>
-        (<%= @study.completion_date_type %>)
-      <% end %>
     </dt>
       <% if !@study.primary_completion_month_year.blank? %>
-        <dd><%= @study.primary_completion_month_year %></dd>
+        <% if !@study.completion_date_type.blank? %>
+          <dd><%= @study.primary_completion_month_year %> (<%= @study.completion_date_type %>)</dd>
+        <% else %>
+          <dd><%= @study.primary_completion_month_year %></dd>
+        <% end %>
       <% else %>
         <dd>not provided</dd>
       <% end %>
       <dt>Enrollment
-        <% if !@study.enrollment_type.blank? %>
-          (<%= @study.enrollment_type %>)
-        <% end %>
       </dt>
       <% if !@study.enrollment.blank? %>
-        <dd><%= @study.enrollment %></dd>
+        <% if !@study.enrollment_type.blank? %>
+          <dd><%= @study.enrollment %> (<%= @study.enrollment_type %>)</dd>
+        <% else %>
+          <dd><%= @study.enrollment %></dd>
+        <% end %>
       <% else %>
         <dd>not provided</dd>
       <% end %>
