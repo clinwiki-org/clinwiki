@@ -1,0 +1,66 @@
+<script src="/assets/jquery.raty.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function() {
+        $(".star-rating").raty({
+           path: '/assets/',
+           readOnly: true,
+           score: function() {
+             return $(this).attr('data-score');
+           }
+        });
+    })
+</script>
+
+<div class="row">
+
+  <div class="col-md-3 bs-docs-sidebar">
+    <p>
+      <%= link_to "Add a Tag", new_tag_path(:nct_id=>@study.nct_id), class: "btn btn-default btn-mini" %>
+    </p>
+    <%= render 'layouts/study_sidebar' %>
+    <p>
+      <%= link_to 'Return to Study',study_path(:id=>@study.nct_id), :class => "btn btn-default btn-mini" %>
+    </p>
+  </div>
+
+  <div class="col-md-9">
+    <dl>
+      <dt><div class='study-title'>Study Title</div></dt>
+      <dd><%= @study.brief_title %></dd>
+    </dl>
+
+    <% if @study.tags.empty? %>
+      <h3>No tags yet. Be the first to write one!</h3>
+    <% else %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="col-md-3"></th>
+            <th class="col-md-9"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @study.tags.each do |tag| %>
+            <tr>
+              <td>
+                <h4>
+                  <%= "#{tag.user.first_name.capitalize} #{tag.user.last_name.capitalize[0]}." %>
+                </h4>
+                <p><%= tag.created_at.strftime("%-m/%-d/%y") %></p>
+              </td>
+
+              <td>
+                <% if user_signed_in? %>
+                  <td><%= link_to 'Edit', edit_tag_path(tag), data: {:id=>tag.id}, class: "btn btn-link" %></td>
+                  <td><%= link_to 'Remove', tag, method: :delete, data: {confirm: 'Are you sure?',:id=>tag.id}, class: "btn btn-link" %></td>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>
+

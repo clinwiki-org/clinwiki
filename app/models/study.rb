@@ -1,11 +1,6 @@
 class Study < ActiveRecord::Base
-  searchkick
 
   self.primary_key = 'nct_id'
-  scope :started_between, lambda {|sdate, edate| where("start_date >= ? AND created_at <= ?", sdate, edate )}
-  scope :changed_since,   lambda {|cdate| where("last_changed_date >= ?", cdate )}
-  scope :completed_since, lambda {|cdate| where("completion_date >= ?", cdate )}
-  scope :sponsored_by,    lambda {|agency| joins(:sponsors).where("sponsors.agency LIKE ?", "#{agency}%")}
 
     def self.all_nctids
       all.collect{|s|s.nct_id}
@@ -65,6 +60,8 @@ class Study < ActiveRecord::Base
       study.prime_address = ''
       study.reviews = Review.where('nct_id = ?',nct_id)
       study.reviews = [] if study.reviews.nil?
+      study.tags = Tag.where('nct_id = ?',nct_id)
+      study.tags = [] if study.tags.nil?
       study.average_rating = (study.reviews.size == 0 ? 0 : study.reviews.average(:rating).round(2))
       study
      end
