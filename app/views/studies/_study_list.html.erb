@@ -7,8 +7,12 @@
              return $(this).attr('data-score');
            }
         });
-    $('#sortTable').dataTable({
-        "oLanguage": { "sSearch": "Filter results" }});
+        $('#sortTable').dataTable({
+          stateSave: true,
+          "oLanguage": { "sSearch": "Filter results" },
+          "lengthMenu": [ 25, 50, 75, 100 ],
+          "pageLength": 50
+        });
     });
 </script>
 
