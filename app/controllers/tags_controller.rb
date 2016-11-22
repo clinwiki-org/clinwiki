@@ -3,26 +3,34 @@ class TagsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_user, only: [:edit, :update, :destroy]
 
+  def index
+    @tags=Tag.where('nct_id=?',params['id'])
+  end
+
   def create
-    puts "================================ create tag"
-    t=Tag.new({:nct_id=>params['nct_id'],:value=>params[:new_tag],:user=>current_user}).save!
-    puts t.inspect
+    Tag.create_from(params,current_user)
+    @tags=Tag.where('nct_id=?', params['nct_id'])
     head :ok
   end
 
   def destroy
-    @tag=Tag.where('nct_id=? and value=?',params['id'],params[:selected_tag])
+    #/tag_id=params['id'].split('_', 2).last
+    tag_id=params['id']
+    @tag=Tag.find(tag_id)
     @tag.destroy
-    respond_to do |format|
-      format.html { redirect_to :action => 'index', notice: 'Tag was removed.', nct_id: @tag.nct_id }
-      format.json { head :no_content }
-    end
+    @tags=Tag.where('nct_id=?',params['nct_id'])
+    head :ok
   end
 
   private
 
   def check_user
-    @tag=Tag.find(params['id']) if @tag.nil?
+    if params['id'].include?('tag')
+      tag_id=params['id'].split('_', 2).last
+    else
+      tag_id=params['id']
+    end
+    @tag=Tag.find(tag_id) if @tag.nil?
     @study=Study.retrieve(@tag.nct_id).first
     unless (@tag.user == current_user) || (current_user.admin?)
       redirect_to root_url, alert: "Sorry, this tag belongs to someone else"

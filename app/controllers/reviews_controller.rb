@@ -52,6 +52,7 @@ class ReviewsController < ApplicationController
 
   def set_study
     @study=Study.retrieve(params[:nct_id]).first
+    @tags=Tag.where('nct_id=?',params[:nct_id])
   end
 
   def check_user
