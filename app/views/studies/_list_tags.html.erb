@@ -4,13 +4,13 @@
         <th>tags</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id='tagList'>
       <% @tags.sort_by {|t| t.value }.each do |t| %>
-          <tr>
+          <tr data-id='<%= t.id %>' class='tagRow' >
             <td><%= t.value %></td>
             <td>
               <p data-placement="top" data-toggle="tooltip" title="Delete">
-                <%= link_to "<i class='glyphicon glyphicon-minus-sign'></i>".html_safe, tag_path(t), method: :delete, data: { confirm: 'Delete tag?' } %>
+                <%= link_to "<i class='removeTag glyphicon glyphicon-minus-sign'></i>".html_safe, tag_path(t), method: :delete, data: { confirm: 'Delete tag?' } %>
               </p>
             </td>
           </tr>
@@ -19,11 +19,33 @@
 </table>
 
 <form>
+  <div class="input-group">
+    <input id='inputNewTag' type="text"  class="form-control" placeholder="add a tag..." aria-describedby='tagHelp'/>
+    <span id='newTag' class="input-group-addon">
+        <%= link_to "<i class='glyphicon glyphicon-plus-sign'></i>".html_safe %>
+    </span>
+  </div>
+  <small id="tagHelp" class="form-text text-muted">Enter a string to help identify the study.</small>
+
 <script>
 
-  $('#newTag').focusout(function() {
-    alert('adding new tag');
-    new_tag=$(this).val();
+  $('.removeTag').click(function() {
+    $($(this).closest("tr")).remove()
+    id = $(this).closest("tr").data("id");
+    $.ajax({
+        type: "DELETE",
+        url: "/tags/"+id,
+        data: id,
+        dataType: "script",
+        success: function(data) {
+          return false;
+        }
+    });
+    return false;
+  });
+
+  $('#newTag').click(function() {
+    new_tag=$("#inputNewTag").val();
     nct_id = '<%= @study.nct_id %>';
     $.ajax({
         type: "POST",
@@ -31,20 +53,13 @@
         data: {new_tag: new_tag, nct_id: nct_id },
         dataType: "script",
         success: function(data) {
-          $('#tag-list').load(data);
-           //$('#tag_list').html(data);
+          $("#tagList").append("<tr> <td>"+new_tag+"</td><td><p data-placement='top' data-toggle='tooltip' title='Delete'></p></td> </tr> ");
+          $("#inputNewTag").val('add a tag...');
         }
     });
     return false;
   });
 </script>
 
-<div class="input-group changethisone">
-    <input type="text"  class="form-control" placeholder="add a tag..." aria-describedby='tagHelp'/>
-    <span class="input-group-addon">
-        <%= link_to "<i class='glyphicon glyphicon-plus-sign'></i>".html_safe, new_tag_path %>
-    </span>
-</div>
-   <small id="tagHelp" class="form-text text-muted">Enter a string to help identify the study.</small>
 
 </form>

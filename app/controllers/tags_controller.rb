@@ -8,21 +8,29 @@ class TagsController < ApplicationController
   end
 
   def create
-    Tag.new({:nct_id=>params['nct_id'],:value=>params[:new_tag],:user=>current_user}).save!
-    @tags=Tag.where('nct_id=?',params['nct_id'])
+    Tag.create_from(params,current_user)
+    @tags=Tag.where('nct_id=?', params['nct_id'])
     head :ok
   end
 
   def destroy
-    @tag=Tag.find(params['id'])
+    #/tag_id=params['id'].split('_', 2).last
+    tag_id=params['id']
+    @tag=Tag.find(tag_id)
     @tag.destroy
+    @tags=Tag.where('nct_id=?',params['nct_id'])
     head :ok
   end
 
   private
 
   def check_user
-    @tag=Tag.find(params['id']) if @tag.nil?
+    if params['id'].include?('tag')
+      tag_id=params['id'].split('_', 2).last
+    else
+      tag_id=params['id']
+    end
+    @tag=Tag.find(tag_id) if @tag.nil?
     @study=Study.retrieve(@tag.nct_id).first
     unless (@tag.user == current_user) || (current_user.admin?)
       redirect_to root_url, alert: "Sorry, this tag belongs to someone else"
