@@ -3,20 +3,20 @@ class TagsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_user, only: [:edit, :update, :destroy]
 
+  def index
+    @tags=Tag.where('nct_id=?',params['id'])
+  end
+
   def create
-    puts "================================ create tag"
-    t=Tag.new({:nct_id=>params['nct_id'],:value=>params[:new_tag],:user=>current_user}).save!
-    puts t.inspect
+    Tag.new({:nct_id=>params['nct_id'],:value=>params[:new_tag],:user=>current_user}).save!
+    @tags=Tag.where('nct_id=?',params['nct_id'])
     head :ok
   end
 
   def destroy
-    @tag=Tag.where('nct_id=? and value=?',params['id'],params[:selected_tag])
+    @tag=Tag.find(params['id'])
     @tag.destroy
-    respond_to do |format|
-      format.html { redirect_to :action => 'index', notice: 'Tag was removed.', nct_id: @tag.nct_id }
-      format.json { head :no_content }
-    end
+    head :ok
   end
 
   private
