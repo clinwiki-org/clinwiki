@@ -10,7 +10,7 @@
             <td><%= t.value %></td>
             <td>
               <p data-placement="top" data-toggle="tooltip" title="Delete">
-                <%= link_to "<i class='removeTag glyphicon glyphicon-minus-sign'></i>".html_safe, tag_path(t), method: :delete, data: { confirm: 'Delete tag?' } %>
+                <%= link_to "<i class='removeTag glyphicon glyphicon-minus-sign'></i>".html_safe, tag_path(t) %>
               </p>
             </td>
           </tr>
@@ -53,7 +53,7 @@
         data: {new_tag: new_tag, nct_id: nct_id },
         dataType: "script",
         success: function(data) {
-          $("#tagList").append("<tr> <td>"+new_tag+"</td><td><p data-placement='top' data-toggle='tooltip' title='Delete'></p></td> </tr> ");
+          $("#tagList").append("<tr data-id="+data+" class='tagRow'> <td>"+new_tag+"</td><td><p data-placement='top' data-toggle='tooltip' title='Delete'><a href='#'><span id='newTag' class='input-group-addon'><i class='glyphicon glyphicon-minus-sign'></i></a></span></p></td> </tr> ");
           $("#inputNewTag").val('add a tag...');
         }
     });
