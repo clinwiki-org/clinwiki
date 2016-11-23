@@ -47,6 +47,13 @@ class Study < ActiveRecord::Base
             study.average_rating = (study.reviews.size == 0 ? 0 : study.reviews.average(:rating).round(2))
             col << study
           }
+          # Add Tagged Studies
+          tagged=Tag.where('lower(value) like ?',"%#{value.downcase}%")
+          tagged.each{|t|
+            response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies/#{t.nct_id}")]
+            study=instantiate_from(response.first['study']) if response
+            col << study if study
+          }
         end
       rescue
         col
