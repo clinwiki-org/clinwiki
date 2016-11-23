@@ -52,23 +52,24 @@ class Study < ActiveRecord::Base
             col << study
           }
 
+#  Exclude Orgs for now.  Current (free) Heroku can't handle it.  Consistently runs out of memory.
           # Search by Organization
-          response=[]
-          page=1
-          org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
-          while org_response.first.size > 0 do
-            response << JSON.parse(org_response.to_json, object_class: OpenStruct)
-            page=page+1
-            puts "Getting next set from page #{page}  Org Counter: #{response.size}"
-            org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
-          end
-          response.flatten.uniq.each{|study|
-            study.prime_address= ''
-            study.reviews = Review.where('nct_id = ?',study['nct_id'])
-            study.reveiws = [] if study.reviews.nil?
-            study.average_rating = (study.reviews.size == 0 ? 0 : study.reviews.average(:rating).round(2))
-            col << study
-          }
+#          response=[]
+#          page=1
+#          org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
+#          while org_response.first.size > 0 do
+#            response << JSON.parse(org_response.to_json, object_class: OpenStruct)
+#            page=page+1
+#            puts "Getting next set from page #{page}  Org Counter: #{response.size}"
+#            org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
+#          end
+#          response.flatten.uniq.each{|study|
+#            study.prime_address= ''
+#            study.reviews = Review.where('nct_id = ?',study['nct_id'])
+#            study.reveiws = [] if study.reviews.nil?
+#            study.average_rating = (study.reviews.size == 0 ? 0 : study.reviews.average(:rating).round(2))
+#            col << study
+#          }
           # Add Tagged Studies
           tagged=Tag.where('lower(value) like ?',"%#{value.downcase}%")
           tagged.each{|t|
@@ -77,6 +78,7 @@ class Study < ActiveRecord::Base
             col << study if study
           }
         end
+        col
     end
 
     def self.instantiate_from(hash)
