@@ -44,7 +44,7 @@
     return false;
   });
 
-  $('#newTag').click(function() {
+  $('#newTag').on('click', function() {
     new_tag=$("#inputNewTag").val();
     nct_id = '<%= @study.nct_id %>';
     $.ajax({
@@ -53,11 +53,38 @@
         dataType: "json",
         data: {new_tag: new_tag, nct_id: nct_id },
         success: function(data) {
-          $("#tagList").append("<tr data-id='"+data.id+"' class='tagRow'> <td>"+new_tag+"</td><td><p data-placement='top' data-toggle='tooltip' title='Delete'><a class='removeTag' data-method='delete' href='/tags/"+data.id+"'><i class='glyphicon glyphicon-minus-sign'></i></a></p></td> </tr> ");
-          $("#inputNewTag").val('add a tag...');
+          if(JSON.stringify(data) == 'false') {
+            alert('Tag was not added: possibly a duplicate?');
+          } else {
+           $("#tagList").append("<tr data-id='"+data.id+"' class='tagRow'> <td>"+new_tag+"</td><td><p data-placement='top' data-toggle='tooltip' title='Delete'><a class='removeTag' data-method='delete' href='/tags/"+data.id+"'><i class='glyphicon glyphicon-minus-sign'></i></a></p></td> </tr> ");
+           $("#inputNewTag").attr("placeholder", "add a tag...").val("").focus().blur();
+          }
         }
     });
     return false;
+  });
+
+  $('#inputNewTag').keypress(function (e) {
+    var key = e.which;
+    if(key == 13)  {
+      new_tag=$("#inputNewTag").val();
+      nct_id = '<%= @study.nct_id %>';
+      $.ajax({
+        type: "POST",
+        url: "/tags",
+        dataType: "json",
+        data: {new_tag: new_tag, nct_id: nct_id },
+        success: function(data) {
+          if(JSON.stringify(data) == 'false') {
+            alert('Tag was not added: possibly a duplicate?');
+          } else {
+           $("#tagList").append("<tr data-id='"+data.id+"' class='tagRow'> <td>"+new_tag+"</td><td><p data-placement='top' data-toggle='tooltip' title='Delete'><a class='removeTag' data-method='delete' href='/tags/"+data.id+"'><i class='glyphicon glyphicon-minus-sign'></i></a></p></td> </tr> ");
+           $("#inputNewTag").attr("placeholder", "add a tag...").val("").focus().blur();
+          }
+        }
+      });
+      return false;
+    }
   });
 </script>
 
