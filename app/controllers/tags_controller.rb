@@ -8,18 +8,17 @@ class TagsController < ApplicationController
   end
 
   def create
-    Tag.create_from(params,current_user)
     @tags=Tag.where('nct_id=?', params['nct_id'])
-    head :ok
+    @tag=Tag.create_from(params,current_user)
+    render :json => @tag
   end
 
   def destroy
-    #/tag_id=params['id'].split('_', 2).last
     tag_id=params['id']
     @tag=Tag.find(tag_id)
     @tag.destroy
     @tags=Tag.where('nct_id=?',params['nct_id'])
-    head :ok
+    render :json => @tags
   end
 
   private
