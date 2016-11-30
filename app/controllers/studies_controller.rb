@@ -21,6 +21,7 @@ class StudiesController < ApplicationController
 
   def set_study
     @study=Study.retrieve(params[:id]).first
+    @tags=Tag.where('nct_id=?',params[:id])
   end
 
   def get_studies

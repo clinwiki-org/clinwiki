@@ -1,9 +1,9 @@
 <div class="container-fluid">
-  <h1>Update Review</h1>
+  <h1>Update Tag</h1>
 
   <div class="col-md-3 bs-docs-sidebar">
     <%= render 'layouts/study_sidebar' %>
-    <%= link_to 'Back', reviews_path(:nct_id=>@study.nct_id), class: "btn btn-primary" %>
+    <%= link_to 'Back', tags_path(:nct_id=>@study.nct_id), class: "btn btn-primary" %>
   </div>
   <div class="col-md-9 bs-docs-sidebar">
     <%= render 'form' %>

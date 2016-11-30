@@ -1,11 +1,6 @@
 class Study < ActiveRecord::Base
-  searchkick
 
   self.primary_key = 'nct_id'
-  scope :started_between, lambda {|sdate, edate| where("start_date >= ? AND created_at <= ?", sdate, edate )}
-  scope :changed_since,   lambda {|cdate| where("last_changed_date >= ?", cdate )}
-  scope :completed_since, lambda {|cdate| where("completion_date >= ?", cdate )}
-  scope :sponsored_by,    lambda {|agency| joins(:sponsors).where("sponsors.agency LIKE ?", "#{agency}%")}
 
     def self.all_nctids
       all.collect{|s|s.nct_id}
@@ -29,10 +24,10 @@ class Study < ActiveRecord::Base
 
     def self.retrieve(value=nil)
       col=[]
-      begin
-        case
+      response=[]
+      case
         when value.blank?
-          response = HTTParty.get('http://aact-dev.herokuapp.com/api/v1/studies?per_page=25')
+          response = HTTParty.get('http://aact-dev.herokuapp.com/api/v1/studies?per_page=50')
           response.each{|r| col << instantiate_from(r)} if response
         when value.downcase.match(/^nct/)
           response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies/#{value}")]
@@ -40,23 +35,50 @@ class Study < ActiveRecord::Base
           col << study if study
         else
           # Search by MeSH Term
-          mesh_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?mesh_term=#{value.gsub(" ", "+")}&per_page=25")]
-          # And also by Organization
-          org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=25")]
-          response=(JSON.parse(mesh_response.to_json, object_class: OpenStruct) \
-                    + JSON.parse(org_response.to_json, object_class: OpenStruct)).flatten.uniq
-          response.each{|study|
+          page=1
+          mesh_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?mesh_term=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
+          while mesh_response.first.size > 0 do
+
+            response << JSON.parse(mesh_response.to_json, object_class: OpenStruct)
+            page=page+1
+            puts "Getting next set from page #{page}  Mesh Counter: #{response.size}"
+            mesh_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?mesh_term=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
+          end
+          response.flatten.uniq.each{|study|
             study.prime_address= ''
             study.reviews = Review.where('nct_id = ?',study['nct_id'])
             study.reveiws = [] if study.reviews.nil?
             study.average_rating = (study.reviews.size == 0 ? 0 : study.reviews.average(:rating).round(2))
             col << study
           }
+
+#  Exclude Orgs for now.  Current (free) Heroku can't handle it.  Consistently runs out of memory.
+          # Search by Organization
+#          response=[]
+#          page=1
+#          org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
+#          while org_response.first.size > 0 do
+#            response << JSON.parse(org_response.to_json, object_class: OpenStruct)
+#            page=page+1
+#            puts "Getting next set from page #{page}  Org Counter: #{response.size}"
+#            org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
+#          end
+#          response.flatten.uniq.each{|study|
+#            study.prime_address= ''
+#            study.reviews = Review.where('nct_id = ?',study['nct_id'])
+#            study.reveiws = [] if study.reviews.nil?
+#            study.average_rating = (study.reviews.size == 0 ? 0 : study.reviews.average(:rating).round(2))
+#            col << study
+#          }
+          # Add Tagged Studies
+          tagged=Tag.where('lower(value) like ?',"%#{value.downcase}%")
+          tagged.each{|t|
+            response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies/#{t.nct_id}")]
+            study=instantiate_from(response.first['study']) if response
+            col << study if study
+          }
         end
-      rescue
         col
-      end
-      col
     end
 
     def self.instantiate_from(hash)
@@ -65,6 +87,8 @@ class Study < ActiveRecord::Base
       study.prime_address = ''
       study.reviews = Review.where('nct_id = ?',nct_id)
       study.reviews = [] if study.reviews.nil?
+      study.tags = Tag.where('nct_id = ?',nct_id)
+      study.tags = [] if study.tags.nil?
       study.average_rating = (study.reviews.size == 0 ? 0 : study.reviews.average(:rating).round(2))
       study
      end
