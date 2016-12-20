@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :reviews
   resources :tags
 
+  get '/.well-known/acme-challenge/:id' => 'pages#letsencrypt'
   get 'pages/about'
   get 'pages/contact'
 
