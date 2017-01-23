@@ -43,7 +43,7 @@
             <th>status</th>
             <th>title</th>
             <th>started</th>
-            <th>source</th>
+            <th>completed</th>
           </tr>
         </thead>
         <colgroup>
@@ -52,7 +52,7 @@
           <col class="col-md-1">
           <col class="col-md-4">
           <col class="col-md-1">
-          <col class="col-md-2">
+          <col class="col-md-1">
         </colgroup>
 
         <tbody>
@@ -62,8 +62,8 @@
              <td><span style="display:none"><%= study.average_rating %></span><div class="star-rating" data-score= <%= study.average_rating %> ></div></td>
               <td><%= study.overall_status %></td>
               <td><%= study.brief_title %></td>
-              <td><%= study.start_month_year %></td>
-              <td><%= study.source %></td>
+              <td><%= study.start_date %></td>
+              <td><%= study.primary_completion_date %></td>
             </td>
             </tr>
           <% end %>
