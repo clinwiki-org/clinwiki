@@ -27,24 +27,26 @@ class Study < ActiveRecord::Base
       response=[]
       case
         when value.blank?
-          response = HTTParty.get('http://aact-dev.herokuapp.com/api/v1/studies?per_page=50')
+          response = HTTParty.get('http://aact-dev.herokuapp.com/api/v1/studies?per_page=500')
           response.each{|r| col << instantiate_from(r)} if response
         when value.downcase.match(/^nct/)
           response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies/#{value}")]
-          study=instantiate_from(response.first['study']) if response
+          study=instantiate_from(response.first.first.last) if response
           col << study if study
         else
-          # Search by MeSH Term
+          # Search by Term
           page=1
-          mesh_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?mesh_term=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
-          while mesh_response.first.size > 0 do
+          raw_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?term=#{value.gsub(" ", "+")}&per_page=1000&page=#{page}")]
+          response << JSON.parse(raw_response.to_json, object_class: OpenStruct)
+          #while raw_response.first.size > 0 do
 
-            response << JSON.parse(mesh_response.to_json, object_class: OpenStruct)
-            page=page+1
-            puts "Getting next set from page #{page}  Mesh Counter: #{response.size}"
-            mesh_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?mesh_term=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
-          end
-          response.flatten.uniq.each{|study|
+            #response << JSON.parse(raw_response.to_json, object_class: OpenStruct)
+            #page=page+1
+            #puts "Getting next set from page #{page}  Mesh Counter: #{raw_response.size}"
+            #raw_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?term=#{value.gsub(" ", "+")}&per_page=500&page=#{page}")]
+          #end
+          response.first.first.each{|entry|
+            study=entry['_source']
             study.prime_address= ''
             study.reviews = Review.where('nct_id = ?',study['nct_id'])
             study.reveiws = [] if study.reviews.nil?
@@ -56,12 +58,12 @@ class Study < ActiveRecord::Base
           # Search by Organization
 #          response=[]
 #          page=1
-#          org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
+#          org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=500&page=#{page}")]
 #          while org_response.first.size > 0 do
 #            response << JSON.parse(org_response.to_json, object_class: OpenStruct)
 #            page=page+1
 #            puts "Getting next set from page #{page}  Org Counter: #{response.size}"
-#            org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=50&page=#{page}")]
+#            org_response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?organization=#{value.gsub(" ", "+")}&per_page=500&page=#{page}")]
 #          end
 #          response.flatten.uniq.each{|study|
 #            study.prime_address= ''
