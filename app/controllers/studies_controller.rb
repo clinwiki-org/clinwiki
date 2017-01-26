@@ -20,7 +20,7 @@ class StudiesController < ApplicationController
   private
 
   def set_study
-    @study=Study.retrieve(params[:id]).first
+    @study=Retriever.get(params[:id]).first
     @tags=Tag.where('nct_id=?',params[:id])
   end
 
@@ -43,7 +43,7 @@ class StudiesController < ApplicationController
 
   def search_studies
     UserSessionStudy.where('user_id=?',current_user.id).destroy_all
-    @studies=Study.retrieve(params['search'])
+    @studies=Retriever.get(params['search'])
     set_session_studies
   end
 

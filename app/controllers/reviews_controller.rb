@@ -51,13 +51,13 @@ class ReviewsController < ApplicationController
   private
 
   def set_study
-    @study=Study.retrieve(params[:nct_id]).first
+    @study=Retriever.get(params[:nct_id]).first
     @tags=Tag.where('nct_id=?',params[:nct_id])
   end
 
   def check_user
     @review=Review.find(params['id']) if @review.nil?
-    @study=Study.retrieve(@review.nct_id).first
+    @study=Retriever.get(@review.nct_id).first
     unless (@review.user == current_user) || (current_user.admin?)
       redirect_to root_url, alert: "Sorry, this review belongs to someone else"
     end
