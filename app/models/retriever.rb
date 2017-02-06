@@ -1,27 +1,34 @@
 class Retriever
 
+  def self.get_study(nct_id)
+    response = HTTParty.get("https://clinicaltrials.gov/show/#{nct_id}?resultsxml=true")
+    r=response.to_hash['clinical_study'] if response
+    instantiate_from(r) if r
+  end
+
   def self.get(value=nil)
     per_page=1000
     url="http://aact-dev.herokuapp.com/api/v1/studies?per_page=#{per_page}"
     col=[]
     response=[]
+    return [] if value.blank?
     case
-    when value.blank?
-        response = HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?per_page=#{per_page}")
-        response.each{|r| col << instantiate_from(r)} if response
     when value.downcase.match(/^nct/)
-        response = [HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies/#{value}")]
-        study=instantiate_from(response.first.first.last) if response
+        response = HTTParty.get("https://clinicaltrials.gov/show/#{value}?resultsxml=true")
+        r=response.to_hash['clinical_study'] if response
+        study=instantiate_from(r) if r
         col << study if study
-    else
+    when !value.blank?
       # Search by Term
       page=1
-      chunk = HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?term=#{value.gsub(" ", "+")}&per_page=#{per_page}&page=#{page}")
+      val=value.gsub(" ", "+")
+      url = "#{url}&term=#{val}&page=#{page}"
+      chunk = HTTParty.get(url)
       until chunk.response.code_type != Net::HTTPOK
         response << chunk
         page=page+1
         puts "On page #{page} Status: #{chunk.response.code_type} Study count so far:  #{response.flatten.size}"
-        chunk = HTTParty.get("http://aact-dev.herokuapp.com/api/v1/studies?term=#{value.gsub(" ", "+")}&per_page=#{per_page}&page=#{page}")
+        chunk = HTTParty.get("#{url}&term=#{val}&page=#{page}")
       end
       response.flatten.each{|entry|
         study=instantiate_from(entry['_source'])
