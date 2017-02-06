@@ -36,10 +36,19 @@
         </thead>
         <tbody>
           <% @study.sponsors.each_pair do |sponsor| %>
-            <tr>
-              <td><%= sponsor.last['agency'] %></td>
-              <td><%= sponsor.first %></td>
-            </tr>
+            <% if sponsor.last.class == Array %>
+              <% sponsor.last.each do |sp| %>
+                <tr>
+                  <td><%= sp['agency'] %></td>
+                  <td><%= sponsor.first %></td>
+                </tr>
+              <% end %>
+            <%  else %>
+              <tr>
+                <td><%= sponsor.last['agency'] %></td>
+                <td><%= sponsor.first %></td>
+              </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>
