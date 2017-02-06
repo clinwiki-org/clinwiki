@@ -64,6 +64,7 @@ class ReviewsController < ApplicationController
     @reviews = [] if @reviews.nil?
     @study.reviews = @reviews
     @tags=Tag.where('nct_id=?',@nct_id)
+    @study.tags=@tags
     @study.average_rating = (@study.reviews.size == 0 ? 0 : @study.reviews.average(:rating).round(2))
   end
 
