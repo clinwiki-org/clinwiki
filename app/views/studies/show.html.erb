@@ -4,7 +4,7 @@
     <%= render 'layouts/study_star_rating' %>
     <div>
       <% if @study.reviews.length == 0 %>
-        <%= link_to "Studies.show  Write a Review", new_review_path(:nct_id=>params['id']), class: "btn btn-default btn-mini" %>
+        <%= link_to "Write a Review", new_review_path(:nct_id=>params['id']), class: "btn btn-default btn-mini" %>
       <% else %>
         <%= link_to "View/Add Reviews", reviews_path(:nct_id=>params['id']), class: "btn btn-default btn-mini" %>
       <% end %>
