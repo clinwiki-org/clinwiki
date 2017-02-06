@@ -15,11 +15,11 @@
 
   <div class="col-md-3 bs-docs-sidebar">
     <p>
-      <%= link_to "Write a Review", new_review_path(:nct_id=>@study.nct_id), class: "btn btn-default btn-mini" %>
+      <%= link_to "Write a Review", new_review_path(:nct_id=>@nct_id), class: "btn btn-default btn-mini" %>
     </p>
     <%= render 'layouts/study_sidebar' %>
     <p>
-      <%= link_to 'Return to Study',study_path(:id=>@study.nct_id), :class => "btn btn-default btn-mini" %>
+      <%= link_to 'Return to Study',study_path(:id=>@nct_id), :class => "btn btn-default btn-mini" %>
     </p>
   </div>
 

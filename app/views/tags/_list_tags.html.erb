@@ -5,7 +5,7 @@
       </tr>
     </thead>
     <tbody id='tagList'>
-      <% @tags.sort_by {|t| t.value }.each do |t| %>
+      <% @study.tags.sort_by {|t| t.value }.each do |t| %>
           <tr data-id='<%= t.id %>' class='tagRow' >
             <td><%= t.value %></td>
             <td>
@@ -46,7 +46,7 @@
 
   $('#newTag').on('click', function() {
     new_tag=$("#inputNewTag").val();
-    nct_id = '<%= @study.nct_id %>';
+    nct_id = '<%= @nct_id %>';
     $.ajax({
         type: "POST",
         url: "/tags",

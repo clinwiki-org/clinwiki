@@ -1,5 +1,5 @@
 <dl>
-    <dt id='nct_id'><%= @study.nct_id %></dt>
+    <dt id='nct_id'><%= @nct_id %></dt>
     <br>
     <dd><%= @study.study_type %></dd>
     <dd><%= @study.overall_status %></dd>
@@ -9,26 +9,17 @@
     <dd><%= @study.phase %></dd>
     <br>
     <dt>Started</dt>
-    <dd><%= @study.start_month_year %></dd>
-    <dt>Completed
-    </dt>
-      <% if !@study.primary_completion_month_year.blank? %>
-        <% if !@study.completion_date_type.blank? %>
-          <dd><%= @study.primary_completion_month_year %> (<%= @study.completion_date_type %>)</dd>
-        <% else %>
-          <dd><%= @study.primary_completion_month_year %></dd>
-        <% end %>
+    <dd><%= @study.start_date %></dd>
+    <dt>Completed</dt>
+      <% if !@study.primary_completion_date.blank? %>
+        <dd><%= @study.primary_completion_date.__content__ %> (<%= @study.primary_completion_date.type %>)</dd>
       <% else %>
         <dd>not provided</dd>
       <% end %>
       <dt>Enrollment
       </dt>
       <% if !@study.enrollment.blank? %>
-        <% if !@study.enrollment_type.blank? %>
-          <dd><%= @study.enrollment %> (<%= @study.enrollment_type %>)</dd>
-        <% else %>
-          <dd><%= @study.enrollment %></dd>
-        <% end %>
+          <dd><%= @study.enrollment.__content__ %> (<%= @study.enrollment.type %>)</dd>
       <% else %>
         <dd>not provided</dd>
       <% end %>
@@ -44,11 +35,20 @@
           </tr>
         </thead>
         <tbody>
-          <% @study.sponsors.sort_by {|f| f.lead_or_collaborator }.reverse.each do |f| %>
-            <tr>
-              <td><%= f.name %></td>
-              <td><%= f.lead_or_collaborator %></td>
-            </tr>
+          <% @study.sponsors.each_pair do |sponsor| %>
+            <% if sponsor.last.class == Array %>
+              <% sponsor.last.each do |sp| %>
+                <tr>
+                  <td><%= sp['agency'] %></td>
+                  <td><%= sponsor.first %></td>
+                </tr>
+              <% end %>
+            <%  else %>
+              <tr>
+                <td><%= sponsor.last['agency'] %></td>
+                <td><%= sponsor.first %></td>
+              </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>
@@ -57,7 +57,7 @@
   <br>
 
   <div class='table-responsive container-fluid row'>
-    <%= render 'tags/list_tags' %>
+    <%= render 'tags/list_tags',  :locals => {:nct_id => @nct_id} %>
   </div>
   <br>
   <p>

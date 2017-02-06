@@ -24,8 +24,7 @@
     <% end %>
 
     <p>
-
-    <%= link_to "Write a Review", new_review_path(:nct_id=>@study.nct_id), class: "btn btn-primary" %>
+    <%= link_to "Reviews.show Write a Review", new_review_path(:nct_id=>@study.nct_id), class: "btn btn-primary" %>
     <%= link_to 'Return to List', studies_path, class: "btn btn-primary" %>
 
     <br>
