@@ -1,0 +1,2 @@
+class BriefSummary < Aact
+end

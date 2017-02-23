@@ -1,0 +1,2 @@
+class BrowseCondition < Aact
+end

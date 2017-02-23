@@ -1,0 +1,2 @@
+class ResponsibleParty < Aact
+end
