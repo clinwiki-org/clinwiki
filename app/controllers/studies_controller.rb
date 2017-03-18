@@ -20,28 +20,16 @@ class StudiesController < ApplicationController
   private
 
   def get_study
-    @nct_id=params[:id]
-    @study=Retriever.get_study(@nct_id)
-    @tags=Tag.where('nct_id=?',params[:id])
-    @study.reviews = Review.where('nct_id = ?',@nct_id)
-    @study.tags = @tags
-    @study.average_rating = (@study.reviews.size == 0 ? 0 : @study.reviews.average(:rating).round(2))
+    @study=Study.find(params[:id])
   end
 
   def get_studies
-    session_studies=UserSessionStudy.where('user_id=?',current_user.id)
-    if session_studies.size > 0
-      @studies=session_studies.collect{|s|
-        study=JSON.parse(s.serialized_study, object_class: OpenStruct).table
-        study.reviews = Review.where('nct_id = ?',study.nct_id)
-        study.reviews = [] if study.reviews.nil?
-        study.average_rating = (study.reviews.size == 0 ? 0 : study.reviews.average(:rating).round(2))
-        study.prime_address = ''
-        study
-      }
-    else
+    session_studies=UserSessionStudy.where('user_id=?',current_user.id).uniq.pluck(:nct_id)
+    if session_studies.size==0
       set_default_query_string
       search_studies
+    else
+      @studies=Study.find(session_studies)
     end
   end
 

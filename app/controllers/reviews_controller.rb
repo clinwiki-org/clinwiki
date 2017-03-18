@@ -58,19 +58,17 @@ class ReviewsController < ApplicationController
   private
 
   def get_study
-    @nct_id=params['nct_id']
-    @study=Retriever.get_study(@nct_id)
-    @reviews = Review.where('nct_id = ?',@nct_id)
-    @reviews = [] if @reviews.nil?
-    @study.reviews = @reviews
-    @tags=Tag.where('nct_id=?',@nct_id)
-    @study.tags=@tags
-    @study.average_rating = (@study.reviews.size == 0 ? 0 : @study.reviews.average(:rating).round(2))
+    if params['nct_id']
+      @nct_id=params['nct_id']
+    else
+      @nct_id=@review.nct_id
+    end
+    @study=Study.find(@nct_id)
   end
 
   def check_user
     @review=Review.find(params['id']) if @review.nil?
-    @study=Retriever.get(@review.nct_id).first
+    @study=Study.find(@review.nct_id)
     unless (@review.user == current_user) || (current_user.admin?)
       redirect_to root_url, alert: "Sorry, this review belongs to someone else"
     end
