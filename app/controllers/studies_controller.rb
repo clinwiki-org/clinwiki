@@ -34,15 +34,17 @@ class StudiesController < ApplicationController
   end
 
   def search_studies
-    UserSessionStudy.where('user_id=?',current_user.id).destroy_all
     @studies=Retriever.get(params['search'])
     set_session_studies
   end
 
   def set_session_studies
-    @studies.each{|s|
-      UserSessionStudy.new({:user_id=>current_user.id,:nct_id=>s.nct_id,:serialized_study=>s.to_json}).save!
-    }
+    Spawnling.new do
+      UserSessionStudy.where('user_id=?',current_user.id).destroy_all
+      @studies.each{|s|
+        UserSessionStudy.new({:user_id=>current_user.id,:nct_id=>s.nct_id,:serialized_study=>s.to_json}).save!
+      }
+    end
   end
 
   def set_default_query_string
