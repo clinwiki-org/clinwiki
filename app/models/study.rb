@@ -46,7 +46,7 @@ class Study < AactBase
   has_many :reviews,          :foreign_key => 'nct_id'
   has_many :tags,             :foreign_key => 'nct_id'
 
-  scope :find_by_term, lambda {|term| joins(:browse_conditions,:browse_interventions,:keywords).where("browse_conditions.mesh_term like ? or browse_interventions.mesh_term like ? or keywords.name like ? ", "%#{term}%","%#{term}%","%#{term}%").uniq}
+  scope :find_by_term, lambda {|term| where("nct_id in (select nct_id from ids_for_term(?))", "%#{term}%")}
 
   def average_rating
     reviews.size == 0 ? 0 : reviews.average(:rating).round(2)
