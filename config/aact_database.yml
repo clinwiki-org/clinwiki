@@ -6,6 +6,7 @@ development: &default
   pool: <%= Integer(ENV.fetch("DB_POOL", 5)) %>
   reaping_frequency: <%= Integer(ENV.fetch("DB_REAPING_FREQUENCY", 10)) %>
   timeout: 5000
+  reconnect: true
 
 test:
   <<: *default
@@ -16,6 +17,7 @@ production: &deploy
   min_messages: warning
   pool: <%= [Integer(ENV.fetch("MAX_THREADS", 5)), Integer(ENV.fetch("DB_POOL", 5))].max %>
   timeout: 5000
+  reconnect: true
   url:  <%= ENV.fetch("AACT_DATABASE_URL", "") %>
 
 staging: *deploy
