@@ -12,14 +12,14 @@
     <dd><%= @study.start_date %></dd>
     <dt>Completed</dt>
       <% if !@study.primary_completion_date.blank? %>
-        <dd><%= @study.primary_completion_date.__content__ %> (<%= @study.primary_completion_date.type %>)</dd>
+        <dd><%= @study.primary_completion_date %> (<%= @study.primary_completion_date_type %>)</dd>
       <% else %>
         <dd>not provided</dd>
       <% end %>
       <dt>Enrollment
       </dt>
       <% if !@study.enrollment.blank? %>
-          <dd><%= @study.enrollment.__content__ %> (<%= @study.enrollment.type %>)</dd>
+          <dd><%= @study.enrollment %> (<%= @study.enrollment_type %>)</dd>
       <% else %>
         <dd>not provided</dd>
       <% end %>
@@ -35,20 +35,11 @@
           </tr>
         </thead>
         <tbody>
-          <% @study.sponsors.each_pair do |sponsor| %>
-            <% if sponsor.last.class == Array %>
-              <% sponsor.last.each do |sp| %>
-                <tr>
-                  <td><%= sp['agency'] %></td>
-                  <td><%= sponsor.first %></td>
-                </tr>
-              <% end %>
-            <%  else %>
-              <tr>
-                <td><%= sponsor.last['agency'] %></td>
-                <td><%= sponsor.first %></td>
-              </tr>
-            <% end %>
+          <% @study.sponsors.each do |sponsor| %>
+             <tr>
+               <td><%= sponsor.agency_class %></td>
+               <td><%= sponsor.name %></td>
+             </tr>
           <% end %>
         </tbody>
       </table>

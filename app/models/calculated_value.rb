@@ -1,0 +1,2 @@
+class CalculatedValue < Aact
+end

@@ -1,0 +1,2 @@
+class Design < Aact
+end

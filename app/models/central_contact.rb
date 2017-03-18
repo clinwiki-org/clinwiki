@@ -1,0 +1,2 @@
+class CentralContact < Aact
+end

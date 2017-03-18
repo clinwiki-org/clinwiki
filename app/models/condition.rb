@@ -1,0 +1,2 @@
+class Condition < Aact
+end

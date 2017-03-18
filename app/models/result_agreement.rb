@@ -1,0 +1,2 @@
+class ResultAgreement < Aact
+end

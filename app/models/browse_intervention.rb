@@ -1,0 +1,2 @@
+class BrowseIntervention < Aact
+end

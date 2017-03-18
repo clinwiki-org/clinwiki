@@ -1,0 +1,2 @@
+class OverallOfficial < Aact
+end

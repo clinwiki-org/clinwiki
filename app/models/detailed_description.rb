@@ -1,0 +1,2 @@
+class DetailedDescription < Aact
+end

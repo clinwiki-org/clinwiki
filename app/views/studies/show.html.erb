@@ -24,13 +24,13 @@
         <br>
       <% end %>
       <dt>Brief Summary</dt>
-      <dd><%= @study.brief_summary.textblock %></dd>
+      <dd><%= @study.brief_summary.description %></dd>
       <br>
       <dt>Eligibility Criteria</dt>
-      <dd><%= @study.eligibility.criteria.textblock %></dd>
+      <dd><%= @study.eligibility.criteria %></dd>
     </dl>
 
-    <% if !@study.responsible_party.blank? %>
+    <% if !@study.responsible_parties.empty? %>
       <br>
       <div class='table-responsive container-fluid row'>
         <table id="responsiblePartyTable" class='table dataTable data-table table-striped table-condensed table-hover'>
@@ -40,12 +40,14 @@
               </tr>
             </thead>
             <tbody>
+                <% @study.responsible_parties.each do |rp| %>
                 <tr>
-                  <td><%= @study.responsible_party.investigator_full_name %></td>
-                  <td><%= @study.responsible_party.investigator_title %></td>
-                  <td><%= @study.responsible_party.responsible_party_type %></td>
-                  <td><%= @study.responsible_party.investigator_affiliation %></td>
+                  <td><%= rp.name %></td>
+                  <td><%= rp.title %></td>
+                  <td><%= rp.type %></td>
+                  <td><%= rp.affiliation %></td>
                 </tr>
+              <% end %>
             </tbody>
           </table>
         </table>

@@ -1,0 +1,2 @@
+class DesignOutcome < Aact
+end
