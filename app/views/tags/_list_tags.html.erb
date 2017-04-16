@@ -25,7 +25,7 @@
         <%= link_to "<i class='glyphicon glyphicon-plus-sign'></i>".html_safe %>
     </span>
   </div>
-  <small id="tagHelp" class="form-text text-muted">Enter a string to help identify the study.</small>
+  <div id="tagHelp" class="form-text text-muted">Enter a string to help identify the study.</div>
 
 <script>
 
@@ -46,7 +46,7 @@
 
   $('#newTag').on('click', function() {
     new_tag=$("#inputNewTag").val();
-    nct_id = '<%= @nct_id %>';
+    nct_id = '<%= @study.nct_id %>';
     $.ajax({
         type: "POST",
         url: "/tags",
