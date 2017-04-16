@@ -51,7 +51,6 @@
               </td>
 
               <td>
-                <div><%= review.review_type %></div>
                 <div class="star-rating" data-score= <%=review.rating %> ></div>
                 <p><%= h(review.comment).gsub(/\n/, '<br/>').html_safe %></p>
                 <% if user_signed_in? %>
