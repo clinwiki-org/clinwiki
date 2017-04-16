@@ -11,10 +11,12 @@
     })
 </script>
 
-<dl>
-    <dd>
-      <div class="star-rating" data-score= <%= @study.average_rating %> ></div>
-      <p><%= "#{@study.reviews.length} reviews" %></p>
-    </dd>
-<dl>
+<div>
+  <dl>
+      <dd>
+        <div class="star-rating" data-score= <%= @study.average_rating %> ></div>
+        <p><%= "#{@study.reviews.length} reviews" %></p>
+      </dd>
+  <dl>
+</div>
 

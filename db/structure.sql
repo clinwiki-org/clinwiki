@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.1
--- Dumped by pg_dump version 9.6.1
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -35,6 +35,39 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: annotations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE annotations (
+    id integer NOT NULL,
+    nct_id character varying,
+    lay_summary text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    user_id integer
+);
+
+
+--
+-- Name: annotations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE annotations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: annotations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE annotations_id_seq OWNED BY annotations.id;
+
+
+--
 -- Name: reviews; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -45,7 +78,8 @@ CREATE TABLE reviews (
     nct_id character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    user_id integer
+    user_id integer,
+    review_type character varying
 );
 
 
@@ -185,6 +219,13 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
+-- Name: annotations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY annotations ALTER COLUMN id SET DEFAULT nextval('annotations_id_seq'::regclass);
+
+
+--
 -- Name: reviews id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -210,6 +251,14 @@ ALTER TABLE ONLY user_session_studies ALTER COLUMN id SET DEFAULT nextval('user_
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Name: annotations annotations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY annotations
+    ADD CONSTRAINT annotations_pkey PRIMARY KEY (id);
 
 
 --
@@ -308,4 +357,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161025140835');
 INSERT INTO schema_migrations (version) VALUES ('20161025205437');
 
 INSERT INTO schema_migrations (version) VALUES ('20161121022548');
+
+INSERT INTO schema_migrations (version) VALUES ('20170318233715');
 

@@ -44,6 +44,7 @@ class Study < AactBase
 
   # clinwiki relationships
   has_many :reviews,          :foreign_key => 'nct_id'
+  has_many :annotations,      :foreign_key => 'nct_id'
   has_many :tags,             :foreign_key => 'nct_id'
 
   scope :find_by_term, lambda {|term| where("nct_id in (select nct_id from ids_for_term(?))", "%#{term}%")}
@@ -54,6 +55,95 @@ class Study < AactBase
 
   def display_start_date
     start_date.to_date.strftime('%B %Y') if start_date
+  end
+
+  def display_interventions
+    res=Study.connection.execute("select intervention from all_interventions where nct_id='#{nct_id}'")
+    res.first['intervention'] if res
+  end
+
+  def display_conditions
+    res=Study.connection.execute("select mesh_term from all_conditions where nct_id='#{nct_id}'")
+    res.first['mesh_term'] if res
+  end
+
+  def primary_outcomes
+    design_outcomes.select{|o|o.type.downcase=='primary'}
+  end
+
+  def secondary_outcomes
+    design_outcomes.select{|o|o.type.downcase=='secondary'}
+  end
+
+  def primary_outcome_measures
+    primary_outcomes.collect{|d| d.display_outcome}.join('; ')
+  end
+
+  def secondary_outcome_measures
+    secondary_outcomes.collect{|d| d.display_outcome}.join('; ')
+  end
+
+  def is_fda_regulated_product?
+    is_fda_regulated_device or is_fda_regulated_drug
+  end
+
+  def administrative_info
+    [
+      {:label=>'NCT Number',:value=>nct_id},
+      {:label=>'Other Study ID Numbers',:value=>'tbd'},
+      {:label=>'Has Data Monitoring Committee',:value=>has_dmc},
+      {:label=>'Is FDA-Regulated Product',:value=>is_fda_regulated_product?},
+      {:label=>'Plan to Share Data',:value=>plan_to_share_ipd},
+      {:label=>'IPD Description',:value=>plan_to_share_ipd_description},
+      {:label=>'Responsible Party',:value=>'tbd'},
+      {:label=>'Sponsor',:value=>'tbd'},
+      {:label=>'Collaborators',:value=>'tbd'},
+      {:label=>'Investigators',:value=>'tbd'},
+      {:label=>'Information Provided By',:value=>source},
+      {:label=>'Verification Date',:value=>verification_date},
+    ]
+  end
+
+  def tracking_info
+    [
+      {:label=>'first_received_date',:value=>first_received_date},
+      {:label=>'last_changed_date',:value=>last_changed_date},
+      {:label=>'start_date',:value=>start_date},
+      {:label=>'primary_completion_date',:value=>primary_completion_date},
+      {:label=>'primary outcome measures',:value=>primary_outcome_measures},
+      {:label=>'secondary outcome measures',:value=>secondary_outcome_measures},
+    ]
+  end
+
+  def descriptive_info
+    [
+      {:label=>'brief title',:value=>brief_title},
+      {:label=>'official title',:value=>official_title},
+      {:label=>'brief summary',:value=>brief_summary.description},
+      {:label=>'detailed description',:value=>detailed_description.try(:description)},
+      {:label=>'study type',:value=>study_type},
+      {:label=>'study phase',:value=>phase},
+      {:label=>'study design',:value=>'tbd'},
+      {:label=>'conditions',:value=>display_conditions},
+      {:label=>'study arms',:value=>'tbd'},
+      {:label=>'publications',:value=>'tbd'},
+    ]
+  end
+
+  def recruitment_info
+    [
+      {:label=>'recruitment status',:value=>overall_status},
+      {:label=>'enrollment',:value=>enrollment},
+      {:label=>'completion date',:value=>completion_date},
+      {:label=>'primary completion date',:value=>primary_completion_date},
+      {:label=>'eligibility criteria',:value=>eligibility.criteria},
+      {:label=>'gender',:value=>eligibility.gender},
+      {:label=>'ages',:value=>'tbd'},
+      {:label=>'accepts healthy volunteers',:value=>eligibility.healthy_volunteers},
+      {:label=>'contacts',:value=>'tbd'},
+      {:label=>'listed location countries',:value=>'tbd'},
+      {:label=>'removed location countries',:value=>'tbd'},
+    ]
   end
 
 end
