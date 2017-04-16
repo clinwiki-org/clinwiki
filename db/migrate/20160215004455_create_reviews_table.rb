@@ -1,9 +1,9 @@
 class CreateReviewsTable < ActiveRecord::Migration
   def change
     create_table :reviews do |t|
+      t.string   :nct_id
       t.integer  :rating
       t.text     :comment
-      t.string   :nct_id
       t.timestamps null: false
     end
 

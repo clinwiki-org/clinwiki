@@ -1,57 +1,28 @@
-<dl>
-    <dt id='nct_id'><%= @nct_id %></dt>
-    <br>
-    <dd><%= @study.study_type %></dd>
-    <dd><%= @study.overall_status %></dd>
-    <% if !@study.phase == 'N/A' %>
-      <dt>Phase</dt>
-    <% end %>
-    <dd><%= @study.phase %></dd>
-    <br>
-    <dt>Started</dt>
-    <dd><%= @study.start_date %></dd>
-    <dt>Completed</dt>
-      <% if !@study.primary_completion_date.blank? %>
-        <dd><%= @study.primary_completion_date %> (<%= @study.primary_completion_date_type %>)</dd>
-      <% else %>
-        <dd>not provided</dd>
+<div class='sidebar'>
+  <dl>
+      <dd><%= @study.study_type %></dd>
+      <dd><%= @study.overall_status %></dd>
+      <% if !@study.phase.include? 'N/A' %>
+        <dt>Phase</dt>
+        <dd><%= @study.phase %></dd>
       <% end %>
-      <dt>Enrollment
-      </dt>
-      <% if !@study.enrollment.blank? %>
-          <dd><%= @study.enrollment %> (<%= @study.enrollment_type %>)</dd>
-      <% else %>
-        <dd>not provided</dd>
-      <% end %>
-      <dt>Source</dt>
-      <dd><%= @study.source %></dd>
-</dl>
+      <br>
+      <dt>Primary Completion Date</dt>
+        <% if !@study.primary_completion_date.blank? %>
+          <dd><%= @study.primary_completion_date %> (<%= @study.primary_completion_date_type %>)</dd>
+        <% else %>
+          <dd>not available</dd>
+        <% end %>
+        <dt>Enrollment
+        </dt>
+        <% if !@study.enrollment.blank? %>
+            <dd><%= @study.enrollment %> (<%= @study.enrollment_type %>)</dd>
+        <% else %>
+          <dd>not provided</dd>
+        <% end %>
+        <dt>Source</dt>
+        <dd><%= @study.source %></dd>
+  </dl>
 
-  <div class='table-responsive container-fluid row'>
-    <table id="sponsorTable" class='table dataTable data-table table-striped table-condensed table-hover'>
-        <thead>
-          <tr>
-            <th>sponsor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @study.sponsors.each do |sponsor| %>
-             <tr>
-               <td><%= sponsor.agency_class %></td>
-               <td><%= sponsor.name %></td>
-             </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </table>
-  </div>
-  <br>
-
-  <div class='table-responsive container-fluid row'>
-    <%= render 'tags/list_tags',  :locals => {:nct_id => @nct_id} %>
-  </div>
-  <br>
-  <p>
-    <%= link_to 'Return to Study List', studies_path, class: "btn btn-default btn-mini" %>
-  </p>
-
+  <%= render 'layouts/bottom_sidebar',  :locals => {:nct_id => @nct_id} %>
+</div>
