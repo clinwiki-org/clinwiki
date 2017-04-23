@@ -1,9 +1,8 @@
-<dl>
-  <dt><div class='study-title'>Study Title</div></dt>
-  <dd><%= @study.brief_title %></dd>
-</dl>
+<div class='study-title'>
+  <h3><%= @study.brief_title %></h3>
+</div>
 
-<h4>New Review</h4>
+<h4>Add a Review</h4>
 
 <%= form_for(@review) do |f| %>
   <% if @review.errors.any? %>

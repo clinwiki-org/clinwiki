@@ -3,7 +3,6 @@
       <dd><%= @study.study_type %></dd>
       <dd><%= @study.overall_status %></dd>
       <% if !@study.phase.include? 'N/A' %>
-        <dt>Phase</dt>
         <dd><%= @study.phase %></dd>
       <% end %>
       <br>
@@ -24,5 +23,5 @@
         <dd><%= @study.source %></dd>
   </dl>
 
-  <%= render 'layouts/bottom_sidebar',  :locals => {:nct_id => @nct_id} %>
+  <%= render 'shared/bottom_sidebar',  :locals => {:nct_id => @nct_id} %>
 </div>

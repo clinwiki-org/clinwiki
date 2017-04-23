@@ -21,6 +21,7 @@ class StudiesController < ApplicationController
 
   def get_study
     @study=Study.find(params[:id])
+    @study.init_annotations if @study.annotations.empty?
   end
 
   def get_studies
