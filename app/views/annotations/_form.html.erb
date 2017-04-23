@@ -4,7 +4,9 @@
   </div>
   <div class="col-md-8">
 
-    <p><%= @study.brief_title %></p>
+    <div class='study-title'>
+      <h3><%= @study.brief_title %></h3>
+    </div>
     <%= form_for(@annotation) do |f| %>
       <% if @annotation.errors.any? %>
         <div id="error_explanation">

@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+<table id="crowdContentTable" class='table dataTable data-table table-striped table-condensed table-hover'>
+  <tbody>
+    <thead>
+      <th class="col-md-3 text-left">Label</th>
+      <th class="col-md-7 text-left">Description</th>
+      <th class="col-md-1 text-center"></th>
+      <th class="col-md-1 text-center"></th>
+    </thead>
+    <% @study.annotations.each do |annotation| %>
+      <tr onClick=location.href="/annotations/<%= annotation.id %>/edit">
+        <td><%= annotation.label %></td>
+        <td><%= annotation.description %></td>
+        <td><%= link_to 'Update', edit_annotation_path(annotation) %></td>
+        <td><%= link_to 'Delete', annotation, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'Enter New Info', new_annotation_path(:id => @study) %>
+

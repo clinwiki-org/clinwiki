@@ -3,7 +3,7 @@ class AnnotationsController < ApplicationController
 
   # GET /annotations
   def index
-    @annotations = Annotation.all
+    @study = Study.where('nct_id = ?', params['id']).try(:first)
   end
 
   # GET /annotations/1
@@ -12,7 +12,7 @@ class AnnotationsController < ApplicationController
 
   # GET /annotations/new
   def new
-    @annotation = Annotation.new({:nct_id=>params[:id],:label=>'label for information',:description=>'information about this study'})
+    @annotation = Annotation.new({:nct_id=>params[:id],:label=>'enter label for information',:description=>'enter summary information about this study'})
     @study = Study.where('nct_id = ?', @annotation.nct_id).try(:first)
   end
 

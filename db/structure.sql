@@ -105,9 +105,9 @@ ALTER SEQUENCE annotations_id_seq OWNED BY annotations.id;
 
 CREATE TABLE reviews (
     id integer NOT NULL,
+    nct_id character varying,
     rating integer,
     comment text,
-    nct_id character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     user_id integer
@@ -404,5 +404,5 @@ INSERT INTO schema_migrations (version) VALUES ('20161025205437');
 
 INSERT INTO schema_migrations (version) VALUES ('20161121022548');
 
-INSERT INTO schema_migrations (version) VALUES ('20170318233715');
+INSERT INTO schema_migrations (version) VALUES ('20170318222715');
 
