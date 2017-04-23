@@ -17,17 +17,19 @@
     <p>
       <%= link_to "Write a Review", new_review_path(:nct_id=>@nct_id), class: "btn btn-default btn-mini" %>
     </p>
-    <%= render 'layouts/study_sidebar' %>
+    <div class='study-title'>
+      <h3 id='nct_id'><%= @study.nct_id %></h3>
+    </div>
+    <%= render 'shared/study_sidebar' %>
     <p>
       <%= link_to 'Return to Study',study_path(:id=>@nct_id), :class => "btn btn-default btn-mini" %>
     </p>
   </div>
 
   <div class="col-md-9">
-    <dl>
-      <dt><div class='study-title'>Study Title</div></dt>
-      <dd><%= @study.brief_title %></dd>
-    </dl>
+    <div class='study-title'>
+      <h3 id='nct_id'><%= @study.brief_title %></h3>
+    </div>
 
     <% if @study.reviews.empty? %>
       <h3>No reviews yet. Be the first to write one!</h3>

@@ -3,7 +3,6 @@
       <dd><%= @study.study_type %></dd>
       <dd><%= @study.overall_status %></dd>
       <% if !@study.phase.include? 'N/A' %>
-        <dt>Phase</dt>
         <dd><%= @study.phase %></dd>
       <% end %>
       <br>
