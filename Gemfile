@@ -30,6 +30,8 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'rake', '~> 11.3'
 gem 'sdoc', '~> 0.4.0', group: :doc
+#  Lets us spawn processes in the background
+gem 'spawnling', '~>2.1'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

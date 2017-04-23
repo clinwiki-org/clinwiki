@@ -1,0 +1,2 @@
+class Keyword < Aact
+end

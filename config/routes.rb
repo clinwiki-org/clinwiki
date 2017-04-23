@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
+
   root 'studies#index'
+  resources :annotations
   resources :reviews
   resources :tags
 

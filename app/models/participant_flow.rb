@@ -1,0 +1,2 @@
+class ParticipantFlow < Aact
+end

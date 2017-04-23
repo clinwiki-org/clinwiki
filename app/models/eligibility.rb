@@ -1,0 +1,2 @@
+class Eligibility < Aact
+end

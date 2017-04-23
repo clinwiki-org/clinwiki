@@ -1,0 +1,8 @@
+<div>
+  <%= render 'tags/list_tags',  :locals => {:nct_id => params[:id]} %>
+  <br>
+  <p>
+    <%= link_to 'Return to Study List', studies_path, class: "btn btn-default btn-mini" %>
+  </p>
+</div>
+

@@ -1,0 +1,2 @@
+class ResultContact < Aact
+end

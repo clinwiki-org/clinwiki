@@ -1,0 +1,2 @@
+class ResultDetail < Aact
+end

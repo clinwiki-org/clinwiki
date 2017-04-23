@@ -30,7 +30,7 @@ class TagsController < ApplicationController
       tag_id=params['id']
     end
     @tag=Tag.find(tag_id) if @tag.nil?
-    @study=Study.retrieve(@tag.nct_id).first
+    @study=Study.find(@tag.nct_id)
     unless (@tag.user == current_user) || (current_user.admin?)
       redirect_to root_url, alert: "Sorry, this tag belongs to someone else"
     end
