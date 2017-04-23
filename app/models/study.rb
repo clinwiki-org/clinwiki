@@ -49,6 +49,10 @@ class Study < AactBase
 
   scope :find_by_term, lambda {|term| where("nct_id in (select nct_id from ids_for_term(?))", "%#{term}%")}
 
+  def init_annotations
+    annotations << Annotation.init_lay_summary
+  end
+
   def average_rating
     reviews.size == 0 ? 0 : reviews.average(:rating).round(2)
   end
@@ -59,12 +63,16 @@ class Study < AactBase
 
   def display_interventions
     res=Study.connection.execute("select intervention from all_interventions where nct_id='#{nct_id}'")
-    res.first['intervention'] if res
+    if !res.first.nil?
+      res.first['intervention']
+    end
   end
 
   def display_conditions
     res=Study.connection.execute("select mesh_term from all_conditions where nct_id='#{nct_id}'")
-    res.first['mesh_term'] if res
+    if !res.first.nil?
+      res.first['mesh_term']
+    end
   end
 
   def primary_outcomes
@@ -144,6 +152,12 @@ class Study < AactBase
       {:label=>'listed location countries',:value=>'tbd'},
       {:label=>'removed location countries',:value=>'tbd'},
     ]
+  end
+
+  def crowd_source_info
+    annotations.each {|annotation|
+      {:label=>annotation.label,:value=>annotation.description}
+    }
   end
 
 end
