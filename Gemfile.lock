@@ -95,6 +95,11 @@ GEM
     jbuilder (2.6.0)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
+    jquery-datatables-rails (3.4.0)
+      actionpack (>= 3.1)
+      jquery-rails
+      railties (>= 3.1)
+      sass-rails
     jquery-rails (4.2.1)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -208,9 +213,6 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.5)
-    turbolinks (5.0.1)
-      turbolinks-source (~> 5)
-    turbolinks-source (5.0.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (3.0.3)
@@ -240,6 +242,7 @@ DEPENDENCIES
   gon
   httparty
   jbuilder (~> 2.0)
+  jquery-datatables-rails
   jquery-rails
   mini_magick
   net-ssh
@@ -256,7 +259,6 @@ DEPENDENCIES
   searchkick
   spawnling (~> 2.1)
   therubyracer
-  turbolinks
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
   zip

@@ -7,13 +7,7 @@
              return $(this).attr('data-score');
            }
         });
-        $('#sortTable').dataTable({
-          stateSave: true,
-          "oLanguage": { "sSearch": "Filter results" },
-          "lengthMenu": [ 25, 50, 75, 100 ],
-          "pageLength": 50
-        });
-    });
+   });
 </script>
 
 <div class="container-fluid">
@@ -34,7 +28,7 @@
   <div class='table-responsive'>
     <div class='container-fluid'>
       <div class='row'>
-        <table id="sortTable" class='table dataTable data-table table-striped table-condensed table-hover'>
+        <table id="studies" class='table dataTable data-table table-striped table-condensed table-hover'>
           <thead>
             <tr>
               <th>id</th>

@@ -23,8 +23,10 @@ gem 'gon'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+gem 'jquery-datatables-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks'
+# Commented out turbolinks cuz it causes dataTable features to fail to render when you navigate back to the page.
+#gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
