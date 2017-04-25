@@ -1,9 +1,7 @@
 class Retriever
 
   def self.get_study(nct_id)
-    response = HTTParty.get("https://clinicaltrials.gov/show/#{nct_id}?resultsxml=true")
-    r=response.to_hash['clinical_study'] if response
-    Study.find(r['nct_id']) if r
+    Study.find(nct_id)
   end
 
   def self.get(value=nil)
