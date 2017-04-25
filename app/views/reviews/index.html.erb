@@ -18,6 +18,7 @@
     <div class='study-title'>
       <h3 id='nct_id'><%= @study.nct_id %></h3>
     </div>
+    <%= render 'shared/study_star_rating' %>
 
     <p>
       <%= link_to "Write a Review", new_review_path(:nct_id=>@nct_id), class: "btn btn-default btn-mini" %>

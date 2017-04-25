@@ -27,7 +27,7 @@
   <div class="form-group">
     <%= hidden_field_tag(:nct_id,@review.nct_id) %>
     <%= f.submit "Save Review", class: "btn btn-primary" %>
-    <%= link_to 'Cancel', reviews_path(:nct_id=>params['nct_id']), class: "btn btn-cancel" %>
+    <%= link_to 'Cancel', reviews_path(:nct_id=>params['nct_id']), class: "button cancel" %>
   </div>
 <% end %>
 
