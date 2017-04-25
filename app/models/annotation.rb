@@ -1,7 +1,7 @@
 class Annotation < ActiveRecord::Base
 
   def self.init_lay_summary
-    new({:label=>'lay summary', :description=>'enter a lay summary here'})
+    new({:label=>'lay summary', :description=>"- enter lay summary here -"})
   end
 
   def study

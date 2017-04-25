@@ -6,7 +6,7 @@
     </div>
     <%= render 'shared/study_star_rating' %>
     <%= render 'shared/study_sidebar' %>
-    <%= link_to 'Back', reviews_path(:nct_id=>params['nct_id']), class: "btn btn-primary" %>
+    <%= link_to 'Return to Study',study_path(:id=>params['nct_id']), :class => "btn btn-default btn-mini" %>
   </div>
   <div class="col-md-9 bs-docs-sidebar">
     <%= render 'form' %>

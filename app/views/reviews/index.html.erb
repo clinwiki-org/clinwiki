@@ -14,13 +14,17 @@
 <div class="row">
 
   <div class="col-md-3 bs-docs-sidebar">
-    <p>
-      <%= link_to "Write a Review", new_review_path(:nct_id=>@nct_id), class: "btn btn-default btn-mini" %>
-    </p>
+
     <div class='study-title'>
       <h3 id='nct_id'><%= @study.nct_id %></h3>
     </div>
+
+    <p>
+      <%= link_to "Write a Review", new_review_path(:nct_id=>@nct_id), class: "btn btn-default btn-mini" %>
+    </p>
+
     <%= render 'shared/study_sidebar' %>
+
     <p>
       <%= link_to 'Return to Study',study_path(:id=>@nct_id), :class => "btn btn-default btn-mini" %>
     </p>
@@ -34,6 +38,7 @@
     <% if @study.reviews.empty? %>
       <h3>No reviews yet. Be the first to write one!</h3>
     <% else %>
+      <h3>Reviews</h3>
       <table class="table">
         <thead>
           <tr>

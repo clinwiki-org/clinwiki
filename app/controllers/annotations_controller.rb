@@ -12,7 +12,7 @@ class AnnotationsController < ApplicationController
 
   # GET /annotations/new
   def new
-    @annotation = Annotation.new({:nct_id=>params[:id],:label=>'enter label for information',:description=>'enter summary information about this study'})
+    @annotation = Annotation.new({:nct_id=>params[:id],:label=>'- enter label for information -',:description=>'- enter information about this study -'})
     @study = Study.where('nct_id = ?', @annotation.nct_id).try(:first)
   end
 

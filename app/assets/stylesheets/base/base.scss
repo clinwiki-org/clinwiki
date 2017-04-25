@@ -19,7 +19,7 @@ html {
   height: 100%;
   padding-left: 100px;
   padding-right: 100px;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Avenir', sans-serif;
 }
 
 a.link-action {
@@ -30,13 +30,13 @@ a.link-action {
 button, input[type="submit"], a.button {
   margin-bottom: 0.1rem;
   padding: 0.6rem 1rem 0.8rem;
-  font-size: 1.2rem;
+  font-size: 14px;
   text-transform: lowercase;
 }
 
 body {
-    font-family: Lato,Helvetica,Arial,sans-serif;
-    font-size: 16px;
+    font-family: Avenir,Helvetica,Arial,sans-serif;
+    font-size: 18px;
 }
 
 .navbar-default .navbar-brand {
