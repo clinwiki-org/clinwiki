@@ -95,6 +95,10 @@ class Study < AactBase
     is_fda_regulated_device or is_fda_regulated_drug
   end
 
+  def display_info_for(section)
+    DisplayConfiguration.display_info_for(section, nct_id)
+  end
+
   def administrative_info
     [
       {:label=>'NCT Number',:value=>nct_id},

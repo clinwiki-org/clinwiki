@@ -1,0 +1,36 @@
+<div class="container-fluid">
+
+  <h1>Listing Display Configurations</h1>
+
+  <table id="configurations" class='display'>
+    <thead>
+      <tr>
+        <th>section</th>
+        <th>table</th>
+        <th>column</th>
+        <th>order</th>
+      </tr>
+    </thead>
+    <colgroup>
+      <col class="col-md-3">
+      <col class="col-md-4">
+      <col class="col-md-4">
+      <col class="col-md-1">
+    </colgroup>
+
+    <tbody>
+      <% @display_configurations.each do |config| %>
+        <tr>
+          <td><%= config.render_in_section %></td>
+          <td><%= config.table_name %></td>
+          <td><%= config.column_name %></td>
+          <td><%= config.sort_order %></td>
+          <td><%= link_to 'Edit', edit_display_configuration_path(config), data: {:id=>config.id}, class: "btn btn-link" %></td>
+          <td><%= link_to 'Remove', config, method: :delete, data: {confirm: 'Are you sure?',:id=>config.id}, class: "btn btn-link" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= link_to 'Add Config', new_display_configuration_path, class: 'btn btn-default btn-mini' %>
+</div>

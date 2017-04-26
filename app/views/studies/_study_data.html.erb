@@ -18,28 +18,22 @@ $(document).ready(function() {
 <div>
   <div id="tabs-container">
       <ul class="clinwiki-tabs-menu tabs-menu">
-          <li class='current'><a href="#tab-1">Crowd Entered Info</a></li>
-          <li><a href="#tab-2">Descriptive Info</a></li>
-          <li><a href="#tab-3">Admin Info</a></li>
-          <li><a href="#tab-4">Recruitment_info</a></li>
-          <li><a href="#tab-5">Tracking Info</a></li>
+        <li class='current'><a href="#crowd-entered">Crowd Entered Info</a></li>
+        <% @sections.each do |section| %>
+          <li><a href="#display_<%= section.downcase.parameterize.underscore %>"><%= section %></a></li>
+        <% end %>
       </ul>
-      <div class="tab">
-          <div id="tab-1" class="tab-content">
-             <%= render 'annotations/annotation_list' %>
+
+     <div class='tab'>
+       <div id='crowd-entered' class='tab-content'>
+           <%= render 'annotations/annotation_list' %>
+       </div>
+
+      <% @sections.each do |section| %>
+          <div id="display_<%= section.downcase.parameterize.underscore %>" class="tab-content">
+           <%= render partial: 'studies/display_info_in_tab', locals: {section: section} %>
           </div>
-          <div id="tab-2" class="tab-content">
-             <%= render 'studies/descriptive_info' %>
-          </div>
-          <div id="tab-3" class="tab-content">
-             <%= render 'studies/administrative_info' %>
-          </div>
-          <div id="tab-4" class="tab-content">
-             <%= render 'studies/recruitment_info' %>
-          </div>
-          <div id="tab-5" class="tab-content">
-             <%= render 'studies/tracking_info' %>
-          </div>
-      </div>
+       <% end %>
+     </div>
   </div>
 </div>

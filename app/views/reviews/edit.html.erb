@@ -1,9 +1,12 @@
 <div class="container-fluid">
-  <h1>Update Review</h1>
 
   <div class="col-md-3 bs-docs-sidebar">
-    <%= render 'layouts/study_sidebar' %>
-    <%= link_to 'Back', reviews_path(:nct_id=>@study.nct_id), class: "btn btn-primary" %>
+    <div class='study-title'>
+      <h3 id='nct_id'><%= @study.nct_id %></h3>
+    </div>
+    <%= render 'shared/study_star_rating' %>
+    <%= render 'shared/study_sidebar' %>
+    <%= link_to 'Return to Study',study_path(:id=>@study.nct_id), :class => "btn btn-default btn-mini" %>
   </div>
   <div class="col-md-9 bs-docs-sidebar">
     <%= render 'form' %>

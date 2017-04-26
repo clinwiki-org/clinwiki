@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :display_configurations
   root 'studies#index'
   resources :annotations
   resources :reviews

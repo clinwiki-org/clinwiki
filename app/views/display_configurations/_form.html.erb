@@ -1,0 +1,46 @@
+<%= form_for(@display_configuration) do |f| %>
+  <% if @display_configuration.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@display_configuration.errors.count, "error") %> prohibited this display_configuration from being saved:</h2>
+
+      <ul>
+      <% @display_configuration.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <div class="form-group">
+      <%= f.label :render_in_section %>
+    </div>
+    <div class="form-group">
+      <%= f.text_field :render_in_section, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :table_name %>
+    </div>
+    <div class="form-group">
+      <%= f.text_field :table_name, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :column_name %>
+    </div>
+    <div class="form-group">
+      <%= f.text_field :column_name, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :sort_order %>
+    </div>
+    <div class="form-group">
+      <%= f.text_field :sort_order, class: "form-control" %>
+    </div>
+
+  <div class="actions">
+    <%= f.submit "Save", class: "btn btn-primary" %>
+    <%= link_to 'Cancel', display_configurations_path, class: "button cancel" %>
+  </div>
+<% end %>

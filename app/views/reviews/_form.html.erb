@@ -2,8 +2,6 @@
   <h3><%= @study.brief_title %></h3>
 </div>
 
-<h4>Add a Review</h4>
-
 <%= form_for(@review) do |f| %>
   <% if @review.errors.any? %>
     <div id="error-explanation" class="alert alert-danger alert-dismissable">
@@ -20,8 +18,9 @@
 
   <div id="star-rating"></div>
   <div class="form-group">
-    <br>
     <%= f.label :comment %>
+  </div>
+  <div class="form-group">
     <%= f.text_area :comment, class: "form-control" %>
   </div>
   <div class="form-group">

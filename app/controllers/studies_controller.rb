@@ -10,6 +10,7 @@ class StudiesController < ApplicationController
   end
 
   def show
+    @sections=DisplayConfiguration.sections
     get_study
   end
 

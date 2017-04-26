@@ -1,0 +1,1 @@
+json.array! @display_configurations, partial: 'display_configurations/display_configuration', as: :display_configuration

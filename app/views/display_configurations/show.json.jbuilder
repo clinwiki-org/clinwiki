@@ -1,0 +1,1 @@
+json.partial! "display_configurations/display_configuration", display_configuration: @display_configuration

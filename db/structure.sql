@@ -100,6 +100,41 @@ ALTER SEQUENCE annotations_id_seq OWNED BY annotations.id;
 
 
 --
+-- Name: display_configurations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE display_configurations (
+    id integer NOT NULL,
+    relationship_to_study character varying,
+    render_in_section character varying,
+    render_in_subsection character varying,
+    table_name character varying,
+    column_name character varying,
+    format_type character varying,
+    sort_order integer
+);
+
+
+--
+-- Name: display_configurations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE display_configurations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: display_configurations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE display_configurations_id_seq OWNED BY display_configurations.id;
+
+
+--
 -- Name: reviews; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -264,6 +299,13 @@ ALTER TABLE ONLY annotations ALTER COLUMN id SET DEFAULT nextval('annotations_id
 
 
 --
+-- Name: display_configurations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY display_configurations ALTER COLUMN id SET DEFAULT nextval('display_configurations_id_seq'::regclass);
+
+
+--
 -- Name: reviews id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -305,6 +347,14 @@ ALTER TABLE ONLY annotation_labels
 
 ALTER TABLE ONLY annotations
     ADD CONSTRAINT annotations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: display_configurations display_configurations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY display_configurations
+    ADD CONSTRAINT display_configurations_pkey PRIMARY KEY (id);
 
 
 --
@@ -405,4 +455,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161025205437');
 INSERT INTO schema_migrations (version) VALUES ('20161121022548');
 
 INSERT INTO schema_migrations (version) VALUES ('20170318222715');
+
+INSERT INTO schema_migrations (version) VALUES ('20170425202702');
 
