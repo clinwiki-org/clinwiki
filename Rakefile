@@ -20,4 +20,12 @@ namespace :search do
     Study.search_index.promote(index_name)
     p "Success!"
   end
+
+  task :reindex_dev, [:limit] => :environment do |t, args|
+    args.with_defaults(:limit => 1000)
+    to_index = args[:limit].to_i
+    p "Indexing #{to_index} random studies"
+    Study.limit(to_index).order('random()').map(&:reindex_async)
+  end
+
 end
