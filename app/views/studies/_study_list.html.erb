@@ -8,20 +8,35 @@
            }
         });
         $('#sortTable').dataTable({
-          stateSave: true,
           "oLanguage": { "sSearch": "Filter results" },
           "lengthMenu": [ 25, 50, 75, 100 ],
-          "pageLength": 50
+          "pageLength": 25,
+          "ajax": "<%= studies_search_json_path q: @search %>",
+          "processing": true,
+          "serverSide": true,
+          "columns": [
+            {"data": "nct_id", render: function(data, type, row) {
+              return "<a href=\"/studies/"+row.nct_id+"\">"+data+"</a>";
+            }},
+            {"data": "rating", render: function(data, type, row) {
+              return "<span style=\"display: none;\">"+data+"</span><div class=\"star-rating\" data-score="+data+"></div>";
+            }},
+            {"data": "status"},
+            {"data": "title", render: function(data, type, row) {
+              return "<a href=\"/studies/"+row.nct_id+"\">"+data+"</a>";
+            }},
+            {"data": "started"},
+            {"data": "completed"}
+          ]
         });
     });
 </script>
-
 <div class="container-fluid">
-  <%= form_tag search_studies_path, method: :get, class: "form-inline navbar-form" do %>
+  <%= form_tag studies_path, method: :get, class: "form-inline navbar-form" do %>
 
        <% if user_signed_in? %>
           <div class='col-xs-offset-2 navbar navbar-right'>
-            <%= text_field_tag :search, params[:search], class: "form-control" %>
+            <%= text_field_tag :q, params[:search], class: "form-control", value: @search %>
             <%= submit_tag "Retrieve Studies", name: nil, class: "btn btn-default search-button" %>
           </div>
        <% end %>
@@ -53,18 +68,8 @@
             <col class="col-md-1">
             <col class="col-md-1">
           </colgroup>
-
           <tbody>
-            <% @studies.each do |study| %>
-              <tr onClick=location.href="/studies/<%= study.nct_id %>">
-                <td><%= study.nct_id %></td>
-                <td><span style="display:none"><%= study.average_rating %></span><div class="star-rating" data-score= <%= study.average_rating %> ></div></td>
-                <td><%= study.overall_status %></td>
-                <td><%= study.brief_title %></td>
-                <td><%= study.start_date %></td>
-                <td><%= study.primary_completion_date %></td>
-              </tr>
-            <% end %>
+
           </tbody>
         </table>
       </div>
@@ -74,6 +79,3 @@
     </div>
   </div>
 </div>
-
-
-
