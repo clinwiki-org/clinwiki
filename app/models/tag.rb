@@ -1,10 +1,8 @@
-require '../helpers/reindex_study'
+require 'reindexes_study'
 
-class Tag < ActiveRecord::Base
-  include ReindexStudyHelper
+class Tag < ReindexesStudy
 
   belongs_to :user
-  belongs_to :study, :foreign_key => 'nct_id'
 
   def self.create_from(params,current_user)
     return false if params[:new_tag].strip.blank?

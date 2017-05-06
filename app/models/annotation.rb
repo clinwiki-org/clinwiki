@@ -1,8 +1,5 @@
-require '../helpers/reindex_study'
-class Annotation < ActiveRecord::Base
-  include ReindexStudyHelper
-
-  belongs_to :study, :foreign_key => 'nct_id'
+require 'reindexes_study'
+class Annotation < ReindexesStudy
 
   def self.init_lay_summary
     new({:label=>'lay summary', :description=>'enter a lay summary here'})

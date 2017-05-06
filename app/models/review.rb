@@ -1,9 +1,6 @@
-require '../helpers/reindex_study'
-class Review < ActiveRecord::Base
-  include ReindexStudyHelper
-
+require 'reindexes_study'
+class Review < ReindexesStudy
   belongs_to :user
-  belongs_to :study, :foreign_key => 'nct_id'
   validates :rating, :comment, presence: true
 
   def self.types
