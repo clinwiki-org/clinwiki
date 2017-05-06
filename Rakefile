@@ -21,7 +21,7 @@ namespace :search do
         study.reindex_async
       rescue Redis::CommandError
         p "Reached Redis memory limit, backing off..."
-        sleep 30
+        study.reindex
         retry
       end
     end
