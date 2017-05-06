@@ -23,6 +23,10 @@ namespace :search do
         p "Reached Redis memory limit, backing off..."
         study.reindex
         retry
+      rescue ActiveRecord::StatementInvalid
+        p "Reached statement invalid -- database may need some space..."
+        sleep 30
+        retry
       end
     end
     while Study.search_index.reindex_queue.length > 0 do
