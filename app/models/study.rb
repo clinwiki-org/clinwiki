@@ -182,9 +182,9 @@ class Study < AactBase
       design_outcome_measures: design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
       average_rating: average_rating,
-      tags: tags && tags.map(:value),
-      reviews: reviews && reviews.map(:comment),
-      annotations: annotations && annotations.map(:label).concat(annotations.map(&:description))
+      tags: tags && tags.map(&:value),
+      reviews: reviews && reviews.map(&:comment),
+      annotations: annotations && annotations.map(&:label).concat(annotations.map(&:description))
       })
   end
 
