@@ -1,3 +1,4 @@
+require '../helpers/reindex_study'
 class Annotation < ActiveRecord::Base
   include ReindexStudyHelper
 

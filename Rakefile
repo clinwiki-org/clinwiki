@@ -7,9 +7,15 @@ Rails.application.load_tasks
 
 
 namespace :search do
-  task :index => :environment do
-    p "Working on #{Study.count} documents..."
+
+  task :create_index => :environment do
+    p "Initializing index..."
     Study.reindex(import: false)
+    p "Done!"
+  end
+
+  task :reindex => :environment do
+    p "Working on #{Study.count} documents..."
     Study.find_each do |study|
       begin
         study.reindex_async

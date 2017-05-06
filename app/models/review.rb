@@ -1,3 +1,4 @@
+require '../helpers/reindex_study'
 class Review < ActiveRecord::Base
   include ReindexStudyHelper
 

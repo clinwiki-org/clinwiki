@@ -1,3 +1,5 @@
+require '../helpers/reindex_study'
+
 class Tag < ActiveRecord::Base
   include ReindexStudyHelper
 
