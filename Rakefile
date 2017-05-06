@@ -10,7 +10,15 @@ namespace :search do
   task :index => :environment do
     p "Working on #{Study.count} documents..."
     Study.reindex(import: false)
-    Study.find_each.map(&:reindex_async)
+    Study.find_each do |study|
+      begin
+        study.reindex_async
+      rescue Redis::CommandError
+        p "Reached Redis memory limit, backing off..."
+        sleep 30
+        retry
+      end
+    end
     while Study.search_index.reindex_queue.length > 0 do
       p "#{Study.search_index.reindex_queue.length} left..."
       sleep 15
