@@ -8,16 +8,13 @@ Rails.application.load_tasks
 
 namespace :search do
   task :index => :environment do
-    index_name = Study.reindex(async: true)[:index_name]
-    p "Working on #{index_name}"
-    result = Searchkick.reindex_status(index_name)
-    while !result[:completed] do
-      p "#{result[:batches_left]} batches left..."
+    p "Working on #{Study.count} documents..."
+    Study.reindex(exeute: false)
+    Study.find_each.map(&:reindex_async)
+    while Study.search_index.reindex_queue.length > 0 do
+      p "#{Study.search_index.reindex_queue.length} left..."
       sleep 15
-      result = Searchkick.reindex_status(index_name)
     end
-    p "Promoting index #{index_name}"
-    Study.search_index.promote(index_name)
     p "Success!"
   end
 
