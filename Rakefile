@@ -9,7 +9,7 @@ Rails.application.load_tasks
 namespace :search do
   task :index => :environment do
     p "Working on #{Study.count} documents..."
-    Study.reindex(execute: false)
+    Study.reindex(import: false)
     Study.find_each.map(&:reindex_async)
     while Study.search_index.reindex_queue.length > 0 do
       p "#{Study.search_index.reindex_queue.length} left..."
