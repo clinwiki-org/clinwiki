@@ -1,4 +1,5 @@
 class Review < ActiveRecord::Base
+  include ReindexStudyHelper
 
   belongs_to :user
   belongs_to :study, :foreign_key => 'nct_id'

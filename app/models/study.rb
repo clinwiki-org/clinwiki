@@ -166,7 +166,8 @@ class Study < AactBase
 
   scope :search_import, -> {
     includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
-    :browse_interventions, :interventions, :design_outcomes, :facilities)
+    :browse_interventions, :interventions, :design_outcomes, :facilities, :annotations,
+    :ratings, :tags)
   }
 
   # Defines the fields to be indexed by searchkick
@@ -181,6 +182,9 @@ class Study < AactBase
       design_outcome_measures: design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
       average_rating: average_rating,
+      tags: tags && tags.map(:value),
+      reviews: reviews && reviews.map(:comment),
+      annotations: annotations && annotations.map(:label).concat(annotations.map(&:description))
       })
   end
 
