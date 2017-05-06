@@ -1,6 +1,10 @@
 class Study < AactBase
   self.primary_key = 'nct_id'
 
+  attr :average_rating
+
+  searchkick batch_size: 25, callbacks: :async
+
   has_one  :brief_summary,         :foreign_key => 'nct_id'
   has_one  :design,                :foreign_key => 'nct_id'
   has_one  :detailed_description,  :foreign_key => 'nct_id'
@@ -54,7 +58,7 @@ class Study < AactBase
   end
 
   def average_rating
-    reviews.size == 0 ? 0 : reviews.average(:rating).round(2)
+    @average_rating ||= reviews.size == 0 ? 0 : reviews.average(:rating).round(2)
   end
 
   def display_start_date
@@ -158,6 +162,26 @@ class Study < AactBase
     annotations.each {|annotation|
       {:label=>annotation.label,:value=>annotation.description}
     }
+  end
+
+  scope :search_import, -> {
+    includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
+    :browse_interventions, :interventions, :design_outcomes, :facilities)
+  }
+
+  # Defines the fields to be indexed by searchkick
+  # @return [Hash]
+  def search_data
+    attributes.merge({
+      brief_summary: brief_summary && brief_summary.description,
+      detailed_description: detailed_description && detailed_description.description,
+      browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
+      browse_interventions_mesh_terms: browse_interventions.map(&:mesh_term),
+      interventions: interventions.map(&:description),
+      design_outcome_measures: design_outcomes.map(&:measure),
+      facility_names: facilities.map(&:name),
+      average_rating: average_rating,
+      })
   end
 
 end
