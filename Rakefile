@@ -22,9 +22,8 @@ namespace :search do
       rescue Redis::CommandError
         p "Reached Redis memory limit, backing off..."
         study.reindex
-        retry
-      rescue ActiveRecord::StatementInvalid
-        p "Reached statement invalid -- database may need some space..."
+      rescue StandardError => e
+        p "Reached error #{e} -- database may need some space..."
         sleep 30
         retry
       end
