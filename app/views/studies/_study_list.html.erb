@@ -16,14 +16,14 @@
           "serverSide": true,
           "columns": [
             {"data": "nct_id", render: function(data, type, row) {
-              return "<a href=\"/studies/"+row.nct_id+"\">"+data+"</a>";
+              return "<a href=\"/studies/"+row.nct_id+"\" target=\"_blank\">"+data+"</a>";
             }},
             {"data": "rating", render: function(data, type, row) {
               return "<span style=\"display: none;\">"+data+"</span><div class=\"star-rating\" data-score="+data+"></div>";
             }},
             {"data": "status"},
             {"data": "title", render: function(data, type, row) {
-              return "<a href=\"/studies/"+row.nct_id+"\">"+data+"</a>";
+              return "<a href=\"/studies/"+row.nct_id+"\" target=\"_blank\">"+data+"</a>";
             }},
             {"data": "started"},
             {"data": "completed"}
