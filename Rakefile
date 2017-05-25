@@ -42,4 +42,10 @@ namespace :search do
     Study.limit(to_index).order('random()').map(&:reindex_async)
   end
 
+  task :add_reviews_dev, [:limit] => :environment do |t, args|
+    user = User.first
+    Study.search('*', limit: args[:limit].to_i).each do |study|
+      Review.create(user: user, study: study, rating: Random.rand(5).to_i, comment: "Here is a review")
+    end
+  end
 end

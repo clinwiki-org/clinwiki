@@ -9,10 +9,16 @@ class StudiesController < ApplicationController
       load: false,
       order: ordering
     }
-    orig_studies = Study.search(@search, query_args)
-    if params['search'] && params['search']['value']
-      @studies = Study.search("#{@search} #{params['search']['value']}", query_args)
+    # this is what you get for a blank search
+    if !@search.blank?
+      orig_studies = Study.search(@search, query_args)
+      if params['search'] && params['search']['value']
+        @studies = Study.search("#{@search} #{params['search']['value']}", query_args)
+      else
+        @studies = orig_studies
+      end
     else
+      orig_studies = Study.search("*", query_args)
       @studies = orig_studies
     end
     render json: {
@@ -25,17 +31,18 @@ class StudiesController < ApplicationController
 
   def index
     @search = params.fetch('q', current_user.default_query_string)
+    p @search.inspect
   end
 
   private
 
   def get_study
-    @study=Study.find(params[:id])
+    @study = Study.find(params[:id])
     @study.init_annotations if @study.annotations.empty?
   end
 
   COLUMNS_TO_ORDER_FIELD = [
-    :nct_id, :rating, :overall_status, :brief_title, :start_date, :completion_date
+    :nct_id, :average_rating, :overall_status, :brief_title, :start_date, :completion_date
   ]
 
   # Transforms ordering params from datatables to what's expected by searchkick
