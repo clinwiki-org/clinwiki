@@ -289,5 +289,8 @@ DEPENDENCIES
   will_paginate
   zip
 
+RUBY VERSION
+   ruby 2.2.3p173
+
 BUNDLED WITH
-   1.12.5
+   1.15.0
