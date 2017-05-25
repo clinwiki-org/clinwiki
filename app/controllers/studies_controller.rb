@@ -1,13 +1,53 @@
 class StudiesController < ApplicationController
   before_action :get_study, only: [:show, :edit]
 
+  # aggregations
+  AGGS = {
+    average_rating: {
+      order: {_term: :desc},
+    },
+    tags: {
+      limit: 10
+    },
+    start_date: {
+      date_histogram: {
+        field: :completion_date,
+        interval: :year,
+      },
+      limit: 10,
+    },
+    completion_date: {
+      date_histogram: {
+        field: :completion_date,
+        interval: :year,
+      },
+      limit: 10
+    },
+    facility_states: {
+      limit: 10,
+    },
+    facility_cities: {
+      limit: 10,
+    },
+    facility_names: {
+      limit: 10,
+    },
+    study_type: {
+      limit: 10,
+    },
+    sponsors: {
+      limit: 10,
+    },
+  }
+
   def search
     @search = params.fetch('q', current_user.default_query_string)
     query_args = {
       page: params[:start] ? (params[:start].to_i / params[:length].to_i).floor : 1,
       per_page: params[:length],
       load: false,
-      order: ordering
+      order: ordering,
+      aggs: AGGS
     }
     # this is what you get for a blank search
     if !@search.blank?
@@ -25,7 +65,8 @@ class StudiesController < ApplicationController
       :draw => params[:draw],
       :recordsTotal => orig_studies.total_entries,
       :recordsFiltered => @studies.total_entries,
-      :data => @studies.map{|s| study_result_to_json(s)}
+      :data => @studies.map{|s| study_result_to_json(s)},
+      :aggs => @studies.aggs
     }
   end
 

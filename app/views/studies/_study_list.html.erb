@@ -23,7 +23,7 @@
             {"data": "completed"}
           ]
         });
-        $('#sortTable').on('draw.dt', function(){
+        table.on('draw.dt', function(){
           $(".star-rating").raty({
              path: '/assets/',
              readOnly: true,
@@ -31,6 +31,10 @@
                return $(this).attr('data-score');
              }
           });
+        });
+        table.on('xhr.dt', function(e, settings, data) {
+          console.log(e);
+          console.log(data);
         });
     });
 </script>
