@@ -120,7 +120,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_magick (4.5.1)
     mini_portile2 (2.1.0)
-    minitest (5.10.1)
+    minitest (5.10.2)
     msgpack (1.1.0)
     multi_json (1.12.1)
     multi_xml (0.5.5)
@@ -204,7 +204,7 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    searchkick (2.2.1)
+    searchkick (2.3.0)
       activemodel (>= 4.1)
       elasticsearch (>= 1)
       hashie

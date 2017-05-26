@@ -13,9 +13,9 @@ Rails.application.routes.draw do
     get '/users/sign_out' => 'devise/sessions#destroy'
   end
 
-  get "/studies/search/json", to: "studies#search", as: :empty_search_json
+  post "/studies/search/json", to: "studies#search", as: :empty_search_json
   get "/studies/search/:q", to: "studies#index"
-  get "/studies/search/:q/json", to: "studies#search", as: :studies_search_json
+  post "/studies/search/:q/json", to: "studies#search", as: :studies_search_json
 
   resources :studies do
     resources :reviews, except: [:index]
