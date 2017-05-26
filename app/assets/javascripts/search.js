@@ -1,6 +1,9 @@
 var filterStorage = {};
 
+console.log('this file was loaded');
+
 $('#search-view').ready(function() {
+  console.log('search view was ready');
   $('.agg').each(function(i, ele){ filterStorage[$(ele).data('filter')] = {}; })
 
   var table = $('#sortTable');
