@@ -14,7 +14,7 @@ module SearchHelper
       end
     else
       @orig_studies = Study.search("*", query_args)
-      @studies = orig_studies
+      @studies = @orig_studies
     end
     return {
       :draw => params[:draw],
