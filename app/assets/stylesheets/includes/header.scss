@@ -1,6 +1,5 @@
 .clinwiki-header {
-  font-size: 90px;
-  padding: 5rem 2rem;
+  font-size: 50px;
   color: #008aa1;
 }
 header {
@@ -16,4 +15,8 @@ header {
     text-align: center;
   }
 
+}
+
+#loggedin-col {
+  padding-right: 45px; // beats me!
 }

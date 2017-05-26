@@ -181,10 +181,13 @@ class Study < AactBase
       interventions: interventions.map(&:description),
       design_outcome_measures: design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
+      facility_states: facilities.map(&:state),
+      facility_cities: facilities.map(&:city),
       average_rating: average_rating,
       tags: tags && tags.map(&:value),
       reviews: reviews && reviews.map(&:comment),
-      annotations: annotations && annotations.map(&:label).concat(annotations.map(&:description))
+      annotations: annotations && annotations.map(&:label).concat(annotations.map(&:description)),
+      sponsors: sponsors && sponsors.map(&:name)
       })
   end
 

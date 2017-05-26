@@ -42,4 +42,24 @@ namespace :search do
     Study.limit(to_index).order('random()').map(&:reindex_async)
   end
 
+  task :add_reviews_dev, [:limit] => :environment do |t, args|
+    args.with_defaults(:limit => 250)
+    user = User.first
+    Study.limit(args[:limit]).order('random()').each do |study|
+      Review.create(
+      user: user, study: study, rating: Random.rand(5).to_i,
+      comment: ["Good study", "Terrible side effects!", "Incorrect study design", "More like triple-blind"].shuffle.first)
+    end
+  end
+
+  task :add_tags_dev, [:limit] => :environment do |t, args|
+    args.with_defaults(:limit => 100)
+    user = User.first
+    Study.limit(args[:limit]).order('random()').each do |study|
+      Tag.create(user: user, study: study, value: ['tag a', 'tag b', 'tag c', 'tag d'].shuffle.first)
+    end
+  end
+
+  task :bootstrap_dev => [:create_index, :reindex_dev, :add_tags_dev, :add_reviews_dev]
+
 end
