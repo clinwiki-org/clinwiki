@@ -10,7 +10,7 @@ module SearchHelper
       if params['search'] && params['search']['value']
         @studies = Study.search("#{@search} #{params['search']['value']}", query_args)
       else
-        @studies = orig_studies
+        @studies = @orig_studies
       end
     else
       @orig_studies = Study.search("*", query_args)
