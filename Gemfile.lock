@@ -82,6 +82,8 @@ GEM
       faraday
       multi_json
     erubis (2.7.0)
+    et-orbi (1.0.4)
+      tzinfo
     execjs (2.7.0)
     faraday (0.12.1)
       multipart-post (>= 1.2, < 3)
@@ -194,6 +196,8 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    rufus-scheduler (3.4.2)
+      et-orbi (~> 1.0)
     sass (3.4.22)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -213,6 +217,9 @@ GEM
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
       redis (~> 3.3, >= 3.3.3)
+    sidekiq-cron (0.6.0)
+      rufus-scheduler (>= 3.3.0)
+      sidekiq (>= 4.2.1)
     spawnling (2.1.6)
     sprockets (3.7.0)
       concurrent-ruby (~> 1.0)
@@ -281,6 +288,7 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   searchkick
   sidekiq
+  sidekiq-cron
   spawnling (~> 2.1)
   therubyracer
   turbolinks
