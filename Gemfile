@@ -71,3 +71,4 @@ gem 'dotenv-rails', groups: [:development, :test]
 
 gem 'activejob-traffic_control', '>= 0.1.3'
 gem 'sidekiq'
+gem 'sidekiq-cron'

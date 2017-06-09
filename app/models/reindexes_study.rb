@@ -3,6 +3,6 @@ class ReindexesStudy < ActiveRecord::Base
   after_save :reindex_study
   belongs_to :study, :foreign_key => 'nct_id'
   def reindex_study
-    study.reindex_async
+    study.enqueue_reindex_job
   end
 end

@@ -1,0 +1,11 @@
+aact_sync:
+  cron: "0 0 * * *"
+  class: "AactSync"
+  queue: default
+
+searchkick_study_queue:
+  cron: "*/10 * * * * *" # every 30 seconds
+  class: "ProcessQueueJob"
+  queue: searchkick
+  args:
+    class_name: "Study"

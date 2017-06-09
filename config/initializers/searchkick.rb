@@ -6,7 +6,6 @@ class Searchkick::BulkReindexJob
   concurrency 8
 end
 
-
 module Searchkick
   class Index
     # monkey-patch full_reindex_async because of bad primary key assumptions

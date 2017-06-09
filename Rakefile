@@ -14,20 +14,15 @@ namespace :search do
     p "Done!"
   end
 
+  task :reindex_days_ago, [:days] => :environment do |t, args|
+    args.with_defaults(:days => 1)
+    p "Reindexing updates from #{args[:days]} ago"
+    AactSync.perform_async(days_ago: args[:days])
+  end
+
   task :reindex => :environment do
     p "Working on #{Study.count} documents..."
-    Study.find_each do |study|
-      begin
-        study.reindex_async
-      rescue Redis::CommandError
-        p "Reached Redis memory limit, backing off..."
-        study.reindex
-      rescue StandardError => e
-        p "Reached error #{e} -- database may need some space..."
-        sleep 30
-        retry
-      end
-    end
+    Study.enqueue_reindex_job(Study.all)
     while Study.search_index.reindex_queue.length > 0 do
       p "#{Study.search_index.reindex_queue.length} left..."
       sleep 15
@@ -39,7 +34,7 @@ namespace :search do
     args.with_defaults(:limit => 1000)
     to_index = args[:limit].to_i
     p "Indexing #{to_index} random studies"
-    Study.limit(to_index).order('random()').map(&:reindex_async)
+    Study.enqueue_reindex_job(Study.limit(to_index).order('random()'))
   end
 
   task :add_reviews_dev, [:limit] => :environment do |t, args|

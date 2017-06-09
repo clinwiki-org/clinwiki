@@ -3,7 +3,7 @@ class Study < AactBase
 
   attr :average_rating
 
-  searchkick batch_size: 25, callbacks: :async
+  searchkick callbacks: :queue, batch_size: 25
 
   has_one  :brief_summary,         :foreign_key => 'nct_id'
   has_one  :design,                :foreign_key => 'nct_id'
@@ -167,8 +167,14 @@ class Study < AactBase
   scope :search_import, -> {
     includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
     :browse_interventions, :interventions, :design_outcomes, :facilities, :annotations,
-    :ratings, :tags)
+    :tags, :sponsors)
   }
+
+  # Takes a selector and enqeueues each instance for batch async reindex
+  # @param [Study::ActiveRecord_Relation]
+  def self.enqueue_reindex_job(selector)
+    Redis.new.lpush "searchkick:reindex_queue:studies_#{Rails.env}", selector.pluck(:nct_id)
+  end
 
   # Defines the fields to be indexed by searchkick
   # @return [Hash]
@@ -191,4 +197,8 @@ class Study < AactBase
       })
   end
 
+  # manually publish to reindex queue
+  def enqueue_reindex_job
+    Redis.new.lpush "searchkick:reindex_queue:studies_#{Rails.env}", nct_id
+  end
 end

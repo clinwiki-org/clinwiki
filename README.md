@@ -51,15 +51,18 @@ Follow the instructions in the searchkick docs for setting up Elasticsearch loca
 Indexing is performed in the background by Sidekiq. You can run Sidekiq as follows:
 
 ```bash
-bundle exec sidekiq -q searchkick -q default -c 32
+bundle exec sidekiq -C config/sidekiq.yml
 ```
-
-Where `q` denotes the queues we pull from (`searchkick` is the one that matters)
-and `-c` denotes the number of threads. You can of course modify this
-value for yourself.
 
 Note that with about 32 concurrent workers, it should take roughly 8 hours to
 fully reindex.
+
+It's also worth noting that we run a background job every ten seconds to
+handle batch reindexing. This is important because it optimizes queries using
+ActiveRecord's `includes` functionality. Refer to the Study model's
+`search_import` scope for more details.
+
+Scheduled jobs can be configured in `./config/schedule.yml`.
 
 A full reindex can be performed by running:
 
