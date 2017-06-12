@@ -201,4 +201,22 @@ class Study < AactBase
   def enqueue_reindex_job
     Redis.new.lpush "searchkick:reindex_queue:studies_#{Rails.env}", nct_id
   end
+
+  def to_json
+    {
+      nct_id: nct_id,
+      title: brief_title,
+      study_type: study_type,
+      overall_status: overall_status,
+      phase: phase,
+      primary_completion_date: primary_completion_date,
+      enrollment: enrollment,
+      enrollment_type: enrollment_type,
+      source: source,
+      tags: tags.map(&:value),
+      reviews_length: reviews.count,
+      average_rating: average_rating
+    }
+  end
+
 end
