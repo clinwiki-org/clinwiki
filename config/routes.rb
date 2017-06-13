@@ -9,9 +9,12 @@ Rails.application.routes.draw do
   get 'pages/about'
   get 'pages/contact'
 
-  devise_for :users do
-    get '/users/sign_out' => 'devise/sessions#destroy'
+  devise_for :users, :controllers => {sessions: 'sessions', registrations: 'registrations'},
+                     :defaults => { format: 'json'} do
+    get '/users/sign_out' => 'sessions#destroy'
   end
+
+  get "/user/exists", to: "application#user_exists", defaults: { format: 'json' }
 
   post "/studies/search/json", to: "studies#search", as: :empty_search_json
   get "/studies/search/:q", to: "studies#index"

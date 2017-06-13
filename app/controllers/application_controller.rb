@@ -4,6 +4,15 @@ class ApplicationController < ActionController::Base
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
   before_action :authenticate_user!
 
+
+  def user_exists
+    if current_user
+      render json: { loggedIn: true, email: current_user.email }
+    else
+      render json: { loggedIn: false }
+    end
+  end
+
   protected
 
   def configure_devise_permitted_parameters
