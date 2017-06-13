@@ -213,7 +213,7 @@ class Study < AactBase
       enrollment: enrollment,
       enrollment_type: enrollment_type,
       source: source,
-      tags: tags.map(&:value),
+      tags: tags.map{|t| {id: t.id, value: t.value}},
       reviews_length: reviews.count,
       average_rating: average_rating
     }

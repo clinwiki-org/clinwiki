@@ -14,8 +14,12 @@ class TagsController < ApplicationController
   end
 
   def destroy
-    tag_id=params['id']
-    @tag=Tag.find(tag_id)
+    if params.has_key?('id')
+      tag_id=params['id']
+      @tag=Tag.find(tag_id)
+    else
+      @tag=Tag.find_by(value: params['tag'], nct_id: params['nctId'])
+    end
     @tag.destroy
     @tags=Tag.where('nct_id=?',params['nct_id'])
     render :json => @tags
