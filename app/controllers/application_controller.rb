@@ -7,7 +7,14 @@ class ApplicationController < ActionController::Base
 
   def user_exists
     if current_user
-      render json: { loggedIn: true, email: current_user.email }
+      render json: {
+        loggedIn: true,
+        email: current_user.email,
+        id: current_user.id,
+        first_name: current_user.first_name,
+        last_name: current_user.last_name,
+        default_query_string: current_user.default_query_string,
+      }
     else
       render json: { loggedIn: false }
     end
