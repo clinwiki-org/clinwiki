@@ -1,5 +1,6 @@
 class AnnotationsController < ApplicationController
   before_action :set_annotation, only: [:show, :edit, :update, :destroy]
+  skip_before_filter :verify_authenticity_token
 
   # GET /annotations
   def index
@@ -26,20 +27,16 @@ class AnnotationsController < ApplicationController
     @annotation = Annotation.create({:nct_id=>annotation_params['nct_id'],:label=>annotation_params['label'],:description=>annotation_params['description']})
 
     if @annotation.save
-      redirect_to @annotation.study, notice: 'Info was successfully created.'
-    else
-      render :new
+      render json: @annotation
     end
   end
 
   # PATCH/PUT /annotations/1
   def update
-    if @annotation.update(annotation_params)
+    if @annotation.update({description: annotation_params[:description]})
       #format.html { redirect_to @study, notice: 'Info was successfully updated.' }
       #redirect_to :controller => :studies, :action => :index
-      redirect_to @study, notice: 'Info was successfully created.'
-    else
-      render :edit
+      render json: @annotation
     end
   end
 
@@ -47,7 +44,7 @@ class AnnotationsController < ApplicationController
   # DELETE /annotations/1.json
   def destroy
     @annotation.destroy
-    redirect_to @study, notice: 'Info removed.'
+    render json: { success: true }
   end
 
   private
@@ -59,10 +56,6 @@ class AnnotationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def annotation_params
-      if params[:commit]
-        params.require(:annotation).permit(:id, :nct_id, :label, :description, :user_id, :commit, :utf8, :authenticity_token, :annotation)
-      else
-        params.permit(:id, :nct_id, :label, :description, :user_id, :utf8, :authenticity_token, :annotation)
-      end
+      params
     end
 end
