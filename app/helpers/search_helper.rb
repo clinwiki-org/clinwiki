@@ -3,7 +3,6 @@ module SearchHelper
   # Retrieves search params from request, performs the search, transforms the result to a response hash
   # @return [Hash] the JSON response
   def search_studies
-    @search = params.fetch('q', current_user && current_user.default_query_string)
     # this is what you get for a blank search
     if !@search.blank?
       @orig_studies = Study.search(@search, query_args)

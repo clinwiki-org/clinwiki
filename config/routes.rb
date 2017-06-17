@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     get "/user/exists", to: "application#user_exists", defaults: { format: 'json' }
 
     post "/studies/search/json", to: "studies#search", as: :empty_search_json
-    get "/studies/search/:q", to: "studies#index"
+    post "/studies/json", to: "studies#index"
     post "/studies/search/:q/json", to: "studies#search", as: :studies_search_json
     get "/studies/:study_id/json", to: "studies#json"
     get "/studies/:study_id/crowd", to: "studies#crowd"

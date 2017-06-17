@@ -1,15 +1,17 @@
 class StudiesController < ApplicationController
   include SearchHelper
   before_action :get_study, only: [:show, :edit]
-  skip_before_filter :verify_authenticity_token, only: [:search]
+  skip_before_filter :verify_authenticity_token, only: [:search, :index]
   skip_before_filter :authenticate_user!  # todo -- figure out
 
   def search
+    @search = params.fetch('q', current_user && current_user.default_query_string)
     render json: search_studies
   end
 
   def index
-    @search = params.fetch('q', current_user.default_query_string)
+    @search = '*'
+    render json: search_studies
   end
 
   def json
