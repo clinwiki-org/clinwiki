@@ -3,7 +3,6 @@ module SearchHelper
   # Retrieves search params from request, performs the search, transforms the result to a response hash
   # @return [Hash] the JSON response
   def search_studies
-    @search = params.fetch('q', current_user.default_query_string)
     # this is what you get for a blank search
     if !@search.blank?
       @orig_studies = Study.search(@search, query_args)
@@ -46,7 +45,11 @@ module SearchHelper
   # Manipulates the filter params to the expected value matching a "where" key
   # @return [Hash]
   def agg_where
-    where = Hash[JSON.parse(params.fetch(:agg_filters, '{}')).map{|key, val|
+    agg_filters = params.fetch(:agg_filters, {})
+    if agg_filters.is_a?(String)
+      agg_filters = JSON.parse(agg_filters)
+    end
+    where = Hash[agg_filters.map{|key, val|
       [key, val]
     }.reject{|x| x[1].empty? }.map{|x| [x[0], x[1].keys]}]
 
@@ -71,6 +74,8 @@ module SearchHelper
       Hash[params[:order].values.map{ |ordering|
         [COLUMNS_TO_ORDER_FIELD[ordering["column"].to_i], ordering["dir"].to_sym]
       }]
+    elsif params[:sort]
+      params[:sort]
     else
       {_score: :desc}
     end
@@ -80,7 +85,7 @@ module SearchHelper
   # @return [Hash]
   def query_args
     {
-      page: params[:start] ? (params[:start].to_i / params[:length].to_i).floor : 1,
+      page: params[:start] ? (params[:start].to_i / params[:length].to_i).floor + 1 : 1,
       per_page: params[:length],
       load: false,
       order: ordering,

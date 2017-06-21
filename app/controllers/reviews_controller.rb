@@ -1,5 +1,6 @@
 class ReviewsController < ApplicationController
-  before_action :authenticate_user!
+  skip_before_filter  :verify_authenticity_token
+  before_action :authenticate_user!, except: [:index]
   before_action :check_user, only: [:edit, :update, :destroy]
 
   def new
@@ -8,7 +9,20 @@ class ReviewsController < ApplicationController
   end
 
   def index
-    get_study
+    respond_to do |format|
+      format.html do
+        get_study
+        render :index
+      end
+      format.json do
+        render json: Review.where(nct_id: params['nct_id']).map{ |r|
+          {
+            review: r,
+            user: r.user,
+          }
+        }
+      end
+    end
   end
 
   def create
@@ -20,7 +34,7 @@ class ReviewsController < ApplicationController
     respond_to do |format|
       if @review.save
         format.html { redirect_to :action => 'index', notice: 'Review was successfully created.', nct_id: @nct_id }
-        format.json { render :show, status: :created, location: @review }
+        format.json { render json: { status: :created, id: @review.id } }
       else
         format.html { render :new }
         format.json { render json: @review.errors, status: :unprocessable_entity }
@@ -39,10 +53,18 @@ class ReviewsController < ApplicationController
     respond_to do |format|
       if @review.update(review_params)
         format.html { redirect_to :action => 'index', notice: 'Review was successfully updated.', nct_id: @review.nct_id }
-        format.json { render :show, status: :ok, location: @review }
+        format.json { render json: { status: :updated, id: @review.id } }
       else
         format.html { render :edit }
         format.json { render json: @review.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def show
+    respond_to do |format|
+      format.json do
+        render json: Review.find(params['id']).to_json
       end
     end
   end
@@ -76,6 +98,6 @@ class ReviewsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def review_params
-    params.require(:review).permit(:rating, :comment)
+    params.require(:review).permit(:rating, :comment, :nct_id)
   end
 end
