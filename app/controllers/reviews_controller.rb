@@ -1,6 +1,6 @@
 class ReviewsController < ApplicationController
   skip_before_filter  :verify_authenticity_token
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index]
   before_action :check_user, only: [:edit, :update, :destroy]
 
   def new
