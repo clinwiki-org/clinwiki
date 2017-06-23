@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     post "/studies/search/json", to: "studies#search", as: :empty_search_json
     post "/studies/json", to: "studies#index"
     post "/studies/search/:q/json", to: "studies#search", as: :studies_search_json
+    post "/studies/agg_buckets", to: "studies#agg_buckets", defaults: { format: 'json' }
     get "/studies/:study_id/json", to: "studies#json"
     get "/studies/:study_id/crowd", to: "studies#crowd"
     get "/studies/:study_id/administrative", to: "studies#administrative"

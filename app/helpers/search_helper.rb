@@ -1,25 +1,30 @@
 module SearchHelper
 
+  def search_query
+    @search ||= params.fetch('q', (current_user && current_user.default_query_string) || "*")
+  end
+
   # Retrieves search params from request, performs the search, transforms the result to a response hash
   # @return [Hash] the JSON response
   def search_studies
-    # this is what you get for a blank search
-    if !@search.blank?
-      @orig_studies = Study.search(@search, query_args)
-      if params['search'] && params['search']['value']
-        @studies = Study.search("#{@search} #{params['search']['value']}", query_args)
-      else
-        @studies = @orig_studies
-      end
-    else
-      @orig_studies = Study.search("*", query_args)
-      @studies = @orig_studies
-    end
+    @studies = Study.search(search_query, query_args)
     return {
-      :draw => params[:draw],
-      :recordsTotal => @orig_studies.total_entries,
-      :recordsFiltered => @studies.total_entries,
+      :recordsTotal => @studies.total_entries,
       :data => @studies.map{|s| study_result_to_json(s)},
+      :aggs => @studies.aggs
+    }
+  end
+
+  def get_agg_buckets
+    qargs = query_args
+    agg = params["agg"]
+    qargs[:aggs] = {
+      agg => AGGS[agg.to_sym]
+    }
+    qargs[:aggs][agg].delete(:limit)
+    qargs[:per_page] = 0
+    @studies = Study.search(search_query, qargs)
+    {
       :aggs => @studies.aggs
     }
   end
@@ -63,7 +68,6 @@ module SearchHelper
         }
       end
     end
-    p where
     where
   end
 
