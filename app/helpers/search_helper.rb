@@ -93,13 +93,24 @@ module SearchHelper
       per_page: params[:length],
       load: false,
       order: ordering,
-      aggs: AGGS,
+      aggs: enabled_aggs,
       where: agg_where
     }
   end
 
+  # @return [Hash]
+  def enabled_aggs
+    AGGS.select{|x,_| ENABLED_AGGS.include?(x) }
+  end
+
   COLUMNS_TO_ORDER_FIELD = [
     :nct_id, :average_rating, :overall_status, :brief_title, :start_date, :completion_date
+  ]
+
+  ENABLED_AGGS = [
+    :average_rating, :tags, :overall_status, :facility_states,
+    :facility_cities, :facility_names, :study_type, :sponsors,
+    :browse_condition_mesh_terms, :phase
   ]
 
   # aggregations
@@ -140,6 +151,12 @@ module SearchHelper
       limit: 10,
     },
     sponsors: {
+      limit: 10,
+    },
+    phase: {
+      limit: 10,
+    },
+    browse_condition_mesh_terms: {
       limit: 10,
     },
   }
