@@ -94,7 +94,8 @@ module SearchHelper
       load: false,
       order: ordering,
       aggs: enabled_aggs,
-      where: agg_where
+      where: agg_where,
+      smart_aggs: false
     }
   end
 
