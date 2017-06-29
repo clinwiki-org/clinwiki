@@ -159,7 +159,7 @@ class Study < AactBase
   end
 
   def crowd_source_info
-    annotations.each {|annotation|
+    annotations.order(label: :asc).each {|annotation|
       {:label=>annotation.label,:value=>annotation.description}
     }
   end
