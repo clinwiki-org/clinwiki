@@ -101,7 +101,19 @@ module SearchHelper
 
   # @return [Hash]
   def enabled_aggs
-    AGGS.select{|x,_| ENABLED_AGGS.include?(x) }
+    Hash[AGGS
+      .select{|x,_| ENABLED_AGGS.include?(x) }
+      .map{|k,v|
+        # don't include the "where" for the current agg
+        this_where = agg_where.select{|x,_| x.to_s != k.to_s}
+        if this_where.blank?
+          [k, v]
+        else
+          [k, v.merge({
+            where: this_where
+            })]
+        end
+      }]
   end
 
   COLUMNS_TO_ORDER_FIELD = [
