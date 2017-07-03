@@ -250,6 +250,73 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
+-- Name: wiki_page_edits; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE wiki_page_edits (
+    id integer NOT NULL,
+    wiki_page_id integer,
+    user_id integer,
+    diff text,
+    diff_html text,
+    comment text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: wiki_page_edits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE wiki_page_edits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: wiki_page_edits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE wiki_page_edits_id_seq OWNED BY wiki_page_edits.id;
+
+
+--
+-- Name: wiki_pages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE wiki_pages (
+    id integer NOT NULL,
+    nct_id character varying,
+    text text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: wiki_pages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE wiki_pages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: wiki_pages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE wiki_pages_id_seq OWNED BY wiki_pages.id;
+
+
+--
 -- Name: annotation_labels id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -289,6 +356,20 @@ ALTER TABLE ONLY user_session_studies ALTER COLUMN id SET DEFAULT nextval('user_
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Name: wiki_page_edits id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY wiki_page_edits ALTER COLUMN id SET DEFAULT nextval('wiki_page_edits_id_seq'::regclass);
+
+
+--
+-- Name: wiki_pages id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY wiki_pages ALTER COLUMN id SET DEFAULT nextval('wiki_pages_id_seq'::regclass);
 
 
 --
@@ -340,6 +421,22 @@ ALTER TABLE ONLY users
 
 
 --
+-- Name: wiki_page_edits wiki_page_edits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY wiki_page_edits
+    ADD CONSTRAINT wiki_page_edits_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: wiki_pages wiki_pages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY wiki_pages
+    ADD CONSTRAINT wiki_pages_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -351,6 +448,27 @@ CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
 --
 
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
+
+
+--
+-- Name: index_wiki_page_edits_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_wiki_page_edits_on_user_id ON wiki_page_edits USING btree (user_id);
+
+
+--
+-- Name: index_wiki_page_edits_on_wiki_page_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_wiki_page_edits_on_wiki_page_id ON wiki_page_edits USING btree (wiki_page_id);
+
+
+--
+-- Name: index_wiki_pages_on_nct_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_wiki_pages_on_nct_id ON wiki_pages USING btree (nct_id);
 
 
 --
@@ -389,6 +507,22 @@ CREATE INDEX user_session_studies_user_id ON user_session_studies USING btree (u
 
 
 --
+-- Name: wiki_page_edits fk_rails_8a2b4e5bc0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY wiki_page_edits
+    ADD CONSTRAINT fk_rails_8a2b4e5bc0 FOREIGN KEY (wiki_page_id) REFERENCES wiki_pages(id);
+
+
+--
+-- Name: wiki_page_edits fk_rails_d7a1c1ec66; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY wiki_page_edits
+    ADD CONSTRAINT fk_rails_d7a1c1ec66 FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -405,4 +539,8 @@ INSERT INTO schema_migrations (version) VALUES ('20161025205437');
 INSERT INTO schema_migrations (version) VALUES ('20161121022548');
 
 INSERT INTO schema_migrations (version) VALUES ('20170318222715');
+
+INSERT INTO schema_migrations (version) VALUES ('20170703121626');
+
+INSERT INTO schema_migrations (version) VALUES ('20170703122024');
 

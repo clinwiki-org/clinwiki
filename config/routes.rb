@@ -26,6 +26,9 @@ Rails.application.routes.draw do
     get "/studies/:study_id/recruitment", to: "studies#recruitment"
     get "/studies/:study_id/descriptive", to: "studies#descriptive"
     get "/studies/:study_id/tracking", to: "studies#tracking"
+    get "/studies/:study_id/wiki", to: "wiki_page#get", defaults: { format: 'json' }
+    post "/studies/:study_id/wiki", to: "wiki_page#post", defaults: { format: 'json' }
+    get "/studies/:study_id/wiki/history", to: "wiki_page#history", defaults: { format: 'json' }
 
     resources :studies do
       resources :reviews, except: [:index]
