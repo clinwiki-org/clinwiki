@@ -5,6 +5,8 @@ class Study < AactBase
 
   searchkick callbacks: :queue, batch_size: 25
 
+  has_one :wiki_page, :foreign_key => 'nct_id'
+
   has_one  :brief_summary,         :foreign_key => 'nct_id'
   has_one  :design,                :foreign_key => 'nct_id'
   has_one  :detailed_description,  :foreign_key => 'nct_id'
@@ -193,8 +195,9 @@ class Study < AactBase
       tags: tags && tags.map(&:value),
       reviews: reviews && reviews.map(&:comment),
       annotations: annotations && annotations.map(&:label).concat(annotations.map(&:description)),
-      sponsors: sponsors && sponsors.map(&:name)
-      })
+      sponsors: sponsors && sponsors.map(&:name),
+      wiki_text: wiki_page  && wiki_page.text  # for now, just parse the markdown
+    })
   end
 
   # manually publish to reindex queue
