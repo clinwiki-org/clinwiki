@@ -5,25 +5,52 @@
 #   commonly used in Ruby web apps (such as libsqlite3)
 # * A recent version of NodeJS
 # * A recent version of the standard Ruby runtime to use by default
-# * The bundler and foreman gems
-FROM gcr.io/google_appengine/ruby
+# * The bundler gem
+FROM gcr.io/google-appengine/ruby:latest
 
-# This Dockerfile uses the default Ruby interpreter installed and
-# specified by the base image.
-# If you want to use a specific ruby interpreter, provide a
-# .ruby-version file, then delete this Dockerfile and re-run
-# "gcloud app gen-config --custom" to recreate it.
+# If your application requires a specific ruby version (compatible with rbenv),
+# set it here. Leave blank to use the currently recommended default.
+ARG REQUESTED_RUBY_VERSION="2.2.3"
+ARG BUILD_ENV
 
-# To install additional packages needed by your gems, uncomment
-# the "RUN apt-get update" and "RUN apt-get install" lines below
-# and specify your packages.
-# RUN apt-get update
-# RUN apt-get install -y -q (your packages here)
+# Install any requested ruby if not already preinstalled by the base image.
+# Tries installing a prebuilt package first, then falls back to a source build.
+RUN if test -n "$REQUESTED_RUBY_VERSION" -a \
+        ! -x /rbenv/versions/$REQUESTED_RUBY_VERSION/bin/ruby; then \
+      (apt-get update -y \
+        &&DEBIAN_FRONTEND=noninteractive apt-get install -y -q gcp-ruby-$REQUESTED_RUBY_VERSION) \
+      || (cd /rbenv/plugins/ruby-build \
+        && git pull \
+        && rbenv install -s $REQUESTED_RUBY_VERSION) \
+      && rbenv global $REQUESTED_RUBY_VERSION \
+      && gem install -q --no-rdoc --no-ri bundler --version $BUNDLER_VERSION \
+      && apt-get clean \
+      && rm -f /var/lib/apt/lists/*_*; \
+    fi
+ENV RBENV_VERSION=${REQUESTED_RUBY_VERSION:-$RBENV_VERSION}
 
-# Install required gems.
-COPY Gemfile Gemfile.lock /app/
-RUN bundle install && rbenv rehash
-
-# Start application on port 8080.
+# Copy the application files.
 COPY . /app/
-ENTRYPOINT bundle exec rackup -p 8080 -E production config.ru
+
+# Install required gems if Gemfile.lock is present.
+RUN if test -f Gemfile.lock; then \
+      bundle install --deployment --without="development test" \
+      && rbenv rehash; \
+    fi
+
+# Temporary. Will be moved to base image later.
+ENV RACK_ENV=$BUILD_ENV \
+    RAILS_ENV=$BUILD_ENV \
+    RAILS_SERVE_STATIC_FILES=true
+
+# Run asset pipeline if we're in a Rails app.
+RUN if test -d app/assets -a -f config/application.rb; then \
+      bundle exec rake assets:precompile || true; \
+    fi
+
+
+# BUG: Reset entrypoint to override base image.
+ENTRYPOINT []
+
+# Start application on port $PORT.
+CMD exec bundle exec rails s
