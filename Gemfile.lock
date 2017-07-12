@@ -94,6 +94,7 @@ GEM
       railties (>= 3.2, < 5.1)
     font-awesome-sass (4.7.0)
       sass (>= 3.2)
+    front_matter_parser (0.1.0)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     gon (6.1.0)
@@ -274,6 +275,7 @@ DEPENDENCIES
   figaro
   font-awesome-rails
   font-awesome-sass
+  front_matter_parser
   gon
   httparty
   jbuilder (~> 2.0)

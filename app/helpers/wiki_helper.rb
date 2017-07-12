@@ -1,8 +1,8 @@
 module WikiHelper
 
-  def generate_edit
-    diff = Diffy::Diff.new(@wiki_page.text, params[:wiki_text])
-    WikiPageEdit.new(
+  def generate_edit(wiki_text)
+    diff = Diffy::Diff.new(@wiki_page.text, wiki_text)
+    WikiPageEdit.create(
       user: current_user,
       wiki_page: @wiki_page,
       diff: diff.to_s,
@@ -18,12 +18,31 @@ module WikiHelper
     return study
   end
 
+  def combined_markdown(content, front_matter={})
+    front_matter_string = front_matter.empty? ? "---\n" : front_matter.to_yaml
+    "#{front_matter_string}---\n#{content}"
+  end
+
   def create_or_update_wiki_page_for_study
     study = get_study!
     @wiki_page = study.wiki_page || WikiPage.new(nct_id: study.nct_id)
-    @edit = generate_edit
-    @edit.save
-    @wiki_page.text = params[:wiki_text]
+
+    content = if params.has_key?(:wiki_text)
+                params[:wiki_text]
+              else
+                @wiki_page.parsed.content
+              end
+
+    front_matter = if params.has_key?(:meta)
+                    params[:meta]
+                   else
+                     @wiki_page.parsed.front_matter
+                   end
+
+    wiki_text = combined_markdown(content, front_matter)
+
+    @edit = generate_edit(wiki_text)
+    @wiki_page.text = wiki_text
     @wiki_page.save
   end
 

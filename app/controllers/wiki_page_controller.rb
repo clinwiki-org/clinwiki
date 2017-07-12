@@ -13,7 +13,7 @@ class WikiPageController < ApplicationController
   end
 
   def post
-    if (! params[:study_id] || params[:text])
+    if (! params[:study_id])
       return status 400
     end
     create_or_update_wiki_page_for_study
