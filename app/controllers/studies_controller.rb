@@ -19,6 +19,7 @@ class StudiesController < ApplicationController
 
   def json
     study = Study.find(params[:study_id])
+    study.exclude_wiki_data if params[:wiki_override] != "true"  # grr
     render json: study.to_json
   end
 

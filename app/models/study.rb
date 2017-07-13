@@ -3,7 +3,7 @@ class Study < AactBase
 
   attr :average_rating
 
-  attr :exclude_wiki_data
+  attr :excluded_wiki_data
 
   searchkick callbacks: :queue, batch_size: 25
 
@@ -210,15 +210,17 @@ class Study < AactBase
   end
 
   def exclude_wiki_data
-    @exclude_wiki_data = true
+    @excluded_wiki_data = true
   end
 
   def include_wiki_data
-    @exclude_wiki_data = false
+    @excluded_wiki_data = false
   end
 
   def with_wiki_data(field)
-    return try(field) if @exclude_wiki_data
+    p 'hey'
+    p @excluded_wiki_data
+    return try(field) if @excluded_wiki_data
     try(:wiki_page).try(field.to_s) || send(field)
   end
 
