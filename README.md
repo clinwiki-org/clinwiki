@@ -33,7 +33,7 @@ to make the handling of database variables easier.
 # Data Access
 
 ## Databases
-The [AACT Clinical Trials Database](http://aact.ctti-clinicaltrials.org/])
+The [AACT Clinical Trials Database](http://aact.ctti-clinicaltrials.org/)
 provides data the data we use for clinical trials.
 
 While the database is available online,
