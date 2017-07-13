@@ -1,11 +1,11 @@
 class WikiPage < ReindexesStudy
 
-  attr :front_matter
+  attr :front_matter, :parsed
 
   has_many :wiki_page_edits
 
   def parsed
-    @front_matter ||= FrontMatterParser::Parser.new(FrontMatterParser::SyntaxParser::Md.new).call(text)
+    @parsed ||= FrontMatterParser::Parser.new(FrontMatterParser::SyntaxParser::Md.new).call(text)
   end
 
   def from_markdown
@@ -14,6 +14,18 @@ class WikiPage < ReindexesStudy
 
   def text_html
     from_markdown.to_html
+  end
+
+  def front_matter
+    @front_matter = parsed.front_matter
+  end
+
+  def method_missing(field)
+    front_matter[field.to_s]
+  end
+
+  def respond_to?(field)
+    super(field) || front_matter.has_key?(field.to_s)
   end
 
   def to_json

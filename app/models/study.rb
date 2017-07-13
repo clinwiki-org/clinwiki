@@ -3,6 +3,8 @@ class Study < AactBase
 
   attr :average_rating
 
+  attr :exclude_wiki_data
+
   searchkick callbacks: :queue, batch_size: 25
 
   has_one :wiki_page, :foreign_key => 'nct_id'
@@ -205,14 +207,27 @@ class Study < AactBase
     Searchkick.redis.lpush "searchkick:reindex_queue:studies_#{Rails.env}", nct_id
   end
 
-  def to_json
+  def exclude_wiki_data
+    @exclude_wiki_data = true
+  end
+
+  def include_wiki_data
+    @exclude_wiki_data = false
+  end
+
+  def with_wiki_data(field)
+    return try(field) if @exclude_wiki_data
+    try(:wiki_page).try(field.to_s) || send(field)
+  end
+
+  def to_json(include_wiki_data: true)
     {
       nct_id: nct_id,
       title: brief_title,
-      study_type: study_type,
-      overall_status: overall_status,
+      study_type: with_wiki_data(:study_type),
+      overall_status: with_wiki_data(:overall_status),
       phase: phase,
-      primary_completion_date: primary_completion_date,
+      primary_completion_date: with_wiki_data(:primary_completion_date),
       enrollment: enrollment,
       enrollment_type: enrollment_type,
       source: source,

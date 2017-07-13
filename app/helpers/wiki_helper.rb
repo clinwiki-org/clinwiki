@@ -39,6 +39,15 @@ module WikiHelper
                      @wiki_page.parsed.front_matter
                    end
 
+
+    if params.has_key?(:delete_meta)
+      front_matter.delete(params[:delete_meta][:key])
+    end
+
+    if params.has_key?(:add_meta)
+      front_matter[params[:add_meta][:key]] = params[:add_meta][:value]
+    end
+
     wiki_text = combined_markdown(content, front_matter)
 
     @edit = generate_edit(wiki_text)
