@@ -52,8 +52,6 @@ class Study < AactBase
 
   # clinwiki relationships
   has_many :reviews,          :foreign_key => 'nct_id'
-  has_many :annotations,      :foreign_key => 'nct_id'
-  has_many :tags,             :foreign_key => 'nct_id'
 
   scope :find_by_term, lambda {|term| where("nct_id in (select nct_id from ids_for_term(?))", "%#{term}%")}
 
@@ -180,6 +178,10 @@ class Study < AactBase
     Searchkick.Redis.lpush "searchkick:reindex_queue:studies_#{Rails.env}", selector.pluck(:nct_id)
   end
 
+  def tags
+    try(:wiki_page).try(:tags)
+  end
+
   # Defines the fields to be indexed by searchkick
   # @return [Hash]
   def search_data
@@ -194,7 +196,7 @@ class Study < AactBase
       facility_states: facilities.map(&:state),
       facility_cities: facilities.map(&:city),
       average_rating: average_rating,
-      tags: tags && tags.map(&:value),
+      tags: tags,
       reviews: reviews && reviews.map(&:comment),
       annotations: annotations && annotations.map(&:label).concat(annotations.map(&:description)),
       sponsors: sponsors && sponsors.map(&:name),
@@ -220,7 +222,7 @@ class Study < AactBase
     try(:wiki_page).try(field.to_s) || send(field)
   end
 
-  def to_json(include_wiki_data: true)
+  def to_json
     {
       nct_id: nct_id,
       title: brief_title,
@@ -231,7 +233,7 @@ class Study < AactBase
       enrollment: enrollment,
       enrollment_type: enrollment_type,
       source: source,
-      tags: tags.map{|t| {id: t.id, value: t.value}},
+      tags: tags,
       reviews_length: reviews.count,
       average_rating: average_rating
     }

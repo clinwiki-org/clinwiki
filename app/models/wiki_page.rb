@@ -28,9 +28,13 @@ class WikiPage < ReindexesStudy
     super(field) || front_matter.has_key?(field.to_s)
   end
 
+  def meta
+    parsed.front_matter.select{|key, val| !(val.is_a?(Array) || val.is_a?(Hash))}
+  end
+
   def to_json
     {
-      meta: parsed.front_matter,
+      meta: meta,
       text: parsed.content,
       text_html: text_html,
       created_at: created_at,

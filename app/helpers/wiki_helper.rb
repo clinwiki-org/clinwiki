@@ -48,6 +48,14 @@ module WikiHelper
       front_matter[params[:add_meta][:key]] = params[:add_meta][:value]
     end
 
+    if params.has_key?(:add_tag)
+      front_matter["tags"] = front_matter.fetch("tags", []) + [params[:add_tag]]
+    end
+
+    if params.has_key?(:remove_tag)
+      front_matter["tags"] = front_matter.fetch("tags", []).select{|x| x != params[:remove_tag]}
+    end
+
     wiki_text = combined_markdown(content, front_matter)
 
     @edit = generate_edit(wiki_text)
