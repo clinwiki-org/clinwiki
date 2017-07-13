@@ -3,6 +3,8 @@ class Study < AactBase
 
   attr :average_rating
 
+  attr :excluded_wiki_data
+
   searchkick callbacks: :queue, batch_size: 25
 
   has_one :wiki_page, :foreign_key => 'nct_id'
@@ -50,8 +52,6 @@ class Study < AactBase
 
   # clinwiki relationships
   has_many :reviews,          :foreign_key => 'nct_id'
-  has_many :annotations,      :foreign_key => 'nct_id'
-  has_many :tags,             :foreign_key => 'nct_id'
 
   scope :find_by_term, lambda {|term| where("nct_id in (select nct_id from ids_for_term(?))", "%#{term}%")}
 
@@ -178,6 +178,10 @@ class Study < AactBase
     Searchkick.Redis.lpush "searchkick:reindex_queue:studies_#{Rails.env}", selector.pluck(:nct_id)
   end
 
+  def tags
+    try(:wiki_page).try(:tags)
+  end
+
   # Defines the fields to be indexed by searchkick
   # @return [Hash]
   def search_data
@@ -192,7 +196,7 @@ class Study < AactBase
       facility_states: facilities.map(&:state),
       facility_cities: facilities.map(&:city),
       average_rating: average_rating,
-      tags: tags && tags.map(&:value),
+      tags: tags,
       reviews: reviews && reviews.map(&:comment),
       annotations: annotations && annotations.map(&:label).concat(annotations.map(&:description)),
       sponsors: sponsors && sponsors.map(&:name),
@@ -205,18 +209,33 @@ class Study < AactBase
     Searchkick.redis.lpush "searchkick:reindex_queue:studies_#{Rails.env}", nct_id
   end
 
+  def exclude_wiki_data
+    @excluded_wiki_data = true
+  end
+
+  def include_wiki_data
+    @excluded_wiki_data = false
+  end
+
+  def with_wiki_data(field)
+    p 'hey'
+    p @excluded_wiki_data
+    return try(field) if @excluded_wiki_data
+    try(:wiki_page).try(field.to_s) || send(field)
+  end
+
   def to_json
     {
       nct_id: nct_id,
       title: brief_title,
-      study_type: study_type,
-      overall_status: overall_status,
+      study_type: with_wiki_data(:study_type),
+      overall_status: with_wiki_data(:overall_status),
       phase: phase,
-      primary_completion_date: primary_completion_date,
+      primary_completion_date: with_wiki_data(:primary_completion_date),
       enrollment: enrollment,
       enrollment_type: enrollment_type,
       source: source,
-      tags: tags.map{|t| {id: t.id, value: t.value}},
+      tags: tags,
       reviews_length: reviews.count,
       average_rating: average_rating
     }
