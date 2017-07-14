@@ -218,8 +218,6 @@ class Study < AactBase
   end
 
   def with_wiki_data(field)
-    p 'hey'
-    p @excluded_wiki_data
     return try(field) if @excluded_wiki_data
     try(:wiki_page).try(field.to_s) || send(field)
   end

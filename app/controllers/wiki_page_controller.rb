@@ -6,7 +6,7 @@ class WikiPageController < ApplicationController
   def get
     page = WikiPage.find_by(nct_id: params[:study_id])
     if page.nil?
-      render json: { exists: false }
+      render json: { exists: true }.merge(WikiPage.new(nct_id: params[:study_id]).to_json)
     else
       render json: { exists: true }.merge(page.to_json)
     end

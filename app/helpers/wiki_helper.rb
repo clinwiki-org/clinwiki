@@ -30,13 +30,13 @@ module WikiHelper
     content = if params.has_key?(:wiki_text)
                 params[:wiki_text]
               else
-                @wiki_page.parsed.content
+                @wiki_page.content
               end
 
     front_matter = if params.has_key?(:meta)
                     params[:meta]
                    else
-                     @wiki_page.parsed.front_matter
+                     @wiki_page.front_matter
                    end
 
 
