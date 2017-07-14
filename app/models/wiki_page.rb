@@ -7,7 +7,7 @@ class WikiPage < ReindexesStudy
   def default_content
     <<-END
 ## Lay Summary
-#{study.brief_summary.description}
+#{study.brief_summary.description.gsub(/^\s+/, '')}
 
 ## Pros
 * Add a pro here
