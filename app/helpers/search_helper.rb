@@ -85,6 +85,20 @@ module SearchHelper
     end
   end
 
+  # Transforms controller params from get request into query args for a search
+  # @return [Hash]
+  def get_query_args
+    agg_filters = {}
+    (params[:agg_filters] || []).each { |filter|
+      agg_filters[filter] = {}
+      params[filter].each { |filter_tag|
+        agg_filters[filter][filter_tag] = 1
+      }
+    }
+    params[:agg_filters] = agg_filters
+    return query_args
+  end
+
   # Transforms controller params into query args for a search
   # @return [Hash]
   def query_args

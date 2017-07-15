@@ -1,0 +1,15 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(:name => "Studies") do |sheet|
+  sheet.add_row ["nct_id", "rating", "title", "status", "started", "completed"]
+  @studies.each { |study|
+    print study[:nct_id]
+    sheet.add_row [
+                      study[:nct_id],
+                      study[:average_rating],
+                      study[:brief_title],
+                      study[:overall_status],
+                      study[:start_date],
+                      study[:completion_date]
+                  ]
+  }
+end

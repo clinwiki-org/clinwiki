@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     get "/user/exists", to: "application#user_exists", defaults: { format: 'json' }
 
     post "/studies/search/json", to: "studies#search", as: :empty_search_json
+    get "/studies/search/export/:filename", to: "studies#export_search_results"
     post "/studies/json", to: "studies#index"
     post "/studies/search/:q/json", to: "studies#search", as: :studies_search_json
     post "/studies/agg_buckets", to: "studies#agg_buckets", defaults: { format: 'json' }

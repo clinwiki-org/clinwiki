@@ -1,11 +1,19 @@
 class StudiesController < ApplicationController
   include SearchHelper
   before_action :get_study, only: [:show, :edit]
-  skip_before_filter :verify_authenticity_token, only: [:search, :index, :agg_buckets]
+  skip_before_filter :verify_authenticity_token, only: [:search, :index, :export_search_results, :agg_buckets]
   skip_before_filter :authenticate_user!  # todo -- figure out
 
   def search
     render json: search_studies
+  end
+
+  def export_search_results
+    search_query = params["query"] || "*"
+    @studies = Study.search(search_query, get_query_args)
+    respond_to do |format|
+      format.xlsx
+    end
   end
 
   def agg_buckets
