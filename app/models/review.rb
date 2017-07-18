@@ -1,10 +1,35 @@
 require 'reindexes_study'
 class Review < ReindexesStudy
-  belongs_to :user
-  validates :rating, :comment, presence: true
+  include WikiModelHelper
 
-  def self.types
-    ['Accessibility','Design','Outcomes']
+  belongs_to :user
+
+  def default_content
+    "Add your review!"
+  end
+
+  def to_json
+    result = {
+      id: id,
+      nct_id: nct_id,
+      created_at: created_at,
+      updated_at: updated_at,
+      text: content,
+      overall_rating: overall_rating,
+      text_html: text_html,
+    }
+
+    if !front_matter.blank?
+      result[:stars] = front_matter
+    else
+      result[:rating] = overall_rating
+    end
+
+    if parsed && parsed.content
+      result[:text] = parsed.content
+    end
+
+    result
   end
 
 end

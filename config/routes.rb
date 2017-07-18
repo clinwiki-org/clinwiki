@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   scope(path: '/api') do
     root 'studies#index'
     resources :annotations
-    resources :reviews
     resources :tags
 
     get '/.well-known/acme-challenge/:id' => 'pages#letsencrypt'
@@ -29,6 +28,12 @@ Rails.application.routes.draw do
     get "/studies/:study_id/wiki", to: "wiki_page#get", defaults: { format: 'json' }
     post "/studies/:study_id/wiki", to: "wiki_page#post", defaults: { format: 'json' }
     get "/studies/:study_id/wiki/history", to: "wiki_page#history", defaults: { format: 'json' }
+
+    get "/reviews/:nct_id", to: "reviews#index", defaults: { format: 'json' }
+    get "/review/:id", to: "reviews#show", defaults: { format: 'json' }
+    post "/reviews/:nct_id", to: "reviews#create", defaults: { format: 'json' }
+    patch "/reviews/:id", to: "reviews#update", defaults: { format: 'json' }
+    delete "/review/:id", to: "reviews#delete", defaults: { format: 'json' }
 
     resources :studies do
       resources :reviews, except: [:index]

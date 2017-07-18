@@ -60,7 +60,7 @@ class Study < AactBase
   end
 
   def average_rating
-    @average_rating ||= reviews.size == 0 ? 0 : reviews.average(:rating).round(2)
+    @average_rating ||= reviews.size == 0 ? 0 : reviews.average(:overall_rating).round(2)
   end
 
   def display_start_date

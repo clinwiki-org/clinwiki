@@ -1,61 +1,45 @@
 class ReviewsController < ApplicationController
   skip_before_filter  :verify_authenticity_token
   before_action :authenticate_user!, except: [:index]
-  before_action :check_user, only: [:edit, :update, :destroy]
 
-  def new
-    get_study
-    @review = Review.new({:nct_id=>@nct_id})
-  end
+  include WikiHelper
 
   def index
-    respond_to do |format|
-      format.html do
-        get_study
-        render :index
-      end
-      format.json do
-        render json: Review.where(nct_id: params['nct_id']).map{ |r|
-          {
-            review: r,
-            user: r.user,
-          }
-        }
-      end
-    end
+    render json: Review.where(nct_id: params['nct_id']).map{ |r|
+      p r.text
+      {
+        review: r.to_json,
+        user: r.user,
+      }
+    }
   end
 
   def create
-    get_study
-    @review = Review.new(review_params)
-    @review.user_id = current_user.id
-    @review.nct_id = @nct_id
+    @review = Review.new(
+      nct_id: params[:nct_id],
+      user_id: current_user.id,
+      text: combined_markdown(params[:review], params[:stars].as_json)
+    )
+
+    if (params[:stars]["Overall Rating"])
+      @review.overall_rating = params[:stars]["Overall Rating"]
+    end
 
     respond_to do |format|
       if @review.save
-        format.html { redirect_to :action => 'index', notice: 'Review was successfully created.', nct_id: @nct_id }
-        format.json { render json: { status: :created, id: @review.id } }
+        format.json { render json: @review.to_json }
       else
-        format.html { render :new }
         format.json { render json: @review.errors, status: :unprocessable_entity }
       end
     end
-  end
-
-  def edit
-    @review = Review.find(params['id'])
-    @nct_id=@review.nct_id
-    get_study
   end
 
   def update
     get_study
     respond_to do |format|
       if @review.update(review_params)
-        format.html { redirect_to :action => 'index', notice: 'Review was successfully updated.', nct_id: @review.nct_id }
         format.json { render json: { status: :updated, id: @review.id } }
       else
-        format.html { render :edit }
         format.json { render json: @review.errors, status: :unprocessable_entity }
       end
     end
@@ -86,18 +70,5 @@ class ReviewsController < ApplicationController
       @nct_id=@review.nct_id
     end
     @study=Study.find(@nct_id)
-  end
-
-  def check_user
-    @review=Review.find(params['id']) if @review.nil?
-    @study=Study.find(@review.nct_id)
-    unless (@review.user == current_user) || (current_user.admin?)
-      redirect_to root_url, alert: "Sorry, this review belongs to someone else"
-    end
-  end
-
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def review_params
-    params.require(:review).permit(:rating, :comment, :nct_id)
   end
 end
