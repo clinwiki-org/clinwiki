@@ -35,10 +35,11 @@ class ReviewsController < ApplicationController
   end
 
   def update
-    get_study
+    @review = Review.find(params['id'])
+    @review.text = combined_markdown(params[:review], params[:stars].as_json)
     respond_to do |format|
-      if @review.update(review_params)
-        format.json { render json: { status: :updated, id: @review.id } }
+      if @review.save
+        format.json { render json: @review.to_json }
       else
         format.json { render json: @review.errors, status: :unprocessable_entity }
       end
@@ -53,10 +54,9 @@ class ReviewsController < ApplicationController
     end
   end
 
-  def destroy
-    @review.destroy
+  def delete
+    Review.find(params[:id]).destroy
     respond_to do |format|
-      format.html { redirect_to :action => 'index', notice: 'Review was successfully removed.', nct_id: @review.nct_id }
       format.json { head :no_content }
     end
   end

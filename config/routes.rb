@@ -32,7 +32,7 @@ Rails.application.routes.draw do
     get "/reviews/:nct_id", to: "reviews#index", defaults: { format: 'json' }
     get "/review/:id", to: "reviews#show", defaults: { format: 'json' }
     post "/reviews/:nct_id", to: "reviews#create", defaults: { format: 'json' }
-    patch "/reviews/:id", to: "reviews#update", defaults: { format: 'json' }
+    patch "/review/:id", to: "reviews#update", defaults: { format: 'json' }
     delete "/review/:id", to: "reviews#delete", defaults: { format: 'json' }
 
     resources :studies do
