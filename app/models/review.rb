@@ -22,7 +22,7 @@ class Review < ReindexesStudy
     if !front_matter.blank?
       result[:stars] = front_matter
     else
-      result[:rating] = overall_rating
+      result[:stars] = { "Overall Rating" => overall_rating }
     end
 
     if parsed && parsed.content
