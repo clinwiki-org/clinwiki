@@ -2,6 +2,8 @@ require 'reindexes_study'
 class Review < ReindexesStudy
   include WikiModelHelper
 
+  alias_method :stars, :front_matter
+
   belongs_to :user
 
   def default_content

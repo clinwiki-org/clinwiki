@@ -55,10 +55,6 @@ class Study < AactBase
 
   scope :find_by_term, lambda {|term| where("nct_id in (select nct_id from ids_for_term(?))", "%#{term}%")}
 
-  def init_annotations
-    annotations << Annotation.init_lay_summary
-  end
-
   def average_rating
     @average_rating ||= reviews.size == 0 ? 0 : reviews.average(:overall_rating).round(2)
   end
@@ -160,16 +156,10 @@ class Study < AactBase
     ]
   end
 
-  def crowd_source_info
-    annotations.order(label: :asc).each {|annotation|
-      {:label=>annotation.label,:value=>annotation.description}
-    }
-  end
-
   scope :search_import, -> {
     includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
-    :browse_interventions, :interventions, :design_outcomes, :facilities, :annotations,
-    :tags, :sponsors)
+    :browse_interventions, :interventions, :design_outcomes, :facilities,
+    :sponsors)
   }
 
   # Takes a selector and enqeueues each instance for batch async reindex
@@ -180,6 +170,20 @@ class Study < AactBase
 
   def tags
     try(:wiki_page).try(:tags)
+  end
+
+  def rating_dimensions
+    dimensions = {}
+    reviews.each do |r|
+      r.stars.keys.each do |key|
+        dimensions[key] = dimensions.fetch(key, []).concat([r.stars[key]])
+      end
+    end
+    dimensions
+  end
+
+  def average_rating_dimensions
+    Hash[rating_dimensions.map{|key, vals| [key, vals.inject{ |sum, el| sum + el }.to_f / vals.size]}]
   end
 
   # Defines the fields to be indexed by searchkick
@@ -197,11 +201,11 @@ class Study < AactBase
       facility_cities: facilities.map(&:city),
       average_rating: average_rating,
       tags: tags,
-      reviews: reviews && reviews.map(&:comment),
-      annotations: annotations && annotations.map(&:label).concat(annotations.map(&:description)),
+      reviews: reviews && reviews.map(&:text),
       sponsors: sponsors && sponsors.map(&:name),
-      wiki_text: wiki_page  && wiki_page.text  # for now, just parse the markdown
-    })
+      wiki_text: wiki_page  && wiki_page.text,  # for now, just parse the markdown
+      rating_dimensions: rating_dimensions.keys,
+    }).merge(average_rating_dimensions)
   end
 
   # manually publish to reindex queue

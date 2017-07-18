@@ -123,7 +123,7 @@ module SearchHelper
   ENABLED_AGGS = [
     :average_rating, :tags, :overall_status, :facility_states,
     :facility_cities, :facility_names, :study_type, :sponsors,
-    :browse_condition_mesh_terms, :phase
+    :browse_condition_mesh_terms, :phase, :rating_dimensions
   ]
 
   # aggregations
@@ -170,6 +170,9 @@ module SearchHelper
       limit: 10,
     },
     browse_condition_mesh_terms: {
+      limit: 10,
+    },
+    rating_dimensions: {
       limit: 10,
     },
   }
