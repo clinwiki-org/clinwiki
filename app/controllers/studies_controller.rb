@@ -11,7 +11,7 @@ class StudiesController < ApplicationController
   def export_search_results
     # Don't allow export of more than 10000 rows
     if (params["length"].to_i > 10000) then
-      render status: 413, plain: "length parameter exceeds maximum of 10000"
+      render status: 400, plain: "length parameter exceeds maximum of 10000"
     else
       search_query = params["query"] || "*"
       @studies = Study.search(search_query, get_query_args)
