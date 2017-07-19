@@ -165,7 +165,9 @@ class Study < AactBase
   # Takes a selector and enqeueues each instance for batch async reindex
   # @param [Study::ActiveRecord_Relation]
   def self.enqueue_reindex_job(selector)
-    Searchkick.Redis.lpush "searchkick:reindex_queue:studies_#{Rails.env}", selector.pluck(:nct_id)
+    selector.select(:nct_id).find_each do |s|
+      Searchkick.redis.lpush "searchkick:reindex_queue:studies_#{Rails.env}", s.nct_id
+    end
   end
 
   def tags
