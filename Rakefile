@@ -17,7 +17,7 @@ namespace :search do
   task :reindex_days_ago, [:days] => :environment do |t, args|
     args.with_defaults(:days => 1)
     p "Reindexing updates from #{args[:days]} ago"
-    AactSync.perform_async(days_ago: args[:days])
+    AactSync.perform_async({ "days_ago" => args[:days] })
   end
 
   task :reindex => :environment do
