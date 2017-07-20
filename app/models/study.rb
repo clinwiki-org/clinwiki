@@ -159,7 +159,7 @@ class Study < AactBase
   scope :search_import, -> {
     includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
     :browse_interventions, :interventions, :design_outcomes, :facilities,
-    :sponsors)
+    :sponsors, :wiki_page)
   }
 
   # Takes a selector and enqeueues each instance for batch async reindex
