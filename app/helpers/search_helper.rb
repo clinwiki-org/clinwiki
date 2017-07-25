@@ -34,17 +34,18 @@ module SearchHelper
   # @param [Hash] result a searchkick raw elasticsearch result
   # @return [Hash] the expected format for the response
   def study_result_to_json(result)
-    {
+    response = {
       nct_id: result[:nct_id],
-      rating: result[:average_rating],
+      "Overall Rating" => result[:average_rating],
       title: result[:brief_title],
       status: result[:overall_status],
       started: result[:start_date],
       completed: result[:completion_date],
-
-      # datatables identifier
-      DT_RowId: result[:nct_id],
     }
+    if result.has_key?(:rating_dimensions)
+      response = response.merge(Hash[result[:rating_dimensions].map{|dim| [dim, result[dim]]}])
+    end
+    response
   end
 
   # Manipulates the filter params to the expected value matching a "where" key
