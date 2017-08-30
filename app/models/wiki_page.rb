@@ -13,6 +13,16 @@ class WikiPage < ReindexesStudy
 
 ## Cons
 * Add a con here
+
+## Ideal Patient
+* Add descriptions here
+
+## Contraindicated Patient
+* Add descriptions here
+
+## References
+* Add links here
+
 END
   end
 
