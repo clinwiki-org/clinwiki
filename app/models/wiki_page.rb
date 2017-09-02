@@ -23,6 +23,9 @@ class WikiPage < ReindexesStudy
 ## References
 * Add links here
 
+## Requests
+* Post open questions about study here (temporary)
+
 END
   end
 
