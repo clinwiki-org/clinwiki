@@ -71,7 +71,7 @@ class Study < AactBase
   end
 
   def display_conditions
-    res=Study.connection.execute("select mesh_term from all_conditions where nct_id='#{nct_id}'")
+    res=Study.connection.execute("select condition from all_conditions where nct_id='#{nct_id}'")
     if !res.first.nil?
       res.first['mesh_term']
     end
