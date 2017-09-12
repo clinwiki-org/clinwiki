@@ -73,7 +73,7 @@ class Study < AactBase
   def display_conditions
     res=Study.connection.execute("select condition from all_conditions where nct_id='#{nct_id}'")
     if !res.first.nil?
-      res.first['mesh_term']
+      res.first['condition']
     end
   end
 
@@ -194,8 +194,8 @@ class Study < AactBase
     attributes.merge({
       brief_summary: brief_summary && brief_summary.description,
       detailed_description: detailed_description && detailed_description.description,
-      browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
-      browse_interventions_mesh_terms: browse_interventions.map(&:mesh_term),
+      browse_condition_mesh_terms: browse_conditions.map(&:condition),
+      browse_interventions_mesh_terms: browse_interventions.map(&:condition),
       interventions: interventions.map(&:description),
       design_outcome_measures: design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
