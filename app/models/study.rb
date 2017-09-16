@@ -78,11 +78,15 @@ class Study < AactBase
   end
 
   def primary_outcomes
-    design_outcomes.select{|o|o.type.downcase=='primary'}
+    # design_outcomes.select{|o|o.type.downcase=='primary'}
+    # commented out because the table is inaccessible and hanging
+    []
   end
 
   def secondary_outcomes
-    design_outcomes.select{|o|o.type.downcase=='secondary'}
+    #design_outcomes.select{|o|o.type.downcase=='secondary'}
+    # commented out because the table is inaccessible and hanging
+    []
   end
 
   def primary_outcome_measures
@@ -158,8 +162,9 @@ class Study < AactBase
 
   scope :search_import, -> {
     includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
-    :browse_interventions, :interventions, :design_outcomes, :facilities,
-    :sponsors, :wiki_page)
+    :browse_interventions, :interventions, :facilities, :sponsors, :wiki_page,
+    #:design_outcomes,
+    )
   }
 
   # Takes a selector and enqeueues each instance for batch async reindex
@@ -197,7 +202,7 @@ class Study < AactBase
       browse_condition_mesh_terms: browse_conditions.map(&:condition),
       browse_interventions_mesh_terms: browse_interventions.map(&:condition),
       interventions: interventions.map(&:description),
-      design_outcome_measures: design_outcomes.map(&:measure),
+      design_outcome_measures: [], #design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
       facility_states: facilities.map(&:state),
       facility_cities: facilities.map(&:city),
