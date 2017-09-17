@@ -163,8 +163,8 @@ class Study < AactBase
 
   scope :search_import, -> {
     includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
-    :browse_interventions, :all_interventions, :facilities, :sponsors, :wiki_page,
-    #:design_outcomes,
+    :browse_interventions, :facilities, :sponsors, :wiki_page,
+    #:design_outcomes, :interventions
     )
   }
 
@@ -202,7 +202,7 @@ class Study < AactBase
       detailed_description: detailed_description && detailed_description.description,
       browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
       browse_interventions_mesh_terms: browse_interventions.map(&:mesh_term),
-      interventions: all_interventions.map(&:description),
+      interventions: [], # interventions.map(&:description),
       design_outcome_measures: [], #design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
       facility_states: facilities.map(&:state),

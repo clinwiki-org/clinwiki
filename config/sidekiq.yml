@@ -1,5 +1,5 @@
 ---
-:concurrency: 4
+:concurrency: 8
 :queues:
   - default
   - searchkick
