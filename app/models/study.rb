@@ -199,8 +199,8 @@ class Study < AactBase
     attributes.merge({
       brief_summary: brief_summary && brief_summary.description,
       detailed_description: detailed_description && detailed_description.description,
-      browse_condition_mesh_terms: browse_conditions.map(&:condition),
-      browse_interventions_mesh_terms: browse_interventions.map(&:condition),
+      browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
+      browse_interventions_mesh_terms: browse_interventions.map(&:mesh_term),
       interventions: interventions.map(&:description),
       design_outcome_measures: [], #design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
