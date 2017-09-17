@@ -33,6 +33,7 @@ class Study < AactBase
   has_many :facility_investigators,:foreign_key => 'nct_id'
   has_many :id_information,        :foreign_key => 'nct_id'
   has_many :interventions,         :foreign_key => 'nct_id'
+  has_many :all_interventions,     :foreign_key => 'nct_id'
   has_many :intervention_other_names, :foreign_key => 'nct_id'
   has_many :keywords,              :foreign_key => 'nct_id'
   has_many :links,                 :foreign_key => 'nct_id'
