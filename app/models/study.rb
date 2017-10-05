@@ -152,7 +152,7 @@ class Study < AactBase
       {:label=>'completion date',:value=>completion_date},
       {:label=>'primary completion date',:value=>primary_completion_date},
       #{:label=>'eligibility criteria',:value=>eligibility.criteria},
-      {:label=>'gender',:value=>eligibility.gender},
+      #{:label=>'gender',:value=>eligibility.gender},
       {:label=>'ages',:value=>'tbd'},
       #{:label=>'accepts healthy volunteers',:value=>eligibility.healthy_volunteers},
       {:label=>'contacts',:value=>'tbd'},
