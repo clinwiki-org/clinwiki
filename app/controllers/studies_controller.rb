@@ -39,10 +39,6 @@ class StudiesController < ApplicationController
     render json: Study.find(params[:study_id]).descriptive_info
   end
 
-  def crowd
-    render json: Study.find(params[:study_id]).crowd_source_info
-  end
-
   private
 
   def get_study
