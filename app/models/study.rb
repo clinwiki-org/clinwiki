@@ -79,15 +79,11 @@ class Study < AactBase
   end
 
   def primary_outcomes
-    # design_outcomes.select{|o|o.type.downcase=='primary'}
-    # commented out because the table is inaccessible and hanging
-    []
+    design_outcomes.select{|o|o.type.downcase=='primary'}
   end
 
   def secondary_outcomes
-    #design_outcomes.select{|o|o.type.downcase=='secondary'}
-    # commented out because the table is inaccessible and hanging
-    []
+    design_outcomes.select{|o|o.type.downcase=='secondary'}
   end
 
   def primary_outcome_measures
@@ -151,10 +147,10 @@ class Study < AactBase
       {:label=>'enrollment',:value=>enrollment},
       {:label=>'completion date',:value=>completion_date},
       {:label=>'primary completion date',:value=>primary_completion_date},
-      #{:label=>'eligibility criteria',:value=>eligibility.criteria},
-      #{:label=>'gender',:value=>eligibility.gender},
+      {:label=>'eligibility criteria',:value=>eligibility.criteria},
+      {:label=>'gender',:value=>eligibility.gender},
       {:label=>'ages',:value=>'tbd'},
-      #{:label=>'accepts healthy volunteers',:value=>eligibility.healthy_volunteers},
+      {:label=>'accepts healthy volunteers',:value=>eligibility.healthy_volunteers},
       {:label=>'contacts',:value=>'tbd'},
       {:label=>'listed location countries',:value=>'tbd'},
       {:label=>'removed location countries',:value=>'tbd'},
@@ -163,8 +159,8 @@ class Study < AactBase
 
   scope :search_import, -> {
     includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
-    :facilities, :sponsors, :wiki_page,
-    #:design_outcomes, :interventions, :browse_interventions,
+             :facilities, :sponsors, :wiki_page,
+             :design_outcomes, :interventions, :browse_interventions,
     )
   }
 
@@ -201,9 +197,9 @@ class Study < AactBase
       brief_summary: brief_summary && brief_summary.description,
       detailed_description: detailed_description && detailed_description.description,
       browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
-      browse_interventions_mesh_terms: [], # browse_interventions.map(&:mesh_term),
-      interventions: [], # interventions.map(&:description),
-      design_outcome_measures: [], #design_outcomes.map(&:measure),
+      browse_interventions_mesh_terms: browse_interventions.map(&:mesh_term),
+      interventions: interventions.map(&:description).reject(&:nil?),
+      design_outcome_measures: design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
       facility_states: facilities.map(&:state),
       facility_cities: facilities.map(&:city),
@@ -213,6 +209,7 @@ class Study < AactBase
       sponsors: sponsors && sponsors.map(&:name),
       wiki_text: wiki_page  && wiki_page.text,  # for now, just parse the markdown
       rating_dimensions: rating_dimensions.keys,
+      indexed_at: Time.now,
     }).merge(average_rating_dimensions)
   end
 
