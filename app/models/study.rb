@@ -157,6 +157,13 @@ class Study < AactBase
     ]
   end
 
+  def site_info
+    col=[]
+    cntr=1
+    facilities.each{ |f| col << {:label=>"#{cntr}", :value=>f.description.strip}; cntr=cntr+1 }
+    col
+  end
+
   scope :search_import, -> {
     includes(:brief_summary, :detailed_description, :browse_conditions, :reviews,
              :facilities, :sponsors, :wiki_page,
