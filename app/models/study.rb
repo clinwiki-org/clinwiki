@@ -56,6 +56,20 @@ class Study < AactBase
 
   scope :find_by_term, lambda {|term| where("nct_id in (select nct_id from ids_for_term(?))", "%#{term}%")}
 
+  NON_INDEX_FIELDS = [
+    :nlm_download_date_description, :first_received_date, :last_changed_date,
+    :first_received_results_date, :received_results_disposit_date,
+    :start_month_year, :start_date_type, :verification_month_year,
+    :verification_date, :completion_month_year, :completion_date_type,
+    :primary_completion_month_year, :primary_completion_date_type,
+    :primary_completion_date, :target_duration, :limitations_and_caveats,
+    :number_of_arms, :number_of_groups, :why_stopped, :has_expanded_access,
+    :expanded_access_type_individual, :expanded_access_type_intermediate,
+    :expanded_access_type_treatment, :has_dmc, :is_fda_regulated_drug,
+    :is_fda_regulated_device, :is_unapproved_device, :is_ppsd, :is_us_export,
+    :biospec_retention, :biospec_description, :plan_to_share_ipd, :design_outcome_measures,
+  ]
+
   def average_rating
     @average_rating ||= reviews.size == 0 ? 0 : reviews.average(:overall_rating).round(2)
   end
@@ -217,7 +231,12 @@ class Study < AactBase
       wiki_text: wiki_page  && wiki_page.text,  # for now, just parse the markdown
       rating_dimensions: rating_dimensions.keys,
       indexed_at: Time.now,
-    }).merge(average_rating_dimensions)
+    }).merge(
+      average_rating_dimensions
+    ).except(
+      # https://github.com/clinwiki-org/clinwiki/issues/111
+      *NON_INDEX_FIELDS
+    )
   end
 
   # manually publish to reindex queue
