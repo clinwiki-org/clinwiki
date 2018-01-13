@@ -58,7 +58,7 @@ namespace :search do
   task :bootstrap_dev => [:create_index, :reindex_dev, :add_tags_dev, :add_reviews_dev]
 
   task :delete_unused_fields => :environment do
-    Study.NON_INDEX_FIELDS.each do |field|
+    Study::NON_INDEX_FIELDS.each do |field|
       puts fields
       Searchkick.client.update_by_query(
         index: "_all",
