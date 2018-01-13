@@ -59,9 +59,10 @@ namespace :search do
 
   task :delete_unused_fields => :environment do
     Study::NON_INDEX_FIELDS.each do |field|
-      puts fields
-      Searchkick.client.update_by_query(
+      puts field
+      puts Searchkick.client.update_by_query(
         index: "_all",
+        wait_for_completion: false,
         body: {
           script: "ctx._source.remove(\"#{field}\")"
           })
