@@ -214,7 +214,7 @@ class Study < AactBase
   # Defines the fields to be indexed by searchkick
   # @return [Hash]
   def search_data
-    sd = attributes.merge({
+    attributes.merge({
       brief_summary: brief_summary && brief_summary.description,
       detailed_description: detailed_description && detailed_description.description,
       browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
@@ -233,13 +233,10 @@ class Study < AactBase
       indexed_at: Time.now,
     }).merge(
       average_rating_dimensions
-    )
-    this_sd = sd.except(
+    ).except(
       # https://github.com/clinwiki-org/clinwiki/issues/111
       *NON_INDEX_FIELDS, *NON_INDEX_FIELDS.map(&:to_s)
     )
-    p this_sd
-    this sd
   end
 
   # manually publish to reindex queue
