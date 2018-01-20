@@ -273,5 +273,4 @@ class Study < AactBase
       average_rating: average_rating
     }
   end
-
 end

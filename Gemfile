@@ -7,7 +7,7 @@ gem 'zip'
 gem 'rails', '4.2.6'
 gem 'rails_12factor'
 # postgres gem
-gem 'pg'
+gem 'pg', '0.20.0'
 gem 'httparty'
 gem "normalize-rails", "~> 3.0.0"
 # Use SCSS for stylesheets
@@ -42,7 +42,7 @@ gem 'spawnling', '~>2.1'
 gem "mini_magick"
 #  User creation gem
 gem 'devise'
-gem 'searchkick'
+gem 'searchkick', "2.3.0"
 gem 'font-awesome-rails'
 gem 'font-awesome-sass'
 gem 'bootstrap-sass', '~> 3.2.0'

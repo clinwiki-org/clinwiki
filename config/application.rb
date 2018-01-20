@@ -35,10 +35,14 @@ module Clinwiki
 
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
-        origins '*'
+        origins 'http://localhost:3001',
+                'http://localhost:3000',
+                'http://clinwiki-prod.herokuapp.com',
+                'http://clinwiki-dev.herokuapp.com'
         resource '*',
           :headers => :any,
-          :methods => [:get, :post, :options, :delete, :put, :patch]
+          :methods => [:get, :post, :options, :delete, :put, :patch],
+          :credentials => true
       end
     end
 

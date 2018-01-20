@@ -1,7 +1,9 @@
 module SearchHelper
 
   def search_query
-    @search ||= params.fetch('q', (current_user && current_user.default_query_string) || "*")
+    s = params.fetch('q', (current_user && current_user.default_query_string))
+    s = "*" if s.blank?
+    @search ||= s
   end
 
   # Retrieves search params from request, performs the search, transforms the result to a response hash
