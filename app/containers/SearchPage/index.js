@@ -20,7 +20,9 @@ import 'react-table/react-table.css';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import SearchInput from 'components/SearchInput';
 import ClinwikiHeader from 'components/ClinwikiHeader';
+import Aggs from 'components/Aggs';
 import makeSelectSearchPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -71,6 +73,12 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
         <Nav id="search-sidebar">
+          <SearchInput
+            query={this.props.SearchPage.query}
+            searchChanged={this.props.actions.searchChanged}
+            history={this.props.history}
+          />
+          <Aggs aggs={this.props.SearchPage.aggs} />
           <NavItem>
             in here
           </NavItem>
@@ -100,9 +108,12 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
 SearchPage.propTypes = {
   actions: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
+  history: ReactRouterPropTypes.history.isRequired,
   SearchPage: PropTypes.shape({
     data: PropTypes.array,
     recordsTotal: PropTypes.number,
+    aggs: PropTypes.object,
+    query: PropTypes.string,
   }),
 };
 

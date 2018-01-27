@@ -4,7 +4,7 @@
 
 import { call, put, takeLatest, select } from 'redux-saga/effects';
 import client from 'utils/client';
-import { SEARCH_MOUNTED } from './constants';
+import { SEARCH_MOUNTED, SEARCH_CHANGED } from './constants';
 import { searchLoaded, searchLoadedError, clearSearchData } from './actions';
 import searchSelector from './selectors';
 
@@ -32,4 +32,5 @@ export function* doSearch(data) {
  */
 export default function* loadSearch() {
   yield takeLatest(SEARCH_MOUNTED, doSearch);
+  yield takeLatest(SEARCH_CHANGED, doSearch);
 }

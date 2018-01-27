@@ -4,7 +4,7 @@
  *
  */
 
-import { fromJS, List } from 'immutable';
+import { fromJS } from 'immutable';
 import {
   DEFAULT_ACTION,
   SEARCH_LOADED,
@@ -16,6 +16,7 @@ const initialState = fromJS({
   recordsTotal: 0,
   data: [],
   params: {},
+  aggs: {},
 });
 
 function SearchPageReducer(state = initialState, action) {
@@ -26,9 +27,10 @@ function SearchPageReducer(state = initialState, action) {
       return initialState;
     case SEARCH_LOADED:
       return state.set('query', action.data.query)
+                  .set('params', fromJS(action.data.params))
                   .set('recordsTotal', action.data.recordsTotal)
-                  .set('data', state.get('data').concat(List(action.data.data)))
-                  .set('params', action.data.params);
+                  .set('data', fromJS(action.data.data))
+                  .set('aggs', fromJS(action.data.aggs));
     default:
       return state;
   }

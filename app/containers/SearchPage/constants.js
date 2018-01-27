@@ -9,3 +9,4 @@ export const SEARCH_MOUNTED = 'app/SearchPage/SEARCH_MOUNTED';
 export const SEARCH_LOADED = 'app/SearchPage/SEARCH_LOADED';
 export const SEARCH_LOADED_ERROR = 'app/SearchPage/SEARCH_LOADED_ERROR';
 export const CLEAR_SEARCH_DATA = 'app/SearchPage/CLEAR_SEARCH_DATA';
+export const SEARCH_CHANGED = 'app/SearchPage/SEARCH_CHANGED';

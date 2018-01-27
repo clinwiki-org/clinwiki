@@ -9,6 +9,7 @@ import {
   SEARCH_LOADED,
   SEARCH_LOADED_ERROR,
   CLEAR_SEARCH_DATA,
+  SEARCH_CHANGED,
 } from './constants';
 
 export function defaultAction() {
@@ -22,6 +23,13 @@ export function searchMounted(query = null, params = {}) {
     type: SEARCH_MOUNTED,
     query,
     params,
+  };
+}
+
+export function searchChanged(query) {
+  return {
+    type: SEARCH_CHANGED,
+    query,
   };
 }
 
