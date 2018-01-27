@@ -4,7 +4,7 @@
 
 - [Where are Babel and ESLint configured?](#where-are-babel-and-eslint-configured)
 - [Where are the files coming from when I run `npm start`?](#where-are-the-files-coming-from-when-i-run-npm-start)
-- [How do I fix `Error: listen EADDRINUSE 127.0.0.1:3000`?](#how-do-i-fix-error-listen-eaddrinuse-1270013000)
+- [How do I fix `Error: listen EADDRINUSE 127.0.0.1:3001`?](#how-do-i-fix-error-listen-eaddrinuse-1270013001)
   - [OS X / Linux](#os-x-linux)
   - [Windows](#windows)
 - [Issue with local caching when running in production mode (F5 / ctrl+F5 / cmd+r weird behavior)](#issue-with-local-caching-when-running-in-production-mode-f5--ctrlf5--cmdr-weird-behavior)
@@ -31,9 +31,9 @@ In development Webpack compiles your application runs it in-memory. Only when
 you run `npm run build` will it write to disk and preserve your bundled
 application across computer restarts.
 
-## How do I fix `Error: listen EADDRINUSE 127.0.0.1:3000`?
+## How do I fix `Error: listen EADDRINUSE 127.0.0.1:3001`?
 
-This simply means that there's another process already listening on port 3000.
+This simply means that there's another process already listening on port 3001.
 The fix is to kill the process and rerun `npm start`.
 
 ### OS X / Linux:
@@ -46,7 +46,7 @@ The fix is to kill the process and rerun `npm start`.
     > ```Shell
     > janedoe    29811  49.1  2.1  3394936 356956 s004  S+    4:45pm   2:40.07 node server
     > ```
-    > Note: If nothing is listed, you can try `lsof -i tcp:3000` 
+    > Note: If nothing is listed, you can try `lsof -i tcp:3001` 
 
 1. Then run
     ```Shell
@@ -68,7 +68,7 @@ The fix is to kill the process and rerun `npm start`.
     > Proto     Local Address     Foreign Address   State       PID
     > TCP       0.0.0.0:25        0.0.0.0:0         Listening   4196
     > ...
-    > TCP       0.0.0.0:3000      0.0.0.0:0         Listening   28344
+    > TCP       0.0.0.0:3001      0.0.0.0:0         Listening   28344
     ```
 
 1. Then run
@@ -104,7 +104,7 @@ output.publicPath in webpack.dev.babel.js, with protocol.
 // webpack.dev.babel.js
 
 output: {
-  publicPath: 'http://127.0.0.1:3000/',
+  publicPath: 'http://127.0.0.1:3001/',
   /* … */
 },
 ```

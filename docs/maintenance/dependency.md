@@ -72,10 +72,10 @@ Identify problems that occur and try to resolve them by rolling back the respect
 - `npm run generate route` to TestPage - /test
     
     Use TestComp on TestPage -> bypass all tests in TestComp and TestPage (set true = true)
-- `npm start` > `localhost:3000/test`
+- `npm start` > `localhost:3001/test`
 - `npm test` (expect test failure due to incomplete test coverage)
 - `npm run build`
-- `npm run start:prod`  > `localhost:3000/test`
+- `npm run start:prod`  > `localhost:3001/test`
 
 # Sample Update Log
 

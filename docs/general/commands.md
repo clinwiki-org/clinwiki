@@ -19,7 +19,7 @@ history irreversibly by accident.
 npm run start
 ```
 
-Starts the development server running on `http://localhost:3000`
+Starts the development server running on `http://localhost:3001`
 
 ## Cleaning
 
@@ -54,7 +54,7 @@ npm start
 ```
 
 Starts the development server and makes your application accessible at
-`localhost:3000`. Tunnels that server with `ngrok`, which means the website
+`localhost:3001`. Tunnels that server with `ngrok`, which means the website
 accessible anywhere! Changes in the application code will be hot-reloaded.
 
 ### Production
