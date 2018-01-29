@@ -4,8 +4,14 @@ This application allows you to rate clinical trials.
 You can retrieve trials to rank by searching for NCT ID or MeSH Term
 
 # Installation / Running
+Before beginning installation, please ensure you have [Homebrew](https://brew.sh/) and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) installed (may not be necessary for Windows users). Run the following command in order to prepare for Ruby set-up:
+
+```bash
+brew install gpg2
+```
+
 You are encouraged to use [rvm](https://rvm.io/) for Ruby version
-and gemset management. Once RVM is installed, switch to the correct
+and gemset management.  Once RVM is installed, switch to the correct
 Ruby and gemset as follows:
 
 ```bash
