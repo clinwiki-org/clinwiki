@@ -5,6 +5,7 @@
 */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import FontAwesome from 'react-fontawesome';
 import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';
@@ -52,13 +53,13 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
       <Form inline onSubmit={this.onSubmit}>
         <FormGroup controlId="formInlineEmail">
           <FormControl
-            style={{ width: '75%' }}
+            style={{ width: '80%' }}
             type="text"
             placeholder="search"
             defaultValue={this.props.query || 'search...'}
             onChange={this.onSearchChange}
           />
-          <Button class="btn-sm" type="submit">
+          <Button type="submit">
             <FontAwesome name="search" />
           </Button>
         </FormGroup>
@@ -68,8 +69,8 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
 }
 
 SearchInput.propTypes = {
-  query: React.PropTypes.string,
-  searchChanged: React.PropTypes.function,
+  query: PropTypes.string,
+  searchChanged: PropTypes.func,
   history: ReactRouterPropTypes.history,
 };
 

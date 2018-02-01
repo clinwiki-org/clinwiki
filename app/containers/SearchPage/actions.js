@@ -10,6 +10,11 @@ import {
   SEARCH_LOADED_ERROR,
   CLEAR_SEARCH_DATA,
   SEARCH_CHANGED,
+  AGG_VIEWED,
+  AGG_LOADED,
+  AGG_LOADED_ERROR,
+  DATA_FETCHED,
+  SEARCH_LOADING,
 } from './constants';
 
 export function defaultAction() {
@@ -26,10 +31,10 @@ export function searchMounted(query = null, params = {}) {
   };
 }
 
-export function searchChanged(query) {
+export function searchChanged(searchQuery) {
   return {
     type: SEARCH_CHANGED,
-    query,
+    searchQuery,
   };
 }
 
@@ -49,4 +54,25 @@ export function searchLoadedError(err) {
 
 export function clearSearchData() {
   return { type: CLEAR_SEARCH_DATA };
+}
+
+export function aggViewed(agg) {
+  return { type: AGG_VIEWED, agg };
+}
+
+export function aggLoaded(agg, data) {
+  return { type: AGG_LOADED, agg, data };
+}
+
+export function aggLoadedError(agg, err) {
+  return { type: AGG_LOADED_ERROR, agg, err };
+}
+
+export function dataFetched(state, match = { params: null }) {
+  const { searchQuery } = match.params;
+  return { type: DATA_FETCHED, state, searchQuery };
+}
+
+export function searchLoading() {
+  return { type: SEARCH_LOADING };
 }

@@ -9,11 +9,10 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Nav, NavItem, Grid, Row, Col } from 'react-bootstrap';
+import { Grid, Row, Col } from 'react-bootstrap';
 import ReactStars from 'react-stars';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
@@ -26,7 +25,6 @@ import Aggs from 'components/Aggs';
 import makeSelectSearchPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
 import * as actions from './actions';
 
 const SearchWrapper = styled.div`
@@ -42,10 +40,10 @@ const SearchWrapper = styled.div`
 // todo this should be configurable
 const getColumns = () => ([
   {
-    header: 'nct id',
+    Header: 'nct id',
     accessor: 'nct_id',
   }, {
-    header: 'rating',
+    Header: 'rating',
     accessor: 'Overall Rating',
     Cell: (row) => (
       <ReactStars
@@ -54,15 +52,20 @@ const getColumns = () => ([
         value={row.value}
       />),
   }, {
-    header: 'title',
+    Header: 'title',
     accessor: 'title',
   },
 ]);
 
 export class SearchPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
-  componentDidMount() {
-    this.props.actions.searchMounted(this.props.match.params.searchQuery);
+  constructor(props) {
+    super(props);
+    this.onFetchData = this.onFetchData.bind(this);
+  }
+
+  onFetchData(state) {
+    this.props.actions.dataFetched(state, this.props.match);
   }
 
   render() {
@@ -72,20 +75,17 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
           <title>SearchPage</title>
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
-        <Nav id="search-sidebar">
+        <div id="search-sidebar">
           <SearchInput
             query={this.props.SearchPage.query}
             searchChanged={this.props.actions.searchChanged}
             history={this.props.history}
           />
-          <Aggs aggs={this.props.SearchPage.aggs} />
-          <NavItem>
-            in here
-          </NavItem>
-          <NavItem>
-            <FormattedMessage {...messages.header} />
-          </NavItem>
-        </Nav>
+          <Aggs
+            aggs={this.props.SearchPage.aggs}
+            aggViewed={this.props.actions.aggViewed}
+          />
+        </div>
         <div id="search-main">
           <Grid>
             <ClinwikiHeader />
@@ -94,7 +94,10 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
                 <ReactTable
                   columns={getColumns()}
                   manual
+                  onFetchData={this.onFetchData}
                   data={this.props.SearchPage.data}
+                  pages={this.props.SearchPage.pages}
+                  loading={this.props.SearchPage.loading}
                 />
               </Col>
             </Row>
@@ -112,8 +115,10 @@ SearchPage.propTypes = {
   SearchPage: PropTypes.shape({
     data: PropTypes.array,
     recordsTotal: PropTypes.number,
+    pages: PropTypes.number,
     aggs: PropTypes.object,
     query: PropTypes.string,
+    loading: PropTypes.bool,
   }),
 };
 
