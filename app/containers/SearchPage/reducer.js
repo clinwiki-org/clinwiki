@@ -11,6 +11,8 @@ import {
   CLEAR_SEARCH_DATA,
   AGG_LOADED,
   AGG_VIEWED,
+  AGG_SELECTED,
+  AGG_REMOVED,
   SEARCH_LOADING,
 } from './constants';
 
@@ -19,6 +21,7 @@ const initialState = fromJS({
   recordsTotal: 0,
   data: [],
   loading: true,
+  aggFilters: {},
   params: {
     page: 0,
     pageSize: 20,
@@ -34,7 +37,7 @@ function SearchPageReducer(state = initialState, action) {
     case CLEAR_SEARCH_DATA:
       return initialState;
     case SEARCH_LOADING:
-      return state.set('loading', true);
+      return state.set('loading', true).set('data', fromJS([]));
     case SEARCH_LOADED:
       return state.set('searchQuery', action.data.searchQuery)
                   .set('params', fromJS(action.data.state))
@@ -44,7 +47,14 @@ function SearchPageReducer(state = initialState, action) {
                   .set('aggs', fromJS(action.data.aggs))
                   .set('loading', false);
     case AGG_VIEWED:
-      return state.updateIn(['aggs', action.agg], (x) => fromJS(Object.assign({}, x, { loading: !x.loaded })));
+      return state.updateIn(['aggs', action.agg],
+      (x) => fromJS(Object.assign({}, x, { loading: !x.loaded })));
+    case AGG_SELECTED:
+      return state.updateIn(['aggFilters'],
+        (x) => fromJS(Object.assign({}, x.toJS(), { [action.agg]: (x.get(action.agg) || []).concat([action.value]) })));
+    case AGG_REMOVED:
+      return state.updateIn(['aggFilters', action.agg],
+      (x) => fromJS(x.toJS().filter((y) => y !== action.value)));
     case AGG_LOADED:
       return state.setIn(['aggs', action.agg],
         Object.assign({}, action.data.aggs[action.agg], { loaded: true }));

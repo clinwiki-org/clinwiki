@@ -8,6 +8,8 @@ import {
   SEARCH_CHANGED,
   AGG_VIEWED,
   DATA_FETCHED,
+  AGG_SELECTED,
+  AGG_REMOVED,
 } from './constants';
 import {
   searchLoaded,
@@ -21,11 +23,14 @@ import searchSelector from './selectors';
 
 export function* loadAgg(data) {
   const searchPage = yield select(searchSelector());
+  if (searchPage.aggs[data.agg].loaded) {
+    return;
+  }
   try {
     const results = yield call(
       client.post,
       '/studies/agg_buckets',
-      Object.assign({}, searchPage.params, { agg: data.agg })
+      Object.assign({}, getParams(searchPage, data), { agg: data.agg })
     );
     yield put(aggLoaded(data.agg, results.data));
   } catch (err) {
@@ -39,22 +44,25 @@ function getParams(searchPage, data) {
     pageSize: allParams.pageSize,
     sorted: allParams.sorted,
     page: allParams.page,
+    aggFilters: searchPage.aggFilters,
   };
 }
 
 export function* doSearch(data) {
   let url = '/studies';
-  const { searchQuery } = data;
+  const { searchQuery, type } = data;
   const searchPage = yield select(searchSelector());
   if (searchQuery) {
-    if (searchPage.query !== searchQuery) {
+    if (searchPage.searchQery !== searchQuery && type === SEARCH_CHANGED) {
       yield put(clearSearchData());
     }
-    url = `/studies/search/${searchQuery}/json`;
+    url = `/studies/search/${searchQuery}`;
+  } else if (searchPage.searchQuery && type !== SEARCH_CHANGED) {
+    url = `/studies/search/${searchPage.searchQuery}`;
   }
   try {
-    const results = yield call(client.post, url, getParams(searchPage, data));
-    const resultActionData = Object.assign({ searchQuery }, { state: data.state }, results.data);
+    const results = yield call(client.post, `${url}/json`, getParams(searchPage, data));
+    const resultActionData = Object.assign({}, { searchQuery }, { state: data.state }, results.data);
     yield put(searchLoaded(resultActionData));
   } catch (err) {
     yield put(searchLoadedError(err));
@@ -64,9 +72,14 @@ export function* doSearch(data) {
 export function* dataFetched(data) {
   const searchPage = yield select(searchSelector());
   if (searchPage.params !== data.state) {
-    yield searchLoading();
-    yield doSearch(Object.assign({ query: searchPage.query, params: searchPage.state }, data));
+    yield doSearch(Object.assign({}, { searchQuery: searchPage.searchQuery, params: searchPage.state }, data));
   }
+}
+
+export function* handleAgg(action) {
+  const searchPage = yield select(searchSelector());
+  yield searchLoading();
+  yield doSearch(Object.assign({}, { searchQuery: searchPage.searchQuery, params: searchPage.state }, action));
 }
 
 /**
@@ -76,4 +89,6 @@ export default function* loadSearch() {
   yield takeEvery(SEARCH_CHANGED, doSearch);
   yield takeEvery(AGG_VIEWED, loadAgg);
   yield takeEvery(DATA_FETCHED, dataFetched);
+  yield takeEvery(AGG_SELECTED, handleAgg);
+  yield takeEvery(AGG_REMOVED, handleAgg);
 }

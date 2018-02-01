@@ -82,8 +82,9 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
             history={this.props.history}
           />
           <Aggs
+            aggFilters={this.props.SearchPage.aggFilters}
             aggs={this.props.SearchPage.aggs}
-            aggViewed={this.props.actions.aggViewed}
+            actions={this.props.actions}
           />
         </div>
         <div id="search-main">
@@ -119,6 +120,7 @@ SearchPage.propTypes = {
     aggs: PropTypes.object,
     query: PropTypes.string,
     loading: PropTypes.bool,
+    aggFilters: PropTypes.object,
   }),
 };
 

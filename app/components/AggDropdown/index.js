@@ -2,11 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Halogen from 'halogen';
 import styled from 'styled-components';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { DropdownButton, MenuItem, Label } from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
 import aggToField from 'utils/aggs/aggToField';
 import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 
 const DropdownButtonWrapper = styled.div`
+  .selected-aggs {
+    margin: 0;
+    padding-left: 10px;
+
+    li {
+      list-style-type: none;
+    }
+  }
+
   .dropdown {
     margin-top: 5px;
     width: 100%;
@@ -28,7 +38,7 @@ class AggDropdown extends React.Component {
 
   onToggle(isOpen) {
     if (isOpen) {
-      this.props.aggViewed(this.props.agg);
+      this.props.actions.aggViewed(this.props.agg);
     }
   }
 
@@ -41,7 +51,7 @@ class AggDropdown extends React.Component {
       menuItems = Object.keys(buckets).map((key) => (
         <MenuItem
           key={key}
-          onSelect={() => ({})}
+          onSelect={() => this.props.actions.aggSelected(this.props.agg, buckets[key].key)}
         >
           {aggKeyToInner(this.props.agg, buckets[key].key)}
           {' '}
@@ -59,6 +69,21 @@ class AggDropdown extends React.Component {
       );
     }
 
+    const selectedAggs = this.props.selectedKeys.map((k) => (
+      <li key={k}>
+        <Label>
+          {k}
+          {' '}
+          <FontAwesome
+            className="remove"
+            name="remove"
+            style={{ cursor: 'pointer', color: '#cc1111' }}
+            onClick={() => this.props.actions.aggRemoved(this.props.agg, k)}
+          />
+        </Label>
+      </li>
+    ));
+
     return (
       <DropdownButtonWrapper>
         <DropdownButton
@@ -70,6 +95,9 @@ class AggDropdown extends React.Component {
         >
           {menuItems}
         </DropdownButton>
+        <ul className="selected-aggs">
+          {selectedAggs}
+        </ul>
       </DropdownButtonWrapper>
     );
   }
@@ -78,7 +106,12 @@ class AggDropdown extends React.Component {
 AggDropdown.propTypes = {
   agg: PropTypes.string,
   data: PropTypes.object,
-  aggViewed: PropTypes.func,
+  actions: PropTypes.object,
+  selectedKeys: PropTypes.array,
+};
+
+AggDropdown.defaultProps = {
+  selectedKeys: [],
 };
 
 export default AggDropdown;

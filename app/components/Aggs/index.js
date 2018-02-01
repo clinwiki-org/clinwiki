@@ -24,8 +24,9 @@ class Aggs extends React.Component { // eslint-disable-line react/prefer-statele
             (<AggDropdown
               key={k}
               agg={k}
+              selectedKeys={this.props.aggFilters[k]}
               data={this.props.aggs[k]}
-              aggViewed={this.props.aggViewed}
+              actions={this.props.actions}
             />) : null)}
         </div>
       );
@@ -35,8 +36,9 @@ class Aggs extends React.Component { // eslint-disable-line react/prefer-statele
 }
 
 Aggs.propTypes = {
+  aggFilters: PropTypes.object,
   aggs: PropTypes.object,
-  aggViewed: PropTypes.func,
+  actions: PropTypes.object,
 };
 
 export default Aggs;

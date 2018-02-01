@@ -55,8 +55,7 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
           <FormControl
             style={{ width: '80%' }}
             type="text"
-            placeholder="search"
-            defaultValue={this.props.query || 'search...'}
+            placeholder={this.props.query || 'search...'}
             onChange={this.onSearchChange}
           />
           <Button type="submit">

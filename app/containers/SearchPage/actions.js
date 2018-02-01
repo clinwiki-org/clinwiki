@@ -15,6 +15,8 @@ import {
   AGG_LOADED_ERROR,
   DATA_FETCHED,
   SEARCH_LOADING,
+  AGG_SELECTED,
+  AGG_REMOVED,
 } from './constants';
 
 export function defaultAction() {
@@ -75,4 +77,12 @@ export function dataFetched(state, match = { params: null }) {
 
 export function searchLoading() {
   return { type: SEARCH_LOADING };
+}
+
+export function aggSelected(agg, value) {
+  return { type: AGG_SELECTED, agg, value };
+}
+
+export function aggRemoved(agg, value) {
+  return { type: AGG_REMOVED, agg, value };
 }
