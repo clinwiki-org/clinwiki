@@ -12,21 +12,40 @@
  */
 
 import React from 'react';
+import { compose } from 'redux';
+import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
-
-import HomePage from 'containers/HomePage/Loadable';
+import injectSaga from 'utils/injectSaga';
+import AuthHeader from 'containers/AuthHeader/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import SearchPage from 'containers/SearchPage/Loadable';
+import ProfilePage from 'containers/ProfilePage/Loadable';
+import saga from './saga';
 
-export default function App() {
+const AppWrapper = styled.div``;
+const MainWrapper = styled.div `
+  margin: 0 15px;
+`;
+
+function App() {
   return (
-    <div>
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/search" component={SearchPage} />
-        <Route path="/search/:searchQuery" component={SearchPage} />
-        <Route component={NotFoundPage} />
-      </Switch>
-    </div>
+    <AppWrapper>
+      <AuthHeader />
+      <MainWrapper>
+        <Switch>
+          <Route exact path="/" component={SearchPage} />
+          <Route exact path="/search" component={SearchPage} />
+          <Route path="/search/:searchQuery" component={SearchPage} />
+          <Route path="/profile" component={ProfilePage} />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </MainWrapper>
+    </AppWrapper>
   );
 }
+
+const withSaga = injectSaga({ key: 'App', saga });
+
+export default compose(
+  withSaga,
+)(App);

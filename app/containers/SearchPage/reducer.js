@@ -24,7 +24,7 @@ const initialState = fromJS({
   aggFilters: {},
   params: {
     page: 0,
-    pageSize: 20,
+    pageSize: 10,
     sorted: [],
   },
   aggs: {},

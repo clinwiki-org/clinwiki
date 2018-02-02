@@ -10,3 +10,5 @@
  */
 
 export const DEFAULT_LOCALE = 'en';
+export const SESSION_CHECKED = 'app/App/SESSION_CHECKED';
+export const RELOAD_SESSION = 'app/App/RELOAD_SESSION';

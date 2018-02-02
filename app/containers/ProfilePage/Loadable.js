@@ -1,6 +1,6 @@
 /**
  *
- * Asynchronously loads the component for ClinwikiHeader
+ * Asynchronously loads the component for ProfilePage
  *
  */
 

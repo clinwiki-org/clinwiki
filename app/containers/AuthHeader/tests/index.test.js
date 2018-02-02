@@ -1,9 +1,9 @@
 // import React from 'react';
 // import { shallow } from 'enzyme';
 
-// import ClinwikiHeader from '../index';
+// import { AuthHeader } from '../index';
 
-describe('<ClinwikiHeader />', () => {
+describe('<AuthHeader />', () => {
   it('Expect to have unit tests specified', () => {
     expect(true).toEqual(false);
   });

@@ -20,7 +20,6 @@ import 'react-table/react-table.css';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import SearchInput from 'components/SearchInput';
-import ClinwikiHeader from 'components/ClinwikiHeader';
 import Aggs from 'components/Aggs';
 import makeSelectSearchPage from './selectors';
 import reducer from './reducer';
@@ -106,7 +105,6 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
         </div>
         <div id="search-main">
           <Grid>
-            <ClinwikiHeader />
             <Row>
               <Col md={12}>
                 <ReactTable
@@ -116,6 +114,7 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
                   data={this.props.SearchPage.data}
                   pages={this.props.SearchPage.pages}
                   loading={this.props.SearchPage.loading}
+                  pageSize={this.props.SearchPage.params.pageSize}
                 />
               </Col>
             </Row>
@@ -138,6 +137,9 @@ SearchPage.propTypes = {
     searchQuery: PropTypes.string,
     loading: PropTypes.bool,
     aggFilters: PropTypes.object,
+    params: PropTypes.shape({
+      pageSize: PropTypes.number,
+    }),
   }),
 };
 
