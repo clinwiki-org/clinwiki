@@ -19,7 +19,6 @@ import 'react-table/react-table.css';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import SearchInput from 'components/SearchInput';
 import Aggs from 'components/Aggs';
 import makeSelectSearchPage from './selectors';
 import reducer from './reducer';
@@ -90,11 +89,6 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
         <div id="search-sidebar">
-          <SearchInput
-            query={this.props.SearchPage.searchQuery}
-            searchChanged={this.props.actions.searchChanged}
-            history={this.props.history}
-          />
           <Aggs
             aggFilters={this.props.SearchPage.aggFilters}
             aggs={this.props.SearchPage.aggs}
@@ -128,7 +122,6 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
 SearchPage.propTypes = {
   actions: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
-  history: ReactRouterPropTypes.history.isRequired,
   SearchPage: PropTypes.shape({
     data: PropTypes.array,
     recordsTotal: PropTypes.number,

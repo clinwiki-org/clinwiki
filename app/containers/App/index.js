@@ -16,15 +16,17 @@ import { compose } from 'redux';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import injectSaga from 'utils/injectSaga';
+import injectReducer from 'utils/injectReducer';
 import AuthHeader from 'containers/AuthHeader/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import SearchPage from 'containers/SearchPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import saga from './saga';
+import reducer from './reducer';
 
 const AppWrapper = styled.div``;
-const MainWrapper = styled.div `
-  margin: 0 15px;
+const MainWrapper = styled.div`
+  margin: 0 10px;
 `;
 
 function App() {
@@ -45,7 +47,9 @@ function App() {
 }
 
 const withSaga = injectSaga({ key: 'App', saga });
+const withReducer = injectReducer({ key: 'authHeader', reducer });
 
 export default compose(
   withSaga,
+  withReducer,
 )(App);

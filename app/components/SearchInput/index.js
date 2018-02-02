@@ -50,7 +50,7 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
 
   render() {
     return (
-      <Form inline onSubmit={this.onSubmit}>
+      <Form inline onSubmit={this.onSubmit} className="searchInput">
         <FormGroup controlId="formInlineEmail">
           <FormControl
             style={{ width: '80%' }}

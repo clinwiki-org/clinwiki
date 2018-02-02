@@ -1,6 +1,15 @@
-// import { take, call, put, select } from 'redux-saga/effects';
+import { push } from 'react-router-redux';
+import { takeEvery, call, put } from 'redux-saga/effects';
+import client from 'utils/client';
+import {
+  SUBMIT_PROFILE_ACTION,
+} from './constants';
 
-// Individual exports for testing
+export function* submitProfile(action) {
+  yield call(client.patch, '/users.json', action.data);
+  yield put(push('/'));
+}
+
 export default function* defaultSaga() {
-  // See example in containers/HomePage/saga.js
+  yield takeEvery(SUBMIT_PROFILE_ACTION, submitProfile);
 }
