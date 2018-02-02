@@ -16,6 +16,26 @@ const aggsOrdered = [
 ];
 
 class Aggs extends React.Component { // eslint-disable-line react/prefer-stateless-function
+
+  constructor(props) {
+    super(props);
+    this.onAggViewed = this.onAggViewed.bind(this);
+    this.onAggSelected = this.onAggSelected.bind(this);
+    this.onAggRemoved = this.onAggRemoved.bind(this);
+  }
+
+  onAggViewed(k) {
+    this.props.onAggViewed(k);
+  }
+
+  onAggSelected(k, v) {
+    this.props.onAggSelected(k, v);
+  }
+
+  onAggRemoved(k, v) {
+    this.props.onAggRemoved(k, v);
+  }
+
   render() {
     if (this.props.aggs) {
       return (
@@ -26,7 +46,9 @@ class Aggs extends React.Component { // eslint-disable-line react/prefer-statele
               agg={k}
               selectedKeys={this.props.aggFilters[k]}
               data={this.props.aggs[k]}
-              actions={this.props.actions}
+              onAggViewed={this.onAggViewed}
+              onAggRemoved={this.onAggRemoved}
+              onAggSelected={this.onAggSelected}
             />) : null)}
         </div>
       );
@@ -38,7 +60,9 @@ class Aggs extends React.Component { // eslint-disable-line react/prefer-statele
 Aggs.propTypes = {
   aggFilters: PropTypes.object,
   aggs: PropTypes.object,
-  actions: PropTypes.object,
+  onAggViewed: PropTypes.func,
+  onAggSelected: PropTypes.func,
+  onAggRemoved: PropTypes.func,
 };
 
 export default Aggs;

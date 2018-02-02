@@ -62,6 +62,21 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
   constructor(props) {
     super(props);
     this.onFetchData = this.onFetchData.bind(this);
+    this.onAggViewed = this.onAggViewed.bind(this);
+    this.onAggSelected = this.onAggSelected.bind(this);
+    this.onAggRemoved = this.onAggRemoved.bind(this);
+  }
+
+  onAggViewed(k) {
+    this.props.actions.aggViewed(k);
+  }
+
+  onAggSelected(k, v) {
+    this.props.actions.aggSelected(k, v);
+  }
+
+  onAggRemoved(k, v) {
+    this.props.actions.aggRemoved(k, v);
   }
 
   onFetchData(state) {
@@ -77,14 +92,16 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
         </Helmet>
         <div id="search-sidebar">
           <SearchInput
-            query={this.props.SearchPage.query}
+            query={this.props.SearchPage.searchQuery}
             searchChanged={this.props.actions.searchChanged}
             history={this.props.history}
           />
           <Aggs
             aggFilters={this.props.SearchPage.aggFilters}
             aggs={this.props.SearchPage.aggs}
-            actions={this.props.actions}
+            onAggViewed={this.props.actions.aggViewed}
+            onAggRemoved={this.props.actions.aggRemoved}
+            onAggSelected={this.props.actions.aggSelected}
           />
         </div>
         <div id="search-main">
@@ -118,7 +135,7 @@ SearchPage.propTypes = {
     recordsTotal: PropTypes.number,
     pages: PropTypes.number,
     aggs: PropTypes.object,
-    query: PropTypes.string,
+    searchQuery: PropTypes.string,
     loading: PropTypes.bool,
     aggFilters: PropTypes.object,
   }),

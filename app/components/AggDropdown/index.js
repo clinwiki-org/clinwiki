@@ -38,7 +38,7 @@ class AggDropdown extends React.Component {
 
   onToggle(isOpen) {
     if (isOpen) {
-      this.props.actions.aggViewed(this.props.agg);
+      this.props.onAggViewed(this.props.agg);
     }
   }
 
@@ -51,13 +51,24 @@ class AggDropdown extends React.Component {
       menuItems = Object.keys(buckets).map((key) => (
         <MenuItem
           key={key}
-          onSelect={() => this.props.actions.aggSelected(this.props.agg, buckets[key].key)}
+          onSelect={() => this.props.onAggSelected(this.props.agg, buckets[key].key)}
         >
           {aggKeyToInner(this.props.agg, buckets[key].key)}
           {' '}
           ({buckets[key].doc_count})
         </MenuItem>
       ));
+    }
+    if (menuItems.length === 0) {
+      menuItems = (
+        <MenuItem disabled>
+          <span>
+            No results found for
+            {' '}
+            <i>{aggToField[this.props.agg]}</i>
+          </span>
+        </MenuItem>
+      );
     }
     if ((!buckets) || this.props.data.loading) {
       menuItems.push(
@@ -78,7 +89,7 @@ class AggDropdown extends React.Component {
             className="remove"
             name="remove"
             style={{ cursor: 'pointer', color: '#cc1111' }}
-            onClick={() => this.props.actions.aggRemoved(this.props.agg, k)}
+            onClick={() => this.props.onAggRemoved(this.props.agg, k)}
           />
         </Label>
       </li>
@@ -106,7 +117,9 @@ class AggDropdown extends React.Component {
 AggDropdown.propTypes = {
   agg: PropTypes.string,
   data: PropTypes.object,
-  actions: PropTypes.object,
+  onAggRemoved: PropTypes.func,
+  onAggViewed: PropTypes.func,
+  onAggSelected: PropTypes.func,
   selectedKeys: PropTypes.array,
 };
 

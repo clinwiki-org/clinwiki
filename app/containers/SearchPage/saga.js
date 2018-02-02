@@ -41,6 +41,7 @@ export function* loadAgg(data) {
 function getParams(searchPage, data) {
   const allParams = Object.assign({}, searchPage.params, data.state);
   return {
+    q: searchPage.searchQuery,
     pageSize: allParams.pageSize,
     sorted: allParams.sorted,
     page: allParams.page,
@@ -62,7 +63,7 @@ export function* doSearch(data) {
   }
   try {
     const results = yield call(client.post, `${url}/json`, getParams(searchPage, data));
-    const resultActionData = Object.assign({}, { searchQuery }, { state: data.state }, results.data);
+    const resultActionData = Object.assign({}, { searchQuery }, { state: data.state || searchPage.params }, results.data);
     yield put(searchLoaded(resultActionData));
   } catch (err) {
     yield put(searchLoadedError(err));
@@ -72,14 +73,14 @@ export function* doSearch(data) {
 export function* dataFetched(data) {
   const searchPage = yield select(searchSelector());
   if (searchPage.params !== data.state) {
+    yield put(searchLoading());
     yield doSearch(Object.assign({}, { searchQuery: searchPage.searchQuery, params: searchPage.state }, data));
   }
 }
 
 export function* handleAgg(action) {
-  const searchPage = yield select(searchSelector());
-  yield searchLoading();
-  yield doSearch(Object.assign({}, { searchQuery: searchPage.searchQuery, params: searchPage.state }, action));
+  yield put(searchLoading());
+  yield doSearch(action);
 }
 
 /**
