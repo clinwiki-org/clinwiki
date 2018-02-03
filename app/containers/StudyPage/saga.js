@@ -1,11 +1,9 @@
-import _ from 'lodash';
 import { all, put, takeEvery, call, take, cancel, select } from 'redux-saga/effects';
 import { LOCATION_CHANGE, push } from 'react-router-redux';
 import client from 'utils/client';
 import {
   REQUEST_STUDY_ACTION,
   RELOAD_STUDY_ACTION,
-  WIKI_SUBMIT_ACTION,
   ANNOTATION_CREATE_ACTION,
   ANNOTATION_DELETE_ACTION,
   ANNOTATION_UPDATE_ACTION,
@@ -17,6 +15,7 @@ import {
   REVIEW_DELETE_ACTION,
   GET_REVIEW_ACTION,
   WRITE_REVIEW_ACTION,
+  STUDY_VIEWED,
 } from './constants';
 import { makeSelectWikiOverride } from './selectors';
 import {
@@ -28,17 +27,15 @@ import {
   adminAction,
   recruitmentAction,
   reviewsAction,
-  wikiAction,
   reviewReceiveAction,
   studyLoadErrorAction,
 } from './actions';
 
 
 export function* loadDefault(action) {
-  const nctId = _.get(action, 'match.params.nctId');
-  if (nctId) {
+  if (action.nctId) {
     const override = yield select(makeSelectWikiOverride());
-    const data = yield call(client.get, `/studies/${nctId}/json?wiki_override=${override}`);
+    const data = yield call(client.get, `/studies/${action.nctId}/json?wiki_override=${override}`);
     yield put(defaultAction(data.data));
   }
 }
@@ -72,18 +69,10 @@ export function* loadReviews(action) {
   yield put(reviewsAction(data.data));
 }
 
-export function* loadWiki(action) {
-  const data = yield client.get(`/studies/${action.nctId}/wiki`);
-  yield put(wikiAction(data.data));
-}
-
 export function* loadStudy(action) {
   // could use all here but need the granular error catching
   try {
     yield call(loadDefault, action);
-  } catch (e) { studyLoadErrorAction(e); }
-  try {
-    yield call(loadWiki, action);
   } catch (e) { studyLoadErrorAction(e); }
   try {
     yield call(loadTracking, action);
@@ -110,22 +99,11 @@ export function* reloadStudy(action) {
     yield call(loadDefault, action);
   } catch (e) { studyLoadErrorAction(e); }
   try {
-    yield call(loadWiki, action);
-  } catch (e) { studyLoadErrorAction(e); }
-  try {
     yield call(loadReviews, action);
   } catch (e) { studyLoadErrorAction(e); }
 }
 
 export const wikiUrl = (action) => `/studies/${action.nctId}/wiki`;
-
-export function* submitWiki(action) {
-  yield client.post(
-    wikiUrl(action),
-    { wiki_text: action.wikiText }
-  );
-  yield put({ type: RELOAD_STUDY_ACTION, nctId: action.nctId });
-}
 
 export function* postAnnotation(action) {
   yield client.post(
@@ -169,11 +147,6 @@ export function* reloadStudySaga() {
   yield cancel(reloadWatcher);
 }
 
-export function* wikiSaga() {
-  const submitWatcher = yield takeEvery(WIKI_SUBMIT_ACTION, submitWiki);
-  yield take(LOCATION_CHANGE);
-  yield cancel(submitWatcher);
-}
 
 export function* annotationsSaga() {
   const createAnnotationWatcher = yield takeEvery(ANNOTATION_CREATE_ACTION, postAnnotation);
@@ -264,10 +237,10 @@ export function* writeReviewSaga() {
 }
 
 
-export default function* doall() {
+export default function* doAll() {
+  yield takeEvery(STUDY_VIEWED, loadDefault);
   yield all([
     reloadStudySaga,
-    wikiSaga,
     annotationsSaga,
     tagsSubmitSaga,
     tagRemoveSaga,

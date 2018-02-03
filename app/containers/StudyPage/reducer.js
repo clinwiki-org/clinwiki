@@ -16,7 +16,6 @@ import {
   RECRUITMENT_ACTION,
   REVIEWS_RECEIVE_ACTION,
   REVIEW_RECEIVE_ACTION,
-  WIKI_ACTION,
   SET_WIKI_OVERRIDE_ACTION,
   CLEAR_REVIEW_ACTION,
 } from './constants';
@@ -49,8 +48,6 @@ function studyPageReducer(state = initialState, action) {
       return state.set('review', action.data);
     case LOCATION_CHANGE:
       return state.set('review', {});
-    case WIKI_ACTION:
-      return state.set('wiki', fromJS(action.data));
     case SET_WIKI_OVERRIDE_ACTION:
       return state.set('wikiOverride', action.shouldOverride);
     default:
