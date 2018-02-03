@@ -19,6 +19,9 @@ import {
   SET_WIKI_OVERRIDE_ACTION,
   CLEAR_REVIEW_ACTION,
 } from './constants';
+import {
+  WIKI_ACTION,
+} from './WikiSection/constants';
 
 const initialState = fromJS({
   wikiOverride: true,
@@ -50,6 +53,8 @@ function studyPageReducer(state = initialState, action) {
       return state.set('review', {});
     case SET_WIKI_OVERRIDE_ACTION:
       return state.set('wikiOverride', action.shouldOverride);
+    case WIKI_ACTION:
+      return state.set('wiki', fromJS(action.data));
     default:
       return state;
   }

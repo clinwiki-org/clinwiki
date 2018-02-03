@@ -10,7 +10,7 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 import { Nav, NavItem, PageHeader } from 'react-bootstrap';
@@ -22,6 +22,8 @@ import reducer from './reducer';
 import saga from './saga';
 import * as actions from './actions';
 import WikiSection from './WikiSection/Loadable';
+import CrowdSection from './CrowdSection/Loadable';
+import GenericStudySection from './GenericStudySection';
 import LoadingPane from './LoadingPane';
 
 const StudyWrapper = styled.div`
@@ -47,22 +49,33 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
   }
 
   onNavItemSelect(key) {
-    this.props.actions.navItemSelected(key);
+    this.props.history.push(
+      `/study/${this.props.match.params.nctId}/${this.defaultSections[key]}`
+    );
   }
 
-  defaultSections = [
-    'Wiki',
-    'Crowd',
-    'Descriptive',
-    'Administrative',
-    'Recruitment',
-    'Tracking',
-    'Sites',
-  ];
+  defaultSections = {
+    Wiki: '',
+    Crowd: 'crowd',
+    Descriptive: 'descriptive',
+    Administrative: 'administrative',
+    Recruitment: 'recruitment',
+    Tracking: 'tracking',
+    Sites: 'sites',
+  };
+
+  genericRoute(route) {
+    return (
+      <Route
+        path={`/study/:nctId/${this.defaultSections[route]}`}
+        render={() => (<GenericStudySection data={this.props.StudyPage[this.defaultSections[route]]} />)}
+      />
+    );
+  }
 
   render() {
-    const navItems = this.defaultSections.map((x, i) => (
-      <NavItem eventKey={i} key={x}>
+    const navItems = Object.keys(this.defaultSections).map((x) => (
+      <NavItem eventKey={x} key={x}>
         {x}
       </NavItem>
     ));
@@ -74,7 +87,15 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
           <PageHeader>
             {this.props.StudyPage.study.title}
           </PageHeader>
-          <Route path="/" component={WikiSection} />
+          <Switch>
+            <Route exact path="/study/:nctId" component={WikiSection} />
+            <Route path="/study/:nctId/crowd" component={CrowdSection} />
+            {this.genericRoute('Descriptive')}
+            {this.genericRoute('Administrative')}
+            {this.genericRoute('Recrutiment')}
+            {this.genericRoute('Tracking')}
+            {this.genericRoute('Sites')}
+          </Switch>
         </div>
       );
     } else {
@@ -97,6 +118,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
 StudyPage.propTypes = {
   actions: PropTypes.object,
   match: ReactRouterPropTypes.match,
+  history: ReactRouterPropTypes.history,
   StudyPage: PropTypes.object,
 };
 

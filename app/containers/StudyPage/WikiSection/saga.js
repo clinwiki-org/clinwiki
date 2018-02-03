@@ -3,7 +3,6 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 import client from 'utils/client';
 import {
   WIKI_SUBMIT_ACTION,
-  WIKI_VIEWED,
 } from './constants';
 import {
   wikiAction,
@@ -14,7 +13,6 @@ export function* loadWiki(action) {
   yield put(wikiAction(data.data));
 }
 
-
 export const wikiUrl = (action) => `/studies/${action.nctId}/wiki`;
 
 export function* submitWiki(action) {
@@ -23,7 +21,6 @@ export function* submitWiki(action) {
 }
 
 export default function* wikiSaga() {
-  yield takeEvery(WIKI_VIEWED, loadWiki);
   const submitWatcher = yield takeEvery(WIKI_SUBMIT_ACTION, submitWiki);
   yield take(LOCATION_CHANGE);
   yield cancel(submitWatcher);

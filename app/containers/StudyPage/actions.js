@@ -19,9 +19,6 @@ import {
   REVIEWS_RECEIVE_ACTION,
   GET_REVIEW_ACTION,
   REVIEW_DELETE_ACTION,
-  ANNOTATION_CREATE_ACTION,
-  ANNOTATION_DELETE_ACTION,
-  ANNOTATION_UPDATE_ACTION,
   REQUEST_STUDY_ACTION,
   RELOAD_STUDY_ACTION,
   SET_WIKI_OVERRIDE_ACTION,
@@ -45,26 +42,6 @@ export const getStudyAction = (nctId) => ({
 export const reloadStudyAction = (nctId) => ({
   type: RELOAD_STUDY_ACTION,
   nctId,
-});
-
-export const createAnnotationAction = (nctId, key, value) => ({
-  type: ANNOTATION_CREATE_ACTION,
-  nctId,
-  key,
-  value,
-});
-
-export const updateAnnotationAction = (nctId, key, value) => ({
-  type: ANNOTATION_UPDATE_ACTION,
-  nctId,
-  key,
-  value,
-});
-
-export const deleteAnnotationAction = (nctId, key) => ({
-  type: ANNOTATION_DELETE_ACTION,
-  nctId,
-  key,
 });
 
 export const defaultAction = (data) => ({
