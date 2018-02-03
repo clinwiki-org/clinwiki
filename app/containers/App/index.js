@@ -21,6 +21,7 @@ import AuthHeader from 'containers/AuthHeader/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import SearchPage from 'containers/SearchPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
+import StudyPage from 'containers/StudyPage/Loadable';
 import saga from './saga';
 import reducer from './reducer';
 
@@ -39,6 +40,7 @@ function App() {
           <Route exact path="/search" component={SearchPage} />
           <Route path="/search/:searchQuery" component={SearchPage} />
           <Route path="/profile" component={ProfilePage} />
+          <Route path="/study/:nctId" component={StudyPage} />
           <Route component={NotFoundPage} />
         </Switch>
       </MainWrapper>

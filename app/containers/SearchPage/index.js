@@ -63,6 +63,7 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
     this.onAggViewed = this.onAggViewed.bind(this);
     this.onAggSelected = this.onAggSelected.bind(this);
     this.onAggRemoved = this.onAggRemoved.bind(this);
+    this.tdProps = this.tdProps.bind(this);
   }
 
   onAggViewed(k) {
@@ -79,6 +80,15 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
 
   onFetchData(state) {
     this.props.actions.dataFetched(state, this.props.match);
+  }
+
+  tdProps(_, rowInfo) {
+    return {
+      onClick: (e, handleOriginal) => {
+        this.props.history.push(`/study/${rowInfo.row.nct_id}`);
+        return handleOriginal();
+      },
+    };
   }
 
   render() {
@@ -109,6 +119,7 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
                   pages={this.props.SearchPage.pages}
                   loading={this.props.SearchPage.loading}
                   pageSize={this.props.SearchPage.params.pageSize}
+                  getTdProps={this.tdProps}
                 />
               </Col>
             </Row>
@@ -122,6 +133,7 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
 SearchPage.propTypes = {
   actions: PropTypes.object.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
+  history: ReactRouterPropTypes.history.isRequired,
   SearchPage: PropTypes.shape({
     data: PropTypes.array,
     recordsTotal: PropTypes.number,
