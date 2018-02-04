@@ -17,12 +17,17 @@ import { Nav, NavItem, PageHeader } from 'react-bootstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
 import makeSelectStudyPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import * as actions from './actions';
 import WikiSection from './WikiSection/Loadable';
 import CrowdSection from './CrowdSection/Loadable';
+import TagsSection from './TagsSection/Loadable';
+import ReviewSection from './ReviewSection/Loadable';
+import NewReviewSection from './NewReviewSection/Loadable';
+import ReviewsSection from './ReviewsSection/Loadable';
 import GenericStudySection from './GenericStudySection';
 import LoadingPane from './LoadingPane';
 
@@ -57,11 +62,13 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
   defaultSections = {
     Wiki: '',
     Crowd: 'crowd',
+    Reviews: 'reviews',
     Descriptive: 'descriptive',
     Administrative: 'administrative',
     Recruitment: 'recruitment',
     Tracking: 'tracking',
     Sites: 'sites',
+    Tags: 'tags',
   };
 
   genericRoute(route) {
@@ -69,6 +76,51 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
       <Route
         path={`/study/:nctId/${this.defaultSections[route]}`}
         render={() => (<GenericStudySection data={this.props.StudyPage[this.defaultSections[route]]} />)}
+      />
+    );
+  }
+
+  tagsRoute() {
+    return (
+      <Route
+        path="/study/:nctId/tags"
+        render={() => (
+          <TagsSection
+            StudyPage={this.props.StudyPage}
+            submitTag={this.props.actions.submitTag}
+            removeTag={this.props.actions.removeTag}
+            loggedIn={_.get(this.props.AuthHeader, 'user.loggedIn')}
+          />)}
+      />
+    );
+  }
+
+  reviewsRoute() {
+    return (
+      <Route
+        path="/study/:nctId/reviews"
+        render={() => (
+          <ReviewsSection
+            history={this.props.history}
+            reviews={_.get(this.props.StudyPage, 'reviews')}
+            nctId={_.get(this.props.StudyPage, 'study.nct_id')}
+            deleteReview={this.props.actions.deleteReview}
+            AuthHeader={this.props.AuthHeader}
+          />)}
+      />
+    );
+  }
+
+  newReviewRoute() {
+    return (
+      <Route
+        path="/study/:nctId/reviews/new"
+        render={() => (
+          <NewReviewSection
+            nctId={_.get(this.props.StudyPage, 'study.nct_id')}
+            submitReview={this.props.actions.submitReview}
+            loggedIn={_.get(this.props.AuthHeader, 'user.loggedIn')}
+          />)}
       />
     );
   }
@@ -89,12 +141,16 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
           </PageHeader>
           <Switch>
             <Route exact path="/study/:nctId" component={WikiSection} />
+            {this.newReviewRoute()}
+            {this.reviewsRoute()}
+            <Route path="/study/:nctId/review" component={ReviewSection} />
             <Route path="/study/:nctId/crowd" component={CrowdSection} />
             {this.genericRoute('Descriptive')}
             {this.genericRoute('Administrative')}
-            {this.genericRoute('Recrutiment')}
+            {this.genericRoute('Recruitment')}
             {this.genericRoute('Tracking')}
             {this.genericRoute('Sites')}
+            {this.tagsRoute()}
           </Switch>
         </div>
       );
@@ -120,10 +176,12 @@ StudyPage.propTypes = {
   match: ReactRouterPropTypes.match,
   history: ReactRouterPropTypes.history,
   StudyPage: PropTypes.object,
+  AuthHeader: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
   StudyPage: makeSelectStudyPage(),
+  AuthHeader: makeSelectAuthHeader(),
 });
 
 function mapDispatchToProps(dispatch) {

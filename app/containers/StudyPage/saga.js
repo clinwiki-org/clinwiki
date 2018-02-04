@@ -150,9 +150,9 @@ export function* wikiOverrideSaga() {
 }
 
 export function* submitReview(action) {
-  yield client.post(`/reviews/${action.nctId}`, action);
+  yield call(client.post, `/reviews/${action.nctId}`, action);
   yield call(reloadStudy, action);
-  yield put(push(`/reviews/${action.nctId}`));
+  yield put(push(`/study/${action.nctId}/reviews`));
 }
 
 export function* submitReviewSaga() {
@@ -164,7 +164,7 @@ export function* submitReviewSaga() {
 export function* updateReview(action) {
   yield client.patch(`/review/${action.reviewId}`, action);
   yield call(reloadStudy, action);
-  yield put(push(`/reviews/${action.nctId}`));
+  yield put(push(`/study/${action.nctId}/reviews`));
 }
 
 export function* updateReviewSaga() {
@@ -198,6 +198,7 @@ export function* getReviewSaga() {
 
 export function* writeReview(action) {
   yield put(push(`/review/${action.nctId}`));
+  yield put(clearReviewAction());
 }
 
 export function* writeReviewSaga() {
@@ -213,6 +214,10 @@ export default function* doAll() {
   yield takeEvery(STUDY_VIEWED, loadDefault);
   yield takeEvery(STUDY_VIEWED, loadStudy);
   yield takeEvery(RELOAD_STUDY_ACTION, reloadStudy);
+  yield takeEvery(TAG_SUBMIT_ACTION, submitTag);
+  yield takeEvery(TAG_REMOVE_ACTION, removeTag);
+  yield takeEvery(WRITE_REVIEW_ACTION, writeReview);
+  yield takeEvery(REVIEW_SUBMIT_ACTION, submitReview);
   yield all([
     reloadStudySaga,
     tagsSubmitSaga,

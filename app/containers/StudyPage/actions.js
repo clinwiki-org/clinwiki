@@ -79,26 +79,26 @@ export const recruitmentAction = (data) => ({
   data,
 });
 
-export const removeTagAction = (nctId, tag) => ({
+export const removeTag = (nctId, tag) => ({
   type: TAG_REMOVE_ACTION,
   nctId,
   tag,
 });
 
-export const submitTagAction = (nctId, tag) => ({
+export const submitTag = (nctId, tag) => ({
   type: TAG_SUBMIT_ACTION,
   nctId,
   tag,
 });
 
-export const submitReviewAction = (nctId, review, stars) => ({
+export const submitReview = (nctId, review, stars) => ({
   type: REVIEW_SUBMIT_ACTION,
   nctId,
   review,
   stars,
 });
 
-export const updateReviewAction = (nctId, reviewId, review, stars) => ({
+export const updateReview = (nctId, reviewId, review, stars) => ({
   type: REVIEW_UPDATE_ACTION,
   nctId,
   reviewId,
@@ -121,7 +121,7 @@ export const getReviewAction = (reviewId) => ({
   reviewId,
 });
 
-export const deleteReviewAction = (nctId, reviewId) => ({
+export const deleteReview = (nctId, reviewId) => ({
   type: REVIEW_DELETE_ACTION,
   nctId,
   reviewId,
