@@ -13,11 +13,12 @@ import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
-import { Nav, NavItem, PageHeader } from 'react-bootstrap';
+import { Nav, NavItem, PageHeader, Row, Col } from 'react-bootstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
+import ReviewSummary from './ReviewSummary';
 import makeSelectStudyPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -36,9 +37,14 @@ const StudyWrapper = styled.div`
   align-items: stretch;
 
   #study-sidebar {
-    padding-top: 100px;
-    min-width: 200px;
-    max-width: 200px;
+    padding-top: 0px;
+    padding-left: 0px;
+    li {
+      text-align: right;
+    }
+  }
+  #study-main {
+    padding-left: 0px;
   }
 `;
 
@@ -160,12 +166,20 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
 
     return (
       <StudyWrapper>
-        <div id="study-sidebar">
-          <Nav bsStyle="pills" stacked activeKey={0} onSelect={this.onNavItemSelect}>
-            {navItems}
-          </Nav>
-        </div>
-        {inner}
+        <Row>
+          <Col md={2} id="study-sidebar">
+            <ReviewSummary
+              average_rating={_.get(this.props, 'StudyPage.study.average_rating')}
+              reviews_length={_.get(this.props, 'StudyPage.study.reviews_length')}
+            />
+            <Nav bsStyle="pills" stacked activeKey={0} onSelect={this.onNavItemSelect}>
+              {navItems}
+            </Nav>
+          </Col>
+          <Col md={10} id="study-main">
+            {inner}
+          </Col>
+        </Row>
       </StudyWrapper>
     );
   }

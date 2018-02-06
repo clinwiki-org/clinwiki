@@ -51,16 +51,17 @@ function getParams(searchPage, data) {
 
 export function* doSearch(data) {
   let url = '/studies';
-  const { searchQuery, type } = data;
+  const { type } = data;
+  let { searchQuery } = data;
   const searchPage = yield select(searchSelector());
   if (searchQuery) {
-    if (searchPage.searchQery !== searchQuery && type === SEARCH_CHANGED) {
+    if (searchPage.searchQuery !== searchQuery && type === SEARCH_CHANGED) {
       yield put(clearSearchData());
     }
-    url = `/studies/search/${searchQuery}`;
   } else if (searchPage.searchQuery && type !== SEARCH_CHANGED) {
-    url = `/studies/search/${searchPage.searchQuery}`;
+    searchQuery = searchPage.searchQuery;
   }
+  url = `/studies/search/${searchQuery}`;
   try {
     const results = yield call(client.post, `${url}/json`, getParams(searchPage, data));
     const resultActionData = Object.assign({}, { searchQuery }, { state: data.state || searchPage.params }, results.data);

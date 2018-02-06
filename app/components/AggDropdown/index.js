@@ -59,6 +59,15 @@ class AggDropdown extends React.Component {
         </MenuItem>
       ));
     }
+    if ((!buckets) || this.props.data.loading) {
+      menuItems.push(
+        <Halogen.BeatLoader
+          key="loader"
+          color="#333"
+          className="text-center"
+        />
+      );
+    }
     if (menuItems.length === 0) {
       menuItems = (
         <MenuItem disabled>
@@ -68,15 +77,6 @@ class AggDropdown extends React.Component {
             <i>{aggToField[this.props.agg]}</i>
           </span>
         </MenuItem>
-      );
-    }
-    if ((!buckets) || this.props.data.loading) {
-      menuItems.push(
-        <Halogen.BeatLoader
-          key="loader"
-          color="#333"
-          className="text-center"
-        />
       );
     }
 

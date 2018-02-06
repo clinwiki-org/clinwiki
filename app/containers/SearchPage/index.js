@@ -116,6 +116,7 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
               <Row>
                 <Col md={12}>
                   <ReactTable
+                    className="-striped -highlight"
                     columns={getColumns()}
                     manual
                     onFetchData={this.onFetchData}

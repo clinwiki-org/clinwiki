@@ -24,7 +24,7 @@ const initialState = fromJS({
   aggFilters: {},
   params: {
     page: 0,
-    pageSize: 10,
+    pageSize: 25,
     sorted: [],
   },
   aggs: {},
@@ -48,7 +48,7 @@ function SearchPageReducer(state = initialState, action) {
                   .set('loading', false);
     case AGG_VIEWED:
       return state.updateIn(['aggs', action.agg],
-      (x) => fromJS(Object.assign({}, x, { loading: !x.loaded })));
+      (x) => fromJS(Object.assign({}, x.toJS(), { loading: !x.loaded })));
     case AGG_SELECTED:
       return state.updateIn(['aggFilters'],
         (x) => fromJS(Object.assign({}, x.toJS(), { [action.agg]: (x.get(action.agg) || []).concat([action.value]) })));
@@ -57,7 +57,7 @@ function SearchPageReducer(state = initialState, action) {
       (x) => fromJS(x.toJS().filter((y) => y !== action.value)));
     case AGG_LOADED:
       return state.setIn(['aggs', action.agg],
-        Object.assign({}, action.data.aggs[action.agg], { loaded: true }));
+        fromJS(Object.assign({}, action.data.aggs[action.agg], { loaded: true })));
     default:
       return state;
   }
