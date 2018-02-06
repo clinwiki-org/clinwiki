@@ -174,9 +174,9 @@ export function* updateReviewSaga() {
 }
 
 export function* deleteReview(action) {
-  yield client.delete(`/review/${action.reviewId}`);
+  yield call(client.delete, `/review/${action.reviewId}`);
   yield call(reloadStudy, action);
-  yield put(push(`/reviews/${action.nctId}`));
+  yield put(push(`/study/${action.nctId}/reviews`));
 }
 
 export function* deleteReviewSaga() {
@@ -218,6 +218,7 @@ export default function* doAll() {
   yield takeEvery(TAG_REMOVE_ACTION, removeTag);
   yield takeEvery(WRITE_REVIEW_ACTION, writeReview);
   yield takeEvery(REVIEW_SUBMIT_ACTION, submitReview);
+  yield takeEvery(REVIEW_DELETE_ACTION, deleteReview);
   yield all([
     reloadStudySaga,
     tagsSubmitSaga,

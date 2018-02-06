@@ -26,12 +26,15 @@ import saga from './saga';
 import * as actions from './actions';
 
 const SearchWrapper = styled.div`
-  display: flex;
-  align-items: stretch;
-
-  #search-sidebar {
-    min-width: 200px;
-    max-width: 200px;
+  .rt-tr {
+    cursor: pointer;
+  }
+  #search-sidebar{
+    padding-right: 0;
+  }
+  #search-main {
+    padding-left: 0;
+    padding-top: 6px;
   }
 `;
 
@@ -98,33 +101,35 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
           <title>SearchPage</title>
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
-        <div id="search-sidebar">
-          <Aggs
-            aggFilters={this.props.SearchPage.aggFilters}
-            aggs={this.props.SearchPage.aggs}
-            onAggViewed={this.props.actions.aggViewed}
-            onAggRemoved={this.props.actions.aggRemoved}
-            onAggSelected={this.props.actions.aggSelected}
-          />
-        </div>
-        <div id="search-main">
-          <Grid>
-            <Row>
-              <Col md={12}>
-                <ReactTable
-                  columns={getColumns()}
-                  manual
-                  onFetchData={this.onFetchData}
-                  data={this.props.SearchPage.data}
-                  pages={this.props.SearchPage.pages}
-                  loading={this.props.SearchPage.loading}
-                  pageSize={this.props.SearchPage.params.pageSize}
-                  getTdProps={this.tdProps}
-                />
-              </Col>
-            </Row>
-          </Grid>
-        </div>
+        <Row>
+          <Col md={2} id="search-sidebar">
+            <Aggs
+              aggFilters={this.props.SearchPage.aggFilters}
+              aggs={this.props.SearchPage.aggs}
+              onAggViewed={this.props.actions.aggViewed}
+              onAggRemoved={this.props.actions.aggRemoved}
+              onAggSelected={this.props.actions.aggSelected}
+            />
+          </Col>
+          <Col md={10} id="search-main">
+            <Grid>
+              <Row>
+                <Col md={12}>
+                  <ReactTable
+                    columns={getColumns()}
+                    manual
+                    onFetchData={this.onFetchData}
+                    data={this.props.SearchPage.data}
+                    pages={this.props.SearchPage.pages}
+                    loading={this.props.SearchPage.loading}
+                    pageSize={this.props.SearchPage.params.pageSize}
+                    getTdProps={this.tdProps}
+                  />
+                </Col>
+              </Row>
+            </Grid>
+          </Col>
+        </Row>
       </SearchWrapper>
     );
   }
