@@ -123,7 +123,7 @@ module SearchHelper
       order: ordering,
       aggs: enabled_aggs,
       where: agg_where,
-      smart_aggs: false
+      smart_aggs: true
     })
   end
 
