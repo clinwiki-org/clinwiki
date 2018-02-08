@@ -8,9 +8,12 @@ Rails.application.routes.draw do
     get 'pages/about'
     get 'pages/contact'
 
-    devise_for :users, :controllers => {sessions: 'sessions', registrations: 'registrations'},
+    devise_for :users, :controllers => {sessions: 'sessions',
+                                        registrations: 'registrations',
+                                        passwords: 'cwpasswords'},
                        :defaults => { format: 'json'} do
       get '/users/sign_out' => 'sessions#destroy'
+      patch "/users/password", to: "cwpasswords#reset", defaults: { format: 'json' }
     end
 
     get "/user/exists", to: "application#user_exists", defaults: { format: 'json' }
