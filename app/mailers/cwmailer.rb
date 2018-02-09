@@ -3,8 +3,4 @@ class Cwmailer < Devise::Mailer
   include Devise::Controllers::UrlHelpers # Optional. eg. `confirmation_url`
   default template_path: 'devise/mailer' # to
 
-  def edit_user_password_path
-    _devise_route_context.send("/reset-password", *args)
-  end
-
 end
