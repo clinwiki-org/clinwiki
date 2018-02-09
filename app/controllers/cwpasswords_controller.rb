@@ -9,11 +9,12 @@ class CwpasswordsController < Devise::PasswordsController
   def update
     p params
     if params.has_key?('reset')
-      p 'here now'
       @user = User.find_by_email(params['email'])
       if @user.present?
        @user.send_reset_password_instructions
+       status 200
        render :json => { success: true }
+       return
       else
        render :json => { success: false }
       end
