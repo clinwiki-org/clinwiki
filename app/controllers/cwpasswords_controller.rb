@@ -11,14 +11,24 @@ class CwpasswordsController < Devise::PasswordsController
       @user = User.find_by_email(params['email'])
       if @user.present?
        @user.send_reset_password_instructions
-       status 200
-       render :json => { success: true }
-       return
+       return render :json => { success: true }, status: 200
       else
        render :json => { success: false }
       end
     else
-      super
+      self.resource = resource_class.reset_password_by_token(resource_params)
+      yield resource if block_given?
+
+      if resource.errors.empty?
+        resource.unlock_access! if unlockable?(resource)
+        if Devise.sign_in_after_reset_password
+          sign_in(resource_name, resource)
+        end
+        render :json => { success: true }, status: 200
+      else
+        set_minimum_password_length
+        render :json => { success: false, errors: resource.errors }, status: 400
+      end
     end
   end
 end
