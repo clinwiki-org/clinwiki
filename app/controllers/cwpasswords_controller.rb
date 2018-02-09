@@ -7,6 +7,7 @@ class CwpasswordsController < Devise::PasswordsController
   end
 
   def update
+    p params
     if params.has_key?('reset')
       @user = User.find_by_email(params['email'])
       if @user.present?
