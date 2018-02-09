@@ -7,13 +7,10 @@ class CwpasswordsController < Devise::PasswordsController
   end
 
   def update
-    p 'here'
     if params.has_key?('reset')
       @user = User.find_by_email(params['email'])
       if @user.present?
-       @user.send_reset_password_instructions(
-         host: ENV.fetch("CW_HOST")
-       )
+       @user.send_reset_password_instructions
        render :json => { success: true }
       else
        render :json => { success: false }
