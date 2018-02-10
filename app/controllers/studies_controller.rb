@@ -43,6 +43,10 @@ class StudiesController < ApplicationController
     render json: Study.find(params[:study_id]).site_info
   end
 
+  def fields
+    render json: Study.searchkick_index.mapping.values[0]["mappings"]["study"]["properties"].keys
+  end
+
   private
 
   def get_study

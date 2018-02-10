@@ -36,9 +36,13 @@ module SearchHelper
   # @param [Hash] result a searchkick raw elasticsearch result
   # @return [Hash] the expected format for the response
   def study_result_to_json(result)
+    # todo: allow for requested keys here
+    if params["selectedColumns"]
+      return Hash[params["selectedColumns"].map{|col| [col.to_sym, result[col.to_sym]]}]
+    end
     response = {
       nct_id: result[:nct_id],
-      "Overall Rating" => result[:average_rating],
+      overall_rating: result[:average_rating],
       title: result[:brief_title],
       status: result[:overall_status],
       started: result[:start_date],
