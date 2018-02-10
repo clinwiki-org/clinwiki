@@ -5,6 +5,7 @@
 */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import styled from 'styled-components';
 import { Button, DropdownButton, MenuItem } from 'react-bootstrap';
@@ -32,7 +33,7 @@ const AuthButton = (props) => {
 };
 
 AuthButton.propTypes = {
-  user: React.PropTypes.object,
+  user: PropTypes.object,
   history: ReactRouterPropTypes.history,
 };
 

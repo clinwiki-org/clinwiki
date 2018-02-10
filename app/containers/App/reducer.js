@@ -4,6 +4,7 @@ import {
 } from 'containers/App/constants';
 
 const initialState = fromJS({
+  sessionChecked: false,
   user: {
     default_query_string: null,
     email: null,
@@ -11,13 +12,15 @@ const initialState = fromJS({
     id: null,
     last_name: null,
     loggedIn: false,
+    search_result_columns: null,
   },
 });
 
 function AppReducer(state = initialState, action) {
   switch (action.type) {
     case SESSION_CHECKED:
-      return state.set('user', fromJS(action.data));
+      return state.set('sessionChecked', true)
+                  .set('user', fromJS(action.data));
     default:
       return state;
   }

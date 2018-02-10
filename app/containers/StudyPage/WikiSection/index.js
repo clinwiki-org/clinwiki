@@ -19,9 +19,9 @@ import { Grid, Button, Row, Col, Table, FormGroup, FormControl } from 'react-boo
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
+import LoadingPane from 'components/LoadingPane';
 import makeSelectWikiSection from './selectors';
 import makeSelectStudyPage from '../selectors';
-import LoadingPane from '../LoadingPane';
 import reducer from './reducer';
 import saga from './saga';
 import * as actions from './actions';

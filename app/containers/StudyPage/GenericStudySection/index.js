@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'react-bootstrap';
-import LoadingPane from '../LoadingPane';
+import LoadingPane from 'components/LoadingPane';
 
 const GenericStudySection = (props) => props.data !== undefined ? (
   <Table striped bordered condensed>

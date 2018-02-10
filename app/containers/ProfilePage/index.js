@@ -4,15 +4,16 @@
  *
  */
 
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
-import { Row, Col, Form, FormGroup, Button,
-  ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
-
+import { Row, Col, Form, Button, FormGroup, Checkbox, Well } from 'react-bootstrap';
+import FieldGroup from 'components/FieldGroup';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -22,22 +23,11 @@ import reducer from './reducer';
 import saga from './saga';
 import * as actions from './actions';
 
-function FieldGroup({ id, label, help, ...props }) {
-  return (
-    <FormGroup controlId={id}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
-      {help && <HelpBlock>{help}</HelpBlock>}
-    </FormGroup>
-  );
-}
-
-FieldGroup.propTypes = {
-  id: PropTypes.string,
-  label: PropTypes.string,
-  help: PropTypes.string,
-};
-
+const ColumnPickerWrapper = styled.div`
+  .checkbox-inline {
+    margin-left: 5px;
+  }
+`;
 
 export class ProfilePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
@@ -51,6 +41,28 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
     this.onChangeFirstName = this.onChangeFirstName.bind(this);
     this.onChangeLastName = this.onChangeLastName.bind(this);
     this.onChangeDefaultQueryString = this.onChangeDefaultQueryString.bind(this);
+    this.toggleColumnPicker = this.toggleColumnPicker.bind(this);
+    this.onCheckboxChanged = this.onCheckboxChanged.bind(this);
+    const selectedColumns = _.get(this.props, 'authheader.user.search_result_columns') || {
+      nct_id: 1,
+      brief_title: 1,
+      average_rating: 1,
+      completion_date: 1,
+      overall_status: 1,
+    };
+    this.state = {
+      showColumnPicker: false,
+      selectedColumns,
+    };
+  }
+
+  onCheckboxChanged(field) {
+    this.setState({
+      selectedColumns: {
+        ...this.state.selectedColumns,
+        [field]: this.state.selectedColumns[field] ? 0 : 1,
+      },
+    });
   }
 
   onChangeFirstName(e) {
@@ -73,8 +85,47 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
       first_name: this.firstName,
       last_name: this.lastName,
       default_query_string: this.defaultQueryString,
+      search_result_columns: _.pickBy(this.state.selectedColumns, (x) => x === 1),
     });
   }
+
+  toggleColumnPicker() {
+    this.setState({ showColumnPicker: !this.state.showColumnPicker });
+  }
+
+  renderColumnPicker() {
+    if (!this.props.profilepage.fields) {
+      return null;
+    }
+    let columnPicker = null;
+    if (this.state.showColumnPicker) {
+      const checkboxes = this.props.profilepage.fields.map((field) => (
+        <Checkbox
+          key={field}
+          inline
+          onChange={() => this.onCheckboxChanged(field)}
+          checked={this.state.selectedColumns[field] === 1}
+        >
+          {field}
+        </Checkbox>
+      ));
+      columnPicker = (
+        <Well>
+          <FormGroup>
+            {checkboxes}
+          </FormGroup>
+        </Well>
+      );
+    }
+
+    return (
+      <ColumnPickerWrapper>
+        <Button type="button" onClick={this.toggleColumnPicker}>Select Search Columns</Button>
+        {columnPicker}
+      </ColumnPickerWrapper>
+    );
+  }
+
   render() {
     if (!(this.props.authheader && this.props.authheader.user.loggedIn)) {
       return <h1>Not logged in!</h1>;
@@ -114,6 +165,7 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
                 onChange={this.onChangeDefaultQueryString}
                 placeholder="Enter A Default Query"
               />
+              {this.renderColumnPicker()}
               <Button type="submit">
                 Submit
               </Button>
@@ -127,6 +179,7 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
 
 ProfilePage.propTypes = {
   authheader: PropTypes.object,
+  profilepage: PropTypes.object,
   actions: PropTypes.object,
 };
 

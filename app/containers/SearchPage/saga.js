@@ -1,9 +1,10 @@
 /**
  * Gets the repositories of the user from Github
  */
-
+import _ from 'lodash';
 import { call, put, takeEvery, select } from 'redux-saga/effects';
 import client from 'utils/client';
+import makeSelectAuthHeader from '../AuthHeader/selectors';
 import {
   SEARCH_CHANGED,
   AGG_VIEWED,
@@ -20,6 +21,7 @@ import {
   searchLoading,
 } from './actions';
 import searchSelector from './selectors';
+
 
 export function* loadAgg(data) {
   const searchPage = yield select(searchSelector());
@@ -38,7 +40,8 @@ export function* loadAgg(data) {
   }
 }
 
-function getParams(searchPage, data) {
+function* getParams(searchPage, data) {
+  const authHeader = yield select(makeSelectAuthHeader());
   const allParams = Object.assign({}, searchPage.params, data.state);
   return {
     q: searchPage.searchQuery,
@@ -46,6 +49,7 @@ function getParams(searchPage, data) {
     sorted: allParams.sorted,
     page: allParams.page,
     aggFilters: searchPage.aggFilters,
+    selectedColumns: Object.keys(_.get(authHeader, 'user.search_result_columns') || {}),
   };
 }
 
@@ -54,16 +58,22 @@ export function* doSearch(data) {
   const { type } = data;
   let { searchQuery } = data;
   const searchPage = yield select(searchSelector());
-  if (searchQuery) {
+  if (searchQuery !== undefined) {
     if (searchPage.searchQuery !== searchQuery && type === SEARCH_CHANGED) {
       yield put(clearSearchData());
     }
   } else if (searchPage.searchQuery && type !== SEARCH_CHANGED) {
     searchQuery = searchPage.searchQuery;
   }
-  url = `/studies/search/${searchQuery}`;
+  if (searchQuery !== undefined) {
+    url = `/studies/search/${searchQuery}`;
+  } else {
+    url = '/studies';
+  }
+
   try {
-    const results = yield call(client.post, `${url}/json`, getParams(searchPage, data));
+    const params = yield call(getParams, searchPage, data);
+    const results = yield call(client.post, `${url}/json`, params);
     const resultActionData = Object.assign({}, { searchQuery }, { state: data.state || searchPage.params }, results.data);
     yield put(searchLoaded(resultActionData));
   } catch (err) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BeatLoader } from 'halogen';
+import { BeatLoader } from 'react-spinners';
 import { Well } from 'react-bootstrap';
 
 const LoaderWrapper = styled.div`

@@ -15,7 +15,7 @@ import { Button, Table } from 'react-bootstrap';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
-import LoadingPane from '../LoadingPane';
+import LoadingPane from 'components/LoadingPane';
 import makeSelectStudyPage from '../selectors';
 import makeSelectCrowdSection from './selectors';
 import reducer from './reducer';

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Halogen from 'halogen';
+import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
 import { DropdownButton, MenuItem, Label } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
@@ -61,7 +61,7 @@ class AggDropdown extends React.Component {
     }
     if ((!buckets) || this.props.data.loading) {
       menuItems.push(
-        <Halogen.BeatLoader
+        <BeatLoader
           key="loader"
           color="#333"
           className="text-center"

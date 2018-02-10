@@ -18,6 +18,7 @@ import { Nav, NavItem, PageHeader, Row, Col } from 'react-bootstrap';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
+import LoadingPane from 'components/LoadingPane';
 import ReviewSummary from './ReviewSummary';
 import makeSelectStudyPage from './selectors';
 import reducer from './reducer';
@@ -30,7 +31,7 @@ import ReviewSection from './ReviewSection/Loadable';
 import NewReviewSection from './NewReviewSection/Loadable';
 import ReviewsSection from './ReviewsSection/Loadable';
 import GenericStudySection from './GenericStudySection';
-import LoadingPane from './LoadingPane';
+
 
 const StudyWrapper = styled.div`
   display: flex;

@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactStars from 'react-stars';
-import { BeatLoader } from 'halogen';
+import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
 
 // import { FormattedMessage } from 'react-intl';

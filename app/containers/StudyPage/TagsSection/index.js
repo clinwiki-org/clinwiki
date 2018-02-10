@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { Row, Col, Table, FormGroup, FormControl, Form, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 
-import LoadingPane from '../LoadingPane';
+import LoadingPane from 'components/LoadingPane';
 
 const TagsWrapper = styled.div`
   .remove-col {

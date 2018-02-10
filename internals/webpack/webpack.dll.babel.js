@@ -22,11 +22,12 @@ const outputPath = join(process.cwd(), dllConfig.path);
 module.exports = require('./webpack.base.babel')({
   context: process.cwd(),
   entry: dllConfig.dlls ? dllConfig.dlls : dllPlugin.entry(pkg),
-  devtool: 'eval',
+  devtool: process.env.NODE_ENV === 'production' ? 'eval' : 'cheap-module-source-map',
   output: {
     filename: '[name].dll.js',
     path: outputPath,
     library: '[name]',
+    crossOriginLoading: 'anonymous',
   },
   plugins: [
     new webpack.DllPlugin({

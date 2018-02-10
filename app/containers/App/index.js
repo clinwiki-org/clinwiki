@@ -22,6 +22,7 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import SearchPage from 'containers/SearchPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import StudyPage from 'containers/StudyPage/Loadable';
+import LoginSignupPage from 'containers/LoginSignupPage/Loadable';
 import saga from './saga';
 import reducer from './reducer';
 
@@ -41,6 +42,9 @@ function App() {
           <Route path="/search/:searchQuery" component={SearchPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/study/:nctId" component={StudyPage} />
+          <Route path="/reset-password" component={LoginSignupPage} />
+          <Route path="/login-signup" component={LoginSignupPage} />
+          <Route path="/logout" component={LoginSignupPage} />
           <Route component={NotFoundPage} />
         </Switch>
       </MainWrapper>
@@ -51,7 +55,9 @@ function App() {
 const withSaga = injectSaga({ key: 'App', saga });
 const withReducer = injectReducer({ key: 'authHeader', reducer });
 
-export default compose(
+const app = compose(
   withSaga,
   withReducer,
 )(App);
+
+export default app;

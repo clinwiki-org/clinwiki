@@ -4,6 +4,7 @@
  *
  */
 
+import _ from 'lodash';
 import React from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import PropTypes from 'prop-types';
@@ -19,7 +20,9 @@ import 'react-table/react-table.css';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import LoadingPane from 'components/LoadingPane';
 import Aggs from 'components/Aggs';
+import makeSelectAuthHeader from '../AuthHeader/selectors';
 import makeSelectSearchPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -37,26 +40,6 @@ const SearchWrapper = styled.div`
     padding-top: 6px;
   }
 `;
-
-// todo this should be configurable
-const getColumns = () => ([
-  {
-    Header: 'nct id',
-    accessor: 'nct_id',
-  }, {
-    Header: 'rating',
-    accessor: 'Overall Rating',
-    Cell: (row) => (
-      <ReactStars
-        count={5}
-        edit={false}
-        value={row.value}
-      />),
-  }, {
-    Header: 'title',
-    accessor: 'title',
-  },
-]);
 
 export class SearchPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
@@ -85,7 +68,29 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
     this.props.actions.dataFetched(state, this.props.match);
   }
 
-  tdProps(_, rowInfo) {
+  getColumns() {
+    let cols = ['nct_id', 'overall_rating', 'title', 'status', 'started', 'completed'];
+    if (_.get(this.props, 'AuthHeader.user.search_result_columns')) {
+      cols = Object.keys(this.props.AuthHeader.user.search_result_columns);
+    }
+    return cols.map((col) => {
+      const spec = {
+        Header: col,
+        accessor: col,
+      };
+      if (col.match('rating')) {
+        spec.Cell = (row) => (
+          <ReactStars
+            count={5}
+            edit={false}
+            value={row.value}
+          />);
+      }
+      return spec;
+    });
+  }
+
+  tdProps(__, rowInfo) {
     return {
       onClick: (e, handleOriginal) => {
         this.props.history.push(`/study/${rowInfo.row.nct_id}`);
@@ -95,6 +100,9 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
   }
 
   render() {
+    if (!this.props.AuthHeader.sessionChecked) {
+      return <LoadingPane />;
+    }
     return (
       <SearchWrapper>
         <Helmet>
@@ -117,7 +125,7 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
                 <Col md={12}>
                   <ReactTable
                     className="-striped -highlight"
-                    columns={getColumns()}
+                    columns={this.getColumns()}
                     manual
                     onFetchData={this.onFetchData}
                     data={this.props.SearchPage.data}
@@ -152,10 +160,12 @@ SearchPage.propTypes = {
       pageSize: PropTypes.number,
     }),
   }),
+  AuthHeader: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
   SearchPage: makeSelectSearchPage(),
+  AuthHeader: makeSelectAuthHeader(),
 });
 
 function mapDispatchToProps(dispatch) {
