@@ -20,9 +20,7 @@ import SearchInput from 'components/SearchInput';
 
 import * as searchActions from 'containers/SearchPage/actions';
 
-import injectSaga from 'utils/injectSaga';
 import makeSelectAuthHeader from './selectors';
-import saga from './saga';
 import * as actions from './actions';
 
 const SearchInputWrapper = styled.div`
@@ -78,10 +76,7 @@ function mapDispatchToProps(dispatch) {
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 
-const withSaga = injectSaga({ key: 'authHeader', saga });
-
 export default compose(
-  withSaga,
   withConnect,
   withRouter,
 )(AuthHeader);

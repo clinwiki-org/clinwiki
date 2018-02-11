@@ -51,7 +51,7 @@ export function* logout() {
     yield put(logoutFinalized(data));
     yield call(checkSession);
   } catch (errs) {
-    yield put(logoutErrorsAction(errs));
+    yield put(logoutErrorsAction(errs.response.data));
   }
 }
 
@@ -66,8 +66,8 @@ export function* requestReset(action) {
 
 export function* doReset(action) {
   try {
-    const data = yield call(client.put, '/users/password.json', action.params);
-    yield put(resetPasswordFinalized(data));
+    yield call(client.put, '/users/password.json', action.params);
+    yield put(resetPasswordFinalized());
     yield call(checkSession);
     yield put(push('/profile'));
   } catch (errs) {

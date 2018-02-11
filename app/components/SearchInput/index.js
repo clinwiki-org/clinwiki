@@ -10,22 +10,6 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import FontAwesome from 'react-fontawesome';
 import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';
 
-/**
-<Button
-  style={{ marginLeft: '5px' }}
-  title="Choose Columns..."
-  onClick={this.props.toggleColumnPickerAction}
->
-  <FontAwesome name="table" /> ...
-</Button>
-<ColumnPicker
-  columns={this.props.Search.columns}
-  isOpen={this.props.Search.columnPickerOpen}
-  onRequestClose={this.props.toggleColumnPickerAction}
-  onPickColumn={this.props.pickColumnAction}
-/>
-*/
-
 class SearchInput extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   constructor(props) {
