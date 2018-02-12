@@ -19,7 +19,7 @@ function profilePageReducer(state = initialState, action) {
     case DEFAULT_ACTION:
       return state;
     case POPULATE_COLUMN_PICKER_ACTION:
-      return state.set('fields', action.fields);
+      return state.set('fields', fromJS(action.fields));
     default:
       return state;
   }

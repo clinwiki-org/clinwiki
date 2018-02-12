@@ -7,6 +7,7 @@
 import {
   DEFAULT_ACTION,
   SUBMIT_PROFILE_ACTION,
+  SUBMIT_PROFILE_ERRORS_ACTION,
   POPULATE_COLUMN_PICKER_ACTION,
 } from './constants';
 
@@ -27,5 +28,12 @@ export function populateColumnPickerAction(fields) {
   return {
     type: POPULATE_COLUMN_PICKER_ACTION,
     fields,
+  };
+}
+
+export function submitProfileErrorsAction(errors) {
+  return {
+    type: SUBMIT_PROFILE_ERRORS_ACTION,
+    errors,
   };
 }

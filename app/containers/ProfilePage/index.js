@@ -43,13 +43,21 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
     this.onChangeDefaultQueryString = this.onChangeDefaultQueryString.bind(this);
     this.toggleColumnPicker = this.toggleColumnPicker.bind(this);
     this.onCheckboxChanged = this.onCheckboxChanged.bind(this);
-    const selectedColumns = _.get(this.props, 'authheader.user.search_result_columns') || {
-      nct_id: 1,
-      brief_title: 1,
-      average_rating: 1,
-      completion_date: 1,
-      overall_status: 1,
-    };
+    let selectedColumns = {};
+    if (_.get(this.props, 'authheader.user.search_result_columns')) {
+      _.forEach(_.get(this.props, 'authheader.user.search_result_columns'), (col) => {
+        selectedColumns[col] = 1;
+      });
+    } else {
+      selectedColumns = {
+        nct_id: 1,
+        brief_title: 1,
+        average_rating: 1,
+        completion_date: 1,
+        overall_status: 1,
+      };
+    }
+
     this.state = {
       showColumnPicker: false,
       selectedColumns,
@@ -101,6 +109,7 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
     if (this.state.showColumnPicker) {
       const checkboxes = this.props.profilepage.fields.map((field) => (
         <Checkbox
+          id={`checkbox-${field}`}
           key={field}
           inline
           onChange={() => this.onCheckboxChanged(field)}
@@ -110,7 +119,7 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
         </Checkbox>
       ));
       columnPicker = (
-        <Well>
+        <Well id="column-picker">
           <FormGroup>
             {checkboxes}
           </FormGroup>
@@ -120,14 +129,14 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
 
     return (
       <ColumnPickerWrapper>
-        <Button type="button" onClick={this.toggleColumnPicker}>Select Search Columns</Button>
+        <Button id="toggle-column-picker" type="button" onClick={this.toggleColumnPicker}>Select Search Columns</Button>
         {columnPicker}
       </ColumnPickerWrapper>
     );
   }
 
   render() {
-    if (!(this.props.authheader && this.props.authheader.user.loggedIn)) {
+    if (!_.get(this.props, 'authheader.user.loggedIn')) {
       return <h1>Not logged in!</h1>;
     }
     return (
@@ -166,7 +175,7 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
                 placeholder="Enter A Default Query"
               />
               {this.renderColumnPicker()}
-              <Button type="submit">
+              <Button type="submit" id="submit-profile-form">
                 Submit
               </Button>
             </Form>
