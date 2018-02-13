@@ -42,11 +42,11 @@ module SearchHelper
     end
     response = {
       nct_id: result[:nct_id],
-      overall_rating: result[:average_rating],
+      average_rating: result[:average_rating],
       title: result[:brief_title],
-      status: result[:overall_status],
-      started: result[:start_date],
-      completed: result[:completion_date],
+      overall_status: result[:overall_status],
+      start_date: result[:start_date],
+      completion_date: result[:completion_date],
     }
     if result.has_key?(:rating_dimensions)
       response = response.merge(Hash[result[:rating_dimensions].map{|dim| [dim, result[dim]]}])
