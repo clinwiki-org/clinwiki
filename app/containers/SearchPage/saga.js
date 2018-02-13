@@ -29,10 +29,11 @@ export function* loadAgg(data) {
     return;
   }
   try {
+    const params = yield call(getParams, searchPage, data);
     const results = yield call(
       client.post,
       '/studies/agg_buckets',
-      Object.assign({}, getParams(searchPage, data), { agg: data.agg })
+      Object.assign({}, params, { agg: data.agg })
     );
     yield put(aggLoaded(data.agg, results.data));
   } catch (err) {
@@ -40,7 +41,7 @@ export function* loadAgg(data) {
   }
 }
 
-function* getParams(searchPage, data) {
+export function* getParams(searchPage, data) {
   const authHeader = yield select(makeSelectAuthHeader());
   const allParams = Object.assign({}, searchPage.params, data.state);
   return {

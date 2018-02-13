@@ -21,6 +21,7 @@ import 'react-table/react-table.css';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import LoadingPane from 'components/LoadingPane';
+import SearchFieldName from 'components/SearchFieldName';
 import Aggs from 'components/Aggs';
 import makeSelectAuthHeader from '../AuthHeader/selectors';
 import makeSelectSearchPage from './selectors';
@@ -69,13 +70,13 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
   }
 
   getColumns() {
-    let cols = ['nct_id', 'overall_rating', 'title', 'status', 'started', 'completed'];
+    let cols = ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'];
     if (_.get(this.props, 'AuthHeader.user.search_result_columns')) {
       cols = Object.keys(this.props.AuthHeader.user.search_result_columns);
     }
     return cols.map((col) => {
       const spec = {
-        Header: col,
+        Header: <SearchFieldName field={col} />,
         accessor: col,
       };
       if (col.match('rating')) {

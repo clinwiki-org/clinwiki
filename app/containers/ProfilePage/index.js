@@ -14,6 +14,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 import { Row, Col, Form, Button, FormGroup, Checkbox, Well } from 'react-bootstrap';
 import FieldGroup from 'components/FieldGroup';
+import SearchFieldName from 'components/SearchFieldName';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -115,7 +116,7 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
           onChange={() => this.onCheckboxChanged(field)}
           checked={this.state.selectedColumns[field] === 1}
         >
-          {field}
+          <SearchFieldName field={field} />
         </Checkbox>
       ));
       columnPicker = (
