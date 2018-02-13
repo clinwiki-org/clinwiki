@@ -85,13 +85,13 @@ export function* dataFetched(data) {
   const searchPage = yield select(searchSelector());
   if (searchPage.params !== data.state) {
     yield put(searchLoading());
-    yield doSearch(Object.assign({}, { searchQuery: searchPage.searchQuery, params: searchPage.state }, data));
+    yield call(doSearch, Object.assign({}, { searchQuery: searchPage.searchQuery, params: searchPage.state }, data));
   }
 }
 
 export function* handleAgg(action) {
   yield put(searchLoading());
-  yield doSearch(action);
+  yield call(doSearch, action);
 }
 
 /**

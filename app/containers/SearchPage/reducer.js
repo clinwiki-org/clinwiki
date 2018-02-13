@@ -6,7 +6,6 @@
 
 import { fromJS } from 'immutable';
 import {
-  DEFAULT_ACTION,
   SEARCH_LOADED,
   CLEAR_SEARCH_DATA,
   AGG_LOADED,
@@ -32,10 +31,11 @@ const initialState = fromJS({
 
 function SearchPageReducer(state = initialState, action) {
   switch (action.type) {
-    case DEFAULT_ACTION:
-      return state;
     case CLEAR_SEARCH_DATA:
-      return initialState;
+      return initialState.set('searchQuery', state.get('searchQuery'))
+                         .setIn(['params', 'sorted'], state.getIn(['params', 'sorted']))
+                         .set('aggs', state.get('aggs'))
+                         .set('aggFilters', state.get('aggFilters'));
     case SEARCH_LOADING:
       return state.set('loading', true).set('data', fromJS([]));
     case SEARCH_LOADED:
