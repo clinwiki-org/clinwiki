@@ -64,7 +64,14 @@ module SearchHelper
 
     new_agg_filters = params.fetch(:aggFilters, {})
     if !new_agg_filters.empty?
-      where = Hash[new_agg_filters.map{|key, val| [key, { all: val }] }.reject{|x| x[1][:all].nil?}]
+      where = {_or: []}
+      new_agg_filters.each do |key, vals|
+        unless vals.nil? || vals.empty?
+          vals.each do |val|
+            where[:_or] << {key => val}
+          end
+        end
+      end
     else
       where = Hash[agg_filters.map{|key, val|
         [key, val]
@@ -81,10 +88,11 @@ module SearchHelper
         }
       end
     end
+    p where
     where
   end
 
-  DESC_TO_SYM = { false => :asc, true => :desc }
+  DESC_TO_SYM = { true => :asc, true => :desc }
   ORDERING_MAP = { "title" => "brief_title" }
 
   # Transforms ordering params from datatables to what's expected by searchkick
