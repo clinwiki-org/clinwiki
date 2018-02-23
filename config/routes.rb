@@ -8,15 +8,19 @@ Rails.application.routes.draw do
     get 'pages/about'
     get 'pages/contact'
 
-    devise_for :users, :controllers => {sessions: 'sessions', registrations: 'registrations'},
+    devise_for :users, :controllers => {sessions: 'sessions',
+                                        registrations: 'registrations',
+                                        passwords: 'cwpasswords'},
                        :defaults => { format: 'json'} do
       get '/users/sign_out' => 'sessions#destroy'
+      patch "/users/password", to: "cwpasswords#reset", defaults: { format: 'html' }
     end
 
     get "/user/exists", to: "application#user_exists", defaults: { format: 'json' }
 
     post "/studies/search/json", to: "studies#search", as: :empty_search_json
     post "/studies/json", to: "studies#index"
+    get "/studies/fields", to: "studies#fields"
     post "/studies/search/:q/json", to: "studies#search", as: :studies_search_json
     post "/studies/agg_buckets", to: "studies#agg_buckets", defaults: { format: 'json' }
     get "/studies/:study_id/json", to: "studies#json"

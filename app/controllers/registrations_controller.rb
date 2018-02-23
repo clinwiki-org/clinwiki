@@ -8,7 +8,8 @@ class RegistrationsController < Devise::RegistrationsController
     resource.update_without_password(
       first_name: params[:first_name],
       last_name: params[:last_name],
-      default_query_string: params[:default_query_string]
+      default_query_string: params[:default_query_string],
+      search_result_columns: params[:search_result_columns],
     )
   end
 

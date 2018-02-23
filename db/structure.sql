@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.2
--- Dumped by pg_dump version 9.6.2
+-- Dumped from database version 10.1
+-- Dumped by pg_dump version 10.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -226,7 +226,8 @@ CREATE TABLE users (
     last_sign_in_ip character varying,
     first_name character varying,
     last_name character varying,
-    default_query_string character varying
+    default_query_string character varying,
+    search_result_columns json
 );
 
 
@@ -545,4 +546,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170703121626');
 INSERT INTO schema_migrations (version) VALUES ('20170703122024');
 
 INSERT INTO schema_migrations (version) VALUES ('20170717233013');
+
+INSERT INTO schema_migrations (version) VALUES ('20180209220605');
 

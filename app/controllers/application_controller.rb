@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
         first_name: current_user.first_name,
         last_name: current_user.last_name,
         default_query_string: current_user.default_query_string,
+        search_result_columns: current_user.search_result_columns,
       }
     else
       render json: { loggedIn: false }

@@ -36,13 +36,17 @@ module SearchHelper
   # @param [Hash] result a searchkick raw elasticsearch result
   # @return [Hash] the expected format for the response
   def study_result_to_json(result)
+    # todo: allow for requested keys here
+    if params["selectedColumns"]
+      return Hash[params["selectedColumns"].map{|col| [col.to_sym, result[col.to_sym]]}]
+    end
     response = {
       nct_id: result[:nct_id],
-      "Overall Rating" => result[:average_rating],
+      average_rating: result[:average_rating],
       title: result[:brief_title],
-      status: result[:overall_status],
-      started: result[:start_date],
-      completed: result[:completion_date],
+      overall_status: result[:overall_status],
+      start_date: result[:start_date],
+      completion_date: result[:completion_date],
     }
     if result.has_key?(:rating_dimensions)
       response = response.merge(Hash[result[:rating_dimensions].map{|dim| [dim, result[dim]]}])
@@ -57,9 +61,22 @@ module SearchHelper
     if agg_filters.is_a?(String)
       agg_filters = JSON.parse(agg_filters)
     end
-    where = Hash[agg_filters.map{|key, val|
-      [key, val]
-    }.reject{|x| x[1].empty? }.map{|x| [x[0], x[1].keys]}]
+
+    new_agg_filters = params.fetch(:aggFilters, {})
+    if !new_agg_filters.empty?
+      where = {_or: []}
+      new_agg_filters.each do |key, vals|
+        unless vals.nil? || vals.empty?
+          vals.each do |val|
+            where[:_or] << {key => val}
+          end
+        end
+      end
+    else
+      where = Hash[agg_filters.map{|key, val|
+        [key, val]
+      }.reject{|x| x[1].empty? }.map{|x| [x[0], x[1].keys]}]
+    end
 
     ["start_date", "completion_date"].each do |key|
       if where.has_key?(key)
@@ -71,8 +88,12 @@ module SearchHelper
         }
       end
     end
+    p where
     where
   end
+
+  DESC_TO_SYM = { true => :asc, true => :desc }
+  ORDERING_MAP = { "title" => "brief_title" }
 
   # Transforms ordering params from datatables to what's expected by searchkick
   # @return [Hash]
@@ -81,6 +102,10 @@ module SearchHelper
       Hash[params[:order].values.map{ |ordering|
         [COLUMNS_TO_ORDER_FIELD[ordering["column"].to_i], ordering["dir"].to_sym]
       }]
+    elsif params[:sorted]
+      Hash[params[:sorted].map{ |ordering|
+        [ORDERING_MAP.fetch(ordering["id"], ordering["id"]), DESC_TO_SYM[ordering["desc"]]]
+      }]
     elsif params[:sort]
       params[:sort]
     else
@@ -88,18 +113,30 @@ module SearchHelper
     end
   end
 
+  def get_page_params
+    if params.has_key?(:page) && params.has_key?(:pageSize)
+      {
+        page: params[:page] + 1,
+        per_page: params[:pageSize],
+      }
+    else
+      {
+        page: params[:start] ? (params[:start].to_i / params[:length].to_i).floor + 1 : 1,
+        per_page: params[:length],
+      }
+    end
+  end
+
   # Transforms controller params into query args for a search
   # @return [Hash]
   def query_args
-    {
-      page: params[:start] ? (params[:start].to_i / params[:length].to_i).floor + 1 : 1,
-      per_page: params[:length],
+    get_page_params.merge({
       load: false,
       order: ordering,
       aggs: enabled_aggs,
       where: agg_where,
-      smart_aggs: false
-    }
+      smart_aggs: false,
+    })
   end
 
   # @return [Hash]
