@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
-import { Button, Table } from 'react-bootstrap';
+import { Grid, Button, Table } from 'react-bootstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -99,7 +99,7 @@ export class CrowdSection extends React.Component { // eslint-disable-line react
     }
 
     return (
-      <div>
+      <Grid>
         <Helmet>
           <title>Crowd Annotations</title>
         </Helmet>
@@ -178,7 +178,7 @@ export class CrowdSection extends React.Component { // eslint-disable-line react
               </tr>}
           </tbody>
         </Table>
-      </div>
+      </Grid>
     );
   }
 }

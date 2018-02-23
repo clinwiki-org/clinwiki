@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { Row, Col, Table, FormGroup, FormControl, Form, Button } from 'react-bootstrap';
+import { Grid, Row, Col, Table, FormGroup, FormControl, Form, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 
 import LoadingPane from 'components/LoadingPane';
@@ -66,9 +66,9 @@ class TagsSection extends React.Component { // eslint-disable-line react/prefer-
     } else {
       tagList = tags.map((tag) => (
         <tr key={tag}>
-          <td>
+          <th>
             {tag}
-          </td>
+          </th>
           <td className="remove-col">
             <FontAwesome
               className="remove"
@@ -82,44 +82,46 @@ class TagsSection extends React.Component { // eslint-disable-line react/prefer-
     }
 
     return (
-      <TagsWrapper>
-        <Row>
-          <Col md={6}>
-            <Table condensed striped>
-              <thead>
-                <tr>
-                  <td><b>Tags</b></td>
-                  <td />
-                </tr>
-              </thead>
-              <tbody>
-                {tagList}
-              </tbody>
-            </Table>
-          </Col>
-          <Col md={3} mdOffset={3}>
-            <Form pullRight inline onSubmit={this.onSubmit} className="tagInput pull-right">
-              <FormGroup controlId="formInlineTag">
-                <FormControl
-                  type="text"
-                  inputRef={(ref) => { this.textInput = ref; }}
-                  onFocus={this.onFocus}
-                  onChange={this.changeNewTag}
-                  onKeyPress={(e) => {
-                    if (e.charCode === 13) {
-                      this.onTagSubmit(e);
-                    }
-                  }}
-                  placeholder={'add a tag'}
-                />
-                <Button type="submit" onClick={(e) => this.onTagSubmit(e)}>
-                  Add Tag
-                </Button>
-              </FormGroup>
-            </Form>
-          </Col>
-        </Row>
-      </TagsWrapper>
+      <Grid>
+        <TagsWrapper>
+          <Row>
+            <Col md={6}>
+              <Table condensed striped>
+                <thead>
+                  <tr>
+                    <th>Tags</th>
+                    <td />
+                  </tr>
+                </thead>
+                <tbody>
+                  {tagList}
+                </tbody>
+              </Table>
+            </Col>
+            <Col md={3} mdOffset={3}>
+              <Form pullRight inline onSubmit={this.onSubmit} className="tagInput pull-right">
+                <FormGroup controlId="formInlineTag">
+                  <FormControl
+                    type="text"
+                    inputRef={(ref) => { this.textInput = ref; }}
+                    onFocus={this.onFocus}
+                    onChange={this.changeNewTag}
+                    onKeyPress={(e) => {
+                      if (e.charCode === 13) {
+                        this.onTagSubmit(e);
+                      }
+                    }}
+                    placeholder={'add a tag'}
+                  />
+                  <Button type="submit" onClick={(e) => this.onTagSubmit(e)}>
+                    Add Tag
+                  </Button>
+                </FormGroup>
+              </Form>
+            </Col>
+          </Row>
+        </TagsWrapper>
+      </Grid>
     );
   }
 }

@@ -27,71 +27,73 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
       body = <h1>No Reviews!</h1>;
     } else {
       body = (
-        <Table striped >
-          <tbody>
-            {this.props.reviews.map((review) => (
-              <tr key={review.review.id}>
-                <td>
-                  <Row style={{ marginBottom: '10px' }}>
-                    <Col md={8}>
-                      <b>{this.getName(review.user)}</b>
-                      <br />
-                    </Col>
-                    <Col md={4} className="text-right">
-                      <small>
-                        {new Date(review.review.created_at).toLocaleDateString('en-US')}
-                      </small>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={9}>
-                      <div
-                        /* eslint-disable */
-                        dangerouslySetInnerHTML={{
-                          __html: review.review.text_html,
-                        }}
-                        /* eslint-enable */
-                      />
-                    </Col>
-                    <Col md={3} style={{ textAlign: 'right' }}>
-                      {this.props.AuthHeader.user.loggedIn && review.user.id === this.props.AuthHeader.user.id ?
-                        <ButtonGroup>
-                          <Button
-                            id={`edit-review-${review.review.id}`}
-                            onClick={() => this.props.history.push(`/review/${this.props.nctId}/edit/${review.review.id}`)}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            id={`delete-review-${review.review.id}`}
-                            onClick={() =>
-                              this.props.deleteReview(review.review.nct_id, review.review.id)}
-                          >
-                            Delete
-                          </Button>
-                        </ButtonGroup>
-                        : null }
-                    </Col>
-                  </Row>
-                  <Row style={{ marginTop: '10px' }}>
-                    {Object.keys(review.review.stars).map((field) => (
-                      <div key={field}>
-                        <Col md={2}>
-                          <ReactStars
-                            count={5}
-                            edit={false}
-                            value={review.review.stars[field]}
-                          />
-                          <Label>{field}</Label>
-                        </Col>
-                      </div>
-                    ))}
-                  </Row>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <Col md={12}>
+          <Table striped >
+            <tbody>
+              {this.props.reviews.map((review) => (
+                <tr key={review.review.id}>
+                  <td>
+                    <Row style={{ marginBottom: '10px' }}>
+                      <Col md={8}>
+                        <b>{this.getName(review.user)}</b>
+                        <br />
+                      </Col>
+                      <Col md={4} className="text-right">
+                        <small>
+                          {new Date(review.review.created_at).toLocaleDateString('en-US')}
+                        </small>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={9}>
+                        <div
+                          /* eslint-disable */
+                          dangerouslySetInnerHTML={{
+                            __html: review.review.text_html,
+                          }}
+                          /* eslint-enable */
+                        />
+                      </Col>
+                      <Col md={3} style={{ textAlign: 'right' }}>
+                        {this.props.AuthHeader.user.loggedIn && review.user.id === this.props.AuthHeader.user.id ?
+                          <ButtonGroup>
+                            <Button
+                              id={`edit-review-${review.review.id}`}
+                              onClick={() => this.props.history.push(`/review/${this.props.nctId}/edit/${review.review.id}`)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              id={`delete-review-${review.review.id}`}
+                              onClick={() =>
+                                this.props.deleteReview(review.review.nct_id, review.review.id)}
+                            >
+                              Delete
+                            </Button>
+                          </ButtonGroup>
+                          : null }
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: '10px' }}>
+                      {Object.keys(review.review.stars).map((field) => (
+                        <div key={field}>
+                          <Col md={2}>
+                            <ReactStars
+                              count={5}
+                              edit={false}
+                              value={review.review.stars[field]}
+                            />
+                            <Label>{field}</Label>
+                          </Col>
+                        </div>
+                      ))}
+                    </Row>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Col>
       );
     }
 

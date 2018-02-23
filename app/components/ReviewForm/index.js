@@ -36,25 +36,30 @@ class ReviewForm extends React.Component {
     this.removeRating = this.removeRating.bind(this);
     this.removeAddedRating = this.removeAddedRating.bind(this);
     this.onStarFieldChange = this.onStarFieldChange.bind(this);
-    this.stars = Object.assign(DEFAULT_STARS, this.props.stars);
     this.review = this.props.review;
+    this.state = Object.assign({}, { stars: this.props.stars }, DEFAULT_STATE);
   }
-
-  state = Object.assign({}, DEFAULT_STATE);
 
   componentWillMount() {
     this.setState({
+      ...this.state,
       value: RichTextEditor.createValueFromString(this.review || CREATE_REVIEW, 'markdown'),
     });
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.review !== nextProps.review) {
-      this.state.value = RichTextEditor.createValueFromString(nextProps.review, 'markdown');
+      this.setState({
+        ...this.state,
+        value: RichTextEditor.createValueFromString(nextProps.review, 'markdown'),
+      });
       this.forceUpdate();
     }
     if (this.props.stars !== nextProps.stars) {
-      this.stars = Object.assign(DEFAULT_STARS, nextProps.stars);
+      this.setState({
+        ...this.state,
+        stars: Object.assign(DEFAULT_STARS, nextProps.stars),
+      });
     }
   }
 
@@ -80,21 +85,44 @@ class ReviewForm extends React.Component {
 
   onStarFieldChange(i, e) {
     e.persist();
-    this.state.starFields[i] = e.target.value;
-    this.state.starFieldsEditable[i] = this.state.starFields[i] !== '';
+    this.setState({
+      ...this.state,
+      starFields: {
+        ...this.state.starFields,
+        [i]: e.target.value,
+      },
+      starFieldsEditable: {
+        ...this.state.starFieldsEditable,
+        [i]: e.target.value !== '',
+      },
+    });
     this.forceUpdate();
   }
 
   onStarChange(field, e) {
-    this.stars[field] = e;
+    this.setState({
+      ...this.state,
+      stars: {
+        ...this.state.stars,
+        [field]: e,
+      },
+    });
   }
 
   onAddingStarChange(i, e) {
     this.state.addingStars[i] = e;
+    this.setState({
+      ...this.state,
+      addingStars: {
+        ...this.state.addingStars,
+        [i]: e,
+      },
+    });
   }
 
   onReviewChange(value) {
     this.setState({
+      ...this.state,
       value,
       changed: true,
     });
@@ -104,10 +132,10 @@ class ReviewForm extends React.Component {
     e.persist();
     e.preventDefault();
     const stars = Object.keys(this.state.addingStars).reduce((starAcc, i) =>
-      starAcc.set(this.state.starFields[i], this.state.addingStars[i]), fromJS(this.stars)).toJS();
+      starAcc.set(this.state.starFields[i], this.state.addingStars[i]), fromJS(this.state.stars)).toJS();
     this.props.submitReview(this.props.nctId, this.state.value.toString('markdown'), stars, this.props.reviewId);
-    this.state = Object.assign(DEFAULT_STATE,
-      { value: RichTextEditor.createValueFromString(CREATE_REVIEW, 'markdown') });
+    this.setState(Object.assign(DEFAULT_STATE,
+      { value: RichTextEditor.createValueFromString(CREATE_REVIEW, 'markdown') }));
 
     // this is a dumb workaround but it fixing this state bug would
     // require a lot more work with sagas than the star bug in a new review would merit
@@ -123,21 +151,32 @@ class ReviewForm extends React.Component {
   }
 
   addRating() {
-    this.state.addingRows += 1;
-    this.state.starFieldsEditable[this.state.addingRows - 1] = false;
+    this.setState({
+      ...this.state,
+      addingRows: this.state.addingRows + 1,
+      starFieldsEditable: {
+        ...this.state.starFieldsEditable,
+        [this.state.starFieldsEditable[this.state.addingRows]]: false,
+      },
+    });
     this.forceUpdate();
   }
 
   removeRating(field) {
-    delete this.stars[field];
+    this.setState({
+      ...this.state,
+      stars: _.omitBy(this.state.stars, (key) => key === field),
+    });
     this.forceUpdate();
   }
 
   removeAddedRating(i) {
-    delete this.state.starFields[i];
-    delete this.state.addingStars[i];
-
-    this.state.addingRows -= 1;
+    this.setState({
+      ...this.state,
+      addingRows: this.state.addingRows - 1,
+      starFields: _.omitBy(this.state.starFields, (x) => x === i),
+      addingStars: _.omitBy(this.state.addingStars, (x) => x === i),
+    });
     this.forceUpdate();
   }
 
@@ -161,7 +200,7 @@ class ReviewForm extends React.Component {
                   <ReactStars
                     count={5}
                     half={false}  // can't do half-star ratings with current db schema
-                    value={this.props.stars[field]}
+                    value={this.state.stars[field]}
                     onChange={(e) => this.onStarChange(field, e)}
                   />
                 </Col>
@@ -181,7 +220,7 @@ class ReviewForm extends React.Component {
               </Row>
             ))}
             {_.range(this.state.addingRows).map((i) => (
-              <Row className="rating-row" key={i}>
+              <Row className={`rating-row rating-row-${i}`} key={i}>
                 <Col md={4}>
                   <FormControl
                     type="text"

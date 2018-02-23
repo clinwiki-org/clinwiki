@@ -72,27 +72,27 @@ class SummaryInfo extends React.Component { // eslint-disable-line react/prefer-
                   <Table striped bordered condensed>
                     <tbody>
                       <tr>
-                        <td>NCT ID</td>
+                        <th>NCT ID</th>
                         <td>{this.props.study.nct_id}</td>
                       </tr>
                       <tr>
-                        <td>Type</td>
+                        <th>Type</th>
                         <td>{this.props.study.study_type}</td>
                       </tr>
                       <tr>
-                        <td>Status</td>
+                        <th>Status</th>
                         <td>{this.props.study.overall_status}</td>
                       </tr>
                       <tr>
-                        <td>Primary Completion Date</td>
+                        <th>Primary Completion Date</th>
                         <td>{this.props.study.primary_completion_date}</td>
                       </tr>
                       <tr>
-                        <td>Enrollment</td>
+                        <th>Enrollment</th>
                         <td>{this.props.study.enrollment}</td>
                       </tr>
                       <tr>
-                        <td>Source</td>
+                        <th>Source</th>
                         <td>{this.props.study.source}</td>
                       </tr>
                     </tbody>
