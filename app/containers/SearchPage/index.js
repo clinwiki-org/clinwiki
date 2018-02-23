@@ -69,12 +69,16 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
     this.props.actions.dataFetched(state, this.props.match);
   }
 
-  getColumns() {
+  getColumnsList() {
     let cols = ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'];
     if (_.get(this.props, 'AuthHeader.user.search_result_columns')) {
       cols = Object.keys(this.props.AuthHeader.user.search_result_columns);
     }
-    return cols.map((col) => {
+    return cols;
+  }
+
+  getColumns() {
+    return this.getColumnsList().map((col) => {
       const spec = {
         Header: <SearchFieldName field={col} />,
         accessor: col,
@@ -89,6 +93,13 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
       }
       return spec;
     });
+  }
+
+  getDefaultSorted() {
+    if (_.includes(this.getColumnsList(), 'average_rating')) {
+      return [{ id: 'average_rating', desc: true }];
+    }
+    return [];
   }
 
   tdProps(__, rowInfo) {
@@ -132,8 +143,10 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
                     data={this.props.SearchPage.data}
                     pages={this.props.SearchPage.pages}
                     loading={this.props.SearchPage.loading}
-                    pageSize={this.props.SearchPage.params.pageSize}
+                    defaultPageSize={this.props.SearchPage.params.pageSize}
                     getTdProps={this.tdProps}
+                    defaultSorted={this.getDefaultSorted()}
+                    defaultSortDesc
                   />
                 </Col>
               </Row>

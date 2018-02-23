@@ -214,6 +214,7 @@ export default function* doAll() {
   yield takeEvery(STUDY_VIEWED, loadDefault);
   yield takeEvery(STUDY_VIEWED, loadStudy);
   yield takeEvery(RELOAD_STUDY_ACTION, reloadStudy);
+  yield takeEvery(SET_WIKI_OVERRIDE_ACTION, reloadStudy);
   yield takeEvery(TAG_SUBMIT_ACTION, submitTag);
   yield takeEvery(TAG_REMOVE_ACTION, removeTag);
   yield takeEvery(WRITE_REVIEW_ACTION, writeReview);

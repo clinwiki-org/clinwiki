@@ -14,7 +14,8 @@ import styled from 'styled-components';
 // import messages from './messages';
 
 const ReviewSummaryWrapper = styled.div`
-  margin: 0 auto;
+  margin: 0 0 0 auto;
+  padding-right: 15px;
   width: max-content;
   text-align: center;
 `;
@@ -30,7 +31,7 @@ function ReviewSummary(props) {
       <ReactStars
         count={5}
         edit={false}
-        value={props.average_rating}
+        value={Math.round(parseFloat(props.average_rating))}
       />
       <small><i>{props.reviews_length} Reviews</i></small>
     </ReviewSummaryWrapper>
@@ -38,7 +39,7 @@ function ReviewSummary(props) {
 }
 
 ReviewSummary.propTypes = {
-  average_rating: PropTypes.number,
+  average_rating: PropTypes.string,
   reviews_length: PropTypes.number,
 };
 

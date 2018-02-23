@@ -4,6 +4,7 @@
  *
  */
 
+import _ from 'lodash';
 import { fromJS } from 'immutable';
 import {
   SEARCH_LOADED,
@@ -42,7 +43,7 @@ function SearchPageReducer(state = initialState, action) {
       return state.set('searchQuery', action.data.searchQuery)
                   .set('params', fromJS(action.data.state))
                   .set('recordsTotal', action.data.recordsTotal)
-                  .set('pages', Math.ceil(action.data.recordsTotal / state.getIn(['params', 'pageSize'])))
+                  .set('pages', Math.ceil(action.data.recordsTotal / (_.get(action, 'data.state.pageSize') || 25)))
                   .set('data', fromJS(action.data.data))
                   .set('aggs', fromJS(action.data.aggs))
                   .set('loading', false);

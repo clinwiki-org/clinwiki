@@ -7325,7 +7325,13 @@ react-test-renderer@^16.0.0-0, react-test-renderer@^16.2.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react-transition-group@2.2.1, react-transition-group@^2.0.0, react-transition-group@^2.2.0:
+react-toggle@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/react-toggle/-/react-toggle-4.0.2.tgz#77f487860efb87fafd197672a2db8c885be1440f"
+  dependencies:
+    classnames "^2.2.5"
+
+react-transition-group@^2.0.0, react-transition-group@^2.2.0, react-transition-group@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.2.1.tgz#e9fb677b79e6455fd391b03823afe84849df4a10"
   dependencies:

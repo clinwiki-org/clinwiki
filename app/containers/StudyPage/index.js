@@ -13,7 +13,8 @@ import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
-import { Nav, NavItem, PageHeader, Row, Col } from 'react-bootstrap';
+import { Nav, NavItem, Row, Col } from 'react-bootstrap';
+import 'react-toggle/style.css';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -31,11 +32,17 @@ import ReviewSection from './ReviewSection/Loadable';
 import NewReviewSection from './NewReviewSection/Loadable';
 import ReviewsSection from './ReviewsSection/Loadable';
 import GenericStudySection from './GenericStudySection';
+import SummaryInfo from './SummaryInfo/Loadable';
+import WikiToggle from './WikiToggle';
 
 
 const StudyWrapper = styled.div`
   display: flex;
   align-items: stretch;
+
+  .table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #eee;
+  }
 
   #study-sidebar {
     padding-top: 0px;
@@ -143,9 +150,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
     if (_.get(this.props.StudyPage, 'study.title')) {
       inner = (
         <div id="study-main">
-          <PageHeader>
-            {this.props.StudyPage.study.title}
-          </PageHeader>
+          <SummaryInfo study={_.get(this.props, 'StudyPage.study')} />
           <Switch>
             <Route exact path="/study/:nctId" component={WikiSection} />
             {this.newReviewRoute()}
@@ -172,6 +177,11 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
             <ReviewSummary
               average_rating={_.get(this.props, 'StudyPage.study.average_rating')}
               reviews_length={_.get(this.props, 'StudyPage.study.reviews_length')}
+            />
+            <WikiToggle
+              wikiOverride={_.get(this.props, 'StudyPage.wikiOverride')}
+              nctId={_.get(this.props, 'StudyPage.study.nct_id')}
+              onWikiOverride={this.props.actions.onWikiOverrideAction}
             />
             <Nav bsStyle="pills" stacked activeKey={0} onSelect={this.onNavItemSelect}>
               {navItems}
