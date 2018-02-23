@@ -43,7 +43,7 @@ class ReviewForm extends React.Component {
   componentWillMount() {
     this.setState({
       ...this.state,
-      value: RichTextEditor.createValueFromString(this.review || CREATE_REVIEW, 'markdown'),
+      value: RichTextEditor.createValueFromString(this.props.review || CREATE_REVIEW, 'markdown'),
     });
   }
 

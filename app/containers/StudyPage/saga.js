@@ -220,6 +220,8 @@ export default function* doAll() {
   yield takeEvery(WRITE_REVIEW_ACTION, writeReview);
   yield takeEvery(REVIEW_SUBMIT_ACTION, submitReview);
   yield takeEvery(REVIEW_DELETE_ACTION, deleteReview);
+  yield takeEvery(GET_REVIEW_ACTION, getReview);
+  yield takeEvery(REVIEW_UPDATE_ACTION, updateReview);
   yield all([
     reloadStudySaga,
     tagsSubmitSaga,

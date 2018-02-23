@@ -1,6 +1,6 @@
 /**
  *
- * Asynchronously loads the component for ReviewSection
+ * Asynchronously loads the component for NewReviewSection
  *
  */
 

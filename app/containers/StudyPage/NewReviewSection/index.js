@@ -6,7 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Row } from 'react-bootstrap';
+import { Grid, Row, Col } from 'react-bootstrap';
 import ReviewForm from 'components/ReviewForm';
 
 class NewReviewSection extends React.Component { // eslint-disable-line react/prefer-stateless-function
@@ -14,11 +14,13 @@ class NewReviewSection extends React.Component { // eslint-disable-line react/pr
     return (
       <Grid>
         <Row>
-          <ReviewForm
-            nctId={this.props.nctId}
-            loggedIn={this.props.loggedIn}
-            submitReview={this.props.submitReview}
-          />
+          <Col md={12}>
+            <ReviewForm
+              nctId={this.props.nctId}
+              loggedIn={this.props.loggedIn}
+              submitReview={this.props.submitReview}
+            />
+          </Col>
         </Row>
       </Grid>
     );

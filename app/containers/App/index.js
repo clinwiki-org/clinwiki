@@ -41,6 +41,7 @@ function App() {
           <Route exact path="/search" component={SearchPage} />
           <Route path="/search/:searchQuery" component={SearchPage} />
           <Route path="/profile" component={ProfilePage} />
+          <Route path="/study/:nctId/review/:reviewId/edit" component={StudyPage} />
           <Route path="/study/:nctId" component={StudyPage} />
           <Route path="/reset-password" component={LoginSignupPage} />
           <Route path="/login-signup" component={LoginSignupPage} />

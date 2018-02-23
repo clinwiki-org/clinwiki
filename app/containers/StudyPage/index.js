@@ -28,8 +28,8 @@ import * as actions from './actions';
 import WikiSection from './WikiSection/Loadable';
 import CrowdSection from './CrowdSection/Loadable';
 import TagsSection from './TagsSection/Loadable';
-import ReviewSection from './ReviewSection/Loadable';
 import NewReviewSection from './NewReviewSection/Loadable';
+import EditReviewSection from './EditReviewSection/Loadable';
 import ReviewsSection from './ReviewsSection/Loadable';
 import GenericStudySection from './GenericStudySection';
 import SummaryInfo from './SummaryInfo/Loadable';
@@ -65,6 +65,9 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
 
   componentDidMount() {
     this.props.actions.studyViewed(this.props.match.params.nctId);
+    if (this.props.match.params.reviewId) {
+      this.props.actions.getReviewAction(this.props.match.params.reviewId);
+    }
   }
 
   onNavItemSelect(key) {
@@ -139,6 +142,22 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
     );
   }
 
+  editReviewRoute() {
+    return (
+      <Route
+        path="/study/:nctId/review/:reviewId/edit"
+        exact
+        render={() => (
+          <EditReviewSection
+            nctId={_.get(this.props.StudyPage, 'study.nct_id')}
+            updateReview={this.props.actions.updateReview}
+            loggedIn={_.get(this.props.AuthHeader, 'user.loggedIn')}
+            review={_.get(this.props.StudyPage, 'review')}
+          />)}
+      />
+    );
+  }
+
   render() {
     const navItems = Object.keys(this.defaultSections).map((x) => (
       <NavItem eventKey={x} key={x}>
@@ -153,9 +172,9 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
           <SummaryInfo study={_.get(this.props, 'StudyPage.study')} />
           <Switch>
             <Route exact path="/study/:nctId" component={WikiSection} />
+            {this.editReviewRoute()}
             {this.newReviewRoute()}
             {this.reviewsRoute()}
-            <Route path="/study/:nctId/review" component={ReviewSection} />
             <Route path="/study/:nctId/crowd" component={CrowdSection} />
             {this.genericRoute('Descriptive')}
             {this.genericRoute('Administrative')}

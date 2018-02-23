@@ -98,7 +98,7 @@ export const submitReview = (nctId, review, stars) => ({
   stars,
 });
 
-export const updateReview = (nctId, reviewId, review, stars) => ({
+export const updateReview = (nctId, review, stars, reviewId) => ({
   type: REVIEW_UPDATE_ACTION,
   nctId,
   reviewId,

@@ -59,7 +59,7 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
                           <ButtonGroup>
                             <Button
                               id={`edit-review-${review.review.id}`}
-                              onClick={() => this.props.history.push(`/review/${this.props.nctId}/edit/${review.review.id}`)}
+                              onClick={() => this.props.history.push(`/study/${this.props.nctId}/review/${review.review.id}/edit`)}
                             >
                               Edit
                             </Button>
