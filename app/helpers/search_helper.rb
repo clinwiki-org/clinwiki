@@ -92,7 +92,7 @@ module SearchHelper
     where
   end
 
-  DESC_TO_SYM = { true => :asc, true => :desc }
+  DESC_TO_SYM = { true => :asc, false => :desc }
   ORDERING_MAP = { "title" => "brief_title" }
 
   # Transforms ordering params from datatables to what's expected by searchkick
