@@ -9,6 +9,7 @@ module SearchHelper
   # Retrieves search params from request, performs the search, transforms the result to a response hash
   # @return [Hash] the JSON response
   def search_studies
+    p query_args
     @studies = Study.search(search_query, query_args)
     return {
       :recordsTotal => @studies.total_entries,
@@ -64,13 +65,15 @@ module SearchHelper
 
     new_agg_filters = params.fetch(:aggFilters, {})
     if !new_agg_filters.empty?
-      where = {_or: []}
+      where = {_and: []}
       new_agg_filters.each do |key, vals|
+        conjs = []
         unless vals.nil? || vals.empty?
           vals.each do |val|
-            where[:_or] << {key => val}
+            conjs << {key => val}
           end
         end
+        where[:_and] << {:_or => conjs} unless conjs.empty?
       end
     else
       where = Hash[agg_filters.map{|key, val|
@@ -88,7 +91,6 @@ module SearchHelper
         }
       end
     end
-    p where
     where
   end
 
