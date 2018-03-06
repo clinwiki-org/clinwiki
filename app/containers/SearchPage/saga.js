@@ -67,7 +67,7 @@ export function* doSearch(data) {
     searchQuery = searchPage.searchQuery;
   }
   if (searchQuery !== undefined) {
-    url = `/studies/search/${searchQuery}`;
+    url = '/studies/search';
   } else {
     url = '/studies';
   }
