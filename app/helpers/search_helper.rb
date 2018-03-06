@@ -9,15 +9,37 @@ module SearchHelper
   # Retrieves search params from request, performs the search, transforms the result to a response hash
   # @return [Hash] the JSON response
   def search_studies
-    p query_args
-    @studies = Study.search(search_query, query_args)
-    return {
-      :recordsTotal => @studies.total_entries,
-      :data => @studies.map{|s| study_result_to_json(s)},
-      :aggs => @studies.aggs
+    if search_query =~ /\.analyzed:/
+      # supports lucene-style query
+      result = Searchkick.client.search(lucene_params)
+      return {
+        recordsTotal: result['hits']['total'],
+        data: result['hits']['hits'].map{|x| x['_source']}
+      }
+    else
+      @studies = Study.search(search_query, query_args)
+      return {
+        :recordsTotal => @studies.total_entries,
+        :data => @studies.map{|s| study_result_to_json(s)},
+        :aggs => @studies.aggs
+      }
+    end
+  end
+
+  # transforms qargs in searchkick to lucene params
+  # @return [Hash]
+  def lucene_params
+    qargs = query_args
+    {
+      index: Study.search_index.name,
+      q: "_type:study AND #{search_query}",
+      sort: qargs[:order].to_a.map{|a| a.join(':')}.join(','),
+      from: (qargs[:page] - 1) * qargs[:per_page],
+      size: qargs[:page] * qargs[:per_page]
     }
   end
 
+  # @return [Hash]
   def get_agg_buckets
     qargs = query_args
     agg = params["agg"]
