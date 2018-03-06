@@ -1,8 +1,9 @@
-// import { fromJS } from 'immutable';
-// import { selectProfilePageDomain } from '../selectors';
+import { fromJS } from 'immutable';
+import { selectProfilePageDomain } from '../selectors';
+import { initialState } from '../reducer';
 
 describe('selectProfilePageDomain', () => {
   it('Expect to have unit tests specified', () => {
-    expect(true).toEqual(false);
+    expect(Object.keys(selectProfilePageDomain(fromJS({ profilePage: initialState })).toJS())).toEqual(['fields']);
   });
 });

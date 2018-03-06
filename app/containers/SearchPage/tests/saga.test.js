@@ -163,14 +163,14 @@ describe('doSearch', () => {
       describe('with a successful request', () => {
         it('gets params, posts to the search endpoint, and brodcasts the search result action', () => {
           shouldGetParams(generator, searchPage, action, searchPage);
-          shouldPostParams(generator, '/studies/search/foo/json', { any: 'params' });
+          shouldPostParams(generator, '/studies/search/json', { any: 'params' });
           shouldLoadSearch(generator, { data: { some: 'data' } }, { searchQuery: 'foo', some: 'data', state: { some: 'state' } });
         });
       });
       describe('with an unsuccessful request', () => {
         it('gets params, posts to search endpoint, and captures error', () => {
           shouldGetParams(generator, searchPage, action, searchPage);
-          shouldPostParams(generator, '/studies/search/foo/json', { any: 'params' });
+          shouldPostParams(generator, '/studies/search/json', { any: 'params' });
           shouldBroadcastError(generator);
         });
       });
@@ -188,14 +188,14 @@ describe('doSearch', () => {
       describe('with a successful request', () => {
         it('gets params, posts to the search endpoint, and brodcasts the search result action', () => {
           shouldGetParams(generator, searchPage, action, searchPage);
-          shouldPostParams(generator, '/studies/search/foo/json', { any: 'params' });
+          shouldPostParams(generator, '/studies/search/json', { any: 'params' });
           shouldLoadSearch(generator, { data: { some: 'data' } }, { searchQuery: 'foo', some: 'data', state: { some: 'state' } });
         });
       });
       describe('with an unsuccessful request', () => {
         it('gets params, posts to search endpoint, and captures error', () => {
           shouldGetParams(generator, searchPage, action, searchPage);
-          shouldPostParams(generator, '/studies/search/foo/json', { any: 'params' });
+          shouldPostParams(generator, '/studies/search/json', { any: 'params' });
           shouldBroadcastError(generator);
         });
       });
@@ -212,14 +212,14 @@ describe('doSearch', () => {
         describe('with a successful request', () => {
           it('gets params, posts to the search endpoint, and brodcasts the search result action', () => {
             shouldGetParams(generator, searchPage, action, searchPage);
-            shouldPostParams(generator, '/studies/search/foo/json', { any: 'params' });
+            shouldPostParams(generator, '/studies/search/json', { any: 'params' });
             shouldLoadSearch(generator, { data: { some: 'data' } }, { searchQuery: 'foo', some: 'data', state: { some: 'state' } });
           });
         });
         describe('with an unsuccessful request', () => {
           it('gets params, posts to search endpoint, and captures error', () => {
             shouldGetParams(generator, searchPage, action, searchPage);
-            shouldPostParams(generator, '/studies/search/foo/json', { any: 'params' });
+            shouldPostParams(generator, '/studies/search/json', { any: 'params' });
             shouldBroadcastError(generator);
           });
         });

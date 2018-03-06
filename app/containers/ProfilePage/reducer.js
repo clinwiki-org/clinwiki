@@ -10,7 +10,7 @@ import {
   POPULATE_COLUMN_PICKER_ACTION,
 } from './constants';
 
-const initialState = fromJS({
+export const initialState = fromJS({
   fields: [],
 });
 
