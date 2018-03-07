@@ -192,7 +192,7 @@ class ReviewForm extends React.Component {
         <Row id="study-tabs">
           <Col md={12}>
             {Object.keys(this.props.stars).map((field, i) => (
-              <Row className="rating-row" key={field}>
+              <Row className="rating-row" id={field.replace(' ', '-')} key={field}>
                 <Col md={4}>
                   <b>{field}</b>
                 </Col>
@@ -261,7 +261,7 @@ class ReviewForm extends React.Component {
             </Row>
             <Row style={{ marginTop: '10px' }}>
               <Col md={12} className="text-right">
-                <Button type="submit" onClick={this.submitReview}>
+                <Button id="submit-review" type="submit" onClick={this.submitReview}>
                   Submit
                 </Button>
               </Col>
