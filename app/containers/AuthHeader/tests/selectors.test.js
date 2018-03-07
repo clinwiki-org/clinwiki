@@ -1,8 +1,8 @@
-// import { fromJS } from 'immutable';
-// import { selectAuthHeaderDomain } from '../selectors';
+import { fromJS } from 'immutable';
+import { selectAuthHeaderDomain } from '../selectors';
 
 describe('selectAuthHeaderDomain', () => {
-  it('Expect to have unit tests specified', () => {
-    expect(true).toEqual(false);
+  it('should retrieve from authHeader domain', () => {
+    expect(selectAuthHeaderDomain(fromJS({ authHeader: 'foo' }))).toEqual('foo');
   });
 });

@@ -21,11 +21,13 @@ export default function configureStore(initialState = {}, history) {
   // Create the store with two middlewares
   // 1. sagaMiddleware: Makes redux-sagas work
   // 2. routerMiddleware: Syncs the location/URL path to the state
-  const middlewares = [
-    sagaMiddleware,
-    logger,
-    routerMiddleware(history),
-  ];
+  // 3. a redux logger (skipped during test)
+  const middlewares = [];
+  middlewares.push(sagaMiddleware);
+  if (process.env.NODE_ENV !== 'test') {
+    middlewares.push(logger);
+  }
+  middlewares.push(routerMiddleware(history));
 
   const enhancers = [
     applyMiddleware(...middlewares),
