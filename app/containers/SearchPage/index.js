@@ -47,22 +47,7 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
   constructor(props) {
     super(props);
     this.onFetchData = this.onFetchData.bind(this);
-    this.onAggViewed = this.onAggViewed.bind(this);
-    this.onAggSelected = this.onAggSelected.bind(this);
-    this.onAggRemoved = this.onAggRemoved.bind(this);
     this.tdProps = this.tdProps.bind(this);
-  }
-
-  onAggViewed(k) {
-    this.props.actions.aggViewed(k);
-  }
-
-  onAggSelected(k, v) {
-    this.props.actions.aggSelected(k, v);
-  }
-
-  onAggRemoved(k, v) {
-    this.props.actions.aggRemoved(k, v);
   }
 
   onFetchData(state) {
