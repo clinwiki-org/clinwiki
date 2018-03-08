@@ -14,9 +14,9 @@ const GenericStudySection = (props) => props.data !== undefined ? (
     <Table striped bordered condensed>
       <tbody>
         {props.data.map((item) => (
-          <tr key={item.label}>
-            <td><b>{item.label}</b></td>
-            <td>{item.value}</td>
+          <tr className="generic-item-row" key={item.label}>
+            <td className="generic-item-row-key"><b>{item.label}</b></td>
+            <td className="generic-item-row-value">{item.value}</td>
           </tr>
         ))}
       </tbody>

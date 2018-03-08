@@ -28,13 +28,13 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
     } else {
       body = (
         <Col md={12}>
-          <Table striped >
+          <Table id="reviews-table" striped >
             <tbody>
               {this.props.reviews.map((review) => (
-                <tr key={review.review.id}>
+                <tr key={review.review.id} className="review-row">
                   <td>
                     <Row style={{ marginBottom: '10px' }}>
-                      <Col md={8}>
+                      <Col md={8} className="name-of-user">
                         <b>{this.getName(review.user)}</b>
                         <br />
                       </Col>
@@ -47,6 +47,7 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
                     <Row>
                       <Col md={9}>
                         <div
+                          className="review-html"
                           /* eslint-disable */
                           dangerouslySetInnerHTML={{
                             __html: review.review.text_html,
@@ -58,12 +59,14 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
                         {this.props.AuthHeader.user.loggedIn && review.user.id === this.props.AuthHeader.user.id ?
                           <ButtonGroup>
                             <Button
+                              className="edit-review-button"
                               id={`edit-review-${review.review.id}`}
                               onClick={() => this.props.history.push(`/study/${this.props.nctId}/review/${review.review.id}/edit`)}
                             >
                               Edit
                             </Button>
                             <Button
+                              className="delete-review-button"
                               id={`delete-review-${review.review.id}`}
                               onClick={() =>
                                 this.props.deleteReview(review.review.nct_id, review.review.id)}
@@ -77,7 +80,7 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
                     <Row style={{ marginTop: '10px' }}>
                       {Object.keys(review.review.stars).map((field) => (
                         <div key={field}>
-                          <Col md={2}>
+                          <Col md={2} className={`star-rating star-rating-${field.replace(' ', '-')}`}>
                             <ReactStars
                               count={5}
                               edit={false}
@@ -102,6 +105,7 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
         <Row style={{ marginBottom: '10px' }}>
           <Col mdOffset={9} md={3}>
             <Button
+              id="write-review"
               className="pull-right"
               onClick={(e) => {
                 e.preventDefault();
