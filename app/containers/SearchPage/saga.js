@@ -45,7 +45,7 @@ export function* getParams(searchPage, data) {
   const authHeader = yield select(makeSelectAuthHeader());
   const allParams = Object.assign({}, searchPage.params, data.state);
   return {
-    q: searchPage.searchQuery,
+    q: data.searchQuery || searchPage.searchQuery,
     pageSize: allParams.pageSize,
     sorted: allParams.sorted,
     page: allParams.page,
@@ -99,9 +99,9 @@ export function* handleAgg(action) {
  * Root saga manages watcher lifecycle
  */
 export default function* loadSearch() {
-  yield takeEvery(SEARCH_CHANGED, doSearch);
   yield takeEvery(AGG_VIEWED, loadAgg);
   yield takeEvery(DATA_FETCHED, dataFetched);
   yield takeEvery(AGG_SELECTED, handleAgg);
   yield takeEvery(AGG_REMOVED, handleAgg);
+  yield takeEvery(SEARCH_CHANGED, doSearch);
 }

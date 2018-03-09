@@ -15,6 +15,7 @@ describe('<AuthHeader />', () => {
       authheader={authheader}
       searchActions={{ searchChanged }}
       history={history}
+      searchPage={{ searchQuery: 'foo' }}
     />
   );
 
@@ -30,8 +31,8 @@ describe('<AuthHeader />', () => {
   it('should render the search input', () => {
     expect(rendered.contains(
       <SearchInput
-        history={history}
         searchChanged={searchChanged}
+        query="foo"
       />
     )).toBe(true);
   });

@@ -6,7 +6,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactRouterPropTypes from 'react-router-prop-types';
 import FontAwesome from 'react-fontawesome';
 import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';
 
@@ -28,7 +27,6 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.history.push(`/search/${this.query}`);
     this.props.searchChanged(this.query);
   }
 
@@ -54,7 +52,6 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
 SearchInput.propTypes = {
   query: PropTypes.string,
   searchChanged: PropTypes.func,
-  history: ReactRouterPropTypes.history,
 };
 
 export default SearchInput;

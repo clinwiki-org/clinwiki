@@ -3,7 +3,7 @@
  * AuthHeader
  *
  */
-
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
@@ -19,6 +19,7 @@ import AuthButton from 'components/AuthButton';
 import SearchInput from 'components/SearchInput';
 
 import * as searchActions from 'containers/SearchPage/actions';
+import makeSelectSearchPage from 'containers/SearchPage/selectors';
 
 import makeSelectAuthHeader from './selectors';
 import * as actions from './actions';
@@ -45,8 +46,8 @@ export class AuthHeader extends React.Component { // eslint-disable-line react/p
         />
         <SearchInputWrapper className="pull-right">
           <SearchInput
-            history={this.props.history}
             searchChanged={this.props.searchActions.searchChanged}
+            query={_.get(this.props, 'searchPage.searchQuery')}
           />
         </SearchInputWrapper>
       </Navbar>
@@ -64,6 +65,7 @@ AuthHeader.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   authheader: makeSelectAuthHeader(),
+  searchPage: makeSelectSearchPage(),
 });
 
 function mapDispatchToProps(dispatch) {

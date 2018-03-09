@@ -8,9 +8,6 @@ import * as constants from '../constants';
 
 describe('default saga', () => {
   const generator = sagas.default();
-  it('triggers a search on search changed', () => {
-    expect(generator.next().value).toEqual(takeEvery(constants.SEARCH_CHANGED, sagas.doSearch));
-  });
   it('loads an agg on agg viewed', () => {
     expect(generator.next().value).toEqual(takeEvery(constants.AGG_VIEWED, sagas.loadAgg));
   });
@@ -22,6 +19,9 @@ describe('default saga', () => {
   });
   it('updates aggs on agg removed', () => {
     expect(generator.next().value).toEqual(takeEvery(constants.AGG_REMOVED, sagas.handleAgg));
+  });
+  it('ignores the first search_changed and reacts to each one after', () => {
+    expect(generator.next().value).toEqual(takeEvery(constants.SEARCH_CHANGED, sagas.doSearch));
   });
 });
 
@@ -101,37 +101,75 @@ describe('loadAgg', () => {
     });
   });
   describe('getParams', () => {
-    const searchPage = {
-      searchQuery: 'foo',
-      params: {
-        pageSize: 0,
-        sorted: ['nct_id'],
-        page: 1,
-      },
-      aggFilters: { foo: ['bar'] },
-    };
-    const data = {
-      state: {
-        pageSize: 10,
-        sorted: ['nct_id', 'title'],
-        page: 2,
-      },
-    };
-    const authheader = {
-      user: { search_result_columns: { nct_id: 1, title: 1 } },
-    };
-    const generator = sagas.getParams(searchPage, data);
-    it('retrieves user data from the auth header', () => {
-      expect(generator.next().value).toBeTruthy();
-    });
-    it('composes search params from the existing state, user prefs, and the request', () => {
-      expect(generator.next(authheader).value).toEqual({
-        q: 'foo',
-        pageSize: 10,
-        sorted: ['nct_id', 'title'],
-        page: 2,
+    describe('a basic usecase', () => {
+      const searchPage = {
+        searchQuery: 'foo',
+        params: {
+          pageSize: 0,
+          sorted: ['nct_id'],
+          page: 1,
+        },
         aggFilters: { foo: ['bar'] },
-        selectedColumns: ['nct_id', 'title'],
+      };
+      const data = {
+        state: {
+          pageSize: 10,
+          sorted: ['nct_id', 'title'],
+          page: 2,
+        },
+      };
+      const authheader = {
+        user: { search_result_columns: { nct_id: 1, title: 1 } },
+      };
+      const generator = sagas.getParams(searchPage, data);
+      it('retrieves user data from the auth header', () => {
+        expect(generator.next().value).toBeTruthy();
+      });
+      it('composes search params from the existing state, user prefs, and the request', () => {
+        expect(generator.next(authheader).value).toEqual({
+          q: 'foo',
+          pageSize: 10,
+          sorted: ['nct_id', 'title'],
+          page: 2,
+          aggFilters: { foo: ['bar'] },
+          selectedColumns: ['nct_id', 'title'],
+        });
+      });
+    });
+    describe('query order of precedence', () => {
+      const searchPage = {
+        searchQuery: 'foo',
+        params: {
+          pageSize: 0,
+          sorted: ['nct_id'],
+          page: 1,
+        },
+        aggFilters: { foo: ['bar'] },
+      };
+      const data = {
+        searchQuery: 'bar',
+        state: {
+          pageSize: 10,
+          sorted: ['nct_id', 'title'],
+          page: 2,
+        },
+      };
+      const authheader = {
+        user: { search_result_columns: { nct_id: 1, title: 1 } },
+      };
+      const generator = sagas.getParams(searchPage, data);
+      it('retrieves user data from the auth header', () => {
+        expect(generator.next().value).toBeTruthy();
+      });
+      it('prefers the search from the action rather than the store', () => {
+        expect(generator.next(authheader).value).toEqual({
+          q: 'bar',
+          pageSize: 10,
+          sorted: ['nct_id', 'title'],
+          page: 2,
+          aggFilters: { foo: ['bar'] },
+          selectedColumns: ['nct_id', 'title'],
+        });
       });
     });
   });

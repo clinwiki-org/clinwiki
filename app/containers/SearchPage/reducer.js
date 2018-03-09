@@ -38,7 +38,7 @@ function SearchPageReducer(state = initialState, action) {
                          .set('aggs', state.get('aggs'))
                          .set('aggFilters', state.get('aggFilters'));
     case SEARCH_LOADING:
-      return state.set('loading', true).set('data', fromJS([]));
+      return state.set('loading', true).set('data', fromJS([]).set('aggs', fromJS([])));
     case SEARCH_LOADED:
       return state.set('searchQuery', action.data.searchQuery)
                   .set('params', fromJS(action.data.state))
