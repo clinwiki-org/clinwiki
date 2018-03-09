@@ -62,15 +62,16 @@ class TagsSection extends React.Component { // eslint-disable-line react/prefer-
 
     let tagList;
     if (!tags) {
-      tagList = <b>No tags for this study.</b>;
+      tagList = <tr id="no-tags-found"><td colSpan={2}><b>No tags for this study.</b></td></tr>;
     } else {
       tagList = tags.map((tag) => (
-        <tr key={tag}>
-          <th>
+        <tr key={tag} className={`tag-row tag-row-${tag.replace(' ', '-')}`}>
+          <th className="tag-value">
             {tag}
           </th>
           <td className="remove-col">
             <FontAwesome
+              id={`remove-tag-${tag.replace(' ', '-')}`}
               className="remove"
               name="remove"
               style={{ cursor: 'pointer', color: '#cc1111' }}
@@ -99,7 +100,7 @@ class TagsSection extends React.Component { // eslint-disable-line react/prefer-
               </Table>
             </Col>
             <Col md={3} mdOffset={3}>
-              <Form pullRight inline onSubmit={this.onSubmit} className="tagInput pull-right">
+              <Form id="add-tag-form" inline onSubmit={this.onSubmit} className="tagInput pull-right">
                 <FormGroup controlId="formInlineTag">
                   <FormControl
                     type="text"
@@ -113,7 +114,7 @@ class TagsSection extends React.Component { // eslint-disable-line react/prefer-
                     }}
                     placeholder={'add a tag'}
                   />
-                  <Button type="submit" onClick={(e) => this.onTagSubmit(e)}>
+                  <Button id="submit-tag" type="submit" onClick={(e) => this.onTagSubmit(e)}>
                     Add Tag
                   </Button>
                 </FormGroup>

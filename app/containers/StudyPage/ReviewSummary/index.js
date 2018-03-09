@@ -10,9 +10,6 @@ import ReactStars from 'react-stars';
 import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
 
-// import { FormattedMessage } from 'react-intl';
-// import messages from './messages';
-
 const ReviewSummaryWrapper = styled.div`
   margin: 0 0 0 auto;
   padding-right: 15px;
@@ -21,7 +18,7 @@ const ReviewSummaryWrapper = styled.div`
 `;
 
 function ReviewSummary(props) {
-  if (props.average_rating === null) {
+  if (props.average_rating === undefined || props.average_rating === null) {
     return (
       <BeatLoader color="#cccccc" />
     );
@@ -30,8 +27,9 @@ function ReviewSummary(props) {
     <ReviewSummaryWrapper>
       <ReactStars
         count={5}
+        half
         edit={false}
-        value={Math.round(parseFloat(props.average_rating))}
+        value={parseFloat(props.average_rating)}
       />
       <small><i>{props.reviews_length} Reviews</i></small>
     </ReviewSummaryWrapper>
