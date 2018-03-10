@@ -22,7 +22,6 @@ import {
   REQUEST_STUDY_ACTION,
   RELOAD_STUDY_ACTION,
   SET_WIKI_OVERRIDE_ACTION,
-  WRITE_REVIEW_ACTION,
   CLEAR_REVIEW_ACTION,
   STUDY_LOAD_ERROR_ACTION,
   STUDY_VIEWED,
@@ -125,11 +124,6 @@ export const deleteReview = (nctId, reviewId) => ({
   type: REVIEW_DELETE_ACTION,
   nctId,
   reviewId,
-});
-
-export const writeReviewAction = (nctId) => ({
-  type: WRITE_REVIEW_ACTION,
-  nctId,
 });
 
 export const clearReviewAction = () => ({

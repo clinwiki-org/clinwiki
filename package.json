@@ -245,7 +245,6 @@
     "react-router-prop-types": "0.0.3",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-rte": "^0.16.0",
-    "react-signup-login-component": "../ReactSignupLoginComponent",
     "react-spinners": "^0.2.6",
     "react-stars": "^2.2.5",
     "react-table": "^6.7.6",

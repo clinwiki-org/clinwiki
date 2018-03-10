@@ -1,4 +1,4 @@
-import { all, put, takeEvery, call, take, cancel, select } from 'redux-saga/effects';
+import { put, takeEvery, call, take, cancel, select } from 'redux-saga/effects';
 import { LOCATION_CHANGE, push } from 'react-router-redux';
 import client from 'utils/client';
 import {
@@ -208,6 +208,14 @@ export function* writeReviewSaga() {
   yield cancel(watcher);
 }
 
+// gets the correct review on location change
+export function* checkForReview(data) {
+  const match = data.payload.pathname.match(/\/study\/NCT.*\/review\/(\d+)\/edit/);
+  if (match) {
+    yield call(getReview, { reviewId: match[1] });
+  }
+}
+
 
 export default function* doAll() {
   yield takeEvery(WIKI_VIEWED, loadWiki);
@@ -222,15 +230,5 @@ export default function* doAll() {
   yield takeEvery(REVIEW_DELETE_ACTION, deleteReview);
   yield takeEvery(GET_REVIEW_ACTION, getReview);
   yield takeEvery(REVIEW_UPDATE_ACTION, updateReview);
-  yield all([
-    reloadStudySaga,
-    tagsSubmitSaga,
-    tagRemoveSaga,
-    wikiOverrideSaga,
-    submitReviewSaga,
-    deleteReviewSaga,
-    updateReviewSaga,
-    getReviewSaga,
-    writeReviewSaga,
-  ]);
+  yield takeEvery(LOCATION_CHANGE, checkForReview);
 }

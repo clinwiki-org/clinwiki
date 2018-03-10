@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import Helmet from 'react-helmet';
-import ReactSignupLoginComponent from 'react-signup-login-component';
+import ReactSignupLoginComponent from 'components/ReactSignupLoginComponent/ReactSignupLoginComponent';
 import { Row, Col, ListGroup, ListGroupItem, Alert, Form, FormGroup, Button } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 import * as qs from 'query-string';

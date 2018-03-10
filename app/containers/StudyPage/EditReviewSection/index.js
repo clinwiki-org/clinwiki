@@ -3,14 +3,18 @@
 * EditReviewSection
 *
 */
-
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Row, Col } from 'react-bootstrap';
+import LoadingPane from 'components/LoadingPane';
 import ReviewForm from 'components/ReviewForm';
 
 class EditReviewSection extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
+    if (!_.get(this.props, 'review.text')) {
+      return <LoadingPane />;
+    }
     return (
       <Grid>
         <Row>

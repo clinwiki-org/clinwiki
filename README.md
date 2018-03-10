@@ -16,3 +16,9 @@ and committing it directly to the
 ```bash
 yarn test
 ```
+
+## Note on Dependencies
+
+We've ported the [react-signup-login-component](https://www.npmjs.com/package/react-signup-login-component)
+over to this codebase because of problems related to Babel transpilation
+during testing. This lives in `app/components/ReactSignupLoginComponent`.
