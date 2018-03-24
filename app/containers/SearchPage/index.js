@@ -67,6 +67,11 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
       const spec = {
         Header: <SearchFieldName field={col} />,
         accessor: col,
+        style: {
+          overflowWrap: 'break-word',
+          overflow: 'visible',
+          whiteSpace: 'normal',
+        },
       };
       if (col.match('rating')) {
         spec.Cell = (row) => (
@@ -75,6 +80,7 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
             edit={false}
             value={row.value}
           />);
+        spec.style.textAlign = 'center';
       }
       return spec;
     });

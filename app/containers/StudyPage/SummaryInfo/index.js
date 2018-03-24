@@ -30,7 +30,7 @@ class SummaryInfo extends React.Component { // eslint-disable-line react/prefer-
   constructor(props) {
     super(props);
     this.state = {
-      summaryVisible: false,
+      summaryVisible: true,
     };
   }
 
