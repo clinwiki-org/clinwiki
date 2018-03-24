@@ -187,7 +187,8 @@ module SearchHelper
   ENABLED_AGGS = [
     :average_rating, :tags, :overall_status, :facility_states,
     :facility_cities, :facility_names, :study_type, :sponsors,
-    :browse_condition_mesh_terms, :phase, :rating_dimensions
+    :browse_condition_mesh_terms, :phase, :rating_dimensions,
+    :browse_interventions_mesh_terms,
   ]
 
   # aggregations
@@ -196,10 +197,12 @@ module SearchHelper
       order: {_term: :desc},
     },
     tags: {
-      limit: 10
+      limit: 10,
+      order: {"_term" => "asc"}
     },
     overall_status: {
-      limit: 10
+      limit: 10,
+      order: {"_term" => "asc"}
     },
     start_date: {
       date_histogram: {
@@ -215,29 +218,41 @@ module SearchHelper
       },
       limit: 10
     },
+    browse_interventions_mesh_terms: {
+      limit: 10,
+      order: {"_term" => "asc"},
+    },
     facility_states: {
       limit: 10,
+      order: {"_term" => "asc"},
     },
     facility_cities: {
       limit: 10,
+      order: {"_term" => "asc"},
     },
     facility_names: {
       limit: 10,
+      order: {"_term" => "asc"},
     },
     study_type: {
       limit: 10,
+      order: {"_term" => "asc"},
     },
     sponsors: {
       limit: 10,
+      order: {"_term" => "asc"},
     },
     phase: {
       limit: 10,
+      order: {"_term" => "asc"},
     },
     browse_condition_mesh_terms: {
       limit: 10,
+      order: {"_term" => "asc"},
     },
     rating_dimensions: {
       limit: 10,
+      order: {"_term" => "asc"},
     },
   }
 end

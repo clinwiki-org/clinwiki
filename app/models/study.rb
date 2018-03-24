@@ -173,8 +173,21 @@ class Study < AactBase
 
   def site_info
     col=[]
-    cntr=1
-    facilities.each{ |f| col << {:label=>"#{cntr}", :value=>f.description.strip}; cntr=cntr+1 }
+    facility_count = 1
+    facilities.each do |f|
+      col << { label: "Facility #{facility_count}", value: f.description.strip }
+      facility_contacts.where(facility: f).each do |contact|
+        contact_data = ""
+        contact_data += " #{contact.name}"
+        contact_data += " email: #{contact.email}" unless contact.email.blank?
+        contact_data += " phone: #{contact.phone}" unless contact.phone.blank?
+        col << {
+          label: "Facility #{facility_count} #{contact.contact_type} contact",
+          value: contact_data
+        }
+      end
+      facility_count += 1
+    end
     col
   end
 
