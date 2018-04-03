@@ -5,6 +5,59 @@ require File.expand_path('../config/application', __FILE__)
 
 Rails.application.load_tasks
 
+namespace :import do
+  task :csv, [:csv_file] => :environment do |t, args|
+    require File.expand_path('../app/services/csv_processor', __FILE__)
+    user = User.find_by(email: "no-reply@clinwiki.org")
+    if user.nil?
+      user = User.create(
+        email: "no-reply@clinwiki.org",
+        first_name: "Clinwiki",
+        last_name: "Bot",
+      )
+    end
+    errors = []
+    added_tags = 0
+    removed_tags = 0
+    fname = "imports/#{args[:csv_file]}"
+    p "running on #{fname}"
+    CSV.foreach(fname, headers: :first_row) do |row|
+      service = CSVProcessorService.new
+      begin
+        if row["Type"] == 'Tag'
+          p 'here'
+          tags = row["Value"].split('|')
+          if row["Action"] == 'Add'
+            p 'adding'
+            service.create_or_update_wiki_page_for_study(params: {
+                study_id: row["nct_id"],
+                add_tag: tags,
+              }, user: user)
+            added_tags += tags.length
+          elsif row["Action"] == 'Remove'
+            service.create_or_update_wiki_page_for_study(params: {
+                study_id: row["nct_id"],
+                remove_tag: tags,
+              }, user: user)
+            removed_tags += tags.length
+          else
+            raise "Action #{row["Action"]} unsupported"
+          end
+        else
+          raise "Type #{row["Type"]} unsupported"
+        end
+
+      rescue StandardError => e
+        errors << { nct_id: row["nct_id"], error: e }
+      end
+    end
+    p "#{added_tags} added tags"
+    p "#{removed_tags} removed tags"
+    p "#{errors.size} errors:"
+    p errors if errors.size > 0
+  end
+end
+
 
 namespace :search do
 
