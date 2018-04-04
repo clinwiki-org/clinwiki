@@ -55,7 +55,7 @@ module WikiHelper
     end
 
     if params.has_key?(:remove_tag)
-      front_matter["tags"] = front_matter.fetch("tags", []).select{|x| ![params[:remove_tag]].flatten.include(x)}
+      front_matter["tags"] = front_matter.fetch("tags", []).select{|x| ![params[:remove_tag]].flatten.include?(x)}
     end
 
     wiki_text = combined_markdown(content, front_matter)

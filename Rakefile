@@ -19,40 +19,50 @@ namespace :import do
     errors = []
     added_tags = 0
     removed_tags = 0
+    added_crowd = 0
+    removed_crowd = 0
     fname = "imports/#{args[:csv_file]}"
     p "running on #{fname}"
     CSV.foreach(fname, headers: :first_row) do |row|
       service = CSVProcessorService.new
+      params = { study_id: row["nct_id"], }
+      tally = lambda {}
       begin
         if row["Type"] == 'Tag'
-          p 'here'
           tags = row["Value"].split('|')
           if row["Action"] == 'Add'
-            p 'adding'
-            service.create_or_update_wiki_page_for_study(params: {
-                study_id: row["nct_id"],
-                add_tag: tags,
-              }, user: user)
-            added_tags += tags.length
+            params[:add_tag] = tags
+            tally = lambda { added_tags += tags.length }
           elsif row["Action"] == 'Remove'
-            service.create_or_update_wiki_page_for_study(params: {
-                study_id: row["nct_id"],
-                remove_tag: tags,
-              }, user: user)
-            removed_tags += tags.length
+            params[:remove_tag] = tags,
+            tally = lambda { removed_tags += tags.length }
           else
             raise "Action #{row["Action"]} unsupported"
+          end
+        elsif Study.new.respond_to?(row["Type"].to_sym)
+          if row["Action"] == 'Remove'
+            params[:delete_meta] = { key: row["Type"] }
+            tally = lambda { removed_crowd += 1 }
+          else
+            params[:add_meta] = {
+              key: row["Type"],
+              value: row["Value"],
+            }
+            tally = lambda { added_crowd += 1}
           end
         else
           raise "Type #{row["Type"]} unsupported"
         end
-
+        tally.call
+        service.create_or_update_wiki_page_for_study(params: params, user: user)
       rescue StandardError => e
         errors << { nct_id: row["nct_id"], error: e }
       end
     end
     p "#{added_tags} added tags"
     p "#{removed_tags} removed tags"
+    p "#{added_crowd} added crowd entries"
+    p "#{removed_crowd} removed crowd entries"
     p "#{errors.size} errors:"
     p errors if errors.size > 0
   end
