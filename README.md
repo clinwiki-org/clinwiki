@@ -79,7 +79,7 @@ the annotation database along with the AACT database.
 
 ### Running Imports
 
-####1) Generate your CSV
+#### 1) Generate your CSV
 
 CSVs expect a header with the following format:
 `nct_id,Type,Value,Action`
@@ -89,7 +89,7 @@ For crowd values, we only presently support native fields that are
 crowd overwriteable. In this case, `Add` will add or overwrite a crowd
 definition for that field, and `Remove` will remove the crowd definition.
 
-####2) Commit your CSV to the appropriate subfolder
+#### 2) Commit your CSV to the appropriate subfolder
 The CSV should be exported to the `imports/` within the root project folder.
 
 You can commit the CSV with the following workflow, which assumes
@@ -103,7 +103,7 @@ git push origin master  # add to clinwiki-org/clinwiki
 git push heroku master  # add to heroku -- this should kick off a deploy
 ```
 
-####3) Run the CSV import Rake task
+#### 3) Run the CSV import Rake task
 
 ```bash
 # if your file is in imports/foo.csv, $MY_FILE should be foo.csv
