@@ -70,6 +70,7 @@ end
 
 namespace :export do
   task :front_matter_csv => :environment do
+    ActiveRecord::Base.logger = nil
     s = Study.new
     puts "nct_id,Type,Value"
     WikiPage.find_each do |w|
