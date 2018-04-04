@@ -5,6 +5,87 @@ require File.expand_path('../config/application', __FILE__)
 
 Rails.application.load_tasks
 
+namespace :import do
+  task :csv, [:csv_file] => :environment do |t, args|
+    require File.expand_path('../app/services/csv_processor', __FILE__)
+    user = User.find_by(email: "no-reply@clinwiki.org")
+    if user.nil?
+      user = User.create(
+        email: "no-reply@clinwiki.org",
+        first_name: "Clinwiki",
+        last_name: "Bot",
+      )
+    end
+    errors = []
+    added_tags = 0
+    removed_tags = 0
+    added_crowd = 0
+    removed_crowd = 0
+    fname = "imports/#{args[:csv_file]}"
+    p "running on #{fname}"
+    CSV.foreach(fname, headers: :first_row) do |row|
+      service = CSVProcessorService.new
+      params = { study_id: row["nct_id"], }
+      tally = lambda {}
+      begin
+        if row["Type"] == 'Tag'
+          tags = row["Value"].split('|')
+          if row["Action"] == 'Add'
+            params[:add_tag] = tags
+            tally = lambda { added_tags += tags.length }
+          elsif row["Action"] == 'Remove'
+            params[:remove_tag] = tags,
+            tally = lambda { removed_tags += tags.length }
+          else
+            raise "Action #{row["Action"]} unsupported"
+          end
+        elsif Study.new.respond_to?(row["Type"].to_sym)
+          if row["Action"] == 'Remove'
+            params[:delete_meta] = { key: row["Type"] }
+            tally = lambda { removed_crowd += 1 }
+          else
+            params[:add_meta] = {
+              key: row["Type"],
+              value: row["Value"],
+            }
+            tally = lambda { added_crowd += 1}
+          end
+        else
+          raise "Type #{row["Type"]} unsupported"
+        end
+        tally.call
+        service.create_or_update_wiki_page_for_study(params: params, user: user)
+      rescue StandardError => e
+        errors << { nct_id: row["nct_id"], error: e }
+      end
+    end
+    p "#{added_tags} added tags"
+    p "#{removed_tags} removed tags"
+    p "#{added_crowd} added crowd entries"
+    p "#{removed_crowd} removed crowd entries"
+    p "#{errors.size} errors:"
+    p errors if errors.size > 0
+  end
+end
+
+namespace :export do
+  task :front_matter_csv => :environment do
+    s = Study.new
+    puts "nct_id,Type,Value"
+    WikiPage.find_each do |w|
+      f = w.front_matter
+      next if f.blank?
+      f.keys.each do |k|
+        if k == 'tags'
+          puts "#{w.nct_id},Tags,#{f[k].join("|")}"
+        elsif s.respond_to?(k.to_sym)
+          puts "#{w.nct_id},#{k},#{f[k]}"
+        end
+      end
+    end
+  end
+end
+
 
 namespace :search do
 

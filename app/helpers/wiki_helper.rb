@@ -1,16 +1,16 @@
 module WikiHelper
 
-  def generate_edit(wiki_text)
+  def generate_edit(wiki_text, user)
     diff = Diffy::Diff.new(@wiki_page.text, wiki_text)
     WikiPageEdit.create(
-      user: current_user,
+      user: user,
       wiki_page: @wiki_page,
       diff: diff.to_s,
       diff_html: diff.to_s(:html_simple)
     )
   end
 
-  def get_study!
+  def get_study!(params:)
     study = Study.find_by(nct_id: params[:study_id])
     if study.nil?
       return status 404
@@ -23,8 +23,8 @@ module WikiHelper
     "#{front_matter_string}---\n#{content}"
   end
 
-  def create_or_update_wiki_page_for_study
-    study = get_study!
+  def create_or_update_wiki_page_for_study(params: {}, user: nil)
+    study = get_study!(params: params)
     @wiki_page = study.wiki_page || WikiPage.new(nct_id: study.nct_id)
 
     content = if params.has_key?(:wiki_text)
@@ -39,6 +39,8 @@ module WikiHelper
                      @wiki_page.front_matter
                    end
 
+    @previous_content = content
+    @previous_front_matter = front_matter
 
     if params.has_key?(:delete_meta)
       front_matter.delete(params[:delete_meta][:key])
@@ -49,16 +51,16 @@ module WikiHelper
     end
 
     if params.has_key?(:add_tag)
-      front_matter["tags"] = front_matter.fetch("tags", []) + [params[:add_tag]]
+      front_matter["tags"] = (front_matter.fetch("tags", []) + [params[:add_tag]]).flatten.uniq
     end
 
     if params.has_key?(:remove_tag)
-      front_matter["tags"] = front_matter.fetch("tags", []).select{|x| x != params[:remove_tag]}
+      front_matter["tags"] = front_matter.fetch("tags", []).select{|x| ![params[:remove_tag]].flatten.include?(x)}
     end
 
     wiki_text = combined_markdown(content, front_matter)
 
-    @edit = generate_edit(wiki_text)
+    @edit = generate_edit(wiki_text, user)
     @wiki_page.text = wiki_text
     @wiki_page.save
   end
