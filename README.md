@@ -109,3 +109,9 @@ git push heroku master  # add to heroku -- this should kick off a deploy
 # if your file is in imports/foo.csv, $MY_FILE should be foo.csv
 heroku run -a clinwiki-prod rake import:csv["$MY_FILE"]  
 ```
+
+### Running Exports
+
+```bash
+heroku run -a clinwiki-prod rake export:front_matter_csv > my-front-matter.csv
+```

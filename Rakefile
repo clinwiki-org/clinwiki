@@ -68,6 +68,24 @@ namespace :import do
   end
 end
 
+namespace :export do
+  task :front_matter_csv => :environment do
+    s = Study.new
+    puts "nct_id,Type,Value"
+    WikiPage.find_each do |w|
+      f = w.front_matter
+      next if f.blank?
+      f.keys.each do |k|
+        if k == 'tags'
+          puts "#{w.nct_id},Tags,#{f[k].join("|")}"
+        elsif s.respond_to?(k.to_sym)
+          puts "#{w.nct_id},#{k},#{f[k]}"
+        end
+      end
+    end
+  end
+end
+
 
 namespace :search do
 
