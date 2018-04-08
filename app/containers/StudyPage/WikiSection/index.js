@@ -115,6 +115,9 @@ class WikiSection extends React.Component { // eslint-disable-line react/prefer-
 
   // this was copypasted from reviews -- we should refactor into a component maybe?
   getName(user) {
+    if (!user) {
+      return 'anonymous';
+    }
     if (user.first_name) {
       return `${user.first_name} ${user.last_name[0]}`;
     }
