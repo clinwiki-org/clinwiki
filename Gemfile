@@ -1,10 +1,10 @@
 source 'http://rubygems.org'
 
-ruby "2.2.3"
+ruby "2.4.1"
 
 gem 'passenger'
 gem 'zip'
-gem 'rails', '4.2.6'
+gem 'rails', '4.2.10'
 gem 'rails_12factor'
 # postgres gem
 gem 'pg', '0.20.0'

@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+vagrant ssh -c "cd /cw-app && yarn start"
