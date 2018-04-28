@@ -40,8 +40,12 @@ file in the project root level directory. Here's an example:
 # needed to connect to aact
 AACT_DATABASE_URL=postgres://aact:aact@aact-db.ctti-clinicaltrials.org:5432/aact
 REDIS_URL=redis://127.0.0.1:6379/0
+DATABASE_URL=postgres://postgres@localhost:5432/clinwiki
 ```
 
+**NOTE:** The use of the `DATABASE_URL` environment variable should prevent
+the need for a `database.yml` file in when running the server in development
+mode.
 
 # Data Access
 
