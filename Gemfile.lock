@@ -76,19 +76,19 @@ GEM
     dotenv-rails (2.2.1)
       dotenv (= 2.2.1)
       railties (>= 3.2, < 5.2)
-    elasticsearch (6.0.0)
-      elasticsearch-api (= 6.0.0)
-      elasticsearch-transport (= 6.0.0)
-    elasticsearch-api (6.0.0)
+    elasticsearch (6.0.2)
+      elasticsearch-api (= 6.0.2)
+      elasticsearch-transport (= 6.0.2)
+    elasticsearch-api (6.0.2)
       multi_json
-    elasticsearch-transport (6.0.0)
+    elasticsearch-transport (6.0.2)
       faraday
       multi_json
     erubis (2.7.0)
     et-orbi (1.0.9)
       tzinfo
     execjs (2.7.0)
-    faraday (0.14.0)
+    faraday (0.15.2)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
     figaro (1.1.1)
@@ -234,9 +234,9 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    searchkick (2.3.0)
-      activemodel (>= 4.1)
-      elasticsearch (>= 1)
+    searchkick (3.1.0)
+      activemodel (>= 4.2)
+      elasticsearch (>= 5)
       hashie
     sidekiq (5.0.5)
       concurrent-ruby (~> 1.0)
@@ -320,7 +320,7 @@ DEPENDENCIES
   rspec-rails (~> 3.4.0)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
-  searchkick (= 2.3.0)
+  searchkick (= 3.1.0)
   sidekiq
   sidekiq-cron
   spawnling (~> 2.1)
@@ -335,4 +335,4 @@ RUBY VERSION
    ruby 2.4.1p111
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

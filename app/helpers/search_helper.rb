@@ -41,13 +41,14 @@ module SearchHelper
 
   # @return [Hash]
   def get_agg_buckets
-    qargs = query_args
     agg = params["agg"]
+    qargs = query_args(agg)
     qargs[:aggs] = {
       agg => AGGS[agg.to_sym]
     }
     qargs[:aggs][agg].delete(:limit)
     qargs[:per_page] = 0
+    qargs[:smart_aggs] = true
     @studies = Study.search(search_query, qargs)
     {
       :aggs => @studies.aggs
@@ -79,8 +80,8 @@ module SearchHelper
 
   # Manipulates the filter params to the expected value matching a "where" key
   # @return [Hash]
-  def agg_where
-    agg_filters = params.fetch(:agg_filters, {})
+  def agg_where(curr_agg = nil)
+    agg_filters = params.fetch(:aggFilters, {})
     if agg_filters.is_a?(String)
       agg_filters = JSON.parse(agg_filters)
     end
@@ -89,6 +90,7 @@ module SearchHelper
     if !new_agg_filters.empty?
       where = {_and: []}
       new_agg_filters.each do |key, vals|
+        next if (!curr_agg.nil?) && curr_agg == key
         conjs = []
         unless vals.nil? || vals.empty?
           vals.each do |val|
@@ -153,12 +155,12 @@ module SearchHelper
 
   # Transforms controller params into query args for a search
   # @return [Hash]
-  def query_args
+  def query_args(curr_agg = nil)
     get_page_params.merge({
       load: false,
       order: ordering,
       aggs: enabled_aggs,
-      where: agg_where,
+      where: agg_where(curr_agg),
       smart_aggs: false,
     })
   end
