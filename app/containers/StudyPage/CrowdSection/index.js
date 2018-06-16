@@ -34,30 +34,50 @@ export class CrowdSection extends React.Component { // eslint-disable-line react
     this.addAnnotation = this.addAnnotation.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.createAnnotation = this.createAnnotation.bind(this);
+    this.appendAnnotation = this.appendAnnotation.bind(this);
+    this.appendAnnotationSubmit = this.appendAnnotationSubmit.bind(this);
     this.annotationRefs = {};
     this.state = ({
       updateableRows: {},
+      appendingRows: {},
+      appendingDescriptions: {},
     });
     this.updateRowData = {};
     this.removedRows = {};
   }
 
-  onAnnotationUpdateSubmit(key) {
+  onAnnotationUpdateSubmit(key, oldValue) {
     if (this.props.AuthHeader.user.loggedIn) {
-      if (this.rowIsUpdating(key)) {
-        this.props.actions.updateAnnotation(this.props.StudyPage.study.nct_id, key, this.updateRowData[key].description);
+      const keyValue = `${key}-${oldValue}`;
+      if (this.rowIsUpdating(keyValue)) {
+        let newValue = this.updateRowData[keyValue].description;
+        if (_.includes(this.props.StudyPage.wiki.meta[key], '|')) {
+          const filteredValues = _.map(this.props.StudyPage.wiki.meta[key].split('|'), (x) => {
+            if (x === oldValue) {
+              return newValue;
+            }
+            return x;
+          });
+          newValue = filteredValues.join('|');
+        }
+        this.props.actions.updateAnnotation(this.props.StudyPage.study.nct_id, key, newValue);
       }
-      this.state.updateableRows[key] = !this.state.updateableRows[key];
+      this.state.updateableRows[keyValue] = !this.state.updateableRows[keyValue];
       this.forceUpdate();
     } else {
       this.props.onAnonymousClick();
     }
   }
 
-  onAnnotationDelete(key) {
+  onAnnotationDelete(key, value) {
     if (this.props.AuthHeader.user.loggedIn) {
-      this.removedRows[key] = true;
-      this.props.actions.deleteAnnotation(this.props.StudyPage.study.nct_id, key);
+      this.removedRows[`${key}-${value}`] = true;
+      if (value === this.props.StudyPage.wiki.meta[key]) {
+        this.props.actions.deleteAnnotation(this.props.StudyPage.study.nct_id, key);
+      } else {
+        const filteredValues = _.filter(this.props.StudyPage.wiki.meta[key].split('|'), (x) => x !== value);
+        this.props.actions.updateAnnotation(this.props.StudyPage.study.nct_id, key, filteredValues.join('|'));
+      }
     } else {
       this.props.onAnonymousClick();
     }
@@ -85,18 +105,111 @@ export class CrowdSection extends React.Component { // eslint-disable-line react
     this.isAddingAnnotation = false;
   }
 
+  appendAnnotation(key) {
+    if (this.props.AuthHeader.user.loggedIn) {
+      this.setState({
+        ...this.state,
+        appendingRows: {
+          ...this.state.appendingRows,
+          [key]: true,
+        },
+      });
+    } else {
+      this.props.onAnonymousClick();
+    }
+  }
+
+  appendAnnotationSubmit(key) {
+    const newValue = `${this.props.StudyPage.wiki.meta[key]}|${this.state.appendingDescriptions[key]}`;
+    this.props.actions.updateAnnotation(this.props.StudyPage.study.nct_id, key, newValue);
+    this.setState({
+      ...this.state,
+      appendingRows: _.omit(this.state.appendingRows, key),
+      appendingDescriptions: _.omit(this.state.appendingDescriptions, key),
+    });
+  }
+
   rowIsUpdating(key) {
     return this.state.updateableRows[key];
   }
 
-  rowIsRemoved(key) {
-    return this.removedRows && this.removedRows[key];
+  rowIsRemoved(key, value) {
+    return this.removedRows && this.removedRows[`${key}-${value}`];
   }
 
   render() {
     if (!_.get(this.props, 'StudyPage.wiki.meta')) {
       return (<LoadingPane />);
     }
+    const rows = [];
+    _.forOwn(this.props.StudyPage.wiki.meta, (values, key) => {
+      _.forEach(values.split('|'),
+        (value) => rows.push(
+          <tr key={`${key}-${value}`}>
+            <td>{key}</td>
+            <td>{this.rowIsUpdating(`${key}-${value}`) ?
+              <textarea
+                style={{ width: '100%', border: '1px solid #ccc' }}
+                type="text"
+                defaultValue={value}
+                onChange={(e) => this.onDescriptionChange(e, `${key}-${value}`)}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 27) {
+                    this.state.updateableRows[`${key}-${value}`] = false;
+                    this.forceUpdate();
+                  }
+                }}
+              />
+              : value}
+            </td>
+            <td>
+              <Button onClick={() => this.appendAnnotation(key)}>
+                Add
+              </Button>
+            </td>
+            <td>
+              <Button onClick={() => this.onAnnotationUpdateSubmit(key, value)}>
+                { this.state.updateableRows[`${key}-${value}`] ?
+                  'Submit' :
+                  'Update'
+                }
+              </Button>
+            </td>
+            <td>
+              <Button onClick={() => this.onAnnotationDelete(key, value)}>
+                Delete
+              </Button>
+            </td>
+          </tr>
+        ));
+      if (this.state.appendingRows[key]) {
+        rows.push(
+          <tr key={`${key}-appending`}>
+            <td>
+              {key}
+            </td>
+            <td>
+              <textarea
+                style={{ width: '100%', border: '1px solid #ccc' }}
+                placeholder="Add a description..."
+                onChange={(e) => this.setState({
+                  ...this.state,
+                  appendingDescriptions: {
+                    ...this.state.appendingDescriptions,
+                    [key]: e.target.value,
+                  },
+                })}
+              />
+            </td>
+            <td colSpan={3} className="text-right">
+              <Button onClick={() => this.appendAnnotationSubmit(key)}>
+                Submit
+              </Button>
+            </td>
+          </tr>
+        );
+      }
+    });
 
     return (
       <Grid>
@@ -113,39 +226,7 @@ export class CrowdSection extends React.Component { // eslint-disable-line react
             </tr>
           </thead>
           <tbody>
-            {Object.keys(this.props.StudyPage.wiki.meta).map((key) => (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>{this.rowIsUpdating(key) ?
-                  <textarea
-                    style={{ width: '100%', border: '1px solid #ccc' }}
-                    type="text"
-                    defaultValue={this.props.StudyPage.wiki.meta[key]}
-                    onChange={(e) => this.onDescriptionChange(e, key)}
-                    onKeyDown={(e) => {
-                      if (e.keyCode === 27) {
-                        this.state.updateableRows[key] = false;
-                        this.forceUpdate();
-                      }
-                    }}
-                  />
-                  : this.props.StudyPage.wiki.meta[key]}
-                </td>
-                <td>
-                  <Button onClick={() => this.onAnnotationUpdateSubmit(key)}>
-                    { this.state.updateableRows[key] ?
-                      'Submit' :
-                      'Update'
-                    }
-                  </Button>
-                </td>
-                <td>
-                  <Button onClick={() => this.onAnnotationDelete(key)}>
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {rows}
             {this.isAddingAnnotation ?
               <tr>
                 <td>
@@ -162,7 +243,7 @@ export class CrowdSection extends React.Component { // eslint-disable-line react
                     onChange={(e) => { this.newDescription = e.target.value; }}
                   />
                 </td>
-                <td colSpan={2} className="text-right">
+                <td colSpan={3} className="text-right">
                   <Button onClick={this.createAnnotation}>
                     Submit
                   </Button>
@@ -170,7 +251,7 @@ export class CrowdSection extends React.Component { // eslint-disable-line react
               </tr>
               :
               <tr>
-                <td colSpan={4} className="text-right">
+                <td colSpan={5} className="text-right">
                   <Button onClick={this.addAnnotation}>
                     Add
                   </Button>
