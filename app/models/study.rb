@@ -224,6 +224,12 @@ class Study < AactBase
     Hash[rating_dimensions.map{|key, vals| [key, vals.inject{ |sum, el| sum + el }.to_f / vals.size]}]
   end
 
+  # Indexing data from the wiki page
+  # @return [Hash]
+  def wiki_search_data
+    {} if wiki_page.nil? else wiki_page.search_data
+  end
+
   # Defines the fields to be indexed by searchkick
   # @return [Hash]
   def search_data
@@ -241,11 +247,12 @@ class Study < AactBase
       tags: tags,
       reviews: reviews && reviews.map(&:text),
       sponsors: sponsors && sponsors.map(&:name),
-      wiki_text: wiki_page  && wiki_page.text,  # for now, just parse the markdown
       rating_dimensions: rating_dimensions.keys,
       indexed_at: Time.now,
     }).merge(
       average_rating_dimensions
+    ).merge(
+      wiki_search_data
     ).except(
       # https://github.com/clinwiki-org/clinwiki/issues/111
       *NON_INDEX_FIELDS, *NON_INDEX_FIELDS.map(&:to_s)
