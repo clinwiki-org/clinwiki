@@ -131,8 +131,8 @@ class Study < AactBase
 
   def tracking_info
     [
-      {:label=>'first_received_date',:value=>first_received_date},
-      {:label=>'last_changed_date',:value=>last_changed_date},
+      {:label=>'first_received_date',:value=> self.try(:first_received_date, nil)},
+      {:label=>'last_changed_date',:value=>self.try(:last_changed_date, nil)},
       {:label=>'start_date',:value=>start_date},
       {:label=>'primary_completion_date',:value=>primary_completion_date},
       {:label=>'primary outcome measures',:value=>primary_outcome_measures},
