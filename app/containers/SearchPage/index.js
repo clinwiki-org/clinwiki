@@ -117,9 +117,11 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
             <Aggs
               aggFilters={this.props.SearchPage.aggFilters}
               aggs={this.props.SearchPage.aggs}
+              crowdAggs={this.props.SearchPage.crowdAggs}
               onAggViewed={this.props.actions.aggViewed}
               onAggRemoved={this.props.actions.aggRemoved}
               onAggSelected={this.props.actions.aggSelected}
+              onCrowdAggViewed={this.props.actions.crowdAggViewed}
             />
           </Col>
           <Col md={10} id="search-main">
@@ -161,6 +163,7 @@ SearchPage.propTypes = {
     searchQuery: PropTypes.string,
     loading: PropTypes.bool,
     aggFilters: PropTypes.object,
+    crowdAggs: PropTypes.object,
     params: PropTypes.shape({
       pageSize: PropTypes.number,
     }),

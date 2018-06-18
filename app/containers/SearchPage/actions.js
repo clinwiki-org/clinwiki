@@ -15,6 +15,7 @@ import {
   SEARCH_LOADING,
   AGG_SELECTED,
   AGG_REMOVED,
+  CROWD_AGG_VIEWED,
 } from './constants';
 
 export function searchChanged(searchQuery) {
@@ -44,6 +45,10 @@ export function clearSearchData() {
 
 export function aggViewed(agg) {
   return { type: AGG_VIEWED, agg };
+}
+
+export function crowdAggViewed(agg) {
+  return { type: CROWD_AGG_VIEWED, agg };
 }
 
 export function aggLoaded(agg, data) {

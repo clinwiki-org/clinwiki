@@ -44,7 +44,6 @@ class AggDropdown extends React.Component {
 
   render() {
     // todo, don't get the first ten items for some reason
-
     let menuItems = [];
     const buckets = this.props.data.buckets;
     if (buckets) {
@@ -74,7 +73,7 @@ class AggDropdown extends React.Component {
           <span>
             No results found for
             {' '}
-            <i>{aggToField[this.props.agg]}</i>
+            <i>{aggToField(this.props.agg)}</i>
           </span>
         </MenuItem>
       );
@@ -100,7 +99,7 @@ class AggDropdown extends React.Component {
         <DropdownButton
           bsStyle="default"
           bsSize="small"
-          title={<b>{aggToField[this.props.agg]}</b>}
+          title={<b>{aggToField(this.props.agg)}</b>}
           id={`agg-${this.props.agg.replace(/ /, '-')}`}
           onToggle={this.onToggle}
         >

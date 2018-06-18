@@ -1,4 +1,6 @@
-export default {
+import _ from 'lodash';
+
+export default (val) => _.get({
   average_rating: 'average rating',
   tags: 'tags',
   overall_status: 'status',
@@ -12,4 +14,4 @@ export default {
   phase: 'phase',
   browse_condition_mesh_terms: 'mesh term',
   browse_interventions_mesh_terms: 'intervention mesh term',
-};
+}, val, val);

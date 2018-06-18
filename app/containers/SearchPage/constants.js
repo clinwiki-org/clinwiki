@@ -17,3 +17,4 @@ export const DATA_FETCHED = 'app/SearchPage/DATA_FETCHED';
 export const SEARCH_LOADING = 'app/SearchPage/SEARCH_LOADING';
 export const AGG_SELECTED = 'app/SearchPage/AGG_SELECTED';
 export const AGG_REMOVED = 'app/SearchPage/AGG_REMOVED';
+export const CROWD_AGG_VIEWED = 'app/SearchPage/CROWD_AGG_VIEWED';

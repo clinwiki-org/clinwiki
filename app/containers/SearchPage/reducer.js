@@ -14,6 +14,7 @@ import {
   AGG_SELECTED,
   AGG_REMOVED,
   SEARCH_LOADING,
+  CROWD_AGG_VIEWED,
 } from './constants';
 
 const initialState = fromJS({
@@ -46,9 +47,13 @@ function SearchPageReducer(state = initialState, action) {
                   .set('pages', Math.ceil(action.data.recordsTotal / (_.get(action, 'data.state.pageSize') || 25)))
                   .set('data', fromJS(action.data.data))
                   .set('aggs', fromJS(action.data.aggs))
+                  .set('crowdAggs', fromJS(_.keyBy(_.map(_.get(action.data.aggs, 'front_matter_keys.buckets', []), (x) => ({ ...x, buckets: [] })), 'key')))
                   .set('loading', false);
     case AGG_VIEWED:
       return state.updateIn(['aggs', action.agg],
+      (x) => fromJS(Object.assign({}, x.toJS(), { loading: !x.loaded })));
+    case CROWD_AGG_VIEWED:
+      return state.updateIn(['crowdAggs', action.agg],
       (x) => fromJS(Object.assign({}, x.toJS(), { loading: !x.loaded })));
     case AGG_SELECTED:
       return state.updateIn(['aggFilters'],
