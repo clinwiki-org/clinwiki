@@ -19,7 +19,17 @@ const aggsOrdered = [
 class Aggs extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   render() {
-    const { crowdAggs, aggs, aggFilters, onAggViewed, onAggSelected, onAggRemoved, onCrowdAggViewed } = this.props;
+    const {
+      crowdAggs,
+      aggs,
+      aggFilters,
+      onAggViewed,
+      onAggSelected,
+      onAggRemoved,
+      onCrowdAggViewed,
+      onCrowdAggRemoved,
+      onCrowdAggSelected,
+    } = this.props;
     let crowdAggDropdowns = null;
     if (!_.isEmpty(crowdAggs)) {
       crowdAggDropdowns = (
@@ -30,10 +40,10 @@ class Aggs extends React.Component { // eslint-disable-line react/prefer-statele
               key={key}
               agg={key}
               data={crowdAggs[key]}
-              selectedKeys={aggFilters[key]}
+              selectedKeys={aggFilters[`fm_${key}`]}
               onAggViewed={onCrowdAggViewed}
-              onAggRemoved={onAggRemoved}
-              onAggSelected={onAggSelected}
+              onAggRemoved={onCrowdAggRemoved}
+              onAggSelected={onCrowdAggSelected}
             />
           ))}
         </div>
@@ -70,6 +80,8 @@ Aggs.propTypes = {
   onAggSelected: PropTypes.func,
   onAggRemoved: PropTypes.func,
   onCrowdAggViewed: PropTypes.func,
+  onCrowdAggRemoved: PropTypes.func,
+  onCrowdAggSelected: PropTypes.func,
 };
 
 export default Aggs;

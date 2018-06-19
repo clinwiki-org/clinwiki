@@ -15,6 +15,9 @@ import {
   AGG_REMOVED,
   SEARCH_LOADING,
   CROWD_AGG_VIEWED,
+  CROWD_AGG_LOADED,
+  CROWD_AGG_SELECTED,
+  CROWD_AGG_REMOVED,
 } from './constants';
 
 const initialState = fromJS({
@@ -51,10 +54,10 @@ function SearchPageReducer(state = initialState, action) {
                   .set('loading', false);
     case AGG_VIEWED:
       return state.updateIn(['aggs', action.agg],
-      (x) => fromJS(Object.assign({}, x.toJS(), { loading: !x.loaded })));
+      (x) => fromJS(Object.assign({}, x.toJS(), { loading: true, loaded: false })));
     case CROWD_AGG_VIEWED:
       return state.updateIn(['crowdAggs', action.agg],
-      (x) => fromJS(Object.assign({}, x.toJS(), { loading: !x.loaded })));
+      (x) => fromJS(Object.assign({}, x.toJS(), { loading: true, loaded: false })));
     case AGG_SELECTED:
       return state.updateIn(['aggFilters'],
         (x) => fromJS(Object.assign({}, x.toJS(), { [action.agg]: (x.get(action.agg) || []).concat([action.value]) })));
@@ -63,7 +66,16 @@ function SearchPageReducer(state = initialState, action) {
       (x) => fromJS(x.toJS().filter((y) => y !== action.value)));
     case AGG_LOADED:
       return state.setIn(['aggs', action.agg],
-        fromJS(Object.assign({}, action.data.aggs[action.agg], { loaded: true })));
+        fromJS(Object.assign({}, action.data.aggs[action.agg], { loading: false, loaded: true })));
+    case CROWD_AGG_LOADED:
+      return state.setIn(['crowdAggs', action.agg],
+        fromJS(Object.assign({}, action.data[action.agg], { loading: false, loaded: true })));
+    case CROWD_AGG_SELECTED:
+      return state.updateIn(['aggFilters'],
+        (x) => fromJS(Object.assign({}, x.toJS(), { [`fm_${action.agg}`]: (x.get(action.agg) || []).concat([action.value]) })));
+    case CROWD_AGG_REMOVED:
+      return state.updateIn(['aggFilters', `fm_${action.agg}`],
+      (x) => fromJS(x.toJS().filter((y) => y !== action.value)));
     default:
       return state;
   }

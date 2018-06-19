@@ -122,6 +122,8 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
               onAggRemoved={this.props.actions.aggRemoved}
               onAggSelected={this.props.actions.aggSelected}
               onCrowdAggViewed={this.props.actions.crowdAggViewed}
+              onCrowdAggSelected={this.props.actions.crowdAggSelected}
+              onCrowdAggRemoved={this.props.actions.crowdAggRemoved}
             />
           </Col>
           <Col md={10} id="search-main">

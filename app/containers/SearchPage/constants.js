@@ -18,3 +18,7 @@ export const SEARCH_LOADING = 'app/SearchPage/SEARCH_LOADING';
 export const AGG_SELECTED = 'app/SearchPage/AGG_SELECTED';
 export const AGG_REMOVED = 'app/SearchPage/AGG_REMOVED';
 export const CROWD_AGG_VIEWED = 'app/SearchPage/CROWD_AGG_VIEWED';
+export const CROWD_AGG_LOADED = 'app/SearchPage/CROWD_AGG_LOADED';
+export const CROWD_AGG_LOADED_ERROR = 'app/SearchPage/CROWD_AGG_LOADED_ERROR';
+export const CROWD_AGG_SELECTED = 'app/SearchPage/CROWD_AGG_SELECTED';
+export const CROWD_AGG_REMOVED = 'app/SearchPage/CROWD_AGG_REMOVED';
