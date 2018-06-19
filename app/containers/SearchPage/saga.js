@@ -11,6 +11,9 @@ import {
   DATA_FETCHED,
   AGG_SELECTED,
   AGG_REMOVED,
+  CROWD_AGG_VIEWED,
+  CROWD_AGG_SELECTED,
+  CROWD_AGG_REMOVED,
 } from './constants';
 import {
   searchLoaded,
@@ -19,6 +22,8 @@ import {
   aggLoaded,
   aggLoadedError,
   searchLoading,
+  crowdAggLoaded,
+  crowdAggLoadedError,
 } from './actions';
 import searchSelector from './selectors';
 
@@ -38,6 +43,24 @@ export function* loadAgg(data) {
     yield put(aggLoaded(data.agg, results.data));
   } catch (err) {
     yield put(aggLoadedError(data.agg, err));
+  }
+}
+
+export function* loadCrowdAgg(data) {
+  const searchPage = yield select(searchSelector());
+  if (searchPage.crowdAggs[data.agg].loaded) {
+    return;
+  }
+  try {
+    const params = yield call(getParams, searchPage, data);
+    const results = yield call(
+      client.post,
+      '/studies/crowd_agg_buckets',
+      Object.assign({}, params, { agg: data.agg })
+    );
+    yield put(crowdAggLoaded(data.agg, results.data));
+  } catch (err) {
+    yield put(crowdAggLoadedError(data.agg, err));
   }
 }
 
@@ -100,8 +123,11 @@ export function* handleAgg(action) {
  */
 export default function* loadSearch() {
   yield takeEvery(AGG_VIEWED, loadAgg);
+  yield takeEvery(CROWD_AGG_VIEWED, loadCrowdAgg);
   yield takeEvery(DATA_FETCHED, dataFetched);
   yield takeEvery(AGG_SELECTED, handleAgg);
   yield takeEvery(AGG_REMOVED, handleAgg);
+  yield takeEvery(CROWD_AGG_SELECTED, handleAgg);
+  yield takeEvery(CROWD_AGG_REMOVED, handleAgg);
   yield takeEvery(SEARCH_CHANGED, doSearch);
 }

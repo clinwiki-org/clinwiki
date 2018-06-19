@@ -15,6 +15,11 @@ import {
   SEARCH_LOADING,
   AGG_SELECTED,
   AGG_REMOVED,
+  CROWD_AGG_VIEWED,
+  CROWD_AGG_LOADED,
+  CROWD_AGG_LOADED_ERROR,
+  CROWD_AGG_SELECTED,
+  CROWD_AGG_REMOVED,
 } from './constants';
 
 export function searchChanged(searchQuery) {
@@ -46,6 +51,10 @@ export function aggViewed(agg) {
   return { type: AGG_VIEWED, agg };
 }
 
+export function crowdAggViewed(agg) {
+  return { type: CROWD_AGG_VIEWED, agg };
+}
+
 export function aggLoaded(agg, data) {
   return { type: AGG_LOADED, agg, data };
 }
@@ -53,6 +62,15 @@ export function aggLoaded(agg, data) {
 export function aggLoadedError(agg, error) {
   return { type: AGG_LOADED_ERROR, agg, error };
 }
+
+export function crowdAggLoaded(agg, data) {
+  return { type: CROWD_AGG_LOADED, agg, data };
+}
+
+export function crowdAggLoadedError(agg, error) {
+  return { type: CROWD_AGG_LOADED_ERROR, agg, error };
+}
+
 
 export function dataFetched(state, match = { params: { searchQuery: null } }) {
   const { searchQuery } = match.params;
@@ -69,4 +87,12 @@ export function aggSelected(agg, value) {
 
 export function aggRemoved(agg, value) {
   return { type: AGG_REMOVED, agg, value };
+}
+
+export function crowdAggSelected(agg, value) {
+  return { type: CROWD_AGG_SELECTED, agg, value };
+}
+
+export function crowdAggRemoved(agg, value) {
+  return { type: CROWD_AGG_REMOVED, agg, value };
 }

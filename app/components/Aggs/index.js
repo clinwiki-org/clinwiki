@@ -6,6 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import AggDropdown from 'components/AggDropdown';
 
 const aggsOrdered = [
@@ -17,39 +18,53 @@ const aggsOrdered = [
 
 class Aggs extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
-  constructor(props) {
-    super(props);
-    this.onAggViewed = this.onAggViewed.bind(this);
-    this.onAggSelected = this.onAggSelected.bind(this);
-    this.onAggRemoved = this.onAggRemoved.bind(this);
-  }
-
-  onAggViewed(k) {
-    this.props.onAggViewed(k);
-  }
-
-  onAggSelected(k, v) {
-    this.props.onAggSelected(k, v);
-  }
-
-  onAggRemoved(k, v) {
-    this.props.onAggRemoved(k, v);
-  }
-
   render() {
-    if (this.props.aggs) {
+    const {
+      crowdAggs,
+      aggs,
+      aggFilters,
+      onAggViewed,
+      onAggSelected,
+      onAggRemoved,
+      onCrowdAggViewed,
+      onCrowdAggRemoved,
+      onCrowdAggSelected,
+    } = this.props;
+    let crowdAggDropdowns = null;
+    if (!_.isEmpty(crowdAggs)) {
+      crowdAggDropdowns = (
+        <div>
+          <h4>Crowd Facets</h4>
+          {Object.keys(crowdAggs).map((key) => (
+            <AggDropdown
+              key={key}
+              agg={key}
+              data={crowdAggs[key]}
+              selectedKeys={aggFilters[`fm_${key}`]}
+              onAggViewed={onCrowdAggViewed}
+              onAggRemoved={onCrowdAggRemoved}
+              onAggSelected={onCrowdAggSelected}
+            />
+          ))}
+        </div>
+      );
+    }
+    if (!_.isEmpty(aggs)) {
       return (
         <div>
-          {aggsOrdered.map((k) => this.props.aggs[k] ?
-            (<AggDropdown
-              key={k}
-              agg={k}
-              selectedKeys={this.props.aggFilters[k]}
-              data={this.props.aggs[k]}
-              onAggViewed={this.onAggViewed}
-              onAggRemoved={this.onAggRemoved}
-              onAggSelected={this.onAggSelected}
-            />) : null)}
+          <div>
+            {aggsOrdered.map((k) => aggs[k] ?
+              (<AggDropdown
+                key={k}
+                agg={k}
+                selectedKeys={aggFilters[k]}
+                data={aggs[k]}
+                onAggViewed={onAggViewed}
+                onAggRemoved={onAggRemoved}
+                onAggSelected={onAggSelected}
+              />) : null)}
+          </div>
+          {crowdAggDropdowns}
         </div>
       );
     }
@@ -60,9 +75,13 @@ class Aggs extends React.Component { // eslint-disable-line react/prefer-statele
 Aggs.propTypes = {
   aggFilters: PropTypes.object,
   aggs: PropTypes.object,
+  crowdAggs: PropTypes.object,
   onAggViewed: PropTypes.func,
   onAggSelected: PropTypes.func,
   onAggRemoved: PropTypes.func,
+  onCrowdAggViewed: PropTypes.func,
+  onCrowdAggRemoved: PropTypes.func,
+  onCrowdAggSelected: PropTypes.func,
 };
 
 export default Aggs;
