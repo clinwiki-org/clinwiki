@@ -1,7 +1,7 @@
 class StudiesController < ApplicationController
   include SearchHelper
   before_action :get_study, only: [:show, :edit]
-  skip_before_filter :verify_authenticity_token, only: [:search, :index, :agg_buckets]
+  skip_before_filter :verify_authenticity_token, only: [:search, :index, :agg_buckets, :crowd_agg_buckets]
   skip_before_filter :authenticate_user!  # todo -- figure out
 
   def search
@@ -10,6 +10,10 @@ class StudiesController < ApplicationController
 
   def agg_buckets
     render json: get_agg_buckets
+  end
+
+  def crowd_agg_buckets
+    render json: get_crowd_agg_buckets
   end
 
   def index

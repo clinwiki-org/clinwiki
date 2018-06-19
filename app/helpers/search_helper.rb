@@ -55,6 +55,21 @@ module SearchHelper
     }
   end
 
+  # @return [Hash]
+  def get_crowd_agg_buckets
+    agg = params["agg"]
+    qargs = query_args(agg)
+    qargs[:aggs] = {
+      "fm_#{agg}" => {}
+    }
+    qargs[:per_page] = 0
+    qargs[:smart_aggs] = true
+    @studies = Study.search(search_query, qargs)
+    {
+      agg => @studies.aggs["fm_#{agg}"]
+    }
+  end
+
   # Transforms the study result to the expected format
   # This is useful for minimizing the size of the response as well
   # @param [Hash] result a searchkick raw elasticsearch result
@@ -190,7 +205,7 @@ module SearchHelper
     :average_rating, :tags, :overall_status, :facility_states,
     :facility_cities, :facility_names, :study_type, :sponsors,
     :browse_condition_mesh_terms, :phase, :rating_dimensions,
-    :browse_interventions_mesh_terms,
+    :browse_interventions_mesh_terms, :front_matter_keys,
   ]
 
   # aggregations
@@ -256,5 +271,9 @@ module SearchHelper
       limit: 10,
       order: {"_term" => "asc"},
     },
+    front_matter_keys: {
+      limit: 10,
+      order: {"_term" => "asc"},
+    }
   }
 end
