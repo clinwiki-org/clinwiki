@@ -39,7 +39,7 @@ namespace :import do
           else
             raise "Action #{row["Action"]} unsupported"
           end
-        elsif Study.new.respond_to?(row["Type"].to_sym)
+        else
           if row["Action"] == 'Remove'
             params[:delete_meta] = { key: row["Type"] }
             tally = lambda { removed_crowd += 1 }
@@ -50,8 +50,6 @@ namespace :import do
             }
             tally = lambda { added_crowd += 1}
           end
-        else
-          raise "Type #{row["Type"]} unsupported"
         end
         tally.call
         service.create_or_update_wiki_page_for_study(params: params, user: user)
