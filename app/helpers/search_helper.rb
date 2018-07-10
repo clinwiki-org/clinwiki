@@ -155,10 +155,10 @@ module SearchHelper
   end
 
   def get_page_params
-    if params.has_key?(:page) && params.has_key?(:pageSize)
+    if params.has_key?(:page) && (params.has_key?(:pageSize) || params.has_key?(:page_size))
       {
         page: params[:page] + 1,
-        per_page: params[:pageSize],
+        per_page: params.fetch(:pageSize, params.fetch(:page_size)),
       }
     else
       {
