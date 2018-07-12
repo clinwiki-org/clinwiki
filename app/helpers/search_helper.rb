@@ -101,23 +101,32 @@ module SearchHelper
       agg_filters = JSON.parse(agg_filters)
     end
 
-    new_agg_filters = params.fetch(:aggFilters, {})
-    if !new_agg_filters.empty?
+    new_agg_filters = params.fetch(:aggFilters, params.fetch(:agg_filters, {}))
+    if new_agg_filters.is_a?(Array)
       where = {_and: []}
-      new_agg_filters.each do |key, vals|
-        next if (!curr_agg.nil?) && curr_agg == key
-        conjs = []
-        unless vals.nil? || vals.empty?
-          vals.each do |val|
-            conjs << {key => val}
-          end
+      new_agg_filters.each do |filter|
+        if filter.field && !filter.values.empty?
+          where[:_and] << {:_or => filter.values.map{ |val| { filter.field => val } } }
         end
-        where[:_and] << {:_or => conjs} unless conjs.empty?
       end
     else
-      where = Hash[agg_filters.map{|key, val|
-        [key, val]
-      }.reject{|x| x[1].empty? }.map{|x| [x[0], x[1].keys]}]
+      if !new_agg_filters.empty?
+        where = {_and: []}
+        new_agg_filters.each do |key, vals|
+          next if (!curr_agg.nil?) && curr_agg == key
+          conjs = []
+          unless vals.nil? || vals.empty?
+            vals.each do |val|
+              conjs << {key => val}
+            end
+          end
+          where[:_and] << {:_or => conjs} unless conjs.empty?
+        end
+      else
+        where = Hash[agg_filters.map{|key, val|
+          [key, val]
+        }.reject{|x| x[1].empty? }.map{|x| [x[0], x[1].keys]}]
+      end
     end
 
     ["start_date", "completion_date"].each do |key|
@@ -149,6 +158,8 @@ module SearchHelper
       }]
     elsif params[:sort]
       params[:sort]
+    elsif params[:sorts]
+      Hash[params[:sorts].map{|x| x.split(' ')}]
     else
       {_score: :desc}
     end
@@ -158,7 +169,7 @@ module SearchHelper
     if params.has_key?(:page) && (params.has_key?(:pageSize) || params.has_key?(:page_size))
       {
         page: params[:page] + 1,
-        per_page: params.fetch(:pageSize, params.fetch(:page_size)),
+        per_page: params.fetch(:pageSize, params.fetch(:page_size, 25)),
       }
     else
       {

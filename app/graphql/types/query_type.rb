@@ -1,24 +1,17 @@
 require_relative './search_result_type'
 module Types
   class QueryType < BaseObject
-    # Add root-level fields here.
-    # They will be entry points for queries on your schema.
-
-    # TODO: remove me
-    field :test_field, String, null: false,
-      description: "An example field added by the generator"
-    def test_field
-      "Hello World!"
-    end
-
     field :search, Types::SearchResultSetType, null: false do
-      argument :q, String, 'an optional query -- defaults to current user default query', required: false
-      argument :page, Int, 'which page of search results we want', required: false, default_value: 1
-      argument :pageSize, Int, 'how many results we want', required: false, default_value: 25
+      argument :params, type: Types::SearchInputType, required: true
     end
     def search(args)
-      p args
-      SearchService.new(args, self.context).search_studies
+      SearchService.new(args[:params], self.context).search_studies
+    end
+    field :agg_buckets, Types::SearchResultSetType, null: false do
+      argument :params, type: Types::SearchInputType, required: true
+    end
+    def agg_buckets(args)
+      SearchService.new(args[:params], self.context).get_agg_buckets
     end
   end
 end
