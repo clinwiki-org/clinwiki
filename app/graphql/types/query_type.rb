@@ -1,3 +1,4 @@
+require_relative './health_type'
 require_relative './search_result_type'
 module Types
   class QueryType < BaseObject
@@ -13,5 +14,14 @@ module Types
     def agg_buckets(args)
       SearchService.new(args[:params], self.context).get_agg_buckets
     end
+    field :health, Types::HealthCheckType, null: false
+    def health()
+      ActiveRecord::Base.establish_connection
+      ActiveRecord::Base.connection
+      return {
+        healthy: ActiveRecord::Base.connected?
+      }
+    end
+
   end
 end
