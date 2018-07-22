@@ -2029,7 +2029,7 @@ core-js@^1.0.0:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
-core-js@^2.4.0, core-js@^2.4.1, core-js@^2.5.0, core-js@^2.5.1:
+core-js@^2.4.0, core-js@^2.4.1, core-js@^2.5.0:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.3.tgz#8acc38345824f16d8365b7c9b4259168e8ed603e"
 
@@ -6138,10 +6138,6 @@ normalize-url@^1.4.0:
     query-string "^4.1.0"
     sort-keys "^1.0.0"
 
-normalize.css@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/normalize.css/-/normalize.css-5.0.0.tgz#7cec875ce8178a5333c4de80b68ea9c18b9d7c37"
-
 npm-path@^2.0.2:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/npm-path/-/npm-path-2.0.4.tgz#c641347a5ff9d6a09e4d9bce5580c4f505278e64"
@@ -7163,7 +7159,7 @@ react-bootstrap@^0.32.1:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
-react-dom@16.2.0, react-dom@^16.0.0:
+react-dom@16.2.0:
   version "16.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
   dependencies:
@@ -7328,27 +7324,6 @@ react-side-effect@^1.1.0:
     exenv "^1.2.1"
     shallowequal "^1.0.1"
 
-react-signup-login-component@../ReactSignupLoginComponent:
-  version "0.0.0-development"
-  dependencies:
-    core-js "^2.5.1"
-    normalize.css "^5.0.0"
-    prop-types "^15.6.0"
-    react "^16.0.0"
-    react-dom "^16.0.0"
-    react-signup-login-component "^1.0.0"
-
-react-signup-login-component@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-signup-login-component/-/react-signup-login-component-1.0.2.tgz#21c70ef550ec617006e61fbfb94c248bc2fccc2f"
-  dependencies:
-    core-js "^2.5.1"
-    normalize.css "^5.0.0"
-    prop-types "^15.6.0"
-    react "^16.0.0"
-    react-dom "^16.0.0"
-    react-signup-login-component "^1.0.0"
-
 react-spinners@^0.2.6:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.2.6.tgz#15ba678d07636c3cf760563b0efb7b2566f465cb"
@@ -7394,7 +7369,7 @@ react-transition-group@^2.0.0, react-transition-group@^2.2.0, react-transition-g
     prop-types "^15.5.8"
     warning "^3.0.0"
 
-react@16.2.0, react@^16.0.0:
+react@16.2.0:
   version "16.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
   dependencies:

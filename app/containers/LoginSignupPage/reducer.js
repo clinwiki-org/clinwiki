@@ -32,6 +32,9 @@ function loginSignupPageReducer(state = initialState, action) {
     case LOGIN_ERRORS_ACTION:
     case SIGNUP_ERRORS_ACTION:
     case RESET_PASSWORD_ERRORS_ACTION:
+      if (action.errors.errors) {
+        return state.set('errors', action.errors.errors);
+      }
       return state.set('errors', action.errors);
     case RESET_FINALIZED_ACTION:
       return state.set('resetSent', true);

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -84,14 +85,15 @@ export class LoginSignupPage extends React.Component { // eslint-disable-line re
   render() {
     let alert;
     if (this.props.LoginSignupPage.errors) {
+      const errors = _.map(this.props.LoginSignupPage.errors, (value, key) => (
+        <ListGroupItem key={key} bsStyle="danger">
+          <b>{key}</b> {_.isArray(value) ? value.join(' ') : value}
+        </ListGroupItem>
+      ));
       alert = (
         <Alert bsStyle="danger">
           <ListGroup>
-            {Object.keys(this.props.LoginSignupPage.errors).map((key) => (
-              <ListGroupItem key={key} bsStyle="danger">
-                <b>{key}</b> {this.props.LoginSignupPage.errors[key]}
-              </ListGroupItem>
-            ))}
+            {errors}
           </ListGroup>
         </Alert>
       );
