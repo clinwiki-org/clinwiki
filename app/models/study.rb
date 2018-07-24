@@ -227,7 +227,8 @@ class Study < AactBase
   # Indexing data from the wiki page
   # @return [Hash]
   def wiki_search_data
-    {} if wiki_page.nil? else wiki_page.search_data
+    return {} if wiki_page.nil?
+    return wiki_page.search_data
   end
 
   # Defines the fields to be indexed by searchkick
