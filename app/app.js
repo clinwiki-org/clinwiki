@@ -18,6 +18,8 @@ import 'sanitize.css/sanitize.css';
 import { Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 
+import { ApolloProvider } from "react-apollo";
+
 // Import root app
 import App from 'containers/App';
 
@@ -40,6 +42,7 @@ import 'file-loader?name=[name].[ext]!./.htaccess';
 /* eslint-enable import/no-unresolved, import/extensions */
 
 import configureStore from './configureStore';
+import apolloClient from './configureApollo';
 
 // Import i18n messages
 import { translationMessages } from './i18n';
@@ -61,13 +64,17 @@ const alertOptions = {
   offset: '14',
 };
 
+
+
 const render = (messages) => {
   ReactDOM.render(
     <AlertProvider template={AlertTemplate} {...alertOptions}>
       <Provider store={store}>
         <LanguageProvider messages={messages}>
           <ConnectedRouter history={history}>
-            <App />
+            <ApolloProvider client={apolloClient}>
+              <App />
+            </ApolloProvider>
           </ConnectedRouter>
         </LanguageProvider>
       </Provider>

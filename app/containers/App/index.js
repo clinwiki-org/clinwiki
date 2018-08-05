@@ -20,6 +20,7 @@ import injectReducer from 'utils/injectReducer';
 import AuthHeader from 'containers/AuthHeader/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import SearchPage from 'containers/SearchPage/Loadable';
+import gqlSearchPage from 'gql_containers/SearchPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import StudyPage from 'containers/StudyPage/Loadable';
 import LoginSignupPage from 'containers/LoginSignupPage/Loadable';
@@ -39,6 +40,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={SearchPage} />
           <Route exact path="/search" component={SearchPage} />
+          <route exact path="/gqlsearch" component={gqlSearchPage} />
           <Route path="/search/:searchQuery" component={SearchPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/study/:nctId/review/:reviewId/edit" component={StudyPage} />
