@@ -77,7 +77,8 @@ query ($params:SearchInput!) {
 
 export class GqlSearchPage extends React.PureComponent {
   constructor(props) {
-      super(props)
+    super(props)
+    this.tdProps = this.tdProps.bind(this);
   }
 
   getColumnsList() {
