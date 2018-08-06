@@ -213,6 +213,7 @@
   },
   "dependencies": {
     "apollo-boost": "^0.1.12",
+    "apollo-cache-inmemory": "^1.2.6",
     "axios": "^0.17.1",
     "babel-polyfill": "6.23.0",
     "chalk": "^1.1.3",

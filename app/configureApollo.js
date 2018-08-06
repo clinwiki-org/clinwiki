@@ -1,11 +1,18 @@
 import ApolloClient from "apollo-boost";
+import { InMemoryCache } from 'apollo-cache-inmemory';
+
+const cache = new InMemoryCache()
 
 const client = new ApolloClient({
   uri: "http://localhost:3000/graphql",
+  cache,
   clientState: {
     defaults: {
-      search_text: "",
-      aggs: []
+      q: "",
+      page: 0,
+      pageSize: 25,
+      sorts: [],
+      aggFilter: [],
     }
   }
 });
