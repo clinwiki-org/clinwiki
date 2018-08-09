@@ -15,5 +15,4 @@ class SearchService
   def current_user
     ctx.fetch(:current_user, nil)
   end
-
 end

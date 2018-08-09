@@ -14,6 +14,13 @@ module Types
     def agg_buckets(args)
       SearchService.new(args[:params], self.context).get_agg_buckets
     end
+    field :crowd_agg_buckets, Types::SearchResultSetType, null: false do
+      argument :params, type: Types::SearchInputType, required: true
+    end
+    def crowd_agg_buckets(args)
+      # we do this to accommodate get_crowd_agg_buckets returning a different structure in the old impl
+      { aggs: SearchService.new(args[:params], self.context).get_crowd_agg_buckets }
+    end
     field :health, Types::HealthCheckType, null: false
     def health()
       ActiveRecord::Base.establish_connection
