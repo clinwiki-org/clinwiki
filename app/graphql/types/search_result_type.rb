@@ -2,7 +2,7 @@ module Types
   SearchResultType = GraphQL::ObjectType.define do
     name "SearchResult"
 
-    field :field, types.String, "An arbitrary search result field" do
+    field :field, !types.String, "An arbitrary search result field" do
       argument :name, !types.String, "The field we're requesting"
       resolve -> (obj, args, context) do
         obj.fetch(args.name.to_sym, nil)
