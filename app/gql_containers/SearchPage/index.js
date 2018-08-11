@@ -1,243 +1,125 @@
 
 import React from 'react';
 import _ from 'lodash';
-import LoadingPane from 'components/LoadingPane';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { Helmet } from 'react-helmet';
-import { Grid, Row, Col } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
 
-import ReactTable from 'react-table';
-import ReactStars from 'react-stars';
-import 'react-table/react-table.css';
-
-import SearchFieldName from 'components/SearchFieldName';
-import Aggs from '../../components/Aggs';
-
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
+import  SearchView  from "./view";
 
 
-const SearchWrapper = styled.div`
-  .rt-tr {
-    cursor: pointer;
+
+const search_query = (fields) => {
+  let data;
+  if (fields && fields.length > 0) {
+    const field_list = fields.map(name => `${name}: field(name: "${name}")`).join('\n')
+    data = `data { ${field_list} }`
   }
-  #search-sidebar{
-    padding-right: 0;
-  }
-  #search-main {
-    padding-left: 0;
-    padding-top: 6px;
-  }
-`;
-
-
-// const QUERY_AGG_BUCKETS=gql`
-//   query ($agg : String!) {
-//     aggBuckets(params: {agg: $agg}) {
-//       aggs {
-//         name
-//         docCountErrorUpperBound
-//         sumDocOtherCount
-//         buckets {
-//           key
-//           docCount
-//         }
-//       }
-//     }
-//   }`
-
-const SEARCH_QUERY=gql`
-query ($params:SearchInput!) {
-  search (params:$params) {
-    recordsTotal
-    aggs {
-      name
-      docCountErrorUpperBound
-      sumDocOtherCount
-      buckets {
-        key
-        doc_count: docCount
+  return gql`
+    query ($params:SearchInput!) {
+      search (params:$params) {
+        recordsTotal
+        aggs {
+          name
+          buckets {
+            key
+            docCount
+          }
+        }
+        ${data}
       }
-    }
-    data {
-      nct_id: field(name: "nct_id")
-      average_rating: field(name: "average_rating")
-      title: field(name: "title")
-      overall_status: field(name: "overall_status")
-      #start_date: field(name: "start_date")
-      #completion_date: field(name: "completion_date")
-    }
-  }
-}`
+    }`
+}
 
-
-export class GqlSearchPage extends React.PureComponent {
+// Replace redux with a simple component to store the page state
+export class SearchState extends React.Component {
   constructor(props) {
     super(props)
-    this.tdProps = this.tdProps.bind(this);
-  }
-
-  getColumnsList() {
-    let cols = ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'];
-    if (_.get(this.props, 'AuthHeader.user.search_result_columns')) {
-      cols = Object.keys(this.props.AuthHeader.user.search_result_columns);
-    }
-    return cols;
-  }
-
-  getColumns() {
-    return this.getColumnsList().map((col) => {
-      const spec = {
-        Header: <SearchFieldName field={col} />,
-        accessor: col,
-        style: {
-          overflowWrap: 'break-word',
-          overflow: 'visible',
-          whiteSpace: 'normal',
-        },
-      };
-      if (col.match('rating')) {
-        spec.Cell = (row) => (
-          <ReactStars
-            count={5}
-            edit={false}
-            value={row.value}
-          />);
-        spec.style.textAlign = 'center';
+    this.state = {
+      cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
+      // map aggName -> Set of selected args
+      aggFilters: {},
+      params: {
+          q: "",
+          page: 0,
+          pageSize: 25
+          // sorts: [],
+          // aggFilter: null, // this one cannot be []
       }
-      return spec;
-    });
-  }
-  
-  getDefaultSorted() {
-    if (_.includes(this.getColumnsList(), 'average_rating')) {
-      return [{ id: 'average_rating', desc: true }];
     }
-    return [];
   }
 
-  tdProps(__, rowInfo) {
-    return {
-      onClick: (e, handleOriginal) => {
-        this.props.history.push(`/study/${rowInfo.row.nct_id}`);
-        return handleOriginal();
-      },
-    };
-  }
-
-  render_aggs(data,client) {
-    const empty = {}
-    const ignore = ()=>{}
-
-    // Next step:
-    // Do less mappnig here and instead change Aggs component
-    // to use gql field names. Drop support for old search page
-    // * Use QUERY_AGG_BUCKETS to get full bucket list on first view
-    //   - let apollo InMemoryCache handle not sending the same query again
-
-    const reducer = (acc,agg) => {
-      acc[agg.name] = {
-        buckets: agg.buckets,
-        doc_count_error_upper_bound : agg.docCountErrorUpperBound,
-        sum_other_doc_count: agg.sumDocOtherCount,
-        loading: false,
-        loaded: false
-      };
-      return acc;
+  columns() {
+    if (_.get(this.props, 'AuthHeader.user.search_result_columns')) {
+      return Object.keys(this.props.AuthHeader.user.search_result_columns)
     }
-    const aggs = data.search.aggs.reduce(reducer, {})
-
-    return <Aggs
-            aggFilters={empty}
-            aggs={aggs}
-            onAggViewed={ignore}
-            onAggRemoved={ignore}
-            onAggSelected={ignore}
-            crowdAggs={empty}
-            />
-  }
-  render_search_result(loading, data) {
-    const empty = {}
-    const ignore = ()=>{}
-    const rows = 
-      _.get(data, "search.data") || []
-    const pageSize = 25 // from @client state
-    const totalPages = loading ? 0 : Math.ceil(data.search.recordsTotal / pageSize);
-
-    return <Grid>
-            <Row>
-              <Col md={12}>
-                <ReactTable
-                  className="-striped -highlight"
-                  columns={this.getColumns()}
-                  manual
-                  onFetchData={ignore}
-                  data={rows}
-                  pages={totalPages}
-                  loading={loading}
-                  defaultPageSize={pageSize}
-                  getTdProps={this.tdProps}
-                  defaultSorted={this.getDefaultSorted()}
-                  defaultSortDesc
-                />
-              </Col>
-            </Row>
-          </Grid>
+    else {
+      return this.state.cols
+    }
   }
 
-  render_query = ({loading,error,data,client}) => {
+  addAggFilter = (agg, item) => {
+      console.log(`add ${item} to ${agg}`)
+      let aggFilters = this.state.aggFilters
+      if (! aggFilters[agg]) {
+          aggFilters[agg] = new Set()
+      }
+      aggFilters[agg].add(item)
+      this.mergeState({ aggFilters })
+  }
+  removeAggFilter = (agg, item) => {
+      console.log(`remove ${item} from ${agg}`)
+      let aggFilters = this.state.aggFilters
+      if (aggFilters[agg]) {
+          aggFilters[agg].delete(item)
+      }
+      this.mergeState({ aggFilters })
+  }
+
+  mergeState = (args) => {
+      let newState = { ... this.state, ... args }
+      this.setState(newState)
+  }
+
+  // Agg management
+  //
+
+  render_search = ({loading,error,data}) => {
     if (error) {
       console.log(error)
       return <div>{error.graphQLErrors.map(e => <div>{e.message}</div>)}</div>
     }
-    return <Row>
-        <Col md={2} id="search-sidebar">
-          { loading ? <LoadingPane /> : this.render_aggs(data,client) }
-        </Col>
-        <Col md={10} id="search-main">
-          { this.render_search_result(loading, data) }
-        </Col>
-      </Row>
+    return <SearchView 
+      loading={loading} 
+      cols={this.columns()} 
+      rows={data.search && data.search.data} 
+      gridProps={{pageSize: this.state.params.pageSize, page: this.state.params.page}}
+      aggs={data.search && data.search.aggs} 
+      crowdAggs={[]}
+      aggFilters={this.state.aggFilters}
+      addFilter={this.addAggFilter}
+      removeFilter={this.removeAggFilter}
+      />
   }
 
   render() {
-    if (!this.props.AuthHeader.sessionChecked) {
-        return <LoadingPane />
+    if (this.props.AuthHeader.sessionChecked) {
+      const query = search_query(this.columns())
+      return <Query query={query} variables={{ params: this.state.params}}>
+        { this.render_search }
+        </Query>
     }
-
-    // query params will eventually come from apollo-link local state
-    // will probably need to be a second query
-    const query_param = {
-      params: {
-        q: "", 
-        pageSize: 25, 
-        sorts: ["average_rating desc"], 
-        aggFilters: [
-          {field: "phase", values: ["Early Phase 1", "Phase 1"]}, 
-          // {field: "browse_condition_mesh_terms", values: ["Brain Neoplasms", "Breast Neoplasms"]}, 
-          // {field: "overall_status", values: ["Recruiting"]}
-        ]
-      }
+    else {
+      return <SearchView 
+        loading={true}
+        cols={this.columns()} />
     }
-
-    return <SearchWrapper>
-    <Helmet>
-      <title>Search</title>
-      <meta name="description" content="Description of SearchPage" />
-    </Helmet>
-    <Query query={SEARCH_QUERY} variables={query_param}>
-      {this.render_query}
-    </Query>
-    </SearchWrapper>
   }
 }
 
-// TODO: Write the auth header to the Apollo store and query it
-// That will make it easier when we eventually move auth to graphql
 const mapStateToProps = createStructuredSelector({
   AuthHeader: makeSelectAuthHeader(),
 });
@@ -245,4 +127,4 @@ const withConnect = connect(mapStateToProps);
 
 export default compose(
   withConnect
-  (GqlSearchPage))
+  (SearchState))

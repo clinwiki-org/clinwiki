@@ -8,13 +8,9 @@ const client = new ApolloClient({
   cache,
   clientState: {
     defaults: {
-      q: "",
-      page: 0,
-      pageSize: 25,
-      sorts: [],
-      aggFilter: [],
     }
-  }
+  },
+  resolvers: {}
 });
 
 export default client;
