@@ -42,13 +42,10 @@ export class SearchState extends React.Component {
       cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
       // map aggName -> Set of selected args
       aggFilters: {},
-      params: {
-          q: "",
-          page: 0,
-          pageSize: 25
-          // sorts: [],
-          // aggFilter: null, // this one cannot be []
-      }
+      query: "",
+      page: 0,
+      pageSize: 25,
+      sorts: []
     }
   }
 
@@ -95,7 +92,7 @@ export class SearchState extends React.Component {
       loading={loading} 
       cols={this.columns()} 
       rows={data.search && data.search.data} 
-      gridProps={{pageSize: this.state.params.pageSize, page: this.state.params.page}}
+      gridProps={{pageSize: this.state.pageSize, page: this.state.page}}
       aggs={data.search && data.search.aggs} 
       crowdAggs={[]}
       aggFilters={this.state.aggFilters}
@@ -107,7 +104,18 @@ export class SearchState extends React.Component {
   render() {
     if (this.props.AuthHeader.sessionChecked) {
       const query = search_query(this.columns())
-      return <Query query={query} variables={{ params: this.state.params}}>
+      const filters = 
+        Object.keys(this.state.aggFilters)
+        .filter(k => this.state.aggFilters[k].size > 0)
+        .map(k => ({field: k, values: [...this.state.aggFilters[k].values()]}))
+      const params = {
+          q: this.state.query,
+          page: this.state.page,
+          pageSize: this.state.pageSize,
+          aggFilters: filters.length == 0 ? undefined : filters
+      }
+      console.log(params)
+      return <Query query={query} variables={{params: params}}>
         { this.render_search }
         </Query>
     }
