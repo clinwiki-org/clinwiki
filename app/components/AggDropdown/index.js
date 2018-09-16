@@ -43,7 +43,6 @@ class AggDropdown extends React.Component {
   }
 
   render() {
-    // todo, don't get the first ten items for some reason
     let menuItems = [];
     const buckets = this.props.data.buckets;
     if (buckets) {

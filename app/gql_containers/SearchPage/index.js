@@ -62,21 +62,19 @@ export class SearchState extends React.Component {
   }
 
   addAggFilter = (agg, item) => {
-      console.log(`add ${item} to ${agg}`)
-      let aggFilters = this.state.aggFilters
-      if (! aggFilters[agg]) {
-          aggFilters[agg] = new Set()
-      }
-      aggFilters[agg].add(item)
-      this.mergeState({ aggFilters })
+      console.log(`add '${item}' to ${agg}`);
+      const aggFilters = (this.state.aggFilters)
+      const filter = new Set(aggFilters[agg])
+      filter.add(item)
+      this.mergeState({ aggFilters: { ... aggFilters, [agg]: filter }})
   }
   removeAggFilter = (agg, item) => {
-      console.log(`remove ${item} from ${agg}`)
-      let aggFilters = this.state.aggFilters
-      if (aggFilters[agg]) {
-          aggFilters[agg].delete(item)
+      console.log(`remove '${item}' from ${agg}`);
+      const aggFilters = this.state.aggFilters
+      const filter = new Set(aggFilters[agg])
+      if (filter.delete(item)) {
+          this.mergeState({ aggFilters: {... aggFilters, [agg]: filter }})
       }
-      this.mergeState({ aggFilters })
   }
 
   mergeState = (args) => {
@@ -88,6 +86,7 @@ export class SearchState extends React.Component {
   //
 
   render_search = ({loading,error,data}) => {
+    console.log(`render-loading=${loading}`)
     if (error) {
       console.log(error)
       return <div>{error.graphQLErrors.map(e => <div>{e.message}</div>)}</div>

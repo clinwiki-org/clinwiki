@@ -50,7 +50,7 @@ const QUERY_AGG_BUCKETS = gql`
 
 class AggDropDown extends React.PureComponent {
   // If aggs is null show the props' aggs otherwise show aggs
-  state = { buckets: null, loading: false };
+  state = { buckets: null, loading: false, isOpen: false };
   refreshAggs = (buckets) => {
     this.setState({ buckets, loading:false });
   }
@@ -61,16 +61,19 @@ class AggDropDown extends React.PureComponent {
             {...this.props} 
             buckets={this.state.buckets||this.props.buckets} 
             loading={this.state.loading}
-            onLoadMore={async () => {
-                if (!this.state.buckets) {
-                    this.setState({ ... this.state, loading: true })
+            isOpen={this.state.isOpen}
+            onLoadMore={async (isOpen) => {
+                if (!isOpen) {
+                    this.setState({loading:false, isOpen: false})
+                    return
                 }
+                this.setState({ ... this.state, loading: true, isOpen: true })
                 const {data} = await client.query({
                     query: QUERY_AGG_BUCKETS,
                     variables: { agg : this.props.agg }
                 });
                 const buckets = _.get(data, "aggBuckets.aggs[0].buckets")
-                this.setState({ buckets, loading: false })
+                this.setState({ buckets, loading: false, isOpen: true })
             }}
             />
       )}
@@ -88,11 +91,12 @@ class AggDropDownView extends React.PureComponent {
         addFilter,
         removeFilter,
         loading,
+        isOpen,
         onLoadMore,
     } = this.props;
 
     let menuItems = [];
-    if (buckets) {
+    if (buckets && isOpen) {
       menuItems = Object.keys(buckets).map((key) => (
         <MenuItem
           key={key}
