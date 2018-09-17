@@ -42,6 +42,7 @@ function App() {
           <Route exact path="/search" component={SearchPage} />
           <Route exact path="/gqlsearch" component={gqlSearchPage} />
           <Route path="/search/:searchQuery" component={SearchPage} />
+          <Route path="/gqlsearch/:searchQuery" component={gqlSearchPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/study/:nctId/review/:reviewId/edit" component={StudyPage} />
           <Route path="/study/:nctId" component={StudyPage} />

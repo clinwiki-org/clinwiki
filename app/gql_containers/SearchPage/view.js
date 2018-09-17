@@ -85,7 +85,7 @@ export class SearchView extends React.PureComponent {
             />
   }
 
-  render_table(loading, columns, rows, gridProps ) {
+  render_table({loading, columns, rows, gridProps, handleGridUpdate}) {
     if(loading) {
       return <ReactTable
             className="-striped -highlight"
@@ -106,7 +106,7 @@ export class SearchView extends React.PureComponent {
             // state.sorted= [0: {id: "average rating", desc: true} ]
             // state.page = page we're on?
             // state.pageSize = 'page size dropdown' (25)
-            onFetchData={state => { console.log('grid fetch data state:'); console.log(state) }}
+            onFetchData={handleGridUpdate}
             data={rows}
             pages={totalPages}
             loading={loading}
@@ -117,17 +117,7 @@ export class SearchView extends React.PureComponent {
           />
   }
 
-  render_query = ({loading,error,data}) => {
-  }
-
   render() {
-    const {
-      loading,
-      cols,
-      rows,
-      gridProps,
-    } = this.props;
-
     return <SearchWrapper>
     <Helmet>
       <title>Search</title>
@@ -135,13 +125,13 @@ export class SearchView extends React.PureComponent {
     </Helmet>
       <Row>
         <Col md={2} id="search-sidebar">
-          { loading ? <LoadingPane /> : this.render_aggs(this.props) }
+          { this.props.loading ? <LoadingPane /> : this.render_aggs(this.props) }
         </Col>
         <Col md={10} id="search-main">
           <Grid>
             <Row>
               <Col md={12}>
-                { this.render_table(loading, cols, rows, gridProps) }
+                { this.render_table(this.props) }
               </Col>
             </Row>
           </Grid>

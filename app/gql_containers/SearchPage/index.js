@@ -38,13 +38,14 @@ const search_query = (fields) => {
 export class SearchState extends React.Component {
   constructor(props) {
     super(props)
+    const query = _.get(props, "match.params.searchQuery", "")
     this.state = {
       cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
       // map aggName -> Set of selected args
       aggFilters: {},
-      query: "",
+      query: query,
       page: 0,
-      pageSize: 25,
+      pageSize: 20,
       sorts: []
     }
   }
@@ -73,6 +74,13 @@ export class SearchState extends React.Component {
           this.mergeState({ aggFilters: {... aggFilters, [agg]: filter }})
       }
   }
+  handleGridUpdate = (gridData) => {
+      if (this.state.oldGridData != gridData) {
+        const {sorted,page,pageSize} = gridData
+        const sorts = sorted.map(x => x.id);
+        this.setState({ ... this.state, oldGridData:gridData, page, pageSize, sorts })
+      }
+  }
 
   mergeState = (args) => {
       let newState = { ... this.state, ... args }
@@ -83,21 +91,30 @@ export class SearchState extends React.Component {
   //
 
   render_search = ({loading,error,data}) => {
-    console.log(`render-loading=${loading}`)
     if (error) {
       console.log(error)
+      if (error.networkError) {
+          return <div>Invalid response. {error.networkError.toString()}</div>
+      }
       return <div>{error.graphQLErrors.map(e => <div>{e.message}</div>)}</div>
+    }
+    const gridProps = {
+        page: this.state.page,
+        pageSize: this.state.pageSize,
+        recordsTotal: data.search && data.search.recordsTotal
     }
     return <SearchView 
       loading={loading} 
-      cols={this.columns()} 
+      columns={this.columns()} 
       rows={data.search && data.search.data} 
-      gridProps={{pageSize: this.state.pageSize, page: this.state.page}}
+      gridProps={gridProps}
+      handleGridUpdate={this.handleGridUpdate}
       aggs={data.search && data.search.aggs} 
       crowdAggs={[]}
       aggFilters={this.state.aggFilters}
       addFilter={this.addAggFilter}
       removeFilter={this.removeAggFilter}
+      history={this.props.history}
       />
   }
 
@@ -108,13 +125,14 @@ export class SearchState extends React.Component {
         Object.keys(this.state.aggFilters)
         .filter(k => this.state.aggFilters[k].size > 0)
         .map(k => ({field: k, values: [...this.state.aggFilters[k].values()]}))
+      const sorts = _.get(this, "state.sorts", null)
       const params = {
           q: this.state.query,
           page: this.state.page,
           pageSize: this.state.pageSize,
+          sorts,
           aggFilters: filters.length == 0 ? undefined : filters
       }
-      console.log(params)
       return <Query query={query} variables={{params: params}}>
         { this.render_search }
         </Query>
@@ -122,7 +140,9 @@ export class SearchState extends React.Component {
     else {
       return <SearchView 
         loading={true}
-        cols={this.columns()} />
+        columns={this.columns()} 
+        handleGridUpdate={this.handleGridUpdate}
+        />
     }
   }
 }
