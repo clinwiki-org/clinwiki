@@ -18,17 +18,19 @@ const Aggs = ({
   removeFilter
 }) => {
   let crowdAggDropdowns = null;
+  let emptySet = new Set()
   if (!_.isEmpty(crowdAggs)) {
     crowdAggDropdowns = (
       <div>
         <h4>Crowd Facets</h4>
-        {Object.keys(crowdAggs).map((key) => (
+        {Object.keys(crowdAggs).map((k) => (
           <AggDropdown
-            key={key}
-            agg={key}
-            data={crowdAggs[key]}
-            selectedKeys={aggFilters[`fm_${key}`]}
-            onAggRemoved={onCrowdAggRemoved}
+            key={k}
+            agg={k}
+            selectedKeys={filters[k]||emptySet}
+            isCrowdAgg={true}
+            addFilter={addFilter}
+            removeFilter={removeFilter}
           />
         ))}
       </div>
@@ -42,7 +44,7 @@ const Aggs = ({
               (<AggDropdown
                 key={k}
                 agg={k}
-                selectedKeys={filters[k]||new Set()}
+                selectedKeys={filters[k]||emptySet}
                 buckets={aggs[k]}
                 addFilter={addFilter}
                 removeFilter={removeFilter}

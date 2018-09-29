@@ -153,26 +153,6 @@ export class SearchPage extends React.Component { // eslint-disable-line react/p
   }
 }
 
-SearchPage.propTypes = {
-  actions: PropTypes.object.isRequired,
-  match: ReactRouterPropTypes.match.isRequired,
-  history: ReactRouterPropTypes.history.isRequired,
-  SearchPage: PropTypes.shape({
-    data: PropTypes.array,
-    recordsTotal: PropTypes.number,
-    pages: PropTypes.number,
-    aggs: PropTypes.object,
-    searchQuery: PropTypes.string,
-    loading: PropTypes.bool,
-    aggFilters: PropTypes.object,
-    crowdAggs: PropTypes.object,
-    params: PropTypes.shape({
-      pageSize: PropTypes.number,
-    }),
-  }),
-  AuthHeader: PropTypes.object,
-};
-
 const mapStateToProps = createStructuredSelector({
   SearchPage: makeSelectSearchPage(),
   AuthHeader: makeSelectAuthHeader(),

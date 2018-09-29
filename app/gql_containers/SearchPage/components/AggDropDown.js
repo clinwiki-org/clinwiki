@@ -37,8 +37,6 @@ const QUERY_AGG_BUCKETS = gql`
     aggBuckets(params: {agg: $agg}) {
       aggs {
         name
-        docCountErrorUpperBound
-        sumDocOtherCount
         buckets {
           key
           docCount
@@ -47,10 +45,23 @@ const QUERY_AGG_BUCKETS = gql`
     }
   }`
 
+  const QUERY_CROWD_AGG_BUCKETA = gql`
+  query ($agg : String!) {
+    aggBuckets: crowdAggBuckets(params: {agg:$agg}) {
+      aggs {
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+  }
+  `
+
 
 class AggDropDown extends React.PureComponent {
   // If aggs is null show the props' aggs otherwise show aggs
-  state = { buckets: null, loading: false, isOpen: false };
+  state = { buckets: [], loading: false, isOpen: false };
   refreshAggs = (buckets) => {
     this.setState({ buckets, loading:false });
   }
@@ -69,7 +80,7 @@ class AggDropDown extends React.PureComponent {
                 }
                 this.setState({ ... this.state, loading: true, isOpen: true })
                 const {data} = await client.query({
-                    query: QUERY_AGG_BUCKETS,
+                    query: this.props.isCrowdAgg ? QUERY_CROWD_AGG_BUCKETA : QUERY_AGG_BUCKETS,
                     variables: { agg : this.props.agg }
                 });
                 const buckets = _.get(data, "aggBuckets.aggs[0].buckets")

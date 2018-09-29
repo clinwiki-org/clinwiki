@@ -19,8 +19,16 @@ const search_query = (fields) => {
     data = `data { ${field_list} }`
   }
   return gql`
-    query ($params:SearchInput!) {
-      search (params:$params) {
+    query ($q: String, $page:Int, $pageSize:Int, $sorts:[String!], $aggFilters:[AggFilter!]) {
+       crowdAggs: aggBuckets(params: {q: $q, agg: "front_matter_keys"}) {
+         aggs {
+            buckets {
+                key
+                docCount
+            }
+        }
+      }
+      search (params: {q: $q, page: $page, pageSize: $pageSize, sorts: $sorts, aggFilters:$aggFilters }) {
         recordsTotal
         aggs {
           name
@@ -103,6 +111,7 @@ export class SearchState extends React.Component {
         pageSize: this.state.pageSize,
         recordsTotal: data.search && data.search.recordsTotal
     }
+    const crowdAggs = _.get(data, "crowdAggs.aggs[0].buckets", [])
     return <SearchView 
       loading={loading} 
       columns={this.columns()} 
@@ -110,7 +119,7 @@ export class SearchState extends React.Component {
       gridProps={gridProps}
       handleGridUpdate={this.handleGridUpdate}
       aggs={data.search && data.search.aggs} 
-      crowdAggs={[]}
+      crowdAggs={crowdAggs}
       aggFilters={this.state.aggFilters}
       addFilter={this.addAggFilter}
       removeFilter={this.removeAggFilter}
@@ -133,7 +142,7 @@ export class SearchState extends React.Component {
           sorts,
           aggFilters: filters.length == 0 ? undefined : filters
       }
-      return <Query query={query} variables={{params: params}}>
+      return <Query query={query} variables={params}>
         { this.render_search }
         </Query>
     }

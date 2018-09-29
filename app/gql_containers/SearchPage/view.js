@@ -74,7 +74,10 @@ export class SearchView extends React.PureComponent {
         return acc
     }
     const faggs = aggs.reduce(reducer, {});
-    const fcrowdAggs = crowdAggs.reduce(reducer, {});
+    const fcrowdAggs = crowdAggs.reduce((acc,agg) => {
+        acc[agg.key] = []
+        return acc
+    }, {});;
 
     return <Aggs
             aggs={faggs}
