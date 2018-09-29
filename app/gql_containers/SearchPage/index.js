@@ -120,6 +120,7 @@ export class SearchState extends React.Component {
       handleGridUpdate={this.handleGridUpdate}
       aggs={data.search && data.search.aggs} 
       crowdAggs={crowdAggs}
+      searchQuery={this.state.query}
       aggFilters={this.state.aggFilters}
       addFilter={this.addAggFilter}
       removeFilter={this.removeAggFilter}

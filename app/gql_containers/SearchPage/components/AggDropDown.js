@@ -33,8 +33,8 @@ const DropdownButtonWrapper = styled.div`
 `;
 
 const QUERY_AGG_BUCKETS = gql`
-  query ($agg : String!) {
-    aggBuckets(params: {agg: $agg}) {
+  query ($agg : String!, $q : String) {
+    aggBuckets(params: {agg: $agg, q: $q}) {
       aggs {
         name
         buckets {
@@ -46,8 +46,8 @@ const QUERY_AGG_BUCKETS = gql`
   }`
 
   const QUERY_CROWD_AGG_BUCKETA = gql`
-  query ($agg : String!) {
-    aggBuckets: crowdAggBuckets(params: {agg:$agg}) {
+  query ($agg : String!, $q: String) {
+    aggBuckets: crowdAggBuckets(params: {agg:$agg, q: $q}) {
       aggs {
         buckets {
           key
@@ -81,7 +81,7 @@ class AggDropDown extends React.PureComponent {
                 this.setState({ ... this.state, loading: true, isOpen: true })
                 const {data} = await client.query({
                     query: this.props.isCrowdAgg ? QUERY_CROWD_AGG_BUCKETA : QUERY_AGG_BUCKETS,
-                    variables: { agg : this.props.agg }
+                    variables: { agg : this.props.agg, q: this.props.searchQuery }
                 });
                 const buckets = _.get(data, "aggBuckets.aggs[0].buckets")
                 this.setState({ buckets, loading: false, isOpen: true })
