@@ -134,7 +134,8 @@ export class SearchState extends React.Component {
         Object.keys(this.state.aggFilters)
         .filter(k => this.state.aggFilters[k].size > 0)
         .map(k => ({field: k, values: [...this.state.aggFilters[k].values()]}))
-      const sorts = _.get(this, "state.sorts", null)
+      let sorts = _.get(this, "state.sorts", null)
+      if (sorts && sorts.length == 0) sorts = null
       const params = {
           q: this.state.query,
           page: this.state.page,
