@@ -46,13 +46,11 @@ const search_query = (fields) => {
 export class SearchState extends React.Component {
   constructor(props) {
     super(props)
-    const query = _.get(props, "match.params.searchQuery", "")
     this.state = {
       cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
       // map aggName -> Set of selected args
       aggFilters: {},
       crowdAggFilters: {},
-      query: query,
       page: 0,
       pageSize: 20,
       sorts: []
@@ -106,7 +104,7 @@ export class SearchState extends React.Component {
         .map(k => ({field: k, values: [...this.state.aggFilters[k].values()]}))
     const sorts = _.get(this, "state.sorts", null)
     return { 
-        q: this.state.query,
+        q: _.get(this.props, "match.params.searchQuery", ""),
         page: this.state.page,
         pageSize: this.state.pageSize,
         sorts,
