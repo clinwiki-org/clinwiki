@@ -79,9 +79,10 @@ class AggDropDown extends React.PureComponent {
                     return
                 }
                 this.setState({ ... this.state, loading: true, isOpen: true })
+                console.log("load more..." + JSON.stringify(this.props.searchParams))
                 const {data} = await client.query({
                     query: this.props.isCrowdAgg ? QUERY_CROWD_AGG_BUCKETA : QUERY_AGG_BUCKETS,
-                    variables: { agg : this.props.agg, q: this.props.searchQuery }
+                    variables: { ... this.props.searchParams, agg : this.props.agg }
                 });
                 const buckets = _.get(data, "aggBuckets.aggs[0].buckets")
                 this.setState({ buckets, loading: false, isOpen: true })

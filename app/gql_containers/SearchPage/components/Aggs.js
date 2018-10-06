@@ -14,9 +14,10 @@ const Aggs = ({
   aggs,
   crowdAggs,
   filters,
+  crowdFilters,
   addFilter,
   removeFilter,
-  searchquery
+  searchParams
 }) => {
   let crowdAggDropdowns = null;
   let emptySet = new Set()
@@ -28,11 +29,11 @@ const Aggs = ({
           <AggDropdown
             key={k}
             agg={k}
-            selectedKeys={filters[k]||emptySet}
+            selectedKeys={crowdFilters[k]||emptySet}
             isCrowdAgg={true}
-            addFilter={addFilter}
-            removeFilter={removeFilter}
-            searchquery={searchquery}
+            addFilter={(agg,item) => addFilter(agg,item,true)}
+            removeFilter={(agg,item) => removeFilter(agg,item,true)}
+            searchParams={searchParams}
           />
         ))}
       </div>
@@ -50,7 +51,7 @@ const Aggs = ({
                 buckets={aggs[k]}
                 addFilter={addFilter}
                 removeFilter={removeFilter}
-                searchquery={searchquery}
+                searchParams={searchParams}
               />) : null)}
           </div>
         {crowdAggDropdowns}

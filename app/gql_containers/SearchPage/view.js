@@ -67,7 +67,7 @@ export class SearchView extends React.PureComponent {
     };
   }
 
-  render_aggs({aggs,crowdAggs,aggFilters,addFilter,removeFilter,searchQuery}) {
+  render_aggs({aggs,crowdAggs,aggFilters,crowdAggFilters,addFilter,removeFilter,searchParams}) {
     // fold the raw aggs (from grahql) into a map
     const reducer = (acc,agg) => {
         acc[agg.name] = agg.buckets
@@ -83,9 +83,10 @@ export class SearchView extends React.PureComponent {
             aggs={faggs}
             crowdAggs={fcrowdAggs}
             filters={aggFilters}
+            crowdFilters={crowdAggFilters}
             addFilter={addFilter}
             removeFilter={removeFilter}
-            searchQuery={searchQuery}
+            searchParams={searchParams}
             />
   }
 

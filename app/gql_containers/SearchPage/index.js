@@ -51,6 +51,7 @@ export class SearchState extends React.Component {
       cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
       // map aggName -> Set of selected args
       aggFilters: {},
+      crowdAggFilters: {},
       query: query,
       page: 0,
       pageSize: 20,
@@ -67,19 +68,21 @@ export class SearchState extends React.Component {
     }
   }
 
-  addAggFilter = (agg, item) => {
+  addAggFilter = (agg, item, isCrowd) => {
       console.log(`add '${item}' to ${agg}`);
-      const aggFilters = (this.state.aggFilters)
+      const aggFilters = isCrowd ? this.state.crowdAggFilters : this.state.aggFilters
       const filter = new Set(aggFilters[agg])
       filter.add(item)
-      this.mergeState({ aggFilters: { ... aggFilters, [agg]: filter }})
+      const filterProp = isCrowd ? "crowdAggFilters" : "aggFilters"
+      this.mergeState({ [filterProp]: { ... aggFilters, [agg]: filter }})
   }
-  removeAggFilter = (agg, item) => {
+  removeAggFilter = (agg, item, isCrowd) => {
       console.log(`remove '${item}' from ${agg}`);
-      const aggFilters = this.state.aggFilters
+      const aggFilters = isCrowd ? this.state.crowdAggFilters : this.state.aggFilters
       const filter = new Set(aggFilters[agg])
       if (filter.delete(item)) {
-          this.mergeState({ aggFilters: {... aggFilters, [agg]: filter }})
+        const filterProp = isCrowd ? "crowdAggFilters" : "aggFilters"
+        this.mergeState({ [filterProp]: { ... aggFilters, [agg]: filter }})
       }
   }
   handleGridUpdate = (gridData) => {
@@ -93,6 +96,20 @@ export class SearchState extends React.Component {
   mergeState = (args) => {
       let newState = { ... this.state, ... args }
       this.setState(newState)
+  }
+
+  getQueryParams = () => { 
+    const filters = 
+        Object.keys(this.state.aggFilters)
+        .filter(k => this.state.aggFilters[k].size > 0)
+        .map(k => ({field: k, values: [...this.state.aggFilters[k].values()]}))
+    const sorts = _.get(this, "state.sorts", null)
+    return { 
+        q: this.state.query,
+        page: this.state.page,
+        pageSize: this.state.pageSize,
+        sorts,
+        aggFilters: filters.length == 0 ? undefined : filters }
   }
 
   // Agg management
@@ -120,8 +137,9 @@ export class SearchState extends React.Component {
       handleGridUpdate={this.handleGridUpdate}
       aggs={data.search && data.search.aggs} 
       crowdAggs={crowdAggs}
-      searchQuery={this.state.query}
+      searchParams={this.getQueryParams()}
       aggFilters={this.state.aggFilters}
+      crowdAggFilters={this.state.crowdAggFilters}
       addFilter={this.addAggFilter}
       removeFilter={this.removeAggFilter}
       history={this.props.history}
@@ -131,19 +149,7 @@ export class SearchState extends React.Component {
   render() {
     if (this.props.AuthHeader.sessionChecked) {
       const query = search_query(this.columns())
-      const filters = 
-        Object.keys(this.state.aggFilters)
-        .filter(k => this.state.aggFilters[k].size > 0)
-        .map(k => ({field: k, values: [...this.state.aggFilters[k].values()]}))
-      const sorts = _.get(this, "state.sorts", null)
-      const params = {
-          q: this.state.query,
-          page: this.state.page,
-          pageSize: this.state.pageSize,
-          sorts,
-          aggFilters: filters.length == 0 ? undefined : filters
-      }
-      return <Query query={query} variables={params}>
+      return <Query query={query} variables={this.getQueryParams()}>
         { this.render_search }
         </Query>
     }
