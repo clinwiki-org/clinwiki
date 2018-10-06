@@ -13,8 +13,12 @@ export function* checkSession() {
   yield put({ type: SESSION_CHECKED, data });
 }
 
+
 export function* handleSearchChange(data) {
-  yield put(push(`/search/${data.searchQuery}`));
+  //hack to keep gqlsearch as non-default search page
+  const isgql = window.location.href.toLowerCase().indexOf("gqlsearch") > 0
+  const searchName = isgql ? "gqlsearch" : "search"
+  yield put(push(`/${searchName}/${data.searchQuery}`));
 }
 
 export default function* defaultSaga() {
