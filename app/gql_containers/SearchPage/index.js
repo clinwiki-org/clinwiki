@@ -88,7 +88,8 @@ export class SearchState extends React.Component {
   handleGridUpdate = (gridData) => {
       if (this.state.oldGridData != gridData) {
         const {sorted,page,pageSize} = gridData
-        const sorts = sorted.map(x => x.id);
+        // const sorts = sorted.map(x => x.id);
+        const sorts = null;
         this.setState({ ... this.state, oldGridData:gridData, page, pageSize, sorts })
       }
   }
