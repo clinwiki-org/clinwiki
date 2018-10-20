@@ -3,8 +3,13 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 const cache = new InMemoryCache()
 
+function get_gql_url() {
+    if (typeof window == 'undefined' || window.location.hostname == 'localhost') return 'http://localhost:3000/graphql'
+    return "/grqphql";
+}
+
 const client = new ApolloClient({
-  uri: "http://localhost:3000/graphql",
+  uri: get_gql_url(),
   cache,
   clientState: {
     defaults: {
