@@ -13,9 +13,9 @@ const client = new ApolloClient({
   cache,
   clientState: {
     defaults: {
-    }
+    },
+    resolvers: {}
   },
-  resolvers: {}
 });
 
 export default client;
