@@ -28,6 +28,11 @@ module.exports = (options) => ({
         },
       },
       {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        loader: 'awesome-typescript-loader',
+      },
+      {
         // Preprocess our own .css files
         // This is the place to add your own loaders (e.g. sass/less etc.)
         // for a list of loaders, see https://webpack.js.org/loaders/#styling
@@ -79,10 +84,6 @@ module.exports = (options) => ({
             limit: 10000,
           },
         },
-      },
-      {
-        test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
       },
     ],
   },
