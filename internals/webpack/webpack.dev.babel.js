@@ -56,8 +56,7 @@ module.exports = require('./webpack.base.babel')({
   plugins: dependencyHandlers().concat(plugins), // eslint-disable-line no-use-before-define
 
   // Emit a source map for easier debugging
-  // See https://webpack.js.org/configuration/devtool/#devtool
-  devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
 
   performance: {
     hints: false,

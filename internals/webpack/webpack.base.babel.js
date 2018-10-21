@@ -80,6 +80,10 @@ module.exports = (options) => ({
           },
         },
       },
+      {
+        test: /\.tsx?$/,
+        loader: 'awesome-typescript-loader',
+      },
     ],
   },
   plugins: options.plugins.concat([
@@ -111,6 +115,8 @@ module.exports = (options) => ({
       '.js',
       '.jsx',
       '.react.js',
+      '.ts',
+      '.tsx'
     ],
     mainFields: [
       'browser',
