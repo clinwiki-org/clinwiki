@@ -4,6 +4,7 @@
         "module": "commonjs",
         "sourceMap": true,
         "baseUrl": "app",
+        "jsx": "react",
         "lib": [
             "es2015", "dom",
             "esnext.asynciterable"

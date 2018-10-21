@@ -1,5 +1,5 @@
 
-import React from 'react';
+import * as React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -42,8 +42,18 @@ const search_query = (fields) => {
     }`
 }
 
+interface ISearchState {
+  cols: string[],
+  aggFilters: {},
+  crowdAggFilters: {},
+  page: number,
+  pageSize: number,
+  sorts: any,
+  oldGridData: any,
+}
+
 // Replace redux with a simple component to store the page state
-export class SearchState extends React.Component {
+export class SearchState extends React.Component<any,ISearchState> {
   constructor(props) {
     super(props)
     this.state = {
@@ -53,7 +63,8 @@ export class SearchState extends React.Component {
       crowdAggFilters: {},
       page: 0,
       pageSize: 20,
-      sorts: []
+      sorts: [],
+      oldGridData: null,
     }
   }
 
