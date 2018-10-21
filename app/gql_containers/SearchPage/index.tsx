@@ -125,7 +125,8 @@ export class SearchState extends React.Component<any,ISearchState> {
   // Agg management
   //
 
-  render_search = ({loading,error,data}) => {
+  render_search = (result) => {
+    const {loading,error,data} = result || {loading:null,error:true,data:null};
     if (error) {
       console.log(error)
       if (error.networkError) {
@@ -160,7 +161,7 @@ export class SearchState extends React.Component<any,ISearchState> {
     if (this.props.AuthHeader.sessionChecked) {
       const query = search_query(this.columns())
       return <Query query={query} variables={this.getQueryParams()}>
-        { this.render_search }
+        { this.render_search } 
         </Query>
     }
     else {

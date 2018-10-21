@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import LoadingPane from 'components/LoadingPane';
 import { Helmet } from 'react-helmet';
 import { Grid, Row, Col } from 'react-bootstrap';
@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import 'react-table/react-table.css';
 import SearchFieldName from 'components/SearchFieldName';
 import Aggs from './components/Aggs';
+import _ from 'lodash';
 
 const SearchWrapper = styled.div`
   .rt-tr {
@@ -22,7 +23,23 @@ const SearchWrapper = styled.div`
   }
 `;
 
-export class SearchView extends React.PureComponent {
+interface ISearchViewProps {
+  loading: boolean,
+  columns: any,
+  rows?: any,
+  gridProps?: any,
+  handleGridUpdate: any,
+  aggs?: any,
+  crowdAggs?: any,
+  searchParams?: any,
+  aggFilters?: any,
+  crowdAggFilters?: any,
+  addFilter?: any,
+  removeFilter?: any,
+  history?: any,
+}
+
+export class SearchView extends React.PureComponent<ISearchViewProps> {
   constructor(props) {
     super(props)
   }
@@ -36,7 +53,9 @@ export class SearchView extends React.PureComponent {
           overflowWrap: 'break-word',
           overflow: 'visible',
           whiteSpace: 'normal',
+          textAlign: null
         },
+        Cell: null
       };
       if (col.match('rating')) {
         spec.Cell = (row) => (
