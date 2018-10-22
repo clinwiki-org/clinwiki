@@ -1,5 +1,5 @@
 
-import React from 'react';
+import * as React from 'react';
 import _ from 'lodash';
 import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
@@ -9,6 +9,7 @@ import aggToField from 'utils/aggs/aggToField';
 import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { ApolloConsumer } from "react-apollo";
 import gql from "graphql-tag";
+import { AggBucket, AggCallback, SearchParams } from '../Types'
 
 const DropdownButtonWrapper = styled.div`
   .selected-aggs {
@@ -58,8 +59,22 @@ const QUERY_AGG_BUCKETS = gql`
   }
   `
 
+interface AggDropDownState {
+  buckets: AggBucket[]
+  loading: boolean
+  isOpen: boolean
+}
+interface AggDropDownProps {
+  agg: string
+  buckets?: AggBucket[]
+  searchParams: SearchParams
+  isCrowdAgg: boolean
+  selectedKeys : Set<string>
+  addFilter: AggCallback
+  removeFilter: AggCallback
+}
 
-class AggDropDown extends React.PureComponent {
+class AggDropDown extends React.Component<AggDropDownProps,AggDropDownState> {
   // If aggs is null show the props' aggs otherwise show aggs
   state = { buckets: [], loading: false, isOpen: false };
   refreshAggs = (buckets) => {
@@ -92,11 +107,20 @@ class AggDropDown extends React.PureComponent {
       </ApolloConsumer>
   }
 }
+interface AggDropDownViewProps {
+  agg: string
+  buckets: AggBucket[]
+  selectedKeys : Set<string>
+  addFilter: AggCallback
+  removeFilter: AggCallback
+  loading: boolean
+  isOpen: boolean
+  onLoadMore: (isopen:boolean) => void
+}
 
-class AggDropDownView extends React.PureComponent {
+class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
   render() {
     let {
-        key,
         agg, // name
         buckets,
         selectedKeys, // Set
@@ -124,20 +148,18 @@ class AggDropDownView extends React.PureComponent {
         <BeatLoader
           key="loader"
           color="#333"
-          className="text-center"
         />
       );
     }
     if (menuItems.length === 0) {
-      menuItems = (
+      menuItems = [ 
         <MenuItem disabled>
           <span>
             No results found for
             {' '}
             <i>{aggToField(agg)}</i>
           </span>
-        </MenuItem>
-      );
+        </MenuItem> ];
     }
 
     const selectedAggs = []
@@ -177,4 +199,4 @@ class AggDropDownView extends React.PureComponent {
   }
 }
 
-export default AggDropDown;
+export default AggDropDown

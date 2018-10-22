@@ -1,7 +1,8 @@
 
-import React from 'react';
+import * as React from 'react';
 import _ from 'lodash';
-import AggDropdown from './AggDropdown';
+import AggDropDown from './AggDropDown';
+import { AggBucketMap, AggCallback, SearchParams } from '../Types'
 
 const aggsOrdered = [
   'average_rating',
@@ -10,15 +11,27 @@ const aggsOrdered = [
   'browse_condition_mesh_terms', 'browse_interventions_mesh_terms', 'phase',
 ];
 
-const Aggs = ({
-  aggs,
-  crowdAggs,
-  filters,
-  crowdFilters,
-  addFilter,
-  removeFilter,
-  searchParams
-}) => {
+interface AggsProps {
+  aggs : AggBucketMap
+  crowdAggs : AggBucketMap
+  // selected
+  filters : Set<string>,
+  crowdFilters : Set<string>
+  addFilter : AggCallback,
+  removeFilter : AggCallback,
+  searchParams : SearchParams
+}
+
+const Aggs = (props : AggsProps) => {
+  const {
+    aggs,
+    crowdAggs,
+    filters,
+    crowdFilters,
+    addFilter,
+    removeFilter,
+    searchParams
+  } = props;
   let crowdAggDropdowns = null;
   let emptySet = new Set()
   if (!_.isEmpty(crowdAggs)) {
@@ -26,10 +39,10 @@ const Aggs = ({
       <div>
         <h4>Crowd Facets</h4>
         {Object.keys(crowdAggs).map((k) => (
-          <AggDropdown
-            key={k}
+          <AggDropDown
             agg={k}
             selectedKeys={crowdFilters[k]||emptySet}
+            buckets={crowdAggs[k]}
             isCrowdAgg={true}
             addFilter={(agg,item) => addFilter(agg,item,true)}
             removeFilter={(agg,item) => removeFilter(agg,item,true)}
@@ -44,11 +57,11 @@ const Aggs = ({
       <div>
           <div>
             {aggsOrdered.map((k) => aggs[k] ?
-              (<AggDropdown
-                key={k}
+              (<AggDropDown
                 agg={k}
                 selectedKeys={filters[k]||emptySet}
                 buckets={aggs[k]}
+                isCrowdAgg={false}
                 addFilter={addFilter}
                 removeFilter={removeFilter}
                 searchParams={searchParams}
