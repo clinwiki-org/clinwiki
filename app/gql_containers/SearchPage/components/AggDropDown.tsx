@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
 import { DropdownButton, MenuItem, Label } from 'react-bootstrap';

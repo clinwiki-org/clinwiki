@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import AggDropDown from './AggDropDown';
 import { AggBucketMap, AggCallback, SearchParams } from '../Types'
 

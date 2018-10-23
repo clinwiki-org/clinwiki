@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -9,6 +9,7 @@ import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import  SearchView  from "./view";
+import { AggFilterMap, SearchParams } from './Types'
 
 
 
@@ -42,10 +43,10 @@ const search_query = (fields) => {
     }`
 }
 
-interface ISearchState {
+interface SearchState {
   cols: string[],
-  aggFilters: {},
-  crowdAggFilters: {},
+  aggFilters: AggFilterMap,
+  crowdAggFilters: AggFilterMap,
   page: number,
   pageSize: number,
   sorts: any,
@@ -53,7 +54,7 @@ interface ISearchState {
 }
 
 // Replace redux with a simple component to store the page state
-export class SearchState extends React.Component<any,ISearchState> {
+export class Search extends React.Component<any,SearchState> {
   constructor(props) {
     super(props)
     this.state = {
@@ -134,26 +135,28 @@ export class SearchState extends React.Component<any,ISearchState> {
       }
       return <div>{error.graphQLErrors.map(e => <div>{e.message}</div>)}</div>
     }
-    const gridProps = {
-        page: this.state.page,
-        pageSize: this.state.pageSize,
-        recordsTotal: data.search && data.search.recordsTotal
-    }
     const crowdAggs = _.get(data, "crowdAggs.aggs[0].buckets", [])
     return <SearchView 
       loading={loading} 
-      columns={this.columns()} 
-      rows={data.search && data.search.data} 
-      gridProps={gridProps}
-      handleGridUpdate={this.handleGridUpdate}
-      aggs={data.search && data.search.aggs} 
-      crowdAggs={crowdAggs}
-      searchParams={this.getQueryParams()}
-      aggFilters={this.state.aggFilters}
-      crowdAggFilters={this.state.crowdAggFilters}
-      addFilter={this.addAggFilter}
-      removeFilter={this.removeAggFilter}
       history={this.props.history}
+      gridProps={{
+        columns: this.columns(),
+        rows: data.search && data.search.data,
+        handleGridUpdate: this.handleGridUpdate,
+        page: this.state.page,
+        pageSize: this.state.pageSize,
+        recordsTotal: data.search && data.search.recordsTotal
+      }}
+      aggProps={{
+        aggs: data.search && data.search.aggs,
+        crowdAggs: crowdAggs,
+        searchParams: this.getQueryParams(),
+        aggFilters: this.state.aggFilters,
+        crowdAggFilters: this.state.crowdAggFilters,
+        addFilter: this.addAggFilter,
+        removeFilter: this.removeAggFilter,
+      }}
+
       />
   }
 
@@ -167,9 +170,11 @@ export class SearchState extends React.Component<any,ISearchState> {
     else {
       return <SearchView 
         loading={true}
-        columns={this.columns()} 
-        handleGridUpdate={this.handleGridUpdate}
-        />
+        gridProps={{
+          columns:this.columns(),
+          rows: [],
+          handleGridUpdate:this.handleGridUpdate
+        }} />
     }
   }
 }
@@ -181,4 +186,4 @@ const withConnect = connect(mapStateToProps);
 
 export default compose(
   withConnect
-  (SearchState))
+  (Search))

@@ -8,7 +8,8 @@ import styled from 'styled-components';
 import 'react-table/react-table.css';
 import SearchFieldName from 'components/SearchFieldName';
 import Aggs from './components/Aggs';
-import _ from 'lodash';
+import * as _ from 'lodash';
+import { AggItem, AggFilterMap, AggCallback, SearchParams } from './Types'
 
 const SearchWrapper = styled.div`
   .rt-tr {
@@ -23,23 +24,32 @@ const SearchWrapper = styled.div`
   }
 `;
 
-interface ISearchViewProps {
-  loading: boolean,
-  columns: any,
-  rows?: any,
-  gridProps?: any,
-  handleGridUpdate: any,
-  aggs?: any,
-  crowdAggs?: any,
-  searchParams?: any,
-  aggFilters?: any,
-  crowdAggFilters?: any,
-  addFilter?: any,
-  removeFilter?: any,
-  history?: any,
+interface AggProps {
+  aggs: AggItem[],
+  crowdAggs: AggItem[],
+  searchParams: SearchParams,
+  aggFilters: AggFilterMap,
+  crowdAggFilters: AggFilterMap,
+  addFilter: AggCallback,
+  removeFilter: AggCallback,
+}
+interface GridProps {
+  columns: any
+  rows: any
+  page?: number
+  pageSize?: number
+  recordsTotal?: number
+  handleGridUpdate: any
 }
 
-export class SearchView extends React.PureComponent<ISearchViewProps> {
+interface SearchViewProps {
+  loading: boolean,
+  history?: any,
+  aggProps? : AggProps
+  gridProps : GridProps
+}
+
+export class SearchView extends React.PureComponent<SearchViewProps> {
   constructor(props) {
     super(props)
   }
@@ -109,19 +119,19 @@ export class SearchView extends React.PureComponent<ISearchViewProps> {
             />
   }
 
-  render_table({loading, columns, rows, gridProps, handleGridUpdate}) {
+  render_table(loading, props : GridProps) {
     if(loading) {
       return <ReactTable
             className="-striped -highlight"
-            columns={this.getColumns(columns)}
+            columns={this.getColumns(props.columns)}
             manual
             loading={true}
-            defaultSorted={this.getDefaultSorted(columns)}
+            defaultSorted={this.getDefaultSorted(props.columns)}
             defaultSortDesc
           />
     }
-    const pageSize = gridProps.pageSize
-    const totalPages = Math.ceil(gridProps.recordsTotal / pageSize);
+    const columns = props.columns
+    const totalPages = Math.ceil(props.recordsTotal / props.pageSize);
 
     return <ReactTable
             className="-striped -highlight"
@@ -130,11 +140,11 @@ export class SearchView extends React.PureComponent<ISearchViewProps> {
             // state.sorted= [0: {id: "average rating", desc: true} ]
             // state.page = page we're on?
             // state.pageSize = 'page size dropdown' (25)
-            onFetchData={handleGridUpdate}
-            data={rows}
-            pages={totalPages}
+            onFetchData={props.handleGridUpdate}
+            data={props.rows}
+            pages={props.recordsTotal}
             loading={loading}
-            defaultPageSize={pageSize}
+            defaultPageSize={props.pageSize}
             getTdProps={this.tdProps}
             defaultSorted={this.getDefaultSorted(columns)}
             defaultSortDesc
@@ -149,13 +159,13 @@ export class SearchView extends React.PureComponent<ISearchViewProps> {
     </Helmet>
       <Row>
         <Col md={2} id="search-sidebar">
-          { this.props.loading ? <LoadingPane /> : this.render_aggs(this.props) }
+          { this.props.loading ? <LoadingPane /> : this.render_aggs(this.props.aggProps) }
         </Col>
         <Col md={10} id="search-main">
           <Grid>
             <Row>
               <Col md={12}>
-                { this.render_table(this.props) }
+                { this.render_table(this.props.loading, this.props.gridProps) }
               </Col>
             </Row>
           </Grid>
