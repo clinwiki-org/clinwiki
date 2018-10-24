@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
 import { DropdownButton, MenuItem, Label } from 'react-bootstrap';
-import FontAwesome from 'react-fontawesome';
+import * as FontAwesome from 'react-fontawesome';
 import aggToField from 'utils/aggs/aggToField';
 import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { ApolloConsumer } from "react-apollo";
@@ -74,7 +74,7 @@ interface AggDropDownProps {
   removeFilter: AggCallback
 }
 
-class AggDropDown extends React.Component<AggDropDownProps,AggDropDownState> {
+export class AggDropDown extends React.Component<AggDropDownProps,AggDropDownState> {
   // If aggs is null show the props' aggs otherwise show aggs
   state = { buckets: [], loading: false, isOpen: false };
   refreshAggs = (buckets) => {
@@ -118,7 +118,7 @@ interface AggDropDownViewProps {
   onLoadMore: (isopen:boolean) => void
 }
 
-class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
+export class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
   render() {
     let {
         agg, // name

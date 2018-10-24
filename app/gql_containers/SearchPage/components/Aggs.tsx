@@ -40,6 +40,7 @@ const Aggs = (props : AggsProps) => {
         <h4>Crowd Facets</h4>
         {Object.keys(crowdAggs).map((k) => (
           <AggDropDown
+            key={k}
             agg={k}
             selectedKeys={crowdFilters[k]||emptySet}
             buckets={crowdAggs[k]}
@@ -58,6 +59,7 @@ const Aggs = (props : AggsProps) => {
           <div>
             {aggsOrdered.map((k) => aggs[k] ?
               (<AggDropDown
+                key={k}
                 agg={k}
                 selectedKeys={filters[k]||emptySet}
                 buckets={aggs[k]}
