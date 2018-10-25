@@ -110,7 +110,7 @@ module SearchHelper
         end
       end
     else
-      if !new_agg_filters.empty?
+      if new_agg_filters && !new_agg_filters.empty?
         where = {_and: []}
         new_agg_filters.each do |key, vals|
           next if (!curr_agg.nil?) && curr_agg == key
