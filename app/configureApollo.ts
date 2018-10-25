@@ -5,7 +5,7 @@ const cache = new InMemoryCache()
 
 function get_gql_url() {
     if (typeof window == 'undefined' || window.location.hostname == 'localhost') return 'http://localhost:3000/graphql'
-    return "/grqphql";
+    return "/graphql";
 }
 
 const client = new ApolloClient({
