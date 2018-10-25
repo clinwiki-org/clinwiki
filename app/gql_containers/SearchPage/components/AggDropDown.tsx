@@ -153,7 +153,7 @@ export class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
     }
     if (menuItems.length === 0) {
       menuItems = [ 
-        <MenuItem disabled>
+        <MenuItem key="no_results" disabled>
           <span>
             No results found for
             {' '}
