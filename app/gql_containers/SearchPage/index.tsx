@@ -9,8 +9,9 @@ import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import  SearchView  from "./view";
-import { AggFilterMap, SearchParams } from './Types'
-
+import { AggFilterMap, SearchParams, 
+        encodeSearchParams, decodeSearchParams,
+        flattenAggs, expandAggs} from './Types'
 
 
 const search_query = (fields) => {
@@ -20,7 +21,7 @@ const search_query = (fields) => {
     data = `data { ${field_list} }`
   }
   return gql`
-    query ($q: String, $page:Int, $pageSize:Int, $sorts:[String!], $aggFilters:[AggFilter!]) {
+    query ($q: String, $p:Int, $psz:Int, $sorts:[String!], $agFlt:[AggFilter!]) {
        crowdAggs: aggBuckets(params: {q: $q, agg: "front_matter_keys"}) {
          aggs {
             buckets {
@@ -29,7 +30,7 @@ const search_query = (fields) => {
             }
         }
       }
-      search (params: {q: $q, page: $page, pageSize: $pageSize, sorts: $sorts, aggFilters:$aggFilters }) {
+      search (params: {q: $q, page: $p, pageSize: $psz, sorts: $sorts, aggFilters:$agFlt }) {
         recordsTotal
         aggs {
           name
@@ -44,13 +45,14 @@ const search_query = (fields) => {
 }
 
 interface SearchState {
-  cols: string[],
-  aggFilters: AggFilterMap,
-  crowdAggFilters: AggFilterMap,
-  page: number,
-  pageSize: number,
-  sorts: any,
-  oldGridData: any,
+  query: string
+  cols: string[]
+  aggFilters: AggFilterMap
+  crowdAggFilters: AggFilterMap
+  page: number
+  pageSize: number
+  sorts: any
+  oldGridData: any
 }
 
 // Replace redux with a simple component to store the page state
@@ -58,6 +60,7 @@ export class Search extends React.Component<any,SearchState> {
   constructor(props) {
     super(props)
     this.state = {
+      query: _.get(props, "match.params.searchQuery", ""),
       cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
       // map aggName -> Set of selected args
       aggFilters: {},
@@ -66,6 +69,28 @@ export class Search extends React.Component<any,SearchState> {
       pageSize: 20,
       sorts: [],
       oldGridData: null,
+    }
+  }
+
+  componentWillMount() {
+    // load url state
+    const u = new URL(window.location.href)
+    // console.log(u.search)
+    const encoded = u.searchParams.get('p')
+    if (encoded) {
+      const decoded = decodeSearchParams(encoded)
+      console.log(decoded)
+
+      const aggFilters = expandAggs(decoded.agFlt)
+      const crowdAggFilters = expandAggs(decoded.cagFlt)
+
+      this.mergeState({ 
+        query: decoded.q,
+        page: decoded.p || this.state.page,
+        pageSize: decoded.psz || this.state.pageSize,
+        aggFilters,
+        crowdAggFilters
+      });
     }
   }
 
@@ -100,27 +125,31 @@ export class Search extends React.Component<any,SearchState> {
         const {sorted,page,pageSize} = gridData
         // const sorts = sorted.map(x => x.id);
         const sorts = null;
-        this.setState({ ... this.state, oldGridData:gridData, page, pageSize, sorts })
+        this.mergeState({ oldGridData:gridData, page, pageSize, sorts })
       }
   }
 
   mergeState = (args) => {
-      let newState = { ... this.state, ... args }
+      let newState = { ... this.state, ... args } as SearchState
       this.setState(newState)
+
+      // Update url
+      const params = this.getQueryParams(newState);
+      const encoded = encodeSearchParams(params)
+      this.props.history.push(`/search/?p=${encoded}`);
   }
 
-  getQueryParams = () => { 
-    const filters = 
-        Object.keys(this.state.aggFilters)
-        .filter(k => this.state.aggFilters[k].size > 0)
-        .map(k => ({field: k, values: [...this.state.aggFilters[k].values()]}))
-    const sorts = _.get(this, "state.sorts", null)
+  getQueryParams = (state:SearchState) => { 
+    const filters = flattenAggs(state.aggFilters)
+    const crowdFilters = flattenAggs(state.crowdAggFilters)
+    // const sorts = _.get(this, "state.sorts", null)
     return { 
-        q: _.get(this.props, "match.params.searchQuery", ""),
-        page: this.state.page,
-        pageSize: this.state.pageSize,
-        sorts,
-        aggFilters: filters.length == 0 ? undefined : filters }
+        q: state.query, 
+        p: state.page,
+        psz: state.pageSize,
+        agFlt: filters,
+        cagFlt: crowdFilters
+    } as SearchParams;
   }
 
   // Agg management
@@ -150,7 +179,7 @@ export class Search extends React.Component<any,SearchState> {
       aggProps={{
         aggs: data.search && data.search.aggs,
         crowdAggs: crowdAggs,
-        searchParams: this.getQueryParams(),
+        searchParams: this.getQueryParams(this.state),
         aggFilters: this.state.aggFilters,
         crowdAggFilters: this.state.crowdAggFilters,
         addFilter: this.addAggFilter,
@@ -163,7 +192,8 @@ export class Search extends React.Component<any,SearchState> {
   render() {
     if (this.props.AuthHeader.sessionChecked) {
       const query = search_query(this.columns())
-      return <Query query={query} variables={this.getQueryParams()}>
+      const params = this.getQueryParams(this.state)
+      return <Query query={query} variables={params}>
         { this.render_search } 
         </Query>
     }
