@@ -75,19 +75,18 @@ export class Search extends React.Component<any,SearchState> {
   componentWillMount() {
     // load url state
     const u = new URL(window.location.href)
-    // console.log(u.search)
     const encoded = u.searchParams.get('p')
     if (encoded) {
       const decoded = decodeSearchParams(encoded)
       console.log(decoded)
 
-      const aggFilters = expandAggs(decoded.agFlt)
-      const crowdAggFilters = expandAggs(decoded.cagFlt)
+      const aggFilters = expandAggs(decoded.aggFilters)
+      const crowdAggFilters = expandAggs(decoded.crowdAggFilters)
 
       this.mergeState({ 
-        query: decoded.q,
-        page: decoded.p || this.state.page,
-        pageSize: decoded.psz || this.state.pageSize,
+        query: decoded.q || _.get(this.props, "match.params.searchQuery", ""),
+        page: decoded.page || this.state.page,
+        pageSize: decoded.pageSize || this.state.pageSize,
         aggFilters,
         crowdAggFilters
       });
@@ -145,10 +144,11 @@ export class Search extends React.Component<any,SearchState> {
     // const sorts = _.get(this, "state.sorts", null)
     return { 
         q: state.query, 
-        p: state.page,
-        psz: state.pageSize,
-        agFlt: filters,
-        cagFlt: crowdFilters
+        page: state.page,
+        pageSize: state.pageSize,
+        aggFilters: filters,
+        crowdAggFilters: crowdFilters,
+        sort: []
     } as SearchParams;
   }
 
