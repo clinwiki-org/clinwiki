@@ -10,7 +10,7 @@ import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import  SearchView  from "./view";
 import { AggFilterMap, SearchParams, 
-        encodeSearchParams, decodeSearchParams,
+        encodeSearchParams, getSearchParamsFromURL,
         flattenAggs, expandAggs} from './Types'
 
 
@@ -74,10 +74,8 @@ export class Search extends React.Component<any,SearchState> {
 
   componentWillMount() {
     // load url state
-    const u = new URL(window.location.href)
-    const encoded = u.searchParams.get('p')
-    if (encoded) {
-      const decoded = decodeSearchParams(encoded)
+    const decoded = getSearchParamsFromURL()
+    if (decoded) {
       console.log(decoded)
 
       const aggFilters = expandAggs(decoded.aggFilters)
@@ -88,7 +86,8 @@ export class Search extends React.Component<any,SearchState> {
         page: decoded.page || this.state.page,
         pageSize: decoded.pageSize || this.state.pageSize,
         aggFilters,
-        crowdAggFilters
+        crowdAggFilters,
+        sort: decoded.sort
       });
     }
   }
@@ -135,7 +134,10 @@ export class Search extends React.Component<any,SearchState> {
       // Update url
       const params = this.getQueryParams(newState);
       const encoded = encodeSearchParams(params)
-      this.props.history.push(`/search/?p=${encoded}`);
+      this.props.history.push(
+        encoded === "" ? 
+        `/search/${params.q}` :
+        `/search/${params.q}?p=${encoded}`);
   }
 
   getQueryParams = (state:SearchState) => { 

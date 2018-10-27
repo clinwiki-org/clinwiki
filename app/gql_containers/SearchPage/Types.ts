@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { object } from "prop-types";
 
 const default_page_size = 20
@@ -57,7 +58,6 @@ export function expandAggs(aggs: AggFilterListItem[]) {
 
 const version_marker = '!'
 interface CompactSearchParams {
-  q: string
   // page
   p: number
   // page size
@@ -71,7 +71,6 @@ interface CompactSearchParams {
 
 function compact_search(p : SearchParams) : CompactSearchParams {
   var res = {
-    q: p.q,
     p: p.page,
     z : p.pageSize,
     a : p.aggFilters,
@@ -79,16 +78,17 @@ function compact_search(p : SearchParams) : CompactSearchParams {
     s : p.sort
   }
   // Erase default values
-  if (p.q === "") delete res.q
-  if (p.page == 0) delete res.p
-  if (Array.isArray(res.a) && res.a.length == 0) delete res.a
-  if (Array.isArray(res.c) && res.c.length == 0) delete res.c
-  if (Array.isArray(res.s) && res.s.length == 0) delete res.s
+  if (res.p == 0) delete res.p
+  if (res.z === default_page_size) delete res.z
+  Object.keys(res).forEach(k => {
+    if (Array.isArray(res[k]) && res[k].length === 0) delete res[k]
+  })
+  if (Object.keys(res).length == 0) return null;
   return res
 }
-function expand(p : CompactSearchParams) : SearchParams {
+function expand(q : string, p : CompactSearchParams) : SearchParams {
   return {
-    q: p.q||"",
+    q,
     page: p.p||0,
     pageSize: p.z,
     aggFilters: p.a||[],
@@ -99,16 +99,21 @@ function expand(p : CompactSearchParams) : SearchParams {
 
 export function encodeSearchParams(params : SearchParams) : string {
   let shortNames = compact_search(params)
-  if (params.page != 0) shortNames.p = params.page
+  if (shortNames == null) return ""
   let temp = JSON.stringify(shortNames)
+  console.log(shortNames)
   return version_marker + btoa(temp)
 }
 
-export function decodeSearchParams(arg: string) : SearchParams {
-  if (arg[0] == version_marker) {
-      let decoded = atob(arg.substr(1))
+export function getSearchParamsFromURL() : SearchParams {
+  const u = new URL(window.location.href)
+  const encodedQuery = u.pathname.startsWith("/search") ? _.last(u.pathname.split('/')) : ""
+  const query = decodeURIComponent(encodedQuery)
+  const encodedParams = u.searchParams.get('p')
+  if (encodedParams && encodedParams[0] == version_marker) {
+      let decoded = atob(encodedParams.substr(1))
       const temp = JSON.parse(decoded)
-      return expand(temp);
+      return expand(query, temp);
   }
-  return null
+  return  expand(query, <CompactSearchParams>{})
 }
