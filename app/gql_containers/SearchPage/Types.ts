@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
-import { object } from "prop-types";
 
-const default_page_size = 20
+export const defaultPageSize = 20
 export type AggCallback = (aggName:string,key:string,isCrowd?:boolean) => void;
 export interface AggBucket {
   key: string
@@ -13,9 +12,11 @@ export interface AggItem {
 }
 export interface AggBucketMap { [key:string] : AggBucket[] }
 export type AggFilterMap = { [key:string] : Set<string> }
+
 export interface AggFilterListItem { 
-  k:string,
-  v: string[]
+  // These field names are used in graphql query
+  field:string,
+  values: string[]
 }
 
 enum SortDirection {
@@ -41,7 +42,7 @@ export function flattenAggs(aggs : AggFilterMap) : AggFilterListItem[] {
   const result =
     Object.keys(aggs)
     .filter(k => aggs[k].size > 0)
-    .map(k => ({k: k, v: [...aggs[k].values()]}))
+    .map(k => ({field: k, values: [...aggs[k].values()]}))
   if (result.length == 0) return []
   return result;
 }
@@ -49,7 +50,7 @@ export function flattenAggs(aggs : AggFilterMap) : AggFilterListItem[] {
 export function expandAggs(aggs: AggFilterListItem[]) {
   if (aggs) {
     return aggs.reduce( (acc,agg) => {
-      acc[agg.k] = new Set(agg.v)
+      acc[agg.field] = new Set(agg.values)
       return acc
     }, {} as AggFilterMap );
   }
@@ -79,7 +80,7 @@ function compact_search(p : SearchParams) : CompactSearchParams {
   }
   // Erase default values
   if (res.p == 0) delete res.p
-  if (res.z === default_page_size) delete res.z
+  if (res.z === defaultPageSize) delete res.z
   Object.keys(res).forEach(k => {
     if (Array.isArray(res[k]) && res[k].length === 0) delete res[k]
   })
@@ -90,7 +91,7 @@ function expand(q : string, p : CompactSearchParams) : SearchParams {
   return {
     q,
     page: p.p||0,
-    pageSize: p.z,
+    pageSize: p.z||defaultPageSize,
     aggFilters: p.a||[],
     crowdAggFilters: p.c||[],
     sort: p.s
@@ -101,13 +102,12 @@ export function encodeSearchParams(params : SearchParams) : string {
   let shortNames = compact_search(params)
   if (shortNames == null) return ""
   let temp = JSON.stringify(shortNames)
-  console.log(shortNames)
   return version_marker + btoa(temp)
 }
 
 export function getSearchParamsFromURL() : SearchParams {
   const u = new URL(window.location.href)
-  const encodedQuery = u.pathname.startsWith("/search") ? _.last(u.pathname.split('/')) : ""
+  const encodedQuery = u.pathname.startsWith("/search/") ? _.last(u.pathname.split('/')) : ""
   const query = decodeURIComponent(encodedQuery)
   const encodedParams = u.searchParams.get('p')
   if (encodedParams && encodedParams[0] == version_marker) {

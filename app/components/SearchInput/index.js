@@ -5,9 +5,10 @@
 */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';
+import { withClientState } from '../../components/Apollo/LocalStateDecorator'
+
 
 class SearchInput extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
@@ -27,31 +28,26 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.searchChanged(this.query);
+    this.props.updateClientState({ searchQuery: this.query })
   }
 
   render() {
     return (
-      <Form inline onSubmit={this.onSubmit} className="searchInput">
-        <FormGroup controlId="formInlineEmail">
-          <FormControl
-            style={{ width: '80%' }}
-            type="text"
-            placeholder={this.props.query || 'search...'}
-            onChange={this.onSearchChange}
-          />
-          <Button type="submit">
-            <FontAwesome name="search" />
-          </Button>
-        </FormGroup>
-      </Form>
-    );
+        <Form inline onSubmit={this.onSubmit} className="searchInput">
+          <FormGroup controlId="formInlineEmail">
+            <FormControl
+              style={{ width: '80%' }}
+              type="text"
+              placeholder={(this.props.clientState && this.props.clientState.searchQuery) || 'search...'}
+              onChange={this.onSearchChange}
+            />
+            <Button type="submit">
+              <FontAwesome name="search" />
+            </Button>
+          </FormGroup>
+        </Form>
+      )
   }
 }
 
-SearchInput.propTypes = {
-  query: PropTypes.string,
-  searchChanged: PropTypes.func,
-};
-
-export default SearchInput;
+export default withClientState(SearchInput);

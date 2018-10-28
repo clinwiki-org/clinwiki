@@ -8,11 +8,14 @@ function get_gql_url() {
     return "/graphql";
 }
 
+// interface ClientState => defined in LocalStateDecorator.tsx
+
 const client = new ApolloClient({
   uri: get_gql_url(),
   cache,
   clientState: {
     defaults: {
+      searchQuery: ""
     },
     resolvers: {}
   },

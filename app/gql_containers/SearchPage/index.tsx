@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
@@ -9,10 +8,10 @@ import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import  SearchView  from "./view";
-import { AggFilterMap, SearchParams, 
+import { AggFilterMap, SearchParams, defaultPageSize,
         encodeSearchParams, getSearchParamsFromURL,
         flattenAggs, expandAggs} from './Types'
-
+import { withClientState, ClientState } from '../../components/Apollo/LocalStateDecorator'
 
 const search_query = (fields) => {
   let data;
@@ -21,7 +20,7 @@ const search_query = (fields) => {
     data = `data { ${field_list} }`
   }
   return gql`
-    query ($q: String, $p:Int, $psz:Int, $sorts:[String!], $agFlt:[AggFilter!]) {
+    query ($q: String, $page:Int, $pageSize:Int, $sort:[String!], $aggFilters:[AggFilter!]) {
        crowdAggs: aggBuckets(params: {q: $q, agg: "front_matter_keys"}) {
          aggs {
             buckets {
@@ -30,7 +29,7 @@ const search_query = (fields) => {
             }
         }
       }
-      search (params: {q: $q, page: $p, pageSize: $psz, sorts: $sorts, aggFilters:$agFlt }) {
+      search (params: {q: $q, page: $page, pageSize: $pageSize, sorts: $sort, aggFilters:$aggFilters }) {
         recordsTotal
         aggs {
           name
@@ -45,7 +44,6 @@ const search_query = (fields) => {
 }
 
 interface SearchState {
-  query: string
   cols: string[]
   aggFilters: AggFilterMap
   crowdAggFilters: AggFilterMap
@@ -55,22 +53,37 @@ interface SearchState {
   oldGridData: any
 }
 
+interface OldCrustyAuthHeader {
+  sessionChecked : boolean
+  user : { search_result_columns : any }
+}
+
+interface SearchProps {
+  loading : boolean
+  apolloClient: any
+  clientState: ClientState
+  updateClientState: (x:ClientState) => void
+  AuthHeader: OldCrustyAuthHeader
+  history : any
+}
+
 // Replace redux with a simple component to store the page state
-export class Search extends React.Component<any,SearchState> {
+export class Search extends React.Component<SearchProps,SearchState> {
   constructor(props) {
     super(props)
     this.state = {
-      query: _.get(props, "match.params.searchQuery", ""),
       cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
       // map aggName -> Set of selected args
       aggFilters: {},
       crowdAggFilters: {},
       page: 0,
-      pageSize: 20,
+      pageSize: defaultPageSize,
       sorts: [],
       oldGridData: null,
     }
   }
+
+  query() { return this.props.clientState.searchQuery; }
 
   componentWillMount() {
     // load url state
@@ -82,13 +95,16 @@ export class Search extends React.Component<any,SearchState> {
       const crowdAggFilters = expandAggs(decoded.crowdAggFilters)
 
       this.mergeState({ 
-        query: decoded.q || _.get(this.props, "match.params.searchQuery", ""),
         page: decoded.page || this.state.page,
         pageSize: decoded.pageSize || this.state.pageSize,
         aggFilters,
         crowdAggFilters,
         sort: decoded.sort
-      });
+      }, decoded.q);
+      // If there is a query use it
+      if (decoded.q) {
+        this.props.updateClientState({ searchQuery: decoded.q })
+      }
     }
   }
 
@@ -127,17 +143,21 @@ export class Search extends React.Component<any,SearchState> {
       }
   }
 
-  mergeState = (args) => {
+  // queryOverride overrides the query string on props
+  // This might happen during initial load because we are decoding
+  // the query string from the url but haven't yet set it on the store
+  mergeState = (args, queryOverride?) => {
       let newState = { ... this.state, ... args } as SearchState
       this.setState(newState)
 
       // Update url
       const params = this.getQueryParams(newState);
       const encoded = encodeSearchParams(params)
+      const query = queryOverride || params.q
       this.props.history.push(
         encoded === "" ? 
-        `/search/${params.q}` :
-        `/search/${params.q}?p=${encoded}`);
+        `/search/${query}` :
+        `/search/${query}?p=${encoded}`);
   }
 
   getQueryParams = (state:SearchState) => { 
@@ -145,7 +165,7 @@ export class Search extends React.Component<any,SearchState> {
     const crowdFilters = flattenAggs(state.crowdAggFilters)
     // const sorts = _.get(this, "state.sorts", null)
     return { 
-        q: state.query, 
+        q: this.props.clientState.searchQuery,
         page: state.page,
         pageSize: state.pageSize,
         aggFilters: filters,
@@ -192,9 +212,11 @@ export class Search extends React.Component<any,SearchState> {
   }
 
   render() {
-    if (this.props.AuthHeader.sessionChecked) {
+    if (this.props.AuthHeader.sessionChecked && !this.props.loading) {
       const query = search_query(this.columns())
       const params = this.getQueryParams(this.state)
+      console.log("Submitting query...")
+      console.log(JSON.stringify(params))
       return <Query query={query} variables={params}>
         { this.render_search } 
         </Query>
@@ -211,6 +233,9 @@ export class Search extends React.Component<any,SearchState> {
   }
 }
 
+//
+// Eventually all of this connect/selector stuff gets replaced with
+// the apollo client state
 const mapStateToProps = createStructuredSelector({
   AuthHeader: makeSelectAuthHeader(),
 });
@@ -218,4 +243,4 @@ const withConnect = connect(mapStateToProps);
 
 export default compose(
   withConnect
-  (Search))
+  (withClientState(Search)))
