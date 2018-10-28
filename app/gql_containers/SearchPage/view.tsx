@@ -36,12 +36,11 @@ interface AggProps {
 interface GridProps {
   columns: any
   rows: any
-  page?: number
-  pageSize?: number
+  page: number
+  pageSize: number
   recordsTotal?: number
-  handleGridUpdate: any
+  update?: { page, pageSize, sort }
 }
-
 interface SearchViewProps {
   loading: boolean,
   history?: any,
@@ -137,12 +136,15 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
             className="-striped -highlight"
             columns={this.getColumns(columns)}
             manual
+            page={props.page}
+            pageSize={props.pageSize}
             // state.sorted= [0: {id: "average rating", desc: true} ]
-            // state.page = page we're on?
-            // state.pageSize = 'page size dropdown' (25)
-            onFetchData={props.handleGridUpdate}
+            // onFetchData={props.handleGridUpdate}
+            onPageChange={props.update.page}
+            onPageSizeChange={props.update.pageSize}
+            onSortedChange={props.update.sort}
             data={props.rows}
-            pages={props.recordsTotal}
+            pages={totalPages}
             loading={loading}
             defaultPageSize={props.pageSize}
             getTdProps={this.tdProps}

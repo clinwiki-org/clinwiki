@@ -7,7 +7,7 @@ import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
 
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import  SearchView  from "./view";
+import SearchView from "./view";
 import { AggFilterMap, SearchParams, defaultPageSize,
         encodeSearchParams, getSearchParamsFromURL,
         flattenAggs, expandAggs} from './Types'
@@ -50,7 +50,6 @@ interface SearchState {
   page: number
   pageSize: number
   sorts: any
-  oldGridData: any
 }
 
 interface OldCrustyAuthHeader {
@@ -67,6 +66,7 @@ interface SearchProps {
   history : any
 }
 
+
 // Replace redux with a simple component to store the page state
 export class Search extends React.Component<SearchProps,SearchState> {
   constructor(props) {
@@ -79,7 +79,6 @@ export class Search extends React.Component<SearchProps,SearchState> {
       page: 0,
       pageSize: defaultPageSize,
       sorts: [],
-      oldGridData: null,
     }
   }
 
@@ -134,13 +133,14 @@ export class Search extends React.Component<SearchProps,SearchState> {
         this.mergeState({ [filterProp]: { ... aggFilters, [agg]: filter }})
       }
   }
-  handleGridUpdate = (gridData) => {
-      if (this.state.oldGridData != gridData) {
-        const {sorted,page,pageSize} = gridData
-        // const sorts = sorted.map(x => x.id);
-        const sorts = null;
-        this.mergeState({ oldGridData:gridData, page, pageSize, sorts })
-      }
+  updateGridPage = (page) => {
+    this.mergeState({ page })
+  }
+  updateGridPageSize = (pageSize, page) => {
+    this.mergeState({ pageSize, page })
+  }
+  updateGridSort = (newSorted, column, shift) => {
+    // not implemented
   }
 
   // queryOverride overrides the query string on props
@@ -199,7 +199,11 @@ export class Search extends React.Component<SearchProps,SearchState> {
       gridProps={{
         columns: this.columns(),
         rows: data.search && data.search.data,
-        handleGridUpdate: this.handleGridUpdate,
+        update: { 
+          page: this.updateGridPage, 
+          pageSize: this.updateGridPageSize,
+          sort : this.updateGridSort
+        },
         page: this.state.page,
         pageSize: this.state.pageSize,
         recordsTotal: data.search && data.search.recordsTotal
@@ -234,7 +238,8 @@ export class Search extends React.Component<SearchProps,SearchState> {
         gridProps={{
           columns:this.columns(),
           rows: [],
-          handleGridUpdate:this.handleGridUpdate
+          page: this.state.page,
+          pageSize: this.state.pageSize,
         }} />
     }
   }
