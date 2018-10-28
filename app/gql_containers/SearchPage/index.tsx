@@ -100,7 +100,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
         aggFilters,
         crowdAggFilters,
         sort: decoded.sort
-      }, decoded.q);
+      });
       // If there is a query use it
       if (decoded.q) {
         this.props.updateClientState({ searchQuery: decoded.q })
@@ -146,18 +146,24 @@ export class Search extends React.Component<SearchProps,SearchState> {
   // queryOverride overrides the query string on props
   // This might happen during initial load because we are decoding
   // the query string from the url but haven't yet set it on the store
-  mergeState = (args, queryOverride?) => {
+  mergeState = (args) => {
       let newState = { ... this.state, ... args } as SearchState
       this.setState(newState)
+      // this.updateUrl(newState, queryOverride);
+  }
 
-      // Update url
-      const params = this.getQueryParams(newState);
+  updateUrl = (state: SearchState) => {
+      const params = this.getQueryParams(state);
       const encoded = encodeSearchParams(params)
-      const query = queryOverride || params.q
-      this.props.history.push(
-        encoded === "" ? 
-        `/search/${query}` :
-        `/search/${query}?p=${encoded}`);
+      const query = params.q
+      const newLocation = encoded === "" ? 
+                          `/search/${query}` :
+                          `/search/${query}?p=${encoded}`;
+      const u = new URL(window.location.href)
+      const curLocation = u.pathname + u.search
+      if (curLocation != newLocation) {
+        this.props.history.push(newLocation)
+      }
   }
 
   getQueryParams = (state:SearchState) => { 
@@ -215,6 +221,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
     if (this.props.AuthHeader.sessionChecked && !this.props.loading) {
       const query = search_query(this.columns())
       const params = this.getQueryParams(this.state)
+      this.updateUrl(this.state)
       console.log("Submitting query...")
       console.log(JSON.stringify(params))
       return <Query query={query} variables={params}>
