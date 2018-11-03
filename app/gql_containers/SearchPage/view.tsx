@@ -9,7 +9,7 @@ import 'react-table/react-table.css';
 import SearchFieldName from 'components/SearchFieldName';
 import Aggs from './components/Aggs';
 import * as _ from 'lodash';
-import { AggItem, AggFilterMap, AggCallback, SearchParams } from './Types'
+import { AggItem, AggFilterMap, AggCallback, SearchParams, SortItem } from './Types'
 
 const SearchWrapper = styled.div`
   .rt-tr {
@@ -34,11 +34,12 @@ interface AggProps {
   removeFilter: AggCallback,
 }
 interface GridProps {
-  columns: any
+  columns: string[]
   rows: any
   page: number
   pageSize: number
   recordsTotal?: number
+  sorts : SortItem[],
   update?: { page, pageSize, sort }
 }
 interface SearchViewProps {
@@ -125,12 +126,13 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
             columns={this.getColumns(props.columns)}
             manual
             loading={true}
-            defaultSorted={this.getDefaultSorted(props.columns)}
             defaultSortDesc
           />
     }
     const columns = props.columns
     const totalPages = Math.ceil(props.recordsTotal / props.pageSize);
+    let sorts = props.sorts
+    if (!sorts || sorts.length == 0) sorts = this.getDefaultSorted(columns)
 
     return <ReactTable
             className="-striped -highlight"
@@ -138,6 +140,7 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
             manual
             page={props.page}
             pageSize={props.pageSize}
+            sorted={props.sorts}
             // state.sorted= [0: {id: "average rating", desc: true} ]
             // onFetchData={props.handleGridUpdate}
             onPageChange={props.update.page}
@@ -148,7 +151,6 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
             loading={loading}
             defaultPageSize={props.pageSize}
             getTdProps={this.tdProps}
-            defaultSorted={this.getDefaultSorted(columns)}
             defaultSortDesc
           />
   }

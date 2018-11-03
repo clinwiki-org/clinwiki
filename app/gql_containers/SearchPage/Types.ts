@@ -19,13 +19,9 @@ export interface AggFilterListItem {
   values: string[]
 }
 
-enum SortDirection {
-  Asc = "+",
-  Desc = "-"
-}
 export interface SortItem {
-  col : string
-  dir : SortDirection
+  id: string
+  desc?: boolean
 }
 
 export interface SearchParams {
@@ -34,7 +30,7 @@ export interface SearchParams {
   pageSize: number
   aggFilters: AggFilterListItem[]
   crowdAggFilters: AggFilterListItem[]
-  sort: SortItem[]
+  sorts: SortItem[]
 }
 
 export function flattenAggs(aggs : AggFilterMap) : AggFilterListItem[] {
@@ -76,7 +72,7 @@ function compact_search(p : SearchParams) : CompactSearchParams {
     z : p.pageSize,
     a : p.aggFilters,
     c : p.crowdAggFilters,
-    s : p.sort
+    s : p.sorts
   }
   // Erase default values
   if (res.p == 0) delete res.p
@@ -94,7 +90,7 @@ function expand(q : string, p : CompactSearchParams) : SearchParams {
     pageSize: p.z||defaultPageSize,
     aggFilters: p.a||[],
     crowdAggFilters: p.c||[],
-    sort: p.s
+    sorts: p.s||[]
   }
 }
 

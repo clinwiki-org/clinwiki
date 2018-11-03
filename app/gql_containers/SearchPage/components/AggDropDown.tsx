@@ -34,8 +34,8 @@ const DropdownButtonWrapper = styled.div`
 `;
 
 const QUERY_AGG_BUCKETS = gql`
-  query ($agg : String!, $q : String, $sort:[String!], $aggFilters:[AggFilter!]) {
-    aggBuckets(params: {agg: $agg, q: $q, sorts: $sort, aggFilters: $aggFilters }) {
+  query ($agg : String!, $q : String, $sorts:[Sort!], $aggFilters:[AggFilter!]) {
+    aggBuckets(params: {agg: $agg, q: $q, sorts: $sorts, aggFilters: $aggFilters }) {
       aggs {
         name
         buckets {
@@ -47,8 +47,8 @@ const QUERY_AGG_BUCKETS = gql`
   }`
 
   const QUERY_CROWD_AGG_BUCKETA = gql`
-  query ($agg : String!, $q: String, $sort:[String!], $aggFilters:[AggFilter!]) {
-    aggBuckets: crowdAggBuckets(params: {agg:$agg, q: $q, sorts: $sort, aggFilters: $aggFilters }) {
+  query ($agg : String!, $q: String, $sorts:[Sort!], $aggFilters:[AggFilter!]) {
+    aggBuckets: crowdAggBuckets(params: {agg:$agg, q: $q, sorts: $sorts, aggFilters: $aggFilters }) {
       aggs {
         buckets {
           key

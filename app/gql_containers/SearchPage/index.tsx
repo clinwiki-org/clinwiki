@@ -8,7 +8,7 @@ import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import SearchView from "./view";
-import { AggFilterMap, SearchParams, defaultPageSize,
+import { AggFilterMap, SearchParams, defaultPageSize, SortItem,
         encodeSearchParams, getSearchParamsFromURL,
         flattenAggs, expandAggs} from './Types'
 import { withClientState, ClientState } from '../../components/Apollo/LocalStateDecorator'
@@ -20,8 +20,15 @@ const search_query = (fields) => {
     data = `data { ${field_list} }`
   }
   return gql`
-    query ($q: String, $page:Int, $pageSize:Int, $sort:[String!], $aggFilters:[AggFilter!]) {
-       crowdAggs: aggBuckets(params: {q: $q, agg: "front_matter_keys"}) {
+    query ($q: String, $page:Int, $pageSize:Int, $sorts:[Sort!], $aggFilters:[AggFilter!]) {
+       crowdAggs: aggBuckets(
+         params: {
+           q: $q, 
+           page: $page, 
+           pageSize: $pageSize, 
+           sorts: $sorts, 
+           aggFilters:$aggFilters, 
+           agg: "front_matter_keys"}) {
          aggs {
             buckets {
                 key
@@ -29,7 +36,13 @@ const search_query = (fields) => {
             }
         }
       }
-      search (params: {q: $q, page: $page, pageSize: $pageSize, sorts: $sort, aggFilters:$aggFilters }) {
+      search (
+        params: 
+          { q: $q, 
+            page: $page, 
+            pageSize: $pageSize, 
+            sorts: $sorts, 
+            aggFilters:$aggFilters }) {
         recordsTotal
         aggs {
           name
@@ -49,7 +62,7 @@ interface SearchState {
   crowdAggFilters: AggFilterMap
   page: number
   pageSize: number
-  sorts: any
+  sorts: SortItem[]
 }
 
 interface OldCrustyAuthHeader {
@@ -88,7 +101,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
     // load url state
     const decoded = getSearchParamsFromURL()
     if (decoded) {
-      console.log(decoded)
+      // console.log(`decoded params: ${JSON.stringify(decoded)}`)
 
       const aggFilters = expandAggs(decoded.aggFilters)
       const crowdAggFilters = expandAggs(decoded.crowdAggFilters)
@@ -98,11 +111,11 @@ export class Search extends React.Component<SearchProps,SearchState> {
         pageSize: decoded.pageSize || this.state.pageSize,
         aggFilters,
         crowdAggFilters,
-        sort: decoded.sort
+        sorts: decoded.sorts||[]
       });
       // If there is a query use it
       if (decoded.q) {
-        this.props.updateClientState({ searchQuery: decoded.q })
+        this.props.updateClientState({ searchQuery: decoded.q||"" })
       }
     }
   }
@@ -139,8 +152,10 @@ export class Search extends React.Component<SearchProps,SearchState> {
   updateGridPageSize = (pageSize, page) => {
     this.mergeState({ pageSize, page })
   }
-  updateGridSort = (newSorted, column, shift) => {
-    // not implemented
+  updateGridSort = (newSorted : SortItem[]) => {
+    this.mergeState({
+      sorts: newSorted
+    })
   }
 
   // queryOverride overrides the query string on props
@@ -169,14 +184,13 @@ export class Search extends React.Component<SearchProps,SearchState> {
   getQueryParams = (state:SearchState) => { 
     const filters = flattenAggs(state.aggFilters)
     const crowdFilters = flattenAggs(state.crowdAggFilters)
-    // const sorts = _.get(this, "state.sorts", null)
     return { 
         q: this.props.clientState.searchQuery,
         page: state.page,
         pageSize: state.pageSize,
         aggFilters: filters,
         crowdAggFilters: crowdFilters,
-        sort: []
+        sorts: state.sorts
     } as SearchParams;
   }
 
@@ -206,7 +220,8 @@ export class Search extends React.Component<SearchProps,SearchState> {
         },
         page: this.state.page,
         pageSize: this.state.pageSize,
-        recordsTotal: data.search && data.search.recordsTotal
+        recordsTotal: data.search && data.search.recordsTotal,
+        sorts: this.state.sorts
       }}
       aggProps={{
         aggs: data.search && data.search.aggs,
@@ -240,6 +255,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
           rows: [],
           page: this.state.page,
           pageSize: this.state.pageSize,
+          sorts: []
         }} />
     }
   }

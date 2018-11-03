@@ -18,17 +18,15 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentDidMount() {
-    this.query = this.props.query;
-  }
-
   onSearchChange(e) {
     this.query = e.target.value;
   }
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.updateClientState({ searchQuery: this.query })
+    this.props.updateClientState({ 
+      searchQuery: this.query || this.props.clientState.searchQuery
+    })
   }
 
   render() {
@@ -38,6 +36,7 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
             <FormControl
               style={{ width: '80%' }}
               type="text"
+              defaultValue={this.props.clientState && this.props.clientState.searchQuery}
               placeholder={(this.props.clientState && this.props.clientState.searchQuery) || 'search...'}
               onChange={this.onSearchChange}
             />
