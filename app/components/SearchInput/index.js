@@ -24,9 +24,11 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.updateClientState({ 
-      searchQuery: this.query || this.props.clientState.searchQuery
-    })
+    let searchQuery = this.query
+    if (searchQuery == null && searchQuery == undefined) {
+      searchQuery = this.props.clientState.searchQuery
+    }
+    this.props.updateClientState({ searchQuery })
   }
 
   render() {
