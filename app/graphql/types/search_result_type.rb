@@ -67,8 +67,8 @@ module Types
 
   class SortType < Types::BaseInputObject
     description "Column to sort by"
-    argument :field, String, description: "Column to sort by", required: true
-    argument :order, SortDirection, description: "Direction to sort by 'asc' or 'desc'", required: true
+    argument :id, String, description: "Column to sort by", required: true
+    argument :desc, Boolean, description: "Sort in descending order if true", required: false, default_value: false
   end
 
   class SearchInputType < Types::BaseInputObject
@@ -76,7 +76,7 @@ module Types
     argument :q, String, 'an optional query -- defaults to current user default query', required: false
     argument :page, Int, 'which page of search results we want', required: false, default_value: 1
     argument :pageSize, Int, 'how many results we want', required: false, default_value: 25
-    argument :sorts, [SortType], 'which fields to sort by', required: false, default_value: [ { :field => 'nct_id', :direction => "ASC" }]
+    argument :sorts, [SortType], 'which fields to sort by', required: false, default_value: [ { :field => 'nct_id' }]
     argument :aggFilters, [AggFilterType], 'the aggs we are filtering on', required: false
     argument :agg, String, 'an agg to query for, used when retrieving all buckets for an agg', required: false
   end
