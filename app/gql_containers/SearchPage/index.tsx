@@ -135,7 +135,10 @@ export class Search extends React.Component<SearchProps,SearchState> {
       const filter = new Set(aggFilters[agg])
       filter.add(item)
       const filterProp = isCrowd ? "crowdAggFilters" : "aggFilters"
-      this.mergeState({ [filterProp]: { ... aggFilters, [agg]: filter }})
+      this.mergeState({ 
+        page: 0,
+        [filterProp]: { ... aggFilters, [agg]: filter }
+      })
   }
   removeAggFilter = (agg, item, isCrowd) => {
       console.log(`remove '${item}' from ${agg}`);
