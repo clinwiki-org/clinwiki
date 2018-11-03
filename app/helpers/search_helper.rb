@@ -159,7 +159,9 @@ module SearchHelper
     elsif params[:sort]
       params[:sort]
     elsif params[:sorts]
-      Hash[params[:sorts].map{|x| x.split(' ')}]
+      # the graphql case
+      # Note: Do we need to transform "title" to "brief_title" as above ?
+      Hash[params[:sorts].map{|x| [x.field, x.order] }]
     else
       {_score: :desc}
     end

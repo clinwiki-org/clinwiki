@@ -59,12 +59,24 @@ module Types
     argument :values, [String], description: "The values we are filtering for that field", required: false, default_value: []
   end
 
+
+  class SortDirection < Types::BaseEnum
+    value "ASC", "Ascending"
+    value "DESC", "Descending"
+  end
+
+  class SortType < Types::BaseInputObject
+    description "Column to sort by"
+    argument :field, String, description: "Column to sort by", required: true
+    argument :order, SortDirection, description: "Direction to sort by 'asc' or 'desc'", required: true
+  end
+
   class SearchInputType < Types::BaseInputObject
     description "Attributes for performing a search"
     argument :q, String, 'an optional query -- defaults to current user default query', required: false
     argument :page, Int, 'which page of search results we want', required: false, default_value: 1
     argument :pageSize, Int, 'how many results we want', required: false, default_value: 25
-    argument :sorts, [String], 'which fields to sort by', required: false, default_value: ['nct_id asc']
+    argument :sorts, [SortType], 'which fields to sort by', required: false, default_value: [ { :field => 'nct_id', :direction => "ASC" }]
     argument :aggFilters, [AggFilterType], 'the aggs we are filtering on', required: false
     argument :agg, String, 'an agg to query for, used when retrieving all buckets for an agg', required: false
   end
