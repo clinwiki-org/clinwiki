@@ -96,38 +96,22 @@ module SearchHelper
   # Manipulates the filter params to the expected value matching a "where" key
   # @return [Hash]
   def agg_where(curr_agg = nil)
-    agg_filters = params.fetch(:aggFilters, {})
-    if agg_filters.is_a?(String)
-      agg_filters = JSON.parse(agg_filters)
-    end
-
-    new_agg_filters = params.fetch(:aggFilters, params.fetch(:agg_filters, {}))
-    if new_agg_filters.is_a?(Array)
+    agg_filters = params.fetch(:aggFilters, params.fetch(:agg_filters, {}))
+    puts "-- agg: #{agg_filters}"
+    if agg_filters.is_a?(Array)
+      puts "-- is_a?(Array)"
       where = {_and: []}
-      new_agg_filters.each do |filter|
+      agg_filters.each do |filter|
         if filter.field && !filter.values.empty?
           where[:_and] << {:_or => filter.values.map{ |val| { filter.field => val } } }
         end
       end
     else
-      if new_agg_filters && !new_agg_filters.empty?
-        where = {_and: []}
-        new_agg_filters.each do |key, vals|
-          next if (!curr_agg.nil?) && curr_agg == key
-          conjs = []
-          unless vals.nil? || vals.empty?
-            vals.each do |val|
-              conjs << {key => val}
-            end
-          end
-          where[:_and] << {:_or => conjs} unless conjs.empty?
-        end
-      else
-        where = Hash[agg_filters.map{|key, val|
-          [key, val]
-        }.reject{|x| x[1].empty? }.map{|x| [x[0], x[1].keys]}]
-      end
+      where = {_and: []}
     end
+    
+    crowd_agg_filters = params.fetch(:crowdAggFilters, params.fetch(:crowd_agg_filters, {}))
+    puts "-- crowd filters: #{crowd_agg_filters}"
 
     ["start_date", "completion_date"].each do |key|
       if where.has_key?(key)
