@@ -97,9 +97,7 @@ module SearchHelper
   # @return [Hash]
   def agg_where(curr_agg = nil)
     agg_filters = params.fetch(:aggFilters, params.fetch(:agg_filters, {}))
-    puts "-- agg: #{agg_filters}"
     if agg_filters.is_a?(Array)
-      puts "-- is_a?(Array)"
       where = {_and: []}
       agg_filters.each do |filter|
         if filter.field && !filter.values.empty?
@@ -110,8 +108,16 @@ module SearchHelper
       where = {_and: []}
     end
     
+    # note: the snake case is the one that actually has the data. Not sure who's transforming it though.
     crowd_agg_filters = params.fetch(:crowdAggFilters, params.fetch(:crowd_agg_filters, {}))
-    puts "-- crowd filters: #{crowd_agg_filters}"
+    if crowd_agg_filters.is_a?(Array)
+      crowd_agg_filters.each do |filter|
+        if filter.field && !filter.values.empty?
+          key = "fm_" + filter.field
+          where[:_and] << {:_or => filter.values.map{ |val| { key => val } } }
+        end
+      end
+    end
 
     ["start_date", "completion_date"].each do |key|
       if where.has_key?(key)
