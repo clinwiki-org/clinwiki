@@ -78,6 +78,7 @@ module Types
     argument :pageSize, Int, 'how many results we want', required: false, default_value: 25
     argument :sorts, [SortType], 'which fields to sort by', required: false, default_value: [ { :field => 'nct_id' }]
     argument :aggFilters, [AggFilterType], 'the aggs we are filtering on', required: false
+    argument :crowdAggFilters, [AggFilterType], 'the crowd aggs we should filter on', required: false
     argument :agg, String, 'an agg to query for, used when retrieving all buckets for an agg', required: false
   end
 end
