@@ -11,7 +11,7 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 
-import RichTextEditor from 'react-rte';
+import TextEditor from 'components/TextEditor'
 import FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import { Grid, Button, Row, Col, Table, FormGroup, FormControl } from 'react-bootstrap';
@@ -64,14 +64,14 @@ class WikiSection extends React.Component { // eslint-disable-line react/prefer-
     editable: false,
     changed: false,
     history: false,
-    value: RichTextEditor.createValueFromString(CREATE_WIKI, 'markdown'),
+    value: TextEditor.createValueFromString(CREATE_WIKI, 'markdown'),
     markdownValue: CREATE_WIKI,
   }
 
   componentWillMount() {
     if (this.props.WikiSection.wiki && this.props.WikiSection.wiki.text) {
       this.setState({
-        value: RichTextEditor.createValueFromString(this.props.WikiSection.wiki.text, 'markdown'),
+        value: TextEditor.createValueFromString(this.props.WikiSection.wiki.text, 'markdown'),
       });
     }
   }
@@ -83,7 +83,7 @@ class WikiSection extends React.Component { // eslint-disable-line react/prefer-
   componentWillReceiveProps(nextProps) {
     if (_.get(nextProps, 'WikiSection.wiki.exists') && _.get(this.props, 'WikiSection.wiki.text') !== _.get(nextProps, 'WikiSection.wiki.text')) {
       this.setState({
-        value: RichTextEditor.createValueFromString(nextProps.WikiSection.wiki.text, 'markdown'),
+        value: TextEditor.createValueFromString(nextProps.WikiSection.wiki.text, 'markdown'),
       });
     }
   }
@@ -132,7 +132,7 @@ class WikiSection extends React.Component { // eslint-disable-line react/prefer-
     if (this.state.editable && this.state.markdown) {
       // cache markdown changes into rte
       return this.setState({
-        value: RichTextEditor.createValueFromString(this.state.markdownValue, 'markdown'),
+        value: TextEditor.createValueFromString(this.state.markdownValue, 'markdown'),
         editable: false,
         history: false,
         markdown: false,
@@ -146,7 +146,7 @@ class WikiSection extends React.Component { // eslint-disable-line react/prefer-
       // switch markdown to rte
       this.setState({
         markdown: false,
-        value: RichTextEditor.createValueFromString(this.state.markdownValue, 'markdown'),
+        value: TextEditor.createValueFromString(this.state.markdownValue, 'markdown'),
       });
     }
     // switch rte to markdown
@@ -216,7 +216,7 @@ class WikiSection extends React.Component { // eslint-disable-line react/prefer-
       );
     }
     return (
-      <RichTextEditor
+      <TextEditor
         onChange={this.onChange}
         value={this.state.value}
       />

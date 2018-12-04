@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RichTextEditor from 'react-rte';
+import TextEditor from 'components/TextEditor'
 import FontAwesome from 'react-fontawesome';
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
@@ -43,7 +43,7 @@ class ReviewForm extends React.Component {
   componentWillMount() {
     this.setState({
       ...this.state,
-      value: RichTextEditor.createValueFromString(this.props.review || CREATE_REVIEW, 'markdown'),
+      value: TextEditor.createValueFromString(this.props.review || CREATE_REVIEW, 'markdown'),
     });
   }
 
@@ -51,7 +51,7 @@ class ReviewForm extends React.Component {
     if (this.props.review !== nextProps.review) {
       this.setState({
         ...this.state,
-        value: RichTextEditor.createValueFromString(nextProps.review, 'markdown'),
+        value: TextEditor.createValueFromString(nextProps.review, 'markdown'),
       });
       this.forceUpdate();
     }
@@ -135,7 +135,7 @@ class ReviewForm extends React.Component {
       starAcc.set(this.state.starFields[i], this.state.addingStars[i]), fromJS(this.state.stars)).toJS();
     this.props.submitReview(this.props.nctId, this.state.value.toString('markdown'), stars, this.props.reviewId);
     this.setState(Object.assign(DEFAULT_STATE,
-      { value: RichTextEditor.createValueFromString(CREATE_REVIEW, 'markdown') }));
+      { value: TextEditor.createValueFromString(CREATE_REVIEW, 'markdown') }));
 
     // this is a dumb workaround but it fixing this state bug would
     // require a lot more work with sagas than the star bug in a new review would merit
@@ -253,7 +253,7 @@ class ReviewForm extends React.Component {
             ))}
             <Row>
               <Col md={12}>
-                <RichTextEditor
+                <TextEditor
                   onChange={this.onReviewChange}
                   value={this.state.value}
                 />
