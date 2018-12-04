@@ -20,7 +20,7 @@ const search_query = (fields) => {
     data = `data { ${field_list} }`
   }
   return gql`
-    query ($q: String, $page:Int, $pageSize:Int, $sorts:[Sort!], $aggFilters:[AggFilter!]) {
+    query ($q: String, $page:Int, $pageSize:Int, $sorts:[Sort!], $aggFilters:[AggFilter!], $crowdAggFilters:[AggFilter!]) {
        crowdAggs: aggBuckets(
          params: {
            q: $q, 
@@ -42,7 +42,8 @@ const search_query = (fields) => {
             page: $page, 
             pageSize: $pageSize, 
             sorts: $sorts, 
-            aggFilters:$aggFilters }) {
+            aggFilters:$aggFilters,
+            crowdAggFilters:$crowdAggFilters }) {
         recordsTotal
         aggs {
           name
@@ -121,9 +122,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
   }
 
   columns() {
-    // Temporarily disable user selectable columns
-      return this.state.cols
-    }
+    return this.state.cols
   }
 
   addAggFilter = (agg, item, isCrowd) => {
