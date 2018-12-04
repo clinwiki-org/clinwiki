@@ -145,7 +145,7 @@ GEM
     multipart-post (2.0.0)
     net-ssh (4.2.0)
     netrc (0.11.0)
-    nokogiri (1.8.2)
+    nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     normalize-rails (3.0.3)
     orm_adapter (0.5.0)
@@ -341,4 +341,4 @@ RUBY VERSION
    ruby 2.4.1p111
 
 BUNDLED WITH
-   1.16.2
+   1.16.3
