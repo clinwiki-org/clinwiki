@@ -121,10 +121,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
   }
 
   columns() {
-    if (_.get(this.props, 'AuthHeader.user.search_result_columns')) {
-      return Object.keys(this.props.AuthHeader.user.search_result_columns)
-    }
-    else {
+    // Temporarily disable user selectable columns
       return this.state.cols
     }
   }

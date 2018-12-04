@@ -175,7 +175,7 @@ export class ProfilePage extends React.Component { // eslint-disable-line react/
                 onChange={this.onChangeDefaultQueryString}
                 placeholder="Enter A Default Query"
               />
-              {this.renderColumnPicker()}
+              {/* {this.renderColumnPicker()} */}
               <Button type="submit" id="submit-profile-form">
                 Submit
               </Button>
