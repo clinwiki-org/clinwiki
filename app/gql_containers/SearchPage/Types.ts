@@ -102,14 +102,20 @@ export function encodeSearchParams(params : SearchParams) : string {
 }
 
 export function getSearchParamsFromURL() : SearchParams {
-  const u = new URL(window.location.href)
-  const encodedQuery = u.pathname.startsWith("/search/") ? _.last(u.pathname.split('/')) : ""
-  const query = decodeURIComponent(encodedQuery)
-  const encodedParams = u.searchParams.get('p')
-  if (encodedParams && encodedParams[0] == version_marker) {
-      let decoded = atob(encodedParams.substr(1))
-      const temp = JSON.parse(decoded)
-      return expand(query, temp);
+  try {
+    const u = new URL(window.location.href)
+    const encodedQuery = u.pathname.startsWith("/search/") ? _.last(u.pathname.split('/')) : ""
+    const query = decodeURIComponent(encodedQuery)
+    const encodedParams = u.searchParams.get('p')
+    if (encodedParams && encodedParams[0] == version_marker) {
+        let decoded = atob(encodedParams.substr(1))
+        const temp = JSON.parse(decoded)
+        return expand(query, temp);
+    }
+    return  expand(query, <CompactSearchParams>{})
   }
-  return  expand(query, <CompactSearchParams>{})
+  catch(e) {
+    console.log(`Error decoding search params ${e}`)
+    return expand("", <any>{})
+  }
 }
