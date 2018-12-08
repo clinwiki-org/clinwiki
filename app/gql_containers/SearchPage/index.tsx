@@ -169,8 +169,8 @@ export class Search extends React.Component<SearchProps,SearchState> {
   updateUrl = (state: SearchState) => {
       const params = this.getQueryParams(state);
       const encoded = encodeSearchParams(params)
-      const query = params.q
-      const newLocation = encoded === "" ? 
+      const query = encodeURIComponent(params.q)
+      let newLocation = encoded === "" ? 
                           `/search/${query}` :
                           `/search/${query}?p=${encoded}`;
       const u = new URL(window.location.href)
