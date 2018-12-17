@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import 'react-table/react-table.css';
 import SearchFieldName from 'components/SearchFieldName';
 import Aggs from './components/Aggs';
+import CrumbsBar from './components/CrumbsBar';
 import * as _ from 'lodash';
 import { AggItem, AggFilterMap, AggCallback, SearchParams, SortItem } from './Types'
 
@@ -121,13 +122,13 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
 
   render_table(loading, props : GridProps) {
     if(loading) {
-      return <ReactTable
-            className="-striped -highlight"
-            columns={this.getColumns(props.columns)}
-            manual
-            loading={true}
-            defaultSortDesc
-          />
+      return (
+      <ReactTable
+        className="-striped -highlight"
+        columns={this.getColumns(props.columns)}
+        manual
+        loading={true}
+        defaultSortDesc />)
     }
     const columns = props.columns
     const totalPages = Math.ceil(props.recordsTotal / props.pageSize);
@@ -169,6 +170,8 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
           <Grid>
             <Row>
               <Col md={12}>
+                { this.props.loading ? null : 
+                  <CrumbsBar {...this.props.aggProps} /> }
                 { this.render_table(this.props.loading, this.props.gridProps) }
               </Col>
             </Row>

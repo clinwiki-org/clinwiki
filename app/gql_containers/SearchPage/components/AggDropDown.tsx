@@ -162,23 +162,23 @@ export class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
         </MenuItem> ];
     }
 
-    const selectedAggs = []
-    selectedKeys.forEach(k => {
-        selectedAggs.push(
-            <li key={k}>
-                <Label>
-                {k}
-                {' '}
-                <FontAwesome
-                    className="remove"
-                    name="remove"
-                    style={{ cursor: 'pointer', color: '#cc1111' }}
-                    onClick={() => removeFilter(agg, k)}
-                />
-                </Label>
-            </li>
-        )}
-    );
+    // const selectedAggs = []
+    // selectedKeys.forEach(k => {
+    //     selectedAggs.push(
+    //         <li key={k}>
+    //             <Label>
+    //             {k}
+    //             {' '}
+    //             <FontAwesome
+    //                 className="remove"
+    //                 name="remove"
+    //                 style={{ cursor: 'pointer', color: '#cc1111' }}
+    //                 onClick={() => removeFilter(agg, k)}
+    //             />
+    //             </Label>
+    //         </li>
+    //     )}
+    // );
 
     return (
       <DropdownButtonWrapper>
@@ -191,9 +191,9 @@ export class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
         >
           {menuItems}
         </DropdownButton>
-        <ul className="selected-aggs">
+        {/* <ul className="selected-aggs">
           {selectedAggs}
-        </ul>
+        </ul> */}
       </DropdownButtonWrapper>
     );
   }

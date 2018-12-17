@@ -1,5 +1,5 @@
 import _ from 'lodash';
-
+//aggToField
 export default (val) => _.get({
   average_rating: 'average rating',
   tags: 'tags',
