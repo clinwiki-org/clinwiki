@@ -25,12 +25,13 @@ export interface SortItem {
 }
 
 export interface SearchParams {
-  q: string
-  page: number
-  pageSize: number
-  aggFilters: AggFilterListItem[]
-  crowdAggFilters: AggFilterListItem[]
-  sorts: SortItem[]
+  readonly q: string
+  readonly searchWithinTerms: string[]
+  readonly page: number
+  readonly pageSize: number
+  readonly aggFilters: AggFilterListItem[]
+  readonly crowdAggFilters: AggFilterListItem[]
+  readonly sorts: SortItem[]
 }
 
 export function flattenAggs(aggs : AggFilterMap) : AggFilterListItem[] {
@@ -57,6 +58,8 @@ const version_marker = '!'
 interface CompactSearchParams {
   // page
   p: number
+  // search within terms
+  w: string[]
   // page size
   z: number
   // aggFilters
@@ -69,6 +72,7 @@ interface CompactSearchParams {
 function compact_search(p : SearchParams) : CompactSearchParams {
   var res = {
     p: p.page,
+    w: p.searchWithinTerms,
     z : p.pageSize,
     a : p.aggFilters,
     c : p.crowdAggFilters,
@@ -83,9 +87,10 @@ function compact_search(p : SearchParams) : CompactSearchParams {
   if (Object.keys(res).length == 0) return null;
   return res
 }
-function expand(q : string, p : CompactSearchParams) : SearchParams {
+function expand_search(q : string, p : CompactSearchParams) : SearchParams {
   return {
     q,
+    searchWithinTerms: p.w||[],
     page: p.p||0,
     pageSize: p.z||defaultPageSize,
     aggFilters: p.a||[],
@@ -110,12 +115,12 @@ export function getSearchParamsFromURL() : SearchParams {
     if (encodedParams && encodedParams[0] == version_marker) {
         let decoded = atob(encodedParams.substr(1))
         const temp = JSON.parse(decoded)
-        return expand(query, temp);
+        return expand_search(query, temp);
     }
-    return  expand(query, <CompactSearchParams>{})
+    return  expand_search(query, <CompactSearchParams>{})
   }
   catch(e) {
     console.log(`Error decoding search params ${e}`)
-    return expand("", <any>{})
+    return expand_search("", <any>{})
   }
 }

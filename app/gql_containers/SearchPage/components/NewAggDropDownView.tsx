@@ -22,6 +22,7 @@ interface AggDropDownViewProps {
 /*
  - style header so the icon goes to the right
  - style away giant margin
+ - add 'filter' on top (local state=filter?)
  - add busy spinner for loading
  - add scrollable div with checkboxes
  - https://stackoverflow.com/questions/7280389/scrollable-box-containing-list-of-checkboxes-in-html

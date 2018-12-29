@@ -10,7 +10,7 @@ import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { ApolloConsumer } from "react-apollo";
 import gql from "graphql-tag";
 import { AggBucket, AggCallback, SearchParams } from '../Types'
-import { AggDropDownView } from './NewAggDropDownView'
+import { AggDropDownView } from './AggDropDownView'
 
 const QUERY_AGG_BUCKETS = gql`
   query ($agg : String!, $q : String, $sorts:[Sort!], $aggFilters:[AggFilter!], $crowdAggFilters:[AggFilter!]) {

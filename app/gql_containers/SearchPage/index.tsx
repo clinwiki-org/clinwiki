@@ -58,6 +58,7 @@ const search_query = (fields) => {
 }
 
 interface SearchState {
+  readonly searchWithinTerms: string[]
   cols: string[]
   aggFilters: AggFilterMap
   crowdAggFilters: AggFilterMap
@@ -86,6 +87,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
   constructor(props) {
     super(props)
     this.state = {
+      searchWithinTerms: [],
       cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
       // map aggName -> Set of selected args
       aggFilters: {},
@@ -145,6 +147,11 @@ export class Search extends React.Component<SearchProps,SearchState> {
         this.mergeState({ [filterProp]: { ... aggFilters, [agg]: filter }})
       }
   }
+  searchWithin = (term:string) => {
+    let terms = (this.state.searchWithinTerms || []).slice()
+    terms.push(term)
+    this.mergeState({ searchWithinTerms: terms })
+  }
   updateGridPage = (page) => {
     this.mergeState({ page })
   }
@@ -185,6 +192,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
     const crowdFilters = flattenAggs(state.crowdAggFilters)
     return { 
         q: this.props.clientState.searchQuery,
+        searchWithinTerms: state.searchWithinTerms,
         page: state.page,
         pageSize: state.pageSize,
         aggFilters: filters,
@@ -209,6 +217,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
     return <SearchView 
       loading={loading} 
       history={this.props.history}
+      searchWithin={this.searchWithin}
       gridProps={{
         columns: this.columns(),
         rows: data.search && data.search.data,
@@ -239,10 +248,15 @@ export class Search extends React.Component<SearchProps,SearchState> {
     if (this.props.AuthHeader.sessionChecked && !this.props.loading) {
       const query = search_query(this.columns())
       const params = this.getQueryParams(this.state)
+      let gqlParams = params
+      if (params.searchWithinTerms) {
+        const q = params.q + " " + params.searchWithinTerms.join(' ')
+        gqlParams = { ...params, q }
+      }
       this.updateUrl(this.state)
       console.log("Submitting query...")
-      console.log(JSON.stringify(params))
-      return <Query query={query} variables={params}>
+      console.log(JSON.stringify(gqlParams))
+      return <Query query={query} variables={gqlParams}>
         { this.render_search } 
         </Query>
     }
