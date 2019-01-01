@@ -51,6 +51,9 @@ const Crumb = ({category,value,onClick}) => {
         />
     </Label>)
 } 
+interface MultiCrumbProps {
+  category:string, values: string[]
+}
 
 export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   *mkCrumbs(searchParams : SearchParams, removeFilter) {
@@ -78,11 +81,15 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
       }
     }
     for(const key in searchParams.crowdAggFilters) {
-      const agg = searchParams.aggFilters[key]
+      const agg = searchParams.crowdAggFilters[key]
       for (const v in agg.values) {
         const val = agg.values[v]
         const cat = aggToField(agg.field)
-        yield <Crumb category={cat} value={val} onClick={()=>removeFilter(agg.field, val, true)} key='{cat}{val}' />
+        yield <Crumb 
+          category={cat} 
+          value={val} 
+          onClick={()=>removeFilter(agg.field, val, true)} 
+          key='{cat}{val}' />
       }
     }
   }

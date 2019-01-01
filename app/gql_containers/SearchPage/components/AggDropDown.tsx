@@ -73,11 +73,23 @@ export class AggDropDown extends React.Component<AggDropDownProps,AggDropDownSta
                     return
                 }
                 this.setState({ ... this.state, loading: true, isOpen: true })
-                console.log("load more..." + JSON.stringify(this.props.searchParams))
-                const {data} = await client.query({
-                    query: this.props.isCrowdAgg ? QUERY_CROWD_AGG_BUCKETA : QUERY_AGG_BUCKETS,
-                    variables: { ... this.props.searchParams, agg : this.props.agg }
-                });
+
+                const {data} = 
+                  this.props.isCrowdAgg ?
+                    await client.query({
+                        query: QUERY_CROWD_AGG_BUCKETA,
+                        variables: {
+                          ... this.props.searchParams, 
+                          crowdAggFilters: this.props.searchParams.crowdAggFilters.filter(agg => agg.field != this.props.agg),
+                          agg : this.props.agg }
+                    }) :
+                    await client.query({
+                        query: QUERY_AGG_BUCKETS,
+                        variables: {
+                          ... this.props.searchParams, 
+                          aggFilters: this.props.searchParams.aggFilters.filter(agg => agg.field != this.props.agg),
+                          agg : this.props.agg }
+                    })
                 const buckets = _.get(data, "aggBuckets.aggs[0].buckets")
                 this.setState({ buckets, loading: false, isOpen: true })
             }}
