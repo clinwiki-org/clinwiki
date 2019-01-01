@@ -48,7 +48,8 @@ interface SearchViewProps {
   history?: any,
   aggProps? : AggProps
   gridProps : GridProps
-  searchWithin? : (term:string)=>void
+  addSearchTerm? : (term:string)=>void
+  removeSearchTerm? : (term:string)=>void
 }
 
 export class SearchView extends React.PureComponent<SearchViewProps> {
@@ -172,7 +173,9 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
             <Row>
               <Col md={12}>
                 { this.props.loading ? null : 
-                  <CrumbsBar {...this.props.aggProps} searchWithin={this.props.searchWithin} /> }
+                  <CrumbsBar {...this.props.aggProps} 
+                    addSearchTerm={this.props.addSearchTerm} 
+                    removeSearchTerm={this.props.removeSearchTerm} /> }
                 { this.render_table(this.props.loading, this.props.gridProps) }
               </Col>
             </Row>

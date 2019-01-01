@@ -32,9 +32,11 @@ import { AggFilterMap, AggCallback, SearchParams } from '../Types'
 interface CrumbsBarProps {
   searchParams : SearchParams
   removeFilter: AggCallback,
-  searchWithin : (term:string)=>void
+  addSearchTerm : (term:string)=>void
+  removeSearchTerm : (term:string,bool?)=>void
 } 
 interface CrumbsBarState {
+  searchTerm : string
 }
 
 const Crumb = ({category,value,onClick}) => {
@@ -53,7 +55,19 @@ const Crumb = ({category,value,onClick}) => {
 export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   *mkCrumbs(searchParams : SearchParams, removeFilter) {
     if (searchParams.q) {
-      yield <Crumb key="search" category="search" value={searchParams.q} onClick={console.log} />
+      yield <Crumb 
+              key="search" 
+              category="search" 
+              value={searchParams.q} 
+              onClick={this.clearPrimarySearch} />
+    }
+    for (const key in searchParams.searchWithinTerms) {
+      const term = searchParams.searchWithinTerms[key]
+      yield <Crumb 
+              key={"search:"+key} 
+              category="search" 
+              value={term} 
+              onClick={() => this.props.removeSearchTerm(term)} />
     }
     for(const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key]
@@ -73,15 +87,31 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
     }
   }
 
+  localSearchChange = (e) => {
+    this.setState({ searchTerm : e.target.value })
+  }
+  clearPrimarySearch = () => {
+    this.props.removeSearchTerm("", true)
+  }
+  onSubmit = (e) => {
+    e.preventDefault()
+    this.props.addSearchTerm(this.state.searchTerm)
+    this.setState({ searchTerm: "" })
+  }
+
   render() {
     return (
       <CrumbsBarStyleWrappper>
       <Grid className="crumbs-bar">
         <Row>
-          <Form inline className="searchInput">
+          <Form inline className="searchInput" onSubmit={this.onSubmit}>
             <FormGroup>
               <b>Search Within: </b>
-              <FormControl type="text" placeholder="search..." />
+              <FormControl 
+                type="text" 
+                placeholder="search..."
+                onChange={this.localSearchChange}
+                />
             </FormGroup>
             <Button type="submit">
               <FontAwesome name="search" />
@@ -95,19 +125,5 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
       </Grid>
       </CrumbsBarStyleWrappper>
     )
-    // <div id="crumbs-bar" className="container">
-    //   <div className="row">
-    //     Search Within: 
-    //     <input type='text' />
-    //   </div>
-    //   <div className="row">
-    //     sort by
-    //     # of items
-    //   </div>
-    //   <div className="row">
-
-    //   </div>
-      
-    // </div>)
   }
 }

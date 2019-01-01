@@ -147,10 +147,29 @@ export class Search extends React.Component<SearchProps,SearchState> {
         this.mergeState({ [filterProp]: { ... aggFilters, [agg]: filter }})
       }
   }
-  searchWithin = (term:string) => {
-    let terms = (this.state.searchWithinTerms || []).slice()
-    terms.push(term)
-    this.mergeState({ searchWithinTerms: terms })
+  addSearchTerm = (term:string) => {
+    if (this.props.clientState.searchQuery == "") {
+      this.props.updateClientState({ searchQuery: term })
+    }
+    else if (term) {
+      let terms = (this.state.searchWithinTerms || []).slice()
+      terms.push(term)
+      this.mergeState({ searchWithinTerms: terms })
+    }
+  }
+  removeSearchTerm = (term:string, isPrimary?:boolean)=>{
+    if (isPrimary) {
+      this.props.updateClientState({ searchQuery: "" })
+    }
+    else if (term) {
+      let terms = this.state.searchWithinTerms||[]
+      const index = terms.indexOf(term)
+      if (index >= 0) {
+        // remove 1 item at index from terms
+        terms.splice(index, 1)
+        this.mergeState({ searchWithinTerms: terms })
+      }
+    }
   }
   updateGridPage = (page) => {
     this.mergeState({ page })
@@ -170,7 +189,6 @@ export class Search extends React.Component<SearchProps,SearchState> {
   mergeState = (args) => {
       let newState = { ... this.state, ... args } as SearchState
       this.setState(newState)
-      // this.updateUrl(newState, queryOverride);
   }
 
   updateUrl = (state: SearchState) => {
@@ -217,7 +235,8 @@ export class Search extends React.Component<SearchProps,SearchState> {
     return <SearchView 
       loading={loading} 
       history={this.props.history}
-      searchWithin={this.searchWithin}
+      addSearchTerm={this.addSearchTerm}
+      removeSearchTerm={this.removeSearchTerm}
       gridProps={{
         columns: this.columns(),
         rows: data.search && data.search.data,
