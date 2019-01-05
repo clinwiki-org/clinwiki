@@ -6,7 +6,6 @@ import {
   SESSION_CHECKED,
   RELOAD_SESSION,
 } from './constants';
-import { SEARCH_CHANGED } from '../SearchPage/constants';
 
 export function* checkSession() {
   const { data } = yield call(client.get, '/user/exists');
@@ -24,5 +23,4 @@ export function* handleSearchChange(data) {
 export default function* defaultSaga() {
   yield call(checkSession);
   yield takeEvery(RELOAD_SESSION, checkSession);
-  yield takeEvery(SEARCH_CHANGED, handleSearchChange);
 }

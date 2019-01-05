@@ -19,7 +19,6 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import AuthHeader from 'containers/AuthHeader/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import SearchPage from 'containers/SearchPage/Loadable';
 import gqlSearchPage from 'gql_containers/SearchPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import StudyPage from 'containers/StudyPage/Loadable';

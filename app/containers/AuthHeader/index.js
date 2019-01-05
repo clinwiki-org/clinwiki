@@ -18,8 +18,6 @@ import { Navbar } from 'react-bootstrap';
 import AuthButton from 'components/AuthButton';
 import SearchInput from 'components/SearchInput';
 
-import * as searchActions from 'containers/SearchPage/actions';
-import makeSelectSearchPage from 'containers/SearchPage/selectors';
 
 import makeSelectAuthHeader from './selectors';
 import * as actions from './actions';
@@ -45,10 +43,7 @@ export class AuthHeader extends React.Component { // eslint-disable-line react/p
           history={this.props.history}
         />
         <SearchInputWrapper className="pull-right">
-          <SearchInput
-            searchChanged={this.props.searchActions.searchChanged}
-            query={_.get(this.props, 'searchPage.searchQuery')}
-          />
+          <SearchInput />
         </SearchInputWrapper>
       </Navbar>
     );
@@ -60,18 +55,15 @@ AuthHeader.propTypes = {
   authheader: PropTypes.shape({
     user: PropTypes.object,
   }),
-  searchActions: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
   authheader: makeSelectAuthHeader(),
-  searchPage: makeSelectSearchPage(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(actions, dispatch),
-    searchActions: bindActionCreators(searchActions, dispatch),
   };
 }
 
