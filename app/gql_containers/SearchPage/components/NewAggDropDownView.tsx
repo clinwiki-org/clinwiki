@@ -1,12 +1,14 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
-import { Panel, Label } from 'react-bootstrap';
+import { Panel, Checkbox, FormControl } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import aggToField from 'utils/aggs/aggToField';
 import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { AggBucket, AggCallback } from '../Types'
+import { BeatLoader } from 'react-spinners';
+
+
 
 interface AggDropDownViewProps {
   agg: string
@@ -19,37 +21,85 @@ interface AggDropDownViewProps {
   onLoadMore: (isopen:boolean) => void
 }
 
-/*
- - style header so the icon goes to the right
- - style away giant margin
- - add 'filter' on top (local state=filter?)
- - add busy spinner for loading
- - add scrollable div with checkboxes
- - https://stackoverflow.com/questions/7280389/scrollable-box-containing-list-of-checkboxes-in-html
-*/
+const PanelWrapper = styled.div`
+.panel {
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+.panel-heading {
+  margin: 0px;
+  padding: 5px;
+}
+.panel-title {
+  margin: 0px;
+  font-size: 14px;
+  width: 100%;
+}
+.flex {
+  display:flex;
+  justify-content: space-between;
+}
+.checkbox {
+  margin: 3px 0px;
+}
+.panel-body {
+  padding: 5px;
+  overflow-x: auto;
+  max-height: 400px;
+}
+`
 
 export class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
+  render_body() {
+    if (!this.props.isOpen) return null;
+    else if (this.props.loading) return <BeatLoader key="loader" color="#333" /> 
+    const {
+      agg,
+      buckets
+    }= this.props;
+
+    return Object.keys(buckets).map(key => {
+      return <Checkbox
+          key={key}
+          onChange={()=> {console.log("todo: toggle this key in teh set")}}>
+          {aggKeyToInner(agg, buckets[key].key)}
+          <span> ({buckets[key].docCount})</span>
+        </Checkbox>
+    })
+  }
   render() {
-    const title = aggToField(this.props.agg)
-    const icon = "chevron-circle" + (this.props.isOpen ? "-up" : "-down")
-    console.log(icon)
+    let {
+        agg,
+        isOpen,
+        onLoadMore,
+    } = this.props;
+
+    const title = aggToField(agg)
+    const icon = "chevron" + (isOpen ? "-up" : "-down")
     return (
-      <Panel>
+      <PanelWrapper>
+      <Panel onToggle={onLoadMore}>
         <Panel.Heading>
           <Panel.Title toggle>
-            <span>
-              {title}{' '}
-              <FontAwesome 
-                name={icon} />
-            </span>
+            <div className="flex">
+              <span>{title}</span>
+              <span> <FontAwesome name={icon} /> </span>
+            </div>
           </Panel.Title>
         </Panel.Heading>
         <Panel.Collapse>
           <Panel.Body>
-            content?
+            <FormControl
+              type="text"
+              placeholder="filter"
+            />
+          </Panel.Body>
+          <Panel.Body>
+            { this.render_body() }
           </Panel.Body>
         </Panel.Collapse>
       </Panel>
+      </PanelWrapper>
     );
   }
 }

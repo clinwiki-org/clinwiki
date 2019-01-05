@@ -7,10 +7,8 @@ import {
   Button, 
   FormControl, 
   Form, 
-  FormGroup, 
-  ButtonGroup,
-  MenuItem,
-  DropdownButton } from 'react-bootstrap';
+  FormGroup
+  } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
@@ -65,7 +63,7 @@ const MultiCrumb = (props: {category:string,values:string[],onClick:(string)=>vo
     <Label>
       <i>{props.category}:</i>
       {props.values.map(v => (
-        <b> {v}
+        <b key={v}> {v}
           <FontAwesome 
             className="remove" 
             name="remove"

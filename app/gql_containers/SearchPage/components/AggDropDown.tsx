@@ -1,16 +1,10 @@
 
 import * as React from 'react';
 import * as _ from 'lodash';
-import { BeatLoader } from 'react-spinners';
-import styled from 'styled-components';
-import { DropdownButton, MenuItem, Label } from 'react-bootstrap';
-import * as FontAwesome from 'react-fontawesome';
-import aggToField from 'utils/aggs/aggToField';
-import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { ApolloConsumer } from "react-apollo";
 import gql from "graphql-tag";
 import { AggBucket, AggCallback, SearchParams, gqlParams } from '../Types'
-import { AggDropDownView } from './AggDropDownView'
+import { AggDropDownView } from './NewAggDropDownView'
 
 const QUERY_AGG_BUCKETS = gql`
   query ($agg : String!, $q : String, $sorts:[Sort!], $aggFilters:[AggFilter!], $crowdAggFilters:[AggFilter!]) {
@@ -63,6 +57,7 @@ export class AggDropDown extends React.Component<AggDropDownProps,AggDropDownSta
     return <ApolloConsumer>
       {client => (
         <AggDropDownView 
+            key={this.props.agg}
             {...this.props} 
             buckets={this.state.buckets||this.props.buckets} 
             loading={this.state.loading}
