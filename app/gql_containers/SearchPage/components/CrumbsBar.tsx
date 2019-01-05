@@ -42,7 +42,7 @@ interface CrumbsBarState {
 const Crumb = ({category,value,onClick}) => {
   return (
     <Label> 
-      <i>{category}:</i> {value} 
+      <i>{category}:</i> <strong>{value}</strong>
       <FontAwesome 
         className="remove" 
         name="remove"
@@ -51,8 +51,22 @@ const Crumb = ({category,value,onClick}) => {
         />
     </Label>)
 } 
-interface MultiCrumbProps {
-  category:string, values: string[]
+const MultiCrumb = (props: {category:string,values:string[],onClick:(string)=>void}) => {
+  return (
+    <Label>
+      <i>{props.category}:</i>
+      {props.values.map(v => (
+        <strong> {v}
+          <FontAwesome 
+            className="remove" 
+            name="remove"
+            style={{cursor: 'pointer', color: '#cc1111', margin: '0 0 0 3px'}}
+            onClick={()=>props.onClick(v)}
+            />
+        </strong>
+      ))}
+    </Label>
+  )
 }
 
 export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
@@ -74,23 +88,21 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
     }
     for(const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key]
-      for (const v in agg.values) {
-        const val = agg.values[v]
-        const cat = aggToField(agg.field)
-        yield <Crumb category={cat} value={val} onClick={()=>removeFilter(agg.field, val)} key='{cat}{val}'  />
-      }
+      const cat = aggToField(agg.field)
+      yield <MultiCrumb 
+          category={cat} 
+          values={agg.values} 
+          onClick={(val)=>removeFilter(agg.field, val)} 
+          key={cat+agg.values.join()}  />
     }
     for(const key in searchParams.crowdAggFilters) {
       const agg = searchParams.crowdAggFilters[key]
-      for (const v in agg.values) {
-        const val = agg.values[v]
         const cat = aggToField(agg.field)
-        yield <Crumb 
+        yield <MultiCrumb
           category={cat} 
-          value={val} 
-          onClick={()=>removeFilter(agg.field, val, true)} 
-          key='{cat}{val}' />
-      }
+          values={agg.values} 
+          onClick={(val)=>removeFilter(agg.field, val, true)} 
+          key={cat+agg.values.join('')} />
     }
   }
 
