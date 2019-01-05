@@ -175,7 +175,10 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
                 { this.props.loading ? null : 
                   <CrumbsBar {...this.props.aggProps} 
                     addSearchTerm={this.props.addSearchTerm} 
-                    removeSearchTerm={this.props.removeSearchTerm} /> }
+                    removeSearchTerm={this.props.removeSearchTerm}
+                    page={this.props.gridProps.page+1}
+                    pagesTotal={Math.ceil(this.props.gridProps.recordsTotal/this.props.gridProps.pageSize)}
+                    /> }
                 { this.render_table(this.props.loading, this.props.gridProps) }
               </Col>
             </Row>

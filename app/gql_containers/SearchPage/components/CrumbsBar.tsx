@@ -4,12 +4,8 @@ import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 
-// import './CrumbsBar.css';
 const CrumbsBarStyleWrappper = styled.div`
 .crumbs-bar {
-  display:flex;
-  flex-direction: column;
-  align-items: flex-start;
   padding: 10px 30px;
   border: solid white 1px;
   background-color: #f2f2f2;
@@ -19,21 +15,21 @@ const CrumbsBarStyleWrappper = styled.div`
 .crumbs-bar .label {
   margin: 2px;
 }
-.crumbs-bar .row {
-  margin: 5px;
+.right-align {
+  text-align: right;
 }
-
-
 `
 
-import { AggFilterMap, AggCallback, SearchParams } from '../Types'
+import { AggCallback, SearchParams } from '../Types'
 
 // 
 interface CrumbsBarProps {
   searchParams : SearchParams
-  removeFilter: AggCallback,
+  removeFilter: AggCallback
   addSearchTerm : (term:string)=>void
   removeSearchTerm : (term:string,bool?)=>void
+  page: number
+  pagesTotal: number
 } 
 interface CrumbsBarState {
   searchTerm : string
@@ -123,19 +119,26 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
       <CrumbsBarStyleWrappper>
       <Grid className="crumbs-bar">
         <Row>
-          <Form inline className="searchInput" onSubmit={this.onSubmit}>
-            <FormGroup>
-              <b>Search Within: </b>
-              <FormControl 
-                type="text" 
-                placeholder="search..."
-                onChange={this.localSearchChange}
-                />
-            </FormGroup>
-            <Button type="submit">
-              <FontAwesome name="search" />
-            </Button>
-          </Form>
+          <Col xs={12} md={10}>
+            <Form inline className="searchInput" onSubmit={this.onSubmit}>
+              <FormGroup>
+                <b>Search Within: </b>
+                <FormControl 
+                  type="text" 
+                  placeholder="search..."
+                  onChange={this.localSearchChange}
+                  />
+              </FormGroup>
+              <Button type="submit">
+                <FontAwesome name="search" />
+              </Button>
+            </Form>
+          </Col>
+          <Col xsHidden md={2}>
+            <div className="right-align">
+              page <strong>{this.props.page}/{this.props.pagesTotal}</strong>
+            </div>
+          </Col>
         </Row>
         <Row>
           <b>Filters: </b>
