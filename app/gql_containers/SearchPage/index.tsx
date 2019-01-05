@@ -171,7 +171,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
       }
     }
   }
-  updateGridPage = (page) => {
+  updateGridPage = (page:number) => {
     this.mergeState({ page })
   }
   updateGridPageSize = (pageSize, page) => {

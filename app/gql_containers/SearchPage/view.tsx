@@ -41,7 +41,7 @@ interface GridProps {
   pageSize: number
   recordsTotal?: number
   sorts : SortItem[],
-  update?: { page, pageSize, sort }
+  update?: { page:(number)=>void, pageSize, sort }
 }
 interface SearchViewProps {
   loading: boolean,
@@ -178,6 +178,8 @@ export class SearchView extends React.PureComponent<SearchViewProps> {
                     removeSearchTerm={this.props.removeSearchTerm}
                     page={this.props.gridProps.page+1}
                     pagesTotal={Math.ceil(this.props.gridProps.recordsTotal/this.props.gridProps.pageSize)}
+                    pageSize={this.props.gridProps.pageSize}
+                    update={{ page: this.props.gridProps.update.page }}
                     /> }
                 { this.render_table(this.props.loading, this.props.gridProps) }
               </Col>

@@ -1,5 +1,16 @@
 import * as React from 'react';
-import { Grid, Row, Col, Label, Button, FormControl, Form, FormGroup } from 'react-bootstrap';
+import { 
+  Grid, 
+  Row, 
+  Col, 
+  Label, 
+  Button, 
+  FormControl, 
+  Form, 
+  FormGroup, 
+  ButtonGroup,
+  MenuItem,
+  DropdownButton } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
@@ -30,6 +41,8 @@ interface CrumbsBarProps {
   removeSearchTerm : (term:string,bool?)=>void
   page: number
   pagesTotal: number
+  pageSize: number
+  update: { page:(number)=>void }
 } 
 interface CrumbsBarState {
   searchTerm : string
@@ -38,7 +51,7 @@ interface CrumbsBarState {
 const Crumb = ({category,value,onClick}) => {
   return (
     <Label> 
-      <i>{category}:</i> <strong>{value}</strong>
+      <i>{category}:</i> <b>{value}</b>
       <FontAwesome 
         className="remove" 
         name="remove"
@@ -52,14 +65,14 @@ const MultiCrumb = (props: {category:string,values:string[],onClick:(string)=>vo
     <Label>
       <i>{props.category}:</i>
       {props.values.map(v => (
-        <strong> {v}
+        <b> {v}
           <FontAwesome 
             className="remove" 
             name="remove"
             style={{cursor: 'pointer', color: '#cc1111', margin: '0 0 0 3px'}}
             onClick={()=>props.onClick(v)}
             />
-        </strong>
+        </b>
       ))}
     </Label>
   )
@@ -119,7 +132,7 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
       <CrumbsBarStyleWrappper>
       <Grid className="crumbs-bar">
         <Row>
-          <Col xs={12} md={10}>
+          <Col xs={12} md={9}>
             <Form inline className="searchInput" onSubmit={this.onSubmit}>
               <FormGroup>
                 <b>Search Within: </b>
@@ -134,15 +147,45 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
               </Button>
             </Form>
           </Col>
-          <Col xsHidden md={2}>
+          <Col xsHidden md={3}>
             <div className="right-align">
-              page <strong>{this.props.page}/{this.props.pagesTotal}</strong>
+              {this.props.page > 1 ? <FontAwesome 
+                className="arrow-left" 
+                name="arrow-left"
+                style={{cursor: 'pointer', margin: '5px'}}
+                onClick={()=>this.props.update.page(this.props.page-2)}
+                /> : null}
+              page <b>{this.props.page}/{this.props.pagesTotal} </b>
+              {this.props.page < this.props.pagesTotal ? <FontAwesome 
+                  className="arrow-right" 
+                  name="arrow-right"
+                  style={{cursor: 'pointer', margin: '5px'}}
+                  onClick={()=>this.props.update.page(this.props.page)}
+                /> : null}
             </div>
           </Col>
         </Row>
+        {/* <Row>
+          <Col md={10}>
+          </Col>
+          <Col md={2}>
+            <div className="right-align">
+              <DropdownButton title={this.props.pageSize+" Rows"} >
+                <MenuItem eventKey="1">5 Rows</MenuItem>
+                <MenuItem eventKey="2">10 Rows</MenuItem>
+                <MenuItem eventKey="3">20 Rows</MenuItem>
+                <MenuItem eventKey="4">25 Rows</MenuItem>
+                <MenuItem eventKey="5">50 Rows</MenuItem>
+                <MenuItem eventKey="5">100 Rows</MenuItem>
+              </DropdownButton>
+            </div>
+          </Col>
+        </Row> */}
         <Row>
-          <b>Filters: </b>
-          { Array.from(this.mkCrumbs(this.props.searchParams, this.props.removeFilter)) }
+          <Col md={12}>
+            <b>Filters: </b>
+            { Array.from(this.mkCrumbs(this.props.searchParams, this.props.removeFilter)) }
+          </Col>
         </Row>
       </Grid>
       </CrumbsBarStyleWrappper>
