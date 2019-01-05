@@ -153,13 +153,8 @@ export class Search extends React.Component<SearchProps,SearchState> {
     }
   }
   removeSearchTerm = (term:string)=>{
-    let currentQuery = this.props.clientState.searchQuery;
-    const index = currentQuery.indexOf(term)
-    if (index >= 0) {
-      // remove 1 item at index from terms
-      const searchQuery = currentQuery.slice(index, 1)
-      this.props.updateClientState({ searchQuery })
-    }
+    let searchQuery = this.props.clientState.searchQuery.filter(x => x != term)
+    this.props.updateClientState({ searchQuery })
   }
   updateGridPage = (page:number) => {
     this.mergeState({ page })

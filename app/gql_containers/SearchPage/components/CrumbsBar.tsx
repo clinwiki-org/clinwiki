@@ -80,31 +80,30 @@ const MultiCrumb = (props: {category:string,values:string[],onClick:(string)=>vo
 
 export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   *mkCrumbs(searchParams : SearchParams, removeFilter) {
-    for (const key in searchParams.q) {
-      const term = searchParams.q[key]
-      yield <Crumb 
-              key={"search:"+key} 
+    if (searchParams.q && searchParams.q.length > 0) {
+      yield <MultiCrumb
+              key="search" 
               category="search" 
-              value={term} 
-              onClick={() => this.props.removeSearchTerm(term)} />
+              values={searchParams.q}
+              onClick={(term) => this.props.removeSearchTerm(term)} />
     }
     for(const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key]
       const cat = aggToField(agg.field)
       yield <MultiCrumb 
-          category={cat} 
-          values={agg.values} 
-          onClick={(val)=>removeFilter(agg.field, val)} 
-          key={cat+agg.values.join()}  />
+              category={cat} 
+              values={agg.values} 
+              onClick={(val)=>removeFilter(agg.field, val)} 
+              key={cat+agg.values.join()}  />
     }
     for(const key in searchParams.crowdAggFilters) {
       const agg = searchParams.crowdAggFilters[key]
         const cat = aggToField(agg.field)
         yield <MultiCrumb
-          category={cat} 
-          values={agg.values} 
-          onClick={(val)=>removeFilter(agg.field, val, true)} 
-          key={cat+agg.values.join('')} />
+              category={cat} 
+              values={agg.values} 
+              onClick={(val)=>removeFilter(agg.field, val, true)} 
+              key={cat+agg.values.join('')} />
     }
   }
 
