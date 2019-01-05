@@ -40,7 +40,6 @@ function App() {
         <Switch>
           <Route exact path="/" component={gqlSearchPage} />
           <Route exact path="/search" component={gqlSearchPage} />
-          <Route exact path="/oldsearch" component={SearchPage} />
           <Route path="/search/:searchQuery" component={gqlSearchPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/study/:nctId/review/:reviewId/edit" component={StudyPage} />
