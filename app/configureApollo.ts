@@ -15,7 +15,7 @@ const client = new ApolloClient({
   cache,
   clientState: {
     defaults: {
-      searchQuery: ""
+      searchQuery: []
     },
     resolvers: {}
   },

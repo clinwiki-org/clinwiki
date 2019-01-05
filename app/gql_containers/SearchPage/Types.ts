@@ -25,8 +25,7 @@ export interface SortItem {
 }
 
 export interface SearchParams {
-  readonly q: string
-  readonly searchWithinTerms: string[]
+  readonly q: string[]
   readonly page: number
   readonly pageSize: number
   readonly aggFilters: AggFilterListItem[]
@@ -72,7 +71,7 @@ interface CompactSearchParams {
 function compact_search(p : SearchParams) : CompactSearchParams {
   var res = {
     p: p.page,
-    w: p.searchWithinTerms,
+    w: p.q.slice(1),
     z : p.pageSize,
     a : p.aggFilters,
     c : p.crowdAggFilters,
@@ -89,8 +88,7 @@ function compact_search(p : SearchParams) : CompactSearchParams {
 }
 function expand_search(q : string, p : CompactSearchParams) : SearchParams {
   return {
-    q,
-    searchWithinTerms: p.w||[],
+    q: q ? [q, ... p.w] : p.w,
     page: p.p||0,
     pageSize: p.z||defaultPageSize,
     aggFilters: p.a||[],

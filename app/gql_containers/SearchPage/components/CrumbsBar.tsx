@@ -80,15 +80,8 @@ const MultiCrumb = (props: {category:string,values:string[],onClick:(string)=>vo
 
 export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   *mkCrumbs(searchParams : SearchParams, removeFilter) {
-    if (searchParams.q) {
-      yield <Crumb 
-              key="search" 
-              category="search" 
-              value={searchParams.q} 
-              onClick={this.clearPrimarySearch} />
-    }
-    for (const key in searchParams.searchWithinTerms) {
-      const term = searchParams.searchWithinTerms[key]
+    for (const key in searchParams.q) {
+      const term = searchParams.q[key]
       yield <Crumb 
               key={"search:"+key} 
               category="search" 

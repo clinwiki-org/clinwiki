@@ -24,22 +24,23 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
 
   onSubmit(e) {
     e.preventDefault();
-    let searchQuery = this.query
-    if (searchQuery == null && searchQuery == undefined) {
-      searchQuery = this.props.clientState.searchQuery
+    let searchQuery = [this.query]
+    if (this.query == null || this.query == undefined) {
+      searchQuery = this.props.clientState.searchQuery.slice(0,1)
     }
     this.props.updateClientState({ searchQuery })
   }
 
   render() {
+    let q = this.props.clientState && this.props.clientState.searchQuery.slice(0,1)
     return (
         <Form inline onSubmit={this.onSubmit} className="searchInput">
           <FormGroup controlId="formInlineEmail">
             <FormControl
               style={{ width: '80%' }}
               type="text"
-              defaultValue={this.props.clientState && this.props.clientState.searchQuery}
-              placeholder={(this.props.clientState && this.props.clientState.searchQuery) || 'search...'}
+              defaultValue={q}
+              placeholder={q || 'search...'}
               onChange={this.onSearchChange}
             />
             <Button type="submit">

@@ -5,7 +5,7 @@ import gql from "graphql-tag";
 const LOCAL_QUERY = gql`{ searchQuery @client }`
 
 export interface ClientState {
-  searchQuery : string
+  searchQuery : string[]
 }
 
 export function withClientState(Wrappedcomponent) {

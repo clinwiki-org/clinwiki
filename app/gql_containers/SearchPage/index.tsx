@@ -58,7 +58,6 @@ const search_query = (fields) => {
 }
 
 interface SearchState {
-  readonly searchWithinTerms: string[]
   cols: string[]
   aggFilters: AggFilterMap
   crowdAggFilters: AggFilterMap
@@ -87,7 +86,6 @@ export class Search extends React.Component<SearchProps,SearchState> {
   constructor(props) {
     super(props)
     this.state = {
-      searchWithinTerms: [],
       cols: ['nct_id', 'average_rating', 'title', 'overall_status', 'start_date', 'completion_date'],
       // map aggName -> Set of selected args
       aggFilters: {},
@@ -118,7 +116,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
       });
       // If there is a query use it
       if (decoded.q) {
-        this.props.updateClientState({ searchQuery: decoded.q||"" })
+        this.props.updateClientState({ searchQuery: decoded.q })
       }
     }
   }
@@ -148,27 +146,19 @@ export class Search extends React.Component<SearchProps,SearchState> {
       }
   }
   addSearchTerm = (term:string) => {
-    if (this.props.clientState.searchQuery == "") {
-      this.props.updateClientState({ searchQuery: term })
-    }
-    else if (term) {
-      let terms = (this.state.searchWithinTerms || []).slice()
-      terms.push(term)
-      this.mergeState({ searchWithinTerms: terms })
+    if (term && term != "") {
+      let searchQuery = this.props.clientState.searchQuery.slice()
+      searchQuery.push(term)
+      this.props.updateClientState({ searchQuery })
     }
   }
-  removeSearchTerm = (term:string, isPrimary?:boolean)=>{
-    if (isPrimary) {
-      this.props.updateClientState({ searchQuery: "" })
-    }
-    else if (term) {
-      let terms = this.state.searchWithinTerms||[]
-      const index = terms.indexOf(term)
-      if (index >= 0) {
-        // remove 1 item at index from terms
-        terms.splice(index, 1)
-        this.mergeState({ searchWithinTerms: terms })
-      }
+  removeSearchTerm = (term:string)=>{
+    let currentQuery = this.props.clientState.searchQuery;
+    const index = currentQuery.indexOf(term)
+    if (index >= 0) {
+      // remove 1 item at index from terms
+      const searchQuery = currentQuery.slice(index, 1)
+      this.props.updateClientState({ searchQuery })
     }
   }
   updateGridPage = (page:number) => {
@@ -194,7 +184,8 @@ export class Search extends React.Component<SearchProps,SearchState> {
   updateUrl = (state: SearchState) => {
       const params = this.getQueryParams(state);
       const encoded = encodeSearchParams(params)
-      const query = encodeURIComponent(params.q)
+      let primarySearchTerm = _.find(params.q, () => true) || "";
+      const query = encodeURIComponent(primarySearchTerm)
       let newLocation = encoded === "" ? 
                           `/search/${query}` :
                           `/search/${query}?p=${encoded}`;
@@ -209,8 +200,7 @@ export class Search extends React.Component<SearchProps,SearchState> {
     const filters = flattenAggs(state.aggFilters)
     const crowdFilters = flattenAggs(state.crowdAggFilters)
     return { 
-        q: this.props.clientState.searchQuery,
-        searchWithinTerms: state.searchWithinTerms,
+        q: this.props.clientState.searchQuery||[],
         page: state.page,
         pageSize: state.pageSize,
         aggFilters: filters,
@@ -267,11 +257,8 @@ export class Search extends React.Component<SearchProps,SearchState> {
     if (this.props.AuthHeader.sessionChecked && !this.props.loading) {
       const query = search_query(this.columns())
       const params = this.getQueryParams(this.state)
-      let gqlParams = params
-      if (params.searchWithinTerms) {
-        const q = params.q + " " + params.searchWithinTerms.join(' ')
-        gqlParams = { ...params, q }
-      }
+      // flatten search terms for graphql
+      let gqlParams = { ...params, q: params.q.join(' ')}
       this.updateUrl(this.state)
       console.log("Submitting query...")
       console.log(JSON.stringify(gqlParams))
