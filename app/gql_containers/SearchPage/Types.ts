@@ -91,8 +91,9 @@ function compact_search(p : SearchParams) : CompactSearchParams {
   return res
 }
 function expand_search(q : string, p : CompactSearchParams) : SearchParams {
+  const w = p.w || [];
   return {
-    q: q ? [q, ... p.w] : p.w,
+    q: q ? [q, ... w] : w,
     page: p.p||0,
     pageSize: p.z||defaultPageSize,
     aggFilters: p.a||[],
