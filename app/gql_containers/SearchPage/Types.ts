@@ -53,6 +53,10 @@ export function expandAggs(aggs: AggFilterListItem[]) {
   return null
 }
 
+export function gqlParams(params : SearchParams) {
+  return { ...params, q: params.q.join(' ')}
+}
+
 const version_marker = '!'
 interface CompactSearchParams {
   // page

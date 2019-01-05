@@ -10,7 +10,8 @@ import gql from "graphql-tag";
 import SearchView from "./view";
 import { AggFilterMap, SearchParams, defaultPageSize, SortItem,
         encodeSearchParams, getSearchParamsFromURL,
-        flattenAggs, expandAggs} from './Types'
+        flattenAggs, expandAggs,
+        gqlParams} from './Types'
 import { withClientState, ClientState } from '../../components/Apollo/LocalStateDecorator'
 
 const search_query = (fields) => {
@@ -252,12 +253,9 @@ export class Search extends React.Component<SearchProps,SearchState> {
     if (this.props.AuthHeader.sessionChecked && !this.props.loading) {
       const query = search_query(this.columns())
       const params = this.getQueryParams(this.state)
-      // flatten search terms for graphql
-      let gqlParams = { ...params, q: params.q.join(' ')}
       this.updateUrl(this.state)
-      console.log("Submitting query...")
-      console.log(JSON.stringify(gqlParams))
-      return <Query query={query} variables={gqlParams}>
+      console.log(JSON.stringify(params))
+      return <Query query={query} variables={gqlParams(params)}>
         { this.render_search } 
         </Query>
     }

@@ -9,7 +9,7 @@ import aggToField from 'utils/aggs/aggToField';
 import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { ApolloConsumer } from "react-apollo";
 import gql from "graphql-tag";
-import { AggBucket, AggCallback, SearchParams } from '../Types'
+import { AggBucket, AggCallback, SearchParams, gqlParams } from '../Types'
 import { AggDropDownView } from './AggDropDownView'
 
 const QUERY_AGG_BUCKETS = gql`
@@ -79,14 +79,14 @@ export class AggDropDown extends React.Component<AggDropDownProps,AggDropDownSta
                     await client.query({
                         query: QUERY_CROWD_AGG_BUCKETA,
                         variables: {
-                          ... this.props.searchParams, 
+                          ... gqlParams(this.props.searchParams), 
                           crowdAggFilters: this.props.searchParams.crowdAggFilters.filter(agg => agg.field != this.props.agg),
                           agg : this.props.agg }
                     }) :
                     await client.query({
                         query: QUERY_AGG_BUCKETS,
                         variables: {
-                          ... this.props.searchParams, 
+                          ... gqlParams(this.props.searchParams), 
                           aggFilters: this.props.searchParams.aggFilters.filter(agg => agg.field != this.props.agg),
                           agg : this.props.agg }
                     })
