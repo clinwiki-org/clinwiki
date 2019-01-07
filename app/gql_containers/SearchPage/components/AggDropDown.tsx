@@ -20,7 +20,7 @@ const QUERY_AGG_BUCKETS = gql`
   }`
 
   const QUERY_CROWD_AGG_BUCKETA = gql`
-  query ($agg : String!, $q: String, $aggFilters:[AggFilter!]) {
+  query ($agg : String!, $q: String, $aggFilters:[AggFilter!], $crowdAggFilters:[AggFilter!]) {
     aggBuckets: crowdAggBuckets(params: {agg:$agg, q: $q, sorts: [], aggFilters: $aggFilters, crowdAggFilters: $crowdAggFilters }) {
       aggs {
         buckets {
