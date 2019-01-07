@@ -21,6 +21,10 @@ interface AggDropDownViewProps {
   onLoadMore: (isopen:boolean) => void
 }
 
+interface AggDropDownViewState {
+  filter: string
+}
+
 const PanelWrapper = styled.div`
 .panel {
   margin-top: 5px;
@@ -49,7 +53,11 @@ const PanelWrapper = styled.div`
 }
 `
 
-export class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
+export class AggDropDownView extends React.Component<AggDropDownViewProps, AggDropDownViewState> {
+  state = { filter: "" }
+  onFilterChange = (e) => {
+    this.setState({ filter: e.target.value })
+  }
   render_body() {
     if (!this.props.isOpen) return null;
     else if (this.props.loading) return <BeatLoader key="loader" color="#333" /> 
@@ -58,20 +66,26 @@ export class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
       buckets
     }= this.props;
 
-    return Object.keys(buckets).map(key => {
-      return <Checkbox
-          key={key}
-          onChange={()=> {console.log("todo: toggle this key in teh set")}}>
-          {aggKeyToInner(agg, buckets[key].key)}
-          <span> ({buckets[key].docCount})</span>
-        </Checkbox>
-    })
+    const hasFilter = this.state.filter != ""
+    const regex = new RegExp(this.state.filter,'i')
+
+    return (Object.keys(buckets)
+        .filter(k => !hasFilter || buckets[k].key.search(regex) != -1)
+        .map(key => {
+          return <Checkbox
+              key={key}
+              onChange={()=> {console.log("todo: toggle this key in teh set")}}>
+              {aggKeyToInner(agg, buckets[key].key)}
+              <span> ({buckets[key].docCount})</span>
+            </Checkbox>
+        }))
   }
   render() {
     let {
         agg,
         isOpen,
         onLoadMore,
+        buckets,
     } = this.props;
 
     const title = aggToField(agg)
@@ -88,12 +102,14 @@ export class AggDropDownView extends React.PureComponent<AggDropDownViewProps> {
           </Panel.Title>
         </Panel.Heading>
         <Panel.Collapse>
-          <Panel.Body>
-            <FormControl
-              type="text"
-              placeholder="filter"
-            />
-          </Panel.Body>
+          { buckets && buckets.length > 10 ?
+            <Panel.Body>
+              <FormControl
+                type="text"
+                placeholder="filter..."
+                onChange={this.onFilterChange}
+              />
+            </Panel.Body> : null }
           <Panel.Body>
             { this.render_body() }
           </Panel.Body>
