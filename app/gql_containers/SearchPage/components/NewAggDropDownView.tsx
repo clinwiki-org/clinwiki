@@ -58,6 +58,16 @@ export class AggDropDownView extends React.Component<AggDropDownViewProps, AggDr
   onFilterChange = (e) => {
     this.setState({ filter: e.target.value })
   }
+  isSelected = key => this.props.selectedKeys.has(this.props.buckets[key].key)
+  toggleAgg = (agg, key) => {
+    var keyName = this.props.buckets[key].key
+    if (this.isSelected(key)) {
+      this.props.removeFilter(agg,keyName)
+    }
+    else {
+      this.props.addFilter(agg,keyName)
+    }
+  }
   render_body() {
     if (!this.props.isOpen) return null;
     else if (this.props.loading) return <BeatLoader key="loader" color="#333" /> 
@@ -74,7 +84,8 @@ export class AggDropDownView extends React.Component<AggDropDownViewProps, AggDr
         .map(key => {
           return <Checkbox
               key={key}
-              onChange={()=> {console.log("todo: toggle this key in teh set")}}>
+              checked={this.isSelected(key)}
+              onChange={()=> {this.toggleAgg(agg,key)}}>
               {aggKeyToInner(agg, buckets[key].key)}
               <span> ({buckets[key].docCount})</span>
             </Checkbox>

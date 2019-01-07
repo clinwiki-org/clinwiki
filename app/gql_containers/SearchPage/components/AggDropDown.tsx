@@ -7,8 +7,8 @@ import { AggBucket, AggCallback, SearchParams, gqlParams } from '../Types'
 import { AggDropDownView } from './NewAggDropDownView'
 
 const QUERY_AGG_BUCKETS = gql`
-  query ($agg : String!, $q : String, $sorts:[Sort!], $aggFilters:[AggFilter!], $crowdAggFilters:[AggFilter!]) {
-    aggBuckets(params: {agg: $agg, q: $q, sorts: $sorts, aggFilters: $aggFilters, crowdAggFilters: $crowdAggFilters }) {
+  query ($agg : String!, $q : String, $aggFilters:[AggFilter!], $crowdAggFilters:[AggFilter!]) {
+    aggBuckets(params: {agg: $agg, q: $q, sorts: [], aggFilters: $aggFilters, crowdAggFilters: $crowdAggFilters }) {
       aggs {
         name
         buckets {
@@ -20,8 +20,8 @@ const QUERY_AGG_BUCKETS = gql`
   }`
 
   const QUERY_CROWD_AGG_BUCKETA = gql`
-  query ($agg : String!, $q: String, $sorts:[Sort!], $aggFilters:[AggFilter!]) {
-    aggBuckets: crowdAggBuckets(params: {agg:$agg, q: $q, sorts: $sorts, aggFilters: $aggFilters }) {
+  query ($agg : String!, $q: String, $aggFilters:[AggFilter!]) {
+    aggBuckets: crowdAggBuckets(params: {agg:$agg, q: $q, sorts: [], aggFilters: $aggFilters, crowdAggFilters: $crowdAggFilters }) {
       aggs {
         buckets {
           key
@@ -53,6 +53,13 @@ export class AggDropDown extends React.Component<AggDropDownProps,AggDropDownSta
   refreshAggs = (buckets) => {
     this.setState({ buckets, loading:false });
   }
+  query = ({client, query, variables}) => {
+    console.log(`Agg: ${JSON.stringify(variables)}`)
+    return client.query({
+      query,
+      variables
+    });
+  }
   render() {
     return <ApolloConsumer>
       {client => (
@@ -71,14 +78,16 @@ export class AggDropDown extends React.Component<AggDropDownProps,AggDropDownSta
 
                 const {data} = 
                   this.props.isCrowdAgg ?
-                    await client.query({
+                    await this.query({
+                        client,
                         query: QUERY_CROWD_AGG_BUCKETA,
                         variables: {
                           ... gqlParams(this.props.searchParams), 
                           crowdAggFilters: this.props.searchParams.crowdAggFilters.filter(agg => agg.field != this.props.agg),
                           agg : this.props.agg }
                     }) :
-                    await client.query({
+                    await this.query({
+                        client,
                         query: QUERY_AGG_BUCKETS,
                         variables: {
                           ... gqlParams(this.props.searchParams), 
