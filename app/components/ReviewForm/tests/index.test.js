@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import RichTextEditor from 'react-rte';
+import RichTextEditor from 'react-rte-yt';
 import ReactStars from 'react-stars';
 import ReviewForm from '../index';
 

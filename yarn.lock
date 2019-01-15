@@ -7825,9 +7825,9 @@ react-router@^4.2.0:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react-rte@^0.16.1:
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/react-rte/-/react-rte-0.16.1.tgz#e345664c87e992d15ec053b406f51ffac6e86622"
+react-rte-yt@^0.16.2-0:
+  version "0.16.2-0"
+  resolved "https://registry.yarnpkg.com/react-rte-yt/-/react-rte-yt-0.16.2-0.tgz#56c05b4ceeafba726571b67f1d57686ca361f2dd"
   dependencies:
     babel-runtime "^6.23.0"
     class-autobind "^0.1.4"
