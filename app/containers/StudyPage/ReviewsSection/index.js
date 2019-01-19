@@ -8,6 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import ReactStars from 'react-stars';
+import { ViewMarkdown } from 'components/TextEditor';
 import { Grid, Table, Row, Col, Button, ButtonGroup, Label } from 'react-bootstrap';
 // import styled from 'styled-components';
 
@@ -46,14 +47,9 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
                     </Row>
                     <Row>
                       <Col md={9}>
-                        <div
-                          className="review-html"
-                          /* eslint-disable */
-                          dangerouslySetInnerHTML={{
-                            __html: review.review.text_html,
-                          }}
-                          /* eslint-enable */
-                        />
+                        <div className="review-html">
+                          <ViewMarkdown markdown={review.review.text} />
+                        </div>
                       </Col>
                       <Col md={3} style={{ textAlign: 'right' }}>
                         {this.props.AuthHeader.user.loggedIn && review.user.id === this.props.AuthHeader.user.id ?

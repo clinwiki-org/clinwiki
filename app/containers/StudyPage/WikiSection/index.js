@@ -11,7 +11,7 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 
-import TextEditor from 'components/TextEditor'
+import TextEditor, { ViewMarkdown } from 'components/TextEditor'
 import FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import { Grid, Button, Row, Col, Table, FormGroup, FormControl } from 'react-bootstrap';
@@ -285,14 +285,11 @@ class WikiSection extends React.Component { // eslint-disable-line react/prefer-
                 paddingBottom: '10px',
                 paddingLeft: '5px',
                 paddingRight: '5px',
-              }}
-              /* eslint-disable react/no-danger */
-              dangerouslySetInnerHTML={{
-                __html: (!this.state.changed && this.props.WikiSection.wiki.text_html)
-                ? this.props.WikiSection.wiki.text_html
-                : this.state.value.toString('html'),
-              }}
-            />
+              }} >
+              {(!this.state.changed && this.props.WikiSection.wiki.text) ?
+                <ViewMarkdown markdown={this.props.WikiSection.wiki.text} /> :
+                <ViewMarkdown value={this.state.value} />}
+            </div>
           </Col>
         </Row>
         <Row style={{ paddingTop: '10px' }}>
