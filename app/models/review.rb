@@ -18,7 +18,7 @@ class Review < ReindexesStudy
       updated_at: updated_at,
       text: content,
       overall_rating: overall_rating,
-      text_html: text_html,
+      # text_html: text_html,
     }
 
     if !front_matter.blank?

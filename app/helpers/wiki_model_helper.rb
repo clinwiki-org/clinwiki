@@ -6,13 +6,13 @@ module WikiModelHelper
     @parsed ||= FrontMatterParser::Parser.new(FrontMatterParser::SyntaxParser::Md.new).call(text)
   end
 
-  def from_markdown
-    Kramdown::Document.new(content)
-  end
+  # def from_markdown
+  #   Kramdown::Document.new(content)
+  # end
 
-  def text_html
-    from_markdown.to_html
-  end
+  # def text_html
+  #   from_markdown.to_html
+  # end
 
   def front_matter
     @front_matter = parsed && parsed.front_matter || {}

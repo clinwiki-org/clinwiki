@@ -33,7 +33,7 @@ END
     {
       meta: meta,
       text: content,
-      text_html: text_html,
+      # text_html: text_html,
       created_at: created_at,
       updated_at: updated_at,
       history: wiki_page_edits.order(created_at: :desc).map(&:to_json)
