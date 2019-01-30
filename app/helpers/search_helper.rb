@@ -1,3 +1,6 @@
+MAX_AGGREGATION_LIMIT = 1_000_000
+DEFAULT_PAGE_SIZE = 25
+
 module SearchHelper
 
   def search_query
@@ -39,17 +42,48 @@ module SearchHelper
     }
   end
 
+  # Caveat - use only both page + pageSize params, or none of them
   # @return [Hash]
   def get_agg_buckets
     agg = params["agg"]
+    unless params["agg_options_filter"].blank?
+      # We don't need to keep filters of the same agg, we want broader results
+      # But we need to respect all other filters
+      params["agg_filters"]&.delete_if {|filter_entry| filter_entry&.field == agg}
+      params["agg_filters"] ||= []
+      downcase_regex = Regexp::new(".*#{params["agg_options_filter"].downcase}.*", "i")
+      capitalized_regex = Regexp::new(".*#{params["agg_options_filter"].capitalize}.*", "i")
+      upcase_regex = Regexp::new(".*#{params["agg_options_filter"].upcase}.*", "i")
+      filter = OpenStruct.new({"field": agg, "values": [downcase_regex, capitalized_regex, upcase_regex]})
+      params["agg_filters"] << filter
+    end
+
     qargs = query_args(agg)
     qargs[:aggs] = {
       agg => AGGS[agg.to_sym]
     }
-    qargs[:aggs][agg].delete(:limit)
+    qargs[:aggs][agg][:limit] = MAX_AGGREGATION_LIMIT
     qargs[:per_page] = 0
+    qargs[:limit] = 0
     qargs[:smart_aggs] = true
     @studies = Study.search(search_query, qargs)
+
+    # Some of the values are multivalue => the doc will have aggs not matching
+    # the actual regex and we need to filter it again
+    unless params["agg_options_filter"].blank?
+      regex = Regexp::new("^.*#{params["agg_options_filter"].downcase}.*$", "i")
+      @studies
+        .aggs[agg]["buckets"]
+        .keep_if {|entry| entry["key"] =~ regex}
+    end
+
+    page = params[:page] || 0
+    page_size = params[:page_size] || DEFAULT_PAGE_SIZE
+    @studies.aggs[agg]["buckets"] = @studies
+        .aggs[agg]["buckets"]
+        .drop(page * page_size)
+        .first(page_size)
+    pp qargs
     {
       :aggs => @studies.aggs
     }
@@ -107,7 +141,7 @@ module SearchHelper
     else
       where = {_and: []}
     end
-    
+
     # note: the snake case is the one that actually has the data. Not sure who's transforming it though.
     crowd_agg_filters = params.fetch(:crowdAggFilters, params.fetch(:crowd_agg_filters, {}))
     if crowd_agg_filters.is_a?(Array)

@@ -67,7 +67,11 @@ group :development do
   gem 'web-console', '~> 2.0'
 end
 
-gem 'dotenv-rails', groups: [:development, :test]
+group :development, :test do
+  gem 'dotenv-rails'
+  gem 'pry-byebug'
+  gem 'pry-rails'
+end
 
 gem 'activejob-traffic_control', '>= 0.1.3'
 gem 'sidekiq'
