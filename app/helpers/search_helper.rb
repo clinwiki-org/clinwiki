@@ -51,10 +51,8 @@ module SearchHelper
       # But we need to respect all other filters
       params["agg_filters"]&.delete_if {|filter_entry| filter_entry&.field == agg}
       params["agg_filters"] ||= []
-      downcase_regex = Regexp::new(".*#{params["agg_options_filter"].downcase}.*", "i")
-      capitalized_regex = Regexp::new(".*#{params["agg_options_filter"].capitalize}.*", "i")
-      upcase_regex = Regexp::new(".*#{params["agg_options_filter"].upcase}.*", "i")
-      filter = OpenStruct.new({"field": agg, "values": [downcase_regex, capitalized_regex, upcase_regex]})
+      regex = case_insensitive_regex_emulation(".*#{params["agg_options_filter"]}.*")
+      filter = OpenStruct.new({"field": agg, "values": [regex]})
       params["agg_filters"] << filter
     end
 
@@ -231,6 +229,17 @@ module SearchHelper
             })]
         end
       }]
+  end
+
+  def case_insensitive_regex_emulation(text)
+    regex_string = text.chars.map do |char|
+      letter?(char) ? "[#{char.upcase}#{char.downcase}]" : char
+    end.join("")
+    Regexp::new(regex_string)
+  end
+
+  def letter?(char)
+    char =~ /[[:alpha:]]/
   end
 
   COLUMNS_TO_ORDER_FIELD = [

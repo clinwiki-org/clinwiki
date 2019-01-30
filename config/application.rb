@@ -24,16 +24,16 @@ module Clinwiki
       generate.test_framework :rspec
       generate.view_specs false
     end
-    config.active_record.schema_format = :sql
+    config.active_record.schema_format = :ruby
     config.action_controller.action_on_unpermitted_parameters = :raise
-    config.active_record.raise_in_transactional_callbacks = true
+    # config.active_record.raise_in_transactional_callbacks = true
     config.active_job.queue_adapter = :sidekiq
     config.eager_load_paths += [
       "#{config.root}/app/workers",
       "#{config.root}/app/docs"
     ]
 
-    config.middleware.insert_before 0, "Rack::Cors" do
+    config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins 'http://localhost:3001',
                 'http://localhost:3000',
@@ -61,6 +61,6 @@ module Clinwiki
     # Do not swallow errors in after_commit/after_rollback callbacks.
 		#config.assets.initialize_on_precompile = false
 		config.assets.enabled = true
-		config.active_record.raise_in_transactional_callbacks = true
+		# config.active_record.raise_in_transactional_callbacks = true
   end
 end

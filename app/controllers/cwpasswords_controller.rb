@@ -1,5 +1,5 @@
 class CwpasswordsController < Devise::PasswordsController
-  skip_before_filter :verify_authenticity_token, :verify_signed_out_user
+  skip_before_action :verify_authenticity_token, :verify_signed_out_user
 
   def create
     resource_params.merge!(locale: 'en') # use 'en' for eg
