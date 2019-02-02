@@ -79,4 +79,4 @@ gem 'front_matter_parser'
 gem 'mailgun-ruby', '~>1.1.6'
 gem 'graphql'
 
-gem 'graphiql-rails', group: :development
+gem 'graphiql-rails'
