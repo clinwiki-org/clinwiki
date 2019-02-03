@@ -21,6 +21,24 @@ AllCops:
     - 'db/schema.rb'
     - 'bin/**/*'
 
+Layout/IndentHash:
+  EnforcedStyle: consistent
+
+Style/Lambda:
+  EnforcedStyle: literal
+
+Performance/Casecmp:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
 Style/NumericPredicate:
   EnforcedStyle: comparison
 

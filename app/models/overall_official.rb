@@ -1,2 +1,3 @@
-class OverallOfficial < Aact
+class OverallOfficial < AactRecord
+  include BelongsToStudy
 end

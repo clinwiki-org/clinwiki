@@ -1,5 +1,5 @@
-class UserSessionStudy < ActiveRecord::Base
+class UserSessionStudy < ApplicationRecord
   belongs_to :user
-  has_many :reviews
-  has_many :tags
+  has_many :reviews, dependent: :destroy
+  has_many :tags, dependent: :destroy
 end

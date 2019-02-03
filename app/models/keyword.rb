@@ -1,2 +1,3 @@
-class Keyword < Aact
+class Keyword < AactRecord
+  include BelongsToStudy
 end

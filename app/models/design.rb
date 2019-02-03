@@ -1,2 +1,3 @@
-class Design < Aact
+class Design < AactRecord
+  include BelongsToStudy
 end

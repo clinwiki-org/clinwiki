@@ -1,2 +1,3 @@
-class Condition < Aact
+class Condition < AactRecord
+  include BelongsToStudy
 end

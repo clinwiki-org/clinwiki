@@ -1,2 +1,3 @@
-class CalculatedValue < Aact
+class CalculatedValue < AactRecord
+  include HasOneStudy
 end

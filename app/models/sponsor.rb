@@ -1,3 +1,5 @@
-class Sponsor < Aact
-  scope :named, lambda {|agency| where("name LIKE ?", "#{agency}%" )}
+class Sponsor < AactRecord
+  include BelongsToStudy
+
+  scope :named, ->(agency) { where("name LIKE ?", "#{agency}%") }
 end

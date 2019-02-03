@@ -1,2 +1,3 @@
-class ParticipantFlow < Aact
+class ParticipantFlow < AactRecord
+  include HasOneStudy
 end

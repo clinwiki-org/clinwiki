@@ -1,6 +1,6 @@
-require "reindexes_study"
+class Tag < ApplicationRecord
+  include TriggersStudyReindex
 
-class Tag < ReindexesStudy
   belongs_to :user
 
   def self.create_from(params, current_user)
