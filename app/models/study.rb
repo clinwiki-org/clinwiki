@@ -69,7 +69,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   ].freeze
 
   def average_rating
-    @average_rating ||= reviews.empty? ? 0 : reviews.average(:overall_rating).round(2)
+    @average_rating ||= reviews.blank? ? 0 : reviews.where.not(overall_rating: nil).average(:overall_rating).round(2)
   end
 
   def display_start_date
