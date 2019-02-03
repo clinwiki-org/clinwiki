@@ -1,7 +1,5 @@
 module Types
-  HealthCheckType = GraphQL::ObjectType.define do
-    name "Health"
-
-    field :healthy, !types.Boolean, "Whether the DB connection is healthy", hash_key: :healthy
+  class HealthType < BaseObject
+    field :healthy, Boolean, "Whether the DB connection is healthy", null: false, hash_key: :healthy
   end
 end

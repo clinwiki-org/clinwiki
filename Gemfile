@@ -65,6 +65,7 @@ group :development do
   #gem 'byebug'
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console'
+  gem 'solargraph'
 end
 
 group :development, :test do

@@ -21,13 +21,13 @@ class Review < ReindexesStudy
       # text_html: text_html,
     }
 
-    if !front_matter.blank?
+    if front_matter.present?
       result[:stars] = front_matter
     else
       result[:stars] = { "Overall Rating" => overall_rating }
     end
 
-    if parsed && parsed.content
+    if parsed&.content
       result[:text] = parsed.content
     end
 
