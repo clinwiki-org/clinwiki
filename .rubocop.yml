@@ -46,19 +46,22 @@ Layout/AlignHash:
   EnforcedLastArgumentHashStyle: ignore_implicit
 
 Layout/DotPosition:
-  EnforcedStyle: trailing
+  EnforcedStyle: leading
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
 
 Lint/UnusedBlockArgument:
   Enabled: true
 
 Metrics/AbcSize:
-  Max: 35
+  Max: 50
 
 Metrics/LineLength:
   Max: 120
 
 Metrics/MethodLength:
-  Max: 25
+  Max: 30
 
 Metrics/ModuleLength:
   Max: 120
@@ -123,6 +126,7 @@ Metrics/BlockLength:
     - 'db/**/*.rb'
     - 'lib/**/*.rake'
     - 'spec/**/*'
+    - 'Rakefile'
 
 Bundler/OrderedGems:
   Enabled: false

@@ -1,25 +1,26 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe User, type: :model do
-  it 'should save expected values' do
+  it "should save expected values" do
     expect(User.count).to eq(0)
-    email_addr='sue.smith@gmail.com'
-    first='sue'
-    last='smith'
-    query_string='chordoma'
+    email_addr = "sue.smith@gmail.com"
+    first = "sue"
+    last = "smith"
+    query_string = "chordoma"
     begin
-      u=User.new({:email=>email_addr, :first_name=>first, :last_name=>last}).save!
-    rescue => e
+      User.new(email: email_addr, first_name: first, last_name: last).save!
+    rescue StandardError => e
       expect(e.record.errors.messages[:password].first).to eq("can't be blank")
     end
-    pwd='abc'
+    pwd = "abc"
     begin
-      u=User.new({:email=>email_addr, :first_name=>first, :last_name=>last, :password=>pwd}).save!
-    rescue => e
-      expect(e.record.errors.messages[:password].first).to eq('is too short (minimum is 8 characters)')
+      User.new(email: email_addr, first_name: first, last_name: last, password: pwd).save!
+    rescue StandardError => e
+      expect(e.record.errors.messages[:password].first).to eq("is too short (minimum is 8 characters)")
     end
-    pwd='abc12345'
-    u=User.new({:email=>email_addr, :first_name=>first, :last_name=>last, :password=>pwd,:default_query_string=>query_string})
+    pwd = "abc12345"
+    u = User.new(email: email_addr, first_name: first, last_name: last, password: pwd,
+                 default_query_string: query_string)
     u.save!
     expect(User.count).to eq(1)
     expect(u.email).to eq(email_addr)

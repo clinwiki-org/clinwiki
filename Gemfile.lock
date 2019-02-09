@@ -118,7 +118,7 @@ GEM
       actionpack (>= 3.0)
       multi_json
       request_store (>= 1.0)
-    graphiql-rails (1.6.0)
+    graphiql-rails (1.4.11)
       railties
       sprockets-rails
     graphql (1.8.13)
@@ -374,7 +374,7 @@ DEPENDENCIES
   font-awesome-sass
   front_matter_parser
   gon
-  graphiql-rails
+  graphiql-rails (~> 1.4.11)
   graphql
   httparty
   jbuilder (~> 2.7)

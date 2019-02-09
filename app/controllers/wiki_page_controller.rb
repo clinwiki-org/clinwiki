@@ -1,3 +1,4 @@
+# rubocop:disable all
 class WikiPageController < ApplicationController
   include WikiHelper
   skip_before_action :verify_authenticity_token

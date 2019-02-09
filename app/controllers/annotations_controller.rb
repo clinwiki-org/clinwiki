@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AnnotationsController < ApplicationController
   before_action :set_annotation, only: [:show, :edit, :update, :destroy]
   skip_before_action :verify_authenticity_token

@@ -227,7 +227,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
 
   # Defines the fields to be indexed by searchkick
   # @return [Hash]
-  def search_data # rubocop:disable Metrics/AbcSize
+  def search_data
     attributes.merge(
       brief_summary: brief_summary && brief_summary.description,
       detailed_description: detailed_description && detailed_description.description,

@@ -1,3 +1,4 @@
+# rubocop:disable all
 class PagesController < ApplicationController
 
   def letsencrypt

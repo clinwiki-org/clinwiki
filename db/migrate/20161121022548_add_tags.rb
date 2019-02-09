@@ -6,6 +6,5 @@ class AddTags < ActiveRecord::Migration
       t.timestamps null: false
     end
     add_column :tags, :user_id, :integer, references: :users
-
   end
 end

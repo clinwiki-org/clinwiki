@@ -17,4 +17,5 @@ config/database_local.yml
 .env
 *.dump
 ubuntu-artful-17.10-cloudimg-console.log 
-.orig 
+.orig
+public/assets

@@ -1,3 +1,4 @@
+# rubocop:disable all
 ENV['ELASTICSEARCH_URL'] = ENV['SEARCHBOX_URL']
 Searchkick.redis = Redis.new
 ActiveJob::TrafficControl.client = Searchkick.redis

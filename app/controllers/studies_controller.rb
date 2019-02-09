@@ -1,3 +1,4 @@
+# rubocop:disable all
 class StudiesController < ApplicationController
   include SearchHelper
   before_action :get_study, only: [:show, :edit]
@@ -9,11 +10,11 @@ class StudiesController < ApplicationController
   end
 
   def agg_buckets
-    render json: get_agg_buckets
+    render json: agg_buckets
   end
 
   def crowd_agg_buckets
-    render json: get_crowd_agg_buckets
+    render json: crowd_agg_buckets
   end
 
   def index

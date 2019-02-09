@@ -1,3 +1,4 @@
+# rubocop:disable all
 # File: config/initializers/static_router.rb
 module ActionDispatch
   module Routing

@@ -1,3 +1,4 @@
+# rubocop:disable all
 schedule_file = "config/schedule.yml"
 
 if File.exists?(schedule_file) && Sidekiq.server?

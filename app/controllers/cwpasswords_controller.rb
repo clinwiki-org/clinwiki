@@ -1,5 +1,6 @@
+# rubocop:disable all
 class CwpasswordsController < Devise::PasswordsController
-  skip_before_action :verify_authenticity_token, :verify_signed_out_user
+  skip_before_action :verify_authenticity_token, :verify_signed_out_user, raise: false
 
   def create
     resource_params.merge!(locale: 'en') # use 'en' for eg

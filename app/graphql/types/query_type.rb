@@ -4,27 +4,27 @@ module Types
       argument :params, type: SearchInputType, required: true
     end
     def search(args)
-      SearchService.new(args[:params], self.context).search_studies
+      SearchService.new(args[:params], context).search_studies
     end
     field :agg_buckets, SearchResultSetType, null: false do
       argument :params, type: SearchInputType, required: true
     end
     def agg_buckets(args)
-      SearchService.new(args[:params], self.context).get_agg_buckets
+      SearchService.new(args[:params], context).agg_buckets
     end
     field :crowd_agg_buckets, SearchResultSetType, null: false do
       argument :params, type: SearchInputType, required: true
     end
     def crowd_agg_buckets(args)
-      # we do this to accommodate get_crowd_agg_buckets returning a different structure in the old impl
-      { aggs: SearchService.new(args[:params], self.context).get_crowd_agg_buckets }
+      # we do this to accommodate crowd_agg_buckets returning a different structure in the old impl
+      { aggs: SearchService.new(args[:params], context).crowd_agg_buckets }
     end
     field :health, HealthType, null: false
-    def health()
+    def health
       ActiveRecord::Base.establish_connection
       ActiveRecord::Base.connection
-      return {
-        healthy: ActiveRecord::Base.connected?
+      {
+        healthy: ActiveRecord::Base.connected?,
       }
     end
 
