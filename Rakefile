@@ -1,3 +1,4 @@
+# rubocop:disable Style/ZeroLengthPredicate
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
@@ -85,66 +86,101 @@ namespace :export do
 end
 
 namespace :search do
+  desc "Creates an empty index"
   task create_index: :environment do
     p "Initializing index..."
     Study.reindex(import: false)
     p "Done!"
   end
 
+  desc "Upserts recent studies from x days ago (1 day by default)"
   task :reindex_days_ago, [:days] => :environment do |_t, args|
     args.with_defaults(days: 1)
-    p "Reindexing updates from #{args[:days]} ago"
-    AactSync.perform_async("days_ago" => args[:days])
-  end
-
-  task reindex: :environment do
-    p "Working on #{Study.count} documents..."
-    Study.enqueue_reindex_job(Study.all)
-    until Study.search_index.reindex_queue.empty?
+    p "Getting ids of studies updated less than #{args[:days].to_i + 1} ago"
+    Study.enqueue_reindex_job_big(Study.where("updated_at > ?", args[:days].to_i.days.ago))
+    until Study.search_index.reindex_queue.length == 0
       p "#{Study.search_index.reindex_queue.length} left..."
-      sleep 15
+      sleep 5
     end
     p "Success!"
   end
 
-  task :reindex_dev, [:limit] => :environment do |_t, args|
+  desc "Takes all studies from sql database and upserts them into index"
+  task reindex: :environment do
+    p "Getting ids of #{Study.count} documents..."
+    Study.enqueue_reindex_job_big(Study.all)
+    until Study.search_index.reindex_queue.length == 0
+      p "#{Study.search_index.reindex_queue.length} left..."
+      sleep 5
+    end
+    p "Success!"
+  end
+
+  desc "Takes random {limit} studies from sql database and upserts them into index"
+  task :add_random_studies_to_index, [:limit] => :environment do |_t, args|
     args.with_defaults(limit: 1000)
     to_index = args[:limit].to_i
     p "Indexing #{to_index} random studies"
-    Study.enqueue_reindex_job(Study.limit(to_index).order("random()"))
-  end
-
-  task :add_reviews_dev, [:limit] => :environment do |_t, args|
-    args.with_defaults(limit: 250)
-    user = User.first
-    Study.limit(args[:limit]).order("random()").each do |study|
-      Review.create(
-        user: user, study: study, rating: Random.rand(5).to_i,
-        comment: ["Good study", "Terrible side effects!", "Incorrect study design", "More like triple-blind"].sample
-      )
+    Study.enqueue_reindex_job_small(Study.limit(to_index).order(Arel.sql("random()")))
+    until Study.search_index.reindex_queue.length == 0
+      p "#{Study.search_index.reindex_queue.length} left..."
+      sleep 5
     end
+    p "Success!"
   end
 
-  task :add_tags_dev, [:limit] => :environment do |_t, args|
-    args.with_defaults(limit: 100)
-    user = User.first
-    Study.limit(args[:limit]).order("random()").each do |study|
-      Tag.create(user: user, study: study, value: ["tag a", "tag b", "tag c", "tag d"].sample)
+  desc "Updates all records in the index"
+  task update_index: :environment do
+    page = 0
+    while page
+      search = Study.search(load: false, per_page: 1_000, page: page)
+      page = search.next_page
+      ids = search.results.map(&:id)
+      Study.enqueue_reindex_ids(ids)
     end
-  end
-
-  task bootstrap_dev: %i[create_index reindex_dev add_tags_dev add_reviews_dev]
-
-  task delete_unused_fields: :environment do
-    Study::NON_INDEX_FIELDS.each do |field|
-      puts field
-      puts Searchkick.client.update_by_query(
-        index: "_all",
-        wait_for_completion: false,
-        body: {
-          script: "ctx._source.remove(\"#{field}\")",
-        },
-      )
+    until Study.search_index.reindex_queue.length == 0
+      p "#{Study.search_index.reindex_queue.length} left..."
+      sleep 5
     end
+    p "Success!"
   end
+
+  desc "Creates an index with 1000 random studies"
+  task bootstrap: [:create_index, :add_random_studies_to_index]
+
+  desc "Creates an index with all studies from sql database"
+  task bootstrap_full: [:create_index, :reindex]
+
+  # task :add_reviews_dev, [:limit] => :environment do |t, args|
+  #   args.with_defaults(:limit => 250)
+  #   user = User.first
+  #   Study.limit(args[:limit]).order('random()').each do |study|
+  #     Review.create(
+  #     user: user, study: study, rating: Random.rand(5).to_i,
+  #     comment:
+  #       ["Good study", "Terrible side effects!", "Incorrect study design", "More like triple-blind"].shuffle.first)
+  #   end
+  # end
+
+  # task :add_tags_dev, [:limit] => :environment do |t, args|
+  #   args.with_defaults(:limit => 100)
+  #   user = User.first
+  #   Study.limit(args[:limit]).order('random()').each do |study|
+  #     Tag.create(user: user, study: study, value: ['tag a', 'tag b', 'tag c', 'tag d'].shuffle.first)
+  #   end
+  # end
+
+  # task :delete_unused_fields => :environment do
+  #   Study::NON_INDEX_FIELDS.each do |field|
+  #     puts field
+  #     puts Searchkick.client.update_by_query(
+  #       index: "_all",
+  #       wait_for_completion: false,
+  #       body: {
+  #         script: "ctx._source.remove(\"#{field}\")"
+  #         })
+  #   end
+  # end
 end
+
+# rubocop:enable Style/ZeroLengthPredicate

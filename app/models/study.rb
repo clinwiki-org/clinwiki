@@ -191,14 +191,6 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
              :design_outcomes, :interventions, :browse_interventions)
   }
 
-  # Takes a selector and enqeueues each instance for batch async reindex
-  # @param [Study::ActiveRecord_Relation]
-  def self.enqueue_reindex_job(selector)
-    selector.select(:nct_id).find_each do |s|
-      Searchkick.redis.lpush "searchkick:reindex_queue:studies_#{Rails.env}", s.nct_id
-    end
-  end
-
   def tags
     try(:wiki_page).try(:tags)
   end
@@ -233,6 +225,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       detailed_description: detailed_description && detailed_description.description,
       browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
       browse_interventions_mesh_terms: browse_interventions.map(&:mesh_term),
+      interventions_mesh_terms: interventions.map(&:name).reject(&:nil?),
       interventions: interventions.map(&:description).reject(&:nil?),
       design_outcome_measures: design_outcomes.map(&:measure),
       facility_names: facilities.map(&:name),
@@ -256,7 +249,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
 
   # manually publish to reindex queue
   def enqueue_reindex_job
-    Searchkick.redis.lpush "searchkick:reindex_queue:studies_#{Rails.env}", nct_id
+    Study.enqueue_reindex_ids(nct_id)
   end
 
   def exclude_wiki_data
@@ -288,5 +281,30 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       reviews_length: reviews.count,
       average_rating: average_rating,
     }
+  end
+
+  # Takes a selector and enqeueues each instance for batch async reindex
+  # Note: selector cannot be ordered and limited in this case, but the query could be big
+  # it will be split in batches
+  # @param [Study::ActiveRecord_Relation]
+  def self.enqueue_reindex_job_big(selector)
+    selector.select(:nct_id).find_each(batch_size: 10_000) do |s|
+      enqueue_reindex_ids(s.nct_id)
+    end
+  end
+
+  # Takes a selector and enqeueues each instance for batch async reindex
+  # Note: selector can be ordered and limited in this case, but the query will execute
+  # in one pass (i.e. recommended to have less than 10_000 items)
+  # @param [Study::ActiveRecord_Relation]
+  def self.enqueue_reindex_job_small(selector)
+    enqueue_reindex_ids(selector.select(:nct_id).map(&:nct_id))
+  end
+
+  def self.enqueue_reindex_ids(ids)
+    ids = ids.is_a?(Array) ? ids : [ids]
+    ids.each do |id|
+      Study.search_index.reindex_queue.push(id)
+    end
   end
 end

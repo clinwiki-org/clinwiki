@@ -59,12 +59,12 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
 
     qargs = query_args(agg)
     qargs[:aggs] = {
-      agg => AGGS[agg.to_sym],
+      agg => AGGS[agg.to_sym].deep_dup,
     }
     qargs[:aggs][agg][:limit] = MAX_AGGREGATION_LIMIT
     qargs[:per_page] = 0
-    qargs[:limit] = 0
     qargs[:smart_aggs] = true
+
     @studies = Study.search(search_query, qargs)
 
     # Some of the values are multivalue => the doc will have aggs not matching
@@ -128,11 +128,11 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
   # Manipulates the filter params to the expected value matching a "where" key
   # @return [Hash]
   # TODO: refactor to reduce complexity
-  def agg_where(_curr_agg = nil) # rubocop:disable Metrics/CyclomaticComplexity
+  def agg_where(curr_agg = nil) # rubocop:disable Metrics/CyclomaticComplexity
     agg_filters = params.fetch(:aggFilters, params.fetch(:agg_filters, {}))
     where = { _and: [] }
     if agg_filters.is_a?(Array)
-      agg_filters.each do |filter|
+      agg_filters.reject { |filter| filter.field == curr_agg }.each do |filter|
         if filter.field && !filter.values.empty?
           where[:_and] << { _or: filter.values.map { |val| { filter.field => val } } }
         end
@@ -247,7 +247,8 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
     average_rating tags overall_status facility_states
     facility_cities facility_names study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
-    browse_interventions_mesh_terms front_matter_keys
+    browse_interventions_mesh_terms interventions_mesh_terms
+    front_matter_keys
   ].freeze
 
   # aggregations
@@ -278,6 +279,10 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
       limit: 10,
     },
     browse_interventions_mesh_terms: {
+      limit: 10,
+      order: { "_term" => "asc" },
+    },
+    interventions_mesh_terms: {
       limit: 10,
       order: { "_term" => "asc" },
     },
