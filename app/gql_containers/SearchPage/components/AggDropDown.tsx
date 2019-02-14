@@ -8,7 +8,7 @@ import { AggDropDownView } from './NewAggDropDownView'
 
 const QUERY_AGG_BUCKETS = gql`
   query ($agg : String!, $q : String, $aggFilters:[AggFilter!], $crowdAggFilters:[AggFilter!]) {
-    aggBuckets(params: {agg: $agg, q: $q, sorts: [], aggFilters: $aggFilters, crowdAggFilters: $crowdAggFilters }) {
+    aggBuckets(params: {agg: $agg, q: $q, sorts: [], aggFilters: $aggFilters, crowdAggFilters: $crowdAggFilters, page: 0, pageSize: 1000 }) {
       aggs {
         name
         buckets {
@@ -21,7 +21,7 @@ const QUERY_AGG_BUCKETS = gql`
 
   const QUERY_CROWD_AGG_BUCKETA = gql`
   query ($agg : String!, $q: String, $aggFilters:[AggFilter!], $crowdAggFilters:[AggFilter!]) {
-    aggBuckets: crowdAggBuckets(params: {agg:$agg, q: $q, sorts: [], aggFilters: $aggFilters, crowdAggFilters: $crowdAggFilters }) {
+    aggBuckets: crowdAggBuckets(params: {agg:$agg, q: $q, sorts: [], aggFilters: $aggFilters, crowdAggFilters: $crowdAggFilters, page: 0, pageSize: 1000 }) {
       aggs {
         buckets {
           key
