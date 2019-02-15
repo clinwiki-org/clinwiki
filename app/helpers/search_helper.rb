@@ -88,15 +88,41 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
   end
 
   # @return [Hash]
-  def crowd_agg_buckets
+  def crowd_agg_buckets # rubocop:disable Metrics/AbcSize
     agg = params["agg"]
+    if params["agg_options_filter"].present?
+      # We don"t need to keep filters of the same agg, we want broader results
+      # But we need to respect all other filters
+      params["crowd_agg_filters"]&.delete_if { |filter_entry| filter_entry&.field == agg }
+      params["crowd_agg_filters"] ||= []
+      regex = case_insensitive_regex_emulation(".*#{params['agg_options_filter']}.*")
+      filter = OpenStruct.new("field": agg, "values": [regex])
+      params["crowd_agg_filters"] << filter
+    end
     qargs = query_args(agg)
     qargs[:aggs] = {
-      "fm_#{agg}": {},
+      "fm_#{agg}": { limit: MAX_AGGREGATION_LIMIT },
     }
     qargs[:per_page] = 0
     qargs[:smart_aggs] = true
     @studies = Study.search(search_query, qargs)
+
+    # Some of the values are multivalue => the doc will have aggs not matching
+    # the actual regex and we need to filter it again
+    if params["agg_options_filter"].present?
+      regex = Regexp.new("^.*#{params['agg_options_filter'].downcase}.*$", "i")
+      @studies
+        .aggs["fm_#{agg}"]["buckets"]
+        .keep_if { |entry| entry["key"] =~ regex }
+    end
+
+    page = params[:page] || 0
+    page_size = params[:page_size] || DEFAULT_PAGE_SIZE
+    @studies.aggs["fm_#{agg}"]["buckets"] = @studies
+      .aggs["fm_#{agg}"]["buckets"]
+      .drop(page * page_size)
+      .first(page_size)
+
     {
       agg: @studies.aggs["fm_#{agg}"],
     }
