@@ -3,7 +3,6 @@
  * AuthHeader
  *
  */
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
