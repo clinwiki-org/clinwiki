@@ -3,7 +3,7 @@
 set NODE_ENV=production
 cd %~dp0\..
 call yarn build
-set CW_PATH=..\clinwiki\public
+set CW_PATH=..\clinwiki-org\public
 del %CW_PATH%\*.js
 copy /y build\* %CW_PATH%
 
