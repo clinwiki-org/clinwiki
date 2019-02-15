@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
   before_action :authenticate_user!, except: [:user_exists]
 
-
   def user_exists
     if current_user
       render json: {
@@ -24,16 +23,16 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_devise_permitted_parameters
-    registration_params = [:first_name, :last_name, :email, :password, :password_confirmation, :default_query_string]
+    registration_params = %i[first_name last_name email password password_confirmation default_query_string]
 
-    if params[:action] == 'update'
-      devise_parameter_sanitizer.permit(:account_update) {
-        |u| u.permit(registration_params << :current_password)
-      }
-    elsif params[:action] == 'create'
-      devise_parameter_sanitizer.permit(:sign_up) {
-        |u| u.permit(registration_params)
-      }
+    if params[:action] == "update"
+      devise_parameter_sanitizer.permit(:account_update) do |u|
+        u.permit(registration_params << :current_password)
+      end
+    elsif params[:action] == "create"
+      devise_parameter_sanitizer.permit(:sign_up) do |u|
+        u.permit(registration_params)
+      end
     end
   end
 end

@@ -1,2 +1,3 @@
-class BriefSummary < Aact
+class BriefSummary < AactRecord
+  include HasOneStudy
 end

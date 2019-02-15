@@ -1,2 +1,3 @@
-class BrowseCondition < Aact
+class BrowseCondition < AactRecord
+  include BelongsToStudy
 end

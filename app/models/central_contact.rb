@@ -1,2 +1,3 @@
-class CentralContact < Aact
+class CentralContact < AactRecord
+  include BelongsToStudy
 end

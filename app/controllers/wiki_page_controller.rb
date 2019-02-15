@@ -1,7 +1,8 @@
+# rubocop:disable all
 class WikiPageController < ApplicationController
   include WikiHelper
-  skip_before_filter :verify_authenticity_token
-  skip_before_filter :authenticate_user!, only: [:get, :history]
+  skip_before_action :verify_authenticity_token
+  skip_before_action :authenticate_user!, only: [:get, :history]
 
   def get
     page = WikiPage.find_by(nct_id: params[:study_id])

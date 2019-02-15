@@ -1,5 +1,5 @@
 class SessionsController < Devise::SessionsController
-  skip_before_filter :verify_authenticity_token, :verify_signed_out_user
+  skip_before_action :verify_authenticity_token, :verify_signed_out_user, raise: false
   respond_to :json
 
   # DELETE /resource/sign_out
@@ -11,11 +11,7 @@ class SessionsController < Devise::SessionsController
     respond_to_on_destroy
   end
 
-
   def verify_signed_out_user
-    if all_signed_out?
-      respond_to_on_destroy
-    end
+    respond_to_on_destroy if all_signed_out?
   end
-
 end

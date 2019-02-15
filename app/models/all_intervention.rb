@@ -1,2 +1,3 @@
-class AllIntervention < Aact
+class AllIntervention < AactRecord
+  include BelongsToStudy
 end

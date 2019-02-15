@@ -1,2 +1,2 @@
-class AnnotationLabel < ActiveRecord::Base
+class AnnotationLabel < ApplicationRecord
 end

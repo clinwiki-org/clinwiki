@@ -1,2 +1,3 @@
-class Link < Aact
+class Link < AactRecord
+  include BelongsToStudy
 end

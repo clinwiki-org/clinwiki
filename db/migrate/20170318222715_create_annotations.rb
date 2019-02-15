@@ -9,7 +9,7 @@ class CreateAnnotations < ActiveRecord::Migration
     add_column :annotations, :user_id, :integer, references: :users
 
     create_table :annotation_labels do |t|
-      t.string  :label
+      t.string :label
       t.timestamps null: false
     end
   end

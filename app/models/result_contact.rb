@@ -1,2 +1,3 @@
-class ResultContact < Aact
+class ResultContact < AactRecord
+  include BelongsToStudy
 end

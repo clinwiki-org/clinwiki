@@ -1,2 +1,3 @@
-class BrowseIntervention < Aact
+class BrowseIntervention < AactRecord
+  include BelongsToStudy
 end

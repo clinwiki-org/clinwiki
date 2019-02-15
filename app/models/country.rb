@@ -1,2 +1,3 @@
-class Country < Aact
+class Country < AactRecord
+  include BelongsToStudy
 end

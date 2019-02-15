@@ -1,7 +1,8 @@
-class Facility < Aact
+class Facility < AactRecord
+  include BelongsToStudy
 
-  has_many :facility_contacts
-  has_many :facility_investigators
+  has_many :facility_contacts, dependent: :restrict_with_exception
+  has_many :facility_investigators, dependent: :restrict_with_exception
 
   def description
     "#{country}: #{name}, #{city} #{state} #{zip} (#{recruitment_status})"
@@ -10,11 +11,10 @@ class Facility < Aact
   end
 
   def recruitment_status
-    status.blank? ? 'status unknown' : status
+    status.presence || "status unknown"
   end
 
   def primary_contact
-    #facility_contacts.select{|fc|fc.contact_type.downcase=='primary'}.first.try(:contact_info)
+    # facility_contacts.select{|fc|fc.contact_type.downcase=='primary'}.first.try(:contact_info)
   end
-
 end

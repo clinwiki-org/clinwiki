@@ -1,2 +1,3 @@
-class DetailedDescription < Aact
+class DetailedDescription < AactRecord
+  include HasOneStudy
 end

@@ -1,2 +1,3 @@
-class ResultAgreement < Aact
+class ResultAgreement < AactRecord
+  include BelongsToStudy
 end

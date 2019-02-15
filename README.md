@@ -136,7 +136,7 @@ git push heroku master  # add to heroku -- this should kick off a deploy
 
 ```bash
 # if your file is in imports/foo.csv, $MY_FILE should be foo.csv
-heroku run -a clinwiki-prod rake import:csv["$MY_FILE"]  
+heroku run -a clinwiki-prod rake import:csv["$MY_FILE"]
 ```
 
 ### Running Exports
@@ -194,3 +194,28 @@ This will run a hot-reloading session of the cw-app frontend.
 
 To make sure reindexing and the like are handled on save,
 make sure to run `./scripts/worker` in a separate session as well.
+
+## Run locally in production mode
+
+1) Create a .env file in root with the following contents
+
+```bash
+AACT_DATABASE_URL=postgres://$AACT_USER:$AACT_PASS@aact-db.ctti-clinicaltrials.org:5432/aact
+MAILGUN_API_KEY=""
+MAILGUN_DOMAIN="localhost:3000"
+CW_HOST="localhost:3000"
+CLINWIKI_DOMAIN="localhost:3000"
+SECRET_KEY_BASE="lkdfjgldgjkdflgjlkdfjgldfkjg"
+```
+
+2) Precompile assets
+
+```bash
+export $(cat .env | xargs) && RAILS_ENV=production rake assets:precompile
+```
+
+3) Start server
+
+```bash
+export $(cat .env | xargs) && RAILS_ENV=production rails s
+```

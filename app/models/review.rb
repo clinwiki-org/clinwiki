@@ -1,8 +1,9 @@
-require 'reindexes_study'
-class Review < ReindexesStudy
+class Review < ApplicationRecord
   include WikiModelHelper
+  include TriggersStudyReindex
+  include BelongsToStudy
 
-  alias_method :stars, :front_matter
+  alias stars front_matter
 
   belongs_to :user
 
@@ -18,20 +19,10 @@ class Review < ReindexesStudy
       updated_at: updated_at,
       text: content,
       overall_rating: overall_rating,
-      # text_html: text_html,
     }
 
-    if !front_matter.blank?
-      result[:stars] = front_matter
-    else
-      result[:stars] = { "Overall Rating" => overall_rating }
-    end
-
-    if parsed && parsed.content
-      result[:text] = parsed.content
-    end
-
+    result[:stars] = front_matter.presence || { "Overall Rating" => overall_rating }
+    result[:text] = parsed.content if parsed&.content
     result
   end
-
 end

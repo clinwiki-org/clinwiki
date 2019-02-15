@@ -1,2 +1,3 @@
-class Eligibility < Aact
+class Eligibility < AactRecord
+  include HasOneStudy
 end
