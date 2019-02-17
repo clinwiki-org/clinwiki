@@ -1,4 +1,4 @@
-class CreateWikiPageEdits < ActiveRecord::Migration
+class CreateWikiPageEdits < ActiveRecord::Migration[5.2]
   def change
     create_table :wiki_page_edits do |t|
       t.references :wiki_page, index: true, foreign_key: true

@@ -59,12 +59,12 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
 
     qargs = query_args(agg)
     qargs[:aggs] = {
-      agg => AGGS[agg.to_sym],
+      agg => AGGS[agg.to_sym].deep_dup,
     }
     qargs[:aggs][agg][:limit] = MAX_AGGREGATION_LIMIT
     qargs[:per_page] = 0
-    qargs[:limit] = 0
     qargs[:smart_aggs] = true
+
     @studies = Study.search(search_query, qargs)
 
     # Some of the values are multivalue => the doc will have aggs not matching
@@ -88,15 +88,41 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
   end
 
   # @return [Hash]
-  def crowd_agg_buckets
+  def crowd_agg_buckets # rubocop:disable Metrics/AbcSize
     agg = params["agg"]
+    if params["agg_options_filter"].present?
+      # We don"t need to keep filters of the same agg, we want broader results
+      # But we need to respect all other filters
+      params["crowd_agg_filters"]&.delete_if { |filter_entry| filter_entry&.field == agg }
+      params["crowd_agg_filters"] ||= []
+      regex = case_insensitive_regex_emulation(".*#{params['agg_options_filter']}.*")
+      filter = OpenStruct.new("field": agg, "values": [regex])
+      params["crowd_agg_filters"] << filter
+    end
     qargs = query_args(agg)
     qargs[:aggs] = {
-      "fm_#{agg}": {},
+      "fm_#{agg}": { limit: MAX_AGGREGATION_LIMIT },
     }
     qargs[:per_page] = 0
     qargs[:smart_aggs] = true
     @studies = Study.search(search_query, qargs)
+
+    # Some of the values are multivalue => the doc will have aggs not matching
+    # the actual regex and we need to filter it again
+    if params["agg_options_filter"].present?
+      regex = Regexp.new("^.*#{params['agg_options_filter'].downcase}.*$", "i")
+      @studies
+        .aggs["fm_#{agg}"]["buckets"]
+        .keep_if { |entry| entry["key"] =~ regex }
+    end
+
+    page = params[:page] || 0
+    page_size = params[:page_size] || DEFAULT_PAGE_SIZE
+    @studies.aggs["fm_#{agg}"]["buckets"] = @studies
+      .aggs["fm_#{agg}"]["buckets"]
+      .drop(page * page_size)
+      .first(page_size)
+
     {
       agg: @studies.aggs["fm_#{agg}"],
     }
@@ -128,11 +154,11 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
   # Manipulates the filter params to the expected value matching a "where" key
   # @return [Hash]
   # TODO: refactor to reduce complexity
-  def agg_where(_curr_agg = nil) # rubocop:disable Metrics/CyclomaticComplexity
+  def agg_where(curr_agg = nil) # rubocop:disable Metrics/CyclomaticComplexity
     agg_filters = params.fetch(:aggFilters, params.fetch(:agg_filters, {}))
     where = { _and: [] }
     if agg_filters.is_a?(Array)
-      agg_filters.each do |filter|
+      agg_filters.reject { |filter| filter.field == curr_agg }.each do |filter|
         if filter.field && !filter.values.empty?
           where[:_and] << { _or: filter.values.map { |val| { filter.field => val } } }
         end
@@ -247,7 +273,8 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
     average_rating tags overall_status facility_states
     facility_cities facility_names study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
-    browse_interventions_mesh_terms front_matter_keys
+    browse_interventions_mesh_terms interventions_mesh_terms
+    front_matter_keys
   ].freeze
 
   # aggregations
@@ -278,6 +305,10 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
       limit: 10,
     },
     browse_interventions_mesh_terms: {
+      limit: 10,
+      order: { "_term" => "asc" },
+    },
+    interventions_mesh_terms: {
       limit: 10,
       order: { "_term" => "asc" },
     },

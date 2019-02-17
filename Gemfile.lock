@@ -369,6 +369,7 @@ DEPENDENCIES
   diffy
   dotenv-rails
   execjs
+  faraday
   figaro
   font-awesome-rails
   font-awesome-sass

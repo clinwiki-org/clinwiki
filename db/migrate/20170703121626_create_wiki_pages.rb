@@ -1,4 +1,4 @@
-class CreateWikiPages < ActiveRecord::Migration
+class CreateWikiPages < ActiveRecord::Migration[5.2]
   def change
     create_table :wiki_pages do |t|
       t.string :nct_id

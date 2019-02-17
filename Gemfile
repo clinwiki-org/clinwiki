@@ -85,5 +85,5 @@ gem "kramdown"
 gem "front_matter_parser"
 gem "mailgun-ruby", "~>1.1.6"
 gem "graphql"
-
-gem 'graphiql-rails', '~> 1.4.11'
+gem "graphiql-rails", "~> 1.4.11"
+gem "faraday"
