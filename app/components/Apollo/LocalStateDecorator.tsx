@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
+import g from 'graphql-tag';
 
-const LOCAL_QUERY = gql`{ searchQuery @client }`;
+const LOCAL_QUERY = g`{ searchQuery @client }`;
 
 export interface ClientState {
   searchQuery : string[];

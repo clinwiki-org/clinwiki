@@ -21,7 +21,7 @@ const searchQuery = (fields) => {
     data = `data { ${fieldList} }`;
   }
   return gql`
-    query (
+    query SearchPageSearchQuery(
       $q: String,
       $page:Int,
       $pageSize:Int,

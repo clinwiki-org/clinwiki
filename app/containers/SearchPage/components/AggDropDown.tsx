@@ -16,7 +16,7 @@ import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 const PAGE_SIZE = 25;
 
 const QUERY_AGG_BUCKETS = gql`
-  query (
+  query SearchPageAggBucketsQuery (
     $agg : String!,
     $q : String,
     $aggFilters:[AggFilter!],
@@ -45,7 +45,7 @@ const QUERY_AGG_BUCKETS = gql`
   }`;
 
 const QUERY_CROWD_AGG_BUCKETA = gql`
-  query (
+  query SearchPageCrowdAggBucketsQuery(
     $agg : String!,
     $q : String,
     $aggFilters:[AggFilter!],
@@ -178,18 +178,19 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       variables,
     });
 
-    const newBuckets = pathOr([], ['data', 'aggBuckets', 'aggs', 0, 'buckets'], response);
+    const newBuckets = pathOr(
+      [],
+      ['data', 'aggBuckets', 'aggs', 0, 'buckets'],
+      response,
+    ) as AggBucket[];
 
-    // @ts-ignore
     const buckets = pipe(
-      // @ts-ignore
       concat(newBuckets),
       uniqBy(prop('key')),
       sortBy(prop('key')),
-    )(this.state.buckets);
+    )(this.state.buckets) as AggBucket[];
 
     const hasMore = length(this.state.buckets) !== length(buckets);
-    // @ts-ignore
     this.setState({ buckets, hasMore });
   }
 

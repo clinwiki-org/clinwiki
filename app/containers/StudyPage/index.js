@@ -7,6 +7,7 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
+import { pathOr } from 'ramda';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -33,6 +34,8 @@ import EditReviewSection from './EditReviewSection/Loadable';
 import ReviewsSection from './ReviewsSection/Loadable';
 import GenericStudySection from './GenericStudySection';
 import SummaryInfo from './SummaryInfo/Loadable';
+// eslint-disable-next-line
+import InterventionsSection from './InterventionsSection';
 import WikiToggle from './WikiToggle';
 
 
@@ -83,6 +86,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
     Descriptive: 'descriptive',
     Administrative: 'administrative',
     Recruitment: 'recruitment',
+    Interventions: 'interventions',
     Tracking: 'tracking',
     Sites: 'sites',
     Tags: 'tags',
@@ -111,6 +115,19 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
       />
     );
   }
+
+  interventionsRoute = () => (
+    <Route
+      path="/study/:nctId/interventions"
+      render={() => (
+        <InterventionsSection
+          history={this.props.history}
+          nctId={pathOr(null, ['StudyPage', 'study', 'nct_id'], this.props)}
+          loggedIn={pathOr(false, ['AuthHeader', 'user', 'loggedIn'], this.props)}
+        />
+      )}
+    />
+  );
 
   reviewsRoute() {
     return (
@@ -179,6 +196,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
             {this.genericRoute('Descriptive')}
             {this.genericRoute('Administrative')}
             {this.genericRoute('Recruitment')}
+            {this.interventionsRoute()}
             {this.genericRoute('Tracking')}
             {this.genericRoute('Sites')}
             {this.tagsRoute()}
