@@ -1,4 +1,4 @@
-class CreateUserSessionStudies < ActiveRecord::Migration
+class CreateUserSessionStudies < ActiveRecord::Migration[5.2]
   def change
     create_table :user_session_studies do |t|
       t.string   :nct_id
