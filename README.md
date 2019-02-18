@@ -113,10 +113,11 @@ the annotation database along with the AACT database.
 CSVs expect a header with the following format:
 `nct_id,Type,Value,Action`
 
-We support `Tags` as a type, with `Add` or `Remove` as an action.
-For crowd values, we only presently support native fields that are
-crowd overwriteable. In this case, `Add` will add or overwrite a crowd
+We support `Tag` as a type, with `Add` or `Remove` as an action.
+For crowd values, there are two types of crowd values and both can use the 'Add' and 'Remove' options.
+For native fields that are crowd overwriteable, `Add` will add or overwrite a crowd
 definition for that field, and `Remove` will remove the crowd definition.
+For crowd values that produce custom facets, the "Type" in the csv ("label" value in the UI) will be the name of the facet. The "Value" in the csv ("description" in the UI) is the value(s) in the facet. For multiple values of the crowd facet, enter as multiple lines or separated on a single line by '|' (example Type = "Karnofsky Score Allowed", Value = "100|90|80|70")
 
 #### 2) Commit your CSV to the appropriate subfolder
 The CSV should be exported to the `imports/` within the root project folder.
