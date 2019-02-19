@@ -23,6 +23,8 @@ import gqlSearchPage from 'containers/SearchPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import StudyPage from 'containers/StudyPage/Loadable';
 import LoginSignupPage from 'containers/LoginSignupPage/Loadable';
+// eslint-disable-next-line
+import InterventionPage from 'containers/InterventionPage';
 import saga from './saga';
 import reducer from './reducer';
 
@@ -43,6 +45,7 @@ function App() {
           <Route path="/profile" component={ProfilePage} />
           <Route path="/study/:nctId/review/:reviewId/edit" component={StudyPage} />
           <Route path="/study/:nctId" component={StudyPage} />
+          <Route path="/intervention/:id" component={InterventionPage} />
           <Route path="/reset-password" component={LoginSignupPage} />
           <Route path="/login-signup" component={LoginSignupPage} />
           <Route path="/logout" component={LoginSignupPage} />

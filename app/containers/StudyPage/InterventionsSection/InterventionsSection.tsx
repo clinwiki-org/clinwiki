@@ -11,8 +11,10 @@ import InterventionItem from './InterventionItem';
 
 const QUERY = gql`
   query InterventionsSectionQuery($nctId: String!) {
-    interventions(nctId: $nctId) {
-      ...InterventionItemFragment
+    study(nctId: $nctId) {
+      interventions {
+        ...InterventionItemFragment
+      }
     }
   }
 
@@ -29,7 +31,7 @@ class QueryComponent extends Query<InterventionsSectionQuery, InterventionsSecti
 
 class InterventionsSection extends React.PureComponent<InterventionsSectionProps> {
   handleItemClick = (id: number) => {
-    this.props.history.push(`/interventions/${id}`);
+    this.props.history.push(`/intervention/${id}`);
   }
 
   render() {
@@ -49,7 +51,7 @@ class InterventionsSection extends React.PureComponent<InterventionsSectionProps
                 </tr>
               </thead>
               <tbody>
-                {data.interventions.map(intervention =>
+                {data.study.interventions.map(intervention =>
                   <InterventionItem
                     key={intervention.name}
                     interventionItem={intervention}

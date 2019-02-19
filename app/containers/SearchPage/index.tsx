@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { isEmpty, isNil } from 'ramda';
 import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
 
 import { Query } from 'react-apollo';
@@ -82,10 +83,12 @@ interface OldCrustyAuthHeader {
 interface SearchProps {
   loading : boolean;
   apolloClient: any;
+  aggFilters?: AggFilterMap;
   clientState: ClientState;
   updateClientState: (x:ClientState) => void;
   AuthHeader: OldCrustyAuthHeader;
   history : any;
+  ignoreUrlUpdate?: boolean;
 }
 
 // Replace redux with a simple component to store the page state
@@ -102,6 +105,15 @@ export class Search extends React.Component<SearchProps, SearchState> {
       pageSize: defaultPageSize,
       sorts: [],
     };
+  }
+
+  static getDerivedStateFromProps = (props: SearchProps, state: SearchState) => {
+    if ((isEmpty(state.aggFilters) || isNil(state.aggFilters)) &&
+      props.aggFilters && !isEmpty(props.aggFilters)) {
+      return { ...state.aggFilters, aggFilters: props.aggFilters };
+    }
+
+    return null;
   }
 
   query() { return this.props.clientState.searchQuery; }
@@ -185,6 +197,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
   }
 
   updateUrl = (state: SearchState) => {
+    if (this.props.ignoreUrlUpdate) return;
     const params = this.getQueryParams(state);
     const encoded = encodeSearchParams(params);
     const primarySearchTerm = _.find(params.q, () => true) || '';

@@ -14,5 +14,5 @@ export default (val) => _.get({
   phase: 'phase',
   browse_condition_mesh_terms: 'mesh term',
   browse_interventions_mesh_terms: 'browse intervention mesh term',
-  interventions_mesh_terms: 'intervention mesh term',
+  interventions_mesh_terms: 'interventions',
 }, val, val);
