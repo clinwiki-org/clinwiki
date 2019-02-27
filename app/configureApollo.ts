@@ -13,6 +13,7 @@ function get_gql_url() {
 const client = new ApolloClient({
   uri: get_gql_url(),
   cache,
+  credentials: 'include',
   clientState: {
     defaults: {
       searchQuery: []

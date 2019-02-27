@@ -7,11 +7,11 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
-import { pathOr } from 'ramda';
+import { pathOr, indexOf } from 'ramda';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 import { Nav, NavItem, Row, Col } from 'react-bootstrap';
@@ -38,13 +38,16 @@ import SummaryInfo from './SummaryInfo/Loadable';
 import InterventionsSection from './InterventionsSection';
 import WikiToggle from './WikiToggle';
 
-
 const StudyWrapper = styled.div`
   display: flex;
   align-items: stretch;
 
   .table-striped>tbody>tr:nth-of-type(odd) {
     background-color: #eee;
+  }
+
+  .navlinks {
+    margin-bottom: 10px;
   }
 
   #study-sidebar {
@@ -74,9 +77,30 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
   }
 
   onNavItemSelect(key) {
-    this.props.history.push(
-      `/study/${this.props.match.params.nctId}/${this.defaultSections[key]}`
-    );
+    const pathComponents = location.pathname.split('/');
+    let studyIndex = indexOf('study', pathComponents);
+    if (studyIndex === -1) {
+      studyIndex = indexOf('studies', pathComponents);
+    }
+
+    if (studyIndex === pathComponents.length - 3) {
+      pathComponents[pathComponents.length - 1] = this.defaultSections[key];
+    } else if (studyIndex === pathComponents.length - 4) {
+      pathComponents.pop();
+      pathComponents.pop();
+      pathComponents.push(this.defaultSections[key]);
+    } else {
+      pathComponents.push(this.defaultSections[key]);
+    }
+
+    this.props.history.push(pathComponents.join('/'));
+  }
+
+  handleSubmitReview = (...data) => {
+    this.props.actions.submitReview(...data);
+    if (this.props.isFeed && this.props.nextLink) {
+      this.props.history.push(this.props.nextLink);
+    }
   }
 
   defaultSections = {
@@ -95,7 +119,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
   genericRoute(route) {
     return (
       <Route
-        path={`/study/:nctId/${this.defaultSections[route]}`}
+        path={`${this.props.match.url}/${this.defaultSections[route]}`}
         render={() => (<GenericStudySection data={this.props.StudyPage[this.defaultSections[route]]} />)}
       />
     );
@@ -104,7 +128,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
   tagsRoute() {
     return (
       <Route
-        path="/study/:nctId/tags"
+        path={`${this.props.match.url}/tags`}
         render={() => (
           <TagsSection
             StudyPage={this.props.StudyPage}
@@ -118,7 +142,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
 
   interventionsRoute = () => (
     <Route
-      path="/study/:nctId/interventions"
+      path={`${this.props.match.url}/interventions`}
       render={() => (
         <InterventionsSection
           history={this.props.history}
@@ -132,7 +156,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
   reviewsRoute() {
     return (
       <Route
-        path="/study/:nctId/reviews"
+        path={`${this.props.match.url}/reviews`}
         render={() => (
           <ReviewsSection
             history={this.props.history}
@@ -148,12 +172,13 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
   newReviewRoute() {
     return (
       <Route
-        path="/study/:nctId/reviews/new"
+        path={`${this.props.match.url}/reviews/new`}
         render={() => (
           <NewReviewSection
             nctId={_.get(this.props.StudyPage, 'study.nct_id')}
-            submitReview={this.props.actions.submitReview}
+            submitReview={this.handleSubmitReview}
             loggedIn={_.get(this.props.AuthHeader, 'user.loggedIn')}
+            submitText={this.props.isFeed ? 'Submit and next' : 'Submit'}
           />)}
       />
     );
@@ -162,7 +187,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
   editReviewRoute() {
     return (
       <Route
-        path="/study/:nctId/review/:reviewId/edit"
+        path={`${this.props.match.url}/review/:reviewId/edit`}
         exact
         render={() => (
           <EditReviewSection
@@ -173,6 +198,12 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
           />)}
       />
     );
+  }
+
+  renderNavigationLink = (link: string | null | undefined, name: string) => {
+    if (!link) return null;
+
+    return <Link to={link}>{name}</Link>;
   }
 
   render() {
@@ -186,13 +217,23 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
     if (_.get(this.props.StudyPage, 'study.title')) {
       inner = (
         <div id="study-main">
+          <div className="container navlinks">
+            <Row>
+              <Col md={12}>
+                {this.renderNavigationLink(this.props.prevLink, '<< Prev')}
+                &nbsp;
+                &nbsp;
+                {this.renderNavigationLink(this.props.nextLink, 'Next >>')}
+              </Col>
+            </Row>
+          </div>
           <SummaryInfo study={_.get(this.props, 'StudyPage.study')} />
           <Switch>
-            <Route exact path="/study/:nctId" component={WikiSection} />
+            <Route exact path={`${this.props.match.url}/`} component={WikiSection} />
             {this.editReviewRoute()}
             {this.newReviewRoute()}
             {this.reviewsRoute()}
-            <Route path="/study/:nctId/crowd" component={CrowdSection} />
+            <Route path={`${this.props.match.url}/crowd`} component={CrowdSection} />
             {this.genericRoute('Descriptive')}
             {this.genericRoute('Administrative')}
             {this.genericRoute('Recruitment')}
@@ -235,8 +276,11 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
 
 StudyPage.propTypes = {
   actions: PropTypes.object,
+  isFeed: PropTypes.bool,
   match: ReactRouterPropTypes.match,
   history: ReactRouterPropTypes.history,
+  prevLink: PropTypes.string,
+  nextLink: PropTypes.string,
   StudyPage: PropTypes.object,
   AuthHeader: PropTypes.object,
 };

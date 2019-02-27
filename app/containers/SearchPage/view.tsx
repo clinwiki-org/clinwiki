@@ -1,7 +1,7 @@
 import * as React from 'react';
 import LoadingPane from 'components/LoadingPane';
 import { Helmet } from 'react-helmet';
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Grid, Row, Col, Button } from 'react-bootstrap';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
@@ -9,6 +9,8 @@ import 'react-table/react-table.css';
 import SearchFieldName from 'components/SearchFieldName';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
+import SaveFeed from './components/SaveFeed';
+import { pathOr } from 'ramda';
 import * as _ from 'lodash';
 import { AggItem, AggFilterMap, AggCallback, SearchParams, SortItem, AggKind } from './Types';
 
@@ -204,6 +206,10 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
       <Row>
         <Col md={2} id="search-sidebar">
           { this.render_aggs(this.props.aggProps || {}) }
+          <SaveFeed
+            searchParams={pathOr({}, ['aggProps', 'searchParams'], this.props) as SearchParams}
+            history={this.props.history}
+          />
         </Col>
         <Col md={10} id="search-main">
           <Grid>

@@ -19,6 +19,7 @@ class NewReviewSection extends React.Component { // eslint-disable-line react/pr
               nctId={this.props.nctId}
               loggedIn={this.props.loggedIn}
               submitReview={this.props.submitReview}
+              submitText={this.props.submitText}
             />
           </Col>
         </Row>
@@ -31,6 +32,7 @@ NewReviewSection.propTypes = {
   nctId: PropTypes.string,
   submitReview: PropTypes.func.isRequired,
   loggedIn: PropTypes.bool,
+  submitText: PropTypes.string,
 };
 
 export default NewReviewSection;

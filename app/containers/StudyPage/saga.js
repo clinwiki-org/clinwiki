@@ -1,6 +1,7 @@
 import { put, takeEvery, call, take, cancel, select } from 'redux-saga/effects';
 import { LOCATION_CHANGE, push } from 'react-router-redux';
 import client from 'utils/client';
+import { path } from 'ramda';
 import {
   REQUEST_STUDY_ACTION,
   RELOAD_STUDY_ACTION,
@@ -151,14 +152,14 @@ export function* wikiOverrideSaga() {
 
 export function* submitReview(action) {
   yield call(client.post, `/reviews/${action.nctId}`, action);
-  yield call(reloadStudy, action);
-  yield put(push(`/study/${action.nctId}/reviews`));
+  // yield call(reloadStudy, action);
+  // yield put(push(`/study/${action.nctId}/reviews`));
 }
 
 export function* submitReviewSaga() {
-  const watcher = yield takeEvery(REVIEW_SUBMIT_ACTION, submitReview);
-  yield take(LOCATION_CHANGE);
-  yield cancel(watcher);
+  yield takeEvery(REVIEW_SUBMIT_ACTION, submitReview);
+  // yield take(LOCATION_CHANGE);
+  // yield cancel(watcher);
 }
 
 export function* updateReview(action) {
@@ -216,6 +217,20 @@ export function* checkForReview(data) {
   }
 }
 
+// gets the correct review on location change
+export function* reloadStudyIfChanged(action) {
+  const state = yield select();
+  const currentStudyId = path(['StudyPage', 'study', 'nct_id'], state.toJS());
+  const currentPath = path(['payload', 'pathname'], action);
+  const newIdMatch = currentPath.match(/\/study\/(NCT[A-Za-z0-9]*)/);
+  if (newIdMatch) {
+    const newId = newIdMatch[1];
+    if (currentStudyId !== newId) {
+      yield put({ type: RELOAD_STUDY_ACTION, nctId: newId });
+    }
+  }
+}
+
 
 export default function* doAll() {
   yield takeEvery(WIKI_VIEWED, loadWiki);
@@ -231,4 +246,5 @@ export default function* doAll() {
   yield takeEvery(GET_REVIEW_ACTION, getReview);
   yield takeEvery(REVIEW_UPDATE_ACTION, updateReview);
   yield takeEvery(LOCATION_CHANGE, checkForReview);
+  yield takeEvery(LOCATION_CHANGE, reloadStudyIfChanged);
 }

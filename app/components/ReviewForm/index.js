@@ -262,7 +262,7 @@ class ReviewForm extends React.Component {
             <Row style={{ marginTop: '10px' }}>
               <Col md={12} className="text-right">
                 <Button id="submit-review" type="submit" onClick={this.submitReview}>
-                  Submit
+                  { this.props.submitText ? this.props.submitText : 'Submit' }
                 </Button>
               </Col>
             </Row>
@@ -281,6 +281,7 @@ ReviewForm.propTypes = {
   review: PropTypes.string,
   reviewId: PropTypes.number,
   reviewIsLoading: PropTypes.bool,
+  submitText: PropTypes.string,
 };
 
 ReviewForm.defaultProps = {

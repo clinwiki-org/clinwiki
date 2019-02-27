@@ -8,6 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import ReactStars from 'react-stars';
+// eslint-disable-next-line
 import { ViewMarkdown } from 'components/TextEditor';
 import { Grid, Table, Row, Col, Button, ButtonGroup, Label } from 'react-bootstrap';
 // import styled from 'styled-components';
@@ -105,7 +106,7 @@ class ReviewsSection extends React.Component { // eslint-disable-line react/pref
               className="pull-right"
               onClick={(e) => {
                 e.preventDefault();
-                this.props.history.push(`/study/${this.props.nctId}/reviews/new`);
+                this.props.history.push('reviews/new');
               }}
             >
               Write a Review

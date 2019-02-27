@@ -25,6 +25,10 @@ import StudyPage from 'containers/StudyPage/Loadable';
 import LoginSignupPage from 'containers/LoginSignupPage/Loadable';
 // eslint-disable-next-line
 import InterventionPage from 'containers/InterventionPage';
+// eslint-disable-next-line
+import FeedPage from 'containers/FeedPage';
+// eslint-disable-next-line
+import FeedsPage from 'containers/FeedsPage';
 import saga from './saga';
 import reducer from './reducer';
 
@@ -41,6 +45,9 @@ function App() {
         <Switch>
           <Route exact path="/" component={gqlSearchPage} />
           <Route exact path="/search" component={gqlSearchPage} />
+          <Route exact path="/feeds" component={FeedsPage} />
+          <Route exact path="/feeds/:feedId" component={FeedPage} />
+          <Route path="/feeds/:feedId/study/:studyId" component={FeedPage} />
           <Route path="/search/:searchQuery" component={gqlSearchPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/study/:nctId/review/:reviewId/edit" component={StudyPage} />

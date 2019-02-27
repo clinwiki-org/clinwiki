@@ -26,6 +26,7 @@ const AuthButton = (props) => {
     <ButtonWrapper className="pull-right">
       <DropdownButton title={(props.user && props.user.email) || ''} id="loggedIn">
         <MenuItem onClick={() => props.history.push('/profile')}>Profile</MenuItem>
+        <MenuItem onClick={() => props.history.push('/feeds')}>Feeds</MenuItem>
         <MenuItem onClick={() => props.history.push('/logout')}>Log Out</MenuItem>
       </DropdownButton>
     </ButtonWrapper>
