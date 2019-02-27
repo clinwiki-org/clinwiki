@@ -11,7 +11,7 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
 
   # Retrieves search params from request, performs the search, transforms the result to a response hash
   # @return [Hash] the JSON response
-  def search_studies
+  def search_studies(search_after: nil, reverse: false)
     if search_query.match?(/\.analyzed:/)
       # supports lucene-style query
       result = Searchkick.client.search(lucene_params)
@@ -20,10 +20,23 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
         data: result["hits"]["hits"].map { |x| x["_source"] },
       }
     else
-      @studies = Study.search(search_query, query_args)
+      body_options = { search_after: search_after }.delete_if { |_, v| v.blank? }
+      args = query_args.merge(body_options: body_options)
+      # Reverse if necessary
+      args[:order].each do |hash|
+        key = hash.keys.first
+        value = hash[key]
+        if reverse
+          value = value == "asc" ? "desc" : "asc"
+        end
+        hash[key] = value
+      end
+
+      @studies = Study.search(search_query, args)
       {
         recordsTotal: @studies.total_entries,
         data: @studies.map { |s| study_result_to_json(s) },
+        studies: @studies,
         aggs: @studies.aggs,
       }
     end
@@ -192,7 +205,7 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
 
   # Transforms ordering params from datatables to what"s expected by searchkick
   # @return [Hash]
-  def ordering
+  def ordering # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     if params[:order]
       Hash[params[:order].values.map do |ordering|
         [COLUMNS_TO_ORDER_FIELD[ordering["column"].to_i], ordering["dir"].to_sym]
@@ -205,7 +218,9 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
       params[:sort]
     elsif params[:sorts]
       # the graphql case
-      Hash[params[:sorts].map { |x| [ORDERING_MAP.fetch(x.id, x.id), x.desc ? "desc" : "asc"] }]
+      res = params[:sorts].map { |x| { ORDERING_MAP.fetch(x.id, x.id) => x.desc ? "desc" : "asc" } }
+      res.push(nct_id: "asc") unless res.any? { |x| x.keys.first.to_sym == :nct_id }
+      res
     else
       { _score: :desc }
     end

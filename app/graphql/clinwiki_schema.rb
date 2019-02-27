@@ -1,4 +1,6 @@
 class ClinwikiSchema < GraphQL::Schema
-  # mutation(Types::MutationType)
+  max_depth 10
+  max_complexity 300
+  mutation(Types::MutationType)
   query(Types::QueryType)
 end

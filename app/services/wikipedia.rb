@@ -5,7 +5,9 @@ class Wikipedia
 
       result = WikipediaArticle.new
 
-      query_url = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=#{search_text}"
+      query_url = "https://en.wikipedia.org/w/api.php"\
+                  "?format=json&action=query&prop=extracts&exintro"\
+                  "&explaintext&redirects=1&titles=#{search_text}"
       wiki_data = get_json_response(query_url)
 
       begin
