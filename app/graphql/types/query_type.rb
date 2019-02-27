@@ -18,8 +18,8 @@ module Types
       argument :nct_id, type: String, required: true
     end
 
-    field :interventions, [InterventionType], null: false do
-      argument :nct_id, type: String, required: true
+    field :intervention, InterventionType, null: true do
+      argument :id, type: Integer, required: true
     end
 
     def search(args)
@@ -47,8 +47,8 @@ module Types
       Study.find_by(nct_id: nct_id)
     end
 
-    def interventions(nct_id:)
-      Intervention.where(nct_id: nct_id)
+    def intervention(id:)
+      Intervention.find_by(id: id)
     end
   end
 end
