@@ -17,7 +17,7 @@ module WikiHelper
   end
 
   def combined_markdown(content, front_matter = {})
-    front_matter_string = front_matter.empty? ? "---\n" : front_matter.to_yaml
+    front_matter_string = front_matter.blank? ? "---\n" : front_matter.to_yaml
     "#{front_matter_string}---\n#{content}"
   end
 

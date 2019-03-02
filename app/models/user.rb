@@ -4,6 +4,7 @@ class User < ApplicationRecord
 
   has_many :reviews, dependent: :destroy
   has_many :user_session_studies, dependent: :destroy
+  has_many :feeds, dependent: :destroy
 
   def admin?
     false

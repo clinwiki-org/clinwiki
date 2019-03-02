@@ -6,7 +6,7 @@ module Types
              required: false, default_value: 1
     argument :pageSize, Int, "how many results we want. for now, use either page and pageSize or none of them",
              required: false, default_value: 25
-    argument :sorts, [SortType], "which fields to sort by", required: false, default_value: [{ field: "nct_id" }]
+    argument :sorts, [SortType], "which fields to sort by", required: false
     argument :aggOptionsFilter, String, "the values in aggs will be filtered by that paramater using a substring match",
              required: false
     argument :aggFilters, [AggFilterType], "the aggs we are filtering on", required: false

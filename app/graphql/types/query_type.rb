@@ -22,6 +22,12 @@ module Types
       argument :id, type: Integer, required: true
     end
 
+    field :feed, FeedType, null: true do
+      argument :id, type: Integer, required: true
+    end
+
+    field :me, UserType, "Current logged in user", null: true
+
     def search(args)
       SearchService.new(args[:params], context).search_studies
     end
@@ -49,6 +55,14 @@ module Types
 
     def intervention(id:)
       Intervention.find_by(id: id)
+    end
+
+    def feed(id:)
+      Feed.find_by(id: id)
+    end
+
+    def me
+      context[:current_user]
     end
   end
 end
