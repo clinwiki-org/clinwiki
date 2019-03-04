@@ -24,36 +24,38 @@ namespace :import do
     removed_crowd = 0
     fname = "imports/#{args[:csv_file]}"
     p "running on #{fname}"
-    CSV.foreach(fname, headers: :first_row) do |row|
-      service = CSVProcessorService.new
-      params = { study_id: row["nct_id"] }
-      tally = -> {}
-      begin
-        if row["Type"] == "Tag"
-          tags = row["Value"].split("|")
-          if row["Action"] == "Add"
-            params[:add_tag] = tags
-            tally = -> { added_tags += tags.length }
+    CSV.open(fname, "r:bom|utf-8", headers: :first_row) do |csv|
+      csv.each do |row|
+        service = CSVProcessorService.new
+        params = { study_id: row["nct_id"] }
+        tally = -> {}
+        begin
+          if row["Type"] == "Tag"
+            tags = row["Value"].split("|")
+            if row["Action"] == "Add"
+              params[:add_tag] = tags
+              tally = -> { added_tags += tags.length }
+            elsif row["Action"] == "Remove"
+              params[:remove_tag] = tags
+              tally = -> { removed_tags += tags.length }
+            else
+              raise "Action #{row['Action']} unsupported"
+            end
           elsif row["Action"] == "Remove"
-            params[:remove_tag] = tags
-            tally = -> { removed_tags += tags.length }
+            params[:delete_meta] = { key: row["Type"] }
+            tally = -> { removed_crowd += 1 }
           else
-            raise "Action #{row['Action']} unsupported"
+            params[:add_meta] = {
+              key: row["Type"],
+              value: row["Value"],
+            }
+            tally = -> { added_crowd += 1 }
           end
-        elsif row["Action"] == "Remove"
-          params[:delete_meta] = { key: row["Type"] }
-          tally = -> { removed_crowd += 1 }
-        else
-          params[:add_meta] = {
-            key: row["Type"],
-            value: row["Value"],
-          }
-          tally = -> { added_crowd += 1 }
+          tally.call
+          service.create_or_update_wiki_page_for_study(params: params, user: user)
+        rescue StandardError => e
+          errors << { nct_id: row["nct_id"], error: e }
         end
-        tally.call
-        service.create_or_update_wiki_page_for_study(params: params, user: user)
-      rescue StandardError => e
-        errors << { nct_id: row["nct_id"], error: e }
       end
     end
     p "#{added_tags} added tags"
