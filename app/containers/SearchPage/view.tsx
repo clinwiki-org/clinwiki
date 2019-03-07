@@ -10,7 +10,7 @@ import SearchFieldName from 'components/SearchFieldName';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SaveFeed from './components/SaveFeed';
-import { pathOr } from 'ramda';
+import { pathOr, path } from 'ramda';
 import * as _ from 'lodash';
 import { AggItem, AggFilterMap, AggCallback, SearchParams, SortItem, AggKind } from './Types';
 
@@ -55,8 +55,8 @@ interface SearchViewProps {
 }
 
 interface SearchViewState {
-  opened: string;
-  openedKind: AggKind;
+  opened: string | null;
+  openedKind: AggKind | null;
 }
 
 export class SearchView extends React.Component<SearchViewProps, SearchViewState> {
@@ -79,20 +79,32 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
     super(props);
   }
 
+  columnName = (name: string): string => {
+    const mapping = {
+      nctId: 'nct_id',
+      briefTitle: 'title',
+      averageRating: 'overall rating',
+      overallStatus: 'status',
+      completionDate: 'completed',
+      startDate: 'started',
+    };
+    return mapping[name];
+  }
+
   getColumns(cols) {
     return cols.map((col) => {
       const spec = {
-        Header: <SearchFieldName field={col} />,
+        Header: <SearchFieldName field={this.columnName(col)} />,
         accessor: col,
         style: {
           overflowWrap: 'break-word',
           overflow: 'visible',
           whiteSpace: 'normal',
-          textAlign: null,
+          textAlign: null as (null | string),
         },
-        Cell: null,
+        Cell: null as any,
       };
-      if (col.match('rating')) {
+      if (col.match('averageRating')) {
         spec.Cell = row => (
           <ReactStars
             count={5}
@@ -106,8 +118,8 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
   }
 
   getDefaultSorted(columns) {
-    if (_.includes(columns, 'average_rating')) {
-      return [{ id: 'average_rating', desc: true }];
+    if (_.includes(columns, 'averageRating')) {
+      return [{ id: 'averageRating', desc: true }];
     }
     return [];
   }
@@ -115,7 +127,7 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
   tdProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
-        this.props.history.push(`/study/${rowInfo.row.nct_id}`);
+        this.props.history.push(`/search/study/${rowInfo.row.nctId}`);
         return handleOriginal();
       },
     };
@@ -130,27 +142,31 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
     removeFilter = null,
     searchParams = null,
   }) {
+    if (!searchParams) return null;
     // fold the raw aggs (from grahql) into a map
     const reducer = (acc, agg) => {
       acc[agg.name] = agg.buckets;
       return acc;
     };
-    const faggs = aggs ? aggs.reduce(reducer, {}) : null;
-    const fcrowdAggs = crowdAggs ? crowdAggs.reduce(
+    // @ts-ignore
+    const faggs = aggs && aggs.reduce(reducer, {});
+    // @ts-ignore
+    const fcrowdAggs = crowdAggs && crowdAggs.reduce(
       (acc, agg) => {
         acc[agg.key] = [];
         return acc;
       },
       {},
-    ) : null;
+    );
 
     return <Aggs
-            aggs={faggs}
-            crowdAggs={fcrowdAggs}
-            filters={aggFilters}
-            crowdFilters={crowdAggFilters}
+            aggs={faggs || {}}
+            crowdAggs={fcrowdAggs || {}}
+            filters={aggFilters || {}}
+            crowdFilters={crowdAggFilters || {}}
             addFilter={addFilter}
             removeFilter={removeFilter}
+            // @ts-ignore
             searchParams={searchParams}
             opened={this.state.opened}
             openedKind={this.state.openedKind}
@@ -171,10 +187,13 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
       );
     }
     const columns = props.columns;
-    const totalPages = Math.ceil(props.recordsTotal / props.pageSize);
+    const totalPages = Math.ceil((props.recordsTotal || 0) / props.pageSize);
     let sorts = props.sorts;
     if (!sorts || sorts.length === 0) sorts = this.getDefaultSorted(columns);
 
+    const onPageChange = path(['update', 'page'], props);
+    const onPageSizeChange = path(['update', 'pageSize'], props);
+    const onSortedChange = path(['update', 'sort'], props);
     return <ReactTable
             className="-striped -highlight"
             columns={this.getColumns(columns)}
@@ -184,9 +203,9 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
             sorted={props.sorts}
             // state.sorted= [0: {id: "average rating", desc: true} ]
             // onFetchData={props.handleGridUpdate}
-            onPageChange={props.update.page}
-            onPageSizeChange={props.update.pageSize}
-            onSortedChange={props.update.sort}
+            onPageChange={onPageChange}
+            onPageSizeChange={onPageSizeChange}
+            onSortedChange={onSortedChange}
             data={props.rows}
             pages={totalPages}
             loading={loading}
@@ -197,7 +216,10 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
   }
 
   render() {
-    const pagesTotal = Math.ceil(this.props.gridProps.recordsTotal / this.props.gridProps.pageSize);
+    let pagesTotal = 0;
+    if (this.props.gridProps.recordsTotal && this.props.gridProps.pageSize) {
+      pagesTotal = Math.ceil(this.props.gridProps.recordsTotal / this.props.gridProps.pageSize);
+    }
     return <SearchWrapper>
     <Helmet>
       <title>Search</title>
@@ -205,7 +227,10 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
     </Helmet>
       <Row>
         <Col md={2} id="search-sidebar">
-          { this.render_aggs(this.props.aggProps || {}) }
+          {
+            // @ts-ignore
+            this.render_aggs(this.props.aggProps || {})
+          }
           <SaveFeed
             searchParams={pathOr({}, ['aggProps', 'searchParams'], this.props) as SearchParams}
             history={this.props.history}
@@ -216,15 +241,18 @@ export class SearchView extends React.Component<SearchViewProps, SearchViewState
             <Row>
               <Col md={12}>
                 { this.props.loading ? null :
+                  // @ts-ignore
                   <CrumbsBar
                     {...this.props.aggProps}
                     removeFilter={this.handleCrumbsRemoveFilter}
-                    addSearchTerm={this.props.addSearchTerm}
-                    removeSearchTerm={this.props.removeSearchTerm}
+                    addSearchTerm={this.props.addSearchTerm || (() => {})}
+                    removeSearchTerm={this.props.removeSearchTerm || (() => {})}
                     page={this.props.gridProps.page + 1}
                     pagesTotal={pagesTotal}
                     pageSize={this.props.gridProps.pageSize}
-                    update={{ page: this.props.gridProps.update.page }}
+                    update={{
+                      page: pathOr(() => {}, ['gridProps', 'update', 'page'], this.props) as any,
+                    }}
                     /> }
                 { this.render_table(this.props.loading, this.props.gridProps) }
               </Col>

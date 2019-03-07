@@ -19,8 +19,8 @@ const QUERY_AGG_BUCKETS = gql`
   query SearchPageAggBucketsQuery (
     $agg : String!,
     $q : String,
-    $aggFilters:[AggFilter!],
-    $crowdAggFilters:[AggFilter!],
+    $aggFilters:[AggFilterInput!],
+    $crowdAggFilters:[AggFilterInput!],
     $page: Int!, $pageSize: Int!,
     $aggOptionsFilter: String
   ) {
@@ -48,8 +48,8 @@ const QUERY_CROWD_AGG_BUCKETA = gql`
   query SearchPageCrowdAggBucketsQuery(
     $agg : String!,
     $q : String,
-    $aggFilters:[AggFilter!],
-    $crowdAggFilters:[AggFilter!],
+    $aggFilters:[AggFilterInput!],
+    $crowdAggFilters:[AggFilterInput!],
     $page: Int!, $pageSize: Int!,
     $aggOptionsFilter: String
   ) {
@@ -117,8 +117,8 @@ interface AggDropDownProps {
   aggKind: AggKind;
   selectedKeys : Set<string>;
   onOpen: (agg: string, aggKind: AggKind) => void;
-  addFilter: AggCallback;
-  removeFilter: AggCallback;
+  addFilter: AggCallback | null;
+  removeFilter: AggCallback | null;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -146,8 +146,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   // getBucketDocCount = (key: string): number => path([key, 'docCount'], this.props.buckets)
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key)
-  toggleAgg = (agg: string, key: string): void =>
-    this.isSelected(key) ? this.props.removeFilter(agg, key) : this.props.addFilter(agg, key)
+  toggleAgg = (agg: string, key: string): void => {
+    if (!this.props.addFilter || !this.props.removeFilter) return;
+    return this.isSelected(key) ?
+      this.props.removeFilter(agg, key) :
+      this.props.addFilter(agg, key);
+  }
+
   getFullPagesCount = () => Math.floor(length(this.state.buckets) / PAGE_SIZE);
 
   handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {

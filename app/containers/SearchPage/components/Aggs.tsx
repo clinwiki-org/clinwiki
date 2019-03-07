@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { isEmpty, isNil } from 'ramda';
 import AggDropDown from './AggDropDown';
-import { AggBucketMap, AggCallback, SearchParams, AggKind } from '../Types';
+import { AggBucketMap, AggCallback, SearchParams, AggKind, AggFilterMap } from '../Types';
 
 const aggsOrdered = [
   'average_rating',
@@ -15,13 +15,13 @@ interface AggsProps {
   aggs : AggBucketMap;
   crowdAggs : AggBucketMap;
   // selected
-  filters : Set<string>;
-  crowdFilters : Set<string>;
-  addFilter : AggCallback;
-  removeFilter : AggCallback;
+  filters : AggFilterMap;
+  crowdFilters : AggFilterMap;
+  addFilter : AggCallback | null;
+  removeFilter : AggCallback | null;
   searchParams : SearchParams;
-  opened: string;
-  openedKind: AggKind;
+  opened: string | null;
+  openedKind: AggKind | null;
   onOpen: (agg: string, kind: AggKind) => void;
 }
 
@@ -37,7 +37,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       searchParams,
     } = this.props;
 
-    let crowdAggDropdowns = null;
+    let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
 
     if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
@@ -53,8 +53,8 @@ class Aggs extends React.PureComponent<AggsProps> {
               isOpen={(this.props.opened === k) && (this.props.openedKind === 'crowdAggs')}
               onOpen={this.props.onOpen}
               aggKind="crowdAggs"
-              addFilter={(agg, item) => addFilter(agg, item, true)}
-              removeFilter={(agg, item) => removeFilter(agg, item, true)}
+              addFilter={(agg, item) => addFilter && addFilter(agg, item, true)}
+              removeFilter={(agg, item) => removeFilter && removeFilter(agg, item, true)}
               searchParams={searchParams}
             />
           ))}

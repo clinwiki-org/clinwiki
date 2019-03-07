@@ -4,6 +4,8 @@
 *
 */
 
+/* eslint-disable */
+
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
 import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';

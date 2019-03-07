@@ -214,12 +214,15 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
     ));
 
     let inner;
-    if (_.get(this.props.StudyPage, 'study.title')) {
+    if (_.get(this.props.StudyPage, 'study.brief_title')) {
       inner = (
         <div id="study-main">
           <div className="container navlinks">
             <Row>
               <Col md={12}>
+                {this.renderNavigationLink(this.props.backLink, 'Back to Search results')}
+                &nbsp;
+                &nbsp;
                 {this.renderNavigationLink(this.props.prevLink, '<< Prev')}
                 &nbsp;
                 &nbsp;
@@ -281,6 +284,7 @@ StudyPage.propTypes = {
   history: ReactRouterPropTypes.history,
   prevLink: PropTypes.string,
   nextLink: PropTypes.string,
+  backLink: PropTypes.string,
   StudyPage: PropTypes.object,
   AuthHeader: PropTypes.object,
 };

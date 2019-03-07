@@ -43,7 +43,7 @@ class FeedPage extends React.PureComponent<FeedPageProps> {
     return (
       <QueryComponent query={QUERY} variables={{ studyId, feedId: feedIdInt }}>
         {({ data, loading, error }) => {
-          if (loading || error) return null;
+          if (loading || error || !data) return null;
           const id = path(['feed', 'studyEdge', 'study', 'nctId'], data);
           if (!studyId) {
             return <Redirect to={`/feeds/${feedId}/study/${id}/reviews/new`} />;

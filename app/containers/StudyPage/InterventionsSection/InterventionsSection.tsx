@@ -38,7 +38,7 @@ class InterventionsSection extends React.PureComponent<InterventionsSectionProps
     return (
       <QueryComponent query={QUERY} variables={{ nctId: this.props.nctId }}>
       {({ data, loading, error }) => {
-        if (loading || error) return null;
+        if (loading || error || !data || !data.study) return null;
         return (
           <div className="container">
             <h1>Interventions</h1>
@@ -53,7 +53,7 @@ class InterventionsSection extends React.PureComponent<InterventionsSectionProps
               <tbody>
                 {data.study.interventions.map(intervention =>
                   <InterventionItem
-                    key={intervention.name}
+                    key={intervention.id}
                     interventionItem={intervention}
                     onClick={this.handleItemClick}
                   />,

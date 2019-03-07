@@ -5,6 +5,7 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty, isNil } from 'ramda';
 import makeSelectAuthHeader from 'containers/AuthHeader/selectors';
+import { Switch, Route } from 'react-router-dom';
 
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -14,57 +15,63 @@ import { AggFilterMap, SearchParams, defaultPageSize, SortItem,
         flattenAggs, expandAggs,
         gqlParams} from './Types';
 import { withClientState, ClientState } from '../../components/Apollo/LocalStateDecorator';
+import StudySearchPage from 'containers/SearchStudyPage';
 
-const searchQuery = (fields) => {
-  let data;
-  if (fields && fields.length > 0) {
-    const fieldList = fields.map(name => `${name}: field(name: "${name}")`).join('\n');
-    data = `data { ${fieldList} }`;
-  }
-  return gql`
-    query SearchPageSearchQuery(
-      $q: String,
-      $page:Int,
-      $pageSize:Int,
-      $sorts:[Sort!],
-      $aggFilters:[AggFilter!],
-      $crowdAggFilters:[AggFilter!]
-    ) {
-       crowdAggs: aggBuckets(
-         params: {
-           q: $q,
-           page: $page,
-           pageSize: $pageSize,
-           sorts: $sorts,
-           aggFilters:$aggFilters,
-           agg: "front_matter_keys"}) {
-         aggs {
-            buckets {
-                key
-                docCount
-            }
-        }
-      }
-      search (
-        params:
-          { q: $q,
-            page: $page,
-            pageSize: $pageSize,
-            sorts: $sorts,
-            aggFilters:$aggFilters,
-            crowdAggFilters:$crowdAggFilters }) {
-        recordsTotal
-        aggs {
-          name
+const QUERY = gql`
+  query SearchPageSearchQuery(
+    $q: String,
+    $page:Int,
+    $pageSize:Int,
+    $sorts:[SortInput!],
+    $aggFilters:[AggFilterInput!],
+    $crowdAggFilters:[AggFilterInput!]
+  ) {
+    crowdAggs: aggBuckets(
+      params: {
+        q: $q,
+        page: $page,
+        pageSize: $pageSize,
+        sorts: $sorts,
+        aggFilters:$aggFilters,
+        agg: "front_matter_keys"}) {
+      aggs {
           buckets {
-            key
-            docCount
+              key
+              docCount
           }
-        }
-        ${data}
       }
-    }`;
-};
+    }
+    search (
+      params:
+        { q: $q,
+          page: $page,
+          pageSize: $pageSize,
+          sorts: $sorts,
+          aggFilters:$aggFilters,
+          crowdAggFilters:$crowdAggFilters }) {
+      recordsTotal
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+      studies {
+        ...StudyItemFragment
+      }
+    }
+  }
+
+  fragment StudyItemFragment on Study {
+    averageRating
+    completionDate
+    nctId
+    overallStatus
+    startDate
+    briefTitle
+  }
+`;
 
 interface SearchState {
   cols: string[];
@@ -96,8 +103,8 @@ export class Search extends React.Component<SearchProps, SearchState> {
   constructor(props) {
     super(props);
     this.state = {
-      cols: ['nct_id', 'average_rating', 'title',
-        'overall_status', 'start_date', 'completion_date'],
+      cols: ['nctId', 'averageRating', 'briefTitle',
+        'overallStatus', 'startDate', 'completionDate'],
       // map aggName -> Set of selected args
       aggFilters: {},
       crowdAggFilters: {},
@@ -198,18 +205,19 @@ export class Search extends React.Component<SearchProps, SearchState> {
 
   updateUrl = (state: SearchState) => {
     if (this.props.ignoreUrlUpdate) return;
-    const params = this.getQueryParams(state);
-    const encoded = encodeSearchParams(params);
-    const primarySearchTerm = _.find(params.q, () => true) || '';
-    const query = encodeURIComponent(primarySearchTerm);
-    const newLocation = encoded === '' ?
-                        `/search/${query}` :
-                        `/search/${query}?p=${encoded}`;
-    const u = new URL(window.location.href);
-    const curLocation = u.pathname + u.search;
-    if (curLocation !== newLocation) {
-      this.props.history.push(newLocation);
-    }
+
+    // const params = this.getQueryParams(state);
+    // const encoded = encodeSearchParams(params);
+    // const primarySearchTerm = _.find(params.q, () => true) || '';
+    // const query = encodeURIComponent(primarySearchTerm);
+    // const newLocation = encoded === '' ?
+    //                     `/search/${query}` :
+    //                     `/search/${query}?p=${encoded}`;
+    // const u = new URL(window.location.href);
+    // const curLocation = u.pathname + u.search;
+    // if (curLocation !== newLocation) {
+    //   this.props.history.push(newLocation);
+    // }
   }
 
   getQueryParams = (state:SearchState) => {
@@ -238,59 +246,71 @@ export class Search extends React.Component<SearchProps, SearchState> {
       return <div>{error.graphQLErrors.map(e => <div>{e.message}</div>)}</div>;
     }
     const crowdAggs = _.get(data, 'crowdAggs.aggs[0].buckets', []);
-    return <SearchView
-      loading={loading}
-      history={this.props.history}
-      addSearchTerm={this.addSearchTerm}
-      removeSearchTerm={this.removeSearchTerm}
-      gridProps={{
-        columns: this.columns(),
-        rows: data.search && data.search.data,
-        update: {
-          page: this.updateGridPage,
-          pageSize: this.updateGridPageSize,
-          sort : this.updateGridSort,
-        },
-        page: this.state.page,
-        pageSize: this.state.pageSize,
-        recordsTotal: data.search && data.search.recordsTotal,
-        sorts: this.state.sorts,
-      }}
-      aggProps={{
-        crowdAggs,
-        aggs: data.search && data.search.aggs,
-        searchParams: this.getQueryParams(this.state),
-        aggFilters: this.state.aggFilters,
-        crowdAggFilters: this.state.crowdAggFilters,
-        addFilter: this.addAggFilter,
-        removeFilter: this.removeAggFilter,
-      }}
-    />;
+    // console.log("------", data.search && data.search.data)
+    return (
+      <Switch>
+        <Route path="/search/:searchId/study/:studyId" component={StudySearchPage}/>
+        <Route render={() => (
+          <SearchView
+            loading={loading}
+            history={this.props.history}
+            addSearchTerm={this.addSearchTerm}
+            removeSearchTerm={this.removeSearchTerm}
+            gridProps={{
+              columns: this.columns(),
+              rows: data.search && data.search.studies,
+              update: {
+                page: this.updateGridPage,
+                pageSize: this.updateGridPageSize,
+                sort : this.updateGridSort,
+              },
+              page: this.state.page,
+              pageSize: this.state.pageSize,
+              recordsTotal: data.search && data.search.recordsTotal,
+              sorts: this.state.sorts,
+            }}
+            aggProps={{
+              crowdAggs,
+              aggs: data.search && data.search.aggs,
+              searchParams: this.getQueryParams(this.state),
+              aggFilters: this.state.aggFilters,
+              crowdAggFilters: this.state.crowdAggFilters,
+              addFilter: this.addAggFilter,
+              removeFilter: this.removeAggFilter,
+            }}
+          />
+        )} />
+      </Switch>
+    );
   }
 
   render() {
     if (this.props.AuthHeader.sessionChecked && !this.props.loading) {
-      const query = searchQuery(this.columns());
       const params = this.getQueryParams(this.state);
       this.updateUrl(this.state);
       console.log(JSON.stringify(params));
       return (
-        <Query query={query} variables={gqlParams(params)}>
+        <Query query={QUERY} variables={gqlParams(params)}>
           { this.renderSearch }
         </Query>
       );
     }
 
-    return <SearchView
-      loading={true}
-      gridProps={{
-        columns:this.columns(),
-        rows: [],
-        page: this.state.page,
-        pageSize: this.state.pageSize,
-        sorts: [],
-      }}
-    />;
+    return (
+      <Switch>
+        <Route path="/search/study/:studyId" component={StudySearchPage}/>
+        <SearchView
+          loading={true}
+          gridProps={{
+            columns:this.columns(),
+            rows: [],
+            page: this.state.page,
+            pageSize: this.state.pageSize,
+            sorts: [],
+          }}
+        />
+      </Switch>
+    );
   }
 }
 

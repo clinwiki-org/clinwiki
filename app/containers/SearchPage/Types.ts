@@ -1,5 +1,9 @@
 import * as _ from 'lodash';
 
+export type Params = {
+
+}
+
 export type AggKind = 'aggs' | 'crowdAggs';
 export const defaultPageSize = 20;
 export type AggCallback = (aggName:string, key:string, isCrowd?:boolean) => void;
@@ -58,7 +62,7 @@ export function expandAggs(aggs: AggFilterListItem[]) {
 }
 
 export function gqlParams(params : SearchParams) {
-  return { ...params, q: params.q.join(' ') };
+  return { ...params };
 }
 
 const versionMarker = '!';
@@ -76,7 +80,7 @@ interface CompactSearchParams {
   s: SortItem[];
 }
 
-function compact_search(p : SearchParams) : CompactSearchParams {
+function compact_search(p : SearchParams) : CompactSearchParams | null {
   const res = {
     p: p.page,
     w: p.q.slice(1),

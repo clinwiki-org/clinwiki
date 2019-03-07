@@ -14,9 +14,9 @@ const Wrapper = styled.div`
 const CREATE_FEED = gql`
   mutation CreateFeedMutation(
     $q: String,
-    $sorts: [Sort!],
-    $aggFilters: [AggFilter!],
-    $crowdAggFilters: [AggFilter!],
+    $sorts: [SortInput!],
+    $aggFilters: [AggFilterInput!],
+    $crowdAggFilters: [AggFilterInput!],
     $name: String!
     $kind: FeedKind!
   ) {
