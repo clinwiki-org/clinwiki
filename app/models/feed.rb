@@ -8,9 +8,12 @@ class Feed < ApplicationRecord
     study = Study.find_by(nct_id: (id || first_study_id))
     return nil if study.blank?
 
+    is_workflow = (params["crowd_agg_filters"] || []).any? { |x| x["field"]&.downcase&.starts_with("wf_") }
+
     OpenStruct.new(
       next_id: next_study_id(study: study),
       prev_id: next_study_id(study: study, forward: false),
+      is_workflow: is_workflow,
       study: study,
     )
   end
@@ -33,8 +36,8 @@ class Feed < ApplicationRecord
   def sort_params_values(study)
     return nil if study.blank?
 
-    sorts = search_params.deep_symbolize_keys[:sorts]
-    sorts.push(nct_id: "asc") unless sorts.any? { |x| x.keys.first.to_sym == :nct_id }
+    sorts = search_params.deep_symbolize_keys[:sorts] || []
+    sorts.push(id: :nct_id) unless sorts.any? { |x| x[:id].to_sym == :nct_id }
     sorts.map do |hash|
       name = hash.keys.first
       study.send(name)

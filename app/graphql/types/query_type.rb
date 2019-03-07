@@ -1,11 +1,16 @@
 module Types
   class QueryType < BaseObject
-    field :search, SearchResultSetType, null: false do
-      argument :params, type: SearchInputType, required: true
+    field :search,
+          SearchResultSetType,
+          "Searches either by searchHash or by params if searchHash in null.",
+          null: true do
+      argument :search_hash, String, required: false
+      argument :params, type: SearchInputType, required: false
     end
 
     field :agg_buckets, SearchResultSetType, null: false do
-      argument :params, type: SearchInputType, required: true
+      argument :search_hash, String, required: false
+      argument :params, type: SearchInputType, required: false
     end
 
     field :crowd_agg_buckets, SearchResultSetType, null: false do
@@ -27,18 +32,34 @@ module Types
     end
 
     field :me, UserType, "Current logged in user", null: true
-
-    def search(args)
-      SearchService.new(args[:params], context).search_studies
+    field :search_hash, String, "Search hash for search params", null: false do
+      argument :params, type: SearchInputType, required: true
     end
 
-    def agg_buckets(args)
-      SearchService.new(args[:params], context).agg_buckets
+    field :search_params, SearchParamsType, "Search params from hash", null: true do
+      argument :hash, type: String, required: false
     end
 
-    def crowd_agg_buckets(args)
-      # we do this to accommodate crowd_agg_buckets returning a different structure in the old impl
-      { aggs: SearchService.new(args[:params], context).crowd_agg_buckets }
+    def search(search_hash: nil, params: nil)
+      context[:search_params] = fetch_search_params(search_hash: search_hash, params: params)
+      search_service = SearchService.new(context[:search_params])
+      search_service.search
+    end
+
+    def agg_buckets(search_hash: nil, params: nil)
+      params = fetch_search_params(search_hash: search_hash, params: params)
+      search_service = SearchService.new(params)
+      Hashie::Mash.new(
+        aggs: search_service.agg_buckets_for_field(field: params[:agg]),
+      )
+    end
+
+    def crowd_agg_buckets(search_hash: nil, params: nil)
+      params = fetch_search_params(search_hash: search_hash, params: params)
+      search_service = SearchService.new(params)
+      Hashie::Mash.new(
+        aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
+      )
     end
 
     def health
@@ -63,6 +84,33 @@ module Types
 
     def me
       context[:current_user]
+    end
+
+    def search_hash(params:)
+      params_hash = params.to_h.deep_symbolize_keys
+      ShortLink.from_long(params_hash).short
+    end
+
+    def search_params(hash: nil)
+      return nil if hash.nil?
+
+      link = ShortLink.from_short(hash)
+      return nil if link.nil?
+
+      JSON.parse(link.long).deep_symbolize_keys
+    end
+
+    private
+
+    def fetch_search_params(search_hash: nil, params: nil)
+      if search_hash
+        link = ShortLink.from_short(search_hash)
+        return if link.nil?
+
+        JSON.parse(link.long).deep_symbolize_keys
+      else
+        params.to_h
+      end
     end
   end
 end

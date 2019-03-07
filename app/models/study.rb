@@ -269,7 +269,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   def to_json
     {
       nct_id: nct_id,
-      title: brief_title,
+      brief_title: brief_title,
       study_type: with_wiki_data(:study_type),
       overall_status: with_wiki_data(:overall_status),
       phase: phase,

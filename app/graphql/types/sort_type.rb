@@ -1,7 +1,7 @@
 module Types
-  class SortType < BaseInputObject
+  class SortType < BaseObject
     description "Column to sort by"
-    argument :id, String, description: "Column to sort by", required: true
-    argument :desc, Boolean, description: "Sort in descending order if true", required: false, default_value: false
+    field :id, String, description: "Column to sort by", null: false
+    field :desc, Boolean, description: "Sort in descending order if true", null: true
   end
 end

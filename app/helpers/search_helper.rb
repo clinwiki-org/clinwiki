@@ -1,5 +1,5 @@
-MAX_AGGREGATION_LIMIT = 1_000_000
-DEFAULT_PAGE_SIZE = 25
+# MAX_AGGREGATION_LIMIT = 1_000_000
+# DEFAULT_PAGE_SIZE = 25
 
 # TODO: make module smaller
 module SearchHelper # rubocop:disable Metrics/ModuleLength
@@ -11,7 +11,7 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
 
   # Retrieves search params from request, performs the search, transforms the result to a response hash
   # @return [Hash] the JSON response
-  def search_studies(search_after: nil, reverse: false)
+  def search_studies(search_after: nil, reverse: false) # rubocop:disable Metrics/MethodLength
     if search_query.match?(/\.analyzed:/)
       # supports lucene-style query
       result = Searchkick.client.search(lucene_params)
@@ -21,7 +21,11 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
       }
     else
       body_options = { search_after: search_after }.delete_if { |_, v| v.blank? }
-      args = query_args.merge(body_options: body_options)
+      args = query_args.merge(
+        body_options: body_options,
+        offset: (params[:page] || 1) - 1,
+        limit: params[:page_size] || DEFAULT_PAGE_SIZE,
+      )
       # Reverse if necessary
       args[:order].each do |hash|
         key = hash.keys.first
@@ -33,10 +37,13 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
       end
 
       @studies = Study.search(search_query, args)
+      study_ids = @studies.map { |s| s["nct_id"] }
+      study_entities_hash = Study.find(study_ids).group_by(&:nct_id)
+      study_entities = study_ids.map { |id| study_entities_hash[id].first }
       {
         recordsTotal: @studies.total_entries,
         data: @studies.map { |s| study_result_to_json(s) },
-        studies: @studies,
+        studies: study_entities,
         aggs: @studies.aggs,
       }
     end
@@ -171,9 +178,9 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
     agg_filters = params.fetch(:aggFilters, params.fetch(:agg_filters, {}))
     where = { _and: [] }
     if agg_filters.is_a?(Array)
-      agg_filters.reject { |filter| filter.field == curr_agg }.each do |filter|
-        if filter.field && !filter.values.empty?
-          where[:_and] << { _or: filter.values.map { |val| { filter.field => val } } }
+      agg_filters.reject { |filter| filter[:field] == curr_agg }.each do |filter|
+        if filter[:field] && !filter.values.empty?
+          where[:_and] << { _or: filter.values.map { |val| { filter[:field] => val } } }
         end
       end
     end
@@ -222,7 +229,7 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
       res.push(nct_id: "asc") unless res.any? { |x| x.keys.first.to_sym == :nct_id }
       res
     else
-      { _score: :desc }
+      [{ nct_id: :asc }]
     end
   end
 
@@ -230,7 +237,7 @@ module SearchHelper # rubocop:disable Metrics/ModuleLength
     if params.key?(:page) && (params.key?(:pageSize) || params.key?(:page_size))
       {
         page: params[:page] + 1,
-        per_page: params.fetch(:pageSize, params.fetch(:page_size, 25)),
+        per_page: params.fetch(:pageSize, params.fetch(:page_size, DEFAULT_PAGE_SIZE)),
       }
     else
       {

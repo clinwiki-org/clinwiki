@@ -6,11 +6,19 @@ module Types
              required: false, default_value: 1
     argument :pageSize, Int, "how many results we want. for now, use either page and pageSize or none of them",
              required: false, default_value: 25
-    argument :sorts, [SortType], "which fields to sort by", required: false
+    argument :sorts, [SortInputType], "which fields to sort by", required: false
     argument :aggOptionsFilter, String, "the values in aggs will be filtered by that paramater using a substring match",
              required: false
-    argument :aggFilters, [AggFilterType], "the aggs we are filtering on", required: false
-    argument :crowdAggFilters, [AggFilterType], "the crowd aggs we should filter on", required: false
+    argument :aggFilters, [AggFilterInputType], "the aggs we are filtering on", required: false
+    argument :crowdAggFilters, [AggFilterInputType], "the crowd aggs we should filter on", required: false
     argument :agg, String, "an agg to query for, used when retrieving all buckets for an agg", required: false
+
+    def to_h
+      res = super.to_h.deep_dup.deep_symbolize_keys
+      res[:sorts]&.each do |sort|
+        sort[:id] = sort[:id].underscore
+      end
+      res
+    end
   end
 end

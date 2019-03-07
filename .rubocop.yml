@@ -95,6 +95,8 @@ Rails/SkipsModelValidations:
   Exclude:
     - 'spec/**/*_spec.rb'
     - 'spec/factories/*.rb'
+  Whitelist:
+    - touch
 
 Style/BlockDelimiters:
   Exclude:
