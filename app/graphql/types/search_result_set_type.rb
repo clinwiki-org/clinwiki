@@ -10,9 +10,8 @@ module Types
 
     def study_edge(id:)
       search_params = context[:search_params]
-      search_params[:sorts] = [{ id: :nct_id }] unless search_params[:sorts]
-      feed = Feed.new(search_params: search_params)
-      feed.study_edge(id)
+      study_edge_service = StudyEdgeService.new(search_params)
+      study_edge_service.study_edge(id)
     end
 
     def aggs

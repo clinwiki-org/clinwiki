@@ -88,7 +88,6 @@ class SearchService # rubocop:disable Metrics/ClassLength
   attr_reader :params
 
   # @param params - hash representing SearchInputType with symbols as keys.
-  # @param ctx - context hash with :current_user set
   def initialize(params)
     @params = params.deep_dup.freeze
   end
@@ -161,12 +160,12 @@ class SearchService # rubocop:disable Metrics/ClassLength
   def search_kick_query_options(params:, aggs: ENABLED_AGGS, search_after: nil, reverse: false, skip_filters: [])
     body_options = { search_after: search_after }.delete_if { |_, v| v.blank? }
     {
-      page: params[:page] || 0,
+      page: (params[:page] || 0) + 1,
       per_page: params[:page_size] || DEFAULT_PAGE_SIZE,
       order: search_kick_order_options(params: params, reverse: reverse),
       aggs: aggs,
       where: search_kick_where_options(params: params, skip_filters: skip_filters),
-      smart_aggs: false,
+      smart_aggs: true,
       body_options: body_options,
     }
   end
@@ -200,7 +199,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
   def search_kick_where_from_filters(filters: [], skip_filters: [], is_crowd_agg: false)
     filters
       .select { |filter| filter[:field] && !filter.values.empty? }
-      .reject { |filter| skip_filters.include?(filter[:field]) }
+      .reject { |filter| skip_filters.include?(filter[:field].to_sym) }
       .map do |filter|
       key_prefix = is_crowd_agg ? "fm_" : ""
       key = "#{key_prefix}#{filter[:field]}"
