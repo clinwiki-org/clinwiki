@@ -140,18 +140,18 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
           </Col>
           <Col xsHidden md={3}>
             <div className="right-align">
-              {this.props.page > 1 ? <FontAwesome
+              {this.props.page > 0 ? <FontAwesome
                 className="arrow-left"
                 name="arrow-left"
                 style={{ cursor: 'pointer', margin: '5px' }}
-                onClick={() => this.props.update.page(this.props.page - 2)}
+                onClick={() => this.props.update.page(this.props.page - 1)}
                 /> : null}
-              page <b>{this.props.page}/{this.props.pagesTotal} </b>
-              {this.props.page < this.props.pagesTotal ? <FontAwesome
+              page <b>{this.props.page + 1}/{this.props.pagesTotal} </b>
+              {this.props.page + 1 < this.props.pagesTotal ? <FontAwesome
                   className="arrow-right"
                   name="arrow-right"
                   style={{ cursor: 'pointer', margin: '5px' }}
-                  onClick={() => this.props.update.page(this.props.page)}
+                  onClick={() => this.props.update.page(this.props.page + 1)}
                 /> : null}
             </div>
           </Col>

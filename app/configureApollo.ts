@@ -14,7 +14,6 @@ const typeDefs = gql`
   extend type Query {
     searchQuery: [String!]!
   }
-
 `;
 
 const client = new ApolloClient({

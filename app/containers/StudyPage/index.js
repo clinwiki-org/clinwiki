@@ -100,6 +100,8 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
     this.props.actions.submitReview(...data);
     if (this.props.isFeed && this.props.nextLink) {
       this.props.history.push(this.props.nextLink);
+    } else if (this.props.isFeed) {
+      this.props.history.push(this.props.backLink);
     }
   }
 

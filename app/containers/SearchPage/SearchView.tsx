@@ -9,8 +9,9 @@ import { Helmet } from 'react-helmet';
 import { SortInput, AggFilterInput } from 'types/globalTypes';
 import {
   map, pipe, path, pathOr, groupBy, prop, head, propOr, lensPath, over,
-  reject, propEq, findIndex, view, remove, isEmpty,
+  reject, propEq, findIndex, view, remove, isEmpty, lensProp,
 } from 'ramda';
+import { camelCase, snakeCase } from 'utils/helpers';
 import { gql } from 'apollo-boost';
 import {
   SearchPageSearchQuery,
@@ -36,8 +37,8 @@ const QUERY = gql`
     crowdAggs: aggBuckets(
       params: {
         q: $q,
-        page: $page,
-        pageSize: $pageSize,
+        page: 0,
+        pageSize: 100000,
         sorts: $sorts,
         aggFilters:$aggFilters,
         agg: "front_matter_keys"}) {
@@ -96,7 +97,11 @@ const changePage =
 const changePageSize =
   (pageSize: number) => (params: SearchParams) => ({ ...params, pageSize, page: 0 });
 const changeSorted =
-  (sorts: [SortInput]) => (params: SearchParams) => ({ ...params, sorts });
+  (sorts: [SortInput]) => (params: SearchParams) => {
+    const idSortedLens = lensProp('id');
+    const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
+    return ({ ...params, sorts: snakeSorts });
+  };
 const changeFilter =
   (add: boolean) => (aggName:string, key:string, isCrowd?:boolean) => (params: SearchParams) => {
     const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
@@ -146,6 +151,10 @@ const SearchWrapper = styled.div`
 interface SearchViewProps {
   params: SearchParams;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
+  onAggsUpdate: (
+    aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
+    crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
+  ) => void;
   onRowClick: (nctId: string) => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string, kind: AggKind } | null;
@@ -183,15 +192,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         />
       ),
     };
-  }
-
-  transformFilters = (filters: AggFilterInput[]): { [key: string]: Set<string> } => {
-    return pipe(
-      groupBy(prop('field')),
-      map(head),
-      map(propOr([], 'values')),
-      map(arr => new Set(arr)),
-    )(filters) as { [key: string]: Set<string> };
   }
 
   transformAggs = (
@@ -243,7 +243,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     }
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
     const totalPages = Math.ceil(totalRecords / pageSize);
-
+    const idSortedLens = lensProp('id');
+    const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     return (
       <ReactTable
         className="-striped -highlight"
@@ -251,7 +252,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         manual
         page={page}
         pageSize={pageSize}
-        sorted={sorts}
+        defaultSorted={camelizedSorts}
         onPageChange={pipe(changePage, this.props.onUpdateParams)}
         onPageSizeChange={pipe(changePageSize, this.props.onUpdateParams)}
         onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
@@ -264,34 +265,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       />
     );
 
-  }
-
-  renderAggs = (
-    { data, loading, error }:
-    { data: SearchPageSearchQuery | undefined,
-      loading: boolean,
-      error: any,
-    },
-  ) => {
-    if (!data) return null;
-    if (!data.search) return null;
-    const opened = this.props.openedAgg && this.props.openedAgg.name;
-    const openedKind = this.props.openedAgg && this.props.openedAgg.kind;
-    return (
-      <Aggs
-        aggs={this.transformAggs(data.search.aggs || [])}
-        crowdAggs={this.transformCrowdAggs(data.crowdAggs.aggs || [])}
-        filters={this.transformFilters(this.props.params.aggFilters)}
-        crowdFilters={this.transformFilters(this.props.params.crowdAggFilters)}
-        addFilter={pipe(addFilter, this.props.onUpdateParams)}
-        removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
-        // @ts-ignore
-        searchParams={this.props.params}
-        opened={opened}
-        openedKind={openedKind}
-        onOpen={this.props.onOpenAgg}
-      />
-    );
   }
 
   renderCrumbs = (
@@ -315,7 +288,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
         addSearchTerm={pipe(addSearchTerm, this.props.onUpdateParams)}
         removeSearchTerm={pipe(removeSearchTerm, this.props.onUpdateParams)}
-        page={this.props.params.page + 1}
+        page={this.props.params.page}
         pagesTotal={pagesTotal}
         pageSize={this.props.params.pageSize}
         update={{
@@ -336,24 +309,21 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         </Helmet>
         <QueryComponent query={QUERY} variables={this.props.params}>
           {({ data, loading, error }) => {
+            if (data && data.search) {
+              this.props.onAggsUpdate(
+                this.transformAggs(data.search.aggs || []),
+                this.transformCrowdAggs(data.crowdAggs.aggs || []),
+              );
+            }
             return (
-              <Row>
-                <Col md={2} id="search-sidebar">
-                  {
-                    this.renderAggs({ data, loading, error })
-                  }
-                </Col>
-                <Col md={10} id="search-main">
-                  <Grid>
-                    <Row>
-                      <Col md={12}>
-                        {this.renderCrumbs({ data, loading, error })}
-                        {this.renderSearch({ data, loading, error })}
-                      </Col>
-                    </Row>
-                  </Grid>
-                </Col>
-              </Row>
+              <Grid>
+                <Row>
+                  <Col md={12}>
+                    {this.renderCrumbs({ data, loading, error })}
+                    {this.renderSearch({ data, loading, error })}
+                  </Col>
+                </Row>
+              </Grid>
             );
           }}
         </QueryComponent>

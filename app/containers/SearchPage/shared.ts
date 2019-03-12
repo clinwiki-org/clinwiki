@@ -10,3 +10,9 @@ export type SearchParams = {
 };
 
 export type AggKind = 'aggs' | 'crowdAggs';
+
+export interface AggBucket {
+  key: string;
+  docCount: number;
+}
+export interface AggBucketMap { [key:string] : AggBucket[]; }
