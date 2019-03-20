@@ -61,6 +61,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               prevLink={prevLink}
               nextLink={nextLink}
               backLink={backLink}
+              isWorkflow={isWorkflow}
               isFeed
             />
           );
