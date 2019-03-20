@@ -98,7 +98,9 @@ class SearchService # rubocop:disable Metrics/ClassLength
     options = search_kick_query_options(params: params, search_after: search_after, reverse: reverse)
     options[:includes] = [:wiki_page, :reviews]
 
-    search_result = Study.search(search_query, options)
+    search_result = Study.search("*", options) do |body|
+      body[:query][:bool][:must] = { query_string: { query: search_query } }
+    end
     {
       recordsTotal: search_result.total_entries,
       studies: search_result.results,
@@ -154,7 +156,29 @@ class SearchService # rubocop:disable Metrics/ClassLength
   private
 
   def search_query
-    @search_query ||= params[:q].presence || "*"
+    @search_query ||= begin
+      ast = (params[:q].presence || { key: "*" }).deep_symbolize_keys
+      query_ast_to_query_string(ast)
+    end
+  end
+
+  def query_ast_to_query_string(node)
+    res =
+      case node[:key]&.downcase
+      when "and"
+        (node[:children] || [])
+          .map { |child_node| "(#{query_ast_to_query_string(child_node)})" }
+          .join(" AND ")
+      when "or"
+        (node[:children] || [])
+          .map { |child_node| "(#{query_ast_to_query_string(child_node)})" }
+          .join(" OR ")
+      else
+        value = node[:key]&.downcase
+        value&.split(" ")&.join(" AND ")
+      end
+
+    res.presence || "*"
   end
 
   def search_kick_query_options(params:, aggs: ENABLED_AGGS, search_after: nil, reverse: false, skip_filters: [])
@@ -171,7 +195,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
   end
 
   def search_kick_order_options(params:, reverse: false)
-    res = params[:sorts].map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
+    res = (params[:sorts] || []).map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
     res.push(nct_id: reverse ? "desc" : "asc") unless res.any? { |x| x.keys.first.to_sym == :nct_id }
     res
   end

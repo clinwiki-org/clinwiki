@@ -1,7 +1,7 @@
 module Types
   class SearchInputType < BaseInputObject
     description "Attributes for performing a search"
-    argument :q, String, "an optional query -- defaults to current user default query", required: false
+    argument :q, SearchQueryInputType, "an optional query -- defaults to current user default query", required: true
     argument :page, Int, "which page of search results we want. for now, use either page and pageSize or none of them",
              required: false, default_value: 1
     argument :pageSize, Int, "how many results we want. for now, use either page and pageSize or none of them",
