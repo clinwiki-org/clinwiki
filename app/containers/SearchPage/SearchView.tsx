@@ -156,6 +156,7 @@ interface SearchViewProps {
     crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
   ) => void;
   onRowClick: (nctId: string) => void;
+  onResetFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string, kind: AggKind } | null;
 }
@@ -294,6 +295,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         update={{
           page: pipe(changePage, this.props.onUpdateParams),
         }}
+        onReset={this.props.onResetFilters}
       />
     );
   }

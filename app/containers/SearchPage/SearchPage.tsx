@@ -27,7 +27,6 @@ import {
 } from 'types/SearchPageSearchQuery';
 import { AggBucketMap } from './Types';
 
-
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
     $q: String,
@@ -194,6 +193,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
   }
 
+  handleResetFilters = () => {
+    this.setState({ params: defaultParams });
+  }
+
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     console.log('Params before:');
     console.log(this.state.params);
@@ -288,6 +291,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     onRowClick={this.handleRowClick}
                     onOpenAgg={this.handleOpenAgg}
                     onAggsUpdate={this.handleAggsUpdate}
+                    onResetFilters={this.handleResetFilters}
                   />
                 );
               }}
@@ -307,6 +311,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         onRowClick={this.handleRowClick}
         onOpenAgg={this.handleOpenAgg}
         onAggsUpdate={this.handleAggsUpdate}
+        onResetFilters={this.handleResetFilters}
       />;
     }
 

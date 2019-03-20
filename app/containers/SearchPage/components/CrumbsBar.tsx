@@ -41,6 +41,7 @@ interface CrumbsBarProps {
   pagesTotal: number;
   pageSize: number;
   update: { page: (n: number) => void };
+  onReset: () => void;
 }
 interface CrumbsBarState {
   searchTerm : string;
@@ -103,6 +104,20 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
             values={agg.values}
             onClick={ val => removeFilter(agg.field, val, true)}
             key={cat + agg.values.join('')} />;
+    }
+    const totalLength =
+      searchParams.q.length + searchParams.crowdAggFilters.length + searchParams.aggFilters.length;
+    if (totalLength > 0) {
+      yield (
+        <Button
+          bsSize="small"
+          key="reset"
+          onClick={this.props.onReset}
+          style={{ marginLeft: '10px' }}
+        >
+          Reset
+        </Button>
+      );
     }
   }
 
@@ -173,7 +188,7 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
           </Col>
         </Row> */}
         <Row>
-          <Col md={12}>
+          <Col md={12} style={{ padding: '10px 0px' }}>
             <b>Filters: </b>
             { Array.from(this.mkCrumbs(this.props.searchParams, this.props.removeFilter)) }
           </Col>
