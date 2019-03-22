@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { SearchParams, AggKind } from './shared';
+import { SearchParams, AggKind, SearchQuery } from './shared';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
 import SearchFieldName from 'components/SearchFieldName';
 import styled from 'styled-components';
 import { Grid, Row, Col } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
-import { SortInput, AggFilterInput } from 'types/globalTypes';
+import { SortInput, AggFilterInput, SearchQueryInput } from 'types/globalTypes';
 import {
   map, pipe, path, pathOr, groupBy, prop, head, propOr, lensPath, over,
-  reject, propEq, findIndex, view, remove, isEmpty, lensProp,
+  reject, propEq, findIndex, view, remove, isEmpty, lensProp, filter, equals,
 } from 'ramda';
 import { camelCase, snakeCase } from 'utils/helpers';
 import { gql } from 'apollo-boost';
@@ -27,7 +27,7 @@ import CrumbsBar from './components/CrumbsBar';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
-    $q: String,
+    $q: SearchQueryInput!,
     $page:Int,
     $pageSize:Int,
     $sorts:[SortInput!],
@@ -129,9 +129,14 @@ const changeFilter =
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addSearchTerm =
-  (term: string) => (params: SearchParams) => ({ ...params, q: term });
+  (term: string) => (params: SearchParams) => (
+    { ...params, q: { ...params.q, children: [...(params.q.children || []), { key: term }] } }
+  );
 const removeSearchTerm =
-  (term: string) => (params: SearchParams) => ({ ...params, q: '*' });
+  (term: string) => (params: SearchParams) => {
+    const children = reject(propEq('key', term), params.q.children || []) as SearchQuery[];
+    return { ...params, q: { ...params.q, children } };
+  };
 
 class QueryComponent extends Query<SearchPageSearchQuery, SearchPageSearchQueryVariables> {}
 
@@ -280,7 +285,9 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       pagesTotal = Math.ceil(data.search.recordsTotal / this.props.params.pageSize);
     }
 
-    const q = this.props.params.q === '*' ? [] : [this.props.params.q];
+    const q = this.props.params.q.key === '*' ?
+      [] :
+      (this.props.params.q.children || []).map(prop('key'));
 
     return (
       <CrumbsBar

@@ -8,7 +8,7 @@ import {
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
-import { SearchParams, AggKind } from './shared';
+import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import { Query, ApolloConsumer } from 'react-apollo';
 import { path, map, dissoc, pathOr, prop, any,
@@ -29,7 +29,7 @@ import { AggBucketMap } from './Types';
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
-    $q: String,
+    $q: SearchQueryInput!,
     $sorts:[SortInput!],
     $aggFilters:[AggFilterInput!],
     $crowdAggFilters:[AggFilterInput!],
@@ -102,7 +102,8 @@ const removeFilter = changeFilter(false);
 interface SearchPageProps {
   match: any;
   history: any;
-  ignoreUrlHash: boolean | null | undefined;
+  ignoreUrlHash?: boolean | null;
+  searchParams?: SearchParams;
 }
 
 interface SearchPageState {
@@ -115,8 +116,8 @@ interface SearchPageState {
   searchCrowdAggs: AggBucketMap;
 }
 
-const defaultParams = {
-  q: '*',
+const defaultParams: SearchParams = {
+  q: { key: 'AND', children: [] },
   aggFilters: [],
   crowdAggFilters: [],
   sorts: [],
@@ -135,7 +136,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   static getDerivedStateFromProps(props: SearchPageProps, state: SearchPageState) {
     if ((state.params == null) && (props.ignoreUrlHash)) {
       return {
-        params: defaultParams,
+        params: props.searchParams || defaultParams,
         openedAgg: null,
       };
     }
@@ -145,6 +146,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     params: SearchPageParamsQuery_searchParams | null | undefined,
   ): SearchParams => {
     if (!params) return defaultParams;
+
+    const q = params.q ? JSON.parse(params.q) as SearchQuery : defaultParams.q;
 
     const aggFilters = map(dissoc('__typename'), params.aggFilters || []) as AggFilterInput[];
     const crowdAggFilters = map(
@@ -157,7 +160,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       aggFilters,
       crowdAggFilters,
       sorts,
-      q: params.q || '*',
+      q,
       page: params.page || 0,
       pageSize: params.pageSize || 25,
     };
@@ -273,7 +276,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           if (error || loading) return null;
           const params: SearchParams = this.searchParamsFromQuery(data && data.searchParams);
           // hydrate state params from hash
-          if (!this.state.params) this.setState({ params });
+          if (!this.state.params) {
+            this.setState({ params });
+            return null;
+          }
+
           return (
             <HashQueryComponent query={HASH_QUERY} variables={this.state.params || undefined} >
               {({ data, loading, error }) => {
@@ -285,7 +292,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 return (
                   <SearchView
-                    params={this.searchParamsFromQuery(params as any)}
+                    params={params}
                     openedAgg={this.state.openedAgg}
                     onUpdateParams={this.handleUpdateParams}
                     onRowClick={this.handleRowClick}
@@ -304,15 +311,26 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   render() {
     if (this.props.ignoreUrlHash) {
-      return <SearchView
-        params={this.state.params as any}
-        openedAgg={this.state.openedAgg}
-        onUpdateParams={this.handleUpdateParams}
-        onRowClick={this.handleRowClick}
-        onOpenAgg={this.handleOpenAgg}
-        onAggsUpdate={this.handleAggsUpdate}
-        onResetFilters={this.handleResetFilters}
-      />;
+      return (
+        <Row>
+          <Col md={2} id="search-sidebar">
+            {
+              this.renderAggs()
+            }
+          </Col>
+          <Col md={10} id="search-main">
+          <SearchView
+            params={this.state.params as any}
+            openedAgg={this.state.openedAgg}
+            onUpdateParams={this.handleUpdateParams}
+            onRowClick={this.handleRowClick}
+            onOpenAgg={this.handleOpenAgg}
+            onAggsUpdate={this.handleAggsUpdate}
+            onResetFilters={this.handleResetFilters}
+          />
+          </Col>
+        </Row>
+      );
     }
 
     const hash = path(['match', 'params', 'searchId'], this.props) as string | null;

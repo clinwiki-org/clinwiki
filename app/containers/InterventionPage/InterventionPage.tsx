@@ -61,8 +61,13 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
           {({ data, loading, error }) => {
             if (loading || error || !data || !data.intervention) return null;
 
-            const aggFilters = {
-              interventions_mesh_terms: new Set([data.intervention.name]),
+            const searchParams = {
+              q: '*',
+              aggFilters: [{ field: 'interventions_mesh_terms', values: [data.intervention.name] }],
+              crowdAggFilters: [],
+              sorts: [],
+              page: 0,
+              pageSize: 25,
             };
 
             return (
@@ -77,7 +82,7 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
                         match={this.props.match}
                         history={this.props.history}
                         ignoreUrlHash
-                        aggFilters={aggFilters}
+                        searchParams={searchParams}
                       />
                     </Col>
                   </Row>

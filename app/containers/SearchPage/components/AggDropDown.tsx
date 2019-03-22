@@ -1,6 +1,8 @@
 import * as React from 'react';
 import styledComponents from 'styled-components';
-import { pipe, map, length, prop, sortBy, pathOr, uniqBy, concat, isNil, isEmpty } from 'ramda';
+import { pipe, map, length, prop, sortBy, pathOr,
+         uniqBy, concat, isNil, isEmpty, equals, lensPath, view,
+       } from 'ramda';
 import { ApolloConsumer } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
@@ -18,7 +20,7 @@ const PAGE_SIZE = 25;
 const QUERY_AGG_BUCKETS = gql`
   query SearchPageAggBucketsQuery (
     $agg : String!,
-    $q : String,
+    $q : SearchQueryInput!,
     $aggFilters:[AggFilterInput!],
     $crowdAggFilters:[AggFilterInput!],
     $page: Int!, $pageSize: Int!,
@@ -47,7 +49,7 @@ const QUERY_AGG_BUCKETS = gql`
 const QUERY_CROWD_AGG_BUCKETA = gql`
   query SearchPageCrowdAggBucketsQuery(
     $agg : String!,
-    $q : String,
+    $q : SearchQueryInput!,
     $aggFilters:[AggFilterInput!],
     $crowdAggFilters:[AggFilterInput!],
     $page: Int!, $pageSize: Int!,
@@ -107,6 +109,7 @@ interface AggDropDownState {
   loading: boolean;
   filter: string;
   buckets: AggBucket[];
+  prevParams: SearchParams | null;
 }
 
 interface AggDropDownProps {
@@ -122,12 +125,26 @@ interface AggDropDownProps {
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
-  state = { hasMore: true, loading: false, buckets: [], filter: '', isOpen: false };
+  state = {
+    hasMore: true,
+    loading: false,
+    buckets: [],
+    filter: '',
+    isOpen: false,
+    prevParams: null,
+  };
 
   static getDerivedStateFromProps(props: AggDropDownProps, state: AggDropDownState)  {
     if (props.isOpen !== state.isOpen) {
       if (props.isOpen) {
-        return { hasMore: true, loading: false, buckets: [], filter: '', isOpen: props.isOpen };
+        return {
+          hasMore: true,
+          loading: false,
+          buckets: [],
+          filter: '',
+          isOpen: props.isOpen,
+          prevParams: props.searchParams,
+        };
       }
 
       return {
@@ -136,6 +153,22 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         buckets: props.buckets,
         filter: '',
         isOpen: props.isOpen,
+        prevParams: props.searchParams,
+      };
+    }
+
+    const aggLens = lensPath(['aggFilters', props.agg]);
+    const prevAggValue = view(aggLens, state.prevParams);
+    const nextAggValue = view(aggLens, props.searchParams);
+
+    if (state.isOpen && !equals(state.prevParams, props.searchParams) && equals(prevAggValue, nextAggValue)) {
+      return {
+        hasMore: true,
+        loading: false,
+        buckets: props.buckets,
+        filter: '',
+        isOpen: props.isOpen,
+        prevParams: props.searchParams,
       };
     }
 

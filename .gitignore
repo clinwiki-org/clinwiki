@@ -13,3 +13,4 @@ yarn-error.log
 apollo
 app/types
 .orig 
+*.orig 

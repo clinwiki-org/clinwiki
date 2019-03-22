@@ -1,7 +1,7 @@
 import { SortInput, AggFilterInput } from 'types/globalTypes';
 
 export type SearchParams = {
-  q: string;
+  q: SearchQuery;
   sorts: SortInput[];
   aggFilters: AggFilterInput[];
   crowdAggFilters: AggFilterInput[];
@@ -16,3 +16,8 @@ export interface AggBucket {
   docCount: number;
 }
 export interface AggBucketMap { [key:string] : AggBucket[]; }
+
+export interface SearchQuery {
+  key: string;
+  children?: SearchQuery[];
+}

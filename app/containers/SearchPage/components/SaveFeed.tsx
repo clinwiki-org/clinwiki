@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
 const CREATE_FEED = gql`
   mutation CreateFeedMutation(
-    $q: String,
+    $q: SearchQueryInput!,
     $sorts: [SortInput!],
     $aggFilters: [AggFilterInput!],
     $crowdAggFilters: [AggFilterInput!],

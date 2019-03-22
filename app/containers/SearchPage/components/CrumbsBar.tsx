@@ -80,12 +80,13 @@ const MultiCrumb = (props: {category:string, values:string[], onClick: (s: strin
 
 export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   *mkCrumbs(searchParams : SearchParams, removeFilter) {
-    if (searchParams.q && searchParams.q.length > 0) {
+    for (const term of searchParams.q || []) {
       yield <MultiCrumb
-              key="search"
+              key={term}
               category="search"
-              values={searchParams.q}
-              onClick={ term => this.props.removeSearchTerm(term)} />;
+              values={[term]}
+              onClick={ term => this.props.removeSearchTerm(term)}
+            />;
     }
     for (const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key];
