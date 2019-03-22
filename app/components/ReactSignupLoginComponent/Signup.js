@@ -84,12 +84,12 @@ const Signup = ({
           handleShowLogin('isLogin', true);
         }}
       >
-        Login
+        Log In
       </button>
       <input
         id="submit-signup"
         type="submit"
-        value="Signup"
+        value="Sign Up"
         style={Object.assign({}, localStyles.button, styles.button)}
         onClick={handleSignup}
       />

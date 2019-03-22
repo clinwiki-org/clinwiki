@@ -18,7 +18,7 @@ const AuthButton = (props) => {
   if (!props.user.loggedIn) {
     return (
       <ButtonWrapper className="pull-right">
-        <Button className="pull-right" href="/login-signup">Login | Signup</Button>
+        <Button className="pull-right" href="/login-signup">Log In | Register</Button>
       </ButtonWrapper>
     );
   }

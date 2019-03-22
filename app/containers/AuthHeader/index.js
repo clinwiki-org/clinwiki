@@ -32,8 +32,8 @@ export class AuthHeader extends React.Component { // eslint-disable-line react/p
       <Navbar fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="/">
-              ClinWiki
+            <a id="logo" href="/">
+             ClinWiki
             </a>
           </Navbar.Brand>
         </Navbar.Header>

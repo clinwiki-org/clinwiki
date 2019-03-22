@@ -29,7 +29,7 @@ export class LoginSignupPage extends React.Component { // eslint-disable-line re
     this.onPasswordResetSubmit = this.onPasswordResetSubmit.bind(this);
     if (props.match.path === '/logout') {
       props.actions.logout();
-    }
+    } 
     this.state = {
       password1: null,
       password2: null,
@@ -113,7 +113,13 @@ export class LoginSignupPage extends React.Component { // eslint-disable-line re
             handleSignup={this.handleSignup}
             handleRecoverPassword={this.handleRecoverPassword}
             styles={{
-              mainWrapper: { margin: '0 auto' },
+              mainWrapper: { 
+                margin: '40px auto',
+                background: 'rgba(255,255,255,.1)',
+                border: '0px',
+                color: '#fff',
+                borderRadius: 10,
+              }
             }}
           />
         </Col>
