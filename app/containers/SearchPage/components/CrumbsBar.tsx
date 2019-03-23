@@ -41,6 +41,7 @@ interface CrumbsBarProps {
   pagesTotal: number;
   pageSize: number;
   update: { page: (n: number) => void };
+  onReset: () => void;
 }
 interface CrumbsBarState {
   searchTerm : string;
@@ -79,12 +80,13 @@ const MultiCrumb = (props: {category:string, values:string[], onClick: (s: strin
 
 export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   *mkCrumbs(searchParams : SearchParams, removeFilter) {
-    if (searchParams.q && searchParams.q.length > 0) {
+    for (const term of searchParams.q || []) {
       yield <MultiCrumb
-              key="search"
+              key={term}
               category="search"
-              values={searchParams.q}
-              onClick={ term => this.props.removeSearchTerm(term)} />;
+              values={[term]}
+              onClick={ term => this.props.removeSearchTerm(term)}
+            />;
     }
     for (const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key];
@@ -103,6 +105,20 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
             values={agg.values}
             onClick={ val => removeFilter(agg.field, val, true)}
             key={cat + agg.values.join('')} />;
+    }
+    const totalLength =
+      searchParams.q.length + searchParams.crowdAggFilters.length + searchParams.aggFilters.length;
+    if (totalLength > 0) {
+      yield (
+        <Button
+          bsSize="small"
+          key="reset"
+          onClick={this.props.onReset}
+          style={{ marginLeft: '10px' }}
+        >
+          Reset
+        </Button>
+      );
     }
   }
 
@@ -140,18 +156,18 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
           </Col>
           <Col xsHidden md={3}>
             <div className="right-align">
-              {this.props.page > 1 ? <FontAwesome
+              {this.props.page > 0 ? <FontAwesome
                 className="arrow-left"
                 name="arrow-left"
                 style={{ cursor: 'pointer', margin: '5px' }}
-                onClick={() => this.props.update.page(this.props.page - 2)}
+                onClick={() => this.props.update.page(this.props.page - 1)}
                 /> : null}
-              page <b>{this.props.page}/{this.props.pagesTotal} </b>
-              {this.props.page < this.props.pagesTotal ? <FontAwesome
+              page <b>{this.props.page + 1}/{this.props.pagesTotal} </b>
+              {this.props.page + 1 < this.props.pagesTotal ? <FontAwesome
                   className="arrow-right"
                   name="arrow-right"
                   style={{ cursor: 'pointer', margin: '5px' }}
-                  onClick={() => this.props.update.page(this.props.page)}
+                  onClick={() => this.props.update.page(this.props.page + 1)}
                 /> : null}
             </div>
           </Col>
@@ -173,7 +189,7 @@ export default class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBar
           </Col>
         </Row> */}
         <Row>
-          <Col md={12}>
+          <Col md={12} style={{ padding: '10px 0px' }}>
             <b>Filters: </b>
             { Array.from(this.mkCrumbs(this.props.searchParams, this.props.removeFilter)) }
           </Col>

@@ -40,9 +40,12 @@ class Intervention extends React.PureComponent<InterventionProps> {
           <div>{wikipediaArticle.description}</div>
         </div>);
     }
-    else {
-      return <p><a href={`https://en.wikipedia.org/wiki/${name}`} target="_blank">View on Wikipedia</a></p>
-    }
+
+    return (
+      <p>
+        <a href={`https://en.wikipedia.org/wiki/${name}`} target="_blank">View on Wikipedia</a>
+      </p>
+    );
   }
 
   render() {
@@ -52,7 +55,7 @@ class Intervention extends React.PureComponent<InterventionProps> {
         <Grid>
           <Row>
             <Col md={6}>
-              <h1>{`${capitalize(name)} (${kind})`}</h1>
+              <h1>{`${capitalize(name || 'No name')} (${kind})`}</h1>
               {description && <p>{description}</p>}
               {this.renderInterventionText(name, wikipediaArticle)}
             </Col>

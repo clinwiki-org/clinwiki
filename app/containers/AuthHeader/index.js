@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 import styled from 'styled-components';
@@ -32,9 +32,9 @@ export class AuthHeader extends React.Component { // eslint-disable-line react/p
       <Navbar fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <a id="logo" href="/">
+            <Link id="logo" to="/">
              ClinWiki
-            </a>
+            </Link>
           </Navbar.Brand>
         </Navbar.Header>
         <AuthButton

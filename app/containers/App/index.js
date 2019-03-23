@@ -19,7 +19,7 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import AuthHeader from 'containers/AuthHeader/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import gqlSearchPage from 'containers/SearchPage/Loadable';
+import SearchPage from 'containers/SearchPage';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import StudyPage from 'containers/StudyPage/Loadable';
 import LoginSignupPage from 'containers/LoginSignupPage/Loadable';
@@ -43,12 +43,12 @@ function App() {
       <AuthHeader />
       <MainWrapper>
         <Switch>
-          <Route exact path="/" component={gqlSearchPage} />
-          <Route exact path="/search" component={gqlSearchPage} />
+          <Route exact path="/" component={SearchPage} />
           <Route exact path="/feeds" component={FeedsPage} />
           <Route exact path="/feeds/:feedId" component={FeedPage} />
+          <Route path="/search/:searchId" component={SearchPage} />
+          <Route path="/search" component={SearchPage} />
           <Route path="/feeds/:feedId/study/:studyId" component={FeedPage} />
-          <Route path="/search/:searchQuery" component={gqlSearchPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/study/:nctId/review/:reviewId/edit" component={StudyPage} />
           <Route path="/study/:nctId" component={StudyPage} />

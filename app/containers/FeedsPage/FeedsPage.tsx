@@ -57,6 +57,7 @@ class FeedsPage extends React.PureComponent<FeedsPageProps> {
   ) => {
     const deletedFeed = path(['deleteFeed', 'feed'], data) as FeedItemFragment;
     const storeData = cache.readQuery({ query: GET_FEEDS_QUERY });
+    if (!storeData) return;
     const feedsLens = lensPath(['me', 'feeds']);
     const newFeeds = over(
       feedsLens,
@@ -72,7 +73,7 @@ class FeedsPage extends React.PureComponent<FeedsPageProps> {
     return (
       <QueryComponent query={GET_FEEDS_QUERY}>
         {({ data, loading, error }) => {
-          if (loading || error) return null;
+          if (loading || error || !data) return null;
           const feeds = pathOr([], ['me', 'feeds'], data) as FeedItemFragment[];
           return (
             <div>

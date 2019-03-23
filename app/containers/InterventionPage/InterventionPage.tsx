@@ -59,10 +59,15 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
       <StyleWrapper>
         <QueryComponent query={QUERY} variables={{ id }}>
           {({ data, loading, error }) => {
-            if (loading || error) return null;
+            if (loading || error || !data || !data.intervention) return null;
 
-            const aggFilters = {
-              interventions_mesh_terms: new Set([data.intervention.name]),
+            const searchParams = {
+              q: '*',
+              aggFilters: [{ field: 'interventions_mesh_terms', values: [data.intervention.name] }],
+              crowdAggFilters: [],
+              sorts: [],
+              page: 0,
+              pageSize: 25,
             };
 
             return (
@@ -74,9 +79,10 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
                   <Row>
                     <Col md={12}>
                       <SearchPage
+                        match={this.props.match}
                         history={this.props.history}
-                        ignoreUrlUpdate
-                        aggFilters={aggFilters}
+                        ignoreUrlHash
+                        searchParams={searchParams}
                       />
                     </Col>
                   </Row>

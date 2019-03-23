@@ -98,8 +98,10 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
 
   handleSubmitReview = (...data) => {
     this.props.actions.submitReview(...data);
-    if (this.props.isFeed && this.props.nextLink) {
+    if (this.props.isWorkflow && this.props.nextLink) {
       this.props.history.push(this.props.nextLink);
+    } else if (this.props.isWorkflow) {
+      this.props.history.push(this.props.backLink);
     }
   }
 
@@ -178,7 +180,7 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
             nctId={_.get(this.props.StudyPage, 'study.nct_id')}
             submitReview={this.handleSubmitReview}
             loggedIn={_.get(this.props.AuthHeader, 'user.loggedIn')}
-            submitText={this.props.isFeed ? 'Submit and next' : 'Submit'}
+            submitText={this.props.isWorkflow ? 'Submit and next' : 'Submit'}
           />)}
       />
     );
@@ -200,13 +202,24 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
     );
   }
 
-  renderNavigationLink = (link: string | null | undefined, name: string) => {
+  renderNavigationLink = (link: string | null | undefined, name: string, keepSection?: bool) => {
     if (!link) return null;
+    const navigate = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const baseUrl = this.props.match.url;
+      const sectionPath = this.props.history.location.pathname.substr(baseUrl.length);
+      const postfix = keepSection ? sectionPath : '';
+      const navLink = `${link}${postfix}`;
+      this.props.history.push(navLink);
+    };
 
-    return <Link to={link}>{name}</Link>;
+    return <a href="#" onClick={navigate}>{name}</a>;
   }
 
   render() {
+    console.log(this.props);
+
     const navItems = Object.keys(this.defaultSections).map((x) => (
       <NavItem eventKey={x} key={x}>
         {x}
@@ -214,16 +227,19 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
     ));
 
     let inner;
-    if (_.get(this.props.StudyPage, 'study.title')) {
+    if (_.get(this.props.StudyPage, 'study.brief_title')) {
       inner = (
         <div id="study-main">
           <div className="container navlinks">
             <Row>
               <Col md={12}>
-                {this.renderNavigationLink(this.props.prevLink, '<< Prev')}
+                {this.props.isFeed && this.renderNavigationLink(this.props.backLink, 'Back to Search results')}
                 &nbsp;
                 &nbsp;
-                {this.renderNavigationLink(this.props.nextLink, 'Next >>')}
+                {this.renderNavigationLink(this.props.prevLink, '<< Prev', true)}
+                &nbsp;
+                &nbsp;
+                {this.renderNavigationLink(this.props.nextLink, 'Next >>', true)}
               </Col>
             </Row>
           </div>
@@ -277,10 +293,12 @@ export class StudyPage extends React.Component { // eslint-disable-line react/pr
 StudyPage.propTypes = {
   actions: PropTypes.object,
   isFeed: PropTypes.bool,
+  isWorkflow: PropTypes.bool,
   match: ReactRouterPropTypes.match,
   history: ReactRouterPropTypes.history,
   prevLink: PropTypes.string,
   nextLink: PropTypes.string,
+  backLink: PropTypes.string,
   StudyPage: PropTypes.object,
   AuthHeader: PropTypes.object,
 };
