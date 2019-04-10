@@ -1,17 +1,22 @@
-module WikiModelHelper
+module FrontMatterHelper
   def parsed
     return nil unless text
 
     @parsed ||= FrontMatterParser::Parser.new(FrontMatterParser::SyntaxParser::Md.new).call(text)
   end
 
-  # def from_markdown
-  #   Kramdown::Document.new(content)
-  # end
+  def text=(txt)
+    super(txt)
+    @parsed = nil
+  end
 
-  # def text_html
-  #   from_markdown.to_html
-  # end
+  def content=(content)
+    self.text = combined_markdown(content, front_matter)
+  end
+
+  def front_matter=(front_matter)
+    self.text = combined_markdown(content, front_matter)
+  end
 
   def front_matter
     @front_matter = parsed&.front_matter || {}
@@ -48,5 +53,10 @@ module WikiModelHelper
     end
 
     result
+  end
+
+  def combined_markdown(content, front_matter = {})
+    front_matter_string = front_matter.blank? ? "---\n" : front_matter.to_yaml
+    "#{front_matter_string}---\n#{content}"
   end
 end

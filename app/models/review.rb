@@ -1,5 +1,5 @@
 class Review < ApplicationRecord
-  include WikiModelHelper
+  include FrontMatterHelper
   include TriggersStudyReindex
   include BelongsToStudy
 

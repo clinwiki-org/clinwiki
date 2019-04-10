@@ -32,6 +32,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   has_many :id_information,        foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :interventions,         foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :all_interventions,     foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
+  has_one :all_condition, foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :intervention_other_names, foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :keywords,              foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :links,                 foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
@@ -68,6 +69,10 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     biospec_retention biospec_description plan_to_share_ipd design_outcome_measures
   ].freeze
 
+  def reviews_count
+    Review.where(nct_id: nct_id).count
+  end
+
   def average_rating
     @average_rating ||= reviews.blank? ? 0 : reviews.where.not(overall_rating: nil).average(:overall_rating).round(2)
   end
@@ -103,7 +108,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   end
 
   def fda_regulated_product?
-    is_fda_regulated_device || is_fda_regulated_drug
+    is_fda_regulated_device || is_fda_regulated_drug || false
   end
 
   def administrative_info

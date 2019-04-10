@@ -32,6 +32,7 @@ gem "rake", "~> 11.3"
 gem "sdoc", "~> 0.4.0", group: :doc
 #  Lets us spawn processes in the background
 gem "spawnling", "~>2.1"
+gem "graphql-batch"
 
 # Use ActiveModel has_secure_password
 # gem "bcrypt", "~> 3.1.7"

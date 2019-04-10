@@ -1,9 +1,12 @@
 class WikiPage < ApplicationRecord
-  include WikiModelHelper
+  include FrontMatterHelper
   include TriggersStudyReindex
   include HasOneStudy
 
   has_many :wiki_page_edits, dependent: :destroy
+  attr_writer :updater
+
+  before_save :create_edit
 
   def default_content
     <<-CONTENT
@@ -41,4 +44,18 @@ class WikiPage < ApplicationRecord
       history: wiki_page_edits.order(created_at: :desc).map(&:to_json),
     }
   end
+
+  def create_edit
+    return if text_was == text
+    raise "Cannot update WikiPage with updater not specified" if @updater.blank?
+
+    diff = Diffy::Diff.new(text_was, text)
+    WikiPageEdit.create(
+      user: @updater,
+      wiki_page_id: id,
+      diff: diff.to_s,
+      diff_html: diff.to_s(:html_simple),
+    )
+  end
+
 end

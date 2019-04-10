@@ -1,5 +1,5 @@
 module Mutations
-  class DeleteFeed < GraphQL::Schema::RelayClassicMutation
+  class DeleteFeed < BaseMutation
     field :feed, Types::FeedType, null: true
 
     argument :id, Integer, "Id of the feed to delete", required: true

@@ -96,7 +96,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false)
     options = search_kick_query_options(params: params, search_after: search_after, reverse: reverse)
-    options[:includes] = [:wiki_page, :reviews]
+    # options[:includes] = [:wiki_page, :reviews]
 
     search_result = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }

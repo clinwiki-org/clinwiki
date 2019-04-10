@@ -16,11 +16,6 @@ module WikiHelper
     study
   end
 
-  def combined_markdown(content, front_matter = {})
-    front_matter_string = front_matter.blank? ? "---\n" : front_matter.to_yaml
-    "#{front_matter_string}---\n#{content}"
-  end
-
   # TODO: refactor and simplify
   def create_or_update_wiki_page_for_study(params: {}, user: nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/LineLength
     study = get_study!(params: params)

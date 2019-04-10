@@ -3,4 +3,6 @@ class ClinwikiSchema < GraphQL::Schema
   max_complexity 300
   mutation(Types::MutationType)
   query(Types::QueryType)
+
+  use GraphQL::Batch
 end
