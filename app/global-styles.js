@@ -24,6 +24,9 @@ body.fontLoaded {
 
 #search-main, #study-main{
   background-color: #eaedf4;
+  min-height: 100vh;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 /* Search Sidebar */
@@ -299,16 +302,16 @@ nav.navbar input.form-control, #search-sidebar input.form-control{
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-::placeholder { 
+::placeholder {
   color: rgba(255,255,255,.6);
-  opacity: 1; 
+  opacity: 1;
 }
 
-:-ms-input-placeholder { 
+:-ms-input-placeholder {
   color: #fff;
 }
 
-::-ms-input-placeholder { 
+::-ms-input-placeholder {
   color: #fff;
 }
 
@@ -319,4 +322,3 @@ div.DraftEditor-editorContainer{
 }
 
 `;
- 

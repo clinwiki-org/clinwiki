@@ -8,6 +8,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import Intervention from 'components/Intervention';
 import SearchPage from 'containers/SearchPage/index';
 import { InterventionPageQuery, InterventionPageQueryVariables } from 'types/InterventionPageQuery';
+import { SearchQuery, SearchParams } from '../SearchPage/shared';
 
 const QUERY = gql`
   query InterventionPageQuery($id: Int!) {
@@ -61,11 +62,11 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
           {({ data, loading, error }) => {
             if (loading || error || !data || !data.intervention) return null;
 
-            const searchParams = {
-              q: '*',
-              aggFilters: [{ field: 'interventions_mesh_terms', values: [data.intervention.name] }],
-              crowdAggFilters: [],
+            const searchParams : SearchParams = {
+              q: { key : '*' },
               sorts: [],
+              aggFilters: [{ field: 'interventions_mesh_terms', values: [data.intervention.name as string] }],
+              crowdAggFilters: [],
               page: 0,
               pageSize: 25,
             };

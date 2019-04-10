@@ -7,6 +7,7 @@ import { capitalize } from 'utils/helpers';
 
 const StyleWrapper = styled.div`
   padding: 10px;
+  color: white;
 `;
 
 interface InterventionProps {
@@ -33,23 +34,33 @@ class Intervention extends React.PureComponent<InterventionProps> {
     if (wikipediaArticle) {
       return (
         <div>
-          <h4>Wikipedia entry for <a href={wikipediaArticle.url} target="_blank">
+          <h4>
+            Wikipedia entry for{' '}
+            <a href={wikipediaArticle.url} target="_blank">
               {wikipediaArticle.title}
             </a>
           </h4>
           <div>{wikipediaArticle.description}</div>
-        </div>);
+        </div>
+      );
     }
 
     return (
       <p>
-        <a href={`https://en.wikipedia.org/wiki/${name}`} target="_blank">View on Wikipedia</a>
+        <a href={`https://en.wikipedia.org/wiki/${name}`} target="_blank">
+          View on Wikipedia
+        </a>
       </p>
     );
   }
 
   render() {
-    const { name, description, type: kind, wikipediaArticle } = this.props.intervention;
+    const {
+      name,
+      description,
+      type: kind,
+      wikipediaArticle,
+    } = this.props.intervention;
     return (
       <StyleWrapper>
         <Grid>

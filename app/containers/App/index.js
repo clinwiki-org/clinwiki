@@ -21,7 +21,7 @@ import AuthHeader from 'containers/AuthHeader/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import SearchPage from 'containers/SearchPage';
 import ProfilePage from 'containers/ProfilePage/Loadable';
-import StudyPage from 'containers/StudyPage/Loadable';
+import StudyPage from 'containers/StudyPage';
 import LoginSignupPage from 'containers/LoginSignupPage/Loadable';
 // eslint-disable-next-line
 import InterventionPage from 'containers/InterventionPage';
@@ -33,9 +33,7 @@ import saga from './saga';
 import reducer from './reducer';
 
 const AppWrapper = styled.div``;
-const MainWrapper = styled.div`
-  margin: 0 10px;
-`;
+const MainWrapper = styled.div``;
 
 function App() {
   return (
@@ -50,7 +48,10 @@ function App() {
           <Route path="/search" component={SearchPage} />
           <Route path="/feeds/:feedId/study/:studyId" component={FeedPage} />
           <Route path="/profile" component={ProfilePage} />
-          <Route path="/study/:nctId/review/:reviewId/edit" component={StudyPage} />
+          <Route
+            path="/study/:nctId/review/:reviewId/edit"
+            component={StudyPage}
+          />
           <Route path="/study/:nctId" component={StudyPage} />
           <Route path="/intervention/:id" component={InterventionPage} />
           <Route path="/reset-password" component={LoginSignupPage} />

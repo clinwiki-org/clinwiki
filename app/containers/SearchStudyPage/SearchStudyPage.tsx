@@ -1,14 +1,18 @@
 import * as React from 'react';
 import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
-import { SearchStudyPageQuery, SearchStudyPageQueryVariables } from 'types/SearchStudyPageQuery';
+import { match } from 'react-router-dom';
+import { History, Location } from 'history';
+import {
+  SearchStudyPageQuery,
+  SearchStudyPageQueryVariables,
+} from 'types/SearchStudyPageQuery';
 import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
-import { Redirect } from 'react-router-dom';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
-    search(searchHash:$hash) {
+    search(searchHash: $hash) {
       studyEdge(id: $id) {
         nextId
         prevId
@@ -22,47 +26,49 @@ const QUERY = gql`
 `;
 
 interface StudySearchPageProps {
-  match: any;
-  history: any;
-  location: any;
+  match: match<{ nctId: string; searchId: string }>;
+  history: History;
+  location: Location;
 }
 
-class SearchStudyPageQueryComponent
-  extends Query<SearchStudyPageQuery, SearchStudyPageQueryVariables> {}
+class SearchStudyPageQueryComponent extends Query<
+  SearchStudyPageQuery,
+  SearchStudyPageQueryVariables
+> {}
 
 class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
   render() {
     const variables = {
       hash: this.props.match.params.searchId,
-      id: this.props.match.params.studyId,
+      id: this.props.match.params.nctId,
     };
 
     return (
       <SearchStudyPageQueryComponent query={QUERY} variables={variables}>
         {({ data, loading, error }) => {
-          if (loading || error || !data) return null;
-          const id = path(['search', 'studyEdge', 'study', 'nctId'], data);
-          const prevId = path(['search', 'studyEdge', 'prevId'], data);
-          const nextId = path(['search', 'studyEdge', 'nextId'], data);
-          const isWorkflow = pathOr(false, ['search', 'studyEdge', 'isWorkflow'], data);
-          const workflowSuffix = isWorkflow ? '/reviews/new' : '';
-          const prevLink = prevId && `/search/${variables.hash}/study/${prevId}${workflowSuffix}`;
-          const nextLink = nextId && `/search/${variables.hash}/study/${nextId}${workflowSuffix}`;
-          const backLink = `/search/${variables.hash}`;
-          const match = {
-            ...this.props.match,
-            params: { ...this.props.match.params, nctId: id },
-          };
+          let prevLink: string | null | undefined = null;
+          let nextLink: string | null | undefined = null;
+          let isWorkflow: boolean = false;
 
+          if (data && !loading) {
+            const prevId = path(['search', 'studyEdge', 'prevId'], data);
+            const nextId = path(['search', 'studyEdge', 'nextId'], data);
+            isWorkflow = pathOr(
+              false,
+              ['search', 'studyEdge', 'isWorkflow'],
+              data,
+            ) as boolean;
+            prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
+            nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
+          }
           return (
             <StudyPage
               history={this.props.history}
-              match={match}
+              location={this.props.location}
+              match={this.props.match}
               prevLink={prevLink}
               nextLink={nextLink}
-              backLink={backLink}
               isWorkflow={isWorkflow}
-              isFeed
             />
           );
         }}

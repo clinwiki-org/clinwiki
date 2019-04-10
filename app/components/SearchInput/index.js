@@ -1,18 +1,18 @@
 /**
-*
-* SearchInput
-*
-*/
+ *
+ * SearchInput
+ *
+ */
 
 /* eslint-disable */
 
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
 import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';
-import { withClientState } from '../../components/Apollo/LocalStateDecorator'
+import { withClientState } from '../../components/Apollo/LocalStateDecorator';
 
-
-class SearchInput extends React.Component { // eslint-disable-line react/prefer-stateless-function
+class SearchInput extends React.Component {
+  // eslint-disable-line react/prefer-stateless-function
 
   constructor(props) {
     super(props);
@@ -26,31 +26,32 @@ class SearchInput extends React.Component { // eslint-disable-line react/prefer-
 
   onSubmit(e) {
     e.preventDefault();
-    let searchQuery = [this.query]
+    let searchQuery = [this.query];
     if (this.query == null || this.query == undefined) {
-      searchQuery = this.props.clientState.searchQuery.slice(0,1)
+      searchQuery = this.props.clientState.searchQuery.slice(0, 1);
     }
-    this.props.updateClientState({ searchQuery })
+    this.props.updateClientState({ searchQuery });
   }
 
   render() {
-    let q = this.props.clientState && this.props.clientState.searchQuery.slice(0,1)
+    let q =
+      this.props.clientState && this.props.clientState.searchQuery.slice(0, 1);
     return (
-        <Form inline onSubmit={this.onSubmit} className="searchInput">
-          <FormGroup controlId="formInlineEmail">
-            <FormControl
-              style={{ width: '80%' }}
-              type="text"
-              defaultValue={q}
-              placeholder={q || 'search...'}
-              onChange={this.onSearchChange}
-            />
-            <Button type="submit">
-              <FontAwesome name="search" />
-            </Button>
-          </FormGroup>
-        </Form>
-      )
+      <Form inline onSubmit={this.onSubmit} className="searchInput">
+        <FormGroup controlId="formInlineEmail">
+          <FormControl
+            style={{ width: '80%', position: 'relative', left: -10 }}
+            type="text"
+            defaultValue={q}
+            placeholder={q || 'search...'}
+            onChange={this.onSearchChange}
+          />
+          <Button type="submit">
+            <FontAwesome name="search" />
+          </Button>
+        </FormGroup>
+      </Form>
+    );
   }
 }
 

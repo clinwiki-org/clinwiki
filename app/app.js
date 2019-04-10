@@ -39,6 +39,7 @@ import '!file-loader?name=[name].[ext]!./images/icon-384x384.png';
 import '!file-loader?name=[name].[ext]!./images/icon-512x512.png';
 import '!file-loader?name=[name].[ext]!./manifest.json';
 import 'file-loader?name=[name].[ext]!./.htaccess';
+import 'react-toggle/style.css';
 /* eslint-enable import/no-unresolved, import/extensions */
 
 import configureStore from './configureStore';
@@ -65,7 +66,7 @@ const alertOptions = {
   offset: '14',
 };
 
-const render = (messages) => {
+const render = messages => {
   ReactDOM.render(
     <AlertProvider template={AlertTemplate} {...alertOptions}>
       <Provider store={store}>
@@ -78,7 +79,7 @@ const render = (messages) => {
         </LanguageProvider>
       </Provider>
     </AlertProvider>,
-    MOUNT_NODE
+    MOUNT_NODE,
   );
 };
 
@@ -94,14 +95,12 @@ if (module.hot) {
 
 // Chunked polyfill for browsers without Intl support
 if (!window.Intl) {
-  (new Promise((resolve) => {
+  new Promise(resolve => {
     resolve(import('intl'));
-  }))
-    .then(() => Promise.all([
-      import('intl/locale-data/jsonp/en.js'),
-    ]))
+  })
+    .then(() => Promise.all([import('intl/locale-data/jsonp/en.js')]))
     .then(() => render(translationMessages))
-    .catch((err) => {
+    .catch(err => {
       throw err;
     });
 } else {

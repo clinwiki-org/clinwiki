@@ -1,10 +1,22 @@
 import ApolloClient, { gql } from 'apollo-boost';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-const cache = new InMemoryCache();
+export const dataIdFromObject = object => {
+  const id = object['id'] || object['_id'] || object['nctId'] || null;
+  if (!id) return null;
+  if (!object.__typename) return id;
+  return `${object.__typename}:${id}`;
+};
+
+const cache = new InMemoryCache({
+  dataIdFromObject,
+});
 
 function get_gql_url() {
-  if (typeof window === 'undefined' || window.location.hostname === 'localhost')  {
+  if (
+    typeof window === 'undefined' ||
+    window.location.hostname === 'localhost'
+  ) {
     return 'http://localhost:3000/graphql';
   }
   return '/graphql';

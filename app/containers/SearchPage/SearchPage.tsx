@@ -2,7 +2,10 @@ import * as React from 'react';
 import { gql } from 'apollo-boost';
 import { Redirect, Switch, Route } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
-import { SearchPageHashQuery, SearchPageHashQueryVariables } from 'types/SearchPageHashQuery';
+import {
+  SearchPageHashQuery,
+  SearchPageHashQueryVariables,
+} from 'types/SearchPageHashQuery';
 import {
   SearchPageParamsQuery,
   SearchPageParamsQueryVariables,
@@ -11,10 +14,27 @@ import {
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import { Query, ApolloConsumer } from 'react-apollo';
-import { path, map, dissoc, pathOr, prop, any,
-         pipe, groupBy, head, propOr, lensPath,
-         over, findIndex, propEq, reject, isEmpty,
-         view, remove, equals } from 'ramda';
+import {
+  path,
+  map,
+  dissoc,
+  pathOr,
+  prop,
+  any,
+  pipe,
+  groupBy,
+  head,
+  propOr,
+  lensPath,
+  over,
+  findIndex,
+  propEq,
+  reject,
+  isEmpty,
+  view,
+  remove,
+  equals,
+} from 'ramda';
 import SearchView from './SearchView';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
@@ -29,73 +49,84 @@ import { AggBucketMap } from './Types';
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
-    $q: SearchQueryInput!,
-    $sorts:[SortInput!],
-    $aggFilters:[AggFilterInput!],
-    $crowdAggFilters:[AggFilterInput!],
-    $page: Int,
+    $q: SearchQueryInput!
+    $sorts: [SortInput!]
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int
     $pageSize: Int
   ) {
-    searchHash(params: {
-      q: $q,
-      sorts: $sorts,
-      aggFilters: $aggFilters,
-      crowdAggFilters:$crowdAggFilters,
-      page: $page,
-      pageSize: $pageSize
-    })
+    searchHash(
+      params: {
+        q: $q
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        page: $page
+        pageSize: $pageSize
+      }
+    )
   }
 `;
 
 const PARAMS_QUERY = gql`
   query SearchPageParamsQuery($hash: String) {
     searchParams(hash: $hash) {
-      q,
+      q
       sorts {
         id
         desc
-      },
+      }
       aggFilters {
         field
         values
-      },
+      }
       crowdAggFilters {
         field
         values
-      },
-      page,
+      }
+      page
       pageSize
     }
   }
 `;
 
-class HashQueryComponent extends Query<SearchPageHashQuery, SearchPageHashQueryVariables> {}
-class ParamsQueryComponent extends Query<SearchPageParamsQuery, SearchPageParamsQueryVariables> {}
+class HashQueryComponent extends Query<
+  SearchPageHashQuery,
+  SearchPageHashQueryVariables
+> {}
+class ParamsQueryComponent extends Query<
+  SearchPageParamsQuery,
+  SearchPageParamsQueryVariables
+> {}
 
-const changeFilter =
-  (add: boolean) => (aggName:string, key:string, isCrowd?:boolean) => (params: SearchParams) => {
-    const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
-    const lens = lensPath([propName]);
-    return over(
-      lens,
-      (aggs: AggFilterInput[]) => {
-        const index = findIndex(propEq('field', aggName), aggs);
-        if ((index === -1) && add) {
-          return [...aggs, { field: aggName, values: [key] }];
-        }
-        const aggLens = lensPath([index, 'values']);
-        const updater = (values: string[]) =>
-          add ? [...values, key] : reject(x => x === key, values);
-        let res = over(aggLens, updater, aggs);
-        // Drop filter if no values left
-        if (isEmpty(view(aggLens, res))) {
-          res = remove(index, 1, res as any);
-        }
-        return res;
-      },
-      params,
-    );
-  };
+const changeFilter = (add: boolean) => (
+  aggName: string,
+  key: string,
+  isCrowd?: boolean,
+) => (params: SearchParams) => {
+  const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
+  const lens = lensPath([propName]);
+  return over(
+    lens,
+    (aggs: AggFilterInput[]) => {
+      const index = findIndex(propEq('field', aggName), aggs);
+      if (index === -1 && add) {
+        return [...aggs, { field: aggName, values: [key] }];
+      }
+      const aggLens = lensPath([index, 'values']);
+      const updater = (values: string[]) =>
+        add ? [...values, key] : reject(x => x === key, values);
+      let res = over(aggLens, updater, aggs);
+      // Drop filter if no values left
+      if (isEmpty(view(aggLens, res))) {
+        res = remove(index, 1, res as any);
+      }
+      return res;
+    },
+    params,
+  );
+};
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 
@@ -109,8 +140,8 @@ interface SearchPageProps {
 interface SearchPageState {
   params: SearchParams | null;
   openedAgg: {
-    name: string,
-    kind: AggKind,
+    name: string;
+    kind: AggKind;
   } | null;
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
@@ -133,8 +164,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchCrowdAggs: {},
   };
 
-  static getDerivedStateFromProps(props: SearchPageProps, state: SearchPageState) {
-    if ((state.params == null) && (props.ignoreUrlHash)) {
+  static getDerivedStateFromProps(
+    props: SearchPageProps,
+    state: SearchPageState,
+  ) {
+    if (state.params == null && props.ignoreUrlHash) {
       return {
         params: props.searchParams || defaultParams,
         openedAgg: null,
@@ -147,9 +181,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   ): SearchParams => {
     if (!params) return defaultParams;
 
-    const q = params.q ? JSON.parse(params.q) as SearchQuery : defaultParams.q;
+    const q = params.q
+      ? (JSON.parse(params.q) as SearchQuery)
+      : defaultParams.q;
 
-    const aggFilters = map(dissoc('__typename'), params.aggFilters || []) as AggFilterInput[];
+    const aggFilters = map(
+      dissoc('__typename'),
+      params.aggFilters || [],
+    ) as AggFilterInput[];
     const crowdAggFilters = map(
       dissoc('__typename'),
       params.crowdAggFilters || [],
@@ -164,16 +203,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       page: params.page || 0,
       pageSize: params.pageSize || 25,
     };
-  }
+  };
 
-  transformFilters = (filters: AggFilterInput[]): { [key: string]: Set<string> } => {
+  transformFilters = (
+    filters: AggFilterInput[],
+  ): { [key: string]: Set<string> } => {
     return pipe(
       groupBy(prop('field')),
       map(head),
       map(propOr([], 'values')),
       map(arr => new Set(arr)),
     )(filters) as { [key: string]: Set<string> };
-  }
+  };
 
   transformAggs = (
     aggs: SearchPageSearchQuery_search_aggs[],
@@ -183,7 +224,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       map(head),
       map(prop('buckets')),
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
-  }
+  };
 
   transformCrowdAggs = (
     aggs: SearchPageSearchQuery_crowdAggs_aggs[],
@@ -194,11 +235,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       prop('buckets'),
       groupBy(prop('key')),
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
-  }
+  };
 
   handleResetFilters = () => {
     this.setState({ params: defaultParams });
-  }
+  };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     console.log('Params before:');
@@ -206,7 +247,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     console.log('Params after:');
     console.log(updater(this.state.params as any));
     this.setState({ params: updater(this.state.params as any) });
-  }
+  };
 
   isWorkflow = () => {
     return pipe(
@@ -215,13 +256,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       // @ts-ignore
       any(x => (x as string).toLowerCase().includes('wf_')),
     )(this.state);
-  }
+  };
 
   handleRowClick = (nctId: string) => {
-    const suffix = this.isWorkflow() && !this.props.ignoreUrlHash ? '/reviews/new' : '';
+    const suffix =
+      this.isWorkflow() && !this.props.ignoreUrlHash ? '/reviews/new' : '';
     const prefix = this.props.ignoreUrlHash ? '' : this.props.match.url;
     this.props.history.push(`${prefix}/study/${nctId}${suffix}`);
-  }
+  };
 
   handleOpenAgg = (name: string, kind: AggKind) => {
     if (!this.state.openedAgg) {
@@ -230,22 +272,25 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     // @ts-ignore
     const { name: currentName, kind: currentKind } = this.state.openedAgg;
-    if ((name === currentName) && (kind === currentKind)) {
+    if (name === currentName && kind === currentKind) {
       this.setState({ openedAgg: null });
       return;
     }
 
     this.setState({ openedAgg: { name, kind } });
-  }
+  };
 
-  handleAggsUpdate = (searchAggs: AggBucketMap, searchCrowdAggs: AggBucketMap) => {
+  handleAggsUpdate = (
+    searchAggs: AggBucketMap,
+    searchCrowdAggs: AggBucketMap,
+  ) => {
     if (
       !equals(searchAggs, this.state.searchAggs) ||
       !equals(searchCrowdAggs, this.state.searchCrowdAggs)
     ) {
       this.setState({ searchAggs, searchCrowdAggs });
     }
-  }
+  };
 
   renderAggs = () => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
@@ -258,8 +303,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         crowdAggs={this.state.searchCrowdAggs}
         filters={this.transformFilters(aggFilters)}
         crowdFilters={this.transformFilters(crowdAggFilters)}
-        addFilter={pipe(addFilter, this.handleUpdateParams)}
-        removeFilter={pipe(removeFilter, this.handleUpdateParams)}
+        addFilter={pipe(
+          addFilter,
+          this.handleUpdateParams,
+        )}
+        removeFilter={pipe(
+          removeFilter,
+          this.handleUpdateParams,
+        )}
         // @ts-ignore
         searchParams={this.state.params}
         opened={opened}
@@ -267,14 +318,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         onOpen={this.handleOpenAgg}
       />
     );
-  }
+  };
 
   renderSearch = (hash: string | null) => {
     return (
       <ParamsQueryComponent query={PARAMS_QUERY} variables={{ hash }}>
         {({ data, loading, error }) => {
           if (error || loading) return null;
-          const params: SearchParams = this.searchParamsFromQuery(data && data.searchParams);
+          const params: SearchParams = this.searchParamsFromQuery(
+            data && data.searchParams,
+          );
           // hydrate state params from hash
           if (!this.state.params) {
             this.setState({ params });
@@ -282,7 +335,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           }
 
           return (
-            <HashQueryComponent query={HASH_QUERY} variables={this.state.params || undefined} >
+            <HashQueryComponent
+              query={HASH_QUERY}
+              variables={this.state.params || undefined}
+            >
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
                 // We have a mismatch between url and params in state
@@ -307,52 +363,52 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         }}
       </ParamsQueryComponent>
     );
-  }
+  };
 
   render() {
     if (this.props.ignoreUrlHash) {
       return (
         <Row>
           <Col md={2} id="search-sidebar">
-            {
-              this.renderAggs()
-            }
+            {this.renderAggs()}
           </Col>
           <Col md={10} id="search-main">
-          <SearchView
-            params={this.state.params as any}
-            openedAgg={this.state.openedAgg}
-            onUpdateParams={this.handleUpdateParams}
-            onRowClick={this.handleRowClick}
-            onOpenAgg={this.handleOpenAgg}
-            onAggsUpdate={this.handleAggsUpdate}
-            onResetFilters={this.handleResetFilters}
-          />
+            <SearchView
+              params={this.state.params as any}
+              openedAgg={this.state.openedAgg}
+              onUpdateParams={this.handleUpdateParams}
+              onRowClick={this.handleRowClick}
+              onOpenAgg={this.handleOpenAgg}
+              onAggsUpdate={this.handleAggsUpdate}
+              onResetFilters={this.handleResetFilters}
+            />
           </Col>
         </Row>
       );
     }
 
-    const hash = path(['match', 'params', 'searchId'], this.props) as string | null;
+    const hash = path(['match', 'params', 'searchId'], this.props) as
+      | string
+      | null;
 
     return (
       <Switch>
         <Route
-          path={`${this.props.match.path}/study/:studyId`}
+          path={`${this.props.match.path}/study/:nctId`}
           component={SearchStudyPage}
         />
-        <Route render={() => (
-          <Row>
-            <Col md={2} id="search-sidebar">
-              {
-                this.renderAggs()
-              }
-            </Col>
-            <Col md={10} id="search-main">
-              {this.renderSearch(hash)}
-            </Col>
-          </Row>
-        )} />
+        <Route
+          render={() => (
+            <Row>
+              <Col md={2} id="search-sidebar">
+                {this.renderAggs()}
+              </Col>
+              <Col md={10} id="search-main">
+                {this.renderSearch(hash)}
+              </Col>
+            </Row>
+          )}
+        />
       </Switch>
     );
   }
