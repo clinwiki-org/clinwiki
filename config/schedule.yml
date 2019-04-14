@@ -2,6 +2,8 @@ aact_sync:
   cron: "0 0 * * *"
   class: "AactSync"
   queue: default
+  args:
+    days_ago: <%= ENV['AUTO_INDEX_LAST_DAYS'] || 1 %>
 
 searchkick_study_queue:
   cron: "*/10 * * * * *" # every 30 seconds

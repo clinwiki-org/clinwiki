@@ -1,9 +1,10 @@
-# Application:  clinwiki
+# Application: clinwiki
 
 This application allows you to rate clinical trials.
 You can retrieve trials to rank by searching for NCT ID or MeSH Term
 
 # Installation / Running
+
 You are encouraged to use [rvm](https://rvm.io/) for Ruby version
 and gemset management. Once RVM is installed, switch to the correct
 Ruby and gemset as follows:
@@ -50,6 +51,7 @@ mode.
 # Data Access
 
 ## Databases
+
 The [AACT Clinical Trials Database](http://aact.ctti-clinicaltrials.org/])
 provides data the data we use for clinical trials.
 
@@ -67,11 +69,13 @@ brew install postgres
 ```
 
 ## Elasticsearch
+
 We use [searchkick](https://github.com/ankane/searchkick) to enable search.
 
 Follow the instructions in the searchkick docs for setting up Elasticsearch locally.
 
 ### Indexing
+
 Indexing is performed in the background by Sidekiq. You can run Sidekiq as follows:
 
 ```bash
@@ -88,6 +92,12 @@ ActiveRecord's `includes` functionality. Refer to the Study model's
 
 Scheduled jobs can be configured in `./config/schedule.yml`.
 
+To disable Auto indexing set env variables for sidekiq process:
+
+```
+AUTO_INDEX_LAST_DAYS=0
+```
+
 A full reindex can be performed by running:
 
 ```bash
@@ -95,16 +105,17 @@ bundle exec rake search:index
 ```
 
 A development environments can bootstrap a subset of search results as follows:
+
 ```bash
 bundle exec rake search:bootstrap_dev
 ```
 
 ### Searching
+
 Searching for studies is handled by Searchkick through
 the Studies model. Results are directly brokered through
 the Elasticsearch index, which brokers data from
 the annotation database along with the AACT database.
-
 
 ### Running Imports
 
@@ -120,6 +131,7 @@ definition for that field, and `Remove` will remove the crowd definition.
 For crowd values that produce custom facets, the "Type" in the csv ("label" value in the UI) will be the name of the facet. The "Value" in the csv ("description" in the UI) is the value(s) in the facet. For multiple values of the crowd facet, enter as multiple lines or separated on a single line by '|' (example Type = "Karnofsky Score Allowed", Value = "100|90|80|70")
 
 #### 2) Commit your CSV to the appropriate subfolder
+
 The CSV should be exported to the `imports/` within the root project folder.
 
 You can commit the CSV with the following workflow, which assumes
@@ -146,7 +158,6 @@ heroku run -a clinwiki-prod rake import:csv["$MY_FILE"]
 heroku run -a clinwiki-prod rake export:front_matter_csv > my-front-matter.csv
 ```
 
-
 ## Working with Vagrant
 
 Make sure you have a copy of `cw-app` located as a sibling of the root project
@@ -160,18 +171,17 @@ You can access the vagrant instance via `vagrant ssh`.
 
 The following scripts are available
 
-| Script | Function |
-| ------ | -------- |
-| `./scripts/vagrant/server` | runs the server through vagrant, serving the API at port 3000 |
-| `./scripts/vagrant/worker` | runs the worker within the vagrant server |
-| `./scripts/vagrant/frontend` | runs a hot-reloading version of the frontend |
+| Script                       | Function                                                      |
+| ---------------------------- | ------------------------------------------------------------- |
+| `./scripts/vagrant/server`   | runs the server through vagrant, serving the API at port 3000 |
+| `./scripts/vagrant/worker`   | runs the worker within the vagrant server                     |
+| `./scripts/vagrant/frontend` | runs a hot-reloading version of the frontend                  |
 
 ### Initializing Data
 
 We have already enqueued several tasks for the worker to run while
 provisioning Vagrant, but you will need to make sure to run the worker
 for those jobs to be handled.
-
 
 ### Running the Server
 
@@ -198,7 +208,7 @@ make sure to run `./scripts/worker` in a separate session as well.
 
 ## Run locally in production mode
 
-1) Create a .env file in root with the following contents
+1. Create a .env file in root with the following contents
 
 ```bash
 AACT_DATABASE_URL=postgres://$AACT_USER:$AACT_PASS@aact-db.ctti-clinicaltrials.org:5432/aact
@@ -209,13 +219,13 @@ CLINWIKI_DOMAIN="localhost:3000"
 SECRET_KEY_BASE="lkdfjgldgjkdflgjlkdfjgldfkjg"
 ```
 
-2) Precompile assets
+2. Precompile assets
 
 ```bash
 export $(cat .env | xargs) && RAILS_ENV=production rake assets:precompile
 ```
 
-3) Start server
+3. Start server
 
 ```bash
 export $(cat .env | xargs) && RAILS_ENV=production rails s
