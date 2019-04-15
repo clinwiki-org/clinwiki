@@ -36,21 +36,5 @@ module Types
     def conditions
       Loaders::Association.for(Study, :all_condition).load(object).then { |dd| dd&.names }
     end
-
   end
 end
-
-# def descriptive_info
-#   [
-#     { label: "brief title", value: brief_title },
-#     { label: "official title", value: official_title },
-#     { label: "brief summary", value: brief_summary.description },
-#     { label: "detailed description", value: detailed_description.try(:description) },
-#     { label: "study type", value: study_type },
-#     { label: "study phase", value: phase },
-#     { label: "study design", value: "tbd" },
-#     { label: "conditions", value: display_conditions },
-#     { label: "study arms", value: "tbd" },
-#     { label: "publications", value: "tbd" },
-#   ]
-# end

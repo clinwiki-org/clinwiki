@@ -2,7 +2,7 @@ module Types
   class QueryType < BaseObject
     field :search,
           SearchResultSetType,
-          "Searches either by searchHash or by params if searchHash in null.",
+          "Searches params by searchHash on server and `params` argument into it",
           null: true do
       argument :search_hash, String, required: false
       argument :params, type: SearchInputType, required: false
@@ -41,13 +41,13 @@ module Types
     end
 
     def search(search_hash: nil, params: nil)
-      context[:search_params] = fetch_search_params(search_hash: search_hash, params: params)
+      context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(context[:search_params])
       search_service.search
     end
 
     def agg_buckets(search_hash: nil, params: nil)
-      params = fetch_search_params(search_hash: search_hash, params: params)
+      params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
         aggs: search_service.agg_buckets_for_field(field: params[:agg]),
@@ -55,7 +55,7 @@ module Types
     end
 
     def crowd_agg_buckets(search_hash: nil, params: nil)
-      params = fetch_search_params(search_hash: search_hash, params: params)
+      params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
         aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
@@ -102,12 +102,14 @@ module Types
 
     private
 
-    def fetch_search_params(search_hash: nil, params: nil)
+    def fetch_and_merge_search_params(search_hash: nil, params: nil)
       if search_hash
         link = ShortLink.from_short(search_hash)
         return if link.nil?
 
-        JSON.parse(link.long).deep_symbolize_keys
+        res = JSON.parse(link.long).deep_symbolize_keys
+        res = res.merge(params.to_h) if params.present?
+        res
       else
         params.to_h
       end

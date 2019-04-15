@@ -57,5 +57,4 @@ class WikiPage < ApplicationRecord
       diff_html: diff.to_s(:html_simple),
     )
   end
-
 end
