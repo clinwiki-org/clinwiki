@@ -1,5 +1,9 @@
 module Types
   class MutationType < BaseObject
+    field :updateProfile, mutation: Mutations::UpdateProfile
+    field :signIn, mutation: Mutations::SignIn
+    field :signUp, mutation: Mutations::SignUp
+    field :resetPassword, mutation: Mutations::ResetPassword
     field :upsertWikiLabel, mutation: Mutations::UpsertWikiLabel
     field :deleteWikiLabel, mutation: Mutations::DeleteWikiLabel
     field :upsertWikiTag, mutation: Mutations::UpsertWikiTag

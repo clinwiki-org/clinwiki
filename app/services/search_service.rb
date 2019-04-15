@@ -83,8 +83,6 @@ DEFAULT_AGG_OPTIONS = {
 }.freeze
 
 class SearchService # rubocop:disable Metrics/ClassLength
-  # include SearchHelper
-
   attr_reader :params
 
   # @param params - hash representing SearchInputType with symbols as keys.

@@ -15,6 +15,30 @@ class GraphqlController < ApplicationController
 
   private
 
+  # Raises JWT::ExpiredSignature if signature is expired
+  def current_user
+    auth_header = request.headers["Authorization"]
+    matches = /Bearer (.*)/i.match(auth_header)
+    return nil if matches.blank?
+
+    hmac_secret = Rails.application.secrets.secret_key_base
+    raise "SECRET_KEY_BASE is not set" if hmac_secret.blank?
+
+    token = matches[1]
+    payload =
+      begin
+        JWT.decode token, hmac_secret, true, algorithm: "HS256"
+      rescue StandardError => e
+        Rails.logger.error("Error parsing token for header `#{request.headers['Authorization']}`: #{e}")
+        return nil
+      end
+
+    email = payload&.dig(0, "email")
+    return nil if email.blank?
+
+    User.find_by(email: email)
+  end
+
   # Handle form data, JSON body, or a blank value
   def ensure_hash(ambiguous_param)
     case ambiguous_param

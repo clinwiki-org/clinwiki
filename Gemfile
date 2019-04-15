@@ -78,6 +78,7 @@ group :development, :test do
 end
 
 gem "activejob-traffic_control", ">= 0.1.3"
+gem "jwt"
 gem "sidekiq"
 gem "sidekiq-cron"
 gem "rack-cors"

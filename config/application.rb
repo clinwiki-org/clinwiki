@@ -14,6 +14,7 @@ Bundler.require(*Rails.groups)
 
 module Clinwiki
   class Application < Rails::Application
+    config.jwt_expiration_secs = ENV["JWT_EXPIRATION_SECS"] || 86400
     config.time_zone = 'Eastern Time (US & Canada)'
     config.quiet_assets = true
     config.generators do |generate|

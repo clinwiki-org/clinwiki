@@ -47,6 +47,12 @@ module Types
         .then { |page| page || WikiPage.new(nct_id: object.nct_id) }
     end
 
+    def average_rating
+      Loaders::Association.for(Study, :reviews)
+        .load(object)
+        .then { |_| object.average_rating }
+    end
+
     def overall_status
       wiki_page.then { object.with_wiki_data(:overall_status) }
     end
