@@ -289,7 +289,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                   join('/'),
                 )(this.props.match.url);
                 if (this.props.isWorkflow && this.props.nextLink) {
-                  redirectPath = `${this.props.nextLink}/reviews/new`;
+                  redirectPath = `${this.props.nextLink}/workflow`;
                 }
                 this.props.history.push(redirectPath);
               }}

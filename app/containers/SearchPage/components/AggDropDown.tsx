@@ -1,15 +1,33 @@
 import * as React from 'react';
 import styledComponents from 'styled-components';
-import { pipe, map, length, prop, sortBy, pathOr,
-         uniqBy, concat, isNil, isEmpty, equals, lensPath, view,
-       } from 'ramda';
+import {
+  pipe,
+  map,
+  length,
+  prop,
+  sortBy,
+  pathOr,
+  uniqBy,
+  concat,
+  isNil,
+  isEmpty,
+  equals,
+  lensPath,
+  view,
+} from 'ramda';
 import { ApolloConsumer } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
 import * as InfiniteScroll from 'react-infinite-scroller';
 import * as FontAwesome from 'react-fontawesome';
 
-import { AggBucket, AggCallback, SearchParams, gqlParams, AggKind } from '../Types';
+import {
+  AggBucket,
+  AggCallback,
+  SearchParams,
+  gqlParams,
+  AggKind,
+} from '../Types';
 
 import gql from 'graphql-tag';
 import aggToField from 'utils/aggs/aggToField';
@@ -18,24 +36,27 @@ import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 const PAGE_SIZE = 25;
 
 const QUERY_AGG_BUCKETS = gql`
-  query SearchPageAggBucketsQuery (
-    $agg : String!,
-    $q : SearchQueryInput!,
-    $aggFilters:[AggFilterInput!],
-    $crowdAggFilters:[AggFilterInput!],
-    $page: Int!, $pageSize: Int!,
+  query SearchPageAggBucketsQuery(
+    $agg: String!
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
     $aggOptionsFilter: String
   ) {
-    aggBuckets(params: {
-      agg: $agg,
-      q: $q,
-      sorts: [],
-      aggFilters: $aggFilters,
-      crowdAggFilters: $crowdAggFilters,
-      aggOptionsFilter: $aggOptionsFilter,
-      page: $page,
-      pageSize: $pageSize
-    }) {
+    aggBuckets(
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
       aggs {
         name
         buckets {
@@ -44,27 +65,31 @@ const QUERY_AGG_BUCKETS = gql`
         }
       }
     }
-  }`;
+  }
+`;
 
 const QUERY_CROWD_AGG_BUCKETA = gql`
   query SearchPageCrowdAggBucketsQuery(
-    $agg : String!,
-    $q : SearchQueryInput!,
-    $aggFilters:[AggFilterInput!],
-    $crowdAggFilters:[AggFilterInput!],
-    $page: Int!, $pageSize: Int!,
+    $agg: String!
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
     $aggOptionsFilter: String
   ) {
-    aggBuckets: crowdAggBuckets(params: {
-      agg: $agg,
-      q: $q,
-      sorts: [],
-      aggFilters: $aggFilters,
-      crowdAggFilters: $crowdAggFilters,
-      aggOptionsFilter: $aggOptionsFilter,
-      page: $page,
-      pageSize: $pageSize
-    }) {
+    aggBuckets: crowdAggBuckets(
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
       aggs {
         buckets {
           key
@@ -118,7 +143,7 @@ interface AggDropDownProps {
   buckets?: AggBucket[];
   searchParams: SearchParams;
   aggKind: AggKind;
-  selectedKeys : Set<string>;
+  selectedKeys: Set<string>;
   onOpen: (agg: string, aggKind: AggKind) => void;
   addFilter: AggCallback | null;
   removeFilter: AggCallback | null;
@@ -134,7 +159,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     prevParams: null,
   };
 
-  static getDerivedStateFromProps(props: AggDropDownProps, state: AggDropDownState)  {
+  static getDerivedStateFromProps(
+    props: AggDropDownProps,
+    state: AggDropDownState,
+  ) {
     if (props.isOpen !== state.isOpen) {
       if (props.isOpen) {
         return {
@@ -161,7 +189,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const prevAggValue = view(aggLens, state.prevParams);
     const nextAggValue = view(aggLens, props.searchParams);
 
-    if (state.isOpen && !equals(state.prevParams, props.searchParams) && equals(prevAggValue, nextAggValue)) {
+    if (
+      state.isOpen &&
+      !equals(state.prevParams, props.searchParams) &&
+      equals(prevAggValue, nextAggValue)
+    ) {
       return {
         hasMore: true,
         loading: false,
@@ -178,30 +210,31 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   // getBucketKey = (key: string): string => path([key, 'key'], this.props.buckets)
   // getBucketDocCount = (key: string): number => path([key, 'docCount'], this.props.buckets)
   isSelected = (key: string): boolean =>
-    this.props.selectedKeys && this.props.selectedKeys.has(key)
+    this.props.selectedKeys && this.props.selectedKeys.has(key);
   toggleAgg = (agg: string, key: string): void => {
     if (!this.props.addFilter || !this.props.removeFilter) return;
-    return this.isSelected(key) ?
-      this.props.removeFilter(agg, key) :
-      this.props.addFilter(agg, key);
-  }
+    return this.isSelected(key)
+      ? this.props.removeFilter(agg, key)
+      : this.props.addFilter(agg, key);
+  };
 
   getFullPagesCount = () => Math.floor(length(this.state.buckets) / PAGE_SIZE);
 
   handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
     this.setState({ filter: value, buckets: [], hasMore: true });
-  }
+  };
 
   handleToggle = () => {
     this.props.onOpen(this.props.agg, this.props.aggKind);
-  }
+  };
 
-  handleLoadMore = async (apolloClient) => {
+  handleLoadMore = async apolloClient => {
     // TODO
-    const [query, filterType] = this.props.aggKind === 'crowdAggs' ?
-    [QUERY_CROWD_AGG_BUCKETA, 'crowdAggFilters'] :
-    [QUERY_AGG_BUCKETS, 'aggFilters'];
+    const [query, filterType] =
+      this.props.aggKind === 'crowdAggs'
+        ? [QUERY_CROWD_AGG_BUCKETA, 'crowdAggFilters']
+        : [QUERY_AGG_BUCKETS, 'aggFilters'];
 
     const variables = {
       ...gqlParams(this.props.searchParams),
@@ -230,7 +263,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     const hasMore = length(this.state.buckets) !== length(buckets);
     this.setState({ buckets, hasMore });
-  }
+  };
 
   renderBuckets = () => {
     const { agg } = this.props;
@@ -242,36 +275,32 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         <Checkbox
           key={key}
           checked={this.isSelected(key)}
-          onChange={() => this.toggleAgg(agg, key)}>
-            {aggKeyToInner(agg, key)}
-            <span> ({docCount})</span>
+          onChange={() => this.toggleAgg(agg, key)}
+        >
+          {aggKeyToInner(agg, key)}
+          <span> ({docCount})</span>
         </Checkbox>
       )),
     )(buckets);
-  }
+  };
 
-  renderBucketsPanel = (apolloClient) => {
+  renderBucketsPanel = apolloClient => {
     return (
       <InfiniteScroll
         pageStart={0}
         loadMore={() => this.handleLoadMore(apolloClient)}
         hasMore={this.state.hasMore}
         useWindow={false}
-        loader={(
-          <BeatLoader
-            key="loader"
-            color="#333"
-          />
-        )}
+        loader={<BeatLoader key="loader" color="#333" />}
       >
         {this.renderBuckets()}
       </InfiniteScroll>
     );
-  }
+  };
 
   renderFilter = () => {
     const { buckets = [], filter } = this.state;
-    if ((length(buckets) <= 10) && (isNil(filter) || isEmpty(filter))) {
+    if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return null;
     }
     return (
@@ -282,38 +311,39 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         onChange={this.handleFilterChange}
       />
     );
-  }
+  };
 
   render() {
     const { agg } = this.props;
     const { isOpen } = this.state;
 
     const title = aggToField(agg);
-    const icon = `chevron${(isOpen ? '-up' : '-down')}`;
+    const icon = `chevron${isOpen ? '-up' : '-down'}`;
 
     return (
       <ApolloConsumer>
-         {apolloClient => (
+        {apolloClient => (
           <PanelWrapper>
             <Panel onToggle={this.handleToggle} expanded={isOpen}>
               <Panel.Heading>
                 <Panel.Title toggle>
                   <div className="flex">
                     <span>{title}</span>
-                    <span> <FontAwesome name={icon} /> </span>
+                    <span>
+                      {' '}
+                      <FontAwesome name={icon} />{' '}
+                    </span>
                   </div>
                 </Panel.Title>
               </Panel.Heading>
-              {isOpen &&
+              {isOpen && (
                 <Panel.Collapse>
-                  <Panel.Body>
-                    {this.renderFilter()}
-                  </Panel.Body>
+                  <Panel.Body>{this.renderFilter()}</Panel.Body>
                   <Panel.Body>
                     {this.renderBucketsPanel(apolloClient)}
                   </Panel.Body>
                 </Panel.Collapse>
-              }
+              )}
             </Panel>
           </PanelWrapper>
         )}

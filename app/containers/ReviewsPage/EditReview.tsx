@@ -8,7 +8,7 @@ import {
 } from 'types/EditReviewQuery';
 import { match } from 'react-router-dom';
 import { find, propEq } from 'ramda';
-import ReviewForm from './ReviewForm';
+import ReviewForm from 'containers/ReviewForm';
 import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
 import { History } from 'history';
 import StudySummary from 'components/StudySummary';

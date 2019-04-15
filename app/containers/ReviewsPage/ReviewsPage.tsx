@@ -9,7 +9,7 @@ import ReactStars from 'react-stars';
 
 import StudySummary from 'components/StudySummary';
 
-import ReviewForm from './ReviewForm';
+import ReviewForm from 'containers/ReviewForm';
 import { trimPath } from 'utils/helpers';
 import {
   ReviewPageQuery,
@@ -270,7 +270,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                   return (
                     <ReviewForm
                       {...props}
-                      isWorkflow={this.props.isWorkflow}
+                      isWorkflow={false}
                       nextLink={this.props.nextLink}
                     />
                   );

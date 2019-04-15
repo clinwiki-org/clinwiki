@@ -7,7 +7,10 @@ import { pipe, path, isNil } from 'ramda';
 import { Grid, Row, Col } from 'react-bootstrap';
 import Intervention from 'components/Intervention';
 import SearchPage from 'containers/SearchPage/index';
-import { InterventionPageQuery, InterventionPageQueryVariables } from 'types/InterventionPageQuery';
+import {
+  InterventionPageQuery,
+  InterventionPageQueryVariables,
+} from 'types/InterventionPageQuery';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
 
 const QUERY = gql`
@@ -20,7 +23,10 @@ const QUERY = gql`
   ${Intervention.fragment}
 `;
 
-class QueryComponent extends Query<InterventionPageQuery, InterventionPageQueryVariables> {}
+class QueryComponent extends Query<
+  InterventionPageQuery,
+  InterventionPageQueryVariables
+> {}
 
 const StyleWrapper = styled.div`
   .intervention-container {
@@ -29,7 +35,7 @@ const StyleWrapper = styled.div`
 `;
 
 interface InterventionPageProps {
-  match?: match<{id: string}>;
+  match?: match<{ id: string }>;
   history?: any;
 }
 
@@ -37,11 +43,11 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
   getInterventionsId = () => {
     return pipe(
       path(['match', 'params', 'id']),
-      (x: string) => x ? parseInt(x, 10) : null,
+      (x: string) => (x ? parseInt(x, 10) : null),
     )(this.props);
-  }
+  };
 
-  setInterventionTerm = (name) => {
+  setInterventionTerm = name => {
     const searchQuery = {
       a: [
         {
@@ -50,7 +56,7 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
         },
       ],
     };
-  }
+  };
 
   render() {
     const id = this.getInterventionsId();
@@ -62,10 +68,15 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
           {({ data, loading, error }) => {
             if (loading || error || !data || !data.intervention) return null;
 
-            const searchParams : SearchParams = {
-              q: { key : '*' },
+            const searchParams: SearchParams = {
+              q: { key: '*' },
               sorts: [],
-              aggFilters: [{ field: 'interventions_mesh_terms', values: [data.intervention.name as string] }],
+              aggFilters: [
+                {
+                  field: 'interventions_mesh_terms',
+                  values: [data.intervention.name as string],
+                },
+              ],
               crowdAggFilters: [],
               page: 0,
               pageSize: 25,

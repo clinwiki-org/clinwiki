@@ -40,6 +40,7 @@ import InterventionsPage from 'containers/InterventionsPage';
 import TrackingPage from 'containers/TrackingPage';
 import SitesPage from 'containers/SitesPage';
 import TagsPage from 'containers/TagsPage';
+import WorkflowPage from 'containers/WorkflowPage';
 
 interface StudyPageProps {
   history: History;
@@ -131,6 +132,7 @@ type Section = {
 
 const sections = [
   { name: 'Crowd', path: '/crowd', component: CrowdPage, order: 2 },
+  { name: 'Workflow', path: '/workflow', component: WorkflowPage, order: 0 },
   { name: 'Reviews', path: '/reviews', component: ReviewsPage, order: 3 },
   {
     name: 'Descriptive',
@@ -218,6 +220,17 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     return '/';
   };
 
+  getSections = (): Section[] =>
+    pipe(
+      reject(
+        (section: Section) =>
+          section.path === '/workflow' && !this.props.isWorkflow,
+      ),
+      // @ts-ignore
+      sortBy(prop('order')),
+      // @ts-ignore
+    )(sections);
+
   handleSelect = (key: string) => {
     this.props.history.push(`${trimPath(this.props.match.url)}${key}`);
   };
@@ -291,7 +304,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   activeKey={this.getCurrentSectionPath()}
                   onSelect={this.handleSelect}
                 >
-                  {sortBy(prop('order'), sections).map((section: Section) => (
+                  {this.getSections().map((section: Section) => (
                     <NavItem key={section.path} eventKey={section.path}>
                       {section.name}
                     </NavItem>

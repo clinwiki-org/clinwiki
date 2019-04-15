@@ -46,10 +46,12 @@ interface CrowdProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  forceAddKey?: string;
 }
 
 interface CrowdState {
   forceAddKey: string | null;
+  prevForceAddKey: string | null;
 }
 
 const FRAGMENT = gql`
@@ -146,7 +148,20 @@ class QueryComponent extends Query<CrowdPageQuery, CrowdPageQueryVariables> {}
 class Crowd extends React.Component<CrowdProps, CrowdState> {
   state: CrowdState = {
     forceAddKey: null,
+    prevForceAddKey: null,
   };
+
+  static getDerivedStateFromProps(props: CrowdProps, state: CrowdState) {
+    if (props.forceAddKey && props.forceAddKey !== state.prevForceAddKey) {
+      return {
+        ...state,
+        forceAddKey: props.forceAddKey,
+        prevForceAddKey: props.forceAddKey,
+      };
+    }
+
+    return null;
+  }
 
   static fragment = FRAGMENT;
 

@@ -260,7 +260,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleRowClick = (nctId: string) => {
     const suffix =
-      this.isWorkflow() && !this.props.ignoreUrlHash ? '/reviews/new' : '';
+      this.isWorkflow() && !this.props.ignoreUrlHash ? '/workflow' : '';
     const prefix = this.props.ignoreUrlHash ? '' : this.props.match.url;
     this.props.history.push(`${prefix}/study/${nctId}${suffix}`);
   };
