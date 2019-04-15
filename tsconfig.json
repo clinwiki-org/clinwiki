@@ -1,19 +1,16 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "sourceMap": true,
-        "baseUrl": "app",
-        "jsx": "react",
-        "downlevelIteration": true,
-        "keyofStringsOnly": true,
-        "strictNullChecks": true,
-        "lib": [
-            "es2015", "dom",
-            "esnext.asynciterable"
-        ]
-    },
-    "exclude": [
-        "node_modules"
-    ]
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "sourceMap": true,
+    "baseUrl": "app",
+    "jsx": "react",
+    "downlevelIteration": true,
+    "keyofStringsOnly": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "lib": ["es2015", "dom", "esnext.asynciterable"]
+  },
+  "exclude": ["node_modules"]
 }

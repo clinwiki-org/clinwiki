@@ -33,6 +33,7 @@ class QueryComponent extends Query<CurrentUserQuery> {}
 
 class CurrentUser extends React.PureComponent<CurrentUserProps> {
   static fragment = FRAGMENT;
+  static query = QUERY;
 
   render() {
     return (

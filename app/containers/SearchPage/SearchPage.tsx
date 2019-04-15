@@ -174,6 +174,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         openedAgg: null,
       };
     }
+    return null;
   }
 
   searchParamsFromQuery = (

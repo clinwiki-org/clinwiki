@@ -172,6 +172,17 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     this.setState({ plainEditorText: e.currentTarget.value });
   };
 
+  handleQueryCompleted = (data: WikiPageQuery) => {
+    console.log('dfsdfds');
+    const text =
+      data && data.study && data.study.wikiPage && data.study.wikiPage.content;
+    if (!text || text === this.state.plainEditorText) return;
+    this.setState({
+      plainEditorText: text,
+      richEditorText: RichTextEditor.createValueFromString(text, 'markdown'),
+    });
+  };
+
   renderMarkdownButton = () => {
     if (this.state.editorState === 'plain') {
       return (
@@ -331,6 +342,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       <QueryComponent
         query={QUERY}
         variables={{ nctId: this.props.match.params.nctId }}
+        onCompleted={this.handleQueryCompleted}
       >
         {({ data, loading, error }) => {
           if (loading) {
@@ -341,6 +353,8 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
           }
           this.handleLoaded();
           if (!data || !data.study) return null;
+          console.log(data);
+
           return (
             <CurrentUser>
               {user => (

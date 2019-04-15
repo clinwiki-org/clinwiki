@@ -1,5 +1,9 @@
-import ApolloClient, { gql } from 'apollo-boost';
+import { gql } from 'apollo-boost';
+import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { setContext } from 'apollo-link-context';
+import { getLocalJwt } from 'utils/localStorage';
+import { createHttpLink } from 'apollo-link-http';
 
 export const dataIdFromObject = object => {
   const id = object['id'] || object['_id'] || object['nctId'] || null;
@@ -11,6 +15,8 @@ export const dataIdFromObject = object => {
 const cache = new InMemoryCache({
   dataIdFromObject,
 });
+
+console.log('Apollo cache', cache);
 
 function get_gql_url() {
   if (
@@ -28,11 +34,23 @@ const typeDefs = gql`
   }
 `;
 
+const httpLink = createHttpLink({ uri: get_gql_url(), credentials: 'include' });
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = getLocalJwt();
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      Authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
 const client = new ApolloClient({
-  cache,
   typeDefs,
-  uri: get_gql_url(),
-  credentials: 'include',
+  cache,
+  link: authLink.concat(httpLink),
   resolvers: {},
 });
 

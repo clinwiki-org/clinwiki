@@ -91,8 +91,6 @@ export default class CrumbsBar extends React.Component<
   CrumbsBarState
 > {
   *mkCrumbs(searchParams: SearchParams, removeFilter) {
-    console.log(searchParams);
-
     if (!isEmpty(searchParams.q)) {
       yield (
         <MultiCrumb
