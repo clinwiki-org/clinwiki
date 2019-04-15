@@ -46,6 +46,7 @@ gem "devise"
 gem "searchkick", "3.1.0"
 gem "font-awesome-rails"
 gem "font-awesome-sass"
+gem "bootstrap-sass"
 gem "autoprefixer-rails"
 gem "backbone-rails"
 
