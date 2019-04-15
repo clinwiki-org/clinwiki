@@ -15,7 +15,9 @@ export interface AggBucket {
   key: string;
   docCount: number;
 }
-export interface AggBucketMap { [key:string] : AggBucket[]; }
+export interface AggBucketMap {
+  [key: string]: AggBucket[];
+}
 
 export interface SearchQuery {
   key: string;

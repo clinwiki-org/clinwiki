@@ -13,6 +13,14 @@ const ToggleWrapper = styled.div`
   label {
     font-size: 10px;
   }
+  .react-toggle-track {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .react-toggle-thumb {
+    border: 0px;
+    background: #55b88d;
+  }
 `;
 
 class WikiToggle extends React.PureComponent<WikiToggleProps> {

@@ -171,6 +171,40 @@ const ReviewsWrapper = styled.div`
   margin-right: 10px;
 `;
 
+const MainContainer = styled(Col)`
+  background-color: #eaedf4;
+  min-height: 100vh;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  .panel-heading {
+    background: #8bb7a4;
+    color: #fff;
+    padding: 15px;
+  }
+`;
+
+const SidebarContainer = styled(Col)`
+  padding-right: 0px;
+  color: rgba(255, 255, 255, 0.5);
+  padding-top: 20px !important;
+
+  li {
+    a {
+      font-size: 16px;
+      color: #bac5d0;
+      border-bottom: 1px solid #4c545e;
+      text-align: left;
+    }
+
+    a:hover {
+      background: #394149;
+      border-radius: 0px;
+      color: #fff;
+    }
+  }
+`;
+
 class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
 class PrefetchQueryComponent extends Query<
   StudyPagePrefetchQuery,
@@ -292,7 +326,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         {({ data, loading, error }) => (
           <StudyWrapper>
             <Row>
-              <Col md={2} id="study-sidebar">
+              <SidebarContainer md={2}>
                 {this.renderReviewsSummary(data)}
                 <WikiToggle
                   value={this.state.wikiToggleValue}
@@ -310,8 +344,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                     </NavItem>
                   ))}
                 </Nav>
-              </Col>
-              <Col md={10} id="study-main">
+              </SidebarContainer>
+              <MainContainer md={10}>
                 <div className="container">
                   {this.renderNavButton('<< Previous', this.props.prevLink)}
                   {this.renderNavButton('Next >>', this.props.nextLink)}
@@ -339,7 +373,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                     ))}
                   </Switch>
                 </div>
-              </Col>
+              </MainContainer>
             </Row>
             {this.state.triggerPrefetch && (
               <PrefetchQueryComponent

@@ -187,10 +187,6 @@ const SearchWrapper = styled.div`
   #search-sidebar {
     padding-right: 0;
   }
-  #search-main {
-    padding-left: 0;
-    padding-top: 6px;
-  }
 `;
 
 interface SearchViewProps {

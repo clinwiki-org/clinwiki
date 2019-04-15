@@ -19,7 +19,11 @@ interface AppProps {
   history: History;
 }
 
-const AppWrapper = styled.div``;
+const AppWrapper = styled.div`
+  background-color: #4d5863;
+  min-height: 100%;
+  min-width: 100%;
+`;
 const MainWrapper = styled.div``;
 
 class App extends React.PureComponent<AppProps> {

@@ -20,12 +20,69 @@ const CrumbsBarStyleWrappper = styled.div`
     background-color: #f2f2f2;
     color: black;
     margin-bottom: 1em;
-  }
-  .crumbs-bar .label {
-    margin: 2px;
+
+    .container {
+      background: #d9deea;
+      border: 0px;
+      margin-top: 5px;
+      color: #394149;
+    }
+
+    i {
+      font-style: normal;
+      margin-right: 3px;
+      text-transform: capitalize;
+    }
+
+    span.label.label-default {
+      padding: 7px !important;
+      border-radius: 2px !important;
+    }
+
+    input.form-control {
+      border: 0px;
+      box-shadow: none;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+
+    span.label {
+      background: none;
+      padding: 5px;
+      font-size: 12px;
+      border-radius: 4px;
+      margin-right: 5px;
+      text-transform: capitalize;
+
+      span.fa-remove {
+        color: #fff !important;
+        opacity: 0.5;
+        margin-left: 5px !important;
+      }
+
+      span.fa-remove:hover {
+        opacity: 1;
+      }
+
+      b {
+        padding-right: 5px;
+      }
+
+      b:last-of-type {
+        padding-right: 0px;
+      }
+    }
   }
   .right-align {
     text-align: right;
+  }
+
+  div.row > div {
+    padding-left: 0px;
+  }
+
+  .searchInput {
+    padding-bottom: 10px;
   }
 `;
 

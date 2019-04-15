@@ -53,6 +53,10 @@ type EditProfileMutationFn = MutationFn<
   EditProfileMutationVariables
 >;
 
+const StyledWrapper = styled(Row)`
+  min-height: 100vh;
+`;
+
 class EditProfilePage extends React.Component<
   EditProfilePageProps,
   EditProfilePageState
@@ -107,7 +111,7 @@ class EditProfilePage extends React.Component<
 
   render() {
     return (
-      <Row>
+      <StyledWrapper>
         <Col md={12}>
           <StyledContainer>
             <StyledFormControl
@@ -160,7 +164,7 @@ class EditProfilePage extends React.Component<
             {this.renderErrors()}
           </StyledContainer>
         </Col>
-      </Row>
+      </StyledWrapper>
     );
   }
 }

@@ -101,19 +101,6 @@ const QUERY_CROWD_AGG_BUCKETA = gql`
 `;
 
 const PanelWrapper = styledComponents.div`
-  .panel {
-    margin-top: 5px;
-    margin-bottom: 0px;
-  }
-  .panel-heading {
-    margin: 0px;
-    padding: 5px;
-  }
-  .panel-title {
-    margin: 0px;
-    font-size: 14px;
-    width: 100%;
-  }
   .flex {
     display:flex;
     justify-content: space-between;

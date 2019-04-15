@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { gql } from 'apollo-boost';
+import styled from 'styled-components';
 import { Redirect, Switch, Route } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import {
@@ -99,6 +100,66 @@ class ParamsQueryComponent extends Query<
   SearchPageParamsQuery,
   SearchPageParamsQueryVariables
 > {}
+
+const MainContainer = styled(Col)`
+  background-color: #eaedf4;
+  min-height: 100vh;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  .rt-th {
+    text-transform: capitalize;
+    padding: 15px !important;
+    background: #8bb7a4 !important;
+    color: #fff;
+  }
+
+  .rt-table {
+  }
+`;
+
+const SidebarContainer = styled(Col)`
+  padding-right: 0px !important;
+  padding-top: 10px;
+  box-sizing: border-box;
+
+  .panel-title {
+    a:hover {
+      text-decoration: none;
+      color: #fff;
+    }
+  }
+
+  .panel-default {
+    box-shadow: 0px;
+    border: 0px;
+    background: none;
+    color: #fff;
+    text-transform: capitalize;
+
+    .panel-heading {
+      box-shadow: 0px;
+      border: 0px;
+      background: none;
+      color: #fff;
+      text-transform: capitalize;
+    }
+
+    .panel-collapse {
+      background: #394149;
+      .panel-body {
+        padding-left: 10px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+
+    .panel-title {
+      font-size: 16px;
+      color: #bac5d0;
+      padding: 0px 10px;
+    }
+  }
+`;
 
 const changeFilter = (add: boolean) => (
   aggName: string,
@@ -370,10 +431,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     if (this.props.ignoreUrlHash) {
       return (
         <Row>
-          <Col md={2} id="search-sidebar">
-            {this.renderAggs()}
-          </Col>
-          <Col md={10} id="search-main">
+          <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+          <MainContainer md={10}>
             <SearchView
               params={this.state.params as any}
               openedAgg={this.state.openedAgg}
@@ -383,7 +442,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               onAggsUpdate={this.handleAggsUpdate}
               onResetFilters={this.handleResetFilters}
             />
-          </Col>
+          </MainContainer>
         </Row>
       );
     }
@@ -401,12 +460,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <Route
           render={() => (
             <Row>
-              <Col md={2} id="search-sidebar">
-                {this.renderAggs()}
-              </Col>
-              <Col md={10} id="search-main">
-                {this.renderSearch(hash)}
-              </Col>
+              <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+              <MainContainer md={10}>{this.renderSearch(hash)}</MainContainer>
             </Row>
           )}
         />

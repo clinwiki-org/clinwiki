@@ -15,27 +15,46 @@ interface AuthHeaderProps {
   history: History;
 }
 
-const SearchInputWrapper = styled.div`
-  margin-top: 7px;
-  margin-right: 15px;
+const StyledWrapper = styled.div`
+  nav.navbar {
+    background: #1b2a38;
+    margin-bottom: 0px;
+    border: 0px;
+    border-radius: 0px;
+  }
+
+  nav.navbar a.logo {
+    color: #fff;
+  }
+
+  a#logo {
+    background: url('https://yellowrubberball.com/img/clinwiki-50.png') center
+      left no-repeat;
+    background-size: 25px 25px;
+    margin-left: 1px;
+    padding-left: 30px;
+    color: #fff;
+  }
 `;
 
 export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
   render() {
     return (
-      <Navbar fluid>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link id="logo" to="/">
-              ClinWiki
-            </Link>
-          </Navbar.Brand>
-        </Navbar.Header>
-        <AuthButton user={this.props.user} history={this.props.history} />
-        {/* <SearchInputWrapper className="pull-right">
+      <StyledWrapper>
+        <Navbar fluid>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Link id="logo" to="/">
+                ClinWiki
+              </Link>
+            </Navbar.Brand>
+          </Navbar.Header>
+          <AuthButton user={this.props.user} history={this.props.history} />
+          {/* <SearchInputWrapper className="pull-right">
           <SearchInput />
         </SearchInputWrapper> */}
-      </Navbar>
+        </Navbar>
+      </StyledWrapper>
     );
   }
 }
