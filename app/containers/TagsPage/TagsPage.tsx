@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Table, Row, Col, Button, FormControl } from 'react-bootstrap';
-import { Query, Mutation } from 'react-apollo';
+import { Query, Mutation, MutationFn } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
@@ -17,6 +17,8 @@ import {
   TagsPageDeleteWikiTagMutationVariables,
 } from 'types/TagsPageDeleteWikiTagMutation';
 import WikiPage from 'containers/WikiPage';
+import { contains, reject, equals } from 'ramda';
+import Edits from 'components/Edits';
 
 interface TagsPageProps {
   history: History;
@@ -69,26 +71,34 @@ const DELETE_TAG_MUTATION = gql`
   mutation TagsPageDeleteWikiTagMutation($nctId: String!, $value: String!) {
     deleteWikiTag(input: { nctId: $nctId, value: $value }) {
       wikiPage {
-        ...WikiPageFragment
+        ...TagsPageFragment
+        edits {
+          ...WikiPageEditFragment
+        }
       }
       errors
     }
   }
 
-  ${WikiPage.fragment}
+  ${FRAGMENT}
+  ${Edits.fragment}
 `;
 
 const ADD_TAG_MUTATION = gql`
   mutation TagsPageAddWikiTagMutation($nctId: String!, $value: String!) {
     upsertWikiTag(input: { nctId: $nctId, value: $value }) {
       wikiPage {
-        ...WikiPageFragment
+        ...TagsPageFragment
+        edits {
+          ...WikiPageEditFragment
+        }
       }
       errors
     }
   }
 
-  ${WikiPage.fragment}
+  ${FRAGMENT}
+  ${Edits.fragment}
 `;
 
 class AddTagMutationComponent extends Mutation<
@@ -96,10 +106,20 @@ class AddTagMutationComponent extends Mutation<
   TagsPageAddWikiTagMutationVariables
 > {}
 
+type AddTagMutationFn = MutationFn<
+  TagsPageAddWikiTagMutation,
+  TagsPageAddWikiTagMutationVariables
+>;
+
 class DeleteTagMutationComponent extends Mutation<
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables
 > {}
+
+type DeleteTagMutationFn = MutationFn<
+  TagsPageDeleteWikiTagMutation,
+  TagsPageDeleteWikiTagMutationVariables
+>;
 
 class QueryComponent extends Query<TagsPageQuery, TagsPageQueryVariables> {}
 
@@ -109,10 +129,22 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
     newTag: '',
   };
 
-  handleAddTag = (
-    addTag: ({ variables: TagsPageAddWikiTagMutationVariables }) => void,
-  ) => () => {
+  handleAddTag = (tags: string[], addTag: AddTagMutationFn) => () => {
     addTag({
+      optimisticResponse: {
+        upsertWikiTag: {
+          __typename: 'UpsertWikiTagPayload',
+          wikiPage: {
+            __typename: 'WikiPage',
+            nctId: this.props.match.params.nctId,
+            tags: contains(this.state.newTag, tags)
+              ? tags
+              : [...tags, this.state.newTag],
+            edits: [],
+          },
+          errors: null,
+        },
+      },
       variables: {
         nctId: this.props.match.params.nctId,
         value: this.state.newTag,
@@ -122,17 +154,32 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   };
 
   handleDeleteTag = (
-    deleteTag: ({ variables: TagsPageDeleteWikiTagMutationVariables }) => void,
+    tags: string[],
+    deleteTag: DeleteTagMutationFn,
     value: string,
   ) => () => {
-    deleteTag({ variables: { value, nctId: this.props.match.params.nctId } });
+    deleteTag({
+      variables: { value, nctId: this.props.match.params.nctId },
+      optimisticResponse: {
+        deleteWikiTag: {
+          __typename: 'DeleteWikiTagPayload',
+          wikiPage: {
+            __typename: 'WikiPage',
+            nctId: this.props.match.params.nctId,
+            tags: reject(equals(value), tags),
+            edits: [],
+          },
+          errors: null,
+        },
+      },
+    });
   };
 
   handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newTag: e.currentTarget.value });
   };
 
-  renderTag = (value: string) => {
+  renderTag = (tags: string[], value: string) => {
     return (
       <tr key={value}>
         <td style={{ display: 'flex' }}>
@@ -142,7 +189,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
               <DeleteWrapper>
                 <FontAwesome
                   name="remove"
-                  onClick={this.handleDeleteTag(deleteTag, value)}
+                  onClick={this.handleDeleteTag(tags, deleteTag, value)}
                 />
               </DeleteWrapper>
             )}
@@ -176,7 +223,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
             <Row>
               <Col md={6}>
                 <Table striped bordered condensed>
-                  <tbody>{tags.map(this.renderTag)}</tbody>
+                  <tbody>{tags.map(tag => this.renderTag(tags, tag))}</tbody>
                 </Table>
               </Col>
               <AddWrapper md={6}>
@@ -189,7 +236,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                 <AddTagMutationComponent mutation={ADD_TAG_MUTATION}>
                   {addTag => (
                     <Button
-                      onClick={this.handleAddTag(addTag)}
+                      onClick={this.handleAddTag(tags, addTag)}
                       style={{ marginLeft: 10 }}
                     >
                       Add Tag

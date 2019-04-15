@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Mutation, Query } from 'react-apollo';
+import { Mutation, Query, MutationFn } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
@@ -34,9 +34,11 @@ import {
   findIndex,
   equals,
   uniq,
+  dissoc,
 } from 'ramda';
 import CrowdLabel from './CrowdLabel';
 import AddCrowdLabel from './AddCrowdLabel';
+import { WikiPageFragment } from 'types/WikiPageFragment';
 
 interface CrowdProps {
   match: match<{ nctId: string }>;
@@ -83,26 +85,34 @@ const UPSERT_LABEL_MUTATION = gql`
   ) {
     upsertWikiLabel(input: { nctId: $nctId, key: $key, value: $value }) {
       wikiPage {
-        ...WikiPageFragment
+        ...CrowdPageFragment
+        edits {
+          ...WikiPageEditFragment
+        }
       }
       errors
     }
   }
 
-  ${WikiPage.fragment}
+  ${FRAGMENT}
+  ${Edits.fragment}
 `;
 
 const DELETE_LABEL_MUTATION = gql`
   mutation CrowdPageDeleteWikiLabelMutation($nctId: String!, $key: String!) {
     deleteWikiLabel(input: { nctId: $nctId, key: $key }) {
       wikiPage {
-        ...WikiPageFragment
+        ...CrowdPageFragment
+        edits {
+          ...WikiPageEditFragment
+        }
       }
       errors
     }
   }
 
-  ${WikiPage.fragment}
+  ${FRAGMENT}
+  ${Edits.fragment}
 `;
 
 const TableWrapper = styled(Table)`
@@ -116,10 +126,20 @@ class UpsertMutationComponent extends Mutation<
   CrowdPageUpsertWikiLabelMutationVariables
 > {}
 
+type UpsertMutationFn = MutationFn<
+  CrowdPageUpsertWikiLabelMutation,
+  CrowdPageUpsertWikiLabelMutationVariables
+>;
+
 class DeleteMutationComponent extends Mutation<
   CrowdPageDeleteWikiLabelMutation,
   CrowdPageDeleteWikiLabelMutationVariables
 > {}
+
+type DeleteMutationFn = MutationFn<
+  CrowdPageDeleteWikiLabelMutation,
+  CrowdPageDeleteWikiLabelMutationVariables
+>;
 
 class QueryComponent extends Query<CrowdPageQuery, CrowdPageQueryVariables> {}
 
@@ -134,6 +154,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     meta: {},
     upsertLabelMutation: (x: {
       variables: CrowdPageUpsertWikiLabelMutationVariables;
+      optimisticResponse?: CrowdPageUpsertWikiLabelMutation;
     }) => void,
   ) => (key: string, oldValue: string, value: string) => {
     if (!value) return;
@@ -149,17 +170,25 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
 
     upsertLabelMutation({
       variables: { key, value: newValue, nctId: this.props.match.params.nctId },
+      optimisticResponse: {
+        upsertWikiLabel: {
+          __typename: 'UpsertWikiLabelPayload',
+          wikiPage: {
+            __typename: 'WikiPage',
+            nctId: this.props.match.params.nctId,
+            meta: JSON.stringify({ ...meta, [key]: newValue }),
+            edits: [],
+          },
+          errors: null,
+        },
+      },
     });
   };
 
   handleLabelDelete = (
     meta: {},
-    upsertLabelMutation: (x: {
-      variables: CrowdPageUpsertWikiLabelMutationVariables;
-    }) => void,
-    deleteLabelMutation: (x: {
-      variables: CrowdPageDeleteWikiLabelMutationVariables;
-    }) => void,
+    upsertLabelMutation: UpsertMutationFn,
+    deleteLabelMutation: DeleteMutationFn,
   ) => (key: string, value: string) => {
     const currentValue = meta[key];
     if (!currentValue) return null;
@@ -168,8 +197,21 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       currentValue.split('|').filter(x => x !== value),
     ).join('|');
     if (newValue.length === 0) {
+      const newMeta = dissoc(key, meta);
       deleteLabelMutation({
         variables: { key, nctId: this.props.match.params.nctId },
+        optimisticResponse: {
+          deleteWikiLabel: {
+            __typename: 'DeleteWikiLabelPayload',
+            wikiPage: {
+              __typename: 'WikiPage',
+              nctId: this.props.match.params.nctId,
+              meta: JSON.stringify(newMeta),
+              edits: [],
+            },
+            errors: null,
+          },
+        },
       });
     } else {
       upsertLabelMutation({
@@ -177,6 +219,18 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
           key,
           value: newValue,
           nctId: this.props.match.params.nctId,
+        },
+        optimisticResponse: {
+          upsertWikiLabel: {
+            __typename: 'UpsertWikiLabelPayload',
+            wikiPage: {
+              __typename: 'WikiPage',
+              nctId: this.props.match.params.nctId,
+              meta: JSON.stringify({ ...meta, [key]: newValue }),
+              edits: [],
+            },
+            errors: null,
+          },
         },
       });
     }
@@ -186,9 +240,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     key: string,
     value: string,
     meta: {},
-    upsertLabelMutation: (x: {
-      variables: CrowdPageUpsertWikiLabelMutationVariables;
-    }) => void,
+    upsertLabelMutation: UpsertMutationFn,
   ) => {
     if (!value) return;
     let val = value;
@@ -200,6 +252,18 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     }
     upsertLabelMutation({
       variables: { key, value: val, nctId: this.props.match.params.nctId },
+      optimisticResponse: {
+        upsertWikiLabel: {
+          __typename: 'UpsertWikiLabelPayload',
+          wikiPage: {
+            __typename: 'WikiPage',
+            nctId: this.props.match.params.nctId,
+            meta: JSON.stringify({ ...meta, [key]: val }),
+            edits: [],
+          },
+          errors: null,
+        },
+      },
     });
 
     this.setState({ forceAddKey: null });
@@ -215,12 +279,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
 
   renderLabels = (
     meta: {},
-    upsertLabelMutation: (x: {
-      variables: CrowdPageUpsertWikiLabelMutationVariables;
-    }) => void,
-    deleteLabelMutation: (x: {
-      variables: CrowdPageDeleteWikiLabelMutationVariables;
-    }) => void,
+    upsertLabelMutation: UpsertMutationFn,
+    deleteLabelMutation: DeleteMutationFn,
   ) => {
     const labels = pipe(
       keys,

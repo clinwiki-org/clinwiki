@@ -8,8 +8,25 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { SortInput, AggFilterInput, SearchQueryInput } from 'types/globalTypes';
 import {
-  map, pipe, path, pathOr, groupBy, prop, head, propOr, lensPath, over,
-  reject, propEq, findIndex, view, remove, isEmpty, lensProp, filter, equals,
+  map,
+  pipe,
+  path,
+  pathOr,
+  groupBy,
+  prop,
+  head,
+  propOr,
+  lensPath,
+  over,
+  reject,
+  propEq,
+  findIndex,
+  view,
+  remove,
+  isEmpty,
+  lensProp,
+  filter,
+  equals,
 } from 'ramda';
 import { camelCase, snakeCase } from 'utils/helpers';
 import { gql } from 'apollo-boost';
@@ -27,36 +44,41 @@ import CrumbsBar from './components/CrumbsBar';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
-    $q: SearchQueryInput!,
-    $page:Int,
-    $pageSize:Int,
-    $sorts:[SortInput!],
-    $aggFilters:[AggFilterInput!],
-    $crowdAggFilters:[AggFilterInput!]
+    $q: SearchQueryInput!
+    $page: Int
+    $pageSize: Int
+    $sorts: [SortInput!]
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
   ) {
     crowdAggs: aggBuckets(
       params: {
-        q: $q,
-        page: 0,
-        pageSize: 100000,
-        sorts: $sorts,
-        aggFilters:$aggFilters,
-        agg: "front_matter_keys"}) {
+        q: $q
+        page: 0
+        pageSize: 100000
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        agg: "front_matter_keys"
+      }
+    ) {
       aggs {
-          buckets {
-              key
-              docCount
-          }
+        buckets {
+          key
+          docCount
+        }
       }
     }
-    search (
-      params:
-        { q: $q,
-          page: $page,
-          pageSize: $pageSize,
-          sorts: $sorts,
-          aggFilters:$aggFilters,
-          crowdAggFilters:$crowdAggFilters }) {
+    search(
+      params: {
+        q: $q
+        page: $page
+        pageSize: $pageSize
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+      }
+    ) {
       recordsTotal
       aggs {
         name
@@ -81,8 +103,14 @@ const QUERY = gql`
   }
 `;
 
-const COLUMNS = ['nctId', 'averageRating', 'briefTitle',
-  'overallStatus', 'startDate', 'completionDate'];
+const COLUMNS = [
+  'nctId',
+  'averageRating',
+  'briefTitle',
+  'overallStatus',
+  'startDate',
+  'completionDate',
+];
 const COLUMN_NAMES = {
   nctId: 'nct_id',
   briefTitle: 'title',
@@ -92,59 +120,71 @@ const COLUMN_NAMES = {
   startDate: 'started',
 };
 
-const changePage =
-  (pageNumber: number) => (params: SearchParams) => ({ ...params, page: pageNumber });
-const changePageSize =
-  (pageSize: number) => (params: SearchParams) => ({ ...params, pageSize, page: 0 });
-const changeSorted =
-  (sorts: [SortInput]) => (params: SearchParams) => {
-    const idSortedLens = lensProp('id');
-    const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
-    return ({ ...params, sorts: snakeSorts });
-  };
-const changeFilter =
-  (add: boolean) => (aggName:string, key:string, isCrowd?:boolean) => (params: SearchParams) => {
-    const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
-    const lens = lensPath([propName]);
-    return over(
-      lens,
-      (aggs: AggFilterInput[]) => {
-        const index = findIndex(propEq('field', aggName), aggs);
-        if ((index === -1) && add) {
-          return [...aggs, { field: aggName, values: [key] }];
-        }
-        const aggLens = lensPath([index, 'values']);
-        const updater = (values: string[]) =>
-          add ? [...values, key] : reject(x => x === key, values);
-        let res = over(aggLens, updater, aggs);
-        // Drop filter if no values left
-        if (isEmpty(view(aggLens, res))) {
-          res = remove(index, 1, res as any);
-        }
-        return res;
-      },
-      params,
-    );
-  };
+const changePage = (pageNumber: number) => (params: SearchParams) => ({
+  ...params,
+  page: pageNumber,
+});
+const changePageSize = (pageSize: number) => (params: SearchParams) => ({
+  ...params,
+  pageSize,
+  page: 0,
+});
+const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
+  const idSortedLens = lensProp('id');
+  const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
+  return { ...params, sorts: snakeSorts };
+};
+const changeFilter = (add: boolean) => (
+  aggName: string,
+  key: string,
+  isCrowd?: boolean,
+) => (params: SearchParams) => {
+  const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
+  const lens = lensPath([propName]);
+  return over(
+    lens,
+    (aggs: AggFilterInput[]) => {
+      const index = findIndex(propEq('field', aggName), aggs);
+      if (index === -1 && add) {
+        return [...aggs, { field: aggName, values: [key] }];
+      }
+      const aggLens = lensPath([index, 'values']);
+      const updater = (values: string[]) =>
+        add ? [...values, key] : reject(x => x === key, values);
+      let res = over(aggLens, updater, aggs);
+      // Drop filter if no values left
+      if (isEmpty(view(aggLens, res))) {
+        res = remove(index, 1, res as any);
+      }
+      return res;
+    },
+    params,
+  );
+};
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
-const addSearchTerm =
-  (term: string) => (params: SearchParams) => (
-    { ...params, q: { ...params.q, children: [...(params.q.children || []), { key: term }] } }
-  );
-const removeSearchTerm =
-  (term: string) => (params: SearchParams) => {
-    const children = reject(propEq('key', term), params.q.children || []) as SearchQuery[];
-    return { ...params, q: { ...params.q, children } };
-  };
+const addSearchTerm = (term: string) => (params: SearchParams) => ({
+  ...params,
+  q: { ...params.q, children: [...(params.q.children || []), { key: term }] },
+});
+const removeSearchTerm = (term: string) => (params: SearchParams) => {
+  const children = reject(
+    propEq('key', term),
+    params.q.children || [],
+  ) as SearchQuery[];
+  return { ...params, q: { ...params.q, children } };
+};
 
-class QueryComponent extends Query<SearchPageSearchQuery, SearchPageSearchQueryVariables> {}
+class QueryComponent extends Query<
+  SearchPageSearchQuery,
+  SearchPageSearchQueryVariables
+> {}
 
 const SearchWrapper = styled.div`
   .rt-tr {
     cursor: pointer;
   }
-  #search-sidebar{
+  #search-sidebar {
     padding-right: 0;
   }
   #search-main {
@@ -163,13 +203,13 @@ interface SearchViewProps {
   onRowClick: (nctId: string) => void;
   onResetFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
-  openedAgg: { name: string, kind: AggKind } | null;
+  openedAgg: { name: string; kind: AggKind } | null;
 }
 
 class SearchView extends React.PureComponent<SearchViewProps> {
   isStarColumn = (name: string): boolean => {
     return name === 'averageRating';
-  }
+  };
 
   rowProps = (_, rowInfo) => {
     return {
@@ -178,7 +218,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         return handleOriginal();
       },
     };
-  }
+  };
 
   renderColumn = (name: string) => {
     return {
@@ -190,15 +230,13 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         whiteSpace: 'normal',
         textAlign: this.isStarColumn(name) ? 'center' : null,
       },
-      Cell: !this.isStarColumn(name) ? null : row => (
-        <ReactStars
-          count={5}
-          edit={false}
-          value={Number(row.value)}
-        />
-      ),
+      Cell: !this.isStarColumn(name)
+        ? null
+        : row => (
+            <ReactStars count={5} edit={false} value={Number(row.value)} />
+          ),
     };
-  }
+  };
 
   transformAggs = (
     aggs: SearchPageSearchQuery_search_aggs[],
@@ -208,7 +246,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       map(head),
       map(prop('buckets')),
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
-  }
+  };
 
   transformCrowdAggs = (
     aggs: SearchPageSearchQuery_crowdAggs_aggs[],
@@ -218,16 +256,19 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       head,
       prop('buckets'),
       groupBy(prop('key')),
+      map(() => []),
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
-  }
+  };
 
-  renderSearch = (
-    { data, loading, error }:
-    { data: SearchPageSearchQuery | undefined,
-      loading: boolean,
-      error: any,
-    },
-  ) => {
+  renderSearch = ({
+    data,
+    loading,
+    error,
+  }: {
+    data: SearchPageSearchQuery | undefined;
+    loading: boolean;
+    error: any;
+  }) => {
     const { page, pageSize, sorts } = this.props.params;
 
     if (loading) {
@@ -259,9 +300,18 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         page={page}
         pageSize={pageSize}
         defaultSorted={camelizedSorts}
-        onPageChange={pipe(changePage, this.props.onUpdateParams)}
-        onPageSizeChange={pipe(changePageSize, this.props.onUpdateParams)}
-        onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
+        onPageChange={pipe(
+          changePage,
+          this.props.onUpdateParams,
+        )}
+        onPageSizeChange={pipe(
+          changePageSize,
+          this.props.onUpdateParams,
+        )}
+        onSortedChange={pipe(
+          changeSorted,
+          this.props.onUpdateParams,
+        )}
         data={path(['search', 'studies'], data)}
         pages={totalPages}
         loading={loading}
@@ -270,42 +320,63 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         defaultSortDesc
       />
     );
+  };
 
-  }
-
-  renderCrumbs = (
-    { data, loading, error }:
-    { data: SearchPageSearchQuery | undefined,
-      loading: boolean,
-      error: any,
-    },
-  ) => {
+  renderCrumbs = ({
+    data,
+    loading,
+    error,
+  }: {
+    data: SearchPageSearchQuery | undefined;
+    loading: boolean;
+    error: any;
+  }) => {
     let pagesTotal = 0;
-    if (data && data.search && data.search.recordsTotal && this.props.params.pageSize) {
-      pagesTotal = Math.ceil(data.search.recordsTotal / this.props.params.pageSize);
+    if (
+      data &&
+      data.search &&
+      data.search.recordsTotal &&
+      this.props.params.pageSize
+    ) {
+      pagesTotal = Math.ceil(
+        data.search.recordsTotal / this.props.params.pageSize,
+      );
     }
 
-    const q = this.props.params.q.key === '*' ?
-      [] :
-      (this.props.params.q.children || []).map(prop('key'));
+    const q =
+      this.props.params.q.key === '*'
+        ? []
+        : (this.props.params.q.children || []).map(prop('key'));
 
     return (
       <CrumbsBar
         // @ts-ignore
-        searchParams={{ ... this.props.params, q }}
-        removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
-        addSearchTerm={pipe(addSearchTerm, this.props.onUpdateParams)}
-        removeSearchTerm={pipe(removeSearchTerm, this.props.onUpdateParams)}
+        searchParams={{ ...this.props.params, q }}
+        removeFilter={pipe(
+          removeFilter,
+          this.props.onUpdateParams,
+        )}
+        addSearchTerm={pipe(
+          addSearchTerm,
+          this.props.onUpdateParams,
+        )}
+        removeSearchTerm={pipe(
+          removeSearchTerm,
+          this.props.onUpdateParams,
+        )}
         page={this.props.params.page}
         pagesTotal={pagesTotal}
         pageSize={this.props.params.pageSize}
         update={{
-          page: pipe(changePage, this.props.onUpdateParams),
+          page: pipe(
+            changePage,
+            this.props.onUpdateParams,
+          ),
         }}
         onReset={this.props.onResetFilters}
       />
     );
-  }
+  };
 
   render() {
     const { page, pageSize, sorts } = this.props.params;
