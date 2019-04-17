@@ -296,6 +296,60 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     }
   end
 
+  def extended_interventions
+    @extended_interventions || Study.preload_extended_interventions(self)
+    @extended_interventions
+  end
+
+  def extended_interventions_raw
+    @extended_interventions
+  end
+
+  def extended_interventions_raw=(value)
+    @extended_interventions = value
+  end
+
+  def reload
+    super
+    self.extended_interventions_raw = nil
+  end
+
+  def self.preload_extended_interventions(studies)
+    studies = studies.is_a?(Array) ? studies : [studies]
+    study_groups = studies.group_by(&:nct_id)
+    ids = studies.map(&:id)
+    ids_sql = ids.map { |id| "\'#{id}\'" }.join(",")
+    query = <<-SQL
+      SELECT dg.group_type as group_type,
+        dg.title as group_title,
+        dg.description as group_description,
+        dg.nct_id as nct_id,
+        i.name as name,
+        i.intervention_type as type,
+        i.description as description,
+        ion.name AS other_name
+      FROM interventions i
+      LEFT OUTER JOIN intervention_other_names ion
+                 ON i.id = ion.intervention_id
+      LEFT OUTER JOIN design_group_interventions dgi
+                 ON i.id = dgi.intervention_id
+      LEFT OUTER JOIN design_groups dg
+                 ON dgi.design_group_id = dg.id
+      WHERE dg.nct_id IN (#{ids_sql})
+      ORDER BY dg.group_type
+    SQL
+
+    rows = AactRecord.connection.execute(query)
+    # Successfully executed sql query - reset extended_inverventions
+    studies.each { |study| study.extended_interventions_raw = [] }
+    rows.each do |row|
+      intervention = ExtendedIntervention.new(row)
+      study_groups[intervention.nct_id].each do |study|
+        study.extended_interventions_raw.push(intervention)
+      end
+    end
+  end
+
   # Takes a selector and enqeueues each instance for batch async reindex
   # Note: selector cannot be ordered and limited in this case, but the query could be big
   # it will be split in batches
