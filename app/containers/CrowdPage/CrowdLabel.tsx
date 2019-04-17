@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Button, FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import ButtonCell from './ButtonCell';
+import CurrentUser from 'containers/CurrentUser';
 
 interface CrowdLabelProps {
   name: string;
@@ -79,33 +80,50 @@ class CrowdLabel extends React.Component<CrowdLabelProps, CrowdLabelState> {
             value
           )}
         </td>
-        <ButtonCell>
-          <div>
-            <Button onClick={this.handleAddClick}>Add</Button>
-          </div>
-        </ButtonCell>
+        <CurrentUser>
+          {user => {
+            if (!user) {
+              return (
+                <>
+                  <ButtonCell />
+                  <ButtonCell />
+                  <ButtonCell />
+                </>
+              );
+            }
+            return (
+              <>
+                <ButtonCell>
+                  <div>
+                    <Button onClick={this.handleAddClick}>Add</Button>
+                  </div>
+                </ButtonCell>
 
-        {this.state.inEditMode && (
-          <ButtonCell>
-            <div>
-              <Button onClick={this.handleSubmitClick}>Submit</Button>
-            </div>
-          </ButtonCell>
-        )}
+                {this.state.inEditMode && (
+                  <ButtonCell>
+                    <div>
+                      <Button onClick={this.handleSubmitClick}>Submit</Button>
+                    </div>
+                  </ButtonCell>
+                )}
 
-        {!this.state.inEditMode && (
-          <ButtonCell>
-            <div>
-              <Button onClick={this.handleEditClick}>Edit</Button>
-            </div>
-          </ButtonCell>
-        )}
+                {!this.state.inEditMode && (
+                  <ButtonCell>
+                    <div>
+                      <Button onClick={this.handleEditClick}>Edit</Button>
+                    </div>
+                  </ButtonCell>
+                )}
 
-        <ButtonCell>
-          <div>
-            <Button onClick={this.handleDeleteClick}>Delete</Button>
-          </div>
-        </ButtonCell>
+                <ButtonCell>
+                  <div>
+                    <Button onClick={this.handleDeleteClick}>Delete</Button>
+                  </div>
+                </ButtonCell>
+              </>
+            );
+          }}
+        </CurrentUser>
       </tr>
     );
   }

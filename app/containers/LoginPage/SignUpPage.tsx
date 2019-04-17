@@ -13,6 +13,7 @@ import { setLocalJwt } from 'utils/localStorage';
 import CurrentUser from 'containers/CurrentUser';
 import StyledError from './StyledError';
 import { omit } from 'ramda';
+import StyledWrapper from './StyledWrapper';
 
 interface SignUpPageProps {
   history: History;
@@ -99,7 +100,7 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
 
   render() {
     return (
-      <Row>
+      <StyledWrapper>
         <Col md={12}>
           <StyledContainer>
             <StyledFormControl
@@ -157,7 +158,7 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
             </LinkContainer>
           </StyledContainer>
         </Col>
-      </Row>
+      </StyledWrapper>
     );
   }
 }

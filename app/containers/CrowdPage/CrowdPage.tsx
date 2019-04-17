@@ -39,6 +39,7 @@ import {
 import CrowdLabel from './CrowdLabel';
 import AddCrowdLabel from './AddCrowdLabel';
 import { WikiPageFragment } from 'types/WikiPageFragment';
+import CurrentUser from 'containers/CurrentUser';
 
 interface CrowdProps {
   match: match<{ nctId: string }>;
@@ -356,12 +357,18 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
                 onAddClick={this.handleAddInsideLabelClick}
               />
             ))}
-            <AddCrowdLabel
-              onAddLabel={(key, value) =>
-                this.handleAddLabel(key, value, meta, upsertLabelMutation)
+            <CurrentUser>
+              {user =>
+                user && (
+                  <AddCrowdLabel
+                    onAddLabel={(key, value) =>
+                      this.handleAddLabel(key, value, meta, upsertLabelMutation)
+                    }
+                    forceAddKey={this.state.forceAddKey}
+                  />
+                )
               }
-              forceAddKey={this.state.forceAddKey}
-            />
+            </CurrentUser>
           </tbody>
         </TableWrapper>
       </div>

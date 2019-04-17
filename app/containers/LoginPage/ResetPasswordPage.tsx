@@ -13,6 +13,7 @@ import StyledButton from './StyledButton';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import StyledError from './StyledError';
+import StyledWrapper from './StyledWrapper';
 
 interface ResetPasswordPageProps {
   history: History;
@@ -83,7 +84,7 @@ class ResetPasswordPage extends React.Component<
 
   render() {
     return (
-      <Row>
+      <StyledWrapper>
         <Col md={12}>
           <StyledContainer>
             <StyledFormControl
@@ -116,7 +117,7 @@ class ResetPasswordPage extends React.Component<
             </LinkContainer>
           </StyledContainer>
         </Col>
-      </Row>
+      </StyledWrapper>
     );
   }
 }

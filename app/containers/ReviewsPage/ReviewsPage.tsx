@@ -28,6 +28,8 @@ import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import EditReview from './EditReview';
 import { reject, propEq, over, lensPath, keys } from 'ramda';
 import { dataIdFromObject } from 'configureApollo';
+import CurrentUser from 'containers/CurrentUser';
+import { UserFragment } from 'types/UserFragment';
 
 interface ReviewsPageProps {
   match: match<{ nctId: string }>;
@@ -151,13 +153,16 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
     );
   };
 
-  renderReview = (review: ReviewsPageFragment) => {
+  renderReview = (user: UserFragment | null) => (
+    review: ReviewsPageFragment,
+  ) => {
     let meta = {};
     try {
       meta = JSON.parse(review.meta);
     } catch (e) {
       console.error(`Error parsing meta ${review.meta}`, e);
     }
+    const authorized = user && user.email === review.user.email;
     return (
       <tr key={review.id}>
         <td>
@@ -180,52 +185,60 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
               />
             </Col>
             <Col md={4} />
-            <Col md={2}>
-              <ButtonsWrapper>
-                <Button
-                  style={{ marginRight: 10 }}
-                  onClick={() => this.handleEditReview(review.id)}
-                >
-                  Edit
-                </Button>
-                <DeleteReviewMutationComponent
-                  mutation={DELETE_REVIEW_MUTATION}
-                  update={cache => {
-                    const id = dataIdFromObject({
-                      id: this.props.match.params.nctId,
-                      __typename: 'Study',
-                    });
+            {authorized && (
+              <Col md={2}>
+                <ButtonsWrapper>
+                  <Button
+                    style={{ marginRight: 10 }}
+                    onClick={() => this.handleEditReview(review.id)}
+                  >
+                    Edit
+                  </Button>
+                  <DeleteReviewMutationComponent
+                    mutation={DELETE_REVIEW_MUTATION}
+                    update={cache => {
+                      const id = dataIdFromObject({
+                        id: this.props.match.params.nctId,
+                        __typename: 'Study',
+                      });
 
-                    const study = cache.readFragment<ReviewsPageStudyFragment>({
-                      id,
-                      fragment: STUDY_FRAGMENT,
-                      fragmentName: 'ReviewsPageStudyFragment',
-                    });
-                    const reviewsLens = lensPath(['reviews']);
-                    const newStudy = over(
-                      reviewsLens,
-                      reject(propEq('id', review.id)),
-                      study,
-                    );
+                      const study = cache.readFragment<
+                        ReviewsPageStudyFragment
+                        // tslint:disable-next-line
+                      >({
+                        id,
+                        fragment: STUDY_FRAGMENT,
+                        fragmentName: 'ReviewsPageStudyFragment',
+                      });
+                      const reviewsLens = lensPath(['reviews']);
+                      const newStudy = over(
+                        reviewsLens,
+                        reject(propEq('id', review.id)),
+                        study,
+                      );
 
-                    cache.writeFragment({
-                      id,
-                      fragment: STUDY_FRAGMENT,
-                      fragmentName: 'ReviewsPageStudyFragment',
-                      data: newStudy,
-                    });
-                  }}
-                >
-                  {deleteReview => (
-                    <Button
-                      onClick={this.handleDeleteReview(deleteReview, review.id)}
-                    >
-                      Delete
-                    </Button>
-                  )}
-                </DeleteReviewMutationComponent>
-              </ButtonsWrapper>
-            </Col>
+                      cache.writeFragment({
+                        id,
+                        fragment: STUDY_FRAGMENT,
+                        fragmentName: 'ReviewsPageStudyFragment',
+                        data: newStudy,
+                      });
+                    }}
+                  >
+                    {deleteReview => (
+                      <Button
+                        onClick={this.handleDeleteReview(
+                          deleteReview,
+                          review.id,
+                        )}
+                      >
+                        Delete
+                      </Button>
+                    )}
+                  </DeleteReviewMutationComponent>
+                </ButtonsWrapper>
+              </Col>
+            )}
           </Row>
           <RatingsWrapper>
             {keys(meta).map(key => this.renderRating(key, meta[key]))}
@@ -237,14 +250,20 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
 
   renderReviews = (reviews: ReviewsPageFragment[]) => {
     return (
-      <>
-        <WriteReviewButton onClick={this.handleWriteReview}>
-          Write a review
-        </WriteReviewButton>
-        <Table striped bordered>
-          <tbody>{reviews.map(this.renderReview)}</tbody>
-        </Table>
-      </>
+      <CurrentUser>
+        {user => (
+          <>
+            {user && (
+              <WriteReviewButton onClick={this.handleWriteReview}>
+                Write a review
+              </WriteReviewButton>
+            )}
+            <Table striped bordered>
+              <tbody>{reviews.map(this.renderReview(user))}</tbody>
+            </Table>
+          </>
+        )}
+      </CurrentUser>
     );
   };
 

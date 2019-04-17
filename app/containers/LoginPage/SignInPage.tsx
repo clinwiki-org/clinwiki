@@ -12,6 +12,7 @@ import { History } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
 import CurrentUser from 'containers/CurrentUser';
 import StyledError from './StyledError';
+import StyledWrapper from './StyledWrapper';
 
 interface SignInPageProps {
   history: History;
@@ -91,7 +92,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
 
   render() {
     return (
-      <Row>
+      <StyledWrapper>
         <Col md={12}>
           <StyledContainer>
             <StyledFormControl
@@ -138,7 +139,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
             </LinkContainer>
           </StyledContainer>
         </Col>
-      </Row>
+      </StyledWrapper>
     );
   }
 }

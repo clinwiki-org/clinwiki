@@ -173,7 +173,6 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   };
 
   handleQueryCompleted = (data: WikiPageQuery) => {
-    console.log('dfsdfds');
     const text =
       data && data.study && data.study.wikiPage && data.study.wikiPage.content;
     if (!text || text === this.state.plainEditorText) return;
@@ -353,7 +352,6 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
           }
           this.handleLoaded();
           if (!data || !data.study) return null;
-          console.log(data);
 
           return (
             <CurrentUser>

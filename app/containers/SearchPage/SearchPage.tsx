@@ -304,10 +304,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
-    console.log('Params before:');
-    console.log(this.state.params);
-    console.log('Params after:');
-    console.log(updater(this.state.params as any));
     this.setState({ params: updater(this.state.params as any) });
   };
 

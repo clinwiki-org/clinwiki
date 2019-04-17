@@ -16,6 +16,7 @@ import StyledError from './StyledError';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { equals, pick } from 'ramda';
+import StyledWrapper from './StyledWrapper';
 
 interface EditProfilePageProps {
   user: UserFragment | null;
@@ -52,10 +53,6 @@ type EditProfileMutationFn = MutationFn<
   EditProfileMutation,
   EditProfileMutationVariables
 >;
-
-const StyledWrapper = styled(Row)`
-  min-height: 100vh;
-`;
 
 class EditProfilePage extends React.Component<
   EditProfilePageProps,

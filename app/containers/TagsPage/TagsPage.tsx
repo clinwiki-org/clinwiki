@@ -19,6 +19,8 @@ import {
 import WikiPage from 'containers/WikiPage';
 import { contains, reject, equals } from 'ramda';
 import Edits from 'components/Edits';
+import CurrentUser from 'containers/CurrentUser';
+import { UserFragment } from 'types/UserFragment';
 
 interface TagsPageProps {
   history: History;
@@ -179,21 +181,23 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
     this.setState({ newTag: e.currentTarget.value });
   };
 
-  renderTag = (tags: string[], value: string) => {
+  renderTag = (tags: string[], value: string, user: UserFragment | null) => {
     return (
       <tr key={value}>
         <td style={{ display: 'flex' }}>
           <b>{value}</b>
-          <DeleteTagMutationComponent mutation={DELETE_TAG_MUTATION}>
-            {deleteTag => (
-              <DeleteWrapper>
-                <FontAwesome
-                  name="remove"
-                  onClick={this.handleDeleteTag(tags, deleteTag, value)}
-                />
-              </DeleteWrapper>
-            )}
-          </DeleteTagMutationComponent>
+          {user && (
+            <DeleteTagMutationComponent mutation={DELETE_TAG_MUTATION}>
+              {deleteTag => (
+                <DeleteWrapper>
+                  <FontAwesome
+                    name="remove"
+                    onClick={this.handleDeleteTag(tags, deleteTag, value)}
+                  />
+                </DeleteWrapper>
+              )}
+            </DeleteTagMutationComponent>
+          )}
         </td>
       </tr>
     );
@@ -220,31 +224,39 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
 
           const tags = data.study.wikiPage.tags;
           return (
-            <Row>
-              <Col md={6}>
-                <Table striped bordered condensed>
-                  <tbody>{tags.map(tag => this.renderTag(tags, tag))}</tbody>
-                </Table>
-              </Col>
-              <AddWrapper md={6}>
-                <FormControl
-                  type="text"
-                  placeholder="Your Tag"
-                  value={this.state.newTag}
-                  onChange={this.handleNewTagChange}
-                />
-                <AddTagMutationComponent mutation={ADD_TAG_MUTATION}>
-                  {addTag => (
-                    <Button
-                      onClick={this.handleAddTag(tags, addTag)}
-                      style={{ marginLeft: 10 }}
-                    >
-                      Add Tag
-                    </Button>
+            <CurrentUser>
+              {user => (
+                <Row>
+                  <Col md={6}>
+                    <Table striped bordered condensed>
+                      <tbody>
+                        {tags.map(tag => this.renderTag(tags, tag, user))}
+                      </tbody>
+                    </Table>
+                  </Col>
+                  {user && (
+                    <AddWrapper md={6}>
+                      <FormControl
+                        type="text"
+                        placeholder="Your Tag"
+                        value={this.state.newTag}
+                        onChange={this.handleNewTagChange}
+                      />
+                      <AddTagMutationComponent mutation={ADD_TAG_MUTATION}>
+                        {addTag => (
+                          <Button
+                            onClick={this.handleAddTag(tags, addTag)}
+                            style={{ marginLeft: 10 }}
+                          >
+                            Add Tag
+                          </Button>
+                        )}
+                      </AddTagMutationComponent>
+                    </AddWrapper>
                   )}
-                </AddTagMutationComponent>
-              </AddWrapper>
-            </Row>
+                </Row>
+              )}
+            </CurrentUser>
           );
         }}
       </QueryComponent>
