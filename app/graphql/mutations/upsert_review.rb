@@ -10,6 +10,8 @@ module Mutations
 
     def resolve(id: nil, nct_id:, meta:, content:)
       review = Review.find_or_initialize_by(id: id)
+      return { review: nil, errors: ["Unauthorized"] } if review.user.present? && review.user != current_user
+
       review.nct_id = nct_id
       review.front_matter = JSON.parse(meta)
       review.content = content
