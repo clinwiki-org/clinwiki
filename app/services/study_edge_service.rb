@@ -4,7 +4,7 @@ LLONG_MAX = 9223372036854775807 # rubocop:disable Style/NumericLiterals
 class StudyEdgeService
   # @param params - hash representing SearchInputType with symbols as keys.
   def initialize(params)
-    @params = params.deep_symbolize_keys.deep_dup.freeze
+    @params = normalize_params(params).freeze
     @search_service = SearchService.new(@params)
   end
 
@@ -23,6 +23,12 @@ class StudyEdgeService
   end
 
   private
+
+  def normalize_params(params)
+    result = params.deep_symbolize_keys.deep_dup
+    result[:page] = 0
+    result
+  end
 
   def first_study_id
     @search_service.search&.dig(:studies)&.first&.id
