@@ -219,10 +219,16 @@ class SearchService # rubocop:disable Metrics/ClassLength
   #   { or: [{"state": "NY"}] },
   # ]
   def search_kick_where_from_filters(filters: [], skip_filters: [], is_crowd_agg: false)
-    filters
-      .select { |filter| filter[:field] && !filter.values.empty? }
-      .reject { |filter| skip_filters.include?(filter[:field].to_sym) }
-      .map do |filter|
+    cleaned_filters =
+      filters
+        .select { |filter| filter[:field] && !filter.values.empty? }
+        .reject do |filter|
+          key_prefix = is_crowd_agg ? "fm_" : ""
+          key = "#{key_prefix}#{filter[:field]}".to_sym
+          skip_filters.include?(key)
+        end
+
+    cleaned_filters.map do |filter|
       key_prefix = is_crowd_agg ? "fm_" : ""
       key = "#{key_prefix}#{filter[:field]}"
       { _or: filter[:values].map { |val| { key => val } } }
