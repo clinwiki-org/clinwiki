@@ -20,6 +20,7 @@ module Types
     field :descriptive_info, DescriptiveInfoType, null: false
     field :wiki_page, WikiPageType, null: true
     field :interventions, [InterventionType], null: false
+    field :extended_interventions, [ExtendedInterventionType], null: false
     field :reviews, [ReviewType], null: false
     field :facilities, [FacilityType], null: false
     field :average_rating, Float, null: false
@@ -71,6 +72,10 @@ module Types
 
     def facilities
       Loaders::Association.for(Study, :facilities).load(object)
+    end
+
+    def extended_interventions
+      Loaders::CustomAssociation.for(Study, :extended_interventions).load(object)
     end
   end
 end

@@ -314,19 +314,20 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     self.extended_interventions_raw = nil
   end
 
-  def self.preload_extended_interventions(studies)
+  def self.preload_extended_interventions(studies) # rubocop:disable Metrics/MethodLength
     studies = studies.is_a?(Array) ? studies : [studies]
     study_groups = studies.group_by(&:nct_id)
     ids = studies.map(&:id)
     ids_sql = ids.map { |id| "\'#{id}\'" }.join(",")
     query = <<-SQL
       SELECT dg.group_type as group_type,
-        dg.title as group_title,
+        dg.title as group_name,
         dg.description as group_description,
-        dg.nct_id as nct_id,
+        i.nct_id as nct_id,
         i.name as name,
         i.intervention_type as type,
         i.description as description,
+        i.id as id,
         ion.name AS other_name
       FROM interventions i
       LEFT OUTER JOIN intervention_other_names ion
@@ -335,7 +336,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
                  ON i.id = dgi.intervention_id
       LEFT OUTER JOIN design_groups dg
                  ON dgi.design_group_id = dg.id
-      WHERE dg.nct_id IN (#{ids_sql})
+      WHERE i.nct_id IN (#{ids_sql})
       ORDER BY dg.group_type
     SQL
 
