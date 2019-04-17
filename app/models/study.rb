@@ -204,10 +204,6 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
              :design_outcomes, :interventions, :browse_interventions)
   }
 
-  def tags
-    try(:wiki_page).try(:tags)
-  end
-
   def rating_dimensions
     dimensions = {}
     reviews.each do |r|
@@ -245,7 +241,6 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       facility_states: facilities.map(&:state),
       facility_cities: facilities.map(&:city),
       average_rating: average_rating,
-      tags: tags,
       reviews: reviews && reviews.map(&:text),
       sponsors: sponsors && sponsors.map(&:name),
       rating_dimensions: rating_dimensions.keys,
@@ -290,7 +285,6 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       enrollment: enrollment,
       enrollment_type: enrollment_type,
       source: source,
-      tags: tags,
       reviews_length: reviews.count,
       average_rating: average_rating,
     }

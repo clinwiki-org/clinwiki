@@ -2,7 +2,7 @@ MAX_AGGREGATION_LIMIT = 1_000_000
 ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
 ENABLED_AGGS = %i[
-  average_rating tags overall_status facility_states
+  average_rating overall_status facility_states
   facility_cities facility_names study_type sponsors
   browse_condition_mesh_terms phase rating_dimensions
   browse_interventions_mesh_terms interventions_mesh_terms
