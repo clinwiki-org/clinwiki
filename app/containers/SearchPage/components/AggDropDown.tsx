@@ -172,7 +172,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       };
     }
 
-    const aggLens = lensPath(['aggFilters', props.agg]);
+    const aggLens = lensPath([
+      props.aggKind === 'aggs' ? 'aggFilters' : 'crowdAggFilters',
+      props.agg,
+    ]);
     const prevAggValue = view(aggLens, state.prevParams);
     const nextAggValue = view(aggLens, props.searchParams);
 
@@ -317,7 +320,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                   <div className="flex">
                     <span>{title}</span>
                     <span>
-                      {' '}
                       <FontAwesome name={icon} />{' '}
                     </span>
                   </div>
