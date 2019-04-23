@@ -93,9 +93,13 @@ class SearchService # rubocop:disable Metrics/ClassLength
   # Search results from params
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false)
-    options = search_kick_query_options(params: params, search_after: search_after, reverse: reverse)
-    # options[:includes] = [:wiki_page, :reviews]
+    crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
+      &.dig(:front_matter_keys, :buckets)
+      &.map { |bucket| "fm_#{bucket[:key]}" } || []
 
+    aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
+
+    options = search_kick_query_options(params: params, aggs: aggs, search_after: search_after, reverse: reverse)
     search_result = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }
     end
@@ -179,7 +183,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
     res.presence || "*"
   end
 
-  def search_kick_query_options(params:, aggs: ENABLED_AGGS, search_after: nil, reverse: false, skip_filters: [])
+  def search_kick_query_options(params:, aggs:, search_after: nil, reverse: false, skip_filters: [])
     body_options = { search_after: search_after }.delete_if { |_, v| v.blank? }
     {
       page: (params[:page] || 0) + 1,
