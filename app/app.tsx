@@ -100,3 +100,17 @@ if (window && !window.Intl) {
 // if (process.env.NODE_ENV === 'production') {
 //   require('offline-plugin/runtime').install(); // eslint-disable-line global-require
 // }
+
+// Explicitly uninstall serviceworker
+if (process.env.NODE_ENV === 'production') {
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.getRegistrations().then(
+      registrations => {
+        for (const reg of registrations) {
+          console.log('Unregistering service worker');
+          reg.unregister();
+        }
+      },
+    );
+  }
+}
