@@ -6,21 +6,22 @@ import ButtonCell from './ButtonCell';
 interface AddCrowdLabelProps {
   onAddLabel: (key: string, value: string) => void;
   // pass not null to this prop if you want to toggle add mode with this key
-  forceAddKey?: string | null;
+  forceAddLabel?: { key: string; value: string } | null;
+  name?: string;
 }
 
 interface AddCrowdLabelState {
   inAddMode: boolean;
   key: string;
   value: string;
-  prevForceKey: string | null;
+  prevForceAddLabel: { key: string; value: string } | null;
 }
 
 const defaultState = {
   inAddMode: false,
   key: '',
   value: '',
-  prevForceKey: null,
+  prevForceAddLabel: null,
 };
 
 const StyleWrapper = styled.tr`
@@ -41,18 +42,18 @@ class AddCrowdLabel extends React.Component<
     props: AddCrowdLabelProps,
     state: AddCrowdLabelState,
   ) => {
-    const { forceAddKey: key } = props;
-    if (key && state.prevForceKey !== props.forceAddKey) {
+    const key = props.forceAddLabel && props.forceAddLabel.key;
+    if (key && state.prevForceAddLabel !== props.forceAddLabel) {
       return {
         ...state,
         key,
         inAddMode: true,
         value: defaultState.value,
-        prevForceKey: key,
+        prevForceAddLabel: props.forceAddLabel,
       };
     }
 
-    return { ...state, prevForceKey: props.forceAddKey };
+    return { ...state, prevForceAddLabel: props.forceAddLabel };
   };
 
   handleKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +76,7 @@ class AddCrowdLabel extends React.Component<
   render() {
     return (
       <StyleWrapper>
-        <td style={{ verticalAlign: 'middle' }}>
+        <td style={{ verticalAlign: 'middle', width: '20%' }}>
           {this.state.inAddMode && (
             <FormControl
               type="text"
@@ -85,7 +86,7 @@ class AddCrowdLabel extends React.Component<
             />
           )}
         </td>
-        <td style={{ borderRight: 'none' }}>
+        <td style={{ borderRight: 'none', width: '50%' }}>
           {this.state.inAddMode && (
             <FormControl
               componentClass="textarea"
@@ -107,7 +108,9 @@ class AddCrowdLabel extends React.Component<
               <Button onClick={this.handleSubmit}>Submit</Button>
             )}
             {!this.state.inAddMode && (
-              <Button onClick={this.handleAddClick}>Add</Button>
+              <Button onClick={this.handleAddClick}>
+                {this.props.name || 'Add'}
+              </Button>
             )}
           </div>
         </ButtonCell>

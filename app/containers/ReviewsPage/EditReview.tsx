@@ -7,11 +7,12 @@ import {
   EditReviewQueryVariables,
 } from 'types/EditReviewQuery';
 import { match } from 'react-router-dom';
-import { find, propEq } from 'ramda';
+import { find, propEq, pipe, split, dropLast, join } from 'ramda';
 import ReviewForm from 'containers/ReviewForm';
 import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
 import { History } from 'history';
 import StudySummary from 'components/StudySummary';
+import { trimPath } from 'utils/helpers';
 
 interface EditReviewProps {
   match: match<{ nctId: string; id?: string }>;
@@ -39,6 +40,16 @@ const QUERY = gql`
 class QueryComponent extends Query<EditReviewQuery, EditReviewQueryVariables> {}
 
 class EditReview extends React.PureComponent<EditReviewProps> {
+  handleReviewSave = () => {
+    const redirectPath = pipe(
+      trimPath,
+      split('/'),
+      dropLast(1),
+      join('/'),
+    )(this.props.match.url);
+    this.props.history.push(redirectPath);
+  };
+
   render() {
     return (
       <QueryComponent
@@ -64,8 +75,8 @@ class EditReview extends React.PureComponent<EditReviewProps> {
           return (
             <ReviewForm
               review={review}
-              history={this.props.history}
-              match={this.props.match}
+              nctId={this.props.match.params.nctId}
+              afterSave={this.handleReviewSave}
             />
           );
         }}

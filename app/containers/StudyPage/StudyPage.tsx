@@ -373,6 +373,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                     ))}
                   </Switch>
                 </div>
+                <div className="container">
+                  {this.renderNavButton('<< Previous', this.props.prevLink)}
+                  {this.renderNavButton('Next >>', this.props.nextLink)}
+                </div>
               </MainContainer>
             </Row>
             {this.state.triggerPrefetch && (

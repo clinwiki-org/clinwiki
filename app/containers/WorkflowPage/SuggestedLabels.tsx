@@ -2,34 +2,36 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import { Button } from 'react-bootstrap';
+import { Button, Checkbox } from 'react-bootstrap';
 import {
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables,
 } from 'types/SuggestedLabelsQuery';
-import { pipe, pathOr, head, prop, defaultTo, map, divide } from 'ramda';
+import { pipe, pathOr, prop, map, filter, fromPairs, keys } from 'ramda';
+import CollapsiblePanel from 'components/CollapsiblePanel';
 
 interface SuggestedLabelsProps {
+  nctId: string;
   searchHash: string | null;
-  onSelect: (value: string) => void;
+  onSelect: (key: string, value: string, checked: boolean) => void;
 }
 
 const QUERY = gql`
-  query SuggestedLabelsQuery($searchHash: String!) {
-    crowdAggs: aggBuckets(
-      searchHash: $searchHash
-      params: {
-        page: 0
-        pageSize: 100000
-        agg: "front_matter_keys"
-        q: { key: "*" }
-      }
-    ) {
+  query SuggestedLabelsQuery($searchHash: String!, $nctId: String!) {
+    search(searchHash: $searchHash, params: { page: 0, q: { key: "*" } }) {
       aggs {
+        name
         buckets {
           key
           docCount
         }
+      }
+    }
+    study(nctId: $nctId) {
+      nctId
+      wikiPage {
+        nctId
+        meta
       }
     }
   }
@@ -45,20 +47,42 @@ const LabelsContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const StyledButton = styled(Button)`
+const StyledPanel = styled(CollapsiblePanel)`
   margin: 0 10px 10px 0;
+  width: 250px;
+  .panel-heading h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+    max-width: 200px;
+  }
+  .panel-body {
+    height: 150px !important;
+    overflow: scroll;
+  }
 `;
 
 class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
-  handleSelect = (value: string) => () => {
-    this.props.onSelect(value);
+  handleSelect = (key: string, value: string) => (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    this.props.onSelect(key, value, e.currentTarget.checked);
   };
 
-  renderAgg = (agg: string) => {
+  renderAgg = (key: string, values: [string, boolean][]) => {
     return (
-      <StyledButton key={agg} onClick={this.handleSelect(agg)}>
-        {agg}
-      </StyledButton>
+      <StyledPanel key={key} header={key} dropdown>
+        {values.map(([value, checked]) => (
+          <Checkbox
+            key={value}
+            checked={checked}
+            onChange={this.handleSelect(key, value)}
+          >
+            {value}
+          </Checkbox>
+        ))}
+      </StyledPanel>
     );
   };
 
@@ -67,18 +91,56 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ searchHash: this.props.searchHash }}
+        variables={{
+          searchHash: this.props.searchHash,
+          nctId: this.props.nctId,
+        }}
       >
         {({ data, loading, error }) => {
           if (loading || error || !data) return null;
+          let meta: { [key: string]: string } = {};
+          try {
+            meta = JSON.parse(
+              (data.study && data.study.wikiPage && data.study.wikiPage.meta) ||
+                '{}',
+            );
+          } catch (e) {
+            console.log(`Error parsing meta: ${meta}`);
+          }
+
+          const labels = pipe(
+            keys,
+            map((key: string) => [key, meta[key].split('|')]),
+            // @ts-ignore
+            fromPairs,
+          )(meta);
+
           const aggs = pipe(
-            pathOr([], ['crowdAggs', 'aggs']),
-            head,
-            defaultTo({ buckets: [] }),
-            prop('buckets'),
-            map(prop('key')),
+            pathOr([], ['search', 'aggs']),
+            filter(
+              (agg: any) =>
+                agg.name.startsWith('fm_') && agg.name !== 'fm_tags',
+            ),
+            map((agg: any) => {
+              const name = agg.name.substring(3, 1000);
+              const existingLabels = labels[name] || [];
+              return [
+                name,
+                agg.buckets.map(bucket => [
+                  bucket.key,
+                  existingLabels.includes(bucket.key),
+                ]),
+              ];
+            }),
+            // @ts-ignore
+            fromPairs,
           )(data);
-          return <LabelsContainer>{aggs.map(this.renderAgg)}</LabelsContainer>;
+
+          return (
+            <LabelsContainer>
+              {keys(aggs).map(key => this.renderAgg(key, aggs[key]))}
+            </LabelsContainer>
+          );
         }}
       </QueryComponent>
     );

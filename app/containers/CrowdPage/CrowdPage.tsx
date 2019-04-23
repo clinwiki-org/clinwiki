@@ -40,19 +40,20 @@ import CrowdLabel from './CrowdLabel';
 import AddCrowdLabel from './AddCrowdLabel';
 import { WikiPageFragment } from 'types/WikiPageFragment';
 import CurrentUser from 'containers/CurrentUser';
+import CollapsiblePanel from 'components/CollapsiblePanel';
 
 interface CrowdProps {
   match: match<{ nctId: string }>;
   history: History;
   onLoaded?: () => void;
-  isWorkflow?: boolean;
+  workflowView?: boolean;
   nextLink?: string | null;
-  forceAddKey?: string;
+  forceAddLabel?: { key: string; value: string };
 }
 
 interface CrowdState {
-  forceAddKey: string | null;
-  prevForceAddKey: string | null;
+  forceAddLabel: { key: string; value: string } | null;
+  prevForceAddLabel: { key: string; value: string } | null;
 }
 
 const FRAGMENT = gql`
@@ -80,7 +81,7 @@ const QUERY = gql`
   ${FRAGMENT}
 `;
 
-const UPSERT_LABEL_MUTATION = gql`
+export const UPSERT_LABEL_MUTATION = gql`
   mutation CrowdPageUpsertWikiLabelMutation(
     $nctId: String!
     $key: String!
@@ -101,7 +102,7 @@ const UPSERT_LABEL_MUTATION = gql`
   ${Edits.fragment}
 `;
 
-const DELETE_LABEL_MUTATION = gql`
+export const DELETE_LABEL_MUTATION = gql`
   mutation CrowdPageDeleteWikiLabelMutation($nctId: String!, $key: String!) {
     deleteWikiLabel(input: { nctId: $nctId, key: $key }) {
       wikiPage {
@@ -124,22 +125,22 @@ const TableWrapper = styled(Table)`
   }
 `;
 
-class UpsertMutationComponent extends Mutation<
+export class UpsertMutationComponent extends Mutation<
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables
 > {}
 
-type UpsertMutationFn = MutationFn<
+export type UpsertMutationFn = MutationFn<
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables
 >;
 
-class DeleteMutationComponent extends Mutation<
+export class DeleteMutationComponent extends Mutation<
   CrowdPageDeleteWikiLabelMutation,
   CrowdPageDeleteWikiLabelMutationVariables
 > {}
 
-type DeleteMutationFn = MutationFn<
+export type DeleteMutationFn = MutationFn<
   CrowdPageDeleteWikiLabelMutation,
   CrowdPageDeleteWikiLabelMutationVariables
 >;
@@ -148,16 +149,19 @@ class QueryComponent extends Query<CrowdPageQuery, CrowdPageQueryVariables> {}
 
 class Crowd extends React.Component<CrowdProps, CrowdState> {
   state: CrowdState = {
-    forceAddKey: null,
-    prevForceAddKey: null,
+    forceAddLabel: null,
+    prevForceAddLabel: null,
   };
 
   static getDerivedStateFromProps(props: CrowdProps, state: CrowdState) {
-    if (props.forceAddKey && props.forceAddKey !== state.prevForceAddKey) {
+    if (
+      props.forceAddLabel &&
+      !equals(props.forceAddLabel, state.prevForceAddLabel)
+    ) {
       return {
         ...state,
-        forceAddKey: props.forceAddKey,
-        prevForceAddKey: props.forceAddKey,
+        forceAddLabel: props.forceAddLabel,
+        prevForceAddLabel: props.forceAddLabel,
       };
     }
 
@@ -166,13 +170,17 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
 
   static fragment = FRAGMENT;
 
-  handleLabelSumbit = (
+  static updateLabel = (
+    key: string,
+    oldValue: string,
+    value: string,
     meta: {},
+    nctId: string,
     upsertLabelMutation: (x: {
       variables: CrowdPageUpsertWikiLabelMutationVariables;
       optimisticResponse?: CrowdPageUpsertWikiLabelMutation;
     }) => void,
-  ) => (key: string, oldValue: string, value: string) => {
+  ) => {
     if (!value) return;
     const currentValue = meta[key];
     if (currentValue == null) return;
@@ -185,13 +193,13 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     const newValue = uniq(parts).join('|');
 
     upsertLabelMutation({
-      variables: { key, value: newValue, nctId: this.props.match.params.nctId },
+      variables: { nctId, key, value: newValue },
       optimisticResponse: {
         upsertWikiLabel: {
           __typename: 'UpsertWikiLabelPayload',
           wikiPage: {
+            nctId,
             __typename: 'WikiPage',
-            nctId: this.props.match.params.nctId,
             meta: JSON.stringify({ ...meta, [key]: newValue }),
             edits: [],
           },
@@ -201,11 +209,14 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     });
   };
 
-  handleLabelDelete = (
+  static deleteLabel = (
+    key: string,
+    value: string,
     meta: {},
+    nctId: string,
     upsertLabelMutation: UpsertMutationFn,
     deleteLabelMutation: DeleteMutationFn,
-  ) => (key: string, value: string) => {
+  ) => {
     const currentValue = meta[key];
     if (!currentValue) return null;
 
@@ -215,13 +226,13 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     if (newValue.length === 0) {
       const newMeta = dissoc(key, meta);
       deleteLabelMutation({
-        variables: { key, nctId: this.props.match.params.nctId },
+        variables: { key, nctId },
         optimisticResponse: {
           deleteWikiLabel: {
             __typename: 'DeleteWikiLabelPayload',
             wikiPage: {
+              nctId,
               __typename: 'WikiPage',
-              nctId: this.props.match.params.nctId,
               meta: JSON.stringify(newMeta),
               edits: [],
             },
@@ -232,16 +243,16 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     } else {
       upsertLabelMutation({
         variables: {
+          nctId,
           key,
           value: newValue,
-          nctId: this.props.match.params.nctId,
         },
         optimisticResponse: {
           upsertWikiLabel: {
             __typename: 'UpsertWikiLabelPayload',
             wikiPage: {
+              nctId,
               __typename: 'WikiPage',
-              nctId: this.props.match.params.nctId,
               meta: JSON.stringify({ ...meta, [key]: newValue }),
               edits: [],
             },
@@ -252,10 +263,11 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     }
   };
 
-  handleAddLabel = (
+  static addLabel = (
     key: string,
     value: string,
     meta: {},
+    nctId: string,
     upsertLabelMutation: UpsertMutationFn,
   ) => {
     if (!value) return;
@@ -267,13 +279,13 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       val = uniq(entries).join('|');
     }
     upsertLabelMutation({
-      variables: { key, value: val, nctId: this.props.match.params.nctId },
+      variables: { nctId, key, value: val },
       optimisticResponse: {
         upsertWikiLabel: {
           __typename: 'UpsertWikiLabelPayload',
           wikiPage: {
+            nctId,
             __typename: 'WikiPage',
-            nctId: this.props.match.params.nctId,
             meta: JSON.stringify({ ...meta, [key]: val }),
             edits: [],
           },
@@ -281,12 +293,58 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
         },
       },
     });
+  };
 
-    this.setState({ forceAddKey: null });
+  handleAddLabel = (
+    key: string,
+    value: string,
+    meta: {},
+    upsertLabelMutation: UpsertMutationFn,
+  ) => {
+    Crowd.addLabel(
+      key,
+      value,
+      meta,
+      this.props.match.params.nctId,
+      upsertLabelMutation,
+    );
+    this.setState({ forceAddLabel: null });
+  };
+
+  handleDeleteLabel = (
+    meta: {},
+    upsertLabelMutation: UpsertMutationFn,
+    deleteLabelMutation: DeleteMutationFn,
+  ) => (key: string, value: string) => {
+    Crowd.deleteLabel(
+      key,
+      value,
+      meta,
+      this.props.match.params.nctId,
+      upsertLabelMutation,
+      deleteLabelMutation,
+    );
+  };
+
+  handleSubmitLabel = (
+    meta: {},
+    upsertLabelMutation: (x: {
+      variables: CrowdPageUpsertWikiLabelMutationVariables;
+      optimisticResponse?: CrowdPageUpsertWikiLabelMutation;
+    }) => void,
+  ) => (key: string, oldValue: string, value: string) => {
+    Crowd.updateLabel(
+      key,
+      oldValue,
+      value,
+      meta,
+      this.props.match.params.nctId,
+      upsertLabelMutation,
+    );
   };
 
   handleAddInsideLabelClick = (key: string) => {
-    this.setState({ forceAddKey: key });
+    this.setState({ forceAddLabel: { key, value: '' } });
   };
 
   handleLoaded = () => {
@@ -306,71 +364,106 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       // @ts-ignore
       flatten,
     )(meta);
+
+    let content = (
+      <TableWrapper striped condensed bordered>
+        <thead>
+          <tr>
+            <th style={{ width: '20%' }}>Label</th>
+            <th style={{ width: '50%', borderRight: 'none' }}>Description</th>
+            <th
+              style={{
+                width: '10%',
+                borderLeft: 'none',
+                borderRight: 'none',
+              }}
+            />
+            <th
+              style={{
+                width: '10%',
+                borderLeft: 'none',
+                borderRight: 'none',
+              }}
+            />
+            <th
+              style={{
+                width: '10%',
+                borderLeft: 'none',
+                borderRight: 'none',
+              }}
+            />
+          </tr>
+        </thead>
+        <tbody>
+          {labels.map(label => (
+            <CrowdLabel
+              key={`${label.key} - ${label.value}`}
+              name={label.key}
+              value={label.value}
+              onSubmitClick={this.handleSubmitLabel(meta, upsertLabelMutation)}
+              onDeleteClick={this.handleDeleteLabel(
+                meta,
+                upsertLabelMutation,
+                deleteLabelMutation,
+              )}
+              onAddClick={this.handleAddInsideLabelClick}
+            />
+          ))}
+          <CurrentUser>
+            {user =>
+              user &&
+              !this.props.workflowView && (
+                <AddCrowdLabel
+                  onAddLabel={(key, value) =>
+                    this.handleAddLabel(key, value, meta, upsertLabelMutation)
+                  }
+                  forceAddLabel={this.state.forceAddLabel}
+                />
+              )
+            }
+          </CurrentUser>
+        </tbody>
+      </TableWrapper>
+    );
+
+    if (this.props.workflowView) {
+      content = (
+        <>
+          <TableWrapper striped condensed bordered>
+            <tbody>
+              <CurrentUser>
+                {user =>
+                  user && (
+                    <AddCrowdLabel
+                      onAddLabel={(key, value) =>
+                        this.handleAddLabel(
+                          key,
+                          value,
+                          meta,
+                          upsertLabelMutation,
+                        )
+                      }
+                      forceAddLabel={this.state.forceAddLabel}
+                      name="Add Custom Label"
+                    />
+                  )
+                }
+              </CurrentUser>
+            </tbody>
+          </TableWrapper>
+          <CollapsiblePanel header="All Crowd Labels" collapsed>
+            {content}
+          </CollapsiblePanel>
+        </>
+      );
+    }
+
     return (
       <div>
         <Helmet>
           <title>Crowd Annotations</title>
         </Helmet>
-        <TableWrapper striped condensed bordered>
-          <thead>
-            <tr>
-              <th style={{ width: '20%' }}>Label</th>
-              <th style={{ width: '50%', borderRight: 'none' }}>Description</th>
-              <th
-                style={{
-                  width: '10%',
-                  borderLeft: 'none',
-                  borderRight: 'none',
-                }}
-              />
-              <th
-                style={{
-                  width: '10%',
-                  borderLeft: 'none',
-                  borderRight: 'none',
-                }}
-              />
-              <th
-                style={{
-                  width: '10%',
-                  borderLeft: 'none',
-                  borderRight: 'none',
-                }}
-              />
-            </tr>
-          </thead>
-          <tbody>
-            {labels.map(label => (
-              <CrowdLabel
-                key={`${label.key} - ${label.value}`}
-                name={label.key}
-                value={label.value}
-                onSubmitClick={this.handleLabelSumbit(
-                  meta,
-                  upsertLabelMutation,
-                )}
-                onDeleteClick={this.handleLabelDelete(
-                  meta,
-                  upsertLabelMutation,
-                  deleteLabelMutation,
-                )}
-                onAddClick={this.handleAddInsideLabelClick}
-              />
-            ))}
-            <CurrentUser>
-              {user =>
-                user && (
-                  <AddCrowdLabel
-                    onAddLabel={(key, value) =>
-                      this.handleAddLabel(key, value, meta, upsertLabelMutation)
-                    }
-                    forceAddKey={this.state.forceAddKey}
-                  />
-                )
-              }
-            </CurrentUser>
-          </tbody>
-        </TableWrapper>
+        {content}
       </div>
     );
   };

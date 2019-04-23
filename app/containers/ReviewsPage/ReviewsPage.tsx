@@ -286,13 +286,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                 path={`${this.props.match.path}/new`}
                 render={props => {
                   this.props.onLoaded && this.props.onLoaded();
-                  return (
-                    <ReviewForm
-                      {...props}
-                      isWorkflow={false}
-                      nextLink={this.props.nextLink}
-                    />
-                  );
+                  return <ReviewForm nctId={this.props.match.params.nctId} />;
                 }}
               />
               <Route

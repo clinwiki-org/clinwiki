@@ -28,7 +28,7 @@ label {
   border-radius: 4px;
 }
 
-.btn, button, .-btn, div.rt-tbody div.rt-tr:hover, div.crumbs-bar span.label{
+.btn, .-btn, div.rt-tbody div.rt-tr:hover, div.crumbs-bar span.label{
   background: #55B88D !important;
   color: #fff !important;
 }

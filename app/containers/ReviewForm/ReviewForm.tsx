@@ -20,7 +20,6 @@ import {
 import ReactStars from 'react-stars';
 import * as FontAwesome from 'react-fontawesome';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
-import { string } from 'prop-types';
 import { gql } from 'apollo-boost';
 import { History } from 'history';
 
@@ -33,13 +32,13 @@ import { ReviewFormStudyFragment } from 'types/ReviewFormStudyFragment';
 
 import { trimPath } from 'utils/helpers';
 import { dataIdFromObject } from 'configureApollo';
+import { ReviewFragment } from 'types/ReviewFragment';
 
 interface ReviewFormProps {
-  match: match<{ nctId: string }>;
-  history: History;
+  nctId: string;
+  hideSaveButton?: boolean;
   review?: ReviewsPageFragment;
-  isWorkflow?: boolean;
-  nextLink?: string | null;
+  afterSave?: (review: ReviewFragment) => void;
 }
 
 interface ReviewFormState {
@@ -124,6 +123,8 @@ class ReviewFormMutationComponent extends Mutation<
 
 class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   state: ReviewFormState = defaultState;
+  // Use this hook to trigger submit using ref from parent
+  submitReview: () => void = () => {};
   static fragment = FRAGMENT;
 
   static getDerivedStateFromProps = (
@@ -172,7 +173,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
     this.setState({ content: value });
   };
 
-  handleSubmitRating = (
+  handleSubmitReview = (
     upsertReview: (x: { variables: ReviewFormMutationVariables }) => void,
   ) => () => {
     const id = (this.props.review && this.props.review.id) || undefined;
@@ -181,7 +182,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
         id,
         meta: JSON.stringify(this.state.meta),
         content: this.state.content.toString('markdown'),
-        nctId: this.props.match.params.nctId,
+        nctId: this.props.nctId,
       },
     });
     this.setState(defaultState);
@@ -251,7 +252,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                   data && data.upsertReview && data.upsertReview.review;
                 if (!review) return;
                 const id = dataIdFromObject({
-                  id: this.props.match.params.nctId,
+                  id: this.props.nctId,
                   __typename: 'Study',
                 });
                 const study = cache.readFragment<ReviewFormStudyFragment>({
@@ -282,29 +283,22 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                   data: newStudy,
                 });
 
-                let redirectPath = pipe(
-                  trimPath,
-                  split('/'),
-                  dropLast(1),
-                  join('/'),
-                )(this.props.match.url);
-                if (this.props.isWorkflow && this.props.nextLink) {
-                  redirectPath = `${this.props.nextLink}/workflow`;
-                }
-                this.props.history.push(redirectPath);
+                this.props.afterSave && this.props.afterSave(review);
               }}
             >
-              {upsertReview => (
-                <Button
-                  style={{ marginTop: 10 }}
-                  disabled={
-                    this.props.isWorkflow && this.props.nextLink === null
-                  }
-                  onClick={this.handleSubmitRating(upsertReview)}
-                >
-                  {this.props.isWorkflow ? 'Submit and Next' : 'Submit'}
-                </Button>
-              )}
+              {upsertReview => {
+                this.submitReview = this.handleSubmitReview(upsertReview);
+                return (
+                  !this.props.hideSaveButton && (
+                    <Button
+                      style={{ marginTop: 10 }}
+                      onClick={this.handleSubmitReview(upsertReview)}
+                    >
+                      "Submit"
+                    </Button>
+                  )
+                );
+              }}
             </ReviewFormMutationComponent>
           </Panel.Body>
         </Panel>
