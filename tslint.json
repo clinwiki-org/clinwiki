@@ -9,6 +9,7 @@
       "allow-pascal-case"
     ],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
-    "ter-arrow-parens": [true, "as-needed"]
+    "ter-arrow-parens": [true, "as-needed"],
+    "max-line-length": [true, 120]
   }
 }
