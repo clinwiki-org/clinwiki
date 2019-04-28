@@ -26,9 +26,12 @@ const StyledWrapper = styled.div`
   nav.navbar a.logo {
     color: #fff;
   }
+  a:hover {
+    color: #fff !important;
+  }
 
   a#logo {
-    background: url('https://yellowrubberball.com/img/clinwiki-50.png') center
+    background: url('clinwiki-50.png') center
       left no-repeat;
     background-size: 25px 25px;
     margin-left: 1px;
@@ -48,6 +51,10 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
                 ClinWiki
               </Link>
             </Navbar.Brand>
+            <ul className="nav navbar-nav">
+              {true ? null : <li><a href="/search">Search</a></li>}
+              <li><a href="/about">About</a></li>
+            </ul>
           </Navbar.Header>
           <AuthButton user={this.props.user} history={this.props.history} />
           {/* <SearchInputWrapper className="pull-right">

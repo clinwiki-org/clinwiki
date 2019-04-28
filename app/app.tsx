@@ -35,6 +35,8 @@ import '!file-loader?name=[name].[ext]!./images/icon-384x384.png';
 import '!file-loader?name=[name].[ext]!./images/icon-512x512.png';
 import '!file-loader?name=[name].[ext]!./manifest.json';
 import 'file-loader?name=[name].[ext]!./.htaccess';
+import '!file-loader?name=[name].[ext]!./images/clinwiki-50.png';
+import '!file-loader?name=[name].[ext]!./images/heading.png';
 import 'react-toggle/style.css';
 /* eslint-enable import/no-unresolved, import/extensions */
 
