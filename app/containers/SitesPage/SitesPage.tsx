@@ -1,127 +1,110 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Table } from 'react-bootstrap';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import { match } from 'react-router-dom';
+import { Table, Button } from 'react-bootstrap';
+import { SitesPageQuery } from 'types/SitesPageQuery';
+import SiteItem from 'components/SiteItem';
+import CollapsiblePanel from 'components/CollapsiblePanel';
 import { History } from 'history';
-import { SitesPageQuery, SitesPageQueryVariables } from 'types/SitesPageQuery';
-import { FacilityFragment } from 'types/FacilityFragment';
-import StudySummary from 'components/StudySummary';
-import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 
 interface SitesPageProps {
   history: History;
-  match: match<{ nctId: string }>;
-  onLoaded?: () => void;
-  isWorkflow?: boolean;
-  nextLink?: string | null;
 }
 
-const FRAGMENT = gql`
-  fragment FacilityFragment on Facility {
-    city
-    country
-    id
-    name
-    nctId
-    state
-    status
-    zip
-    contacts {
-      contactType
-      email
-      id
-      name
-      nctId
-      phone
-    }
-  }
-`;
-
 const QUERY = gql`
-  query SitesPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      facilities {
-        ...FacilityFragment
-      }
-      nctId
-    }
+  query SitesPageQuery {
     me {
       id
+      ownSites {
+        ...SiteItemFragment
+      }
+      editorSites {
+        ...SiteItemFragment
+      }
     }
   }
 
-  ${StudySummary.fragment}
-  ${FRAGMENT}
+  ${SiteItem.fragment}
 `;
 
-class QueryComponent extends Query<SitesPageQuery, SitesPageQueryVariables> {}
+const Container = styled.div`
+  padding: 20px;
+`;
+
+const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+`;
+
+class QueryComponent extends Query<SitesPageQuery> {}
 
 class SitesPage extends React.PureComponent<SitesPageProps> {
-  static fragment = FRAGMENT;
-
-  processFacility = (facility: FacilityFragment, i: number) => {
-    const res: { key: string; value: string }[] = [];
-    const { name, country, city, state, zip } = facility;
-    const status = isEmpty(facility.status)
-      ? 'status unknown'
-      : facility.status;
-    res.push({
-      key: `Facility ${i + 1}`,
-      value: `${country}: ${name}, ${city} ${state} ${zip} (${status})`,
-    });
-
-    for (const contact of facility.contacts) {
-      let value = ` ${contact.name}`;
-      if (contact.email) value += ` email: ${contact.email}`;
-      if (contact.phone) value += ` phone: ${contact.phone}`;
-      res.push({ value, key: `Facility ${i + 1} ${contact.contactType}` });
-    }
-
-    return res;
+  handleCreateSite = () => {
+    this.props.history.push('/sites/new');
   };
 
-  renderItem = ({ key, value }: { key: string; value: string | null }) => {
-    return (
-      <tr key={key}>
-        <td style={{ width: '20%', verticalAlign: 'middle' }}>
-          <b>{key}</b>
-        </td>
-        <td>{value || ''}</td>
-      </tr>
-    );
+  handleSiteEdit = (id: number) => {
+    this.props.history.push(`/sites/${id}/edit`);
   };
 
   render() {
     return (
-      <QueryComponent
-        query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
-      >
+      <QueryComponent query={QUERY}>
         {({ data, loading, error }) => {
-          if (
-            loading ||
-            error ||
-            !data ||
-            !data.study ||
-            !data.study.facilities
-          ) {
+          if (loading || error || !data || !data.me) {
             return null;
           }
-
-          this.props.onLoaded && this.props.onLoaded();
-          const facilities = data.study.facilities;
-          const items = pipe(
-            addIndex(map)(this.processFacility),
-            // @ts-ignore
-            flatten,
-          )(facilities) as { key: string; value: string }[];
           return (
-            <Table striped bordered condensed>
-              <tbody>{items.map(this.renderItem)}</tbody>
-            </Table>
+            <Container>
+              <CollapsiblePanel header="My Sites">
+                {data.me.ownSites.length > 0 && (
+                  <Table striped bordered condensed>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Subdomain</th>
+                        <th />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.me.ownSites.map(site => (
+                        <SiteItem
+                          site={site}
+                          key={site.subdomain}
+                          onEdit={this.handleSiteEdit}
+                        />
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+                {data.me.ownSites.length === 0 && 'No sites yet'}
+              </CollapsiblePanel>
+              <ButtonsContainer>
+                <Button onClick={this.handleCreateSite}>Create Site</Button>
+              </ButtonsContainer>
+              <CollapsiblePanel header="Editable Sites">
+                {data.me.editorSites.length > 0 && (
+                  <Table striped bordered condensed>
+                    <thead>
+                      <th>Name</th>
+                      <th>Subdomain</th>
+                    </thead>
+                    <tbody>
+                      {data.me.editorSites.map(site => (
+                        <SiteItem
+                          site={site}
+                          key={site.subdomain}
+                          onEdit={this.handleSiteEdit}
+                        />
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+                {data.me.editorSites.length === 0 && 'No sites yet'}
+              </CollapsiblePanel>
+            </Container>
           );
         }}
       </QueryComponent>

@@ -16,6 +16,10 @@ import {
 import AuthHeader from 'components/AuthHeader';
 import { History } from 'history';
 import CurrentUser from 'containers/CurrentUser';
+import SitesPage from 'containers/SitesPage';
+import SitePage from 'containers/SitePage';
+import SitesNewPage from 'containers/SitesNewPage';
+import SitesEditPage from 'containers/SitesEditPage';
 
 interface AppProps {
   history: History;
@@ -23,7 +27,7 @@ interface AppProps {
 
 const AppWrapper = styled.div`
   background-color: #4d5863;
-  min-height: 100%;
+  min-height: 100vh;
   min-width: 100%;
 `;
 const MainWrapper = styled.div``;
@@ -48,6 +52,9 @@ class App extends React.PureComponent<AppProps> {
             <Route path="/study/:nctId" component={StudyPage} />
             <Route path="/intervention/:id" component={InterventionPage} />
             <Route path="/profile" component={EditProfilePage} />
+            <Route path="/sites/:id/edit" component={SitesEditPage} />
+            <Route path="/sites/new" component={SitesNewPage} />
+            <Route path="/sites" component={SitesPage} />
             <Route path="/reset_password" component={ResetPasswordPage} />
             <Route path="/sign_in" component={SignInPage} />
             <Route path="/sign_up" component={SignUpPage} />

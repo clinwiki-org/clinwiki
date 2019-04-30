@@ -38,7 +38,7 @@ import AdministrativePage from 'containers/AdministrativePage';
 import RecruitmentPage from 'containers/RecruitmentPage';
 import InterventionsPage from 'containers/InterventionsPage';
 import TrackingPage from 'containers/TrackingPage';
-import SitesPage from 'containers/SitesPage';
+import FacilitiesPage from 'containers/FacilitiesPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
 
@@ -119,7 +119,7 @@ const PREFETCH_QUERY = gql`
   ${RecruitmentPage.fragment}
   ${InterventionsPage.fragment}
   ${TrackingPage.fragment}
-  ${SitesPage.fragment}
+  ${FacilitiesPage.fragment}
   ${TagsPage.fragment}
 `;
 
@@ -159,7 +159,7 @@ const sections = [
     order: 7,
   },
   { name: 'Tracking', path: '/tracking', component: TrackingPage, order: 8 },
-  { name: 'Sites', path: '/sites', component: SitesPage, order: 9 },
+  { name: 'Sites', path: '/sites', component: FacilitiesPage, order: 9 },
   { name: 'Tags', path: '/tags', component: TagsPage, order: 10 },
   { name: 'Wiki', path: '/', component: WikiPage, order: 1 },
 ];

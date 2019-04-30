@@ -22,6 +22,10 @@ const StyledLink = styled(Link)`
 `;
 
 class AuthButton extends React.PureComponent<AuthButtonProps> {
+  handleSitesClick = () => {
+    this.props.history.push('/sites');
+  };
+
   handleProfileClick = () => {
     this.props.history.push('/profile');
   };
@@ -46,6 +50,7 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
           title={(this.props.user && this.props.user.email) || ''}
           id="loggedIn"
         >
+          <MenuItem onClick={this.handleSitesClick}>Sites</MenuItem>
           <MenuItem onClick={this.handleProfileClick}>Profile</MenuItem>
           <MenuItem onClick={this.handleSignOutClick}>Log Out</MenuItem>
         </DropdownButton>
