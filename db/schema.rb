@@ -15,13 +15,13 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "annotation_labels", id: :serial, force: :cascade do |t|
+  create_table "annotation_labels", force: :cascade do |t|
     t.string "label"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "annotations", id: :serial, force: :cascade do |t|
+  create_table "annotations", force: :cascade do |t|
     t.string "nct_id"
     t.string "label"
     t.text "description"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.integer "user_id"
   end
 
-  create_table "reviews", id: :serial, force: :cascade do |t|
+  create_table "reviews", force: :cascade do |t|
     t.string "nct_id"
     t.integer "overall_rating"
     t.text "text"
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
-  create_table "tags", id: :serial, force: :cascade do |t|
+  create_table "tags", force: :cascade do |t|
     t.string "nct_id"
     t.string "value"
     t.datetime "created_at", null: false
@@ -76,7 +76,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.integer "user_id"
   end
 
-  create_table "user_session_studies", id: :serial, force: :cascade do |t|
+  create_table "user_session_studies", force: :cascade do |t|
     t.string "nct_id"
     t.text "serialized_study"
     t.datetime "created_at", null: false
@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.index ["user_id"], name: "user_session_studies_user_id"
   end
 
-  create_table "users", id: :serial, force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -99,8 +99,8 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.string "last_sign_in_ip"
     t.string "first_name"
     t.string "last_name"
-    t.json "search_result_columns"
     t.string "default_query_string"
+    t.json "search_result_columns"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -113,9 +113,9 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
-  create_table "wiki_page_edits", id: :serial, force: :cascade do |t|
-    t.integer "wiki_page_id"
-    t.integer "user_id"
+  create_table "wiki_page_edits", force: :cascade do |t|
+    t.bigint "wiki_page_id"
+    t.bigint "user_id"
     t.text "diff"
     t.text "diff_html"
     t.text "comment"
@@ -125,7 +125,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.index ["wiki_page_id"], name: "index_wiki_page_edits_on_wiki_page_id"
   end
 
-  create_table "wiki_pages", id: :serial, force: :cascade do |t|
+  create_table "wiki_pages", force: :cascade do |t|
     t.string "nct_id"
     t.text "text"
     t.datetime "created_at", null: false
