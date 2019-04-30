@@ -50,7 +50,7 @@ class LandingPage extends React.PureComponent<LandingPageProps, LandingPageState
   }
   onSubmit = async (e,client:ApolloClient<any>) => {
     e.preventDefault();
-    const params = { q: { key: this.state.searchTerm } };
+    const params = { q: { key: "AND", children: [ { key: this.state.searchTerm }] } };
     const { data } = await client.query({ query: HASH_QUERY, variables: params });
     this.props.history.push(`/search/${data.searchHash}`);
   }
