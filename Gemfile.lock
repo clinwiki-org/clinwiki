@@ -254,6 +254,7 @@ GEM
       netrc (~> 0.8)
     reverse_markdown (1.1.0)
       nokogiri
+    rolify (5.2.0)
     rspec-core (3.8.0)
       rspec-support (~> 3.8.0)
     rspec-expectations (3.8.2)
@@ -404,6 +405,7 @@ DEPENDENCIES
   rails (= 5.2.2)
   rails_12factor
   rake (~> 11.3)
+  rolify
   rspec-rails (~> 3.8)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)

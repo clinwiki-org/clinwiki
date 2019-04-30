@@ -2,24 +2,24 @@ AllCops:
   TargetRubyVersion: 2.5
   DisplayCopNames: true
   Include:
-    - 'app/**/*.rb'
-    - 'config/**/*.rb'
-    - 'db/migrate/**/*.rb'
-    - 'db/seed_data/**/*.rb'
-    - 'db/seeders/**/*.rb'
-    - 'db/seeds.rb'
-    - 'lib/**/*.rb'
-    - 'lib/**/*.rake'
-    - 'spec/**/*.rb'
-    - 'config.ru'
-    - 'Gemfile'
-    - 'Rakefile'
-    - 'Brewfile'
+    - "app/**/*.rb"
+    - "config/**/*.rb"
+    - "db/migrate/**/*.rb"
+    - "db/seed_data/**/*.rb"
+    - "db/seeders/**/*.rb"
+    - "db/seeds.rb"
+    - "lib/**/*.rb"
+    - "lib/**/*.rake"
+    - "spec/**/*.rb"
+    - "config.ru"
+    - "Gemfile"
+    - "Rakefile"
+    - "Brewfile"
   Exclude:
-    - 'vendor/**/*'
-    - 'spec/fixtures/**/*'
-    - 'db/schema.rb'
-    - 'bin/**/*'
+    - "vendor/**/*"
+    - "spec/fixtures/**/*"
+    - "db/schema.rb"
+    - "bin/**/*"
 
 Layout/IndentHash:
   EnforcedStyle: consistent
@@ -28,6 +28,9 @@ Style/Lambda:
   EnforcedStyle: literal
 
 Performance/Casecmp:
+  Enabled: false
+
+Naming/UncommunicativeMethodParamName:
   Enabled: false
 
 Style/TrailingCommaInArguments:
@@ -66,13 +69,13 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Max: 120
   Exclude:
-    - 'spec/**/*_spec.rb'
+    - "spec/**/*_spec.rb"
 
 Naming/PredicateName:
   NamePrefixBlacklist:
     - is_
   Exclude:
-    - 'spec/**/*'
+    - "spec/**/*"
 
 Rails:
   Enabled: true
@@ -93,14 +96,14 @@ Rails/UnknownEnv:
 
 Rails/SkipsModelValidations:
   Exclude:
-    - 'spec/**/*_spec.rb'
-    - 'spec/factories/*.rb'
+    - "spec/**/*_spec.rb"
+    - "spec/factories/*.rb"
   Whitelist:
     - touch
 
 Style/BlockDelimiters:
   Exclude:
-    - 'spec/**/*_spec.rb'
+    - "spec/**/*_spec.rb"
 
 Style/Documentation:
   Enabled: false
@@ -122,13 +125,13 @@ Style/WordArray:
 
 Metrics/BlockLength:
   Exclude:
-    - 'app/rails_admin_models/*.rb'
-    - 'app/views/**/*'
-    - 'config/**/*.rb'
-    - 'db/**/*.rb'
-    - 'lib/**/*.rake'
-    - 'spec/**/*'
-    - 'Rakefile'
+    - "app/rails_admin_models/*.rb"
+    - "app/views/**/*"
+    - "config/**/*.rb"
+    - "db/**/*.rb"
+    - "lib/**/*.rake"
+    - "spec/**/*"
+    - "Rakefile"
 
 Bundler/OrderedGems:
   Enabled: false

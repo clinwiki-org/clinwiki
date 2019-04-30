@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_12_085943) do
+ActiveRecord::Schema.define(version: 2019_04_30_075101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,16 @@ ActiveRecord::Schema.define(version: 2019_04_12_085943) do
     t.index ["user_id"], name: "reviews_user_id"
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
+    t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
+  end
+
   create_table "short_links", force: :cascade do |t|
     t.string "short", null: false
     t.string "long", null: false
@@ -48,6 +58,14 @@ ActiveRecord::Schema.define(version: 2019_04_12_085943) do
     t.datetime "updated_at", null: false
     t.index ["long"], name: "index_short_links_on_long", unique: true
     t.index ["short"], name: "index_short_links_on_short", unique: true
+  end
+
+  create_table "sites", force: :cascade do |t|
+    t.string "name"
+    t.string "subdomain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
   create_table "tags", id: :serial, force: :cascade do |t|
@@ -81,10 +99,18 @@ ActiveRecord::Schema.define(version: 2019_04_12_085943) do
     t.string "last_sign_in_ip"
     t.string "first_name"
     t.string "last_name"
-    t.string "default_query_string"
     t.json "search_result_columns"
+    t.string "default_query_string"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "users_roles", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "role_id"
+    t.index ["role_id"], name: "index_users_roles_on_role_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+    t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
   create_table "wiki_page_edits", id: :serial, force: :cascade do |t|

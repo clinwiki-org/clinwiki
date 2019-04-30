@@ -5,8 +5,22 @@ module Types
     field :first_name, String, "First name", null: true
     field :last_name, String, "Last name", null: true
     field :default_query_string, String, "Default query for user", null: true
+    field :own_sites, [SiteType], null: false
+    field :editor_sites, [SiteType], null: false
 
     field :feeds, [FeedType], "Feed list. Available only for current user", null: false
+
+    def own_sites
+      return [] if current_user.blank?
+
+      Site.with_role(:site_owner, current_user)
+    end
+
+    def editor_sites
+      return [] if current_user.blank?
+
+      Site.with_role(:site_editor, current_user)
+    end
 
     def feeds
       return [] unless context[:current_user]&.id == object.id

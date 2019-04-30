@@ -18,6 +18,9 @@ module Types
     end
 
     field :health, HealthType, null: false
+    field :site, SiteType, null: true do
+      argument :id, type: Int, required: true
+    end
 
     field :study, StudyType, null: true do
       argument :nct_id, type: String, required: true
@@ -68,6 +71,10 @@ module Types
       {
         healthy: ActiveRecord::Base.connected?,
       }
+    end
+
+    def site(id:)
+      Site.find_by(id: id)
     end
 
     def study(nct_id:)
