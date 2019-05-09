@@ -31,7 +31,7 @@ const StyledWrapper = styled.div`
   }
 
   a#logo {
-    background: url('clinwiki-50.png') center
+    background: url('/clinwiki-50.png') center
       left no-repeat;
     background-size: 25px 25px;
     margin-left: 1px;
