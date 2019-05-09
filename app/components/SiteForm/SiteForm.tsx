@@ -1,20 +1,49 @@
 import * as React from 'react';
-import { CreateSiteInput } from 'types/globalTypes';
-import { equals, pick, lens, lensPath, set, over, reject } from 'ramda';
+import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
+import {
+  equals,
+  pick,
+  lens,
+  lensPath,
+  set,
+  over,
+  reject,
+  omit,
+  prop,
+} from 'ramda';
 import { Row, Col, FormControl, Button, Table } from 'react-bootstrap';
 import styled from 'styled-components';
 import { gql } from 'apollo-boost';
+import { aggsOrdered } from 'utils/constants';
+import { capitalize } from 'utils/helpers';
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteFragment } from 'types/SiteFragment';
+import {
+  updateView,
+  createMutation,
+  getViewValueByPath,
+} from 'utils/siteViewUpdater';
+import MultiInput from 'components/MultiInput';
 
 interface SiteFormProps {
-  form?: CreateSiteInput;
-  onSave: (form: CreateSiteInput) => void;
+  site: SiteFragment;
+  onSave: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
 }
 
 interface SiteFormState {
   form: CreateSiteInput;
+  mutations: SiteViewMutationInput[];
   addEditorEmail: string;
   prevForm: CreateSiteInput | null;
 }
+
+const AGGS_OPTIONS = aggsOrdered.map(option => ({
+  id: option,
+  label: option
+    .split('_')
+    .map(capitalize)
+    .join(' '),
+}));
 
 const StyledContainer = styled.div`
   padding: 20px;
@@ -52,6 +81,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       subdomain: '',
       editorEmails: [],
     },
+    mutations: [],
     addEditorEmail: '',
     prevForm: null,
   };
@@ -70,15 +100,21 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     props: SiteFormProps,
     state: SiteFormState,
   ): SiteFormState | null => {
-    if (props.form && !equals(props.form, state.prevForm)) {
-      const form = pick(['name', 'subdomain', 'editorEmails'], props.form);
-      return { ...state, form, prevForm: props.form };
+    const { name, subdomain, editors } = props.site;
+    const editorEmails = editors.map(prop('email'));
+    const form = {
+      name,
+      subdomain,
+      editorEmails,
+    };
+    if (form && !equals(form, state.prevForm as any)) {
+      return { ...state, form, prevForm: form };
     }
     return null;
   };
 
   handleSave = () => {
-    this.props.onSave(this.state.form);
+    this.props.onSave(this.state.form, this.state.mutations);
   };
 
   handleAddEditor = () => {
@@ -114,6 +150,15 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
     this.setState({ form: { ...this.state.form, [name]: value } });
+  };
+
+  handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
+    const { name, value } = e.currentTarget;
+    const mutation = createMutation(name, value);
+    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const currentValue = getViewValueByPath(mutation.path, view);
+    if (equals(value, currentValue)) return;
+    this.setState({ mutations: [...this.state.mutations, mutation] });
   };
 
   renderEditors = () => {
@@ -160,10 +205,12 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   };
 
   render() {
+    const view = updateView(this.props.site.siteView, this.state.mutations);
+
     return (
       <StyledContainer>
         <Row>
-          <Col md={4}>
+          <Col md={6} lg={4}>
             <StyledLabel htmlFor="name">Name</StyledLabel>
             <StyledFormControl
               id="name"
@@ -183,6 +230,25 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               onChange={this.handleInputChange}
             />
             {this.renderEditors()}
+          </Col>
+          <Col md={6} lg={4}>
+            <StyledLabel htmlFor="facets">Facets</StyledLabel>
+            <StyledFormControl
+              name="set:search.aggs.selected.kind"
+              componentClass="select"
+              onChange={this.handleAddMutation}
+              defaultValue={view.search.aggs.selected.kind}
+            >
+              <option value="BLACKLIST">All except</option>
+              <option value="WHITELIST">Only</option>
+            </StyledFormControl>
+            <MultiInput
+              name="set:search.aggs.selected.values"
+              options={AGGS_OPTIONS}
+              placeholder="Add facet"
+              value={view.search.aggs.selected.values}
+              onChange={this.handleAddMutation}
+            />
           </Col>
         </Row>
         <Button onClick={this.handleSave}>Save</Button>

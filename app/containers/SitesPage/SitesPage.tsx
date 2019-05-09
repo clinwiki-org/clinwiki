@@ -7,6 +7,9 @@ import { SitesPageQuery } from 'types/SitesPageQuery';
 import SiteItem from 'components/SiteItem';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { History } from 'history';
+import DeleteSiteMutation, {
+  DeleteSiteMutationFn,
+} from 'mutations/DeleteSiteMutations';
 
 interface SitesPageProps {
   history: History;
@@ -49,6 +52,10 @@ class SitesPage extends React.PureComponent<SitesPageProps> {
     this.props.history.push(`/sites/${id}/edit`);
   };
 
+  handleSiteDelete = (deleteSite: DeleteSiteMutationFn) => (id: number) => {
+    deleteSite({ variables: { input: { id } } });
+  };
+
   render() {
     return (
       <QueryComponent query={QUERY}>
@@ -69,13 +76,20 @@ class SitesPage extends React.PureComponent<SitesPageProps> {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.me.ownSites.map(site => (
-                        <SiteItem
-                          site={site}
-                          key={site.subdomain}
-                          onEdit={this.handleSiteEdit}
-                        />
-                      ))}
+                      <DeleteSiteMutation>
+                        {deleteSite => (
+                          <>
+                            {data!.me!.ownSites.map(site => (
+                              <SiteItem
+                                site={site}
+                                key={site.subdomain}
+                                onEdit={this.handleSiteEdit}
+                                onDelete={this.handleSiteDelete(deleteSite)}
+                              />
+                            ))}
+                          </>
+                        )}
+                      </DeleteSiteMutation>
                     </tbody>
                   </Table>
                 )}

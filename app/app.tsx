@@ -38,6 +38,7 @@ import 'file-loader?name=[name].[ext]!./.htaccess';
 import '!file-loader?name=[name].[ext]!./images/clinwiki-50.png';
 import '!file-loader?name=[name].[ext]!./images/heading.png';
 import 'react-toggle/style.css';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 /* eslint-enable import/no-unresolved, import/extensions */
 
 import apolloClient from './configureApollo';

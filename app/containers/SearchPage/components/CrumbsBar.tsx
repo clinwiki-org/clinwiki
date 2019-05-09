@@ -12,6 +12,7 @@ import {
 import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
+import MultiCrumb from 'components/MultiCrumb';
 
 const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
@@ -115,30 +116,6 @@ const Crumb = ({ category, value, onClick }) => {
         style={{ cursor: 'pointer', color: '#cc1111', margin: '0 0 0 3px' }}
         onClick={onClick}
       />
-    </Label>
-  );
-};
-
-const MultiCrumb = (props: {
-  category: string;
-  values: string[];
-  onClick: (s: string) => void;
-}) => {
-  return (
-    <Label>
-      <i>{props.category}:</i>
-      {props.values.map(v => (
-        <b key={v}>
-          {' '}
-          {v}
-          <FontAwesome
-            className="remove"
-            name="remove"
-            style={{ cursor: 'pointer', color: '#cc1111', margin: '0 0 0 3px' }}
-            onClick={() => props.onClick(v)}
-          />
-        </b>
-      ))}
     </Label>
   );
 };

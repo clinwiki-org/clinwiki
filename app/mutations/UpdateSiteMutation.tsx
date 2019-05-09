@@ -6,6 +6,7 @@ import {
   UpdateSiteMutationVariables,
 } from 'types/UpdateSiteMutation';
 import SiteItem from 'components/SiteItem';
+import SiteProvider from 'containers/SiteProvider';
 
 interface UpdateSiteMutationProps {
   children: (
@@ -18,13 +19,13 @@ const UPDATE_SITE_MUTATION = gql`
   mutation UpdateSiteMutation($input: UpdateSiteInput!) {
     updateSite(input: $input) {
       site {
-        ...SiteItemFragment
+        ...SiteFragment
       }
       errors
     }
   }
 
-  ${SiteItem.fragment}
+  ${SiteProvider.fragment}
 `;
 
 class UpdateSiteMutationComponent extends Mutation<

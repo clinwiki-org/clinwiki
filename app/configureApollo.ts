@@ -21,9 +21,9 @@ console.log('Apollo cache', cache);
 function get_gql_url() {
   if (
     typeof window === 'undefined' ||
-    window.location.hostname === 'localhost'
+    window.location.hostname.includes('localhost')
   ) {
-    return 'http://localhost:3000/graphql';
+    return `http://${window.location.hostname}:3000/graphql`;
   }
   return '/graphql';
 }

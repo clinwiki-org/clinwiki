@@ -9,6 +9,7 @@ import SiteItem from 'components/SiteItem';
 import { SiteItemFragment } from 'types/SiteItemFragment';
 import { lensPath, set } from 'ramda';
 import { CreateSiteOwnSitesQuery } from 'types/CreateSiteOwnSitesQuery';
+import SiteProvider from 'containers/SiteProvider';
 
 interface CreateSiteMutationProps {
   children: (
@@ -21,13 +22,13 @@ const CREATE_SITE_MUTATION = gql`
   mutation CreateSiteMutation($input: CreateSiteInput!) {
     createSite(input: $input) {
       site {
-        ...SiteItemFragment
+        ...SiteFragment
       }
       errors
     }
   }
 
-  ${SiteItem.fragment}
+  ${SiteProvider.fragment}
 `;
 
 class CreateSiteMutationComponent extends Mutation<

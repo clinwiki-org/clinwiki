@@ -232,6 +232,7 @@
     "react": "16.8.1",
     "react-apollo": "^2.1.9",
     "react-bootstrap": "^0.32.1",
+    "react-bootstrap-typeahead": "^4.0.0-alpha.10",
     "react-dom": "16.8.1",
     "react-fontawesome": "^1.6.1",
     "react-helmet": "5.1.3",

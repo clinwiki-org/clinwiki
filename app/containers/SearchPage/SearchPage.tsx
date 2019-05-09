@@ -47,6 +47,7 @@ import {
   SearchPageSearchQuery_crowdAggs_aggs,
 } from 'types/SearchPageSearchQuery';
 import { AggBucketMap } from './Types';
+import SiteProvider from 'containers/SiteProvider';
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
