@@ -1,13 +1,6 @@
 MAX_AGGREGATION_LIMIT = 1_000_000
 ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
-ENABLED_AGGS = %i[
-  average_rating overall_status facility_states
-  facility_cities facility_names study_type sponsors
-  browse_condition_mesh_terms phase rating_dimensions
-  browse_interventions_mesh_terms interventions_mesh_terms
-  front_matter_keys
-].freeze
 
 # aggregations
 DEFAULT_AGG_OPTIONS = {
@@ -83,6 +76,14 @@ DEFAULT_AGG_OPTIONS = {
 }.freeze
 
 class SearchService # rubocop:disable Metrics/ClassLength
+  ENABLED_AGGS = %i[
+    average_rating overall_status facility_states
+    facility_cities facility_names study_type sponsors
+    browse_condition_mesh_terms phase rating_dimensions
+    browse_interventions_mesh_terms interventions_mesh_terms
+    front_matter_keys
+  ].freeze
+
   attr_reader :params
 
   # @param params - hash representing SearchInputType with symbols as keys.

@@ -6,6 +6,23 @@ require File.expand_path("config/application", __dir__)
 
 Rails.application.load_tasks
 
+task :token, [:email] => :environment do |_t, args|
+  user = args[:email] ? User.find_by(email: args[:email]) : User.first
+  if user.blank?
+    p "User not found"
+    return
+  end
+
+  hmac_secret = Rails.application.secrets.secret_key_base
+  raise "SECRET_KEY_BASE is not set" if hmac_secret.blank?
+
+  exp_secs = 86_400 * 30
+  exp = Time.now.to_i + exp_secs.to_i
+  jwt = JWT.encode({ email: user.email, exp: exp }, hmac_secret, "HS256")
+
+  puts jwt
+end
+
 namespace :import do
   task :csv, [:csv_file] => :environment do |_t, args|
     require File.expand_path("app/services/csv_processor", __dir__)

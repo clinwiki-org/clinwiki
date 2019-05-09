@@ -39,6 +39,7 @@ module Clinwiki
       allow do
         origins 'http://localhost:3001',
                 'http://localhost:3000',
+                'http://mysite.localhost:3001',
                 'http://clinwiki-prod.herokuapp.com',
                 'http://clinwiki-dev.herokuapp.com'
         resource '*',

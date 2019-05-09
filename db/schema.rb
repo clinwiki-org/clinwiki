@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_30_075101) do
+ActiveRecord::Schema.define(version: 2019_05_04_135833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,14 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.datetime "updated_at", null: false
     t.index ["long"], name: "index_short_links_on_long", unique: true
     t.index ["short"], name: "index_short_links_on_short", unique: true
+  end
+
+  create_table "site_views", force: :cascade do |t|
+    t.jsonb "updates", default: [], null: false
+    t.bigint "site_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["site_id"], name: "index_site_views_on_site_id"
   end
 
   create_table "sites", force: :cascade do |t|
@@ -133,6 +141,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_075101) do
     t.index ["nct_id"], name: "index_wiki_pages_on_nct_id", unique: true
   end
 
+  add_foreign_key "site_views", "sites"
   add_foreign_key "wiki_page_edits", "users"
   add_foreign_key "wiki_page_edits", "wiki_pages"
 end

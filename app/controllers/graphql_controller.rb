@@ -30,7 +30,7 @@ class GraphqlController < ApplicationController
     subdomain = uri.host.split(".").first
     return nil if subdomain.blank?
 
-    Site.find_by(subdomain: subdomain)
+    Site.find_by(subdomain: subdomain) || Site.default
   end
 
   # Raises JWT::ExpiredSignature if signature is expired

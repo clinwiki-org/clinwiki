@@ -1,7 +1,9 @@
 module Types
   class MutationType < BaseObject
+    field :updateSiteView, mutation: Mutations::UpdateSiteView
     field :updateSite, mutation: Mutations::UpdateSite
     field :createSite, mutation: Mutations::CreateSite
+    field :deleteSite, mutation: Mutations::DeleteSite
     field :updateProfile, mutation: Mutations::UpdateProfile
     field :signIn, mutation: Mutations::SignIn
     field :signUp, mutation: Mutations::SignUp
