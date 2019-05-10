@@ -39,7 +39,7 @@ class SiteView < ApplicationRecord
           },
           fields: aggs,
         },
-        crowd_aggs: {
+        crowdAggs: {
           selected: {
             kind: "BLACKLIST",
             values: [],
@@ -66,7 +66,7 @@ class SiteView < ApplicationRecord
       name: name,
       rank: nil,
       preselected: {
-        kind: "BLACKLIST",
+        kind: "WHITELIST",
         values: [],
       },
     }
