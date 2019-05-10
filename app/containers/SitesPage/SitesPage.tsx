@@ -102,8 +102,10 @@ class SitesPage extends React.PureComponent<SitesPageProps> {
                 {data.me.editorSites.length > 0 && (
                   <Table striped bordered condensed>
                     <thead>
-                      <th>Name</th>
-                      <th>Subdomain</th>
+                      <tr>
+                        <th>Name</th>
+                        <th>Subdomain</th>
+                      </tr>
                     </thead>
                     <tbody>
                       {data.me.editorSites.map(site => (

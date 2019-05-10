@@ -1,6 +1,14 @@
 import * as React from 'react';
-import { isEmpty, isNil, reject, filter, equals } from 'ramda';
-import AggDropDown from './AggDropDown';
+import {
+  isEmpty,
+  isNil,
+  reject,
+  filter,
+  equals,
+  prop,
+  intersection,
+} from 'ramda';
+import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,
   AggCallback,
@@ -13,6 +21,7 @@ import SiteProvider from 'containers/SiteProvider';
 import { SiteFragment } from 'types/SiteFragment';
 import { throws } from 'assert';
 import { FilterKind } from 'types/globalTypes';
+import { displayFields } from 'utils/siteViewHelpers';
 
 interface AggsProps {
   aggs: AggBucketMap;
@@ -30,10 +39,21 @@ interface AggsProps {
 
 class Aggs extends React.PureComponent<AggsProps> {
   getAggs = (site: SiteFragment): string[] => {
-    const aggsSettings = site.siteView.search.aggs;
-    const { kind, values } = aggsSettings.selected;
-    const kindFunction = kind === FilterKind.BLACKLIST ? reject : filter;
-    return kindFunction(x => values.includes(x), aggsOrdered);
+    return displayFields(
+      site.siteView.search.aggs.selected.kind,
+      site.siteView.search.aggs.selected.values,
+      site.siteView.search.aggs.fields,
+    ).map(prop('name'));
+  };
+
+  getCrowdAggs = (site: SiteFragment, crowdAggs: string[]): string[] => {
+    const displayed = displayFields(
+      site.siteView.search.crowdAggs.selected.kind,
+      site.siteView.search.crowdAggs.selected.values,
+      site.siteView.search.crowdAggs.fields,
+    ).map(prop('name'));
+
+    return filter(x => crowdAggs.includes(x), displayed);
   };
 
   render() {
@@ -52,29 +72,38 @@ class Aggs extends React.PureComponent<AggsProps> {
 
     if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
       crowdAggDropdowns = (
-        <div>
-          <h4 style={{ color: 'white', position: 'relative', left: '20px' }}>
-            Crowd Facets
-          </h4>
-          {Object.keys(crowdAggs).map(k => (
-            <AggDropDown
-              key={k}
-              agg={k}
-              selectedKeys={crowdFilters[k] || emptySet}
-              buckets={crowdAggs[k]}
-              isOpen={
-                this.props.opened === k && this.props.openedKind === 'crowdAggs'
-              }
-              onOpen={this.props.onOpen}
-              aggKind="crowdAggs"
-              addFilter={(agg, item) => addFilter && addFilter(agg, item, true)}
-              removeFilter={(agg, item) =>
-                removeFilter && removeFilter(agg, item, true)
-              }
-              searchParams={searchParams}
-            />
-          ))}
-        </div>
+        <SiteProvider>
+          {site => (
+            <div>
+              <h4
+                style={{ color: 'white', position: 'relative', left: '20px' }}
+              >
+                Crowd Facets
+              </h4>
+              {this.getCrowdAggs(site, Object.keys(crowdAggs)).map(k => (
+                <AggDropDown
+                  key={k}
+                  agg={k}
+                  selectedKeys={crowdFilters[k] || emptySet}
+                  buckets={crowdAggs[k]}
+                  isOpen={
+                    this.props.opened === k &&
+                    this.props.openedKind === 'crowdAggs'
+                  }
+                  onOpen={this.props.onOpen}
+                  aggKind="crowdAggs"
+                  addFilter={(agg, item) =>
+                    addFilter && addFilter(agg, item, true)
+                  }
+                  removeFilter={(agg, item) =>
+                    removeFilter && removeFilter(agg, item, true)
+                  }
+                  searchParams={searchParams}
+                />
+              ))}
+            </div>
+          )}
+        </SiteProvider>
       );
     }
     if (!isEmpty(aggs) && !isNil(aggs)) {

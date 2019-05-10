@@ -48,6 +48,8 @@ import {
 } from 'types/SearchPageSearchQuery';
 import { AggBucketMap } from './Types';
 import SiteProvider from 'containers/SiteProvider';
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import { preselectedFilters } from 'utils/siteViewHelpers';
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
@@ -209,7 +211,7 @@ interface SearchPageState {
   searchCrowdAggs: AggBucketMap;
 }
 
-const defaultParams: SearchParams = {
+const DEFAULT_PARAMS: SearchParams = {
   q: { key: 'AND', children: [] },
   aggFilters: [],
   crowdAggFilters: [],
@@ -232,16 +234,22 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   ) {
     if (state.params == null && props.ignoreUrlHash) {
       return {
-        params: props.searchParams || defaultParams,
+        params: props.searchParams || DEFAULT_PARAMS,
         openedAgg: null,
       };
     }
     return null;
   }
 
+  getDefaultParams = (view: SiteViewFragment) => {
+    return { ...DEFAULT_PARAMS, ...preselectedFilters(view) };
+  };
+
   searchParamsFromQuery = (
+    view: SiteViewFragment,
     params: SearchPageParamsQuery_searchParams | null | undefined,
   ): SearchParams => {
+    const defaultParams = this.getDefaultParams(view);
     if (!params) return defaultParams;
 
     const q = params.q
@@ -300,8 +308,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
   };
 
-  handleResetFilters = () => {
-    this.setState({ params: defaultParams });
+  handleResetFilters = (view: SiteViewFragment) => () => {
+    this.setState({ params: this.getDefaultParams(view) });
   };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
@@ -379,12 +387,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  renderSearch = (hash: string | null) => {
+  renderSearch = (hash: string | null, view: SiteViewFragment) => {
     return (
       <ParamsQueryComponent query={PARAMS_QUERY} variables={{ hash }}>
         {({ data, loading, error }) => {
           if (error || loading) return null;
           const params: SearchParams = this.searchParamsFromQuery(
+            view,
             data && data.searchParams,
           );
           // hydrate state params from hash
@@ -413,7 +422,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     onRowClick={this.handleRowClick}
                     onOpenAgg={this.handleOpenAgg}
                     onAggsUpdate={this.handleAggsUpdate}
-                    onResetFilters={this.handleResetFilters}
+                    onResetFilters={this.handleResetFilters(view)}
                   />
                 );
               }}
@@ -430,15 +439,19 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <Row>
           <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
           <MainContainer md={10}>
-            <SearchView
-              params={this.state.params as any}
-              openedAgg={this.state.openedAgg}
-              onUpdateParams={this.handleUpdateParams}
-              onRowClick={this.handleRowClick}
-              onOpenAgg={this.handleOpenAgg}
-              onAggsUpdate={this.handleAggsUpdate}
-              onResetFilters={this.handleResetFilters}
-            />
+            <SiteProvider>
+              {site => (
+                <SearchView
+                  params={this.state.params as any}
+                  openedAgg={this.state.openedAgg}
+                  onUpdateParams={this.handleUpdateParams}
+                  onRowClick={this.handleRowClick}
+                  onOpenAgg={this.handleOpenAgg}
+                  onAggsUpdate={this.handleAggsUpdate}
+                  onResetFilters={this.handleResetFilters(site.siteView)}
+                />
+              )}
+            </SiteProvider>
           </MainContainer>
         </Row>
       );
@@ -456,10 +469,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         />
         <Route
           render={() => (
-            <Row>
-              <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
-              <MainContainer md={10}>{this.renderSearch(hash)}</MainContainer>
-            </Row>
+            <SiteProvider>
+              {site => (
+                <Row>
+                  <SidebarContainer md={2}>
+                    {this.renderAggs()}
+                  </SidebarContainer>
+                  <MainContainer md={10}>
+                    {this.renderSearch(hash, site.siteView)}
+                  </MainContainer>
+                </Row>
+              )}
+            </SiteProvider>
           )}
         />
       </Switch>

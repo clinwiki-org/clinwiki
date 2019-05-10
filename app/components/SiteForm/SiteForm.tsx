@@ -1,5 +1,9 @@
 import * as React from 'react';
-import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
+import {
+  CreateSiteInput,
+  SiteViewMutationInput,
+  FilterKind,
+} from 'types/globalTypes';
 import {
   equals,
   pick,
@@ -10,6 +14,7 @@ import {
   reject,
   omit,
   prop,
+  filter,
 } from 'ramda';
 import { Row, Col, FormControl, Button, Table } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -24,6 +29,8 @@ import {
   getViewValueByPath,
 } from 'utils/siteViewUpdater';
 import MultiInput from 'components/MultiInput';
+import AggField from './AggField';
+import { displayFields } from 'utils/siteViewHelpers';
 
 interface SiteFormProps {
   site: SiteFragment;
@@ -48,6 +55,7 @@ const AGGS_OPTIONS = aggsOrdered.map(option => ({
 const StyledContainer = styled.div`
   padding: 20px;
   h3,
+  h4,
   h5 {
     color: white;
   }
@@ -111,6 +119,16 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       return { ...state, form, prevForm: form };
     }
     return null;
+  };
+
+  getCrowdFields = () => {
+    return this.props.site.siteView.search.crowdAggs.fields.map(field => ({
+      id: field.name,
+      label: field.name
+        .split('_')
+        .map(capitalize)
+        .join(' '),
+    }));
   };
 
   handleSave = () => {
@@ -206,11 +224,21 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
-
+    const fields = displayFields(
+      view.search.aggs.selected.kind,
+      view.search.aggs.selected.values,
+      view.search.aggs.fields,
+    );
+    const crowdFields = displayFields(
+      view.search.crowdAggs.selected.kind,
+      view.search.crowdAggs.selected.values,
+      view.search.crowdAggs.fields,
+    );
     return (
       <StyledContainer>
         <Row>
-          <Col md={6} lg={4}>
+          <Col md={6}>
+            <h3>Site params</h3>
             <StyledLabel htmlFor="name">Name</StyledLabel>
             <StyledFormControl
               id="name"
@@ -231,8 +259,11 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
             />
             {this.renderEditors()}
           </Col>
-          <Col md={6} lg={4}>
-            <StyledLabel htmlFor="facets">Facets</StyledLabel>
+        </Row>
+        <Row>
+          <Col md={6}>
+            <h3>Aggs visibility</h3>
+            <StyledLabel>Filter</StyledLabel>
             <StyledFormControl
               name="set:search.aggs.selected.kind"
               componentClass="select"
@@ -249,6 +280,44 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               value={view.search.aggs.selected.values}
               onChange={this.handleAddMutation}
             />
+            <h3>Aggs settings</h3>
+            {fields.map(field => (
+              <AggField
+                kind="aggs"
+                key={field.name}
+                field={field}
+                onAddMutation={this.handleAddMutation}
+              />
+            ))}
+          </Col>
+          <Col md={6}>
+            <h3>Crowd aggs visibility</h3>
+            <StyledLabel>Filter</StyledLabel>
+            <StyledFormControl
+              name="set:search.crowdAggs.selected.kind"
+              componentClass="select"
+              onChange={this.handleAddMutation}
+              defaultValue={view.search.crowdAggs.selected.kind}
+            >
+              <option value="BLACKLIST">All except</option>
+              <option value="WHITELIST">Only</option>
+            </StyledFormControl>
+            <MultiInput
+              name="set:search.crowdAggs.selected.values"
+              options={this.getCrowdFields()}
+              placeholder="Add facet"
+              value={view.search.crowdAggs.selected.values}
+              onChange={this.handleAddMutation}
+            />
+            <h3>Crowd aggs settings</h3>
+            {crowdFields.map(field => (
+              <AggField
+                kind="crowdAggs"
+                key={field.name}
+                field={field}
+                onAddMutation={this.handleAddMutation}
+              />
+            ))}
           </Col>
         </Row>
         <Button onClick={this.handleSave}>Save</Button>

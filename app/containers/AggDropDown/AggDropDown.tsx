@@ -27,7 +27,7 @@ import {
   SearchParams,
   gqlParams,
   AggKind,
-} from '../Types';
+} from '../SearchPage/Types';
 
 import gql from 'graphql-tag';
 import aggToField from 'utils/aggs/aggToField';
@@ -131,9 +131,9 @@ interface AggDropDownProps {
   searchParams: SearchParams;
   aggKind: AggKind;
   selectedKeys: Set<string>;
-  onOpen: (agg: string, aggKind: AggKind) => void;
   addFilter: AggCallback | null;
   removeFilter: AggCallback | null;
+  onOpen?: (agg: string, aggKind: AggKind) => void;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -216,7 +216,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   handleToggle = () => {
-    this.props.onOpen(this.props.agg, this.props.aggKind);
+    this.props.onOpen && this.props.onOpen(this.props.agg, this.props.aggKind);
   };
 
   handleLoadMore = async apolloClient => {

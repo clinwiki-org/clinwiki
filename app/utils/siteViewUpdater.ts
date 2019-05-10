@@ -95,10 +95,10 @@ const getLastHashByPath = (
   let [key, ...currentComponents] = components;
   let currentView = view as any;
   while (currentComponents.length && currentView) {
-    if (typeof currentView === 'object') {
+    if (Array.isArray(currentView)) {
+      currentView = find(propEq('name', key), currentView);
+    } else if (typeof currentView === 'object') {
       currentView = currentView[key];
-    } else if (Array.isArray(currentView)) {
-      currentView = find(propEq('name', key));
     } else {
       currentView = null;
     }
