@@ -114,13 +114,9 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
             // @ts-ignore
             fromPairs,
           )(meta);
-
           const aggs = pipe(
             pathOr([], ['search', 'aggs']),
-            filter(
-              (agg: any) =>
-                agg.name.startsWith('fm_') && agg.name !== 'fm_tags',
-            ),
+            filter((agg: any) => agg.name.startsWith('fm_')),
             map((agg: any) => {
               const name = agg.name.substring(3, 1000);
               const existingLabels = labels[name] || [];
