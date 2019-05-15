@@ -18,7 +18,7 @@ module Types
     end
 
     field :health, HealthType, null: false
-    field :site, SiteType, "If id is missing, returns current site.", null: true do
+    field :site, SiteType, "If id is missing, returns current site. If id == 0, returns default site", null: true do
       argument :id, type: Int, required: false
     end
 
@@ -74,7 +74,14 @@ module Types
     end
 
     def site(id: nil)
-      id.nil? ? context[:current_site] : Site.find_by(id: id)
+      case id
+      when nil
+        context[:current_site]
+      when 0
+        Site.default
+      else
+        Site.find_by(id: id)
+      end
     end
 
     def study(nct_id:)
