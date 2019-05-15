@@ -42,7 +42,7 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
 
   render() {
     return (
-      <SiteProvider>
+      <SiteProvider id={0}>
         {site => (
           <UpdateSiteViewMutation
             onCompleted={() => this.props.history.push('/sites')}
@@ -51,7 +51,7 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
               <CreateSiteMutation>
                 {createSite => (
                   <SiteForm
-                    site={site}
+                    site={{ ...site, name: '' }}
                     onSave={this.handleSave(createSite, updateSiteView)}
                   />
                 )}
