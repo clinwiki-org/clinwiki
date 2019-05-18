@@ -14,6 +14,7 @@ import {
   equals,
   lensPath,
   view,
+  find,
 } from 'ramda';
 import { ApolloConsumer } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
@@ -172,12 +173,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       };
     }
 
-    const aggLens = lensPath([
-      props.aggKind === 'aggs' ? 'aggFilters' : 'crowdAggFilters',
-      props.agg,
-    ]);
-    const prevAggValue = view(aggLens, state.prevParams);
-    const nextAggValue = view(aggLens, props.searchParams);
+    const findAgg = (searchParams: SearchParams | null) => {
+      if (!searchParams) return null;
+
+      const key = props.aggKind === 'aggs' ? 'aggFilters' : 'crowdAggFilters';
+      return find(agg => agg.field === props.agg, searchParams[key]);
+    };
+    const prevAggValue = findAgg(state.prevParams);
+    const nextAggValue = findAgg(props.searchParams);
 
     if (
       state.isOpen &&
@@ -281,7 +284,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         loadMore={() => this.handleLoadMore(apolloClient)}
         hasMore={this.state.hasMore}
         useWindow={false}
-        loader={<BeatLoader key="loader" color="#333" />}
+        loader={
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <BeatLoader key="loader" color="#fff" />
+          </div>
+        }
       >
         {this.renderBuckets()}
       </InfiniteScroll>
