@@ -111,47 +111,47 @@ class SearchService # rubocop:disable Metrics/ClassLength
     }
   end
 
-  def agg_buckets_for_field(field:, is_crowd_agg: false) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/LineLength
+  def agg_buckets_for_field(field:, is_crowd_agg: false) # rubocop:disable Metrics/MethodLength
     params = self.params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
 
-    has_options_filter = params[:agg_options_filter].present?
-    if has_options_filter
-      # We don't need to keep filters of the same agg, we want broader results
-      # But we need to respect all other filters
-      params[:agg_filters]&.delete_if { |filter_entry| filter_entry[:field] == field }
-      params[:agg_filters] ||= []
-      regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
-      params[:agg_filters] << { field: key.to_s, values: [regex] }
-    end
+    # We don't need to keep filters of the same agg, we want broader results
+    # But we need to respect all other filters
+
+    params[:agg_filters]&.delete_if { |filter_entry| filter_entry[:field] == field }
 
     options = search_kick_query_options(
       params: params,
       aggs: { key => DEFAULT_AGG_OPTIONS[key]&.deep_dup || {} },
-      skip_filters: [key],
+      skip_filters: [],
     )
     options[:aggs][key][:limit] = MAX_AGGREGATION_LIMIT
     options[:per_page] = 0
     options[:smart_aggs] = true
     options[:load] = false
 
-    aggs = Study.search(search_query, options).aggs.to_h.deep_symbolize_keys
-
-    # Some of the values are multivalue => the doc will have aggs not matching
-    # the actual regex and we need to filter it again
-    if has_options_filter
-      regex = Regexp.new("^.*#{params[:agg_options_filter].downcase}.*$", "i")
-      aggs[key][:buckets]
-        .keep_if { |entry| entry[:key] =~ regex }
-    end
-
     page = params[:page] || 0
     page_size = params[:page_size] || DEFAULT_PAGE_SIZE
-    aggs[key][:buckets] =
-      aggs[key][:buckets]
-      .drop(page * page_size)
-      .first(page_size)
+
+    search_results = Study.search(search_query, options) do |body|
+      body[:aggs][key][:aggs][key][:aggs] =
+        (body[:aggs][key][:aggs][key][:aggs] || {}).merge(
+          agg_bucket_sort: {
+            bucket_sort: {
+              from: page * page_size,
+              size: page_size,
+            },
+          },
+        )
+
+      if params[:agg_options_filter].present?
+        body[:aggs][key][:aggs][key][:terms][:include] =
+          case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
+      end
+    end
+
+    aggs = search_results.aggs.to_h.deep_symbolize_keys
 
     aggs
   end
@@ -241,10 +241,9 @@ class SearchService # rubocop:disable Metrics/ClassLength
   end
 
   def case_insensitive_regex_emulation(text)
-    regex_string = text.chars.map do |char|
+    text.chars.map do |char|
       letter?(char) ? "[#{char.upcase}#{char.downcase}]" : char
     end.join("")
-    Regexp.new(regex_string)
   end
 
   def letter?(char)
