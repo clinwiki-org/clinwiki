@@ -1,39 +1,28 @@
 import * as React from 'react';
-import {
-  CreateSiteInput,
-  SiteViewMutationInput,
-  FilterKind,
-} from 'types/globalTypes';
-import {
-  equals,
-  pick,
-  lens,
-  lensPath,
-  set,
-  over,
-  reject,
-  omit,
-  prop,
-  filter,
-} from 'ramda';
-import { Row, Col, FormControl, Button, Table } from 'react-bootstrap';
+import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
+import { equals, prop, last } from 'ramda';
+import { FormControl, Button, Nav, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { gql } from 'apollo-boost';
-import { aggsOrdered } from 'utils/constants';
-import { capitalize } from 'utils/helpers';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { capitalize, trimPath } from 'utils/helpers';
 import { SiteFragment } from 'types/SiteFragment';
 import {
   updateView,
   createMutation,
   getViewValueByPath,
 } from 'utils/siteViewUpdater';
-import MultiInput from 'components/MultiInput';
-import AggField from './AggField';
-import { displayFields } from 'utils/siteViewHelpers';
+import { Switch, Route, match, Redirect } from 'react-router';
+import MainForm from './MainForm';
+import SearchForm from './SearchForm';
+import { StyledContainer } from './Styled';
+import { Link } from 'react-router-dom';
+import { History, Location } from 'history';
 
 interface SiteFormProps {
+  match: match<{}>;
   site: SiteFragment;
+  history: History;
+  location: Location;
   onSave: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
 }
 
@@ -44,42 +33,18 @@ interface SiteFormState {
   prevForm: CreateSiteInput | null;
 }
 
-const AGGS_OPTIONS = aggsOrdered.map(option => ({
-  id: option,
-  label: option
-    .split('_')
-    .map(capitalize)
-    .join(' '),
-}));
-
-const StyledContainer = styled.div`
-  padding: 20px;
-  h3,
-  h4,
-  h5 {
+const Container = styled.div`
+  ul > li > a {
     color: white;
-  }
-`;
-const StyledFormControl = styled(FormControl)`
-  margin-bottom: 20px;
-`;
 
-const StyledLabel = styled.label`
-  color: white;
-`;
-
-const AddEditorContainer = styled.div`
-  display: flex;
-
-  button {
-    margin-left: 10px;
-    margin-bottom: 20px;
+    &:hover {
+      color: #333;
+    }
   }
 `;
 
-const EditorActions = styled.td`
-  display: flex;
-  justify-content: flex-end;
+const StyledNav = styled(Nav)`
+  margin: 15px;
 `;
 
 class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
@@ -121,53 +86,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     return null;
   };
 
-  getCrowdFields = () => {
-    return this.props.site.siteView.search.crowdAggs.fields.map(field => ({
-      id: field.name,
-      label: field.name
-        .split('_')
-        .map(capitalize)
-        .join(' '),
-    }));
-  };
-
   handleSave = () => {
     this.props.onSave(this.state.form, this.state.mutations);
-  };
-
-  handleAddEditor = () => {
-    if (!this.state.addEditorEmail) return;
-
-    const editorsLens = lensPath([
-      'editorEmails',
-      (this.state.form.editorEmails || []).length,
-    ]);
-    const newForm = set(
-      editorsLens,
-      this.state.addEditorEmail,
-      this.state.form,
-    ) as any;
-
-    this.setState({ form: newForm, addEditorEmail: '' });
-  };
-
-  handleDeleteEditor = (email: string) => () => {
-    const editorsLens = lensPath(['editorEmails']);
-    const newForm = over(
-      editorsLens,
-      reject(equals(email)),
-      this.state.form,
-    ) as any;
-    this.setState({ form: newForm });
-  };
-
-  handleEditorEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ addEditorEmail: e.currentTarget.value });
-  };
-
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.currentTarget;
-    this.setState({ form: { ...this.state.form, [name]: value } });
   };
 
   handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
@@ -179,149 +99,60 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     this.setState({ mutations: [...this.state.mutations, mutation] });
   };
 
-  renderEditors = () => {
-    const noEditors =
-      !this.state.form.editorEmails || !this.state.form.editorEmails.length;
+  handleFormChange = (form: CreateSiteInput) => {
+    this.setState({ form });
+  };
+
+  renderTabs = () => {
+    const path = trimPath(this.props.match.url);
+    const sections = [
+      { path: '/main', value: 'Main' },
+      { path: '/search', value: 'Search' },
+    ];
+    const activeKey = `/${last(this.props.location.pathname.split('/'))}`;
     return (
-      <div>
-        <h3>Editors</h3>
-        {noEditors && <h5>No editors</h5>}
-        {!noEditors && (
-          <Table striped bordered condensed>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th style={{ width: '20%' }} />
-              </tr>
-            </thead>
-            <tbody>
-              {(this.state.form.editorEmails || []).map(email => (
-                <tr key={email}>
-                  <td>{email}</td>
-                  <EditorActions>
-                    <Button onClick={this.handleDeleteEditor(email)}>
-                      Delete
-                    </Button>
-                  </EditorActions>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
-        <AddEditorContainer>
-          <StyledFormControl
-            name="editor"
-            type="text"
-            placeholder="Editor email"
-            value={this.state.addEditorEmail}
-            onChange={this.handleEditorEmailChange}
-          />
-          <Button onClick={this.handleAddEditor}>Add</Button>
-        </AddEditorContainer>
-      </div>
+      <StyledNav
+        bsStyle="pills"
+        activeKey={activeKey}
+        onSelect={key => this.props.history.push(`${path}${key}`)}
+      >
+        {sections.map(section => (
+          <NavItem key={`${section.path}`} eventKey={`${section.path}`}>
+            {section.value}
+          </NavItem>
+        ))}
+      </StyledNav>
     );
   };
 
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
-    const fields = displayFields(
-      view.search.aggs.selected.kind,
-      view.search.aggs.selected.values,
-      view.search.aggs.fields,
-    );
-    const crowdFields = displayFields(
-      view.search.crowdAggs.selected.kind,
-      view.search.crowdAggs.selected.values,
-      view.search.crowdAggs.fields,
-    );
+    const path = trimPath(this.props.match.path);
     return (
-      <StyledContainer>
-        <Row>
-          <Col md={6}>
-            <h3>Site params</h3>
-            <StyledLabel htmlFor="name">Name</StyledLabel>
-            <StyledFormControl
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Name"
-              value={this.state.form.name}
-              onChange={this.handleInputChange}
-            />
-            <StyledLabel htmlFor="subdomain">Subdomain</StyledLabel>
-            <StyledFormControl
-              id="subdomain"
-              name="subdomain"
-              type="text"
-              placeholder="Subdomain"
-              value={this.state.form.subdomain}
-              onChange={this.handleInputChange}
-            />
-            {this.renderEditors()}
-          </Col>
-        </Row>
-        <Row>
-          <Col md={6}>
-            <h3>Aggs visibility</h3>
-            <StyledLabel>Filter</StyledLabel>
-            <StyledFormControl
-              name="set:search.aggs.selected.kind"
-              componentClass="select"
-              onChange={this.handleAddMutation}
-              defaultValue={view.search.aggs.selected.kind}
-            >
-              <option value="BLACKLIST">All except</option>
-              <option value="WHITELIST">Only</option>
-            </StyledFormControl>
-            <MultiInput
-              name="set:search.aggs.selected.values"
-              options={AGGS_OPTIONS}
-              placeholder="Add facet"
-              value={view.search.aggs.selected.values}
-              onChange={this.handleAddMutation}
-            />
-            <h3>Aggs settings</h3>
-            {fields.map(field => (
-              <AggField
-                kind="aggs"
-                key={field.name}
-                field={field}
-                onAddMutation={this.handleAddMutation}
+      <Container>
+        {this.renderTabs()}
+        <Switch>
+          <Route
+            path={`${path}/main`}
+            render={() => (
+              <MainForm
+                form={this.state.form}
+                onFormChange={this.handleFormChange}
               />
-            ))}
-          </Col>
-          <Col md={6}>
-            <h3>Crowd aggs visibility</h3>
-            <StyledLabel>Filter</StyledLabel>
-            <StyledFormControl
-              name="set:search.crowdAggs.selected.kind"
-              componentClass="select"
-              onChange={this.handleAddMutation}
-              defaultValue={view.search.crowdAggs.selected.kind}
-            >
-              <option value="BLACKLIST">All except</option>
-              <option value="WHITELIST">Only</option>
-            </StyledFormControl>
-            <MultiInput
-              name="set:search.crowdAggs.selected.values"
-              options={this.getCrowdFields()}
-              placeholder="Add facet"
-              value={view.search.crowdAggs.selected.values}
-              onChange={this.handleAddMutation}
-            />
-            <h3>Crowd aggs settings</h3>
-            {crowdFields.map(field => (
-              <AggField
-                kind="crowdAggs"
-                key={field.name}
-                field={field}
-                onAddMutation={this.handleAddMutation}
-              />
-            ))}
-          </Col>
-        </Row>
-        <Button onClick={this.handleSave}>Save</Button>
-      </StyledContainer>
+            )}
+          />
+          <Route
+            path={`${path}/search`}
+            render={() => (
+              <SearchForm view={view} onAddMutation={this.handleAddMutation} />
+            )}
+          />
+          <Redirect to={`${path}/main`} />
+        </Switch>
+        <StyledContainer>
+          <Button onClick={this.handleSave}>Save</Button>;
+        </StyledContainer>
+      </Container>
     );
   }
 }

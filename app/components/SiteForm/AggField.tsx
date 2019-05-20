@@ -104,6 +104,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                   crowdAggFilters: [],
                   sorts: [],
                 }}
+                display={this.props.field.display}
                 isOpen={this.state.isValuesOpen}
                 selectedKeys={selected}
                 addFilter={this.handleAddFilter}
@@ -111,7 +112,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 onOpen={this.handleOpen}
               />
             </FilterContainer>
-
             {/* <StyledKind
               name={`set:${this.getPath()}.preselected.kind`}
               componentClass="select"
@@ -131,6 +131,17 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               value={this.props.field.rank}
               onChange={this.props.onAddMutation}
             />
+            <StyledLabel>Display</StyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath()}.display`}
+              componentClass="select"
+              onChange={this.props.onAddMutation}
+              defaultValue={this.props.field.display}
+            >
+              <option value="STRING">Text</option>
+              <option value="STAR">Stars</option>
+              <option value="DATE">Date</option>
+            </StyledFormControl>
           </div>
         </Container>
       </>

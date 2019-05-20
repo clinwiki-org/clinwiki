@@ -15,6 +15,7 @@ import {
   lensPath,
   view,
   find,
+  propEq,
 } from 'ramda';
 import { ApolloConsumer } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
@@ -33,6 +34,12 @@ import {
 import gql from 'graphql-tag';
 import aggToField from 'utils/aggs/aggToField';
 import aggKeyToInner from 'utils/aggs/aggKeyToInner';
+import { FieldDisplay } from 'types/globalTypes';
+import SiteProvider from 'containers/SiteProvider';
+import {
+  SiteViewFragment,
+  SiteViewFragment_search_aggs_fields,
+} from 'types/SiteViewFragment';
 
 const PAGE_SIZE = 25;
 
@@ -134,6 +141,7 @@ interface AggDropDownProps {
   selectedKeys: Set<string>;
   addFilter: AggCallback | null;
   removeFilter: AggCallback | null;
+  display?: FieldDisplay;
   onOpen?: (agg: string, aggKind: AggKind) => void;
 }
 
@@ -258,7 +266,35 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({ buckets, hasMore });
   };
 
-  renderBuckets = () => {
+  renderBucket = (
+    value: string | number,
+    display: FieldDisplay,
+    docCount: number,
+  ): React.ReactNode => {
+    let text = '';
+    switch (display) {
+      case FieldDisplay.STAR:
+        text = {
+          0: '☆☆☆☆☆',
+          1: '★☆☆☆☆',
+          2: '★★☆☆☆',
+          3: '★★★☆☆',
+          4: '★★★★☆',
+          5: '★★★★★',
+        }[value];
+        break;
+      case FieldDisplay.DATE:
+        text = new Date(parseInt(value.toString(), 10))
+          .getFullYear()
+          .toString();
+        break;
+      default:
+        text = value.toString();
+    }
+    return `${text} (${docCount})`;
+  };
+
+  renderBuckets = (display: FieldDisplay) => {
     const { agg } = this.props;
     const { buckets = [] } = this.state;
 
@@ -270,14 +306,21 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           checked={this.isSelected(key)}
           onChange={() => this.toggleAgg(agg, key)}
         >
-          {aggKeyToInner(agg, key)}
-          <span> ({docCount})</span>
+          {this.renderBucket(key, display, docCount)}
         </Checkbox>
       )),
     )(buckets);
   };
 
-  renderBucketsPanel = apolloClient => {
+  renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
+    let display = this.props.display;
+    if (!display) {
+      const field = find(propEq('name', this.props.agg), [
+        ...site.search.aggs.fields,
+        ...site.search.crowdAggs.fields,
+      ]) as SiteViewFragment_search_aggs_fields | null;
+      display = (field && field.display) || FieldDisplay.STRING;
+    }
     return (
       <InfiniteScroll
         pageStart={0}
@@ -290,7 +333,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           </div>
         }
       >
-        {this.renderBuckets()}
+        {this.renderBuckets(display)}
       </InfiniteScroll>
     );
   };
@@ -318,32 +361,36 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
 
     return (
-      <ApolloConsumer>
-        {apolloClient => (
-          <PanelWrapper>
-            <Panel onToggle={this.handleToggle} expanded={isOpen}>
-              <Panel.Heading>
-                <Panel.Title toggle>
-                  <div className="flex">
-                    <span>{title}</span>
-                    <span>
-                      <FontAwesome name={icon} />{' '}
-                    </span>
-                  </div>
-                </Panel.Title>
-              </Panel.Heading>
-              {isOpen && (
-                <Panel.Collapse>
-                  <Panel.Body>{this.renderFilter()}</Panel.Body>
-                  <Panel.Body>
-                    {this.renderBucketsPanel(apolloClient)}
-                  </Panel.Body>
-                </Panel.Collapse>
-              )}
-            </Panel>
-          </PanelWrapper>
+      <SiteProvider>
+        {site => (
+          <ApolloConsumer>
+            {apolloClient => (
+              <PanelWrapper>
+                <Panel onToggle={this.handleToggle} expanded={isOpen}>
+                  <Panel.Heading>
+                    <Panel.Title toggle>
+                      <div className="flex">
+                        <span>{title}</span>
+                        <span>
+                          <FontAwesome name={icon} />{' '}
+                        </span>
+                      </div>
+                    </Panel.Title>
+                  </Panel.Heading>
+                  {isOpen && (
+                    <Panel.Collapse>
+                      <Panel.Body>{this.renderFilter()}</Panel.Body>
+                      <Panel.Body>
+                        {this.renderBucketsPanel(apolloClient, site.siteView)}
+                      </Panel.Body>
+                    </Panel.Collapse>
+                  )}
+                </Panel>
+              </PanelWrapper>
+            )}
+          </ApolloConsumer>
         )}
-      </ApolloConsumer>
+      </SiteProvider>
     );
   }
 }

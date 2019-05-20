@@ -1,7 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
-import { Query } from 'react-apollo';
-import { gql } from 'apollo-boost';
 import SiteForm from 'components/SiteForm/SiteForm';
 import UpdateSiteMutation, {
   UpdateSiteMutationFn,
@@ -18,11 +15,12 @@ import UpdateSiteViewMutation, {
 } from 'mutations/UpdateSiteViewMutation';
 import { SiteFragment } from 'types/SiteFragment';
 import { serializeMutation } from 'utils/siteViewUpdater';
-import { History } from 'history';
+import { History, Location } from 'history';
 
 interface SitesEditPageProps {
   match: match<{ id: string }>;
   history: History;
+  location: Location;
 }
 
 class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
@@ -57,6 +55,9 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
               <UpdateSiteMutation>
                 {updateSite => (
                   <SiteForm
+                    match={this.props.match}
+                    history={this.props.history}
+                    location={this.props.location}
                     site={site}
                     onSave={this.handleSave(updateSite, updateSiteView, site)}
                   />

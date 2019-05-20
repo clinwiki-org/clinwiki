@@ -294,7 +294,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                       style={{ marginTop: 10 }}
                       onClick={this.handleSubmitReview(upsertReview)}
                     >
-                      "Submit"
+                      Submit
                     </Button>
                   )
                 );

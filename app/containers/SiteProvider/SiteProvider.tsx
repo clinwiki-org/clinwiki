@@ -20,6 +20,7 @@ const SITE_VIEW_FRAGMENT = gql`
       aggs {
         fields {
           name
+          display
           preselected {
             kind
             values
@@ -34,6 +35,7 @@ const SITE_VIEW_FRAGMENT = gql`
       crowdAggs {
         fields {
           name
+          display
           preselected {
             kind
             values

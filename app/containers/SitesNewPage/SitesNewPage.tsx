@@ -10,10 +10,13 @@ import UpdateSiteViewMutation, {
 } from 'mutations/UpdateSiteViewMutation';
 import { pathOr } from 'ramda';
 import { serializeMutation } from 'utils/siteViewUpdater';
-import { History } from 'history';
+import { History, Location } from 'history';
+import { match } from 'react-router';
 
 interface SitesNewPageProps {
+  match: match<{}>;
   history: History;
+  location: Location;
 }
 
 class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
@@ -51,6 +54,9 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
               <CreateSiteMutation>
                 {createSite => (
                   <SiteForm
+                    history={this.props.history}
+                    location={this.props.location}
+                    match={this.props.match}
                     site={{ ...site, name: '' }}
                     onSave={this.handleSave(createSite, updateSiteView)}
                   />
