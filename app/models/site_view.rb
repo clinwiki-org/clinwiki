@@ -1,3 +1,5 @@
+STAR_FIELDS = [:average_rating].freeze
+
 class SiteView < ApplicationRecord
   belongs_to :site
 
@@ -62,9 +64,11 @@ class SiteView < ApplicationRecord
   end
 
   def default_agg_params(name)
+    display = STAR_FIELDS.include?(name.to_sym) ? "STAR" : "STRING"
     {
       name: name,
       rank: nil,
+      display: display,
       preselected: {
         kind: "WHITELIST",
         values: [],
