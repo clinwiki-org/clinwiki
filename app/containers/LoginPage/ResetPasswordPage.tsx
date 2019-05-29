@@ -123,4 +123,3 @@ class ResetPasswordPage extends React.Component<
 }
 
 export default ResetPasswordPage;
-62;

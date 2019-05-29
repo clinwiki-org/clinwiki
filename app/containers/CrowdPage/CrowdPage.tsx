@@ -428,33 +428,9 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
 
     if (this.props.workflowView) {
       content = (
-        <>
-          <TableWrapper striped condensed bordered>
-            <tbody>
-              <CurrentUser>
-                {user =>
-                  user && (
-                    <AddCrowdLabel
-                      onAddLabel={(key, value) =>
-                        this.handleAddLabel(
-                          key,
-                          value,
-                          meta,
-                          upsertLabelMutation,
-                        )
-                      }
-                      forceAddLabel={this.state.forceAddLabel}
-                      name="Add Custom Label"
-                    />
-                  )
-                }
-              </CurrentUser>
-            </tbody>
-          </TableWrapper>
-          <CollapsiblePanel header="All Crowd Labels" collapsed>
-            {content}
-          </CollapsiblePanel>
-        </>
+        <CollapsiblePanel header="All Crowd Labels" collapsed>
+          {content}
+        </CollapsiblePanel>
       );
     }
 
