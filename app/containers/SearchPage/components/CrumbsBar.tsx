@@ -97,6 +97,7 @@ interface CrumbsBarProps {
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
   page: number;
+  recordsTotal: number;
   pagesTotal: number;
   pageSize: number;
   update: { page: (n: number) => void };
@@ -231,6 +232,9 @@ export default class CrumbsBar extends React.Component<
                     onClick={() => this.props.update.page(this.props.page + 1)}
                   />
                 ) : null}
+                <div>
+                  {this.props.recordsTotal} results
+                </div>
               </div>
             </Col>
           </Row>

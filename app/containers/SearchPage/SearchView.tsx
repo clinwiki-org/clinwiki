@@ -328,6 +328,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     error: any;
   }) => {
     let pagesTotal = 0;
+    let recordsTotal = 0;
     if (
       data &&
       data.search &&
@@ -337,6 +338,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       pagesTotal = Math.ceil(
         data.search.recordsTotal / this.props.params.pageSize,
       );
+      recordsTotal = data.search.recordsTotal;
     }
 
     const q =
@@ -361,6 +363,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           this.props.onUpdateParams,
         )}
         page={this.props.params.page}
+        recordsTotal={recordsTotal}
         pagesTotal={pagesTotal}
         pageSize={this.props.params.pageSize}
         update={{
