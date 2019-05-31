@@ -7,6 +7,7 @@ import MultiInput from 'components/MultiInput';
 import AggField from './AggField';
 import { capitalize } from 'utils/helpers';
 import { aggsOrdered } from 'utils/constants';
+import { FilterKind } from 'types/globalTypes';
 
 interface SearchFormProps {
   view: SiteViewFragment;
@@ -35,13 +36,13 @@ class SearchForm extends React.PureComponent<SearchFormProps> {
   render() {
     const view = this.props.view;
     const fields = displayFields(
-      view.search.aggs.selected.kind,
-      view.search.aggs.selected.values,
+      FilterKind.BLACKLIST,
+      [],
       view.search.aggs.fields,
     );
     const crowdFields = displayFields(
-      view.search.crowdAggs.selected.kind,
-      view.search.crowdAggs.selected.values,
+      FilterKind.BLACKLIST,
+      [],
       view.search.crowdAggs.fields,
     );
 
