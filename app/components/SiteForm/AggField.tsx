@@ -6,6 +6,7 @@ import AggDropDown from 'containers/AggDropDown';
 import { reject, equals } from 'ramda';
 import { AggKind } from 'containers/SearchPage/shared';
 import { camelCase, capitalize } from 'utils/helpers';
+import MultiCrumb from 'components/MultiCrumb';
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
@@ -19,6 +20,35 @@ interface AggFieldState {
 
 const FiltersContainer = styled.div`
   display: flex;
+`;
+
+const CrumbsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin: 5px 0 15px 0;
+  span.label {
+    background: #55b88d;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 4px;
+    margin-right: 5px;
+    margin-bottom: 15px;
+    text-transform: capitalize;
+
+    span.fa-remove {
+      color: #fff !important;
+      opacity: 0.5;
+      margin-left: 5px !important;
+    }
+
+    span.fa-remove:hover {
+      opacity: 1;
+    }
+  }
+  span.label.label-default {
+    padding: 7px !important;
+    border-radius: 2px !important;
+  }
 `;
 
 const FilterContainer = styled.div`
@@ -91,6 +121,16 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
         </h4>
         <Container>
           <StyledLabel>Preselected values</StyledLabel>
+          <CrumbsContainer>
+            {Array.from(selected).map(value => (
+              <MultiCrumb
+                key={value}
+                values={[value]}
+                onClick={value => this.handleRemoveFilter('', value, false)}
+              />
+            ))}
+          </CrumbsContainer>
+
           <FiltersContainer>
             <FilterContainer>
               <AggDropDown
