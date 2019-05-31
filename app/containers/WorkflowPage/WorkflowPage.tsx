@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button } from 'react-bootstrap';
+import { Button, Panel } from 'react-bootstrap';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { match } from 'react-router';
 import ReviewForm from 'containers/ReviewForm';
@@ -72,6 +72,10 @@ const ButtonContainer = styled.div`
 
 const RichTextEditorContainer = styled.div`
   margin-bottom: 16px;
+`;
+
+const StyledPanel = styled(Panel)`
+  padding: 16px;
 `;
 
 class WorkflowPage extends React.Component<
@@ -157,41 +161,43 @@ class WorkflowPage extends React.Component<
     return (
       <div>
         <h3>{this.state.editReviewMode ? 'Add Review' : 'Added Review'} </h3>
-        {this.renderReview()}
+        <StyledPanel>{this.renderReview()}</StyledPanel>
         <h3>Crowd Labels</h3>
-        <WorkflowPageQueryComponent
-          query={QUERY}
-          variables={{ nctId: this.props.match.params.nctId }}
-        >
-          {({ data, loading, error }) => (
-            <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-              {upsertMutation => (
-                <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
-                  {deleteMutation => (
-                    <SuggestedLabels
-                      nctId={this.props.match.params.nctId}
-                      searchHash={this.props.match.params.searchId || null}
-                      onSelect={this.handleSelect(
-                        (data &&
-                          data.study &&
-                          data.study.wikiPage &&
-                          JSON.parse(data.study.wikiPage.meta)) ||
-                          {},
-                        upsertMutation,
-                        deleteMutation,
-                      )}
-                    />
-                  )}
-                </DeleteMutationComponent>
-              )}
-            </UpsertMutationComponent>
-          )}
-        </WorkflowPageQueryComponent>
-        <CrowdPage
-          {...this.props}
-          workflowView
-          forceAddLabel={this.state.selectedLabel || undefined}
-        />
+        <StyledPanel>
+          <WorkflowPageQueryComponent
+            query={QUERY}
+            variables={{ nctId: this.props.match.params.nctId }}
+          >
+            {({ data, loading, error }) => (
+              <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
+                {upsertMutation => (
+                  <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
+                    {deleteMutation => (
+                      <SuggestedLabels
+                        nctId={this.props.match.params.nctId}
+                        searchHash={this.props.match.params.searchId || null}
+                        onSelect={this.handleSelect(
+                          (data &&
+                            data.study &&
+                            data.study.wikiPage &&
+                            JSON.parse(data.study.wikiPage.meta)) ||
+                            {},
+                          upsertMutation,
+                          deleteMutation,
+                        )}
+                      />
+                    )}
+                  </DeleteMutationComponent>
+                )}
+              </UpsertMutationComponent>
+            )}
+          </WorkflowPageQueryComponent>
+          <CrowdPage
+            {...this.props}
+            workflowView
+            forceAddLabel={this.state.selectedLabel || undefined}
+          />
+        </StyledPanel>
         <ButtonContainer>
           <Button
             disabled={!this.state.editReviewMode}
