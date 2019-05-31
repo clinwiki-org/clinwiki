@@ -33,6 +33,9 @@ class SiteView < ApplicationRecord
 
   def default_view
     {
+      workflow: {
+        addRating: true,
+      },
       search: {
         aggs: {
           selected: {
