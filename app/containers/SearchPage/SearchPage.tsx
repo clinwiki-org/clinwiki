@@ -313,7 +313,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
-    this.setState({ params: updater(this.state.params as any) });
+    const params = updater(this.state.params as any);
+    if (!equals(params.q, this.state.params && this.state.params.q)) {
+      // For now search doesn't work well with args list
+      // Therefore we close it to refresh later on open
+      this.setState({ openedAgg: null });
+    }
+    this.setState({ params });
   };
 
   isWorkflow = () => {
