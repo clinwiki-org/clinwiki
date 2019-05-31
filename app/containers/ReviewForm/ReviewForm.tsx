@@ -37,6 +37,7 @@ import { ReviewFragment } from 'types/ReviewFragment';
 interface ReviewFormProps {
   nctId: string;
   hideSaveButton?: boolean;
+  hideMeta?: boolean;
   review?: ReviewsPageFragment;
   afterSave?: (review: ReviewFragment) => void;
 }
@@ -189,6 +190,8 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   };
 
   renderMeta = () => {
+    if (this.props.hideMeta) return null;
+
     return (
       <div>
         {keys(this.state.meta).map(key => (

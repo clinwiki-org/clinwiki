@@ -16,6 +16,9 @@ interface SiteProviderProps {
 const SITE_VIEW_FRAGMENT = gql`
   fragment SiteViewFragment on SiteView {
     id
+    workflow {
+      addRating
+    }
     search {
       aggs {
         fields {

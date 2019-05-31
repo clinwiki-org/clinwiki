@@ -21,6 +21,8 @@ import {
   WorkflowPageQuery,
   WorkflowPageQueryVariables,
 } from 'types/WorkflowPageQuery';
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import SiteProvider from 'containers/SiteProvider';
 
 const QUERY = gql`
   query WorkflowPageQuery($nctId: String!) {
@@ -126,7 +128,7 @@ class WorkflowPage extends React.Component<
     this.setState({ review, editReviewMode: false });
   };
 
-  renderReview = () => {
+  renderReview = (hideMeta: boolean) => {
     if (this.state.editReviewMode) {
       return (
         <ReviewForm
@@ -135,6 +137,7 @@ class WorkflowPage extends React.Component<
           }}
           nctId={this.props.match.params.nctId}
           hideSaveButton
+          hideMeta={hideMeta}
           review={this.state.review || undefined}
           afterSave={this.handleReviewSave}
         />
@@ -159,54 +162,60 @@ class WorkflowPage extends React.Component<
 
   render() {
     return (
-      <div>
-        <h3>{this.state.editReviewMode ? 'Add Review' : 'Added Review'} </h3>
-        <StyledPanel>{this.renderReview()}</StyledPanel>
-        <h3>Crowd Labels</h3>
+      <SiteProvider>
+        {site => (
+          <div>
+            <h3>
+              {this.state.editReviewMode ? 'Add Review' : 'Added Review'}{' '}
+            </h3>
+            <StyledPanel>{this.renderReview(!site.siteView.workflow.addRating)}</StyledPanel>
+            <h3>Crowd Labels</h3>
         <StyledPanel>
-          <WorkflowPageQueryComponent
-            query={QUERY}
-            variables={{ nctId: this.props.match.params.nctId }}
-          >
-            {({ data, loading, error }) => (
-              <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-                {upsertMutation => (
-                  <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
-                    {deleteMutation => (
-                      <SuggestedLabels
-                        nctId={this.props.match.params.nctId}
-                        searchHash={this.props.match.params.searchId || null}
-                        onSelect={this.handleSelect(
-                          (data &&
-                            data.study &&
-                            data.study.wikiPage &&
-                            JSON.parse(data.study.wikiPage.meta)) ||
-                            {},
-                          upsertMutation,
-                          deleteMutation,
-                        )}
-                      />
-                    )}
-                  </DeleteMutationComponent>
-                )}
-              </UpsertMutationComponent>
-            )}
-          </WorkflowPageQueryComponent>
-          <CrowdPage
-            {...this.props}
-            workflowView
-            forceAddLabel={this.state.selectedLabel || undefined}
-          />
+        <WorkflowPageQueryComponent
+          query={QUERY}
+          variables={{ nctId: this.props.match.params.nctId }}
+        >
+          {({ data, loading, error }) => (
+            <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
+              {upsertMutation => (
+                <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
+                  {deleteMutation => (
+                    <SuggestedLabels
+                      nctId={this.props.match.params.nctId}
+                      searchHash={this.props.match.params.searchId || null}
+                      onSelect={this.handleSelect(
+                        (data &&
+                          data.study &&
+                          data.study.wikiPage &&
+                          JSON.parse(data.study.wikiPage.meta)) ||
+                          {},
+                        upsertMutation,
+                        deleteMutation,
+                      )}
+                    />
+                  )}
+                </DeleteMutationComponent>
+              )}
+            </UpsertMutationComponent>
+          )}
+        </WorkflowPageQueryComponent>
+        <CrowdPage
+          {...this.props}
+          workflowView
+          forceAddLabel={this.state.selectedLabel || undefined}
+        />
         </StyledPanel>
-        <ButtonContainer>
-          <Button
-            disabled={!this.state.editReviewMode}
-            onClick={this.handleSave}
-          >
-            Save
-          </Button>
-        </ButtonContainer>
-      </div>
+            <ButtonContainer>
+              <Button
+                disabled={!this.state.editReviewMode}
+                onClick={this.handleSave}
+              >
+                Save
+              </Button>
+            </ButtonContainer>
+          </div>
+        )}
+      </SiteProvider>
     );
   }
 }
