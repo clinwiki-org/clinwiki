@@ -220,7 +220,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     return {
       Header: <SearchFieldName field={COLUMN_NAMES[name]} />,
       accessor: name,
-      style: {
+      Style: {
         overflowWrap: 'break-word',
         overflow: 'visible',
         whiteSpace: 'normal',
@@ -229,7 +229,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       Cell: !this.isStarColumn(name)
         ? null
         : row => (
-            <ReactStars count={5} edit={false} value={Number(row.value)} />
+            <ReactStars count={5} color2={'#7ed964'} edit={false} value={Number(row.value)} />
           ),
     };
   };

@@ -202,6 +202,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
             <Col md={6}>
               <ReactStars
                 count={5}
+                color2={'#7ed964'}
                 half={false}
                 value={this.state.meta[key]}
                 onChange={value => this.handleRatingChange(key, value)}

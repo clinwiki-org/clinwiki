@@ -306,7 +306,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         <div>
           <ReactStars
             count={5}
-            half
+            color2={'#7ed964'}
             edit={false}
             value={data.study.averageRating}
           />
