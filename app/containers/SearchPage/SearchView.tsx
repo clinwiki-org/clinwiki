@@ -236,6 +236,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       },
       Cell: !this.isStarColumn(name)
         ? null
+        // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
         : props => (<div><div id="stars"><ReactStars
           count={5}
           color2={'#7ed964'}
@@ -307,9 +308,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         columns={map(this.renderColumn, COLUMNS)}
         manual
         page={page}
-        // pageSize={(data.length > pageSize) ? pageSize : data.length}
         pageSize={pageSize}
-        minRows={1}
+        minRows={1} // this is so it truncates the results when there are less than pageSize results on the page
         defaultSorted={camelizedSorts}
         onPageChange={pipe(
           changePage,
