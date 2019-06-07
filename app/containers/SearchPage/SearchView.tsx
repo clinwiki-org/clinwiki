@@ -111,7 +111,6 @@ const QUERY = gql`
 const COLUMNS = [
   'nctId',
   'averageRating',
-  'reviewsCount',
   'briefTitle',
   'overallStatus',
   'startDate',
@@ -121,7 +120,6 @@ const COLUMN_NAMES = {
   nctId: 'nct_id',
   briefTitle: 'title',
   averageRating: 'overall rating',
-  reviewsCount: 'num reviews',
   overallStatus: 'status',
   completionDate: 'completed',
   startDate: 'started',
@@ -239,7 +237,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       },
       Cell: !this.isStarColumn(name)
         ? null
-        : row => (<div><ReactStars count={5} color2={'#7ed964'} edit={false} value={Number(row.value)} />
+        : props => (<div><ReactStars count={5} color2={'#7ed964'} edit={false} value={Number(props.original.averageRating)} />
+          {`${props.original.reviewsCount} Reviews`}
           </div>),
     };
   };
