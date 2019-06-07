@@ -223,22 +223,26 @@ class SearchView extends React.PureComponent<SearchViewProps> {
 
   renderColumn = (name: string) => {
     // INPUT: col name
-    // OUTPUT render a react-table column with given header, accessor, style, 
+    // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
     return {
       Header: <SearchFieldName field={COLUMN_NAMES[name]} />,
       accessor: name,
       Style: {
-        overflowWrap: 'break-word',
         overflow: 'visible',
         whiteSpace: 'normal',
         textAlign: this.isStarColumn(name) ? 'center' : null,
       },
       Cell: !this.isStarColumn(name)
         ? null
-        : props => (<div><ReactStars count={5} color2={'#7ed964'} edit={false} value={Number(props.original.averageRating)} />
-          {`${props.original.reviewsCount} Reviews`}
+        : props => (<div><div id="stars"><ReactStars
+          count={5}
+          color2={'#7ed964'}
+          edit={false}
+          value={Number(props.original.averageRating)}/></div>
+          <div id="numreviews">
+            &nbsp;({props.original.reviewsCount})</div>
           </div>),
     };
   };
