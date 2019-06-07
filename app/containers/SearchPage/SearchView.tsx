@@ -307,7 +307,9 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         columns={map(this.renderColumn, COLUMNS)}
         manual
         page={page}
+        // pageSize={(data.length > pageSize) ? pageSize : data.length}
         pageSize={pageSize}
+        minRows={1}
         defaultSorted={camelizedSorts}
         onPageChange={pipe(
           changePage,
