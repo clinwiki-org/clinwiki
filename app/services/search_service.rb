@@ -134,7 +134,8 @@ class SearchService # rubocop:disable Metrics/ClassLength
     page = params[:page] || 0
     page_size = params[:page_size] || DEFAULT_PAGE_SIZE
 
-    search_results = Study.search(search_query, options) do |body|
+    search_results = Study.search("*", options) do |body|
+      body[:query][:bool][:must] = { query_string: { query: search_query } }
       body[:aggs][key][:aggs][key][:aggs] =
         (body[:aggs][key][:aggs][key][:aggs] || {}).merge(
           agg_bucket_sort: {
