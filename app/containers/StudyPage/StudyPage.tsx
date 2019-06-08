@@ -187,7 +187,7 @@ const MainContainer = styled(Col)`
 const SidebarContainer = styled(Col)`
   padding-right: 0px;
   color: rgba(255, 255, 255, 0.5);
-  padding-top: 20px !important;
+  padding-top: 15px !important;
 
   li {
     a {
@@ -205,6 +205,11 @@ const SidebarContainer = styled(Col)`
   }
 `;
 
+const BackButtonWrapper = styled.div`
+  width:90%;
+  margin:auto;
+  padding: 5px;
+`
 class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
 class PrefetchQueryComponent extends Query<
   StudyPagePrefetchQuery,
@@ -290,7 +295,21 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
     return (
       <Button
-        style={{ marginRight: 10, marginBottom: 10 }}
+        style={{ marginRight: 10, marginBottom: 10 ,}}
+        onClick={this.handleNavButtonClick(link!)}
+        disabled={link === null}
+      >
+        {name}
+      </Button>
+    );
+  };
+
+  renderBackButton = (name: string, link?: string | null) => {
+    if (link === undefined) return null;
+
+    return (
+      <Button
+        style={{margin: 'auto', width: '100%'}}
         onClick={this.handleNavButtonClick(link!)}
         disabled={link === null}
       >
@@ -304,7 +323,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     return (
       <ReviewsWrapper>
         <div>
-          <div>{this.renderNavButton('<< Back', '/search')}</div>
           <ReactStars
             count={5}
             color2={'#7ed964'}
@@ -317,6 +335,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     );
   };
 
+
   render() {
     return (
       <QueryComponent
@@ -327,7 +346,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         {({ data, loading, error }) => (
           <StudyWrapper>
             <Row>
+
               <SidebarContainer md={2}>
+                <BackButtonWrapper>
+                {this.renderBackButton('⤺︎ Back', '/search')}
+                </BackButtonWrapper>
+              
                 {this.renderReviewsSummary(data)}
                 <WikiToggle
                   value={this.state.wikiToggleValue}
