@@ -2,7 +2,7 @@ import * as React from 'react';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { Nav, NavItem, Row, Col, Button } from 'react-bootstrap';
-import { match, Route, Switch } from 'react-router-dom';
+import {Link, match, Route, Switch} from 'react-router-dom';
 import { History, Location } from 'history';
 import ReactStars from 'react-stars';
 import {
@@ -304,6 +304,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     return (
       <ReviewsWrapper>
         <div>
+          <div>{this.renderNavButton('<< Back', '/search')}</div>
           <ReactStars
             count={5}
             color2={'#7ed964'}

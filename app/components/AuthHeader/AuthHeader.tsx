@@ -47,7 +47,7 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
         <Navbar fluid>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link id="logo" to="/search">
+              <Link id="logo" to="/">
                 ClinWiki
               </Link>
             </Navbar.Brand>
