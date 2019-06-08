@@ -187,7 +187,7 @@ const MainContainer = styled(Col)`
 const SidebarContainer = styled(Col)`
   padding-right: 0px;
   color: rgba(255, 255, 255, 0.5);
-  padding-top: 15px !important;
+  padding-top: 10px !important;
 
   li {
     a {
@@ -209,6 +209,7 @@ const BackButtonWrapper = styled.div`
   width:90%;
   margin:auto;
   padding: 5px;
+  padding-bottom: 10px;
 `
 class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
 class PrefetchQueryComponent extends Query<
@@ -351,7 +352,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 <BackButtonWrapper>
                 {this.renderBackButton('⤺︎ Back', '/search')}
                 </BackButtonWrapper>
-              
+
                 {this.renderReviewsSummary(data)}
                 <WikiToggle
                   value={this.state.wikiToggleValue}
@@ -372,8 +373,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
               </SidebarContainer>
               <MainContainer md={10}>
                 <div className="container">
-                  {this.renderNavButton('<< Previous', this.props.prevLink)}
-                  {this.renderNavButton('Next >>', this.props.nextLink)}
+                  {this.renderNavButton('← Previous', this.props.prevLink)}
+                  {this.renderNavButton('Next →', this.props.nextLink)}
                 </div>
 
                 {data && data.study && <StudySummary study={data.study} />}
@@ -399,8 +400,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   </Switch>
                 </div>
                 <div className="container">
-                  {this.renderNavButton('<< Previous', this.props.prevLink)}
-                  {this.renderNavButton('Next >>', this.props.nextLink)}
+                  {this.renderNavButton('← Previous', this.props.prevLink)}
+                  {this.renderNavButton('Next →', this.props.nextLink)}
                 </div>
               </MainContainer>
             </Row>
