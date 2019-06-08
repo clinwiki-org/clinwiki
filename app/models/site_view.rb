@@ -51,6 +51,7 @@ class SiteView < ApplicationRecord
           },
           fields: crowd_aggs,
         },
+        fields: %w[nct_id average_rating brief_title overall_status start_date completion_date],
       },
     }
   end

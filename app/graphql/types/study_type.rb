@@ -6,13 +6,68 @@ module Types
 
     field :brief_title, String, null: true
     field :nct_id, String, null: false
-    field :average_rating, Float, null: false
     field :source, String, null: false
     field :type, String, null: false
     field :overall_status, String, null: true
     field :start_date, String, null: true
     field :completion_date, String, null: true
     field :enrollment, Int, null: true
+
+    field :nlm_download_date_description, String, null: true
+    field :study_first_submitted_date, String, null: true
+    field :results_first_submitted_date, String, null: true
+    field :disposition_first_submitted_date, String, null: true
+    field :last_update_submitted_date, String, null: true
+    field :study_first_submitted_qc_date, String, null: true
+    field :study_first_posted_date, String, null: true
+    field :study_first_posted_date_type, String, null: true
+    field :results_first_submitted_qc_date, String, null: true
+    field :results_first_posted_date, String, null: true
+    field :results_first_posted_date_type, String, null: true
+    field :disposition_first_submitted_qc_date, String, null: true
+    field :disposition_first_posted_date, String, null: true
+    field :disposition_first_posted_date_type, String, null: true
+    field :last_update_submitted_qc_date, String, null: true
+    field :last_update_posted_date, String, null: true
+    field :last_update_posted_date_type, String, null: true
+    field :start_month_year, String, null: true
+    field :start_date_type, String, null: true
+    field :verification_month_year, String, null: true
+    field :verification_date, String, null: true
+    field :completion_month_year, String, null: true
+    field :completion_date_type, String, null: true
+    field :primary_completion_month_year, String, null: true
+    field :primary_completion_date_type, String, null: true
+    field :primary_completion_date, String, null: true
+    field :target_duration, String, null: true
+    field :study_type, String, null: true
+    field :acronym, String, null: true
+    field :baseline_population, String, null: true
+    field :official_title, String, null: true
+    field :last_known_status, String, null: true
+    field :phase, String, null: true
+    field :enrollment_type, String, null: true
+    field :limitations_and_caveats, String, null: true
+    field :number_of_arms, String, null: true
+    field :number_of_groups, String, null: true
+    field :why_stopped, String, null: true
+    field :has_expanded_access, String, null: true
+    field :expanded_access_type_individual, String, null: true
+    field :expanded_access_type_intermediate, String, null: true
+    field :expanded_access_type_treatment, String, null: true
+    field :has_dmc, String, null: true
+    field :is_fda_regulated_drug, String, null: true
+    field :is_fda_regulated_device, String, null: true
+    field :is_unapproved_device, String, null: true
+    field :is_ppsd, String, null: true
+    field :is_us_export, String, null: true
+    field :biospec_retention, String, null: true
+    field :biospec_description, String, null: true
+    field :ipd_time_frame, String, null: true
+    field :ipd_access_criteria, String, null: true
+    field :ipd_url, String, null: true
+    field :plan_to_share_ipd, String, null: true
+    field :plan_to_share_ipd_description, String, null: true
 
     field :administrative_info, AdministrativeInfoType, null: false
     field :recruitment_info, RecruitmentInfoType, null: false
