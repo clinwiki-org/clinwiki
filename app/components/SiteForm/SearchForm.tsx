@@ -6,13 +6,20 @@ import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
 import MultiInput from 'components/MultiInput';
 import AggField from './AggField';
 import { capitalize } from 'utils/helpers';
-import { aggsOrdered } from 'utils/constants';
+import { aggsOrdered, studyFields } from 'utils/constants';
 import { FilterKind } from 'types/globalTypes';
 
 interface SearchFormProps {
   view: SiteViewFragment;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
+const SEARCH_FIELDS = studyFields.map(option => ({
+  id: option,
+  label: option
+    .split('_')
+    .map(capitalize)
+    .join(' '),
+}));
 
 const AGGS_OPTIONS = aggsOrdered.map(option => ({
   id: option,
@@ -33,6 +40,8 @@ class SearchForm extends React.PureComponent<SearchFormProps> {
     }));
   };
 
+  handleFieldsOrderChange = () => {};
+
   render() {
     const view = this.props.view;
     const fields = displayFields(
@@ -48,6 +57,15 @@ class SearchForm extends React.PureComponent<SearchFormProps> {
 
     return (
       <StyledContainer>
+        <h3>Fields</h3>
+        <MultiInput
+          name="set:search.fields"
+          options={SEARCH_FIELDS}
+          placeholder="Add field"
+          draggable
+          value={view.search.fields}
+          onChange={this.props.onAddMutation}
+        />
         <Row>
           <Col md={6}>
             <h3>Aggs visibility</h3>
