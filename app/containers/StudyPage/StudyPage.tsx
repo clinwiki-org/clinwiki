@@ -373,8 +373,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
               </SidebarContainer>
               <MainContainer md={10}>
                 <div className="container">
-                  {this.renderNavButton('← Previous', this.props.prevLink)}
-                  {this.renderNavButton('Next →', this.props.nextLink)}
+                  {this.renderNavButton('❮ Previous', this.props.prevLink)}
+                  {this.renderNavButton('Next ❯', this.props.nextLink)}
                 </div>
 
                 {data && data.study && <StudySummary study={data.study} />}
@@ -400,8 +400,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   </Switch>
                 </div>
                 <div className="container">
-                  {this.renderNavButton('← Previous', this.props.prevLink)}
-                  {this.renderNavButton('Next →', this.props.nextLink)}
+                  {this.renderNavButton('❮ Previous', this.props.prevLink)}
+                  {this.renderNavButton('Next ❯', this.props.nextLink)}
                 </div>
               </MainContainer>
             </Row>
