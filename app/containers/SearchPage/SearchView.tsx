@@ -237,6 +237,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       Cell: !this.isStarColumn(name)
         ? null
         // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
+        // maybe not the base place for that. may be better to move it to this file
         : props => (<div><div id="stars"><ReactStars
           count={5}
           color2={'#7ed964'}

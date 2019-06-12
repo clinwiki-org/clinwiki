@@ -2,9 +2,10 @@ import * as React from 'react';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { Nav, NavItem, Row, Col, Button } from 'react-bootstrap';
-import {Link, match, Route, Switch} from 'react-router-dom';
+import { Link, match, Route, Switch } from 'react-router-dom';
 import { History, Location } from 'history';
 import ReactStars from 'react-stars';
+import * as FontAwesome from 'react-fontawesome';
 import {
   last,
   split,
@@ -41,6 +42,7 @@ import TrackingPage from 'containers/TrackingPage';
 import FacilitiesPage from 'containers/FacilitiesPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
+import StudyPageCounter from './components/StudyPageCounter';
 
 interface StudyPageProps {
   history: History;
@@ -49,12 +51,14 @@ interface StudyPageProps {
   prevLink?: string | null;
   nextLink?: string | null;
   isWorkflow?: boolean;
+  recordsTotal: number;
 }
 
 interface StudyPageState {
   // trigger prefetch for all study sections
   triggerPrefetch: boolean;
   wikiToggleValue: boolean;
+  studyCounter: number;
 }
 
 const QUERY = gql`
@@ -210,7 +214,7 @@ const BackButtonWrapper = styled.div`
   margin:auto;
   padding: 5px;
   padding-bottom: 10px;
-`
+`;
 class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
 class PrefetchQueryComponent extends Query<
   StudyPagePrefetchQuery,
@@ -221,6 +225,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   state: StudyPageState = {
     triggerPrefetch: false,
     wikiToggleValue: true,
+    studyCounter: 1,
   };
 
   getCurrentSectionPath = () => {
@@ -285,7 +290,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     this.setState({ wikiToggleValue: !this.state.wikiToggleValue });
   };
 
-  handleNavButtonClick = (link: string) => () => {
+  handleNavButtonClick = (link: string, name: string) => () => {
+    if (name === 'Next ❯') {
+      this.state.studyCounter += 1;
+    } else if (name === '❮ Previous') {
+      this.state.studyCounter -= 1;
+    }
     this.props.history.push(
       `${trimPath(link)}${this.getCurrentSectionFullPath()}`,
     );
@@ -293,14 +303,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
   renderNavButton = (name: string, link?: string | null) => {
     if (link === undefined) return null;
-
     return (
       <Button
-        style={{ marginRight: 10, marginBottom: 10 ,}}
-        onClick={this.handleNavButtonClick(link!)}
+        style={{ marginRight: 10, marginBottom: 10 }}
+        onClick={this.handleNavButtonClick(link!, name)}
         disabled={link === null}
-      >
-        {name}
+      >{name}
       </Button>
     );
   };
@@ -310,8 +318,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
     return (
       <Button
-        style={{margin: 'auto', width: '100%'}}
-        onClick={this.handleNavButtonClick(link!)}
+        style={{ margin: 'auto', width: '100%' }}
+        onClick={this.handleNavButtonClick(link!, name)}
         disabled={link === null}
       >
         {name}
@@ -335,7 +343,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       </ReviewsWrapper>
     );
   };
-
 
   render() {
     return (
@@ -374,6 +381,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
               <MainContainer md={10}>
                 <div className="container">
                   {this.renderNavButton('❮ Previous', this.props.prevLink)}
+                  <StudyPageCounter
+                    counter={this.state.studyCounter}
+                    recordsTotal={this.props.recordsTotal}
+                  />
                   {this.renderNavButton('Next ❯', this.props.nextLink)}
                 </div>
 
@@ -401,6 +412,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 </div>
                 <div className="container">
                   {this.renderNavButton('❮ Previous', this.props.prevLink)}
+                  <StudyPageCounter
+                    counter={this.state.studyCounter}
+                    recordsTotal={this.props.recordsTotal}
+                  />
                   {this.renderNavButton('Next ❯', this.props.nextLink)}
                 </div>
               </MainContainer>
