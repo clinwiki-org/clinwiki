@@ -356,7 +356,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         data.search.recordsTotal / this.props.params.pageSize,
       );
       recordsTotal = data.search.recordsTotal;
-      this.props.recordsTotalCallback(recordsTotal);
+      // this.props.recordsTotalCallback(recordsTotal);
+      localStorage.setItem('appState', JSON.stringify(recordsTotal));
     }
 
     const q =

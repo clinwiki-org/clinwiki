@@ -200,6 +200,7 @@ interface SearchPageProps {
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
   recordsTotalCallback: (recordsTotal: number) => void;
+  recordsTotal: number;
 }
 
 interface SearchPageState {
@@ -444,6 +445,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
+    this.props.recordsTotalCallback(this.state.recordsTotal);
     if (this.props.ignoreUrlHash) {
       return (
         <Row>
@@ -501,6 +503,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   recordsTotalCallback = (recordsTotal: number) => {
+    localStorage.setItem('appState', JSON.stringify(this.state.recordsTotal));
     this.state.recordsTotal = recordsTotal;
     this.props.recordsTotalCallback(recordsTotal);
   };
