@@ -20,9 +20,14 @@ import SitesPage from 'containers/SitesPage';
 import SitePage from 'containers/SitePage';
 import SitesNewPage from 'containers/SitesNewPage';
 import SitesEditPage from 'containers/SitesEditPage';
+import SearchStudyPage from '../SearchPage/SearchPage';
 
 interface AppProps {
   history: History;
+}
+
+interface AppState {
+  recordsTotal: number;
 }
 
 const AppWrapper = styled.div`
@@ -32,19 +37,39 @@ const AppWrapper = styled.div`
 `;
 const MainWrapper = styled.div``;
 
-class App extends React.PureComponent<AppProps> {
+class App extends React.PureComponent<AppProps, AppState> {
+  state: AppState = {
+    recordsTotal: 0,
+  };
+  recordsTotalCallback = (recordsTotal: number) => {
+    this.state.recordsTotal = recordsTotal;
+  };
   render() {
     return (
       <AppWrapper>
         <CurrentUser>
-          {user => <AuthHeader user={user} history={this.props.history} />}
+          {(user) => <AuthHeader user={user} history={this.props.history} />}
         </CurrentUser>
         <MainWrapper>
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/about" component={AboutPage} />
-            <Route path="/search/:searchId" component={SearchPage} />
-            <Route path="/search" component={SearchPage} />
+            <Route
+              path="/search/:searchId"
+              render={props => (<SearchPage
+                {...props}
+                recordsTotal={this.state.recordsTotal}
+                recordsTotalCallback={this.recordsTotalCallback}
+              />)}
+            />
+            <Route
+              path="/search"
+              render={props => (<SearchPage
+                {...props}
+                recordsTotal={this.state.recordsTotal}
+                recordsTotalCallback={this.recordsTotalCallback}
+              />)}
+            />
             <Route
               path="/study/:nctId/review/:reviewId/edit"
               component={StudyPage}

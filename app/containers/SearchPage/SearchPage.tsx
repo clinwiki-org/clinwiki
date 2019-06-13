@@ -199,6 +199,7 @@ interface SearchPageProps {
   history: any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
+  recordsTotalCallback: (recordsTotal: number) => void;
 }
 
 interface SearchPageState {
@@ -501,6 +502,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   recordsTotalCallback = (recordsTotal: number) => {
     this.state.recordsTotal = recordsTotal;
+    this.props.recordsTotalCallback(recordsTotal);
   };
 }
 
