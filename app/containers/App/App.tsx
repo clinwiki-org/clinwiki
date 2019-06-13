@@ -26,10 +26,6 @@ interface AppProps {
   history: History;
 }
 
-interface AppState {
-  recordsTotal: number;
-}
-
 const AppWrapper = styled.div`
   background-color: #4d5863;
   min-height: 100vh;
@@ -37,30 +33,8 @@ const AppWrapper = styled.div`
 `;
 const MainWrapper = styled.div``;
 
-const InitialState = {
-  recordsTotal: 10,
-};
-
-class App extends React.PureComponent<AppProps, AppState> {
-  constructor(props) {
-    super(props);
-    this.state = localStorage.getItem('appState') ? JSON.parse(localStorage.getItem('appState')!) : InitialState;
-  }
-  state: AppState = {
-    recordsTotal: 10,
-  };
-  componentWillUnmount() {
-    // Remember state for the next mount
-    localStorage.setItem('appState', JSON.stringify(this.state));
-  }
-  recordsTotalCallback = (recordsTotal: number) => {
-    localStorage.setItem('appState', JSON.stringify(this.state));
-    this.state.recordsTotal = recordsTotal;
-  };
+class App extends React.PureComponent<AppProps> {
   render() {
-    // localStorage.clear();
-    console.log(localStorage.getItem('appState'));
-    console.log(this.state.recordsTotal);
     return (
       <AppWrapper>
         <CurrentUser>
@@ -72,19 +46,11 @@ class App extends React.PureComponent<AppProps, AppState> {
             <Route exact path="/about" component={AboutPage} />
             <Route
               path="/search/:searchId"
-              render={props => (<SearchPage
-                {...props}
-                recordsTotal={this.state.recordsTotal}
-                recordsTotalCallback={this.recordsTotalCallback}
-              />)}
+              component={SearchPage}
             />
             <Route
               path="/search"
-              render={props => (<SearchPage
-                {...props}
-                recordsTotal={this.state.recordsTotal}
-                recordsTotalCallback={this.recordsTotalCallback}
-              />)}
+              component={SearchPage}
             />
             <Route
               path="/study/:nctId/review/:reviewId/edit"

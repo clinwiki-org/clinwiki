@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 interface StudyPageCounterProps {
   counter: number;
-  recordsTotal: number;
 }
 // interface StudyPageCounterState {
 // }
@@ -13,7 +12,10 @@ const StudyPageCounterWrapper = styled.div`
 
 // A simple counter that displays which study you're on on the study page, in the middle of the prev and next buttons
 class StudyPageCounter extends React.PureComponent<StudyPageCounterProps> {
-
+  // componentWillUnmount() {
+  //   // Remember state for the next mount
+  //   localStorage.setItem('appState', JSON.stringify(this.props.recordsTotal));
+  // }
   render() {
     return (
       // There is an error complaining about PropTypes, but none of the other components have this. Weird.
@@ -21,7 +23,7 @@ class StudyPageCounter extends React.PureComponent<StudyPageCounterProps> {
         <div id="navbuttonsonstudypage">
           record{' '}
           <b>
-            {this.props.counter + 1}/{this.props.recordsTotal} &nbsp;
+            {this.props.counter + 1}/{localStorage.getItem('appState')} &nbsp;
           </b>
         </div>
       </StudyPageCounterWrapper>

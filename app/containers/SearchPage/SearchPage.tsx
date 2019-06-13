@@ -433,7 +433,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     onOpenAgg={this.handleOpenAgg}
                     onAggsUpdate={this.handleAggsUpdate}
                     onResetFilters={this.handleResetFilters(view)}
-                    recordsTotalCallback={this.recordsTotalCallback}
                   />
                 );
               }}
@@ -445,7 +444,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
-    this.props.recordsTotalCallback(this.state.recordsTotal);
     if (this.props.ignoreUrlHash) {
       return (
         <Row>
@@ -461,7 +459,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   onOpenAgg={this.handleOpenAgg}
                   onAggsUpdate={this.handleAggsUpdate}
                   onResetFilters={this.handleResetFilters(site.siteView)}
-                  recordsTotalCallback={this.recordsTotalCallback}
                 />
               )}
             </SiteProvider>
@@ -478,9 +475,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       <Switch>
         <Route
           path={`${this.props.match.path}/study/:nctId`}
-          render={props => <SearchStudyPage
-            {...props} recordsTotal={this.state.recordsTotal}
-            />}
+          component={SearchStudyPage}
         />
         <Route
           render={() => (
@@ -501,12 +496,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       </Switch>
     );
   }
-
-  recordsTotalCallback = (recordsTotal: number) => {
-    localStorage.setItem('appState', JSON.stringify(this.state.recordsTotal));
-    this.state.recordsTotal = recordsTotal;
-    this.props.recordsTotalCallback(recordsTotal);
-  };
 }
 
 export default SearchPage;

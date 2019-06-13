@@ -42,8 +42,6 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 
-
-
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 
 const QUERY = gql`
@@ -205,7 +203,6 @@ interface SearchViewProps {
   onResetFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string; kind: AggKind } | null;
-  recordsTotalCallback: (recordsTotal: number) => void;
 }
 
 class SearchView extends React.PureComponent<SearchViewProps> {
@@ -356,7 +353,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         data.search.recordsTotal / this.props.params.pageSize,
       );
       recordsTotal = data.search.recordsTotal;
-      // this.props.recordsTotalCallback(recordsTotal);
       localStorage.setItem('appState', JSON.stringify(recordsTotal));
     }
 
