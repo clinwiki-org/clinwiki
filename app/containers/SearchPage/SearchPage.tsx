@@ -209,6 +209,7 @@ interface SearchPageState {
   } | null;
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
+  recordsTotal: number;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -226,6 +227,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     openedAgg: null,
     searchAggs: {},
     searchCrowdAggs: {},
+    recordsTotal: 0,
   };
 
   static getDerivedStateFromProps(
@@ -429,6 +431,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     onOpenAgg={this.handleOpenAgg}
                     onAggsUpdate={this.handleAggsUpdate}
                     onResetFilters={this.handleResetFilters(view)}
+                    recordsTotalCallback={this.recordsTotalCallback}
                   />
                 );
               }}
@@ -455,6 +458,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   onOpenAgg={this.handleOpenAgg}
                   onAggsUpdate={this.handleAggsUpdate}
                   onResetFilters={this.handleResetFilters(site.siteView)}
+                  recordsTotalCallback={this.recordsTotalCallback}
                 />
               )}
             </SiteProvider>
@@ -471,7 +475,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       <Switch>
         <Route
           path={`${this.props.match.path}/study/:nctId`}
-          component={SearchStudyPage}
+          render={props => <SearchStudyPage
+            {...props} recordsTotal={this.state.recordsTotal}
+            />}
         />
         <Route
           render={() => (
@@ -492,6 +498,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       </Switch>
     );
   }
+
+  recordsTotalCallback = (recordsTotal: number) => {
+    this.state.recordsTotal = recordsTotal;
+  };
 }
 
 export default SearchPage;

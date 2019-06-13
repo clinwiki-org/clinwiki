@@ -18,10 +18,10 @@ class StudyPageCounter extends React.PureComponent<StudyPageCounterProps> {
     return (
       // There is an error complaining about PropTypes, but none of the other components have this. Weird.
       <StudyPageCounterWrapper>
-        <div>
-        record{' '}
+        <div id="navbuttonsonstudypage">
+          record{' '}
           <b>
-            {this.props.counter + 1}/{this.props.recordsTotal}{' '}
+            {this.props.counter + 1}/{this.props.recordsTotal} &nbsp;
           </b>
         </div>
       </StudyPageCounterWrapper>

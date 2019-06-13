@@ -205,6 +205,7 @@ interface SearchViewProps {
   onResetFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string; kind: AggKind } | null;
+  recordsTotalCallback: (recordsTotal: number) => void;
 }
 
 class SearchView extends React.PureComponent<SearchViewProps> {
@@ -238,12 +239,12 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         ? null
         // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
         // maybe not the base place for that. may be better to move it to this file
-        : props => (<div><div id="stars"><ReactStars
+        : props => (<div><div id="divsononeline"><ReactStars
           count={5}
           color2={'#7ed964'}
           edit={false}
           value={Number(props.original.averageRating)}/></div>
-          <div id="numreviews">
+          <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
           </div>),
     };
@@ -355,6 +356,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         data.search.recordsTotal / this.props.params.pageSize,
       );
       recordsTotal = data.search.recordsTotal;
+      this.props.recordsTotalCallback(recordsTotal);
     }
 
     const q =
@@ -395,7 +397,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
 
   render() {
     const { page, pageSize, sorts } = this.props.params;
-
     return (
       <SearchWrapper>
         <Helmet>

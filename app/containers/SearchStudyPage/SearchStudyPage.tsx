@@ -29,6 +29,7 @@ interface StudySearchPageProps {
   match: match<{ nctId: string; searchId: string }>;
   history: History;
   location: Location;
+  recordsTotal: number;
 }
 
 class SearchStudyPageQueryComponent extends Query<
@@ -60,6 +61,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             ) as boolean;
             prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
+            // recordsTotal = pathOr(1, ['search', 'recordsTotal'], data) as number;
           }
           return (
             <StudyPage
@@ -69,6 +71,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               prevLink={prevLink}
               nextLink={nextLink}
               isWorkflow={isWorkflow}
+              recordsTotal={this.props.recordsTotal}
             />
           );
         }}

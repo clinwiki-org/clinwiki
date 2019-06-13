@@ -225,7 +225,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   state: StudyPageState = {
     triggerPrefetch: false,
     wikiToggleValue: true,
-    studyCounter: 1,
+    studyCounter: 0,
   };
 
   getCurrentSectionPath = () => {
@@ -291,9 +291,9 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   handleNavButtonClick = (link: string, name: string) => () => {
-    if (name === 'Next ❯') {
+    if (name.includes('Next')) {
       this.state.studyCounter += 1;
-    } else if (name === '❮ Previous') {
+    } else if (name.includes('Previous')) {
       this.state.studyCounter -= 1;
     }
     this.props.history.push(
@@ -380,12 +380,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
               </SidebarContainer>
               <MainContainer md={10}>
                 <div className="container">
-                  {this.renderNavButton('❮ Previous', this.props.prevLink)}
-                  <StudyPageCounter
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('❮ Previous', this.props.prevLink)}</div>
+                  <div id="navbuttonsonstudypage"><StudyPageCounter
                     counter={this.state.studyCounter}
                     recordsTotal={this.props.recordsTotal}
-                  />
-                  {this.renderNavButton('Next ❯', this.props.nextLink)}
+                  /></div>
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('Next ❯', this.props.nextLink)}</div>
                 </div>
 
                 {data && data.study && <StudySummary study={data.study} />}
@@ -411,12 +411,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   </Switch>
                 </div>
                 <div className="container">
-                  {this.renderNavButton('❮ Previous', this.props.prevLink)}
-                  <StudyPageCounter
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('❮ Previous', this.props.prevLink)}</div>
+                  <div id="navbuttonsonstudypage"><StudyPageCounter
                     counter={this.state.studyCounter}
                     recordsTotal={this.props.recordsTotal}
-                  />
-                  {this.renderNavButton('Next ❯', this.props.nextLink)}
+                  /></div>
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('Next ❯', this.props.nextLink)}</div>
                 </div>
               </MainContainer>
             </Row>
