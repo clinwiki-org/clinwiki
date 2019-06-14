@@ -43,7 +43,7 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import { studyFields } from 'utils/constants';
+import { studyFields, activeStarColor } from 'utils/constants';
 
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 
@@ -310,7 +310,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         // maybe not the base place for that. may be better to move it to this file
         : props => (<div><div id="divsononeline"><ReactStars
           count={5}
-          color2={'#7ed964'}
+          color2={activeStarColor}
           edit={false}
           value={Number(props.original.averageRating)}/></div>
           <div id="divsononeline">

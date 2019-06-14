@@ -22,6 +22,7 @@ import * as FontAwesome from 'react-fontawesome';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { gql } from 'apollo-boost';
 import { History } from 'history';
+import { activeStarColor } from 'utils/constants';
 
 import {
   ReviewFormMutation,
@@ -202,7 +203,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
             <Col md={6}>
               <ReactStars
                 count={5}
-                color2={'#7ed964'}
+                color2={activeStarColor}
                 half={false}
                 value={this.state.meta[key]}
                 onChange={value => this.handleRatingChange(key, value)}

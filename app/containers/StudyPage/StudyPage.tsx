@@ -43,6 +43,7 @@ import FacilitiesPage from 'containers/FacilitiesPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
 import StudyPageCounter from './components/StudyPageCounter';
+import { activeStarColor } from '../../utils/constants';
 
 interface StudyPageProps {
   history: History;
@@ -335,7 +336,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         <div>
           <ReactStars
             count={5}
-            color2={'#7ed964'}
+            color2={activeStarColor}
             edit={false}
             value={data.study.averageRating}
           />

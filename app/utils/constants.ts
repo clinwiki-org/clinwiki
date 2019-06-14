@@ -79,3 +79,5 @@ export const studyFields = [
   // derived fields
   'average_rating',
 ];
+
+export const activeStarColor = '#7ed964';
