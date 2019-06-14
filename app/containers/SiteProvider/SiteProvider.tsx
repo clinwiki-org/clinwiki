@@ -20,6 +20,7 @@ const SITE_VIEW_FRAGMENT = gql`
       addRating
     }
     search {
+      fields
       aggs {
         fields {
           name
