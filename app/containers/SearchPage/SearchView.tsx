@@ -166,10 +166,16 @@ const changeFilter = (add: boolean) => (
 };
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
-const addSearchTerm = (term: string) => (params: SearchParams) => ({
-  ...params,
-  q: { ...params.q, children: [...(params.q.children || []), { key: term }] },
-});
+const addSearchTerm = (term: string) => (params: SearchParams) => {
+  const children = reject(
+    propEq('key', term),
+    params.q.children || [],
+  ) as SearchQuery[];
+  return {
+    ...params,
+    q: { ...params.q, children: [...(children || []), { key: term }] },
+  };
+};
 const removeSearchTerm = (term: string) => (params: SearchParams) => {
   const children = reject(
     propEq('key', term),
