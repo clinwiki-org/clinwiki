@@ -226,13 +226,23 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     };
   };
 
-  renderColumn = (name: string) => {
+  renderColumn = (name: string, data) => {
     // INPUT: col name
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
+    const getColumnWidth = (rows, accessor, headerText) => {
+      const maxWidth = 400;
+      const magicSpacing = 10;
+      const cellLength = Math.max(
+        ...rows.map(row => (`${row[accessor]}` || '').length),
+        headerText.length,
+      );
+      return Math.min(maxWidth, cellLength * magicSpacing);
+    };
+    const headerName = COLUMN_NAMES[name];
     return {
-      Header: <SearchFieldName field={COLUMN_NAMES[name]} />,
+      Header: <SearchFieldName field={headerName} />,
       accessor: name,
       Style: {
         overflow: 'visible',
@@ -251,6 +261,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
           </div>),
+      width: getColumnWidth(data, name, headerName),
     };
   };
 
@@ -291,7 +302,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       return (
         <ReactTable
           className="-striped -highlight"
-          columns={map(this.renderColumn, COLUMNS)}
+          columns={map(x => this.renderColumn(x, ''), COLUMNS)}
           manual
           loading={true}
           defaultSortDesc
@@ -308,10 +319,12 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const totalPages = Math.ceil(totalRecords / pageSize);
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
+    const searchData = path(['search', 'studies'], data);
+    console.log(searchData);
     return (
       <ReactTable
         className="-striped -highlight"
-        columns={map(this.renderColumn, COLUMNS)}
+        columns={map(x => this.renderColumn(x, searchData), COLUMNS)}
         manual
         page={page}
         pageSize={pageSize}
@@ -329,7 +342,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           changeSorted,
           this.props.onUpdateParams,
         )}
-        data={path(['search', 'studies'], data)}
+        data={searchData}
         pages={totalPages}
         loading={loading}
         defaultPageSize={pageSize}
