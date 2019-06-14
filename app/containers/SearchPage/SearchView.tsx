@@ -27,8 +27,9 @@ import {
   lensProp,
   filter,
   equals,
+  fromPairs,
 } from 'ramda';
-import { camelCase, snakeCase } from 'utils/helpers';
+import { camelCase, snakeCase, capitalize } from 'utils/helpers';
 import { gql } from 'apollo-boost';
 import {
   SearchPageSearchQuery,
@@ -41,6 +42,8 @@ import { Query } from 'react-apollo';
 import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
+import SiteProvider from 'containers/SiteProvider';
+import { studyFields } from 'utils/constants';
 
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 
@@ -102,26 +105,77 @@ const QUERY = gql`
     overallStatus
     startDate
     briefTitle
-    reviewsCount
+    nlmDownloadDateDescription
+    studyFirstSubmittedDate
+    resultsFirstSubmittedDate
+    dispositionFirstSubmittedDate
+    lastUpdateSubmittedDate
+    studyFirstSubmittedQcDate
+    studyFirstPostedDate
+    studyFirstPostedDateType
+    resultsFirstSubmittedQcDate
+    resultsFirstPostedDate
+    resultsFirstPostedDateType
+    dispositionFirstSubmittedQcDate
+    dispositionFirstPostedDate
+    dispositionFirstPostedDateType
+    lastUpdateSubmittedQcDate
+    lastUpdatePostedDate
+    lastUpdatePostedDateType
+    startMonthYear
+    startDateType
+    verificationMonthYear
+    verificationDate
+    completionMonthYear
+    completionDateType
+    primaryCompletionMonthYear
+    primaryCompletionDateType
+    primaryCompletionDate
+    targetDuration
+    studyType
+    acronym
+    baselinePopulation
+    officialTitle
+    lastKnownStatus
+    phase
+    enrollment
+    enrollmentType
+    source
+    limitationsAndCaveats
+    numberOfArms
+    numberOfGroups
+    whyStopped
+    hasExpandedAccess
+    expandedAccessTypeIndividual
+    expandedAccessTypeIntermediate
+    expandedAccessTypeTreatment
+    hasDmc
+    isFdaRegulatedDrug
+    isFdaRegulatedDevice
+    isUnapprovedDevice
+    isPpsd
+    isUsExport
+    biospecRetention
+    biospecDescription
+    ipdTimeFrame
+    ipdAccessCriteria
+    ipdUrl
+    planToShareIpd
+    planToShareIpdDescription
   }
 `;
 
-const COLUMNS = [
-  'nctId',
-  'averageRating',
-  'briefTitle',
-  'overallStatus',
-  'startDate',
-  'completionDate',
-];
-const COLUMN_NAMES = {
-  nctId: 'nct_id',
-  briefTitle: 'title',
-  averageRating: 'overall rating',
-  overallStatus: 'status',
-  completionDate: 'completed',
-  startDate: 'started',
-};
+const COLUMNS = studyFields;
+const COLUMN_NAMES = fromPairs(
+  // @ts-ignore
+  COLUMNS.map(field => [
+    field,
+    field
+      .split('_')
+      .map(capitalize)
+      .join(' '),
+  ]),
+);
 
 const changePage = (pageNumber: number) => (params: SearchParams) => ({
   ...params,
@@ -213,7 +267,7 @@ interface SearchViewProps {
 
 class SearchView extends React.PureComponent<SearchViewProps> {
   isStarColumn = (name: string): boolean => {
-    return name === 'averageRating';
+    return name === 'average_rating';
   };
 
   rowProps = (_, rowInfo) => {
@@ -233,8 +287,9 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     // also renders stars
     return {
       Header: <SearchFieldName field={COLUMN_NAMES[name]} />,
-      accessor: name,
+      accessor: camelCase(name),
       Style: {
+        overflowWrap: 'break-word',
         overflow: 'visible',
         whiteSpace: 'normal',
         textAlign: this.isStarColumn(name) ? 'center' : null,
@@ -289,13 +344,17 @@ class SearchView extends React.PureComponent<SearchViewProps> {
 
     if (loading) {
       return (
-        <ReactTable
-          className="-striped -highlight"
-          columns={map(this.renderColumn, COLUMNS)}
-          manual
-          loading={true}
-          defaultSortDesc
-        />
+        <SiteProvider>
+          {site => (
+            <ReactTable
+              className="-striped -highlight"
+              columns={map(this.renderColumn, site.siteView.search.fields)}
+              manual
+              loading={true}
+              defaultSortDesc
+            />
+          )}
+        </SiteProvider>
       );
     }
     if (error) {
@@ -309,33 +368,37 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     return (
-      <ReactTable
-        className="-striped -highlight"
-        columns={map(this.renderColumn, COLUMNS)}
-        manual
-        page={page}
-        pageSize={pageSize}
-        minRows={1} // this is so it truncates the results when there are less than pageSize results on the page
-        defaultSorted={camelizedSorts}
-        onPageChange={pipe(
-          changePage,
-          this.props.onUpdateParams,
+      <SiteProvider>
+        {site => (
+          <ReactTable
+            className="-striped -highlight"
+            columns={map(this.renderColumn, site.siteView.search.fields)}
+            manual
+            minRows={1} // this is so it truncates the results when there are less than pageSize results on the page
+            page={page}
+            pageSize={pageSize}
+            defaultSorted={camelizedSorts}
+            onPageChange={pipe(
+              changePage,
+              this.props.onUpdateParams,
+            )}
+            onPageSizeChange={pipe(
+              changePageSize,
+              this.props.onUpdateParams,
+            )}
+            onSortedChange={pipe(
+              changeSorted,
+              this.props.onUpdateParams,
+            )}
+            data={path(['search', 'studies'], data)}
+            pages={totalPages}
+            loading={loading}
+            defaultPageSize={pageSize}
+            getTdProps={this.rowProps}
+            defaultSortDesc
+          />
         )}
-        onPageSizeChange={pipe(
-          changePageSize,
-          this.props.onUpdateParams,
-        )}
-        onSortedChange={pipe(
-          changeSorted,
-          this.props.onUpdateParams,
-        )}
-        data={path(['search', 'studies'], data)}
-        pages={totalPages}
-        loading={loading}
-        defaultPageSize={pageSize}
-        getTdProps={this.rowProps}
-        defaultSortDesc
-      />
+      </SiteProvider>
     );
   };
 
