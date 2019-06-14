@@ -23,7 +23,7 @@ class StudyPageCounter extends React.PureComponent<StudyPageCounterProps> {
         <div id="navbuttonsonstudypage">
           record{' '}
           <b>
-            {this.props.counter + 1}/{localStorage.getItem('appState')} &nbsp;
+            {this.props.counter}/{localStorage.getItem('recordsTotal')} &nbsp;
           </b>
         </div>
       </StudyPageCounterWrapper>

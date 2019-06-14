@@ -199,7 +199,7 @@ interface SearchViewProps {
     aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
     crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
   ) => void;
-  onRowClick: (nctId: string) => void;
+  onRowClick: (nctId: string, index: number) => void;
   onResetFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string; kind: AggKind } | null;
@@ -213,7 +213,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
   rowProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
-        this.props.onRowClick(rowInfo.row.nctId);
+        this.props.onRowClick(rowInfo.row.nctId,
+                              (rowInfo.index + 1) + (this.props.params.page) * (this.props.params.pageSize));
         return handleOriginal();
       },
     };
@@ -353,7 +354,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         data.search.recordsTotal / this.props.params.pageSize,
       );
       recordsTotal = data.search.recordsTotal;
-      localStorage.setItem('appState', JSON.stringify(recordsTotal));
+      localStorage.setItem('recordsTotal', JSON.stringify(recordsTotal));
     }
 
     const q =

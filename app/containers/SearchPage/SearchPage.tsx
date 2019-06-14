@@ -335,7 +335,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     )(this.state);
   };
 
-  handleRowClick = (nctId: string) => {
+  handleRowClick = (nctId: string, index: number) => {
+    localStorage.setItem('counterIndex', index.toString());
     const suffix =
       this.isWorkflow() && !this.props.ignoreUrlHash ? '/workflow' : '';
     const prefix = this.props.ignoreUrlHash ? '' : this.props.match.url;
