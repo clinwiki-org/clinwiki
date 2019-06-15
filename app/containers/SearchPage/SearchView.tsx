@@ -43,7 +43,7 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import { studyFields } from 'utils/constants';
+import { studyFields, starColor } from 'utils/constants';
 
 
 
@@ -107,6 +107,7 @@ const QUERY = gql`
     overallStatus
     startDate
     briefTitle
+    reviewsCount
     nlmDownloadDateDescription
     studyFirstSubmittedDate
     resultsFirstSubmittedDate
@@ -294,7 +295,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
         : props => (<div><div id="stars"><ReactStars
           count={5}
-          color2={'#7ed964'}
+          color2={starColor}
           edit={false}
           value={Number(props.original.averageRating)}/></div>
           <div id="numreviews">

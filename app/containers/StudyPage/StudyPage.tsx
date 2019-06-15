@@ -41,7 +41,7 @@ import TrackingPage from 'containers/TrackingPage';
 import FacilitiesPage from 'containers/FacilitiesPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
-
+import {starColor} from 'utils/constants';
 interface StudyPageProps {
   history: History;
   location: Location;
@@ -326,7 +326,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         <div>
           <ReactStars
             count={5}
-            color2={'#7ed964'}
+            color2={starColor}
             edit={false}
             value={data.study.averageRating}
           />
