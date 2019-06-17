@@ -2,7 +2,7 @@ import * as React from 'react';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { Nav, NavItem, Row, Col, Button } from 'react-bootstrap';
-import { match, Route, Switch } from 'react-router-dom';
+import {Link, match, Route, Switch} from 'react-router-dom';
 import { History, Location } from 'history';
 import ReactStars from 'react-stars';
 import {
@@ -41,7 +41,7 @@ import TrackingPage from 'containers/TrackingPage';
 import FacilitiesPage from 'containers/FacilitiesPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
-
+import {starColor} from 'utils/constants';
 interface StudyPageProps {
   history: History;
   location: Location;
@@ -187,7 +187,7 @@ const MainContainer = styled(Col)`
 const SidebarContainer = styled(Col)`
   padding-right: 0px;
   color: rgba(255, 255, 255, 0.5);
-  padding-top: 20px !important;
+  padding-top: 10px !important;
 
   li {
     a {
@@ -205,6 +205,12 @@ const SidebarContainer = styled(Col)`
   }
 `;
 
+const BackButtonWrapper = styled.div`
+  width:90%;
+  margin:auto;
+  padding: 5px;
+  padding-bottom: 10px;
+`
 class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
 class PrefetchQueryComponent extends Query<
   StudyPagePrefetchQuery,
@@ -290,7 +296,21 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
     return (
       <Button
-        style={{ marginRight: 10, marginBottom: 10 }}
+        style={{ marginRight: 10, marginBottom: 10 ,}}
+        onClick={this.handleNavButtonClick(link!)}
+        disabled={link === null}
+      >
+        {name}
+      </Button>
+    );
+  };
+
+  renderBackButton = (name: string, link?: string | null) => {
+    if (link === undefined) return null;
+
+    return (
+      <Button
+        style={{margin: 'auto', width: '100%'}}
         onClick={this.handleNavButtonClick(link!)}
         disabled={link === null}
       >
@@ -306,7 +326,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         <div>
           <ReactStars
             count={5}
-            half
+            color2={starColor}
             edit={false}
             value={data.study.averageRating}
           />
@@ -315,6 +335,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       </ReviewsWrapper>
     );
   };
+
 
   render() {
     return (
@@ -326,7 +347,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         {({ data, loading, error }) => (
           <StudyWrapper>
             <Row>
+
               <SidebarContainer md={2}>
+                <BackButtonWrapper>
+                {this.renderBackButton('⤺︎ Back', '/search')}
+                </BackButtonWrapper>
+
                 {this.renderReviewsSummary(data)}
                 <WikiToggle
                   value={this.state.wikiToggleValue}
@@ -347,8 +373,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
               </SidebarContainer>
               <MainContainer md={10}>
                 <div className="container">
-                  {this.renderNavButton('<< Previous', this.props.prevLink)}
-                  {this.renderNavButton('Next >>', this.props.nextLink)}
+                  {this.renderNavButton('❮ Previous', this.props.prevLink)}
+                  {this.renderNavButton('Next ❯', this.props.nextLink)}
                 </div>
 
                 {data && data.study && <StudySummary study={data.study} />}
@@ -374,8 +400,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   </Switch>
                 </div>
                 <div className="container">
-                  {this.renderNavButton('<< Previous', this.props.prevLink)}
-                  {this.renderNavButton('Next >>', this.props.nextLink)}
+                  {this.renderNavButton('❮ Previous', this.props.prevLink)}
+                  {this.renderNavButton('Next ❯', this.props.nextLink)}
                 </div>
               </MainContainer>
             </Row>

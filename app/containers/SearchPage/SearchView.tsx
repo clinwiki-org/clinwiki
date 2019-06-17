@@ -43,7 +43,11 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import { studyFields } from 'utils/constants';
+import { studyFields, starColor } from 'utils/constants';
+
+
+
+import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -103,6 +107,7 @@ const QUERY = gql`
     overallStatus
     startDate
     briefTitle
+    reviewsCount
     nlmDownloadDateDescription
     studyFirstSubmittedDate
     resultsFirstSubmittedDate
@@ -272,10 +277,14 @@ class SearchView extends React.PureComponent<SearchViewProps> {
   };
 
   renderColumn = (name: string) => {
+    // INPUT: col name
+    // OUTPUT render a react-table column with given header, accessor, style,
+    // and value determined by studyfragment of that column.
+    // also renders stars
     return {
       Header: <SearchFieldName field={COLUMN_NAMES[name]} />,
       accessor: camelCase(name),
-      style: {
+      Style: {
         overflowWrap: 'break-word',
         overflow: 'visible',
         whiteSpace: 'normal',
@@ -283,9 +292,15 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       },
       Cell: !this.isStarColumn(name)
         ? null
-        : row => (
-            <ReactStars count={5} edit={false} value={Number(row.value)} />
-          ),
+        // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
+        : props => (<div><div id="stars"><ReactStars
+          count={5}
+          color2={starColor}
+          edit={false}
+          value={Number(props.original.averageRating)}/></div>
+          <div id="numreviews">
+            &nbsp;({props.original.reviewsCount})</div>
+          </div>),
     };
   };
 
@@ -354,6 +369,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
             className="-striped -highlight"
             columns={map(this.renderColumn, site.siteView.search.fields)}
             manual
+            minRows={1} // this is so it truncates the results when there are less than pageSize results on the page
             page={page}
             pageSize={pageSize}
             defaultSorted={camelizedSorts}

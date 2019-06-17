@@ -33,7 +33,7 @@ import { ReviewFormStudyFragment } from 'types/ReviewFormStudyFragment';
 import { trimPath } from 'utils/helpers';
 import { dataIdFromObject } from 'configureApollo';
 import { ReviewFragment } from 'types/ReviewFragment';
-
+import { starColor } from  'utils/constants';
 interface ReviewFormProps {
   nctId: string;
   hideSaveButton?: boolean;
@@ -202,6 +202,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
             <Col md={6}>
               <ReactStars
                 count={5}
+                color2={starColor}
                 half={false}
                 value={this.state.meta[key]}
                 onChange={value => this.handleRatingChange(key, value)}

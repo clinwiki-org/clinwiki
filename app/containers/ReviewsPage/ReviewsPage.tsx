@@ -147,7 +147,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   renderRating = (key: string, value: string) => {
     return (
       <RatingWrapper key={key}>
-        <ReactStars edit={false} count={5} half={false} value={value} />
+        <ReactStars edit={false} color2={'#7ed964'} count={5} half={false} value={value} />
         <Label>{key}</Label>
       </RatingWrapper>
     );

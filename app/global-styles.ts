@@ -85,4 +85,12 @@ div.DraftEditor-editorContainer{
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+#stars {
+   float: left;
+}
+
+#numreviews{
+   float: left;
+}
+
 `;
