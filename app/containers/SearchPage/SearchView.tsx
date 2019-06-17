@@ -105,6 +105,7 @@ const QUERY = gql`
     overallStatus
     startDate
     briefTitle
+    reviewsCount
     nlmDownloadDateDescription
     studyFirstSubmittedDate
     resultsFirstSubmittedDate
@@ -286,12 +287,18 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     // and value determined by studyfragment of that column.
     // also renders stars
     const getColumnWidth = (rows, accessor, headerText) => {
+      if (rows.length < 1) {
+        return 0;
+      }
       const maxWidth = 400;
       const magicSpacing = 10;
       const cellLength = Math.max(
         ...rows.map(row => (`${row[accessor]}` || '').length),
         headerText.length,
       );
+      console.log(accessor);
+      console.log(...rows.map(row => (`${row[accessor]}` || '').length));
+      console.log(cellLength);
       return Math.min(maxWidth, cellLength * magicSpacing);
     };
     const headerName = COLUMN_NAMES[name];
@@ -379,7 +386,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     const searchData = path(['search', 'studies'], data);
-    console.log(searchData);
     return (
       <SiteProvider>
         {site => (
