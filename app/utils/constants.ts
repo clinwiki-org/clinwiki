@@ -80,4 +80,4 @@ export const studyFields = [
   'average_rating',
 ];
 
-export const activeStarColor = '#7ed964';
+export const starColor = '#7ed964';
