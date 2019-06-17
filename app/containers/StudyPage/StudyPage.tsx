@@ -51,6 +51,8 @@ interface StudyPageProps {
   prevLink?: string | null;
   nextLink?: string | null;
   isWorkflow?: boolean;
+  recordsTotal?: number;
+  counterIndex?: number;
 }
 
 interface StudyPageState {

@@ -46,6 +46,7 @@ import SiteProvider from 'containers/SiteProvider';
 import { studyFields, starColor } from 'utils/constants';
 
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
+import {stringify} from 'querystring';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -292,14 +293,24 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       }
       const maxWidth = 400;
       const magicSpacing = 10;
-      const cellLength = Math.max(
-        ...rows.map(row => (`${row[accessor]}` || '').length),
-        headerText.length,
-      );
+      const acc = camelCase(accessor);
+      // const cellLength = Math.max(
+      //   ...rows.map(row => (`${row[accessor]}` || '').length),
+      //   headerText.length,
+      // );
+      let max = 0;
+      for (let i = 0; i < rows.length; i += 1) {
+        const elem = rows[i][acc];
+        if (rows[i] !== undefined && elem !== null) {
+          const len = elem.toString().length;
+          if (len > max) {
+            max = len;
+          }
+        }
+      }
       console.log(accessor);
-      console.log(...rows.map(row => (`${row[accessor]}` || '').length));
-      console.log(cellLength);
-      return Math.min(maxWidth, cellLength * magicSpacing);
+      console.log(max);
+      return Math.min(maxWidth, Math.max(max, headerText.length) * magicSpacing);
     };
     const headerName = COLUMN_NAMES[name];
     return {
