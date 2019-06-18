@@ -20,8 +20,6 @@ const QUERY = gql`
         study {
           nctId
         }
-        recordsTotal
-        counterIndex
       }
     }
   }

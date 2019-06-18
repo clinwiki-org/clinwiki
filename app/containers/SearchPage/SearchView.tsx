@@ -308,8 +308,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           }
         }
       }
-      console.log(accessor);
-      console.log(max);
       return Math.min(maxWidth, Math.max(max, headerText.length) * magicSpacing);
     };
     const headerName = COLUMN_NAMES[name];

@@ -292,7 +292,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   handleNavButtonClick = (link: string, name: string) => () => {
     let counter = localStorage.getItem('counterIndex') ?
       parseInt(localStorage.getItem('counterIndex')!, 10) : 1;
-    console.log(counter);
     if (name.includes('Next')) {
       counter += 1;
     } else if (name.includes('Previous')) {
