@@ -272,6 +272,10 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     return name === 'average_rating';
   };
 
+  isStatusColumn = (name: string): boolean => {
+    return name === 'overall_status';
+  };
+
   rowProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
@@ -287,12 +291,11 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
-    const getColumnWidth = (rows, accessor, headerText) => {
+    const getColumnWidth = (rows, accessor, headerText, magicSpacing) => {
       if (rows.length < 1) {
         return 0;
       }
       const maxWidth = 400;
-      const magicSpacing = 10;
       const acc = camelCase(accessor);
       // const cellLength = Math.max(
       //   ...rows.map(row => (`${row[accessor]}` || '').length),
@@ -314,16 +317,15 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     return {
       Header: <SearchFieldName field={headerName} />,
       accessor: camelCase(name),
-      Style: {
+      style: {
         overflowWrap: 'break-word',
-        overflow: 'visible',
+        overflow: 'hidden',
         whiteSpace: 'normal',
         textAlign: this.isStarColumn(name) ? 'center' : null,
       },
       Cell: !this.isStarColumn(name)
         ? null
         // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
-        // maybe not the base place for that. may be better to move it to this file
         : props => (<div><div id="divsononeline"><ReactStars
           count={5}
           color2={starColor}
@@ -332,7 +334,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
           </div>),
-      width: getColumnWidth(data, name, headerName),
+      width: getColumnWidth(data, name, headerName, this.isStatusColumn(name) ? 7 : 10),
     };
   };
 

@@ -20,6 +20,8 @@ const QUERY = gql`
         study {
           nctId
         }
+        recordsTotal
+        counterIndex
       }
     }
   }
@@ -64,6 +66,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             recordsTotal = pathOr(1, ['search', 'studyEdge', 'recordsTotal'], data) as number;
             counterIndex = pathOr(1, ['search', 'studyEdge', 'counterIndex'], data) as number;
           }
+          console.log(recordsTotal);
           return (
             <StudyPage
               history={this.props.history}
