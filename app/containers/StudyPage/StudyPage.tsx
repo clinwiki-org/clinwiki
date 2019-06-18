@@ -387,7 +387,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 <div className="container">
                   <div id="navbuttonsonstudypage">{this.renderNavButton('❮ Previous', this.props.prevLink)}</div>
                   <div id="navbuttonsonstudypage"><StudyPageCounter
-                    counter = {counter}/></div>
+                    counter = {this.props.recordsTotal!}
+                    recordsTotal={this.props.recordsTotal!}/></div>
                   <div id="navbuttonsonstudypage">{this.renderNavButton('Next ❯', this.props.nextLink)}</div>
                 </div>
 
@@ -416,7 +417,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 <div className="container">
                   <div id="navbuttonsonstudypage">{this.renderNavButton('❮ Previous', this.props.prevLink)}</div>
                   <div id="navbuttonsonstudypage"><StudyPageCounter
-                    counter = {parseInt(localStorage.getItem('counterIndex')!, 10)}/></div>
+                    counter = {this.props.recordsTotal!}
+                    recordsTotal={this.props.recordsTotal!}/></div>
                   <div id="navbuttonsonstudypage">{this.renderNavButton('Next ❯', this.props.nextLink)}</div>
                 </div>
               </MainContainer>
