@@ -223,10 +223,14 @@ const changeFilter = (add: boolean) => (
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addSearchTerm = (term: string) => (params: SearchParams) => {
-  const children = reject(
+  if (term === '') {
+    return params;
+  }
+  let children = reject(
     propEq('key', term),
     params.q.children || [],
-  ) as SearchQuery[];
+  )
+  console.log(params.q.key);
   return {
     ...params,
     q: { ...params.q, children: [...(children || []), { key: term }] },
@@ -308,8 +312,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           }
         }
       }
-      console.log(accessor);
-      console.log(max);
       return Math.min(maxWidth, Math.max(max, headerText.length) * magicSpacing);
     };
     const headerName = COLUMN_NAMES[name];
