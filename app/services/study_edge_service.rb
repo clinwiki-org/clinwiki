@@ -19,8 +19,11 @@ class StudyEdgeService
       prev_id: next_study_id(study: study, reverse: true),
       is_workflow: is_workflow,
       study: study,
+      records_total: records_total(study: study),
+      counter_index: counter_index(study: study),
     )
   end
+
 
   private
 
@@ -102,5 +105,16 @@ class StudyEdgeService
     else
       value
     end
+  end
+
+  def records_total(study)
+    return 1 if study.blank?
+    total = @search_service.search&.dig(:recordsTotal)
+    return total unless total.nil?
+    1
+  end
+
+  def counter_index(study, reverse = false)
+    1
   end
 end
