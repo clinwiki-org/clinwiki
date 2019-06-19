@@ -115,6 +115,17 @@ class StudyEdgeService
   end
 
   def counter_index(study, reverse = false)
-    1
+    return 1 if study.blank?
+    puts "~*~*~*~*~"
+    puts @search_service.search(
+        reverse: reverse,
+        )&.dig(:studies)
+    puts "~*~*~*~*~"
+    index = @search_service.search(
+        reverse: reverse,
+        )&.dig(:studies)&.index(study.__id__)
+    return index unless index.nil?
+
+    10
   end
 end
