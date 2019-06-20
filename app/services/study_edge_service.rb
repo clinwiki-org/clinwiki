@@ -116,16 +116,12 @@ class StudyEdgeService
 
   def counter_index(study, reverse = false)
     return 1 if study.blank?
-    puts "~*~*~*~*~"
-    puts @search_service.search(
-        reverse: reverse,
-        )&.dig(:studies)
-    puts "~*~*~*~*~"
-    index = @search_service.search(
-        reverse: reverse,
-        )&.dig(:studies)&.index(study.__id__)
-    return index unless index.nil?
 
-    10
+    id = @search_service.search(
+          reverse: reverse,
+          )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] } + 1
+    return id unless id.nil?
+
+    1
   end
 end
