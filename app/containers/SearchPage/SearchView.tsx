@@ -453,7 +453,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       this.props.params.pageSize
     ) {
       recordsTotal = data.search.recordsTotal;
-      console.log(recordsTotal);
       pagesTotal = Math.ceil(
           data.search.recordsTotal / this.props.params.pageSize,
         );
