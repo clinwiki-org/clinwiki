@@ -21,6 +21,7 @@ class StudyEdgeService
       study: study,
       records_total: records_total(study: study),
       counter_index: counter_index(study: study),
+      first_id: first_study_id
     )
   end
 
@@ -117,10 +118,10 @@ class StudyEdgeService
   def counter_index(study, reverse = false)
     return 1 if study.blank?
 
-    id = @search_service.search(
+    index = @search_service.search(
           reverse: reverse,
-          )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] } + 1
-    return id unless id.nil?
+          )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
+    return index + 1 unless index.nil?
 
     1
   end
