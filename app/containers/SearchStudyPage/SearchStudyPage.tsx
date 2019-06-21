@@ -66,7 +66,9 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             ) as boolean;
             prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
-            firstLink = firstId && `/search/${variables.hash}/study/${firstId}`;
+            if (prevId != null) {
+              firstLink = firstId && `/search/${variables.hash}/study/${firstId}`;
+            }
           }
           return (
             <StudyPage
