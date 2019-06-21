@@ -222,7 +222,7 @@ export default class CrumbsBar extends React.Component<
                 ) : null}
                 page{' '}
                 <b>
-                  {this.props.page + 1}/{this.props.pagesTotal}{' '}
+                  {Math.min(this.props.page + 1, this.props.pagesTotal)}/{this.props.pagesTotal}{' '}
                 </b>
                 {this.props.page + 1 < this.props.pagesTotal ? (
                   <FontAwesome

@@ -482,7 +482,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           removeSearchTerm,
           this.props.onUpdateParams,
         )}
-        page={this.props.params.page}
+        page={Math.min(this.props.params.page, pagesTotal)}
         recordsTotal={recordsTotal}
         pagesTotal={pagesTotal}
         pageSize={this.props.params.pageSize}
