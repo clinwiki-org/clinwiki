@@ -444,7 +444,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     loading: boolean;
     error: any;
   }) => {
-    let pagesTotal = 0;
+    let pagesTotal = 1;
     let recordsTotal = 0;
     if (
       data &&
@@ -452,11 +452,11 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       data.search.recordsTotal &&
       this.props.params.pageSize
     ) {
-      pagesTotal = Math.ceil(
-        data.search.recordsTotal / this.props.params.pageSize,
-      );
       recordsTotal = data.search.recordsTotal;
-      localStorage.setItem('recordsTotal', JSON.stringify(recordsTotal));
+      console.log(recordsTotal);
+      pagesTotal = Math.ceil(
+          data.search.recordsTotal / this.props.params.pageSize,
+        );
     }
 
     const q =
