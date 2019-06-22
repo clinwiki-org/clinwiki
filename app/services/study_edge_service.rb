@@ -4,7 +4,7 @@ LLONG_MAX = 9223372036854775807 # rubocop:disable Style/NumericLiterals
 class StudyEdgeService
   # @param params - hash representing SearchInputType with symbols as keys.
   def initialize(params)
-    @params = normalize_params(params).freeze
+    @params = normalize_params(params)
     @search_service = SearchService.new(@params)
   end
 
@@ -30,7 +30,6 @@ class StudyEdgeService
   def normalize_params(params)
     result = params.deep_symbolize_keys.deep_dup
     @page = result[:page]
-    result[:page] = 0
     result
   end
 
@@ -117,8 +116,8 @@ class StudyEdgeService
 
   def counter_index(study, reverse = false)
     return 1 if study.blank?
+
     search_results = @search_service.search(
-        search_after: [next_study_id(study: study[:study], reverse: true)],
         reverse: reverse,
         )
     index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
@@ -128,12 +127,7 @@ class StudyEdgeService
     #       reverse: reverse,
     #       )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
     # end
-    puts "*~*~*~*"
-    # puts search_results&.dig(:studies)
-    puts @page
-    puts nil + 1
-    puts "*~*~*~*"
-    return index + 1 unless index.nil?
+    return (index + 1) + (@params[:page] * @params[:page_size]) unless index.nil?
 
     1
   end

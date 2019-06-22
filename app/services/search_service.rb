@@ -88,12 +88,20 @@ class SearchService # rubocop:disable Metrics/ClassLength
 
   # @param params - hash representing SearchInputType with symbols as keys.
   def initialize(params)
-    @params = params.deep_dup.freeze
+    @params = params.deep_dup
   end
 
   # Search results from params
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false)
+    temp = 0
+    unless search_after.nil?
+      puts "*~*~*"
+      puts @params[:page]
+      puts "*~*~*~*"
+      temp = @params[:page]
+      @params[:page] = 0
+    end
     crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
       &.dig(:front_matter_keys, :buckets)
       &.map { |bucket| "fm_#{bucket[:key]}" } || []
@@ -103,6 +111,12 @@ class SearchService # rubocop:disable Metrics/ClassLength
     options = search_kick_query_options(params: params, aggs: aggs, search_after: search_after, reverse: reverse)
     search_result = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }
+    end
+    unless search_after.nil?
+      @params[:page] = temp
+      puts "*~*~*"
+      puts @params[:page]
+      puts "*~*~*~*"
     end
     {
       recordsTotal: search_result.total_entries,
