@@ -297,32 +297,34 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
-    const getColumnWidth = (rows, accessor, headerText, magicSpacing) => {
-      if (rows.length < 1) {
-        return 0;
+    const camelCaseName = camelCase(name);
+    const magicSpacing = 10;
+    const maxWidth = 400;
+
+    const getColumnWidth = () => {
+      if (data.length < 1) {
+        return headerName.length * magicSpacing;
       }
-      const maxWidth = 400;
-      const acc = camelCase(accessor);
       // const cellLength = Math.max(
       //   ...rows.map(row => (`${row[accessor]}` || '').length),
       //   headerText.length,
       // );
       let max = 0;
-      for (let i = 0; i < rows.length; i += 1) {
-        const elem = rows[i][acc];
-        if (rows[i] !== undefined && elem !== null) {
+      for (let i = 0; i < data.length; i += 1) {
+        const elem = data[i][camelCaseName];
+        if (data[i] !== undefined && elem !== null) {
           const len = elem.toString().length;
           if (len > max) {
             max = len;
           }
         }
       }
-      return Math.min(maxWidth, Math.max(max, headerText.length) * magicSpacing);
+      return Math.min(maxWidth, Math.max(max, headerName.length) * magicSpacing);
     };
     const headerName = COLUMN_NAMES[name];
     return {
       Header: <SearchFieldName field={headerName} />,
-      accessor: camelCase(name),
+      accessor: camelCaseName,
       style: {
         overflowWrap: 'break-word',
         overflow: 'hidden',
@@ -340,7 +342,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
         </div>),
-      width: getColumnWidth(data, name, headerName, 10),
+      width: getColumnWidth(),
     };
   };
 
