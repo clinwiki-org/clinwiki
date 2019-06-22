@@ -29,6 +29,7 @@ class StudyEdgeService
 
   def normalize_params(params)
     result = params.deep_symbolize_keys.deep_dup
+    @page = result[:page]
     result[:page] = 0
     result
   end
@@ -116,10 +117,11 @@ class StudyEdgeService
 
   def counter_index(study, reverse = false)
     return 1 if study.blank?
-    index = @search_service.search(
+    search_results = @search_service.search(
         search_after: [next_study_id(study: study[:study], reverse: true)],
-          reverse: reverse,
-          )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
+        reverse: reverse,
+        )
+    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
     # if index % 25 == 1
     #   index = @search_service.search(
     #       search_after: [next_study_id(study: study[:study], reverse: true)],
@@ -127,10 +129,8 @@ class StudyEdgeService
     #       )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
     # end
     puts "*~*~*~*"
-    # puts [next_study_id(study: study[:study], reverse: true)].class
-    # puts sort_values(study[:study], true).class
-    # puts @search_service.search&.dig(:page)
-    puts @params
+    # puts search_results&.dig(:studies)
+    puts @page
     puts nil + 1
     puts "*~*~*~*"
     return index + 1 unless index.nil?
