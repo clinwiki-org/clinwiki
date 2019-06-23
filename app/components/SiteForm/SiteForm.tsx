@@ -132,6 +132,9 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const path = trimPath(this.props.match.path);
     return (
       <Container>
+        <h3 style={{ color: 'white', marginLeft: 15 }}>
+          {this.props.site.name}
+        </h3>
         {this.renderTabs()}
         <Switch>
           <Route
