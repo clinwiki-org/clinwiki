@@ -202,4 +202,19 @@ namespace :search do
   # end
 end
 
+desc "Creates an index with all studies from sql database"
+task migrate_tags: :environment do
+  updater = User.first
+  WikiPage.all.each do |wiki_page|
+    next unless wiki_page.tags.is_a?(Array)
+
+    fm = wiki_page.front_matter
+    fm["tags"] = fm["tags"].join("|")
+    wiki_page.front_matter = fm
+    wiki_page.updater = updater
+    wiki_page.save!
+    p "Successfully migrated tags for wiki `#{wiki_page.nct_id}`"
+  end
+end
+
 # rubocop:enable Style/ZeroLengthPredicate
