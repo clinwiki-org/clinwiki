@@ -44,7 +44,6 @@ const FRAGMENT = gql`
     }
     nctId
     meta
-    tags
   }
 
   ${Edits.fragment}
