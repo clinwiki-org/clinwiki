@@ -66,8 +66,8 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
     this.props.onFormChange({ ...this.props.form, [name]: value });
   };
 
-  handleEditorEmailChange = (addEditorEmail: string) => {
-    this.setState({ addEditorEmail });
+  handleEditorEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ addEditorEmail: e.currentTarget.value });
   };
 
   render() {
@@ -113,7 +113,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
                       <tr key={email}>
                         <td>{email}</td>
                         <EditorActions>
-                          <Button onClick={this.handleDeleteEditor}>
+                          <Button onClick={this.handleDeleteEditor(email)}>
                             Delete
                           </Button>
                         </EditorActions>
