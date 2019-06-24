@@ -114,9 +114,6 @@ class SearchService # rubocop:disable Metrics/ClassLength
     end
     unless search_after.nil?
       @params[:page] = temp
-      puts "*~*~*"
-      puts @params[:page]
-      puts "*~*~*~*"
     end
     {
       recordsTotal: search_result.total_entries,

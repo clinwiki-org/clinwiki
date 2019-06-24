@@ -22,6 +22,7 @@ class StudyEdgeService
       records_total: recordstotal,
       counter_index: counter_index(study: study),
       first_id: first_study_id,
+      hash_first: hash_page(number: -@params[:page], recordstotal: recordstotal),
       hash_next: hash_page(number: 1, recordstotal: recordstotal),
       hash_prev: hash_page(number: -1, recordstotal: recordstotal),
       page_size: @params[:page_size] || DEFAULT_PAGE_SIZE,
@@ -37,7 +38,11 @@ class StudyEdgeService
   end
 
   def first_study_id
-    @search_service.search&.dig(:studies)&.first&.id
+    temp = @search_service.params[:page]
+    @search_service.params[:page] = 0
+    id = @search_service.search&.dig(:studies)&.first&.id
+    @search_service.params[:page] = temp
+    id
   end
 
   # There's a big problem with nulls. When you sort by a field
