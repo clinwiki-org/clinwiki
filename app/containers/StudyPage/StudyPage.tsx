@@ -52,6 +52,8 @@ interface StudyPageProps {
   nextLink?: string | null;
   firstLink?: string | null;
   isWorkflow?: boolean;
+  recordsTotal?: number;
+  counterIndex?: number;
 }
 
 interface StudyPageState {
@@ -388,7 +390,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   <div id="navbuttonsonstudypage">{this.renderNavButton('❮❮ First', this.props.firstLink)}</div>
                   <div id="navbuttonsonstudypage">{this.renderNavButton('❮ Previous', this.props.prevLink)}</div>
                   <div id="navbuttonsonstudypage"><StudyPageCounter
-                    counter = {counter}/></div>
+                    counter = {this.props.counterIndex!}
+                    recordsTotal={this.props.recordsTotal!}/></div>
                   <div id="navbuttonsonstudypage">{this.renderNavButton('Next ❯', this.props.nextLink)}</div>
                 </div>
 
@@ -418,7 +421,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   <div id="navbuttonsonstudypage">{this.renderNavButton('❮❮ First', this.props.firstLink)}</div>
                   <div id="navbuttonsonstudypage">{this.renderNavButton('❮ Previous', this.props.prevLink)}</div>
                   <div id="navbuttonsonstudypage"><StudyPageCounter
-                    counter = {counter}/></div>
+                    counter = {this.props.counterIndex!}
+                    recordsTotal={this.props.recordsTotal!}/></div>
                   <div id="navbuttonsonstudypage">{this.renderNavButton('Next ❯', this.props.nextLink)}</div>
                 </div>
               </MainContainer>

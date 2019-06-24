@@ -46,7 +46,7 @@ import SiteProvider from 'containers/SiteProvider';
 import { studyFields, starColor } from 'utils/constants';
 
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
-import {stringify} from 'querystring';
+import { stringify } from 'querystring';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -341,7 +341,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           value={Number(props.original.averageRating)}/></div>
           <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
-        </div>),
+          </div >),
       width: getColumnWidth(),
     };
   };
