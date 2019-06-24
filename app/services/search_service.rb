@@ -94,11 +94,11 @@ class SearchService # rubocop:disable Metrics/ClassLength
   # Search results from params
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false)
+    # Searchkick apparently doesn't like it when you have a page number AND a search_after
+    # so this is a workaround. It might be better to do this under search_kick_query_options()
+    # This also requires @params to be unfrozen, which might be risky/bad practice.
     temp = 0
     unless search_after.nil?
-      puts "*~*~*"
-      puts @params[:page]
-      puts "*~*~*~*"
       temp = @params[:page]
       @params[:page] = 0
     end
