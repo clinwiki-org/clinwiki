@@ -4,7 +4,7 @@ LLONG_MAX = 9223372036854775807 # rubocop:disable Style/NumericLiterals
 class StudyEdgeService
   # @param params - hash representing SearchInputType with symbols as keys.
   def initialize(params)
-    @params = normalize_params(params).freeze
+    @params = normalize_params(params)
     @search_service = SearchService.new(@params)
   end
 
@@ -13,15 +13,18 @@ class StudyEdgeService
     return nil if study.blank?
 
     is_workflow = (@params[:crowd_agg_filters] || []).any? { |x| x[:field]&.downcase&.starts_with("wf_") }
-
+    recordstotal = records_total
     OpenStruct.new(
       next_id: next_study_id(study: study),
       prev_id: next_study_id(study: study, reverse: true),
       is_workflow: is_workflow,
       study: study,
-      records_total: records_total(study: study),
+      records_total: recordstotal,
       counter_index: counter_index(study: study),
-      first_id: first_study_id
+      first_id: first_study_id,
+      hash_next: hash_page(number: 1, recordstotal: recordstotal),
+      hash_prev: hash_page(number: -1, recordstotal: recordstotal),
+      page_size: @params[:page_size] || DEFAULT_PAGE_SIZE,
     )
   end
 
@@ -30,7 +33,6 @@ class StudyEdgeService
 
   def normalize_params(params)
     result = params.deep_symbolize_keys.deep_dup
-    result[:page] = 0
     result
   end
 
@@ -108,21 +110,50 @@ class StudyEdgeService
     end
   end
 
-  def records_total(study)
-    return 1 if study.blank?
+  def records_total
     total = @search_service.search&.dig(:recordsTotal)
     return total unless total.nil?
     1
   end
 
-  def counter_index(study, reverse = false)
+  def counter_index(study)
+    # Finds the index of the item in the search results.
+    # This code could do with some cleanup; it's pretty messy and I had to do some cheesy modifications
+    # to search_service.rb to make this work.
     return 1 if study.blank?
-
-    index = @search_service.search(
-          reverse: reverse,
-          )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
-    return index + 1 unless index.nil?
-
+    search_results = @search_service.search
+    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
+    return (index + 1) + (@params[:page] * @params[:page_size]) unless index.nil?
     1
+  end
+
+  # Simply rehashes the params with a new specified page number increase (or decrease if neg)
+  #
+  # Weird bug where it seems to be misordering the :sorts part of the params when it rehashes it.
+  # e.g. it may originally be `{:agg_filters=>[], :crowd_agg_filters=>[], :page=>2, :page_size=>10, :q=>{:chi
+  # ldren=>[], :key=>"AND"}, :sorts=>[{:id=>"nct_id", :desc=>false}]}`
+  # but then when it hashes it, it becomes `{:agg_filters=>[], :crowd_agg_filters=>[], :page=>2, :page_size=>10,
+  # :q=>{:children=>[], :key=>"AND"}, :sorts=>[{:desc=>false, :id=>"nct_id"}]}`
+  # This causes the search hash to be completely different than what you might have gotten from the initial search
+  # (in the above two examples, the two hash out to be `4_HTmIXh` and `7NCvcFT2` respectively)
+  # May also occur to other parts of the params (e.g. :q or :agg_filters), but I have not tested.
+  # This doesn't seem to cause any effect on the search results, however. They both produce the same results.
+  def search_hash(params:)
+    params_hash = params.to_h.deep_symbolize_keys
+    ShortLink.from_long(params_hash).short
+  end
+
+  # recordstotal is passed in so as to save on computation; don't want to call another search just for this
+  # could also possibly only call this function based off the counter_index rather than calling it on all
+  # queries regardless of the index to save on computation, but it seems fast enough anyway
+  def hash_page(number:, recordstotal:)
+    temp = @params.deep_dup
+    new_page = temp[:page] + number
+    # make sure the new page is within the confines
+    if new_page >= 0 and new_page < ((recordstotal / temp[:page_size]).ceil)
+      temp[:page] = new_page
+      return search_hash(params: temp)
+    end
+    nil
   end
 end

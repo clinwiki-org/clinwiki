@@ -10,6 +10,8 @@ module Types
 
     def study_edge(id:)
       search_params = context[:search_params]
+      puts search_params
+      # puts nil + 1
       study_edge_service = StudyEdgeService.new(search_params)
       study_edge_service.study_edge(id)
     end
