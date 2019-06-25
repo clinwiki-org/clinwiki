@@ -57,8 +57,8 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let nextLink: string | null | undefined = null;
           let firstLink: string | null | undefined = null;
           let isWorkflow: boolean = false;
-          let recordsTotal: number | null | undefined = 1;
-          let counterIndex: number | null | undefined = 1;
+          let recordsTotal: number | string | null | undefined = 'loading';
+          let counterIndex: number | string | null | undefined = 'loading';
           let pageSize: number | undefined = 25;
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
