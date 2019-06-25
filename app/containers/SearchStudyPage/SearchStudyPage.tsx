@@ -9,6 +9,7 @@ import {
 } from 'types/SearchStudyPageQuery';
 import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
+import { PulseLoader } from 'react-spinners';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
@@ -57,8 +58,9 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let nextLink: string | null | undefined = null;
           let firstLink: string | null | undefined = null;
           let isWorkflow: boolean = false;
-          let recordsTotal: number | string | null | undefined = 'loading';
-          let counterIndex: number | string | null | undefined = 'loading';
+          let recordsTotal: number | JSX.Element | null | undefined =
+            <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>;
+          let counterIndex: number | JSX.Element | null | undefined = null;
           let pageSize: number | undefined = 25;
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);

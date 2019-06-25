@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 interface StudyPageCounterProps {
   counter: number;
-  recordsTotal: number;
+  recordsTotal: number | Element;
 }
 // interface StudyPageCounterState {
 // }
@@ -20,7 +20,8 @@ class StudyPageCounter extends React.PureComponent<StudyPageCounterProps> {
         <div id="navbuttonsonstudypage">
           record{' '}
           <b>
-            {this.props.counter}/{this.props.recordsTotal} &nbsp;
+            {this.props.counter}{typeof this.props.recordsTotal === 'number' ? '/' : null}
+            {this.props.recordsTotal} &nbsp;
           </b>
         </div>
       </StudyPageCounterWrapper>
