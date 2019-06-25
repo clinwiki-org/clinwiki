@@ -199,8 +199,6 @@ interface SearchPageProps {
   history: any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
-  recordsTotalCallback: (recordsTotal: number) => void;
-  recordsTotal: number;
 }
 
 interface SearchPageState {
@@ -211,7 +209,6 @@ interface SearchPageState {
   } | null;
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
-  recordsTotal: number;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -229,7 +226,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     openedAgg: null,
     searchAggs: {},
     searchCrowdAggs: {},
-    recordsTotal: 0,
   };
 
   static getDerivedStateFromProps(
@@ -335,8 +331,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     )(this.state);
   };
 
-  handleRowClick = (nctId: string, index: number) => {
-    localStorage.setItem('counterIndex', index.toString());
+  handleRowClick = (nctId: string) => {
     const suffix =
       this.isWorkflow() && !this.props.ignoreUrlHash ? '/workflow' : '';
     const prefix = this.props.ignoreUrlHash ? '' : this.props.match.url;

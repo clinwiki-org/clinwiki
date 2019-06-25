@@ -29,7 +29,7 @@ const HASH_QUERY = gql`
       params: {
         q: $q,
         page: 0,
-        pageSize: 20
+        pageSize: 25
       }
     )
   }
