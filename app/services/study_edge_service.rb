@@ -22,9 +22,12 @@ class StudyEdgeService
       records_total: recordstotal,
       counter_index: counter_index(study: study),
       first_id: first_study_id,
-      hash_first: hash_page(number: -@params[:page], recordstotal: recordstotal),
-      hash_next: hash_page(number: 1, recordstotal: recordstotal),
-      hash_prev: hash_page(number: -1, recordstotal: recordstotal),
+      last_id: last_study_id,
+      hash_first: hash_page(new_page: 0, recordstotal: recordstotal),
+      hash_last: hash_page(new_page: (recordstotal / @params[:page_size]).ceil - 1,
+                           recordstotal: recordstotal),
+      hash_next: hash_page(new_page: @params[:page] + 1, recordstotal: recordstotal),
+      hash_prev: hash_page(new_page: @params[:page] - 1, recordstotal: recordstotal),
       page_size: @params[:page_size] || DEFAULT_PAGE_SIZE,
     )
   end
@@ -41,6 +44,14 @@ class StudyEdgeService
     temp = @search_service.params[:page]
     @search_service.params[:page] = 0
     id = @search_service.search&.dig(:studies)&.first&.id
+    @search_service.params[:page] = temp
+    id
+  end
+
+  def last_study_id
+    temp = @search_service.params[:page]
+    @search_service.params[:page] = 0
+    id = @search_service.search(reverse: true)&.dig(:studies)&.first&.id
     @search_service.params[:page] = temp
     id
   end
@@ -151,11 +162,10 @@ class StudyEdgeService
   # recordstotal is passed in so as to save on computation; don't want to call another search just for this
   # could also possibly only call this function based off the counter_index rather than calling it on all
   # queries regardless of the index to save on computation, but it seems fast enough anyway
-  def hash_page(number:, recordstotal:)
-    temp = @params.deep_dup
-    new_page = temp[:page] + number
+  def hash_page(new_page:, recordstotal:)
     # make sure the new page is within the confines
-    if new_page >= 0 and new_page < ((recordstotal / temp[:page_size]).ceil)
+    if new_page >= 0 and new_page < ((recordstotal / @params[:page_size]).ceil)
+      temp = @params.deep_dup
       temp[:page] = new_page
       return search_hash(params: temp)
     end

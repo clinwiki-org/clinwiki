@@ -46,6 +46,7 @@ gem "mini_magick"
 #  User creation gem
 gem "devise"
 gem "searchkick", "3.1.0"
+gem "autosuggest"
 gem "font-awesome-rails"
 gem "font-awesome-sass"
 gem "bootstrap-sass"

@@ -2,6 +2,13 @@ MAX_AGGREGATION_LIMIT = 1_000_000
 ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
 
+require 'autosuggest'
+
+def hello(studies)
+  top_queries = studies
+  puts Autosuggest.new(top_queries)
+end
+
 # aggregations
 DEFAULT_AGG_OPTIONS = {
   average_rating: {
@@ -115,6 +122,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
     unless search_after.nil?
       @params[:page] = temp
     end
+    hello(search_result)
     {
       recordsTotal: search_result.total_entries,
       studies: search_result.results,
