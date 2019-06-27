@@ -24,7 +24,7 @@ class StudyEdgeService
       first_id: first_study_id,
       last_id: last_study_id(recordsTotal: recordstotal),
       hash_first: hash_page(new_page: 0, recordstotal: recordstotal),
-      hash_last: hash_page(new_page: (recordstotal / @params[:page_size]).ceil - 1,
+      hash_last: hash_page(new_page: (recordstotal / @params[:page_size]).ceil,
                            recordstotal: recordstotal),
       hash_next: hash_page(new_page: @params[:page] + 1, recordstotal: recordstotal),
       hash_prev: hash_page(new_page: @params[:page] - 1, recordstotal: recordstotal),
@@ -50,7 +50,7 @@ class StudyEdgeService
 
   def last_study_id(recordsTotal:)
     temp = @search_service.params[:page]
-    last_page = ((recordsTotal / @params[:page_size]).ceil - 1)
+    last_page = ((recordsTotal / @params[:page_size]).ceil)
     page_max = ((MAX_WINDOW_SIZE / @params[:page_size]).ceil - 1)
     @search_service.params[:page] = last_page < page_max ? last_page : page_max
     id = @search_service.search&.dig(:studies)&.last&.id
@@ -166,7 +166,7 @@ class StudyEdgeService
   # queries regardless of the index to save on computation, but it seems fast enough anyway
   def hash_page(new_page:, recordstotal:)
     # make sure the new page is within the confines
-    if new_page >= 0 and new_page < ((recordstotal / @params[:page_size]).ceil)
+    if new_page >= 0 and new_page <= ((recordstotal / @params[:page_size]).ceil)
       temp = @params.deep_dup
       page_max = ((MAX_WINDOW_SIZE / @params[:page_size]).ceil - 1)
       temp[:page] = new_page < page_max ? new_page : page_max
