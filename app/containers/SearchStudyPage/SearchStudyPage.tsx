@@ -86,7 +86,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             const hashLast = path(['search', 'studyEdge', 'hashLast'], data);
 
             // clamp it to the max window size
-            if (counterIndex < MAX_WINDOW_SIZE) {
+            if (counterIndex < MAX_WINDOW_SIZE && counterIndex < recordsTotal) {
               // if it's the last on the page
               if (pageSize && counterIndex % pageSize === 0) {
                 nextLink = nextId && `/search/${hashNext}/study/${nextId}`;
@@ -95,11 +95,14 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               }
             }
 
-            // if it's the first on the page
-            if (pageSize && counterIndex % pageSize === 1) {
-              prevLink = prevId && `/search/${hashPrev}/study/${prevId}`;
-            } else {
-              prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
+            // if the counter is 1, there shouldn't be a previous button
+            if (counterIndex > 1) {
+              // if it's the first on the page
+              if (pageSize && counterIndex % pageSize === 1) {
+                prevLink = prevId && `/search/${hashPrev}/study/${prevId}`;
+              } else {
+                prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
+              }
             }
 
             // just so that there isn't a first button if there isn't a prev button
