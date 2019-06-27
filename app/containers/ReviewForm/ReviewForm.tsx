@@ -166,8 +166,10 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   };
 
   handleAddRating = () => {
-    const lens = lensPath(['meta', this.state.newRating]);
-    this.setState({ ...set(lens, 0, this.state), newRating: '' });
+    if (this.state.newRating.replace(/\s/g, '').length) {
+      const lens = lensPath(['meta', this.state.newRating]);
+      this.setState({ ...set(lens, 0, this.state), newRating: '' });
+    }
   };
 
   handleContentChange = (value: EditorValue) => {

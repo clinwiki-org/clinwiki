@@ -227,7 +227,7 @@ const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addSearchTerm = (term: string) => (params: SearchParams) => {
   // have to check for empty string because if you press return two times it ends up putting it in the terms
-  if (term === '') {
+  if (!term.replace(/\s/g, '').length) {
     return params;
   }
   // recycled code for removing repeated terms. might be a better way but I'm not sure.
