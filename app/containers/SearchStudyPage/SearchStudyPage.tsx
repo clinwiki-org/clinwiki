@@ -24,7 +24,9 @@ const QUERY = gql`
         recordsTotal
         counterIndex
         firstId
+        lastId
         hashFirst
+        hashLast
         hashNext
         hashPrev
         pageSize
@@ -57,6 +59,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let prevLink: string | null | undefined = null;
           let nextLink: string | null | undefined = null;
           let firstLink: string | null | undefined = null;
+          let lastLink: string | null | undefined = null;
           let isWorkflow: boolean = false;
           let recordsTotal: number | JSX.Element | null | undefined =
             <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>;
@@ -66,6 +69,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
             const nextId = path(['search', 'studyEdge', 'nextId'], data);
             const firstId = path(['search', 'studyEdge', 'firstId'], data);
+            const lastId = path(['search', 'studyEdge', 'lastId'], data);
             isWorkflow = pathOr(
               false,
               ['search', 'studyEdge', 'isWorkflow'],
@@ -78,6 +82,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             const hashNext = path(['search', 'studyEdge', 'hashNext'], data);
             const hashPrev = path(['search', 'studyEdge', 'hashPrev'], data);
             const hashFirst = path(['search', 'studyEdge', 'hashFirst'], data);
+            const hashLast = path(['search', 'studyEdge', 'hashLast'], data);
 
             // if it's the last on the page
             if (pageSize && counterIndex % pageSize === 0) {
@@ -97,6 +102,9 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             if (prevId != null) {
               firstLink = firstId && `/search/${hashFirst}/study/${firstId}`;
             }
+            if (nextId != null) {
+              lastLink = lastId && `/search/${hashLast}/study/${lastId}`;
+            }
           }
           return (
             <StudyPage
@@ -106,6 +114,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               prevLink={prevLink}
               nextLink={nextLink}
               firstLink={firstLink}
+              lastLink={lastLink}
               isWorkflow={isWorkflow}
               recordsTotal={recordsTotal}
               counterIndex={counterIndex}
