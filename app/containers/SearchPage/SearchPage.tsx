@@ -188,7 +188,10 @@ const changeFilter = (add: boolean) => (
       }
       return res;
     },
-    params,
+    {
+      ...params,
+      page: 0,
+    },
   );
 };
 const addFilter = changeFilter(true);
