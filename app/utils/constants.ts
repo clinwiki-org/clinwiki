@@ -81,3 +81,5 @@ export const studyFields = [
 ];
 
 export const starColor = '#7ed964';
+
+export const MAX_WINDOW_SIZE = 10000;

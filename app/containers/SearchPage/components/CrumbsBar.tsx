@@ -89,6 +89,7 @@ const CrumbsBarStyleWrappper = styled.div`
 
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
+import {MAX_WINDOW_SIZE} from '../../../utils/constants';
 
 //
 interface CrumbsBarProps {
@@ -234,6 +235,9 @@ export default class CrumbsBar extends React.Component<
                 ) : null}
                 <div>
                   {this.props.recordsTotal} results
+                </div>
+                <div>
+                  {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
                 </div>
               </div>
             </Col>

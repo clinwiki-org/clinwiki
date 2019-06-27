@@ -43,7 +43,7 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import { studyFields, starColor } from 'utils/constants';
+import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
 
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import { stringify } from 'querystring';
@@ -181,7 +181,7 @@ const COLUMN_NAMES = fromPairs(
 
 const changePage = (pageNumber: number) => (params: SearchParams) => ({
   ...params,
-  page: pageNumber,
+  page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / params.pageSize) - 1),
 });
 const changePageSize = (pageSize: number) => (params: SearchParams) => ({
   ...params,
@@ -217,7 +217,10 @@ const changeFilter = (add: boolean) => (
       }
       return res;
     },
-    params,
+    {
+      ...params,
+      page: 0,
+    },
   );
 };
 const addFilter = changeFilter(true);
@@ -235,6 +238,7 @@ const addSearchTerm = (term: string) => (params: SearchParams) => {
   return {
     ...params,
     q: { ...params.q, children: [...(children || []), { key: term }] },
+    page: 0,
   };
 };
 const removeSearchTerm = (term: string) => (params: SearchParams) => {
@@ -242,7 +246,11 @@ const removeSearchTerm = (term: string) => (params: SearchParams) => {
     propEq('key', term),
     params.q.children || [],
   ) as SearchQuery[];
-  return { ...params, q: { ...params.q, children } };
+  return {
+    ...params,
+    q: { ...params.q, children },
+    page: 0,
+  };
 };
 
 class QueryComponent extends Query<
@@ -401,7 +409,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       return null;
     }
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
-    const totalPages = Math.ceil(totalRecords / pageSize);
+    const totalPages = Math.min(Math.ceil(totalRecords / this.props.params.pageSize),
+                                Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     const searchData = path(['search', 'studies'], data);
@@ -458,9 +467,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       this.props.params.pageSize
     ) {
       recordsTotal = data.search.recordsTotal;
-      pagesTotal = Math.ceil(
-          data.search.recordsTotal / this.props.params.pageSize,
-        );
+      pagesTotal = Math.min(Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+                            Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
     }
 
     const q =
