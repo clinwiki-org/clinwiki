@@ -47,7 +47,7 @@ import { starColor } from 'utils/constants';
 interface StudyPageProps {
   history: History;
   location: Location;
-  match: match<{ nctId: string }>;
+  match: match<{ nctId: string, searchId: string }>;
   prevLink?: string | null;
   nextLink?: string | null;
   firstLink?: string | null;
@@ -353,7 +353,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
               <SidebarContainer md={2}>
                 <BackButtonWrapper>
-                {this.renderBackButton('⤺︎ Back', '/search')}
+                {this.renderBackButton('⤺︎ Back', `/search/${this.props.match.params.searchId}`)}
                 </BackButtonWrapper>
 
                 {this.renderReviewsSummary(data)}

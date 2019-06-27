@@ -10,6 +10,7 @@ import {
 import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
+import {MAX_WINDOW_SIZE} from '../../utils/constants';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
@@ -84,11 +85,14 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             const hashFirst = path(['search', 'studyEdge', 'hashFirst'], data);
             const hashLast = path(['search', 'studyEdge', 'hashLast'], data);
 
-            // if it's the last on the page
-            if (pageSize && counterIndex % pageSize === 0) {
-              nextLink = nextId && `/search/${hashNext}/study/${nextId}`;
-            } else {
-              nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
+            // clamp it to the max window size
+            if (counterIndex < MAX_WINDOW_SIZE) {
+              // if it's the last on the page
+              if (pageSize && counterIndex % pageSize === 0) {
+                nextLink = nextId && `/search/${hashNext}/study/${nextId}`;
+              } else {
+                nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
+              }
             }
 
             // if it's the first on the page
@@ -99,10 +103,11 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             }
 
             // just so that there isn't a first button if there isn't a prev button
-            if (prevId != null) {
+            // likewise for the last button
+            if (prevLink != null) {
               firstLink = firstId && `/search/${hashFirst}/study/${firstId}`;
             }
-            if (nextId != null) {
+            if (nextLink != null) {
               lastLink = lastId && `/search/${hashLast}/study/${lastId}`;
             }
           }
