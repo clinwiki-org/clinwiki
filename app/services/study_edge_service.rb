@@ -19,10 +19,10 @@ class StudyEdgeService
       prev_id: next_study_id(study: study, reverse: true),
       is_workflow: is_workflow,
       study: study,
-      records_total: recordstotal,
+      records_total: recordstotal < MAX_WINDOW_SIZE ? recordstotal : MAX_WINDOW_SIZE,
       counter_index: counter_index(study: study),
       first_id: first_study_id,
-      last_id: last_study_id,
+      last_id: last_study_id(recordsTotal: recordstotal),
       hash_first: hash_page(new_page: 0, recordstotal: recordstotal),
       hash_last: hash_page(new_page: (recordstotal / @params[:page_size]).ceil - 1,
                            recordstotal: recordstotal),
@@ -48,10 +48,12 @@ class StudyEdgeService
     id
   end
 
-  def last_study_id
+  def last_study_id(recordsTotal:)
     temp = @search_service.params[:page]
-    @search_service.params[:page] = 0
-    id = @search_service.search(reverse: true)&.dig(:studies)&.first&.id
+    last_page = ((recordsTotal / @params[:page_size]).ceil - 1)
+    page_max = ((MAX_WINDOW_SIZE / @params[:page_size]).ceil - 1)
+    @search_service.params[:page] = last_page < page_max ? last_page : page_max
+    id = @search_service.search&.dig(:studies)&.last&.id
     @search_service.params[:page] = temp
     id
   end
@@ -166,7 +168,8 @@ class StudyEdgeService
     # make sure the new page is within the confines
     if new_page >= 0 and new_page < ((recordstotal / @params[:page_size]).ceil)
       temp = @params.deep_dup
-      temp[:page] = new_page
+      page_max = ((MAX_WINDOW_SIZE / @params[:page_size]).ceil - 1)
+      temp[:page] = new_page < page_max ? new_page : page_max
       return search_hash(params: temp)
     end
     nil

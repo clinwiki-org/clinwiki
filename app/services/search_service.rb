@@ -1,6 +1,7 @@
 MAX_AGGREGATION_LIMIT = 1_000_000
 ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
+MAX_WINDOW_SIZE = 10_000
 
 require 'autosuggest'
 
