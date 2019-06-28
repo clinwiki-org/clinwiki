@@ -314,10 +314,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       if (data.length < 1) {
         return calcWidth(headerName.split('')) + totalPadding;
       }
-      // const cellLength = Math.max(
-      //   ...rows.map(row => (`${row[accessor]}` || '').length),
-      //   headerText.length,
-      // );
       let max = headerName;
       for (let i = 0; i < data.length; i += 1) {
         const elem = data[i][camelCaseName];
@@ -330,7 +326,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       }
       const maxArray = max.split('');
       max = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
-      console.log(max);
       return Math.min(maxWidth, max);
     };
 
@@ -433,7 +428,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
             className="-striped -highlight"
             columns={map(x => this.renderColumn(x, searchData), site.siteView.search.fields)}
             manual
-            minRows={1} // this is so it truncates the results when there are less than pageSize results on the page
+            minRows={searchData![0] !== undefined ? 1 : 3}
+            // this is so it truncates the results when there are less than pageSize results on the page
             page={page}
             pageSize={pageSize}
             defaultSorted={camelizedSorts}
@@ -449,12 +445,13 @@ class SearchView extends React.PureComponent<SearchViewProps> {
               changeSorted,
               this.props.onUpdateParams,
             )}
-            data={path(['search', 'studies'], data)}
+            data={searchData}
             pages={totalPages}
             loading={loading}
             defaultPageSize={pageSize}
             getTdProps={this.rowProps}
             defaultSortDesc
+            noDataText={'No studies found'}
           />
         )}
       </SiteProvider>
