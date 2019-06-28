@@ -7,7 +7,7 @@ interface ErrorProps {
 
 class Error extends React.PureComponent<ErrorProps> {
   render() {
-    return <div>test{this.props.message}</div>;
+    return <div>{this.props.message}</div>;
   }
 }
 
