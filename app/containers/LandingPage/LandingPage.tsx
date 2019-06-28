@@ -39,17 +39,17 @@ interface LandingPageProps {
   history : History;
 }
 interface LandingPageState {
-  searchTerm: string | null;
+  searchTerm: string;
 }
 
 class LandingPage extends React.PureComponent<LandingPageProps, LandingPageState> {
   state: LandingPageState = {
-    searchTerm: null,
+    searchTerm: '',
   };
   onSubmit = async (e, client:ApolloClient<any>) => {
     e.preventDefault();
     let params = {};
-    if (this.state.searchTerm !== null) {
+    if (this.state.searchTerm.replace(/\s/g, '').length) {
       params = { q: { key: 'AND', children: [{ key: this.state.searchTerm }] } };
     } else {
       params = { q: { key: 'AND', children: [] } };
@@ -58,11 +58,7 @@ class LandingPage extends React.PureComponent<LandingPageProps, LandingPageState
     this.props.history.push(`/search/${data.searchHash}`);
   };
   searchChanged = e => {
-    if (e.target.value.replace(/\s/g, '').length) {
-      this.setState({ searchTerm: e.target.value });
-    } else {
-      this.setState({ searchTerm: null });
-    }
+    this.setState({ searchTerm: e.target.value });
   };
   renderMain = (client:ApolloClient<any>) => (<MainContainer>
     <Heading> </Heading>
