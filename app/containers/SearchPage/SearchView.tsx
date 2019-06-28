@@ -305,29 +305,42 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     // and value determined by studyfragment of that column.
     // also renders stars
     const camelCaseName = camelCase(name);
-    const magicSpacing = 10;
+    const lowerCaseSpacing = 8;
+    const upperCaseSpacing = 10;
     const maxWidth = 400;
+    const totalPadding = 17;
 
     const getColumnWidth = () => {
       if (data.length < 1) {
-        return headerName.length * magicSpacing;
+        return calcWidth(headerName.split('')) + totalPadding;
       }
       // const cellLength = Math.max(
       //   ...rows.map(row => (`${row[accessor]}` || '').length),
       //   headerText.length,
       // );
-      let max = 0;
+      let max = headerName;
       for (let i = 0; i < data.length; i += 1) {
         const elem = data[i][camelCaseName];
         if (data[i] !== undefined && elem !== null) {
-          const len = elem.toString().length;
-          if (len > max) {
-            max = len;
+          const str = elem.toString();
+          if (str.length > max.length) {
+            max = str;
           }
         }
       }
-      return Math.min(maxWidth, Math.max(max, headerName.length) * magicSpacing);
+      const maxArray = max.split('');
+      max = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
+      console.log(max);
+      return Math.min(maxWidth, max);
     };
+
+    const calcWidth = array => {
+      return array.reduce(((acc, letter) =>
+                        letter === letter.toUpperCase() && letter !== ' ' ?
+                          acc + upperCaseSpacing : acc + lowerCaseSpacing),
+                          0);
+    };
+
     const headerName = COLUMN_NAMES[name];
     return {
       Header: <SearchFieldName field={headerName} />,
