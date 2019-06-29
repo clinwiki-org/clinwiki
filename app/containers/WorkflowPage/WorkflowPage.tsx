@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, Panel } from 'react-bootstrap';
+import { Button, Panel, FormControl } from 'react-bootstrap';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { match } from 'react-router';
 import ReviewForm from 'containers/ReviewForm';
@@ -23,6 +23,23 @@ import {
 } from 'types/WorkflowPageQuery';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import SiteProvider from 'containers/SiteProvider';
+import { extractWikiSections, WikiSection } from 'utils/helpers';
+import {
+  drop,
+  addIndex,
+  map,
+  pipe,
+  isNil,
+  find,
+  propEq,
+  lensPath,
+  set,
+  keys,
+} from 'ramda';
+import { StyledFormControl } from 'components/SiteForm/Styled';
+import UpdateWikiSectionsMutation, {
+  UpdateWikiSectionsMutationFn,
+} from 'mutations/UpdateWikiSectionsMutation';
 
 const QUERY = gql`
   query WorkflowPageQuery($nctId: String!) {
@@ -30,18 +47,7 @@ const QUERY = gql`
       wikiPage {
         nctId
         meta
-      }
-      nctId
-    }
-  }
-`;
-
-const WORKFLOW_PAGE_QUERY = gql`
-  query WorkflowPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      wikiPage {
-        nctId
-        meta
+        content
       }
       nctId
     }
@@ -65,6 +71,7 @@ interface WorkflowPageState {
   selectedLabel: { key: string; value: string } | null;
   review: ReviewFragment | null;
   editReviewMode: boolean;
+  updatedSections: { [key: string]: string };
 }
 
 const ButtonContainer = styled.div`
@@ -88,6 +95,7 @@ class WorkflowPage extends React.Component<
     selectedLabel: null,
     review: null,
     editReviewMode: true,
+    updatedSections: {},
   };
   reviewFormRef: ReviewForm | null = null;
 
@@ -116,8 +124,19 @@ class WorkflowPage extends React.Component<
     }
   };
 
-  handleSave = () => {
+  handleSave = (updateWikiSections: UpdateWikiSectionsMutationFn) => () => {
     this.reviewFormRef && this.reviewFormRef.submitReview();
+    updateWikiSections({
+      variables: {
+        input: {
+          nctId: this.props.match.params.nctId,
+          sections: keys(this.state.updatedSections).map(key => ({
+            name: key,
+            content: this.state.updatedSections[key],
+          })),
+        },
+      },
+    }).then(() => this.setState({ updatedSections: {} }));
   };
 
   handleReviewEdit = () => {
@@ -126,6 +145,17 @@ class WorkflowPage extends React.Component<
 
   handleReviewSave = (review: ReviewFragment) => {
     this.setState({ review, editReviewMode: false });
+  };
+
+  handleSectionChange = (name: string) => (e: {
+    currentTarget: { value: string };
+  }) => {
+    this.setState({
+      updatedSections: {
+        ...this.state.updatedSections,
+        [name]: e.currentTarget.value,
+      },
+    });
   };
 
   renderReview = (hideMeta: boolean) => {
@@ -160,6 +190,30 @@ class WorkflowPage extends React.Component<
     );
   };
 
+  renderWikiSection = (section: WikiSection, sections: WikiSection[]) => {
+    let value = this.state.updatedSections[section.name];
+    if (isNil(value)) {
+      const foundSection = find(
+        propEq('name', section.name),
+        sections,
+      ) as WikiSection;
+      value = foundSection.content;
+    }
+
+    return (
+      <React.Fragment key={section.name}>
+        <h3>{section.name}</h3>
+        <FormControl
+          componentClass="textarea"
+          placeholder="Add a description"
+          rows={5}
+          value={value}
+          onChange={this.handleSectionChange(section.name)}
+        />
+      </React.Fragment>
+    );
+  };
+
   render() {
     return (
       <SiteProvider>
@@ -168,50 +222,80 @@ class WorkflowPage extends React.Component<
             <h3>
               {this.state.editReviewMode ? 'Add Review' : 'Added Review'}{' '}
             </h3>
-            <StyledPanel>{this.renderReview(!site.siteView.workflow.addRating)}</StyledPanel>
+            <StyledPanel>
+              {this.renderReview(!site.siteView.workflow.addRating)}
+            </StyledPanel>
             <h3>Crowd Labels</h3>
-        <StyledPanel>
-        <WorkflowPageQueryComponent
-          query={QUERY}
-          variables={{ nctId: this.props.match.params.nctId }}
-        >
-          {({ data, loading, error }) => (
-            <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-              {upsertMutation => (
-                <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
-                  {deleteMutation => (
-                    <SuggestedLabels
-                      nctId={this.props.match.params.nctId}
-                      searchHash={this.props.match.params.searchId || null}
-                      onSelect={this.handleSelect(
-                        (data &&
-                          data.study &&
-                          data.study.wikiPage &&
-                          JSON.parse(data.study.wikiPage.meta)) ||
-                          {},
-                        upsertMutation,
-                        deleteMutation,
-                      )}
-                    />
+
+            <WorkflowPageQueryComponent
+              query={QUERY}
+              variables={{ nctId: this.props.match.params.nctId }}
+            >
+              {({ data, loading, error }) => (
+                <>
+                  <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
+                    {upsertMutation => (
+                      <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
+                        {deleteMutation => (
+                          <StyledPanel>
+                            <SuggestedLabels
+                              nctId={this.props.match.params.nctId}
+                              searchHash={
+                                this.props.match.params.searchId || null
+                              }
+                              onSelect={this.handleSelect(
+                                (data &&
+                                  data.study &&
+                                  data.study.wikiPage &&
+                                  JSON.parse(data.study.wikiPage.meta)) ||
+                                  {},
+                                upsertMutation,
+                                deleteMutation,
+                              )}
+                            />
+                          </StyledPanel>
+                        )}
+                      </DeleteMutationComponent>
+                    )}
+                  </UpsertMutationComponent>
+                  <CrowdPage
+                    {...this.props}
+                    workflowView
+                    forceAddLabel={this.state.selectedLabel || undefined}
+                  />
+                  {pipe(
+                    drop(1),
+                    addIndex(map)((section, _, sections) =>
+                      this.renderWikiSection(
+                        section as WikiSection,
+                        sections as WikiSection[],
+                      ),
+                    ),
+                  )(
+                    extractWikiSections(
+                      (data &&
+                        data.study &&
+                        data.study.wikiPage &&
+                        data.study.wikiPage.content) ||
+                        '',
+                    ),
                   )}
-                </DeleteMutationComponent>
+                </>
               )}
-            </UpsertMutationComponent>
-          )}
-        </WorkflowPageQueryComponent>
-        <CrowdPage
-          {...this.props}
-          workflowView
-          forceAddLabel={this.state.selectedLabel || undefined}
-        />
-        </StyledPanel>
+            </WorkflowPageQueryComponent>
+
             <ButtonContainer>
-              <Button
-                disabled={!this.state.editReviewMode}
-                onClick={this.handleSave}
-              >
-                Save
-              </Button>
+              <UpdateWikiSectionsMutation>
+                {mutate => (
+                  <Button
+                    disabled={!this.state.editReviewMode}
+                    onClick={this.handleSave(mutate)}
+                    style={{ marginTop: 15 }}
+                  >
+                    Save
+                  </Button>
+                )}
+              </UpdateWikiSectionsMutation>
             </ButtonContainer>
           </div>
         )}
