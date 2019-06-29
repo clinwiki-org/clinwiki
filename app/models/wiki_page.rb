@@ -57,4 +57,46 @@ class WikiPage < ApplicationRecord
       diff_html: diff.to_s(:html_simple),
     )
   end
+
+  def update_section(name, value)
+    sects = sections.map do |section|
+      res = section
+      res[2] = value if section[0] == name
+      section
+    end
+
+    self.sections = sects
+    self
+  end
+
+  private
+
+  def sections
+    regex = /^\s*##?\s*([^#\s].*)/i
+    lines = content.split("\n", -1)
+    section_match = ""
+    section_name = ""
+    section_contents = []
+    result = []
+    lines.each do |line|
+      matches = line.match(regex)
+      if matches && matches[1] && matches[1].strip.present?
+        result.push([section_name, section_match, section_contents.join("\n")])
+        section_name = matches[1].strip
+        section_match = matches[0]
+        section_contents = []
+      else
+        section_contents.push(line)
+      end
+    end
+    result.push([section_name, section_match, section_contents.join("\n")])
+
+    result
+  end
+
+  def sections=(sects)
+    self.content = sects.map do |section|
+      [section[1], section[2]].join("\n")
+    end.join("\n")
+  end
 end
