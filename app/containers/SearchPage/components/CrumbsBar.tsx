@@ -215,27 +215,35 @@ export default class CrumbsBar extends React.Component<
             </Col>
             <Col xsHidden md={3}>
               <div className="right-align">
-                {this.props.page > 0 ? (
+                {this.props.page > 0 && !this.props.loading ? (
                   <FontAwesome
                     className="arrow-left"
                     name="arrow-left"
                     style={{ cursor: 'pointer', margin: '5px' }}
                     onClick={() => this.props.update.page(this.props.page - 1)}
                   />
-                ) : null}
+                ) : <FontAwesome
+                  className="arrow-left"
+                  name="arrow-left"
+                  style={{ margin: '5px', color: 'gray' }}
+                /> }
                 page{' '}
                 <b>
                   {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
                     : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
                 </b>
-                {this.props.page + 1 >= this.props.pagesTotal ? null : (
+                {this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
                   <FontAwesome
                     className="arrow-right"
                     name="arrow-right"
-                    style={{cursor: 'pointer', margin: '5px'}}
+                    style={{ cursor: 'pointer', margin: '5px' }}
                     onClick={() => this.props.update.page(this.props.page + 1)}
                   />
-                )}
+                ) : <FontAwesome
+                  className="arrow-right"
+                  name="arrow-right"
+                  style={{ margin: '5px', color: 'gray' }}
+                />}
                 <div>
                   {this.props.recordsTotal} results
                 </div>
