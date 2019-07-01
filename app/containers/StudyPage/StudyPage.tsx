@@ -2,9 +2,10 @@ import * as React from 'react';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { Nav, NavItem, Row, Col, Button } from 'react-bootstrap';
-import {Link, match, Route, Switch} from 'react-router-dom';
+import { Link, match, Route, Switch } from 'react-router-dom';
 import { History, Location } from 'history';
 import ReactStars from 'react-stars';
+import * as FontAwesome from 'react-fontawesome';
 import {
   last,
   split,
@@ -41,14 +42,19 @@ import TrackingPage from 'containers/TrackingPage';
 import FacilitiesPage from 'containers/FacilitiesPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
-import {starColor} from 'utils/constants';
+import StudyPageCounter from './components/StudyPageCounter';
+import { starColor } from 'utils/constants';
 interface StudyPageProps {
   history: History;
   location: Location;
   match: match<{ nctId: string }>;
   prevLink?: string | null;
   nextLink?: string | null;
+  firstLink?: string | null;
+  lastLink?: string | null;
   isWorkflow?: boolean;
+  recordsTotal?: number;
+  counterIndex?: number;
 }
 
 interface StudyPageState {
@@ -210,7 +216,7 @@ const BackButtonWrapper = styled.div`
   margin:auto;
   padding: 5px;
   padding-bottom: 10px;
-`
+`;
 class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
 class PrefetchQueryComponent extends Query<
   StudyPagePrefetchQuery,
@@ -293,14 +299,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
   renderNavButton = (name: string, link?: string | null) => {
     if (link === undefined) return null;
-
     return (
       <Button
-        style={{ marginRight: 10, marginBottom: 10 ,}}
+        style={{ marginRight: 10, marginBottom: 10 }}
         onClick={this.handleNavButtonClick(link!)}
         disabled={link === null}
-      >
-        {name}
+      >{name}
       </Button>
     );
   };
@@ -310,7 +314,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
     return (
       <Button
-        style={{margin: 'auto', width: '100%'}}
+        style={{ margin: 'auto', width: '100%' }}
         onClick={this.handleNavButtonClick(link!)}
         disabled={link === null}
       >
@@ -335,7 +339,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       </ReviewsWrapper>
     );
   };
-
 
   render() {
     return (
@@ -373,8 +376,13 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
               </SidebarContainer>
               <MainContainer md={10}>
                 <div className="container">
-                  {this.renderNavButton('❮ Previous', this.props.prevLink)}
-                  {this.renderNavButton('Next ❯', this.props.nextLink)}
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('❮❮ First', this.props.firstLink)}</div>
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('❮ Previous', this.props.prevLink)}</div>
+                  <div id="navbuttonsonstudypage"><StudyPageCounter
+                    counter = {this.props.counterIndex!}
+                    recordsTotal={this.props.recordsTotal!}/></div>
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('Next ❯', this.props.nextLink)}</div>
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('Last ❯❯', this.props.lastLink)}</div>
                 </div>
 
                 {data && data.study && <StudySummary study={data.study} />}
@@ -400,8 +408,13 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   </Switch>
                 </div>
                 <div className="container">
-                  {this.renderNavButton('❮ Previous', this.props.prevLink)}
-                  {this.renderNavButton('Next ❯', this.props.nextLink)}
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('❮❮ First', this.props.firstLink)}</div>
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('❮ Previous', this.props.prevLink)}</div>
+                  <div id="navbuttonsonstudypage"><StudyPageCounter
+                    counter = {this.props.counterIndex!}
+                    recordsTotal={this.props.recordsTotal!}/></div>
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('Next ❯', this.props.nextLink)}</div>
+                  <div id="navbuttonsonstudypage">{this.renderNavButton('Last ❯❯', this.props.lastLink)}</div>
                 </div>
               </MainContainer>
             </Row>

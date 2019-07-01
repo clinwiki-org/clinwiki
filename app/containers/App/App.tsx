@@ -20,6 +20,7 @@ import SitesPage from 'containers/SitesPage';
 import SitePage from 'containers/SitePage';
 import SitesNewPage from 'containers/SitesNewPage';
 import SitesEditPage from 'containers/SitesEditPage';
+import SearchStudyPage from '../SearchPage/SearchPage';
 
 interface AppProps {
   history: History;
@@ -37,14 +38,20 @@ class App extends React.PureComponent<AppProps> {
     return (
       <AppWrapper>
         <CurrentUser>
-          {user => <AuthHeader user={user} history={this.props.history} />}
+          {(user) => <AuthHeader user={user} history={this.props.history} />}
         </CurrentUser>
         <MainWrapper>
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/about" component={AboutPage} />
-            <Route path="/search/:searchId" component={SearchPage} />
-            <Route path="/search" component={SearchPage} />
+            <Route
+              path="/search/:searchId"
+              component={SearchPage}
+            />
+            <Route
+              path="/search"
+              component={SearchPage}
+            />
             <Route
               path="/study/:nctId/review/:reviewId/edit"
               component={StudyPage}

@@ -45,9 +45,8 @@ import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
 import { studyFields, starColor } from 'utils/constants';
 
-
-
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
+import { stringify } from 'querystring';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -223,10 +222,21 @@ const changeFilter = (add: boolean) => (
 };
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
-const addSearchTerm = (term: string) => (params: SearchParams) => ({
-  ...params,
-  q: { ...params.q, children: [...(params.q.children || []), { key: term }] },
-});
+const addSearchTerm = (term: string) => (params: SearchParams) => {
+  // have to check for empty string because if you press return two times it ends up putting it in the terms
+  if (term === '') {
+    return params;
+  }
+  // recycled code for removing repeated terms. might be a better way but I'm not sure.
+  const children = reject(
+    propEq('key', term),
+    params.q.children || [],
+  );
+  return {
+    ...params,
+    q: { ...params.q, children: [...(children || []), { key: term }] },
+  };
+};
 const removeSearchTerm = (term: string) => (params: SearchParams) => {
   const children = reject(
     propEq('key', term),
@@ -267,6 +277,11 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     return name === 'average_rating';
   };
 
+  // this is for the column widths. currently, some tags are making it way too wide
+  isStatusColumn = (name: string): boolean => {
+    return name === 'overall_status';
+  };
+
   rowProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
@@ -276,31 +291,57 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     };
   };
 
-  renderColumn = (name: string) => {
+  renderColumn = (name: string, data) => {
     // INPUT: col name
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
+    const camelCaseName = camelCase(name);
+    const magicSpacing = 10;
+    const maxWidth = 400;
+
+    const getColumnWidth = () => {
+      if (data.length < 1) {
+        return headerName.length * magicSpacing;
+      }
+      // const cellLength = Math.max(
+      //   ...rows.map(row => (`${row[accessor]}` || '').length),
+      //   headerText.length,
+      // );
+      let max = 0;
+      for (let i = 0; i < data.length; i += 1) {
+        const elem = data[i][camelCaseName];
+        if (data[i] !== undefined && elem !== null) {
+          const len = elem.toString().length;
+          if (len > max) {
+            max = len;
+          }
+        }
+      }
+      return Math.min(maxWidth, Math.max(max, headerName.length) * magicSpacing);
+    };
+    const headerName = COLUMN_NAMES[name];
     return {
-      Header: <SearchFieldName field={COLUMN_NAMES[name]} />,
-      accessor: camelCase(name),
-      Style: {
+      Header: <SearchFieldName field={headerName} />,
+      accessor: camelCaseName,
+      style: {
         overflowWrap: 'break-word',
-        overflow: 'visible',
+        overflow: 'hidden',
         whiteSpace: 'normal',
         textAlign: this.isStarColumn(name) ? 'center' : null,
       },
       Cell: !this.isStarColumn(name)
         ? null
         // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
-        : props => (<div><div id="stars"><ReactStars
+        : props => (<div><div id="divsononeline"><ReactStars
           count={5}
           color2={starColor}
           edit={false}
           value={Number(props.original.averageRating)}/></div>
-          <div id="numreviews">
+          <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
-          </div>),
+          </div >),
+      width: getColumnWidth(),
     };
   };
 
@@ -343,7 +384,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           {site => (
             <ReactTable
               className="-striped -highlight"
-              columns={map(this.renderColumn, site.siteView.search.fields)}
+              columns={map(x => this.renderColumn(x, ''), site.siteView.search.fields)}
               manual
               loading={true}
               defaultSortDesc
@@ -362,12 +403,13 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const totalPages = Math.ceil(totalRecords / pageSize);
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
+    const searchData = path(['search', 'studies'], data);
     return (
       <SiteProvider>
         {site => (
           <ReactTable
             className="-striped -highlight"
-            columns={map(this.renderColumn, site.siteView.search.fields)}
+            columns={map(x => this.renderColumn(x, searchData), site.siteView.search.fields)}
             manual
             minRows={1} // this is so it truncates the results when there are less than pageSize results on the page
             page={page}
@@ -406,7 +448,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     loading: boolean;
     error: any;
   }) => {
-    let pagesTotal = 0;
+    let pagesTotal = 1;
     let recordsTotal = 0;
     if (
       data &&
@@ -414,10 +456,10 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       data.search.recordsTotal &&
       this.props.params.pageSize
     ) {
-      pagesTotal = Math.ceil(
-        data.search.recordsTotal / this.props.params.pageSize,
-      );
       recordsTotal = data.search.recordsTotal;
+      pagesTotal = Math.ceil(
+          data.search.recordsTotal / this.props.params.pageSize,
+        );
     }
 
     const q =
@@ -441,7 +483,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           removeSearchTerm,
           this.props.onUpdateParams,
         )}
-        page={this.props.params.page}
+        page={Math.min(this.props.params.page, pagesTotal)}
         recordsTotal={recordsTotal}
         pagesTotal={pagesTotal}
         pageSize={this.props.params.pageSize}
@@ -458,7 +500,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
 
   render() {
     const { page, pageSize, sorts } = this.props.params;
-
     return (
       <SearchWrapper>
         <Helmet>

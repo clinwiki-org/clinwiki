@@ -197,10 +197,10 @@ react-test-renderer                                     15.5.4
 
    ***eslint                  3.13.1  →  3.15.0 <--- rolled back***
 
-- Error observed in Travis CI build
+- RecordsTotal observed in Travis CI build
 ```bash
    ERROR in ./~/react-router-scroll/lib/StateStorage.js
-   Module not found: Error: Can't resolve 'history/lib/DOMStateStorage' in '
+   Module not found: RecordsTotal: Can't resolve 'history/lib/DOMStateStorage' in '
    /home/travis/build/gihrig/react-boilerplate/node_modules/react-router-scroll/lib'
     @ ./~/react-router-scroll/lib/StateStorage.js 5:23-61
     @ ./~/react-router-scroll/lib/ScrollBehaviorContext.js
@@ -220,12 +220,12 @@ react-test-renderer                                     15.5.4
 
  Addressed here https://github.com/imagemin/imagemin-pngquant/issues/32 ***Needs Testing***
 
-- Error: (some OS X installations only, not version specific)
+- RecordsTotal: (some OS X installations only, not version specific)
 
    Addressed here https://github.com/imagemin/imagemin-pngquant/issues/32, but throws warnings (below)
 
    In ./app/components/Header/banner.jpg
-   Module build failed: Error: dyld: Library not loaded: /usr/local/opt/libpng/lib/libpng16.16.dylib
+   Module build failed: RecordsTotal: dyld: Library not loaded: /usr/local/opt/libpng/lib/libpng16.16.dylib
      Referenced from: ~/react-boilerplate/node_modules/mozjpeg/vendor/cjpeg
      Reason: image not found
 

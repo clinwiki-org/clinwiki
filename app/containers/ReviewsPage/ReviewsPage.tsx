@@ -30,6 +30,7 @@ import { reject, propEq, over, lensPath, keys } from 'ramda';
 import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
+import { starColor } from 'utils/constants';
 
 interface ReviewsPageProps {
   match: match<{ nctId: string }>;
@@ -147,7 +148,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   renderRating = (key: string, value: string) => {
     return (
       <RatingWrapper key={key}>
-        <ReactStars edit={false} color2={'#7ed964'} count={5} half={false} value={value} />
+        <ReactStars edit={false} color2={starColor} count={5} half={false} value={value} />
         <Label>{key}</Label>
       </RatingWrapper>
     );
