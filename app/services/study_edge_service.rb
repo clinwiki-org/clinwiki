@@ -140,7 +140,7 @@ class StudyEdgeService
     # to search_service.rb to make this work.
     return 1 if study.blank?
     search_results = @search_service.search
-    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
+    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study][:nct_id] }
     return (index + 1) + (@params[:page] * @params[:page_size]) unless index.nil?
     1
   end
