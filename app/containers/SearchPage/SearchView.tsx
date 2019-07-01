@@ -512,6 +512,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           ),
         }}
         onReset={this.props.onResetFilters}
+        loading={loading}
       />
     );
   };
