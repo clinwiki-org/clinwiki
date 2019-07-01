@@ -43,36 +43,45 @@ interface LandingPageState {
 }
 
 class LandingPage extends React.PureComponent<LandingPageProps, LandingPageState> {
-  render() {
-    return <ApolloConsumer>
-      {client => this.renderMain(client)}
-    </ApolloConsumer>;
-  }
-  onSubmit = async (e,client:ApolloClient<any>) => {
+  state: LandingPageState = {
+    searchTerm: '',
+  };
+  onSubmit = async (e, client:ApolloClient<any>) => {
     e.preventDefault();
-    const params = { q: { key: "AND", children: [ { key: this.state.searchTerm }] } };
+    let params = {};
+    if (this.state.searchTerm.replace(/\s/g, '').length) {
+      params = { q: { key: 'AND', children: [{ key: this.state.searchTerm }] } };
+    } else {
+      params = { q: { key: 'AND', children: [] } };
+    }
     const { data } = await client.query({ query: HASH_QUERY, variables: params });
     this.props.history.push(`/search/${data.searchHash}`);
-  }
+  };
   searchChanged = e => {
     this.setState({ searchTerm: e.target.value });
-  }
+  };
   renderMain = (client:ApolloClient<any>) => (<MainContainer>
     <Heading> </Heading>
     <div className="container">
       <Row className="justify-content-md-center">
         <Col md={3} />
         <Col md={6}>
-          <Form className="center" onSubmit={e => this.onSubmit(e,client)}>
+          <Form className="center" onSubmit={(e) => this.onSubmit(e, client)}>
             <FormControl
               id="query"
               onChange={this.searchChanged}
-              placeholder="Enter a Search: ex) 'Glioblastoma or Musella Foundation'" />
+              placeholder="Enter a Search: ex) 'Glioblastoma or Musella Foundation'"
+            />
           </Form>
         </Col>
       </Row>
     </div>
-  </MainContainer>)
+  </MainContainer>);
+  render() {
+    return (<ApolloConsumer>
+      {client => this.renderMain(client)}
+    </ApolloConsumer>);
+  }
 }
 
 export default LandingPage;

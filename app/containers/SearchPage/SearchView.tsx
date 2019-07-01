@@ -43,7 +43,7 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import { studyFields, starColor } from 'utils/constants';
+import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
 
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import { stringify } from 'querystring';
@@ -181,7 +181,7 @@ const COLUMN_NAMES = fromPairs(
 
 const changePage = (pageNumber: number) => (params: SearchParams) => ({
   ...params,
-  page: pageNumber,
+  page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / params.pageSize) - 1),
 });
 const changePageSize = (pageSize: number) => (params: SearchParams) => ({
   ...params,
@@ -217,14 +217,17 @@ const changeFilter = (add: boolean) => (
       }
       return res;
     },
-    params,
+    {
+      ...params,
+      page: 0,
+    },
   );
 };
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addSearchTerm = (term: string) => (params: SearchParams) => {
   // have to check for empty string because if you press return two times it ends up putting it in the terms
-  if (term === '') {
+  if (!term.replace(/\s/g, '').length) {
     return params;
   }
   // recycled code for removing repeated terms. might be a better way but I'm not sure.
@@ -235,6 +238,7 @@ const addSearchTerm = (term: string) => (params: SearchParams) => {
   return {
     ...params,
     q: { ...params.q, children: [...(children || []), { key: term }] },
+    page: 0,
   };
 };
 const removeSearchTerm = (term: string) => (params: SearchParams) => {
@@ -242,7 +246,11 @@ const removeSearchTerm = (term: string) => (params: SearchParams) => {
     propEq('key', term),
     params.q.children || [],
   ) as SearchQuery[];
-  return { ...params, q: { ...params.q, children } };
+  return {
+    ...params,
+    q: { ...params.q, children },
+    page: 0,
+  };
 };
 
 class QueryComponent extends Query<
@@ -297,29 +305,37 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     // and value determined by studyfragment of that column.
     // also renders stars
     const camelCaseName = camelCase(name);
-    const magicSpacing = 10;
+    const lowerCaseSpacing = 8;
+    const upperCaseSpacing = 10;
     const maxWidth = 400;
+    const totalPadding = 17;
 
     const getColumnWidth = () => {
       if (data.length < 1) {
-        return headerName.length * magicSpacing;
+        return calcWidth(headerName.split('')) + totalPadding;
       }
-      // const cellLength = Math.max(
-      //   ...rows.map(row => (`${row[accessor]}` || '').length),
-      //   headerText.length,
-      // );
-      let max = 0;
+      let max = headerName;
       for (let i = 0; i < data.length; i += 1) {
         const elem = data[i][camelCaseName];
         if (data[i] !== undefined && elem !== null) {
-          const len = elem.toString().length;
-          if (len > max) {
-            max = len;
+          const str = elem.toString();
+          if (str.length > max.length) {
+            max = str;
           }
         }
       }
-      return Math.min(maxWidth, Math.max(max, headerName.length) * magicSpacing);
+      const maxArray = max.split('');
+      max = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
+      return Math.min(maxWidth, max);
     };
+
+    const calcWidth = array => {
+      return array.reduce(((acc, letter) =>
+                        letter === letter.toUpperCase() && letter !== ' ' ?
+                          acc + upperCaseSpacing : acc + lowerCaseSpacing),
+                          0);
+    };
+
     const headerName = COLUMN_NAMES[name];
     return {
       Header: <SearchFieldName field={headerName} />,
@@ -400,7 +416,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       return null;
     }
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
-    const totalPages = Math.ceil(totalRecords / pageSize);
+    const totalPages = Math.min(Math.ceil(totalRecords / this.props.params.pageSize),
+                                Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     const searchData = path(['search', 'studies'], data);
@@ -411,7 +428,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
             className="-striped -highlight"
             columns={map(x => this.renderColumn(x, searchData), site.siteView.search.fields)}
             manual
-            minRows={1} // this is so it truncates the results when there are less than pageSize results on the page
+            minRows={searchData![0] !== undefined ? 1 : 3}
+            // this is so it truncates the results when there are less than pageSize results on the page
             page={page}
             pageSize={pageSize}
             defaultSorted={camelizedSorts}
@@ -427,12 +445,13 @@ class SearchView extends React.PureComponent<SearchViewProps> {
               changeSorted,
               this.props.onUpdateParams,
             )}
-            data={path(['search', 'studies'], data)}
+            data={searchData}
             pages={totalPages}
             loading={loading}
             defaultPageSize={pageSize}
             getTdProps={this.rowProps}
             defaultSortDesc
+            noDataText={'No studies found'}
           />
         )}
       </SiteProvider>
@@ -457,9 +476,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       this.props.params.pageSize
     ) {
       recordsTotal = data.search.recordsTotal;
-      pagesTotal = Math.ceil(
-          data.search.recordsTotal / this.props.params.pageSize,
-        );
+      pagesTotal = Math.min(Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+                            Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
     }
 
     const q =
@@ -494,6 +512,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           ),
         }}
         onReset={this.props.onResetFilters}
+        loading={loading}
       />
     );
   };

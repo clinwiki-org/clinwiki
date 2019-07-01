@@ -44,10 +44,12 @@ import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
 import StudyPageCounter from './components/StudyPageCounter';
 import { starColor } from 'utils/constants';
+import {PulseLoader, ScaleLoader} from 'react-spinners';
+
 interface StudyPageProps {
   history: History;
   location: Location;
-  match: match<{ nctId: string }>;
+  match: match<{ nctId: string, searchId: string }>;
   prevLink?: string | null;
   nextLink?: string | null;
   firstLink?: string | null;
@@ -324,7 +326,19 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   renderReviewsSummary = (data: StudyPageQuery | undefined) => {
-    if (!data || !data.study) return null;
+    if (!data || !data.study) {
+      return <ReviewsWrapper>
+        <div>
+          <ReactStars
+            count={5}
+            color2={starColor}
+            edit={false}
+            value={0}
+          />
+          <div>{'0 Reviews'}</div>
+        </div>
+      </ReviewsWrapper>;
+    }
     return (
       <ReviewsWrapper>
         <div>
@@ -353,7 +367,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
               <SidebarContainer md={2}>
                 <BackButtonWrapper>
-                {this.renderBackButton('⤺︎ Back', '/search')}
+                {this.renderBackButton('⤺︎ Back', `/search/${this.props.match.params.searchId}`)}
                 </BackButtonWrapper>
 
                 {this.renderReviewsSummary(data)}

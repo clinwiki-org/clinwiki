@@ -96,6 +96,8 @@ const CrumbsBarStyleWrappper = styled.div`
 
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
+import {MAX_WINDOW_SIZE} from '../../../utils/constants';
+import {PulseLoader} from 'react-spinners';
 
 //
 interface CrumbsBarProps {
@@ -109,6 +111,7 @@ interface CrumbsBarProps {
   pageSize: number;
   update: { page: (n: number) => void };
   onReset: () => void;
+  loading: boolean;
 }
 interface CrumbsBarState {
   searchTerm: string;
@@ -232,18 +235,22 @@ export default class CrumbsBar extends React.Component<
                 ) : null}
                 page{' '}
                 <b>
-                  {Math.min(this.props.page + 1, this.props.pagesTotal)}/{this.props.pagesTotal}{' '}
+                  {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
+                    : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
                 </b>
-                {this.props.page + 1 < this.props.pagesTotal ? (
+                {this.props.page + 1 >= this.props.pagesTotal ? null : (
                   <FontAwesome
                     className="arrow-right"
                     name="arrow-right"
-                    style={{ cursor: 'pointer', margin: '5px' }}
+                    style={{cursor: 'pointer', margin: '5px'}}
                     onClick={() => this.props.update.page(this.props.page + 1)}
                   />
-                ) : null}
+                )}
                 <div>
                   {this.props.recordsTotal} results
+                </div>
+                <div>
+                  {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
                 </div>
               </div>
             </Col>

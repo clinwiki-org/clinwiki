@@ -9,6 +9,8 @@ import {
 } from 'types/SearchStudyPageQuery';
 import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
+import { PulseLoader } from 'react-spinners';
+import {MAX_WINDOW_SIZE} from '../../utils/constants';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
@@ -60,8 +62,9 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let firstLink: string | null | undefined = null;
           let lastLink: string | null | undefined = null;
           let isWorkflow: boolean = false;
-          let recordsTotal: number | null | undefined = 1;
-          let counterIndex: number | null | undefined = 1;
+          let recordsTotal: number | JSX.Element | null | undefined =
+            <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>;
+          let counterIndex: number | JSX.Element | null | undefined = null;
           let pageSize: number | undefined = 25;
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
@@ -82,25 +85,32 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             const hashFirst = path(['search', 'studyEdge', 'hashFirst'], data);
             const hashLast = path(['search', 'studyEdge', 'hashLast'], data);
 
-            // if it's the last on the page
-            if (pageSize && counterIndex % pageSize === 0) {
-              nextLink = nextId && `/search/${hashNext}/study/${nextId}`;
-            } else {
-              nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
+            // clamp it to the max window size
+            if (counterIndex < MAX_WINDOW_SIZE && counterIndex < recordsTotal) {
+              // if it's the last on the page
+              if (pageSize && counterIndex % pageSize === 0) {
+                nextLink = nextId && `/search/${hashNext}/study/${nextId}`;
+              } else {
+                nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
+              }
             }
 
-            // if it's the first on the page
-            if (pageSize && counterIndex % pageSize === 1) {
-              prevLink = prevId && `/search/${hashPrev}/study/${prevId}`;
-            } else {
-              prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
+            // if the counter is 1, there shouldn't be a previous button
+            if (counterIndex > 1) {
+              // if it's the first on the page
+              if (pageSize && counterIndex % pageSize === 1) {
+                prevLink = prevId && `/search/${hashPrev}/study/${prevId}`;
+              } else {
+                prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
+              }
             }
 
             // just so that there isn't a first button if there isn't a prev button
-            if (prevId != null) {
+            // likewise for the last button
+            if (prevLink != null) {
               firstLink = firstId && `/search/${hashFirst}/study/${firstId}`;
             }
-            if (nextId != null) {
+            if (nextLink != null) {
               lastLink = lastId && `/search/${hashLast}/study/${lastId}`;
             }
           }
