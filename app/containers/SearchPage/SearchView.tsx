@@ -397,15 +397,22 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     if (loading) {
       return (
         <SiteProvider>
-          {site => (
-            <ReactTable
-              className="-striped -highlight"
-              columns={map(x => this.renderColumn(x, ''), site.siteView.search.fields)}
-              manual
-              loading={true}
-              defaultSortDesc
-            />
-          )}
+          {site => {
+            const columns = map(x => this.renderColumn(x, ''), site.siteView.search.fields);
+            const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
+            const leftover = tableWidth - totalWidth;
+            const additionalWidth = leftover / columns.length;
+            columns.map(x => x.width += additionalWidth, columns);
+            return (
+              <ReactTable
+                className="-striped -highlight"
+                columns={columns}
+                manual
+                loading={true}
+                defaultSortDesc
+              />
+            );
+          }}
         </SiteProvider>
       );
     }
@@ -421,39 +428,47 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     const searchData = path(['search', 'studies'], data);
+    const tableWidth = 1140;
     return (
       <SiteProvider>
-        {site => (
-          <ReactTable
-            className="-striped -highlight"
-            columns={map(x => this.renderColumn(x, searchData), site.siteView.search.fields)}
-            manual
-            minRows={searchData![0] !== undefined ? 1 : 3}
-            // this is so it truncates the results when there are less than pageSize results on the page
-            page={page}
-            pageSize={pageSize}
-            defaultSorted={camelizedSorts}
-            onPageChange={pipe(
-              changePage,
-              this.props.onUpdateParams,
-            )}
-            onPageSizeChange={pipe(
-              changePageSize,
-              this.props.onUpdateParams,
-            )}
-            onSortedChange={pipe(
-              changeSorted,
-              this.props.onUpdateParams,
-            )}
-            data={searchData}
-            pages={totalPages}
-            loading={loading}
-            defaultPageSize={pageSize}
-            getTdProps={this.rowProps}
-            defaultSortDesc
-            noDataText={'No studies found'}
-          />
-        )}
+        {site => {
+          const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
+          const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
+          const leftover = tableWidth - totalWidth;
+          const additionalWidth = leftover / columns.length;
+          columns.map(x => x.width += additionalWidth, columns);
+          return (
+            <ReactTable
+              className="-striped -highlight"
+              columns={columns}
+              manual
+              minRows={searchData![0] !== undefined ? 1 : 3}
+              // this is so it truncates the results when there are less than pageSize results on the page
+              page={page}
+              pageSize={pageSize}
+              defaultSorted={camelizedSorts}
+              onPageChange={pipe(
+                changePage,
+                this.props.onUpdateParams,
+              )}
+              onPageSizeChange={pipe(
+                changePageSize,
+                this.props.onUpdateParams,
+              )}
+              onSortedChange={pipe(
+                changeSorted,
+                this.props.onUpdateParams,
+              )}
+              data={searchData}
+              pages={totalPages}
+              loading={loading}
+              defaultPageSize={pageSize}
+              getTdProps={this.rowProps}
+              defaultSortDesc
+              noDataText={'No studies found'}
+            />
+          );
+        }}
       </SiteProvider>
     );
   };
