@@ -1,0 +1,2 @@
+class WordFrequency < ApplicationRecord
+end
