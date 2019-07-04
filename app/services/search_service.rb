@@ -3,12 +3,12 @@ ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
 MAX_WINDOW_SIZE = 10_000
 
-require 'autosuggest'
-
-def hello(studies)
-  top_queries = studies
-  puts Autosuggest.new(top_queries)
-end
+# require 'autosuggest'
+#
+# def hello(studies)
+#   top_queries = studies
+#   puts Autosuggest.new(top_queries)
+# end
 
 # aggregations
 DEFAULT_AGG_OPTIONS = {
@@ -123,7 +123,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
     unless search_after.nil?
       @params[:page] = temp
     end
-    hello(search_result)
+    # hello(search_result)
     {
       recordsTotal: search_result.total_entries,
       studies: search_result.results,
