@@ -19,8 +19,8 @@ studies.each do |study|
 
   title_array.each do |word|
     # delete any characters that are not letters or hyphens or apostrophes.
-    # if you want to make it not delete numbers, change it to ^a-zA-Z-'
-    sanitized = word.delete("^a-zA-Z-'").downcase
+    # if you want to make it not delete numbers, change it to "^a-zA-Z0-9-\'"
+    sanitized = word.delete("^a-zA-Z-\'").downcase
     # this regex disallows 1-letter words, which is unintended,
     # but 1-letter words are relatively useless for the autosuggest anyway
     # change this if necessary
