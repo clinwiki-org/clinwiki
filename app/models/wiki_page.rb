@@ -9,28 +9,27 @@ class WikiPage < ApplicationRecord
   before_save :create_edit
 
   def default_content
-    <<-CONTENT
-  ## Lay Summary
-  #{study.brief_summary.description.gsub(/^\s+/, '')}
+    <<~CONTENT
+      ## Lay Summary
+      #{study.brief_summary.description.gsub(/^\s+/, '')}
 
-  ## Pros
-  * Add a pro here
+      ## Pros
+      * Add a pro here
 
-  ## Cons
-  * Add a con here
+      ## Cons
+      * Add a con here
 
-  ## Ideal Patient
-  * Add descriptions here
+      ## Ideal Patient
+      * Add descriptions here
 
-  ## Contraindicated Patient
-  * Add descriptions here
+      ## Contraindicated Patient
+      * Add descriptions here
 
-  ## References
-  * Add links here
+      ## References
+      * Add links here
 
-  ## Requests
-  * Post open questions about study here (temporary)
-
+      ## Requests
+      * Post open questions about study here (temporary)
     CONTENT
   end
 
