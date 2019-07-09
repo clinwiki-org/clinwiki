@@ -38,7 +38,7 @@ export const extractWikiSections = (text: string): WikiSection[] => {
   lines.forEach(line => {
     const matches = regex.exec(line);
     if (matches && matches[1] && matches[1].trim()) {
-      currentSection.content = sectionContents.join('\n');
+      currentSection.content = sectionContents.join('\n').trim();
       result.push(currentSection);
       currentSection = {
         name: matches[1].trim(),
@@ -50,7 +50,7 @@ export const extractWikiSections = (text: string): WikiSection[] => {
       sectionContents.push(line);
     }
   });
-  currentSection.content = sectionContents.join('\n');
+  currentSection.content = sectionContents.join('\n').trim();
   result.push(currentSection);
 
   return result;

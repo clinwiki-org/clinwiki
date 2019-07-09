@@ -14,6 +14,7 @@ interface SuggestedLabelsProps {
   nctId: string;
   searchHash: string | null;
   onSelect: (key: string, value: string, checked: boolean) => void;
+  disabled?: boolean;
 }
 
 const QUERY = gql`
@@ -77,6 +78,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
           <Checkbox
             key={value}
             checked={checked}
+            disabled={this.props.disabled}
             onChange={this.handleSelect(key, value)}
           >
             {value}
