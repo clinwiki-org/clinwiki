@@ -9,7 +9,6 @@ def hello(studies)
   top_queries = Hash[WordFrequency.pluck(:name, :frequency)]
   puts top_queries
   puts Autosuggest.new(top_queries).suggestions[0]
-  puts nil + 1
 end
 
 # aggregations
@@ -125,7 +124,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
     unless search_after.nil?
       @params[:page] = temp
     end
-    hello(search_result.results)
+    # hello(search_result.results)
     {
       recordsTotal: search_result.total_entries,
       studies: search_result.results,
