@@ -38,7 +38,7 @@ module FrontMatterHelper
   def meta
     return {} if parsed.nil?
 
-    front_matter.reject { |_, val| val.is_a?(Array) || val.is_a?(Hash) }
+    front_matter
   end
 
   # Where wiki search data lives for future extensibility
