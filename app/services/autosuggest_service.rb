@@ -9,7 +9,17 @@ class AutosuggestService
   end
 
   def suggestions
-    @autosuggest.suggestions
-    OpenStruct.new(`something here somehow returning [SuggestionType]?`)
+    OpenStruct.new(words: words)
+  end
+
+  def words
+    result = []
+    @autosuggest.suggestions.each do |suggestion|
+      unless suggestion.nil?
+        result.push [suggestion[:query], suggestion[:score]]
+      end
+    end
+    puts result
+    result
   end
 end

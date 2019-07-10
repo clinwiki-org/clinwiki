@@ -8,7 +8,7 @@ require 'autosuggest'
 def hello(studies)
   top_queries = Hash[WordFrequency.pluck(:name, :frequency)]
   puts top_queries
-  puts Autosuggest.new(top_queries).suggestions[0].class
+  puts Autosuggest.new(top_queries).suggestions[0]
   puts nil + 1
 end
 
