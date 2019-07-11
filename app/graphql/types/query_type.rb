@@ -118,6 +118,8 @@ module Types
 
     def autosuggestions
       autosuggest = AutosuggestService.new
+      test = WordFrequency.all
+      puts autosuggest.suggestions
       autosuggest.suggestions
     end
 

@@ -16,10 +16,9 @@ class AutosuggestService
     result = []
     @autosuggest.suggestions.each do |suggestion|
       unless suggestion.nil?
-        result.push [suggestion[:query], suggestion[:score]]
+        result.push Hash[suggestion[:query], suggestion[:score]]
       end
     end
-    puts result
     result
   end
 end
