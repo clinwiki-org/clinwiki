@@ -42,27 +42,27 @@ module Types
     field :search_params, SearchParamsType, "Search params from hash", null: true do
       argument :hash, type: String, required: false
     end
-
-    field :freq_words, [FreqwordType], 'All words', null:false
-
-    # field :user, UserType, '1 User', null:true do
-    #   argument :first_name, type: String, required:true
+    field :autosuggestions, [SuggestionType], "List of all words with frequencies", null: false
+    # field :freq_words, [FreqwordType], 'All words', null:false
+    #
+    # # field :user, UserType, '1 User', null:true do
+    # #   argument :first_name, type: String, required:true
+    # # end
+    #
+    # # def user(first_name:)
+    # #   User.find_by(first_name: first_name)
+    # # end
+    #
+    # # field :users, [UserType], 'All Users', null:false
+    #
+    # def users
+    #   User.all
     # end
-
-    # def user(first_name:)
-    #   User.find_by(first_name: first_name)
+    #
+    # def freq_words
+    #   all = WordFrequency.all
+    #   all.sort_by{|x| x[:frequency] }.reverse
     # end
-
-    # field :users, [UserType], 'All Users', null:false
-
-    def users
-      User.all
-    end
-
-    def freq_words
-      all = WordFrequency.all
-      all.sort_by{|x| x[:frequency] }.reverse
-    end
 
     def search(search_hash: nil, params: nil)
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
@@ -74,23 +74,23 @@ module Types
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg]),
-      )
+          aggs: search_service.agg_buckets_for_field(field: params[:agg]),
+          )
     end
 
     def crowd_agg_buckets(search_hash: nil, params: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
-      )
+          aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
+          )
     end
 
     def health
       ActiveRecord::Base.establish_connection
       ActiveRecord::Base.connection
       {
-        healthy: ActiveRecord::Base.connected?,
+          healthy: ActiveRecord::Base.connected?,
       }
     end
 
@@ -133,6 +133,11 @@ module Types
       return nil if link.nil?
 
       JSON.parse(link.long).deep_symbolize_keys
+    end
+
+    def autosuggestions
+      autosuggest = AutosuggestService.new
+      autosuggest.suggestions
     end
 
     private
