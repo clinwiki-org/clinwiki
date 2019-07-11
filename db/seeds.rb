@@ -18,7 +18,7 @@ studies.each do |study|
     # this regex disallows 1-letter words, which is unintended,
     # but 1-letter words are relatively useless for the autosuggest anyway
     # change this if necessary
-    if sanitized =~ /^[a-zA-Z]+(?:['-]*[a-zA-Z]+)*$/
+    if sanitized =~ /^[a-zA-Z]{4,}(?:['-]*[a-zA-Z]+)*$/
       hash[sanitized] += 1
     end
   end

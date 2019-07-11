@@ -42,8 +42,27 @@ module Types
     field :search_params, SearchParamsType, "Search params from hash", null: true do
       argument :hash, type: String, required: false
     end
-
     field :autosuggestions, [SuggestionType], "List of all words with frequencies", null: false
+    # field :freq_words, [FreqwordType], 'All words', null:false
+    #
+    # # field :user, UserType, '1 User', null:true do
+    # #   argument :first_name, type: String, required:true
+    # # end
+    #
+    # # def user(first_name:)
+    # #   User.find_by(first_name: first_name)
+    # # end
+    #
+    # # field :users, [UserType], 'All Users', null:false
+    #
+    # def users
+    #   User.all
+    # end
+    #
+    # def freq_words
+    #   all = WordFrequency.all
+    #   all.sort_by{|x| x[:frequency] }.reverse
+    # end
 
     def search(search_hash: nil, params: nil)
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
@@ -118,8 +137,6 @@ module Types
 
     def autosuggestions
       autosuggest = AutosuggestService.new
-      test = WordFrequency.all
-      puts autosuggest.suggestions
       autosuggest.suggestions
     end
 
