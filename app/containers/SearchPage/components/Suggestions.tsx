@@ -4,22 +4,16 @@ interface SuggestionsProps {
 
 }
 
+export default class Suggestions extends React.PureComponent<SuggestionsProps> {
 
-export default class Suggestions extends React.PureComponent<SuggestionsProps>{
+  render() {
+    const options = ['aids', 'alzheimers', 'cancer', 'diabetes', 'heart', 'lung', 'pancreas', 'respiratory', 'stroke'];
+    // const options = loadFile()
+    return (
+      <datalist id="medical">
+        {options.map((option) => <option key={options.indexOf(option)}> {option} </option>)}
+      </datalist>
 
-
-        render() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               	
-		let options = ['aids','alzheimers', 'cancer', 'diabetes','heart', 'lung', 'pancreas', 'respiratory', 'stroke'];
-		//const options = loadFile()
-		return (
-		<datalist id='medical'>
-            {options.map( (option) => {
-            	return <option key={options.indexOf(option)}> {option} </option>;
-            }
-            	)}
-          </datalist>
-
-			);
-		}
+    );
+  }
 }
-                                                                                                                                                                                                      

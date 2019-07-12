@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
 
-import Suggestions from './Suggestions'
+import Suggestions from './Suggestions';
 const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
     padding: 10px 30px;
@@ -96,8 +96,8 @@ const CrumbsBarStyleWrappper = styled.div`
 
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
-import {MAX_WINDOW_SIZE} from '../../../utils/constants';
-import {PulseLoader} from 'react-spinners';
+import { MAX_WINDOW_SIZE } from '../../../utils/constants';
+import { PulseLoader } from 'react-spinners';
 
 //
 interface CrumbsBarProps {
@@ -195,7 +195,7 @@ export default class CrumbsBar extends React.Component<
     this.props.removeSearchTerm('', true);
   };
   onSubmit = e => {
-    console.log()
+    console.log();
     e.preventDefault();
     this.props.addSearchTerm(this.state.searchTerm);
     this.setState({ searchTerm: '' });
@@ -210,12 +210,12 @@ export default class CrumbsBar extends React.Component<
               <Form inline className="searchInput" onSubmit={this.onSubmit}>
                 <FormGroup>
                   <b>Search Within: </b>
-                  <FormControl 
-                              autoComplete='off' 
-                              onChange={this.localSearchChange} 
-                              type='text'
-                              list='medical'
-                              />
+                  <FormControl
+                    autoComplete="off"
+                    onChange={this.localSearchChange}
+                    type="text"
+                    list="medical"
+                  />
                   <Suggestions/>
                 </FormGroup>
                 <Button type="submit">
