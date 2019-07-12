@@ -33,7 +33,7 @@ import { ReviewFormStudyFragment } from 'types/ReviewFormStudyFragment';
 import { trimPath } from 'utils/helpers';
 import { dataIdFromObject } from 'configureApollo';
 import { ReviewFragment } from 'types/ReviewFragment';
-import { starColor } from  'utils/constants';
+import { starColor } from 'utils/constants';
 interface ReviewFormProps {
   nctId: string;
   hideSaveButton?: boolean;

@@ -8,11 +8,19 @@ import AggField from './AggField';
 import { capitalize } from 'utils/helpers';
 import { aggsOrdered, studyFields } from 'utils/constants';
 import { FilterKind } from 'types/globalTypes';
+import { Checkbox } from 'react-bootstrap';
+import styled from 'styled-components';
 
 interface SearchFormProps {
   view: SiteViewFragment;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
+
+interface SearchFormState {
+  showAllAggs: boolean;
+  showAllCrowdAggs: boolean;
+}
+
 const SEARCH_FIELDS = studyFields.map(option => ({
   id: option,
   label: option
@@ -29,7 +37,26 @@ const AGGS_OPTIONS = aggsOrdered.map(option => ({
     .join(' '),
 }));
 
-class SearchForm extends React.PureComponent<SearchFormProps> {
+const AggsHeaderContainer = styled.div`
+  display: flex;
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  margin: 25px 0 10px 0;
+
+  h3 {
+    margin: 0;
+  }
+`;
+
+const StyledCheckbox = styled(Checkbox)`
+  display: flex;
+  align-items: center;
+`;
+
+class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
+  state: SearchFormState = { showAllAggs: false, showAllCrowdAggs: false };
+
   getCrowdFields = () => {
     return this.props.view.search.crowdAggs.fields.map(field => ({
       id: field.name,
@@ -40,18 +67,31 @@ class SearchForm extends React.PureComponent<SearchFormProps> {
     }));
   };
 
+  handleShowAllToggle = (kind: 'aggs' | 'crowdAggs') => () => {
+    if (kind == 'aggs') {
+      this.setState({ showAllAggs: !this.state.showAllAggs });
+    } else {
+      this.setState({ showAllCrowdAggs: !this.state.showAllCrowdAggs });
+    }
+  };
+
   handleFieldsOrderChange = () => {};
 
   render() {
     const view = this.props.view;
+
     const fields = displayFields(
-      FilterKind.BLACKLIST,
-      [],
+      this.state.showAllAggs
+        ? FilterKind.BLACKLIST
+        : view.search.aggs.selected.kind,
+      this.state.showAllAggs ? [] : view.search.aggs.selected.values,
       view.search.aggs.fields,
     );
     const crowdFields = displayFields(
-      FilterKind.BLACKLIST,
-      [],
+      this.state.showAllCrowdAggs
+        ? FilterKind.BLACKLIST
+        : view.search.crowdAggs.selected.kind,
+      this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
       view.search.crowdAggs.fields,
     );
 
@@ -68,7 +108,15 @@ class SearchForm extends React.PureComponent<SearchFormProps> {
         />
         <Row>
           <Col md={6}>
-            <h3>Aggs visibility</h3>
+            <AggsHeaderContainer>
+              <h3>Aggs visibility</h3>
+              <StyledCheckbox
+                checked={this.state.showAllAggs}
+                onChange={this.handleShowAllToggle('aggs')}
+              >
+                Show all
+              </StyledCheckbox>
+            </AggsHeaderContainer>
             <StyledLabel>Filter</StyledLabel>
             <StyledFormControl
               name="set:search.aggs.selected.kind"
@@ -97,7 +145,16 @@ class SearchForm extends React.PureComponent<SearchFormProps> {
             ))}
           </Col>
           <Col md={6}>
-            <h3>Crowd aggs visibility</h3>
+            <AggsHeaderContainer>
+              <h3>Crowd aggs visibility</h3>
+              <StyledCheckbox
+                checked={this.state.showAllCrowdAggs}
+                onChange={this.handleShowAllToggle('crowdAggs')}
+              >
+                Show all
+              </StyledCheckbox>
+            </AggsHeaderContainer>
+
             <StyledLabel>Filter</StyledLabel>
             <StyledFormControl
               name="set:search.crowdAggs.selected.kind"

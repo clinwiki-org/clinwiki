@@ -17,7 +17,7 @@ import {
   TagsPageDeleteWikiTagMutationVariables,
 } from 'types/TagsPageDeleteWikiTagMutation';
 import WikiPage from 'containers/WikiPage';
-import { contains, reject, equals } from 'ramda';
+import { contains, reject, equals, lensPath } from 'ramda';
 import Edits from 'components/Edits';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
@@ -131,7 +131,22 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
     newTag: '',
   };
 
-  handleAddTag = (tags: string[], addTag: AddTagMutationFn) => () => {
+  getTagsFromMeta = (meta: string) => {
+    const tagsString = JSON.parse(meta).tags;
+    return tagsString ? tagsString.split('|') : [];
+  };
+
+  updateMetaTags = (
+    updater: (tags: string[]) => string[],
+    meta: string,
+  ): string => {
+    const tags = this.getTagsFromMeta(meta);
+    const parsedMeta = JSON.parse(meta);
+    parsedMeta.tags = updater(tags).join('|');
+    return JSON.stringify(parsedMeta);
+  };
+
+  handleAddTag = (meta: string, addTag: AddTagMutationFn) => () => {
     addTag({
       optimisticResponse: {
         upsertWikiTag: {
@@ -139,9 +154,13 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
           wikiPage: {
             __typename: 'WikiPage',
             nctId: this.props.match.params.nctId,
-            tags: contains(this.state.newTag, tags)
-              ? tags
-              : [...tags, this.state.newTag],
+            meta: this.updateMetaTags(
+              tags =>
+                contains(this.state.newTag, tags)
+                  ? tags
+                  : [...tags, this.state.newTag],
+              meta,
+            ),
             edits: [],
           },
           errors: null,
@@ -156,7 +175,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   };
 
   handleDeleteTag = (
-    tags: string[],
+    meta: string,
     deleteTag: DeleteTagMutationFn,
     value: string,
   ) => () => {
@@ -168,7 +187,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
           wikiPage: {
             __typename: 'WikiPage',
             nctId: this.props.match.params.nctId,
-            tags: reject(equals(value), tags),
+            meta: this.updateMetaTags(reject(equals(value)), meta),
             edits: [],
           },
           errors: null,
@@ -181,7 +200,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
     this.setState({ newTag: e.currentTarget.value });
   };
 
-  renderTag = (tags: string[], value: string, user: UserFragment | null) => {
+  renderTag = (meta: string, value: string, user: UserFragment | null) => {
     return (
       <tr key={value}>
         <td style={{ display: 'flex' }}>
@@ -192,7 +211,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                 <DeleteWrapper>
                   <FontAwesome
                     name="remove"
-                    onClick={this.handleDeleteTag(tags, deleteTag, value)}
+                    onClick={this.handleDeleteTag(meta, deleteTag, value)}
                   />
                 </DeleteWrapper>
               )}
@@ -222,7 +241,8 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
 
           this.props.onLoaded && this.props.onLoaded();
 
-          const tags = data.study.wikiPage.tags;
+          const meta = data.study.wikiPage.meta;
+          const tags = this.getTagsFromMeta(meta);
           return (
             <CurrentUser>
               {user => (
@@ -230,7 +250,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                   <Col md={6}>
                     <Table striped bordered condensed>
                       <tbody>
-                        {tags.map(tag => this.renderTag(tags, tag, user))}
+                        {tags.map(tag => this.renderTag(meta, tag, user))}
                       </tbody>
                     </Table>
                   </Col>
@@ -245,7 +265,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                       <AddTagMutationComponent mutation={ADD_TAG_MUTATION}>
                         {addTag => (
                           <Button
-                            onClick={this.handleAddTag(tags, addTag)}
+                            onClick={this.handleAddTag(meta, addTag)}
                             style={{ marginLeft: 10 }}
                           >
                             Add Tag

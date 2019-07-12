@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, Panel } from 'react-bootstrap';
+import { Button, Panel, FormControl } from 'react-bootstrap';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { match } from 'react-router';
 import ReviewForm from 'containers/ReviewForm';
@@ -23,6 +23,29 @@ import {
 } from 'types/WorkflowPageQuery';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import SiteProvider from 'containers/SiteProvider';
+import { extractWikiSections, WikiSection } from 'utils/helpers';
+import {
+  drop,
+  addIndex,
+  map,
+  pipe,
+  isNil,
+  find,
+  propEq,
+  lensPath,
+  set,
+  keys,
+  reject,
+  filter,
+  equals,
+  isEmpty,
+} from 'ramda';
+import { StyledFormControl } from 'components/SiteForm/Styled';
+import UpdateWikiSectionsMutation, {
+  UpdateWikiSectionsMutationFn,
+} from 'mutations/UpdateWikiSectionsMutation';
+import CurrentUser from 'containers/CurrentUser';
+import WikiSections from './WikiSections';
 
 const QUERY = gql`
   query WorkflowPageQuery($nctId: String!) {
@@ -30,18 +53,7 @@ const QUERY = gql`
       wikiPage {
         nctId
         meta
-      }
-      nctId
-    }
-  }
-`;
-
-const WORKFLOW_PAGE_QUERY = gql`
-  query WorkflowPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      wikiPage {
-        nctId
-        meta
+        content
       }
       nctId
     }
@@ -65,6 +77,7 @@ interface WorkflowPageState {
   selectedLabel: { key: string; value: string } | null;
   review: ReviewFragment | null;
   editReviewMode: boolean;
+  updatedSections: { [key: string]: string };
 }
 
 const ButtonContainer = styled.div`
@@ -88,6 +101,7 @@ class WorkflowPage extends React.Component<
     selectedLabel: null,
     review: null,
     editReviewMode: true,
+    updatedSections: {},
   };
   reviewFormRef: ReviewForm | null = null;
 
@@ -116,7 +130,7 @@ class WorkflowPage extends React.Component<
     }
   };
 
-  handleSave = () => {
+  handleReviewSave = () => {
     this.reviewFormRef && this.reviewFormRef.submitReview();
   };
 
@@ -124,7 +138,7 @@ class WorkflowPage extends React.Component<
     this.setState({ editReviewMode: true });
   };
 
-  handleReviewSave = (review: ReviewFragment) => {
+  handleReviewAfterSave = (review: ReviewFragment) => {
     this.setState({ review, editReviewMode: false });
   };
 
@@ -139,7 +153,7 @@ class WorkflowPage extends React.Component<
           hideSaveButton
           hideMeta={hideMeta}
           review={this.state.review || undefined}
-          afterSave={this.handleReviewSave}
+          afterSave={this.handleReviewAfterSave}
         />
       );
     }
@@ -162,60 +176,107 @@ class WorkflowPage extends React.Component<
 
   render() {
     return (
-      <SiteProvider>
-        {site => (
-          <div>
-            <h3>
-              {this.state.editReviewMode ? 'Add Review' : 'Added Review'}{' '}
-            </h3>
-            <StyledPanel>{this.renderReview(!site.siteView.workflow.addRating)}</StyledPanel>
-            <h3>Crowd Labels</h3>
-        <StyledPanel>
-        <WorkflowPageQueryComponent
-          query={QUERY}
-          variables={{ nctId: this.props.match.params.nctId }}
-        >
-          {({ data, loading, error }) => (
-            <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-              {upsertMutation => (
-                <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
-                  {deleteMutation => (
-                    <SuggestedLabels
-                      nctId={this.props.match.params.nctId}
-                      searchHash={this.props.match.params.searchId || null}
-                      onSelect={this.handleSelect(
+      <CurrentUser>
+        {user => (
+          <SiteProvider>
+            {site => (
+              <div>
+                {user && (
+                  <>
+                    <h3>
+                      {this.state.editReviewMode
+                        ? 'Add Review'
+                        : 'Added Review'}{' '}
+                    </h3>
+                    <StyledPanel>
+                      {this.renderReview(!site.siteView.workflow.addRating)}
+                    </StyledPanel>
+                    <ButtonContainer>
+                      <Button
+                        disabled={!this.state.editReviewMode}
+                        onClick={this.handleReviewSave}
+                        style={{ marginTop: 15 }}
+                      >
+                        Save Review
+                      </Button>
+                    </ButtonContainer>
+                  </>
+                )}
+
+                <h3>Crowd Labels</h3>
+
+                <WorkflowPageQueryComponent
+                  query={QUERY}
+                  variables={{ nctId: this.props.match.params.nctId }}
+                >
+                  {({ data, loading, error }) => {
+                    const sections = pipe(
+                      drop(1),
+                      // Temporary until we add sections configs
+                      filter(
+                        (section: WikiSection) => section.name == 'Lay Summary',
+                      ),
+                    )(
+                      extractWikiSections(
                         (data &&
                           data.study &&
                           data.study.wikiPage &&
-                          JSON.parse(data.study.wikiPage.meta)) ||
-                          {},
-                        upsertMutation,
-                        deleteMutation,
-                      )}
-                    />
-                  )}
-                </DeleteMutationComponent>
-              )}
-            </UpsertMutationComponent>
-          )}
-        </WorkflowPageQueryComponent>
-        <CrowdPage
-          {...this.props}
-          workflowView
-          forceAddLabel={this.state.selectedLabel || undefined}
-        />
-        </StyledPanel>
-            <ButtonContainer>
-              <Button
-                disabled={!this.state.editReviewMode}
-                onClick={this.handleSave}
-              >
-                Save
-              </Button>
-            </ButtonContainer>
-          </div>
+                          data.study.wikiPage.content) ||
+                          '',
+                      ),
+                    ) as WikiSection[];
+                    return (
+                      <>
+                        <UpsertMutationComponent
+                          mutation={UPSERT_LABEL_MUTATION}
+                        >
+                          {upsertMutation => (
+                            <DeleteMutationComponent
+                              mutation={DELETE_LABEL_MUTATION}
+                            >
+                              {deleteMutation => (
+                                <StyledPanel>
+                                  <SuggestedLabels
+                                    nctId={this.props.match.params.nctId}
+                                    searchHash={
+                                      this.props.match.params.searchId || null
+                                    }
+                                    onSelect={this.handleSelect(
+                                      (data &&
+                                        data.study &&
+                                        data.study.wikiPage &&
+                                        JSON.parse(data.study.wikiPage.meta)) ||
+                                        {},
+                                      upsertMutation,
+                                      deleteMutation,
+                                    )}
+                                    disabled={!user}
+                                  />
+                                </StyledPanel>
+                              )}
+                            </DeleteMutationComponent>
+                          )}
+                        </UpsertMutationComponent>
+                        <CrowdPage
+                          {...this.props}
+                          workflowView
+                          forceAddLabel={this.state.selectedLabel || undefined}
+                        />
+                        <WikiSections
+                          sections={sections}
+                          disabled={!user}
+                          nctId={this.props.match.params.nctId}
+                          key={this.props.match.params.nctId}
+                        />
+                      </>
+                    );
+                  }}
+                </WorkflowPageQueryComponent>
+              </div>
+            )}
+          </SiteProvider>
         )}
-      </SiteProvider>
+      </CurrentUser>
     );
   }
 }
