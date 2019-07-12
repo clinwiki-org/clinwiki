@@ -4,8 +4,7 @@ interface SuggestionsProps {
 
 }
 
-export default class Suggestions extends React.PureComponent<SuggestionsProps> {
-
+class Suggestions extends React.PureComponent<SuggestionsProps> {
   render() {
     const options = ['aids', 'alzheimers', 'cancer', 'diabetes', 'heart', 'lung', 'pancreas', 'respiratory', 'stroke'];
     // const options = loadFile()
@@ -17,3 +16,5 @@ export default class Suggestions extends React.PureComponent<SuggestionsProps> {
     );
   }
 }
+
+export default Suggestions;
