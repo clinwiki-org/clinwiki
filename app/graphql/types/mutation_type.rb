@@ -1,5 +1,6 @@
 module Types
   class MutationType < BaseObject
+    field :updateWikiSections, mutation: Mutations::UpdateWikiSections
     field :updateSiteView, mutation: Mutations::UpdateSiteView
     field :updateSite, mutation: Mutations::UpdateSite
     field :createSite, mutation: Mutations::CreateSite
