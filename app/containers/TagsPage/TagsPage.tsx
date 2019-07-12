@@ -47,7 +47,7 @@ const AddWrapper = styled(Col)`
 const FRAGMENT = gql`
   fragment TagsPageFragment on WikiPage {
     nctId
-    tags
+    meta
   }
 `;
 
