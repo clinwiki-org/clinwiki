@@ -43,8 +43,6 @@ module Types
       argument :hash, type: String, required: false
     end
 
-    field :freq_words, [FreqwordType], 'All words', null:false
-
 
     field :autosuggest, AutosuggestType, 'recommended words', null:false
 
@@ -63,23 +61,23 @@ module Types
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg]),
-      )
+          aggs: search_service.agg_buckets_for_field(field: params[:agg]),
+          )
     end
 
     def crowd_agg_buckets(search_hash: nil, params: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
-      )
+          aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
+          )
     end
 
     def health
       ActiveRecord::Base.establish_connection
       ActiveRecord::Base.connection
       {
-        healthy: ActiveRecord::Base.connected?,
+          healthy: ActiveRecord::Base.connected?,
       }
     end
 

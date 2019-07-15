@@ -10,10 +10,11 @@ module Mutations
       serializable do
         wiki_page = WikiPage.find_or_initialize_by(nct_id: nct_id)
         front_matter = wiki_page.front_matter
-        tags = front_matter["tags"]
+        tags = front_matter["tags"]&.split("|") || []
         return { wiki_page: wiki_page, errors: nil } unless tags.include?(value)
 
         tags.reject! { |tag| tag == value }
+        front_matter["tags"] = tags.join("|")
         wiki_page.front_matter = front_matter
         wiki_page.updater = current_user
         if wiki_page.save

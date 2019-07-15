@@ -3,17 +3,12 @@ module Types
     implements TimestampsType
 
     field :nctId, String, null: false
-    field :meta, String, "Json key value pairs of meta information. This doesn't include tags, etc.", null: false
+    field :meta, String, "Json key value pairs of meta information", null: false
     field :content, String, null: false
-    field :tags, [String], null: false
     field :edits, [WikiPageEditType], null: false
 
     def meta
       object.meta.to_json
-    end
-
-    def tags
-      object.tags || []
     end
 
     def edits

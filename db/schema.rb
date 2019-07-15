@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2019_07_02_010935) do
     t.text "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.integer "user_id", null: false
     t.index ["nct_id"], name: "reviews_nct_id"
     t.index ["user_id"], name: "reviews_user_id"
   end
