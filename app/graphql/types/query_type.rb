@@ -45,15 +45,6 @@ module Types
 
     field :freq_words, [FreqwordType], 'All words', null:false
 
-    # field :user, UserType, '1 User', null:true do
-    #   argument :first_name, type: String, required:true
-    # end
-
-    # def user(first_name:)
-    #   User.find_by(first_name: first_name)
-    # end
-
-    # field :users, [UserType], 'All Users', null:false
 
     field :autosuggest, AutosuggestType, 'recommended words', null:false
 
