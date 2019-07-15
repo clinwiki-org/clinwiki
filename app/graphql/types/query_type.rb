@@ -55,13 +55,11 @@ module Types
 
     # field :users, [UserType], 'All Users', null:false
 
-    def users
-      User.all
-    end
+    field :autosuggest, AutosuggestType, 'recommended words', null:false
 
-    def freq_words
-      all = WordFrequency.all
-      all.sort_by{|x| x[:frequency] }.reverse
+    def autosuggest
+      suggest_service = AutosuggestService.new
+      suggest_service.suggestions
     end
 
     def search(search_hash: nil, params: nil)
