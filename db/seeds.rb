@@ -6,7 +6,7 @@ User.create! first_name: "Sheri", last_name: "Tibbs", email: "sheri.tibbs@gmail.
 User.create! first_name: "William", last_name: "Hoos", email: "william.hoos@gmail.com",
              password: "clinwiki", password_confirmation: "clinwiki"
 
-studies = Study.order('RANDOM()').first(100)
+studies = Study.order('RANDOM()').first(500)
 hash = Hash.new(0)
 studies.each do |study|
   title_array = study.brief_title.split(' ')
@@ -14,11 +14,14 @@ studies.each do |study|
   title_array.each do |word|
     # delete any characters that are not letters or hyphens or apostrophes.
     # if you want to make it not delete numbers, change it to "^a-zA-Z0-9-\'"
-    sanitized = word.delete("^a-zA-Z-\'").downcase
+    sanitized = word.delete("^a-zA-Z-\'")
     # this regex disallows 1-letter words, which is unintended,
     # but 1-letter words are relatively useless for the autosuggest anyway
     # change this if necessary
-    if sanitized =~ /^[a-zA-Z]{4,}(?:['-]*[a-zA-Z]+)*$/
+    if sanitized =~ /^[a-zA-Z]+(?:['-]*[a-zA-Z]+)*$/
+      unless sanitized =~ /'/ or sanitized =~ /.*[A-Z].*[A-Z].*/
+        sanitized = sanitized.downcase
+      end
       hash[sanitized] += 1
     end
   end
