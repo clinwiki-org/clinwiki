@@ -44,11 +44,11 @@ module Types
     end
 
 
-    field :autosuggest, AutosuggestType, 'recommended words', null:false
+    field :autosuggest, [SuggestionType], 'recommended words', null:false
 
     def autosuggest
       suggest_service = AutosuggestService.new
-      suggest_service.suggestions
+      suggest_service.words
     end
 
     def search(search_hash: nil, params: nil)

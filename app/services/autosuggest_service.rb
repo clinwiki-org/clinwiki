@@ -8,10 +8,6 @@ class AutosuggestService
     @autosuggest = Autosuggest.new(top_queries)
   end
 
-  def suggestions
-    OpenStruct.new(words: words)
-  end
-
   def words
     result = []
     @autosuggest.suggestions.each do |suggestion|
