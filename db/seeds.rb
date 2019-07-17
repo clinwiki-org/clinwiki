@@ -14,12 +14,17 @@ studies.each do |study|
   title_array.each do |word|
     # delete any characters that are not letters or hyphens or apostrophes.
     # if you want to make it not delete numbers, change it to "^a-zA-Z0-9-\'"
-    sanitized = word.delete("^a-zA-Z-\'")
-    # this regex disallows 1-letter words, which is unintended,
-    # but 1-letter words are relatively useless for the autosuggest anyway
-    # change this if necessary
+    sanitized = word.delete("^a-zA-Z-'")
     if sanitized =~ /^[a-zA-Z]+(?:['-]*[a-zA-Z]+)*$/
-      unless sanitized =~ /'/ or sanitized =~ /.*[A-Z].*[A-Z].*/
+      # if the word doesn't have an apostrophe and it doesn't have two capital letters,
+      # or if it has two capitalized words separated by a hyphen
+      # or if it already exists in the hash as downcased
+      if sanitized !~ /'/ and sanitized !~ /.*[A-Z].*[A-Z].*/ or
+          sanitized =~ /^[A-Z][a-z]*-[A-Z][a-z]*$/ or
+          hash.key?(sanitized.downcase)
+        sanitized = sanitized.downcase
+      end
+      if hash.key?(sanitized.downcase)
         sanitized = sanitized.downcase
       end
       hash[sanitized] += 1
