@@ -10,7 +10,7 @@ class Suggestions extends React.PureComponent<SuggestionsProps> {
     // const options = loadFile()
     return (
       <datalist id="medical">
-        {options.map((option) => <option key={options.indexOf(option)}> {option} </option>)}
+        {options.map(option => <option key={options.indexOf(option)}> {option} </option>)}
       </datalist>
 
     );

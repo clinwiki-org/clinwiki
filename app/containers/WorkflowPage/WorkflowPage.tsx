@@ -214,7 +214,7 @@ class WorkflowPage extends React.Component<
                       drop(1),
                       // Temporary until we add sections configs
                       filter(
-                        (section: WikiSection) => section.name == 'Lay Summary',
+                        (section: WikiSection) => section.name == 'Lay Summary' || section.name == 'References',
                       ),
                     )(
                       extractWikiSections(

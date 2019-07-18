@@ -89,7 +89,7 @@ class QueryComponent extends Query<WikiPageQuery, WikiPageQueryVariables> {}
 class UpdateContentMutation extends Mutation<
   WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables
-> {}
+  > {}
 
 class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   state: WikiPageState = {
@@ -132,9 +132,9 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     if (this.state.editorState === 'plain') {
       const text = this.getEditorText() || '';
       this.setState({
-        editorState: 'rich',
-        richEditorText: RichTextEditor.createValueFromString(text, 'markdown'),
-      });
+                      editorState: 'rich',
+                      richEditorText: RichTextEditor.createValueFromString(text, 'markdown'),
+                    });
     }
 
     this.props.history.push(this.props.match.url);
@@ -144,10 +144,10 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     const text = this.getEditorText() || '';
     const editorState = this.state.editorState === 'rich' ? 'plain' : 'rich';
     this.setState({
-      editorState,
-      plainEditorText: text,
-      richEditorText: RichTextEditor.createValueFromString(text, 'markdown'),
-    });
+                    editorState,
+                    plainEditorText: text,
+                    richEditorText: RichTextEditor.createValueFromString(text, 'markdown'),
+                  });
   };
 
   handleEditSubmit = (
@@ -156,11 +156,11 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     }) => void,
   ) => {
     updateWikiContent({
-      variables: {
-        nctId: this.props.match.params.nctId,
-        content: this.getEditorText() || '',
-      },
-    });
+                        variables: {
+                          nctId: this.props.match.params.nctId,
+                          content: this.getEditorText() || '',
+                        },
+                      });
   };
 
   handleRichEditorChange = (richEditorText: EditorValue) => {
@@ -176,9 +176,9 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       data && data.study && data.study.wikiPage && data.study.wikiPage.content;
     if (!text || text === this.state.plainEditorText) return;
     this.setState({
-      plainEditorText: text,
-      richEditorText: RichTextEditor.createValueFromString(text, 'markdown'),
-    });
+                    plainEditorText: text,
+                    richEditorText: RichTextEditor.createValueFromString(text, 'markdown'),
+                  });
   };
 
   renderMarkdownButton = () => {
