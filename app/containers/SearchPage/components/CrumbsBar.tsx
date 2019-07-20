@@ -219,7 +219,7 @@ export default class CrumbsBar extends React.Component<
                   <Suggestions/>
                 </FormGroup>
                 <Button type="submit">
-                  <FontAwesome name="right_arr" />
+                  <FontAwesome name="search" />
                 </Button>
               </Form>
             </Col>
