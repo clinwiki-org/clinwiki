@@ -15,6 +15,8 @@ import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
 
 import Suggestions from './Suggestions';
+import {Typeahead} from 'react-bootstrap-typeahead'; // ES2015
+import AutoSuggester from './AutoSuggester';
 const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
     padding: 10px 30px;
@@ -47,13 +49,7 @@ const CrumbsBarStyleWrappper = styled.div`
       margin-right: 10px;
       margin-left: 10px;
     }
-    input.typeahead {
-      border: 0px;
-      box-shadow: none;
-      margin-right: 10px;
-      margin-left: 10px;
 
-    }
     span.label {
       background: none;
       padding: 5px;
@@ -189,18 +185,28 @@ export default class CrumbsBar extends React.Component<
   }
 
   localSearchChange = e => {
+    console.log(e)
     this.setState({ searchTerm: e.target.value });
   };
   clearPrimarySearch = () => {
     this.props.removeSearchTerm('', true);
   };
   onSubmit = e => {
-    console.log();
+    //console.log('hi');
     e.preventDefault();
     this.props.addSearchTerm(this.state.searchTerm);
     this.setState({ searchTerm: '' });
   };
 
+  inputSearchChange = val => {
+    console.log(val)
+    this.setState({searchTerm:val})
+  }
+
+  clickSearchChange = val => {
+    console.log(val)
+    this.setState({searchTerm:val[0]})
+  }
   render() {
     return (
       <CrumbsBarStyleWrappper>
@@ -210,18 +216,25 @@ export default class CrumbsBar extends React.Component<
               <Form inline className="searchInput" onSubmit={this.onSubmit}>
                 <FormGroup>
                   <b>Search Within: </b>
-                  <FormControl
-                    autoComplete="off"
-                    onChange={this.localSearchChange}
-                    type="text"
-                    list="medical"
-                  />
-                  <Suggestions/>
+
+                  <FormControl 
+
+                    componentClass={AutoSuggester}
+                    onInputChange={this.inputSearchChange}
+                    onChange={this.clickSearchChange}
+                  
+                    id='searcher'
+                    placeholder='search...' />
+
+
                 </FormGroup>
+
                 <Button type="submit">
                   <FontAwesome name="search" />
                 </Button>
               </Form>
+
+
             </Col>
             <Col xsHidden md={3}>
               <div className="right-align">
