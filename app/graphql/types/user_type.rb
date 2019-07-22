@@ -7,6 +7,7 @@ module Types
     field :default_query_string, String, "Default query for user", null: true
     field :own_sites, [SiteType], null: false
     field :editor_sites, [SiteType], null: false
+    field :roles, [String], null: false
 
     field :feeds, [FeedType], "Feed list. Available only for current user", null: false
 
@@ -26,6 +27,10 @@ module Types
       return [] unless context[:current_user]&.id == object.id
 
       object.feeds
+    end
+
+    def roles
+      object.roles.map(&:name)
     end
   end
 end

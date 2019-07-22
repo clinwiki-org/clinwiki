@@ -144,11 +144,15 @@ class SiteView < ApplicationRecord
     SearchService::ENABLED_AGGS.sort.reject { |x| x == :front_matter_keys }.map { |agg| default_agg_params(agg) }
   end
 
+  def crowd_agg_names
+    @crowd_agg_names ||=
+      Study.search("*", aggs: [:front_matter_keys], load: false, limit: 0).aggs.to_h
+        .dig("front_matter_keys", "buckets")
+        .map { |x| x["key"] }
+  end
+
   def crowd_aggs
-    Study.search("*", aggs: [:front_matter_keys], load: false, limit: 0).aggs.to_h
-      .dig("front_matter_keys", "buckets")
-      .map { |x| x["key"] }
-      .map { |agg| default_agg_params(agg) }
+    crowd_agg_names.map { |agg| default_agg_params(agg) }
   end
 
   def default_agg_params(name)
@@ -163,5 +167,4 @@ class SiteView < ApplicationRecord
       },
     }
   end
-
 end

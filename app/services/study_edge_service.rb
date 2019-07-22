@@ -12,12 +12,16 @@ class StudyEdgeService
     study = Study.find_by(nct_id: (id || first_study_id))
     return nil if study.blank?
 
-    is_workflow = (@params[:crowd_agg_filters] || []).any? { |x| x[:field]&.downcase&.starts_with("wf_") }
+    workflow_name = (@params[:crowd_agg_filters] || [])
+      .map { |param| param[:field] }
+      .find { |field| field&.downcase&.starts_with("wf_") }
+    is_workflow = workflow_name.present?
 
     OpenStruct.new(
       next_id: next_study_id(study: study),
       prev_id: next_study_id(study: study, reverse: true),
       is_workflow: is_workflow,
+      workflow_name: workflow_name,
       study: study,
     )
   end

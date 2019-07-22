@@ -5,6 +5,7 @@ module Types
     field :prevId, String, "Id of a previous study", null: true
     field :nextId, String, "Id of a next study", null: true
     field :isWorkflow, Boolean, "Study is in a workflow mode", null: false
+    field :workflowName, String, "Workflow name if any", null: true
     field :study, StudyType, "Study", null: false
   end
 end

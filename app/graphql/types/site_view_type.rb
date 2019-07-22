@@ -3,7 +3,6 @@ module Types
     field :id, Integer, null: false
     field :study, SiteStudyPageType, null: false
     field :search, SiteSearchPageType, null: false
-    field :workflow, SiteWorkflowPageType, null: false
 
     def study
       object.view[:study]

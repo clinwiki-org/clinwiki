@@ -43,6 +43,8 @@ module Types
       argument :hash, type: String, required: false
     end
 
+    field :workflows_view, WorkflowsViewType, "Workflows config", null: false
+
     def search(search_hash: nil, params: nil)
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(context[:search_params])
@@ -112,6 +114,10 @@ module Types
       return nil if link.nil?
 
       JSON.parse(link.long).deep_symbolize_keys
+    end
+
+    def workflows_view
+      WorkflowsView.instance.view
     end
 
     private
