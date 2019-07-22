@@ -44,14 +44,21 @@ const CrumbsBarStyleWrappper = styled.div`
     }
 
     input.form-control {
-      border: 0px;
+      margin:0px;
       box-shadow: none;
-      margin-right: 10px;
-      margin-left: 10px;
+      position: relative;
+      display:inline;
     }
+
+    div.rbt {
+      border: 0px;
+      box-shadow:none;
+      background-color: #f2f2f2;
+
+    }
+
     #searcher {
       border: 0px;
-      box-shadow: none;
       margin-right: 10px;
       margin-left: 10px;
       font-color:green;
@@ -230,7 +237,7 @@ export default class CrumbsBar extends React.Component<
                     onInputChange={this.inputSearchChange}
                     onChange={this.clickSearchChange}
                     id='searcher'
-                    placeholder='search?' />
+                    placeholder='search...' />
 
 
                 </FormGroup>
