@@ -13,11 +13,69 @@ interface SiteProviderProps {
   children: (site: SiteFragment) => React.ReactNode;
 }
 
+const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
+  fragment SiteStudyExtendedGenericSectionFragment on SiteStudyExtendedGenericSection {
+    fields
+    hide
+    order
+    selected {
+      kind
+      values
+    }
+    title
+  }
+`;
+
+const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT = gql`
+  fragment SiteStudyBasicGenericSectionFragment on SiteStudyBasicGenericSection {
+    hide
+  }
+`;
+
+const SITE_STUDY_PAGE_FRAGMENT = gql`
+  fragment SiteStudyPageFragment on SiteStudyPage {
+    administrative {
+      ...SiteStudyExtendedGenericSectionFragment
+    }
+    crowd {
+      ...SiteStudyBasicGenericSectionFragment
+    }
+
+    descriptive {
+      ...SiteStudyExtendedGenericSectionFragment
+    }
+    facilities {
+      ...SiteStudyBasicGenericSectionFragment
+    }
+    interventions {
+      ...SiteStudyExtendedGenericSectionFragment
+    }
+    recruitment {
+      ...SiteStudyExtendedGenericSectionFragment
+    }
+    reviews {
+      ...SiteStudyBasicGenericSectionFragment
+    }
+    tags {
+      ...SiteStudyBasicGenericSectionFragment
+    }
+    tracking {
+      ...SiteStudyExtendedGenericSectionFragment
+    }
+    wiki {
+      ...SiteStudyBasicGenericSectionFragment
+    }
+  }
+
+  ${SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT}
+  ${SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT}
+`;
+
 const SITE_VIEW_FRAGMENT = gql`
   fragment SiteViewFragment on SiteView {
     id
-    workflow {
-      addRating
+    study {
+      ...SiteStudyPageFragment
     }
     search {
       fields
@@ -53,6 +111,8 @@ const SITE_VIEW_FRAGMENT = gql`
       }
     }
   }
+
+  ${SITE_STUDY_PAGE_FRAGMENT}
 `;
 
 const SITE_FRAGMENT = gql`

@@ -10,6 +10,10 @@ import {
   AdministrativePageQueryVariables,
 } from 'types/AdministrativePageQuery';
 import StudySummary from 'components/StudySummary';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import { prop } from 'ramda';
+import { displayFields } from 'utils/siteViewHelpers';
 
 interface AdministrativePageProps {
   history: History;
@@ -17,6 +21,7 @@ interface AdministrativePageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyExtendedGenericSectionFragment;
 }
 
 // We need to rename nctId so that it's not id of the object according to Apollo.
@@ -93,32 +98,50 @@ class AdministrativePage extends React.PureComponent<AdministrativePageProps> {
             return null;
           }
 
+          const fields = displayFields(
+            this.props.metaData.selected.kind,
+            this.props.metaData.selected.values,
+            this.props.metaData.fields.map(name => ({ name, rank: null })),
+          ).map(prop('name'));
+
           this.props.onLoaded && this.props.onLoaded();
           const info = data.study.administrativeInfo;
           return (
             <Table striped bordered condensed>
               <tbody>
-                {this.renderItem('NCT Number', info.studyId)}
-                {this.renderItem('Other Study ID Numbers', info.otherStudyIds)}
-                {this.renderItem(
-                  'Has Data Monitoring Committee',
-                  info.hasDataMonitoringCommittee ? 'Yes' : 'No',
-                )}
-                {this.renderItem(
-                  'Is FDA-Regulated Product',
-                  info.isFdaRegulated ? 'Yes' : 'No',
-                )}
-                {this.renderItem('Plan to Share Data', info.planToShareIpd)}
-                {this.renderItem(
-                  'IPD Description',
-                  info.planToShareIpdDescription,
-                )}
-                {this.renderItem('Responsible Party', info.responsibleParty)}
-                {this.renderItem('Sponsor', info.sponsor)}
-                {this.renderItem('Collaborators', info.collaborators)}
-                {this.renderItem('Investigators', info.investigators)}
-                {this.renderItem('Information Provided By', info.source)}
-                {this.renderItem('Verification Date', info.verificationDate)}
+                {fields.includes('studyId') &&
+                  this.renderItem('NCT Number', info.studyId)}
+                {fields.includes('otherStudyIds') &&
+                  this.renderItem('Other Study ID Numbers', info.otherStudyIds)}
+                {fields.includes('hasDataMonitoringCommittee') &&
+                  this.renderItem(
+                    'Has Data Monitoring Committee',
+                    info.hasDataMonitoringCommittee ? 'Yes' : 'No',
+                  )}
+                {fields.includes('isFdaRegulated') &&
+                  this.renderItem(
+                    'Is FDA-Regulated Product',
+                    info.isFdaRegulated ? 'Yes' : 'No',
+                  )}
+                {fields.includes('planToShareIpd') &&
+                  this.renderItem('Plan to Share Data', info.planToShareIpd)}
+                {fields.includes('planToShareIpdDescription') &&
+                  this.renderItem(
+                    'IPD Description',
+                    info.planToShareIpdDescription,
+                  )}
+                {fields.includes('responsibleParty') &&
+                  this.renderItem('Responsible Party', info.responsibleParty)}
+                {fields.includes('sponsor') &&
+                  this.renderItem('Sponsor', info.sponsor)}
+                {fields.includes('collaborators') &&
+                  this.renderItem('Collaborators', info.collaborators)}
+                {fields.includes('investigators') &&
+                  this.renderItem('Investigators', info.investigators)}
+                {fields.includes('source') &&
+                  this.renderItem('Information Provided By', info.source)}
+                {fields.includes('verificationDate') &&
+                  this.renderItem('Verification Date', info.verificationDate)}
               </tbody>
             </Table>
           );

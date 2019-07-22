@@ -12,6 +12,7 @@ import {
 import { FacilityFragment } from 'types/FacilityFragment';
 import StudySummary from 'components/StudySummary';
 import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface FacilitiesPageProps {
   history: History;
@@ -19,6 +20,7 @@ interface FacilitiesPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyBasicGenericSectionFragment;
 }
 
 const FRAGMENT = gql`

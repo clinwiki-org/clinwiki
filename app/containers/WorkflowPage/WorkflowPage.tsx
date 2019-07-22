@@ -44,6 +44,7 @@ import { StyledFormControl } from 'components/SiteForm/Styled';
 import UpdateWikiSectionsMutation, {
   UpdateWikiSectionsMutationFn,
 } from 'mutations/UpdateWikiSectionsMutation';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import CurrentUser from 'containers/CurrentUser';
 import WikiSections from './WikiSections';
 
@@ -71,6 +72,7 @@ interface WorkflowPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyBasicGenericSectionFragment;
 }
 
 interface WorkflowPageState {
@@ -188,9 +190,7 @@ class WorkflowPage extends React.Component<
                         ? 'Add Review'
                         : 'Added Review'}{' '}
                     </h3>
-                    <StyledPanel>
-                      {this.renderReview(!site.siteView.workflow.addRating)}
-                    </StyledPanel>
+                    <StyledPanel>{this.renderReview(false)}</StyledPanel>
                     <ButtonContainer>
                       <Button
                         disabled={!this.state.editReviewMode}
@@ -214,7 +214,7 @@ class WorkflowPage extends React.Component<
                       drop(1),
                       // Temporary until we add sections configs
                       filter(
-                        (section: WikiSection) => section.name == 'Lay Summary' || section.name == 'References',
+                        (section: WikiSection) => section.name == 'Lay Summary',
                       ),
                     )(
                       extractWikiSections(

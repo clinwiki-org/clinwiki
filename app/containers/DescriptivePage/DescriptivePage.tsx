@@ -10,6 +10,9 @@ import {
   DescriptivePageQueryVariables,
 } from 'types/DescriptivePageQuery';
 import StudySummary from 'components/StudySummary';
+import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import { displayFields } from 'utils/siteViewHelpers';
+import { prop } from 'ramda';
 
 interface DescriptivePageProps {
   history: History;
@@ -17,6 +20,7 @@ interface DescriptivePageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyExtendedGenericSectionFragment;
 }
 
 const FRAGMENT = gql`
@@ -87,28 +91,46 @@ class DescriptivePage extends React.PureComponent<DescriptivePageProps> {
           ) {
             return null;
           }
+          const fields = displayFields(
+            this.props.metaData.selected.kind,
+            this.props.metaData.selected.values,
+            this.props.metaData.fields.map(name => ({ name, rank: null })),
+          ).map(prop('name'));
 
           this.props.onLoaded && this.props.onLoaded();
           const descriptiveInfo = data.study.descriptiveInfo;
           return (
             <Table striped bordered condensed>
               <tbody>
-                {this.renderItem('Brief Title', descriptiveInfo.briefTitle)}
-                {this.renderItem(
-                  'Official Title',
-                  descriptiveInfo.officialTitle,
-                )}
-                {this.renderItem('Brief Summary', descriptiveInfo.briefSummary)}
-                {this.renderItem(
-                  'Detailed Description',
-                  descriptiveInfo.detailedDescription,
-                )}
-                {this.renderItem('Study Type', descriptiveInfo.studyType)}
-                {this.renderItem('Study Phase', descriptiveInfo.phase)}
-                {this.renderItem('Study Design', descriptiveInfo.design)}
-                {this.renderItem('Conditions', descriptiveInfo.conditions)}
-                {this.renderItem('Study Arms', descriptiveInfo.studyArms)}
-                {this.renderItem('Publications', descriptiveInfo.publications)}
+                {fields.includes('briefTitle') &&
+                  this.renderItem('Brief Title', descriptiveInfo.briefTitle)}
+                {fields.includes('officialTitle') &&
+                  this.renderItem(
+                    'Official Title',
+                    descriptiveInfo.officialTitle,
+                  )}
+                {fields.includes('briefSummary') &&
+                  this.renderItem(
+                    'Brief Summary',
+                    descriptiveInfo.briefSummary,
+                  )}
+                {fields.includes('detailedDescription') &&
+                  this.renderItem(
+                    'Detailed Description',
+                    descriptiveInfo.detailedDescription,
+                  )}
+                {fields.includes('studyType') &&
+                  this.renderItem('Study Type', descriptiveInfo.studyType)}
+                {fields.includes('phase') &&
+                  this.renderItem('Study Phase', descriptiveInfo.phase)}
+                {fields.includes('design') &&
+                  this.renderItem('Study Design', descriptiveInfo.design)}
+                {fields.includes('conditions') &&
+                  this.renderItem('Conditions', descriptiveInfo.conditions)}
+                {fields.includes('studyArms') &&
+                  this.renderItem('Study Arms', descriptiveInfo.studyArms)}
+                {fields.includes('publications') &&
+                  this.renderItem('Publications', descriptiveInfo.publications)}
               </tbody>
             </Table>
           );

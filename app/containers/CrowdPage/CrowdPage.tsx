@@ -41,6 +41,7 @@ import AddCrowdLabel from './AddCrowdLabel';
 import { WikiPageFragment } from 'types/WikiPageFragment';
 import CurrentUser from 'containers/CurrentUser';
 import CollapsiblePanel from 'components/CollapsiblePanel';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface CrowdProps {
   match: match<{ nctId: string }>;
@@ -49,6 +50,7 @@ interface CrowdProps {
   workflowView?: boolean;
   nextLink?: string | null;
   forceAddLabel?: { key: string; value: string };
+  metaData: SiteStudyBasicGenericSectionFragment;
 }
 
 interface CrowdState {

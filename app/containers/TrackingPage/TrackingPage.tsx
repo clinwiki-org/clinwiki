@@ -11,6 +11,9 @@ import {
 } from 'types/TrackingPageQuery';
 import StudySummary from 'components/StudySummary';
 import { pipe, filter, prop, propEq, map, join } from 'ramda';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import { displayFields } from 'utils/siteViewHelpers';
 
 interface TrackingPageProps {
   history: History;
@@ -18,6 +21,7 @@ interface TrackingPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyExtendedGenericSectionFragment;
 }
 
 const FRAGMENT = gql`
@@ -101,21 +105,36 @@ class TrackingPage extends React.PureComponent<TrackingPageProps> {
             )(info);
           const primaryMeasures = getMeasures('primary');
           const secondaryMeasures = getMeasures('secondary');
+          const fields = displayFields(
+            this.props.metaData.selected.kind,
+            this.props.metaData.selected.values,
+            this.props.metaData.fields.map(name => ({ name, rank: null })),
+          ).map(prop('name'));
+
           return (
             <Table striped bordered condensed>
               <tbody>
-                {this.renderItem('First Received Date', info.firstReceivedDate)}
-                {this.renderItem('Last Changed Date', info.lastChangedDate)}
-                {this.renderItem('Start Date', info.startDate)}
-                {this.renderItem(
-                  'Primary Completion Date',
-                  info.primaryCompletionDate,
-                )}
-                {this.renderItem('Primary Outcome Measures', primaryMeasures)}
-                {this.renderItem(
-                  'Secondary Outcome Measures',
-                  secondaryMeasures,
-                )}
+                {fields.includes('firstReceivedDate') &&
+                  this.renderItem(
+                    'First Received Date',
+                    info.firstReceivedDate,
+                  )}
+                {fields.includes('lastChangedDate') &&
+                  this.renderItem('Last Changed Date', info.lastChangedDate)}
+                {fields.includes('startDate') &&
+                  this.renderItem('Start Date', info.startDate)}
+                {fields.includes('primaryCompletionDate') &&
+                  this.renderItem(
+                    'Primary Completion Date',
+                    info.primaryCompletionDate,
+                  )}
+                {fields.includes('primaryMeasures') &&
+                  this.renderItem('Primary Outcome Measures', primaryMeasures)}
+                {fields.includes('secondaryMeasures') &&
+                  this.renderItem(
+                    'Secondary Outcome Measures',
+                    secondaryMeasures,
+                  )}
               </tbody>
             </Table>
           );

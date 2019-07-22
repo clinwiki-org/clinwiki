@@ -30,6 +30,7 @@ import { reject, propEq, over, lensPath, keys } from 'ramda';
 import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface ReviewsPageProps {
   match: match<{ nctId: string }>;
@@ -37,6 +38,7 @@ interface ReviewsPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyBasicGenericSectionFragment;
 }
 
 const FRAGMENT = gql`
@@ -147,7 +149,13 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   renderRating = (key: string, value: string) => {
     return (
       <RatingWrapper key={key}>
-        <ReactStars edit={false} color2={'#7ed964'} count={5} half={false} value={value} />
+        <ReactStars
+          edit={false}
+          color2={'#7ed964'}
+          count={5}
+          half={false}
+          value={value}
+        />
         <Label>{key}</Label>
       </RatingWrapper>
     );
