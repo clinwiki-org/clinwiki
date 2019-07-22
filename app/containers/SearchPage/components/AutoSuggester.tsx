@@ -38,7 +38,7 @@ class AutoSuggester extends React.Component {
 
 			}
 			return (
-			<Typeahead {...this.props} options={wordList}/>
+			<Typeahead {...this.props} options={defaultOptions} minLength={2}/>
 				);
 		}}
       </Query>
