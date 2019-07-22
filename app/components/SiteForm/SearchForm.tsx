@@ -122,7 +122,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               name="set:search.aggs.selected.kind"
               componentClass="select"
               onChange={this.props.onAddMutation}
-              defaultValue={view.search.aggs.selected.kind}
+              value={view.search.aggs.selected.kind}
             >
               <option value="BLACKLIST">All except</option>
               <option value="WHITELIST">Only</option>
@@ -160,7 +160,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               name="set:search.crowdAggs.selected.kind"
               componentClass="select"
               onChange={this.props.onAddMutation}
-              defaultValue={view.search.crowdAggs.selected.kind}
+              v={view.search.crowdAggs.selected.kind}
             >
               <option value="BLACKLIST">All except</option>
               <option value="WHITELIST">Only</option>

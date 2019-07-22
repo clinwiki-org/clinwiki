@@ -15,6 +15,7 @@ interface SuggestedLabelsProps {
   searchHash: string | null;
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
+  allowedSuggestedLabels: string[];
 }
 
 const QUERY = gql`
@@ -134,9 +135,14 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
             fromPairs,
           )(data);
 
+          const aggNames = pipe(
+            keys,
+            filter(name => this.props.allowedSuggestedLabels.includes(name)),
+          )(aggs) as string[];
+
           return (
             <LabelsContainer>
-              {keys(aggs).map(key => this.renderAgg(key, aggs[key]))}
+              {aggNames.map(key => this.renderAgg(key, aggs[key]))}
             </LabelsContainer>
           );
         }}

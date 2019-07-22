@@ -17,6 +17,7 @@ const QUERY = gql`
         nextId
         prevId
         isWorkflow
+        workflowName
         study {
           nctId
         }
@@ -49,6 +50,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let prevLink: string | null | undefined = null;
           let nextLink: string | null | undefined = null;
           let isWorkflow: boolean = false;
+          let workflowName: string | null = null;
 
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
@@ -58,6 +60,12 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               ['search', 'studyEdge', 'isWorkflow'],
               data,
             ) as boolean;
+            workflowName = pathOr(
+              false,
+              ['search', 'studyEdge', 'workflowName'],
+              data,
+            ) as string | null;
+
             prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
           }
@@ -69,6 +77,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               prevLink={prevLink}
               nextLink={nextLink}
               isWorkflow={isWorkflow}
+              workflowName={workflowName}
             />
           );
         }}

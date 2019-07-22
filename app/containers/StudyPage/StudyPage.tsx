@@ -48,6 +48,8 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import SitesPage from 'containers/SitesPage';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
+import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 interface StudyPageProps {
   history: History;
   location: Location;
@@ -55,6 +57,7 @@ interface StudyPageProps {
   prevLink?: string | null;
   nextLink?: string | null;
   isWorkflow?: boolean;
+  workflowName: string | null;
 }
 
 interface StudyPageState {
@@ -458,109 +461,135 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     return (
       <SiteProvider>
         {site => (
-          <QueryComponent
-            query={QUERY}
-            variables={{ nctId: this.props.match.params.nctId }}
-            fetchPolicy="cache-only"
-          >
-            {({ data, loading, error }) => (
-              <StudyWrapper>
-                <Row>
-                  <SidebarContainer md={2}>
-                    <BackButtonWrapper>
-                      {this.renderBackButton(
-                        site.siteView,
-                        '⤺︎ Back',
-                        '/search',
-                      )}
-                    </BackButtonWrapper>
+          <WorkflowsViewProvider>
+            {workflowsView => {
+              const workflow = pipe(
+                prop('workflows'),
+                find(propEq('name', this.props.workflowName)),
+              )(workflowsView) as WorkflowConfigFragment | null;
 
-                    {this.renderReviewsSummary(data)}
-                    <WikiToggle
-                      value={this.state.wikiToggleValue}
-                      onChange={this.handleWikiToggleChange}
-                    />
-                    <Nav
-                      bsStyle="pills"
-                      stacked
-                      activeKey={this.getCurrentSectionPath(site.siteView)}
-                      onSelect={this.handleSelect}
-                    >
-                      {this.getSections(site.siteView).map(
-                        (section: Section) => (
-                          <NavItem key={section.path} eventKey={section.path}>
-                            {section.displayName}
-                          </NavItem>
-                        ),
-                      )}
-                    </Nav>
-                  </SidebarContainer>
-                  <MainContainer md={10}>
-                    <div className="container">
-                      {this.renderNavButton(
-                        site.siteView,
-                        '❮ Previous',
-                        this.props.prevLink,
-                      )}
-                      {this.renderNavButton(
-                        site.siteView,
-                        'Next ❯',
-                        this.props.nextLink,
-                      )}
-                    </div>
+              return (
+                <QueryComponent
+                  query={QUERY}
+                  variables={{ nctId: this.props.match.params.nctId }}
+                  fetchPolicy="cache-only"
+                >
+                  {({ data, loading, error }) => (
+                    <StudyWrapper>
+                      <Row>
+                        <SidebarContainer md={2}>
+                          <BackButtonWrapper>
+                            {this.renderBackButton(
+                              site.siteView,
+                              '⤺︎ Back',
+                              '/search',
+                            )}
+                          </BackButtonWrapper>
 
-                    {data && data.study && <StudySummary study={data.study} />}
-                    <div className="container">
-                      <Switch>
-                        {this.getSectionsForRoutes(site.siteView).map(
-                          section => section ? (
-                            <Route
-                              key={section.path}
-                              path={`${this.props.match.path}${section.path}`}
-                              render={props => {
-                                const Component = section.component;
+                          {this.renderReviewsSummary(data)}
+                          <WikiToggle
+                            value={this.state.wikiToggleValue}
+                            onChange={this.handleWikiToggleChange}
+                          />
+                          <Nav
+                            bsStyle="pills"
+                            stacked
+                            activeKey={this.getCurrentSectionPath(
+                              site.siteView,
+                            )}
+                            onSelect={this.handleSelect}
+                          >
+                            {this.getSections(site.siteView).map(
+                              (section: Section) => (
+                                <NavItem
+                                  key={section.path}
+                                  eventKey={section.path}
+                                >
+                                  {section.displayName}
+                                </NavItem>
+                              ),
+                            )}
+                          </Nav>
+                        </SidebarContainer>
+                        <MainContainer md={10}>
+                          <div className="container">
+                            {this.renderNavButton(
+                              site.siteView,
+                              '❮ Previous',
+                              this.props.prevLink,
+                            )}
+                            {this.renderNavButton(
+                              site.siteView,
+                              'Next ❯',
+                              this.props.nextLink,
+                            )}
+                          </div>
 
-                                return (
-                                  // @ts-ignore
-                                  <Component
-                                    {...props}
-                                    metaData={section.metaData}
-                                    onLoaded={this.handleLoaded}
-                                    isWorkflow={this.props.isWorkflow}
-                                    nextLink={this.props.nextLink}
-                                  />
-                                );
-                              }}
+                          {data && data.study && (
+                            <StudySummary
+                              study={data.study}
+                              workflow={workflow}
+                              workflowsView={workflowsView}
                             />
-                          ) : null,
-                        )}
-                      </Switch>
-                    </div>
-                    <div className="container">
-                      {this.renderNavButton(
-                        site.siteView,
-                        '❮ Previous',
-                        this.props.prevLink,
+                          )}
+                          <div className="container">
+                            <Switch>
+                              {this.getSectionsForRoutes(site.siteView).map(
+                                section => section ? (
+                                  <Route
+                                    key={section.path}
+                                    path={`${this.props.match.path}${
+                                      section.path
+                                    }`}
+                                    render={props => {
+                                      const Component = section.component;
+
+                                      return (
+                                        // @ts-ignore
+                                        <Component
+                                          {...props}
+                                          workflowName={this.props.workflowName}
+                                          metaData={section.metaData}
+                                          onLoaded={this.handleLoaded}
+                                          isWorkflow={this.props.isWorkflow}
+                                          nextLink={this.props.nextLink}
+                                          workflowsView={workflowsView}
+                                        />
+                                      );
+                                    }}
+                                  />
+                                ) : null,
+                              )}
+                            </Switch>
+                          </div>
+                          <div className="container">
+                            {this.renderNavButton(
+                              site.siteView,
+                              '❮ Previous',
+                              this.props.prevLink,
+                            )}
+                            {this.renderNavButton(
+                              site.siteView,
+                              'Next ❯',
+                              this.props.nextLink,
+                            )}
+                          </div>
+                        </MainContainer>
+                      </Row>
+                      {this.state.triggerPrefetch && (
+                        <PrefetchQueryComponent
+                          query={PREFETCH_QUERY}
+                          variables={{ nctId: this.props.match.params.nctId }}
+                        >
+                          {() => null}
+                        </PrefetchQueryComponent>
                       )}
-                      {this.renderNavButton(
-                        site.siteView,
-                        'Next ❯',
-                        this.props.nextLink,
-                      )}
-                    </div>
-                  </MainContainer>
-                </Row>
-                {this.state.triggerPrefetch && (
-                  <PrefetchQueryComponent
-                    query={PREFETCH_QUERY}
-                    variables={{ nctId: this.props.match.params.nctId }}
-                  >
-                    {() => null}
-                  </PrefetchQueryComponent>
-                )}
-              </StudyWrapper>
-            )}
-          </QueryComponent>
+                    </StudyWrapper>
+                  )}
+                </QueryComponent>
+              );
+            }}
+          </WorkflowsViewProvider>
         )}
       </SiteProvider>
     );

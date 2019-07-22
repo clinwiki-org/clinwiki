@@ -123,7 +123,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
           name={`set:study.${section.name}.selected.kind`}
           componentClass="select"
           onChange={this.props.onAddMutation}
-          defaultValue={data.selected.kind}
+          value={data.selected.kind}
         >
           <option value="BLACKLIST">All except</option>
           <option value="WHITELIST">Only</option>
