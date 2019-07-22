@@ -44,10 +44,11 @@ const CrumbsBarStyleWrappper = styled.div`
     }
 
     input.form-control {
-      margin:0px;
-      box-shadow: none;
-      position: relative;
-      display:inline;
+      border: 0px;
+      box-shadow:none;
+      margin-right: 10px;
+      display:absolute;
+      height: 120%;
     }
 
     div.rbt {
