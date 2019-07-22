@@ -13,7 +13,6 @@ class SiteViewUpdaterService
 
   class << self
     def compact(mutations)
-      puts mutations
       mutations = mutations.clone
       mutations.each_with_index { |mut, i| mut[:id] = i }
       muts = mutations

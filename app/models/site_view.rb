@@ -31,10 +31,94 @@ class SiteView < ApplicationRecord
 
   private
 
-  def default_view
+  def default_view # rubocop:disable Metrics/MethodLength
     {
-      workflow: {
-        addRating: true,
+      study: {
+        wiki: {
+          hide: false,
+        },
+        crowd: {
+          hide: false,
+        },
+        reviews: {
+          hide: false,
+        },
+        tags: {
+          hide: false,
+        },
+        facilities: {
+          hide: false,
+        },
+        descriptive: {
+          hide: false,
+          title: "Descriptive",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[
+              briefSummary briefTitle conditions design detailedDescription
+              officialTitle phase publications studyArms studyType
+            ],
+        },
+        administrative: {
+          hide: false,
+          title: "Administrative",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[
+              collaborators hasDataMonitoringCommittee investigators isFdaRegulated
+              otherStudyIds planToShareIpd planToShareIpdDescription responsibleParty
+              source sponsor verificationDate
+            ],
+        },
+        recruitment: {
+          hide: false,
+          title: "Recruitment",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[
+              ages completionDate contacts enrollment listedLocationCountries
+              overallStatus primaryCompletionDate removedLocationCountries
+              eligibilityCriteria eligibilityGender eligibilityHealthyVolunteers
+            ],
+        },
+        interventions: {
+          hide: false,
+          title: "Interventions",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[description name type],
+        },
+        tracking: {
+          hide: false,
+          title: "Tracking",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[
+              primaryMeasures secondaryMeasures designOutcomesOutcomeType
+              firstReceivedDate lastChangedDate primaryCompletionDate
+              startDate
+            ],
+        },
       },
       search: {
         aggs: {
