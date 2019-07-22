@@ -19,4 +19,3 @@ config/database_local.yml
 ubuntu-artful-17.10-cloudimg-console.log 
 .orig
 public/assets
-20190601_clinical_trials/*
