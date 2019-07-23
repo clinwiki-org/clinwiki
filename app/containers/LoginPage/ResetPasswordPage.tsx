@@ -99,7 +99,7 @@ class ResetPasswordPage extends React.Component<
               update={(cache, { data }) => {
                 if (data && data.resetPassword && data.resetPassword.success) {
                   this.setState({
-                    errors: ['Instructions has been send to your email'],
+                    errors: ['Instructions have been sent to your email'],
                   });
                 }
               }}
