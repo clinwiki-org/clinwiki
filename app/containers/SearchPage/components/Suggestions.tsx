@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {gql} from 'apollo-boost';
+import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
-import {SuggestionsQuery} from 'types/SuggestionsQuery'
+// import {SuggestionsQuery} from 'types/SuggestionsQuery'
 import { path, pathOr, test } from 'ramda';
 
 const QUERY = gql`

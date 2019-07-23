@@ -26,11 +26,6 @@ const QUERY = gql`
         counterIndex
         firstId
         lastId
-        hashFirst
-        hashLast
-        hashNext
-        hashPrev
-        pageSize
       }
     }
   }
@@ -77,41 +72,17 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               data,
             ) as boolean;
             recordsTotal = pathOr(1, ['search', 'studyEdge', 'recordsTotal'], data) as number;
-            counterIndex = pathOr(1, ['search', 'studyEdge', 'counterIndex'], data) as number;
-            pageSize = path(['search', 'studyEdge', 'pageSize'], data);
-
-            const hashNext = path(['search', 'studyEdge', 'hashNext'], data);
-            const hashPrev = path(['search', 'studyEdge', 'hashPrev'], data);
-            const hashFirst = path(['search', 'studyEdge', 'hashFirst'], data);
-            const hashLast = path(['search', 'studyEdge', 'hashLast'], data);
-
-            // clamp it to the max window size
-            if (counterIndex < MAX_WINDOW_SIZE && counterIndex < recordsTotal) {
-              // if it's the last on the page
-              if (pageSize && counterIndex % pageSize === 0) {
-                nextLink = nextId && `/search/${hashNext}/study/${nextId}`;
-              } else {
-                nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
-              }
-            }
-
-            // if the counter is 1, there shouldn't be a previous button
-            if (counterIndex > 1) {
-              // if it's the first on the page
-              if (pageSize && counterIndex % pageSize === 1) {
-                prevLink = prevId && `/search/${hashPrev}/study/${prevId}`;
-              } else {
-                prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
-              }
-            }
+            counterIndex = path(['search', 'studyEdge', 'counterIndex'], data);
+            nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
+            prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
 
             // just so that there isn't a first button if there isn't a prev button
             // likewise for the last button
             if (prevLink != null) {
-              firstLink = firstId && `/search/${hashFirst}/study/${firstId}`;
+              firstLink = firstId && `/search/${variables.hash}/study/${firstId}`;
             }
-            if (nextLink != null) {
-              lastLink = lastId && `/search/${hashLast}/study/${lastId}`;
+            if (nextLink != null && counterIndex != null) {
+              lastLink = lastId && `/search/${variables.hash}/study/${lastId}`;
             }
           }
           return (
