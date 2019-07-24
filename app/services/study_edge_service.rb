@@ -34,6 +34,7 @@ class StudyEdgeService
   def normalize_params(params)
     result = params.deep_symbolize_keys.deep_dup
     result[:page_size] = MAX_PAGE_SIZE
+    result[:page] = 0
     result
   end
 
@@ -45,7 +46,7 @@ class StudyEdgeService
     unless recordsTotal > MAX_PAGE_SIZE
       return @search_service.search&.dig(:studies)&.last&.id
     end
-    null
+    nil
   end
 
   # There's a big problem with nulls. When you sort by a field
@@ -126,12 +127,11 @@ class StudyEdgeService
 
   def counter_index(study, recordsTotal)
     # Finds the index of the item in the search results.
-    # This code could do with some cleanup; it's pretty messy and I had to do some cheesy modifications
-    # to search_service.rb to make this work.
     return 1 if study.blank?
-    return null if recordsTotal > MAX_PAGE_SIZE
+    return nil if recordsTotal > MAX_PAGE_SIZE
     search_results = @search_service.search
-    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study][:nct_id] }
+    puts search_results&.dig(:studies)
+    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:nct_id] }
     return (index + 1) + (@params[:page] * @params[:page_size]) unless index.nil?
     1
   end
