@@ -2,6 +2,7 @@ module Types
   class MutationType < BaseObject
     field :updateWikiSections, mutation: Mutations::UpdateWikiSections
     field :updateSiteView, mutation: Mutations::UpdateSiteView
+    field :updateWorkflowsView, mutation: Mutations::UpdateWorkflowsView
     field :updateSite, mutation: Mutations::UpdateSite
     field :createSite, mutation: Mutations::CreateSite
     field :deleteSite, mutation: Mutations::DeleteSite

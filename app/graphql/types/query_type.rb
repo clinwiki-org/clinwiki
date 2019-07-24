@@ -64,6 +64,8 @@ module Types
     #   all.sort_by{|x| x[:frequency] }.reverse
     # end
 
+    field :workflows_view, WorkflowsViewType, "Workflows config", null: false
+
     def search(search_hash: nil, params: nil)
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(context[:search_params])
@@ -138,6 +140,9 @@ module Types
     def autosuggestions
       autosuggest = AutosuggestService.new
       autosuggest.suggestions
+      
+    def workflows_view
+      WorkflowsView.instance.view
     end
 
     private
