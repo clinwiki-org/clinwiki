@@ -15,7 +15,7 @@ studies.each do |study|
     # delete any characters that are not letters or hyphens or apostrophes or numbers.
     sanitized = word.delete("^a-zA-Z-'0-9")
     # if the word is a whole word, hyphenated, or has an apostrophe
-    # AND it's not only cons
+    # AND it's not only digits
     if sanitized =~ /^[a-zA-Z0-9]+(?:['-]*[a-zA-Z0-9]+)*$/ and sanitized !~ /^\d+$/
       # if the word doesn't have an apostrophe and it doesn't have two capital letters,
       # or if it has two capitalized words separated by a hyphen

@@ -17,6 +17,8 @@ class AutosuggestService
         result.push Hash[suggestion[:query], suggestion[:score]]
       end
     end
+    puts result.size
+    puts '!*!*!*!*!'
     result
   end
 end
