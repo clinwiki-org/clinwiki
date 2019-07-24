@@ -60,7 +60,6 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let recordsTotal: number | JSX.Element | null | undefined =
             <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>;
           let counterIndex: number | JSX.Element | null | undefined = null;
-          let pageSize: number | undefined = 25;
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
             const nextId = path(['search', 'studyEdge', 'nextId'], data);
@@ -71,8 +70,10 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               ['search', 'studyEdge', 'isWorkflow'],
               data,
             ) as boolean;
-            recordsTotal = pathOr(1, ['search', 'studyEdge', 'recordsTotal'], data) as number;
+            // counterIndex will remain null if it's >200 or whatever we set the max page size to
             counterIndex = path(['search', 'studyEdge', 'counterIndex'], data);
+            recordsTotal = counterIndex &&
+              pathOr(1, ['search', 'studyEdge', 'recordsTotal'], data) as number;
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
             prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
 

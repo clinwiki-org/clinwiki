@@ -5,8 +5,8 @@ import { Query } from 'react-apollo';
 import { path, pathOr, test } from 'ramda';
 
 const QUERY = gql`
-  query SuggestionsQuery() {
-    autosuggest() {
+  query SuggestionsQuery {
+    autosuggest {
       word
       frequency
     }
