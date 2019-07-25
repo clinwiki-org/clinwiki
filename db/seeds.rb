@@ -6,7 +6,7 @@ User.create! first_name: "Sheri", last_name: "Tibbs", email: "sheri.tibbs@gmail.
 User.create! first_name: "William", last_name: "Hoos", email: "william.hoos@gmail.com",
              password: "clinwiki", password_confirmation: "clinwiki"
 
-studies = Study.order('RANDOM()').first(500)
+studies = Study.all
 hash = Hash.new(0)
 studies.each do |study|
   title_array = study.brief_title.split(' ')

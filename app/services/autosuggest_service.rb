@@ -13,12 +13,11 @@ class AutosuggestService
   def words
     result = []
     @autosuggest.suggestions.each do |suggestion|
+      puts suggestion
       unless suggestion.nil? or suggestion[:blacklisted]
         result.push Hash[suggestion[:query], suggestion[:score]]
       end
     end
-    puts result.size
-    puts '!*!*!*!*!'
     result
   end
 end
