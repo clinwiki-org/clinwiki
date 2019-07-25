@@ -31,10 +31,94 @@ class SiteView < ApplicationRecord
 
   private
 
-  def default_view
+  def default_view # rubocop:disable Metrics/MethodLength
     {
-      workflow: {
-        addRating: true,
+      study: {
+        wiki: {
+          hide: false,
+        },
+        crowd: {
+          hide: false,
+        },
+        reviews: {
+          hide: false,
+        },
+        tags: {
+          hide: false,
+        },
+        facilities: {
+          hide: false,
+        },
+        descriptive: {
+          hide: false,
+          title: "Descriptive",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[
+              briefSummary briefTitle conditions design detailedDescription
+              officialTitle phase publications studyArms studyType
+            ],
+        },
+        administrative: {
+          hide: false,
+          title: "Administrative",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[
+              collaborators hasDataMonitoringCommittee investigators isFdaRegulated
+              otherStudyIds planToShareIpd planToShareIpdDescription responsibleParty
+              source sponsor verificationDate
+            ],
+        },
+        recruitment: {
+          hide: false,
+          title: "Recruitment",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[
+              ages completionDate contacts enrollment listedLocationCountries
+              overallStatus primaryCompletionDate removedLocationCountries
+              eligibilityCriteria eligibilityGender eligibilityHealthyVolunteers
+            ],
+        },
+        interventions: {
+          hide: false,
+          title: "Interventions",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[description name type],
+        },
+        tracking: {
+          hide: false,
+          title: "Tracking",
+          order: nil,
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields:
+            %w[
+              primaryMeasures secondaryMeasures designOutcomesOutcomeType
+              firstReceivedDate lastChangedDate primaryCompletionDate
+              startDate
+            ],
+        },
       },
       search: {
         aggs: {
@@ -60,11 +144,15 @@ class SiteView < ApplicationRecord
     SearchService::ENABLED_AGGS.sort.reject { |x| x == :front_matter_keys }.map { |agg| default_agg_params(agg) }
   end
 
+  def crowd_agg_names
+    @crowd_agg_names ||=
+      Study.search("*", aggs: [:front_matter_keys], load: false, limit: 0).aggs.to_h
+        .dig("front_matter_keys", "buckets")
+        .map { |x| x["key"] }
+  end
+
   def crowd_aggs
-    Study.search("*", aggs: [:front_matter_keys], load: false, limit: 0).aggs.to_h
-      .dig("front_matter_keys", "buckets")
-      .map { |x| x["key"] }
-      .map { |agg| default_agg_params(agg) }
+    crowd_agg_names.map { |agg| default_agg_params(agg) }
   end
 
   def default_agg_params(name)
@@ -79,5 +167,4 @@ class SiteView < ApplicationRecord
       },
     }
   end
-
 end
