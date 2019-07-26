@@ -141,6 +141,13 @@ ActiveRecord::Schema.define(version: 2019_07_18_071212) do
     t.index ["nct_id"], name: "index_wiki_pages_on_nct_id", unique: true
   end
 
+  create_table "word_frequencies", force: :cascade do |t|
+    t.string "name"
+    t.integer "frequency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "workflows_views", force: :cascade do |t|
     t.jsonb "updates", default: [], null: false
     t.datetime "created_at", null: false
