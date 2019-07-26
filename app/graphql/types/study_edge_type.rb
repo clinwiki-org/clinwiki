@@ -8,6 +8,7 @@ module Types
     field :workflowName, String, "Workflow name if any", null: true
     field :study, StudyType, "Study", null: false
 
+    field :recordsTotal, Integer, "Total number of records", null: false
     field :firstId, String, "Id of the first study", null: true
     field :lastId, String, "Id of the last study", null: true
   end
