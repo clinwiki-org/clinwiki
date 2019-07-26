@@ -23,6 +23,7 @@ class StudyEdgeService
       is_workflow: is_workflow,
       workflow_name: workflow_name,
       study: study,
+      first_id: first_study_id,
     )
   end
 
