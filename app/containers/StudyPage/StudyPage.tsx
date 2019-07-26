@@ -56,6 +56,8 @@ interface StudyPageProps {
   match: match<{ nctId: string }>;
   prevLink?: string | null;
   nextLink?: string | null;
+  firstLink?: string | null;
+  lastLink?: string | null;
   isWorkflow?: boolean;
   workflowName: string | null;
 }
@@ -513,16 +515,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                         </SidebarContainer>
                         <MainContainer md={10}>
                           <div className="container">
-                            {this.renderNavButton(
-                              site.siteView,
-                              '❮ Previous',
-                              this.props.prevLink,
-                            )}
-                            {this.renderNavButton(
-                              site.siteView,
-                              'Next ❯',
-                              this.props.nextLink,
-                            )}
+                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}</div>
+                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}</div>
+                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, 'Next ❯', this.props.nextLink)}</div>
+                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, 'Last ❯❯', this.props.lastLink)}</div>
                           </div>
 
                           {data && data.study && (
@@ -563,16 +559,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                             </Switch>
                           </div>
                           <div className="container">
-                            {this.renderNavButton(
-                              site.siteView,
-                              '❮ Previous',
-                              this.props.prevLink,
-                            )}
-                            {this.renderNavButton(
-                              site.siteView,
-                              'Next ❯',
-                              this.props.nextLink,
-                            )}
+                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}</div>
+                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}</div>
+                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, 'Next ❯', this.props.nextLink)}</div>
+                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, 'Last ❯❯', this.props.lastLink)}</div>
                           </div>
                         </MainContainer>
                       </Row>
