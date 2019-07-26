@@ -1,5 +1,6 @@
 LLONG_MIN = -9223372036854775808 # rubocop:disable Style/NumericLiterals
 LLONG_MAX = 9223372036854775807 # rubocop:disable Style/NumericLiterals
+MAX_PAGE_SIZE = 200
 
 class StudyEdgeService
   # @param params - hash representing SearchInputType with symbols as keys.
@@ -11,7 +12,7 @@ class StudyEdgeService
   def study_edge(id = nil)
     study = Study.find_by(nct_id: (id || first_study_id))
     return nil if study.blank?
-
+    recordstotal = records_total
     workflow_name = (@params[:crowd_agg_filters] || [])
       .map { |param| param[:field] }
       .find { |field| field&.downcase&.starts_with("wf_") }
@@ -22,7 +23,10 @@ class StudyEdgeService
       prev_id: next_study_id(study: study, reverse: true),
       is_workflow: is_workflow,
       workflow_name: workflow_name,
+      records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
       study: study,
+      first_id: first_study_id,
+      last_id: last_study_id(recordstotal),
     )
   end
 
@@ -36,6 +40,13 @@ class StudyEdgeService
 
   def first_study_id
     @search_service.search&.dig(:studies)&.first&.id
+  end
+
+  def last_study_id(records_total)
+    unless records_total > MAX_PAGE_SIZE
+      return @search_service.search&.dig(:studies)&.last&.id
+    end
+    nil
   end
 
   # There's a big problem with nulls. When you sort by a field
@@ -107,4 +118,11 @@ class StudyEdgeService
       value
     end
   end
+
+  def records_total
+    total = @search_service.search&.dig(:recordsTotal)
+    return total unless total.nil?
+    1
+  end
+
 end
