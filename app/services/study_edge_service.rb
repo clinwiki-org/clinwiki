@@ -1,5 +1,6 @@
 LLONG_MIN = -9223372036854775808 # rubocop:disable Style/NumericLiterals
 LLONG_MAX = 9223372036854775807 # rubocop:disable Style/NumericLiterals
+MAX_PAGE_SIZE = 200
 
 class StudyEdgeService
   # @param params - hash representing SearchInputType with symbols as keys.
@@ -23,8 +24,8 @@ class StudyEdgeService
       is_workflow: is_workflow,
       workflow_name: workflow_name,
       study: study,
-      records_total: recordstotal,
-      counter_index: counter_index(study: study),
+      records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
+      counter_index: counter_index(study, recordstotal),
     )
   end
 
@@ -33,6 +34,7 @@ class StudyEdgeService
   def normalize_params(params)
     result = params.deep_symbolize_keys.deep_dup
     result[:page] = 0
+    result[:page_size] = MAX_PAGE_SIZE
     result
   end
 
@@ -121,7 +123,7 @@ class StudyEdgeService
     # Finds the index of the item in the search results.
     return 1 if study.blank?
     search_results = @search_service.search
-    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
+    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study][:nct_id] }
     return return (index + 1) + (@params[:page] * @params[:page_size]) unless index.nil?
 
     1
