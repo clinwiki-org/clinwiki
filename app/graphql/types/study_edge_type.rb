@@ -8,6 +8,6 @@ module Types
     field :workflowName, String, "Workflow name if any", null: true
     field :study, StudyType, "Study", null: false
     field :recordsTotal, Integer, "Total number of records", null: false
-    field :counterIndex, Integer, "The index of the study in the results", null: false
+    field :counterIndex, Integer, "The index of the study in the results", null: true
   end
 end

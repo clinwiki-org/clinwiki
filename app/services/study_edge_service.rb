@@ -119,9 +119,10 @@ class StudyEdgeService
     1
   end
 
-  def counter_index(study)
+  def counter_index(study, recordsTotal)
     # Finds the index of the item in the search results.
     return 1 if study.blank?
+    return nil if recordsTotal > MAX_PAGE_SIZE
     search_results = @search_service.search
     index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study][:nct_id] }
     return return (index + 1) + (@params[:page] * @params[:page_size]) unless index.nil?
