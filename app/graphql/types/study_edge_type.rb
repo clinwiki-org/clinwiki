@@ -9,5 +9,6 @@ module Types
     field :study, StudyType, "Study", null: false
 
     field :firstId, String, "Id of the first study", null: true
+    field :lastId, String, "Id of the last study", null: true
   end
 end

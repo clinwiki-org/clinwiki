@@ -24,6 +24,7 @@ class StudyEdgeService
       workflow_name: workflow_name,
       study: study,
       first_id: first_study_id,
+      last_id: last_study_id,
     )
   end
 
@@ -37,6 +38,10 @@ class StudyEdgeService
 
   def first_study_id
     @search_service.search&.dig(:studies)&.first&.id
+  end
+
+  def last_study_id
+    @search_service.search&.dig(:studies)&.last&.id
   end
 
   # There's a big problem with nulls. When you sort by a field
