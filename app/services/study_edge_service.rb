@@ -16,14 +16,14 @@ class StudyEdgeService
       .map { |param| param[:field] }
       .find { |field| field&.downcase&.starts_with("wf_") }
     is_workflow = workflow_name.present?
-
+    recordstotal = records_total
     OpenStruct.new(
       next_id: next_study_id(study: study),
       prev_id: next_study_id(study: study, reverse: true),
       is_workflow: is_workflow,
       workflow_name: workflow_name,
       study: study,
-      records_total: records_total(study: study),
+      records_total: recordstotal,
       counter_index: counter_index(study: study),
     )
   end
@@ -110,33 +110,19 @@ class StudyEdgeService
     end
   end
 
-  def records_total(study)
+  def records_total
     return 1 if study.blank?
     total = @search_service.search&.dig(:recordsTotal)
     return total unless total.nil?
     1
   end
 
-  def counter_index(study, reverse = false)
+  def counter_index(study)
+    # Finds the index of the item in the search results.
     return 1 if study.blank?
-    index = @search_service.search(
-        search_after: [next_study_id(study: study[:study], reverse: true)],
-        reverse: reverse,
-        )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
-    # if index % 25 == 1
-    #   index = @search_service.search(
-    #       search_after: [next_study_id(study: study[:study], reverse: true)],
-    #       reverse: reverse,
-    #       )&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
-    # end
-    puts "*~*~*~*"
-    # puts [next_study_id(study: study[:study], reverse: true)].class
-    # puts sort_values(study[:study], true).class
-    # puts @search_service.search&.dig(:page)
-    puts @params
-    puts nil + 1
-    puts "*~*~*~*"
-    return index + 1 unless index.nil?
+    search_results = @search_service.search
+    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:study]["nct_id"] }
+    return return (index + 1) + (@params[:page] * @params[:page_size]) unless index.nil?
 
     1
   end
