@@ -44,7 +44,7 @@ class StudyEdgeService
     unless recordsTotal > MAX_PAGE_SIZE
       return @search_service.search&.dig(:studies)&.last&.id
     end
-    null
+    nil
   end
 
   # There's a big problem with nulls. When you sort by a field
