@@ -12,7 +12,7 @@ class StudyEdgeService
   def study_edge(id = nil)
     study = Study.find_by(nct_id: (id || first_study_id))
     return nil if study.blank?
-
+    recordstotal = records_total
     workflow_name = (@params[:crowd_agg_filters] || [])
       .map { |param| param[:field] }
       .find { |field| field&.downcase&.starts_with("wf_") }
@@ -23,9 +23,12 @@ class StudyEdgeService
       prev_id: next_study_id(study: study, reverse: true),
       is_workflow: is_workflow,
       workflow_name: workflow_name,
+      records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
       study: study,
       records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
       counter_index: counter_index(study, recordstotal),
+      first_id: first_study_id,
+      last_id: last_study_id(recordstotal),
     )
   end
 
@@ -40,6 +43,13 @@ class StudyEdgeService
 
   def first_study_id
     @search_service.search&.dig(:studies)&.first&.id
+  end
+
+  def last_study_id(records_total)
+    unless records_total > MAX_PAGE_SIZE
+      return @search_service.search&.dig(:studies)&.last&.id
+    end
+    nil
   end
 
   # There's a big problem with nulls. When you sort by a field
