@@ -43,7 +43,7 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import { studyFields, starColor } from 'utils/constants';
+import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
 
 
 
@@ -290,7 +290,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       if (data.length < 1) {
         return calcWidth(headerName.split('')) + totalPadding;
       }
-      
+
       let max = headerName;
       for (let i = 0; i < data.length; i += 1) {
         const elem = data[i][camelCaseName];
@@ -382,11 +382,11 @@ class SearchView extends React.PureComponent<SearchViewProps> {
            const additionalWidth = leftover / columns.length;
            columns.map(x=>x.width += additionalWidth, columns);
            return (
-            <ReactTable 
-              className="-striped -highlight" 
+            <ReactTable
+              className="-striped -highlight"
               columns = {columns}
-              manual 
-              loading={true} 
+              manual
+              loading={true}
               defaultSortDesc
             />
           )}
@@ -428,13 +428,13 @@ class SearchView extends React.PureComponent<SearchViewProps> {
              pageSize={pageSize}
              defaultSorted={camelizedSorts}
              onPageChange={pipe(
-               changePage, 
+               changePage,
                this.props.onUpdateParams,)}
              onPageSizeChange={pipe(
                changePageSize,
                this.props.onUpdateParams,)}
              onSortedChange = {pipe(
-               changeSorted, 
+               changeSorted,
                this.props.onUpdateParams,)}
              data={searchData}
              pages={totalPages}
