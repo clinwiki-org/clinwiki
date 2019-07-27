@@ -317,7 +317,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     return {
       Header: <SearchFieldName field={headerName} />,
       accessor: camelCaseName,
-      Style: {
+      style: {
         overflowWrap: 'break-word',
         overflow: 'hidden',
         whiteSpace: 'normal',
