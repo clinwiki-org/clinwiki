@@ -70,7 +70,6 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             ) as boolean;
             // counterIndex will remain null if it's >200 or whatever we set the max page size to
             counterIndex = path(['search', 'studyEdge', 'counterIndex'], data);
-            console.log(counterIndex);
             recordsTotal = counterIndex &&
               pathOr(1, ['search', 'studyEdge', 'recordsTotal'], data) as number;
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
