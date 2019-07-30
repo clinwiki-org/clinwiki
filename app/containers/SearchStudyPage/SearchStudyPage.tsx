@@ -9,6 +9,8 @@ import {
 } from 'types/SearchStudyPageQuery';
 import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
+import { PulseLoader } from 'react-spinners';
+import {MAX_WINDOW_SIZE} from '../../utils/constants';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
@@ -55,8 +57,6 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let lastLink: string | null | undefined = null;
           let isWorkflow: boolean = false;
           let workflowName: string | null = null;
-
-
 
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
