@@ -23,16 +23,16 @@ class StudyEdgeService
     puts recordstotal
     puts "*~*~*~*~*"
     OpenStruct.new(
-        next_id: next_study_id(study: study),
-        prev_id: next_study_id(study: study, reverse: true),
-        is_workflow: is_workflow,
-        workflow_name: workflow_name,
-        study: study,
-        records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
-        counter_index: counter_index(study, recordstotal),
-        first_id: first_study_id,
-        last_id: last_study_id(recordstotal),
-        )
+      next_id: next_study_id(study: study),
+      prev_id: next_study_id(study: study, reverse: true),
+      is_workflow: is_workflow,
+      workflow_name: workflow_name,
+      study: study,
+      records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
+      counter_index: counter_index(study, recordstotal),
+      first_id: first_study_id,
+      last_id: last_study_id(recordstotal),
+    )
   end
 
 
@@ -138,7 +138,6 @@ class StudyEdgeService
     return nil if records_total > MAX_PAGE_SIZE
     search_results = @search_service.search
     index = search_results&.dig(:studies)&.index{ |x| x.id == study[:nct_id] }
-    puts index
     return index + 1 unless index.nil?
     1
   end
