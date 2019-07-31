@@ -276,31 +276,66 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     };
   };
 
-  renderColumn = (name: string) => {
+  renderColumn = (name: string, data) => {
     // INPUT: col name
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
+    const camelCaseName = camelCase(name);
+    const lowerCaseSpacing = 8;
+    const upperCaseSpacing = 10;
+    const maxWidth = 400;
+    const totalPadding = 17;
+    const getColumnWidth = () => {
+      if (data.length < 1) {
+        return calcWidth(headerName.split('')) + totalPadding;
+      }
+      
+      let max = headerName;
+      for (let i = 0; i < data.length; i += 1) {
+        const elem = data[i][camelCaseName];
+        if (data[i] !== undefined && elem !== null) {
+          const str = elem.toString();
+          if (str.length > max.length) {
+            max = str;
+          }
+        }
+      }
+      const maxArray = max.split('');
+      let maxSize = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
+      return Math.min(maxWidth, maxSize);
+    };
+
+    const calcWidth = array => {
+      return array.reduce(((acc, letter) =>
+                        letter === letter.toUpperCase() && letter !== ' ' ?
+                          acc + upperCaseSpacing : acc + lowerCaseSpacing),
+                          0);
+    };
+
+    const headerName = COLUMN_NAMES[name];
     return {
-      Header: <SearchFieldName field={COLUMN_NAMES[name]} />,
-      accessor: camelCase(name),
-      Style: {
+      Header: <SearchFieldName field={headerName} />,
+      accessor: camelCaseName,
+      style: {
         overflowWrap: 'break-word',
-        overflow: 'visible',
+        overflow: 'hidden',
         whiteSpace: 'normal',
         textAlign: this.isStarColumn(name) ? 'center' : null,
       },
       Cell: !this.isStarColumn(name)
         ? null
         // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
-        : props => (<div><div id="stars"><ReactStars
+        : props => (<div><div id="divsononeline"><ReactStars
           count={5}
           color2={starColor}
           edit={false}
           value={Number(props.original.averageRating)}/></div>
-          <div id="numreviews">
+          <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
           </div>),
+       width: getColumnWidth(),
+
     };
   };
 
@@ -340,15 +375,24 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     if (loading) {
       return (
         <SiteProvider>
-          {site => (
-            <ReactTable
-              className="-striped -highlight"
-              columns={map(this.renderColumn, site.siteView.search.fields)}
-              manual
-              loading={true}
+          {site => {
+           const columns = map(x=>this.renderColumn(x, ''), site.siteView.search.fields);
+           const totalWidth = columns.reduce(((acc, col)=> acc+col.width), 0);
+           const leftover = tableWidth - totalWidth;
+           const additionalWidth = leftover / columns.length;
+           columns.map(x=>x.width += additionalWidth, columns);
+           return (
+            <ReactTable 
+              className="-striped -highlight" 
+              columns = {columns}
+              manual 
+              loading={true} 
               defaultSortDesc
             />
           )}
+
+          }
+
         </SiteProvider>
       );
     }
@@ -362,40 +406,50 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const totalPages = Math.ceil(totalRecords / pageSize);
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
+    const searchData = path(['search', 'studies'], data);
+    const tableWidth = 1140;
+
     return (
       <SiteProvider>
-        {site => (
-          <ReactTable
-            className="-striped -highlight"
-            columns={map(this.renderColumn, site.siteView.search.fields)}
-            manual
-            minRows={1} // this is so it truncates the results when there are less than pageSize results on the page
-            page={page}
-            pageSize={pageSize}
-            defaultSorted={camelizedSorts}
-            onPageChange={pipe(
-              changePage,
-              this.props.onUpdateParams,
-            )}
-            onPageSizeChange={pipe(
-              changePageSize,
-              this.props.onUpdateParams,
-            )}
-            onSortedChange={pipe(
-              changeSorted,
-              this.props.onUpdateParams,
-            )}
-            data={path(['search', 'studies'], data)}
-            pages={totalPages}
-            loading={loading}
-            defaultPageSize={pageSize}
-            getTdProps={this.rowProps}
-            defaultSortDesc
-          />
-        )}
+        {site => {
+         const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
+         const totalWidth = columns.reduce(((acc, col)=> acc+col.width), 0);
+         const leftover = tableWidth-totalWidth;
+         const additionalWidth=leftover/columns.length;
+         columns.map(x=>x.width+= additionalWidth, columns);
+
+         return (
+           <ReactTable
+             className="-striped -highlight"
+             columns={columns}
+             manual
+             minRows={searchData![0] !== undefined ? 1 : 3}
+             page={page}
+             pageSize={pageSize}
+             defaultSorted={camelizedSorts}
+             onPageChange={pipe(
+               changePage, 
+               this.props.onUpdateParams,)}
+             onPageSizeChange={pipe(
+               changePageSize,
+               this.props.onUpdateParams,)}
+             onSortedChange = {pipe(
+               changeSorted, 
+               this.props.onUpdateParams,)}
+             data={searchData}
+             pages={totalPages}
+             loading={loading}
+             defaultPageSize={pageSize}
+             getTdProps={this.rowProps}
+             defaultSortDesc
+             noDataText={'No studies found'}
+           />
+           );
+        }}
       </SiteProvider>
-    );
+       );
   };
+
 
   renderCrumbs = ({
     data,
@@ -406,7 +460,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     loading: boolean;
     error: any;
   }) => {
-    let pagesTotal = 0;
+    let pagesTotal = 1;
     let recordsTotal = 0;
     if (
       data &&

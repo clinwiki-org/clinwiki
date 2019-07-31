@@ -85,18 +85,13 @@ div.DraftEditor-editorContainer{
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-#stars {
-   float: left;
-}
-
-#numreviews{
-   float: left;
+#divsononeline {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 #navbuttonsonstudypage {
    float: left;       display: inline-block;
    vertical-align: super;
-}    }
-
-
+}    
 `;
