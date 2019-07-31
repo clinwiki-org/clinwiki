@@ -2,6 +2,7 @@ LLONG_MIN = -9223372036854775808 # rubocop:disable Style/NumericLiterals
 LLONG_MAX = 9223372036854775807 # rubocop:disable Style/NumericLiterals
 MAX_PAGE_SIZE = 200
 
+
 class StudyEdgeService
   # @param params - hash representing SearchInputType with symbols as keys.
   def initialize(params)
@@ -12,28 +13,34 @@ class StudyEdgeService
   def study_edge(id = nil)
     study = Study.find_by(nct_id: (id || first_study_id))
     return nil if study.blank?
-    recordstotal = records_total
+
     workflow_name = (@params[:crowd_agg_filters] || [])
-      .map { |param| param[:field] }
-      .find { |field| field&.downcase&.starts_with("wf_") }
+                        .map { |param| param[:field] }
+                        .find { |field| field&.downcase&.starts_with("wf_") }
     is_workflow = workflow_name.present?
 
+    recordstotal = records_total
+    puts recordstotal
+    puts "*~*~*~*~*"
     OpenStruct.new(
       next_id: next_study_id(study: study),
       prev_id: next_study_id(study: study, reverse: true),
       is_workflow: is_workflow,
       workflow_name: workflow_name,
-      records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
       study: study,
+      records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
+      counter_index: counter_index(study, recordstotal),
       first_id: first_study_id,
       last_id: last_study_id(recordstotal),
     )
   end
 
+
   private
 
   def normalize_params(params)
     result = params.deep_symbolize_keys.deep_dup
+    result[:page_size] = MAX_PAGE_SIZE
     result[:page] = 0
     result
   end
@@ -42,8 +49,8 @@ class StudyEdgeService
     @search_service.search&.dig(:studies)&.first&.id
   end
 
-  def last_study_id(records_total)
-    unless records_total > MAX_PAGE_SIZE
+  def last_study_id(recordsTotal)
+    unless recordsTotal > MAX_PAGE_SIZE
       return @search_service.search&.dig(:studies)&.last&.id
     end
     nil
@@ -69,9 +76,9 @@ class StudyEdgeService
 
     sort_values_variants(study, reverse).each do |sort_values|
       id = @search_service.search(
-        search_after: sort_values,
-        reverse: reverse,
-      )&.dig(:studies)&.first&.id
+          search_after: sort_values,
+          reverse: reverse,
+          )&.dig(:studies)&.first&.id
       return id unless id.nil?
     end
 
@@ -106,8 +113,8 @@ class StudyEdgeService
 
   def sort_value_to_elastic(value, desc)
     case value
-    # there is a bug in Searchkick - when you pass 0.0 it converts it to "0.0"
-    # and Elasticsearch fails to parse that
+      # there is a bug in Searchkick - when you pass 0.0 it converts it to "0.0"
+      # and Elasticsearch fails to parse that
     when BigDecimal
       value.to_i
     when Date
@@ -125,4 +132,13 @@ class StudyEdgeService
     1
   end
 
+  def counter_index(study, records_total)
+    # Finds the index of the item in the search results.
+    return 1 if study.blank?
+    return nil if records_total > MAX_PAGE_SIZE
+    search_results = @search_service.search
+    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:nct_id] }
+    return index + 1 unless index.nil?
+    1
+  end
 end
