@@ -13,6 +13,7 @@ import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
+import { MAX_WINDOW_SIZE } from '../../../utils/constants';
 
 const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
