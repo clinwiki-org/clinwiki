@@ -191,6 +191,13 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
 
     const extendedSections = [
       {
+        name: 'interventions',
+        path: '/interventions',
+        displayName: interventions.title,
+        kind: 'extended',
+        order: interventions.order,
+      },
+      {
         name: 'descriptive',
         path: '/descriptive',
         displayName: descriptive.title,
@@ -211,13 +218,6 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
         displayName: recruitment.title,
         kind: 'extended',
         order: recruitment.order,
-      },
-      {
-        name: 'interventions',
-        path: '/interventions',
-        displayName: interventions.title,
-        kind: 'extended',
-        order: interventions.order,
       },
       {
         name: 'tracking',

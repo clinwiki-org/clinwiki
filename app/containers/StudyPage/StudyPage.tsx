@@ -34,11 +34,7 @@ import WikiToggle from 'components/WikiToggle';
 import { Query } from 'react-apollo';
 import { trimPath } from 'utils/helpers';
 import ReviewsPage from 'containers/ReviewsPage';
-import DescriptivePage from 'containers/DescriptivePage';
-import AdministrativePage from 'containers/AdministrativePage';
-import RecruitmentPage from 'containers/RecruitmentPage';
 import InterventionsPage from 'containers/InterventionsPage';
-import TrackingPage from 'containers/TrackingPage';
 import FacilitiesPage from 'containers/FacilitiesPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
@@ -51,6 +47,7 @@ import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtended
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import StudyPageCounter from './components/StudyPageCounter';
+import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import {PulseLoader, ScaleLoader} from 'react-spinners';
 
 interface StudyPageProps {
@@ -94,23 +91,11 @@ const PREFETCH_QUERY = gql`
         ...CrowdPageFragment
         ...TagsPageFragment
       }
-      descriptiveInfo {
-        ...DescriptiveInfoFragment
-      }
-      administrativeInfo {
-        ...AdministrativeInfoFragment
-      }
-      recruitmentInfo {
-        ...RecruitmentInfoFragment
-      }
       reviews {
         ...ReviewsPageFragment
       }
       interventions {
         ...InterventionItemFragment
-      }
-      trackingInfo {
-        ...TrackingInfoFragment
       }
       facilities {
         ...FacilityFragment
@@ -129,12 +114,8 @@ const PREFETCH_QUERY = gql`
   ${StudySummary.fragment}
   ${WikiPage.fragment}
   ${CrowdPage.fragment}
-  ${DescriptivePage.fragment}
   ${ReviewsPage.fragment}
-  ${AdministrativePage.fragment}
-  ${RecruitmentPage.fragment}
   ${InterventionsPage.fragment}
-  ${TrackingPage.fragment}
   ${FacilitiesPage.fragment}
   ${TagsPage.fragment}
 `;
@@ -332,7 +313,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         displayName: descriptive.title,
         kind: 'extended',
         order: descriptive.order,
-        component: DescriptivePage,
+        component: GenericStudySectionPage,
         hidden: descriptive.hide,
         metaData: descriptive,
       },
@@ -343,7 +324,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         displayName: administrative.title,
         kind: 'extended',
         order: administrative.order,
-        component: AdministrativePage,
+        component: GenericStudySectionPage,
         hidden: administrative.hide,
         metaData: administrative,
       },
@@ -353,7 +334,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         displayName: recruitment.title,
         kind: 'extended',
         order: recruitment.order,
-        component: RecruitmentPage,
+        component: GenericStudySectionPage,
         hidden: recruitment.hide,
         metaData: recruitment,
       },
@@ -373,7 +354,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         displayName: tracking.title,
         kind: 'extended',
         order: tracking.order,
-        component: TrackingPage,
+        component: GenericStudySectionPage,
         hidden: tracking.hide,
         metaData: tracking,
       },
@@ -539,30 +520,33 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           <div className="container">
                             <Switch>
                               {this.getSectionsForRoutes(site.siteView).map(
-                                section => section ? (
-                                  <Route
-                                    key={section.path}
-                                    path={`${this.props.match.path}${
-                                      section.path
-                                    }`}
-                                    render={props => {
-                                      const Component = section.component;
+                                section =>
+                                  section ? (
+                                    <Route
+                                      key={section.path}
+                                      path={`${this.props.match.path}${
+                                        section.path
+                                      }`}
+                                      render={props => {
+                                        const Component = section.component;
 
-                                      return (
-                                        // @ts-ignore
-                                        <Component
-                                          {...props}
-                                          workflowName={this.props.workflowName}
-                                          metaData={section.metaData}
-                                          onLoaded={this.handleLoaded}
-                                          isWorkflow={this.props.isWorkflow}
-                                          nextLink={this.props.nextLink}
-                                          workflowsView={workflowsView}
-                                        />
-                                      );
-                                    }}
-                                  />
-                                ) : null,
+                                        return (
+                                          // @ts-ignore
+                                          <Component
+                                            {...props}
+                                            workflowName={
+                                              this.props.workflowName
+                                            }
+                                            metaData={section.metaData}
+                                            onLoaded={this.handleLoaded}
+                                            isWorkflow={this.props.isWorkflow}
+                                            nextLink={this.props.nextLink}
+                                            workflowsView={workflowsView}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                  ) : null,
                               )}
                             </Switch>
                           </div>

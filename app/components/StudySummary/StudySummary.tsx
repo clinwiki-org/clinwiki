@@ -19,29 +19,111 @@ interface StudySummaryProps {
 class StudySummary extends React.PureComponent<StudySummaryProps> {
   static fragment = gql`
     fragment StudySummaryFragment on Study {
-      briefTitle
-      nctId
-      type
-      overallStatus
-      completionDate
-      enrollment
-      source
-      reviewsCount
+      acronym
+      ages
       averageRating
+      baselinePopulation
+      biospecDescription
+      biospecRetention
+      briefSummary
+      briefTitle
+      collaborators
+      completionDate
+      completionDateType
+      completionMonthYear
+      conditions
+      contacts
+      createdAt
+      design
+      detailedDescription
+      dispositionFirstPostedDate
+      dispositionFirstPostedDateType
+      dispositionFirstSubmittedDate
+      dispositionFirstSubmittedQcDate
+      eligibilityCriteria
+      eligibilityGender
+      eligibilityHealthyVolunteers
+      enrollment
+      enrollmentType
+      expandedAccessTypeIndividual
+      expandedAccessTypeIntermediate
+      expandedAccessTypeTreatment
+      firstReceivedDate
+      hasDataMonitoringCommittee
+      hasDmc
+      hasExpandedAccess
+      investigators
+      ipdAccessCriteria
+      ipdTimeFrame
+      ipdUrl
+      isFdaRegulated
+      isFdaRegulatedDevice
+      isFdaRegulatedDrug
+      isPpsd
+      isUnapprovedDevice
+      isUsExport
+      lastChangedDate
+      lastKnownStatus
+      lastUpdatePostedDate
+      lastUpdatePostedDateType
+      lastUpdateSubmittedDate
+      lastUpdateSubmittedQcDate
+      limitationsAndCaveats
+      listedLocationCountries
+      nctId
+      nlmDownloadDateDescription
+      numberOfArms
+      numberOfGroups
+      officialTitle
+      otherStudyIds
+      overallStatus
+      phase
+      planToShareIpd
+      planToShareIpdDescription
+      primaryCompletionDate
+      primaryCompletionDateType
+      primaryCompletionMonthYear
+      primaryMeasures
+      publications
+      removedLocationCountries
+      responsibleParty
+      resultsFirstPostedDate
+      resultsFirstPostedDateType
+      resultsFirstSubmittedDate
+      resultsFirstSubmittedQcDate
+      reviewsCount
+      secondaryMeasures
+      source
+      sponsor
+      startDate
+      startDateType
+      startMonthYear
+      studyArms
+      studyFirstPostedDate
+      studyFirstPostedDateType
+      studyFirstSubmittedDate
+      studyFirstSubmittedQcDate
+      studyType
+      targetDuration
+      type
+      updatedAt
+      verificationDate
+      verificationMonthYear
+      whyStopped
     }
   `;
 
   render() {
-    const allowedFields = 
-      this.props.workflow ? 
-      displayFields(
-        this.props.workflow.summaryFieldsFilter.kind,
-        this.props.workflow.summaryFieldsFilter.values,
-        this.props.workflow.allSummaryFields.map(name => ({
-          name,
-          rank: null,
-        })),
-      ).map(prop('name')) : null;
+    const allowedFields = this.props.workflow
+      ? displayFields(
+          this.props.workflow.summaryFieldsFilter.kind,
+          this.props.workflow.summaryFieldsFilter.values,
+          this.props.workflow.allSummaryFields.map(name => ({
+            name,
+            rank: null,
+          })),
+        ).map(prop('name'))
+      : null;
 
     return (
       <div className="container">
@@ -70,7 +152,8 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
                   <td>{this.props.study.overallStatus}</td>
                 </tr>
               )}
-              {(!allowedFields || allowedFields.includes('completion_date')) && (
+              {(!allowedFields ||
+                allowedFields.includes('completion_date')) && (
                 <tr>
                   <th>Primary Completion Date</th>
                   <td>{this.props.study.completionDate}</td>
