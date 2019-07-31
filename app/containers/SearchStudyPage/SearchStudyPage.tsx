@@ -17,6 +17,8 @@ const QUERY = gql`
       studyEdge(id: $id) {
         nextId
         prevId
+        firstId
+        lastId
         isWorkflow
         workflowName
         study {
@@ -58,6 +60,8 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let recordsTotal: number | JSX.Element | null | undefined =
             <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>;
           let counterIndex: number | JSX.Element | null | undefined = null;
+          let workflowName: string | null = null;
+
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
             const nextId = path(['search', 'studyEdge', 'nextId'], data);

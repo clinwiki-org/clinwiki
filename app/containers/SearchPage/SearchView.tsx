@@ -317,7 +317,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     return {
       Header: <SearchFieldName field={headerName} />,
       accessor: camelCaseName,
-      Style: {
+      style: {
         overflowWrap: 'break-word',
         overflow: 'hidden',
         whiteSpace: 'normal',
@@ -326,12 +326,12 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       Cell: !this.isStarColumn(name)
         ? null
         // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
-        : props => (<div><div id="stars"><ReactStars
+        : props => (<div><div id="divsononeline"><ReactStars
           count={5}
           color2={starColor}
           edit={false}
           value={Number(props.original.averageRating)}/></div>
-          <div id="numreviews">
+          <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
           </div>),
        width: getColumnWidth(),
