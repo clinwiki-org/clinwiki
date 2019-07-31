@@ -148,6 +148,7 @@ ActiveRecord::Schema.define(version: 2019_07_18_071212) do
     t.float "frequency"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
 
   create_table "workflows_views", force: :cascade do |t|
     t.jsonb "updates", default: [], null: false
