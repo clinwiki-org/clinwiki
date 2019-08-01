@@ -1,5 +1,5 @@
 class WordFrequency < ApplicationRecord
-  # searchkick word_start: [:name]
+  searchkick word_start: [:name]
 
   self.primary_key = "name"
 
@@ -10,8 +10,8 @@ class WordFrequency < ApplicationRecord
   def percentage(word)
     WordFrequency.where(:name => word).frequency / total_frequency
   end
-
-  def rank(word)
-    WordFrequency.all.order(frequency: :desc).map(&:name).index(word) + 1
-  end
+  #
+  # def rank(word)
+  #   WordFrequency.all.order(frequency: :desc).map(&:name).index(word) + 1
+  # end
 end

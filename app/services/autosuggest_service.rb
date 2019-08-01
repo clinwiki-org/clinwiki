@@ -22,13 +22,13 @@ class AutosuggestService
   end
 
   def autocomplete
-    render json: Movie.search(params[:query], {
-        fields: ["name^5"],
+    WordFrequency.search(params[:query], {
+        fields: ["name^5", ],
         match: :word_start,
         limit: 10,
         load: false,
         misspellings: {below: 5}
-    }).map(&:title)
+    }).map(&:name)
   end
 end
 
