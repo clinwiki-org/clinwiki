@@ -29,6 +29,9 @@ studies.each do |study|
     end
   end
 end
+
+hash = hash.select{|k, _| !FUNCTION_WORDS.include? k}
+
 hash.each_pair do |word, word_count|
   WordFrequency.create! name: word, frequency: word_count
 end
