@@ -127,6 +127,7 @@ module Types
     def autosuggestions
       autosuggest = AutosuggestService.new
       autosuggest.suggestions
+    end
 
     def workflows_view
       WorkflowsView.instance.view

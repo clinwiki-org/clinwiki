@@ -22,13 +22,14 @@ class AutosuggestService
   end
 
   def autocomplete
-    WordFrequency.search(params[:query], {
-        fields: ["name^5", ],
+    result = WordFrequency.search(params[:query], {
+        fields: %w(name^5 frequency),
         match: :word_start,
         limit: 10,
         load: false,
         misspellings: {below: 5}
-    }).map(&:name)
+    })
+    result.results
   end
 end
 
