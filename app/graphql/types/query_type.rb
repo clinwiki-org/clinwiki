@@ -58,7 +58,6 @@ module Types
         load: false,
         misspellings: {below: 5}
       }
-      WordFrequency.reindex
       results = WordFrequency.search(params, fields)
       results.map(&:name)
     end
