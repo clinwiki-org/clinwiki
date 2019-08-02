@@ -231,9 +231,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
   getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
     const sections = this.getSections(view);
-    const wiki = find(propEq('name', 'wiki'), sections);
     const noWikiSections = reject(propEq('name', 'wiki'), sections);
-    return [...noWikiSections, wiki] as Section[];
+    const wiki = find(propEq('name', 'wiki'), sections);
+    // @ts-ignore
+    return !wiki || wiki.hidden
+      ? noWikiSections
+      : ([...noWikiSections, wiki] as Section[]);
   };
 
   getSections = (view: SiteViewFragment): Section[] => {
@@ -547,6 +550,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                                       }}
                                     />
                                   ) : null,
+                              )}
+                              {!this.props.isWorkflow && (
+                                <Redirect
+                                  to={`${this.props.match.url}${
+                                    this.getSectionsForRoutes(site.siteView)[0]
+                                      .path
+                                  }`}
+                                />
                               )}
                             </Switch>
                           </div>
