@@ -50,7 +50,7 @@ module Types
       argument :params, type: String, required: false
     end
 
-    def typeahead(params:"")
+    def typeahead(params:nil)
       fields = {
         fields: ["name"],
         match: :word_start,
@@ -58,14 +58,6 @@ module Types
         load: false,
         misspellings: {below: 5}
       }
-    #       search_result = Study.search("*", options) do |body|
-    #   body[:query][:bool][:must] = { query_string: { query: search_query } }
-    # end
-    # {
-    #   recordsTotal: search_result.total_entries,
-    #   studies: search_result.results,
-    #   aggs: search_result.aggs,
-    # }
       WordFrequency.reindex
       results = WordFrequency.search(params, fields)
       results.map(&:name)
