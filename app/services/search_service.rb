@@ -3,13 +3,6 @@ ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
 MAX_WINDOW_SIZE = 10_000
 
-require 'autosuggest'
-#
-def hello(studies)
-  top_queries = Hash[WordFrequency.pluck(:name, :frequency)]
-  puts top_queries
-  #puts Autosuggest.new(top_queries).pretty_suggestions
-end
 
 # aggregations
 DEFAULT_AGG_OPTIONS = {

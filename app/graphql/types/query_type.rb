@@ -44,12 +44,37 @@ module Types
     end
 
 
-    field :autosuggest, [SuggestionType], 'recommended words', null:false
+    #field :autosuggest, [SuggestionType], 'recommended words', null:false
 
-    def autosuggest
-      suggest_service = AutosuggestService.new
-      suggest_service.words
+    field :typeahead, [String], 'searchkick recommended words', null: false do
+      argument :params, type: String, required: false
     end
+
+    def typeahead(params:"")
+      fields = {
+        fields: ["name"],
+        match: :word_start,
+        limit: 10,
+        load: false,
+        misspellings: {below: 5}
+      }
+    #       search_result = Study.search("*", options) do |body|
+    #   body[:query][:bool][:must] = { query_string: { query: search_query } }
+    # end
+    # {
+    #   recordsTotal: search_result.total_entries,
+    #   studies: search_result.results,
+    #   aggs: search_result.aggs,
+    # }
+      WordFrequency.reindex
+      results = WordFrequency.search(params, fields)
+      results.map(&:name)
+    end
+
+    # def autosuggest
+    #   suggest_service = AutosuggestService.new
+    #   suggest_service.words
+    # end
 
     field :workflows_view, WorkflowsViewType, "Workflows config", null: false
 
@@ -124,9 +149,6 @@ module Types
       JSON.parse(link.long).deep_symbolize_keys
     end
 
-    def autosuggestions
-      autosuggest = AutosuggestService.new
-      autosuggest.suggestions
 
     def workflows_view
       WorkflowsView.instance.view

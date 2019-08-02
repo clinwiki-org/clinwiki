@@ -1,5 +1,5 @@
 class WordFrequency < ApplicationRecord
-  # searchkick word_start: [:name]
+  searchkick word_start: [:name]
 
   self.primary_key = "name"
 
