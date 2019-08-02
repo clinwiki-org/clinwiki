@@ -18,7 +18,10 @@ const QUERY = gql`
       studyEdge(id: $id) {
         nextId
         prevId
+        firstId
+        lastId
         isWorkflow
+        workflowName
         study {
           nctId
         }
@@ -60,6 +63,10 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let recordsTotal: number | JSX.Element | null | undefined =
             <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>;
           let counterIndex: number | JSX.Element | null | undefined = null;
+          let workflowName: string | null = null;
+
+
+
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
             const nextId = path(['search', 'studyEdge', 'nextId'], data);
@@ -76,6 +83,11 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               pathOr(1, ['search', 'studyEdge', 'recordsTotal'], data) as number;
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
             prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
+            workflowName = pathOr(
+              false,
+              ['search', 'studyEdge', 'workflowName'],
+              data,
+            ) as string | null;
 
             // just so that there isn't a first button if there isn't a prev button
             // likewise for the last button
@@ -98,6 +110,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               isWorkflow={isWorkflow}
               recordsTotal={recordsTotal}
               counterIndex={counterIndex}
+              workflowName={workflowName}
             />
           );
         }}

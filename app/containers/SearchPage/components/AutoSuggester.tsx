@@ -1,16 +1,13 @@
 import * as React from 'react';
-import { Typeahead } from 'react-bootstrap-typeahead'; // ES2015
-import { gql } from 'apollo-boost';
-import { Query } from 'react-apollo';
+import { Typeahead, AsyncTypeahead, } from 'react-bootstrap-typeahead'; // ES2015
+import {gql, ApolloClient} from "apollo-boost";
+import { Query, ApolloConsumer } from 'react-apollo';
 import { SuggestionsQuery } from 'types/SuggestionsQuery';
 import { path, pathOr, test, is, map } from 'ramda';
 
 const QUERY = gql`
-  query SuggestionsQuery {
-    autosuggest {
-      word
-      frequency
-    }
+  query SuggestionsQuery($params: String) {
+    typeahead(params: $params)
   }
 `;
 
@@ -18,33 +15,58 @@ class SuggestionsQueryComponent extends Query<
   SuggestionsQuery
   > {}
 
-class AutoSuggester extends React.Component {
-  eachPath = arrayData => path(['word'], arrayData);
+interface SuggestionsProps {
+  params: String;
+}
+interface SuggestionsState {
+  isLoading: boolean;
+  options: [String] | null;
+}
 
+class AutoSuggester extends React.Component<SuggestionsProps, SuggestionsState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      options: [''],
+      isLoading: false,
+    }
+  }
   render() {
-    // const defaultOptions = ['Jick', 'Miles', 'Charles', 'Herbie'];
+    return (<ApolloConsumer> 
+      {client => this.renderMain(client)}
+    </ApolloConsumer>)
+  }
+
+  onSearch = async (query: string, client:ApolloClient<any>) => {
+
+    this.setState({isLoading: true});
+
+    const {data}: any = await client.query({
+      query: QUERY, 
+      variables: {
+        params: query
+      }
+    });
+    console.log(data.typeahead)
+    this.setState({
+      options: data.typeahead,
+      isLoading: false
+    });
+  };
+
+  renderMain(client:ApolloClient<any>) {
+    //const defaultOptions = ['Jick', 'Miles', 'Charles', 'Herbie'];
+
     return (
-      <SuggestionsQueryComponent query={QUERY}>
-        {({ data, loading, error }) => {
-          if (error) {
-            return null;
-          }
-          if (loading) {
-            return 'Loading ...';
-          }
-          let wordList: [] | null | undefined | any = null;
-          if (data && !loading) {
-            const autoSuggestData: any = path(['autosuggest'], data);
-            // wordList = map(this.eachPath, path(['autosuggest'], data));
-            wordList = map(this.eachPath, autoSuggestData);
-          }
-          return (
-            <Typeahead {...this.props} options={wordList} minLength={1} maxResults={5} />
-          );
-        }}
-      </SuggestionsQueryComponent>
+      <AsyncTypeahead {...this.props} 
+      options={this.state.options} 
+      isLoading={this.state.isLoading}
+      onSearch = {e=>this.onSearch(e,client)}
+      minLength={1} 
+      maxResults={10} />
     );
   }
+
 }
 
 export default AutoSuggester;

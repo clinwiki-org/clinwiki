@@ -20,6 +20,7 @@ import Edits from 'components/Edits';
 import { trimPath } from 'utils/helpers';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface WikiPageProps {
   match: match<{ nctId: string }>;
@@ -28,6 +29,7 @@ interface WikiPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyBasicGenericSectionFragment;
 }
 
 interface WikiPageState {

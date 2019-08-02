@@ -16,6 +16,7 @@ const FRAGMENT = gql`
     firstName
     lastName
     defaultQueryString
+    roles
   }
 `;
 

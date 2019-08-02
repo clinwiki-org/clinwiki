@@ -10,6 +10,7 @@ const TrWithPointer = styled.tr`
 const Tr = styled.tr``;
 
 interface InterventionItemProps {
+  fields: string[];
   interventionItem: InterventionItemFragment;
   onClick?: (id: number) => void;
 }
@@ -33,11 +34,18 @@ class InterventionItem extends React.PureComponent<InterventionItemProps> {
     const Wrapper = this.props.onClick ? TrWithPointer : Tr;
     return (
       <Wrapper onClick={this.handleClick}>
-        <td>{this.props.interventionItem.name || 'No name provided'}</td>
-        <td>{this.props.interventionItem.type || 'No type provided'}</td>
-        <td>
-          {this.props.interventionItem.description || 'No description provided'}
-        </td>
+        {this.props.fields.includes('name') && (
+          <td>{this.props.interventionItem.name || 'No name provided'}</td>
+        )}
+        {this.props.fields.includes('type') && (
+          <td>{this.props.interventionItem.type || 'No type provided'}</td>
+        )}
+        {this.props.fields.includes('description') && (
+          <td>
+            {this.props.interventionItem.description ||
+              'No description provided'}
+          </td>
+        )}
       </Wrapper>
     );
   }

@@ -17,7 +17,7 @@ import SearchForm from './SearchForm';
 import { StyledContainer } from './Styled';
 import { Link } from 'react-router-dom';
 import { History, Location } from 'history';
-import WorkflowForm from './WorkflowForm';
+import StudyForm from './StudyForm';
 
 interface SiteFormProps {
   match: match<{}>;
@@ -109,9 +109,16 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const sections = [
       { path: '/main', value: 'Main' },
       { path: '/search', value: 'Search' },
-      { path: '/workflow', value: 'Workflow' },
+      { path: '/study', value: 'Study' },
     ];
-    const activeKey = `/${last(this.props.location.pathname.split('/'))}`;
+
+    const locationComponents = this.props.location.pathname.split('/');
+    let activeKey = last(locationComponents);
+    if (locationComponents[locationComponents.length - 2] === 'study') {
+      activeKey = 'study';
+    }
+    activeKey = `/${activeKey}`;
+
     return (
       <StyledNav
         bsStyle="pills"
@@ -153,9 +160,10 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
             )}
           />
           <Route
-            path={`${path}/workflow`}
-            render={() => (
-              <WorkflowForm
+            path={`${path}/study`}
+            render={routeProps => (
+              <StudyForm
+                {...routeProps}
                 view={view}
                 onAddMutation={this.handleAddMutation}
               />

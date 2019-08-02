@@ -21,6 +21,7 @@ import { contains, reject, equals, lensPath } from 'ramda';
 import Edits from 'components/Edits';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface TagsPageProps {
   history: History;
@@ -28,6 +29,7 @@ interface TagsPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyBasicGenericSectionFragment;
 }
 
 interface TagsPageState {

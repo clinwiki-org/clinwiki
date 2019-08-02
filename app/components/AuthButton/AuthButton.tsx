@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 interface AuthButtonProps {
   user: {
     email: string;
+    roles: string[];
   } | null;
   history: History;
 }
@@ -28,6 +29,10 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
 
   handleProfileClick = () => {
     this.props.history.push('/profile');
+  };
+
+  handleWorkflowsClick = () => {
+    this.props.history.push('/workflows');
   };
 
   handleSignOutClick = () => {
@@ -51,6 +56,9 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
           id="loggedIn"
         >
           <MenuItem onClick={this.handleSitesClick}>Sites</MenuItem>
+          {this.props.user && this.props.user.roles.includes('admin') && (
+            <MenuItem onClick={this.handleWorkflowsClick}>Workflows</MenuItem>
+          )}
           <MenuItem onClick={this.handleProfileClick}>Profile</MenuItem>
           <MenuItem onClick={this.handleSignOutClick}>Log Out</MenuItem>
         </DropdownButton>

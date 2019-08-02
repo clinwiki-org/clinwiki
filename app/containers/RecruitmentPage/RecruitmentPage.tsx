@@ -10,6 +10,10 @@ import {
   RecruitmentPageQueryVariables,
 } from 'types/RecruitmentPageQuery';
 import StudySummary from 'components/StudySummary';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import { displayFields } from 'utils/siteViewHelpers';
+import { prop } from 'ramda';
 
 interface RecruitmentPageProps {
   history: History;
@@ -17,6 +21,7 @@ interface RecruitmentPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  metaData: SiteStudyExtendedGenericSectionFragment;
 }
 
 const FRAGMENT = gql`
@@ -91,37 +96,53 @@ class RecruitmentPage extends React.PureComponent<RecruitmentPageProps> {
             return null;
           }
 
+          const fields = displayFields(
+            this.props.metaData.selected.kind,
+            this.props.metaData.selected.values,
+            this.props.metaData.fields.map(name => ({ name, rank: null })),
+          ).map(prop('name'));
+
           this.props.onLoaded && this.props.onLoaded();
           const info = data.study.recruitmentInfo;
           return (
             <Table striped bordered condensed>
               <tbody>
-                {this.renderItem('Recruitment Status', info.overallStatus)}
-                {this.renderItem('Enrollment', info.enrollment)}
-                {this.renderItem('Completion date', info.completionDate)}
-                {this.renderItem(
-                  'Primary Completion Date',
-                  info.primaryCompletionDate,
-                )}
-                {this.renderItem(
-                  'Eligibility Criteria',
-                  info.eligibility.criteria,
-                )}
-                {this.renderItem('Gender', info.eligibility.gender)}
-                {this.renderItem('Ages', info.ages)}
-                {this.renderItem(
-                  'Accepts Healthy Volunteers',
-                  info.eligibility.healthyVolunteers,
-                )}
-                {this.renderItem('Contacts', info.contacts)}
-                {this.renderItem(
-                  'Listed Location Countries',
-                  info.listedLocationCountries,
-                )}
-                {this.renderItem(
-                  'Removed Location Countries',
-                  info.removedLocationCountries,
-                )}
+                {fields.includes('overallStatus') &&
+                  this.renderItem('Recruitment Status', info.overallStatus)}
+                {fields.includes('enrollment') &&
+                  this.renderItem('Enrollment', info.enrollment)}
+                {fields.includes('completionDate') &&
+                  this.renderItem('Completion date', info.completionDate)}
+                {fields.includes('primaryCompletionDate') &&
+                  this.renderItem(
+                    'Primary Completion Date',
+                    info.primaryCompletionDate,
+                  )}
+                {fields.includes('eligibilityCriteria') &&
+                  this.renderItem(
+                    'Eligibility Criteria',
+                    info.eligibility.criteria,
+                  )}
+                {fields.includes('eligibilityGender') &&
+                  this.renderItem('Gender', info.eligibility.gender)}
+                {fields.includes('ages') && this.renderItem('Ages', info.ages)}
+                {fields.includes('eligibilityHealthyVolunteers') &&
+                  this.renderItem(
+                    'Accepts Healthy Volunteers',
+                    info.eligibility.healthyVolunteers,
+                  )}
+                {fields.includes('contacts') &&
+                  this.renderItem('Contacts', info.contacts)}
+                {fields.includes('listedLocationCountries') &&
+                  this.renderItem(
+                    'Listed Location Countries',
+                    info.listedLocationCountries,
+                  )}
+                {fields.includes('removedLocationCountries') &&
+                  this.renderItem(
+                    'Removed Location Countries',
+                    info.removedLocationCountries,
+                  )}
               </tbody>
             </Table>
           );

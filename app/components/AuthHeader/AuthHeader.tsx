@@ -11,6 +11,7 @@ import AuthButton from 'components/AuthButton';
 interface AuthHeaderProps {
   user: {
     email: string;
+    roles: string[];
   } | null;
   history: History;
 }
@@ -31,8 +32,7 @@ const StyledWrapper = styled.div`
   }
 
   a#logo {
-    background: url('/clinwiki-50.png') center
-      left no-repeat;
+    background: url('/clinwiki-50.png') center left no-repeat;
     background-size: 25px 25px;
     margin-left: 1px;
     padding-left: 30px;
@@ -52,8 +52,14 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
               </Link>
             </Navbar.Brand>
             <ul className="nav navbar-nav">
-              {true ? null : <li><a href="/search">Search</a></li>}
-              <li><a href="/about">About</a></li>
+              {true ? null : (
+                <li>
+                  <a href="/search">Search</a>
+                </li>
+              )}
+              <li>
+                <a href="/about">About</a>
+              </li>
             </ul>
           </Navbar.Header>
           <AuthButton user={this.props.user} history={this.props.history} />

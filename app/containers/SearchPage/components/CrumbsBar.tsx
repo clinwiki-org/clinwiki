@@ -236,7 +236,8 @@ export default class CrumbsBar extends React.Component<
                     onInputChange={this.inputSearchChange}
                     onChange={this.clickSearchChange}
                     id='searcher'
-                    placeholder='search...' />
+                    placeholder='search...'
+                    params = {val=>{return val}}/>
 
 
                 </FormGroup>

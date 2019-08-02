@@ -21,6 +21,7 @@ import SitePage from 'containers/SitePage';
 import SitesNewPage from 'containers/SitesNewPage';
 import SitesEditPage from 'containers/SitesEditPage';
 import SearchStudyPage from '../SearchPage/SearchPage';
+import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 
 interface AppProps {
   history: History;
@@ -59,6 +60,7 @@ class App extends React.PureComponent<AppProps> {
             <Route path="/study/:nctId" component={StudyPage} />
             <Route path="/intervention/:id" component={InterventionPage} />
             <Route path="/profile" component={EditProfilePage} />
+            <Route path="/workflows" component={EditWorkflowsPage} />
             <Route path="/sites/:id/edit" component={SitesEditPage} />
             <Route path="/sites/new" component={SitesNewPage} />
             <Route path="/sites" component={SitesPage} />

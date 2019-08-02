@@ -95,4 +95,10 @@ div.DraftEditor-editorContainer{
    vertical-align: super;
 }
 
+#navbuttonsonstudypage {
+   float: left;       display: inline-block;
+   vertical-align: super;
+}    }
+
+
 `;
