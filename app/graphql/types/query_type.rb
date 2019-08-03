@@ -50,16 +50,9 @@ module Types
       argument :params, type: String, required: false
     end
 
-    def typeahead(params:nil)
-      fields = {
-        fields: ["name"],
-        match: :word_start,
-        limit: 10,
-        load: false,
-        misspellings: {below: 5}
-      }
-      results = WordFrequency.search(params, fields)
-      results.map(&:name)
+    def typeahead(params: nil)
+      autosuggest = AutosuggestService.new(params)
+      autosuggest.autocomplete
     end
 
     # def autosuggest
