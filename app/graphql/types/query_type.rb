@@ -44,12 +44,21 @@ module Types
     end
 
 
-    field :autosuggest, [SuggestionType], 'recommended words', null:false
+    #field :autosuggest, [SuggestionType], 'recommended words', null:false
 
-    def autosuggest
-      suggest_service = AutosuggestService.new
-      suggest_service.words
+    field :typeahead, [String], 'searchkick recommended words', null: false do
+      argument :params, type: String, required: false
     end
+
+    def typeahead(params: nil)
+      autosuggest = AutosuggestService.new(params)
+      autosuggest.autocomplete
+    end
+
+    # def autosuggest
+    #   suggest_service = AutosuggestService.new
+    #   suggest_service.words
+    # end
 
     field :workflows_view, WorkflowsViewType, "Workflows config", null: false
 
@@ -122,11 +131,6 @@ module Types
       return nil if link.nil?
 
       JSON.parse(link.long).deep_symbolize_keys
-    end
-
-    def autosuggestions
-      autosuggest = AutosuggestService.new
-      autosuggest.suggestions
     end
 
     def workflows_view
