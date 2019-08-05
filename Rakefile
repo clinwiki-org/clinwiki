@@ -217,4 +217,44 @@ task migrate_tags: :environment do
   end
 end
 
+namespace :autocomplete do
+  desc "Creates an index of the WordFrequency table"
+  task create_index: :environment do
+    p "Initializing index..."
+    WordFrequency.reindex(import: false)
+    p "Done!"
+  end
+
+  desc "Takes all words from sql database and upserts them into index"
+  task reindex: :environment do
+    p "Getting names of #{WordFrequency.count} words..."
+    WordFrequency.enqueue_reindex_job_big(WordFrequency.all)
+    until WordFrequency.search_index.reindex_queue.length == 0
+      p "#{WordFrequency.search_index.reindex_queue.length} left..."
+      sleep 5
+    end
+    p "Success!"
+  end
+
+  desc "Updates all records in the index"
+  task update_index: :environment do
+    page = 0
+    while page
+      search = WordFrequency.search(load: false, per_page: 1_000, page: page)
+      page = search.next_page
+      ids = search.results.map(&:id)
+      WordFrequency.enqueue_reindex_ids(ids)
+    end
+    until WordFrequency.search_index.reindex_queue.length == 0
+      p "#{WordFrequency.search_index.reindex_queue.length} left..."
+      sleep 5
+    end
+    p "Success!"
+  end
+
+  desc "Creates an index with all words from sql database"
+  task bootstrap_full: [:create_index, :reindex]
+
+end
+
 # rubocop:enable Style/ZeroLengthPredicate
