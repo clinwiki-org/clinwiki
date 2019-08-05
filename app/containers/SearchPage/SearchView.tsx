@@ -44,6 +44,11 @@ import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
 import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> base
 
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import { stringify } from 'querystring';
@@ -309,7 +314,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const upperCaseSpacing = 10;
     const maxWidth = 400;
     const totalPadding = 17;
-
     const getColumnWidth = () => {
       if (data.length < 1) {
         return calcWidth(headerName.split('')) + totalPadding;
@@ -325,8 +329,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         }
       }
       const maxArray = max.split('');
-      max = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
-      return Math.min(maxWidth, max);
+      let maxSize = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
+      return Math.min(maxWidth, maxSize);
     };
 
     const calcWidth = array => {
@@ -356,8 +360,9 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           value={Number(props.original.averageRating)}/></div>
           <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
-          </div >),
-      width: getColumnWidth(),
+          </div>),
+       width: getColumnWidth(),
+
     };
   };
 
@@ -429,49 +434,48 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     const searchData = path(['search', 'studies'], data);
     const tableWidth = 1140;
+
     return (
       <SiteProvider>
         {site => {
-          const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
-          const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
-          const leftover = tableWidth - totalWidth;
-          const additionalWidth = leftover / columns.length;
-          columns.map(x => x.width += additionalWidth, columns);
-          return (
-            <ReactTable
-              className="-striped -highlight"
-              columns={columns}
-              manual
-              minRows={searchData![0] !== undefined ? 1 : 3}
-              // this is so it truncates the results when there are less than pageSize results on the page
-              page={page}
-              pageSize={pageSize}
-              defaultSorted={camelizedSorts}
-              onPageChange={pipe(
-                changePage,
-                this.props.onUpdateParams,
-              )}
-              onPageSizeChange={pipe(
-                changePageSize,
-                this.props.onUpdateParams,
-              )}
-              onSortedChange={pipe(
-                changeSorted,
-                this.props.onUpdateParams,
-              )}
-              data={searchData}
-              pages={totalPages}
-              loading={loading}
-              defaultPageSize={pageSize}
-              getTdProps={this.rowProps}
-              defaultSortDesc
-              noDataText={'No studies found'}
-            />
-          );
+         const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
+         const totalWidth = columns.reduce(((acc, col)=> acc+col.width), 0);
+         const leftover = tableWidth-totalWidth;
+         const additionalWidth=leftover/columns.length;
+         columns.map(x=>x.width+= additionalWidth, columns);
+
+         return (
+           <ReactTable
+             className="-striped -highlight"
+             columns={columns}
+             manual
+             minRows={searchData![0] !== undefined ? 1 : 3}
+             page={page}
+             pageSize={pageSize}
+             defaultSorted={camelizedSorts}
+             onPageChange={pipe(
+               changePage,
+               this.props.onUpdateParams,)}
+             onPageSizeChange={pipe(
+               changePageSize,
+               this.props.onUpdateParams,)}
+             onSortedChange = {pipe(
+               changeSorted,
+               this.props.onUpdateParams,)}
+             data={searchData}
+             pages={totalPages}
+             loading={loading}
+             defaultPageSize={pageSize}
+             getTdProps={this.rowProps}
+             defaultSortDesc
+             noDataText={'No studies found'}
+           />
+           );
         }}
       </SiteProvider>
-    );
+       );
   };
+
 
   renderCrumbs = ({
     data,

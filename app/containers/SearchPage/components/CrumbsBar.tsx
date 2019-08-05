@@ -13,8 +13,13 @@ import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
+<<<<<<< HEAD
 import {Typeahead} from 'react-bootstrap-typeahead'; // ES2015
 import AutoSuggester from './AutoSuggester';
+=======
+import { MAX_WINDOW_SIZE } from '../../../utils/constants';
+
+>>>>>>> base
 const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
     padding: 10px 30px;

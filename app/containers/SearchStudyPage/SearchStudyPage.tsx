@@ -26,9 +26,9 @@ const QUERY = gql`
           nctId
         }
         recordsTotal
-        counterIndex
-        firstId
-        lastId
+	      counterIndex
+	      firstId
+	      lastId
       }
     }
   }
@@ -43,15 +43,13 @@ interface StudySearchPageProps {
 class SearchStudyPageQueryComponent extends Query<
   SearchStudyPageQuery,
   SearchStudyPageQueryVariables
-> {}
-
+  > {}
 class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
   render() {
     const variables = {
       hash: this.props.match.params.searchId,
       id: this.props.match.params.nctId,
     };
-
     return (
       <SearchStudyPageQueryComponent query={QUERY} variables={variables}>
         {({ data, loading, error }) => {
@@ -64,8 +62,6 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
             <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>;
           let counterIndex: number | JSX.Element | null | undefined = null;
           let workflowName: string | null = null;
-
-
 
           if (data && !loading) {
             const prevId = path(['search', 'studyEdge', 'prevId'], data);
@@ -111,6 +107,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               recordsTotal={recordsTotal}
               counterIndex={counterIndex}
               workflowName={workflowName}
+
             />
           );
         }}
@@ -118,5 +115,4 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
     );
   }
 }
-
 export default StudySearchPage;
