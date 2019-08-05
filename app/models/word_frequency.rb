@@ -1,5 +1,5 @@
 class WordFrequency < ApplicationRecord
-  searchkick word_start: [:name]
+  searchkick word_start: [:name], callbacks: :queue, batch_size: 25
 
   self.primary_key = "name"
 
