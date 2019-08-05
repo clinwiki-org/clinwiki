@@ -300,9 +300,42 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
+    const camelCaseName = camelCase(name);
+    const lowerCaseSpacing = 8;
+    const upperCaseSpacing = 10;
+    const maxWidth = 400;
+    const totalPadding = 17;
+    const getColumnWidth = () => {
+      if (data.length < 1) {
+        return calcWidth(headerName.split('')) + totalPadding;
+      }
+
+      let max = headerName;
+      for (let i = 0; i < data.length; i += 1) {
+        const elem = data[i][camelCaseName];
+        if (data[i] !== undefined && elem !== null) {
+          const str = elem.toString();
+          if (str.length > max.length) {
+            max = str;
+          }
+        }
+      }
+      const maxArray = max.split('');
+      let maxSize = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
+      return Math.min(maxWidth, maxSize);
+    };
+
+    const calcWidth = array => {
+      return array.reduce(((acc, letter) =>
+                        letter === letter.toUpperCase() && letter !== ' ' ?
+                          acc + upperCaseSpacing : acc + lowerCaseSpacing),
+                          0);
+    };
+
+    const headerName = COLUMN_NAMES[name];
     return {
-      Header: <SearchFieldName field={COLUMN_NAMES[name]} />,
-      accessor: camelCase(name),
+      Header: <SearchFieldName field={headerName} />,
+      accessor: camelCaseName,
       style: {
         overflowWrap: 'break-word',
         overflow: 'hidden',
@@ -360,10 +393,16 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     if (loading) {
       return (
         <SiteProvider>
-          {site => (
+          {site => {
+           const columns = map(x=>this.renderColumn(x, ''), site.siteView.search.fields);
+           const totalWidth = columns.reduce(((acc, col)=> acc+col.width), 0);
+           const leftover = tableWidth - totalWidth;
+           const additionalWidth = leftover / columns.length;
+           columns.map(x=>x.width += additionalWidth, columns);
+           return (
             <ReactTable
               className="-striped -highlight"
-              columns={map(this.renderColumn, site.siteView.search.fields)}
+              columns = {columns}
               manual
               loading={true}
               defaultSortDesc
@@ -387,37 +426,41 @@ class SearchView extends React.PureComponent<SearchViewProps> {
 
     return (
       <SiteProvider>
-        {site => (
-          <ReactTable
-            className="-striped -highlight"
-            columns={map(this.renderColumn, site.siteView.search.fields)}
-            manual
-            minRows={searchData![0] !== undefined ? 1 : 3}
-            // this is so it truncates the results when there are less than pageSize results on the page
-            page={page}
-            pageSize={pageSize}
-            defaultSorted={camelizedSorts}
-            onPageChange={pipe(
-              changePage,
-              this.props.onUpdateParams,
-            )}
-            onPageSizeChange={pipe(
-              changePageSize,
-              this.props.onUpdateParams,
-            )}
-            onSortedChange={pipe(
-              changeSorted,
-              this.props.onUpdateParams,
-            )}
-            data={searchData}
-            pages={totalPages}
-            loading={loading}
-            defaultPageSize={pageSize}
-            getTdProps={this.rowProps}
-            defaultSortDesc
-            noDataText={'No studies found'}
-          />
-        )}
+        {site => {
+         const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
+         const totalWidth = columns.reduce(((acc, col)=> acc+col.width), 0);
+         const leftover = tableWidth-totalWidth;
+         const additionalWidth=leftover/columns.length;
+         columns.map(x=>x.width+= additionalWidth, columns);
+
+         return (
+           <ReactTable
+             className="-striped -highlight"
+             columns={columns}
+             manual
+             minRows={searchData![0] !== undefined ? 1 : 3}
+             page={page}
+             pageSize={pageSize}
+             defaultSorted={camelizedSorts}
+             onPageChange={pipe(
+               changePage,
+               this.props.onUpdateParams,)}
+             onPageSizeChange={pipe(
+               changePageSize,
+               this.props.onUpdateParams,)}
+             onSortedChange = {pipe(
+               changeSorted,
+               this.props.onUpdateParams,)}
+             data={searchData}
+             pages={totalPages}
+             loading={loading}
+             defaultPageSize={pageSize}
+             getTdProps={this.rowProps}
+             defaultSortDesc
+             noDataText={'No studies found'}
+           />
+           );
+        }}
       </SiteProvider>
     );
   };
