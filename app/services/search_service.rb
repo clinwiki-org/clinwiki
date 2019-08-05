@@ -3,7 +3,6 @@ ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
 MAX_WINDOW_SIZE = 10_000
 
-
 # aggregations
 DEFAULT_AGG_OPTIONS = {
   average_rating: {
