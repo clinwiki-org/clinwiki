@@ -44,12 +44,6 @@ import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
 import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
-<<<<<<< HEAD
-=======
-
-
->>>>>>> base
-
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import { stringify } from 'querystring';
 

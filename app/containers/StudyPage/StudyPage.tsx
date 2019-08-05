@@ -50,9 +50,7 @@ import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGeneri
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
-import StudyPageCounter from './components/StudyPageCounter';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
-import {PulseLoader, ScaleLoader} from 'react-spinners';
 
 interface StudyPageProps {
   history: History;
@@ -66,8 +64,6 @@ interface StudyPageProps {
   recordsTotal?: number;
   counterIndex?: number;
   workflowName: string | null;
-  recordsTotal?: number;
-  counterIndex?: number;
 }
 
 interface StudyPageState {
