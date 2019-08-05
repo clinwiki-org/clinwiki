@@ -63,7 +63,10 @@ class AutoSuggester extends React.Component<SuggestionsProps, SuggestionsState> 
       isLoading={this.state.isLoading}
       onSearch = {e=>this.onSearch(e,client)}
       minLength={1} 
-      maxResults={10} />
+      maxResults={10}
+      positionFixed={true}
+      highlightOnlyResult={true}
+      align='left' />
     );
   }
 
