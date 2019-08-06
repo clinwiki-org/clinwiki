@@ -189,7 +189,6 @@ export default class CrumbsBar extends React.Component<
   }
 
   localSearchChange = e => {
-    console.log(e)
     this.setState({ searchTerm: e.target.value });
   };
   clearPrimarySearch = () => {
@@ -203,12 +202,10 @@ export default class CrumbsBar extends React.Component<
   };
 
   inputSearchChange = val => {
-    console.log(val)
     this.setState({searchTerm:val})
   }
 
   clickSearchChange = val => {
-    console.log(val)
     this.setState({searchTerm:val[0]})
   }
   render() {

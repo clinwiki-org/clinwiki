@@ -47,7 +47,6 @@ class AutoSuggester extends React.Component<SuggestionsProps, SuggestionsState> 
         params: query
       }
     });
-    console.log(data.typeahead)
     this.setState({
       options: data.typeahead,
       isLoading: false
@@ -66,7 +65,8 @@ class AutoSuggester extends React.Component<SuggestionsProps, SuggestionsState> 
       maxResults={10}
       positionFixed={true}
       highlightOnlyResult={true}
-      align='left' />
+      align='left'
+      bsSize='sm' />
     );
   }
 
