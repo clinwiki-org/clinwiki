@@ -43,7 +43,7 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
+import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
 
 
 
@@ -182,7 +182,7 @@ const COLUMN_NAMES = fromPairs(
 
 const changePage = (pageNumber: number) => (params: SearchParams) => ({
   ...params,
-  page: pageNumber,
+  page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / params.pageSize) - 1),
 });
 const changePageSize = (pageSize: number) => (params: SearchParams) => ({
   ...params,
@@ -218,21 +218,40 @@ const changeFilter = (add: boolean) => (
       }
       return res;
     },
-    params,
+    {
+      ...params,
+      page: 0,
+    },
   );
 };
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
-const addSearchTerm = (term: string) => (params: SearchParams) => ({
-  ...params,
-  q: { ...params.q, children: [...(params.q.children || []), { key: term }] },
-});
+const addSearchTerm = (term: string) => (params: SearchParams) => {
+  // have to check for empty string because if you press return two times it ends up putting it in the terms
+  if (!term.replace(/\s/g, '').length) {
+    return params;
+  }
+  // recycled code for removing repeated terms. might be a better way but I'm not sure.
+  const children = reject(
+    propEq('key', term),
+    params.q.children || [],
+  );
+  return {
+    ...params,
+    q: { ...params.q, children: [...(children || []), { key: term }] },
+    page: 0,
+  };
+};
 const removeSearchTerm = (term: string) => (params: SearchParams) => {
   const children = reject(
     propEq('key', term),
     params.q.children || [],
   ) as SearchQuery[];
-  return { ...params, q: { ...params.q, children } };
+  return {
+    ...params,
+    q: { ...params.q, children },
+    page: 0,
+  };
 };
 
 class QueryComponent extends Query<
@@ -276,7 +295,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     };
   };
 
-  renderColumn = (name: string, data) => {
+  renderColumn = (name: string) => {
     // INPUT: col name
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
@@ -334,7 +353,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
           </div>),
-       width: getColumnWidth(),
 
     };
   };
@@ -390,9 +408,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
               defaultSortDesc
             />
           )}
-
-          }
-
         </SiteProvider>
       );
     }
@@ -403,11 +418,11 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       return null;
     }
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
-    const totalPages = Math.ceil(totalRecords / pageSize);
+    const totalPages = Math.min(Math.ceil(totalRecords / this.props.params.pageSize),
+                                Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     const searchData = path(['search', 'studies'], data);
-    const tableWidth = 1140;
 
     return (
       <SiteProvider>
@@ -447,9 +462,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
            );
         }}
       </SiteProvider>
-       );
+    );
   };
-
 
   renderCrumbs = ({
     data,
@@ -468,9 +482,8 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       data.search.recordsTotal &&
       this.props.params.pageSize
     ) {
-      pagesTotal = Math.ceil(
-        data.search.recordsTotal / this.props.params.pageSize,
-      );
+      pagesTotal = Math.min(Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+                            Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
       recordsTotal = data.search.recordsTotal;
     }
 
@@ -495,7 +508,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           removeSearchTerm,
           this.props.onUpdateParams,
         )}
-        page={this.props.params.page}
+        page={Math.min(this.props.params.page, pagesTotal)}
         recordsTotal={recordsTotal}
         pagesTotal={pagesTotal}
         pageSize={this.props.params.pageSize}
@@ -506,6 +519,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           ),
         }}
         onReset={this.props.onResetFilters}
+        loading={loading}
       />
     );
   };

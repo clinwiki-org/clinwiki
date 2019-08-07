@@ -5,6 +5,7 @@ import { Nav, NavItem, Row, Col, Button } from 'react-bootstrap';
 import { Link, match, Route, Switch, Redirect } from 'react-router-dom';
 import { History, Location } from 'history';
 import ReactStars from 'react-stars';
+import * as FontAwesome from 'react-fontawesome';
 import {
   last,
   split,
@@ -38,7 +39,6 @@ import InterventionsPage from 'containers/InterventionsPage';
 import FacilitiesPage from 'containers/FacilitiesPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
-import { starColor } from 'utils/constants';
 import SiteProvider from 'containers/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import SitesPage from 'containers/SitesPage';
@@ -46,6 +46,7 @@ import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGeneri
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
+import { starColor } from 'utils/constants';
 import StudyPageCounter from './components/StudyPageCounter';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import {PulseLoader, ScaleLoader} from 'react-spinners';
@@ -53,7 +54,7 @@ import {PulseLoader, ScaleLoader} from 'react-spinners';
 interface StudyPageProps {
   history: History;
   location: Location;
-  match: match<{ nctId: string }>;
+  match: match<{ nctId: string, searchId: string }>;
   prevLink?: string | null;
   nextLink?: string | null;
   firstLink?: string | null;
@@ -432,7 +433,20 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   renderReviewsSummary = (data: StudyPageQuery | undefined) => {
-    if (!data || !data.study) return null;
+    if (!data || !data.study) {
+      return <ReviewsWrapper>
+        <div>
+          <ReactStars
+            count={5}
+            color2={starColor}
+            edit={false}
+            value={0}
+          />
+          <div>{'0 Reviews'}</div>
+        </div>
+      </ReviewsWrapper>;
+    }
+
     return (
       <ReviewsWrapper>
         <div>
@@ -473,7 +487,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                             {this.renderBackButton(
                               site.siteView,
                               '⤺︎ Back',
-                              '/search',
+                              `/search/${this.props.match.params.searchId}`,
                             )}
                           </BackButtonWrapper>
 
@@ -504,13 +518,22 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                         </SidebarContainer>
                         <MainContainer md={10}>
                           <div className="container">
-                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}</div>
-                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}</div>
+                            <div id="navbuttonsonstudypage">
+                              this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}
+                            </div>
                             <div id="navbuttonsonstudypage"><StudyPageCounter
                               counter = {this.props.counterIndex!}
-                              recordsTotal={this.props.recordsTotal!}/></div>
-                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, 'Next ❯', this.props.nextLink)}</div>
-                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, 'Last ❯❯', this.props.lastLink)}</div>
+                              recordsTotal={this.props.recordsTotal!}/>
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(site.siteView, 'Next ❯', this.props.nextLink)}
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(site.siteView, 'Last ❯❯', this.props.lastLink)}
+                            </div>
                           </div>
 
                           {data && data.study && (
@@ -562,13 +585,22 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                             </Switch>
                           </div>
                           <div className="container">
-                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}</div>
-                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}</div>
+                            <div id="navbuttonsonstudypage">
+                              this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}
+                            </div>
                             <div id="navbuttonsonstudypage"><StudyPageCounter
                               counter = {this.props.counterIndex!}
-                              recordsTotal={this.props.recordsTotal!}/></div>
-                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, 'Next ❯', this.props.nextLink)}</div>
-                            <div id="navbuttonsonstudypage">{this.renderNavButton(site.siteView, 'Last ❯❯', this.props.lastLink)}</div>
+                              recordsTotal={this.props.recordsTotal!}/>
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(site.siteView, 'Next ❯', this.props.nextLink)}
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(site.siteView, 'Last ❯❯', this.props.lastLink)}
+                            </div>
                           </div>
                         </MainContainer>
                       </Row>

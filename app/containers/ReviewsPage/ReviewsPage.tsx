@@ -31,6 +31,7 @@ import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { starColor } from 'utils/constants';
 
 interface ReviewsPageProps {
   match: match<{ nctId: string }>;
@@ -151,7 +152,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
       <RatingWrapper key={key}>
         <ReactStars
           edit={false}
-          color2={'#7ed964'}
+          color2={starColor}
           count={5}
           half={false}
           value={value}

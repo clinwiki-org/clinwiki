@@ -1,7 +1,7 @@
 export type Params = {};
 
 export type AggKind = 'aggs' | 'crowdAggs';
-export const defaultPageSize = 20;
+export const defaultPageSize = 25;
 export type AggCallback = (
   aggName: string,
   key: string,

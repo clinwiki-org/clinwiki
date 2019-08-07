@@ -10,6 +10,7 @@ import {
 import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
+import {MAX_WINDOW_SIZE} from '../../utils/constants';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
