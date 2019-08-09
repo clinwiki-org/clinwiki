@@ -66,7 +66,7 @@ class AutoSuggester extends React.Component<SuggestionsProps, SuggestionsState> 
       positionFixed={true}
       highlightOnlyResult={true}
       align='left'
-      bsSize='sm' />
+      />
     );
   }
 
