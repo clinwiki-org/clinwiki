@@ -11,7 +11,6 @@ const MainContainer = styled(Col)`
   min-height: 100vh;
   padding-top: 50px;
   padding-bottom: 00px;
-
   .center {
     text-align: center
   }
