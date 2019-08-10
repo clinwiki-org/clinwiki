@@ -43,11 +43,9 @@ import 'react-table/react-table.css';
 import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
-
-
-
+import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
+import { stringify } from 'querystring';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -286,6 +284,11 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     return name === 'average_rating';
   };
 
+  // this is for the column widths. currently, some tags are making it way too wide
+  isStatusColumn = (name: string): boolean => {
+    return name === 'overall_status';
+  };
+
   rowProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
@@ -295,7 +298,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     };
   };
 
-  renderColumn = (name: string) => {
+  renderColumn = (name: string, data) => {
     // INPUT: col name
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
@@ -309,7 +312,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       if (data.length < 1) {
         return calcWidth(headerName.split('')) + totalPadding;
       }
-
       let max = headerName;
       for (let i = 0; i < data.length; i += 1) {
         const elem = data[i][camelCaseName];
@@ -353,6 +355,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
           </div>),
+       width: getColumnWidth(),
 
     };
   };
@@ -394,20 +397,21 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       return (
         <SiteProvider>
           {site => {
-           const columns = map(x=>this.renderColumn(x, ''), site.siteView.search.fields);
-           const totalWidth = columns.reduce(((acc, col)=> acc+col.width), 0);
-           const leftover = tableWidth - totalWidth;
-           const additionalWidth = leftover / columns.length;
-           columns.map(x=>x.width += additionalWidth, columns);
-           return (
-            <ReactTable
-              className="-striped -highlight"
-              columns = {columns}
-              manual
-              loading={true}
-              defaultSortDesc
-            />
-          )}
+            const columns = map(x => this.renderColumn(x, ''), site.siteView.search.fields);
+            const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
+            const leftover = tableWidth - totalWidth;
+            const additionalWidth = leftover / columns.length;
+            columns.map(x => x.width += additionalWidth, columns);
+            return (
+              <ReactTable
+                className="-striped -highlight"
+                columns={columns}
+                manual
+                loading={true}
+                defaultSortDesc
+              />
+            );
+          }}
         </SiteProvider>
       );
     }
@@ -423,6 +427,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     const searchData = path(['search', 'studies'], data);
+    const tableWidth = 1140;
 
     return (
       <SiteProvider>
@@ -462,8 +467,9 @@ class SearchView extends React.PureComponent<SearchViewProps> {
            );
         }}
       </SiteProvider>
-    );
+       );
   };
+
 
   renderCrumbs = ({
     data,
@@ -482,9 +488,9 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       data.search.recordsTotal &&
       this.props.params.pageSize
     ) {
+      recordsTotal = data.search.recordsTotal;
       pagesTotal = Math.min(Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
                             Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
-      recordsTotal = data.search.recordsTotal;
     }
 
     const q =
@@ -526,7 +532,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
 
   render() {
     const { page, pageSize, sorts } = this.props.params;
-
     return (
       <SearchWrapper>
         <Helmet>
