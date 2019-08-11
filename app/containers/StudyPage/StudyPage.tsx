@@ -519,7 +519,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                         <MainContainer md={10}>
                           <div className="container">
                             <div id="navbuttonsonstudypage">
-                              this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}
+                              {this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}
@@ -586,7 +586,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           </div>
                           <div className="container">
                             <div id="navbuttonsonstudypage">
-                              this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}
+                              {this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}
