@@ -69,7 +69,11 @@ class ResetPasswordPage extends React.Component<
   };
 
   handleResetPassword = (resetPassword: ResetPasswordMutationFn) => () => {
-    resetPassword({ variables: { input: this.state.form } });
+    resetPassword({ variables: { input: this.state.form } }).then(() =>
+      this.setState({
+        errors: ['Password reset instructions have been sent to your email.'],
+      }),
+    );
   };
 
   renderErrors = () => {
