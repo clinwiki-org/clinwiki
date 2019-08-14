@@ -132,6 +132,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
           name={`set:study.${section.name}.selected.values`}
           options={data.fields.map(field => ({ id: field, label: field }))}
           placeholder="Add field"
+          draggable
           value={data.selected.values}
           onChange={this.props.onAddMutation}
         />

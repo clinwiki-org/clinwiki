@@ -427,7 +427,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     const searchData = path(['search', 'studies'], data);
-    const tableWidth = 1140;
+    const tableWidth = 1175;
 
     return (
       <SiteProvider>

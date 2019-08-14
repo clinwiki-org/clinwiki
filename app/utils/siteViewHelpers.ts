@@ -1,5 +1,13 @@
 import { FilterKind, AggFilterInput } from 'types/globalTypes';
-import { reject, filter, pipe, sortWith, sortBy, isEmpty } from 'ramda';
+import {
+  reject,
+  filter,
+  pipe,
+  sortWith,
+  sortBy,
+  isEmpty,
+  indexOf,
+} from 'ramda';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 
 export const preselectedFilters = (
@@ -31,13 +39,15 @@ export const displayFields = <
   kind: FilterKind,
   filterValues: string[],
   fields: T[],
+  sortByValues?: boolean,
 ): T[] => {
   const fieldFilterFn = kind === FilterKind.BLACKLIST ? reject : filter;
   const filtered = fieldFilterFn(
     (field: T) => filterValues.includes(field.name),
     fields,
   );
-  return sortBy(getRank, filtered);
+  const sortF = sortByValues ? x => indexOf(x.name, filterValues) : getRank;
+  return sortBy(sortF, filtered);
 };
 
 const getRank = <T extends { name: string; rank: number | string | null }>(

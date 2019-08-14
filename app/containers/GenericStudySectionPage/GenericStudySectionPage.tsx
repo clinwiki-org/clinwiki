@@ -76,6 +76,7 @@ class GenericStudySectionPage extends React.PureComponent<
             this.props.metaData.selected.kind,
             this.props.metaData.selected.values,
             this.props.metaData.fields.map(name => ({ name, rank: null })),
+            true,
           ).map(prop('name'));
 
           this.props.onLoaded && this.props.onLoaded();
