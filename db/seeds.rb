@@ -6,7 +6,7 @@ User.create! first_name: "Sheri", last_name: "Tibbs", email: "sheri.tibbs@gmail.
 User.create! first_name: "William", last_name: "Hoos", email: "william.hoos@gmail.com",
              password: "clinwiki", password_confirmation: "clinwiki"
 
-studies = Study.all
+studies = Study.order('RANDOM()').first(500)
 hash = Hash.new(0)
 studies.each do |study|
   title_array = study.brief_title.split(' ')
@@ -36,8 +36,5 @@ hash.each_pair do |word, word_count|
   WordFrequency.create! name: word, frequency: word_count
 end
 
-WordFrequency.order(frequency: :asc).last(10).each do |x|
-  puts x.rank(x.name).to_s + ". " + x.name + ' ' + x.frequency.to_s
-end
 
 

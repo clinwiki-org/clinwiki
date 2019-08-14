@@ -219,41 +219,49 @@ end
 
 namespace :autocomplete do
   desc "Creates an index of the WordFrequency table"
-  task create_index: :environment do
+  task reindex: :environment do
     p "Initializing index..."
-    WordFrequency.reindex(import: false)
+    WordFrequency.reindex
     p "Done!"
   end
 
-  desc "Takes all words from sql database and upserts them into index"
-  task reindex: :environment do
-    p "Getting names of #{WordFrequency.count} words..."
-    WordFrequency.enqueue_reindex_job_big(WordFrequency.all)
-    until WordFrequency.search_index.reindex_queue.length == 0
-      p "#{WordFrequency.search_index.reindex_queue.length} left..."
-      sleep 5
-    end
-    p "Success!"
-  end
 
-  desc "Updates all records in the index"
-  task update_index: :environment do
-    page = 0
-    while page
-      search = WordFrequency.search(load: false, per_page: 1_000, page: page)
-      page = search.next_page
-      ids = search.results.map(&:id)
-      WordFrequency.enqueue_reindex_ids(ids)
+  desc "Creates seed for WordFreq table from Study"
+  task seed: :environment do
+    studies = Study.all
+    hash = Hash.new(0)
+    studies.each do |study|
+      title_array = study.brief_title.split(' ')
+
+      title_array.each do |word|
+        # delete any characters that are not letters or hyphens or apostrophes or numbers.
+        sanitized = word.delete("^a-zA-Z-'0-9")
+        # if the word is a whole word, hyphenated, or has an apostrophe
+        # AND it's not only digits
+        if sanitized =~ /^[a-zA-Z0-9]+(?:['-]*[a-zA-Z0-9]+)*$/ and sanitized !~ /^\d+$/
+          # if the word doesn't have an apostrophe and it doesn't have two capital letters,
+          # or if it has two capitalized words separated by a hyphen
+          # or if it already exists in the hash as downcased
+          if sanitized !~ /'/ and sanitized !~ /.*[A-Z].*[A-Z].*/ or
+              sanitized =~ /^[A-Z][a-z]*-[A-Z][a-z]*$/ or
+              hash.key?(sanitized.downcase)
+            sanitized = sanitized.downcase
+          end
+          hash[sanitized] += 1
+        end
+      end
     end
-    until WordFrequency.search_index.reindex_queue.length == 0
-      p "#{WordFrequency.search_index.reindex_queue.length} left..."
-      sleep 5
+
+    hash = hash.select{|k, _| !FUNCTION_WORDS.include? k}
+
+    hash.each_pair do |word, word_count|
+      WordFrequency.create! name: word, frequency: word_count
     end
-    p "Success!"
+
   end
 
   desc "Creates an index with all words from sql database"
-  task bootstrap_full: [:create_index, :reindex]
+  task bootstrap: [:seed, :reindex]
 
 end
 
