@@ -1,4 +1,3 @@
-require 'autosuggest'
 require_relative '../../config/initializers/function_words'
 
 class AutosuggestService
