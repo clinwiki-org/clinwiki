@@ -10,7 +10,7 @@ import {
 import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
-import {MAX_WINDOW_SIZE} from '../../utils/constants';
+import { MAX_WINDOW_SIZE } from '../../utils/constants';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
@@ -26,9 +26,9 @@ const QUERY = gql`
           nctId
         }
         recordsTotal
-	      counterIndex
-	      firstId
-	      lastId
+        counterIndex
+        firstId
+        lastId
       }
     }
   }
@@ -43,7 +43,7 @@ interface StudySearchPageProps {
 class SearchStudyPageQueryComponent extends Query<
   SearchStudyPageQuery,
   SearchStudyPageQueryVariables
-  > {}
+> {}
 class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
   render() {
     const variables = {
@@ -58,8 +58,11 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let firstLink: string | null | undefined = null;
           let lastLink: string | null | undefined = null;
           let isWorkflow: boolean = false;
-          let recordsTotal: number | JSX.Element | null | undefined =
-            <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>;
+          let recordsTotal: number | JSX.Element | null | undefined = (
+            <div id="divsononeline">
+              <PulseLoader color="#cccccc" size={8} />
+            </div>
+          );
           let counterIndex: number | JSX.Element | null | undefined = null;
           let workflowName: string | null = null;
 
@@ -73,17 +76,29 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               ['search', 'studyEdge', 'isWorkflow'],
               data,
             ) as boolean;
+            workflowName = pathOr(
+              false,
+              ['search', 'studyEdge', 'workflowName'],
+              data,
+            ) as string | null;
+
             // counterIndex will remain null if it's >200 or whatever we set the max page size to
             counterIndex = path(['search', 'studyEdge', 'counterIndex'], data);
-            recordsTotal = counterIndex &&
-              pathOr(1, ['search', 'studyEdge', 'recordsTotal'], data) as number;
+            recordsTotal =
+              counterIndex &&
+              (pathOr(
+                1,
+                ['search', 'studyEdge', 'recordsTotal'],
+                data,
+              ) as number);
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
             prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
 
             // just so that there isn't a first button if there isn't a prev button
             // likewise for the last button
             if (prevLink != null) {
-              firstLink = firstId && `/search/${variables.hash}/study/${firstId}`;
+              firstLink =
+                firstId && `/search/${variables.hash}/study/${firstId}`;
             }
             if (nextLink != null && counterIndex != null) {
               lastLink = lastId && `/search/${variables.hash}/study/${lastId}`;
@@ -101,6 +116,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               isWorkflow={isWorkflow}
               recordsTotal={recordsTotal}
               counterIndex={counterIndex}
+              workflowName={workflowName}
             />
           );
         }}
