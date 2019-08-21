@@ -2,7 +2,7 @@ module Types
   class StudyType < Types::BaseObject # rubocop:disable Metrics/ClassLength
     implements TimestampsType
 
-    description "AACT Stydy entity"
+    description "AACT Study entity"
 
     field :brief_title, String, null: true
     field :nct_id, String, null: false

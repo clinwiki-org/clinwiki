@@ -43,6 +43,23 @@ module Types
       argument :hash, type: String, required: false
     end
 
+
+    #field :autosuggest, [SuggestionType], 'recommended words', null:false
+
+    field :typeahead, [String], 'searchkick recommended words', null: false do
+      argument :params, type: String, required: false
+    end
+
+    def typeahead(params: nil)
+      autosuggest = AutosuggestService.new(params)
+      autosuggest.autocomplete
+    end
+
+    # def autosuggest
+    #   suggest_service = AutosuggestService.new
+    #   suggest_service.words
+    # end
+
     field :workflows_view, WorkflowsViewType, "Workflows config", null: false
 
     def search(search_hash: nil, params: nil)
@@ -55,23 +72,23 @@ module Types
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg]),
-      )
+          aggs: search_service.agg_buckets_for_field(field: params[:agg]),
+          )
     end
 
     def crowd_agg_buckets(search_hash: nil, params: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
-      )
+          aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
+          )
     end
 
     def health
       ActiveRecord::Base.establish_connection
       ActiveRecord::Base.connection
       {
-        healthy: ActiveRecord::Base.connected?,
+          healthy: ActiveRecord::Base.connected?,
       }
     end
 

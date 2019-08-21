@@ -14,14 +14,12 @@ class StudyEdgeService
     study = Study.find_by(nct_id: (id || first_study_id))
     return nil if study.blank?
 
+    recordstotal = records_total
     workflow_name = (@params[:crowd_agg_filters] || [])
                         .map { |param| param[:field] }
                         .find { |field| field&.downcase&.starts_with("wf_") }
     is_workflow = workflow_name.present?
 
-    recordstotal = records_total
-    puts recordstotal
-    puts "*~*~*~*~*"
     OpenStruct.new(
       next_id: next_study_id(study: study),
       prev_id: next_study_id(study: study, reverse: true),
@@ -132,13 +130,14 @@ class StudyEdgeService
     1
   end
 
-  def counter_index(study, records_total)
+  def counter_index(study, recordsTotal)
     # Finds the index of the item in the search results.
     return 1 if study.blank?
-    return nil if records_total > MAX_PAGE_SIZE
+    return nil if recordsTotal > MAX_PAGE_SIZE
     search_results = @search_service.search
+    puts search_results&.dig(:studies)
     index = search_results&.dig(:studies)&.index{ |x| x.id == study[:nct_id] }
-    return index + 1 unless index.nil?
+    return (index + 1) + (@params[:page] * @params[:page_size]) unless index.nil?
     1
   end
 end
