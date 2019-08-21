@@ -108,22 +108,22 @@ const ADD_TAG_MUTATION = gql`
 class AddTagMutationComponent extends Mutation<
   TagsPageAddWikiTagMutation,
   TagsPageAddWikiTagMutationVariables
-> {}
+  > {}
 
 type AddTagMutationFn = MutationFn<
   TagsPageAddWikiTagMutation,
   TagsPageAddWikiTagMutationVariables
->;
+  >;
 
 class DeleteTagMutationComponent extends Mutation<
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables
-> {}
+  > {}
 
 type DeleteTagMutationFn = MutationFn<
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables
->;
+  >;
 
 class QueryComponent extends Query<TagsPageQuery, TagsPageQueryVariables> {}
 
@@ -150,29 +150,29 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
 
   handleAddTag = (meta: string, addTag: AddTagMutationFn) => () => {
     addTag({
-      optimisticResponse: {
-        upsertWikiTag: {
-          __typename: 'UpsertWikiTagPayload',
-          wikiPage: {
-            __typename: 'WikiPage',
-            nctId: this.props.match.params.nctId,
-            meta: this.updateMetaTags(
-              tags =>
-                contains(this.state.newTag, tags)
-                  ? tags
-                  : [...tags, this.state.newTag],
-              meta,
-            ),
-            edits: [],
-          },
-          errors: null,
-        },
-      },
-      variables: {
-        nctId: this.props.match.params.nctId,
-        value: this.state.newTag,
-      },
-    });
+             optimisticResponse: {
+               upsertWikiTag: {
+                 __typename: 'UpsertWikiTagPayload',
+                 wikiPage: {
+                   __typename: 'WikiPage',
+                   nctId: this.props.match.params.nctId,
+                   meta: this.updateMetaTags(
+                     tags =>
+                       contains(this.state.newTag, tags)
+                         ? tags
+                         : [...tags, this.state.newTag],
+                     meta,
+                   ),
+                   edits: [],
+                 },
+                 errors: null,
+               },
+             },
+             variables: {
+               nctId: this.props.match.params.nctId,
+               value: this.state.newTag,
+             },
+           });
     this.setState({ newTag: '' });
   };
 
@@ -182,20 +182,20 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
     value: string,
   ) => () => {
     deleteTag({
-      variables: { value, nctId: this.props.match.params.nctId },
-      optimisticResponse: {
-        deleteWikiTag: {
-          __typename: 'DeleteWikiTagPayload',
-          wikiPage: {
-            __typename: 'WikiPage',
-            nctId: this.props.match.params.nctId,
-            meta: this.updateMetaTags(reject(equals(value)), meta),
-            edits: [],
-          },
-          errors: null,
-        },
-      },
-    });
+                variables: { value, nctId: this.props.match.params.nctId },
+                optimisticResponse: {
+                  deleteWikiTag: {
+                    __typename: 'DeleteWikiTagPayload',
+                    wikiPage: {
+                      __typename: 'WikiPage',
+                      nctId: this.props.match.params.nctId,
+                      meta: this.updateMetaTags(reject(equals(value)), meta),
+                      edits: [],
+                    },
+                    errors: null,
+                  },
+                },
+              });
   };
 
   handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -252,7 +252,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                   <Col md={6}>
                     <Table striped bordered condensed>
                       <tbody>
-                        {tags.map(tag => this.renderTag(meta, tag, user))}
+                      {tags.map(tag => this.renderTag(meta, tag, user))}
                       </tbody>
                     </Table>
                   </Col>

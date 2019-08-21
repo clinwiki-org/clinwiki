@@ -30,7 +30,7 @@
 
 *Step 4:* Open the `Permissions` accordion on the right (under the `Properties` tab) after selecting your new bucket. Click `Add more permissions`, set the `Grantee` to `Everyone` (or whoever you want to be able to access the website), and give them `View Permissions`. Click `Save`.
 
-*Step 5:* Click on the `Static Website Hosting` accordion where you should see the URL (or *endpoint*) of your website (ie. example.s3-website-us-east-1.amazonaws.com). Click `Enable website hosting` and fill in both the `Index document` and `Error document` input fields with `index.html`. Click `Save`.
+*Step 5:* Click on the `Static Website Hosting` accordion where you should see the URL (or *endpoint*) of your website (ie. example.s3-website-us-east-1.amazonaws.com). Click `Enable website hosting` and fill in both the `Index document` and `RecordsTotal document` input fields with `index.html`. Click `Save`.
 
 *Step 6:* Click on your new S3 bucket on the left to open the bucket. Click `Upload` and select all the files within your `./build` folder. Click `Start Upload`. Once the files are done, select all of the files, right-click on the selected files (or click on the `Actions` button) and select `Make Public`.
 
