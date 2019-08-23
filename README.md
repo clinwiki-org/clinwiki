@@ -10,7 +10,7 @@ and gemset management. Once RVM is installed, switch to the correct
 Ruby and gemset as follows:
 
 ```bash
-rvm use ruby-2.4.1@clinwiki --install --create
+rvm use ruby-2.5.3@clinwiki --install --create
 ```
 
 Then, from the project root directory:
