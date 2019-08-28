@@ -1,0 +1,11 @@
+docker run  \
+    -it \
+    -e AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact \
+    -v ~/clinwiki:/clinwiki \
+    -w /clinwiki/ \
+    -v ~/db/clinwiki:/var/lib/postgresql/ \
+    -v ~/db/elastic:/var/lib/elasticsearch/ \
+    --name clinwiki \
+    --net host \
+    cdub bash
+
