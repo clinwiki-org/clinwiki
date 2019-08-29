@@ -9,9 +9,7 @@ class Site < ApplicationRecord
 
   class << self
     def default
-      site = Site.new(id: 0, name: "root", subdomain: "")
-      site.site_view = SiteView.default
-      site
+      @default_site = Site.find_or_create_by(name: "default", subdomain: "default")
     end
   end
 

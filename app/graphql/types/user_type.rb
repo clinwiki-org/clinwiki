@@ -20,7 +20,9 @@ module Types
     def editor_sites
       return [] if current_user.blank?
 
-      Site.with_role(:site_editor, current_user)
+      res = Site.with_role(:site_editor, current_user).to_a
+      res.push(Site.default) if current_user.has_role?(:admin)
+      res
     end
 
     def feeds
