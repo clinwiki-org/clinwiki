@@ -23,47 +23,26 @@ const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
       values
     }
     title
+    name
   }
 `;
 
 const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT = gql`
   fragment SiteStudyBasicGenericSectionFragment on SiteStudyBasicGenericSection {
     hide
+    title
+    name
   }
 `;
 
 const SITE_STUDY_PAGE_FRAGMENT = gql`
   fragment SiteStudyPageFragment on SiteStudyPage {
-    administrative {
-      ...SiteStudyExtendedGenericSectionFragment
-    }
-    crowd {
+    allFields
+    basicSections {
       ...SiteStudyBasicGenericSectionFragment
     }
-
-    descriptive {
+    extendedSections {
       ...SiteStudyExtendedGenericSectionFragment
-    }
-    facilities {
-      ...SiteStudyBasicGenericSectionFragment
-    }
-    interventions {
-      ...SiteStudyExtendedGenericSectionFragment
-    }
-    recruitment {
-      ...SiteStudyExtendedGenericSectionFragment
-    }
-    reviews {
-      ...SiteStudyBasicGenericSectionFragment
-    }
-    tags {
-      ...SiteStudyBasicGenericSectionFragment
-    }
-    tracking {
-      ...SiteStudyExtendedGenericSectionFragment
-    }
-    wiki {
-      ...SiteStudyBasicGenericSectionFragment
     }
   }
 

@@ -8,7 +8,7 @@ import {
   Checkbox,
   Panel,
   FormControl,
-  Label,
+  Button,
 } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { History, Location } from 'history';
@@ -27,6 +27,8 @@ import {
   reverse,
   sortBy,
   prop,
+  isNil,
+  find,
 } from 'ramda';
 import MultiInput from 'components/MultiInput';
 import { parse } from 'graphql';
@@ -39,7 +41,9 @@ interface StudyFormProps {
   location: Location;
 }
 
-interface StudyFormState {}
+interface StudyFormState {
+  newSectionName: string;
+}
 
 const StyledCheckbox = styled(Checkbox)`
   display: flex;
@@ -55,6 +59,10 @@ const FormContainer = styled(Panel)`
   min-height: 420px;
 `;
 
+const SectionForm = styled.div`
+  padding: 15px 0 15px 15px;
+`;
+
 type Section = {
   name: string;
   displayName: string;
@@ -64,7 +72,9 @@ type Section = {
 };
 
 class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
-  state: StudyFormState = {};
+  state: StudyFormState = {
+    newSectionName: '',
+  };
 
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
@@ -95,6 +105,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
     section: Section,
     data: SiteStudyExtendedGenericSectionFragment,
   ) => {
+    const fields = data.fields || this.props.view.study.allFields;
     return (
       <div>
         <StyledCheckbox
@@ -129,8 +140,8 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
           <option value="WHITELIST">Only</option>
         </StyledFormControl>
         <MultiInput
-          name={`set:study.${section.name}.selected.values`}
-          options={data.fields.map(field => ({ id: field, label: field }))}
+          name={`set:study.extendedSections.${section.name}.selected.values`}
+          options={fields.map(field => ({ id: field, label: field }))}
           placeholder="Add field"
           draggable
           value={data.selected.values}
@@ -144,90 +155,48 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
     this.props.history.push(`${trimPath(this.props.match.url)}${key}`);
   };
 
+  handleNewSectionNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newSectionName: e.currentTarget.value });
+  };
+
+  handleAddSection = () => {
+    const section = {
+      hide: false,
+      title: this.state.newSectionName,
+      name: this.state.newSectionName.toLowerCase(),
+      order: null,
+      selected: {
+        kind: 'WHITELIST',
+        values: [],
+      },
+    };
+    this.props.onAddMutation({
+      currentTarget: {
+        name: `push:study.extendedSections`,
+        value: JSON.stringify(section),
+      },
+    });
+    this.setState({ newSectionName: '' });
+  };
+
   getSections = (): Section[] => {
     const {
-      administrative,
-      crowd,
-      descriptive,
-      facilities,
-      interventions,
-      recruitment,
-      reviews,
-      tags,
-      tracking,
-      wiki,
+      basicSections: basicSectionsRaw,
+      extendedSections: extendedSectionsRaw,
     } = this.props.view.study;
-    const basicSections = [
-      {
-        name: 'wiki',
-        path: '/wiki',
-        displayName: 'Wiki',
-        kind: 'basic',
-      },
-      {
-        name: 'crowd',
-        path: '/crowd',
-        displayName: 'Crowd',
-        kind: 'basic',
-      },
-      {
-        name: 'reviews',
-        path: '/reviews',
-        displayName: 'Reviews',
-        kind: 'basic',
-      },
-      {
-        name: 'facilities',
-        path: '/sites',
-        displayName: 'Sites',
-        kind: 'basic',
-      },
-      {
-        name: 'tags',
-        path: '/tags',
-        displayName: 'Tags',
-        kind: 'basic',
-      },
-    ];
-
-    const extendedSections = [
-      {
-        name: 'interventions',
-        path: '/interventions',
-        displayName: interventions.title,
-        kind: 'extended',
-        order: interventions.order,
-      },
-      {
-        name: 'descriptive',
-        path: '/descriptive',
-        displayName: descriptive.title,
-        kind: 'extended',
-        order: descriptive.order,
-      },
-
-      {
-        name: 'administrative',
-        path: '/administrative',
-        displayName: administrative.title,
-        kind: 'extended',
-        order: administrative.order,
-      },
-      {
-        name: 'recruitment',
-        path: '/recruitment',
-        displayName: recruitment.title,
-        kind: 'extended',
-        order: recruitment.order,
-      },
-      {
-        name: 'tracking',
-        path: '/tracking',
-        displayName: tracking.title,
-        kind: 'extended',
-        order: tracking.order,
-      },
-    ];
+    const basicSections = basicSectionsRaw.map(section => ({
+      name: section.title.toLowerCase(),
+      path: `/${section.title.toLowerCase()}`,
+      displayName: section.title,
+      kind: 'basic',
+    }));
+    const extendedSections = extendedSectionsRaw.map(section => ({
+      name: section.title.toLowerCase(),
+      path: `/${section.title.toLowerCase()}`,
+      displayName: section.title,
+      kind: 'extended',
+      order: section.order,
+    }));
     // @ts-ignore
     const sortedExtendedSections = sortBy(
       pipe(
@@ -274,6 +243,14 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
                 </NavItem>
               ))}
             </Nav>
+            <SectionForm>
+              <StyledFormControl
+                placeholder="Add a section"
+                value={this.state.newSectionName}
+                onChange={this.handleNewSectionNameChange}
+              />
+              <Button onClick={this.handleAddSection}>Add</Button>
+            </SectionForm>
           </Col>
           <Col md={10}>
             <FormContainer>
@@ -286,11 +263,19 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
                       section.kind === 'basic'
                         ? this.renderBasicSection(
                             section,
-                            this.props.view.study[section.name],
+                            // @ts-ignore
+                            find(
+                              propEq('title', section.displayName),
+                              this.props.view.study.basicSections,
+                            ),
                           )
                         : this.renderExtendedSection(
                             section,
-                            this.props.view.study[section.name],
+                            // @ts-ignore
+                            find(
+                              propEq('title', section.displayName),
+                              this.props.view.study.extendedSections,
+                            ),
                           )
                     }
                   />

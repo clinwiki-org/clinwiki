@@ -49,12 +49,12 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { starColor } from 'utils/constants';
 import StudyPageCounter from './components/StudyPageCounter';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
-import {PulseLoader, ScaleLoader} from 'react-spinners';
+import { PulseLoader, ScaleLoader } from 'react-spinners';
 
 interface StudyPageProps {
   history: History;
   location: Location;
-  match: match<{ nctId: string, searchId: string }>;
+  match: match<{ nctId: string; searchId: string }>;
   prevLink?: string | null;
   nextLink?: string | null;
   firstLink?: string | null;
@@ -240,18 +240,27 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       : ([...noWikiSections, wiki] as Section[]);
   };
 
+  getComponent = (name: string): any => {
+    switch (name) {
+      case 'wiki':
+        return WikiPage;
+      case 'crowd':
+        return CrowdPage;
+      case 'reviews':
+        return ReviewsPage;
+      case 'facilities':
+        return FacilitiesPage;
+      case 'tags':
+        return TagsPage;
+      default:
+        return () => null;
+    }
+  };
+
   getSections = (view: SiteViewFragment): Section[] => {
     const {
-      administrative,
-      crowd,
-      descriptive,
-      facilities,
-      interventions,
-      recruitment,
-      reviews,
-      tags,
-      tracking,
-      wiki,
+      basicSections: basicSectionsRaw,
+      extendedSections: extendedSectionsRaw,
     } = view.study;
     const basicSections = [
       {
@@ -263,106 +272,31 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         hidden: !this.props.isWorkflow,
         metaData: { hide: !this.props.isWorkflow },
       },
-      {
-        name: 'wiki',
-        path: '/',
-        displayName: 'Wiki',
+      ...basicSectionsRaw.map(section => ({
+        name: section.title.toLowerCase(),
+        path:
+          section.title.toLowerCase() === 'wiki'
+            ? '/'
+            : `/${section.title.toLowerCase()}`,
+        displayName: section.title,
         kind: 'basic',
-        component: WikiPage,
-        hidden: wiki.hide,
-        metaData: wiki,
-      },
-      {
-        name: 'crowd',
-        path: '/crowd',
-        displayName: 'Crowd',
-        kind: 'basic',
-        component: CrowdPage,
-        hidden: crowd.hide,
-        metaData: crowd,
-      },
-      {
-        name: 'reviews',
-        path: '/reviews',
-        displayName: 'Reviews',
-        kind: 'basic',
-        component: ReviewsPage,
-        hidden: reviews.hide,
-        metaData: reviews,
-      },
-      {
-        name: 'facilities',
-        path: '/sites',
-        displayName: 'Sites',
-        kind: 'basic',
-        component: FacilitiesPage,
-        hidden: facilities.hide,
-        metaData: facilities,
-      },
-      {
-        name: 'tags',
-        path: '/tags',
-        displayName: 'Tags',
-        kind: 'basic',
-        component: TagsPage,
-        hidden: tags.hide,
-        metaData: tags,
-      },
+        component: this.getComponent(section.title.toLowerCase()),
+        hidden: section.hide,
+        metaData: section,
+      })),
     ];
 
-    const extendedSections = [
-      {
-        name: 'descriptive',
-        path: '/descriptive',
-        displayName: descriptive.title,
-        kind: 'extended',
-        order: descriptive.order,
-        component: GenericStudySectionPage,
-        hidden: descriptive.hide,
-        metaData: descriptive,
-      },
+    const extendedSections = extendedSectionsRaw.map(section => ({
+      name: section.title.toLowerCase(),
+      path: `/${section.title.toLowerCase()}`,
+      displayName: section.title,
+      kind: 'extended',
+      order: section.order,
+      component: GenericStudySectionPage,
+      hidden: section.hide,
+      metaData: section,
+    }));
 
-      {
-        name: 'administrative',
-        path: '/administrative',
-        displayName: administrative.title,
-        kind: 'extended',
-        order: administrative.order,
-        component: GenericStudySectionPage,
-        hidden: administrative.hide,
-        metaData: administrative,
-      },
-      {
-        name: 'recruitment',
-        path: '/recruitment',
-        displayName: recruitment.title,
-        kind: 'extended',
-        order: recruitment.order,
-        component: GenericStudySectionPage,
-        hidden: recruitment.hide,
-        metaData: recruitment,
-      },
-      {
-        name: 'interventions',
-        path: '/interventions',
-        displayName: interventions.title,
-        kind: 'extended',
-        order: interventions.order,
-        component: InterventionsPage,
-        hidden: interventions.hide,
-        metaData: interventions,
-      },
-      {
-        name: 'tracking',
-        path: '/tracking',
-        displayName: tracking.title,
-        kind: 'extended',
-        order: tracking.order,
-        component: GenericStudySectionPage,
-        hidden: tracking.hide,
-        metaData: tracking,
-      },
-    ];
     // @ts-ignore
     const processedExtendedSections = sortBy(
       pipe(
@@ -434,17 +368,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
   renderReviewsSummary = (data: StudyPageQuery | undefined) => {
     if (!data || !data.study) {
-      return <ReviewsWrapper>
-        <div>
-          <ReactStars
-            count={5}
-            color2={starColor}
-            edit={false}
-            value={0}
-          />
-          <div>{'0 Reviews'}</div>
-        </div>
-      </ReviewsWrapper>;
+      return (
+        <ReviewsWrapper>
+          <div>
+            <ReactStars count={5} color2={starColor} edit={false} value={0} />
+            <div>{'0 Reviews'}</div>
+          </div>
+        </ReviewsWrapper>
+      );
     }
 
     return (
@@ -519,20 +450,38 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                         <MainContainer md={10}>
                           <div className="container">
                             <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}
+                              {this.renderNavButton(
+                                site.siteView,
+                                '❮❮ First',
+                                this.props.firstLink,
+                              )}
                             </div>
                             <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}
-                            </div>
-                            <div id="navbuttonsonstudypage"><StudyPageCounter
-                              counter = {this.props.counterIndex!}
-                              recordsTotal={this.props.recordsTotal!}/>
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(site.siteView, 'Next ❯', this.props.nextLink)}
+                              {this.renderNavButton(
+                                site.siteView,
+                                '❮ Previous',
+                                this.props.prevLink,
+                              )}
                             </div>
                             <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(site.siteView, 'Last ❯❯', this.props.lastLink)}
+                              <StudyPageCounter
+                                counter={this.props.counterIndex!}
+                                recordsTotal={this.props.recordsTotal!}
+                              />
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(
+                                site.siteView,
+                                'Next ❯',
+                                this.props.nextLink,
+                              )}
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(
+                                site.siteView,
+                                'Last ❯❯',
+                                this.props.lastLink,
+                              )}
                             </div>
                           </div>
 
@@ -550,9 +499,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                                   section ? (
                                     <Route
                                       key={section.path}
-                                      path={`${this.props.match.path}${
-                                        section.path
-                                      }`}
+                                      path={`${this.props.match.path}${section.path}`}
                                       render={props => {
                                         const Component = section.component;
 
@@ -586,20 +533,38 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           </div>
                           <div className="container">
                             <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(site.siteView, '❮❮ First', this.props.firstLink)}
+                              {this.renderNavButton(
+                                site.siteView,
+                                '❮❮ First',
+                                this.props.firstLink,
+                              )}
                             </div>
                             <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(site.siteView, '❮ Previous', this.props.prevLink)}
-                            </div>
-                            <div id="navbuttonsonstudypage"><StudyPageCounter
-                              counter = {this.props.counterIndex!}
-                              recordsTotal={this.props.recordsTotal!}/>
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(site.siteView, 'Next ❯', this.props.nextLink)}
+                              {this.renderNavButton(
+                                site.siteView,
+                                '❮ Previous',
+                                this.props.prevLink,
+                              )}
                             </div>
                             <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(site.siteView, 'Last ❯❯', this.props.lastLink)}
+                              <StudyPageCounter
+                                counter={this.props.counterIndex!}
+                                recordsTotal={this.props.recordsTotal!}
+                              />
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(
+                                site.siteView,
+                                'Next ❯',
+                                this.props.nextLink,
+                              )}
+                            </div>
+                            <div id="navbuttonsonstudypage">
+                              {this.renderNavButton(
+                                site.siteView,
+                                'Last ❯❯',
+                                this.props.lastLink,
+                              )}
                             </div>
                           </div>
                         </MainContainer>

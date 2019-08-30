@@ -63,13 +63,18 @@ const applyOne = (view: SiteViewFragment, mutation: SiteViewMutationInput) => {
   const [key, mutationView] = getLastHashByPath(mutation.path, view);
   if (!mutationView) return false;
 
+  const payload =
+    typeof mutation.payload === 'string'
+      ? JSON.parse(mutation.payload)
+      : mutation.payload;
+
   switch (mutation.operation) {
     case SiteViewOperation.SET:
-      mutationView[key] = mutation.payload;
+      mutationView[key] = payload;
       break;
 
     case SiteViewOperation.PUSH:
-      mutationView[key].push(mutation.payload);
+      mutationView[key].push(payload);
       break;
 
     case SiteViewOperation.DELETE:
