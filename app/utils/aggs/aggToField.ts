@@ -11,6 +11,7 @@ export default val =>
     facility_names: 'facilities',
     facility_states: 'states',
     facility_cities: 'cities',
+    facility_countries: 'countries',
     start_date: 'start date',
     completion_date: 'completion date',
     phase: 'phase',
