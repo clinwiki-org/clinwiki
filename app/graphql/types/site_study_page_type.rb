@@ -1,24 +1,19 @@
 module Types
   class SiteStudyPageType < Types::BaseObject
-    field :wiki, SiteStudyBasicGenericSectionType, null: false
-    field :crowd, SiteStudyBasicGenericSectionType, null: false
-    field :reviews, SiteStudyBasicGenericSectionType, null: false
-    field :tags, SiteStudyBasicGenericSectionType, null: false
-    field :facilities, SiteStudyBasicGenericSectionType, null: false
+    field :all_fields, [String], null: false
+    field :basic_sections, [SiteStudyBasicGenericSectionType], null: false
+    field :extended_sections, [SiteStudyExtendedGenericSectionType], null: false
 
-    field :descriptive, SiteStudyExtendedGenericSectionType, null: false
-    field :administrative, SiteStudyExtendedGenericSectionType, null: false
-    field :recruitment, SiteStudyExtendedGenericSectionType, null: false
-    field :interventions, SiteStudyExtendedGenericSectionType, null: false
-    field :tracking, SiteStudyExtendedGenericSectionType, null: false
-
-    def search
-      object.view[:search]
+    def basic_sections
+      object[:basicSections]
     end
 
-    def workflow
-      object.view[:workflow]
+    def extended_sections
+      object[:extendedSections]
     end
 
+    def all_fields
+      SiteView.new.all_fields
+    end
   end
 end

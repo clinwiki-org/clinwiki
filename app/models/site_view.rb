@@ -29,141 +29,6 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
-  private
-
-  def default_view # rubocop:disable Metrics/MethodLength
-    {
-      study: {
-        wiki: {
-          hide: false,
-        },
-        crowd: {
-          hide: false,
-        },
-        reviews: {
-          hide: false,
-        },
-        tags: {
-          hide: false,
-        },
-        facilities: {
-          hide: false,
-        },
-        descriptive: {
-          hide: false,
-          title: "Descriptive",
-          order: nil,
-          selected: {
-            kind: "WHITELIST",
-            values: %w[
-              briefSummary briefTitle conditions design detailedDescription
-              officialTitle phase publications studyArms studyType
-            ],
-          },
-          fields: all_fields,
-        },
-        administrative: {
-          hide: false,
-          title: "Administrative",
-          order: nil,
-          selected: {
-            kind: "WHITELIST",
-            values: %w[
-              collaborators hasDataMonitoringCommittee investigators isFdaRegulated
-              otherStudyIds planToShareIpd planToShareIpdDescription responsibleParty
-              source sponsor verificationDate
-            ],
-          },
-          fields: all_fields,
-        },
-        recruitment: {
-          hide: false,
-          title: "Recruitment",
-          order: nil,
-          selected: {
-            kind: "WHITELIST",
-            values: %w[
-              ages completionDate contacts enrollment listedLocationCountries
-              overallStatus primaryCompletionDate removedLocationCountries
-              eligibilityCriteria eligibilityGender eligibilityHealthyVolunteers
-            ],
-          },
-          fields: all_fields,
-        },
-        interventions: {
-          hide: false,
-          title: "Interventions",
-          order: nil,
-          selected: {
-            kind: "BLACKLIST",
-            values: [],
-          },
-          fields:
-            %w[description name type],
-        },
-        tracking: {
-          hide: false,
-          title: "Tracking",
-          order: nil,
-          selected: {
-            kind: "WHITELIST",
-            values: %w[
-              primaryMeasures secondaryMeasures
-              firstReceivedDate lastChangedDate primaryCompletionDate
-              startDate
-            ],
-          },
-          fields: all_fields,
-        },
-      },
-      search: {
-        aggs: {
-          selected: {
-            kind: "BLACKLIST",
-            values: [],
-          },
-          fields: aggs,
-        },
-        crowdAggs: {
-          selected: {
-            kind: "BLACKLIST",
-            values: [],
-          },
-          fields: crowd_aggs,
-        },
-        fields: %w[nct_id average_rating brief_title overall_status start_date completion_date],
-      },
-    }
-  end
-
-  def aggs
-    SearchService::ENABLED_AGGS.sort.reject { |x| x == :front_matter_keys }.map { |agg| default_agg_params(agg) }
-  end
-
-  def crowd_agg_names
-    @crowd_agg_names ||=
-      Study.search("*", aggs: [:front_matter_keys], load: false, limit: 0).aggs.to_h
-        .dig("front_matter_keys", "buckets")
-        .map { |x| x["key"] }
-  end
-
-  def crowd_aggs
-    crowd_agg_names.map { |agg| default_agg_params(agg) }
-  end
-
-  def default_agg_params(name)
-    display = STAR_FIELDS.include?(name.to_sym) ? "STAR" : "STRING"
-    {
-      name: name,
-      rank: nil,
-      display: display,
-      preselected: {
-        kind: "WHITELIST",
-        values: [],
-      },
-    }
-  end
-
   def all_fields # rubocop:disable Metrics/MethodLength
     %w[
       acronym
@@ -258,5 +123,165 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
       verificationMonthYear
       whyStopped
     ]
+  end
+
+  private
+
+  def default_view # rubocop:disable Metrics/MethodLength
+    {
+      study: {
+        basicSections: [
+          {
+            hide: false,
+            kind: "basic",
+            title: "Wiki",
+            name: "wiki",
+          },
+          {
+            hide: false,
+            kind: "basic",
+            title: "Crowd",
+            name: "crowd",
+          },
+          {
+            hide: false,
+            kind: "basic",
+            title: "Reviews",
+            name: "reviews",
+          },
+          {
+            hide: false,
+            kind: "basic",
+            title: "Tags",
+            name: "tags",
+          },
+          {
+            hide: false,
+            kind: "basic",
+            title: "Facilities",
+            name: "facilities",
+          },
+        ],
+        extendedSections: [
+          {
+            hide: false,
+            kind: "extended",
+            title: "Descriptive",
+            name: "descriptive",
+            order: nil,
+            selected: {
+              kind: "WHITELIST",
+              values: %w[
+                briefSummary briefTitle conditions design detailedDescription
+                officialTitle phase publications studyArms studyType
+              ],
+            },
+          },
+          {
+            hide: false,
+            kind: "extended",
+            title: "Administrative",
+            name: "administrative",
+            order: nil,
+            selected: {
+              kind: "WHITELIST",
+              values: %w[
+                collaborators hasDataMonitoringCommittee investigators isFdaRegulated
+                otherStudyIds planToShareIpd planToShareIpdDescription responsibleParty
+                source sponsor verificationDate
+              ],
+            },
+          },
+          {
+            hide: false,
+            kind: "extended",
+            title: "Recruitment",
+            name: "recruitment",
+            order: nil,
+            selected: {
+              kind: "WHITELIST",
+              values: %w[
+                ages completionDate contacts enrollment listedLocationCountries
+                overallStatus primaryCompletionDate removedLocationCountries
+                eligibilityCriteria eligibilityGender eligibilityHealthyVolunteers
+              ],
+            },
+          },
+          {
+            hide: false,
+            kind: "extended",
+            title: "Interventions",
+            name: "interventions",
+            order: nil,
+            selected: {
+              kind: "BLACKLIST",
+              values: [],
+            },
+            fields:
+              %w[description name type],
+          },
+          {
+            hide: false,
+            kind: "extended",
+            title: "Tracking",
+            name: "tracking",
+            order: nil,
+            selected: {
+              kind: "WHITELIST",
+              values: %w[
+                primaryMeasures secondaryMeasures
+                firstReceivedDate lastChangedDate primaryCompletionDate
+                startDate
+              ],
+            },
+          },
+        ],
+      },
+      search: {
+        aggs: {
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields: aggs,
+        },
+        crowdAggs: {
+          selected: {
+            kind: "BLACKLIST",
+            values: [],
+          },
+          fields: crowd_aggs,
+        },
+        fields: %w[nct_id average_rating brief_title overall_status start_date completion_date],
+      },
+    }
+  end
+
+  def aggs
+    SearchService::ENABLED_AGGS.sort.reject { |x| x == :front_matter_keys }.map { |agg| default_agg_params(agg) }
+  end
+
+  def crowd_agg_names
+    @crowd_agg_names ||=
+      Study.search("*", aggs: [:front_matter_keys], load: false, limit: 0).aggs.to_h
+        .dig("front_matter_keys", "buckets")
+        .map { |x| x["key"] }
+  end
+
+  def crowd_aggs
+    crowd_agg_names.map { |agg| default_agg_params(agg) }
+  end
+
+  def default_agg_params(name)
+    display = STAR_FIELDS.include?(name.to_sym) ? "STAR" : "STRING"
+    {
+      name: name,
+      rank: nil,
+      display: display,
+      preselected: {
+        kind: "WHITELIST",
+        values: [],
+      },
+    }
   end
 end
