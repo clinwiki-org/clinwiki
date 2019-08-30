@@ -282,6 +282,10 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         kind: "WHITELIST",
         values: [],
       },
+      visibleOptions: {
+        kind: "WHITELIST",
+        values: [],
+      },
     }
   end
 end
