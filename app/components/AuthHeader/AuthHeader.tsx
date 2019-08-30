@@ -38,6 +38,11 @@ const StyledWrapper = styled.div`
     padding-left: 30px;
     color: #fff;
   }
+  span#small {
+    font-size: 14px;
+    opacity: 0.75;
+  }
+
 `;
 
 export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
@@ -48,7 +53,7 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
           <Navbar.Header>
             <Navbar.Brand>
               <Link id="logo" to="/search">
-                ClinWiki
+                ClinWiki <span id='small'>(beta)</span>
               </Link>
             </Navbar.Brand>
             <ul className="nav navbar-nav">
