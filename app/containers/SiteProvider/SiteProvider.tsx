@@ -66,6 +66,10 @@ const SITE_VIEW_FRAGMENT = gql`
             kind
             values
           }
+          visibleOptions {
+            kind
+            values
+          }
           rank
         }
         selected {
@@ -78,6 +82,10 @@ const SITE_VIEW_FRAGMENT = gql`
           name
           display
           preselected {
+            kind
+            values
+          }
+          visibleOptions {
             kind
             values
           }

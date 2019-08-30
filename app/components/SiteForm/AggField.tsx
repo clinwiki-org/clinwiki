@@ -16,6 +16,7 @@ interface AggFieldProps {
 
 interface AggFieldState {
   isValuesOpen: boolean;
+  isVisibleOptionsOpen: boolean;
 }
 
 const FiltersContainer = styled.div`
@@ -79,38 +80,51 @@ const StyledFormControl = styled(FormControl)`
 class AggField extends React.Component<AggFieldProps, AggFieldState> {
   state: AggFieldState = {
     isValuesOpen: false,
+    isVisibleOptionsOpen: false,
   };
 
   getPath = () => `search.${this.props.kind}.fields.${this.props.field.name}`;
 
-  handleAddFilter = (aggName: string, aggValue: string, isCrowd: boolean) => {
-    this.props.onAddMutation({
-      currentTarget: {
-        name: `set:${this.getPath()}.preselected.values`,
-        value: [...this.props.field.preselected.values, aggValue],
-      },
-    });
-  };
-
-  handleRemoveFilter = (
+  handleAddFilter = (kind: 'preselected' | 'visibleOptions') => (
     aggName: string,
     aggValue: string,
     isCrowd: boolean,
   ) => {
     this.props.onAddMutation({
       currentTarget: {
-        name: `set:${this.getPath()}.preselected.values`,
+        name: `set:${this.getPath()}.${kind}.values`,
+        value: [...this.props.field[kind].values, aggValue],
+      },
+    });
+  };
+
+  handleRemoveFilter = (kind: 'preselected' | 'visibleOptions') => (
+    aggName: string,
+    aggValue: string,
+    isCrowd: boolean,
+  ) => {
+    this.props.onAddMutation({
+      currentTarget: {
+        name: `set:${this.getPath()}.${kind}.values`,
         value: reject(equals(aggValue), this.props.field.preselected.values),
       },
     });
   };
 
-  handleOpen = (agg: string, aggKind: AggKind) => {
-    this.setState({ isValuesOpen: !this.state.isValuesOpen });
+  handleOpen = (kind: 'preselected' | 'visibleOptions') => (
+    agg: string,
+    aggKind: AggKind,
+  ) => {
+    if (kind === 'preselected') {
+      this.setState({ isValuesOpen: !this.state.isValuesOpen });
+    } else {
+      this.setState({ isVisibleOptionsOpen: !this.state.isVisibleOptionsOpen });
+    }
   };
 
   render() {
     const selected = new Set(this.props.field.preselected.values);
+    const visibleOptions = new Set(this.props.field.visibleOptions.values);
     return (
       <>
         <h4>
@@ -126,7 +140,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <MultiCrumb
                 key={value}
                 values={[value]}
-                onClick={value => this.handleRemoveFilter('', value, false)}
+                onClick={value =>
+                  this.handleRemoveFilter('preselected')('', value, false)
+                }
               />
             ))}
           </CrumbsContainer>
@@ -147,21 +163,47 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 display={this.props.field.display}
                 isOpen={this.state.isValuesOpen}
                 selectedKeys={selected}
-                addFilter={this.handleAddFilter}
-                removeFilter={this.handleRemoveFilter}
-                onOpen={this.handleOpen}
+                addFilter={this.handleAddFilter('preselected')}
+                removeFilter={this.handleRemoveFilter('preselected')}
+                onOpen={this.handleOpen('preselected')}
               />
             </FilterContainer>
-            {/* <StyledKind
-              name={`set:${this.getPath()}.preselected.kind`}
-              componentClass="select"
-              onChange={this.props.onAddMutation}
-              defaultValue={this.props.field.preselected.kind}
-              disabled
-            >
-              <option value="BLACKLIST">All except</option>
-              <option value="WHITELIST">Only</option>
-            </StyledKind> */}
+          </FiltersContainer>
+
+          <StyledLabel>Visible options</StyledLabel>
+          <CrumbsContainer>
+            {Array.from(visibleOptions).map(value => (
+              <MultiCrumb
+                key={value}
+                values={[value]}
+                onClick={value =>
+                  this.handleRemoveFilter('visibleOptions')('', value, false)
+                }
+              />
+            ))}
+          </CrumbsContainer>
+
+          <FiltersContainer>
+            <FilterContainer>
+              <AggDropDown
+                agg={this.props.field.name}
+                aggKind={this.props.kind}
+                searchParams={{
+                  q: ({ key: 'AND', children: [] } as unknown) as string[],
+                  page: 0,
+                  pageSize: 25,
+                  aggFilters: [],
+                  crowdAggFilters: [],
+                  sorts: [],
+                }}
+                display={this.props.field.display}
+                isOpen={this.state.isVisibleOptionsOpen}
+                selectedKeys={visibleOptions}
+                addFilter={this.handleAddFilter('visibleOptions')}
+                removeFilter={this.handleRemoveFilter('visibleOptions')}
+                onOpen={this.handleOpen('visibleOptions')}
+              />
+            </FilterContainer>
           </FiltersContainer>
           <div>
             <StyledLabel>Order</StyledLabel>
