@@ -5,6 +5,7 @@ import NotFoundPage from 'containers/NotFoundPage';
 import SearchPage from 'containers/SearchPage';
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
+import ReleaseNotes from 'containers/ReleaseNotes';
 import StudyPage from 'containers/StudyPage';
 import InterventionPage from 'containers/InterventionPage';
 import {
@@ -44,6 +45,7 @@ class App extends React.PureComponent<AppProps> {
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/about" component={AboutPage} />
+            <Route exact path="/release" component={ReleaseNotes} />
             <Route path="/search/:searchId" component={SearchPage} />
             <Route path="/search" component={SearchPage} />
             <Route
