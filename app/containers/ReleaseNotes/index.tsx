@@ -15,6 +15,8 @@ const notes =
 - Dynamic study sections
 - Country facet
 - Release notes added
+- Show record count on study page
+- First/Last buttons on study page
 
 ### Version 0
 - Everything else
