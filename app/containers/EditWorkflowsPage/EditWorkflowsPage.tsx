@@ -72,7 +72,9 @@ class EditWorkflowsPage extends React.Component<
     return (
       <WorkflowsViewProvider>
         {rawWorkflowsView => {
-          if (!this.state.currentWorkflowName) {
+          if (!this.state.currentWorkflowName 
+              && rawWorkflowsView.workflows
+              && rawWorkflowsView.workflows.length > 0) {
             this.setState({
               currentWorkflowName: rawWorkflowsView.workflows[0].name,
             });
@@ -85,9 +87,10 @@ class EditWorkflowsPage extends React.Component<
             propEq('name', this.state.currentWorkflowName),
             workflowsView.workflows,
           ) as WorkflowConfigFragment;
-          console.log(this.state.currentWorkflowName, workflow);
 
-          return (
+          if (workflow == null)
+            return <Container><Row>No Workflows</Row></Container>;
+          else return (
             <Container>
               <Row>
                 <Col md={2}>
