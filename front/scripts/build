@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+if [ -z "$CW_PATH" ]; then
+  if [ -d "../clinwiki" ]; then
+    echo "Using $(stat -f "%N" "../clinwiki") as \$CW_PATH"
+    export CW_PATH="../clinwiki"
+  else
+    echo "CW_PATH not set. Call `export CW_PATH=$YOUR_CW_PATH`"
+    exit 1
+  fi
+fi
+
+yarn build:clean && \
+NODE_ENV=production yarn build && \
+rm $CW_PATH/public/*.chunk.js && \
+rm $CW_PATH/public/main*.js && \
+cp build/* $CW_PATH/public/.
