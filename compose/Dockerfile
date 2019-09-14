@@ -9,6 +9,7 @@ RUN npm install -g yarn
 RUN mkdir /clinwiki
 WORKDIR /clinwiki
 COPY Gemfile /clinwiki/
+COPY Gemfile.lock /clinwiki/
 RUN bundle install
 
 # Add a script to be executed with the container starts
