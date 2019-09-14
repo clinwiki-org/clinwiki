@@ -15,7 +15,7 @@ fi
 
 yarn install && \
 yarn build:clean && \
-NODE_ENV=production yarn build && \
+time NODE_ENV=production yarn build && \
 rm -f $CW_PATH/public/*.chunk.js && \
 rm -f $CW_PATH/public/main*.js && \
 cp build/* $CW_PATH/public/.
