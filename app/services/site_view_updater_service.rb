@@ -18,7 +18,7 @@ class SiteViewUpdaterService
       muts = mutations
         .group_by { |mut| mut[:path] }
         .values
-        .map { |g| g.max_by { |x| x[:id] } }
+        .flat_map { |g| g.first[:operation] == "push" ? g : [g.max_by { |x| x[:id] }] }
         .sort_by { |x| x[:id] }
       muts.each { |mut| mut.delete(:id) }
       muts
@@ -36,9 +36,10 @@ class SiteViewUpdaterService
       mutation_view[key] = mutation[:payload]
       return true
     when "push"
-      return false unless mutation_view[key].is_a?(Array)
+      return false unless mutation_view[key].nil? || mutation_view[key].is_a?(Array)
 
-      mutation_view[key].push(mutation[:payload])
+      mutation_view[key] = (mutation_view[key] || []) + [mutation[:payload]]
+
       return true
     when "delete"
       if mutation_view.is_a?(Hash)

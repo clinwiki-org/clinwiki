@@ -72,23 +72,23 @@ module Types
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-          aggs: search_service.agg_buckets_for_field(field: params[:agg]),
-          )
+        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site]),
+      )
     end
 
     def crowd_agg_buckets(search_hash: nil, params: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-          aggs: search_service.agg_buckets_for_field(field: params[:agg], is_crowd_agg: true),
-          )
+        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site], is_crowd_agg: true),
+      )
     end
 
     def health
       ActiveRecord::Base.establish_connection
       ActiveRecord::Base.connection
       {
-          healthy: ActiveRecord::Base.connected?,
+        healthy: ActiveRecord::Base.connected?,
       }
     end
 

@@ -4,9 +4,14 @@ module Types
     field :rank, Integer, null: true
     field :display, FieldDisplayType, null: false
     field :preselected, SiteSelectType, null: false
+    field :visible_options, SiteSelectType, null: false
 
     def display
       object[:display]
+    end
+
+    def visible_options
+      object[:visibleOptions]
     end
   end
 end

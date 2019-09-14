@@ -38,16 +38,19 @@ module WikiHelper
 
     front_matter.delete(params[:delete_meta][:key]) if params.key?(:delete_meta)
     front_matter[params[:add_meta][:key]] = params[:add_meta][:value] if params.key?(:add_meta)
-    front_matter["tags"] = (front_matter.fetch("tags", []) + [params[:add_tag]]).flatten.uniq if params.key?(:add_tag)
+    tags = front_matter["tags"]&.split("|") || []
+    tags = (tags + [params[:add_tag]]).flatten.uniq if params.key?(:add_tag)
 
     if params.key?(:remove_tag)
-      front_matter["tags"] = front_matter.fetch("tags", []).reject { |x| [params[:remove_tag]].flatten.include?(x) }
+      tags = tags.reject { |x| [params[:remove_tag]].flatten.include?(x) }
     end
 
-    wiki_text = combined_markdown(content, front_matter)
+    front_matter["tags"] = tags.join("|")
 
-    @edit = generate_edit(wiki_text, user)
-    @wiki_page.text = wiki_text
+    # @edit = generate_edit(wiki_text, user)
+    @wiki_page.updater = user
+    @wiki_page.front_matter = front_matter
+    @wiki_page.content = content
     @wiki_page.save
   end
 end

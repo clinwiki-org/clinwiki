@@ -4,6 +4,13 @@ search_results/*
 public/studies/*
 public/imported/*
 public/downloaded/*
+public/*.js
+public/*.png
+public/*.jpeg
+public/*.jpg
+public/*.ico
+public/index.html
+public/manifest.json
 db/*.sqlite3
 vendor/*
 tmp/*

@@ -79,7 +79,7 @@ DEFAULT_AGG_OPTIONS = {
 class SearchService # rubocop:disable Metrics/ClassLength
   ENABLED_AGGS = %i[
     average_rating overall_status facility_states
-    facility_cities facility_names study_type sponsors
+    facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys
@@ -112,7 +112,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
     }
   end
 
-  def agg_buckets_for_field(field:, is_crowd_agg: false) # rubocop:disable Metrics/MethodLength
+  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false) # rubocop:disable Metrics/MethodLength
     params = self.params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
@@ -147,10 +147,14 @@ class SearchService # rubocop:disable Metrics/ClassLength
           },
         )
 
+      visibile_options = find_visibile_options(key, is_crowd_agg, current_site)
+      visible_options_regex = one_of_regex(visibile_options)
+      regex = visible_options_regex
       if params[:agg_options_filter].present?
-        body[:aggs][key][:aggs][key][:terms][:include] =
-          case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
+        filter_regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
+        regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
       end
+      body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
@@ -242,10 +246,25 @@ class SearchService # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def find_visibile_options(agg_name, is_crowd_agg, current_site)
+    return [] if current_site.blank?
+
+    view = current_site.site_view.view
+    fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
+    field = fields.find { |f| f[:name] == agg_name }
+    field&.dig(:visibleOptions, :values) || []
+  end
+
   def case_insensitive_regex_emulation(text)
     text.chars.map do |char|
       letter?(char) ? "[#{char.upcase}#{char.downcase}]" : char
     end.join("")
+  end
+
+  def one_of_regex(values)
+    return nil if values.blank?
+
+    values.join("|")
   end
 
   def letter?(char)
