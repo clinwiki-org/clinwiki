@@ -1,0 +1,22 @@
+from ruby:2.5.3
+
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN apt-get update -qq && \
+   DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs npm postgresql-client htop curl make sudo screen vim && \
+   apt-get clean
+RUN npm install -g yarn
+
+RUN mkdir /clinwiki
+WORKDIR /clinwiki
+COPY ../Gemfile* /clinwiki/
+RUN bundle install
+
+# Add a script to be executed with the container starts
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+EXPOSE 3000
+
+CMD ["/usr/bin/entrypoint.sh"]
+
+
+
