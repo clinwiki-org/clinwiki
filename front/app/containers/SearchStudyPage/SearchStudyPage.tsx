@@ -93,6 +93,11 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               ) as number);
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
             prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
+            workflowName = pathOr(
+              false,
+              ['search', 'studyEdge', 'workflowName'],
+              data,
+            ) as string | null;
 
             // just so that there isn't a first button if there isn't a prev button
             // likewise for the last button

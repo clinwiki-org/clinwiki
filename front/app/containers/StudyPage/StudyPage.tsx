@@ -49,7 +49,6 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { starColor } from 'utils/constants';
 import StudyPageCounter from './components/StudyPageCounter';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
-import { PulseLoader, ScaleLoader } from 'react-spinners';
 
 interface StudyPageProps {
   history: History;
@@ -60,9 +59,9 @@ interface StudyPageProps {
   firstLink?: string | null;
   lastLink?: string | null;
   isWorkflow?: boolean;
-  workflowName: string | null;
   recordsTotal?: number;
   counterIndex?: number;
+  workflowName: string | null;
 }
 
 interface StudyPageState {
@@ -336,14 +335,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     link?: string | null,
   ) => {
     if (link === undefined) return null;
-
     return (
       <Button
         style={{ marginRight: 10, marginBottom: 10 }}
         onClick={this.handleNavButtonClick(link!, view)}
         disabled={link === null}
-      >
-        {name}
+      >{name}
       </Button>
     );
   };

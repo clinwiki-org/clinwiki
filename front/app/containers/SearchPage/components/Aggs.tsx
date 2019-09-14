@@ -109,7 +109,7 @@ class Aggs extends React.PureComponent<AggsProps> {
     if (!isEmpty(aggs) && !isNil(aggs)) {
       return (
         <SiteProvider>
-          {site => (
+          {(site) => (
             <div>
               <div>
                 {this.getAggs(site).map(k =>

@@ -29,7 +29,7 @@ class AboutPage extends React.PureComponent<{}, {}> {
             driving participation and ultimately improved trials and faster progress against serious dis eases.</p>
           <p>
             Special thanks to our supporters,
-            <a href="https://www.cancercommon s.org" target="_blank"> Cancer Commons</a> and
+            <a href="https://www.cancercommons.org" target="_blank"> Cancer Commons</a> and
             <a href="http://www.orangecountync.gov/departments/outside_agency_non-profit_funding/funding_process.php"
             target="_blank"> Orange County</a>
           </p>

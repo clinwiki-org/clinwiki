@@ -13,8 +13,7 @@ import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
-import { MAX_WINDOW_SIZE } from '../../../utils/constants';
-import { PulseLoader } from 'react-spinners';
+import AutoSuggester from './AutoSuggester';
 
 const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
@@ -44,10 +43,16 @@ const CrumbsBarStyleWrappper = styled.div`
 
     input.form-control {
       border: 0px;
-      box-shadow: none;
+      box-shadow:none;
       margin-right: 10px;
-      margin-left: 10px;
+      height:100%;
+      width:100%;
+      clear: both;
     }
+    input.rbt-input-hint {
+      opacity: 0;
+    }
+
 
     span.label {
       background: none;
@@ -91,6 +96,8 @@ const CrumbsBarStyleWrappper = styled.div`
 
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
+import { MAX_WINDOW_SIZE } from '../../../utils/constants';
+import { PulseLoader } from 'react-spinners';
 
 //
 interface CrumbsBarProps {
@@ -188,11 +195,19 @@ export default class CrumbsBar extends React.Component<
     this.props.removeSearchTerm('', true);
   };
   onSubmit = e => {
+    //console.log('hi');
     e.preventDefault();
     this.props.addSearchTerm(this.state.searchTerm);
     this.setState({ searchTerm: '' });
   };
 
+  inputSearchChange = val => {
+    this.setState({searchTerm:val})
+  }
+
+  clickSearchChange = val => {
+    this.setState({searchTerm:val[0]})
+  }
   render() {
     return (
       <CrumbsBarStyleWrappper>
@@ -202,16 +217,26 @@ export default class CrumbsBar extends React.Component<
               <Form inline className="searchInput" onSubmit={this.onSubmit}>
                 <FormGroup>
                   <b>Search Within: </b>
+
                   <FormControl
-                    type="text"
-                    placeholder="search..."
-                    onChange={this.localSearchChange}
-                  />
+
+                    componentClass={AutoSuggester}
+                    onInputChange={this.inputSearchChange}
+                    onChange={this.clickSearchChange}
+                    id='searcher'
+                    placeholder='search...'
+                    params = {val=>{return val}}
+                    autocomplete='off'/>
+
+
                 </FormGroup>
+
                 <Button type="submit">
                   <FontAwesome name="search" />
                 </Button>
               </Form>
+
+
             </Col>
             <Col xsHidden md={3}>
               <div className="right-align">
