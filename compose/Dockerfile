@@ -8,11 +8,11 @@ RUN npm install -g yarn
 
 RUN mkdir /clinwiki
 WORKDIR /clinwiki
-COPY ../Gemfile* /clinwiki/
+COPY Gemfile /clinwiki/
 RUN bundle install
 
 # Add a script to be executed with the container starts
-COPY entrypoint.sh /usr/bin/
+COPY compose/entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 EXPOSE 3000
 
