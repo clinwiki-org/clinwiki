@@ -75,6 +75,14 @@ class LandingPage extends React.PureComponent<LandingPageProps, LandingPageState
         </Col>
       </Row>
     </div>
+    <div>
+      <iframe 
+          class="container" 
+          allowfullscreen="" 
+          src="https://www.youtube.com/watch?v=pEjeJJTTQ9I&t=9s"
+          >
+      </iframe>
+     </div>
   </MainContainer>);
   render() {
     return (<ApolloConsumer>
