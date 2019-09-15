@@ -26,3 +26,4 @@ config/database_local.yml
 ubuntu-artful-17.10-cloudimg-console.log 
 .orig
 public/assets
+node_modules 
