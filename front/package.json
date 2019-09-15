@@ -252,9 +252,7 @@
     "sanitize.css": "^5.0.0",
     "styled-components": "3.1.6",
     "warning": "3.0.0",
-    "whatwg-fetch": "^2.0.3"
-  },
-  "devDependencies": {
+    "whatwg-fetch": "^2.0.3",
     "@types/graphql": "^14.0.7",
     "@types/ramda": "types/npm-ramda#dist",
     "@types/react": "^16.4.18",
