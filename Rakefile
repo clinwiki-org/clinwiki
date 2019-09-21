@@ -227,7 +227,7 @@ namespace :autocomplete do
 
 
   desc "Creates seed for WordFreq table from Study"
-  task seed: :environment do
+  task seed_full: :environment do
 
     # Since we're seeding from scratch, destroy the original db and recreate it.
     # using delete_all instead of destroy_all for efficiency (since there's no callbacks here)
@@ -261,15 +261,55 @@ namespace :autocomplete do
       hash = hash.select{|k, _| !FUNCTION_WORDS.include? k}
 
       hash.each_pair do |word, word_count| 
-        WordFrequency.find_or_create_by(name: word) do |record|
-          record.frequency = (record.frequency || 0) + word_count
-        end
+        record = WordFrequency.create_with(frequency: 0).find_or_create_by(name: word)
+        record.increment!(:frequency, word_count)
       end
     end       
   end
 
+  desc "Creates random seed for WordFreq table from 1000 random Studies"
+  task seed_random: :environment do
+    WordFrequency.delete_all
+    studies = Study.order('RANDOM()').first(1000)
+    hash = Hash.new(0)
+    studies.each do |study|
+      title_array = study.brief_title.split(' ')
+
+      title_array.each do |word|
+        # delete any characters that are not letters or hyphens or apostrophes or numbers.
+        sanitized = word.delete("^a-zA-Z-'0-9")
+        # if the word is a whole word, hyphenated, or has an apostrophe
+        # AND it's not only digits
+        if sanitized =~ /^[a-zA-Z0-9]+(?:['-]*[a-zA-Z0-9]+)*$/ and sanitized !~ /^\d+$/
+          # if the word doesn't have an apostrophe and it doesn't have two capital letters,
+          # or if it has two capitalized words separated by a hyphen
+          # or if it already exists in the hash as downcased
+          if sanitized !~ /'/ and sanitized !~ /.*[A-Z].*[A-Z].*/ or
+              sanitized =~ /^[A-Z][a-z]*-[A-Z][a-z]*$/ or
+              hash.key?(sanitized.downcase)
+            sanitized = sanitized.downcase
+          end
+          hash[sanitized] += 1
+        end
+      end
+    end
+
+    hash = hash.select{|k, _| !FUNCTION_WORDS.include? k}
+
+    hash.each_pair do |word, word_count|
+      record = WordFrequency.create_with(frequency: 0).find_or_create_by(name: word)
+      record.increment!(:frequency, word_count)
+    end
+  end
+
+
+  desc "Creates an index with all words from 1000 words in Study database"
+  task bootstrap: [:seed_random, :reindex]
+
   desc "Creates an index with all words from sql database"
-  task bootstrap: [:seed, :reindex]
+  task bootstrap_full: [:seed_full, :reindex]
+
+
 
 end
 

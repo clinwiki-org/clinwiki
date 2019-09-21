@@ -7,11 +7,12 @@ class AutosuggestService
 
   def autocomplete
     fields = {
-        fields: ["name"],
+        fields: [:name, :frequency],
         match: :word_start,
         limit: 10,
         load: false,
-        misspellings: {below: 5}
+        misspellings: {below: 3},
+        order: {frequency: :desc}
     }
     results = WordFrequency.search(@params, fields)
     results.map(&:name)
