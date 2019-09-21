@@ -228,36 +228,44 @@ namespace :autocomplete do
 
   desc "Creates seed for WordFreq table from Study"
   task seed: :environment do
-    studies = Study.all
-    hash = Hash.new(0)
-    studies.each do |study|
-      title_array = study.brief_title.split(' ')
 
-      title_array.each do |word|
-        # delete any characters that are not letters or hyphens or apostrophes or numbers.
-        sanitized = word.delete("^a-zA-Z-'0-9")
-        # if the word is a whole word, hyphenated, or has an apostrophe
-        # AND it's not only digits
-        if sanitized =~ /^[a-zA-Z0-9]+(?:['-]*[a-zA-Z0-9]+)*$/ and sanitized !~ /^\d+$/
-          # if the word doesn't have an apostrophe and it doesn't have two capital letters,
-          # or if it has two capitalized words separated by a hyphen
-          # or if it already exists in the hash as downcased
-          if sanitized !~ /'/ and sanitized !~ /.*[A-Z].*[A-Z].*/ or
-              sanitized =~ /^[A-Z][a-z]*-[A-Z][a-z]*$/ or
-              hash.key?(sanitized.downcase)
-            sanitized = sanitized.downcase
+    # Since we're seeding from scratch, destroy the original db and recreate it.
+    # using delete_all instead of destroy_all for efficiency (since there's no callbacks here)
+    WordFrequency.delete_all
+    # Using default batch memory size of 1000 since that's a pretty reasonable amount 
+    # to conserve memory by
+    Study.find_in_batches do |studies_sub|
+      #To save memory use a new hash every 1000 records being iterated upon
+      hash = Hash.new(0)
+      studies_sub.each do |study|
+        title_array = study.brief_title.split(' ')
+        title_array.each do |word|
+          # delete any characters that are not letters or hyphens or apostrophes or numbers.
+          sanitized = word.delete("^a-zA-Z-'0-9")
+          # if the word is a whole word, hyphenated, or has an apostrophe
+          # AND it's not only digits
+          if sanitized =~ /^[a-zA-Z0-9]+(?:['-]*[a-zA-Z0-9]+)*$/ and sanitized !~ /^\d+$/
+            # if the word doesn't have an apostrophe and it doesn't have two capital letters,
+            # or if it has two capitalized words separated by a hyphen
+            # or if it already exists in the hash as downcased
+            if sanitized !~ /'/ and sanitized !~ /.*[A-Z].*[A-Z].*/ or
+                sanitized =~ /^[A-Z][a-z]*-[A-Z][a-z]*$/ or
+                hash.key?(name: sanitized.downcase)
+              sanitized = sanitized.downcase
+            end
+            hash[sanitized] += 1
           end
-          hash[sanitized] += 1
         end
       end
-    end
 
-    hash = hash.select{|k, _| !FUNCTION_WORDS.include? k}
+      hash = hash.select{|k, _| !FUNCTION_WORDS.include? k}
 
-    hash.each_pair do |word, word_count|
-      WordFrequency.create! name: word, frequency: word_count
-    end
-
+      hash.each_pair do |word, word_count| 
+        WordFrequency.find_or_create_by(name: word) do |record|
+          record.frequency = (record.frequency || 0) + word_count
+        end
+      end
+    end       
   end
 
   desc "Creates an index with all words from sql database"
