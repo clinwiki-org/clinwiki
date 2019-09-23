@@ -7,11 +7,12 @@
 #              password: "clinwiki", password_confirmation: "clinwiki"
 
 #studies = Study.order('RANDOM()').first(500)
-require 'activerecord-import'
-require 'memory_profiler'
+# require 'activerecord-import'
+# require 'memory_profiler'
 
-WordFrequency.seed(Study.count)
-WordFrequency.reindex_model
+
+# WordFrequency.seed(Study.count)
+# WordFrequency.reindex_model
 
 
 

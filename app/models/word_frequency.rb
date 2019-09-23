@@ -42,12 +42,12 @@ class WordFrequency < ApplicationRecord
     puts 'Done!'
   end
 
-  def self.seed(limit=1000)
+  def self.seed(size=1000)
     #deletes all records of WordFrequency so we have a fresh db
     WordFrequency.delete_all
 
     #batch size of 1000 is default and pretty reliable
-    Study.limit(limit).find_in_batches(batch_size: 1000) do |studies|
+    Study.limit(size).find_in_batches(batch_size: 1000) do |studies|
       hash = Hash.new(0)
       studies.each do |study|
         study.brief_title.split(' ').each do |word|

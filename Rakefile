@@ -234,7 +234,7 @@ namespace :autocomplete do
 
     #calls seed function found in word_frequency.rb
     #seeds using all records of Study
-    WordFrequency.seed
+    WordFrequency.seed(Study.count)
 
   end
 
