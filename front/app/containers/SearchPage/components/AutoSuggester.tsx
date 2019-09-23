@@ -32,40 +32,34 @@ class AutoSuggester extends React.Component<SuggestionsProps, SuggestionsState> 
     }
   }
   render() {
-    return (<ApolloConsumer> 
+    return (<ApolloConsumer>
       {client => this.renderMain(client)}
-    </ApolloConsumer>)
+    </ApolloConsumer>);
   }
 
   onSearch = async (query: string, client:ApolloClient<any>) => {
 
-    this.setState({isLoading: true});
-
-    const {data}: any = await client.query({
-      query: QUERY, 
+    const { data }: any = await client.query({
+      query: QUERY,
       variables: {
-        params: query
-      }
+        params: query,
+      },
     });
     this.setState({
       options: data.typeahead,
-      isLoading: false
     });
   };
 
   renderMain(client:ApolloClient<any>) {
-    //const defaultOptions = ['Jick', 'Miles', 'Charles', 'Herbie'];
 
     return (
-      <AsyncTypeahead {...this.props} 
-      options={this.state.options} 
+      <AsyncTypeahead {...this.props}
+      options={this.state.options}
       isLoading={this.state.isLoading}
-      onSearch = {e=>this.onSearch(e,client)}
-      minLength={1} 
+      onSearch = {e => this.onSearch(e, client)}
+      minLength={1}
       maxResults={10}
-      positionFixed={true}
       highlightOnlyResult={true}
-      align='left'
       />
     );
   }
