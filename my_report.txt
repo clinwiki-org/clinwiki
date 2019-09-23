@@ -1,0 +1,3 @@
+Total allocated: 7.28 MB (100884 objects)
+Total retained:  91.83 kB (1685 objects)
+

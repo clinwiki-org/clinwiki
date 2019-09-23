@@ -5,6 +5,7 @@ class CreateWordFrequencies < ActiveRecord::Migration[5.2]
       t.integer :frequency
 
       t.timestamps
+
     end
   end
 end
