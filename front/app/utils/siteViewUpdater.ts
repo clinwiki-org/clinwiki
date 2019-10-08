@@ -58,15 +58,18 @@ export const updateView = (
   mutations.forEach(mutation => applyOne(result, mutation));
   return result;
 };
+  
+const tryParse = (data, defaultValue) => {
+  try { return JSON.parse(data); }
+  catch(e) {}
+  return defaultValue;
+}
 
 const applyOne = (view: SiteViewFragment, mutation: SiteViewMutationInput) => {
   const [key, mutationView] = getLastHashByPath(mutation.path, view);
   if (!mutationView) return false;
 
-  const payload =
-    typeof mutation.payload === 'string'
-      ? JSON.parse(mutation.payload)
-      : mutation.payload;
+  const payload = tryParse(mutation.payload, mutation.payload);
 
   switch (mutation.operation) {
     case SiteViewOperation.SET:
