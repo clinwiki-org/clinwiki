@@ -14,6 +14,7 @@ import {
 } from 'types/SearchPageParamsQuery';
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
+import BulkEditPage from 'containers/BulkEditPage';
 import { Query, ApolloConsumer } from 'react-apollo';
 import {
   path,
@@ -341,6 +342,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.props.history.push(`${prefix}/study/${nctId}${suffix}`);
   };
 
+  handleBulkUpdateClick = () => {
+    this.props.history.push(`${this.props.match.url}/bulk`);
+  };
+
   handleOpenAgg = (name: string, kind: AggKind) => {
     if (!this.state.openedAgg) {
       this.setState({ openedAgg: { name, kind } });
@@ -426,6 +431,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 return (
                   <SearchView
                     params={params}
+                    onBulkUpdate={this.handleBulkUpdateClick}
                     openedAgg={this.state.openedAgg}
                     onUpdateParams={this.handleUpdateParams}
                     onRowClick={this.handleRowClick}
@@ -452,6 +458,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               {site => (
                 <SearchView
                   params={this.state.params as any}
+                  onBulkUpdate={this.handleBulkUpdateClick}
                   openedAgg={this.state.openedAgg}
                   onUpdateParams={this.handleUpdateParams}
                   onRowClick={this.handleRowClick}
@@ -475,6 +482,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <Route
           path={`${this.props.match.path}/study/:nctId`}
           component={SearchStudyPage}
+        />
+        <Route
+          path={`${this.props.match.path}/bulk/`}
+          component={BulkEditPage}
         />
         <Route
           render={() => (
