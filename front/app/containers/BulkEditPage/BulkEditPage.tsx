@@ -1,17 +1,60 @@
 import * as React from 'react';
-import { path } from 'ramda';
+import { match } from 'react-router';
+import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
+import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
+import { displayFields } from 'utils/siteViewHelpers';
+import {
+  path,
+  drop,
+  addIndex,
+  map,
+  pipe,
+  isNil,
+  find,
+  propEq,
+  lensPath,
+  set,
+  keys,
+  reject,
+  filter,
+  equals,
+  isEmpty,
+  prop,
+} from 'ramda';
+import SiteProvider from 'containers/SiteProvider';
+import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
+import BulkEditView from './BulkEditView'
 
 interface BulkEditProps {
-    match: any
+  match: match<{ searchId?: string }>;
 }
-interface BulkEditState {
-}
+class BulkEditPage extends React.PureComponent<BulkEditProps> {
+  render() {
+      return (
+        <WorkflowsViewProvider>
+          {workflowsView => {
+            const workflow = pipe(
+              prop('workflows'),
+              find(propEq('name', "wf_bulk")),
+            )(workflowsView) as WorkflowConfigFragment | null;
+         
+            if (workflow) {
+              const allowedSuggestedLabels = displayFields(
+                workflow.suggestedLabelsFilter.kind,
+                workflow.suggestedLabelsFilter.values,
+                workflow.allSuggestedLabels.map(name => ({ name, rank: null })),
+              ).map(prop('name'));
+                
+              return <BulkEditView labels={allowedSuggestedLabels} />
 
-class BulkEditPage extends React.Component<BulkEditProps, BulkEditState> {
-    render() {
-        const hash = path(['match', 'params', 'searchId'], this.props) as string | null;
-        return <div>hash={hash}</div>
-    }
+            }
+            else {
+              return null;
+            }
+          }}
+        </WorkflowsViewProvider>
+      )
+  }
 }
 
 export default BulkEditPage;
