@@ -9,6 +9,9 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 2
+- Add /voyager to debug builds for exploring graphql schema
+
 ### Version 1
 - Filter facet values in site config
 - Beta added to logo
