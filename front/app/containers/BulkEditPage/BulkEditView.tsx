@@ -23,18 +23,32 @@ import {
   prop,
 } from 'ramda';
 
+interface Undo {
+  description : string
+  action : ()=>void
+}
+interface Label {
+  name : string
+  values : string[]
+  selectedValues : string[]
+  indeterminiteValues : string[]
+}
+interface LabelValue {
+  name : string
+  value : string
+}
+
 interface BulkEditProps {
-  labels : String[]
+  labels : Label[]
+  commit : (toAdd:Label[], toRemove:Label[], description:string) => Undo
 }
 interface BulkEditState {
+  labelsToAdd : LabelValue[]
+  labelsToRemove : LabelValue[]
 }
 
 class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
-  // Load wf_bulk workflow properties (if they exist)
-  // Load facets
-  // store facet changes in state
   render() {
-    // See: WorkflowsPage -> SuggestedLabels
     return <div>{this.props.labels}</div>;
   }
 }
