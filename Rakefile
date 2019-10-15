@@ -165,10 +165,42 @@ namespace :search do
   end
 
   desc "Creates an index with 1000 random studies"
-  task bootstrap: [:create_index, :add_random_studies_to_index]
+  task bootstrap: [:create_index, :add_query_studies]
 
   desc "Creates an index with all studies from sql database"
   task bootstrap_full: [:create_index, :reindex]
+
+  desc "Takes {limit} studies from sql database for '{term}' and upserts them into index"
+  task :add_query_studies, [:limit, :term] => :environment do |_t, args|
+    args.with_defaults(limit: 1000, term: 'pancreatic neoplasms')
+    to_index = args[:limit].to_i
+    search_term = args[:term].to_s
+    p "Indexing #{to_index} studies searched by #{search_term}"
+    
+    studies_nct_ids = Study.find_by_sql("
+      select s2.nct_id, count(s2.nct_id)
+      from
+      (
+          select s.nct_id, bc.downcase_mesh_term
+          from  studies s
+          left outer join browse_conditions bc
+          on s.nct_id = bc.nct_id
+          WHERE bc.downcase_mesh_term like '#{search_term}'
+          or s.nct_id in ('NCT01964430','NCT00844649','NCT00112658','NCT02184195')
+          order by s.updated_at desc
+        
+      ) as s2
+      group by s2.nct_id, s2.downcase_mesh_term
+      order by count(s2.nct_id) DESC
+      limit #{to_index}
+    ")
+    Study.enqueue_reindex_job_small(Study.where("nct_id in (?)", studies_nct_ids.pluck(:nct_id)))
+    until Study.search_index.reindex_queue.length == 0
+      p "#{Study.search_index.reindex_queue.length} left..."
+      sleep 5
+    end
+    p "Success!"
+  end
 
   # task :add_reviews_dev, [:limit] => :environment do |t, args|
   #   args.with_defaults(:limit => 250)
@@ -201,6 +233,7 @@ namespace :search do
   #   end
   # end
 end
+
 
 desc "Creates an index with all studies from sql database"
 task migrate_tags: :environment do
