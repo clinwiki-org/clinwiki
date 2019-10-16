@@ -1,9 +1,12 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
-  mount Sidekiq::Web => "/sidekiq" if Rails.env.development?
-  mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
+  if Rails.env.development?
+    mount Sidekiq::Web => "/sidekiq"
+    get 'voyager' => 'voyager#index'
+  end
 
+  mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
   post "/graphql", to: "graphql#execute"
   scope(path: "/api") do
     root "studies#index"
