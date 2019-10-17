@@ -30,6 +30,12 @@ ActiveRecord::Schema.define(version: 2019_10_27_001857) do
     t.integer "user_id"
   end
 
+  create_table "locations", force: :cascade do |t|
+    t.string "name"
+    t.float "latitude"
+    t.float "longitude"
+  end
+
   create_table "reviews", force: :cascade do |t|
     t.string "nct_id"
     t.integer "overall_rating"
