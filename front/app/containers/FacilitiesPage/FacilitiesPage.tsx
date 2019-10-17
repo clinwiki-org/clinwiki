@@ -32,6 +32,8 @@ const FRAGMENT = gql`
     nctId
     state
     status
+    latitude
+    longitude
     zip
     contacts {
       contactType
@@ -72,13 +74,13 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps> {
 
   processFacility = (facility: FacilityFragment, i: number) => {
     const res: { key: string; value: string }[] = [];
-    const { name, country, city, state, zip } = facility;
+    const { name, country, city, state, zip, latitude, longitude } = facility;
     const status = isEmpty(facility.status)
       ? 'status unknown'
       : facility.status;
     res.push({
       key: `Facility ${i + 1}`,
-      value: `${country}: ${name}, ${city} ${state} ${zip} (${status})`,
+      value: `${country}: ${name}, ${city} ${state} ${zip} (${status}) ${latitude} ${longitude}`,
     });
 
     for (const contact of facility.contacts) {
