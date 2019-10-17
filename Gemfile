@@ -20,6 +20,7 @@ gem "coffee-rails", "~> 4.2.0"
 # gem "therubyracer", platforms: :ruby
 # gem gon lets you set variables in controller that you can access in javascript
 gem "gon"
+gem "geocoder"
 
 gem "rolify"
 
