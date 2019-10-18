@@ -1,9 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, DropdownButton, MenuItem } from 'react-bootstrap';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { History } from 'history';
 import { logout } from 'utils/auth';
-import { Link } from 'react-router-dom';
 
 interface AuthButtonProps {
   user: {
@@ -15,11 +14,6 @@ interface AuthButtonProps {
 
 const ButtonWrapper = styled.div`
   margin-top: 7px;
-`;
-
-const StyledLink = styled(Link)`
-  color: white !important;
-  text-decoration: none !important;
 `;
 
 class AuthButton extends React.PureComponent<AuthButtonProps> {
@@ -42,11 +36,11 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
   render() {
     if (!this.props.user) {
       return (
-        <ButtonWrapper className="pull-right">
-          <Button className="pull-right" style={{ marginRight: 10 }}>
-            <StyledLink to="/sign_in">Sign in</StyledLink>
-          </Button>
-        </ButtonWrapper>
+        <li>
+          <p className="navbar-btn">
+            <a href="/sign_in" className="btn btn-default">Sign in</a>
+          </p>
+        </li>
       );
     }
     return (
