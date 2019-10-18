@@ -109,6 +109,7 @@ const MainContainer = styled(Col)`
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 20px;
+  float: left;
 
   .rt-th {
     text-transform: capitalize;
@@ -212,6 +213,7 @@ interface SearchPageState {
   } | null;
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
+  showCards: Boolean;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -229,6 +231,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     openedAgg: null,
     searchAggs: {},
     searchCrowdAggs: {},
+    showCards: (localStorage.getItem('showCards') === 'true') ? true : false,
   };
 
   static getDerivedStateFromProps(
@@ -242,6 +245,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       };
     }
     return null;
+  }
+
+  toggledShowCards = (showCards: Boolean) => {
+    localStorage.setItem('showCards', showCards.toString());
+    const params:any = { ...this.state.params, page: 0 };
+    this.setState({ showCards, params });
+  }
+
+  previousSearchData: Array<Object> = [];
+  returnPreviousSearchData = (previousSearchData: Array<Object>) => {
+    this.previousSearchData = previousSearchData;
   }
 
   getDefaultParams = (view: SiteViewFragment) => {
@@ -432,6 +446,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     onOpenAgg={this.handleOpenAgg}
                     onAggsUpdate={this.handleAggsUpdate}
                     onResetFilters={this.handleResetFilters(view)}
+                    previousSearchData={this.previousSearchData}
+                    returnPreviousSearchData={this.returnPreviousSearchData}
+                    searchHash={data.searchHash}
+                    showCards={this.state.showCards}
+                    toggledShowCards={this.toggledShowCards}
                   />
                 );
               }}
@@ -442,6 +461,34 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
+  handleScroll = () => {
+
+    if (window.innerHeight + window.scrollY === document.body.scrollHeight) {
+
+      // runScrollUp to avoid reprocessing
+      document.body.scrollTo(0, (document.body.scrollHeight - 10));
+      window.removeEventListener('scroll', this.handleScroll);
+
+      const params:any = { ...this.state.params, page: (this.state.params!.page + 1) };
+      this.setState({ params });
+
+      setTimeout(() => {
+        window.addEventListener('scroll', this.handleScroll);
+      }, 1000);
+
+      return null;
+
+    }
+
+  }
+
+  componentDidMount () {
+    window.addEventListener('scroll', this.handleScroll);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
   render() {
     if (this.props.ignoreUrlHash) {
       return (
@@ -458,6 +505,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   onOpenAgg={this.handleOpenAgg}
                   onAggsUpdate={this.handleAggsUpdate}
                   onResetFilters={this.handleResetFilters(site.siteView)}
+                  previousSearchData={this.previousSearchData}
+                  returnPreviousSearchData={() => this.returnPreviousSearchData}
+                  searchHash={''}
+                  showCards={this.state.showCards}
+                  toggledShowCards={this.toggledShowCards}
                 />
               )}
             </SiteProvider>

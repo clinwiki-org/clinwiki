@@ -23,7 +23,7 @@ label {
   border-radius: 4px;
 }
 .btn, .-btn, div.rt-tbody div.rt-tr:hover, div.crumbs-bar span.label{
-  background: #55B88D !important;
+  background: #55B88D;
   color: #fff !important;
 }
 /* Pagination */

@@ -8,6 +8,8 @@ import {
   FormControl,
   Form,
   FormGroup,
+  ButtonGroup,
+  ControlLabel,
 } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
@@ -23,6 +25,7 @@ const CrumbsBarStyleWrappper = styled.div`
     background-color: #f2f2f2;
     color: black;
     margin-bottom: 1em;
+    width: 100%;
 
     .container {
       background: #d9deea;
@@ -105,9 +108,13 @@ interface CrumbsBarProps {
   update: { page: (n: number) => void };
   onReset: () => void;
   loading: boolean;
+  showCards: Boolean;
+  toggledShowCards: Function;
 }
 interface CrumbsBarState {
   searchTerm: string;
+  cardsBtnColor: string;
+  tableBtnColor: string;
 }
 
 const Crumb = ({ category, value, onClick }) => {
@@ -128,6 +135,26 @@ export default class CrumbsBar extends React.Component<
   CrumbsBarProps,
   CrumbsBarState
 > {
+
+  constructor(props) {
+
+    super(props);
+
+    let cardsColor = '';
+    let tableColor = '';
+
+    if (window.localStorage.getItem('showCards') === 'true') {
+      cardsColor = '#90a79d';
+      tableColor = '#55B88D';
+    } else {
+      cardsColor = '#55B88D';
+      tableColor =  '#90a79d';
+    }
+
+    this.state = { searchTerm: '', cardsBtnColor: cardsColor, tableBtnColor: tableColor };
+
+  }
+
   *mkCrumbs(searchParams: SearchParams, removeFilter) {
     if (!isEmpty(searchParams.q)) {
       yield (
@@ -193,15 +220,24 @@ export default class CrumbsBar extends React.Component<
     this.setState({ searchTerm: '' });
   };
 
+  toggledShowCards = (type, showCards) => {
+    if (type === 'cards') {
+      this.setState({ cardsBtnColor: '#90a79d', tableBtnColor: '#55B88D' });
+    } else if (type === 'table') {
+      this.setState({ cardsBtnColor: '#55B88D', tableBtnColor: '#90a79d' });
+    }
+    this.props.toggledShowCards(showCards);
+  }
+
   render() {
     return (
       <CrumbsBarStyleWrappper>
         <Grid className="crumbs-bar">
           <Row>
-            <Col xs={12} md={9}>
+            <Col xs={12} md={5}>
               <Form inline className="searchInput" onSubmit={this.onSubmit}>
                 <FormGroup>
-                  <b>Search Within: </b>
+                  <ControlLabel>Search Within: </ControlLabel>{' '}
                   <FormControl
                     type="text"
                     placeholder="search..."
@@ -213,44 +249,19 @@ export default class CrumbsBar extends React.Component<
                 </Button>
               </Form>
             </Col>
-            <Col xsHidden md={3}>
-              <div className="right-align">
-                {this.props.page > 0 && !this.props.loading ? (
-                  <FontAwesome
-                    className="arrow-left"
-                    name="arrow-left"
-                    style={{ cursor: 'pointer', margin: '5px' }}
-                    onClick={() => this.props.update.page(this.props.page - 1)}
-                  />
-                ) : <FontAwesome
-                  className="arrow-left"
-                  name="arrow-left"
-                  style={{ margin: '5px', color: 'gray' }}
-                /> }
-                page{' '}
-                <b>
-                  {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
-                    : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
-                </b>
-                {this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
-                  <FontAwesome
-                    className="arrow-right"
-                    name="arrow-right"
-                    style={{ cursor: 'pointer', margin: '5px' }}
-                    onClick={() => this.props.update.page(this.props.page + 1)}
-                  />
-                ) : <FontAwesome
-                  className="arrow-right"
-                  name="arrow-right"
-                  style={{ margin: '5px', color: 'gray' }}
-                />}
-                <div>
-                  {this.props.recordsTotal} results
-                </div>
-                <div>
-                  {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
-                </div>
-              </div>
+            <Col>
+              <ControlLabel>View Style: </ControlLabel>{' '}
+              <ButtonGroup>
+                <Button
+                    onClick={() => this.toggledShowCards('cards', true)}
+                    style={{ backgroundColor: this.state.cardsBtnColor }}>
+                  < FontAwesome name="th" />
+                </Button>
+                <Button
+                    onClick={() => this.toggledShowCards('table', false)}
+                    style={{ backgroundColor: this.state.tableBtnColor }}>
+                  < FontAwesome name="table" /></Button>
+              </ButtonGroup>
             </Col>
           </Row>
           {/* <Row>
