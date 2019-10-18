@@ -193,6 +193,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     showCards: (localStorage.getItem('showCards') === 'true') ? true : false,
   };
 
+  numberOfPages: number = 0;
+  returnNumberOfPages = (numberOfPg: number) => {
+    this.numberOfPages = numberOfPg;
+  }
+
   static getDerivedStateFromProps(
     props: SearchPageProps,
     state: SearchPageState,
@@ -290,6 +295,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params as any);
+    this.previousSearchData = [];
     if (!equals(params.q, this.state.params && this.state.params.q)) {
       // For now search doesn't work well with args list
       // Therefore we close it to refresh later on open
@@ -342,6 +348,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   renderAggs = () => {
+
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
@@ -367,6 +374,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         onOpen={this.handleOpenAgg}
       />
     );
+
   };
 
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
@@ -410,6 +418,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     searchHash={data.searchHash}
                     showCards={this.state.showCards}
                     toggledShowCards={this.toggledShowCards}
+                    returnNumberOfPages={this.returnNumberOfPages}
                   />
                 );
               }}
@@ -422,7 +431,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleScroll = () => {
 
-    if (window.innerHeight + window.scrollY === document.body.scrollHeight) {
+    if (window.innerHeight + window.scrollY === document.body.scrollHeight
+      && this.state.params!.page < (this.numberOfPages - 1)) {
 
       // runScrollUp to avoid reprocessing
       document.body.scrollTo(0, (document.body.scrollHeight - 10));
@@ -431,9 +441,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       const params:any = { ...this.state.params, page: (this.state.params!.page + 1) };
       this.setState({ params });
 
-      setTimeout(() => {
-        window.addEventListener('scroll', this.handleScroll);
-      }, 1000);
+      setTimeout(
+        () => {
+          window.addEventListener('scroll', this.handleScroll);
+        },
+        1000,
+      );
 
       return null;
 
@@ -492,7 +505,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     },
     bmOverlay: {
       background: 'rgba(0, 0, 0, 0.3)',
-    }
+    },
   };
 
   render() {
@@ -516,6 +529,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   searchHash={''}
                   showCards={this.state.showCards}
                   toggledShowCards={this.toggledShowCards}
+                  returnNumberOfPages={this.returnNumberOfPages}
                 />
               )}
             </SiteProvider>
@@ -525,7 +539,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
 
     const hash = path(['match', 'params', 'searchId'], this.props) as
-      | string 
+      | string
       | null;
 
     return (

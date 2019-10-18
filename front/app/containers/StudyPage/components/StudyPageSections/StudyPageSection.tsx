@@ -90,7 +90,6 @@ class StudyPageSection extends React.Component<StudyPageSectionProps, StudyPageS
 
   changeTab = () => {
     this.setState({ visible: !this.state.visible });
-    console.log('this.state.visible: '+this.state.visible);
   }
 
   render() {

@@ -185,7 +185,7 @@ const changePageSize = (pageSize: number) => (params: SearchParams) => ({
 const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
   const idSortedLens = lensProp('id');
   const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
-  return { ...params, sorts: snakeSorts };
+  return { ...params, sorts: snakeSorts, page: 0 };
 };
 const changeFilter = (add: boolean) => (
   aggName: string,
@@ -277,6 +277,7 @@ interface SearchViewProps {
   searchHash: string;
   showCards: Boolean;
   toggledShowCards: Function;
+  returnNumberOfPages: Function;
 }
 
 interface SearchViewState {
@@ -498,10 +499,14 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
     const totalPages = Math.min(Math.ceil(totalRecords / this.props.params.pageSize),
                                 Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
+
+    this.props.returnNumberOfPages(totalPages);
+
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     let searchData = path(['search', 'studies'], data);
-    if (page < totalPages) {
+
+    if (page < (totalPages - 1)) {
 
       searchData = Array.from(new Set(this.props.previousSearchData.concat(searchData)));
 
