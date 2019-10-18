@@ -11,8 +11,10 @@ import {
 } from 'types/FacilitiesPageQuery';
 import { FacilityFragment } from 'types/FacilityFragment';
 import StudySummary from 'components/StudySummary';
+import GoogleMapReact from 'google-map-react';
 import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import MapMarker from './MapMarker';
 
 interface FacilitiesPageProps {
   history: History;
@@ -21,6 +23,11 @@ interface FacilitiesPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
+}
+
+interface FacilitiesPageState {
+  activeMarker: object,
+  cardVisible: boolean,
 }
 
 const FRAGMENT = gql`
@@ -62,15 +69,24 @@ const QUERY = gql`
   ${FRAGMENT}
 `;
 
+// const AnyReactComponent = ({ text, lat, lng }) => <div>{text}</div>;
+
+
 class QueryComponent extends Query<
   FacilitiesPageQuery,
   FacilitiesPageQueryVariables
 > {}
 
-class FacilitiesPage extends React.PureComponent<FacilitiesPageProps> {
+class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, FacilitiesPageState, any> {
   static fragment = FRAGMENT;
 
+  // state ={
+  //   activeMarker: {},
+  //   cardVisible: false,
+  // }
+
   processFacility = (facility: FacilityFragment, i: number) => {
+    console.log(facility);
     const res: { key: string; value: string }[] = [];
     const { name, country, city, state, zip } = facility;
     const status = isEmpty(facility.status)
@@ -102,8 +118,43 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps> {
     );
   };
 
+  // distanceToMouse = ({markerPos, mousePos, markerProps} : {markerPos: }) => {
+  //   const x = markerPos.x;
+  //   // because of marker non symmetric,
+  //   // we transform it central point to measure distance from marker circle center
+  //   // you can change distance function to any other distance measure
+  //   const y = markerPos.y - K_STICK_SIZE - K_CIRCLE_SIZE / 2;
+
+  //   // and i want that hover probability on markers with text === 'A' be greater than others
+  //   // so i tweak distance function (for example it's more likely to me that user click on 'A' marker)
+  //   // another way is to decrease distance for 'A' marker
+  //   // this is really visible on small zoom values or if there are a lot of markers on the map
+  //   const distanceKoef = markerProps.text !== 'A' ? 1.5 : 1;
+
+  //   // it's just a simple example, you can tweak distance function as you wish
+  //   return distanceKoef * Math.sqrt((x - mousePos.x) * (x - mousePos.x) + (y - mousePos.y) * (y - mousePos.y));
+  // }
+
+
   render() {
+    const center = { lat: 39.5, lng: -98.35 };
+    const facilityArr = [
+      {
+        city: 'Bethesda',
+        state: 'Maryland',
+        name: "National Institute of Neurological Disorders and Stroke (NINDS)",
+        country: 'United States',
+      },
+      {
+        city: 'Durham',
+        state: 'North Carolina',
+        name: "Duke University",
+        country: 'United States',
+      },
+    ];
+    const K_HOVER_DISTANCE = 30;
     return (
+      <div>
       <QueryComponent
         query={QUERY}
         variables={{ nctId: this.props.match.params.nctId }}
@@ -133,6 +184,26 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps> {
           );
         }}
       </QueryComponent>
+      <div style={{ height: '100vh', width: '100%', paddingBottom: '20px', }}>
+          <GoogleMapReact
+            bootstrapURLKeys={{ key: "AIzaSyBO8EcEkM2ssqj9Xi260UQkk5bkPfAJGlw" }}
+            defaultCenter={center}
+            defaultZoom={4}
+            hoverDistance={K_HOVER_DISTANCE}
+          >
+            <MapMarker
+              lat={39}
+              lng={-98}
+              text="1" 
+            />
+            <MapMarker
+              lat={37}
+              lng={-96}
+              text="2" 
+            />
+          </GoogleMapReact>
+        </div>
+     </div>
     );
   }
 }
