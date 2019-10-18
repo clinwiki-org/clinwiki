@@ -34,6 +34,7 @@ import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGeneri
 import { starColor } from 'utils/constants';
 
 interface ReviewsPageProps {
+  nctId: string;
   match: match<{ nctId: string }>;
   history: History;
   onLoaded?: () => void;
@@ -280,7 +281,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
+        variables={{ nctId: this.props.nctId }}
       >
         {({ data, loading, error }) => {
           if (loading || error || !data || !data.study || !data.study.reviews) {
@@ -295,7 +296,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                 path={`${this.props.match.path}/new`}
                 render={props => {
                   this.props.onLoaded && this.props.onLoaded();
-                  return <ReviewForm nctId={this.props.match.params.nctId} />;
+                  return <ReviewForm nctId={this.props.nctId} />;
                 }}
               />
               <Route

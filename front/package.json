@@ -212,6 +212,7 @@
   "dependencies": {
     "apollo-boost": "^0.3",
     "apollo-cache-inmemory": "^1.5.0",
+    "apollo-cache-persist": "^0.1.1",
     "apollo-client": "^2.5.0",
     "axios": "^0.17.1",
     "babel-polyfill": "6.23.0",
