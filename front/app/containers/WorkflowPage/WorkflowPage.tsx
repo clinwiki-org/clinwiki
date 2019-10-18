@@ -72,6 +72,7 @@ class WorkflowPageQueryComponent extends Query<
 > {}
 
 interface WorkflowPageProps {
+  nctId: string;
   match: match<{ nctId: string; searchId?: string }>;
   history: History;
   onLoaded?: () => void;
@@ -279,10 +280,10 @@ class WorkflowPage extends React.Component<
                         )}
                       </UpsertMutationComponent>
                       <CrowdPage
-                        {...this.props}
-                        workflowView
-                        forceAddLabel={this.state.selectedLabel || undefined}
-                      />
+                          {...this.props}
+                          nctId={this.props.nctId}
+                          workflowView
+                          forceAddLabel={this.state.selectedLabel || undefined} />
                       <WikiSections
                         sections={sections}
                         disabled={!user}

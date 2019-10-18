@@ -23,6 +23,7 @@ import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface WikiPageProps {
+  nctId: string;
   match: match<{ nctId: string }>;
   history: History;
   location: Location;
@@ -94,6 +95,7 @@ class UpdateContentMutation extends Mutation<
 > {}
 
 class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
+
   state: WikiPageState = {
     editorState: 'rich',
     richEditorText: null,
@@ -110,7 +112,6 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
         this.state.richEditorText.toString('markdown')
       );
     }
-
     return this.state.plainEditorText;
   };
 
@@ -159,7 +160,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   ) => {
     updateWikiContent({
       variables: {
-        nctId: this.props.match.params.nctId,
+        nctId: this.props.nctId,
         content: this.getEditorText() || '',
       },
     });
@@ -341,7 +342,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
+        variables={{ nctId: this.props.nctId }}
         onCompleted={this.handleQueryCompleted}
       >
         {({ data, loading, error }) => {
