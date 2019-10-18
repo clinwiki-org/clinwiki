@@ -438,7 +438,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     if (!this.props.showCards) window.removeEventListener('resize', this.updateState);
   }
 
-  cardPressed = (card: any) => {
+  cardPressed = card => {
     this.props.onRowClick(card.nctId);
   }
 
@@ -501,11 +501,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     let searchData = path(['search', 'studies'], data);
-
-    // function removeDuplicateUsingSet(arr) {
-    //   return Array.from(new Set(arr));
-    // }
-
     if (page < totalPages) {
 
       searchData = Array.from(new Set(this.props.previousSearchData.concat(searchData)));
