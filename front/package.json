@@ -310,6 +310,7 @@
     "url-loader": "0.5.8",
     "warning": "3.0.0",
     "webpack": "3.5.5",
+    "webpack-dev-middleware": "1.11.0",
     "webpack-hot-middleware": "2.18.0",
     "whatwg-fetch": "^2.0.3"
   },
