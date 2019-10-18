@@ -24,8 +24,8 @@ export interface FacilityFragment {
   nctId: string;
   state: string;
   status: string;
-  zip: string;
   latitude: number;
   longitude: number;
+  zip: string;
   contacts: FacilityFragment_contacts[];
 }

@@ -26,8 +26,7 @@ interface FacilitiesPageProps {
 }
 
 interface FacilitiesPageState {
-  activeMarker: object,
-  cardVisible: boolean,
+  facilities: any,
 }
 
 const FRAGMENT = gql`
@@ -71,24 +70,19 @@ const QUERY = gql`
   ${FRAGMENT}
 `;
 
-// const AnyReactComponent = ({ text, lat, lng }) => <div>{text}</div>;
-
-
 class QueryComponent extends Query<
   FacilitiesPageQuery,
   FacilitiesPageQueryVariables
 > {}
 
 class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, FacilitiesPageState, any> {
+
+  state = {
+    facilities: [],
+  }
   static fragment = FRAGMENT;
 
-  // state ={
-  //   activeMarker: {},
-  //   cardVisible: false,
-  // }
-
   processFacility = (facility: FacilityFragment, i: number) => {
-    console.log(facility);
     const res: { key: string; value: string }[] = [];
     const { name, country, city, state, zip, latitude, longitude } = facility;
     const status = isEmpty(facility.status)
@@ -120,41 +114,10 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
     );
   };
 
-  // distanceToMouse = ({markerPos, mousePos, markerProps} : {markerPos: }) => {
-  //   const x = markerPos.x;
-  //   // because of marker non symmetric,
-  //   // we transform it central point to measure distance from marker circle center
-  //   // you can change distance function to any other distance measure
-  //   const y = markerPos.y - K_STICK_SIZE - K_CIRCLE_SIZE / 2;
-
-  //   // and i want that hover probability on markers with text === 'A' be greater than others
-  //   // so i tweak distance function (for example it's more likely to me that user click on 'A' marker)
-  //   // another way is to decrease distance for 'A' marker
-  //   // this is really visible on small zoom values or if there are a lot of markers on the map
-  //   const distanceKoef = markerProps.text !== 'A' ? 1.5 : 1;
-
-  //   // it's just a simple example, you can tweak distance function as you wish
-  //   return distanceKoef * Math.sqrt((x - mousePos.x) * (x - mousePos.x) + (y - mousePos.y) * (y - mousePos.y));
-  // }
-
-
   render() {
     const center = { lat: 39.5, lng: -98.35 };
-    const facilityArr = [
-      {
-        city: 'Bethesda',
-        state: 'Maryland',
-        name: "National Institute of Neurological Disorders and Stroke (NINDS)",
-        country: 'United States',
-      },
-      {
-        city: 'Durham',
-        state: 'North Carolina',
-        name: "Duke University",
-        country: 'United States',
-      },
-    ];
     const K_HOVER_DISTANCE = 30;
+    // console.log(this.processFacility())
     return (
       <div>
       <QueryComponent
@@ -174,37 +137,41 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
 
           this.props.onLoaded && this.props.onLoaded();
           const facilities = data.study.facilities;
+          this.setState({facilities: facilities})
           const items = pipe(
             addIndex(map)(this.processFacility),
             // @ts-ignore
             flatten,
           )(facilities) as { key: string; value: string }[];
           return (
-            <Table striped bordered condensed>
-              <tbody>{items.map(this.renderItem)}</tbody>
-            </Table>
+            <div>
+              <Table striped bordered condensed>
+                <tbody>{items.map(this.renderItem)}</tbody>
+              </Table>
+              <div style={{ height: '100vh', width: '100%', paddingBottom: '20px', }}>
+                <GoogleMapReact
+                  bootstrapURLKeys={{ key: "AIzaSyBO8EcEkM2ssqj9Xi260UQkk5bkPfAJGlw" }}
+                  defaultCenter={center}
+                  defaultZoom={4}
+                  hoverDistance={K_HOVER_DISTANCE}
+                >
+                  {facilities.map((item, index) => (
+                    <MapMarker
+                      lat={item.latitude}
+                      lng={item.longitude}
+                      text={index + 1}
+                      name={item.name}
+                      address={`${item.city}, ${item.state} ${item.zip}`}
+                    />
+                  ))}
+                </GoogleMapReact>
+              </div>
+            </div>
           );
         }}
+        
       </QueryComponent>
-      <div style={{ height: '100vh', width: '100%', paddingBottom: '20px', }}>
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: "AIzaSyBO8EcEkM2ssqj9Xi260UQkk5bkPfAJGlw" }}
-            defaultCenter={center}
-            defaultZoom={4}
-            hoverDistance={K_HOVER_DISTANCE}
-          >
-            <MapMarker
-              lat={39}
-              lng={-98}
-              text="1" 
-            />
-            <MapMarker
-              lat={37}
-              lng={-96}
-              text="2" 
-            />
-          </GoogleMapReact>
-        </div>
+      
      </div>
     );
   }

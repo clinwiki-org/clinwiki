@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 const CardContainer = styled.div`
-  width: 270px;
+  min-width: 250px;
   background-color: #55B88D;
   min-height: 50px;
   position: relative;
@@ -44,8 +44,8 @@ class FacilityInfoCard extends React.PureComponent<any> {
     return(
       <div>
         <CardContainer style={this.props.hover ? {visibility: "visible"} : {visibility: "hidden"}}>
-          <TitleText>Cleveland Clinic Taussig Cancer Center</TitleText>
-          <SubTitle>Cleveland, OH 20756</SubTitle>
+          <TitleText>{this.props.name}</TitleText>
+          <SubTitle>{this.props.address}</SubTitle>
         </CardContainer>
         <Pointer style={this.props.hover ? {visibility: "visible"} : {visibility: "hidden"}}/>
       </div>

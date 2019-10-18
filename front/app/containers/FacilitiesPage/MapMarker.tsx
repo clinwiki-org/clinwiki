@@ -103,6 +103,8 @@ class MapMarker extends React.PureComponent<any> {
         } 
         <FacilityInfoCard 
           hover={this.props.$hover}
+          address={this.props.address}
+          name={this.props.name}
         />
       </MarkerContainer>
     )
