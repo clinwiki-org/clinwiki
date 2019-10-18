@@ -137,7 +137,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
               {(!allowedFields || allowedFields.includes('nct_id')) && (
                 <tr>
                   <th>NCT ID</th>
-                  <td><a href="https://clinicaltrials.gov/ct2/show/{this.props.study.nctId}">{this.props.study.nctId}</a></td>
+                  <td><a href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`}>{this.props.study.nctId}</a></td>
                 </tr>
               )}
               {(!allowedFields || allowedFields.includes('type')) && (
