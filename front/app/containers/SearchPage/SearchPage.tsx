@@ -50,6 +50,7 @@ import { AggBucketMap } from './Types';
 import SiteProvider from 'containers/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
+import { stack  as Menu } from 'react-burger-menu';
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
@@ -122,49 +123,6 @@ const MainContainer = styled(Col)`
   }
 `;
 
-const SidebarContainer = styled(Col)`
-  padding-right: 0px !important;
-  padding-top: 10px;
-  box-sizing: border-box;
-
-  .panel-title {
-    a:hover {
-      text-decoration: none;
-      color: #fff;
-    }
-  }
-
-  .panel-default {
-    box-shadow: 0px;
-    border: 0px;
-    background: none;
-    color: #fff;
-    text-transform: capitalize;
-
-    .panel-heading {
-      box-shadow: 0px;
-      border: 0px;
-      background: none;
-      color: #fff;
-      text-transform: capitalize;
-    }
-
-    .panel-collapse {
-      background: #394149;
-      .panel-body {
-        padding-left: 10px;
-        color: rgba(255, 255, 255, 0.7);
-      }
-    }
-
-    .panel-title {
-      font-size: 16px;
-      color: #bac5d0;
-      padding: 0px 10px;
-    }
-  }
-`;
-
 const changeFilter = (add: boolean) => (
   aggName: string,
   key: string,
@@ -226,6 +184,7 @@ const DEFAULT_PARAMS: SearchParams = {
 };
 
 class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
+
   state: SearchPageState = {
     params: null,
     openedAgg: null,
@@ -429,7 +388,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <HashQueryComponent
               query={HASH_QUERY}
               variables={this.state.params || undefined}
-            >
+              >
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
                 // We have a mismatch between url and params in state
@@ -489,11 +448,58 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
+
+  bmStyles = {
+    bmBurgerButton: {
+      zIndex: '1030',
+      position: 'fixed',
+      width: '30px',  // 36 px
+      height: '25px', // 30 px
+      left: '20px',
+      top: '14px',
+    },
+    bmBurgerBars: {
+      background: '#55b88d',
+    },
+    bmBurgerBarsHover: {
+      background: '#a90000',
+    },
+    bmCrossButton: {
+      height: '24px',
+      width: '24px',
+    },
+    bmCross: {
+      background: '#bdc3c7',
+    },
+    bmMenuWrap: {
+      position: 'fixed',
+      height: '100%',
+    },
+    bmMenu: {
+      background: '#373a47',
+      padding: '2.5em 1.5em 0',
+      fontSize: '1.15em',
+    },
+    bmMorphShape: {
+      fill: '#373a47',
+    },
+    bmItemList: {
+      color: '#b8b7ad',
+      padding: '0.8em',
+    },
+    bmItem: {
+      display: 'inline-block',
+    },
+    bmOverlay: {
+      background: 'rgba(0, 0, 0, 0.3)',
+    }
+  };
+
   render() {
     if (this.props.ignoreUrlHash) {
       return (
-        <Row>
-          <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+        <Row id="menuMain">
+            {this.renderAggs()}
           <MainContainer md={10}>
             <SiteProvider>
               {site => (
@@ -519,7 +525,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
 
     const hash = path(['match', 'params', 'searchId'], this.props) as
-      | string
+      | string 
       | null;
 
     return (
@@ -533,12 +539,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <SiteProvider>
               {site => (
                 <Row>
-                  <SidebarContainer md={2}>
-                    {this.renderAggs()}
-                  </SidebarContainer>
-                  <MainContainer md={10}>
-                    {this.renderSearch(hash, site.siteView)}
-                  </MainContainer>
+                  <Menu styles={ this.bmStyles } >
+                      {this.renderAggs()}
+                  </Menu>
+                  <div id="main_search">
+                    <MainContainer md={12}>
+                      {this.renderSearch(hash, site.siteView)}
+                    </MainContainer>
+                  </div>
                 </Row>
               )}
             </SiteProvider>

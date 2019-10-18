@@ -40,6 +40,7 @@ import {
   SiteViewFragment,
   SiteViewFragment_search_aggs_fields,
 } from 'types/SiteViewFragment';
+import './AggDropDownStyle.css';
 
 const PAGE_SIZE = 25;
 
@@ -366,9 +367,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           <ApolloConsumer>
             {apolloClient => (
               <PanelWrapper>
-                <Panel onToggle={this.handleToggle} expanded={isOpen}>
-                  <Panel.Heading>
-                    <Panel.Title toggle>
+                <Panel onToggle={this.handleToggle} expanded={isOpen} className="bm-panel-default">
+                  <Panel.Heading className="bm-panel-heading">
+                    <Panel.Title className="bm-panel-title" toggle>
                       <div className="flex">
                         <span>{title}</span>
                         <span>
@@ -378,7 +379,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                     </Panel.Title>
                   </Panel.Heading>
                   {isOpen && (
-                    <Panel.Collapse>
+                    <Panel.Collapse className="bm-panel-collapse">
                       <Panel.Body>{this.renderFilter()}</Panel.Body>
                       <Panel.Body>
                         {this.renderBucketsPanel(apolloClient, site.siteView)}
