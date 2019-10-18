@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
 
 import AuthButton from 'components/AuthButton';
 // import SearchInput from 'components/SearchInput';
@@ -49,29 +49,28 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
   render() {
     return (
       <StyledWrapper>
-        <Navbar collapseOnSelect
-            fluid className="navbar-fixed-top"
-            style={{ paddingLeft: '60px', paddingRight: '15px' }}>
+        <Navbar fluid>
           <Navbar.Header>
             <Navbar.Brand>
               <Link id="logo" to="/search">
-                ClinWiki <span id="small">(beta)</span>
+                ClinWiki <span id='small'>(beta)</span>
               </Link>
             </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
+            <ul className="nav navbar-nav">
               {true ? null : (
-                <NavItem eventKey={1} href="/search">Search</NavItem>
+                <li>
+                  <a href="/search">Search</a>
+                </li>
               )}
-              <NavItem eventKey={1} href="/about">About</NavItem>
-              <AuthButton user={this.props.user} history={this.props.history} />
-            </Nav>
-          </Navbar.Collapse>
+              <li>
+                <a href="/about">About</a>
+              </li>
+            </ul>
+          </Navbar.Header>
+          <AuthButton user={this.props.user} history={this.props.history} />
           {/* <SearchInputWrapper className="pull-right">
-            <SearchInput />
-          </SearchInputWrapper> */}
+          <SearchInput />
+        </SearchInputWrapper> */}
         </Navbar>
       </StyledWrapper>
     );
