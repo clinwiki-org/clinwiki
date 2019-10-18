@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 const CardContainer = styled.div`
-  min-width: 250px;
+  min-width: 300px;
   background-color: #55B88D;
   min-height: 50px;
   position: relative;
