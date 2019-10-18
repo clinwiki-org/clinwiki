@@ -472,9 +472,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       const params:any = { ...this.state.params, page: (this.state.params!.page + 1) };
       this.setState({ params });
 
-      setTimeout(() => {
-        window.addEventListener('scroll', this.handleScroll);
-      }, 1000);
+      setTimeout(
+        () => {
+          window.addEventListener('scroll', this.handleScroll);
+        },
+        1000,
+      );
 
       return null;
 
@@ -489,6 +492,53 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
+
+  bmStyles = {
+    bmBurgerButton: {
+      zIndex: '1030',
+      position: 'fixed',
+      width: '30px',  // 36 px
+      height: '25px', // 30 px
+      left: '20px',
+      top: '14px',
+    },
+    bmBurgerBars: {
+      background: '#55b88d',
+    },
+    bmBurgerBarsHover: {
+      background: '#a90000',
+    },
+    bmCrossButton: {
+      height: '24px',
+      width: '24px',
+    },
+    bmCross: {
+      background: '#bdc3c7',
+    },
+    bmMenuWrap: {
+      position: 'fixed',
+      height: '100%',
+    },
+    bmMenu: {
+      background: '#373a47',
+      padding: '2.5em 1.5em 0',
+      fontSize: '1.15em',
+    },
+    bmMorphShape: {
+      fill: '#373a47',
+    },
+    bmItemList: {
+      color: '#b8b7ad',
+      padding: '0.8em',
+    },
+    bmItem: {
+      display: 'inline-block',
+    },
+    bmOverlay: {
+      background: 'rgba(0, 0, 0, 0.3)',
+    },
+  };
+
   render() {
     if (this.props.ignoreUrlHash) {
       return (

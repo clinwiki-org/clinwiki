@@ -41,7 +41,8 @@ module Clinwiki
                 'http://localhost:3000',
                 'http://mysite.localhost:3001',
                 'http://clinwiki-prod.herokuapp.com',
-                'http://clinwiki-dev.herokuapp.com'
+                'http://clinwiki-dev.herokuapp.com',
+                'http://172.22.0.1:3000'
         resource '*',
           :headers => :any,
           :methods => [:get, :post, :options, :delete, :put, :patch],
