@@ -464,7 +464,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               return (
                 <Cards
                     data={[]}
-                    onPress={this.cardPressed} />
+                    onPress={this.cardPressed}
+                    loading={true} />
               );
 
             }
@@ -529,7 +530,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             return (
               <Cards
                   data={searchData}
-                  onPress={this.cardPressed} />
+                  onPress={this.cardPressed}
+                  loading={loading} />
             );
 
           }

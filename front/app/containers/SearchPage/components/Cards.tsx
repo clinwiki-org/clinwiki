@@ -3,16 +3,29 @@ import { Col } from 'react-bootstrap';
 import ReactStars from 'react-stars';
 import { starColor } from 'utils/constants';
 import moment from 'moment';
+import { PulseLoader } from 'react-spinners';
 
 interface CardsProps {
   data: any;
   onPress: Function;
+  loading: boolean;
 }
 
-class Cards extends React.Component<CardsProps> {
+interface CardsState {
+  loading: boolean;
+}
+
+class Cards extends React.Component<CardsProps, CardsState> {
 
   constructor (props:CardsProps) {
     super(props);
+    this.state = { loading: this.props.loading };
+  }
+
+  componentDidUpdate() {
+    if (this.state.loading !== this.props.loading) {
+      this.setState({ loading: this.props.loading });
+    }
   }
 
   cardStyle = {
@@ -75,7 +88,13 @@ class Cards extends React.Component<CardsProps> {
     });
 
     return (
-      <div>{ listItems }</div>
+      <div>
+        {listItems}
+        <PulseLoader
+          size={15}
+          color={'#aed7ca'}
+          loading={this.state.loading} />
+      </div>
     );
 
   }
