@@ -22,8 +22,16 @@ label {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   border-radius: 4px;
 }
-.btn, .-btn, div.rt-tbody div.rt-tr:hover, div.crumbs-bar span.label{
+.btn, .-btn{
   background: #55B88D;
+  color: #fff !important;
+}
+div.crumbs-bar span.label {
+  background: #55B88D !important;
+  color: #fff !important;
+}
+div.rt-tbody div.rt-tr:hover{
+  background: #55B88D !important;
   color: #fff !important;
 }
 /* Pagination */

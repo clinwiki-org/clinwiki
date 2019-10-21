@@ -59,14 +59,14 @@ class Cards extends React.Component<CardsProps, CardsState> {
               <label>Average Rating:</label>
             </div>
             <div style={{ width: '100%', paddingBottom: '10px' }}>
-                <ReactStars
-                    count={5}
-                    color2={starColor}
-                    edit={false}
-                    value={d.averageRating}/>
+              <ReactStars
+                count={5}
+                color2={starColor}
+                edit={false}
+                value={d.averageRating}/>
             </div>
             <div style={{ width: '100%' }}>
-                <label>Brief Title: </label> 
+                <label>Brief Title: </label>
             </div>
             <div style={{ width: '100%', height: '150px' }}>
               {d.briefTitle}

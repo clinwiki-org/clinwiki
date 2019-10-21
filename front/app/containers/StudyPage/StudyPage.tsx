@@ -422,6 +422,18 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 >
                   {({ data, loading, error }) => (
                     <StudyWrapper>
+                      <Row md={12}>
+                        <BackButtonWrapper>
+                          {this.renderBackButton(
+                            site.siteView,
+                            '⤺︎ Back',
+                            `/search/${this.props.match.params.searchId}`,
+                          )}
+                        </BackButtonWrapper>
+                        <BackButtonWrapper>
+                        {this.renderReviewsSummary(data)}
+                        </BackButtonWrapper>
+                      </Row>
                       <Row>
 
                         <MainContainer md={12}>

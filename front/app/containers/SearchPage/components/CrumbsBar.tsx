@@ -42,7 +42,7 @@ const CrumbsBarStyleWrappper = styled.div`
 
     span.label.label-default {
       padding: 7px !important;
-      border-radius: 2px !important;
+      border-radius: 4px !important;
     }
 
     input.form-control {
@@ -53,7 +53,7 @@ const CrumbsBarStyleWrappper = styled.div`
     }
 
     span.label {
-      background: none;
+      background: #55B88D;
       padding: 5px;
       font-size: 12px;
       border-radius: 4px;
@@ -144,11 +144,11 @@ export default class CrumbsBar extends React.Component<
     let tableColor = '';
 
     if (window.localStorage.getItem('showCards') === 'true') {
-      cardsColor = '#90a79d';
-      tableColor = '#55B88D';
-    } else {
       cardsColor = '#55B88D';
-      tableColor =  '#90a79d';
+      tableColor = '#90a79d';
+    } else {
+      cardsColor = '#90a79d';
+      tableColor =  '#55B88D';
     }
 
     this.state = { searchTerm: '', cardsBtnColor: cardsColor, tableBtnColor: tableColor };
@@ -222,9 +222,9 @@ export default class CrumbsBar extends React.Component<
 
   toggledShowCards = (type, showCards) => {
     if (type === 'cards') {
-      this.setState({ cardsBtnColor: '#90a79d', tableBtnColor: '#55B88D' });
-    } else if (type === 'table') {
       this.setState({ cardsBtnColor: '#55B88D', tableBtnColor: '#90a79d' });
+    } else if (type === 'table') {
+      this.setState({ cardsBtnColor: '#90a79d', tableBtnColor: '#55B88D' });
     }
     this.props.toggledShowCards(showCards);
   }
@@ -234,7 +234,7 @@ export default class CrumbsBar extends React.Component<
       <CrumbsBarStyleWrappper>
         <Grid className="crumbs-bar">
           <Row>
-            <Col xs={12} md={5}>
+            <Col xs={12} md={8}>
               <Form inline className="searchInput" onSubmit={this.onSubmit}>
                 <FormGroup>
                   <ControlLabel>Search Within: </ControlLabel>{' '}
@@ -249,19 +249,60 @@ export default class CrumbsBar extends React.Component<
                 </Button>
               </Form>
             </Col>
-            <Col>
-              <ControlLabel>View Style: </ControlLabel>{' '}
-              <ButtonGroup>
-                <Button
-                    onClick={() => this.toggledShowCards('cards', true)}
-                    style={{ backgroundColor: this.state.cardsBtnColor }}>
-                  < FontAwesome name="th" />
-                </Button>
-                <Button
-                    onClick={() => this.toggledShowCards('table', false)}
-                    style={{ backgroundColor: this.state.tableBtnColor }}>
-                  < FontAwesome name="table" /></Button>
-              </ButtonGroup>
+            <Col md={2}>
+              <div className="right-align">
+                <ControlLabel>View Style: </ControlLabel>{' '}
+                <ButtonGroup>
+                  <Button
+                      onClick={() => this.toggledShowCards('cards', true)}
+                      style={{ backgroundColor: this.state.cardsBtnColor }}>
+                    < FontAwesome name="th" />
+                  </Button>
+                  <Button
+                      onClick={() => this.toggledShowCards('table', false)}
+                      style={{ backgroundColor: this.state.tableBtnColor }}>
+                    < FontAwesome name="table" /></Button>
+                </ButtonGroup>
+              </div>
+            </Col>
+            <Col xsHidden md={2}>
+              <div className="right-align">
+                {/*this.props.page > 0 && !this.props.loading ? (
+                  <FontAwesome
+                    className="arrow-left"
+                    name="arrow-left"
+                    style={{ cursor: 'pointer', margin: '5px' }}
+                    onClick={() => this.props.update.page(this.props.page - 1)}
+                  />
+                ) : <FontAwesome
+                  className="arrow-left"
+                  name="arrow-left"
+                  style={{ margin: '5px', color: 'gray' }}
+                />*/}
+                {/*page{' '}*/}
+                {/*<b>
+                  {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
+                    : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
+                </b>*/}
+                {/*this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
+                  <FontAwesome
+                    className="arrow-right"
+                    name="arrow-right"
+                    style={{ cursor: 'pointer', margin: '5px' }}
+                    onClick={() => this.props.update.page(this.props.page + 1)}
+                  />
+                ) : <FontAwesome
+                  className="arrow-right"
+                  name="arrow-right"
+                  style={{ margin: '5px', color: 'gray' }}
+                />*/}
+                <div>
+                  {this.props.recordsTotal} results
+                </div>
+                <div>
+                  {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
+                </div>
+              </div>
             </Col>
           </Row>
           {/* <Row>

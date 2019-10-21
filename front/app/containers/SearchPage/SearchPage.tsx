@@ -431,11 +431,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleScroll = () => {
 
-    if (window.innerHeight + window.scrollY === document.body.scrollHeight
-      && this.state.params!.page < (this.numberOfPages - 1)) {
+    if (window.innerHeight + window.scrollY >= (document.body.scrollHeight - 100)
+        && this.state.params!.page < (this.numberOfPages - 1)) {
 
-      // runScrollUp to avoid reprocessing
-      // document.body.scrollTo(0, (document.body.scrollHeight - 10));
       window.removeEventListener('scroll', this.handleScroll);
 
       const params:any = { ...this.state.params, page: (this.state.params!.page + 1) };
@@ -553,8 +551,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <SiteProvider>
               {site => (
                 <Row>
-                  <Menu styles={ this.bmStyles } >
-                      {this.renderAggs()}
+                  <Menu
+                      styles={ this.bmStyles }
+                      isOpen={ true }
+                      width={ '400px' } >
+                    <div style={{ paddingBottom: '100px' }}>
+                    {this.renderAggs()}
+                    </div>
                   </Menu>
                   <div id="main_search">
                     <MainContainer md={12}>

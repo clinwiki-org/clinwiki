@@ -507,19 +507,10 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     let searchData = path(['search', 'studies'], data);
 
-    // if (page < (totalPages - 1)) {
+    searchData = Array.from(new Set(this.props.previousSearchData.concat(searchData)));
 
-      searchData = Array.from(new Set(this.props.previousSearchData.concat(searchData)));
-
-      // Returns the new searchData to the SearchPage component
-      this.props.returnPreviousSearchData(searchData);
-
-    // } else {
-
-    //   // Returns the new searchData to the SearchPage component
-    //   this.props.returnPreviousSearchData([]);
-
-    // }
+    // Returns the new searchData to the SearchPage component
+    this.props.returnPreviousSearchData(searchData);
 
     return (
       <SiteProvider>
