@@ -435,7 +435,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       && this.state.params!.page < (this.numberOfPages - 1)) {
 
       // runScrollUp to avoid reprocessing
-      document.body.scrollTo(0, (document.body.scrollHeight - 10));
+      // document.body.scrollTo(0, (document.body.scrollHeight - 10));
       window.removeEventListener('scroll', this.handleScroll);
 
       const params:any = { ...this.state.params, page: (this.state.params!.page + 1) };
