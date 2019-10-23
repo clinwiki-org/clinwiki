@@ -53,6 +53,9 @@ class GenericStudySectionPage extends React.PureComponent<
       join(' '),
     )(key);
 
+    // the value has line breaks inserted at a specific distance
+    // paragraph splits have multiple line breaks
+    // this recombines each sentence and wraps paragraphs in <p>
     const text = pipe(
       value => value.toString(),
       split(/\n{2,}/),
