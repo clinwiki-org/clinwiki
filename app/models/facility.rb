@@ -14,18 +14,26 @@ class Facility < AactRecord
     return @location if @location
     @location = Location.find_by(name: location_name)
     res = Geocoder.search(location_name).first
-    @location = Location.create(
-      name: location_name,
-      latitude: res.coordinates.first,
-      longitude: res.coordinates.last
-    )
+    if res
+      @location = Location.create(
+        name: location_name,
+        latitude: res.coordinates.first,
+        longitude: res.coordinates.last,
+        partial_match: res.partial_match,
+        location_type: res.types
+      )
+    else
+      @location = Location.create(name: location_name)
+    end
   end
 
   def latitude
+    return nil if location.partial_match
     location.latitude
   end
 
   def longitude
+    return nil if location.partial_match
     location.longitude
   end
 
