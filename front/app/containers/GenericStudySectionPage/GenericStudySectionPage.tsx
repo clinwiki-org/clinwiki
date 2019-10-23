@@ -45,19 +45,26 @@ class QueryComponent extends Query<
 class GenericStudySectionPage extends React.PureComponent<
   GenericStudySectionPageProps
 > {
-  renderItem = (key: string, value: string | null) => {
+  renderItem = (key: string, value: string | number | null) => {
     const name = pipe(
       snakeCase,
       split('_'),
       map(capitalize),
       join(' '),
     )(key);
+
+    const text = pipe(
+      value => value.toString(),
+      split(/\n{2,}/),
+      arr => arr.map((paragraph, i) => <p key={i} style={{ margin: ".5em 0" }}>{paragraph}</p>)
+    )(value || "")
+
     return (
       <tr key={key}>
         <td style={{ width: '30%', verticalAlign: 'middle' }}>
           <b>{name}</b>
         </td>
-        <td>{value || ''}</td>
+        <td>{text}</td>
       </tr>
     );
   };
