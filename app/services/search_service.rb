@@ -1,6 +1,7 @@
 MAX_AGGREGATION_LIMIT = 1_000_000
 ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
+DEFAULT_SORT = 'asc'
 MAX_WINDOW_SIZE = 10_000
 
 # aggregations
@@ -134,6 +135,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
 
     page = params[:page] || 0
     page_size = params[:page_size] || DEFAULT_PAGE_SIZE
+    sorting = params[:agg_options_sort] || DEFAULT_SORT
 
     search_results = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }
@@ -143,6 +145,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
             bucket_sort: {
               from: page * page_size,
               size: page_size,
+              sort: [{ _key: { order: sorting }}]
             },
           },
         )
