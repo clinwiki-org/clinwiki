@@ -16,6 +16,7 @@ import {
   view,
   find,
   propEq,
+  reverse,
 } from 'ramda';
 import { ApolloConsumer } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
@@ -52,6 +53,7 @@ const QUERY_AGG_BUCKETS = gql`
     $page: Int!
     $pageSize: Int!
     $aggOptionsFilter: String
+    $aggOptionsSort: String
   ) {
     aggBuckets(
       params: {
@@ -61,6 +63,7 @@ const QUERY_AGG_BUCKETS = gql`
         aggFilters: $aggFilters
         crowdAggFilters: $crowdAggFilters
         aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: $aggOptionsSort
         page: $page
         pageSize: $pageSize
       }
@@ -130,6 +133,7 @@ interface AggDropDownState {
   filter: string;
   buckets: AggBucket[];
   prevParams: SearchParams | null;
+  sort: boolean;
 }
 
 interface AggDropDownProps {
@@ -153,6 +157,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     filter: '',
     isOpen: false,
     prevParams: null,
+    sort: false,
   };
 
   static getDerivedStateFromProps(
@@ -170,7 +175,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           prevParams: props.searchParams,
         };
       }
-
+      console.log(props.buckets, "props.buckets")
       return {
         hasMore: true,
         loading: false,
@@ -180,6 +185,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         prevParams: props.searchParams,
       };
     }
+
+
+
+    
 
     const findAgg = (searchParams: SearchParams | null) => {
       if (!searchParams) return null;
@@ -231,6 +240,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   handleLoadMore = async apolloClient => {
+
+    const { sort } = this.state;
     // TODO
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
@@ -243,8 +254,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       pageSize: PAGE_SIZE,
       page: this.getFullPagesCount(),
       aggOptionsFilter: this.state.filter,
+      aggOptionsSort: sort ? "desc" : "asc",
     };
-
+    
     const response = await apolloClient.query({
       query,
       variables,
@@ -256,12 +268,29 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       response,
     ) as AggBucket[];
 
-    const buckets = pipe(
-      concat(newBuckets),
-      uniqBy(prop('key')),
-      sortBy(prop('key')),
-    )(this.state.buckets) as AggBucket[];
+    console.log(newBuckets, sort);
+    // debugger;
+    
+    let buckets;
 
+    if(sort) {
+        buckets = pipe(
+        concat(newBuckets),
+        uniqBy(prop('key')),
+        sortBy(prop('key')),
+        reverse(),
+      )(this.state.buckets) as AggBucket[];
+    } else {
+      // reverse(newBuckets);
+      buckets = pipe(
+        concat(newBuckets),
+        uniqBy(prop('key')),
+        sortBy(prop('key')),
+      )(this.state.buckets) as AggBucket[];
+    }
+
+    console.log(buckets, "loadmore", sort, "sort")
+    
     const hasMore = length(this.state.buckets) !== length(buckets);
     this.setState({ buckets, hasMore });
   };
@@ -296,20 +325,39 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderBuckets = (display: FieldDisplay) => {
     const { agg } = this.props;
-    const { buckets = [] } = this.state;
+    const { buckets = [], sort } = this.state;
+    
 
-    return pipe(
-      sortBy(prop('key')),
-      map(({ key, docCount }) => (
-        <Checkbox
-          key={key}
-          checked={this.isSelected(key)}
-          onChange={() => this.toggleAgg(agg, key)}
-        >
-          {this.renderBucket(key, display, docCount)}
-        </Checkbox>
-      )),
-    )(buckets);
+    console.log(buckets, "renderBuckets")
+
+    if(sort) { 
+      return pipe(
+        sortBy(prop('key')),
+        reverse(),
+        map(({ key, docCount }) => (
+          <Checkbox
+            key={key}
+            checked={this.isSelected(key)}
+            onChange={() => this.toggleAgg(agg, key)}
+          >
+            {this.renderBucket(key, display, docCount)}
+          </Checkbox>
+        )),
+      )(buckets);
+    } else {
+      return pipe(
+        sortBy(prop('key')),
+        map(({ key, docCount }) => (
+          <Checkbox
+            key={key}
+            checked={this.isSelected(key)}
+            onChange={() => this.toggleAgg(agg, key)}
+          >
+            {this.renderBucket(key, display, docCount)}
+          </Checkbox>
+        )),
+      )(buckets);
+    }
   };
 
   renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
@@ -340,18 +388,34 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderFilter = () => {
     const { buckets = [], filter } = this.state;
+    const icon = "sort";
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return null;
     }
     return (
-      <FormControl
-        type="text"
-        placeholder="filter..."
-        value={this.state.filter}
-        onChange={this.handleFilterChange}
-      />
+      <div style={{display: 'flex', flexDirection: 'row',}}>
+        <FormControl
+          type="text"
+          placeholder="filter..."
+          value={this.state.filter}
+          onChange={this.handleFilterChange}
+          style={{flex: 4}}
+        />
+        <div style={{flex: 2, justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
+          <FontAwesome name={icon} onClick={this.toggleSort} />
+        </div>
+      {/* filter sorter */}
+      </div>
     );
   };
+
+  toggleSort = () => {
+    this.setState({
+      sort: !this.state.sort,
+      buckets: [],
+      hasMore: true,
+    })
+  }
 
   render() {
     const { agg } = this.props;
