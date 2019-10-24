@@ -61,6 +61,7 @@ const QUERY_AGG_BUCKETS = gql`
         aggFilters: $aggFilters
         crowdAggFilters: $crowdAggFilters
         aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: "asc"
         page: $page
         pageSize: $pageSize
       }
@@ -130,6 +131,7 @@ interface AggDropDownState {
   filter: string;
   buckets: AggBucket[];
   prevParams: SearchParams | null;
+  sort: boolean;
 }
 
 interface AggDropDownProps {
@@ -153,6 +155,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     filter: '',
     isOpen: false,
     prevParams: null,
+    sort: false,
   };
 
   static getDerivedStateFromProps(
@@ -231,6 +234,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   handleLoadMore = async apolloClient => {
+
+    const { sort } = this.state;
     // TODO
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
@@ -243,6 +248,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       pageSize: PAGE_SIZE,
       page: this.getFullPagesCount(),
       aggOptionsFilter: this.state.filter,
+      aggOptionsSort: sort ? "asc" : "desc",
     };
 
     const response = await apolloClient.query({
@@ -340,18 +346,32 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderFilter = () => {
     const { buckets = [], filter } = this.state;
+    const icon = "sort";
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return null;
     }
     return (
-      <FormControl
-        type="text"
-        placeholder="filter..."
-        value={this.state.filter}
-        onChange={this.handleFilterChange}
-      />
+      <div style={{display: 'flex', flexDirection: 'row',}}>
+        <FormControl
+          type="text"
+          placeholder="filter..."
+          value={this.state.filter}
+          onChange={this.handleFilterChange}
+          style={{flex: 4}}
+        />
+        <div style={{flex: 2, justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
+          <FontAwesome name={icon} onClick={this.toggleSort} />
+        </div>
+      {/* filter sorter */}
+      </div>
     );
   };
+
+  toggleSort = () => {
+    this.setState({
+      sort: !this.state.sort
+    }, () => console.log('sort', this.state.sort))
+  }
 
   render() {
     const { agg } = this.props;
