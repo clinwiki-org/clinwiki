@@ -1,8 +1,8 @@
 module Types
-  class FacetState < BaseInputObject
+  class FacetState < Types::BaseObject
     description "Describe the state of a single facet."
-    argument :name, String, "facet name", required: true
-    argument :value, String, "facet value", required: true
-    argument :enable, Boolean, "", required: true
+    field :name, String, null: true
+    field :value, String, null: true
+    field :enable, Boolean, null: true
   end
 end

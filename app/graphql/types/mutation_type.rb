@@ -20,6 +20,6 @@ module Types
     field :deleteFeed, mutation: Mutations::DeleteFeed
     field :createFeed, mutation: Mutations::CreateFeed
     field :bulkQueryUpdate, mutation: Mutations::BulkQueryUpdate
-    # field :bulkListUpdate, mutation: Mutations::BulkListUpdate
+    field :bulkListUpdate, mutation: Mutations::BulkListUpdate
   end
 end

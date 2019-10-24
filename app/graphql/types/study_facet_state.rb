@@ -1,7 +1,8 @@
 module Types
-  class StudyFacetState < BaseInputObject
+  class StudyFacetState < Types::BaseObject
     description "Set of facet states for a particular study"
-    argument :nct_id, String, "id", required: true
-    argument :state , [FacetState], "", required: true
+    
+    field :nct_id, String, null: true
+    field :state , [FacetState], null: true
   end
 end
