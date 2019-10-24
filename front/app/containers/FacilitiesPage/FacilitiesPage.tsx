@@ -137,7 +137,7 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
 
           this.props.onLoaded && this.props.onLoaded();
           const facilities = data.study.facilities;
-          this.setState({facilities: facilities})
+          console.log(process.env)
           const items = pipe(
             addIndex(map)(this.processFacility),
             // @ts-ignore
@@ -150,13 +150,14 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
               </Table>
               <div style={{ height: '100vh', width: '100%', paddingBottom: '20px', }}>
                 <GoogleMapReact
-                  bootstrapURLKeys={{ key: "AIzaSyBO8EcEkM2ssqj9Xi260UQkk5bkPfAJGlw" }}
+                  bootstrapURLKeys={{ key: "AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M"}}
                   defaultCenter={center}
                   defaultZoom={4}
                   hoverDistance={K_HOVER_DISTANCE}
                 >
                   {facilities.map((item, index) => (
                     <MapMarker
+                      key={index.toString()}
                       lat={item.latitude}
                       lng={item.longitude}
                       text={index + 1}

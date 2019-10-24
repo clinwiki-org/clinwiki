@@ -99,6 +99,7 @@ module.exports = (options) => ({
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        GOOGLE_MAP_KEY: JSON.stringify(process.env.GOOGLE_MAP_KEY),
       },
     }),
 
@@ -117,7 +118,7 @@ module.exports = (options) => ({
       '.jsx',
       '.react.js',
       '.ts',
-      '.tsx'
+      '.tsx',
     ],
     mainFields: [
       'browser',
