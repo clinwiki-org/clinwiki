@@ -2,9 +2,9 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 const CardContainer = styled.div`
-  min-width: 300px;
+  min-width: 250px;
   background-color: #55B88D;
-  min-height: 50px;
+  height: 75px;
   position: relative;
   bottom: 85px;
   right: 20px;
@@ -12,6 +12,7 @@ const CardContainer = styled.div`
   padding-right: 8px;
   padding-top: 4px;
   padding-bottom: 4px;
+  z-index: 5000;
 `;
 
 const TitleText = styled.h1`

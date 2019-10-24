@@ -137,7 +137,7 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
 
           this.props.onLoaded && this.props.onLoaded();
           const facilities = data.study.facilities;
-          console.log(process.env)
+          console.log(facilities)
           const items = pipe(
             addIndex(map)(this.processFacility),
             // @ts-ignore
@@ -148,7 +148,7 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
               <Table striped bordered condensed>
                 <tbody>{items.map(this.renderItem)}</tbody>
               </Table>
-              <div style={{ height: '100vh', width: '100%', paddingBottom: '20px', }}>
+              <div style={{ height: '50vh', width: '100%', paddingBottom: '20px', }}>
                 <GoogleMapReact
                   bootstrapURLKeys={{ key: "AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M"}}
                   defaultCenter={center}
