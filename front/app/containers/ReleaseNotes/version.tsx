@@ -11,7 +11,6 @@ const notes =
 
 ### Version 2
 - Add /voyager to debug builds for exploring graphql schema
-- Add youtube video to home page
 - Add link to NCT ID to address issue #162 - thanks rarbuthnot
 
 ### Version 1
