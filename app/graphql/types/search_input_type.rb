@@ -9,6 +9,7 @@ module Types
     argument :sorts, [SortInputType], "which fields to sort by", required: false
     argument :aggOptionsFilter, String, "the values in aggs will be filtered by that paramater using a substring match",
              required: false
+    argument :aggOptionsSort, String, "the values in aggs will be sorted by this option", required: false
     argument :aggFilters, [AggFilterInputType], "the aggs we are filtering on", required: false
     argument :crowdAggFilters, [AggFilterInputType], "the crowd aggs we should filter on", required: false
     argument :agg, String, "an agg to query for, used when retrieving all buckets for an agg", required: false
