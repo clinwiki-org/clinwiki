@@ -418,8 +418,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 <QueryComponent
                   query={QUERY}
                   variables={{ nctId: this.props.match.params.nctId }}
-                  fetchPolicy="cache-only"
-                >
+                  fetchPolicy="cache-only" >
                   {({ data, loading, error }) => (
                     <StudyWrapper>
                       <Row md={12}>

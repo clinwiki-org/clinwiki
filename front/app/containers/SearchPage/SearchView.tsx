@@ -305,6 +305,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       changePage,
       this.props.onUpdateParams);
   }
+
   // this is for the column widths. currently, some tags are making it way too wide
   isStatusColumn = (name: string): boolean => {
     return name === 'overall_status';
@@ -454,7 +455,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   }) => {
     const { page, pageSize, sorts } = this.props.params;
 
-    if (loading) {
+    /*if (loading) {
       return (
         <SiteProvider>
           {site => {
@@ -490,7 +491,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           }}
         </SiteProvider>
       );
-    }
+    }*/
+
     if (error) {
       return <div>{error.message}</div>;
     }

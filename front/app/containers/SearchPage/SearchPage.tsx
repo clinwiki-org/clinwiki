@@ -406,19 +406,19 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 return (
                   <SearchView
-                    params={params}
-                    openedAgg={this.state.openedAgg}
-                    onUpdateParams={this.handleUpdateParams}
-                    onRowClick={this.handleRowClick}
-                    onOpenAgg={this.handleOpenAgg}
-                    onAggsUpdate={this.handleAggsUpdate}
-                    onResetFilters={this.handleResetFilters(view)}
-                    previousSearchData={this.previousSearchData}
-                    returnPreviousSearchData={this.returnPreviousSearchData}
-                    searchHash={data.searchHash}
-                    showCards={this.state.showCards}
-                    toggledShowCards={this.toggledShowCards}
-                    returnNumberOfPages={this.returnNumberOfPages}
+                      params={params}
+                      openedAgg={this.state.openedAgg}
+                      onUpdateParams={this.handleUpdateParams}
+                      onRowClick={this.handleRowClick}
+                      onOpenAgg={this.handleOpenAgg}
+                      onAggsUpdate={this.handleAggsUpdate}
+                      onResetFilters={this.handleResetFilters(view)}
+                      previousSearchData={this.previousSearchData}
+                      returnPreviousSearchData={this.returnPreviousSearchData}
+                      searchHash={data.searchHash}
+                      showCards={this.state.showCards}
+                      toggledShowCards={this.toggledShowCards}
+                      returnNumberOfPages={this.returnNumberOfPages}
                   />
                 );
               }}
@@ -527,8 +527,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   searchHash={''}
                   showCards={this.state.showCards}
                   toggledShowCards={this.toggledShowCards}
-                  returnNumberOfPages={this.returnNumberOfPages}
-                />
+                  returnNumberOfPages={this.returnNumberOfPages} />
               )}
             </SiteProvider>
           </MainContainer>

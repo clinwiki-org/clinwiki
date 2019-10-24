@@ -63,7 +63,7 @@ class Cards extends React.Component<CardsProps, CardsState> {
                 count={5}
                 color2={starColor}
                 edit={false}
-                value={d.averageRating}/>
+                value={d.averageRating} />
             </div>
             <div style={{ width: '100%' }}>
                 <label>Brief Title: </label>
@@ -78,7 +78,7 @@ class Cards extends React.Component<CardsProps, CardsState> {
                 <label>Start Date: </label> { d.startDate ? moment(d.startDate).format('MM/DD/YYYY') : '' }
             </div>
             <div style={{ width: '100%' }}>
-                <label>Start Date: </label> {
+                <label>Completion Date: </label> {
                   d.completionDate ? moment(d.completionDate).format('MM/DD/YYYY') : ''
                 }
             </div>
