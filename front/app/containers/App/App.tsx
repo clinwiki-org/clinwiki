@@ -45,7 +45,7 @@ class App extends React.PureComponent<AppProps> {
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/about" component={AboutPage} />
-            <Route exact path="/release" component={ReleaseNotes} />
+            <Route exact path="/version" component={ReleaseNotes} />
             <Route path="/search/:searchId" component={SearchPage} />
             <Route path="/search" component={SearchPage} />
             <Route
