@@ -491,12 +491,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           let leftover = 0;
 
           if (window.innerWidth <= 500) {
-            tableWidth-totalWidth;
+            leftover = tableWidth - totalWidth;
           }  else {
             leftover = this.state.tableWidth - totalWidth;
           }
           
-          this.state.tableWidth - totalWidth;
           const additionalWidth = leftover / columns.length;
           columns.map(x => x.width += additionalWidth, columns);
 
