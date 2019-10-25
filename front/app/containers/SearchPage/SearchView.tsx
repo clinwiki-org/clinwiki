@@ -507,9 +507,16 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
-    let searchData = path(['search', 'studies'], data);
+    let searchData : any = path(['search', 'studies'], data);
+
+    //console.log(JSON.stringify(searchData));
 
     searchData = Array.from(new Set(this.props.previousSearchData.concat(searchData)));
+
+    // Eliminates undefined itens from the searchData array
+    searchData = searchData.filter(function (el) {
+      return el != null;
+    });
 
     // Returns the new searchData to the SearchPage component
     this.props.returnPreviousSearchData(searchData);
@@ -518,22 +525,23 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       <SiteProvider>
         {site => {
 
-          if (this.props.showCards) {
-
-            return (
-              <Cards
-                  data={searchData}
-                  onPress={this.cardPressed}
-                  loading={loading} />
-            );
-
-          }
-
           const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
           const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
           const leftover = this.state.tableWidth - totalWidth;
           const additionalWidth = leftover / columns.length;
           columns.map(x => x.width += additionalWidth, columns);
+
+          if (this.props.showCards) {
+
+            return (
+              <Cards
+                columns={columns}
+                data={searchData}
+                onPress={this.cardPressed}
+                loading={loading} />
+            );
+
+          }
 
           return (
             <ReactTable ref={this.searchTable}

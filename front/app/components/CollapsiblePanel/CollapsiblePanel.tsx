@@ -24,10 +24,6 @@ const StyleWrapper = styled.div`
         ? 'background: #f5f5f5 !important; padding: 10px 15px !important; color: #333 !important'
         : ''}
   }
-  .panel-toggle {
-    margin-top: 4px;
-    font-weight: bold;
-  }
 `;
 
 const StyledPanelBody = styled.div`
@@ -94,17 +90,16 @@ class CollapsiblePanel extends React.Component<
                 : 'Click to show details'
             }
           >
-            <Panel.Title componentClass="h3" className="pull-left">
+            <Panel.Title componentClass="h3" className="pull-left" style={{ fontSize: '18px' }}>
+            <FontAwesome
+                name={
+                  this.state.summaryVisible
+                    ? 'chevron-up'
+                    : 'chevron-down'
+                }
+                className="pull-left" />
               {this.props.header}
             </Panel.Title>
-            <FontAwesome
-              name={
-                this.state.summaryVisible
-                  ? 'angle-double-up'
-                  : 'angle-double-down'
-              }
-              className="pull-right panel-toggle"
-            />
             &nbsp;
           </Panel.Heading>
           <CSSTransition

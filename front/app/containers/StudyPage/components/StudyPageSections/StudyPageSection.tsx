@@ -48,12 +48,11 @@ const StyleWrapper = styled.div`
     cursor: pointer;
     ${(props: StyleWrapperProps) =>
       props.dropdown
-        ? '!important; padding: 15px 15px 30px 15px !important;'
+        ? ''
         : ''}
   }
   .panel-toggle {
-    margin-top: 4px;
-    font-weight: bold;
+    margin-top: 2px;
   }
 `;
 
@@ -84,8 +83,11 @@ const StyledPanelBody = styled.div`
 class StudyPageSection extends React.Component<StudyPageSectionProps, StudyPageSectionsState> {
 
   constructor(props) {
+
     super(props);
-    this.state = { visible: false };
+
+    this.state = { visible: !(window.innerWidth <= 500) };
+
   }
 
   changeTab = () => {
@@ -98,14 +100,30 @@ class StudyPageSection extends React.Component<StudyPageSectionProps, StudyPageS
 
       <StyleWrapper dropdown={this.state.visible}>
 
-        <Panel key={this.props.section.name}>
-          <Panel.Heading style={{ padding: '15px 15px 30px 15px', cursor: 'pointer' }} onClick={() => this.changeTab()}>
-            <Panel.Title componentClass="h3" className="pull-left">
+        <Panel
+            key={this.props.section.name}
+            style={{
+              background: 'none',
+              border: 'none',
+              borderRadius: '0',
+              boxShadow: 'none',
+            }} >
+          <Panel.Heading
+              style={{
+                cursor: 'pointer',
+                background: 'none',
+                color: 'black',
+                borderBottom: '2px solid',
+                borderColor: '#8bb7a4',
+              }}
+              onClick={() => this.changeTab()}>
+            <FontAwesome
+                name={this.state.visible ? 'chevron-up' : 'chevron-down'}
+                className="panel-toggle"
+                style={{ float: 'left', paddingRight: '5px' }} />
+            <Panel.Title componentClass="h3" style={{ fontSize: '18px' }}>
               {this.props.section.displayName}
             </Panel.Title>
-            <FontAwesome
-                name={this.state.visible ? 'angle-double-up' : 'angle-double-down'}
-                className="pull-right panel-toggle" />
           </Panel.Heading>
           <CSSTransition
               in={this.state.visible}

@@ -177,6 +177,35 @@ const SidebarContainer = styled(Col)`
   }
 `;
 
+const StudySummaryContainer = styled.div`
+
+  .container {
+
+    div {
+
+      .panel-default {
+
+        background: none;
+        border: none;
+        borderRadius: 0;
+        boxShadow: none;
+
+        .panel-heading {
+          cursor: pointer;
+          background: none;
+          color: black;
+          border-bottom: 2px solid;
+          border-color: #8bb7a4;
+        }
+
+      }
+
+    }
+
+  }
+
+`;
+
 const BackButtonWrapper = styled.div`
   width: 90%;
   margin: auto;
@@ -365,20 +394,22 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     if (link === undefined) return null;
 
     return (
-      <Button
-        style={{ margin: 'auto', width: '100%' }}
-        onClick={this.handleNavButtonClick(link!, view)}
-        disabled={link === null}
-      >
-        {name}
-      </Button>
+      <div style={{ paddingTop: '10px' }} >
+        <Button
+          style={{ margin: 'auto', float: 'left' }}
+          onClick={this.handleNavButtonClick(link!, view)}
+          disabled={link === null}
+        >
+          {name}
+        </Button>
+      </div>
     );
   };
 
   renderReviewsSummary = (data: StudyPageQuery | undefined) => {
     if (!data || !data.study) {
       return (
-        <ReviewsWrapper>
+        <ReviewsWrapper style={{ float: 'left' }}>
           <div>
             <ReactStars count={5} color2={starColor} edit={false} value={0} />
             <div>{'0 Reviews'}</div>
@@ -396,7 +427,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
             edit={false}
             value={data.study.averageRating}
           />
-          <div>{`${data.study.reviewsCount} Reviews`}</div>
+          <div style={{ color: 'rgba(255, 255, 255, 0.5)' }}>{`${data.study.reviewsCount} Reviews`}</div>
         </div>
       </ReviewsWrapper>
     );
@@ -428,9 +459,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                             '⤺︎ Back',
                             `/search/${this.props.match.params.searchId}`,
                           )}
-                        </BackButtonWrapper>
-                        <BackButtonWrapper>
-                        {this.renderReviewsSummary(data)}
+                          {this.renderReviewsSummary(data)}
                         </BackButtonWrapper>
                       </Row>
                       <Row>
@@ -475,11 +504,13 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           </div>
 
                           {data && data.study && (
-                            <StudySummary
-                              study={data.study}
-                              workflow={workflow}
-                              workflowsView={workflowsView}
-                            />
+                            <StudySummaryContainer>
+                              <StudySummary
+                                study={data.study}
+                                workflow={workflow}
+                                workflowsView={workflowsView}
+                              />
+                            </StudySummaryContainer>
                           )}
 
                           <div className="container">

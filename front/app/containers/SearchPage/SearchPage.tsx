@@ -198,18 +198,19 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.numberOfPages = numberOfPg;
   }
 
-  static getDerivedStateFromProps(
-    props: SearchPageProps,
-    state: SearchPageState,
-  ) {
-    if (state.params == null && props.ignoreUrlHash) {
-      return {
-        params: props.searchParams || DEFAULT_PARAMS,
-        openedAgg: null,
-      };
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(
+  //   props: SearchPageProps,
+  //   state: SearchPageState,
+  // ) {
+  //   if (state.params == null && props.ignoreUrlHash) {
+  //     return {
+  //       params: props.searchParams || DEFAULT_PARAMS,
+  //       openedAgg: null,
+  //     };
+  //   }
+  //   console.log('Returning 4');
+  //   return null;
+  // }
 
   toggledShowCards = (showCards: Boolean) => {
     localStorage.setItem('showCards', showCards.toString());
@@ -378,14 +379,23 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
+
+    console.log('called renderSearch');
+
     return (
       <ParamsQueryComponent query={PARAMS_QUERY} variables={{ hash }}>
         {({ data, loading, error }) => {
+
+          console.log('ParamsQueryComponent');
+
+          if (error || loading) console.log('Returning 1');
           if (error || loading) return null;
+
           const params: SearchParams = this.searchParamsFromQuery(
             view,
             data && data.searchParams,
           );
+
           // hydrate state params from hash
           if (!this.state.params) {
             this.setState({ params });
@@ -398,9 +408,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               variables={this.state.params || undefined}
               >
               {({ data, loading, error }) => {
+
+                console.log('HashQueryComponent');
+
+                if (error || loading) console.log('Returning 2');
                 if (error || loading || !data) return null;
+
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
+                  console.log('Returning 3');
                   return <Redirect to={`/search/${data.searchHash}`} />;
                 }
 
@@ -468,6 +484,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       height: '25px', // 30 px
       left: '20px',
       top: '14px',
+      outline: 'none',
     },
     bmBurgerBars: {
       background: '#55b88d',
@@ -478,6 +495,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     bmCrossButton: {
       height: '24px',
       width: '24px',
+      outline: 'none',
     },
     bmCross: {
       background: '#bdc3c7',
@@ -490,6 +508,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       background: '#373a47',
       padding: '2.5em 1.5em 0',
       fontSize: '1.15em',
+      outline: 'none',
     },
     bmMorphShape: {
       fill: '#373a47',
@@ -500,6 +519,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     },
     bmItem: {
       display: 'inline-block',
+      outline: 'none',
     },
     bmOverlay: {
       background: 'rgba(0, 0, 0, 0.3)',
@@ -507,7 +527,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
+
     if (this.props.ignoreUrlHash) {
+
       return (
         <Row id="menuMain">
             {this.renderAggs()}
@@ -543,8 +565,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       <Switch>
         <Route
           path={`${this.props.match.path}/study/:nctId`}
-          component={SearchStudyPage}
-        />
+          component={SearchStudyPage} />
         <Route
           render={() => (
             <SiteProvider>
@@ -553,7 +574,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   <Menu
                       styles={ this.bmStyles }
                       isOpen={ true }
-                      width={ '400px' } >
+                      width={ '400px' }>
                     <div style={{ paddingBottom: '100px' }}>
                     {this.renderAggs()}
                     </div>

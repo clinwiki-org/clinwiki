@@ -127,6 +127,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
 
     return (
       <div className="container">
+
         <Helmet>
           <title>{`Wiki - ${this.props.study.briefTitle}`}</title>
         </Helmet>
