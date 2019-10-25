@@ -455,44 +455,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   }) => {
     const { page, pageSize, sorts } = this.props.params;
 
-    /*if (loading) {
-      return (
-        <SiteProvider>
-          {site => {
-
-            if (this.props.showCards) {
-
-              return (
-                <Cards
-                    data={[]}
-                    onPress={this.cardPressed}
-                    loading={true} />
-              );
-
-            }
-
-            const columns = map(x => this.renderColumn(x, ''), site.siteView.search.fields);
-            const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
-            const leftover = this.state.tableWidth - totalWidth;
-            const additionalWidth = leftover / columns.length;
-            columns.map(x => x.width += additionalWidth, columns);
-
-            return (
-              <ReactTable ref={this.searchTable}
-                className="-striped -highlight"
-                columns={columns}
-                manual
-                loading={true}
-                defaultSortDesc
-                showPagination={false}
-              />
-            );
-
-          }}
-        </SiteProvider>
-      );
-    }*/
-
     if (error) {
       return <div>{error.message}</div>;
     }
@@ -508,13 +470,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
     let searchData : any = path(['search', 'studies'], data);
-
-    //console.log(JSON.stringify(searchData));
+    const tableWidth = 1175;
 
     searchData = Array.from(new Set(this.props.previousSearchData.concat(searchData)));
 
     // Eliminates undefined itens from the searchData array
-    searchData = searchData.filter(function (el) {
+    searchData = searchData.filter((el) => {
       return el != null;
     });
 
@@ -527,7 +488,15 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
           const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
           const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
-          const leftover = this.state.tableWidth - totalWidth;
+          let leftover = 0;
+
+          if (window.innerWidth <= 500) {
+            tableWidth-totalWidth;
+          }  else {
+            leftover = this.state.tableWidth - totalWidth;
+          }
+          
+          this.state.tableWidth - totalWidth;
           const additionalWidth = leftover / columns.length;
           columns.map(x => x.width += additionalWidth, columns);
 
