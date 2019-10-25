@@ -97,7 +97,8 @@ class CollapsiblePanel extends React.Component<
                     ? 'chevron-up'
                     : 'chevron-down'
                 }
-                className="pull-left" />
+                className="pull-left"
+                style={{ fontSize: '14px' }} />
               {this.props.header}
             </Panel.Title>
             &nbsp;
