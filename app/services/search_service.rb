@@ -1,10 +1,13 @@
 MAX_AGGREGATION_LIMIT = 1_000_000
 ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
-DEFAULT_AGG_SORT = 'asc'
 MAX_WINDOW_SIZE = 10_000
 
 # aggregations
+DEFAULT_AGG_SORT = {
+  id: 'key',
+  asc: true
+}
 DEFAULT_AGG_OPTIONS = {
   average_rating: {
     order: { _term: :desc },
@@ -135,7 +138,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
 
     page = params[:page] || 0
     page_size = params[:page_size] || DEFAULT_PAGE_SIZE
-    sorting = params[:agg_options_sort] || DEFAULT_AGG_SORT
+    bucket_sort = params[:agg_options_sort] || []
 
     search_results = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }
@@ -145,7 +148,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
             bucket_sort: {
               from: page * page_size,
               size: page_size,
-              sort: [{ _key: { order: sorting }}],
+              sort: bucket_sort.map{|s| bucket_agg_sort(s)}
             },
           },
         )
@@ -166,6 +169,12 @@ class SearchService # rubocop:disable Metrics/ClassLength
   end
 
   private
+
+  def bucket_agg_sort(sort)
+    order = sort[:desc] ? 'desc' : 'asc'
+    field = sort[:id] == 'count' ? :_count : :_key
+    { field => { order: order }}
+  end
 
   def search_query
     @search_query ||= begin
