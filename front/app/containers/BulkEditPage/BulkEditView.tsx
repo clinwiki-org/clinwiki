@@ -26,7 +26,11 @@ interface BulkEditProps {
   aggBucketsByLabel: any;
   loading: boolean;
   undoHistory: any[];
-  commit: (toAdd: LabelValue[], toRemove: LabelValue[], description: string) => Promise<void>;
+  commit: (
+    toAdd: LabelValue[],
+    toRemove: LabelValue[],
+    description: string,
+  ) => Promise<void>;
   handleUndo: (undoActions: any[], idx: number) => void;
 }
 interface BulkEditState {
@@ -37,11 +41,15 @@ interface BulkEditState {
 const groupByLabel = (labels: LabelValue[]) => {
   return labels.reduce(
     (accum, x) => ({
+      ...accum,
       [x.name]: [...(accum[x.name] || []), x.value],
     }),
-    {}
+    {},
   );
 };
+
+const isSelected = ({ label, value }) => (x: { name: string; value: string }) =>
+  x.name != label || x.value != value;
 
 class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
   state: BulkEditState = {
@@ -50,26 +58,30 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
   };
   handleSelect = (label, value, checked) => {
     if (checked) {
-      this.setState((state) => ({
+      this.setState(state => ({
         labelsToRemove: [...state.labelsToRemove, { name: label, value }],
-        labelsToAdd: state.labelsToAdd.filter((x) => x.name == label && x.value != value),
+        labelsToAdd: state.labelsToAdd.filter(isSelected({ label, value })),
       }));
     } else {
-      this.setState((state) => ({
+      this.setState(state => ({
         labelsToAdd: [...state.labelsToAdd, { name: label, value }],
-        labelsToRemove: state.labelsToRemove.filter((x) => x.name == label && x.value != value),
+        labelsToRemove: state.labelsToRemove.filter(
+          isSelected({ label, value }),
+        ),
       }));
     }
   };
 
   handleRemoveCrumb = (label, value, fromAdd = false) => {
     if (fromAdd) {
-      this.setState((state) => ({
-        labelsToAdd: state.labelsToAdd.filter((x) => x.name == label && x.value != value),
+      this.setState(state => ({
+        labelsToAdd: state.labelsToAdd.filter(isSelected({ label, value })),
       }));
     } else {
-      this.setState((state) => ({
-        labelsToRemove: state.labelsToRemove.filter((x) => x.name == label && x.value != value),
+      this.setState(state => ({
+        labelsToRemove: state.labelsToRemove.filter(
+          isSelected({ label, value }),
+        ),
       }));
     }
   };
@@ -97,13 +109,16 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
           <Loading show={loading} />
           <Title>Crowd Labels</Title>
           <Container>
-            {labels.map((label) =>
+            {labels.map(label =>
               !aggBucketsByLabel[label].all.length ? null : (
                 <StyledPanel key={label} header={label} dropdown>
-                  {aggBucketsByLabel[label].all.map((value) => {
-                    const indeterminate = aggBucketsByLabel[label].selected.includes(value);
+                  {aggBucketsByLabel[label].all.map(value => {
+                    const indeterminate = aggBucketsByLabel[
+                      label
+                    ].selected.includes(value);
                     const isToAdd =
-                      groupedByLabel.toAdd[label] && groupedByLabel.toAdd[label].includes(value);
+                      groupedByLabel.toAdd[label] &&
+                      groupedByLabel.toAdd[label].includes(value);
                     const isToRemove =
                       groupedByLabel.toRemove[label] &&
                       groupedByLabel.toRemove[label].includes(value);
@@ -111,46 +126,56 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                       <Checkbox
                         key={`${label}-${value}`}
                         checked={(indeterminate || isToAdd) && !isToRemove}
-                        inputRef={(el) =>
-                          el && (el.indeterminate = indeterminate && !isToAdd && !isToRemove)
+                        inputRef={el =>
+                          el &&
+                          (el.indeterminate =
+                            indeterminate && !isToAdd && !isToRemove)
                         }
-                        onChange={() => this.handleSelect(label, value, isToAdd)}
+                        onChange={() =>
+                          this.handleSelect(label, value, isToAdd)
+                        }
                       >
                         {value}
                       </Checkbox>
                     );
                   })}
                 </StyledPanel>
-              )
+              ),
             )}
           </Container>
           {!labelsToAdd.length && !labelsToRemove.length
             ? `Select labels to update ${recordsTotal} studies`
             : ''}
-          <CrumbsBarStyleWrapper className="crumbs-bar">
+          <CrumbsBarStyleWrapper className='crumbs-bar'>
             {labelsToAdd.length ? ' Add: ' : ''}
             {labelsToAdd.length
-              ? Object.keys(groupedByLabel.toAdd).map((label) => (
+              ? Object.keys(groupedByLabel.toAdd).map(label => (
                   <MultiCrumb
                     key={label}
                     category={label}
                     values={groupedByLabel.toAdd[label]}
-                    onClick={(value) => this.handleRemoveCrumb(label, value, true)}
+                    onClick={value =>
+                      this.handleRemoveCrumb(label, value, true)
+                    }
                   />
                 ))
               : null}
             {labelsToRemove.length ? ' Remove: ' : ''}
             {labelsToRemove.length
-              ? Object.keys(groupedByLabel.toRemove).map((label) => (
+              ? Object.keys(groupedByLabel.toRemove).map(label => (
                   <MultiCrumb
                     key={label}
                     category={label}
                     values={groupedByLabel.toRemove[label]}
-                    onClick={(value) => this.handleRemoveCrumb(label, value, false)}
+                    onClick={value =>
+                      this.handleRemoveCrumb(label, value, false)
+                    }
                   />
                 ))
               : null}
-            {labelsToAdd.length || labelsToRemove.length ? `on ${recordsTotal} studies` : ''}
+            {labelsToAdd.length || labelsToRemove.length
+              ? `on ${recordsTotal} studies`
+              : ''}
           </CrumbsBarStyleWrapper>
 
           <ButtonToolbar>
@@ -162,16 +187,20 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                   buildDescription({
                     groupedByLabel,
                     recordsTotal,
-                  })
-                ).then(() => this.setState({ labelsToRemove: [], labelsToAdd: [] }))
+                  }),
+                ).then(() =>
+                  this.setState({ labelsToRemove: [], labelsToAdd: [] }),
+                )
               }
             >
               Save
             </Button>
             {labelsToAdd.length || labelsToRemove.length ? (
               <Button
-                bsStyle="danger"
-                onClick={() => this.setState({ labelsToAdd: [], labelsToRemove: [] })}
+                bsStyle='danger'
+                onClick={() =>
+                  this.setState({ labelsToAdd: [], labelsToRemove: [] })
+                }
               >
                 Clear
               </Button>
@@ -281,7 +310,7 @@ const Loading = styled.div<LoadingProps>`
   transition: 0.3s;
   opacity: 0;
   pointer-events: none;
-  ${(props) =>
+  ${props =>
     props.show
       ? `
       opacity:1;

@@ -5,28 +5,30 @@ module Mutations
 
     def resolve(updates:)
       current_user = context[:current_user]
-      if !current_user.present? || !current_user.has_role?(:admin)
-        raise "Unauthorized"
-      end
-    
-      updates.each do |update|
-        pp update[:nct_id]
+      raise "Unauthorized" if current_user.blank? || !current_user.has_role?(:admin)
+
+      bulk_params = []
+      studies = Study.where(nct_id: updates.map(&:nct_id)).includes(:wiki_page)
+      updates.each_with_index do |update, idx|
+        params = {
+          study: studies[idx],
+          add_meta: {},
+          delete_meta: {},
+        }
         update[:state].each do |state|
-          params = { study_id: update[:nct_id] }
-          
           if state[:enable]
-            params[:add_meta] = {
-              key: state[:name],
-              value: state[:value],
-            }
+            values = params[:add_meta][state[:name]] || []
+            values << state[:value]
+            params[:add_meta][state[:name]] = values
           else
-            params[:delete_meta] = {
-              key: state[:name],
-            }
+            values = params[:delete_meta][state[:name]] || []
+            values << state[:value]
+            params[:delete_meta][state[:name]] = values
           end
-          create_or_update_wiki_page_for_study(params: params, user: context[:current_user])
         end
+        bulk_params.push(params)
       end
+      bulk_create_or_update_wiki_page_for_study(bulk_params: bulk_params, user: context[:current_user])
       nil
     end
   end
