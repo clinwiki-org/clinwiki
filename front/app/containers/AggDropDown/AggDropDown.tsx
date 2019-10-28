@@ -63,7 +63,11 @@ const QUERY_AGG_BUCKETS = gql`
         aggFilters: $aggFilters
         crowdAggFilters: $crowdAggFilters
         aggOptionsFilter: $aggOptionsFilter
+<<<<<<< Updated upstream
         aggOptionsSort: $aggOptionsSort
+=======
+        aggOptionsSort: "asc"
+>>>>>>> Stashed changes
         page: $page
         pageSize: $pageSize
       }
@@ -254,7 +258,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       pageSize: PAGE_SIZE,
       page: this.getFullPagesCount(),
       aggOptionsFilter: this.state.filter,
+<<<<<<< Updated upstream
       aggOptionsSort: sort ? "desc" : "asc",
+=======
+      aggOptionsSort: sort ? "asc" : "desc",
+>>>>>>> Stashed changes
     };
     
     const response = await apolloClient.query({
@@ -411,10 +419,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   toggleSort = () => {
     this.setState({
-      sort: !this.state.sort,
-      buckets: [],
-      hasMore: true,
-    })
+      sort: !this.state.sort
+    }, () => console.log('sort', this.state.sort))
   }
 
   render() {
