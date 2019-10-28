@@ -59,18 +59,47 @@ class Cards extends React.Component<CardsProps, CardsState> {
 
           {
 
-            this.props.columns.map(c => {
+            this.props.columns.map((c, index) => {
 
-              if (c.accessor === 'nctId') {
+              if (index === 0) {
+
+                if (c.Cell) {
+
+                  const props = {
+                    original: {
+                      averageRating: d.averageRating,
+                      reviewsCount: d.reviewsCount,
+                    },
+                  };
+
+                  return (
+                    <div
+                        key={`${d.nctId}_${c.accessor}`}
+                        style={{ width: '100%', backgroundColor: '#55b88d80', ...this.contentStyle }}>
+                      <div style={{ width: '100%' }}>
+                        <label style={{ marginBottom: '0px' }}>{c.Header.props.field}</label>
+                      </div>
+                      <div style={{ width: '100%' }}>
+                        { c.Cell(props) }
+                      </div>
+                    </div>
+                  );
+
+                }
+
                 return (
                   <div
                       key={`${d.nctId}_${c.accessor}`}
                       style={{ width: '100%', backgroundColor: '#55b88d80', ...this.contentStyle }}>
                     <div style={{ width: '100%' }}>
-                      <label style={{ fontSize: '20px' }}>{d[c.accessor]}</label>
+                      <label style={{ marginBottom: '0px' }}>{c.Header.props.field}</label>
+                    </div>
+                    <div style={{ width: '100%' }}>
+                      <label style={{ fontSize: '20px', marginBottom: '0px' }}>{d[c.accessor]}</label>
                     </div>
                   </div>
                 );
+
               }
 
               if (c.Cell) {
@@ -96,6 +125,7 @@ class Cards extends React.Component<CardsProps, CardsState> {
               }
 
               return (
+
                 <div key={`${d.nctId}_${c.accessor}`} style={{ width: '100%', ...this.contentStyle }}>
                   <div style={{ width: '100%' }}>
                     <label>{c.Header.props.field}</label>
