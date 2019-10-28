@@ -123,6 +123,44 @@ const MainContainer = styled(Col)`
   }
 `;
 
+const SidebarContainer = styled(Col)`
+  padding-right: 0px !important;
+  padding-top: 10px;
+  box-sizing: border-box;
+  .panel-title {
+    a:hover {
+      text-decoration: none;
+      color: #fff;
+    }
+  }
+  .panel-default {
+    box-shadow: 0px;
+    border: 0px;
+    background: none;
+    color: #fff;
+    text-transform: capitalize;
+    .panel-heading {
+      box-shadow: 0px;
+      border: 0px;
+      background: none;
+      color: #fff;
+      text-transform: capitalize;
+    }
+    .panel-collapse {
+      background: #394149;
+      .panel-body {
+        padding-left: 10px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+    .panel-title {
+      font-size: 16px;
+      color: #bac5d0;
+      padding: 0px 10px;
+    }
+  }
+`;
+
 const changeFilter = (add: boolean) => (
   aggName: string,
   key: string,
@@ -571,16 +609,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <SiteProvider>
               {site => (
                 <Row>
-                  <Menu
+                  {/*<Menu
                       styles={ this.bmStyles }
                       isOpen={ true }
                       width={ '400px' }>
                     <div style={{ paddingBottom: '100px' }}>
                     {this.renderAggs()}
                     </div>
-                  </Menu>
+                  </Menu>*/}
+                  <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
                   <div id="main_search">
-                    <MainContainer md={12}>
+                    <MainContainer md={10}>
                       {this.renderSearch(hash, site.siteView)}
                     </MainContainer>
                   </div>

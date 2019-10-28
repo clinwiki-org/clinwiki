@@ -51,7 +51,7 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
       <StyledWrapper>
         <Navbar collapseOnSelect
             fluid className="navbar-fixed-top"
-            style={{ paddingLeft: '60px', paddingRight: '15px' }}>
+            style={{ paddingRight: '15px' }}>
           <Navbar.Header>
             <Navbar.Brand>
               <Link id="logo" to="/search">
