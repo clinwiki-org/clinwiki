@@ -1,1 +1,0 @@
-{"virtualbox":{"/clinwiki":{"guestpath":"/clinwiki","hostpath":"/Users/relwell/Code/clinwiki","disabled":false,"__vagrantfile":true},"/cw-app":{"guestpath":"/cw-app","hostpath":"/Users/relwell/Code/cw-app","disabled":false,"__vagrantfile":true}}}
