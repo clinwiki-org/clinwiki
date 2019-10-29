@@ -563,8 +563,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               {site => (
                 <Row>
                   <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
-                  <div id="main_search">
-                    <MainContainer md={10}>
+                  <div id="main_search" style={{ overflowY: 'auto' }}>
+                    <MainContainer style={{ width: '100%' }}>
                       {this.renderSearch(hash, site.siteView)}
                     </MainContainer>
                   </div>
