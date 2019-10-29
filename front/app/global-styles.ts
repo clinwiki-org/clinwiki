@@ -81,4 +81,7 @@ div.DraftEditor-editorContainer{
    display: inline-block;
    vertical-align: super;
 }
+.ReactTable .-pagination .-btn {
+  background: #55B88D !important;
+}
 `;

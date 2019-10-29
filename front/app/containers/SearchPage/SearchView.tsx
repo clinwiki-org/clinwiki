@@ -549,8 +549,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               defaultPageSize={pageSize}
               getTdProps={this.rowProps}
               defaultSortDesc
-              noDataText={'No studies found'}
-              showPagination={true} />
+              noDataText={'No studies found'} />
           );
 
         }}
