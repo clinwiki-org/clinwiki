@@ -236,23 +236,23 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.numberOfPages = numberOfPg;
   }
 
-  // static getDerivedStateFromProps(
-  //   props: SearchPageProps,
-  //   state: SearchPageState,
-  // ) {
-  //   if (state.params == null && props.ignoreUrlHash) {
-  //     return {
-  //       params: props.searchParams || DEFAULT_PARAMS,
-  //       openedAgg: null,
-  //     };
-  //   }
-  //   console.log('Returning 4');
-  //   return null;
-  // }
+  static getDerivedStateFromProps(
+    props: SearchPageProps,
+    state: SearchPageState,
+  ) {
+    if (state.params == null && props.ignoreUrlHash) {
+      return {
+        params: props.searchParams || DEFAULT_PARAMS,
+        openedAgg: null,
+      };
+    }
+    return null;
+  }
 
   toggledShowCards = (showCards: Boolean) => {
     localStorage.setItem('showCards', showCards.toString());
     const params:any = { ...this.state.params, page: 0 };
+    this.previousSearchData = [];
     this.setState({ showCards, params });
   }
 
@@ -418,15 +418,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
 
-    console.log('called renderSearch');
-
     return (
       <ParamsQueryComponent query={PARAMS_QUERY} variables={{ hash }}>
         {({ data, loading, error }) => {
 
-          console.log('ParamsQueryComponent');
-
-          if (error || loading) console.log('Returning 1');
           if (error || loading) return null;
 
           const params: SearchParams = this.searchParamsFromQuery(
@@ -443,18 +438,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           return (
             <HashQueryComponent
               query={HASH_QUERY}
-              variables={this.state.params || undefined}
-              >
+              variables={this.state.params || undefined} >
               {({ data, loading, error }) => {
 
-                console.log('HashQueryComponent');
-
-                if (error || loading) console.log('Returning 2');
                 if (error || loading || !data) return null;
 
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
-                  console.log('Returning 3');
                   return <Redirect to={`/search/${data.searchHash}`} />;
                 }
 
@@ -486,7 +476,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   handleScroll = () => {
 
     if (window.innerHeight + window.scrollY >= (document.body.scrollHeight - 100)
-        && this.state.params!.page < (this.numberOfPages - 1)) {
+        && this.state.params!.page < (this.numberOfPages - 1)
+        && this.state.showCards) {
 
       window.removeEventListener('scroll', this.handleScroll);
 
@@ -507,62 +498,24 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   componentDidMount () {
-    window.addEventListener('scroll', this.handleScroll);
+    if (this.state.showCards) {
+      window.addEventListener('scroll', this.handleScroll);
+    } else {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  bmStyles = {
-    bmBurgerButton: {
-      zIndex: '1030',
-      position: 'fixed',
-      width: '30px',  // 36 px
-      height: '25px', // 30 px
-      left: '20px',
-      top: '14px',
-      outline: 'none',
-    },
-    bmBurgerBars: {
-      background: '#55b88d',
-    },
-    bmBurgerBarsHover: {
-      background: '#a90000',
-    },
-    bmCrossButton: {
-      height: '24px',
-      width: '24px',
-      outline: 'none',
-    },
-    bmCross: {
-      background: '#bdc3c7',
-    },
-    bmMenuWrap: {
-      position: 'fixed',
-      height: '100%',
-    },
-    bmMenu: {
-      background: '#373a47',
-      padding: '2.5em 1.5em 0',
-      fontSize: '1.15em',
-      outline: 'none',
-    },
-    bmMorphShape: {
-      fill: '#373a47',
-    },
-    bmItemList: {
-      color: '#b8b7ad',
-      padding: '0.8em',
-    },
-    bmItem: {
-      display: 'inline-block',
-      outline: 'none',
-    },
-    bmOverlay: {
-      background: 'rgba(0, 0, 0, 0.3)',
-    },
-  };
+  componentDidUpdate() {
+    if (this.state.showCards) {
+      window.addEventListener('scroll', this.handleScroll);
+    } else {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
+  }
 
   render() {
 
@@ -609,14 +562,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <SiteProvider>
               {site => (
                 <Row>
-                  {/*<Menu
-                      styles={ this.bmStyles }
-                      isOpen={ true }
-                      width={ '400px' }>
-                    <div style={{ paddingBottom: '100px' }}>
-                    {this.renderAggs()}
-                    </div>
-                  </Menu>*/}
                   <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
                   <div id="main_search">
                     <MainContainer md={10}>

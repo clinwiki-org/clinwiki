@@ -229,6 +229,63 @@ export default class CrumbsBar extends React.Component<
     this.props.toggledShowCards(showCards);
   }
 
+  loadPaginator = () => {
+
+    if (this.props.showCards) {
+      return (
+        <div className="right-align">
+          <div>
+            {this.props.recordsTotal} results
+          </div>
+          <div>
+            {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="right-align">
+        {this.props.page > 0 && !this.props.loading ? (
+          <FontAwesome
+            className="arrow-left"
+            name="arrow-left"
+            style={{ cursor: 'pointer', margin: '5px' }}
+            onClick={() => this.props.update.page(this.props.page - 1)}
+          />
+        ) : <FontAwesome
+          className="arrow-left"
+          name="arrow-left"
+          style={{ margin: '5px', color: 'gray' }}
+        />}
+        page{' '}
+        <b>
+          {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
+            : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
+        </b>
+        {this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
+          <FontAwesome
+            className="arrow-right"
+            name="arrow-right"
+            style={{ cursor: 'pointer', margin: '5px' }}
+            onClick={() => this.props.update.page(this.props.page + 1)}
+          />
+        ) : <FontAwesome
+          className="arrow-right"
+          name="arrow-right"
+          style={{ margin: '5px', color: 'gray' }}
+        />}
+        <div>
+          {this.props.recordsTotal} results
+        </div>
+        <div>
+          {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
+        </div>
+      </div>
+    )
+
+  }
+
   render() {
     return (
       <CrumbsBarStyleWrappper>
@@ -299,43 +356,7 @@ export default class CrumbsBar extends React.Component<
               </div>
             </Col>
             <Col xsHidden md={2}>
-              <div className="right-align">
-                {/*this.props.page > 0 && !this.props.loading ? (
-                  <FontAwesome
-                    className="arrow-left"
-                    name="arrow-left"
-                    style={{ cursor: 'pointer', margin: '5px' }}
-                    onClick={() => this.props.update.page(this.props.page - 1)}
-                  />
-                ) : <FontAwesome
-                  className="arrow-left"
-                  name="arrow-left"
-                  style={{ margin: '5px', color: 'gray' }}
-                />*/}
-                {/*page{' '}*/}
-                {/*<b>
-                  {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
-                    : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
-                </b>*/}
-                {/*this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
-                  <FontAwesome
-                    className="arrow-right"
-                    name="arrow-right"
-                    style={{ cursor: 'pointer', margin: '5px' }}
-                    onClick={() => this.props.update.page(this.props.page + 1)}
-                  />
-                ) : <FontAwesome
-                  className="arrow-right"
-                  name="arrow-right"
-                  style={{ margin: '5px', color: 'gray' }}
-                />*/}
-                <div>
-                  {this.props.recordsTotal} results
-                </div>
-                <div>
-                  {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
-                </div>
-              </div>
+              {this.loadPaginator()}
             </Col>
           </Row>
           {/* <Row>
