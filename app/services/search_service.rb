@@ -50,6 +50,10 @@ DEFAULT_AGG_OPTIONS = {
     limit: 10,
     order: { "_term" => "asc" },
   },
+  facility_countries: {
+    limit: 10,
+    order: { "_term" => "asc" },
+  },
   study_type: {
     limit: 10,
     order: { "_term" => "asc" },
