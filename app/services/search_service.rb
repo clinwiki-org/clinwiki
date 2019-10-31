@@ -50,6 +50,10 @@ DEFAULT_AGG_OPTIONS = {
     limit: 10,
     order: { "_term" => "asc" },
   },
+  facility_countries: {
+    limit: 10,
+    order: { "_term" => "asc" },
+  },
   study_type: {
     limit: 10,
     order: { "_term" => "asc" },
@@ -78,6 +82,7 @@ DEFAULT_AGG_OPTIONS = {
 
 class SearchService # rubocop:disable Metrics/ClassLength
   ENABLED_AGGS = %i[
+    countries
     average_rating overall_status facility_states
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions

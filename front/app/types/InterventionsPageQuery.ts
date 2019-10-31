@@ -48,9 +48,6 @@ export interface InterventionsPageQuery_study {
   dispositionFirstPostedDateType: string | null;
   dispositionFirstSubmittedDate: string | null;
   dispositionFirstSubmittedQcDate: string | null;
-  eligibilityCriteria: string;
-  eligibilityGender: string;
-  eligibilityHealthyVolunteers: string;
   enrollment: number | null;
   enrollmentType: string | null;
   expandedAccessTypeIndividual: string | null;
