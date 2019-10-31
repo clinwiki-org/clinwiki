@@ -90,15 +90,18 @@ const LABELS_QUERY = gql`
     }
   }
 `;
+// escape label
+const el = (label:string) => label.replace(' ','_');
+
 const buildParams = (labels: string[]): string => {
-  return labels.reduce((s, label) => `$${label}Params: SearchInput! ${s}`, '');
+  return labels.reduce((s, label) => `$${el(label)}Params: SearchInput! ${s}`, '');
 };
 
 const variablesForLabels = (labels: string[], params: any) => {
   return labels.reduce(
     (variables, label) => ({
       ...variables,
-      [`${label}Params`]: {
+      [`${el(label)}Params`]: {
         ...params,
         agg: label,
       },
@@ -113,8 +116,8 @@ const bucketsForLabels = (labels: string[]) => {
     ${labels.reduce(
       (s, l) => `
       ${s}
-      ${l}Selected: crowdAggBuckets(
-        params:   $${l}Params
+      ${el(l)}Selected: crowdAggBuckets(
+        params:   $${el(l)}Params
       ) {
         aggs {
           name
@@ -124,7 +127,7 @@ const bucketsForLabels = (labels: string[]) => {
           }
         }
       }
-      ${l}All: crowdAggBuckets(
+      ${el(l)}All: crowdAggBuckets(
         params: { agg: "${l}", q: { key: "*" }, page: 0, pageSize: 25 }
       ) {
         aggs {
@@ -153,8 +156,8 @@ const groupBucketsByLabel = ({ data, labels }) =>
     (accum, label) => ({
       ...accum,
       [label]: {
-        all: extractBucketKeys(data[`${label}All`]),
-        selected: extractBucketKeys(data[`${label}Selected`]),
+        all: extractBucketKeys(data[`${el(label)}All`]),
+        selected: extractBucketKeys(data[`${el(label)}Selected`]),
       },
     }),
     {}
