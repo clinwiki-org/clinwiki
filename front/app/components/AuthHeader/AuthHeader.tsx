@@ -68,9 +68,6 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
             </ul>
           </Navbar.Header>
           <AuthButton user={this.props.user} history={this.props.history} />
-          {/* <SearchInputWrapper className="pull-right">
-          <SearchInput />
-        </SearchInputWrapper> */}
         </Navbar>
       </StyledWrapper>
     );

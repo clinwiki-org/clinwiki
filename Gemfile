@@ -91,3 +91,5 @@ gem "mailgun-ruby", "~>1.1.6"
 gem "graphql"
 gem "graphiql-rails", "~> 1.4.11"
 gem "faraday"
+
+gem "activerecord-import", "~> 1.0"

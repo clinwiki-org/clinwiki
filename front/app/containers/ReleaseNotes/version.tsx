@@ -9,6 +9,11 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 3
+- Bulk edit feature
+- Handle returns in extra data of studies #173
+- Stop requesting eligibility fields
+
 ### Version 2
 - Add /voyager to debug builds for exploring graphql schema
 - Add link to NCT ID to address issue #162 - thanks rarbuthnot
