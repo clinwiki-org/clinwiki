@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as FontAwesome from 'react-fontawesome';
 
-
 interface SorterProps {
   type: string;
   isActive: boolean;
@@ -30,10 +29,9 @@ class Sorter extends React.PureComponent<SorterProps> {
 
   render() {
     const { isActive, toggle } = this.props;
-    console.log('sorter', isActive)
     return(
       <div onClick={toggle}>
-        <FontAwesome name={this.iconSelector()} style={isActive ? {color: 'green', fontSize: '26px'} : {color:'white', fontSize: '26px'}} /> 
+        <FontAwesome name={this.iconSelector()} style={isActive ? {color: '#55b88d', fontSize: '26px'} : {color:'#c0c3c5', fontSize: '26px'}} /> 
       </div>
     )
   }
