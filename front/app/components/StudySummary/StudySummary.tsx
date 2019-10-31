@@ -40,9 +40,9 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       dispositionFirstPostedDateType
       dispositionFirstSubmittedDate
       dispositionFirstSubmittedQcDate
-      eligibilityCriteria
-      eligibilityGender
-      eligibilityHealthyVolunteers
+      #eligibilityCriteria
+      #eligibilityGender
+      #eligibilityHealthyVolunteers
       enrollment
       enrollmentType
       expandedAccessTypeIndividual
