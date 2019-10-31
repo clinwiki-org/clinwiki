@@ -13,6 +13,7 @@ const notes =
 - Bulk edit feature
 - Handle returns in extra data of studies #173
 - Stop requesting eligibility fields
+- Country now fully configurable in site config
 
 ### Version 2
 - Add /voyager to debug builds for exploring graphql schema
