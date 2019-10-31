@@ -109,6 +109,7 @@ const SITE_FRAGMENT = gql`
       email
     }
     name
+    skipLanding
     subdomain
     owners {
       email

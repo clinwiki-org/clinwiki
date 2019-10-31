@@ -5,7 +5,7 @@ module Rack
     end
 
     def redirect(location)
-      [302, { "Location" => location, "Content-Type" => "text/html" }, ["Moved"]]
+      [302, { "Location" => location, "Content-Type" => "text/html" }, ["Moved Temporarily"]]
     end
 
     def current_site(req)

@@ -53,6 +53,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     form: {
       name: '',
       subdomain: '',
+      skipLanding: false,
       editorEmails: [],
     },
     mutations: [],
@@ -64,6 +65,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     fragment SiteFormFragment on Site {
       name
       subdomain
+      skipLanding
       editors {
         email
       }
@@ -74,11 +76,12 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     props: SiteFormProps,
     state: SiteFormState,
   ): SiteFormState | null => {
-    const { name, subdomain, editors } = props.site;
+    const { name, subdomain, skipLanding,  editors } = props.site;
     const editorEmails = editors.map(prop('email'));
     const form = {
       name,
       subdomain,
+      skipLanding,
       editorEmails,
     };
     if (form && !equals(form, state.prevForm as any)) {
