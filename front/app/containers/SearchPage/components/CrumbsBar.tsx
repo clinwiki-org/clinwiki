@@ -15,6 +15,7 @@ import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
 import { MAX_WINDOW_SIZE } from '../../../utils/constants';
 import { PulseLoader } from 'react-spinners';
+import CurrentUser from 'containers/CurrentUser';
 
 const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
@@ -95,6 +96,7 @@ import { isEmpty } from 'ramda';
 //
 interface CrumbsBarProps {
   searchParams: SearchParams;
+  onBulkUpdate : ()=>void;
   removeFilter: AggCallback;
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
@@ -211,6 +213,10 @@ export default class CrumbsBar extends React.Component<
                 <Button type="submit">
                   <FontAwesome name="search" />
                 </Button>
+                &nbsp;
+                <CurrentUser>
+                { user => user && user.roles.includes("admin") ? <Button onClick={this.props.onBulkUpdate}>Bulk Update <FontAwesome name="truck" /></Button> : null }
+                </CurrentUser>
               </Form>
             </Col>
             <Col xsHidden md={3}>
