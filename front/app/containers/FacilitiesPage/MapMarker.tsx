@@ -59,7 +59,6 @@ const HoverStick = styled.div`
   background-color: #55B88D
 `;
 
-
 const MarkerStick = styled.div`
   position: absolute;
   left: calc(${K_CIRCLE_SIZE}px / 2 - ${K_STICK_WIDTH}px / 2);
@@ -69,43 +68,54 @@ const MarkerStick = styled.div`
   background-color: #324870
 `;
 
-// interface MapMarkerProps  {
-//   // $hover: boolean,
-//   text: string,
-//   lat: number,
-//   lng: number,
-// };
-
-// interface MapMarkerState {
-
-// };
-
-
 class MapMarker extends React.PureComponent<any> {
+
+  state = {
+    clicked: false,
+  }
+
+  markerClicked = () =>{
+    console.log('hi')
+    this.setState({
+      clicked: !this.state.clicked,
+    })
+  }
 
   render() {
     return (
-      <MarkerContainer>
-        {this.props.$hover ? 
+      <MarkerContainer onClick={() => this.markerClicked()}>
+        {this.props.$hover || this.state.clicked ? 
           <div> 
-            <HoverCircle>
+            <HoverCircle  onClick={this.props.onClick}>
               {this.props.text}
             </HoverCircle>
             <HoverStick />
           </div>
           : 
           <div>
-            <MarkerCircle>
+            <MarkerCircle  onClick={this.props.onClick}>
               {this.props.text}
             </MarkerCircle>
             <MarkerStick />
           </div>
         } 
-        <FacilityInfoCard 
-          hover={this.props.$hover}
-          address={this.props.address}
-          name={this.props.name}
-        />
+        {this.state.clicked ? 
+          <FacilityInfoCard 
+            hover={true}
+            address={this.props.address}
+            name={this.props.name}
+            contacts={this.props.contacts}
+            clicked={this.state.clicked}
+          />
+            :
+          <FacilityInfoCard 
+            hover={this.props.$hover}
+            address={this.props.address}
+            name={this.props.name}
+            contacts={this.props.contacts}
+            clicked={this.state.clicked}
+          />
+        }
       </MarkerContainer>
     )
   }

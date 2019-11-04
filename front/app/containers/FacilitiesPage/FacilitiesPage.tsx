@@ -11,10 +11,12 @@ import {
 } from 'types/FacilitiesPageQuery';
 import { FacilityFragment } from 'types/FacilityFragment';
 import StudySummary from 'components/StudySummary';
+
 import GoogleMapReact from 'google-map-react';
 import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import MapMarker from './MapMarker';
+import FacilityCard from './FacilityCard';
 
 interface FacilitiesPageProps {
   history: History;
@@ -27,6 +29,8 @@ interface FacilitiesPageProps {
 
 interface FacilitiesPageState {
   facilities: any,
+  cardClicked: boolean,
+  facilityExpanded: boolean,
 }
 
 const FRAGMENT = gql`
@@ -79,47 +83,55 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
 
   state = {
     facilities: [],
+    cardClicked: false,
+    facilityExpanded: false,
   }
   static fragment = FRAGMENT;
 
   processFacility = (facility: FacilityFragment, i: number) => {
-    const res: { key: string; value: string }[] = [];
-    const { name, country, city, state, zip, latitude, longitude } = facility;
-    const status = isEmpty(facility.status)
+    const res: { key: string; location: string; index: number; status: string; contacts: Array<object> }[] = [];
+    const { name, country, city, state, zip, contacts } = facility;
+    const newStatus = isEmpty(facility.status)
       ? 'status unknown'
       : facility.status;
+    const newLocation = isEmpty(facility.state)
+      ? `${city}, ${country}`
+      : `${city}, ${state} ${zip}, ${country}`;
     res.push({
-      key: `Facility ${i + 1}`,
-      value: `${country}: ${name}, ${city} ${state} ${zip} (${status}) ${latitude} ${longitude}`,
+      key: name,
+      location: newLocation,
+      index: i + 1,
+      status: newStatus,
+      contacts: contacts,
     });
-
-    for (const contact of facility.contacts) {
-      let value = ` ${contact.name}`;
-      if (contact.email) value += ` email: ${contact.email}`;
-      if (contact.phone) value += ` phone: ${contact.phone}`;
-      res.push({ value, key: `Facility ${i + 1} ${contact.contactType}` });
-    }
-
     return res;
   };
 
-  renderItem = ({ key, value }: { key: string; value: string | null }) => {
+  renderItem = ({ key, location, index, status, contacts }: { key: string; location: string | null; index: number; status: string; contacts: Array<object>; }) => {
     return (
-      <tr key={key}>
-        <td style={{ width: '20%', verticalAlign: 'middle' }}>
-          <b>{key}</b>
-        </td>
-        <td>{value || ''}</td>
-      </tr>
+      <div>
+        <FacilityCard 
+          key={key}
+          title={key}
+          index={index}
+          status={status}
+          location={location}
+          contacts={contacts}
+        />
+      </div>
     );
   };
+
+  onCardClick = () => {
+    this.setState({
+      cardClicked: !this.state.cardClicked,
+    })
+  }
 
   render() {
     const center = { lat: 39.5, lng: -98.35 };
     const K_HOVER_DISTANCE = 30;
-    // console.log(this.processFacility())
     return (
-      <div>
       <QueryComponent
         query={QUERY}
         variables={{ nctId: this.props.match.params.nctId }}
@@ -137,18 +149,17 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
 
           this.props.onLoaded && this.props.onLoaded();
           const facilities = data.study.facilities;
-          console.log(facilities)
           const items = pipe(
             addIndex(map)(this.processFacility),
             // @ts-ignore
             flatten,
-          )(facilities) as { key: string; value: string }[];
+          )(facilities) as { key: string; location: string; index: number; status: string; contacts: Array<object>; }[];
           return (
-            <div>
-              <Table striped bordered condensed>
-                <tbody>{items.map(this.renderItem)}</tbody>
-              </Table>
-              <div style={{ height: '50vh', width: '100%', paddingBottom: '20px', }}>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+              <div style={{width: '40%'}}>
+                {items.map(this.renderItem)}
+              </div>
+              <div style={{ height: '80vh', width: '55%', paddingBottom: '20px', marginLeft: '3px' }}>
                 <GoogleMapReact
                   bootstrapURLKeys={{ key: "AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M"}}
                   defaultCenter={center}
@@ -157,9 +168,12 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
                 >
                   {facilities.map((item, index) => (
                     <MapMarker
+                      onClick={this.onCardClick}
+                      clicked={this.state.cardClicked}
                       key={index.toString()}
                       lat={item.latitude}
                       lng={item.longitude}
+                      contacts={item.contacts}
                       text={index + 1}
                       name={item.name}
                       address={`${item.city}, ${item.state} ${item.zip}`}
@@ -173,7 +187,7 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
         
       </QueryComponent>
       
-     </div>
+     
     );
   }
 }
