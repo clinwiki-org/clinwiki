@@ -1,37 +1,43 @@
 import * as React from 'react';
 import * as FontAwesome from 'react-fontawesome';
+import {SortKind, ActiveSort} from './AggDropDown';
 
 interface SorterProps {
   type: string;
-  isActive: boolean;
-  asc: boolean;
+  sortKind: SortKind;
+  desc: boolean;
   toggle: any;
+  active: ActiveSort;
 }
 
 class Sorter extends React.PureComponent<SorterProps> {
 
   iconSelector = () => {
-    const { type, asc } = this.props;
-    if(asc) {
-      if(type === 'number') {
-        return 'sort-numeric-asc';
-      } if(type === 'alpha') {
-        return 'sort-alpha-asc';
-      }
-    } else {
-      if(type === 'number') {
-        return 'sort-numeric-desc';
-      } if(type === 'alpha') {
-        return 'sort-alpha-desc';
-      }
+    const { type, desc } = this.props;
+    if(type === 'number') {
+      return `sort-numeric-${desc ? 'asc' : 'desc' }`
+    }
+    if(type === 'alpha') {
+      return `sort-alpha-${desc ? 'asc' : 'desc' }`
     }
   }
 
   render() {
-    const { isActive, toggle } = this.props;
+    const { toggle, active, type } = this.props;
+
+    let activeSort = false;
+    
+    if(type === 'number' && active === ActiveSort.Number) {
+      activeSort = true;
+    }
+    if(type === 'alpha' && active === ActiveSort.Alpha) {
+      activeSort = true;
+    }
+
+
     return(
       <div onClick={toggle}>
-        <FontAwesome name={this.iconSelector()} style={isActive ? {color: '#55b88d', fontSize: '26px'} : {color:'#c0c3c5', fontSize: '26px'}} /> 
+        <FontAwesome name={this.iconSelector()} style={activeSort ? {color: '#55b88d', fontSize: '26px'} : {color:'#c0c3c5', fontSize: '26px'}} /> 
       </div>
     )
   }

@@ -127,6 +127,17 @@ const PanelWrapper = styledComponents.div`
   }
 `;
 
+export enum SortKind {
+  Alpha,
+  Number
+}
+
+export enum ActiveSort {
+  Alpha,
+  Number
+}
+
+
 interface AggDropDownState {
   hasMore: boolean;
   isOpen: boolean;
@@ -134,11 +145,11 @@ interface AggDropDownState {
   filter: string;
   buckets: AggBucket[];
   prevParams: SearchParams | null;
-  alphaDesc: boolean;
-  numericDesc: boolean;
-  alphaActive: boolean;
-  numberActive: boolean;
+  desc: boolean;
+  sortKind: SortKind;
+  activeSort: ActiveSort;
 }
+
 
 interface AggDropDownProps {
   agg: string;
@@ -161,10 +172,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     filter: '',
     isOpen: false,
     prevParams: null,
-    alphaDesc: true,
-    alphaActive: false,
-    numericDesc: true,
-    numberActive: false,
+    sortKind: SortKind.Alpha,
+    desc: true,
+    activeSort: ActiveSort.Alpha,
   };
 
   static getDerivedStateFromProps(
@@ -243,7 +253,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   handleLoadMore = async apolloClient => {
 
-    const { alphaDesc, numericDesc, numberActive, alphaActive } = this.state;
+    const { desc, sortKind } = this.state;
     // TODO
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
@@ -252,15 +262,15 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     let aggSort = [{id: 'key', desc: false}]
 
-    if(!alphaDesc && alphaActive) {
+    if(!desc && sortKind === SortKind.Alpha) {
       aggSort = [{id: 'key', desc: true}]
     }
 
-    if(numericDesc && numberActive) {
+    if(desc && sortKind === SortKind.Number) {
       aggSort = [{id: 'count', desc: false}]
     }
 
-    if(!numericDesc && numberActive) {
+    if(!desc && sortKind === SortKind.Number) {
       aggSort = [{id: 'count', desc: true}]
     }
 
@@ -283,26 +293,26 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       ['data', 'aggBuckets', 'aggs', 0, 'buckets'],
       response,
     ) as AggBucket[];
-    let buckets;
-        buckets = pipe(
+    
+    let buckets = pipe(
         concat(newBuckets),
         uniqBy(prop('key')),
         sortBy(prop('key')),
       )(this.state.buckets) as AggBucket[];
-     if(!alphaDesc && alphaActive) {
+    if(!desc && sortKind === SortKind.Alpha) {
       buckets = pipe(
         concat(newBuckets),
         uniqBy(prop('key')),
         sortBy(prop('key')),
         reverse(),
       )(this.state.buckets) as AggBucket[];
-    } if(numericDesc && numberActive) {
+    } if(desc && sortKind === SortKind.Number) {
       buckets = pipe(
       concat(newBuckets),
       uniqBy(prop('key')),
       sortBy(prop('docCount')),
       )(this.state.buckets) as AggBucket[];
-    } if(!numericDesc && numberActive) {
+    } if(!desc && sortKind === SortKind.Number) {
       buckets = pipe(
       concat(newBuckets),
       uniqBy(prop('key')),
@@ -387,7 +397,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   renderFilter = () => {
-    const { buckets = [], filter, alphaDesc, numericDesc, alphaActive, numberActive } = this.state;
+    const { buckets = [], filter, desc, sortKind, activeSort } = this.state;
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return null;
     }
@@ -401,8 +411,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           style={{flex: 4}}
         />
         <div style={{flex: 2, justifyContent: 'space-around', alignItems: 'center', display: 'flex'}}>
-          <Sorter type='alpha' asc={alphaDesc} isActive={alphaActive} toggle={this.toggleAlphaSort}/>
-          <Sorter type='number' asc={numericDesc} isActive={numberActive} toggle={this.toggleNumericSort}/>
+          <Sorter type='alpha' desc={desc} sortKind={sortKind} active={activeSort} toggle={this.toggleAlphaSort}/>
+          <Sorter type='number' desc={desc} sortKind={sortKind} active={activeSort} toggle={this.toggleNumericSort}/>
         </div>
       </div>
     );
@@ -410,9 +420,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   toggleAlphaSort = () => {
     this.setState({
-      alphaDesc: !this.state.alphaDesc,
-      alphaActive: true,
-      numberActive: false,
+      desc: !this.state.desc,
+      sortKind: SortKind.Alpha,
+      activeSort: ActiveSort.Alpha,
       buckets: [],
       hasMore: true,
     })
@@ -420,9 +430,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   toggleNumericSort = () => {
     this.setState({
-      numericDesc: !this.state.numericDesc,
-      numberActive: true,
-      alphaActive: false,
+      desc: !this.state.desc,
+      sortKind: SortKind.Number,
+      activeSort: ActiveSort.Number,
       buckets: [],
       hasMore: true, 
     })
