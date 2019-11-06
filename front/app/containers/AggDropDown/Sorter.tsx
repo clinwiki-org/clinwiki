@@ -1,10 +1,8 @@
 import * as React from 'react';
 import * as FontAwesome from 'react-fontawesome';
-import { SortKind } from './AggDropDown';
 
 interface SorterProps {
   type: string;
-  sortKind: SortKind;
   desc: boolean;
   toggle: any;
   active: boolean;
