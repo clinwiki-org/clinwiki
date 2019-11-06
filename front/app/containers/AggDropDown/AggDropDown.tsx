@@ -133,12 +133,6 @@ export enum SortKind {
   Number
 }
 
-export enum ActiveSort {
-  Alpha,
-  Number
-}
-
-
 interface AggDropDownState {
   hasMore: boolean;
   isOpen: boolean;
@@ -148,7 +142,6 @@ interface AggDropDownState {
   prevParams: SearchParams | null;
   desc: boolean;
   sortKind: SortKind;
-  activeSort: ActiveSort;
 }
 
 
@@ -175,7 +168,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     prevParams: null,
     sortKind: SortKind.Alpha,
     desc: true,
-    activeSort: ActiveSort.Alpha,
   };
 
   static getDerivedStateFromProps(
@@ -399,7 +391,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   renderFilter = () => {
-    const { buckets = [], filter, desc, sortKind, activeSort } = this.state;
+    const { buckets = [], filter, desc, sortKind } = this.state;
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return null;
     }
@@ -424,7 +416,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({
       desc: !this.state.desc,
       sortKind: SortKind.Alpha,
-      activeSort: ActiveSort.Alpha,
       buckets: [],
       hasMore: true,
     })
@@ -434,7 +425,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({
       desc: !this.state.desc,
       sortKind: SortKind.Number,
-      activeSort: ActiveSort.Number,
       buckets: [],
       hasMore: true, 
     })

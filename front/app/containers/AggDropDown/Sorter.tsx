@@ -22,9 +22,7 @@ class Sorter extends React.PureComponent<SorterProps, SorterState> {
 
   componentDidMount = () => {
     const { type } = this.props;
-
     let iconStr
-
     if(type ==='number') {
       iconStr = 'sort-numeric-desc'
     }
