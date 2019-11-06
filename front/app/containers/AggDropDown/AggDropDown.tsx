@@ -17,6 +17,7 @@ import {
   find,
   propEq,
   reverse,
+  identity,
 } from 'ramda';
 import { ApolloConsumer } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
@@ -298,6 +299,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         concat(newBuckets),
         uniqBy(prop('key')),
         sortBy(prop('key')),
+        // desc ? identity() : reverse(),
       )(this.state.buckets) as AggBucket[];
     if(!desc && sortKind === SortKind.Alpha) {
       buckets = pipe(
@@ -411,8 +413,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           style={{flex: 4}}
         />
         <div style={{flex: 2, justifyContent: 'space-around', alignItems: 'center', display: 'flex'}}>
-          <Sorter type='alpha' desc={desc} sortKind={sortKind} active={activeSort} toggle={this.toggleAlphaSort}/>
-          <Sorter type='number' desc={desc} sortKind={sortKind} active={activeSort} toggle={this.toggleNumericSort}/>
+          <Sorter type='alpha' desc={desc} sortKind={sortKind} active={sortKind === SortKind.Alpha} toggle={this.toggleAlphaSort}/>
+          <Sorter type='number' desc={desc} sortKind={sortKind} active={sortKind === SortKind.Number} toggle={this.toggleNumericSort}/>
         </div>
       </div>
     );

@@ -1,43 +1,66 @@
 import * as React from 'react';
 import * as FontAwesome from 'react-fontawesome';
-import {SortKind, ActiveSort} from './AggDropDown';
+import { SortKind } from './AggDropDown';
 
 interface SorterProps {
   type: string;
   sortKind: SortKind;
   desc: boolean;
   toggle: any;
-  active: ActiveSort;
+  active: boolean;
 }
 
-class Sorter extends React.PureComponent<SorterProps> {
+interface SorterState {
+  icon: string;
+}
 
-  iconSelector = () => {
-    const { type, desc } = this.props;
-    if(type === 'number') {
-      return `sort-numeric-${desc ? 'asc' : 'desc' }`
+class Sorter extends React.PureComponent<SorterProps, SorterState> {
+
+  state = {
+    icon: ''
+  }
+
+  componentDidMount = () => {
+    const { type } = this.props;
+
+    let iconStr
+
+    if(type ==='number') {
+      iconStr = 'sort-numeric-desc'
     }
     if(type === 'alpha') {
-      return `sort-alpha-${desc ? 'asc' : 'desc' }`
+      iconStr = 'sort-alpha-desc'
+    }
+    this.setState({
+      icon : iconStr,
+    })
+  }
+
+  componentDidUpdate = () => {
+    const { type, desc, active} = this.props;
+    if(type === 'number' && active) {
+      this.setState({
+        icon: `sort-numeric-${desc ? 'asc' : 'desc' }`
+      })
+    }
+    if(type === 'alpha' && active) {
+      this.setState({
+        icon: `sort-alpha-${desc ? 'asc' : 'desc' }`
+      })
+    } else {
+      this.setState((prevState) => {
+        icon: prevState.icon
+      })
     }
   }
 
   render() {
-    const { toggle, active, type } = this.props;
-
-    let activeSort = false;
-    
-    if(type === 'number' && active === ActiveSort.Number) {
-      activeSort = true;
-    }
-    if(type === 'alpha' && active === ActiveSort.Alpha) {
-      activeSort = true;
-    }
-
-
+    const { toggle, active } = this.props;
+    const { icon } = this.state;
+ 
     return(
       <div onClick={toggle}>
-        <FontAwesome name={this.iconSelector()} style={activeSort ? {color: '#55b88d', fontSize: '26px'} : {color:'#c0c3c5', fontSize: '26px'}} /> 
+        <FontAwesome name={icon} style={active ? {color: '#55b88d', fontSize: '26px'} : {color:'#c0c3c5', fontSize: '26px'}} /> 
       </div>
     )
   }
