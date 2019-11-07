@@ -29,8 +29,10 @@ interface FacilitiesPageProps {
 
 interface FacilitiesPageState {
   facilities: any,
-  cardClicked: boolean,
+  markerClicked: boolean,
   facilityExpanded: boolean,
+  mapCenter: object,
+  mapZoom: number,
 }
 
 const FRAGMENT = gql`
@@ -83,31 +85,36 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
 
   state = {
     facilities: [],
-    cardClicked: false,
+    markerClicked: false,
     facilityExpanded: false,
+    mapCenter: { lat: 39.5, lng: -98.35 },
+    mapZoom: 4,
   }
   static fragment = FRAGMENT;
 
   processFacility = (facility: FacilityFragment, i: number) => {
-    const res: { key: string; location: string; index: number; status: string; contacts: Array<object> }[] = [];
-    const { name, country, city, state, zip, contacts } = facility;
+    const res: { key: string; location: string; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number;}[] = [];
+    const { name, country, city, state, zip, contacts, latitude, longitude } = facility;
     const newStatus = isEmpty(facility.status)
       ? 'status unknown'
       : facility.status;
     const newLocation = isEmpty(facility.state)
       ? `${city}, ${country}`
       : `${city}, ${state} ${zip}, ${country}`;
+
     res.push({
       key: name,
       location: newLocation,
       index: i + 1,
       status: newStatus,
       contacts: contacts,
+      latitude: latitude,
+      longitude: longitude,
     });
     return res;
   };
 
-  renderItem = ({ key, location, index, status, contacts }: { key: string; location: string | null; index: number; status: string; contacts: Array<object>; }) => {
+  renderFacilityCards = ({ key, location, index, status, contacts, latitude, longitude }: { key: string; location: string | null; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number; }) => {
     return (
       <div>
         <FacilityCard 
@@ -117,19 +124,36 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
           status={status}
           location={location}
           contacts={contacts}
+          latitude={latitude}
+          longitude={longitude}
+          numberClick={this.onCardNumberClick}
         />
       </div>
     );
   };
 
-  onCardClick = () => {
+  onMarkerClick = () => {
     this.setState({
-      cardClicked: !this.state.cardClicked,
+      markerClicked: !this.state.markerClicked,
     })
   }
 
+  onCardNumberClick = (lat, long) => {
+    this.setState({
+      mapCenter:
+        { 
+          lat: lat,
+          lng: long,
+        },
+      mapZoom: 8,
+    })
+
+    console.log(this.state)
+
+  }
+
   render() {
-    const center = { lat: 39.5, lng: -98.35 };
+    const { mapCenter, mapZoom } = this.state;
     const K_HOVER_DISTANCE = 30;
     return (
       <QueryComponent
@@ -153,23 +177,27 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
             addIndex(map)(this.processFacility),
             // @ts-ignore
             flatten,
-          )(facilities) as { key: string; location: string; index: number; status: string; contacts: Array<object>; }[];
+          )(facilities) as { key: string; location: string; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number; }[];
+          console.log('items', items)
+          console.log('facilities', facilities)
           return (
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
               <div style={{width: '40%'}}>
-                {items.map(this.renderItem)}
+                {items.map(this.renderFacilityCards)}
               </div>
               <div style={{ height: '80vh', width: '55%', paddingBottom: '20px', marginLeft: '3px' }}>
                 <GoogleMapReact
                   bootstrapURLKeys={{ key: "AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M"}}
-                  defaultCenter={center}
+                  defaultCenter={{ lat: 39.5, lng: -98.35 }}
+                  center={mapCenter}
                   defaultZoom={4}
+                  zoom={mapZoom}
                   hoverDistance={K_HOVER_DISTANCE}
                 >
                   {facilities.map((item, index) => (
                     <MapMarker
-                      onClick={this.onCardClick}
-                      clicked={this.state.cardClicked}
+                      onClick={this.onMarkerClick}
+                      clicked={this.state.markerClicked}
                       key={index.toString()}
                       lat={item.latitude}
                       lng={item.longitude}

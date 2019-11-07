@@ -151,7 +151,7 @@ class FacilityCard extends React.PureComponent<any> {
 
   render() {
     const { facilityExpanded } = this.state;
-    const { title, index, status, location, contacts } = this.props;
+    const { title, index, status, location, contacts, numberClick, latitude, longitude } = this.props;
     const newTitle = facilityExpanded
       ? title
       : this.truncateString(title, 33, true);
@@ -161,7 +161,7 @@ class FacilityCard extends React.PureComponent<any> {
         <FacilityHeader>
           <FacilityTitle>{newTitle || ''}</FacilityTitle>
           <div style={{ width: '8%' }}>
-            <FacilityNumber>{index}</FacilityNumber>
+            <FacilityNumber onClick={() => numberClick(latitude, longitude)}>{index}</FacilityNumber>
           </div>
         </FacilityHeader>
         <FacilityBody>
