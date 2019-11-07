@@ -91,7 +91,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
     return (
       <div>
         <StyledCheckbox
-          name={`set:study.${section.name}.hide`}
+          name={`set:study.basicSections.${section.name}.hide`}
           checked={data.hide}
           onChange={this.handleCheckboxToggle(data.hide)}
         >
@@ -109,7 +109,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
     return (
       <div>
         <StyledCheckbox
-          name={`set:study.${section.name}.hide`}
+          name={`set:study.extendedSections.${section.name}.hide`}
           checked={data.hide}
           onChange={this.handleCheckboxToggle(data.hide)}
         >
