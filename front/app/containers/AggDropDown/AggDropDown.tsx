@@ -405,8 +405,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           style={{flex: 4}}
         />
         <div style={{flex: 2, justifyContent: 'space-around', alignItems: 'center', display: 'flex'}}>
-          <Sorter type='alpha' desc={desc} sortKind={sortKind} active={sortKind === SortKind.Alpha} toggle={this.toggleAlphaSort}/>
-          <Sorter type='number' desc={desc} sortKind={sortKind} active={sortKind === SortKind.Number} toggle={this.toggleNumericSort}/>
+          <Sorter type='alpha' desc={desc} active={sortKind === SortKind.Alpha} toggle={this.toggleAlphaSort}/>
+          <Sorter type='number' desc={desc} active={sortKind === SortKind.Number} toggle={this.toggleNumericSort}/>
         </div>
       </div>
     );
