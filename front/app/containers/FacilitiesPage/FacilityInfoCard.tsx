@@ -2,26 +2,30 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 const CardContainer = styled.div`
-  min-width: 300px;
+  min-width: 250px;
   background-color: #55B88D;
-  min-height: 50px;
+  min-height: 75px;
   position: relative;
   bottom: 85px;
   right: 20px;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding: 10px;
+  z-index: 5000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: text;
 `;
 
 const TitleText = styled.h1`
   color: white;
   font-size: 14px;
+  margin: 0;
 `;
 
 const SubTitle = styled.p`
   color: white;
   font-size: 14px;
+  margin: 0;
 `;
 
 const Pointer = styled.div`
@@ -35,17 +39,34 @@ const Pointer = styled.div`
   right: -5px;
 `;
 
+const ContactInfo = styled.p`
+  color: white;
+  font-size: 14px;
+  margin: 0;
+`;
+
 
 class FacilityInfoCard extends React.PureComponent<any> {
 
+  truncateString = (str, n, useWordBoundary) => {
+    if(str.length <= n){
+      return str;
+    }
+    let shortStr = str.substr(0, n);
+    return (useWordBoundary
+      ?  shortStr.substr(0, shortStr.lastIndexOf(' '))
+      : shortStr) + '...';
+  }
+
   render() {
+    const { name, address, hover } = this.props
     return(
       <div>
-        <CardContainer style={this.props.hover ? {visibility: "visible"} : {visibility: "hidden"}}>
-          <TitleText>{this.props.name}</TitleText>
-          <SubTitle>{this.props.address}</SubTitle>
+        <CardContainer style={hover ? {visibility: "visible"} : {visibility: "hidden"}}>
+          <TitleText>{this.truncateString(name, 60, true)}</TitleText>
+          <SubTitle>{address}</SubTitle>
         </CardContainer>
-        <Pointer style={this.props.hover ? {visibility: "visible"} : {visibility: "hidden"}}/>
+        <Pointer style={hover ? {visibility: "visible"} : {visibility: "hidden"}}/>
       </div>
     )
   }

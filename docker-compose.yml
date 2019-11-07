@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2

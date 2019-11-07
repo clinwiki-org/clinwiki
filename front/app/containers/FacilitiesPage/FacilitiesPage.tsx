@@ -11,8 +11,12 @@ import {
 } from 'types/FacilitiesPageQuery';
 import { FacilityFragment } from 'types/FacilityFragment';
 import StudySummary from 'components/StudySummary';
+
+import GoogleMapReact from 'google-map-react';
 import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import MapMarker from './MapMarker';
+import FacilityCard from './FacilityCard';
 
 interface FacilitiesPageProps {
   history: History;
@@ -21,6 +25,14 @@ interface FacilitiesPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
+}
+
+interface FacilitiesPageState {
+  facilities: any,
+  markerClicked: boolean,
+  facilityExpanded: boolean,
+  mapCenter: object,
+  mapZoom: number,
 }
 
 const FRAGMENT = gql`
@@ -32,6 +44,8 @@ const FRAGMENT = gql`
     nctId
     state
     status
+    latitude
+    longitude
     zip
     contacts {
       contactType
@@ -67,42 +81,80 @@ class QueryComponent extends Query<
   FacilitiesPageQueryVariables
 > {}
 
-class FacilitiesPage extends React.PureComponent<FacilitiesPageProps> {
+class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, FacilitiesPageState, any> {
+
+  state = {
+    facilities: [],
+    markerClicked: false,
+    facilityExpanded: false,
+    mapCenter: { lat: 39.5, lng: -98.35 },
+    mapZoom: 4,
+  }
   static fragment = FRAGMENT;
 
   processFacility = (facility: FacilityFragment, i: number) => {
-    const res: { key: string; value: string }[] = [];
-    const { name, country, city, state, zip } = facility;
-    const status = isEmpty(facility.status)
+    const res: { key: string; location: string; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number;}[] = [];
+    const { name, country, city, state, zip, contacts, latitude, longitude } = facility;
+    const newStatus = isEmpty(facility.status)
       ? 'status unknown'
       : facility.status;
+    const newLocation = isEmpty(facility.state)
+      ? `${city}, ${country}`
+      : `${city}, ${state} ${zip}, ${country}`;
+
     res.push({
-      key: `Facility ${i + 1}`,
-      value: `${country}: ${name}, ${city} ${state} ${zip} (${status})`,
+      key: name,
+      location: newLocation,
+      index: i + 1,
+      status: newStatus,
+      contacts: contacts,
+      latitude: latitude,
+      longitude: longitude,
     });
-
-    for (const contact of facility.contacts) {
-      let value = ` ${contact.name}`;
-      if (contact.email) value += ` email: ${contact.email}`;
-      if (contact.phone) value += ` phone: ${contact.phone}`;
-      res.push({ value, key: `Facility ${i + 1} ${contact.contactType}` });
-    }
-
     return res;
   };
 
-  renderItem = ({ key, value }: { key: string; value: string | null }) => {
+  renderFacilityCards = ({ key, location, index, status, contacts, latitude, longitude }: { key: string; location: string | null; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number; }) => {
     return (
-      <tr key={key}>
-        <td style={{ width: '20%', verticalAlign: 'middle' }}>
-          <b>{key}</b>
-        </td>
-        <td>{value || ''}</td>
-      </tr>
+      <div>
+        <FacilityCard 
+          key={key}
+          title={key}
+          index={index}
+          status={status}
+          location={location}
+          contacts={contacts}
+          latitude={latitude}
+          longitude={longitude}
+          numberClick={this.onCardNumberClick}
+        />
+      </div>
     );
   };
 
+  onMarkerClick = () => {
+    this.setState({
+      markerClicked: !this.state.markerClicked,
+    })
+  }
+
+  onCardNumberClick = (lat, long) => {
+    this.setState({
+      mapCenter:
+        { 
+          lat: lat,
+          lng: long,
+        },
+      mapZoom: 8,
+    })
+
+    console.log(this.state)
+
+  }
+
   render() {
+    const { mapCenter, mapZoom } = this.state;
+    const K_HOVER_DISTANCE = 30;
     return (
       <QueryComponent
         query={QUERY}
@@ -125,14 +177,45 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps> {
             addIndex(map)(this.processFacility),
             // @ts-ignore
             flatten,
-          )(facilities) as { key: string; value: string }[];
+          )(facilities) as { key: string; location: string; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number; }[];
+          console.log('items', items)
+          console.log('facilities', facilities)
           return (
-            <Table striped bordered condensed>
-              <tbody>{items.map(this.renderItem)}</tbody>
-            </Table>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+              <div style={{width: '40%'}}>
+                {items.map(this.renderFacilityCards)}
+              </div>
+              <div style={{ height: '80vh', width: '55%', paddingBottom: '20px', marginLeft: '3px' }}>
+                <GoogleMapReact
+                  bootstrapURLKeys={{ key: "AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M"}}
+                  defaultCenter={{ lat: 39.5, lng: -98.35 }}
+                  center={mapCenter}
+                  defaultZoom={4}
+                  zoom={mapZoom}
+                  hoverDistance={K_HOVER_DISTANCE}
+                >
+                  {facilities.map((item, index) => (
+                    <MapMarker
+                      onClick={this.onMarkerClick}
+                      clicked={this.state.markerClicked}
+                      key={index.toString()}
+                      lat={item.latitude}
+                      lng={item.longitude}
+                      contacts={item.contacts}
+                      text={index + 1}
+                      name={item.name}
+                      address={`${item.city}, ${item.state} ${item.zip}`}
+                    />
+                  ))}
+                </GoogleMapReact>
+              </div>
+            </div>
           );
         }}
+        
       </QueryComponent>
+      
+     
     );
   }
 }
