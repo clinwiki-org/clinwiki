@@ -12,8 +12,8 @@ const notes =
 ### Version 3
 - Bulk edit feature
 - Handle returns in extra data of studies #173
-- Stop requesting eligibility fields
 - Country now fully configurable in site config
+- Bugfix #189 unable to 'hide section' on study page configuration
 
 ### Version 2
 - Add /voyager to debug builds for exploring graphql schema
