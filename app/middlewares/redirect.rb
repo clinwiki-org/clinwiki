@@ -9,7 +9,7 @@ module Rack
     end
 
     def current_site(req)
-      url = req.headers["ORIGIN"] || req.headers["REFERER"]
+      url = req.headers["ORIGIN"] || req.headers["REFERER"] || req.original_url
       uri =
         begin
           URI.parse(url)
