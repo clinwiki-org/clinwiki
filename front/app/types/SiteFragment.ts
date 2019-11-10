@@ -138,6 +138,7 @@ export interface SiteFragment {
   id: number;
   editors: SiteFragment_editors[];
   name: string;
+  skipLanding: boolean | null;
   subdomain: string;
   owners: SiteFragment_owners[];
   siteView: SiteFragment_siteView;

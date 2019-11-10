@@ -56,6 +56,7 @@ export interface BulkQueryUpdateInput {
 export interface CreateSiteInput {
   name: string;
   subdomain: string;
+  skipLanding?: boolean | null;
   editorEmails?: string[] | null;
   clientMutationId?: string | null;
 }
@@ -166,6 +167,7 @@ export interface UpdateProfileInput {
 export interface UpdateSiteInput {
   id: number;
   name?: string | null;
+  skipLanding?: boolean | null;
   subdomain?: string | null;
   editorEmails?: string[] | null;
   clientMutationId?: string | null;
