@@ -7,6 +7,7 @@ export const aggsOrdered = [
   'facility_names',
   'facility_states',
   'facility_cities',
+  'facility_countries',
   'browse_condition_mesh_terms',
   'interventions_mesh_terms',
   'phase',

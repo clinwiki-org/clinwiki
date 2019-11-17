@@ -2,21 +2,12 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: SiteFormFragment
+// GraphQL fragment: ToastFragment
 // ====================================================
 
-export interface SiteFormFragment_editors {
-  __typename: "User";
-  /**
-   * Email
-   */
-  email: string;
-}
-
-export interface SiteFormFragment {
+export interface ToastFragment {
   __typename: "Site";
+  id: number;
   name: string;
   subdomain: string;
-  skipLanding: boolean | null;
-  editors: SiteFormFragment_editors[];
 }

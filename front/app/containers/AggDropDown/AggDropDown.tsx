@@ -30,8 +30,8 @@ import {
   AggBucket,
   AggCallback,
   SearchParams,
-  gqlParams,
   AggKind,
+  maskAgg,
 } from '../SearchPage/Types';
 
 import gql from 'graphql-tag';
@@ -247,7 +247,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   handleLoadMore = async apolloClient => {
 
     const { desc, sortKind } = this.state;
-    // TODO
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
         ? [QUERY_CROWD_AGG_BUCKETA, 'crowdAggFilters']
@@ -268,7 +267,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
 
     const variables = {
-      ...gqlParams(this.props.searchParams),
+      ... this.props.searchParams,
+      aggFilters: maskAgg(this.props.searchParams.aggFilters, this.props.agg),
+      crowdAggFilters : maskAgg(this.props.searchParams.crowdAggFilters, this.props.agg),
       agg: this.props.agg,
       pageSize: PAGE_SIZE,
       page: this.getFullPagesCount(),

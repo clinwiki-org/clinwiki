@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 2019_10_17_205457) do
     t.string "subdomain"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "skip_landing"
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 

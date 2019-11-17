@@ -30,6 +30,7 @@ class SiteViewUpdaterService
   def apply_one_mutation(mutation)
     key, mutation_view = get_last_hash_by_path(mutation[:path])
     return false if mutation_view.nil?
+    return false if mutation_view.empty?
 
     case mutation[:operation]
     when "set"

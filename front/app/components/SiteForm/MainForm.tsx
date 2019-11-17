@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { StyledContainer, StyledLabel } from './Styled';
 import { CreateSiteInput } from 'types/globalTypes';
-import { Row, Col, Button, Table } from 'react-bootstrap';
+import { Checkbox, Row, Col, Button, Table } from 'react-bootstrap';
 import StyledFormControl from 'containers/LoginPage/StyledFormControl';
 import { set, lensPath, over, reject, equals } from 'ramda';
 
@@ -66,6 +66,12 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
     this.props.onFormChange({ ...this.props.form, [name]: value });
   };
 
+
+  handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.currentTarget;
+    this.props.onFormChange({ ...this.props.form, [name]: checked });
+  };
+
   handleEditorEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ addEditorEmail: e.currentTarget.value });
   };
@@ -96,6 +102,14 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
               placeholder="Subdomain"
               value={this.props.form.subdomain}
               onChange={this.handleInputChange}
+            />
+            <StyledLabel htmlFor="subdomain">Skip landing page</StyledLabel>
+               <Checkbox
+              id="skipLanding"
+              name="skipLanding"
+              type="checkbox"
+              checked={this.props.form.skipLanding}
+              onClick={this.handleCheckboxChange}
             />
             <div>
               <h3>Editors</h3>

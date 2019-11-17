@@ -5,14 +5,15 @@ module Mutations
 
     argument :id, Int, required: true
     argument :name, String, required: false
+    argument :skip_landing, Boolean, required: false
     argument :subdomain, String, required: false
     argument :editor_emails, [String], required: false
 
     def resolve(attrs)
       site = site(attrs[:id])
       return { site: nil, errors: ["Not found"] } if site.blank?
-
-      site.attributes = attrs.to_h.except(:id, :editor_emails).reject { |_, v| v.blank? }
+      
+      site.attributes = attrs.to_h.except(:id, :editor_emails).reject { |_, v| v.to_s.blank? }
 
       ActiveRecord::Base.transaction do
         site.save

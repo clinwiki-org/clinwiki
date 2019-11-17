@@ -54,6 +54,10 @@ DEFAULT_AGG_OPTIONS = {
     limit: 10,
     order: { "_term" => "asc" },
   },
+  facility_countries: {
+    limit: 10,
+    order: { "_term" => "asc" },
+  },
   study_type: {
     limit: 10,
     order: { "_term" => "asc" },
@@ -82,6 +86,7 @@ DEFAULT_AGG_OPTIONS = {
 
 class SearchService # rubocop:disable Metrics/ClassLength
   ENABLED_AGGS = %i[
+    countries
     average_rating overall_status facility_states
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
@@ -98,7 +103,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
 
   # Search results from params
   # @return [Hash] the JSON response
-  def search(search_after: nil, reverse: false)
+  def search(search_after: nil, reverse: false, includes: [])
     crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
       &.dig(:front_matter_keys, :buckets)
       &.map { |bucket| "fm_#{bucket[:key]}" } || []
@@ -106,6 +111,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
 
     options = search_kick_query_options(params: params, aggs: aggs, search_after: search_after, reverse: reverse)
+    options[:includes] = includes
     search_result = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }
     end

@@ -17,15 +17,15 @@ class GraphqlController < ApplicationController
   private
 
   def current_site
-    url = request.headers["ORIGIN"] || request.headers["REFERER"]
+    url = request.headers["ORIGIN"] || request.headers["REFERER"] || request.original_url
     uri =
       begin
         URI.parse(url)
       rescue StandardError
         nil
       end
-
-    return nil if uri.blank?
+    return nil if  uri.blank?
+    return nil if  uri.host.blank?
 
     subdomain = uri.host.split(".").first
     return nil if subdomain.blank?

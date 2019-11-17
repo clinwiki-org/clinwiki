@@ -1,7 +1,7 @@
 # rubocop:disable all
 require File.expand_path('../boot', __FILE__)
 require 'rails/all'
-
+require_relative '../app/middlewares/redirect'
 # developed using ruby-2.1.2 & Rails 4.2.0
 #
 #To prevent error:  Faraday::SSLError: SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed
@@ -48,7 +48,7 @@ module Clinwiki
           :credentials => true
       end
     end
-
+    config.middleware.insert_before 1,  Rack::Redirect
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
