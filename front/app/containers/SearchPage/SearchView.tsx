@@ -540,14 +540,15 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <title>Search</title>
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
-        <QueryComponent query={QUERY} variables={this.props.params}>
-          {({ data, loading, error }) => {
+        <QueryComponent query={QUERY} variables={this.props.params} onCompleted={(data:any)=>{
             if (data && data.search) {
               this.props.onAggsUpdate(
                 this.transformAggs(data.search.aggs || []),
                 this.transformCrowdAggs(data.crowdAggs.aggs || []),
               );
             }
+        }}>
+          {({ data, loading, error }) => {
             return (
               <Grid>
                 <Row>

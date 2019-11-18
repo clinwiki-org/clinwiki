@@ -403,7 +403,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
     return (
-      <ParamsQueryComponent query={PARAMS_QUERY} variables={{ hash }}>
+      <ParamsQueryComponent query={PARAMS_QUERY} variables={{ hash }} onCompleted={(data: any) => {
+        if (!this.state.params) {
+          const params: SearchParams = this.searchParamsFromQuery(
+            view,
+            data && data.searchParams,
+          );
+          this.setState({ params });
+          return null;
+        }
+      }}>
         {({ data, loading, error }) => {
           if (error || loading) return null;
           const params: SearchParams = this.searchParamsFromQuery(
@@ -412,7 +421,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           );
           // hydrate state params from hash
           if (!this.state.params) {
-            this.setState({ params });
+            // this.setState({ params });
             return null;
           }
 

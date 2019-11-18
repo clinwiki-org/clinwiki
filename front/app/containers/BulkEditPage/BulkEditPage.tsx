@@ -34,7 +34,7 @@ import {
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
-import { PARAMS_QUERY } from '../SearchPage/SearchPage';
+import  PARAMS_QUERY  from '../SearchPage/PARAMS_QUERY';
 import { SearchQueryInput } from 'types/globalTypes';
 import { SearchPageSearchQueryVariables } from 'types/SearchPageSearchQuery';
 import {
