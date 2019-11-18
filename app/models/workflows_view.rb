@@ -58,7 +58,7 @@ class WorkflowsView < ApplicationRecord
         "Requests",
       ],
       allSuggestedLabels: crowd_agg_names,
-      allSummaryFields: %w[nct_id type status completion_date enrollment source],
+      allSummaryFields: SiteView.new.all_fields,
       wikiSectionsFilter: {
         kind: "BLACKLIST",
         values: [],

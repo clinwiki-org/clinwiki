@@ -1,16 +1,18 @@
 export const aggsOrdered = [
   'average_rating',
-  'tags',
-  'overall_status',
-  'study_type',
-  'sponsors',
-  'facility_names',
-  'facility_states',
+  // 'tags',
+  'browse_condition_mesh_terms',
+  'browse_interventions_mesh_terms',
   'facility_cities',
   'facility_countries',
-  'browse_condition_mesh_terms',
+  'facility_names',
+  'facility_states',
   'interventions_mesh_terms',
+  'overall_status',
   'phase',
+  'rating_dimensions',
+  'sponsors',
+  'study_type',
 ];
 
 export const studyFields = [
