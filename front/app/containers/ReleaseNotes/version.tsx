@@ -12,11 +12,13 @@ const notes =
 ### Version 3
 - Bulk edit feature
 - Handle returns in extra data of studies #173
-- Country now fully configurable in site config
 - Bugfix #189 unable to 'hide section' on study page configuration
 - Bugfix #164 crowd facets not filtering with selections properly
 - Feature ##171 Enable subsites config to start on search page
-- Bugfix #189 Unable to 'hide section' on study config
+- Reduce sidekick timer to 5 seconds
+- Fixed source maps
+- Bugfix #160 facet filter list for subsite/workflow not displaying all options
+- CTG: facet sorting
 
 ### Version 2
 - Add /voyager to debug builds for exploring graphql schema
