@@ -16,6 +16,26 @@ module WikiHelper
     study
   end
 
+  def add_value(front_matter, key, value) 
+    values = front_matter[key]&.split("|") || []
+    new_values = value&.split("|")
+    values = (values + new_values).flatten.uniq
+    front_matter[key] = values.join("|")
+    front_matter
+  end
+  
+  def remove_value(front_matter, key, value="")
+    values = front_matter[key]&.split("|") || []
+    remove_values = value&.split("|")
+    values = values.reject { |x| remove_values.include?(x) }
+    if values.empty? || remove_values.empty?
+      front_matter.delete key
+    else
+      front_matter[key] = values.join "|"
+    end
+    front_matter
+  end
+
   # TODO: refactor and simplify
   def create_or_update_wiki_page_for_study(params: {}, user: nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/LineLength
     study = get_study!(params: params)
@@ -36,8 +56,13 @@ module WikiHelper
     @previous_content = content
     @previous_front_matter = front_matter
 
-    front_matter.delete(params[:delete_meta][:key]) if params.key?(:delete_meta)
-    front_matter[params[:add_meta][:key]] = params[:add_meta][:value] if params.key?(:add_meta)
+     if params.key?(:delete_meta)
+      front_matter = remove_value(front_matter,params[:delete_meta][:key])
+     end
+     if params.key?(:add_meta)
+      front_matter = add_value(front_matter, params[:add_meta][:key], params[:add_meta][:value])
+     end
+   
     tags = front_matter["tags"]&.split("|") || []
     tags = (tags + [params[:add_tag]]).flatten.uniq if params.key?(:add_tag)
 

@@ -91,7 +91,7 @@ const LABELS_QUERY = gql`
   }
 `;
 // escape label
-const el = (label:string) => label.replace(' ','_');
+const el = (label: string) => label.replace(/ /g, '').replace('|', '_');
 
 const buildParams = (labels: string[]): string => {
   return labels.reduce((s, label) => `$${el(label)}Params: SearchInput! ${s}`, '');
