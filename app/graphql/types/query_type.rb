@@ -67,6 +67,16 @@ module Types
       )
     end
 
+    def autocomplete(search_hash: nil, param: nil)
+      params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
+      search_service = SearchService.new(params)
+      Hashie::Mash.new(
+        field1: search_service.agg_buckets_for_field(field: 'field1', current_site: context[:current_site]),
+        field1: search_service.agg_buckets_for_field(field: 'field1', current_site: context[:current_site]),
+        field1: search_service.agg_buckets_for_field(field: 'field1', current_site: context[:current_site]),
+      )
+    end
+
     def health
       ActiveRecord::Base.establish_connection
       ActiveRecord::Base.connection
