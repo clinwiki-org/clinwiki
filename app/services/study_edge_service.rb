@@ -19,19 +19,20 @@ class StudyEdgeService
                         .find { |field| field&.downcase&.starts_with("wf_") }
     is_workflow = workflow_name.present?
 
-    recordstotal = records_total
+    before = next_studies(study: study, reverse: true)
+    after = next_studies(study: study)
+    recordstotal = after&.dig(:recordsTotal)
     puts recordstotal
-    puts "*~*~*~*~*"
     OpenStruct.new(
-      next_id: next_study_id(study: study),
-      prev_id: next_study_id(study: study, reverse: true),
+      next_id: after&.dig(:studies)&.first&.id,
+      prev_id: before&.dig(:studies)&.first&.id,
       is_workflow: is_workflow,
       workflow_name: workflow_name,
       study: study,
       records_total: recordstotal < MAX_PAGE_SIZE ? recordstotal : MAX_PAGE_SIZE,
       counter_index: counter_index(study, recordstotal),
-      first_id: first_study_id,
-      last_id: last_study_id(recordstotal),
+      first_id: before&.dig(:studies)&.last&.id,
+      last_id: after&.dig(:studies)&.last&.id,
     )
   end
 
@@ -54,6 +55,15 @@ class StudyEdgeService
       return @search_service.search&.dig(:studies)&.last&.id
     end
     nil
+  end
+
+  def next_studies(study:, reverse: false)
+    return nil if study.blank?
+    sort_values_variants(study, reverse).each do |sort_values|
+      return @search_service.search(
+          search_after: sort_values,
+          reverse: reverse)
+    end
   end
 
   # There's a big problem with nulls. When you sort by a field
@@ -126,11 +136,11 @@ class StudyEdgeService
     end
   end
 
-  def records_total
-    total = @search_service.search&.dig(:recordsTotal)
-    return total unless total.nil?
-    1
-  end
+  # def records_total
+  #   total = @search_service.search&.dig(:recordsTotal)
+  #   return total unless total.nil?
+  #   1
+  # end
 
   def counter_index(study, records_total)
     # Finds the index of the item in the search results.
