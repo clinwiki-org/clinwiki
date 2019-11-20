@@ -53,6 +53,6 @@ To contribute a new feature or bug fix create a new branch off of the current st
 
 # Testing
 
-ClinWiki doesn't currently have any automated tests (feel free to contribute some).  Instead we have a manual checklist that we will run though after features are merged to staging.  [See it here](TESTING.md)
+ClinWiki doesn't currently have any automated tests (feel free to contribute some).  Instead we have a manual checklist maintained in the Wiki that we will run though after features are merged to staging.  [See it here](https://github.com/clinwiki-org/clinwiki/wiki/Testing-Guide)
 
 

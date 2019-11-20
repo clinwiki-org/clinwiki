@@ -10,7 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_17_205457) do
+
+# ActiveRecord::Schema.define(version: 2019_10_17_205457) do
+# Daniel: I commented the above line out to pass merge conflict. I'm unsure if the latter part of that datetime is important or not
+
+ActiveRecord::Schema.define(version: 2019_10_27_001857) do
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +84,7 @@ ActiveRecord::Schema.define(version: 2019_10_17_205457) do
     t.string "subdomain"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "skip_landing"
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 

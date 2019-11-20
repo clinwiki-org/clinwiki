@@ -16,6 +16,7 @@ vendor/*
 tmp/*
 config/database.yml
 config/database_local.yml
+.byebug_history
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

@@ -138,6 +138,7 @@ export interface CreateSiteMutation_createSite_site {
   id: number;
   editors: CreateSiteMutation_createSite_site_editors[];
   name: string;
+  skipLanding: boolean | null;
   subdomain: string;
   owners: CreateSiteMutation_createSite_site_owners[];
   siteView: CreateSiteMutation_createSite_site_siteView;

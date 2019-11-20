@@ -268,6 +268,7 @@ const SearchWrapper = styled.div`
 
 interface SearchViewProps {
   params: SearchParams;
+  onBulkUpdate : ()=>void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
   onAggsUpdate: (
     aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
@@ -502,6 +503,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       <CrumbsBar
         // @ts-ignore
         searchParams={{ ...this.props.params, q }}
+        onBulkUpdate={this.props.onBulkUpdate}
         removeFilter={pipe(
           removeFilter,
           this.props.onUpdateParams,
@@ -538,14 +540,15 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <title>Search</title>
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
-        <QueryComponent query={QUERY} variables={this.props.params}>
-          {({ data, loading, error }) => {
+        <QueryComponent query={QUERY} variables={this.props.params} onCompleted={(data:any)=>{
             if (data && data.search) {
               this.props.onAggsUpdate(
                 this.transformAggs(data.search.aggs || []),
                 this.transformCrowdAggs(data.crowdAggs.aggs || []),
               );
             }
+        }}>
+          {({ data, loading, error }) => {
             return (
               <Grid>
                 <Row>
