@@ -9,6 +9,9 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 4
+- Github dependency upgrade bot
+
 ### Version 3
 - Bulk edit feature
 - Handle returns in extra data of studies #173
