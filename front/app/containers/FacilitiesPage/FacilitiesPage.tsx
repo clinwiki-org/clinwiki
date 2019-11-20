@@ -1,22 +1,53 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { Table } from 'react-bootstrap';
-import { Query } from 'react-apollo';
-import { gql } from 'apollo-boost';
-import { match } from 'react-router-dom';
-import { History } from 'history';
+import * as React from "react";
+import styled from "styled-components";
+import { Query } from "react-apollo";
+import { gql } from "apollo-boost";
+import { match } from "react-router-dom";
+import { History } from "history";
 import {
   FacilitiesPageQuery,
-  FacilitiesPageQueryVariables,
-} from 'types/FacilitiesPageQuery';
-import { FacilityFragment } from 'types/FacilityFragment';
-import StudySummary from 'components/StudySummary';
+  FacilitiesPageQueryVariables
+} from "types/FacilitiesPageQuery";
+import { FacilityFragment } from "types/FacilityFragment";
+import StudySummary from "components/StudySummary";
+import GoogleMapReact from "google-map-react";
+import { pipe, addIndex, map, flatten, isEmpty } from "ramda";
+import { SiteStudyBasicGenericSectionFragment } from "types/SiteStudyBasicGenericSectionFragment";
+import MapMarker from "./MapMarker";
+import FacilityCard from "./FacilityCard";
 
-import GoogleMapReact from 'google-map-react';
-import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
-import MapMarker from './MapMarker';
-import FacilityCard from './FacilityCard';
+const MappingContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 700px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: 1400px;
+  }
+`;
+
+const ScrollCardContainer = styled.div`
+  width: 45%;
+  overflow-y: scroll;
+  padding-right: 15px;
+  margin-bottom: 15px;
+  height: 700px;
+  @media (max-width: 768px) {
+    width: 100%;
+    margin: 10px;
+  }
+`;
+
+const MapContainer = styled.div`
+  height: 700px;
+  width: 55%;
+  padding-bottom: 20px;
+  margin-left: 3px;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
 
 interface FacilitiesPageProps {
   history: History;
@@ -28,11 +59,11 @@ interface FacilitiesPageProps {
 }
 
 interface FacilitiesPageState {
-  facilities: any,
-  markerClicked: boolean,
-  facilityExpanded: boolean,
-  mapCenter: object,
-  mapZoom: number,
+  facilities: any;
+  markerClicked: boolean;
+  facilityExpanded: boolean;
+  mapCenter: object;
+  mapZoom: number;
 }
 
 const FRAGMENT = gql`
@@ -81,22 +112,42 @@ class QueryComponent extends Query<
   FacilitiesPageQueryVariables
 > {}
 
-class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, FacilitiesPageState, any> {
-
+class FacilitiesPage extends React.PureComponent<
+  FacilitiesPageProps,
+  FacilitiesPageState,
+  any
+> {
   state = {
     facilities: [],
     markerClicked: false,
     facilityExpanded: false,
     mapCenter: { lat: 39.5, lng: -98.35 },
-    mapZoom: 4,
-  }
+    mapZoom: 4
+  };
   static fragment = FRAGMENT;
 
   processFacility = (facility: FacilityFragment, i: number) => {
-    const res: { key: string; location: string; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number;}[] = [];
-    const { name, country, city, state, zip, contacts, latitude, longitude } = facility;
+    const res: {
+      key: string;
+      location: string;
+      index: number;
+      status: string;
+      contacts: Array<object>;
+      latitude: number;
+      longitude: number;
+    }[] = [];
+    const {
+      name,
+      country,
+      city,
+      state,
+      zip,
+      contacts,
+      latitude,
+      longitude
+    } = facility;
     const newStatus = isEmpty(facility.status)
-      ? 'status unknown'
+      ? "status unknown"
       : facility.status;
     const newLocation = isEmpty(facility.state)
       ? `${city}, ${country}`
@@ -109,15 +160,31 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
       status: newStatus,
       contacts: contacts,
       latitude: latitude,
-      longitude: longitude,
+      longitude: longitude
     });
     return res;
   };
 
-  renderFacilityCards = ({ key, location, index, status, contacts, latitude, longitude }: { key: string; location: string | null; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number; }) => {
+  renderFacilityCards = ({
+    key,
+    location,
+    index,
+    status,
+    contacts,
+    latitude,
+    longitude
+  }: {
+    key: string;
+    location: string | null;
+    index: number;
+    status: string;
+    contacts: Array<object>;
+    latitude: number;
+    longitude: number;
+  }) => {
     return (
       <div>
-        <FacilityCard 
+        <FacilityCard
           key={key}
           title={key}
           index={index}
@@ -134,23 +201,21 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
 
   onMarkerClick = () => {
     this.setState({
-      markerClicked: !this.state.markerClicked,
-    })
-  }
+      markerClicked: !this.state.markerClicked
+    });
+  };
 
   onCardNumberClick = (lat, long) => {
     this.setState({
-      mapCenter:
-        { 
-          lat: lat,
-          lng: long,
-        },
-      mapZoom: 8,
-    })
+      mapCenter: {
+        lat: lat,
+        lng: long
+      },
+      mapZoom: 8
+    });
 
-    console.log(this.state)
-
-  }
+    console.log(this.state);
+  };
 
   render() {
     const { mapCenter, mapZoom } = this.state;
@@ -176,18 +241,26 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
           const items = pipe(
             addIndex(map)(this.processFacility),
             // @ts-ignore
-            flatten,
-          )(facilities) as { key: string; location: string; index: number; status: string; contacts: Array<object>; latitude: number; longitude: number; }[];
-          console.log('items', items)
-          console.log('facilities', facilities)
+            flatten
+          )(facilities) as {
+            key: string;
+            location: string;
+            index: number;
+            status: string;
+            contacts: Array<object>;
+            latitude: number;
+            longitude: number;
+          }[];
           return (
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-              <div style={{width: '40%'}}>
+            <MappingContainer>
+              <ScrollCardContainer>
                 {items.map(this.renderFacilityCards)}
-              </div>
-              <div style={{ height: '80vh', width: '55%', paddingBottom: '20px', marginLeft: '3px' }}>
+              </ScrollCardContainer>
+              <MapContainer>
                 <GoogleMapReact
-                  bootstrapURLKeys={{ key: "AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M"}}
+                  bootstrapURLKeys={{
+                    key: "AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M"
+                  }}
                   defaultCenter={{ lat: 39.5, lng: -98.35 }}
                   center={mapCenter}
                   defaultZoom={4}
@@ -208,14 +281,11 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps, Facilities
                     />
                   ))}
                 </GoogleMapReact>
-              </div>
-            </div>
+              </MapContainer>
+            </MappingContainer>
           );
         }}
-        
       </QueryComponent>
-      
-     
     );
   }
 }
