@@ -107,6 +107,10 @@ const QUERY = gql`
   ${FRAGMENT}
 `;
 
+const MAPOPTIONS = {
+  minZoom: 0
+};
+
 class QueryComponent extends Query<
   FacilitiesPageQuery,
   FacilitiesPageQueryVariables
@@ -266,6 +270,7 @@ class FacilitiesPage extends React.PureComponent<
                   defaultZoom={4}
                   zoom={mapZoom}
                   hoverDistance={K_HOVER_DISTANCE}
+                  options={MAPOPTIONS}
                 >
                   {facilities.map((item, index) => (
                     <MapMarker
