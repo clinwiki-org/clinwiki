@@ -138,6 +138,7 @@ export interface SiteProviderQuery_site {
   id: number;
   editors: SiteProviderQuery_site_editors[];
   name: string;
+  skipLanding: boolean | null;
   subdomain: string;
   owners: SiteProviderQuery_site_owners[];
   siteView: SiteProviderQuery_site_siteView;

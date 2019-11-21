@@ -39,6 +39,7 @@ const Pointer = styled.div`
   right: -5px;
 `;
 
+
 const ContactInfo = styled.p`
   color: white;
   font-size: 14px;

@@ -1,3 +1,22 @@
+import {
+  pipe,
+  map,
+  length,
+  prop,
+  sortBy,
+  pathOr,
+  uniqBy,
+  concat,
+  isNil,
+  isEmpty,
+  equals,
+  lensPath,
+  view,
+  find,
+  propEq,
+  filter,
+} from 'ramda';
+
 export type Params = {};
 
 export type AggKind = 'aggs' | 'crowdAggs';
@@ -62,58 +81,6 @@ export function expandAggs(aggs: AggFilterListItem[]) {
   return null;
 }
 
-export function gqlParams(params: SearchParams) {
-  return { ...params };
-}
-
-const versionMarker = '!';
-interface CompactSearchParams {
-  // page
-  p: number;
-  // search within terms
-  w: string[];
-  // page size
-  z: number;
-  // aggFilters
-  a: AggFilterListItem[];
-  // crowdAggFilters
-  c: AggFilterListItem[];
-  s: SortItem[];
-}
-
-function compact_search(p: SearchParams): CompactSearchParams | null {
-  const res = {
-    p: p.page,
-    w: p.q.slice(1),
-    z: p.pageSize,
-    a: p.aggFilters,
-    c: p.crowdAggFilters,
-    s: p.sorts,
-  };
-  // Erase default values
-  if (res.p === 0) delete res.p;
-  if (res.z === defaultPageSize) delete res.z;
-  Object.keys(res).forEach(k => {
-    if (Array.isArray(res[k]) && res[k].length === 0) delete res[k];
-  });
-  if (Object.keys(res).length === 0) return null;
-  return res;
-}
-function expand_search(q: string, p: CompactSearchParams): SearchParams {
-  const w = p.w || [];
-  return {
-    q: q ? [q, ...w] : w,
-    page: p.p || 0,
-    pageSize: p.z || defaultPageSize,
-    aggFilters: p.a || [],
-    crowdAggFilters: p.c || [],
-    sorts: p.s || [],
-  };
-}
-
-export function encodeSearchParams(params: SearchParams): string {
-  const shortNames = compact_search(params);
-  if (shortNames == null) return '';
-  const temp = JSON.stringify(shortNames);
-  return versionMarker + btoa(temp);
+export function maskAgg(aggs : AggFilterListItem[], toRemove : string) {
+  return filter(a => a.field != toRemove, aggs);
 }

@@ -138,6 +138,7 @@ export interface UpdateSiteMutation_updateSite_site {
   id: number;
   editors: UpdateSiteMutation_updateSite_site_editors[];
   name: string;
+  skipLanding: boolean | null;
   subdomain: string;
   owners: UpdateSiteMutation_updateSite_site_owners[];
   siteView: UpdateSiteMutation_updateSite_site_siteView;

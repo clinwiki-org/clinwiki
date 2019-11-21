@@ -31,7 +31,7 @@ if (dllPlugin) {
     plugins.push(
       new AddAssetHtmlPlugin({
         filepath: dllPath,
-        includeSourcemap: false,
+        includeSourcemap: true,
       }),
     );
   });

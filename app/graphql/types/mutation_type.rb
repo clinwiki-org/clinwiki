@@ -19,5 +19,7 @@ module Types
     field :deleteReview, mutation: Mutations::DeleteReview
     field :deleteFeed, mutation: Mutations::DeleteFeed
     field :createFeed, mutation: Mutations::CreateFeed
+    field :bulkQueryUpdate, mutation: Mutations::BulkQueryUpdate
+    field :bulkListUpdate, mutation: Mutations::BulkListUpdate
   end
 end

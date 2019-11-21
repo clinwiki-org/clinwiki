@@ -3,9 +3,9 @@ require "sidekiq/web"
 Rails.application.routes.draw do
   if Rails.env.development?
     mount Sidekiq::Web => "/sidekiq"
-    get 'voyager' => 'voyager#index'
+    get "voyager" => "voyager#index"
   end
-
+  
   mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
   post "/graphql", to: "graphql#execute"
   scope(path: "/api") do
@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     get "pages/contact"
 
     devise_for :users, controllers: { sessions: "sessions", registrations: "registrations", passwords: "cwpasswords" },
-                       defaults: { format: "json" } do
+    defaults: { format: "json" } do
       get "/users/sign_out" => "sessions#destroy"
       patch "/users/password", to: "cwpasswords#reset", defaults: { format: "html" }
     end
