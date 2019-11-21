@@ -1,17 +1,19 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import * as React from "react";
+import styled from "styled-components";
 
 const CardContainer = styled.div`
-  min-width: 300px;
-  background-color: #55B88D;
-  min-height: 50px;
+  min-width: 250px;
+  background-color: #55b88d;
+  min-height: 75px;
   position: relative;
   bottom: 85px;
   right: 20px;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding: 10px;
+  z-index: 5000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: text;
 `;
 
 const TitleText = styled.h1`
@@ -27,11 +29,11 @@ const SubTitle = styled.p`
 `;
 
 const Pointer = styled.div`
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid #55B88D;
+  border-top: 10px solid #55b88d;
   position: relative;
   bottom: 85px;
   right: -5px;
@@ -43,33 +45,35 @@ const ContactInfo = styled.p`
   margin: 0;
 `;
 
-
 class FacilityInfoCard extends React.PureComponent<any> {
-
   truncateString = (str, n, useWordBoundary) => {
-    if(str.length <= n){
+    if (str.length <= n) {
       return str;
     }
     let shortStr = str.substr(0, n);
-    return (useWordBoundary
-      ?  shortStr.substr(0, shortStr.lastIndexOf(' '))
-      : shortStr) + '...';
-  }
+    return (
+      (useWordBoundary
+        ? shortStr.substr(0, shortStr.lastIndexOf(" "))
+        : shortStr) + "..."
+    );
+  };
 
   render() {
-    const { name, address, hover } = this.props
-    return(
+    const { name, address, hover } = this.props;
+    return (
       <div>
-        <CardContainer style={hover ? {visibility: "visible"} : {visibility: "hidden"}}>
+        <CardContainer
+          style={hover ? { visibility: "visible" } : { visibility: "hidden" }}
+        >
           <TitleText>{this.truncateString(name, 60, true)}</TitleText>
           <SubTitle>{address}</SubTitle>
         </CardContainer>
-        <Pointer style={hover ? {visibility: "visible"} : {visibility: "hidden"}}/>
+        <Pointer
+          style={hover ? { visibility: "visible" } : { visibility: "hidden" }}
+        />
       </div>
-    )
+    );
   }
-
 }
-
 
 export default FacilityInfoCard;
