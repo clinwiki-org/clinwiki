@@ -95,6 +95,7 @@ export interface SearchInput {
   pageSize?: number | null;
   sorts?: SortInput[] | null;
   aggOptionsFilter?: string | null;
+  aggOptionsSort?: SortInput[] | null;
   aggFilters?: AggFilterInput[] | null;
   crowdAggFilters?: AggFilterInput[] | null;
   agg?: string | null;

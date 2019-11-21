@@ -9,16 +9,22 @@ module Types
     # @param value [DateTime]
     # @return [String]
     def self.coerce_result(value, _ctx)
-      value&.to_datetime&.utc&.iso8601
+      # Format as mm/dd/yyyy
+      value&.to_datetime&.utc&.to_s(:month_day_year)
     end
 
     # @param str_value [String]
     # @return [DateTime]
     def self.coerce_input(str_value, _ctx)
-      DateTime.iso8601(str_value)
+      # Try parse mm/dd/yyyy first
+      DateTime.strptime(date, Time::DATE_FORMATS[:month_day_year])
     rescue ArgumentError
-      # Invalid input
-      nil
+      begin
+        DateTime.parse(str_value)
+      rescue ArgumentError
+        # Invalid input
+        nil
+      end
     end
   end
 end
