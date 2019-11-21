@@ -21,9 +21,9 @@ const MappingContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   height: 700px;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    height: 1400px;
+  @media (max-width: 991px) {
+    flex-direction: column-reverse;
+    max-height: 1400px;
   }
 `;
 
@@ -32,10 +32,11 @@ const ScrollCardContainer = styled.div`
   overflow-y: scroll;
   padding-right: 15px;
   margin-bottom: 15px;
-  height: 700px;
-  @media (max-width: 768px) {
+  @media (max-width: 991px) {
+    min-height: 250px;
     width: 100%;
     margin: 10px;
+    max-height: 700px;
   }
 `;
 
@@ -44,7 +45,7 @@ const MapContainer = styled.div`
   width: 55%;
   padding-bottom: 20px;
   margin-left: 3px;
-  @media (max-width: 768px) {
+  @media (max-width: 991px) {
     width: 100%;
   }
 `;
