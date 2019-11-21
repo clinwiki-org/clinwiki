@@ -120,7 +120,6 @@ class SearchService # rubocop:disable Metrics/ClassLength
     params = self.params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
-    byebug
 
     # We don't need to keep filters of the same agg, we want broader results
     # But we need to respect all other filters
