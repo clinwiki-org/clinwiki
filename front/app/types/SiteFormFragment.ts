@@ -17,5 +17,6 @@ export interface SiteFormFragment {
   __typename: "Site";
   name: string;
   subdomain: string;
+  skipLanding: boolean | null;
   editors: SiteFormFragment_editors[];
 }

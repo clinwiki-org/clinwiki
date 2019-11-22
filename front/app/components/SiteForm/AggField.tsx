@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import aggToField from 'utils/aggs/aggToField';
 import { FormControl } from 'react-bootstrap';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
@@ -128,7 +129,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     return (
       <>
         <h4>
-          {this.props.field.name
+          {aggToField(this.props.field.name)
             .split('_')
             .map(capitalize)
             .join(' ')}

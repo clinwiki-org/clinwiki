@@ -7,6 +7,7 @@ import MultiInput from 'components/MultiInput';
 import AggField from './AggField';
 import { capitalize } from 'utils/helpers';
 import { aggsOrdered, studyFields } from 'utils/constants';
+import aggToField from 'utils/aggs/aggToField';
 import { FilterKind } from 'types/globalTypes';
 import { Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -31,7 +32,7 @@ const SEARCH_FIELDS = studyFields.map(option => ({
 
 const AGGS_OPTIONS = aggsOrdered.map(option => ({
   id: option,
-  label: option
+  label: aggToField(option)
     .split('_')
     .map(capitalize)
     .join(' '),

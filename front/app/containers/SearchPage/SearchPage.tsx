@@ -14,6 +14,7 @@ import {
 } from 'types/SearchPageParamsQuery';
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
+import BulkEditPage from 'containers/BulkEditPage';
 import { Query, ApolloConsumer } from 'react-apollo';
 import {
   path,
@@ -74,7 +75,7 @@ const HASH_QUERY = gql`
   }
 `;
 
-const PARAMS_QUERY = gql`
+export const PARAMS_QUERY = gql`
   query SearchPageParamsQuery($hash: String) {
     searchParams(hash: $hash) {
       q
@@ -359,6 +360,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.props.history.push(`${prefix}/study/${nctId}${suffix}`);
   };
 
+  handleBulkUpdateClick = () => {
+    this.props.history.push(`${this.props.match.url}/bulk`);
+  };
+
   handleOpenAgg = (name: string, kind: AggKind) => {
     if (!this.state.openedAgg) {
       this.setState({ openedAgg: { name, kind } });
@@ -419,7 +424,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
 
     return (
-      <ParamsQueryComponent query={PARAMS_QUERY} variables={{ hash }}>
+      <ParamsQueryComponent query={PARAMS_QUERY} variables={{ hash }} onCompleted={(data: any) => {
+        if (!this.state.params) {
+          const params: SearchParams = this.searchParamsFromQuery(
+            view,
+            data && data.searchParams,
+          );
+          this.setState({ params });
+          return null;
+        }
+      }}>
         {({ data, loading, error }) => {
 
           if (error || loading) return null;
@@ -431,7 +445,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
           // hydrate state params from hash
           if (!this.state.params) {
-            this.setState({ params });
+            // this.setState({ params });
             return null;
           }
 
@@ -451,6 +465,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 return (
                   <SearchView
                       params={params}
+                      onBulkUpdate={this.handleBulkUpdateClick}
                       openedAgg={this.state.openedAgg}
                       onUpdateParams={this.handleUpdateParams}
                       onRowClick={this.handleRowClick}
@@ -529,6 +544,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               {site => (
                 <SearchView
                   params={this.state.params as any}
+                  onBulkUpdate={this.handleBulkUpdateClick}
                   openedAgg={this.state.openedAgg}
                   onUpdateParams={this.handleUpdateParams}
                   onRowClick={this.handleRowClick}
@@ -557,6 +573,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <Route
           path={`${this.props.match.path}/study/:nctId`}
           component={SearchStudyPage} />
+        <Route
+          path={`${this.props.match.path}/bulk/`}
+          component={BulkEditPage}
+        />
         <Route
           render={() => (
             <SiteProvider>

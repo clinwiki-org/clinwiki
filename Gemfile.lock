@@ -37,6 +37,8 @@ GEM
       activemodel (= 5.2.2)
       activesupport (= 5.2.2)
       arel (>= 9.0)
+    activerecord-import (1.0.3)
+      activerecord (>= 3.2)
     activestorage (5.2.2)
       actionpack (= 5.2.2)
       activerecord (= 5.2.2)
@@ -52,7 +54,7 @@ GEM
       execjs
     backbone-rails (1.2.3)
       rails (>= 3.0.0)
-    bcrypt (3.1.12)
+    bcrypt (3.1.13)
     bindex (0.5.0)
     bootsnap (1.3.2)
       msgpack (~> 1.0)
@@ -69,14 +71,14 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.4)
+    concurrent-ruby (1.1.5)
     connection_pool (2.2.2)
-    crass (1.0.4)
+    crass (1.0.5)
     dalli (2.7.9)
-    devise (4.5.0)
+    devise (4.7.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
-      railties (>= 4.1.0, < 6.0)
+      railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
     diff-lcs (1.3)
@@ -95,7 +97,7 @@ GEM
     elasticsearch-transport (6.1.0)
       faraday
       multi_json
-    erubi (1.8.0)
+    erubi (1.9.0)
     et-orbi (1.1.7)
       tzinfo
     eventmachine (1.2.7)
@@ -133,7 +135,7 @@ GEM
     httparty (0.16.3)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    i18n (1.5.3)
+    i18n (1.7.0)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.2)
     jbuilder (2.8.0)
@@ -151,7 +153,7 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
-    loofah (2.2.3)
+    loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -165,12 +167,12 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
     mimemagic (0.3.3)
-    mini_magick (4.9.2)
+    mini_magick (4.9.4)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     mini_racer (0.2.4)
       libv8 (>= 6.3)
-    minitest (5.11.3)
+    minitest (5.13.0)
     msgpack (1.2.6)
     multi_json (1.13.1)
     multi_xml (0.6.0)
@@ -178,7 +180,7 @@ GEM
     net-ssh (5.1.0)
     netrc (0.11.0)
     nio4r (2.3.1)
-    nokogiri (1.10.1)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     normalize-rails (3.0.3)
     orm_adapter (0.5.0)
@@ -201,8 +203,9 @@ GEM
       pry (>= 0.10.4)
     puma (3.12.0)
     raabro (1.1.6)
-    rack (2.0.6)
-    rack-cors (1.0.2)
+    rack (2.0.7)
+    rack-cors (1.0.5)
+      rack (>= 1.6.0)
     rack-protection (2.0.5)
       rack
     rack-test (1.1.0)
@@ -223,8 +226,8 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.0.4)
-      loofah (~> 2.2, >= 2.2.2)
+    rails-html-sanitizer (1.3.0)
+      loofah (~> 2.3)
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
@@ -245,9 +248,9 @@ GEM
     redis (4.1.0)
     request_store (1.4.1)
       rack (>= 1.4)
-    responders (2.4.1)
-      actionpack (>= 4.2.0, < 6.0)
-      railties (>= 4.2.0, < 6.0)
+    responders (3.0.0)
+      actionpack (>= 5.0)
+      railties (>= 5.0)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -359,7 +362,7 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
     will_paginate (3.1.6)
-    yard (0.9.18)
+    yard (0.9.20)
     zip (2.0.2)
 
 PLATFORMS
@@ -367,6 +370,7 @@ PLATFORMS
 
 DEPENDENCIES
   activejob-traffic_control (>= 0.1.3)
+  activerecord-import (~> 1.0)
   autoprefixer-rails
   backbone-rails
   bootsnap
@@ -424,4 +428,4 @@ RUBY VERSION
    ruby 2.5.3p105
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
