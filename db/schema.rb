@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2019_10_27_001857) do
-=======
-ActiveRecord::Schema.define(version: 2019_11_20_045639) do
->>>>>>> process geocoding
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +37,7 @@ ActiveRecord::Schema.define(version: 2019_11_20_045639) do
     t.float "latitude"
     t.float "longitude"
     t.datetime "checked"
+    t.string "last_error"
   end
 
   create_table "reviews", force: :cascade do |t|
