@@ -2,11 +2,12 @@ namespace :geocode do
   desc "Adds all facilities to the queue to be geocoded. (from US Interventional studies)"
   task queue: :environment do
     facilities = Facility.joins(:study).
-                 where(studies: { study_type: 'Interventional' }).
-                 where(country: 'United States').limit(10)
+                 where(country: 'United States')
 
-    facilities.each do |facility|
-      Location.find_or_create_by(name: facility.location_name)
+    facilities.find_in_batches do |group|
+      group.each do |facility|
+        Location.find_or_create_by(name: facility.location_name)
+      end
     end
   end
 
