@@ -1,31 +1,34 @@
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
-import { SearchQueryInput, AggFilterInput, SortInput } from "./globalTypes";
+import { SearchQueryInput, AggFilterInput } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: SearchPageAggBucketsQuery
 // ====================================================
 
-export interface SearchPageAggBucketsQuery_aggBuckets_aggs_buckets {
+export interface SearchPageAggBucketsQuery_autocomplete_autocomplete_results {
   __typename: "AggBucket";
   key: string;
   docCount: number;
 }
 
-export interface SearchPageAggBucketsQuery_aggBuckets_aggs {
-  __typename: "Agg";
+export interface SearchPageAggBucketsQuery_autocomplete_autocomplete {
+  __typename: "Autocomplete";
   name: string;
-  buckets: SearchPageAggBucketsQuery_aggBuckets_aggs_buckets[];
+  results: SearchPageAggBucketsQuery_autocomplete_autocomplete_results[];
 }
 
-export interface SearchPageAggBucketsQuery_aggBuckets {
+export interface SearchPageAggBucketsQuery_autocomplete {
   __typename: "SearchResultSet";
-  aggs: SearchPageAggBucketsQuery_aggBuckets_aggs[] | null;
+  /**
+   * autocomplete result
+   */
+  autocomplete: SearchPageAggBucketsQuery_autocomplete_autocomplete[] | null;
 }
 
 export interface SearchPageAggBucketsQuery {
-  aggBuckets: SearchPageAggBucketsQuery_aggBuckets;
+  autocomplete: SearchPageAggBucketsQuery_autocomplete;
 }
 
 export interface SearchPageAggBucketsQueryVariables {
@@ -36,5 +39,4 @@ export interface SearchPageAggBucketsQueryVariables {
   page: number;
   pageSize: number;
   aggOptionsFilter?: string | null;
-  aggOptionsSort?: SortInput[] | null;
 }

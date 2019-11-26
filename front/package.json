@@ -281,6 +281,7 @@
     "ramda": "^0.26.1",
     "react": "16.8.1",
     "react-apollo": "^2.1.9",
+    "react-autosuggest": "^9.4.3",
     "react-bootstrap": "^0.32.1",
     "react-bootstrap-typeahead": "^4.0.0-alpha.10",
     "react-dom": "16.8.1",

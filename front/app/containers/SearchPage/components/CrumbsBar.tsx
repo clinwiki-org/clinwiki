@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Grid,
   Row,
@@ -7,15 +7,53 @@ import {
   Button,
   FormControl,
   Form,
-  FormGroup,
-} from 'react-bootstrap';
-import * as FontAwesome from 'react-fontawesome';
-import styled from 'styled-components';
-import aggToField from 'utils/aggs/aggToField';
-import MultiCrumb from 'components/MultiCrumb';
-import { MAX_WINDOW_SIZE } from '../../../utils/constants';
-import { PulseLoader } from 'react-spinners';
-import CurrentUser from 'containers/CurrentUser';
+  FormGroup
+} from "react-bootstrap";
+import * as FontAwesome from "react-fontawesome";
+import gql from "graphql-tag";
+import { ApolloConsumer } from "react-apollo";
+import * as Autosuggest from "react-autosuggest";
+import styled from "styled-components";
+import aggToField from "utils/aggs/aggToField";
+import MultiCrumb from "components/MultiCrumb";
+import { MAX_WINDOW_SIZE } from "../../../utils/constants";
+import { PulseLoader } from "react-spinners";
+
+const AUTOSUGGEST_QUERY = gql`
+  query SearchPageAggBucketsQuery(
+    $agg: String!
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
+    $aggOptionsFilter: String
+  ) {
+    autocomplete(
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: [{ id: "count", desc: true }]
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
+      autocomplete {
+        name
+        results {
+          key
+          docCount
+        }
+        __typename
+      }
+      __typename
+    }
+  }
+`;
 
 const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
@@ -90,13 +128,13 @@ const CrumbsBarStyleWrappper = styled.div`
   }
 `;
 
-import { AggCallback, SearchParams } from '../Types';
-import { isEmpty } from 'ramda';
+import { AggCallback, SearchParams } from "../Types";
+import { isEmpty } from "ramda";
 
 //
 interface CrumbsBarProps {
   searchParams: SearchParams;
-  onBulkUpdate : ()=>void;
+  onBulkUpdate: () => void;
   removeFilter: AggCallback;
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
@@ -110,6 +148,7 @@ interface CrumbsBarProps {
 }
 interface CrumbsBarState {
   searchTerm: string;
+  suggestions: any;
 }
 
 const Crumb = ({ category, value, onClick }) => {
@@ -119,7 +158,7 @@ const Crumb = ({ category, value, onClick }) => {
       <FontAwesome
         className="remove"
         name="remove"
-        style={{ cursor: 'pointer', color: '#cc1111', margin: '0 0 0 3px' }}
+        style={{ cursor: "pointer", color: "#cc1111", margin: "0 0 0 3px" }}
         onClick={onClick}
       />
     </Label>
@@ -130,6 +169,14 @@ export default class CrumbsBar extends React.Component<
   CrumbsBarProps,
   CrumbsBarState
 > {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchTerm: "",
+      suggestions: []
+    };
+  }
   *mkCrumbs(searchParams: SearchParams, removeFilter) {
     if (!isEmpty(searchParams.q)) {
       yield (
@@ -161,7 +208,7 @@ export default class CrumbsBar extends React.Component<
           category={cat}
           values={agg.values}
           onClick={val => removeFilter(agg.field, val, true)}
-          key={cat + agg.values.join('')}
+          key={cat + agg.values.join("")}
         />
       );
     }
@@ -175,7 +222,7 @@ export default class CrumbsBar extends React.Component<
           bsSize="small"
           key="reset"
           onClick={this.props.onReset}
-          style={{ marginLeft: '10px' }}
+          style={{ marginLeft: "10px" }}
         >
           Reset
         </Button>
@@ -183,83 +230,215 @@ export default class CrumbsBar extends React.Component<
     }
   }
 
-  localSearchChange = e => {
-    this.setState({ searchTerm: e.target.value });
+  queryAutoSuggest = async apolloClient => {
+    const { searchTerm } = this.state;
+    const { searchParams } = this.props;
+
+    const newParams = searchParams.q.map(i => {
+      return { children: [], key: i };
+    });
+
+    const query = AUTOSUGGEST_QUERY;
+
+    const variables = {
+      agg: "browse_condition_mesh_terms",
+      aggFilters: searchParams.aggFilters,
+      aggOptionsFilter: searchTerm,
+      crowdAggFilters: [],
+      page: 0,
+      pageSize: 5,
+      q: {
+        children: newParams,
+        key: "AND"
+      },
+      sorts: []
+    };
+
+    const response = await apolloClient.query({
+      query,
+      variables
+    });
+
+    const array = response.data.autocomplete.autocomplete;
+
+    this.setState({
+      suggestions: array
+    });
   };
+
+  escapeRegexCharacters = str => {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  };
+
+  parseSuggestions = value => {
+    const escapedValue = this.escapeRegexCharacters(value.trim());
+
+    if (escapedValue === "") {
+      return [];
+    }
+
+    const regex = new RegExp("^" + escapedValue, "i");
+    const { suggestions } = this.state;
+    // console.log("pre map", suggestions);
+
+    return suggestions
+      .map(section => {
+        // console.log("in map", section.name, section.results);
+        return {
+          title: section.name,
+          results: section.results.filter(results => regex.test(results.key))
+        };
+      })
+      .filter(section => section.results.length > 0);
+  };
+
+  onSuggestionsFetchRequested = apolloClient => {
+    this.queryAutoSuggest(apolloClient);
+    this.setState({
+      suggestions: this.parseSuggestions(this.state.searchTerm)
+    });
+  };
+
+  onSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: []
+    });
+  };
+
+  getSuggestionValue = suggestion => {
+    return suggestion.key;
+  };
+
+  renderSuggestion = suggestion => {
+    return <span>{`${suggestion.key} (${suggestion.docCount})`}</span>;
+  };
+
+  getSectionSuggestions = section => {
+    return section.results;
+  };
+
+  renderSectionTitle = section => {
+    if (section.results.length > 0) {
+      return <strong>{section.name}</strong>;
+    } else return null;
+  };
+
+  onChange = (e, { newValue, method }) => {
+    this.setState({
+      searchTerm: newValue
+    });
+  };
+
   clearPrimarySearch = () => {
-    this.props.removeSearchTerm('', true);
+    this.props.removeSearchTerm("", true);
   };
   onSubmit = e => {
     e.preventDefault();
     this.props.addSearchTerm(this.state.searchTerm);
-    this.setState({ searchTerm: '' });
+    this.setState({ searchTerm: "" });
   };
 
   render() {
+    const { searchTerm, suggestions } = this.state;
+
+    // console.log(this.props);
+
     return (
       <CrumbsBarStyleWrappper>
-        <Grid className="crumbs-bar">
-          <Row>
-            <Col xs={12} md={9}>
-              <Form inline className="searchInput" onSubmit={this.onSubmit}>
-                <FormGroup>
-                  <b>Search Within: </b>
-                  <FormControl
-                    type="text"
-                    placeholder="search..."
-                    onChange={this.localSearchChange}
-                  />
-                </FormGroup>
-                <Button type="submit">
-                  <FontAwesome name="search" />
-                </Button>
-                &nbsp;
-                <CurrentUser>
-                { user => user && user.roles.includes("admin") ? <Button onClick={this.props.onBulkUpdate}>Bulk Update <FontAwesome name="truck" /></Button> : null }
-                </CurrentUser>
-              </Form>
-            </Col>
-            <Col xsHidden md={3}>
-              <div className="right-align">
-                {this.props.page > 0 && !this.props.loading ? (
-                  <FontAwesome
-                    className="arrow-left"
-                    name="arrow-left"
-                    style={{ cursor: 'pointer', margin: '5px' }}
-                    onClick={() => this.props.update.page(this.props.page - 1)}
-                  />
-                ) : <FontAwesome
-                  className="arrow-left"
-                  name="arrow-left"
-                  style={{ margin: '5px', color: 'gray' }}
-                /> }
-                page{' '}
-                <b>
-                  {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
-                    : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
-                </b>
-                {this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
-                  <FontAwesome
-                    className="arrow-right"
-                    name="arrow-right"
-                    style={{ cursor: 'pointer', margin: '5px' }}
-                    onClick={() => this.props.update.page(this.props.page + 1)}
-                  />
-                ) : <FontAwesome
-                  className="arrow-right"
-                  name="arrow-right"
-                  style={{ margin: '5px', color: 'gray' }}
-                />}
-                <div>
-                  {this.props.recordsTotal} results
-                </div>
-                <div>
-                  {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
-                </div>
-              </div>
-            </Col>
-          </Row>
-          {/* <Row>
+        <ApolloConsumer>
+          {apolloClient => (
+            <Grid className="crumbs-bar">
+              <Row>
+                <Col xs={12} md={9}>
+                  <Form inline className="searchInput" onSubmit={this.onSubmit}>
+                    <FormGroup>
+                      <div style={{ display: "flex", flexDirection: "row" }}>
+                        <b style={{ marginRight: "8px", marginTop: "4px" }}>
+                          Search Within:
+                        </b>
+                        <Autosuggest
+                          multiSection={true}
+                          suggestions={suggestions}
+                          inputProps={{
+                            value: searchTerm,
+                            onChange: this.onChange
+                          }}
+                          renderSuggestion={this.renderSuggestion}
+                          renderSectionTitle={this.renderSectionTitle}
+                          getSectionSuggestions={this.getSectionSuggestions}
+                          onSuggestionsFetchRequested={() =>
+                            this.onSuggestionsFetchRequested(apolloClient)
+                          }
+                          onSuggestionsClearRequested={
+                            this.onSuggestionsClearRequested
+                          }
+                          getSuggestionValue={this.getSuggestionValue}
+                        />
+                      </div>
+                    </FormGroup>
+                    <Button type="submit">
+                      <FontAwesome name="search" />
+                    </Button>
+                  </Form>
+                </Col>
+                <Col xsHidden md={3}>
+                  <div className="right-align">
+                    {this.props.page > 0 && !this.props.loading ? (
+                      <FontAwesome
+                        className="arrow-left"
+                        name="arrow-left"
+                        style={{ cursor: "pointer", margin: "5px" }}
+                        onClick={() =>
+                          this.props.update.page(this.props.page - 1)
+                        }
+                      />
+                    ) : (
+                      <FontAwesome
+                        className="arrow-left"
+                        name="arrow-left"
+                        style={{ margin: "5px", color: "gray" }}
+                      />
+                    )}
+                    page{" "}
+                    <b>
+                      {this.props.loading ? (
+                        <div id="divsononeline">
+                          <PulseLoader color="#cccccc" size={8} />
+                        </div>
+                      ) : (
+                        `${Math.min(
+                          this.props.page + 1,
+                          this.props.pagesTotal
+                        )}/${this.props.pagesTotal}`
+                      )}{" "}
+                    </b>
+                    {this.props.page + 1 < this.props.pagesTotal &&
+                    !this.props.loading ? (
+                      <FontAwesome
+                        className="arrow-right"
+                        name="arrow-right"
+                        style={{ cursor: "pointer", margin: "5px" }}
+                        onClick={() =>
+                          this.props.update.page(this.props.page + 1)
+                        }
+                      />
+                    ) : (
+                      <FontAwesome
+                        className="arrow-right"
+                        name="arrow-right"
+                        style={{ margin: "5px", color: "gray" }}
+                      />
+                    )}
+                    <div>{this.props.recordsTotal} results</div>
+                    <div>
+                      {this.props.recordsTotal > MAX_WINDOW_SIZE
+                        ? `(showing first ${MAX_WINDOW_SIZE})`
+                        : null}
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+              {/* <Row>
           <Col md={10}>
           </Col>
           <Col md={2}>
@@ -275,15 +454,20 @@ export default class CrumbsBar extends React.Component<
             </div>
           </Col>
         </Row> */}
-          <Row>
-            <Col md={12} style={{ padding: '10px 0px' }}>
-              <b>Filters: </b>
-              {Array.from(
-                this.mkCrumbs(this.props.searchParams, this.props.removeFilter),
-              )}
-            </Col>
-          </Row>
-        </Grid>
+              <Row>
+                <Col md={12} style={{ padding: "10px 0px" }}>
+                  <b>Filters: </b>
+                  {Array.from(
+                    this.mkCrumbs(
+                      this.props.searchParams,
+                      this.props.removeFilter
+                    )
+                  )}
+                </Col>
+              </Row>
+            </Grid>
+          )}
+        </ApolloConsumer>
       </CrumbsBarStyleWrappper>
     );
   }

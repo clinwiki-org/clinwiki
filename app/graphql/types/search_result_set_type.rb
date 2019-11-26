@@ -2,6 +2,7 @@ module Types
   class SearchResultSetType < BaseObject
     field :recordsTotal, Int, description: "Total results", null: true, hash_key: :recordsTotal
     field :aggs, [AggType], null: true
+    field :autocomplete, [AutocompleteType], null: true, description: "autocomplete result"
     field :study_edge, StudyEdgeType, "Return study decorated with navigation cursors for current search", null: true do
       argument :id, String, "When id is null returns first edge in the search results.", required: false
     end
@@ -24,5 +25,10 @@ module Types
         )
       end
     end
+
+    # def autocomplete
+      # x = object.fetch(:autocomplete, [])
+      # return x
+    # end
   end
 end
