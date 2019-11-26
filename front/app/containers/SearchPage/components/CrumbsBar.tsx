@@ -231,18 +231,24 @@ export default class CrumbsBar extends React.Component<
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
+    const { searchParams } = this.props;
+    console.log(searchParams);
+
+    const newParams = searchParams.q.map(i => {
+      return { children: [], key: i };
+    });
 
     const query = AUTOSUGGEST_QUERY;
 
     const variables = {
       agg: "browse_condition_mesh_terms",
-      aggFilters: [],
+      aggFilters: searchParams.aggFilters,
       aggOptionsFilter: searchTerm,
       crowdAggFilters: [],
       page: 0,
-      pageSize: 10,
+      pageSize: 5,
       q: {
-        children: [{ children: [], key: "cancer" }],
+        children: newParams,
         key: "AND"
       },
       sorts: []
@@ -253,7 +259,7 @@ export default class CrumbsBar extends React.Component<
       variables
     });
 
-    console.log(response.data.autocomplete.autocomplete);
+    // console.log(response.data.autocomplete.autocomplete);
 
     const array = response.data.autocomplete.autocomplete;
 
@@ -262,33 +268,36 @@ export default class CrumbsBar extends React.Component<
     });
   };
 
-  parseSuggestions = () => {
+  escapeRegexCharacters = str => {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  };
+
+  parseSuggestions = value => {
+    const escapedValue = this.escapeRegexCharacters(value.trim());
+
+    if (escapedValue === "") {
+      return [];
+    }
+
+    const regex = new RegExp("^" + escapedValue, "i");
     const { suggestions } = this.state;
+    // console.log("pre map", suggestions);
 
-    return suggestions.map(item => {
-      return {
-        title: item.name,
-        results: item.results.map(item => item.key)
-      };
-    });
-  };
-
-  renderSuggestion = suggestion => {
-    return <span>{suggestion.results}</span>;
-  };
-
-  renderSectionTitle = section => {
-    return <strong>{section.title}</strong>;
-  };
-
-  getSectionSuggestions = section => {
-    return section.name;
+    return suggestions
+      .map(section => {
+        // console.log("in map", section.name, section.results);
+        return {
+          title: section.name,
+          results: section.results.filter(results => regex.test(results.key))
+        };
+      })
+      .filter(section => section.results.length > 0);
   };
 
   onSuggestionsFetchRequested = apolloClient => {
     this.queryAutoSuggest(apolloClient);
     this.setState({
-      suggestions: this.parseSuggestions()
+      suggestions: this.parseSuggestions(this.state.searchTerm)
     });
   };
 
@@ -299,12 +308,29 @@ export default class CrumbsBar extends React.Component<
   };
 
   getSuggestionValue = suggestion => {
-    return suggestion.name;
+    return suggestion.key;
   };
 
-  localSearchChange = e => {
-    this.setState({ searchTerm: e.target.value });
+  renderSuggestion = suggestion => {
+    return <span>{`${suggestion.key} (${suggestion.docCount})`}</span>;
   };
+
+  getSectionSuggestions = section => {
+    return section.results;
+  };
+
+  renderSectionTitle = section => {
+    if (section.results.length > 0) {
+      return <strong>{section.name}</strong>;
+    } else return null;
+  };
+
+  onChange = (e, { newValue, method }) => {
+    this.setState({
+      searchTerm: newValue
+    });
+  };
+
   clearPrimarySearch = () => {
     this.props.removeSearchTerm("", true);
   };
@@ -317,11 +343,8 @@ export default class CrumbsBar extends React.Component<
   render() {
     const { searchTerm, suggestions } = this.state;
 
-    const inputProps = {
-      placeholder: "Search Within",
-      value: searchTerm,
-      onChange: this.localSearchChange
-    };
+    // console.log(this.props);
+
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -329,33 +352,31 @@ export default class CrumbsBar extends React.Component<
             <Grid className="crumbs-bar">
               <Row>
                 <Col xs={12} md={9}>
-                  <Autosuggest
-                    multiSection={true}
-                    suggestions={suggestions}
-                    inputProps={{
-                      placeholder: "Search Within",
-                      value: searchTerm,
-                      onChange: e => this.localSearchChange(e)
-                    }}
-                    renderSuggestion={this.renderSuggestion}
-                    renderSectionTitle={this.renderSectionTitle}
-                    getSectionSuggestions={this.getSectionSuggestions}
-                    onSuggestionsFetchRequested={() =>
-                      this.onSuggestionsFetchRequested(apolloClient)
-                    }
-                    onSuggestionsClearRequested={
-                      this.onSuggestionsClearRequested
-                    }
-                    getSuggestionValue={this.getSuggestionValue}
-                  />
                   <Form inline className="searchInput" onSubmit={this.onSubmit}>
                     <FormGroup>
-                      <b>Search Within: </b>
-                      <FormControl
-                        type="text"
-                        placeholder="search..."
-                        onChange={e => this.localSearchChange(e)}
-                      />
+                      <div style={{ display: "flex", flexDirection: "row" }}>
+                        <b style={{ marginRight: "8px", marginTop: "4px" }}>
+                          Search Within:
+                        </b>
+                        <Autosuggest
+                          multiSection={true}
+                          suggestions={suggestions}
+                          inputProps={{
+                            value: searchTerm,
+                            onChange: this.onChange
+                          }}
+                          renderSuggestion={this.renderSuggestion}
+                          renderSectionTitle={this.renderSectionTitle}
+                          getSectionSuggestions={this.getSectionSuggestions}
+                          onSuggestionsFetchRequested={() =>
+                            this.onSuggestionsFetchRequested(apolloClient)
+                          }
+                          onSuggestionsClearRequested={
+                            this.onSuggestionsClearRequested
+                          }
+                          getSuggestionValue={this.getSuggestionValue}
+                        />
+                      </div>
                     </FormGroup>
                     <Button type="submit">
                       <FontAwesome name="search" />
