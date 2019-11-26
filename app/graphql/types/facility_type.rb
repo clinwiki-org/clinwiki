@@ -8,8 +8,8 @@ module Types
     field :state, String, null: false
     field :zip, String, null: false
     field :country, String, null: false
-    field :latitude, Float
-    field :longitude, Float
+    field :latitude, Float, null: true
+    field :longitude, Float, null: true
 
     field :contacts, [FacilityContactType], null: false
 
