@@ -232,7 +232,6 @@ export default class CrumbsBar extends React.Component<
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
     const { searchParams } = this.props;
-    console.log(searchParams);
 
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
@@ -258,8 +257,6 @@ export default class CrumbsBar extends React.Component<
       query,
       variables
     });
-
-    // console.log(response.data.autocomplete.autocomplete);
 
     const array = response.data.autocomplete.autocomplete;
 
