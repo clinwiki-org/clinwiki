@@ -144,11 +144,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
 
     page = params[:page] || 0
     page_size = params[:page_size] || DEFAULT_PAGE_SIZE
-<<<<<<< HEAD
     bucket_sort = params[:agg_options_sort] || []
-=======
-    sorting = params[:agg_options_sort] || DEFAULT_SORT
->>>>>>> add metadata to geocoding cache & sorting to agg buckets in graphql
 
     search_results = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }
@@ -158,11 +154,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
             bucket_sort: {
               from: page * page_size,
               size: page_size,
-<<<<<<< HEAD
               sort: bucket_sort.map{|s| bucket_agg_sort(s)}
-=======
-              sort: [{ _key: { order: sorting }}]
->>>>>>> add metadata to geocoding cache & sorting to agg buckets in graphql
             },
           },
         )
