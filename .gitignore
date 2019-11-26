@@ -23,8 +23,9 @@ config/database_local.yml
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 .env
+.byebug_history
 *.dump
-ubuntu-artful-17.10-cloudimg-console.log 
+ubuntu-artful-17.10-cloudimg-console.log
 .orig
 public/assets
-node_modules 
+node_modules
