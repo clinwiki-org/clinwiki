@@ -317,6 +317,13 @@ export default class CrumbsBar extends React.Component<
     return section.results;
   };
 
+  onSuggestionSelected = (
+    event,
+    { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
+  ) => {
+    this.setState({ searchTerm: suggestionValue }, () => this.onSubmit(event));
+  };
+
   renderSectionTitle = section => {
     if (section.results.length > 0) {
       return <strong>{section.name}</strong>;
@@ -341,8 +348,6 @@ export default class CrumbsBar extends React.Component<
   render() {
     const { searchTerm, suggestions } = this.state;
 
-    // console.log(this.props);
-
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -366,6 +371,7 @@ export default class CrumbsBar extends React.Component<
                           renderSuggestion={this.renderSuggestion}
                           renderSectionTitle={this.renderSectionTitle}
                           getSectionSuggestions={this.getSectionSuggestions}
+                          onSuggestionSelected={this.onSuggestionSelected}
                           onSuggestionsFetchRequested={() =>
                             this.onSuggestionsFetchRequested(apolloClient)
                           }
