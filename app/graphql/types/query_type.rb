@@ -50,6 +50,12 @@ module Types
 
     field :workflows_view, WorkflowsViewType, "Workflows config", null: false
 
+    DISPLAY_NAMES = {
+      'browse_condition_mesh_terms' => 'Browse Condition Mesh Terms',
+      'browse_interventions_mesh_terms' => 'Browse Intervention Mesh Terms',
+      'facility_countries' => 'Countries'
+    }
+
     def search(search_hash: nil, params: nil)
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(context[:search_params])
@@ -81,7 +87,7 @@ module Types
       fields.each do |field_name|
         result = search_service.agg_buckets_for_field(field: field_name, current_site: context[:current_site])
         list << Hashie::Mash.new(
-          name: field_name,
+          name: DISPLAY_NAMES[field_name],
           results: result[field_name.to_sym][:buckets]
         )
       end
