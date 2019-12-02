@@ -32,12 +32,12 @@ ActiveRecord::Schema.define(version: 2019_11_26_185443) do
 
   create_table "locations", force: :cascade do |t|
     t.string "name"
-    t.string "location_type"
-    t.boolean "partial_match"
     t.float "latitude"
     t.float "longitude"
     t.datetime "checked"
     t.string "last_error"
+    t.string "location_type"
+    t.string "partial_match"
   end
 
   create_table "reviews", force: :cascade do |t|

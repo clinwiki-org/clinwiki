@@ -1,6 +1,6 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import FacilityInfoCard from  './FacilityInfoCard';
+import * as React from "react";
+import styled from "styled-components";
+import FacilityInfoCard from "./FacilityInfoCard";
 
 const K_CIRCLE_SIZE = 30;
 const K_STICK_SIZE = 10;
@@ -24,12 +24,12 @@ const MarkerCircle = styled.div`
   border-radius: ${K_CIRCLE_SIZE}px;
   background-color: white;
   text-align: center;
-  color: #55B88D;
+  color: #55b88d;
   font-size: 21px;
   font-weight: bold;
   padding: 0;
   cursor: pointer;
-  box-shadow: 0 0 0 1px white
+  box-shadow: 0 0 0 1px white;
 `;
 
 const HoverCircle = styled.div`
@@ -38,7 +38,7 @@ const HoverCircle = styled.div`
   top: 0;
   width: ${K_CIRCLE_SIZE}px;
   height: ${K_CIRCLE_SIZE}px;
-  border: 3px solid #55B88D;
+  border: 3px solid #55b88d;
   border-radius: ${K_CIRCLE_SIZE}px;
   background-color: white;
   text-align: center;
@@ -47,7 +47,7 @@ const HoverCircle = styled.div`
   font-weight: bold;
   padding: 0;
   cursor: pointer;
-  box-shadow: 0 0 0 1px white
+  box-shadow: 0 0 0 1px white;
 `;
 
 const HoverStick = styled.div`
@@ -56,7 +56,7 @@ const HoverStick = styled.div`
   top: ${K_CIRCLE_SIZE}px;
   width: ${K_STICK_WIDTH}px;
   height: ${K_STICK_SIZE}px;
-  background-color: #55B88D
+  background-color: #55b88d;
 `;
 
 const MarkerStick = styled.div`
@@ -65,59 +65,57 @@ const MarkerStick = styled.div`
   top: ${K_CIRCLE_SIZE}px;
   width: ${K_STICK_WIDTH}px;
   height: ${K_STICK_SIZE}px;
-  background-color: #324870
+  background-color: #324870;
 `;
 
 class MapMarker extends React.PureComponent<any> {
-
   state = {
-    clicked: false,
-  }
+    clicked: false
+  };
 
-  markerClicked = () =>{
-    console.log('hi')
+  markerClicked = () => {
     this.setState({
-      clicked: !this.state.clicked,
-    })
-  }
+      clicked: !this.state.clicked
+    });
+  };
 
   render() {
     return (
       <MarkerContainer onClick={() => this.markerClicked()}>
-        {this.props.$hover || this.state.clicked ? 
-          <div> 
-            <HoverCircle  onClick={this.props.onClick}>
+        {this.props.$hover || this.state.clicked ? (
+          <div>
+            <HoverCircle onClick={this.props.onClick}>
               {this.props.text}
             </HoverCircle>
             <HoverStick />
           </div>
-          : 
+        ) : (
           <div>
-            <MarkerCircle  onClick={this.props.onClick}>
+            <MarkerCircle onClick={this.props.onClick}>
               {this.props.text}
             </MarkerCircle>
             <MarkerStick />
           </div>
-        } 
-        {this.state.clicked ? 
-          <FacilityInfoCard 
+        )}
+        {this.state.clicked ? (
+          <FacilityInfoCard
             hover={true}
             address={this.props.address}
             name={this.props.name}
             contacts={this.props.contacts}
             clicked={this.state.clicked}
           />
-            :
-          <FacilityInfoCard 
+        ) : (
+          <FacilityInfoCard
             hover={this.props.$hover}
             address={this.props.address}
             name={this.props.name}
             contacts={this.props.contacts}
             clicked={this.state.clicked}
           />
-        }
+        )}
       </MarkerContainer>
-    )
+    );
   }
 }
 

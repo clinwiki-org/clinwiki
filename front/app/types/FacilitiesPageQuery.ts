@@ -24,8 +24,8 @@ export interface FacilitiesPageQuery_study_facilities {
   nctId: string;
   state: string;
   status: string;
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
   zip: string;
   contacts: FacilitiesPageQuery_study_facilities_contacts[];
 }

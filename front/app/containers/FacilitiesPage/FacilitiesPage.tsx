@@ -131,6 +131,28 @@ class FacilitiesPage extends React.PureComponent<
   };
   static fragment = FRAGMENT;
 
+  componentDidMount = () => {
+    this.setState({
+      mapZoom: 4,
+      mapCenter: {
+        lat: 39.5,
+        lng: -98.35
+      }
+    });
+  };
+
+  componentDidUpdate = prevProps => {
+    if (prevProps.match.params.nctId !== this.props.match.params.nctId) {
+      this.setState({
+        mapZoom: 4,
+        mapCenter: {
+          lat: 39.5,
+          lng: -98.35
+        }
+      });
+    }
+  };
+
   processFacility = (facility: FacilityFragment, i: number) => {
     const res: {
       key: string;
@@ -138,8 +160,8 @@ class FacilitiesPage extends React.PureComponent<
       index: number;
       status: string;
       contacts: Array<object>;
-      latitude: number;
-      longitude: number;
+      latitude: number | null;
+      longitude: number | null;
     }[] = [];
     const {
       name,
@@ -184,13 +206,13 @@ class FacilitiesPage extends React.PureComponent<
     index: number;
     status: string;
     contacts: Array<object>;
-    latitude: number;
-    longitude: number;
+    latitude: number | null;
+    longitude: number | null;
   }) => {
     return (
       <div>
         <FacilityCard
-          key={key}
+          key={`${key}-${index}`}
           title={key}
           index={index}
           status={status}
@@ -218,8 +240,6 @@ class FacilitiesPage extends React.PureComponent<
       },
       mapZoom: 8
     });
-
-    console.log(this.state);
   };
 
   render() {
@@ -253,8 +273,8 @@ class FacilitiesPage extends React.PureComponent<
             index: number;
             status: string;
             contacts: Array<object>;
-            latitude: number;
-            longitude: number;
+            latitude: number | null;
+            longitude: number | null;
           }[];
           return (
             <MappingContainer>
@@ -272,6 +292,7 @@ class FacilitiesPage extends React.PureComponent<
                   zoom={mapZoom}
                   hoverDistance={K_HOVER_DISTANCE}
                   options={MAPOPTIONS}
+                  key={this.props}
                 >
                   {facilities.map((item, index) => (
                     <MapMarker

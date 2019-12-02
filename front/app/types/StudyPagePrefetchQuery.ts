@@ -117,8 +117,8 @@ export interface StudyPagePrefetchQuery_study_facilities {
   nctId: string;
   state: string;
   status: string;
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
   zip: string;
   contacts: StudyPagePrefetchQuery_study_facilities_contacts[];
 }
