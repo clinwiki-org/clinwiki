@@ -430,7 +430,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             view,
             data && data.searchParams,
           );
-          this.setState({ params });
+          this.setState({ params:{
+            ...params,
+            page: 0,
+            pageSize: 25
+          } });
           return null;
         }
       }}>
