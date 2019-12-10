@@ -17,7 +17,7 @@ class GraphqlController < ApplicationController
   private
 
   def current_site
-    url = request.headers["ORIGIN"] || request.headers["REFERER"] || request.original_url
+    url = request.original_url
     uri =
       begin
         URI.parse(url)

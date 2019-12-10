@@ -9,6 +9,13 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 5
+- Bugfix for mistyped subdomains
+- update puma minor version
+
+### Version 4
+- Github dependency upgrade bot
+
 ### Version 3
 - Bulk edit feature
 - Handle returns in extra data of studies #173
