@@ -9,6 +9,10 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 5
+- Bugfix for mistyped subdomains
+- update puma minor version
+
 ### Version 4
 - Github dependency upgrade bot
 
