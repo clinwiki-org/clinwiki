@@ -1,12 +1,12 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { Query } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import * as React from "react";
+import styled from "styled-components";
+import { Query } from "react-apollo";
+import { gql } from "apollo-boost";
 import {
   SiteProviderQuery,
-  SiteProviderQueryVariables,
-} from 'types/SiteProviderQuery';
-import { SiteFragment } from 'types/SiteFragment';
+  SiteProviderQueryVariables
+} from "types/SiteProviderQuery";
+import { SiteFragment } from "types/SiteFragment";
 
 interface SiteProviderProps {
   id?: number;
@@ -70,6 +70,7 @@ const SITE_VIEW_FRAGMENT = gql`
             kind
             values
           }
+          autoSuggest
           rank
         }
         selected {
@@ -90,6 +91,7 @@ const SITE_VIEW_FRAGMENT = gql`
             values
           }
           rank
+          autoSuggest
         }
         selected {
           kind

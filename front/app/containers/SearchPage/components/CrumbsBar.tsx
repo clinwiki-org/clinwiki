@@ -16,6 +16,7 @@ import * as Autosuggest from "react-autosuggest";
 import styled from "styled-components";
 import aggToField from "utils/aggs/aggToField";
 import MultiCrumb from "components/MultiCrumb";
+import SiteProvider from "containers/SiteProvider";
 import { MAX_WINDOW_SIZE } from "../../../utils/constants";
 import { PulseLoader } from "react-spinners";
 
@@ -145,6 +146,7 @@ interface CrumbsBarProps {
   update: { page: (n: number) => void };
   onReset: () => void;
   loading: boolean;
+  data: any;
 }
 interface CrumbsBarState {
   searchTerm: string;
@@ -232,8 +234,7 @@ export default class CrumbsBar extends React.Component<
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
-    const { searchParams } = this.props;
-
+    const { searchParams, data } = this.props;
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
@@ -270,6 +271,27 @@ export default class CrumbsBar extends React.Component<
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   };
 
+  extractSuggestions = () => {
+    const { data } = this.props;
+    const aggs = data.siteView.search.aggs.fields;
+    const crowdAggs = data.siteView.search.crowdAggs.fields;
+
+    let aggsArr;
+
+    aggs.map(item => {
+      if (item.autoSuggest) {
+        aggsArr.push(item.name);
+      }
+    });
+
+    crowdAggs.map(item => {
+      if (item.autoSuggest) {
+        aggsArr.push(item.name);
+      }
+    });
+    return aggsArr;
+  };
+
   parseSuggestions = value => {
     const escapedValue = this.escapeRegexCharacters(value.trim());
 
@@ -279,11 +301,9 @@ export default class CrumbsBar extends React.Component<
 
     const regex = new RegExp("^" + escapedValue, "i");
     const { suggestions } = this.state;
-    // console.log("pre map", suggestions);
 
     return suggestions
       .map(section => {
-        // console.log("in map", section.name, section.results);
         return {
           title: section.name,
           results: section.results.filter(results => regex.test(results.key))
@@ -347,6 +367,8 @@ export default class CrumbsBar extends React.Component<
 
   render() {
     const { searchTerm, suggestions } = this.state;
+    const { data } = this.props;
+    console.log(data);
 
     return (
       <CrumbsBarStyleWrappper>

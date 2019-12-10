@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { SearchParams, AggKind, SearchQuery } from './shared';
-import ReactTable from 'react-table';
-import ReactStars from 'react-stars';
-import SearchFieldName from 'components/SearchFieldName';
-import styled from 'styled-components';
-import { Grid, Row, Col } from 'react-bootstrap';
-import { Helmet } from 'react-helmet';
-import { SortInput, AggFilterInput, SearchQueryInput } from 'types/globalTypes';
+import * as React from "react";
+import { SearchParams, AggKind, SearchQuery } from "./shared";
+import ReactTable from "react-table";
+import ReactStars from "react-stars";
+import SearchFieldName from "components/SearchFieldName";
+import styled from "styled-components";
+import { Grid, Row, Col } from "react-bootstrap";
+import { Helmet } from "react-helmet";
+import { SortInput, AggFilterInput, SearchQueryInput } from "types/globalTypes";
 import {
   map,
   pipe,
@@ -27,25 +27,25 @@ import {
   lensProp,
   filter,
   equals,
-  fromPairs,
-} from 'ramda';
-import { camelCase, snakeCase, capitalize } from 'utils/helpers';
-import { gql } from 'apollo-boost';
+  fromPairs
+} from "ramda";
+import { camelCase, snakeCase, capitalize } from "utils/helpers";
+import { gql } from "apollo-boost";
 import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,
   SearchPageSearchQuery_search_aggs,
   SearchPageSearchQuery_search_aggs_buckets,
-  SearchPageSearchQuery_crowdAggs_aggs,
-} from 'types/SearchPageSearchQuery';
-import { Query } from 'react-apollo';
-import 'react-table/react-table.css';
-import Aggs from './components/Aggs';
-import CrumbsBar from './components/CrumbsBar';
-import SiteProvider from 'containers/SiteProvider';
-import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
-import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
-import { stringify } from 'querystring';
+  SearchPageSearchQuery_crowdAggs_aggs
+} from "types/SearchPageSearchQuery";
+import { Query } from "react-apollo";
+import "react-table/react-table.css";
+import Aggs from "./components/Aggs";
+import CrumbsBar from "./components/CrumbsBar";
+import SiteProvider from "containers/SiteProvider";
+import { studyFields, starColor, MAX_WINDOW_SIZE } from "utils/constants";
+import { StudyPageQuery, StudyPageQueryVariables } from "types/StudyPageQuery";
+import { stringify } from "querystring";
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -172,41 +172,41 @@ const COLUMN_NAMES = fromPairs(
   COLUMNS.map(field => [
     field,
     field
-      .split('_')
+      .split("_")
       .map(capitalize)
-      .join(' '),
-  ]),
+      .join(" ")
+  ])
 );
 
 const changePage = (pageNumber: number) => (params: SearchParams) => ({
   ...params,
-  page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / params.pageSize) - 1),
+  page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / params.pageSize) - 1)
 });
 const changePageSize = (pageSize: number) => (params: SearchParams) => ({
   ...params,
   pageSize,
-  page: 0,
+  page: 0
 });
 const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
-  const idSortedLens = lensProp('id');
+  const idSortedLens = lensProp("id");
   const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
   return { ...params, sorts: snakeSorts };
 };
 const changeFilter = (add: boolean) => (
   aggName: string,
   key: string,
-  isCrowd?: boolean,
+  isCrowd?: boolean
 ) => (params: SearchParams) => {
-  const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
+  const propName = isCrowd ? "crowdAggFilters" : "aggFilters";
   const lens = lensPath([propName]);
   return over(
     lens,
     (aggs: AggFilterInput[]) => {
-      const index = findIndex(propEq('field', aggName), aggs);
+      const index = findIndex(propEq("field", aggName), aggs);
       if (index === -1 && add) {
         return [...aggs, { field: aggName, values: [key] }];
       }
-      const aggLens = lensPath([index, 'values']);
+      const aggLens = lensPath([index, "values"]);
       const updater = (values: string[]) =>
         add ? [...values, key] : reject(x => x === key, values);
       let res = over(aggLens, updater, aggs);
@@ -218,37 +218,34 @@ const changeFilter = (add: boolean) => (
     },
     {
       ...params,
-      page: 0,
-    },
+      page: 0
+    }
   );
 };
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addSearchTerm = (term: string) => (params: SearchParams) => {
   // have to check for empty string because if you press return two times it ends up putting it in the terms
-  if (!term.replace(/\s/g, '').length) {
+  if (!term.replace(/\s/g, "").length) {
     return params;
   }
   // recycled code for removing repeated terms. might be a better way but I'm not sure.
-  const children = reject(
-    propEq('key', term),
-    params.q.children || [],
-  );
+  const children = reject(propEq("key", term), params.q.children || []);
   return {
     ...params,
     q: { ...params.q, children: [...(children || []), { key: term }] },
-    page: 0,
+    page: 0
   };
 };
 const removeSearchTerm = (term: string) => (params: SearchParams) => {
   const children = reject(
-    propEq('key', term),
-    params.q.children || [],
+    propEq("key", term),
+    params.q.children || []
   ) as SearchQuery[];
   return {
     ...params,
     q: { ...params.q, children },
-    page: 0,
+    page: 0
   };
 };
 
@@ -268,11 +265,11 @@ const SearchWrapper = styled.div`
 
 interface SearchViewProps {
   params: SearchParams;
-  onBulkUpdate : ()=>void;
+  onBulkUpdate: () => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
   onAggsUpdate: (
     aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
-    crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
+    crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] }
   ) => void;
   onRowClick: (nctId: string) => void;
   onResetFilters: () => void;
@@ -282,12 +279,12 @@ interface SearchViewProps {
 
 class SearchView extends React.PureComponent<SearchViewProps> {
   isStarColumn = (name: string): boolean => {
-    return name === 'average_rating';
+    return name === "average_rating";
   };
 
   // this is for the column widths. currently, some tags are making it way too wide
   isStatusColumn = (name: string): boolean => {
-    return name === 'overall_status';
+    return name === "overall_status";
   };
 
   rowProps = (_, rowInfo) => {
@@ -295,7 +292,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       onClick: (_, handleOriginal) => {
         this.props.onRowClick(rowInfo.row.nctId);
         return handleOriginal();
-      },
+      }
     };
   };
 
@@ -311,7 +308,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const totalPadding = 17;
     const getColumnWidth = () => {
       if (data.length < 1) {
-        return calcWidth(headerName.split('')) + totalPadding;
+        return calcWidth(headerName.split("")) + totalPadding;
       }
       let max = headerName;
       for (let i = 0; i < data.length; i += 1) {
@@ -323,16 +320,22 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           }
         }
       }
-      const maxArray = max.split('');
-      let maxSize = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
+      const maxArray = max.split("");
+      let maxSize = Math.max(
+        calcWidth(maxArray),
+        calcWidth(headerName.split("")) + totalPadding
+      );
       return Math.min(maxWidth, maxSize);
     };
 
     const calcWidth = array => {
-      return array.reduce(((acc, letter) =>
-                        letter === letter.toUpperCase() && letter !== ' ' ?
-                          acc + upperCaseSpacing : acc + lowerCaseSpacing),
-                          0);
+      return array.reduce(
+        (acc, letter) =>
+          letter === letter.toUpperCase() && letter !== " "
+            ? acc + upperCaseSpacing
+            : acc + lowerCaseSpacing,
+        0
+      );
     };
 
     const headerName = COLUMN_NAMES[name];
@@ -340,53 +343,59 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       Header: <SearchFieldName field={headerName} />,
       accessor: camelCaseName,
       style: {
-        overflowWrap: 'break-word',
-        overflow: 'hidden',
-        whiteSpace: 'normal',
-        textAlign: this.isStarColumn(name) ? 'center' : null,
+        overflowWrap: "break-word",
+        overflow: "hidden",
+        whiteSpace: "normal",
+        textAlign: this.isStarColumn(name) ? "center" : null
       },
       Cell: !this.isStarColumn(name)
         ? null
-        // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
-        : props => (<div><div id="divsononeline"><ReactStars
-          count={5}
-          color2={starColor}
-          edit={false}
-          value={Number(props.original.averageRating)}/></div>
-          <div id="divsononeline">
-            &nbsp;({props.original.reviewsCount})</div>
-          </div>),
-       width: getColumnWidth(),
-
+        : // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
+          props => (
+            <div>
+              <div id="divsononeline">
+                <ReactStars
+                  count={5}
+                  color2={starColor}
+                  edit={false}
+                  value={Number(props.original.averageRating)}
+                />
+              </div>
+              <div id="divsononeline">
+                &nbsp;({props.original.reviewsCount})
+              </div>
+            </div>
+          ),
+      width: getColumnWidth()
     };
   };
 
   transformAggs = (
-    aggs: SearchPageSearchQuery_search_aggs[],
+    aggs: SearchPageSearchQuery_search_aggs[]
   ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
     return pipe(
-      groupBy(prop('name')),
+      groupBy(prop("name")),
       map(head),
-      map(prop('buckets')),
+      map(prop("buckets"))
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
   };
 
   transformCrowdAggs = (
-    aggs: SearchPageSearchQuery_crowdAggs_aggs[],
+    aggs: SearchPageSearchQuery_crowdAggs_aggs[]
   ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
     // @ts-ignore
     return pipe(
       head,
-      prop('buckets'),
-      groupBy(prop('key')),
-      map(() => []),
+      prop("buckets"),
+      groupBy(prop("key")),
+      map(() => [])
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
   };
 
   renderSearch = ({
     data,
     loading,
-    error,
+    error
   }: {
     data: SearchPageSearchQuery | undefined;
     loading: boolean;
@@ -398,11 +407,14 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       return (
         <SiteProvider>
           {site => {
-            const columns = map(x => this.renderColumn(x, ''), site.siteView.search.fields);
-            const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
+            const columns = map(
+              x => this.renderColumn(x, ""),
+              site.siteView.search.fields
+            );
+            const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
             const leftover = tableWidth - totalWidth;
             const additionalWidth = leftover / columns.length;
-            columns.map(x => x.width += additionalWidth, columns);
+            columns.map(x => (x.width += additionalWidth), columns);
             return (
               <ReactTable
                 className="-striped -highlight"
@@ -422,60 +434,57 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     if (!data) {
       return null;
     }
-    const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
-    const totalPages = Math.min(Math.ceil(totalRecords / this.props.params.pageSize),
-                                Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
-    const idSortedLens = lensProp('id');
+    const totalRecords = pathOr(0, ["search", "recordsTotal"], data) as number;
+    const totalPages = Math.min(
+      Math.ceil(totalRecords / this.props.params.pageSize),
+      Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
+    );
+    const idSortedLens = lensProp("id");
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
-    const searchData = path(['search', 'studies'], data);
+    const searchData = path(["search", "studies"], data);
     const tableWidth = 1175;
 
     return (
       <SiteProvider>
         {site => {
-         const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
-         const totalWidth = columns.reduce(((acc, col)=> acc+col.width), 0);
-         const leftover = tableWidth-totalWidth;
-         const additionalWidth=leftover/columns.length;
-         columns.map(x=>x.width+= additionalWidth, columns);
-
-         return (
-           <ReactTable
-             className="-striped -highlight"
-             columns={columns}
-             manual
-             minRows={searchData![0] !== undefined ? 1 : 3}
-             page={page}
-             pageSize={pageSize}
-             defaultSorted={camelizedSorts}
-             onPageChange={pipe(
-               changePage,
-               this.props.onUpdateParams,)}
-             onPageSizeChange={pipe(
-               changePageSize,
-               this.props.onUpdateParams,)}
-             onSortedChange = {pipe(
-               changeSorted,
-               this.props.onUpdateParams,)}
-             data={searchData}
-             pages={totalPages}
-             loading={loading}
-             defaultPageSize={pageSize}
-             getTdProps={this.rowProps}
-             defaultSortDesc
-             noDataText={'No studies found'}
-           />
-           );
+          const columns = map(
+            x => this.renderColumn(x, searchData),
+            site.siteView.search.fields
+          );
+          const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
+          const leftover = tableWidth - totalWidth;
+          const additionalWidth = leftover / columns.length;
+          columns.map(x => (x.width += additionalWidth), columns);
+          return (
+            <ReactTable
+              className="-striped -highlight"
+              columns={columns}
+              manual
+              minRows={searchData![0] !== undefined ? 1 : 3}
+              page={page}
+              pageSize={pageSize}
+              defaultSorted={camelizedSorts}
+              onPageChange={pipe(changePage, this.props.onUpdateParams)}
+              onPageSizeChange={pipe(changePageSize, this.props.onUpdateParams)}
+              onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
+              data={searchData}
+              pages={totalPages}
+              loading={loading}
+              defaultPageSize={pageSize}
+              getTdProps={this.rowProps}
+              defaultSortDesc
+              noDataText={"No studies found"}
+            />
+          );
         }}
       </SiteProvider>
-       );
+    );
   };
-
 
   renderCrumbs = ({
     data,
     loading,
-    error,
+    error
   }: {
     data: SearchPageSearchQuery | undefined;
     loading: boolean;
@@ -490,45 +499,39 @@ class SearchView extends React.PureComponent<SearchViewProps> {
       this.props.params.pageSize
     ) {
       recordsTotal = data.search.recordsTotal;
-      pagesTotal = Math.min(Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
-                            Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
+      pagesTotal = Math.min(
+        Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+        Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
+      );
     }
-
     const q =
-      this.props.params.q.key === '*'
+      this.props.params.q.key === "*"
         ? []
-        : (this.props.params.q.children || []).map(prop('key'));
+        : (this.props.params.q.children || []).map(prop("key"));
 
     return (
-      <CrumbsBar
-        // @ts-ignore
-        searchParams={{ ...this.props.params, q }}
-        onBulkUpdate={this.props.onBulkUpdate}
-        removeFilter={pipe(
-          removeFilter,
-          this.props.onUpdateParams,
+      <SiteProvider>
+        {site => (
+          <CrumbsBar
+            // @ts-ignore
+            searchParams={{ ...this.props.params, q }}
+            onBulkUpdate={this.props.onBulkUpdate}
+            removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
+            addSearchTerm={pipe(addSearchTerm, this.props.onUpdateParams)}
+            removeSearchTerm={pipe(removeSearchTerm, this.props.onUpdateParams)}
+            page={Math.min(this.props.params.page, pagesTotal)}
+            recordsTotal={recordsTotal}
+            pagesTotal={pagesTotal}
+            pageSize={this.props.params.pageSize}
+            update={{
+              page: pipe(changePage, this.props.onUpdateParams)
+            }}
+            data={site}
+            onReset={this.props.onResetFilters}
+            loading={loading}
+          />
         )}
-        addSearchTerm={pipe(
-          addSearchTerm,
-          this.props.onUpdateParams,
-        )}
-        removeSearchTerm={pipe(
-          removeSearchTerm,
-          this.props.onUpdateParams,
-        )}
-        page={Math.min(this.props.params.page, pagesTotal)}
-        recordsTotal={recordsTotal}
-        pagesTotal={pagesTotal}
-        pageSize={this.props.params.pageSize}
-        update={{
-          page: pipe(
-            changePage,
-            this.props.onUpdateParams,
-          ),
-        }}
-        onReset={this.props.onResetFilters}
-        loading={loading}
-      />
+      </SiteProvider>
     );
   };
 
@@ -540,14 +543,18 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <title>Search</title>
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
-        <QueryComponent query={QUERY} variables={this.props.params} onCompleted={(data:any)=>{
+        <QueryComponent
+          query={QUERY}
+          variables={this.props.params}
+          onCompleted={(data: any) => {
             if (data && data.search) {
               this.props.onAggsUpdate(
                 this.transformAggs(data.search.aggs || []),
-                this.transformCrowdAggs(data.crowdAggs.aggs || []),
+                this.transformCrowdAggs(data.crowdAggs.aggs || [])
               );
             }
-        }}>
+          }}
+        >
           {({ data, loading, error }) => {
             return (
               <Grid>
