@@ -281,7 +281,7 @@ export default class CrumbsBar extends React.Component<
     const { suggestions } = this.state;
     // console.log("pre map", suggestions);
 
-    return suggestions
+    const newArr = suggestions
       .map(section => {
         // console.log("in map", section.name, section.results);
         return {
@@ -290,13 +290,13 @@ export default class CrumbsBar extends React.Component<
         };
       })
       .filter(section => section.results.length > 0);
+
+    this.setState({ suggestions: newArr });
   };
 
   onSuggestionsFetchRequested = apolloClient => {
-    this.queryAutoSuggest(apolloClient);
-    this.setState({
-      suggestions: this.parseSuggestions(this.state.searchTerm)
-    });
+    // this.queryAutoSuggest(apolloClient);
+    // console.log(apolloClient);
   };
 
   onSuggestionsClearRequested = () => {
@@ -330,10 +330,16 @@ export default class CrumbsBar extends React.Component<
     } else return null;
   };
 
-  onChange = (e, { newValue, method }) => {
-    this.setState({
-      searchTerm: newValue
-    });
+  onChange = (e, { newValue }, apolloClient) => {
+    this.setState(
+      {
+        searchTerm: newValue
+      },
+      () => {
+        this.queryAutoSuggest(apolloClient);
+        this.parseSuggestions(this.state.searchTerm);
+      }
+    );
   };
 
   clearPrimarySearch = () => {
@@ -366,7 +372,8 @@ export default class CrumbsBar extends React.Component<
                           suggestions={suggestions}
                           inputProps={{
                             value: searchTerm,
-                            onChange: this.onChange
+                            onChange: (e, searchTerm) =>
+                              this.onChange(e, searchTerm, apolloClient)
                           }}
                           renderSuggestion={this.renderSuggestion}
                           renderSectionTitle={this.renderSectionTitle}
