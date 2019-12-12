@@ -266,38 +266,7 @@ export default class CrumbsBar extends React.Component<
     });
   };
 
-  escapeRegexCharacters = str => {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  };
-
-  parseSuggestions = value => {
-    const escapedValue = this.escapeRegexCharacters(value.trim());
-
-    if (escapedValue === "") {
-      return [];
-    }
-
-    const regex = new RegExp("^" + escapedValue, "i");
-    const { suggestions } = this.state;
-    // console.log("pre map", suggestions);
-
-    const newArr = suggestions
-      .map(section => {
-        // console.log("in map", section.name, section.results);
-        return {
-          title: section.name,
-          results: section.results.filter(results => regex.test(results.key))
-        };
-      })
-      .filter(section => section.results.length > 0);
-
-    this.setState({ suggestions: newArr });
-  };
-
-  onSuggestionsFetchRequested = apolloClient => {
-    // this.queryAutoSuggest(apolloClient);
-    // console.log(apolloClient);
-  };
+  onSuggestionsFetchRequested = () => {};
 
   onSuggestionsClearRequested = () => {
     this.setState({
@@ -337,7 +306,6 @@ export default class CrumbsBar extends React.Component<
       },
       () => {
         this.queryAutoSuggest(apolloClient);
-        this.parseSuggestions(this.state.searchTerm);
       }
     );
   };
@@ -379,8 +347,8 @@ export default class CrumbsBar extends React.Component<
                           renderSectionTitle={this.renderSectionTitle}
                           getSectionSuggestions={this.getSectionSuggestions}
                           onSuggestionSelected={this.onSuggestionSelected}
-                          onSuggestionsFetchRequested={() =>
-                            this.onSuggestionsFetchRequested(apolloClient)
+                          onSuggestionsFetchRequested={
+                            this.onSuggestionsFetchRequested
                           }
                           onSuggestionsClearRequested={
                             this.onSuggestionsClearRequested
