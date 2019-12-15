@@ -56,7 +56,6 @@ const StyledPanel = styled(CollapsiblePanel)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    position: absolute;
     max-width: 200px;
   }
   .panel-body {
