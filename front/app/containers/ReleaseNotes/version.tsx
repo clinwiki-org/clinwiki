@@ -9,6 +9,11 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 6
+- Merge Owera changes
+    - New "Card View" search result option
+    - New Mobile friendly study page
+
 ### Version 5
 - Bugfix for mistyped subdomains
 - update puma minor version
