@@ -267,57 +267,7 @@ export default class CrumbsBar extends React.Component<
     });
   };
 
-  escapeRegexCharacters = str => {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  };
-
-  extractSuggestions = () => {
-    const { data } = this.props;
-    const aggs = data.siteView.search.aggs.fields;
-    const crowdAggs = data.siteView.search.crowdAggs.fields;
-
-    let aggsArr;
-
-    aggs.map(item => {
-      if (item.autoSuggest) {
-        aggsArr.push(item.name);
-      }
-    });
-
-    crowdAggs.map(item => {
-      if (item.autoSuggest) {
-        aggsArr.push(item.name);
-      }
-    });
-    return aggsArr;
-  };
-
-  parseSuggestions = value => {
-    const escapedValue = this.escapeRegexCharacters(value.trim());
-
-    if (escapedValue === "") {
-      return [];
-    }
-
-    const regex = new RegExp("^" + escapedValue, "i");
-    const { suggestions } = this.state;
-
-    return suggestions
-      .map(section => {
-        return {
-          title: section.name,
-          results: section.results.filter(results => regex.test(results.key))
-        };
-      })
-      .filter(section => section.results.length > 0);
-  };
-
-  onSuggestionsFetchRequested = apolloClient => {
-    this.queryAutoSuggest(apolloClient);
-    this.setState({
-      suggestions: this.parseSuggestions(this.state.searchTerm)
-    });
-  };
+  onSuggestionsFetchRequested = () => {};
 
   onSuggestionsClearRequested = () => {
     this.setState({
@@ -350,10 +300,15 @@ export default class CrumbsBar extends React.Component<
     } else return null;
   };
 
-  onChange = (e, { newValue, method }) => {
-    this.setState({
-      searchTerm: newValue
-    });
+  onChange = (e, { newValue }, apolloClient) => {
+    this.setState(
+      {
+        searchTerm: newValue
+      },
+      () => {
+        this.queryAutoSuggest(apolloClient);
+      }
+    );
   };
 
   clearPrimarySearch = () => {
@@ -388,14 +343,15 @@ export default class CrumbsBar extends React.Component<
                           suggestions={suggestions}
                           inputProps={{
                             value: searchTerm,
-                            onChange: this.onChange
+                            onChange: (e, searchTerm) =>
+                              this.onChange(e, searchTerm, apolloClient)
                           }}
                           renderSuggestion={this.renderSuggestion}
                           renderSectionTitle={this.renderSectionTitle}
                           getSectionSuggestions={this.getSectionSuggestions}
                           onSuggestionSelected={this.onSuggestionSelected}
-                          onSuggestionsFetchRequested={() =>
-                            this.onSuggestionsFetchRequested(apolloClient)
+                          onSuggestionsFetchRequested={
+                            this.onSuggestionsFetchRequested
                           }
                           onSuggestionsClearRequested={
                             this.onSuggestionsClearRequested
