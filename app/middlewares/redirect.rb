@@ -11,9 +11,11 @@ module Rack
     def current_site(subdomain)
       return Site.default if subdomain.blank? || subdomain.include?("localhost")
 
-      valid_subdomains = Site.all.map(&:subdomain) + ["www", "staging", "experimental", "dev"]
+      valid_subdomains = Site.all.map(&:subdomain) + ["www", "staging", "experimental", "dev", "mysite"]
 
-      return Site.find_by(subdomain: subdomain) if valid_subdomains.include?(subdomain)
+      if valid_subdomains.include?(subdomain) then
+        return Site.find_by(subdomain: subdomain) || Site.default
+      end
     end
 
     def get_subdomain(req)
