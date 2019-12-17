@@ -277,7 +277,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     {
       name: name,
       rank: nil,
-      auto_suggest: false,
+      autoSuggest: false,
       display: display,
       preselected: {
         kind: "WHITELIST",
