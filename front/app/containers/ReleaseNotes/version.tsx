@@ -9,6 +9,9 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 7
+- Fix [#222](https://github.com/clinwiki-org/clinwiki/issues/222) - Study summary
+
 ### Version 6
 - Merge Owera changes
     - New "Card View" search result option
