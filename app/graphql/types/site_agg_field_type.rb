@@ -11,6 +11,10 @@ module Types
       object[:display]
     end
 
+    def auto_suggest
+      object[:autoSuggest]
+    end
+
     def visible_options
       object[:visibleOptions]
     end
