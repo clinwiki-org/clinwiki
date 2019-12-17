@@ -5,7 +5,7 @@ import { displayFields } from 'utils/siteViewHelpers';
 import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
 import MultiInput from 'components/MultiInput';
 import AggField from './AggField';
-import { capitalize } from 'utils/helpers';
+import { sentanceCase } from 'utils/helpers';
 import { aggsOrdered, studyFields } from 'utils/constants';
 import aggToField from 'utils/aggs/aggToField';
 import { FilterKind } from 'types/globalTypes';
@@ -24,18 +24,12 @@ interface SearchFormState {
 
 const SEARCH_FIELDS = studyFields.map(option => ({
   id: option,
-  label: option
-    .split('_')
-    .map(capitalize)
-    .join(' '),
+  label: sentanceCase(option)
 }));
 
 const AGGS_OPTIONS = aggsOrdered.map(option => ({
   id: option,
-  label: aggToField(option)
-    .split('_')
-    .map(capitalize)
-    .join(' '),
+  label: sentanceCase(aggToField(option))
 }));
 
 const AggsHeaderContainer = styled.div`
@@ -61,10 +55,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   getCrowdFields = () => {
     return this.props.view.search.crowdAggs.fields.map(field => ({
       id: field.name,
-      label: field.name
-        .split('_')
-        .map(capitalize)
-        .join(' '),
+      label: sentanceCase(field.name)
     }));
   };
 
