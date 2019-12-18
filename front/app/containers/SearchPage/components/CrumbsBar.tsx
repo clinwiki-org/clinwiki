@@ -32,6 +32,7 @@ const AUTOSUGGEST_QUERY = gql`
     $fields: [String!]!
   ) {
     autocomplete(
+      fields: $fields
       params: {
         agg: $agg
         q: $q
@@ -45,7 +46,6 @@ const AUTOSUGGEST_QUERY = gql`
       }
     ) {
       autocomplete {
-        fields:[$fields]
         name
         results {
           key
@@ -149,6 +149,7 @@ interface CrumbsBarProps {
   onReset: () => void;
   loading: boolean;
   data: any;
+  siteView: any;
 }
 interface CrumbsBarState {
   searchTerm: string;
@@ -234,13 +235,32 @@ export default class CrumbsBar extends React.Component<
     }
   }
 
+  getFieldsFromSubsiteConfig = fields => {
+    console.log("trying to map this", fields);
+    let aggFields: string[] = [];
+
+    if (fields.length > 0) {
+      fields.map(i => {
+        if (i.autoSuggest) {
+          aggFields.push(i.name);
+        }
+      });
+    } else aggFields = [];
+
+    console.log(aggFields);
+    return aggFields;
+  };
+
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
     const { searchParams, data } = this.props;
+
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
-
+    const fields = this.getFieldsFromSubsiteConfig(
+      data.siteView.search.aggs.fields
+    );
     const query = AUTOSUGGEST_QUERY;
 
     const variables = {
@@ -254,7 +274,8 @@ export default class CrumbsBar extends React.Component<
         children: newParams,
         key: "AND"
       },
-      sorts: []
+      sorts: [],
+      fields: fields
     };
 
     const response = await apolloClient.query({
@@ -325,7 +346,12 @@ export default class CrumbsBar extends React.Component<
   render() {
     const { searchTerm, suggestions } = this.state;
     const { data } = this.props;
-    console.log(data);
+
+    console.log(data.siteView.search);
+
+    // if (this.props.siteView.length > 0) {
+    //   console.log("propssss", this.props.siteView.search.aggs.fields);
+    // }
 
     return (
       <CrumbsBarStyleWrappper>

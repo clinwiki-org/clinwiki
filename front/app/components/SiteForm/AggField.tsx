@@ -150,7 +150,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   render() {
     const selected = new Set(this.props.field.preselected.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
-    console.log(this.props);
+    // console.log(this.props);
     return (
       <>
         <h4>
