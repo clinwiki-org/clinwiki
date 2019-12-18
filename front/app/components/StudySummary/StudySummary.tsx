@@ -124,7 +124,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
             rank: null,
           })),
         ).map(prop('name'))
-      : ["nct_id", "type", "status", "completion_date", "enrollment", "source"];
+      : ["nctId", "type", "overallStatus", "completionDate", "enrollment", "source"];
 
     return (
       <div className="container">
@@ -137,10 +137,21 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
           <Table striped bordered condensed>
             <tbody>
               { allowedFields.map(name =>
-                  <tr key={name}>
-                    <th>{sentanceCaseFromCamelCase(name)}</th>
-                    <td>{this.props.study[name]}</td>
-                  </tr>)
+                  name == "nctId" ?
+                    // Special case nctID to include a link
+                    <tr key={name}>
+                      <th>NCT ID</th>
+                      <td>
+                        <a href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`}>
+                        {this.props.study.nctId}
+                        </a>
+                      </td>
+                    </tr>
+                    :
+                    <tr key={name}>
+                      <th>{sentanceCaseFromCamelCase(name)}</th>
+                      <td>{this.props.study[name]}</td>
+                    </tr>)
               }
             </tbody>
           </Table>
