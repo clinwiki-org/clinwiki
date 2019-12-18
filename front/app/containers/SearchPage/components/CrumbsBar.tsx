@@ -29,6 +29,7 @@ const AUTOSUGGEST_QUERY = gql`
     $page: Int!
     $pageSize: Int!
     $aggOptionsFilter: String
+    $fields: [String!]!
   ) {
     autocomplete(
       params: {
@@ -44,6 +45,7 @@ const AUTOSUGGEST_QUERY = gql`
       }
     ) {
       autocomplete {
+        fields:[$fields]
         name
         results {
           key
