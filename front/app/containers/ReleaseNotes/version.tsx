@@ -9,6 +9,21 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 7
+- Fix [#222](https://github.com/clinwiki-org/clinwiki/issues/222) - Study summary
+
+### Version 6
+- Merge Owera changes
+    - New "Card View" search result option
+    - New Mobile friendly study page
+
+### Version 5
+- Bugfix for mistyped subdomains
+- update puma minor version
+
+### Version 4
+- Github dependency upgrade bot
+
 ### Version 3
 - Bulk edit feature
 - Handle returns in extra data of studies #173

@@ -1,4 +1,4 @@
-{
+ {
   "name": "react-boilerplate",
   "version": "3.5.0",
   "description": "A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices",
@@ -212,6 +212,7 @@
   "dependencies": {
     "apollo-boost": "^0.3",
     "apollo-cache-inmemory": "^1.5.0",
+    "apollo-cache-persist": "^0.1.1",
     "apollo-client": "^2.5.0",
     "axios": "^0.19.0",
     "babel-polyfill": "6.23.0",
@@ -297,11 +298,13 @@
     "imports-loader": "0.7.1",
     "jest-cli": "20.0.4",
     "lint-staged": "3.5.1",
+    "moment": "^2.24.0",
     "node-plop": "0.7.0",
     "null-loader": "0.1.1",
     "plop": "1.8.0",
     "pre-commit": "1.2.2",
     "raf": "^3.4.0",
+    "react-burger-menu": "^2.6.11",
     "react-mock-router": "^1.0.11",
     "react-test-renderer": "^16.2.0",
     "rimraf": "2.6.1",
@@ -315,5 +318,8 @@
     "webpack": "3.5.5",
     "webpack-dev-middleware": "1.11.0",
     "webpack-hot-middleware": "2.18.0"
+  },
+  "devDependencies": {
+    "@types/react-burger-menu": "^2.2.5"
   }
 }

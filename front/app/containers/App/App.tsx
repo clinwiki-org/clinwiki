@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage';
+import NotConfiguredPage from 'containers/NotConfiguredPage';
 import SearchPage from 'containers/SearchPage';
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
@@ -41,7 +42,7 @@ class App extends React.PureComponent<AppProps> {
         <CurrentUser>
           {user => <AuthHeader user={user} history={this.props.history} />}
         </CurrentUser>
-        <MainWrapper>
+        <MainWrapper className="main container-fluid" style={{ paddingTop:  '50px' }}>
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/about" component={AboutPage} />
@@ -62,6 +63,7 @@ class App extends React.PureComponent<AppProps> {
             <Route path="/reset_password" component={ResetPasswordPage} />
             <Route path="/sign_in" component={SignInPage} />
             <Route path="/sign_up" component={SignUpPage} />
+            <Route path="/not-configured" component={NotConfiguredPage} />
             <Route component={NotFoundPage} />
           </Switch>
         </MainWrapper>

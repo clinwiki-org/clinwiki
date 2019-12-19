@@ -24,6 +24,7 @@ import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface TagsPageProps {
+  nctId: string;
   history: History;
   match: match<{ nctId: string }>;
   onLoaded?: () => void;
@@ -155,7 +156,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
           __typename: 'UpsertWikiTagPayload',
           wikiPage: {
             __typename: 'WikiPage',
-            nctId: this.props.match.params.nctId,
+            nctId: this.props.nctId,
             meta: this.updateMetaTags(
               tags =>
                 contains(this.state.newTag, tags)
@@ -169,7 +170,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
         },
       },
       variables: {
-        nctId: this.props.match.params.nctId,
+        nctId: this.props.nctId,
         value: this.state.newTag,
       },
     });
@@ -182,13 +183,13 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
     value: string,
   ) => () => {
     deleteTag({
-      variables: { value, nctId: this.props.match.params.nctId },
+      variables: { value, nctId: this.props.nctId },
       optimisticResponse: {
         deleteWikiTag: {
           __typename: 'DeleteWikiTagPayload',
           wikiPage: {
             __typename: 'WikiPage',
-            nctId: this.props.match.params.nctId,
+            nctId: this.props.nctId,
             meta: this.updateMetaTags(reject(equals(value)), meta),
             edits: [],
           },
@@ -228,7 +229,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
+        variables={{ nctId: this.props.nctId }}
       >
         {({ data, loading, error }) => {
           if (

@@ -15,7 +15,6 @@ import {
   groupBy,
   prop,
   head,
-  propOr,
   lensPath,
   over,
   reject,
@@ -25,8 +24,6 @@ import {
   remove,
   isEmpty,
   lensProp,
-  filter,
-  equals,
   fromPairs,
 } from 'ramda';
 import { camelCase, snakeCase, capitalize } from 'utils/helpers';
@@ -40,12 +37,10 @@ import {
 } from 'types/SearchPageSearchQuery';
 import { Query } from 'react-apollo';
 import 'react-table/react-table.css';
-import Aggs from './components/Aggs';
 import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
-import {studyFields, starColor, MAX_WINDOW_SIZE} from 'utils/constants';
-import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
-import { stringify } from 'querystring';
+import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
+import Cards from './components/Cards';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -190,7 +185,7 @@ const changePageSize = (pageSize: number) => (params: SearchParams) => ({
 const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
   const idSortedLens = lensProp('id');
   const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
-  return { ...params, sorts: snakeSorts };
+  return { ...params, sorts: snakeSorts, page: 0 };
 };
 const changeFilter = (add: boolean) => (
   aggName: string,
@@ -278,12 +273,41 @@ interface SearchViewProps {
   onResetFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string; kind: AggKind } | null;
+  previousSearchData: Array<any>;
+  returnPreviousSearchData: Function;
+  searchHash: string;
+  showCards: Boolean;
+  toggledShowCards: Function;
+  returnNumberOfPages: Function;
 }
 
-class SearchView extends React.PureComponent<SearchViewProps> {
+interface SearchViewState {
+  tableWidth: number;
+}
+class SearchView extends React.Component<SearchViewProps, SearchViewState> {
+
+  searchTable:any = 0;
+
+  constructor(props) {
+
+    super(props);
+
+    this.searchTable = React.createRef();
+    this.state = { tableWidth: 0 };
+
+    
+
+  }
   isStarColumn = (name: string): boolean => {
     return name === 'average_rating';
   };
+
+  toggledShowCards = (showCards: Boolean) => {
+    this.props.toggledShowCards(showCards);
+    pipe(
+      changePage,
+      this.props.onUpdateParams);
+  }
 
   // this is for the column widths. currently, some tags are making it way too wide
   isStatusColumn = (name: string): boolean => {
@@ -324,7 +348,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         }
       }
       const maxArray = max.split('');
-      let maxSize = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
+      const maxSize = Math.max(calcWidth(maxArray), calcWidth(headerName.split('')) + totalPadding);
       return Math.min(maxWidth, maxSize);
     };
 
@@ -356,8 +380,7 @@ class SearchView extends React.PureComponent<SearchViewProps> {
           <div id="divsononeline">
             &nbsp;({props.original.reviewsCount})</div>
           </div>),
-       width: getColumnWidth(),
-
+      width: getColumnWidth(),
     };
   };
 
@@ -383,6 +406,58 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
   };
 
+  updateState = () => {
+    if (!this.props.showCards) {
+      this.setState({
+        tableWidth: document.getElementsByClassName('ReactTable')[0].clientWidth,
+      });
+    }
+  };
+
+  componentDidMount() {
+    if (!this.props.showCards) {
+      this.setState({
+        tableWidth: document.getElementsByClassName('ReactTable')[0].clientWidth,
+      });
+      window.addEventListener('resize', this.updateState);
+    }
+  }
+
+  componentDidUpdate() {
+    if (!this.props.showCards) {
+      if (
+          document.getElementsByClassName('ReactTable')[0] &&
+          this.state.tableWidth !== document.getElementsByClassName('ReactTable')[0].clientWidth
+        ) {
+        window.addEventListener('resize', this.updateState);
+        this.setState({
+          tableWidth: document.getElementsByClassName('ReactTable')[0].clientWidth,
+        });
+      }
+    } else {
+      if (!this.props.showCards) window.removeEventListener('resize', this.updateState);
+    }
+  }
+
+  componentWillUnmount() {
+    if (!this.props.showCards) window.removeEventListener('resize', this.updateState);
+  }
+
+  cardPressed = card => {
+    this.props.onRowClick(card.nctId);
+  }
+
+  mobileAndTabletcheck = () => {
+    let check = false;
+    ((a: string) => {
+      // tslint:disable-next-line: max-line-length
+      if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) {
+        check = true;
+      }
+    })(navigator.userAgent || navigator.vendor);
+    return check;
+  };
+
   renderSearch = ({
     data,
     loading,
@@ -394,28 +469,6 @@ class SearchView extends React.PureComponent<SearchViewProps> {
   }) => {
     const { page, pageSize, sorts } = this.props.params;
 
-    if (loading) {
-      return (
-        <SiteProvider>
-          {site => {
-            const columns = map(x => this.renderColumn(x, ''), site.siteView.search.fields);
-            const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
-            const leftover = tableWidth - totalWidth;
-            const additionalWidth = leftover / columns.length;
-            columns.map(x => x.width += additionalWidth, columns);
-            return (
-              <ReactTable
-                className="-striped -highlight"
-                columns={columns}
-                manual
-                loading={true}
-                defaultSortDesc
-              />
-            );
-          }}
-        </SiteProvider>
-      );
-    }
     if (error) {
       return <div>{error.message}</div>;
     }
@@ -425,52 +478,85 @@ class SearchView extends React.PureComponent<SearchViewProps> {
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
     const totalPages = Math.min(Math.ceil(totalRecords / this.props.params.pageSize),
                                 Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize));
+
+    this.props.returnNumberOfPages(totalPages);
+
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
-    const searchData = path(['search', 'studies'], data);
+    let searchData : any = path(['search', 'studies'], data);
     const tableWidth = 1175;
+
+    searchData = Array.from(new Set(this.props.previousSearchData.concat(searchData)));
+
+    // Eliminates undefined itens from the searchData array
+    searchData = searchData.filter((el) => {
+      return el != null;
+    });
+
+    // Returns the new searchData to the SearchPage component
+    this.props.returnPreviousSearchData(searchData);
+
+    const isMobile = this.mobileAndTabletcheck();
 
     return (
       <SiteProvider>
         {site => {
-         const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
-         const totalWidth = columns.reduce(((acc, col)=> acc+col.width), 0);
-         const leftover = tableWidth-totalWidth;
-         const additionalWidth=leftover/columns.length;
-         columns.map(x=>x.width+= additionalWidth, columns);
 
-         return (
-           <ReactTable
-             className="-striped -highlight"
-             columns={columns}
-             manual
-             minRows={searchData![0] !== undefined ? 1 : 3}
-             page={page}
-             pageSize={pageSize}
-             defaultSorted={camelizedSorts}
-             onPageChange={pipe(
-               changePage,
-               this.props.onUpdateParams,)}
-             onPageSizeChange={pipe(
-               changePageSize,
-               this.props.onUpdateParams,)}
-             onSortedChange = {pipe(
-               changeSorted,
-               this.props.onUpdateParams,)}
-             data={searchData}
-             pages={totalPages}
-             loading={loading}
-             defaultPageSize={pageSize}
-             getTdProps={this.rowProps}
-             defaultSortDesc
-             noDataText={'No studies found'}
-           />
-           );
+          const columns = map(x => this.renderColumn(x, searchData), site.siteView.search.fields);
+          const totalWidth = columns.reduce(((acc, col) => acc + col.width), 0);
+          let leftover = 0;
+          if (isMobile) {
+            leftover = tableWidth - totalWidth;
+          }  else {
+            leftover = this.state.tableWidth - totalWidth;
+          }
+
+          const additionalWidth = leftover / columns.length;
+          columns.map(x => x.width += additionalWidth, columns);
+
+          if (this.props.showCards) {
+
+            return (
+              <Cards
+                columns={columns}
+                data={searchData}
+                onPress={this.cardPressed}
+                loading={loading} />
+            );
+
+          }
+
+          return (
+            <ReactTable ref={this.searchTable}
+              className="-striped -highlight"
+              columns={columns}
+              manual
+              minRows={searchData![0] !== undefined ? 1 : 3}
+              page={page}
+              pageSize={pageSize}
+              defaultSorted={camelizedSorts}
+              onPageChange={pipe(
+                changePage,
+                this.props.onUpdateParams)}
+              onPageSizeChange={pipe(
+                changePageSize,
+                this.props.onUpdateParams)}
+              onSortedChange = {pipe(
+                changeSorted,
+                this.props.onUpdateParams)}
+              data={searchData}
+              pages={totalPages}
+              loading={loading}
+              defaultPageSize={pageSize}
+              getTdProps={this.rowProps}
+              defaultSortDesc
+              noDataText={'No studies found'} />
+          );
+
         }}
       </SiteProvider>
-       );
+    );
   };
-
 
   renderCrumbs = ({
     data,
@@ -528,19 +614,28 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         }}
         onReset={this.props.onResetFilters}
         loading={loading}
+        showCards={this.props.showCards}
+        toggledShowCards={this.toggledShowCards}
       />
     );
   };
 
   render() {
+
     const { page, pageSize, sorts } = this.props.params;
+
     return (
+
       <SearchWrapper>
+
         <Helmet>
           <title>Search</title>
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
+
         <QueryComponent query={QUERY} variables={this.props.params} onCompleted={(data:any)=>{
+
+
             if (data && data.search) {
               this.props.onAggsUpdate(
                 this.transformAggs(data.search.aggs || []),
@@ -550,19 +645,19 @@ class SearchView extends React.PureComponent<SearchViewProps> {
         }}>
           {({ data, loading, error }) => {
             return (
-              <Grid>
-                <Row>
-                  <Col md={12}>
-                    {this.renderCrumbs({ data, loading, error })}
-                    {this.renderSearch({ data, loading, error })}
-                  </Col>
-                </Row>
-              </Grid>
+              <Col md={12}>
+                {this.renderCrumbs({ data, loading, error })}
+                {this.renderSearch({ data, loading, error })}
+              </Col>
             );
+
           }}
+
         </QueryComponent>
       </SearchWrapper>
+
     );
+
   }
 }
 

@@ -19,8 +19,8 @@ interface SuggestedLabelsProps {
 }
 
 const QUERY = gql`
-  query SuggestedLabelsQuery($searchHash: String!, $nctId: String!) {
-    search(searchHash: $searchHash, params: { page: 0, q: { key: "*" } }) {
+  query SuggestedLabelsQuery($nctId: String!) {
+    search(params: { page: 0, q: { key: "*" } }) {
       aggs {
         name
         buckets {
@@ -56,7 +56,6 @@ const StyledPanel = styled(CollapsiblePanel)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    position: absolute;
     max-width: 200px;
   }
   .panel-body {
@@ -117,6 +116,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
             // @ts-ignore
             fromPairs,
           )(meta);
+
           const aggs = pipe(
             pathOr([], ['search', 'aggs']),
             filter((agg: any) => agg.name.startsWith('fm_')),

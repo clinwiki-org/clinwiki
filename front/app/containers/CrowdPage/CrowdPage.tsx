@@ -44,6 +44,7 @@ import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface CrowdProps {
+  nctId: string;
   match: match<{ nctId: string }>;
   history: History;
   onLoaded?: () => void;
@@ -453,9 +454,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
           <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
             {deleteLabelMutation => (
               <QueryComponent
-                query={QUERY}
-                variables={{ nctId: this.props.match.params.nctId }}
-              >
+                  query={QUERY}
+                  variables={{ nctId: this.props.nctId }} >
                 {({ data, loading, error }) => {
                   if (loading) {
                     return <LoadingPane />;

@@ -27,6 +27,10 @@
       integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
       crossorigin="anonymous"
     ></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-GZNGYD968N"
+    ></script>
     <script>
       window["_fs_debug"] = false;
       window["_fs_host"] = "fullstory.com";
@@ -82,6 +86,14 @@
         };
         g.clearUserCookie = function() {};
       })(window, document, window["_fs_namespace"], "script", "user");
+    </script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-GZNGYD968N");
     </script>
     <title>Clinwiki</title>
   </head>

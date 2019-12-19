@@ -25,6 +25,7 @@ import {
   isEmpty,
   prop,
   propOr,
+  uniq,
 } from 'ramda';
 import SiteProvider from 'containers/SiteProvider';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
@@ -215,14 +216,14 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
               {({ data = {}, loading, error }) => {
                 const { allCrowdAggs, myCrowdAggs } = data;
                 const recordsTotal = pathOr(0, ['search', 'recordsTotal'], data) as number;
-                const labels = [
+                const labels = uniq([
                   ...new Set([
                     ...extractBucketKeys(allCrowdAggs),
                     ...extractBucketKeys(myCrowdAggs),
                   ]),
                 ]
                   .filter((x) => !FILTERED_LABELS.includes(x))
-                  .filter((x) => !workflow || allowedSuggestedLabels.includes(x));
+                  .filter((x) => !workflow || allowedSuggestedLabels.includes(x)));
                 if (!labels.length) return null;
                 return (
                   <Query
@@ -230,6 +231,10 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                     variables={variablesForLabels(labels, parsedSearchParams)}
                   >
                     {({ data = {}, loading, error }) => {
+                      if (error) {
+                        console.log(error);
+                        console.log(labels);
+                      }
                       const aggBucketsByLabel = groupBucketsByLabel({
                         data,
                         labels,

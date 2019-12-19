@@ -72,6 +72,7 @@ class WorkflowPageQueryComponent extends Query<
 > {}
 
 interface WorkflowPageProps {
+  nctId: string;
   match: match<{ nctId: string; searchId?: string }>;
   history: History;
   onLoaded?: () => void;
@@ -185,118 +186,122 @@ class WorkflowPage extends React.Component<
 
   render() {
     return (
-      <CurrentUser>
-        {user => {
-          const workflow = pipe(
-            prop('workflows'),
-            find(propEq('name', this.props.workflowName)),
-          )(this.props.workflowsView) as WorkflowConfigFragment;
-          const allowedWikiSections = displayFields(
-            workflow.wikiSectionsFilter.kind,
-            workflow.wikiSectionsFilter.values,
-            workflow.allWikiSections.map(name => ({ name, rank: null })),
-          ).map(prop('name'));
-          const allowedSuggestedLabels = displayFields(
-            workflow.suggestedLabelsFilter.kind,
-            workflow.suggestedLabelsFilter.values,
-            workflow.allSuggestedLabels.map(name => ({ name, rank: null })),
-          ).map(prop('name'));
+      <WorkflowsViewProvider>
+        {(workflowsView) => (
+          <CurrentUser>
+            {user => {
+              const workflow = pipe(
+                prop('workflows'),
+                find(propEq('name', this.props.workflowName)),
+              )(workflowsView) as WorkflowConfigFragment;
+              const allowedWikiSections = displayFields(
+                workflow.wikiSectionsFilter.kind,
+                workflow.wikiSectionsFilter.values,
+                workflow.allWikiSections.map(name => ({ name, rank: null })),
+              ).map(prop('name'));
+              const allowedSuggestedLabels = displayFields(
+                workflow.suggestedLabelsFilter.kind,
+                workflow.suggestedLabelsFilter.values,
+                workflow.allSuggestedLabels.map(name => ({ name, rank: null })),
+              ).map(prop('name'));
 
-          return (
-            <div>
-              {user && !workflow.hideReviews && (
-                <>
-                  <h3>
-                    {this.state.editReviewMode ? 'Add Review' : 'Added Review'}{' '}
-                  </h3>
-                  <StyledPanel>
-                    {this.renderReview(workflow.disableAddRating)}
-                  </StyledPanel>
-                  <ButtonContainer>
-                    <Button
-                      disabled={!this.state.editReviewMode}
-                      onClick={this.handleReviewSave}
-                      style={{ marginTop: 15 }}
-                    >
-                      Save Review
-                    </Button>
-                  </ButtonContainer>
-                </>
-              )}
-
-              <h3>Crowd Labels</h3>
-
-              <WorkflowPageQueryComponent
-                query={QUERY}
-                variables={{ nctId: this.props.match.params.nctId }}
-              >
-                {({ data, loading, error }) => {
-                  const sections = pipe(
-                    drop(1),
-                    filter((section: WikiSection) =>
-                      allowedWikiSections.includes(section.name),
-                    ),
-                  )(
-                    extractWikiSections(
-                      (data &&
-                        data.study &&
-                        data.study.wikiPage &&
-                        data.study.wikiPage.content) ||
-                        '',
-                    ),
-                  ) as WikiSection[];
-                  return (
+              return (
+                <div>
+                  {user && !workflow.hideReviews && (
                     <>
-                      <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-                        {upsertMutation => (
-                          <DeleteMutationComponent
-                            mutation={DELETE_LABEL_MUTATION}
-                          >
-                            {deleteMutation => (
-                              <StyledPanel>
-                                <SuggestedLabels
-                                  nctId={this.props.match.params.nctId}
-                                  searchHash={
-                                    this.props.match.params.searchId || null
-                                  }
-                                  onSelect={this.handleSelect(
-                                    (data &&
-                                      data.study &&
-                                      data.study.wikiPage &&
-                                      JSON.parse(data.study.wikiPage.meta)) ||
-                                      {},
-                                    upsertMutation,
-                                    deleteMutation,
-                                  )}
-                                  allowedSuggestedLabels={
-                                    allowedSuggestedLabels
-                                  }
-                                  disabled={!user}
-                                />
-                              </StyledPanel>
-                            )}
-                          </DeleteMutationComponent>
-                        )}
-                      </UpsertMutationComponent>
-                      <CrowdPage
-                        {...this.props}
-                        workflowView
-                        forceAddLabel={this.state.selectedLabel || undefined}
-                      />
-                      <WikiSections
-                        sections={sections}
-                        disabled={!user}
-                        nctId={this.props.match.params.nctId}
-                        key={this.props.match.params.nctId}
-                      />
+                      <h3>
+                        {this.state.editReviewMode ? 'Add Review' : 'Added Review'}{' '}
+                      </h3>
+                      <StyledPanel>
+                        {this.renderReview(workflow.disableAddRating)}
+                      </StyledPanel>
+                      <ButtonContainer>
+                        <Button
+                          disabled={!this.state.editReviewMode}
+                          onClick={this.handleReviewSave}
+                          style={{ marginTop: 15 }}
+                        >
+                          Save Review
+                        </Button>
+                      </ButtonContainer>
                     </>
-                  );
-                }}
-              </WorkflowPageQueryComponent>
-            </div>
-          );
-        }}
-      </CurrentUser>
+                  )}
+
+                  <h3>Crowd Labels</h3>
+
+                  <WorkflowPageQueryComponent
+                    query={QUERY}
+                    variables={{ nctId: this.props.match.params.nctId }}
+                  >
+                    {({ data, loading, error }) => {
+                      const sections = pipe(
+                        drop(1),
+                        filter((section: WikiSection) =>
+                          allowedWikiSections.includes(section.name),
+                        ),
+                      )(
+                        extractWikiSections(
+                          (data &&
+                            data.study &&
+                            data.study.wikiPage &&
+                            data.study.wikiPage.content) ||
+                            '',
+                        ),
+                      ) as WikiSection[];
+                      return (
+                        <>
+                          <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
+                            {upsertMutation => (
+                              <DeleteMutationComponent
+                                mutation={DELETE_LABEL_MUTATION}
+                              >
+                                {deleteMutation => (
+                                  <StyledPanel>
+                                    <SuggestedLabels
+                                      nctId={this.props.match.params.nctId}
+                                      searchHash={
+                                        this.props.match.params.searchId || null
+                                      }
+                                      onSelect={this.handleSelect(
+                                        (data &&
+                                          data.study &&
+                                          data.study.wikiPage &&
+                                          JSON.parse(data.study.wikiPage.meta)) ||
+                                          {},
+                                        upsertMutation,
+                                        deleteMutation,
+                                      )}
+                                      allowedSuggestedLabels={
+                                        allowedSuggestedLabels
+                                      }
+                                      disabled={!user}
+                                    />
+                                  </StyledPanel>
+                                )}
+                              </DeleteMutationComponent>
+                            )}
+                          </UpsertMutationComponent>
+                          <CrowdPage
+                              {...this.props}
+                              nctId={this.props.nctId}
+                              workflowView
+                              forceAddLabel={this.state.selectedLabel || undefined} />
+                          <WikiSections
+                            sections={sections}
+                            disabled={!user}
+                            nctId={this.props.match.params.nctId}
+                            key={this.props.match.params.nctId}
+                          />
+                        </>
+                      );
+                    }}
+                  </WorkflowPageQueryComponent>
+                </div>
+              );
+            }}
+          </CurrentUser>
+        )}
+        </WorkflowsViewProvider>
     );
   }
 }

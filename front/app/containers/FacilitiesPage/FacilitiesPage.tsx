@@ -15,6 +15,7 @@ import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface FacilitiesPageProps {
+  nctId: string;
   history: History;
   match: match<{ nctId: string }>;
   onLoaded?: () => void;
@@ -106,7 +107,7 @@ class FacilitiesPage extends React.PureComponent<FacilitiesPageProps> {
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
+        variables={{ nctId: this.props.nctId }}
       >
         {({ data, loading, error }) => {
           if (
