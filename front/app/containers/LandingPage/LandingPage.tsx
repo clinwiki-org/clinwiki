@@ -5,6 +5,7 @@ import { Row, Col, Form, FormControl } from 'react-bootstrap';
 import { gql, ApolloClient } from 'apollo-boost';
 import { ApolloConsumer }  from 'react-apollo';
 import { History } from 'history';
+import { parseSearchQuery } from "utils/parseSearchQuery";
 
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
@@ -48,8 +49,8 @@ class LandingPage extends React.PureComponent<LandingPageProps, LandingPageState
   onSubmit = async (e, client:ApolloClient<any>) => {
     e.preventDefault();
     let params = {};
-    if (this.state.searchTerm.replace(/\s/g, '').length) {
-      params = { q: { key: 'AND', children: [{ key: this.state.searchTerm }] } };
+    if (this.state.searchTerm.trim().length) {
+      params = { q: parseSearchQuery(this.state.searchTerm) };
     } else {
       params = { q: { key: 'AND', children: [] } };
     }
