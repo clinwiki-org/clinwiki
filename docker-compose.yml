@@ -1,0 +1,90 @@
+version: '3'
+services:
+   nginx:
+      image: nginx:stable
+      container_name: nginx
+      #network_mode: host
+      ports:
+         - 80:80
+      volumes:
+         - ./compose/nginx:/etc/nginx/conf.d/
+   db:
+      image: postgres:11.5
+      container_name: clinwiki-db
+      ports:
+         - 15432:5432
+      environment:
+         - POSTGRES_USER=clinwiki
+         - POSTGRES_PASSWORD=ZetIFOnXd78H
+      volumes:
+         - cw-data:/var/lib/postgresq/data
+   elastic:
+      image: elasticsearch:6.8.1
+      container_name: elastic
+      #network_mode: host
+      ports:
+         - 9200:9200
+      environment:
+         - discovery.type=single-node
+      ulimits:
+         memlock:
+            soft: -1
+            hard: -1
+      volumes:
+         - es-data:/usr/share/elasticsearch/data/
+   redis:
+      image: redis:5.0.5
+      container_name: redis
+      #network_mode: host
+      ports:
+         - 6379:6379
+      volumes:
+         - redis-data:/data
+   clinwiki:
+      image: cwlite
+      build: 
+         context: .
+         dockerfile: compose/Dockerfile
+      container_name: clinwiki
+      #network_mode: host
+      ports:
+         - 3000:3000
+      volumes:
+         - .:/clinwiki
+         - ./compose/entrypoint.sh:/usr/bin/entrypoint.sh
+      environment:
+         - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
+         - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
+         - REDIS_URL=redis://redis:6379/0
+         - SEARCHBOX_URL=http://elastic:9200
+      depends_on: 
+         - db
+         - elastic
+         - redis
+   sidekiq:
+      image: cwlite
+      build: 
+         context: .
+         dockerfile: compose/Dockerfile
+      container_name: sidekiq
+      #network_mode: host
+      volumes:
+         - .:/clinwiki
+         - ./compose/entrypoint.worker.sh:/usr/bin/entrypoint.sh
+      environment:
+         - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
+         - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
+         - REDIS_URL=redis://redis:6379/0
+         - SEARCHBOX_URL=http://elastic:9200
+      depends_on: 
+         - db
+         - elastic
+         - redis
+      command: bundle exec sidekiq -C config/sidekiq.yml
+
+volumes:
+   es-data:
+   cw-data:
+   aact-data:
+   redis-data:
+

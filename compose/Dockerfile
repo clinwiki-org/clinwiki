@@ -15,9 +15,8 @@ RUN bundle install
 # Add a script to be executed with the container starts
 COPY compose/entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["/usr/bin/entrypoint.sh"]
+
 EXPOSE 3000
 
-CMD ["/usr/bin/entrypoint.sh"]
-
-
-
+CMD ["bundle","exec","rails","server","-b", "0.0.0.0"]

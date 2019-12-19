@@ -21,11 +21,15 @@ The easiest way to start ClinWiki on your own system is to use [docker-compose](
 - Install Docker
     - Windows and Mac users install [Docker Desktop](https://www.docker.com/products/docker-desktop)
     - Linux users follow the [official install instructions for Docker for your distribution](https://docs.docker.com/install/#supported-platforms)
-- cd /compose
-    - ./bin/build
-    - docker-compose up
-    - ./bin/search_bootstrap
-    - Now you should have the ClinWiki server running on http://localhost:3000.  The front end is not built yet so you will only see the rails start page but you can browse to http://localhost:3000/graphiql to send graphql queries.
+- `docker-compose build`
+- `docker-compose up` or `docker-compose up -d` to run as daemon in background
+- `compose/bin/search_bootstrap`
+- Now you should have the ClinWiki server running on http://localhost:3000
+- Extras
+    - Logs: `docker-compose logs -f clinwiki`
+    - Console: `docker-compose exec clinwiki bundle exec rails c`
+    - Run and build: `docker-compose up -d --build`
+  The front end is not built yet so you will only    see the rails start page but you can browse to http://localhost:3000/graphiql to send graphql queries.
 - cd /front
     - yarn install
     - yarn start
