@@ -17,7 +17,7 @@ import styled from "styled-components";
 import aggToField from "utils/aggs/aggToField";
 import MultiCrumb from "components/MultiCrumb";
 import SiteProvider from "containers/SiteProvider";
-import { MAX_WINDOW_SIZE } from "../../../utils/constants";
+import { MAX_WINDOW_SIZE, aggsOrdered } from "../../../utils/constants";
 import { PulseLoader } from "react-spinners";
 
 const AUTOSUGGEST_QUERY = gql`
@@ -235,19 +235,17 @@ export default class CrumbsBar extends React.Component<
     }
   }
 
-  getFieldsFromSubsiteConfig = fields => {
-    console.log("trying to map this", fields);
+  getFieldsFromSubsiteConfig = aggs => {
     let aggFields: string[] = [];
-
-    if (fields.length > 0) {
-      fields.map(i => {
+    console.log(aggs);
+    if (aggs.length > 0) {
+      aggs.map(i => {
         if (i.autoSuggest) {
           aggFields.push(i.name);
         }
       });
     } else aggFields = [];
 
-    console.log(aggFields);
     return aggFields;
   };
 
@@ -262,6 +260,8 @@ export default class CrumbsBar extends React.Component<
       data.siteView.search.aggs.fields
     );
     const query = AUTOSUGGEST_QUERY;
+
+    console.log(fields);
 
     const variables = {
       agg: "browse_condition_mesh_terms",
@@ -282,6 +282,8 @@ export default class CrumbsBar extends React.Component<
       query,
       variables
     });
+
+    console.log("response", response);
 
     const array = response.data.autocomplete.autocomplete;
 
@@ -319,7 +321,8 @@ export default class CrumbsBar extends React.Component<
 
   renderSectionTitle = section => {
     if (section.results.length > 0) {
-      return <strong>{section.name}</strong>;
+      const newName = aggToField(section.name);
+      return <strong>{newName}</strong>;
     } else return null;
   };
 
@@ -346,8 +349,6 @@ export default class CrumbsBar extends React.Component<
   render() {
     const { searchTerm, suggestions } = this.state;
     const { data } = this.props;
-
-    console.log(data.siteView.search);
 
     // if (this.props.siteView.length > 0) {
     //   console.log("propssss", this.props.siteView.search.aggs.fields);

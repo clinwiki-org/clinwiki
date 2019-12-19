@@ -54,7 +54,8 @@ module Types
     DISPLAY_NAMES = {
       'browse_condition_mesh_terms' => 'Browse Condition Mesh Terms',
       'browse_interventions_mesh_terms' => 'Browse Intervention Mesh Terms',
-      'facility_countries' => 'Countries'
+      'facility_countries' => 'Countries',
+
     }
 
     def search(search_hash: nil, params: nil)
@@ -88,7 +89,7 @@ module Types
       fields.each do |field_name|
         result = search_service.agg_buckets_for_field(field: field_name, current_site: context[:current_site])
         list << Hashie::Mash.new(
-          name: DISPLAY_NAMES[field_name],
+          name: field_name,
           results: result[field_name.to_sym][:buckets]
         )
       end
