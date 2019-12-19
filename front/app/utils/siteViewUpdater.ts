@@ -43,11 +43,9 @@ export const serializeMutation = (
   mutation: SiteViewMutationInput
 ): SiteViewMutationInput => {
   const copy = cloneDeep(mutation);
-  console.log("mutation", copy.payload);
   if (typeof copy.payload !== "string") {
     copy.payload = JSON.stringify(copy.payload);
   }
-  console.log("after stringify", copy.payload);
   return copy;
 };
 

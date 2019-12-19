@@ -218,8 +218,6 @@ class FacilitiesPage extends React.PureComponent<
       },
       mapZoom: 8
     });
-
-    console.log(this.state);
   };
 
   render() {

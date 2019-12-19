@@ -237,7 +237,6 @@ export default class CrumbsBar extends React.Component<
 
   getFieldsFromSubsiteConfig = aggs => {
     let aggFields: string[] = [];
-    console.log(aggs);
     if (aggs.length > 0) {
       aggs.map(i => {
         if (i.autoSuggest) {
@@ -261,8 +260,6 @@ export default class CrumbsBar extends React.Component<
     );
     const query = AUTOSUGGEST_QUERY;
 
-    console.log(fields);
-
     const variables = {
       agg: "browse_condition_mesh_terms",
       aggFilters: searchParams.aggFilters,
@@ -282,8 +279,6 @@ export default class CrumbsBar extends React.Component<
       query,
       variables
     });
-
-    console.log("response", response);
 
     const array = response.data.autocomplete.autocomplete;
 
