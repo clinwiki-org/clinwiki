@@ -235,7 +235,7 @@ export default class CrumbsBar extends React.Component<
     }
   }
 
-  getFieldsFromSubsiteConfig = aggs => {
+  getFieldsFromSubsiteConfig = (aggs, crowdAggs) => {
     let aggFields: string[] = [];
     if (aggs.length > 0) {
       aggs.map(i => {
@@ -243,8 +243,14 @@ export default class CrumbsBar extends React.Component<
           aggFields.push(i.name);
         }
       });
-    } else aggFields = [];
-
+    }
+    if (crowdAggs.length > 0) {
+      crowdAggs.map(i => {
+        if (i.autoSuggest) {
+          aggFields.push(i.name);
+        }
+      });
+    }
     return aggFields;
   };
 
@@ -256,7 +262,8 @@ export default class CrumbsBar extends React.Component<
       return { children: [], key: i };
     });
     const fields = this.getFieldsFromSubsiteConfig(
-      data.siteView.search.aggs.fields
+      data.siteView.search.aggs.fields,
+      data.siteView.search.crowdAggs.fields
     );
     const query = AUTOSUGGEST_QUERY;
 
@@ -307,6 +314,10 @@ export default class CrumbsBar extends React.Component<
     return section.results;
   };
 
+  capitalize = str => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   onSuggestionSelected = (
     event,
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
@@ -316,7 +327,8 @@ export default class CrumbsBar extends React.Component<
 
   renderSectionTitle = section => {
     if (section.results.length > 0) {
-      const newName = aggToField(section.name);
+      let newName = aggToField(section.name);
+      newName = this.capitalize(newName);
       return <strong>{newName}</strong>;
     } else return null;
   };
