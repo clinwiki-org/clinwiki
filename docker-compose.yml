@@ -3,7 +3,6 @@ services:
    nginx:
       image: nginx:stable
       container_name: nginx
-      #network_mode: host
       ports:
          - 80:80
       volumes:
@@ -21,7 +20,6 @@ services:
    elastic:
       image: elasticsearch:6.8.1
       container_name: elastic
-      #network_mode: host
       ports:
          - 9200:9200
       environment:
@@ -35,7 +33,6 @@ services:
    redis:
       image: redis:5.0.5
       container_name: redis
-      #network_mode: host
       ports:
          - 6379:6379
       volumes:
@@ -46,7 +43,6 @@ services:
          context: .
          dockerfile: compose/Dockerfile
       container_name: clinwiki
-      #network_mode: host
       ports:
          - 3000:3000
       volumes:
@@ -67,7 +63,6 @@ services:
          context: .
          dockerfile: compose/Dockerfile
       container_name: sidekiq
-      #network_mode: host
       volumes:
          - .:/clinwiki
          - ./compose/entrypoint.worker.sh:/usr/bin/entrypoint.sh
