@@ -33,8 +33,8 @@ services:
    redis:
       image: redis:5.0.5
       container_name: redis
-      ports:
-         - 6379:6379
+      #ports:
+      #   - 6379:6379
       volumes:
          - redis-data:/data
    clinwiki:
@@ -80,6 +80,5 @@ services:
 volumes:
    es-data:
    cw-data:
-   aact-data:
    redis-data:
 
