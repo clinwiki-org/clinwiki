@@ -7,6 +7,8 @@ services:
          - 80:80
       volumes:
          - ./compose/nginx:/etc/nginx/conf.d/
+      depends_on: 
+         - clinwiki
    db:
       image: postgres:11.5
       container_name: clinwiki-db
