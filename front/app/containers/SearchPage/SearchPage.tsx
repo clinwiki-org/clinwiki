@@ -41,11 +41,10 @@ import SearchView from "./SearchView";
 import { AggFilterInput, SortInput } from "types/globalTypes";
 import Aggs from "./components/Aggs";
 import {
-  SearchPageSearchQuery,
-  SearchPageSearchQueryVariables,
   SearchPageSearchQuery_search_aggs,
   SearchPageSearchQuery_search_aggs_buckets,
-  SearchPageSearchQuery_crowdAggs_aggs
+  SearchPageSearchQuery_crowdAggs_aggs,
+  SearchPageSearchQuery_search_studies
 } from "types/SearchPageSearchQuery";
 import { AggBucketMap } from "./Types";
 import SiteProvider from "containers/SiteProvider";
@@ -228,7 +227,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     params: null,
     openedAgg: null,
     searchAggs: {},
-    searchCrowdAggs: {}
+    searchCrowdAggs: {},
     showCards: (localStorage.getItem('showCards') === 'true') ? true : false,
   };
 
@@ -257,8 +256,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.setState({ showCards, params });
   }
 
-  previousSearchData: Array<Object> = [];
-  returnPreviousSearchData = (previousSearchData: Array<Object>) => {
+  previousSearchData: Array<SearchPageSearchQuery_search_studies> = [];
+  returnPreviousSearchData = (previousSearchData: Array<SearchPageSearchQuery_search_studies>) => {
     this.previousSearchData = previousSearchData;
   }
 

@@ -46,6 +46,5 @@ export interface SuggestedLabelsQuery {
 }
 
 export interface SuggestedLabelsQueryVariables {
-  searchHash: string;
   nctId: string;
 }

@@ -160,4 +160,4 @@ div.DraftEditor-editorContainer{
 .ReactTable .-pagination .-btn {
   background: #55B88D !important;
 }
-
+`;

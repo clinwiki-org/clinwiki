@@ -7,9 +7,7 @@ import {
   Button,
   FormControl,
   Form,
-  FormGroup
-  ButtonGroup,
-  ControlLabel,
+  FormGroup,
 } from "react-bootstrap";
 import * as FontAwesome from "react-fontawesome";
 import gql from "graphql-tag";
@@ -137,6 +135,7 @@ const CrumbsBarStyleWrappper = styled.div`
 
 import { AggCallback, SearchParams } from "../Types";
 import { isEmpty } from "ramda";
+import { SiteFragment } from "types/SiteFragment";
 
 //
 interface CrumbsBarProps {
@@ -152,8 +151,7 @@ interface CrumbsBarProps {
   update: { page: (n: number) => void };
   onReset: () => void;
   loading: boolean;
-  data: any;
-  siteView: any;
+  data: SiteFragment;
   showCards: Boolean;
   toggledShowCards: Function;
 }
@@ -445,7 +443,6 @@ export default class CrumbsBar extends React.Component<
 
   render() {
     const { searchTerm, suggestions } = this.state;
-    const { data } = this.props;
     return  (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>

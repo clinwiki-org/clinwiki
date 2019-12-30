@@ -24,7 +24,8 @@ import {
   remove,
   isEmpty,
   lensProp,
-  fromPairs
+  fromPairs,
+  join
 } from "ramda";
 import { camelCase, snakeCase, capitalize } from "utils/helpers";
 import { gql } from "apollo-boost";
@@ -33,7 +34,8 @@ import {
   SearchPageSearchQueryVariables,
   SearchPageSearchQuery_search_aggs,
   SearchPageSearchQuery_search_aggs_buckets,
-  SearchPageSearchQuery_crowdAggs_aggs
+  SearchPageSearchQuery_crowdAggs_aggs,
+  SearchPageSearchQuery_search_studies
 } from "types/SearchPageSearchQuery";
 import { Query } from "react-apollo";
 import "react-table/react-table.css";
@@ -247,10 +249,7 @@ const removeSearchTerm = (term: string) => (params: SearchParams) => {
   };
 };
 
-class QueryComponent extends Query<
-  SearchPageSearchQuery,
-  SearchPageSearchQueryVariables
-> {}
+class QueryComponent extends Query<SearchPageSearchQuery, SearchPageSearchQueryVariables> {}
 
 const SearchWrapper = styled.div`
   .rt-tr {
@@ -273,7 +272,7 @@ interface SearchViewProps {
   onResetFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string; kind: AggKind } | null;
-  previousSearchData: Array<any>;
+  previousSearchData: Array<SearchPageSearchQuery_search_studies>;
   returnPreviousSearchData: Function;
   searchHash: string;
   showCards: Boolean;
@@ -496,12 +495,14 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
-    let searchData : any = path(['search', 'studies'], data);
+    // NOTE: If we upgrade typescript we can use data?.search?.studies;
+    let searchData = path(['search','studies'],data) as SearchPageSearchQuery_search_studies[];
     const tableWidth = 1175;
 
+    //OWERA: high computational complexity here for little return
     searchData = Array.from(new Set(this.props.previousSearchData.concat(searchData)));
 
-    // Eliminates undefined itens from the searchData array
+    // Eliminates undefined items from the searchData array
     searchData = searchData.filter((el) => {
       return el != null;
     });
@@ -514,105 +515,61 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     return (
       <SiteProvider>
         {site => {
-
             const columns = map(
               x => this.renderColumn(x, ""),
               site.siteView.search.fields
             );
             const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
-            const leftover = tableWidth - totalWidth;
+            const leftover = 
+              isMobile ?
+              tableWidth - totalWidth :
+              this.state.tableWidth - totalWidth;
             const additionalWidth = leftover / columns.length;
             columns.map(x => (x.width += additionalWidth), columns);
-            return (
-              <ReactTable
-                className="-striped -highlight"
-                columns={columns}
-                manual
-                loading={true}
-                defaultSortDesc
-              />
-            );
-          }}
-        </SiteProvider>
-      );
-    }
-    if (error) {
-      return <div>{error.message}</div>;
-    }
-    if (!data) {
-      return null;
-    }
-    const totalRecords = pathOr(0, ["search", "recordsTotal"], data) as number;
-    const totalPages = Math.min(
-      Math.ceil(totalRecords / this.props.params.pageSize),
-      Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
-    );
-    const idSortedLens = lensProp("id");
-    const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
-    const searchData = path(["search", "studies"], data);
-    const tableWidth = 1175;
-
-    return (
-      <SiteProvider>
-        {site => {
-          const columns = map(
-            x => this.renderColumn(x, searchData),
-            site.siteView.search.fields
-          );
-          const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
-          let leftover = 0;
-          if (isMobile) {
-            leftover = tableWidth - totalWidth;
-          }  else {
-            leftover = this.state.tableWidth - totalWidth;
+            if (this.props.showCards) {
+              return (
+                <Cards
+                  columns={columns}
+                  data={searchData}
+                  onPress={this.cardPressed}
+                  loading={loading} />
+              );
+            }
+            else {
+              return (
+                <ReactTable ref={this.searchTable}
+                  className="-striped -highlight"
+                  columns={columns}
+                  manual
+                  minRows={searchData![0] !== undefined ? 1 : 3}
+                  page={page}
+                  pageSize={pageSize}
+                  defaultSorted={camelizedSorts}
+                  onPageChange={pipe(
+                    changePage,
+                    this.props.onUpdateParams)}
+                  onPageSizeChange={pipe(
+                    changePageSize,
+                    this.props.onUpdateParams)}
+                  onSortedChange = {pipe(
+                    changeSorted,
+                    this.props.onUpdateParams)}
+                  data={searchData}
+                  pages={totalPages}
+                  loading={loading}
+                  defaultPageSize={pageSize}
+                  getTdProps={this.rowProps}
+                  defaultSortDesc
+                  noDataText={'No studies found'}
+                />
+              );
+            }
           }
-
-          const additionalWidth = leftover / columns.length;
-          columns.map(x => (x.width += additionalWidth), columns);
-          if (this.props.showCards) {
-
-            return (
-              <Cards
-                columns={columns}
-                data={searchData}
-                onPress={this.cardPressed}
-                loading={loading} />
-            );
-
-          }
-
-          return (
-            <ReactTable ref={this.searchTable}
-              className="-striped -highlight"
-              columns={columns}
-              manual
-              minRows={searchData![0] !== undefined ? 1 : 3}
-              page={page}
-              pageSize={pageSize}
-              defaultSorted={camelizedSorts}
-              onPageChange={pipe(
-                changePage,
-                this.props.onUpdateParams)}
-              onPageSizeChange={pipe(
-                changePageSize,
-                this.props.onUpdateParams)}
-              onSortedChange = {pipe(
-                changeSorted,
-                this.props.onUpdateParams)}
-              data={searchData}
-              pages={totalPages}
-              loading={loading}
-              defaultPageSize={pageSize}
-              getTdProps={this.rowProps}
-              defaultSortDesc
-              noDataText={"No studies found"}
-            />
-          );
-
-        }}
+        }
       </SiteProvider>
     );
-  };
+  }
+
   renderCrumbs = ({
     data,
     loading,

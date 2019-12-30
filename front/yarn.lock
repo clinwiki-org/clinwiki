@@ -388,13 +388,6 @@
   version "0.25.0"
   resolved "https://codeload.github.com/types/npm-ramda/tar.gz/9529aa3c8ff70ff84afcbc0be83443c00f30ea90"
 
-"@types/react-burger-menu@^2.2.5":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@types/react-burger-menu/-/react-burger-menu-2.6.0.tgz#7cfe7d1cc80e82a1769e25894c00f82ac1d78c4c"
-  integrity sha512-jw0tpOk0fSn282xdjlmyhcYiOOJxzQ5m8pwTIBhmcnabhcgsKE9zPOfrgLaAnm64xwu6Z1cF/Jj9VX8A6ysxzQ==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-dom@^16.4.18":
   version "16.8.0"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.0.tgz#c565f43f9d2ec911f9e0b8f3b74e25e67879aa3f"

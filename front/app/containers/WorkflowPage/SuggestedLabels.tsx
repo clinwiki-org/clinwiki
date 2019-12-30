@@ -94,7 +94,6 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
       <QueryComponent
         query={QUERY}
         variables={{
-          searchHash: this.props.searchHash,
           nctId: this.props.nctId,
         }}
       >
