@@ -36,6 +36,28 @@ The easiest way to start ClinWiki on your own system is to use [docker-compose](
     - This will build the ClinWiki front end and serve it on http://localhost:3001
     - Changes to local .ts/.tsx files will be automatically applied to the running system
 
+### CW_MODE
+
+You can use the CW_MODE environment variable to configure how docker-compose starts ClinWiki.
+
+* CW_MODE=PROD  - the default, builds the front end and runs rails
+* CW_MODE=FAST  - runs rails *without* building the front end for a quicker startup
+* CW_MODE=DEV   - starts the 'clinwiki' container without running rails so you can start/restart it manually during development
+* CW_MODE=WORKER - runs the sidekiq process instead of rails
+
+To specify the variable changes the command line a little bit depending on if you're on Windows or Linux/Mac:  
+
+*Linux/Mac:*
+```
+CW_MODE=FAST docker-compose up -d
+```
+
+*Windows:*
+
+```
+set CW_MODE=FAST
+docker-compose up -d
+```
 
 ## Branch Strategy
 
