@@ -265,7 +265,7 @@
     "apollo-cache-inmemory": "^1.5.0",
     "apollo-client": "^2.5.0",
     "awesome-typescript-loader": "^4.0.0",
-    "axios": "^0.17.1",
+    "axios": "^0.18.1",
     "babel-cli": "6.24.1",
     "babel-core": "6.24.1",
     "babel-eslint": "7.2.3",
