@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_26_185443) do
+ActiveRecord::Schema.define(version: 2019_12_23_191804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,12 +32,13 @@ ActiveRecord::Schema.define(version: 2019_11_26_185443) do
 
   create_table "locations", force: :cascade do |t|
     t.string "name"
+    t.string "location_type"
+    t.boolean "partial_match"
     t.float "latitude"
     t.float "longitude"
     t.datetime "checked"
     t.string "last_error"
-    t.string "location_type"
-    t.string "partial_match"
+    t.index ["name"], name: "index_locations_on_name", unique: true
   end
 
   create_table "reviews", force: :cascade do |t|

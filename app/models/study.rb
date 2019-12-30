@@ -346,6 +346,12 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def self.enqueue_facilities_geocoding(nct_id)
+    Facility.where(nct_id: nct_id).each do |facility|
+      Location.find_or_create_by(name: facility.location_name)
+    end
+  end
+
   # Takes a selector and enqeueues each instance for batch async reindex
   # Note: selector cannot be ordered and limited in this case, but the query could be big
   # it will be split in batches
