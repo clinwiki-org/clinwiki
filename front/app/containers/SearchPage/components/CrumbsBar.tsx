@@ -21,6 +21,7 @@ import MultiCrumb from "components/MultiCrumb";
 import SiteProvider from "containers/SiteProvider";
 import { MAX_WINDOW_SIZE, aggsOrdered } from "../../../utils/constants";
 import { PulseLoader } from "react-spinners";
+import CurrentUser from 'containers/CurrentUser';
 
 const AUTOSUGGEST_QUERY = gql`
   query SearchPageAggBucketsQuery(
@@ -416,8 +417,9 @@ export default class CrumbsBar extends React.Component<
         />}
         page{' '}
         <b>
-          {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
-            : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
+          {this.props.loading ? 
+            <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div> : 
+            `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
         </b>
         {this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
           <FontAwesome
@@ -439,9 +441,74 @@ export default class CrumbsBar extends React.Component<
         </div>
       </div>
     )
-
   }
 
   render() {
-
+    const { searchTerm, suggestions } = this.state;
+    const { data } = this.props;
+    return  (
+      <CrumbsBarStyleWrappper>
+        <ApolloConsumer>
+          {apolloClient => (
+            <Grid className="crumbs-bar">
+              <Row>
+                <Col xs={12} md={8}>
+                  <Form inline className="searchInput" onSubmit={this.onSubmit}>
+                    <FormGroup>
+                      <div style={{ display: "flex", flexDirection: "row" }}>
+                        <b style={{ marginRight: "8px", marginTop: "4px" }}>
+                          Search Within:
+                        </b>
+                        <Autosuggest
+                          multiSection={true}
+                          suggestions={suggestions}
+                          inputProps={{
+                            value: searchTerm,
+                            onChange: (e, searchTerm) =>
+                              this.onChange(e, searchTerm, apolloClient)
+                          }}
+                          renderSuggestion={this.renderSuggestion}
+                          renderSectionTitle={this.renderSectionTitle}
+                          getSectionSuggestions={this.getSectionSuggestions}
+                          onSuggestionSelected={this.onSuggestionSelected}
+                          onSuggestionsFetchRequested={
+                            this.onSuggestionsFetchRequested
+                          }
+                          onSuggestionsClearRequested={
+                            this.onSuggestionsClearRequested
+                          }
+                          getSuggestionValue={this.getSuggestionValue}
+                        />
+                      </div>
+                    </FormGroup>
+                    <Button type="submit">
+                      <FontAwesome name="search" />
+                    </Button>
+                    &nbsp;
+                    <CurrentUser>
+                      { user => user && user.roles.includes("admin") ? <Button onClick={this.props.onBulkUpdate}>Bulk Update <FontAwesome name="truck" /></Button> : null }
+                    </CurrentUser>
+                  </Form>
+                </Col>
+                <Col xsHidden md={2}>
+                  {this.loadPaginator()}
+                </Col>
+              </Row>
+              <Row>
+                <Col md={12} style={{ padding: "10px 0px" }}>
+                  <b>Filters: </b>
+                  {Array.from(
+                    this.mkCrumbs(
+                      this.props.searchParams,
+                      this.props.removeFilter
+                    )
+                  )}
+                </Col>
+              </Row>
+            </Grid>
+          )}
+        </ApolloConsumer>
+      </CrumbsBarStyleWrappper>
+    );
+  }
 }
