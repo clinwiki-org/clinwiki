@@ -1,0 +1,40 @@
+.bm-panel-title {
+  color: #51575d;
+}
+
+.bm-panel-title a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+
+.bm-panel-default {
+  box-shadow: 0px;
+  border: 0px;
+  background: none;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.bm-panel-heading {
+  box-shadow: 0px !important;
+  border: 0px;
+  background: none !important;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.bm-panel-collapse {
+  background: #394149;
+}
+
+.bm-panel-body {
+  padding-left: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+}
+
+.bm-panel-title {
+  font-size: 16px;
+  color: #bac5d0;
+  padding: 0px 10px;
+}

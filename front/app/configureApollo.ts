@@ -4,6 +4,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { setContext } from 'apollo-link-context';
 import { getLocalJwt } from 'utils/localStorage';
 import { createHttpLink } from 'apollo-link-http';
+// import { persistCache } from 'apollo-cache-persist';
 
 export const dataIdFromObject = object => {
   const id = object['id'] || object['_id'] || object['nctId'] || null;
@@ -15,6 +16,12 @@ export const dataIdFromObject = object => {
 const cache = new InMemoryCache({
   dataIdFromObject,
 });
+
+// persistCache({
+//   cache,
+//   storage: window.localStorage,
+//   maxSize: (2 * 1048576), // 2 MB
+// });
 
 console.log('Apollo cache', cache);
 
@@ -52,6 +59,14 @@ const client = new ApolloClient({
   cache,
   link: authLink.concat(httpLink),
   resolvers: {},
+  // defaultOptions: {
+  //   query: {
+  //     fetchPolicy: 'network-only',
+  //   },
+  //   watchQuery: {
+  //     fetchPolicy: 'cache-and-network',
+  //   },
+  // },
 });
 
 const data = {

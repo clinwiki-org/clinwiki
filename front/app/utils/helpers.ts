@@ -1,7 +1,12 @@
-import { keys } from 'ramda';
+import { keys, pipe, split, map, join } from 'ramda';
 
 export const capitalize = (x: string): string =>
   x.charAt(0).toUpperCase() + x.slice(1);
+
+// see also aggToField for formatting aggs
+export const sentanceCase = (x:string) => 
+  x.split('_').map(capitalize).join(' ');
+
 
 export const camelCase = (text: string) =>
   text
@@ -10,8 +15,15 @@ export const camelCase = (text: string) =>
     .join('')
     .replace(/./, m => m.toLowerCase());
 
-export const snakeCase = (text: string) =>
-  text.replace(/([A-Z])/g, x => `_${x.toLowerCase()}`);
+export const snakeCase = (text: string) => text.replace(/([A-Z])/g, x => `_${x.toLowerCase()}`);
+
+export const sentanceCaseFromCamelCase = (x:string) =>
+  pipe(
+    snakeCase,
+    split('_'),
+    map(capitalize),
+    join(' '))
+  (x)
 
 export const trimPath = (text: string): string => {
   return text[text.length - 1] === '/'

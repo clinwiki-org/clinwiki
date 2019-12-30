@@ -16,6 +16,7 @@ import { prop, pipe, split, map, join } from 'ramda';
 import { snakeCase, capitalize } from 'utils/helpers';
 
 interface GenericStudySectionPageProps {
+  nctId: string;
   history: History;
   match: match<{ nctId: string }>;
   onLoaded?: () => void;
@@ -76,7 +77,7 @@ class GenericStudySectionPage extends React.PureComponent<
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
+        variables={{ nctId: this.props.nctId }}
       >
         {({ data, loading, error }) => {
           if (loading || error || !data || !data.study) {

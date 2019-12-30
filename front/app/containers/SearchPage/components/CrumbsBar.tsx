@@ -8,6 +8,8 @@ import {
   FormControl,
   Form,
   FormGroup
+  ButtonGroup,
+  ControlLabel,
 } from "react-bootstrap";
 import * as FontAwesome from "react-fontawesome";
 import gql from "graphql-tag";
@@ -65,6 +67,7 @@ const CrumbsBarStyleWrappper = styled.div`
     background-color: #f2f2f2;
     color: black;
     margin-bottom: 1em;
+    width: 100%;
 
     .container {
       background: #d9deea;
@@ -81,7 +84,7 @@ const CrumbsBarStyleWrappper = styled.div`
 
     span.label.label-default {
       padding: 7px !important;
-      border-radius: 2px !important;
+      border-radius: 4px !important;
     }
 
     input.form-control {
@@ -92,7 +95,7 @@ const CrumbsBarStyleWrappper = styled.div`
     }
 
     span.label {
-      background: none;
+      background: #55B88D;
       padding: 5px;
       font-size: 12px;
       border-radius: 4px;
@@ -150,10 +153,14 @@ interface CrumbsBarProps {
   loading: boolean;
   data: any;
   siteView: any;
+  showCards: Boolean;
+  toggledShowCards: Function;
 }
 interface CrumbsBarState {
   searchTerm: string;
   suggestions: any;
+  cardsBtnColor: string;
+  tableBtnColor: string;
 }
 
 const Crumb = ({ category, value, onClick }) => {
@@ -174,14 +181,30 @@ export default class CrumbsBar extends React.Component<
   CrumbsBarProps,
   CrumbsBarState
 > {
+
   constructor(props) {
+
     super(props);
 
-    this.state = {
-      searchTerm: "",
-      suggestions: []
-    };
+    let cardsColor = '';
+    let tableColor = '';
+
+    if (window.localStorage.getItem('showCards') === 'true') {
+      cardsColor = '#55B88D';
+      tableColor = '#90a79d';
+    } else {
+      cardsColor = '#90a79d';
+      tableColor =  '#55B88D';
+    }
+
+    this.state = { 
+      searchTerm: '', 
+      suggestions: [],
+      cardsBtnColor: cardsColor, 
+      tableBtnColor: tableColor };
+
   }
+
   *mkCrumbs(searchParams: SearchParams, removeFilter) {
     if (!isEmpty(searchParams.q)) {
       yield (
@@ -353,142 +376,72 @@ export default class CrumbsBar extends React.Component<
     this.setState({ searchTerm: "" });
   };
 
-  render() {
-    const { searchTerm, suggestions } = this.state;
-    const { data } = this.props;
+  toggledShowCards = (type, showCards) => {
+    if (type === 'cards') {
+      this.setState({ cardsBtnColor: '#55B88D', tableBtnColor: '#90a79d' });
+    } else if (type === 'table') {
+      this.setState({ cardsBtnColor: '#90a79d', tableBtnColor: '#55B88D' });
+    }
+    this.props.toggledShowCards(showCards);
+  }
 
-    // if (this.props.siteView.length > 0) {
-    //   console.log("propssss", this.props.siteView.search.aggs.fields);
-    // }
+  loadPaginator = () => {
+
+    if (this.props.showCards) {
+      return (
+        <div className="right-align">
+          <div>
+            {this.props.recordsTotal} results
+          </div>
+          <div>
+            {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
+          </div>
+        </div>
+      )
+    }
 
     return (
-      <CrumbsBarStyleWrappper>
-        <ApolloConsumer>
-          {apolloClient => (
-            <Grid className="crumbs-bar">
-              <Row>
-                <Col xs={12} md={9}>
-                  <Form inline className="searchInput" onSubmit={this.onSubmit}>
-                    <FormGroup>
-                      <div style={{ display: "flex", flexDirection: "row" }}>
-                        <b style={{ marginRight: "8px", marginTop: "4px" }}>
-                          Search Within:
-                        </b>
-                        <Autosuggest
-                          multiSection={true}
-                          suggestions={suggestions}
-                          inputProps={{
-                            value: searchTerm,
-                            onChange: (e, searchTerm) =>
-                              this.onChange(e, searchTerm, apolloClient)
-                          }}
-                          renderSuggestion={this.renderSuggestion}
-                          renderSectionTitle={this.renderSectionTitle}
-                          getSectionSuggestions={this.getSectionSuggestions}
-                          onSuggestionSelected={this.onSuggestionSelected}
-                          onSuggestionsFetchRequested={
-                            this.onSuggestionsFetchRequested
-                          }
-                          onSuggestionsClearRequested={
-                            this.onSuggestionsClearRequested
-                          }
-                          getSuggestionValue={this.getSuggestionValue}
-                        />
-                      </div>
-                    </FormGroup>
-                    <Button type="submit">
-                      <FontAwesome name="search" />
-                    </Button>
-                  </Form>
-                </Col>
-                <Col xsHidden md={3}>
-                  <div className="right-align">
-                    {this.props.page > 0 && !this.props.loading ? (
-                      <FontAwesome
-                        className="arrow-left"
-                        name="arrow-left"
-                        style={{ cursor: "pointer", margin: "5px" }}
-                        onClick={() =>
-                          this.props.update.page(this.props.page - 1)
-                        }
-                      />
-                    ) : (
-                      <FontAwesome
-                        className="arrow-left"
-                        name="arrow-left"
-                        style={{ margin: "5px", color: "gray" }}
-                      />
-                    )}
-                    page{" "}
-                    <b>
-                      {this.props.loading ? (
-                        <div id="divsononeline">
-                          <PulseLoader color="#cccccc" size={8} />
-                        </div>
-                      ) : (
-                        `${Math.min(
-                          this.props.page + 1,
-                          this.props.pagesTotal
-                        )}/${this.props.pagesTotal}`
-                      )}{" "}
-                    </b>
-                    {this.props.page + 1 < this.props.pagesTotal &&
-                    !this.props.loading ? (
-                      <FontAwesome
-                        className="arrow-right"
-                        name="arrow-right"
-                        style={{ cursor: "pointer", margin: "5px" }}
-                        onClick={() =>
-                          this.props.update.page(this.props.page + 1)
-                        }
-                      />
-                    ) : (
-                      <FontAwesome
-                        className="arrow-right"
-                        name="arrow-right"
-                        style={{ margin: "5px", color: "gray" }}
-                      />
-                    )}
-                    <div>{this.props.recordsTotal} results</div>
-                    <div>
-                      {this.props.recordsTotal > MAX_WINDOW_SIZE
-                        ? `(showing first ${MAX_WINDOW_SIZE})`
-                        : null}
-                    </div>
-                  </div>
-                </Col>
-              </Row>
-              {/* <Row>
-          <Col md={10}>
-          </Col>
-          <Col md={2}>
-            <div className="right-align">
-              <DropdownButton title={this.props.pageSize+" Rows"} >
-                <MenuItem eventKey="1">5 Rows</MenuItem>
-                <MenuItem eventKey="2">10 Rows</MenuItem>
-                <MenuItem eventKey="3">20 Rows</MenuItem>
-                <MenuItem eventKey="4">25 Rows</MenuItem>
-                <MenuItem eventKey="5">50 Rows</MenuItem>
-                <MenuItem eventKey="5">100 Rows</MenuItem>
-              </DropdownButton>
-            </div>
-          </Col>
-        </Row> */}
-              <Row>
-                <Col md={12} style={{ padding: "10px 0px" }}>
-                  <b>Filters: </b>
-                  {Array.from(
-                    this.mkCrumbs(
-                      this.props.searchParams,
-                      this.props.removeFilter
-                    )
-                  )}
-                </Col>
-              </Row>
-            </Grid>
-          )}
-        </ApolloConsumer>
-      </CrumbsBarStyleWrappper>
-    );
+      <div className="right-align">
+        {this.props.page > 0 && !this.props.loading ? (
+          <FontAwesome
+            className="arrow-left"
+            name="arrow-left"
+            style={{ cursor: 'pointer', margin: '5px' }}
+            onClick={() => this.props.update.page(this.props.page - 1)}
+          />
+        ) : <FontAwesome
+          className="arrow-left"
+          name="arrow-left"
+          style={{ margin: '5px', color: 'gray' }}
+        />}
+        page{' '}
+        <b>
+          {this.props.loading ? <div id="divsononeline"><PulseLoader color="#cccccc" size={8} /></div>
+            : `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${this.props.pagesTotal}`}{' '}
+        </b>
+        {this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
+          <FontAwesome
+            className="arrow-right"
+            name="arrow-right"
+            style={{ cursor: 'pointer', margin: '5px' }}
+            onClick={() => this.props.update.page(this.props.page + 1)}
+          />
+        ) : <FontAwesome
+          className="arrow-right"
+          name="arrow-right"
+          style={{ margin: '5px', color: 'gray' }}
+        />}
+        <div>
+          {this.props.recordsTotal} results
+        </div>
+        <div>
+          {this.props.recordsTotal > MAX_WINDOW_SIZE ? `(showing first ${MAX_WINDOW_SIZE})` : null}
+        </div>
+      </div>
+    )
+
   }
+
+  render() {
+
 }

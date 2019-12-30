@@ -51,6 +51,7 @@ import { AggBucketMap } from "./Types";
 import SiteProvider from "containers/SiteProvider";
 import { SiteViewFragment } from "types/SiteViewFragment";
 import { preselectedFilters } from "utils/siteViewHelpers";
+import { stack  as Menu } from 'react-burger-menu';
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
@@ -110,6 +111,7 @@ const MainContainer = styled(Col)`
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 20px;
+  float: left;
 
   .rt-th {
     text-transform: capitalize;
@@ -126,21 +128,18 @@ const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
   box-sizing: border-box;
-
   .panel-title {
     a:hover {
       text-decoration: none;
       color: #fff;
     }
   }
-
   .panel-default {
     box-shadow: 0px;
     border: 0px;
     background: none;
     color: #fff;
     text-transform: capitalize;
-
     .panel-heading {
       box-shadow: 0px;
       border: 0px;
@@ -148,7 +147,6 @@ const SidebarContainer = styled(Col)`
       color: #fff;
       text-transform: capitalize;
     }
-
     .panel-collapse {
       background: #394149;
       .panel-body {
@@ -156,7 +154,6 @@ const SidebarContainer = styled(Col)`
         color: rgba(255, 255, 255, 0.7);
       }
     }
-
     .panel-title {
       font-size: 16px;
       color: #bac5d0;
@@ -213,6 +210,7 @@ interface SearchPageState {
   } | null;
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
+  showCards: Boolean;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -225,12 +223,19 @@ const DEFAULT_PARAMS: SearchParams = {
 };
 
 class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
+
   state: SearchPageState = {
     params: null,
     openedAgg: null,
     searchAggs: {},
     searchCrowdAggs: {}
+    showCards: (localStorage.getItem('showCards') === 'true') ? true : false,
   };
+
+  numberOfPages: number = 0;
+  returnNumberOfPages = (numberOfPg: number) => {
+    this.numberOfPages = numberOfPg;
+  }
 
   static getDerivedStateFromProps(
     props: SearchPageProps,
@@ -243,6 +248,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       };
     }
     return null;
+  }
+
+  toggledShowCards = (showCards: Boolean) => {
+    localStorage.setItem('showCards', showCards.toString());
+    const params:any = { ...this.state.params, page: 0 };
+    this.previousSearchData = [];
+    this.setState({ showCards, params });
+  }
+
+  previousSearchData: Array<Object> = [];
+  returnPreviousSearchData = (previousSearchData: Array<Object>) => {
+    this.previousSearchData = previousSearchData;
   }
 
   getDefaultParams = (view: SiteViewFragment) => {
@@ -316,6 +333,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params as any);
+    this.previousSearchData = [];
     if (!equals(params.q, this.state.params && this.state.params.q)) {
       // For now search doesn't work well with args list
       // Therefore we close it to refresh later on open
@@ -372,6 +390,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   renderAggs = () => {
+
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
@@ -391,9 +410,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         onOpen={this.handleOpenAgg}
       />
     );
+
   };
 
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
+
     return (
       <ParamsQueryComponent
         query={PARAMS_QUERY}
@@ -404,17 +425,24 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               view,
               data && data.searchParams
             );
-            this.setState({ params });
+          this.setState({ params:{
+            ...params,
+            page: 0,
+            pageSize: 25
+          } });
             return null;
           }
         }}
       >
         {({ data, loading, error }) => {
+
           if (error || loading) return null;
+
           const params: SearchParams = this.searchParamsFromQuery(
             view,
             data && data.searchParams
           );
+
           // hydrate state params from hash
           if (!this.state.params) {
             // this.setState({ params });
@@ -424,10 +452,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           return (
             <HashQueryComponent
               query={HASH_QUERY}
-              variables={this.state.params || undefined}
-            >
+              variables={this.state.params || undefined} >
               {({ data, loading, error }) => {
+
                 if (error || loading || !data) return null;
+
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
                   return <Redirect to={`/search/${data.searchHash}`} />;
@@ -435,14 +464,20 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 return (
                   <SearchView
-                    params={params}
-                    onBulkUpdate={this.handleBulkUpdateClick}
-                    openedAgg={this.state.openedAgg}
-                    onUpdateParams={this.handleUpdateParams}
-                    onRowClick={this.handleRowClick}
-                    onOpenAgg={this.handleOpenAgg}
-                    onAggsUpdate={this.handleAggsUpdate}
-                    onResetFilters={this.handleResetFilters(view)}
+                      params={params}
+                      onBulkUpdate={this.handleBulkUpdateClick}
+                      openedAgg={this.state.openedAgg}
+                      onUpdateParams={this.handleUpdateParams}
+                      onRowClick={this.handleRowClick}
+                      onOpenAgg={this.handleOpenAgg}
+                      onAggsUpdate={this.handleAggsUpdate}
+                      onResetFilters={this.handleResetFilters(view)}
+                      previousSearchData={this.previousSearchData}
+                      returnPreviousSearchData={this.returnPreviousSearchData}
+                      searchHash={data.searchHash}
+                      showCards={this.state.showCards}
+                      toggledShowCards={this.toggledShowCards}
+                      returnNumberOfPages={this.returnNumberOfPages}
                   />
                 );
               }}
@@ -453,11 +488,57 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
+  handleScroll = () => {
+
+    if (window.innerHeight + window.scrollY >= (document.body.scrollHeight - 100)
+        && this.state.params!.page < (this.numberOfPages - 1)
+        && this.state.showCards) {
+
+      window.removeEventListener('scroll', this.handleScroll);
+
+      const params:any = { ...this.state.params, page: (this.state.params!.page + 1) };
+      this.setState({ params });
+
+      setTimeout(
+        () => {
+          window.addEventListener('scroll', this.handleScroll);
+        },
+        1000,
+      );
+
+      return null;
+
+    }
+
+  }
+
+  componentDidMount () {
+    if (this.state.showCards) {
+      window.addEventListener('scroll', this.handleScroll);
+    } else {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  componentDidUpdate() {
+    if (this.state.showCards) {
+      window.addEventListener('scroll', this.handleScroll);
+    } else {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
+  }
+
   render() {
+
     if (this.props.ignoreUrlHash) {
+
       return (
-        <Row>
-          <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+        <Row id="menuMain">
+            {this.renderAggs()}
           <MainContainer md={10}>
             <SiteProvider>
               {site => (
@@ -470,7 +551,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   onOpenAgg={this.handleOpenAgg}
                   onAggsUpdate={this.handleAggsUpdate}
                   onResetFilters={this.handleResetFilters(site.siteView)}
-                />
+                  previousSearchData={this.previousSearchData}
+                  returnPreviousSearchData={() => this.returnPreviousSearchData}
+                  searchHash={''}
+                  showCards={this.state.showCards}
+                  toggledShowCards={this.toggledShowCards}
+                  returnNumberOfPages={this.returnNumberOfPages} />
               )}
             </SiteProvider>
           </MainContainer>
@@ -486,8 +572,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       <Switch>
         <Route
           path={`${this.props.match.path}/study/:nctId`}
-          component={SearchStudyPage}
-        />
+          component={SearchStudyPage} />
         <Route
           path={`${this.props.match.path}/bulk/`}
           component={BulkEditPage}
@@ -497,12 +582,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <SiteProvider>
               {site => (
                 <Row>
-                  <SidebarContainer md={2}>
-                    {this.renderAggs()}
-                  </SidebarContainer>
-                  <MainContainer md={10}>
-                    {this.renderSearch(hash, site.siteView)}
-                  </MainContainer>
+                  <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+                  <div id="main_search" style={{ overflowY: 'auto' }}>
+                    <MainContainer style={{ width: '100%' }}>
+                      {this.renderSearch(hash, site.siteView)}
+                    </MainContainer>
+                  </div>
                 </Row>
               )}
             </SiteProvider>
