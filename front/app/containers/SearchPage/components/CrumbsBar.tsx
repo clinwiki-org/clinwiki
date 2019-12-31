@@ -452,7 +452,7 @@ export default class CrumbsBar extends React.Component<
           {apolloClient => (
             <Grid className="crumbs-bar">
               <Row>
-                <Col xs={12} md={8}>
+                <Col xs={8} md={8}>
                   <Form inline className="searchInput" onSubmit={this.onSubmit}>
                     <FormGroup>
                       <div style={{ display: "flex", flexDirection: "row" }}>
@@ -490,7 +490,7 @@ export default class CrumbsBar extends React.Component<
                     </CurrentUser>
                   </Form>
                 </Col>
-                <Col md={2}>
+                <Col md={2} xs={4}>
                   <div className="right-align">
                     <ControlLabel>View Style: </ControlLabel>{' '}
                     <ButtonGroup>
