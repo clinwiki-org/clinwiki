@@ -9,6 +9,10 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 8
+- Type ahead search based on facet values [#207](https://github.com/clinwiki-org/clinwiki/issues/207)
+- Link autosuggest to site config [#223](https://github.com/clinwiki-org/clinwiki/issues/223)
+
 ### Version 7
 - Fix [#222](https://github.com/clinwiki-org/clinwiki/issues/222) - Study summary
 
