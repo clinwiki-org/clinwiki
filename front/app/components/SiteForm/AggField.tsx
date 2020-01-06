@@ -29,7 +29,7 @@ const FiltersContainer = styled.div`
 const ContainerRow = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
 const CrumbsContainer = styled.div`
@@ -76,7 +76,7 @@ const StyledKind = styled(FormControl)`
 const StyledCheckbox = styled(Checkbox)`
   display: flex;
   align-items: center;
-  margin-left: 15px;
+  margin-left: 5px;
   marign-top: 7px;
 `;
 
@@ -150,7 +150,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   render() {
     const selected = new Set(this.props.field.preselected.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
-    // console.log(this.props);
     return (
       <>
         <h4>
@@ -160,15 +159,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             .join(" ")}
         </h4>
         <Container>
-          <ContainerRow>
-            <h5>Auto-Suggest</h5>
-            {/* {JSON.stringify(this.props.field)} */}
-            <StyledCheckbox
-              name={`set:${this.getPath()}.autoSuggest`}
-              checked={this.props.field.autoSuggest}
-              onChange={this.handleCheckboxToggle(this.props.field.autoSuggest)}
-            />
-          </ContainerRow>
           <StyledLabel>Preselected values</StyledLabel>
           <CrumbsContainer>
             {Array.from(selected).map(value => (
@@ -181,7 +171,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               />
             ))}
           </CrumbsContainer>
-
           <FiltersContainer>
             <FilterContainer>
               <AggDropDown
@@ -204,7 +193,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               />
             </FilterContainer>
           </FiltersContainer>
-
           <StyledLabel>Visible options</StyledLabel>
           <CrumbsContainer>
             {Array.from(visibleOptions).map(value => (
@@ -217,7 +205,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               />
             ))}
           </CrumbsContainer>
-
           <FiltersContainer>
             <FilterContainer>
               <AggDropDown
@@ -260,6 +247,18 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="DATE">Date</option>
             </StyledFormControl>
           </div>
+          {this.props.field.name !== "average_rating" && (
+            <ContainerRow>
+              <StyledCheckbox
+                name={`set:${this.getPath()}.autoSuggest`}
+                checked={this.props.field.autoSuggest}
+                onChange={this.handleCheckboxToggle(
+                  this.props.field.autoSuggest
+                )}
+              />
+              <h5>Add to Auto-Suggest</h5>
+            </ContainerRow>
+          )}
         </Container>
       </>
     );
