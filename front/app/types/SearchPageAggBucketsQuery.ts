@@ -39,5 +39,6 @@ export interface SearchPageAggBucketsQueryVariables {
   page: number;
   pageSize: number;
   aggOptionsFilter?: string | null;
-  fields: string[];
+  aggFields: string[];
+  crowdAggFields: string[];
 }
