@@ -146,6 +146,7 @@ interface CrumbsBarProps {
   searchParams: SearchParams;
   onBulkUpdate: () => void;
   removeFilter: AggCallback;
+  addFilter: AggCallback;
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
   page: number;
@@ -365,7 +366,10 @@ export default class CrumbsBar extends React.Component<
     event,
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
   ) => {
-    this.setState({ searchTerm: suggestionValue }, () => this.onSubmit(event));
+    console.log(sectionIndex);
+    const section = this.state.suggestions[sectionIndex];
+    console.log(section);
+    this.props.addFilter(section.name, suggestionValue);
   };
 
   renderSectionTitle = section => {
