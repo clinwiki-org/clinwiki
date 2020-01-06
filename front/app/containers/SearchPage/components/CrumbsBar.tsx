@@ -32,10 +32,12 @@ const AUTOSUGGEST_QUERY = gql`
     $page: Int!
     $pageSize: Int!
     $aggOptionsFilter: String
-    $fields: [String!]!
+    $aggFields: [String!]!
+    $crowdAggFields: [String!]!
   ) {
     autocomplete(
-      fields: $fields
+      aggFields: $aggFields
+      crowdAggFields: $crowdAggFields
       params: {
         agg: $agg
         q: $q
@@ -258,7 +260,7 @@ export default class CrumbsBar extends React.Component<
     }
   }
 
-  getFieldsFromSubsiteConfig = (aggs, crowdAggs) => {
+  getAggFieldsFromSubsiteConfig = aggs => {
     let aggFields: string[] = [];
     if (aggs.length > 0) {
       aggs.map(i => {
@@ -267,22 +269,26 @@ export default class CrumbsBar extends React.Component<
         }
       });
     }
-    if (crowdAggs.length > 0) {
-      crowdAggs.map(i => {
-        if (i.autoSuggest) {
-          aggFields.push(i.name);
-        }
-      });
-    }
     if (aggFields.length <= 0) {
-      // if no fields comeback, at least render these 3
       aggFields = [
         "browse_condition_mesh_terms",
-        "facility_cities",
-        "interventions_mesh_terms"
+        "browse_interventions_mesh_terms",
+        "facility_countries"
       ];
     }
     return aggFields;
+  };
+
+  getCrowdAggFieldsFromSubsiteConfig = crowdAggs => {
+    let crowdAggFields: string[] = [];
+    if (crowdAggs.length > 0) {
+      crowdAggs.map(i => {
+        if (i.autoSuggest) {
+          crowdAggFields.push(i.name);
+        }
+      });
+    }
+    return crowdAggFields;
   };
 
   queryAutoSuggest = async apolloClient => {
@@ -293,10 +299,14 @@ export default class CrumbsBar extends React.Component<
       return { children: [], key: i };
     });
 
-    const fields = this.getFieldsFromSubsiteConfig(
-      data.siteView.search.aggs.fields,
+    const aggFields = this.getAggFieldsFromSubsiteConfig(
+      data.siteView.search.aggs.fields
+    );
+
+    const crowdAggFields = this.getCrowdAggFieldsFromSubsiteConfig(
       data.siteView.search.crowdAggs.fields
     );
+
     const query = AUTOSUGGEST_QUERY;
 
     const variables = {
@@ -311,14 +321,15 @@ export default class CrumbsBar extends React.Component<
         key: "AND"
       },
       sorts: [],
-      fields: fields
+      aggFields: aggFields,
+      crowdAggFields: crowdAggFields
     };
 
     const response = await apolloClient.query({
       query,
       variables
     });
-
+    console.log(response);
     const array = response.data.autocomplete.autocomplete;
 
     this.setState({
@@ -339,7 +350,8 @@ export default class CrumbsBar extends React.Component<
   };
 
   renderSuggestion = suggestion => {
-    return <span>{`${suggestion.key} (${suggestion.docCount})`}</span>;
+    const capitalized = this.capitalize(suggestion.key);
+    return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
   };
 
   getSectionSuggestions = section => {

@@ -15,7 +15,8 @@ module Types
 
     field :autocomplete, SearchResultSetType, null: false do
       argument :search_hash, String, required: false
-      argument :fields, [String], required: true
+      argument :aggFields, [String], required: true
+      argument :crowdAggFields, [String], required: true
       argument :params, type: SearchInputType, required: false
     end
 
@@ -80,17 +81,22 @@ module Types
       )
     end
 
-    def autocomplete(search_hash: nil, params: nil, fields: [])
+    def autocomplete(search_hash: nil, params: nil, agg_fields: [], crowd_agg_fields: [])
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
-      # fields = ['browse_condition_mesh_terms', 'browse_interventions_mesh_terms', 'facility_countries']
-      # fields = ['browse_condition_mesh_terms', 'browse_interventions_mesh_terms', 'facility_countries']
       list = []
-      fields.each do |field_name|
+      agg_fields.each do |field_name|
         result = search_service.agg_buckets_for_field(field: field_name, current_site: context[:current_site])
         list << Hashie::Mash.new(
           name: field_name,
           results: result[field_name.to_sym][:buckets]
+        )
+      end
+      crowd_agg_fields.each do |field_name|
+        result = search_service.agg_buckets_for_field(field: field_name, current_site: context[:current_site], is_crowd_agg: true)
+        list << Hashie::Mash.new(
+          name: field_name,
+          results: result["fm_#{field_name}".to_sym][:buckets]
         )
       end
       Hashie::Mash.new(autocomplete: list)
