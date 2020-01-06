@@ -1,6 +1,6 @@
 namespace :geocode do
   desc "Adds all facilities to the queue to be geocoded. (from US Interventional studies)"
-  task queue: [:days] => :environment do |_t, args|
+  task :queue, [:days] => :environment do |_t, args|
     studies = Study.where("updated_at > ?", args[:days].to_i.days.ago)
     if studies.length > 4_000
       facilities = Facility.joins(:study).

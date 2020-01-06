@@ -4,7 +4,55 @@ class Facility < AactRecord
   has_many :facility_contacts, dependent: :restrict_with_exception
   has_many :facility_investigators, dependent: :restrict_with_exception
 
-  geocoded_by :address
+  belongs_to :facility_location, foreign_key: [:name, :city, :state, :zip, :country]
+
+  # this runs the geocoding algorithm
+  # 1. attempt with "name, city state zip country"
+  # 2. if no partial match => status: good
+  # 3. if partial match attempt with "city state zip country"
+  # 4. if no partial match => status: zip
+  # 5. if partial match => status: bad
+  def geocode
+    unless facility_location
+      self.facility_location = FacilityLocation.new(
+        name: name,
+        city: city,
+        state: state,
+        zip: zip,
+        country: country
+      )
+    end
+
+    full_name = "#{name}, #{city} #{state} #{zip} #{country}"
+    location = Location.find_or_create_by(name: full_name)
+    location.geocode unless location.checked
+
+    if location.partial_match
+      zip_name = "#{city} #{state} #{zip} #{country}"
+      zip = Location.find_or_create_by(name: zip_name)
+      zip.geocode unless zip.checked
+
+      if zip.partial_match
+        facility_location.update(
+          latitude: nil,
+          longitude: nil,
+          status: 'bad'
+        )
+      else
+        facility_location.update(
+          latitude: zip.latitude,
+          longitude: zip.longitude,
+          status: 'zip'
+        )
+      end
+    else
+      facility_location.update(
+        latitude: location.latitude,
+        longitude: location.longitude,
+        status: 'good'
+      )
+    end
+  end
 
   def location_name
     "#{name}, #{city} #{state} #{zip} #{country}"
