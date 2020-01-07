@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
-import { Nav, NavItem, Row, Col, Button } from 'react-bootstrap';
+import { Nav, NavItem, Row, Col, Button, Panel } from 'react-bootstrap';
 import { Link, match, Route, Switch, Redirect } from 'react-router-dom';
 import { History, Location } from 'history';
 import ReactStars from 'react-stars';
@@ -27,6 +27,7 @@ import {
   StudyPagePrefetchQuery,
   StudyPagePrefetchQueryVariables,
 } from 'types/StudyPagePrefetchQuery';
+import StudyPageSections from './components/StudyPageSections';
 
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
@@ -50,6 +51,7 @@ import { starColor } from 'utils/constants';
 import StudyPageCounter from './components/StudyPageCounter';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import { PulseLoader, ScaleLoader } from 'react-spinners';
+import { CSSTransition } from 'react-transition-group';
 
 interface StudyPageProps {
   history: History;
@@ -175,6 +177,35 @@ const SidebarContainer = styled(Col)`
   }
 `;
 
+const StudySummaryContainer = styled.div`
+
+  .container {
+
+    div {
+
+      .panel-default {
+
+        background: none;
+        border: none;
+        borderRadius: 0;
+        boxShadow: none;
+
+        .panel-heading {
+          cursor: pointer;
+          background: none;
+          color: black;
+          border-bottom: 2px solid;
+          border-color: #8bb7a4;
+        }
+
+      }
+
+    }
+
+  }
+
+`;
+
 const BackButtonWrapper = styled.div`
   width: 90%;
   margin: auto;
@@ -231,13 +262,20 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
+
     const sections = this.getSections(view);
     const noWikiSections = reject(propEq('name', 'wiki'), sections);
     const wiki = find(propEq('name', 'wiki'), sections);
+
     // @ts-ignore
-    return !wiki || wiki.hidden
-      ? noWikiSections
-      : ([...noWikiSections, wiki] as Section[]);
+    const retVar = !wiki || wiki.hidden ? noWikiSections : ([...noWikiSections, wiki] as Section[]);
+
+    console.log('getSectionsForRoutes: ');
+    console.log(retVar);
+
+    // @ts-ignore
+    return retVar;
+
   };
 
   getComponent = (name: string): any => {
@@ -356,20 +394,22 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     if (link === undefined) return null;
 
     return (
-      <Button
-        style={{ margin: 'auto', width: '100%' }}
-        onClick={this.handleNavButtonClick(link!, view)}
-        disabled={link === null}
-      >
-        {name}
-      </Button>
+      <div style={{ paddingTop: '10px' }} >
+        <Button
+          style={{ margin: 'auto', float: 'left' }}
+          onClick={this.handleNavButtonClick(link!, view)}
+          disabled={link === null}
+        >
+          {name}
+        </Button>
+      </div>
     );
   };
 
   renderReviewsSummary = (data: StudyPageQuery | undefined) => {
     if (!data || !data.study) {
       return (
-        <ReviewsWrapper>
+        <ReviewsWrapper style={{ float: 'left' }}>
           <div>
             <ReactStars count={5} color2={starColor} edit={false} value={0} />
             <div>{'0 Reviews'}</div>
@@ -387,13 +427,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
             edit={false}
             value={data.study.averageRating}
           />
-          <div>{`${data.study.reviewsCount} Reviews`}</div>
+          <div style={{ color: 'rgba(255, 255, 255, 0.5)' }}>{`${data.study.reviewsCount} Reviews`}</div>
         </div>
       </ReviewsWrapper>
     );
   };
 
   render() {
+
     return (
       <SiteProvider>
         {site => (
@@ -408,46 +449,23 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 <QueryComponent
                   query={QUERY}
                   variables={{ nctId: this.props.match.params.nctId }}
-                  fetchPolicy="cache-only"
-                >
+                  fetchPolicy="cache-only" >
                   {({ data, loading, error }) => (
                     <StudyWrapper>
-                      <Row>
-                        <SidebarContainer md={2}>
-                          <BackButtonWrapper>
-                            {this.renderBackButton(
-                              site.siteView,
-                              '⤺︎ Back',
-                              `/search/${this.props.match.params.searchId}`,
-                            )}
-                          </BackButtonWrapper>
-
+                      <Row md={12}>
+                        <BackButtonWrapper>
+                          {this.renderBackButton(
+                            site.siteView,
+                            '⤺︎ Back',
+                            `/search/${this.props.match.params.searchId}`,
+                          )}
                           {this.renderReviewsSummary(data)}
-                          <WikiToggle
-                            value={this.state.wikiToggleValue}
-                            onChange={this.handleWikiToggleChange}
-                          />
-                          <Nav
-                            bsStyle="pills"
-                            stacked
-                            activeKey={this.getCurrentSectionPath(
-                              site.siteView,
-                            )}
-                            onSelect={this.handleSelect}
-                          >
-                            {this.getSections(site.siteView).map(
-                              (section: Section) => (
-                                <NavItem
-                                  key={section.path}
-                                  eventKey={section.path}
-                                >
-                                  {section.displayName}
-                                </NavItem>
-                              ),
-                            )}
-                          </Nav>
-                        </SidebarContainer>
-                        <MainContainer md={10}>
+                        </BackButtonWrapper>
+                      </Row>
+                      <Row>
+
+                        <MainContainer md={12}>
+
                           <div className="container">
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
@@ -486,51 +504,29 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           </div>
 
                           {data && data.study && (
-                            <StudySummary
-                              study={data.study}
-                              workflow={workflow}
-                              workflowsView={workflowsView}
-                            />
+                            <StudySummaryContainer>
+                              <StudySummary
+                                study={data.study}
+                                workflow={workflow}
+                                workflowsView={workflowsView}
+                              />
+                            </StudySummaryContainer>
                           )}
-                          <div className="container">
-                            <Switch>
-                              {this.getSectionsForRoutes(site.siteView).map(
-                                section =>
-                                  section ? (
-                                    <Route
-                                      key={section.path}
-                                      path={`${this.props.match.path}${section.path}`}
-                                      render={props => {
-                                        const Component = section.component;
 
-                                        return (
-                                          // @ts-ignore
-                                          <Component
-                                            {...props}
-                                            workflowName={
-                                              this.props.workflowName
-                                            }
-                                            metaData={section.metaData}
-                                            onLoaded={this.handleLoaded}
-                                            isWorkflow={this.props.isWorkflow}
-                                            nextLink={this.props.nextLink}
-                                            workflowsView={workflowsView}
-                                          />
-                                        );
-                                      }}
-                                    />
-                                  ) : null,
-                              )}
-                              {!this.props.isWorkflow && (
-                                <Redirect
-                                  to={`${this.props.match.url}${
-                                    this.getSectionsForRoutes(site.siteView)[0]
-                                      .path
-                                  }`}
-                                />
-                              )}
-                            </Switch>
+                          <div className="container">
+                            <StudyPageSections
+                                history={this.props.history}
+                                location={this.props.location}
+                                nctId={this.props.match.params.nctId}
+                                sections={this.getSections(site.siteView)}
+                                isWorkflow={this.props.isWorkflow}
+                                nextLink={this.props.nextLink}
+                                workflowName={this.props.workflowName}
+                                onLoad={this.handleLoaded}
+                                workflowsView={workflowsView}
+                                match={this.props.match} />
                           </div>
+
                           <div className="container">
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(

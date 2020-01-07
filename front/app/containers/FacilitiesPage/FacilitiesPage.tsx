@@ -51,6 +51,7 @@ const MapContainer = styled.div`
 `;
 
 interface FacilitiesPageProps {
+  nctId: string;
   history: History;
   match: match<{ nctId: string }>;
   onLoaded?: () => void;
@@ -248,7 +249,7 @@ class FacilitiesPage extends React.PureComponent<
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
+        variables={{ nctId: this.props.nctId }}
       >
         {({ data, loading, error }) => {
           if (

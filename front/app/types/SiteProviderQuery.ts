@@ -71,6 +71,7 @@ export interface SiteProviderQuery_site_siteView_search_aggs_fields {
   display: FieldDisplay;
   preselected: SiteProviderQuery_site_siteView_search_aggs_fields_preselected;
   visibleOptions: SiteProviderQuery_site_siteView_search_aggs_fields_visibleOptions;
+  autoSuggest: boolean;
   rank: number | null;
 }
 
@@ -105,6 +106,7 @@ export interface SiteProviderQuery_site_siteView_search_crowdAggs_fields {
   preselected: SiteProviderQuery_site_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: SiteProviderQuery_site_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
+  autoSuggest: boolean;
 }
 
 export interface SiteProviderQuery_site_siteView_search_crowdAggs_selected {

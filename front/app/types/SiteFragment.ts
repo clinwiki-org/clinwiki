@@ -71,6 +71,7 @@ export interface SiteFragment_siteView_search_aggs_fields {
   display: FieldDisplay;
   preselected: SiteFragment_siteView_search_aggs_fields_preselected;
   visibleOptions: SiteFragment_siteView_search_aggs_fields_visibleOptions;
+  autoSuggest: boolean;
   rank: number | null;
 }
 
@@ -105,6 +106,7 @@ export interface SiteFragment_siteView_search_crowdAggs_fields {
   preselected: SiteFragment_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: SiteFragment_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
+  autoSuggest: boolean;
 }
 
 export interface SiteFragment_siteView_search_crowdAggs_selected {

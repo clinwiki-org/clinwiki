@@ -1,25 +1,25 @@
-import { SiteViewFragment } from 'types/SiteViewFragment';
-import { SiteViewMutationInput, SiteViewOperation } from 'types/globalTypes';
-import { find, propEq, reject } from 'ramda';
-import { cloneDeep } from 'apollo-utilities';
+import { SiteViewFragment } from "types/SiteViewFragment";
+import { SiteViewMutationInput, SiteViewOperation } from "types/globalTypes";
+import { find, propEq, reject } from "ramda";
+import { cloneDeep } from "apollo-utilities";
 
 export const createMutation = (
   name: string,
-  value: any,
+  value: any
 ): SiteViewMutationInput => {
-  const [operation, path] = name.split(':');
-  const pathComponents = path.split('.');
+  const [operation, path] = name.split(":");
+  const pathComponents = path.split(".");
   let typedOperation: SiteViewOperation;
   switch (operation.toUpperCase()) {
-    case 'PUSH':
+    case "PUSH":
       typedOperation = SiteViewOperation.PUSH;
       break;
 
-    case 'SET':
+    case "SET":
       typedOperation = SiteViewOperation.SET;
       break;
 
-    case 'DELETE':
+    case "DELETE":
       typedOperation = SiteViewOperation.DELETE;
       break;
 
@@ -30,7 +30,7 @@ export const createMutation = (
   return {
     path: pathComponents,
     operation: typedOperation,
-    payload: value,
+    payload: value
   };
 };
 
@@ -40,30 +40,30 @@ export const getViewValueByPath = (path: string[], view: SiteViewFragment) => {
 };
 
 export const serializeMutation = (
-  mutation: SiteViewMutationInput,
+  mutation: SiteViewMutationInput
 ): SiteViewMutationInput => {
   const copy = cloneDeep(mutation);
-  if (typeof copy.payload !== 'string') {
+  if (typeof copy.payload !== "string") {
     copy.payload = JSON.stringify(copy.payload);
   }
-
   return copy;
 };
 
 export const updateView = (
   view: SiteViewFragment,
-  mutations: SiteViewMutationInput[],
+  mutations: SiteViewMutationInput[]
 ): SiteViewFragment => {
   const result = cloneDeep(view);
   mutations.forEach(mutation => applyOne(result, mutation));
   return result;
 };
-  
+
 const tryParse = (data, defaultValue) => {
-  try { return JSON.parse(data); }
-  catch(e) {}
+  try {
+    return JSON.parse(data);
+  } catch (e) {}
   return defaultValue;
-}
+};
 
 const applyOne = (view: SiteViewFragment, mutation: SiteViewMutationInput) => {
   const [key, mutationView] = getLastHashByPath(mutation.path, view);
@@ -81,12 +81,12 @@ const applyOne = (view: SiteViewFragment, mutation: SiteViewMutationInput) => {
       break;
 
     case SiteViewOperation.DELETE:
-      if (typeof mutationView[key] === 'object') {
+      if (typeof mutationView[key] === "object") {
         delete mutationView[key];
       }
       if (Array.isArray(mutationView[key])) {
         mutationView[key] = reject(
-          (x: any) => x === mutation.payload || x.name === mutation.payload,
+          (x: any) => x === mutation.payload || x.name === mutation.payload
         );
       }
       break;
@@ -98,14 +98,14 @@ const applyOne = (view: SiteViewFragment, mutation: SiteViewMutationInput) => {
 
 const getLastHashByPath = (
   components: string[],
-  view: SiteViewFragment,
+  view: SiteViewFragment
 ): [string, any] => {
   let [key, ...currentComponents] = components;
   let currentView = view as any;
   while (currentComponents.length && currentView) {
     if (Array.isArray(currentView)) {
-      currentView = find(propEq('name', key), currentView);
-    } else if (typeof currentView === 'object') {
+      currentView = find(propEq("name", key), currentView);
+    } else if (typeof currentView === "object") {
       currentView = currentView[key];
     } else {
       currentView = null;

@@ -9,7 +9,7 @@ const MultiCrumb = (props: {
   onClick: (s: string) => void;
 }) => {
   return (
-    <Label>
+    <Label className="btn">
       {props.category && <i>{props.category}:</i>}
       {props.values.map((v, i) => {
         const label = props.labels ? props.labels[i] : v;

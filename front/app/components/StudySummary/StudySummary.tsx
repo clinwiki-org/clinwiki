@@ -9,6 +9,7 @@ import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { prop } from 'ramda';
+import { sentanceCaseFromCamelCase } from 'utils/helpers';
 
 interface StudySummaryProps {
   study: StudySummaryFragment;
@@ -123,10 +124,11 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
             rank: null,
           })),
         ).map(prop('name'))
-      : null;
+      : ["nctId", "type", "overallStatus", "completionDate", "enrollment", "source"];
 
     return (
       <div className="container">
+
         <Helmet>
           <title>{`Wiki - ${this.props.study.briefTitle}`}</title>
         </Helmet>
@@ -134,43 +136,23 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
         <CollapsiblePanel header={this.props.study.briefTitle || ''}>
           <Table striped bordered condensed>
             <tbody>
-              {(!allowedFields || allowedFields.includes('nct_id')) && (
-                <tr>
-                  <th>NCT ID</th>
-                  <td><a href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`} target="_blank">{this.props.study.nctId}</a></td>
-                </tr>
-              )}
-              {(!allowedFields || allowedFields.includes('type')) && (
-                <tr>
-                  <th>Type</th>
-                  <td>{this.props.study.type}</td>
-                </tr>
-              )}
-              {(!allowedFields || allowedFields.includes('status')) && (
-                <tr>
-                  <th>Status</th>
-                  <td>{this.props.study.overallStatus}</td>
-                </tr>
-              )}
-              {(!allowedFields ||
-                allowedFields.includes('completion_date')) && (
-                <tr>
-                  <th>Primary Completion Date</th>
-                  <td>{this.props.study.completionDate}</td>
-                </tr>
-              )}
-              {(!allowedFields || allowedFields.includes('enrollment')) && (
-                <tr>
-                  <th>Enrollment</th>
-                  <td>{this.props.study.enrollment}</td>
-                </tr>
-              )}
-              {(!allowedFields || allowedFields.includes('source')) && (
-                <tr>
-                  <th>Source</th>
-                  <td>{this.props.study.source}</td>
-                </tr>
-              )}
+              { allowedFields.map(name =>
+                  name == "nctId" ?
+                    // Special case nctID to include a link
+                    <tr key={name}>
+                      <th>NCT ID</th>
+                      <td>
+                        <a href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`}>
+                        {this.props.study.nctId}
+                        </a>
+                      </td>
+                    </tr>
+                    :
+                    <tr key={name}>
+                      <th>{sentanceCaseFromCamelCase(name)}</th>
+                      <td>{this.props.study[name]}</td>
+                    </tr>)
+              }
             </tbody>
           </Table>
         </CollapsiblePanel>

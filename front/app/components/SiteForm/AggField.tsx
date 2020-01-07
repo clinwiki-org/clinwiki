@@ -1,16 +1,17 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import aggToField from 'utils/aggs/aggToField';
-import { FormControl } from 'react-bootstrap';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
-import AggDropDown from 'containers/AggDropDown';
-import { reject, equals } from 'ramda';
-import { AggKind } from 'containers/SearchPage/shared';
-import { camelCase, capitalize } from 'utils/helpers';
-import MultiCrumb from 'components/MultiCrumb';
+import * as React from "react";
+import styled from "styled-components";
+import aggToField from "utils/aggs/aggToField";
+import { FormControl } from "react-bootstrap";
+import { SiteViewFragment_search_aggs_fields } from "types/SiteViewFragment";
+import AggDropDown from "containers/AggDropDown";
+import { reject, equals } from "ramda";
+import { AggKind } from "containers/SearchPage/shared";
+import { Checkbox } from "react-bootstrap";
+import { camelCase, capitalize } from "utils/helpers";
+import MultiCrumb from "components/MultiCrumb";
 
 interface AggFieldProps {
-  kind: 'aggs' | 'crowdAggs';
+  kind: "aggs" | "crowdAggs";
   field: SiteViewFragment_search_aggs_fields;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
@@ -18,10 +19,17 @@ interface AggFieldProps {
 interface AggFieldState {
   isValuesOpen: boolean;
   isVisibleOptionsOpen: boolean;
+  isChecked: boolean;
 }
 
 const FiltersContainer = styled.div`
   display: flex;
+`;
+
+const ContainerRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 `;
 
 const CrumbsContainer = styled.div`
@@ -65,6 +73,13 @@ const StyledKind = styled(FormControl)`
   margin-left: 15px;
 `;
 
+const StyledCheckbox = styled(Checkbox)`
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+  marign-top: 7px;
+`;
+
 const StyledLabel = styled.label`
   color: white;
 `;
@@ -82,41 +97,50 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   state: AggFieldState = {
     isValuesOpen: false,
     isVisibleOptionsOpen: false,
+    isChecked: false
   };
 
   getPath = () => `search.${this.props.kind}.fields.${this.props.field.name}`;
 
-  handleAddFilter = (kind: 'preselected' | 'visibleOptions') => (
+  handleAddFilter = (kind: "preselected" | "visibleOptions") => (
     aggName: string,
     aggValue: string,
-    isCrowd: boolean,
+    isCrowd: boolean
   ) => {
     this.props.onAddMutation({
       currentTarget: {
         name: `set:${this.getPath()}.${kind}.values`,
-        value: [...this.props.field[kind].values, aggValue],
-      },
+        value: [...this.props.field[kind].values, aggValue]
+      }
     });
   };
 
-  handleRemoveFilter = (kind: 'preselected' | 'visibleOptions') => (
+  handleCheckboxToggle = value => (e: {
+    currentTarget: { name: string; value: any };
+  }) => {
+    this.props.onAddMutation({
+      currentTarget: { name: e.currentTarget.name, value: !value }
+    });
+  };
+
+  handleRemoveFilter = (kind: "preselected" | "visibleOptions") => (
     aggName: string,
     aggValue: string,
-    isCrowd: boolean,
+    isCrowd: boolean
   ) => {
     this.props.onAddMutation({
       currentTarget: {
         name: `set:${this.getPath()}.${kind}.values`,
-        value: reject(equals(aggValue), this.props.field.preselected.values),
-      },
+        value: reject(equals(aggValue), this.props.field.preselected.values)
+      }
     });
   };
 
-  handleOpen = (kind: 'preselected' | 'visibleOptions') => (
+  handleOpen = (kind: "preselected" | "visibleOptions") => (
     agg: string,
-    aggKind: AggKind,
+    aggKind: AggKind
   ) => {
-    if (kind === 'preselected') {
+    if (kind === "preselected") {
       this.setState({ isValuesOpen: !this.state.isValuesOpen });
     } else {
       this.setState({ isVisibleOptionsOpen: !this.state.isVisibleOptionsOpen });
@@ -130,9 +154,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       <>
         <h4>
           {aggToField(this.props.field.name)
-            .split('_')
+            .split("_")
             .map(capitalize)
-            .join(' ')}
+            .join(" ")}
         </h4>
         <Container>
           <StyledLabel>Preselected values</StyledLabel>
@@ -142,35 +166,33 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 key={value}
                 values={[value]}
                 onClick={value =>
-                  this.handleRemoveFilter('preselected')('', value, false)
+                  this.handleRemoveFilter("preselected")("", value, false)
                 }
               />
             ))}
           </CrumbsContainer>
-
           <FiltersContainer>
             <FilterContainer>
               <AggDropDown
                 agg={this.props.field.name}
                 aggKind={this.props.kind}
                 searchParams={{
-                  q: ({ key: 'AND', children: [] } as unknown) as string[],
+                  q: ({ key: "AND", children: [] } as unknown) as string[],
                   page: 0,
                   pageSize: 25,
                   aggFilters: [],
                   crowdAggFilters: [],
-                  sorts: [],
+                  sorts: []
                 }}
                 display={this.props.field.display}
                 isOpen={this.state.isValuesOpen}
                 selectedKeys={selected}
-                addFilter={this.handleAddFilter('preselected')}
-                removeFilter={this.handleRemoveFilter('preselected')}
-                onOpen={this.handleOpen('preselected')}
+                addFilter={this.handleAddFilter("preselected")}
+                removeFilter={this.handleRemoveFilter("preselected")}
+                onOpen={this.handleOpen("preselected")}
               />
             </FilterContainer>
           </FiltersContainer>
-
           <StyledLabel>Visible options</StyledLabel>
           <CrumbsContainer>
             {Array.from(visibleOptions).map(value => (
@@ -178,31 +200,30 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 key={value}
                 values={[value]}
                 onClick={value =>
-                  this.handleRemoveFilter('visibleOptions')('', value, false)
+                  this.handleRemoveFilter("visibleOptions")("", value, false)
                 }
               />
             ))}
           </CrumbsContainer>
-
           <FiltersContainer>
             <FilterContainer>
               <AggDropDown
                 agg={this.props.field.name}
                 aggKind={this.props.kind}
                 searchParams={{
-                  q: ({ key: 'AND', children: [] } as unknown) as string[],
+                  q: ({ key: "AND", children: [] } as unknown) as string[],
                   page: 0,
                   pageSize: 25,
                   aggFilters: [],
                   crowdAggFilters: [],
-                  sorts: [],
+                  sorts: []
                 }}
                 display={this.props.field.display}
                 isOpen={this.state.isVisibleOptionsOpen}
                 selectedKeys={visibleOptions}
-                addFilter={this.handleAddFilter('visibleOptions')}
-                removeFilter={this.handleRemoveFilter('visibleOptions')}
-                onOpen={this.handleOpen('visibleOptions')}
+                addFilter={this.handleAddFilter("visibleOptions")}
+                removeFilter={this.handleRemoveFilter("visibleOptions")}
+                onOpen={this.handleOpen("visibleOptions")}
               />
             </FilterContainer>
           </FiltersContainer>
@@ -226,6 +247,18 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="DATE">Date</option>
             </StyledFormControl>
           </div>
+          {this.props.field.name !== "average_rating" && (
+            <ContainerRow>
+              <StyledCheckbox
+                name={`set:${this.getPath()}.autoSuggest`}
+                checked={this.props.field.autoSuggest}
+                onChange={this.handleCheckboxToggle(
+                  this.props.field.autoSuggest
+                )}
+              />
+              <h5>Add to Auto-Suggest</h5>
+            </ContainerRow>
+          )}
         </Container>
       </>
     );
