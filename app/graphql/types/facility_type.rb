@@ -8,13 +8,16 @@ module Types
     field :state, String, null: false
     field :zip, String, null: false
     field :country, String, null: false
-    field :latitude, Float, null: true
-    field :longitude, Float, null: true
 
+    field :location, LocationType, null: true
     field :contacts, [FacilityContactType], null: false
 
     def contacts
       Loaders::Association.for(Facility, :facility_contacts).load(object)
+    end
+
+    def location
+      Loaders::Association.for(Facility, :facility_location).load(object)
     end
   end
 end
