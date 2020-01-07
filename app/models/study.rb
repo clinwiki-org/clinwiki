@@ -309,6 +309,13 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     self.extended_interventions_raw = nil
   end
 
+  def geocode
+    facilities.where(country: 'United States').each do |facility|
+      facility.geocode
+      sleep 0.1
+    end
+  end
+
   def self.preload_extended_interventions(studies) # rubocop:disable Metrics/MethodLength
     studies = studies.is_a?(Array) ? studies : [studies]
     study_groups = studies.group_by(&:nct_id)
