@@ -405,12 +405,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   transformCrowdAggs = (
     aggs: SearchPageSearchQuery_crowdAggs_aggs[]
   ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
-    // @ts-ignore
     return pipe(
       head,
       prop("buckets"),
       groupBy(prop("key")),
       map(() => [])
+    // @ts-ignore
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
   };
 

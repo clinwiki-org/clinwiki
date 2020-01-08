@@ -142,7 +142,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
                     <tr key={name}>
                       <th>NCT ID</th>
                       <td>
-                        <a href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`}>
+                        <a href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`} target="_blank">
                         {this.props.study.nctId}
                         </a>
                       </td>

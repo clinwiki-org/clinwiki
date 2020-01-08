@@ -43,12 +43,12 @@ ActiveRecord::Schema.define(version: 2019_12_31_232856) do
 
   create_table "locations", force: :cascade do |t|
     t.string "name"
-    t.string "location_type"
-    t.boolean "partial_match"
     t.float "latitude"
     t.float "longitude"
     t.datetime "checked"
     t.string "last_error"
+    t.string "location_type"
+    t.string "partial_match"
     t.index ["name"], name: "index_locations_on_name", unique: true
   end
 

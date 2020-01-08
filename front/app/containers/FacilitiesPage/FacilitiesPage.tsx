@@ -77,8 +77,10 @@ const FRAGMENT = gql`
     nctId
     state
     status
-    latitude
-    longitude
+    location {
+      latitude
+      longitude
+    }
     zip
     contacts {
       contactType
@@ -171,9 +173,10 @@ class FacilitiesPage extends React.PureComponent<
       state,
       zip,
       contacts,
-      latitude,
-      longitude
+      location
     } = facility;
+    const latitude = location?.latitude ?? null;
+    const longitude = location?.longitude ?? null;
     const newStatus = isEmpty(facility.status)
       ? "status unknown"
       : facility.status;
@@ -300,8 +303,8 @@ class FacilitiesPage extends React.PureComponent<
                       onClick={this.onMarkerClick}
                       clicked={this.state.markerClicked}
                       key={index.toString()}
-                      lat={item.latitude}
-                      lng={item.longitude}
+                      lat={item.location?.latitude}
+                      lng={item.location?.longitude}
                       contacts={item.contacts}
                       text={index + 1}
                       name={item.name}

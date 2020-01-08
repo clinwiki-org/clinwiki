@@ -155,7 +155,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
 
   handleRatingChange = (key: string, value: number) => {
     const lens = lensPath(['meta', key]);
-    this.setState(set(lens, value, this.state));
+    this.setState(set(lens, value, this.state) as ReviewFormState);
   };
   handleRatingDelete = (key: string) => {
     const newState = dissocPath(['meta', key], this.state) as ReviewFormState;
@@ -168,6 +168,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   handleAddRating = () => {
     if (this.state.newRating.replace(/\s/g, '').length) {
       const lens = lensPath(['meta', this.state.newRating]);
+      // @ts-ignore
       this.setState({ ...set(lens, 0, this.state), newRating: '' });
     }
   };
