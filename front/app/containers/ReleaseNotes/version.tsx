@@ -9,6 +9,10 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 9
+- Facility maps
+- Upgraded to typescript 3.7
+
 ### Version 8
 - Type ahead search based on facet values [#207](https://github.com/clinwiki-org/clinwiki/issues/207)
 - Link autosuggest to site config [#223](https://github.com/clinwiki-org/clinwiki/issues/223)
