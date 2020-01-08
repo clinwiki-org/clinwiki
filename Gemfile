@@ -94,3 +94,4 @@ gem "graphiql-rails", "~> 1.4.11"
 gem "faraday"
 
 gem "activerecord-import", "~> 1.0"
+gem "composite_primary_keys"

@@ -16,7 +16,7 @@ class Location < ApplicationRecord
         checked: Time.now
       )
     else
-      update(checked: Time.now)
+      update(checked: Time.now, location_type: ['note found'], partial_match: true)
     end
   end
 end
