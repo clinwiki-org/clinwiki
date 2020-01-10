@@ -32,6 +32,24 @@ const MarkerCircle = styled.div`
   box-shadow: 0 0 0 1px white;
 `;
 
+const WarningCircle = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: ${K_CIRCLE_SIZE}px;
+  height: ${K_CIRCLE_SIZE}px;
+  border: 3px solid #ff6d36;
+  border-radius: ${K_CIRCLE_SIZE}px;
+  background-color: white;
+  text-align: center;
+  color: #ffae42;
+  font-size: 21px;
+  font-weight: bold;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px white;
+`;
+
 const HoverCircle = styled.div`
   position: absolute;
   left: 0;
@@ -50,13 +68,22 @@ const HoverCircle = styled.div`
   box-shadow: 0 0 0 1px white;
 `;
 
-const HoverStick = styled.div`
+const WarningHoverCircle = styled.div`
   position: absolute;
-  left: calc(${K_CIRCLE_SIZE}px / 2 - ${K_STICK_WIDTH}px / 2);
-  top: ${K_CIRCLE_SIZE}px;
-  width: ${K_STICK_WIDTH}px;
-  height: ${K_STICK_SIZE}px;
-  background-color: #55b88d;
+  left: 0;
+  top: 0;
+  width: ${K_CIRCLE_SIZE}px;
+  height: ${K_CIRCLE_SIZE}px;
+  border: 3px solid #ffae42;
+  border-radius: ${K_CIRCLE_SIZE}px;
+  background-color: white;
+  text-align: center;
+  color: #ff6d36;
+  font-size: 21px;
+  font-weight: bold;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px white;
 `;
 
 const MarkerStick = styled.div`
@@ -66,6 +93,33 @@ const MarkerStick = styled.div`
   width: ${K_STICK_WIDTH}px;
   height: ${K_STICK_SIZE}px;
   background-color: #324870;
+`;
+
+const HoverStick = styled.div`
+  position: absolute;
+  left: calc(${K_CIRCLE_SIZE}px / 2 - ${K_STICK_WIDTH}px / 2);
+  top: ${K_CIRCLE_SIZE}px;
+  width: ${K_STICK_WIDTH}px;
+  height: ${K_STICK_SIZE}px;
+  background-color: #55b88d;
+`;
+
+const WarningStick = styled.div`
+  position: absolute;
+  left: calc(${K_CIRCLE_SIZE}px / 2 - ${K_STICK_WIDTH}px / 2);
+  top: ${K_CIRCLE_SIZE}px;
+  width: ${K_STICK_WIDTH}px;
+  height: ${K_STICK_SIZE}px;
+  background-color: #ff6d36;
+`;
+
+const WarningHoverStick = styled.div`
+  position: absolute;
+  left: calc(${K_CIRCLE_SIZE}px / 2 - ${K_STICK_WIDTH}px / 2);
+  top: ${K_CIRCLE_SIZE}px;
+  width: ${K_STICK_WIDTH}px;
+  height: ${K_STICK_SIZE}px;
+  background-color: #ffae42;
 `;
 
 class MapMarker extends React.PureComponent<any> {
@@ -80,42 +134,82 @@ class MapMarker extends React.PureComponent<any> {
   };
 
   render() {
-    return (
-      <MarkerContainer onClick={() => this.markerClicked()}>
-        {this.props.$hover || this.state.clicked ? (
-          <div>
-            <HoverCircle onClick={this.props.onClick}>
-              {this.props.text}
-            </HoverCircle>
-            <HoverStick />
-          </div>
-        ) : (
-          <div>
-            <MarkerCircle onClick={this.props.onClick}>
-              {this.props.text}
-            </MarkerCircle>
-            <MarkerStick />
-          </div>
-        )}
-        {this.state.clicked ? (
-          <FacilityInfoCard
-            hover={true}
-            address={this.props.address}
-            name={this.props.name}
-            contacts={this.props.contacts}
-            clicked={this.state.clicked}
-          />
-        ) : (
-          <FacilityInfoCard
-            hover={this.props.$hover}
-            address={this.props.address}
-            name={this.props.name}
-            contacts={this.props.contacts}
-            clicked={this.state.clicked}
-          />
-        )}
-      </MarkerContainer>
-    );
+    if (this.props.geoStatus === "good") {
+      return (
+        <MarkerContainer onClick={() => this.markerClicked()}>
+          {this.props.$hover || this.state.clicked ? (
+            <div>
+              <HoverCircle onClick={this.props.onClick}>
+                {this.props.text}
+              </HoverCircle>
+              <HoverStick />
+            </div>
+          ) : (
+            <div>
+              <MarkerCircle onClick={this.props.onClick}>
+                {this.props.text}
+              </MarkerCircle>
+              <MarkerStick />
+            </div>
+          )}
+          {this.state.clicked ? (
+            <FacilityInfoCard
+              hover={true}
+              address={this.props.address}
+              name={this.props.name}
+              contacts={this.props.contacts}
+              clicked={this.state.clicked}
+            />
+          ) : (
+            <FacilityInfoCard
+              hover={this.props.$hover}
+              address={this.props.address}
+              name={this.props.name}
+              contacts={this.props.contacts}
+              clicked={this.state.clicked}
+            />
+          )}
+        </MarkerContainer>
+      );
+    }
+    if (this.props.geoStatus === "zip") {
+      return (
+        <MarkerContainer onClick={() => this.markerClicked()}>
+          {this.props.$hover || this.state.clicked ? (
+            <div>
+              <WarningHoverCircle onClick={this.props.onClick}>
+                {this.props.text}
+              </WarningHoverCircle>
+              <WarningHoverStick />
+            </div>
+          ) : (
+            <div>
+              <WarningCircle onClick={this.props.onClick}>
+                {this.props.text}
+              </WarningCircle>
+              <WarningStick />
+            </div>
+          )}
+          {this.state.clicked ? (
+            <FacilityInfoCard
+              hover={true}
+              address={this.props.address}
+              name={this.props.name}
+              contacts={this.props.contacts}
+              clicked={this.state.clicked}
+            />
+          ) : (
+            <FacilityInfoCard
+              hover={this.props.$hover}
+              address={this.props.address}
+              name={this.props.name}
+              contacts={this.props.contacts}
+              clicked={this.state.clicked}
+            />
+          )}
+        </MarkerContainer>
+      );
+    }
   }
 }
 

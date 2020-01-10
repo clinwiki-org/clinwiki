@@ -9,6 +9,7 @@ export interface FacilityFragment_location {
   __typename: "Location";
   latitude: number | null;
   longitude: number | null;
+  status: string;
 }
 
 export interface FacilityFragment_contacts {

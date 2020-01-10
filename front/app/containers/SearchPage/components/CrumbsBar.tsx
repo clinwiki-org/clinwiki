@@ -329,7 +329,6 @@ export default class CrumbsBar extends React.Component<
       query,
       variables
     });
-    console.log(response);
     const array = response.data.autocomplete.autocomplete;
 
     this.setState({
@@ -366,9 +365,7 @@ export default class CrumbsBar extends React.Component<
     event,
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
   ) => {
-    console.log(sectionIndex);
     const section = this.state.suggestions[sectionIndex];
-    console.log(section);
     this.props.addFilter(section.name, suggestionValue);
   };
 
