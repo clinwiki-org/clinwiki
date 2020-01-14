@@ -536,11 +536,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     if (this.props.ignoreUrlHash) {
 
       return (
-        <Row id="menuMain">
-            {this.renderAggs()}
-          <MainContainer md={10}>
+        <Row>
+           <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+            
             <SiteProvider>
               {site => (
+          <MainContainer md={10}>
                 <SearchView
                   params={this.state.params as any}
                   onBulkUpdate={this.handleBulkUpdateClick}
@@ -556,9 +557,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   showCards={this.state.showCards}
                   toggledShowCards={this.toggledShowCards}
                   returnNumberOfPages={this.returnNumberOfPages} />
+          </MainContainer>
               )}
             </SiteProvider>
-          </MainContainer>
         </Row>
       );
     }
