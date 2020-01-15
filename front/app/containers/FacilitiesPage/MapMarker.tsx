@@ -38,11 +38,11 @@ const WarningCircle = styled.div`
   top: 0;
   width: ${K_CIRCLE_SIZE}px;
   height: ${K_CIRCLE_SIZE}px;
-  border: 3px solid #ff6d36;
+  border: 3px solid #ffcc00;
   border-radius: ${K_CIRCLE_SIZE}px;
   background-color: white;
   text-align: center;
-  color: #ffae42;
+  color: #f6a202;
   font-size: 21px;
   font-weight: bold;
   padding: 0;
@@ -74,11 +74,11 @@ const WarningHoverCircle = styled.div`
   top: 0;
   width: ${K_CIRCLE_SIZE}px;
   height: ${K_CIRCLE_SIZE}px;
-  border: 3px solid #ffae42;
+  border: 3px solid #f6a202;
   border-radius: ${K_CIRCLE_SIZE}px;
   background-color: white;
   text-align: center;
-  color: #ff6d36;
+  color: #ffcc00;
   font-size: 21px;
   font-weight: bold;
   padding: 0;
@@ -110,7 +110,7 @@ const WarningStick = styled.div`
   top: ${K_CIRCLE_SIZE}px;
   width: ${K_STICK_WIDTH}px;
   height: ${K_STICK_SIZE}px;
-  background-color: #ff6d36;
+  background-color: #ffcc00;
 `;
 
 const WarningHoverStick = styled.div`
@@ -119,7 +119,7 @@ const WarningHoverStick = styled.div`
   top: ${K_CIRCLE_SIZE}px;
   width: ${K_STICK_WIDTH}px;
   height: ${K_STICK_SIZE}px;
-  background-color: #ffae42;
+  background-color: #f6a202;
 `;
 
 class MapMarker extends React.PureComponent<any> {

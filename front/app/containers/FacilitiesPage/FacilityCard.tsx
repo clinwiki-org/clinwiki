@@ -17,6 +17,7 @@ const FacilityHeader = styled.div`
 `;
 
 const FacilityNumber = styled.div`
+  position: relative;
   width: 28px;
   height: 22px;
   border: 3px solid #324870;
@@ -34,13 +35,14 @@ const FacilityNumber = styled.div`
 `;
 
 const WarningNumber = styled.div`
+  position: relative;
   width: 28px;
   height: 22px;
-  border: 3px solid #ff6d36;
+  border: 3px solid #ffcc00;
   border-radius: 22px;
   background-color: white;
   text-align: center;
-  color: #ffae42;
+  color: #f6a202;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -51,6 +53,7 @@ const WarningNumber = styled.div`
 `;
 
 const ErrorNumber = styled.div`
+  position: relative;
   width: 28px;
   height: 22px;
   border: 3px solid red;
@@ -64,6 +67,37 @@ const ErrorNumber = styled.div`
   align-self: flex-end;
   margin: 0;
   padding-bottom: 22px;
+  cursor: pointer;
+`;
+
+const WarningHover = styled.div`
+  width: 200px;
+  height: 30px;
+  background-color: #ffcc00;
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  top: 30px;
+  right: -5px;
+  padding-top: 5px;
+  visibility: hidden;
+  border-radius: 1px;
+  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.36);
+`;
+
+const ErrorHover = styled.div`
+  width: 200px;
+  height: 30px;
+  background-color: red;
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  top: 30px;
+  right: -5px;
+  padding-top: 5px;
+  visibility: hidden;
+  border-radius: 1px;
+  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.36);
 `;
 
 const FacilityTitle = styled.h2`
@@ -134,15 +168,52 @@ const FacilityFooter = styled.div`
   padding-top: 5px;
 `;
 
+const WarningPointer = styled.div`
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #ffcc00;
+  position: relative;
+  bottom: -3px;
+  right: -1px;
+  visibility: hidden;
+`;
+
+const ErrorPointer = styled.div`
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid red;
+  position: relative;
+  bottom: -3px;
+  right: -1px;
+  visibility: hidden;
+`;
+
 class FacilityCard extends React.PureComponent<any> {
   state = {
     facilityExpanded: false,
-    failedGeocode: false
+    warningHover: false,
+    errorHover: false
   };
 
   toggleExpand = () => {
     this.setState({
       facilityExpanded: !this.state.facilityExpanded
+    });
+  };
+
+  toggleWarning = bool => {
+    this.setState({
+      warningHover: bool
+    });
+  };
+
+  toggleError = bool => {
+    this.setState({
+      errorHover: bool
     });
   };
 
@@ -223,13 +294,54 @@ class FacilityCard extends React.PureComponent<any> {
       return (
         <WarningNumber
           onClick={() => numberClick(latitude, longitude, geoStatus)}
+          onMouseEnter={() => this.toggleWarning(true)}
+          onMouseOut={() => this.toggleWarning(false)}
         >
+          <WarningHover
+            style={
+              this.state.warningHover
+                ? { visibility: "visible" }
+                : { visibility: "hidden" }
+            }
+          >
+            Partial Address Mapped
+          </WarningHover>
           {index}
+          <WarningPointer
+            style={
+              this.state.warningHover
+                ? { visibility: "visible" }
+                : { visibility: "hidden" }
+            }
+          />
         </WarningNumber>
       );
     }
     if (geoStatus === "bad") {
-      return <ErrorNumber>!</ErrorNumber>;
+      return (
+        <ErrorNumber
+          onMouseEnter={() => this.toggleError(true)}
+          onMouseOut={() => this.toggleError(false)}
+        >
+          <ErrorHover
+            style={
+              this.state.errorHover
+                ? { visibility: "visible" }
+                : { visibility: "hidden" }
+            }
+          >
+            No Address Mapped
+          </ErrorHover>
+          !
+          <ErrorPointer
+            style={
+              this.state.errorHover
+                ? { visibility: "visible" }
+                : { visibility: "hidden" }
+            }
+          />
+        </ErrorNumber>
+      );
     }
   };
 
@@ -238,7 +350,7 @@ class FacilityCard extends React.PureComponent<any> {
       return (
         <Row>
           <FacilitySubHead>Location:</FacilitySubHead>
-          <FacilityError>Location Unavailable</FacilityError>
+          <FacilityError>{location}</FacilityError>
         </Row>
       );
     }
@@ -246,7 +358,7 @@ class FacilityCard extends React.PureComponent<any> {
       return (
         <Row>
           <FacilitySubHead>Location:</FacilitySubHead>
-          <FacilityWarning>Partially Matched with Zipcode</FacilityWarning>
+          <FacilityWarning>{location}</FacilityWarning>
         </Row>
       );
     }
