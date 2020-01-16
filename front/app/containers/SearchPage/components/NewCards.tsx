@@ -91,7 +91,7 @@ class NewCards extends React.Component<CardsProps, CardsState> {
   clicked = (d: any) => {
     this.props.onPress(d);
   };
-  // Number(data.averageRating)
+
   renderCards = (data: any) => {
     const cards = data.map((data, i) => {
       return (
@@ -99,7 +99,12 @@ class NewCards extends React.Component<CardsProps, CardsState> {
           <CardHeader>
             <CardTitle>{data.nctId}</CardTitle>
             <CardRating>
-              <ReactStars count={5} color2={starColor} edit={false} value={3} />
+              <ReactStars
+                count={5}
+                color2={starColor}
+                edit={false}
+                value={Number(data.averageRating)}
+              />
               <CardContent>{`(${data.reviewsCount})`}</CardContent>
             </CardRating>
           </CardHeader>
