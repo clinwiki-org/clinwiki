@@ -46,6 +46,7 @@ import { studyFields, starColor, MAX_WINDOW_SIZE } from "utils/constants";
 import { StudyPageQuery, StudyPageQueryVariables } from "types/StudyPageQuery";
 import { stringify } from "querystring";
 import Cards from "./components/Cards";
+import NewCards from "./components/NewCards";
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -410,7 +411,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       prop("buckets"),
       groupBy(prop("key")),
       map(() => [])
-    // @ts-ignore
+      // @ts-ignore
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
   };
 
@@ -541,8 +542,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           columns.map(x => (x.width += additionalWidth), columns);
           if (this.props.showCards) {
             return (
-              <Cards
-                columns={columns}
+              <NewCards
                 data={searchData}
                 onPress={this.cardPressed}
                 loading={loading}
