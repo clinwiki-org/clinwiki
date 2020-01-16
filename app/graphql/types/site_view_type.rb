@@ -3,6 +3,8 @@ module Types
     field :id, Integer, null: false
     field :study, SiteStudyPageType, null: false
     field :search, SiteSearchPageType, null: false
+    field :name, String, null:true
+    field :default, Boolean, null:true
 
     def study
       object.view[:study]

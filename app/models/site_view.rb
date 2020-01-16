@@ -2,6 +2,12 @@ STAR_FIELDS = [:average_rating].freeze
 
 class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
+  validates :name, uniqueness: true
+  after_save do
+    if default
+      site.site_views.where.not(id: id).update_all(default:false)
+    end
+  end
 
   class << self
     def default
