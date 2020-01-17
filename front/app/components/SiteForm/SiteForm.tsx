@@ -1,23 +1,23 @@
-import * as React from 'react';
-import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
-import { equals, prop, last } from 'ramda';
-import { FormControl, Button, Nav, NavItem } from 'react-bootstrap';
-import styled from 'styled-components';
-import { gql } from 'apollo-boost';
-import { capitalize, trimPath } from 'utils/helpers';
-import { SiteFragment } from 'types/SiteFragment';
+import * as React from "react";
+import { CreateSiteInput, SiteViewMutationInput } from "types/globalTypes";
+import { equals, prop, last } from "ramda";
+import { FormControl, Button, Nav, NavItem } from "react-bootstrap";
+import styled from "styled-components";
+import { gql } from "apollo-boost";
+import { capitalize, trimPath } from "utils/helpers";
+import { SiteFragment } from "types/SiteFragment";
 import {
   updateView,
   createMutation,
-  getViewValueByPath,
-} from 'utils/siteViewUpdater';
-import { Switch, Route, match, Redirect } from 'react-router';
-import MainForm from './MainForm';
-import SearchForm from './SearchForm';
-import { StyledContainer } from './Styled';
-import { Link } from 'react-router-dom';
-import { History, Location } from 'history';
-import StudyForm from './StudyForm';
+  getViewValueByPath
+} from "utils/siteViewUpdater";
+import { Switch, Route, match, Redirect } from "react-router";
+import MainForm from "./MainForm";
+import SearchForm from "./SearchForm";
+import { StyledContainer } from "./Styled";
+import { Link } from "react-router-dom";
+import { History, Location } from "history";
+import StudyForm from "./StudyForm";
 
 interface SiteFormProps {
   match: match<{}>;
@@ -51,14 +51,14 @@ const StyledNav = styled(Nav)`
 class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   state: SiteFormState = {
     form: {
-      name: '',
-      subdomain: '',
+      name: "",
+      subdomain: "",
       skipLanding: false,
-      editorEmails: [],
+      editorEmails: []
     },
     mutations: [],
-    addEditorEmail: '',
-    prevForm: null,
+    addEditorEmail: "",
+    prevForm: null
   };
 
   static fragment = gql`
@@ -74,15 +74,15 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
   static getDerivedStateFromProps = (
     props: SiteFormProps,
-    state: SiteFormState,
+    state: SiteFormState
   ): SiteFormState | null => {
-    const { name, subdomain, skipLanding,  editors } = props.site;
-    const editorEmails = editors.map(prop('email'));
+    const { name, subdomain, skipLanding, editors } = props.site;
+    const editorEmails = editors.map(prop("email"));
     const form = {
       name,
       subdomain,
       skipLanding,
-      editorEmails,
+      editorEmails
     };
     if (form && !equals(form, state.prevForm as any)) {
       return { ...state, form, prevForm: form };
@@ -110,15 +110,16 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   renderTabs = () => {
     const path = trimPath(this.props.match.url);
     const sections = [
-      { path: '/main', value: 'Main' },
-      { path: '/search', value: 'Search' },
-      { path: '/study', value: 'Study' },
+      { path: "/main", value: "Main" },
+      { path: "/search", value: "Search" },
+      { path: "/study", value: "Study" },
+      { path: "/search2", value: "Search2" }
     ];
 
-    const locationComponents = this.props.location.pathname.split('/');
+    const locationComponents = this.props.location.pathname.split("/");
     let activeKey = last(locationComponents);
-    if (locationComponents[locationComponents.length - 2] === 'study') {
-      activeKey = 'study';
+    if (locationComponents[locationComponents.length - 2] === "study") {
+      activeKey = "study";
     }
     activeKey = `/${activeKey}`;
 
@@ -142,7 +143,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const path = trimPath(this.props.match.path);
     return (
       <Container>
-        <h3 style={{ color: 'white', marginLeft: 15 }}>
+        <h3 style={{ color: "white", marginLeft: 15 }}>
           {this.props.site.name}
         </h3>
         {this.renderTabs()}
@@ -170,6 +171,12 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 view={view}
                 onAddMutation={this.handleAddMutation}
               />
+            )}
+          />
+          <Route
+            path={`${path}/search2`}
+            render={() => (
+              <SearchForm view={view} onAddMutation={this.handleAddMutation} />
             )}
           />
           <Redirect to={`${path}/main`} />
