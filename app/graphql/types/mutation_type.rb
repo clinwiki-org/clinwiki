@@ -22,5 +22,6 @@ module Types
     field :bulkQueryUpdate, mutation: Mutations::BulkQueryUpdate
     field :bulkListUpdate, mutation: Mutations::BulkListUpdate
     field :createSiteView, mutation: Mutations::CreateSiteView
+    field :deleteSiteView, mutation: Mutations::DeleteSiteView
   end
 end
