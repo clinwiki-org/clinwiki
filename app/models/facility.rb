@@ -24,7 +24,7 @@ class Facility < AactRecord
   # 5. if partial match => status: bad
   def geocode
     unless facility_location
-      self.facility_location = FacilityLocation.new(
+      self.facility_location = FacilityLocation.create(
         name: name,
         city: city,
         state: state,
@@ -33,8 +33,7 @@ class Facility < AactRecord
       )
     end
 
-    full_name = "#{name}, #{city} #{state} #{zip} #{country}"
-    location = Location.find_or_create_by(name: full_name)
+    location = Location.find_or_create_by(name: location_name)
     location.geocode unless location.checked
 
     if location.partial_match
@@ -66,21 +65,6 @@ class Facility < AactRecord
 
   def location_name
     "#{name}, #{city} #{state} #{zip} #{country}"
-  end
-
-  def location
-    return @location if @location
-    @location = Location.find_or_create_by(name: location_name)
-  end
-
-  def latitude
-    return nil if location.partial_match
-    location.latitude
-  end
-
-  def longitude
-    return nil if location.partial_match
-    location.longitude
   end
 
   def description
