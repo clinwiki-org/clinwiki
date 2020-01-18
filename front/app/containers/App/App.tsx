@@ -1,28 +1,27 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import NotFoundPage from 'containers/NotFoundPage';
-import NotConfiguredPage from 'containers/NotConfiguredPage';
-import SearchPage from 'containers/SearchPage';
-import LandingPage from 'containers/LandingPage';
-import AboutPage from 'containers/AboutPage';
-import ReleaseNotes from 'containers/ReleaseNotes';
-import StudyPage from 'containers/StudyPage';
-import InterventionPage from 'containers/InterventionPage';
+import * as React from "react";
+import styled from "styled-components";
+import { Switch, Route, withRouter } from "react-router-dom";
+import NotFoundPage from "containers/NotFoundPage";
+import NotConfiguredPage from "containers/NotConfiguredPage";
+import SearchPage from "containers/SearchPage";
+import LandingPage from "containers/LandingPage";
+import AboutPage from "containers/AboutPage";
+import ReleaseNotes from "containers/ReleaseNotes";
+import StudyPage from "containers/StudyPage";
+import InterventionPage from "containers/InterventionPage";
 import {
   SignInPage,
   SignUpPage,
   ResetPasswordPage,
-  EditProfilePage,
-} from 'containers/LoginPage';
-import AuthHeader from 'components/AuthHeader';
-import { History } from 'history';
-import CurrentUser from 'containers/CurrentUser';
-import SitesPage from 'containers/SitesPage';
-import SitePage from 'containers/SitePage';
-import SitesNewPage from 'containers/SitesNewPage';
-import SitesEditPage from 'containers/SitesEditPage';
-import EditWorkflowsPage from 'containers/EditWorkflowsPage';
+  EditProfilePage
+} from "containers/LoginPage";
+import AuthHeader from "components/AuthHeader";
+import { History } from "history";
+import CurrentUser from "containers/CurrentUser";
+import SitesPage from "containers/SitesPage";
+import SitesNewPage from "containers/SitesNewPage";
+import SitesEditPage from "containers/SitesEditPage";
+import EditWorkflowsPage from "containers/EditWorkflowsPage";
 
 interface AppProps {
   history: History;
@@ -42,7 +41,10 @@ class App extends React.PureComponent<AppProps> {
         <CurrentUser>
           {user => <AuthHeader user={user} history={this.props.history} />}
         </CurrentUser>
-        <MainWrapper className="main container-fluid" style={{ paddingTop:  '50px' }}>
+        <MainWrapper
+          className="main container-fluid"
+          style={{ paddingTop: "50px" }}
+        >
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/about" component={AboutPage} />

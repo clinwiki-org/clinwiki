@@ -80,6 +80,7 @@ const FRAGMENT = gql`
     location {
       latitude
       longitude
+      status
     }
     zip
     contacts {
@@ -165,20 +166,14 @@ class FacilitiesPage extends React.PureComponent<
       contacts: Array<object>;
       latitude: number | null;
       longitude: number | null;
+      geoStatus: string | null;
     }[] = [];
-    const {
-      name,
-      country,
-      city,
-      state,
-      zip,
-      contacts,
-      location
-    } = facility;
+    const { name, country, city, state, zip, contacts, location } = facility;
     const latitude = location?.latitude ?? null;
     const longitude = location?.longitude ?? null;
+    const geoStatus = location?.status ?? null;
     const newStatus = isEmpty(facility.status)
-      ? "status unknown"
+      ? "Status Unknown"
       : facility.status;
     const newLocation = isEmpty(facility.state)
       ? `${city}, ${country}`
@@ -191,7 +186,8 @@ class FacilitiesPage extends React.PureComponent<
       status: newStatus,
       contacts: contacts,
       latitude: latitude,
-      longitude: longitude
+      longitude: longitude,
+      geoStatus: geoStatus
     });
     return res;
   };
@@ -203,7 +199,8 @@ class FacilitiesPage extends React.PureComponent<
     status,
     contacts,
     latitude,
-    longitude
+    longitude,
+    geoStatus
   }: {
     key: string;
     location: string | null;
@@ -212,6 +209,7 @@ class FacilitiesPage extends React.PureComponent<
     contacts: Array<object>;
     latitude: number | null;
     longitude: number | null;
+    geoStatus: string | null;
   }) => {
     return (
       <div>
@@ -224,6 +222,7 @@ class FacilitiesPage extends React.PureComponent<
           contacts={contacts}
           latitude={latitude}
           longitude={longitude}
+          geoStatus={geoStatus}
           numberClick={this.onCardNumberClick}
         />
       </div>
@@ -236,24 +235,24 @@ class FacilitiesPage extends React.PureComponent<
     });
   };
 
-  onCardNumberClick = (lat, long) => {
-    this.setState({
-      mapCenter: {
-        lat: lat,
-        lng: long
-      },
-      mapZoom: 8
-    });
+  onCardNumberClick = (lat, long, status) => {
+    if (status === "bad") {
+      return null;
+    } else
+      this.setState({
+        mapCenter: {
+          lat: lat,
+          lng: long
+        },
+        mapZoom: 8
+      });
   };
 
   render() {
     const { mapCenter, mapZoom } = this.state;
     const K_HOVER_DISTANCE = 30;
     return (
-      <QueryComponent
-        query={QUERY}
-        variables={{ nctId: this.props.nctId }}
-      >
+      <QueryComponent query={QUERY} variables={{ nctId: this.props.nctId }}>
         {({ data, loading, error }) => {
           if (
             loading ||
@@ -279,6 +278,7 @@ class FacilitiesPage extends React.PureComponent<
             contacts: Array<object>;
             latitude: number | null;
             longitude: number | null;
+            geoStatus: string;
           }[];
           return (
             <MappingContainer>
@@ -298,19 +298,26 @@ class FacilitiesPage extends React.PureComponent<
                   options={MAPOPTIONS}
                   key={this.props}
                 >
-                  {facilities.map((item, index) => (
-                    <MapMarker
-                      onClick={this.onMarkerClick}
-                      clicked={this.state.markerClicked}
-                      key={index.toString()}
-                      lat={item.location?.latitude}
-                      lng={item.location?.longitude}
-                      contacts={item.contacts}
-                      text={index + 1}
-                      name={item.name}
-                      address={`${item.city}, ${item.state} ${item.zip}`}
-                    />
-                  ))}
+                  {facilities.map((item, index) => {
+                    if (item.location?.status ?? "bad" === "bad") {
+                      return null;
+                    } else
+                      return (
+                        <MapMarker
+                          onClick={this.onMarkerClick}
+                          clicked={this.state.markerClicked}
+                          key={`${item.name}${item.location?.latitude}`}
+                          lat={item.location?.latitude}
+                          lng={item.location?.longitude}
+                          geoStatus={item.location?.status}
+                          // location={item.location}
+                          contacts={item.contacts}
+                          text={index + 1}
+                          name={item.name}
+                          address={`${item.city}, ${item.state} ${item.zip}`}
+                        />
+                      );
+                  })}
                 </GoogleMapReact>
               </MapContainer>
             </MappingContainer>

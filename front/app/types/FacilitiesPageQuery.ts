@@ -9,6 +9,7 @@ export interface FacilitiesPageQuery_study_facilities_location {
   __typename: "Location";
   latitude: number | null;
   longitude: number | null;
+  status: string;
 }
 
 export interface FacilitiesPageQuery_study_facilities_contacts {
