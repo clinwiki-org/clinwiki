@@ -4,7 +4,17 @@ class Facility < AactRecord
   has_many :facility_contacts, dependent: :restrict_with_exception
   has_many :facility_investigators, dependent: :restrict_with_exception
 
-  belongs_to :facility_location, foreign_key: [:name, :city, :state, :zip, :country]
+  # belongs_to :facility_location, foreign_key: [:name, :city, :state, :zip, :country]
+  def facility_location
+    return @facility_location if @facility_location
+    @facility_location = FacilityLocation.find_by(
+      name: name, city: city, state: state, zip: zip, country: country
+    )
+  end
+
+  def facility_location=(val)
+    @facility_location = val
+  end
 
   # this runs the geocoding algorithm
   # 1. attempt with "name, city state zip country"

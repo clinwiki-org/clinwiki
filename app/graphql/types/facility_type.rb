@@ -3,7 +3,7 @@ module Types
     field :id, Int, null: false
     field :nct_id, String, null: false
     field :status, String, null: false
-    field :name, String, null: false
+    field :name, String, null: true
     field :city, String, null: false
     field :state, String, null: false
     field :zip, String, null: false
@@ -17,7 +17,7 @@ module Types
     end
 
     def location
-      Loaders::Association.for(Facility, :facility_location).load(object)
+      object.facility_location
     end
   end
 end
