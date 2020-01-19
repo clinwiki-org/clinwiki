@@ -10,6 +10,6 @@ class CreateFacilityLocations < ActiveRecord::Migration[5.2]
       t.float  :longitude
       t.string :status
     end
-    add_index :facility_locations, [:name, :city, :state, :zip, :country], unique: true
+    add_index :facility_locations, [:name, :city, :state, :zip, :country], name: 'facility_locations_idx', unique: true, using: :btree
   end
 end

@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2019_12_31_232856) do
     t.float "latitude"
     t.float "longitude"
     t.string "status"
+    t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
