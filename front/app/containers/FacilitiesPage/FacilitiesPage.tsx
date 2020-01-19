@@ -299,7 +299,7 @@ class FacilitiesPage extends React.PureComponent<
                   key={this.props}
                 >
                   {facilities.map((item, index) => {
-                    if (item.location?.status ?? "bad" === "bad") {
+                    if ((item.location?.status ?? "bad") === "bad") {
                       return null;
                     } else
                       return (
