@@ -155,6 +155,7 @@ interface AggDropDownProps {
   selectedKeys: Set<string>;
   addFilter: AggCallback;
   addFilters?: AggregateAggCallback | undefined;
+  removeFilters?: AggregateAggCallback | undefined;
   removeFilter: AggCallback | null;
   display?: FieldDisplay;
   onOpen?: (agg: string, aggKind: AggKind) => void;
@@ -234,6 +235,46 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       ? this.props.removeFilter(agg, key)
       : this.props.addFilter(agg, key);
   };
+  selectAll =(agg: string): void=>{
+    console.log("Running selectAll, here are buckets:", this.state.buckets)
+  const {buckets}= this.state
+  let newParams = []
+
+  buckets.map(({key})=>{
+    console.log(key)
+    newParams.push(key)
+})
+
+if( this.isAllSelected() != true){  
+  if (!this.props.addFilters) return;
+  console.log("About to run addFilters")
+     this.props.addFilters(agg, newParams, false);
+}else{
+  if (!this.props.removeFilters) return;
+  console.log("About to run setFilter to []")
+     this.props.removeFilters(agg, newParams, false);
+}
+
+  }
+  isAllSelected= (): boolean =>{
+    const {buckets}= this.state
+    let i=0
+    let newParams=[]
+    buckets.map(({key})=>{
+        if(this.isSelected(key)){
+          i++
+        }
+
+  })
+  console.log("Eye, eye, captain",i)
+  if (buckets.length == i){
+return true
+
+  }
+return false
+
+  }
+
 
   getFullPagesCount = () => Math.floor(length(this.state.buckets) / PAGE_SIZE);
 
@@ -485,6 +526,17 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                   {isOpen && (
                     <Panel.Collapse className="bm-panel-collapse">
                       <Panel.Body>{this.renderFilter()}</Panel.Body>
+                      <Panel.Body>
+                        <Checkbox
+                          // checked={this.selectAll(agg)}
+                          // checked={this.isSelected("Select All")}
+                           onChange={()=>this.selectAll(agg)}
+                          //onChange={() => this.toggleAgg(agg, key)}
+                           // onChange={()=> this.props.addFilters(agg, this.state.buckets)}
+                        >
+                          Select All
+                        </Checkbox>
+                      </Panel.Body>
                       <Panel.Body>
                         {this.renderBucketsPanel(apolloClient, site.siteView)}
                       </Panel.Body>

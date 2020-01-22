@@ -33,6 +33,7 @@ interface AggsProps {
   addFilter: AggCallback;
   addFilters: AggregateAggCallback;
   removeFilter: AggCallback;
+  removeFilters: AggregateAggCallback;
   searchParams: SearchParams;
   opened: string | null;
   openedKind: AggKind | null;
@@ -67,6 +68,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       addFilter,
       addFilters,
       removeFilter,
+      removeFilters,
       searchParams
     } = this.props;
 
@@ -100,6 +102,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                   removeFilter={(agg, item) =>
                     removeFilter && removeFilter(agg, item, true)
                   }
+                  removeFilters={(agg,items)=> removeFilters(agg,items,true)}
                   searchParams={searchParams}
                 />
               ))}
@@ -130,6 +133,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                       addFilter={addFilter}
                       addFilters={addFilters}
                       removeFilter={removeFilter}
+                      removeFilters={removeFilters}
                       searchParams={searchParams}
                     />
                   ) : null

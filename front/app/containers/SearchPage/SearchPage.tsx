@@ -168,6 +168,7 @@ const changeFilter = (add: boolean) => (
 ) => (params: SearchParams) => {
   const propName = isCrowd ? "crowdAggFilters" : "aggFilters";
   const lens = lensPath([propName]);
+  console.log("In change filter")
   return over(
     lens,
     (aggs: AggFilterInput[]) => {
@@ -192,15 +193,31 @@ const changeFilter = (add: boolean) => (
   );
 };
 const addFilter = changeFilter(true);
+
+const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
+  console.log("Search Page addFilters", aggName, keys, isCrowd)
   return (params: SearchParams) => {
     keys.forEach(
-      k => (params = addFilter(aggName, k, isCrowd)(params) as SearchParams)
+      k => {(params = addFilter(aggName, k, isCrowd)(params) as SearchParams), console.log(k)
+      }
     );
+    // changeFilter(true);
     return params;
   };
 };
-const removeFilter = changeFilter(false);
+
+const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
+  console.log("Search Page removeFilters", aggName, keys, isCrowd)
+  return (params: SearchParams) => {
+    keys.forEach(
+      k => {(params = removeFilter(aggName, k, isCrowd)(params) as SearchParams), console.log(k)
+      }
+    );
+    // changeFilter(true);
+    return params;
+  };
+};
 
 interface SearchPageProps {
   match: any;
@@ -341,13 +358,20 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
+    console.log("Handling Params", params)
     this.previousSearchData = [];
     if (!equals(params.q, this.state.params && this.state.params.q)) {
       // For now search doesn't work well with args list
       // Therefore we close it to refresh later on open
+      console.log("NOIDEAWHATSGOINGON")
       this.setState({ openedAgg: null });
     }
+
+    console.log("Somestuff", params)
+
+    console.log("PresetState", this.state.params)
     this.setState({ params });
+    console.log("Statestuff", this.state.params)
   };
 
   isWorkflow = () => {
@@ -410,7 +434,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         crowdFilters={this.transformFilters(crowdAggFilters)}
         addFilter={pipe(addFilter, this.handleUpdateParams)}
         addFilters={pipe(addFilters, this.handleUpdateParams)}
+        //addFilters={addFilters}
         removeFilter={pipe(removeFilter, this.handleUpdateParams)}
+        removeFilters={pipe(removeFilters, this.handleUpdateParams)}
         updateParams={this.handleUpdateParams}
         // @ts-ignore
         searchParams={this.state.params}
