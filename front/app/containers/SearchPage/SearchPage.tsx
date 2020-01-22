@@ -168,7 +168,6 @@ const changeFilter = (add: boolean) => (
 ) => (params: SearchParams) => {
   const propName = isCrowd ? "crowdAggFilters" : "aggFilters";
   const lens = lensPath([propName]);
-  console.log("In change filter")
   return over(
     lens,
     (aggs: AggFilterInput[]) => {
@@ -196,7 +195,6 @@ const addFilter = changeFilter(true);
 
 const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  console.log("Search Page addFilters", aggName, keys, isCrowd)
   return (params: SearchParams) => {
     keys.forEach(
       k => {(params = addFilter(aggName, k, isCrowd)(params) as SearchParams), console.log(k)
@@ -208,10 +206,9 @@ const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 };
 
 const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  console.log("Search Page removeFilters", aggName, keys, isCrowd)
   return (params: SearchParams) => {
     keys.forEach(
-      k => {(params = removeFilter(aggName, k, isCrowd)(params) as SearchParams), console.log(k)
+      k => {(params = removeFilter(aggName, k, isCrowd)(params) as SearchParams)
       }
     );
     // changeFilter(true);
@@ -358,20 +355,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
-    console.log("Handling Params", params)
     this.previousSearchData = [];
     if (!equals(params.q, this.state.params && this.state.params.q)) {
       // For now search doesn't work well with args list
       // Therefore we close it to refresh later on open
-      console.log("NOIDEAWHATSGOINGON")
       this.setState({ openedAgg: null });
     }
 
-    console.log("Somestuff", params)
 
-    console.log("PresetState", this.state.params)
     this.setState({ params });
-    console.log("Statestuff", this.state.params)
   };
 
   isWorkflow = () => {

@@ -236,22 +236,18 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       : this.props.addFilter(agg, key);
   };
   selectAll =(agg: string): void=>{
-    console.log("Running selectAll, here are buckets:", this.state.buckets)
   const {buckets}= this.state
   let newParams = []
 
   buckets.map(({key})=>{
-    console.log(key)
     newParams.push(key)
 })
 
 if( this.isAllSelected() != true){  
   if (!this.props.addFilters) return;
-  console.log("About to run addFilters")
      this.props.addFilters(agg, newParams, false);
 }else{
   if (!this.props.removeFilters) return;
-  console.log("About to run setFilter to []")
      this.props.removeFilters(agg, newParams, false);
 }
 
@@ -266,7 +262,6 @@ if( this.isAllSelected() != true){
         }
 
   })
-  console.log("Eye, eye, captain",i)
   if (buckets.length == i){
 return true
 
