@@ -273,6 +273,7 @@
     "lucene": "^2.1.1",
     "minimist": "1.2.0",
     "moment": "^2.24.0",
+    "ngrok": "^3.2.7",
     "node-plop": "0.7.0",
     "null-loader": "0.1.1",
     "plop": "1.8.0",
