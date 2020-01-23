@@ -116,7 +116,10 @@ const SITE_FRAGMENT = gql`
     owners {
       email
     }
-    siteView {
+    siteView(url: $url) {
+      ...SiteViewFragment
+    }
+    siteViews {
       ...SiteViewFragment
     }
   }
@@ -125,7 +128,7 @@ const SITE_FRAGMENT = gql`
 `;
 
 const QUERY = gql`
-  query SiteProviderQuery($id: Int) {
+  query SiteProviderQuery($id: Int, $url: String) {
     site(id: $id) {
       ...SiteFragment
     }
@@ -145,7 +148,7 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
 
   render() {
     return (
-      <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
+      <QueryComponent query={QUERY} variables={{ id: this.props.id, url: null }}>
         {({ data, loading, error }) => {
           if (loading || error) return null;
           return this.props.children(data!.site!);

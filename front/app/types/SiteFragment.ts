@@ -135,6 +135,118 @@ export interface SiteFragment_siteView {
   search: SiteFragment_siteView_search;
 }
 
+export interface SiteFragment_siteViews_study_basicSections {
+  __typename: "SiteStudyBasicGenericSection";
+  hide: boolean;
+  title: string;
+  name: string;
+}
+
+export interface SiteFragment_siteViews_study_extendedSections_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteFragment_siteViews_study_extendedSections {
+  __typename: "SiteStudyExtendedGenericSection";
+  fields: string[];
+  hide: boolean;
+  order: number | null;
+  selected: SiteFragment_siteViews_study_extendedSections_selected;
+  title: string;
+  name: string;
+}
+
+export interface SiteFragment_siteViews_study {
+  __typename: "SiteStudyPage";
+  allFields: string[];
+  basicSections: SiteFragment_siteViews_study_basicSections[];
+  extendedSections: SiteFragment_siteViews_study_extendedSections[];
+}
+
+export interface SiteFragment_siteViews_search_aggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteFragment_siteViews_search_aggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteFragment_siteViews_search_aggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: SiteFragment_siteViews_search_aggs_fields_preselected;
+  visibleOptions: SiteFragment_siteViews_search_aggs_fields_visibleOptions;
+  autoSuggest: boolean;
+  rank: number | null;
+}
+
+export interface SiteFragment_siteViews_search_aggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteFragment_siteViews_search_aggs {
+  __typename: "SiteAggSection";
+  fields: SiteFragment_siteViews_search_aggs_fields[];
+  selected: SiteFragment_siteViews_search_aggs_selected;
+}
+
+export interface SiteFragment_siteViews_search_crowdAggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteFragment_siteViews_search_crowdAggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteFragment_siteViews_search_crowdAggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: SiteFragment_siteViews_search_crowdAggs_fields_preselected;
+  visibleOptions: SiteFragment_siteViews_search_crowdAggs_fields_visibleOptions;
+  rank: number | null;
+  autoSuggest: boolean;
+}
+
+export interface SiteFragment_siteViews_search_crowdAggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteFragment_siteViews_search_crowdAggs {
+  __typename: "SiteAggSection";
+  fields: SiteFragment_siteViews_search_crowdAggs_fields[];
+  selected: SiteFragment_siteViews_search_crowdAggs_selected;
+}
+
+export interface SiteFragment_siteViews_search {
+  __typename: "SiteSearchPage";
+  fields: string[];
+  aggs: SiteFragment_siteViews_search_aggs;
+  crowdAggs: SiteFragment_siteViews_search_crowdAggs;
+}
+
+export interface SiteFragment_siteViews {
+  __typename: "SiteView";
+  id: number;
+  study: SiteFragment_siteViews_study;
+  search: SiteFragment_siteViews_search;
+}
+
 export interface SiteFragment {
   __typename: "Site";
   id: number;
@@ -144,4 +256,5 @@ export interface SiteFragment {
   subdomain: string;
   owners: SiteFragment_owners[];
   siteView: SiteFragment_siteView;
+  siteViews: SiteFragment_siteViews[];
 }
