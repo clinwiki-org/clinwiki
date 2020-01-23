@@ -159,7 +159,7 @@ class FacilitiesPage extends React.PureComponent<
 
   processFacility = (facility: FacilityFragment, i: number) => {
     const res: {
-      key: string;
+      key: string | null;
       location: string;
       index: number;
       status: string;
@@ -178,9 +178,10 @@ class FacilitiesPage extends React.PureComponent<
     const newLocation = isEmpty(facility.state)
       ? `${city}, ${country}`
       : `${city}, ${state} ${zip}, ${country}`;
+    const uid = `${city}-${state}-${zip}-${country}`;
 
     res.push({
-      key: name,
+      key: uid,
       location: newLocation,
       index: i + 1,
       status: newStatus,
