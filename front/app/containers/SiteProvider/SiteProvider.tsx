@@ -10,6 +10,7 @@ import { SiteFragment } from "types/SiteFragment";
 
 interface SiteProviderProps {
   id?: number;
+  url?: string;
   children: (site: SiteFragment) => React.ReactNode;
 }
 
@@ -148,7 +149,10 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
 
   render() {
     return (
-      <QueryComponent query={QUERY} variables={{ id: this.props.id, url: null }}>
+      <QueryComponent
+        query={QUERY}
+        variables={{ id: this.props.id, url: null }}
+      >
         {({ data, loading, error }) => {
           if (loading || error) return null;
           return this.props.children(data!.site!);
