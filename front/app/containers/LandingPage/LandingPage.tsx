@@ -5,7 +5,7 @@ import { Row, Col, Form, FormControl } from 'react-bootstrap';
 import { gql, ApolloClient } from 'apollo-boost';
 import { ApolloConsumer }  from 'react-apollo';
 import { History } from 'history';
-import { parseSearchQuery } from "utils/parseSearchQuery";
+import { parseSearchQuery } from 'utils/parseSearchQuery';
 
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
