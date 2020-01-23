@@ -16,7 +16,7 @@ interface UpdateSiteMutationProps {
 }
 
 const UPDATE_SITE_MUTATION = gql`
-  mutation UpdateSiteMutation($input: UpdateSiteInput!) {
+  mutation UpdateSiteMutation($input: UpdateSiteInput!, $url: String) {
     updateSite(input: $input) {
       site {
         ...SiteFragment

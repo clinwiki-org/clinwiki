@@ -19,7 +19,7 @@ interface CreateSiteMutationProps {
 }
 
 const CREATE_SITE_MUTATION = gql`
-  mutation CreateSiteMutation($input: CreateSiteInput!) {
+  mutation CreateSiteMutation($input: CreateSiteInput!, $url: String) {
     createSite(input: $input) {
       site {
         ...SiteFragment

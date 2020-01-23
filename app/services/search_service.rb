@@ -267,7 +267,8 @@ class SearchService # rubocop:disable Metrics/ClassLength
   def find_visibile_options(agg_name, is_crowd_agg, current_site)
     return [] if current_site.blank?
 
-    view = current_site.site_view.view
+    # TODO ability to select site view from a url
+    view = current_site.site_views.find_by(default: true).view
     fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
     field = fields.find { |f| f[:name] == agg_name }
     field&.dig(:visibleOptions, :values) || []
