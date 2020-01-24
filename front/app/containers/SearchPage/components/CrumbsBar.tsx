@@ -20,10 +20,8 @@ import aggToField from "utils/aggs/aggToField";
 import MultiCrumb from "components/MultiCrumb";
 import SiteProvider from "containers/SiteProvider";
 import { MAX_WINDOW_SIZE, aggsOrdered } from "../../../utils/constants";
-import { PulseLoader } from "react-spinners";
+import { PulseLoader, BeatLoader } from "react-spinners";
 import CurrentUser from "containers/CurrentUser";
-import LoadingPane from "../../../components/LoadingPane"
-import { BeatLoader } from 'react-spinners';
 
 const AUTOSUGGEST_QUERY = gql`
   query SearchPageAggBucketsQuery(
@@ -403,8 +401,6 @@ export default class CrumbsBar extends React.Component<
   };
 
   renderSectionTitle = section => {
-    const { isSuggestionLoading } = this.state;
-
     if (section.results.length > 0) {
       let newName = aggToField(section.name);
       newName = this.capitalize(newName);
