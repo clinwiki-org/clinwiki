@@ -28,11 +28,6 @@ class QueryComponent extends Query<
   InterventionPageQueryVariables
 > {}
 
-const StyleWrapper = styled.div`
-  .intervention-container {
-    margin-bottom: 2rem;
-  }
-`;
 
 interface InterventionPageProps {
   match?: match<{ id: string }>;
@@ -63,7 +58,7 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
     if (isNil(id)) return null;
 
     return (
-      <StyleWrapper>
+      
         <QueryComponent query={QUERY} variables={{ id }}>
           {({ data, loading, error }) => {
             if (loading || error || !data || !data.intervention) return null;
@@ -83,29 +78,28 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
             };
 
             return (
-              <div>
-                <div className="intervention-container">
+              <InteventionContainer>
                   <Intervention intervention={data.intervention} />
-                </div>
-                <Grid>
+                {/* <Grid>
                   <Row>
-                    <Col md={12}>
+                    <Col md={12}> */}
                       <SearchPage
                         match={this.props.match}
                         history={this.props.history}
                         ignoreUrlHash
                         searchParams={searchParams}
                       />
-                    </Col>
+                    {/* </Col>
                   </Row>
-                </Grid>
-              </div>
+                </Grid> */}
+              </InteventionContainer>
             );
           }}
         </QueryComponent>
-      </StyleWrapper>
     );
   }
 }
+
+const InteventionContainer = styled.div``;
 
 export default InterventionPage;

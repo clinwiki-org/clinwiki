@@ -11,6 +11,7 @@ module Mutations
       serializable do
         wiki_page = WikiPage.find_or_initialize_by(nct_id: nct_id)
         front_matter = wiki_page.front_matter
+        key = key.strip
         front_matter[key] = value
         wiki_page.front_matter = front_matter
         wiki_page.updater = current_user
