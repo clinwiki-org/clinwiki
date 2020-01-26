@@ -7,7 +7,9 @@ namespace :geocode do
       facilities.find_in_batches do |group|
         group.each do |facility|
           facility.geocode
-          sleep 0.1
+          # using the Google Maps Api should be rare as most locations are
+          # already geocoded so no sleep will be necessary
+          # sleep 0.1
         end
       end
     else # only geocode updated studies

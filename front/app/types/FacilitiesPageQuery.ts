@@ -27,7 +27,7 @@ export interface FacilitiesPageQuery_study_facilities {
   city: string;
   country: string;
   id: number;
-  name: string;
+  name: string | null;
   nctId: string;
   state: string;
   status: string;
