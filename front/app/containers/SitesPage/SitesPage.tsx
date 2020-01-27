@@ -1,15 +1,15 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { Query } from 'react-apollo';
-import { gql } from 'apollo-boost';
-import { Table, Button } from 'react-bootstrap';
-import { SitesPageQuery } from 'types/SitesPageQuery';
-import SiteItem from 'components/SiteItem';
-import CollapsiblePanel from 'components/CollapsiblePanel';
-import { History } from 'history';
+import * as React from "react";
+import styled from "styled-components";
+import { Query } from "react-apollo";
+import { gql } from "apollo-boost";
+import { Table, Button } from "react-bootstrap";
+import { SitesPageQuery } from "types/SitesPageQuery";
+import { SiteItem } from "components/SiteItem";
+import CollapsiblePanel from "components/CollapsiblePanel";
+import { History } from "history";
 import DeleteSiteMutation, {
-  DeleteSiteMutationFn,
-} from 'mutations/DeleteSiteMutations';
+  DeleteSiteMutationFn
+} from "mutations/DeleteSiteMutations";
 
 interface SitesPageProps {
   history: History;
@@ -45,7 +45,7 @@ class QueryComponent extends Query<SitesPageQuery> {}
 
 class SitesPage extends React.PureComponent<SitesPageProps> {
   handleCreateSite = () => {
-    this.props.history.push('/sites/new');
+    this.props.history.push("/sites/new");
   };
 
   handleSiteEdit = (id: number) => {
@@ -93,7 +93,7 @@ class SitesPage extends React.PureComponent<SitesPageProps> {
                     </tbody>
                   </Table>
                 )}
-                {data.me.ownSites.length === 0 && 'No sites yet'}
+                {data.me.ownSites.length === 0 && "No sites yet"}
               </CollapsiblePanel>
               <ButtonsContainer>
                 <Button onClick={this.handleCreateSite}>Create Site</Button>
@@ -118,7 +118,7 @@ class SitesPage extends React.PureComponent<SitesPageProps> {
                     </tbody>
                   </Table>
                 )}
-                {data.me.editorSites.length === 0 && 'No sites yet'}
+                {data.me.editorSites.length === 0 && "No sites yet"}
               </CollapsiblePanel>
             </Container>
           );

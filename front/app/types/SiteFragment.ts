@@ -130,6 +130,8 @@ export interface SiteFragment_siteView_search {
 
 export interface SiteFragment_siteView {
   __typename: "SiteView";
+  name: string | null;
+  url: string | null;
   id: number;
   study: SiteFragment_siteView_study;
   search: SiteFragment_siteView_search;
@@ -242,6 +244,8 @@ export interface SiteFragment_siteViews_search {
 
 export interface SiteFragment_siteViews {
   __typename: "SiteView";
+  name: string | null;
+  url: string | null;
   id: number;
   study: SiteFragment_siteViews_study;
   search: SiteFragment_siteViews_search;

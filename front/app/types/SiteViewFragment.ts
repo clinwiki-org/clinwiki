@@ -114,6 +114,8 @@ export interface SiteViewFragment_search {
 
 export interface SiteViewFragment {
   __typename: "SiteView";
+  name: string | null;
+  url: string | null;
   id: number;
   study: SiteViewFragment_study;
   search: SiteViewFragment_search;

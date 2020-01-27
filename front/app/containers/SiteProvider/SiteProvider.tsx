@@ -53,6 +53,8 @@ const SITE_STUDY_PAGE_FRAGMENT = gql`
 
 const SITE_VIEW_FRAGMENT = gql`
   fragment SiteViewFragment on SiteView {
+    name
+    url
     id
     study {
       ...SiteStudyPageFragment
@@ -149,10 +151,7 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
 
   render() {
     return (
-      <QueryComponent
-        query={QUERY}
-        variables={{ id: this.props.id, url: null }}
-      >
+      <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
         {({ data, loading, error }) => {
           if (loading || error) return null;
           return this.props.children(data!.site!);

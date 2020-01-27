@@ -101,7 +101,9 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
-    this.setState({ mutations: [...this.state.mutations, mutation] });
+    this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
+      console.log(this.state.mutations)
+    );
   };
 
   handleFormChange = (form: CreateSiteInput) => {
@@ -114,7 +116,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       { path: "/main", value: "Main" },
       { path: "/search", value: "Search" },
       { path: "/study", value: "Study" },
-      { path: "/siteViews", value: "SiteViews" }
+      { path: "/siteViews", value: "Site Views" }
     ];
 
     const locationComponents = this.props.location.pathname.split("/");
@@ -142,6 +144,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
+    const allViews = this.props.site.siteViews;
     return (
       <Container>
         <h3 style={{ color: "white", marginLeft: 15 }}>
@@ -174,19 +177,19 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               />
             )}
           />
-          {/* <Route
-            path={`${path}/site_views`}
+          <Route
+            path={`${path}/siteviews`}
             render={() => (
               <SiteViewsForm
-                view={view}
+                siteViews={allViews}
                 onAddMutation={this.handleAddMutation}
               />
             )}
-          /> */}
+          />
           <Redirect to={`${path}/main`} />
         </Switch>
         <StyledContainer>
-          <Button onClick={this.handleSave}>Save</Button>;
+          <Button onClick={this.handleSave}>Save</Button>
         </StyledContainer>
       </Container>
     );

@@ -1,20 +1,20 @@
-import * as React from 'react';
-import { gql } from 'apollo-boost';
-import { Mutation, MutationFn, MutationResult } from 'react-apollo';
+import * as React from "react";
+import { gql } from "apollo-boost";
+import { Mutation, MutationFn, MutationResult } from "react-apollo";
 import {
   CreateSiteMutation as CreateSiteMutationType,
-  CreateSiteMutationVariables,
-} from 'types/CreateSiteMutation';
-import SiteItem from 'components/SiteItem';
-import { SiteItemFragment } from 'types/SiteItemFragment';
-import { lensPath, set } from 'ramda';
-import { CreateSiteOwnSitesQuery } from 'types/CreateSiteOwnSitesQuery';
-import SiteProvider from 'containers/SiteProvider';
+  CreateSiteMutationVariables
+} from "types/CreateSiteMutation";
+import { SiteItem } from "components/SiteItem";
+import { SiteItemFragment } from "types/SiteItemFragment";
+import { lensPath, set } from "ramda";
+import { CreateSiteOwnSitesQuery } from "types/CreateSiteOwnSitesQuery";
+import SiteProvider from "containers/SiteProvider";
 
 interface CreateSiteMutationProps {
   children: (
     mutate: CreateSiteMutationFn,
-    result: MutationResult<CreateSiteMutationType>,
+    result: MutationResult<CreateSiteMutationType>
   ) => React.ReactNode;
 }
 
@@ -63,7 +63,7 @@ class CreateSiteMutation extends React.PureComponent<CreateSiteMutationProps> {
           let currentData: CreateSiteOwnSitesQuery | null;
           try {
             currentData = cache.readQuery({
-              query: OWN_SITES_QUERY,
+              query: OWN_SITES_QUERY
             });
           } catch {
             // This means the data for ownStores was not fetched yet
@@ -72,9 +72,9 @@ class CreateSiteMutation extends React.PureComponent<CreateSiteMutationProps> {
 
           if (!currentData || !currentData.me) return;
           const ownStoresLens = lensPath([
-            'me',
-            'ownSites',
-            currentData.me!.ownSites.length,
+            "me",
+            "ownSites",
+            currentData.me!.ownSites.length
           ]);
           const newData = set(ownStoresLens, data.createSite.site, currentData);
           cache.writeQuery({ query: OWN_SITES_QUERY, data: newData });

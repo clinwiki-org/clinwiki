@@ -179,7 +179,7 @@ export interface UpdateSiteInput {
  */
 export interface UpdateSiteViewInput {
   name: string;
-  default?: boolean | null;
+  default: boolean;
   url: string;
   description?: string | null;
   id: number;
