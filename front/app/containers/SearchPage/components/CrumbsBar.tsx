@@ -52,6 +52,7 @@ const AUTOSUGGEST_QUERY = gql`
     ) {
       autocomplete {
         name
+        isCrowd
         results {
           key
           docCount
@@ -141,7 +142,6 @@ import { AggCallback, SearchParams } from "../Types";
 import { isEmpty } from "ramda";
 import { SiteFragment } from "types/SiteFragment";
 
-//
 interface CrumbsBarProps {
   searchParams: SearchParams;
   onBulkUpdate: () => void;
@@ -313,7 +313,7 @@ export default class CrumbsBar extends React.Component<
       agg: "browse_condition_mesh_terms",
       aggFilters: searchParams.aggFilters,
       aggOptionsFilter: searchTerm,
-      crowdAggFilters: [],
+      crowdAggFilters: searchParams.crowdAggFilters,
       page: 0,
       pageSize: 5,
       q: {
@@ -366,7 +366,9 @@ export default class CrumbsBar extends React.Component<
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
   ) => {
     const section = this.state.suggestions[sectionIndex];
-    this.props.addFilter(section.name, suggestionValue);
+    if (section.isCrowd) {
+      this.props.addFilter(section.name, suggestionValue, true);
+    } else this.props.addFilter(section.name, suggestionValue);
   };
 
   renderSectionTitle = section => {
