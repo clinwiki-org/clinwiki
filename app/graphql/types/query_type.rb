@@ -89,14 +89,16 @@ module Types
         result = search_service.agg_buckets_for_field(field: field_name, current_site: context[:current_site])
         list << Hashie::Mash.new(
           name: field_name,
-          results: result[field_name.to_sym][:buckets]
+          results: result[field_name.to_sym][:buckets],
+          is_crowd: false
         )
       end
       crowd_agg_fields.each do |field_name|
         result = search_service.agg_buckets_for_field(field: field_name, current_site: context[:current_site], is_crowd_agg: true)
         list << Hashie::Mash.new(
           name: field_name,
-          results: result["fm_#{field_name}".to_sym][:buckets]
+          results: result["fm_#{field_name}".to_sym][:buckets],
+          is_crowd: true
         )
       end
       Hashie::Mash.new(autocomplete: list)
