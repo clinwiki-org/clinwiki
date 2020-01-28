@@ -273,6 +273,7 @@ interface SearchViewProps {
   ) => void;
   onRowClick: (nctId: string) => void;
   onResetFilters: () => void;
+  onClearFilters:()=> void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string; kind: AggKind } | null;
   previousSearchData: Array<SearchPageSearchQuery_search_studies>;
@@ -627,6 +628,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             }}
             data={site}
             onReset={this.props.onResetFilters}
+            onClear={this.props.onClearFilters}
             loading={loading}
             showCards={this.props.showCards}
             toggledShowCards={this.toggledShowCards}
