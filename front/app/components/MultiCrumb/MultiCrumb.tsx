@@ -28,15 +28,45 @@ toggleShowValue=()=>{
 
   this.setState({showValue: !showValue})
 }
-render(){  return (
+render(){  
+  let addVals = this.props.values.length - 4
+  let shortVals= this.props.values.splice(3, addVals)
+  
+  
+  return (
     <Label className="btn">
       {this.props.category && <i>{this.props.category}:</i>}
 
       { this.props.values.length > 4 ?(
+<span>
 
+{shortVals.map((v,i)=>{
+  const label = this.props.labels ? this.props.labels[i] : v;
+
+  return (
+    <b key={v}>
+      {label}
+      <FontAwesome
+        className="remove"
+        name="remove"
+        style={{
+          cursor: 'pointer',
+          color: '#cc1111',
+          margin: '0 0 0 3px',
+        }}
+        onClick={() => this.props.onClick(v)}
+      />
+    </b>
+  );
+})
+
+}
   <b  onClick={()=>this.toggleShowValue()}>
-   ({this.props.values.length})
+Show Something
   </b>
+
+</span>
+
 
       ):(
 
