@@ -88,6 +88,9 @@ const CrumbsBarStyleWrappper = styled.div`
     span.label.label-default {
       padding: 7px !important;
       border-radius: 4px !important;
+      display:flex;
+      flex-wrap:wrap;
+      max-width:33%;
     }
 
     input.form-control {

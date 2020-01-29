@@ -2,115 +2,173 @@ import * as React from 'react';
 import { Label } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import { render } from 'react-dom';
-interface MultiCrumbProps{
+interface MultiCrumbProps {
   category?: string;
   values: string[];
   labels?: string[];
   onClick: (s: string) => void;
 }
-interface MultiCrumbState{
+interface MultiCrumbState {
   showValue: boolean;
 }
-class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState>{
+class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
+  state: MultiCrumbState = {
+    showValue: false
+  };
 
-state: MultiCrumbState={
-  showValue: false
-};
+  toggleShowValue = () => {
+    const { showValue } = this.state;
 
-// (props: {
-//   category?: string;
-//   values: string[];
-//   labels?: string[];
-//   onClick: (s: string) => void;
-// }) => {
-toggleShowValue=()=>{
-  const {showValue} = this.state
+    this.setState({ showValue: !showValue });
+  };
+  render() {
 
-  this.setState({showValue: !showValue})
-}
-render(){  
-  let addVals = this.props.values.length - 4
-  let shortVals= this.props.values.splice(3, addVals)
+
+
+    if(this.props.values.length>4 && this.state.showValue==false){
+       let addVals = this.props.values.length - 4
+      // let originalVals =this.props.values
+      // let shortVals=originalVals
+      // shortVals.splice(4, addVals, `...${addVals} others`)
+      // console.log(addVals, originalVals, shortVals)
+
+      console.log("Length >4")
+      return (
+        <Label className='btn'>
+          {this.props.category && <i>{this.props.category}:</i>}
+          {
+      this.props.values.slice(0,4).map((v,i)=>{
+        const label = this.props.labels ? this.props.labels[i] : v;
+      
+        return (
+          <b key={v}>
+            {label}
+            <FontAwesome
+              className="remove"
+              name="remove"
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                margin: '0 0 0 3px',
+              }}
+              onClick={() => this.props.onClick(v)}
+            />
+          </b>
+      
+        );
+      })
+      }
+      <b>
+        {`...${addVals} others`}
+        <FontAwesome
+              className="chevron-right"
+              name="chevron-right"
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                margin: '0 0 0 3px',
+              }}
+              onClick={() => this.toggleShowValue()}
+            />
+      </b>
+      
+      </Label>)
+     
   
-  
-  return (
-    <Label className="btn">
+    }else  if(this.props.values.length>4 && this.state.showValue==true ){
+
+return (
+  <Label className='btn'>
+    {this.props.category && <i>{this.props.category}:</i>}
+  {  
+    this.props.values.map((v, i) => {
+            const label = this.props.labels ? this.props.labels[i] : v;
+            return (
+              <b key={v}>
+                {label}
+                <FontAwesome
+                  className='remove'
+                  name='remove'
+                  style={{
+                    cursor: 'pointer',
+                    color: '#fff',
+                    margin: '0 0 0 3px'
+                  }}
+                  onClick={() => this.props.onClick(v)}
+                />
+              </b>
+            );
+          })
+        }
+
+<b>
+        <FontAwesome
+              className="chevron-left"
+              name="chevron-left"
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                margin: '0 0 0 3px',
+              }}
+              onClick={() => this.toggleShowValue()}
+            />
+      </b>
+</Label>
+      )
+    }else{
+
+      return(
+      <Label className='btn '>
       {this.props.category && <i>{this.props.category}:</i>}
-
-      { this.props.values.length > 4 ?(
-<span>
-
-{shortVals.map((v,i)=>{
-  const label = this.props.labels ? this.props.labels[i] : v;
-
-  return (
-    <b key={v}>
-      {label}
-      <FontAwesome
-        className="remove"
-        name="remove"
-        style={{
-          cursor: 'pointer',
-          color: '#cc1111',
-          margin: '0 0 0 3px',
-        }}
-        onClick={() => this.props.onClick(v)}
-      />
-    </b>
-  );
-})
-
-}
-  <b  onClick={()=>this.toggleShowValue()}>
-Show Something
-  </b>
-
-</span>
-
-
-      ):(
-
+    {  
       this.props.values.map((v, i) => {
-        const label = this.props.labels ? this.props.labels[i] : v;
-        return (
-          <b key={v}>
-            {label}
-            <FontAwesome
-              className="remove"
-              name="remove"
-              style={{
-                cursor: 'pointer',
-                color: '#cc1111',
-                margin: '0 0 0 3px',
-              }}
-              onClick={() => this.props.onClick(v)}
-            />
-          </b>
-        );
-      }))}
-  
-{this.state.showValue==true ?
-(  this.props.values.map((v, i) => {
-        const label = this.props.labels ? this.props.labels[i] : v;
-        return (
-          <b key={v}>
-            {label}
-            <FontAwesome
-              className="remove"
-              name="remove"
-              style={{
-                cursor: 'pointer',
-                color: '#cc1111',
-                margin: '0 0 0 3px',
-              }}
-              onClick={() => this.props.onClick(v)}
-            />
-          </b>
-        );
-      })):(null)}
+              const label = this.props.labels ? this.props.labels[i] : v;
+              return (
+                <b key={v}>
+                  {label}
+                  <FontAwesome
+                    className='remove'
+                    name='remove'
+                    style={{
+                      cursor: 'pointer',
+                      color: '#cc1111',
+                      margin: '0 0 0 3px'
+                    }}
+                    onClick={() => this.props.onClick(v)}
+                  />
+                </b>
+              );
+            })
+          }
+  </Label>);
+    }
 
-  </Label>
-  )}
-};
+
+  
+          
+
+        // {this.state.showValue == true
+        //   ? this.props.values.map((v, i) => {
+        //       const label = this.props.labels ? this.props.labels[i] : v;
+        //       return (
+        //         <b key={v}>
+        //           {label}
+        //           <FontAwesome
+        //             className='remove'
+        //             name='remove'
+        //             style={{
+        //               cursor: 'pointer',
+        //               color: '#cc1111',
+        //               margin: '0 0 0 3px'
+        //             }}
+        //             onClick={() => this.props.onClick(v)}
+        //           />
+        //         </b>
+        //       );
+        //     })
+        //   : null}
+    
+  }
+}
 
 export default MultiCrumb;
