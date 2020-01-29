@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { Label } from 'react-bootstrap';
+import { Label, ListGroupItem } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
+import styled from "styled-components";
+
 import { render } from 'react-dom';
 interface MultiCrumbProps {
   category?: string;
@@ -24,7 +26,13 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
   render() {
 
 
+const MultiCrumb = styled.div`
+.filter-values{
+  background-color: transparent;
+  border: none;
+}
 
+`
     if(this.props.values.length>4 && this.state.showValue==false){
        let addVals = this.props.values.length - 4
       // let originalVals =this.props.values
@@ -34,7 +42,8 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
 
       console.log("Length >4")
       return (
-        <Label className='btn'>
+        <MultiCrumb>
+        <ListGroupItem className="filter-values">
           {this.props.category && <i>{this.props.category}:</i>}
           {
       this.props.values.slice(0,4).map((v,i)=>{
@@ -46,7 +55,9 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
                       // border: "1px solid rgb(127, 0, 0)",
                       border: "3px solid rgba(255, 255, 255, .75)",
                       borderRadius: "10px",
-                      padding: "0 5px 0 5px"
+                      padding: "0 5px 0 5px",
+                      color: "#55B88D"
+
             }}>
             {label}
             <FontAwesome
@@ -54,7 +65,7 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
               name="remove"
               style={{
                 cursor: 'pointer',
-                color: '#fff',
+                color: '#55B88D',
                 margin: '0 0 0 3px',
               }}
               onClick={() => this.props.onClick(v)}
@@ -70,7 +81,9 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
                       // border: "1px solid rgb(127, 0, 0)",
                       border: "3px solid rgba(255, 255, 255, .75)",
                       borderRadius: "10px",
-                      padding: "0 5px 0 5px"
+                      padding: "0 5px 0 5px",
+                      color: "#55B88D"
+
             }}>
         {`...${addVals} others`}
         <FontAwesome
@@ -78,7 +91,7 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
               name="chevron-right"
               style={{
                 cursor: 'pointer',
-                color: '#fff',
+                color: '#55B88D',
                 margin: '0 0 0 3px',
               }}
               onClick={() => this.toggleShowValue()}
@@ -86,13 +99,16 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
         </span>
       </b>
       
-      </Label>)
+      </ListGroupItem>
+      </MultiCrumb>
+      )
      
   
     }else  if(this.props.values.length>4 && this.state.showValue==true ){
 
 return (
-  <Label className='btn'>
+  <MultiCrumb>
+  <ListGroupItem className="filter-values">
     {this.props.category && <i>{this.props.category}:</i>}
   {  
     this.props.values.map((v, i) => {
@@ -103,7 +119,9 @@ return (
                       // border: "1px solid rgb(127, 0, 0)",
                       border: "3px solid rgba(255, 255, 255, .75)",
                       borderRadius: "10px",
-                      padding: "0 5px 0 5px"
+                      padding: "0 5px 0 5px",
+                      color: "#55B88D"
+
             }}>
                 {label}
                 <FontAwesome
@@ -111,7 +129,7 @@ return (
                   name='remove'
                   style={{
                     cursor: 'pointer',
-                    color: '#fff',
+                    color: '#55B88D',
                     margin: '0 0 0 3px'
                   }}
                   onClick={() => this.props.onClick(v)}
@@ -128,18 +146,20 @@ return (
               name="chevron-left"
               style={{
                 cursor: 'pointer',
-                color: '#fff',
+                color: '#55B88D',
                 margin: '0 0 0 3px',
               }}
               onClick={() => this.toggleShowValue()}
             />
       </b>
-</Label>
+</ListGroupItem>
+</MultiCrumb>
       )
     }else{
 
       return(
-      <Label className='btn '>
+      <MultiCrumb>
+      <ListGroupItem className="filter-values">
       {this.props.category && <i>{this.props.category}:</i>}
     {  
       this.props.values.map((v, i) => {
@@ -148,9 +168,10 @@ return (
                 <b key={v}>
                               <span style={{
                       // border: "1px solid rgb(127, 0, 0)",
-                      border: "3px solid rgba(255, 255, 255, .75)",
-                      borderRadius: "10px",
-                      padding: "0 5px 0 5px"
+                      //border: "3px solid rgba(255, 255, 255, .75)",
+                    //  borderRadius: "10px",
+                      padding: "0 5px 0 5px",
+                      color: "#55B88D"
             }}>
                   {label}
                   <FontAwesome
@@ -158,7 +179,7 @@ return (
                     name='remove'
                     style={{
                       cursor: 'pointer',
-                      color: '#cc1111',
+                      color: '#55B88D',
                       margin: '0 0 0 3px'
                     }}
                     onClick={() => this.props.onClick(v)}
@@ -168,7 +189,8 @@ return (
               );
             })
           }
-  </Label>);
+  </ListGroupItem>
+  </MultiCrumb>);
     }
 
 
