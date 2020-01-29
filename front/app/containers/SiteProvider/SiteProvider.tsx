@@ -147,7 +147,7 @@ class QueryComponent extends Query<
 
 class SiteProvider extends React.PureComponent<SiteProviderProps> {
   static fragment = SITE_FRAGMENT;
-  static siteViewFragmemt = SITE_VIEW_FRAGMENT;
+  static siteViewFragment = SITE_VIEW_FRAGMENT;
 
   render() {
     return (
