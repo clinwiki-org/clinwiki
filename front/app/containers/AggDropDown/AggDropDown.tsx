@@ -15,6 +15,7 @@ import {
   lensPath,
   view,
   find,
+  filter,
   propEq,
   reverse,
   identity,
@@ -156,6 +157,7 @@ interface AggDropDownProps {
   addFilter: AggCallback | null;
   removeFilter: AggCallback | null;
   display?: FieldDisplay;
+  visibleOptions?: String[],
   onOpen?: (agg: string, aggKind: AggKind) => void;
 }
 
@@ -349,11 +351,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return `${text} (${docCount})`;
   };
 
-  renderBuckets = (display: FieldDisplay) => {
-    const { agg } = this.props;
+  renderBuckets = ({ display, site,field } : { display: FieldDisplay, site: SiteViewFragment, field:SiteViewFragment_search_aggs_fields|any }) => {
+    const { agg, visibleOptions = [] } = this.props;
     const { buckets = [] } = this.state;
-
       return pipe(
+        filter(({ key }) => visibleOptions.length ? visibleOptions.includes(key) : true),
         map(({ key, docCount }) => (
           <Checkbox
             key={key}
@@ -368,11 +370,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
     let display = this.props.display;
+    const field = find(propEq('name', this.props.agg), [
+      ...site.search.aggs.fields,
+      ...site.search.crowdAggs.fields,
+    ]) as SiteViewFragment_search_aggs_fields | null;
     if (!display) {
-      const field = find(propEq('name', this.props.agg), [
-        ...site.search.aggs.fields,
-        ...site.search.crowdAggs.fields,
-      ]) as SiteViewFragment_search_aggs_fields | null;
       display = (field && field.display) || FieldDisplay.STRING;
     }
     return (
@@ -387,7 +389,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           </div>
         }
       >
-        {this.renderBuckets(display)}
+        {this.renderBuckets({display, site, field})}
       </InfiniteScroll>
     );
   };
