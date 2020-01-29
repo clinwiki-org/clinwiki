@@ -88,6 +88,8 @@ const CrumbsBarStyleWrappper = styled.div`
     span.label.label-default {
       padding: 7px !important;
       border-radius: 4px !important;
+      display: flex;
+      flex-wrap: wrap;
     }
 
     input.form-control {
@@ -582,7 +584,7 @@ export default class CrumbsBar extends React.Component<
                 </Col>
               </Row>
               <Row>
-                <Col md={12} style={{ padding: "10px 0px" }}>
+                <Col md={12} style={{ padding: "10px 0px",display:"flex",flexWrap:"wrap" }}>
                   <b>Filters: </b>
                   {Array.from(
                     this.mkCrumbs(
