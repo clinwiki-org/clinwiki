@@ -118,8 +118,7 @@ const CrumbsBarStyleWrappper = styled.div`
       }
 
       b {
-        padding-right: 5px;
-      }
+        padding: 5px 1px 5px 1px;      }
 
       b:last-of-type {
         padding-right: 0px;

@@ -42,6 +42,12 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
       
         return (
           <b key={v}>
+            <span style={{
+                      // border: "1px solid rgb(127, 0, 0)",
+                      border: "3px solid rgba(255, 255, 255, .75)",
+                      borderRadius: "10px",
+                      padding: "0 5px 0 5px"
+            }}>
             {label}
             <FontAwesome
               className="remove"
@@ -53,12 +59,19 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
               }}
               onClick={() => this.props.onClick(v)}
             />
+            </span>
           </b>
       
         );
       })
       }
       <b>
+      <span style={{
+                      // border: "1px solid rgb(127, 0, 0)",
+                      border: "3px solid rgba(255, 255, 255, .75)",
+                      borderRadius: "10px",
+                      padding: "0 5px 0 5px"
+            }}>
         {`...${addVals} others`}
         <FontAwesome
               className="chevron-right"
@@ -70,6 +83,7 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
               }}
               onClick={() => this.toggleShowValue()}
             />
+        </span>
       </b>
       
       </Label>)
@@ -85,6 +99,12 @@ return (
             const label = this.props.labels ? this.props.labels[i] : v;
             return (
               <b key={v}>
+                            <span style={{
+                      // border: "1px solid rgb(127, 0, 0)",
+                      border: "3px solid rgba(255, 255, 255, .75)",
+                      borderRadius: "10px",
+                      padding: "0 5px 0 5px"
+            }}>
                 {label}
                 <FontAwesome
                   className='remove'
@@ -96,6 +116,7 @@ return (
                   }}
                   onClick={() => this.props.onClick(v)}
                 />
+                </span>
               </b>
             );
           })
@@ -125,6 +146,12 @@ return (
               const label = this.props.labels ? this.props.labels[i] : v;
               return (
                 <b key={v}>
+                              <span style={{
+                      // border: "1px solid rgb(127, 0, 0)",
+                      border: "3px solid rgba(255, 255, 255, .75)",
+                      borderRadius: "10px",
+                      padding: "0 5px 0 5px"
+            }}>
                   {label}
                   <FontAwesome
                     className='remove'
@@ -136,6 +163,7 @@ return (
                     }}
                     onClick={() => this.props.onClick(v)}
                   />
+                  </span>
                 </b>
               );
             })
