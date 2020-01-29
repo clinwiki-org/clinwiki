@@ -39,8 +39,8 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
         input: {
           mutations: mutations.map(serializeMutation),
           id: site.siteView.id,
-          name: "banana",
-          url: "banana",
+          name: "Default",
+          url: "",
           default: true
         }
       }
