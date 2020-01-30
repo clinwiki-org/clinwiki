@@ -31,7 +31,17 @@ const MultiCrumb = styled.div`
   background-color: transparent;
   border: none;
 }
-
+.crumb-container{
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 0 5px 0 5px;
+  color: #55B88D;
+}
+.crumb-icon{
+  cursor: pointer;
+  color: #ddd;
+  margin: 0 0 0 3px;
+}
 `
     if(this.props.values.length>4 && this.state.showValue==false){
        let addVals = this.props.values.length - 4
@@ -51,23 +61,12 @@ const MultiCrumb = styled.div`
       
         return (
           <b key={v}>
-            <span style={{
-                      // border: "1px solid rgb(127, 0, 0)",
-                      border: "3px solid rgba(255, 255, 255, .75)",
-                      borderRadius: "10px",
-                      padding: "0 5px 0 5px",
-                      color: "#55B88D"
-
-            }}>
+            <span className="crumb-container">
             {label}
             <FontAwesome
-              className="remove"
+              className="remove crumb-icon"
               name="remove"
-              style={{
-                cursor: 'pointer',
-                color: '#55B88D',
-                margin: '0 0 0 3px',
-              }}
+
               onClick={() => this.props.onClick(v)}
             />
             </span>
@@ -77,23 +76,12 @@ const MultiCrumb = styled.div`
       })
       }
       <b>
-      <span style={{
-                      // border: "1px solid rgb(127, 0, 0)",
-                      border: "3px solid rgba(255, 255, 255, .75)",
-                      borderRadius: "10px",
-                      padding: "0 5px 0 5px",
-                      color: "#55B88D"
+      <span className="crumb-container">
 
-            }}>
         {`...${addVals} others`}
         <FontAwesome
-              className="chevron-right"
+              className="chevron-right crumb-icon"
               name="chevron-right"
-              style={{
-                cursor: 'pointer',
-                color: '#55B88D',
-                margin: '0 0 0 3px',
-              }}
               onClick={() => this.toggleShowValue()}
             />
         </span>
@@ -115,23 +103,14 @@ return (
             const label = this.props.labels ? this.props.labels[i] : v;
             return (
               <b key={v}>
-                            <span style={{
-                      // border: "1px solid rgb(127, 0, 0)",
-                      border: "3px solid rgba(255, 255, 255, .75)",
-                      borderRadius: "10px",
-                      padding: "0 5px 0 5px",
-                      color: "#55B88D"
+            <span className="crumb-container">
 
-            }}>
                 {label}
                 <FontAwesome
-                  className='remove'
+                  className='remove crumb-icon'
                   name='remove'
-                  style={{
-                    cursor: 'pointer',
-                    color: '#55B88D',
-                    margin: '0 0 0 3px'
-                  }}
+            
+                  
                   onClick={() => this.props.onClick(v)}
                 />
                 </span>
@@ -142,13 +121,9 @@ return (
 
 <b>
         <FontAwesome
-              className="chevron-left"
+              className="chevron-left crumb-icon"
               name="chevron-left"
-              style={{
-                cursor: 'pointer',
-                color: '#55B88D',
-                margin: '0 0 0 3px',
-              }}
+
               onClick={() => this.toggleShowValue()}
             />
       </b>
@@ -166,22 +141,12 @@ return (
               const label = this.props.labels ? this.props.labels[i] : v;
               return (
                 <b key={v}>
-                              <span style={{
-                      // border: "1px solid rgb(127, 0, 0)",
-                      //border: "3px solid rgba(255, 255, 255, .75)",
-                    //  borderRadius: "10px",
-                      padding: "0 5px 0 5px",
-                      color: "#55B88D"
-            }}>
+            <span className="crumb-container">
+
                   {label}
                   <FontAwesome
-                    className='remove'
+                    className='remove crumb-icon'
                     name='remove'
-                    style={{
-                      cursor: 'pointer',
-                      color: '#55B88D',
-                      margin: '0 0 0 3px'
-                    }}
                     onClick={() => this.props.onClick(v)}
                   />
                   </span>
