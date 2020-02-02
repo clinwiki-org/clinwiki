@@ -20,7 +20,7 @@ import aggToField from "utils/aggs/aggToField";
 import MultiCrumb from "components/MultiCrumb";
 import SiteProvider from "containers/SiteProvider";
 import { MAX_WINDOW_SIZE, aggsOrdered } from "../../../utils/constants";
-import { PulseLoader } from "react-spinners";
+import { PulseLoader, BeatLoader } from "react-spinners";
 import CurrentUser from "containers/CurrentUser";
 
 const AUTOSUGGEST_QUERY = gql`
@@ -137,7 +137,12 @@ const CrumbsBarStyleWrappper = styled.div`
     padding-bottom: 10px;
   }
 `;
+const LoaderWrapper = styled.div`
+  margin: 20px 20px;
 
+  text-align: center;
+
+`;
 import { AggCallback, SearchParams } from "../Types";
 import { isEmpty } from "ramda";
 import { SiteFragment } from "types/SiteFragment";
@@ -163,6 +168,7 @@ interface CrumbsBarProps {
 interface CrumbsBarState {
   searchTerm: string;
   suggestions: any;
+  isSuggestionLoading: boolean;
   cardsBtnColor: string;
   tableBtnColor: string;
 }
@@ -202,6 +208,7 @@ export default class CrumbsBar extends React.Component<
     this.state = {
       searchTerm: "",
       suggestions: [],
+      isSuggestionLoading: true,
       cardsBtnColor: cardsColor,
       tableBtnColor: tableColor
     };
@@ -332,15 +339,22 @@ export default class CrumbsBar extends React.Component<
     const array = response.data.autocomplete.autocomplete;
 
     this.setState({
-      suggestions: array
+      suggestions: array,
+      isSuggestionLoading: false
     });
   };
 
-  onSuggestionsFetchRequested = () => {};
+  onSuggestionsFetchRequested = () => {
+    this.setState({
+      isSuggestionLoading: true
+    });
+
+  };
 
   onSuggestionsClearRequested = () => {
     this.setState({
-      suggestions: []
+      suggestions: [],
+      isSuggestionLoading: true
     });
   };
 
@@ -350,7 +364,24 @@ export default class CrumbsBar extends React.Component<
 
   renderSuggestion = suggestion => {
     const capitalized = this.capitalize(suggestion.key);
-    return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
+      return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
+  };
+  renderSuggestionsContainer = () => {
+    const { isSuggestionLoading, suggestions } = this.state;
+
+    if (isSuggestionLoading == true) {
+
+        if(suggestions.length==0){
+          return null
+        }else{
+      return (
+        <div className="react-autosuggest__suggestions-container--open">
+          <LoaderWrapper>
+            <BeatLoader color="#cccccc" />
+          </LoaderWrapper>
+        </div>
+      )}
+    }
   };
 
   getSectionSuggestions = section => {
@@ -401,9 +432,15 @@ export default class CrumbsBar extends React.Component<
 
   toggledShowCards = (type, showCards) => {
     if (type === "cards") {
-      this.setState({ cardsBtnColor: "#55B88D", tableBtnColor: "#90a79d" });
+      this.setState({
+        cardsBtnColor: "#55B88D",
+        tableBtnColor: "#90a79d"
+      });
     } else if (type === "table") {
-      this.setState({ cardsBtnColor: "#90a79d", tableBtnColor: "#55B88D" });
+      this.setState({
+        cardsBtnColor: "#90a79d",
+        tableBtnColor: "#55B88D"
+      });
     }
     this.props.toggledShowCards(showCards);
   };
@@ -475,7 +512,8 @@ export default class CrumbsBar extends React.Component<
   };
 
   render() {
-    const { searchTerm, suggestions } = this.state;
+    const { searchTerm, suggestions, isSuggestionLoading } = this.state;
+
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -484,33 +522,86 @@ export default class CrumbsBar extends React.Component<
               <Row>
                 <Col xs={8} md={8}>
                   <Form inline className="searchInput" onSubmit={this.onSubmit}>
-                    <FormGroup>
-                      <div style={{ display: "flex", flexDirection: "row" }}>
-                        <b style={{ marginRight: "8px", marginTop: "4px" }}>
-                          <ControlLabel>Search Within: </ControlLabel>{" "}
-                        </b>
-                        <Autosuggest
-                          multiSection={true}
-                          suggestions={suggestions}
-                          inputProps={{
-                            value: searchTerm,
-                            onChange: (e, searchTerm) =>
-                              this.onChange(e, searchTerm, apolloClient)
+                    {isSuggestionLoading ? (
+                      <FormGroup>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row"
                           }}
-                          renderSuggestion={this.renderSuggestion}
-                          renderSectionTitle={this.renderSectionTitle}
-                          getSectionSuggestions={this.getSectionSuggestions}
-                          onSuggestionSelected={this.onSuggestionSelected}
-                          onSuggestionsFetchRequested={
-                            this.onSuggestionsFetchRequested
-                          }
-                          onSuggestionsClearRequested={
-                            this.onSuggestionsClearRequested
-                          }
-                          getSuggestionValue={this.getSuggestionValue}
-                        />
-                      </div>
-                    </FormGroup>
+                        >
+                          <b
+                            style={{
+                              marginRight: "8px",
+                              marginTop: "4px"
+                            }}
+                          >
+                            <ControlLabel>Search Within: </ControlLabel>{" "}
+                          </b>
+
+                          <Autosuggest
+                            multiSection={true}
+                            suggestions={suggestions}
+                            inputProps={{
+                              value: searchTerm,
+                              onChange: (e, searchTerm) =>
+                                this.onChange(e, searchTerm, apolloClient)
+                            }}
+                            renderSuggestion={this.renderSuggestion}
+                            renderSuggestionsContainer={this.renderSuggestionsContainer}
+                            renderSectionTitle={this.renderSectionTitle}
+                            getSectionSuggestions={this.getSectionSuggestions}
+                            onSuggestionSelected={this.onSuggestionSelected}
+                            onSuggestionsFetchRequested={
+                              this.onSuggestionsFetchRequested
+                            }
+                            onSuggestionsClearRequested={
+                              this.onSuggestionsClearRequested
+                            }
+                            getSuggestionValue={this.getSuggestionValue}
+                          />
+                        </div>
+                      </FormGroup>
+                    ) : (
+                      <FormGroup>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row"
+                          }}
+                        >
+                          <b
+                            style={{
+                              marginRight: "8px",
+                              marginTop: "4px"
+                            }}
+                          >
+                            <ControlLabel>Search Within: </ControlLabel>{" "}
+                          </b>
+
+                          <Autosuggest
+                            multiSection={true}
+                            suggestions={suggestions}
+                            inputProps={{
+                              value: searchTerm,
+                              onChange: (e, searchTerm) =>
+                                this.onChange(e, searchTerm, apolloClient)
+                            }}
+                            renderSuggestion={this.renderSuggestion}
+                            renderSectionTitle={this.renderSectionTitle}
+                            getSectionSuggestions={this.getSectionSuggestions}
+                            onSuggestionSelected={this.onSuggestionSelected}
+                            onSuggestionsFetchRequested={
+                              this.onSuggestionsFetchRequested
+                            }
+                            onSuggestionsClearRequested={
+                              this.onSuggestionsClearRequested
+                            }
+                            getSuggestionValue={this.getSuggestionValue}
+                          />
+                        </div>
+                      </FormGroup>
+                    )}
                     <Button type="submit">
                       <FontAwesome name="search" />
                     </Button>
@@ -532,7 +623,9 @@ export default class CrumbsBar extends React.Component<
                     <ButtonGroup>
                       <Button
                         onClick={() => this.toggledShowCards("cards", true)}
-                        style={{ backgroundColor: this.state.cardsBtnColor }}
+                        style={{
+                          backgroundColor: this.state.cardsBtnColor
+                        }}
                       >
                         <svg
                           aria-hidden="true"
@@ -555,7 +648,9 @@ export default class CrumbsBar extends React.Component<
                       </Button>
                       <Button
                         onClick={() => this.toggledShowCards("table", false)}
-                        style={{ backgroundColor: this.state.tableBtnColor }}
+                        style={{
+                          backgroundColor: this.state.tableBtnColor
+                        }}
                       >
                         <svg
                           aria-hidden="true"
