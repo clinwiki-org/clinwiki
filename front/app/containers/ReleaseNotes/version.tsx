@@ -14,7 +14,7 @@ const notes = RichTextEditor.createValueFromString(
 - Select all in facets
 - loading for autocomplete
 - Interventions page
-
+- Fix crowd aggs in type ahead
 
 ### Version 9
 - Facility maps
