@@ -164,7 +164,7 @@ module Types
     end
 
     def interventions
-      Loaders::Association.for(Study, :interventions).load(object)
+      Loaders::CustomAssociation.for(Study, :interventions).load(object)
     end
 
     def reviews

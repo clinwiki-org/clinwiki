@@ -6,9 +6,13 @@ import {
   filter,
   equals,
   prop,
+  tap,
+  compose, 
+  reduce, 
   intersection
-} from "ramda";
-import AggDropDown from "containers/AggDropDown";
+  pathOr
+} from 'ramda';
+import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,
   AggCallback,
@@ -24,6 +28,10 @@ import { throws } from "assert";
 import { FilterKind } from "types/globalTypes";
 import { displayFields } from "utils/siteViewHelpers";
 
+const getVisibleOptionsByName: (SiteFragment) => any = compose(
+  reduce((byName, {name, visibleOptions}) => ({...byName,[name]: visibleOptions.values}), {}),
+  pathOr([], ['siteView', 'search','crowdAggs','fields']),
+)
 interface AggsProps {
   aggs: AggBucketMap;
   crowdAggs: AggBucketMap;
@@ -53,9 +61,8 @@ class Aggs extends React.PureComponent<AggsProps> {
     const displayed = displayFields(
       site.siteView.search.crowdAggs.selected.kind,
       site.siteView.search.crowdAggs.selected.values,
-      site.siteView.search.crowdAggs.fields
-    ).map(prop("name"));
-
+      site.siteView.search.crowdAggs.fields,
+    ).map(prop('name'));
     return filter(x => crowdAggs.includes(x), displayed);
   };
 
@@ -74,11 +81,13 @@ class Aggs extends React.PureComponent<AggsProps> {
 
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
-
+    
     if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
       crowdAggDropdowns = (
         <SiteProvider>
-          {site => (
+          {(site: SiteFragment )=> {
+            const visibleOptionsByName = getVisibleOptionsByName(site)
+            return (
             <div>
               <h4
                 style={{ color: "white", position: "relative", left: "20px" }}
@@ -104,10 +113,11 @@ class Aggs extends React.PureComponent<AggsProps> {
                   }
                   removeFilters={(agg,items)=> removeFilters(agg,items,true)}
                   searchParams={searchParams}
+                  visibleOptions={visibleOptionsByName[k]}
                 />
               ))}
             </div>
-          )}
+            );}}
         </SiteProvider>
       );
     }

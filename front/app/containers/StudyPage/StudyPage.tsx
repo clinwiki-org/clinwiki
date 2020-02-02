@@ -290,8 +290,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         return FacilitiesPage;
       case 'tags':
         return TagsPage;
+      case 'interventions':
+          return InterventionsPage;
       default:
-        return () => null;
+        return GenericStudySectionPage;
     }
   };
 
@@ -330,7 +332,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       displayName: section.title,
       kind: 'extended',
       order: section.order,
-      component: GenericStudySectionPage,
+      component: this.getComponent(section.title.toLowerCase()),
       hidden: section.hide,
       metaData: section,
     }));

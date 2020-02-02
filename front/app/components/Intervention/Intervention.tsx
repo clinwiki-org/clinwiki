@@ -7,7 +7,11 @@ import { capitalize } from 'utils/helpers';
 
 const StyleWrapper = styled.div`
   padding: 10px;
-  color: white;
+  // color: white;
+  background: #eaedf4;
+  border-radius: 2px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 `;
 
 interface InterventionProps {
@@ -62,16 +66,14 @@ class Intervention extends React.PureComponent<InterventionProps> {
       wikipediaArticle,
     } = this.props.intervention;
     return (
-      <StyleWrapper>
-        <Grid>
+      <StyleWrapper>        
           <Row>
-            <Col md={6}>
+            <Col md={12}>
               <h1>{`${capitalize(name || 'No name')} (${kind})`}</h1>
               {description && <p>{description}</p>}
               {this.renderInterventionText(name, wikipediaArticle)}
             </Col>
           </Row>
-        </Grid>
       </StyleWrapper>
     );
   }
