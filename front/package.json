@@ -321,5 +321,12 @@
     "webpack-dev-middleware": "1.11.0",
     "webpack-hot-middleware": "2.18.0",
     "whatwg-fetch": "^3.0.0"
+  },
+  "prettier" : {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "jsxBracketSameLine": true
   }
 }

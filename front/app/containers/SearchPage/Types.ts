@@ -14,12 +14,12 @@ import {
   view,
   find,
   propEq,
-  filter
-} from "ramda";
+  filter,
+} from 'ramda';
 
 export type Params = {};
 
-export type AggKind = "aggs" | "crowdAggs";
+export type AggKind = 'aggs' | 'crowdAggs';
 export const defaultPageSize = 25;
 export type AggCallback = (
   aggName: string,
