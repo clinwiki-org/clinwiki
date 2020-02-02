@@ -1,16 +1,16 @@
-import * as React from "react";
-import { gql } from "apollo-boost";
-import { Query } from "react-apollo";
-import { match } from "react-router-dom";
-import { History, Location } from "history";
+import * as React from 'react';
+import { gql } from 'apollo-boost';
+import { Query } from 'react-apollo';
+import { match } from 'react-router-dom';
+import { History, Location } from 'history';
 import {
   SearchStudyPageQuery,
-  SearchStudyPageQueryVariables
-} from "types/SearchStudyPageQuery";
-import { path, pathOr, test } from "ramda";
-import StudyPage from "containers/StudyPage";
-import { PulseLoader } from "react-spinners";
-import { MAX_WINDOW_SIZE } from "../../utils/constants";
+  SearchStudyPageQueryVariables,
+} from 'types/SearchStudyPageQuery';
+import { path, pathOr, test } from 'ramda';
+import StudyPage from 'containers/StudyPage';
+import { PulseLoader } from 'react-spinners';
+import { MAX_WINDOW_SIZE } from '../../utils/constants';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
@@ -48,7 +48,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
   render() {
     const variables = {
       hash: this.props.match.params.searchId,
-      id: this.props.match.params.nctId
+      id: this.props.match.params.nctId,
     };
     return (
       <SearchStudyPageQueryComponent query={QUERY} variables={variables}>
@@ -67,28 +67,28 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
           let workflowName: string | null = null;
 
           if (data && !loading) {
-            const prevId = path(["search", "studyEdge", "prevId"], data);
-            const nextId = path(["search", "studyEdge", "nextId"], data);
-            const firstId = path(["search", "studyEdge", "firstId"], data);
-            const lastId = path(["search", "studyEdge", "lastId"], data);
+            const prevId = path(['search', 'studyEdge', 'prevId'], data);
+            const nextId = path(['search', 'studyEdge', 'nextId'], data);
+            const firstId = path(['search', 'studyEdge', 'firstId'], data);
+            const lastId = path(['search', 'studyEdge', 'lastId'], data);
             isWorkflow = pathOr(
               false,
-              ["search", "studyEdge", "isWorkflow"],
+              ['search', 'studyEdge', 'isWorkflow'],
               data
             ) as boolean;
             workflowName = pathOr(
               false,
-              ["search", "studyEdge", "workflowName"],
+              ['search', 'studyEdge', 'workflowName'],
               data
             ) as string | null;
 
             // counterIndex will remain null if it's >200 or whatever we set the max page size to
-            counterIndex = path(["search", "studyEdge", "counterIndex"], data);
+            counterIndex = path(['search', 'studyEdge', 'counterIndex'], data);
             recordsTotal =
               counterIndex &&
               (pathOr(
                 1,
-                ["search", "studyEdge", "recordsTotal"],
+                ['search', 'studyEdge', 'recordsTotal'],
                 data
               ) as number);
             nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;

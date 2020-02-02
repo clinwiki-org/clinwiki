@@ -54,7 +54,7 @@ class WikiSections extends React.Component<
   };
 
   handleSectionsSave = (
-    updateWikiSections: UpdateWikiSectionsMutationFn,
+    updateWikiSections: UpdateWikiSectionsMutationFn
   ) => () => {
     updateWikiSections({
       variables: {
@@ -72,13 +72,13 @@ class WikiSections extends React.Component<
   renderWikiSection = (
     section: WikiSection,
     sections: WikiSection[],
-    disabled: boolean,
+    disabled: boolean
   ) => {
     let value = this.state.updatedSections[section.name];
     if (isNil(value)) {
       const foundSection = find(
         propEq('name', section.name),
-        sections,
+        sections
       ) as WikiSection;
       value = foundSection.content;
     }
@@ -109,8 +109,8 @@ class WikiSections extends React.Component<
           this.renderWikiSection(
             section as WikiSection,
             sections as WikiSection[],
-            this.props.disabled,
-          ),
+            this.props.disabled
+          )
         )(this.props.sections)}
         {!this.props.disabled && (
           <ButtonContainer>
@@ -119,8 +119,7 @@ class WikiSections extends React.Component<
                 <Button
                   onClick={this.handleSectionsSave(mutate)}
                   style={{ marginTop: 15 }}
-                  disabled={isEmpty(this.state.updatedSections)}
-                >
+                  disabled={isEmpty(this.state.updatedSections)}>
                   Save Sections
                 </Button>
               )}

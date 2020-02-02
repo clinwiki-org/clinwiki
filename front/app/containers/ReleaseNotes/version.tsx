@@ -4,8 +4,8 @@ import Heading from 'components/Heading';
 import { Row, Col } from 'react-bootstrap';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 
-const notes = 
-  RichTextEditor.createValueFromString(`
+const notes = RichTextEditor.createValueFromString(
+  `
 
 # ClinWiki Version History
 
@@ -65,15 +65,16 @@ const notes =
 
 ### Version 0
 - Everything else
-`, 'markdown');
+`,
+  'markdown'
+);
 
-export default class ReleaseNotes extends React.PureComponent<{},{}> {
-    render() {
-        return (
-        <div>
-            <RichTextEditor
-                readOnly
-                value={notes} />
-        </div>);
-    }
+export default class ReleaseNotes extends React.PureComponent<{}, {}> {
+  render() {
+    return (
+      <div>
+        <RichTextEditor readOnly value={notes} />
+      </div>
+    );
+  }
 }

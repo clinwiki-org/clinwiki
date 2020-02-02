@@ -68,7 +68,7 @@ const render = messages => {
         </ApolloProvider>
       </Router>
     </LanguageProvider>,
-    MOUNT_NODE,
+    MOUNT_NODE
   );
 };
 
@@ -107,13 +107,11 @@ if (window && !window.Intl) {
 // Explicitly uninstall serviceworker
 if (process.env.NODE_ENV === 'production') {
   if (navigator.serviceWorker) {
-    navigator.serviceWorker.getRegistrations().then(
-      registrations => {
-        for (const reg of registrations) {
-          console.log('Unregistering service worker');
-          reg.unregister();
-        }
-      },
-    );
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (const reg of registrations) {
+        console.log('Unregistering service worker');
+        reg.unregister();
+      }
+    });
   }
 }

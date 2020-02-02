@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Grid,
   Row,
@@ -9,19 +9,19 @@ import {
   Form,
   FormGroup,
   ButtonGroup,
-  ControlLabel
-} from "react-bootstrap";
-import * as FontAwesome from "react-fontawesome";
-import gql from "graphql-tag";
-import { ApolloConsumer } from "react-apollo";
-import * as Autosuggest from "react-autosuggest";
-import styled from "styled-components";
-import aggToField from "utils/aggs/aggToField";
-import MultiCrumb from "components/MultiCrumb";
-import SiteProvider from "containers/SiteProvider";
-import { MAX_WINDOW_SIZE, aggsOrdered } from "../../../utils/constants";
-import { PulseLoader, BeatLoader } from "react-spinners";
-import CurrentUser from "containers/CurrentUser";
+  ControlLabel,
+} from 'react-bootstrap';
+import * as FontAwesome from 'react-fontawesome';
+import gql from 'graphql-tag';
+import { ApolloConsumer } from 'react-apollo';
+import * as Autosuggest from 'react-autosuggest';
+import styled from 'styled-components';
+import aggToField from 'utils/aggs/aggToField';
+import MultiCrumb from 'components/MultiCrumb';
+import SiteProvider from 'containers/SiteProvider';
+import { MAX_WINDOW_SIZE, aggsOrdered } from '../../../utils/constants';
+import { PulseLoader, BeatLoader } from 'react-spinners';
+import CurrentUser from 'containers/CurrentUser';
 
 const AUTOSUGGEST_QUERY = gql`
   query SearchPageAggBucketsQuery(
@@ -141,11 +141,10 @@ const LoaderWrapper = styled.div`
   margin: 20px 20px;
 
   text-align: center;
-
 `;
-import { AggCallback, SearchParams } from "../Types";
-import { isEmpty } from "ramda";
-import { SiteFragment } from "types/SiteFragment";
+import { AggCallback, SearchParams } from '../Types';
+import { isEmpty } from 'ramda';
+import { SiteFragment } from 'types/SiteFragment';
 
 interface CrumbsBarProps {
   searchParams: SearchParams;
@@ -180,7 +179,7 @@ const Crumb = ({ category, value, onClick }) => {
       <FontAwesome
         className="remove"
         name="remove"
-        style={{ cursor: "pointer", color: "#cc1111", margin: "0 0 0 3px" }}
+        style={{ cursor: 'pointer', color: '#cc1111', margin: '0 0 0 3px' }}
         onClick={onClick}
       />
     </Label>
@@ -194,23 +193,23 @@ export default class CrumbsBar extends React.Component<
   constructor(props) {
     super(props);
 
-    let cardsColor = "";
-    let tableColor = "";
+    let cardsColor = '';
+    let tableColor = '';
 
-    if (window.localStorage.getItem("showCards") === "true") {
-      cardsColor = "#55B88D";
-      tableColor = "#90a79d";
+    if (window.localStorage.getItem('showCards') === 'true') {
+      cardsColor = '#55B88D';
+      tableColor = '#90a79d';
     } else {
-      cardsColor = "#90a79d";
-      tableColor = "#55B88D";
+      cardsColor = '#90a79d';
+      tableColor = '#55B88D';
     }
 
     this.state = {
-      searchTerm: "",
+      searchTerm: '',
       suggestions: [],
       isSuggestionLoading: true,
       cardsBtnColor: cardsColor,
-      tableBtnColor: tableColor
+      tableBtnColor: tableColor,
     };
   }
 
@@ -245,7 +244,7 @@ export default class CrumbsBar extends React.Component<
           category={cat}
           values={agg.values}
           onClick={val => removeFilter(agg.field, val, true)}
-          key={cat + agg.values.join("")}
+          key={cat + agg.values.join('')}
         />
       );
     }
@@ -259,8 +258,7 @@ export default class CrumbsBar extends React.Component<
           bsSize="small"
           key="reset"
           onClick={this.props.onReset}
-          style={{ marginLeft: "10px" }}
-        >
+          style={{ marginLeft: '10px' }}>
           Reset
         </Button>
       );
@@ -278,9 +276,9 @@ export default class CrumbsBar extends React.Component<
     }
     if (aggFields.length <= 0) {
       aggFields = [
-        "browse_condition_mesh_terms",
-        "browse_interventions_mesh_terms",
-        "facility_countries"
+        'browse_condition_mesh_terms',
+        'browse_interventions_mesh_terms',
+        'facility_countries',
       ];
     }
     return aggFields;
@@ -317,7 +315,7 @@ export default class CrumbsBar extends React.Component<
     const query = AUTOSUGGEST_QUERY;
 
     const variables = {
-      agg: "browse_condition_mesh_terms",
+      agg: 'browse_condition_mesh_terms',
       aggFilters: searchParams.aggFilters,
       aggOptionsFilter: searchTerm,
       crowdAggFilters: searchParams.crowdAggFilters,
@@ -325,36 +323,35 @@ export default class CrumbsBar extends React.Component<
       pageSize: 5,
       q: {
         children: newParams,
-        key: "AND"
+        key: 'AND',
       },
       sorts: [],
       aggFields: aggFields,
-      crowdAggFields: crowdAggFields
+      crowdAggFields: crowdAggFields,
     };
 
     const response = await apolloClient.query({
       query,
-      variables
+      variables,
     });
     const array = response.data.autocomplete.autocomplete;
 
     this.setState({
       suggestions: array,
-      isSuggestionLoading: false
+      isSuggestionLoading: false,
     });
   };
 
   onSuggestionsFetchRequested = () => {
     this.setState({
-      isSuggestionLoading: true
+      isSuggestionLoading: true,
     });
-
   };
 
   onSuggestionsClearRequested = () => {
     this.setState({
       suggestions: [],
-      isSuggestionLoading: true
+      isSuggestionLoading: true,
     });
   };
 
@@ -364,23 +361,23 @@ export default class CrumbsBar extends React.Component<
 
   renderSuggestion = suggestion => {
     const capitalized = this.capitalize(suggestion.key);
-      return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
+    return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
   };
   renderSuggestionsContainer = () => {
     const { isSuggestionLoading, suggestions } = this.state;
 
     if (isSuggestionLoading == true) {
-
-        if(suggestions.length==0){
-          return null
-        }else{
-      return (
-        <div className="react-autosuggest__suggestions-container--open">
-          <LoaderWrapper>
-            <BeatLoader color="#cccccc" />
-          </LoaderWrapper>
-        </div>
-      )}
+      if (suggestions.length == 0) {
+        return null;
+      } else {
+        return (
+          <div className="react-autosuggest__suggestions-container--open">
+            <LoaderWrapper>
+              <BeatLoader color="#cccccc" />
+            </LoaderWrapper>
+          </div>
+        );
+      }
     }
   };
 
@@ -413,7 +410,7 @@ export default class CrumbsBar extends React.Component<
   onChange = (e, { newValue }, apolloClient) => {
     this.setState(
       {
-        searchTerm: newValue
+        searchTerm: newValue,
       },
       () => {
         this.queryAutoSuggest(apolloClient);
@@ -422,24 +419,24 @@ export default class CrumbsBar extends React.Component<
   };
 
   clearPrimarySearch = () => {
-    this.props.removeSearchTerm("", true);
+    this.props.removeSearchTerm('', true);
   };
   onSubmit = e => {
     e.preventDefault();
     this.props.addSearchTerm(this.state.searchTerm);
-    this.setState({ searchTerm: "" });
+    this.setState({ searchTerm: '' });
   };
 
   toggledShowCards = (type, showCards) => {
-    if (type === "cards") {
+    if (type === 'cards') {
       this.setState({
-        cardsBtnColor: "#55B88D",
-        tableBtnColor: "#90a79d"
+        cardsBtnColor: '#55B88D',
+        tableBtnColor: '#90a79d',
       });
-    } else if (type === "table") {
+    } else if (type === 'table') {
       this.setState({
-        cardsBtnColor: "#90a79d",
-        tableBtnColor: "#55B88D"
+        cardsBtnColor: '#90a79d',
+        tableBtnColor: '#55B88D',
       });
     }
     this.props.toggledShowCards(showCards);
@@ -465,17 +462,17 @@ export default class CrumbsBar extends React.Component<
           <FontAwesome
             className="arrow-left"
             name="arrow-left"
-            style={{ cursor: "pointer", margin: "5px" }}
+            style={{ cursor: 'pointer', margin: '5px' }}
             onClick={() => this.props.update.page(this.props.page - 1)}
           />
         ) : (
           <FontAwesome
             className="arrow-left"
             name="arrow-left"
-            style={{ margin: "5px", color: "gray" }}
+            style={{ margin: '5px', color: 'gray' }}
           />
         )}
-        page{" "}
+        page{' '}
         <b>
           {this.props.loading ? (
             <div id="divsononeline">
@@ -485,20 +482,20 @@ export default class CrumbsBar extends React.Component<
             `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${
               this.props.pagesTotal
             }`
-          )}{" "}
+          )}{' '}
         </b>
         {this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
           <FontAwesome
             className="arrow-right"
             name="arrow-right"
-            style={{ cursor: "pointer", margin: "5px" }}
+            style={{ cursor: 'pointer', margin: '5px' }}
             onClick={() => this.props.update.page(this.props.page + 1)}
           />
         ) : (
           <FontAwesome
             className="arrow-right"
             name="arrow-right"
-            style={{ margin: "5px", color: "gray" }}
+            style={{ margin: '5px', color: 'gray' }}
           />
         )}
         <div>{this.props.recordsTotal} results</div>
@@ -526,17 +523,15 @@ export default class CrumbsBar extends React.Component<
                       <FormGroup>
                         <div
                           style={{
-                            display: "flex",
-                            flexDirection: "row"
-                          }}
-                        >
+                            display: 'flex',
+                            flexDirection: 'row',
+                          }}>
                           <b
                             style={{
-                              marginRight: "8px",
-                              marginTop: "4px"
-                            }}
-                          >
-                            <ControlLabel>Search Within: </ControlLabel>{" "}
+                              marginRight: '8px',
+                              marginTop: '4px',
+                            }}>
+                            <ControlLabel>Search Within: </ControlLabel>{' '}
                           </b>
 
                           <Autosuggest
@@ -545,10 +540,12 @@ export default class CrumbsBar extends React.Component<
                             inputProps={{
                               value: searchTerm,
                               onChange: (e, searchTerm) =>
-                                this.onChange(e, searchTerm, apolloClient)
+                                this.onChange(e, searchTerm, apolloClient),
                             }}
                             renderSuggestion={this.renderSuggestion}
-                            renderSuggestionsContainer={this.renderSuggestionsContainer}
+                            renderSuggestionsContainer={
+                              this.renderSuggestionsContainer
+                            }
                             renderSectionTitle={this.renderSectionTitle}
                             getSectionSuggestions={this.getSectionSuggestions}
                             onSuggestionSelected={this.onSuggestionSelected}
@@ -566,17 +563,15 @@ export default class CrumbsBar extends React.Component<
                       <FormGroup>
                         <div
                           style={{
-                            display: "flex",
-                            flexDirection: "row"
-                          }}
-                        >
+                            display: 'flex',
+                            flexDirection: 'row',
+                          }}>
                           <b
                             style={{
-                              marginRight: "8px",
-                              marginTop: "4px"
-                            }}
-                          >
-                            <ControlLabel>Search Within: </ControlLabel>{" "}
+                              marginRight: '8px',
+                              marginTop: '4px',
+                            }}>
+                            <ControlLabel>Search Within: </ControlLabel>{' '}
                           </b>
 
                           <Autosuggest
@@ -585,7 +580,7 @@ export default class CrumbsBar extends React.Component<
                             inputProps={{
                               value: searchTerm,
                               onChange: (e, searchTerm) =>
-                                this.onChange(e, searchTerm, apolloClient)
+                                this.onChange(e, searchTerm, apolloClient),
                             }}
                             renderSuggestion={this.renderSuggestion}
                             renderSectionTitle={this.renderSectionTitle}
@@ -608,7 +603,7 @@ export default class CrumbsBar extends React.Component<
                     &nbsp;
                     <CurrentUser>
                       {user =>
-                        user && user.roles.includes("admin") ? (
+                        user && user.roles.includes('admin') ? (
                           <Button onClick={this.props.onBulkUpdate}>
                             Bulk Update <FontAwesome name="truck" />
                           </Button>
@@ -619,14 +614,13 @@ export default class CrumbsBar extends React.Component<
                 </Col>
                 <Col md={2} xs={4}>
                   <div className="right-align">
-                    <ControlLabel>View Style: </ControlLabel>{" "}
+                    <ControlLabel>View Style: </ControlLabel>{' '}
                     <ButtonGroup>
                       <Button
-                        onClick={() => this.toggledShowCards("cards", true)}
+                        onClick={() => this.toggledShowCards('cards', true)}
                         style={{
-                          backgroundColor: this.state.cardsBtnColor
-                        }}
-                      >
+                          backgroundColor: this.state.cardsBtnColor,
+                        }}>
                         <svg
                           aria-hidden="true"
                           focusable="false"
@@ -636,22 +630,19 @@ export default class CrumbsBar extends React.Component<
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 512 512"
                           className="svg-inline--fa fa-th fa-w-16 fa-lg"
-                          style={{ width: "17px" }}
-                        >
+                          style={{ width: '17px' }}>
                           <path
                             fill="currentColor"
                             // tslint:disable-next-line: max-line-length
                             d="M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM197.3 72h117.3v96H197.3zm0 136h117.3v96H197.3zm-40 232H52c-6.6 0-12-5.4-12-12v-84h117.3zm0-136H40v-96h117.3zm0-136H40V84c0-6.6 5.4-12 12-12h105.3zm157.4 272H197.3v-96h117.3v96zm157.3 0H354.7v-96H472zm0-136H354.7v-96H472zm0-136H354.7V72H472z"
-                            className=""
-                          ></path>
+                            className=""></path>
                         </svg>
                       </Button>
                       <Button
-                        onClick={() => this.toggledShowCards("table", false)}
+                        onClick={() => this.toggledShowCards('table', false)}
                         style={{
-                          backgroundColor: this.state.tableBtnColor
-                        }}
-                      >
+                          backgroundColor: this.state.tableBtnColor,
+                        }}>
                         <svg
                           aria-hidden="true"
                           focusable="false"
@@ -661,14 +652,12 @@ export default class CrumbsBar extends React.Component<
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 512 512"
                           className="svg-inline--fa fa-th-list fa-w-16 fa-lg"
-                          style={{ width: "17px" }}
-                        >
+                          style={{ width: '17px' }}>
                           <path
                             fill="currentColor"
                             // tslint:disable-next-line: max-line-length
                             d="M0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48H48C21.49 32 0 53.49 0 80zm472 224H197.333v-96H472v96zm0 40v84c0 6.627-5.373 12-12 12H197.333v-96H472zM40 208h117.333v96H40v-96zm157.333-40V72H460c6.627 0 12 5.373 12 12v84H197.333zm-40-96v96H40V84c0-6.627 5.373-12 12-12h105.333zM40 344h117.333v96H52c-6.627 0-12-5.373-12-12v-84z"
-                            className=""
-                          ></path>
+                            className=""></path>
                         </svg>
                       </Button>
                     </ButtonGroup>
@@ -679,7 +668,7 @@ export default class CrumbsBar extends React.Component<
                 </Col>
               </Row>
               <Row>
-                <Col md={12} style={{ padding: "10px 0px" }}>
+                <Col md={12} style={{ padding: '10px 0px' }}>
                   <b>Filters: </b>
                   {Array.from(
                     this.mkCrumbs(

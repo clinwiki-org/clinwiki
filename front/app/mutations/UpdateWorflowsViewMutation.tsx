@@ -10,7 +10,7 @@ import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 interface UpdateWorkflowsViewMutationProps {
   children: (
     mutate: UpdateWorkflowsViewMutationFn,
-    result: MutationResult<UpdateWorkflowsViewMutationType>,
+    result: MutationResult<UpdateWorkflowsViewMutationType>
   ) => React.ReactNode;
   onCompleted?: (data: UpdateWorkflowsViewMutationType) => void;
   onError?: (e: ApolloError) => void;
@@ -46,8 +46,7 @@ class UpdateWorkflowsViewMutation extends React.PureComponent<
       <UpdateWorkflowsViewMutationComponent
         mutation={UPDATE_WORKFLOWS_VIEW_MUTATION}
         onCompleted={this.props.onCompleted}
-        onError={this.props.onError}
-      >
+        onError={this.props.onError}>
         {this.props.children}
       </UpdateWorkflowsViewMutationComponent>
     );

@@ -95,7 +95,6 @@ class UpdateContentMutation extends Mutation<
 > {}
 
 class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
-
   state: WikiPageState = {
     editorState: 'rich',
     richEditorText: null,
@@ -156,7 +155,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   handleEditSubmit = (
     updateWikiContent: (vars: {
       variables: WikiPageUpdateContentMutationVariables;
-    }) => void,
+    }) => void
   ) => {
     updateWikiContent({
       variables: {
@@ -206,8 +205,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       <Button
         type="button"
         onClick={this.handleEdit}
-        style={{ marginLeft: '10px' }}
-      >
+        style={{ marginLeft: '10px' }}>
         Edit <FontAwesome name="edit" />
       </Button>
     );
@@ -225,8 +223,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
           <Button
             onClick={() => this.handleEditSubmit(updateWikiContent)}
             disabled={editorTextState === editorTextData}
-            style={{ marginLeft: '10px' }}
-          >
+            style={{ marginLeft: '10px' }}>
             Submit <FontAwesome name="pencil" />
           </Button>
         )}
@@ -247,8 +244,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                 <Button
                   type="button"
                   onClick={this.handlePreview}
-                  style={{ marginLeft: '10px' }}
-                >
+                  style={{ marginLeft: '10px' }}>
                   Preview <FontAwesome name="photo" />
                 </Button>
                 {this.renderSubmitButton(data, isAuthenticated)}
@@ -263,8 +259,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                 <Button
                   type="button"
                   onClick={this.handleView}
-                  style={{ marginLeft: '10px' }}
-                >
+                  style={{ marginLeft: '10px' }}>
                   View <FontAwesome name="photo" />
                 </Button>
               </>
@@ -294,7 +289,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       if (this.state.editorState === 'rich') {
         const richEditorText = RichTextEditor.createValueFromString(
           data.study.wikiPage.content || '',
-          'markdown',
+          'markdown'
         );
         this.setState({ richEditorText });
       } else {
@@ -343,8 +338,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       <QueryComponent
         query={QUERY}
         variables={{ nctId: this.props.nctId }}
-        onCompleted={this.handleQueryCompleted}
-      >
+        onCompleted={this.handleQueryCompleted}>
         {({ data, loading, error }) => {
           if (loading) {
             return <LoadingPane />;

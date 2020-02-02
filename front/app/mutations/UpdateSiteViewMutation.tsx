@@ -10,7 +10,7 @@ import SiteProvider from 'containers/SiteProvider';
 interface UpdateSiteViewMutationProps {
   children: (
     mutate: UpdateSiteViewMutationFn,
-    result: MutationResult<UpdateSiteViewMutationType>,
+    result: MutationResult<UpdateSiteViewMutationType>
   ) => React.ReactNode;
   onCompleted?: (data: UpdateSiteViewMutationType) => void;
   onError?: (e: ApolloError) => void;
@@ -46,8 +46,7 @@ class UpdateSiteViewMutation extends React.PureComponent<
       <UpdateSiteViewMutationComponent
         mutation={UPDATE_SITE_VIEW_MUTATION}
         onCompleted={this.props.onCompleted}
-        onError={this.props.onError}
-      >
+        onError={this.props.onError}>
         {this.props.children}
       </UpdateSiteViewMutationComponent>
     );

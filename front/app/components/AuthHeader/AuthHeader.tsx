@@ -42,16 +42,17 @@ const StyledWrapper = styled.div`
     font-size: 14px;
     opacity: 0.75;
   }
-
 `;
 
 export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
   render() {
     return (
       <StyledWrapper>
-        <Navbar collapseOnSelect
-            fluid className="navbar-fixed-top"
-            style={{ paddingLeft: '15px', paddingRight: '15px' }}>
+        <Navbar
+          collapseOnSelect
+          fluid
+          className="navbar-fixed-top"
+          style={{ paddingLeft: '15px', paddingRight: '15px' }}>
           <Navbar.Header>
             <Navbar.Brand>
               <Link id="logo" to="/search">
@@ -63,9 +64,13 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
           <Navbar.Collapse>
             <Nav pullRight>
               {true ? null : (
-                <NavItem eventKey={1} href="/search">Search</NavItem>
+                <NavItem eventKey={1} href="/search">
+                  Search
+                </NavItem>
               )}
-              <NavItem eventKey={1} href="/about">About</NavItem>
+              <NavItem eventKey={1} href="/about">
+                About
+              </NavItem>
               <AuthButton user={this.props.user} history={this.props.history} />
             </Nav>
           </Navbar.Collapse>

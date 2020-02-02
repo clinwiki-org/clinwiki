@@ -143,7 +143,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
     deleteReview: (x: {
       variables: ReviewsPageDeleteReviewMutationVariables;
     }) => void,
-    id: number,
+    id: number
   ) => () => {
     deleteReview({ variables: { id } });
   };
@@ -164,7 +164,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   };
 
   renderReview = (user: UserFragment | null) => (
-    review: ReviewsPageFragment,
+    review: ReviewsPageFragment
   ) => {
     let meta = {};
     try {
@@ -200,8 +200,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                 <ButtonsWrapper>
                   <Button
                     style={{ marginRight: 10 }}
-                    onClick={() => this.handleEditReview(review.id)}
-                  >
+                    onClick={() => this.handleEditReview(review.id)}>
                     Edit
                   </Button>
                   <DeleteReviewMutationComponent
@@ -224,7 +223,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                       const newStudy = over(
                         reviewsLens,
                         reject(propEq('id', review.id)),
-                        study,
+                        study
                       );
 
                       cache.writeFragment({
@@ -233,15 +232,13 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                         fragmentName: 'ReviewsPageStudyFragment',
                         data: newStudy,
                       });
-                    }}
-                  >
+                    }}>
                     {deleteReview => (
                       <Button
                         onClick={this.handleDeleteReview(
                           deleteReview,
-                          review.id,
-                        )}
-                      >
+                          review.id
+                        )}>
                         Delete
                       </Button>
                     )}
@@ -279,10 +276,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
 
   render() {
     return (
-      <QueryComponent
-        query={QUERY}
-        variables={{ nctId: this.props.nctId }}
-      >
+      <QueryComponent query={QUERY} variables={{ nctId: this.props.nctId }}>
         {({ data, loading, error }) => {
           if (loading || error || !data || !data.study || !data.study.reviews) {
             return null;

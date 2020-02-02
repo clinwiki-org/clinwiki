@@ -61,7 +61,7 @@ class CollapsiblePanel extends React.Component<
 
   static getDerivedStateFromProps = (
     props: CollapsiblePanelProps,
-    state: CollapsiblePanelState,
+    state: CollapsiblePanelState
   ): CollapsiblePanelState | null => {
     if (
       props.collapsed !== undefined &&
@@ -88,17 +88,16 @@ class CollapsiblePanel extends React.Component<
               this.state.summaryVisible
                 ? 'Click to hide details'
                 : 'Click to show details'
-            }
-          >
-            <Panel.Title componentClass="h3" className="pull-left" style={{ fontSize: '18px' }}>
-            <FontAwesome
-                name={
-                  this.state.summaryVisible
-                    ? 'chevron-up'
-                    : 'chevron-down'
-                }
+            }>
+            <Panel.Title
+              componentClass="h3"
+              className="pull-left"
+              style={{ fontSize: '18px' }}>
+              <FontAwesome
+                name={this.state.summaryVisible ? 'chevron-up' : 'chevron-down'}
                 className="pull-left"
-                style={{ fontSize: '14px' }} />
+                style={{ fontSize: '14px' }}
+              />
               {this.props.header}
             </Panel.Title>
             &nbsp;
@@ -107,8 +106,7 @@ class CollapsiblePanel extends React.Component<
             in={this.state.summaryVisible}
             timeout={200}
             appear
-            classNames="transition"
-          >
+            classNames="transition">
             <StyledPanelBody>
               <Panel.Body>{this.props.children}</Panel.Body>
             </StyledPanelBody>
