@@ -9,6 +9,13 @@ const notes =
 
 # ClinWiki Version History
 
+### Version 10
+- #156 - visible crowd aggs
+- Select all in facets
+- loading for autocomplete
+- Interventions page
+
+
 ### Version 9
 - Facility maps
 - Upgraded to typescript 3.7
