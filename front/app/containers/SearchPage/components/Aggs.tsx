@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   isEmpty,
   isNil,
@@ -6,31 +6,42 @@ import {
   filter,
   equals,
   prop,
+  tap,
+  compose, 
+  reduce, 
   intersection,
+  pathOr
 } from 'ramda';
 import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,
   AggCallback,
+  AggregateAggCallback,
   SearchParams,
   AggKind,
-  AggFilterMap,
-} from '../Types';
-import { aggsOrdered } from 'utils/constants';
-import SiteProvider from 'containers/SiteProvider';
-import { SiteFragment } from 'types/SiteFragment';
-import { throws } from 'assert';
-import { FilterKind } from 'types/globalTypes';
-import { displayFields } from 'utils/siteViewHelpers';
+  AggFilterMap
+} from "../Types";
+import { aggsOrdered } from "utils/constants";
+import SiteProvider from "containers/SiteProvider";
+import { SiteFragment } from "types/SiteFragment";
+import { throws } from "assert";
+import { FilterKind } from "types/globalTypes";
+import { displayFields } from "utils/siteViewHelpers";
 
+const getVisibleOptionsByName: (SiteFragment) => any = compose(
+  reduce((byName, {name, visibleOptions}) => ({...byName,[name]: visibleOptions.values}), {}),
+  pathOr([], ['siteView', 'search','crowdAggs','fields']),
+)
 interface AggsProps {
   aggs: AggBucketMap;
   crowdAggs: AggBucketMap;
   // selected
   filters: AggFilterMap;
   crowdFilters: AggFilterMap;
-  addFilter: AggCallback | null;
-  removeFilter: AggCallback | null;
+  addFilter: AggCallback;
+  addFilters: AggregateAggCallback;
+  removeFilter: AggCallback;
+  removeFilters: AggregateAggCallback;
   searchParams: SearchParams;
   opened: string | null;
   openedKind: AggKind | null;
@@ -42,8 +53,8 @@ class Aggs extends React.PureComponent<AggsProps> {
     return displayFields(
       site.siteView.search.aggs.selected.kind,
       site.siteView.search.aggs.selected.values,
-      site.siteView.search.aggs.fields,
-    ).map(prop('name'));
+      site.siteView.search.aggs.fields
+    ).map(prop("name"));
   };
 
   getCrowdAggs = (site: SiteFragment, crowdAggs: string[]): string[] => {
@@ -52,7 +63,6 @@ class Aggs extends React.PureComponent<AggsProps> {
       site.siteView.search.crowdAggs.selected.values,
       site.siteView.search.crowdAggs.fields,
     ).map(prop('name'));
-
     return filter(x => crowdAggs.includes(x), displayed);
   };
 
@@ -63,20 +73,24 @@ class Aggs extends React.PureComponent<AggsProps> {
       filters,
       crowdFilters,
       addFilter,
+      addFilters,
       removeFilter,
-      searchParams,
+      removeFilters,
+      searchParams
     } = this.props;
 
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
-
+    
     if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
       crowdAggDropdowns = (
         <SiteProvider>
-          {site => (
+          {(site: SiteFragment )=> {
+            const visibleOptionsByName = getVisibleOptionsByName(site)
+            return (
             <div>
               <h4
-                style={{ color: 'white', position: 'relative', left: '20px' }}
+                style={{ color: "white", position: "relative", left: "20px" }}
               >
                 Crowd Facets
               </h4>
@@ -88,21 +102,22 @@ class Aggs extends React.PureComponent<AggsProps> {
                   buckets={crowdAggs[k]}
                   isOpen={
                     this.props.opened === k &&
-                    this.props.openedKind === 'crowdAggs'
+                    this.props.openedKind === "crowdAggs"
                   }
                   onOpen={this.props.onOpen}
                   aggKind="crowdAggs"
-                  addFilter={(agg, item) =>
-                    addFilter && addFilter(agg, item, true)
-                  }
+                  addFilter={(agg, item) => addFilter(agg, item, true)}
+                  addFilters={(agg, items) => addFilters(agg, items, true)}
                   removeFilter={(agg, item) =>
                     removeFilter && removeFilter(agg, item, true)
                   }
+                  removeFilters={(agg,items)=> removeFilters(agg,items,true)}
                   searchParams={searchParams}
+                  visibleOptions={visibleOptionsByName[k]}
                 />
               ))}
             </div>
-          )}
+            );}}
         </SiteProvider>
       );
     }
@@ -121,15 +136,17 @@ class Aggs extends React.PureComponent<AggsProps> {
                       buckets={aggs[k]}
                       isOpen={
                         this.props.opened === k &&
-                        this.props.openedKind === 'aggs'
+                        this.props.openedKind === "aggs"
                       }
                       onOpen={this.props.onOpen}
                       aggKind="aggs"
                       addFilter={addFilter}
+                      addFilters={addFilters}
                       removeFilter={removeFilter}
+                      removeFilters={removeFilters}
                       searchParams={searchParams}
                     />
-                  ) : null,
+                  ) : null
                 )}
               </div>
               {crowdAggDropdowns}
