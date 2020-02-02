@@ -16,6 +16,7 @@ export interface SearchPageAggBucketsQuery_autocomplete_autocomplete_results {
 export interface SearchPageAggBucketsQuery_autocomplete_autocomplete {
   __typename: "Autocomplete";
   name: string;
+  isCrowd: boolean;
   results: SearchPageAggBucketsQuery_autocomplete_autocomplete_results[];
 }
 

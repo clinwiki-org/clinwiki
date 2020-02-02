@@ -9,7 +9,7 @@ import {
   tap,
   compose, 
   reduce, 
-  intersection
+  intersection,
   pathOr
 } from 'ramda';
 import AggDropDown from 'containers/AggDropDown';

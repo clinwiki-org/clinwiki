@@ -561,25 +561,25 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       return (
         <Row>
            <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
-            
             <SiteProvider>
               {site => (
-          <MainContainer md={10}>
-                <SearchView
-                  params={this.state.params as any}
-                  onBulkUpdate={this.handleBulkUpdateClick}
-                  openedAgg={this.state.openedAgg}
-                  onUpdateParams={this.handleUpdateParams}
-                  onRowClick={this.handleRowClick}
-                  onOpenAgg={this.handleOpenAgg}
-                  onAggsUpdate={this.handleAggsUpdate}
-                  onResetFilters={this.handleResetFilters(site.siteView)}
-                  previousSearchData={this.previousSearchData}
-                  returnPreviousSearchData={() => this.returnPreviousSearchData}
-                  searchHash={""}
-                  showCards={this.state.showCards}
-                  toggledShowCards={this.toggledShowCards}
-                  returnNumberOfPages={this.returnNumberOfPages}
+                <MainContainer md={10}>
+                  <SearchView
+                    params={this.state.params as any}
+                    onBulkUpdate={this.handleBulkUpdateClick}
+                    openedAgg={this.state.openedAgg}
+                    onUpdateParams={this.handleUpdateParams}
+                    onRowClick={this.handleRowClick}
+                    onOpenAgg={this.handleOpenAgg}
+                    onAggsUpdate={this.handleAggsUpdate}
+                    onResetFilters={this.handleResetFilters(site.siteView)}
+                    previousSearchData={this.previousSearchData}
+                    returnPreviousSearchData={() => this.returnPreviousSearchData}
+                    searchHash={""}
+                    showCards={this.state.showCards}
+                    toggledShowCards={this.toggledShowCards}
+                    returnNumberOfPages={this.returnNumberOfPages} />
+                </MainContainer>
               )}
             </SiteProvider>
         </Row>
