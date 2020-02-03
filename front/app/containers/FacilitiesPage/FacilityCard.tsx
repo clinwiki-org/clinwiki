@@ -383,11 +383,14 @@ class FacilityCard extends React.PureComponent<any> {
       numberClick,
       latitude,
       longitude,
-      geoStatus
+      geoStatus,
+      name
     } = this.props;
-    const newTitle = facilityExpanded
-      ? title
-      : this.truncateString(title, 33, true);
+    let newTitle;
+    console.log(name);
+    if (name) {
+      newTitle = facilityExpanded ? name : this.truncateString(name, 33, true);
+    } else newTitle = title;
 
     return (
       <FacilityCardWrapper key={title}>
