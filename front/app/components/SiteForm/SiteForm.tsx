@@ -14,7 +14,7 @@ import {
 import { Switch, Route, match, Redirect } from "react-router";
 import MainForm from "./MainForm";
 import SearchForm from "./SearchForm";
-import SiteViewsForm from "./SiteViewsForm";
+import SiteViewsPage from "containers/SiteViewsPage/SiteViewsPage";
 import { StyledContainer } from "./Styled";
 import { Link } from "react-router-dom";
 import { History, Location } from "history";
@@ -73,6 +73,10 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     }
   `;
 
+  componentDidMount = () => {
+    console.log(this.state.mutations, "mutations");
+  };
+
   static getDerivedStateFromProps = (
     props: SiteFormProps,
     state: SiteFormState
@@ -112,12 +116,14 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
   renderTabs = () => {
     const path = trimPath(this.props.match.url);
-    const sections = [
-      { path: "/main", value: "Main" },
-      { path: "/search", value: "Search" },
-      { path: "/study", value: "Study" },
-      { path: "/siteViews", value: "Site Views" }
-    ];
+    let sections;
+    if (path === "/sites/new") {
+      sections = [{ path: "/main", value: "Main" }];
+    } else
+      sections = [
+        { path: "/main", value: "Main" },
+        { path: "/siteViews", value: "Site Views" }
+      ];
 
     const locationComponents = this.props.location.pathname.split("/");
     let activeKey = last(locationComponents);
@@ -161,7 +167,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               />
             )}
           />
-          <Route
+          {/* <Route
             path={`${path}/search`}
             render={() => (
               <SearchForm view={view} onAddMutation={this.handleAddMutation} />
@@ -176,15 +182,10 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 onAddMutation={this.handleAddMutation}
               />
             )}
-          />
+          /> */}
           <Route
             path={`${path}/siteviews`}
-            render={() => (
-              <SiteViewsForm
-                siteViews={allViews}
-                onAddMutation={this.handleAddMutation}
-              />
-            )}
+            render={() => <SiteViewsPage site={this.props.site} />}
           />
           <Redirect to={`${path}/main`} />
         </Switch>
