@@ -14,7 +14,7 @@ import SiteProvider from 'containers/SiteProvider';
 interface CreateSiteMutationProps {
   children: (
     mutate: CreateSiteMutationFn,
-    result: MutationResult<CreateSiteMutationType>,
+    result: MutationResult<CreateSiteMutationType>
   ) => React.ReactNode;
 }
 
@@ -78,8 +78,7 @@ class CreateSiteMutation extends React.PureComponent<CreateSiteMutationProps> {
           ]);
           const newData = set(ownStoresLens, data.createSite.site, currentData);
           cache.writeQuery({ query: OWN_SITES_QUERY, data: newData });
-        }}
-      >
+        }}>
         {this.props.children}
       </CreateSiteMutationComponent>
     );

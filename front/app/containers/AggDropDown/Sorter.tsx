@@ -13,52 +13,58 @@ interface SorterState {
 }
 
 class Sorter extends React.PureComponent<SorterProps, SorterState> {
-
   state = {
-    icon: ''
-  }
+    icon: '',
+  };
 
   componentDidMount = () => {
     const { type } = this.props;
-    let iconStr
-    if(type ==='number') {
-      iconStr = 'sort-numeric-desc'
+    let iconStr;
+    if (type === 'number') {
+      iconStr = 'sort-numeric-desc';
     }
-    if(type === 'alpha') {
-      iconStr = 'sort-alpha-desc'
+    if (type === 'alpha') {
+      iconStr = 'sort-alpha-desc';
     }
     this.setState({
-      icon : iconStr,
-    })
-  }
+      icon: iconStr,
+    });
+  };
 
   componentDidUpdate = () => {
-    const { type, desc, active} = this.props;
-    if(type === 'number' && active) {
+    const { type, desc, active } = this.props;
+    if (type === 'number' && active) {
       this.setState({
-        icon: `sort-numeric-${desc ? 'asc' : 'desc' }`
-      })
+        icon: `sort-numeric-${desc ? 'asc' : 'desc'}`,
+      });
     }
-    if(type === 'alpha' && active) {
+    if (type === 'alpha' && active) {
       this.setState({
-        icon: `sort-alpha-${desc ? 'asc' : 'desc' }`
-      })
+        icon: `sort-alpha-${desc ? 'asc' : 'desc'}`,
+      });
     } else {
-      this.setState((prevState) => {
-        icon: prevState.icon
-      })
+      this.setState(prevState => {
+        icon: prevState.icon;
+      });
     }
-  }
+  };
 
   render() {
     const { toggle, active } = this.props;
     const { icon } = this.state;
- 
-    return(
+
+    return (
       <div onClick={toggle}>
-        <FontAwesome name={icon} style={active ? {color: '#55b88d', fontSize: '26px'} : {color:'#c0c3c5', fontSize: '26px'}} /> 
+        <FontAwesome
+          name={icon}
+          style={
+            active
+              ? { color: '#55b88d', fontSize: '26px' }
+              : { color: '#c0c3c5', fontSize: '26px' }
+          }
+        />
       </div>
-    )
+    );
   }
 }
 

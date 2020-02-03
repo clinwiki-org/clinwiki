@@ -1,25 +1,25 @@
-import { SiteViewFragment } from "types/SiteViewFragment";
-import { SiteViewMutationInput, SiteViewOperation } from "types/globalTypes";
-import { find, propEq, reject } from "ramda";
-import { cloneDeep } from "apollo-utilities";
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewMutationInput, SiteViewOperation } from 'types/globalTypes';
+import { find, propEq, reject } from 'ramda';
+import { cloneDeep } from 'apollo-utilities';
 
 export const createMutation = (
   name: string,
   value: any
 ): SiteViewMutationInput => {
-  const [operation, path] = name.split(":");
-  const pathComponents = path.split(".");
+  const [operation, path] = name.split(':');
+  const pathComponents = path.split('.');
   let typedOperation: SiteViewOperation;
   switch (operation.toUpperCase()) {
-    case "PUSH":
+    case 'PUSH':
       typedOperation = SiteViewOperation.PUSH;
       break;
 
-    case "SET":
+    case 'SET':
       typedOperation = SiteViewOperation.SET;
       break;
 
-    case "DELETE":
+    case 'DELETE':
       typedOperation = SiteViewOperation.DELETE;
       break;
 
@@ -30,7 +30,7 @@ export const createMutation = (
   return {
     path: pathComponents,
     operation: typedOperation,
-    payload: value
+    payload: value,
   };
 };
 
@@ -43,7 +43,7 @@ export const serializeMutation = (
   mutation: SiteViewMutationInput
 ): SiteViewMutationInput => {
   const copy = cloneDeep(mutation);
-  if (typeof copy.payload !== "string") {
+  if (typeof copy.payload !== 'string') {
     copy.payload = JSON.stringify(copy.payload);
   }
   return copy;
@@ -81,7 +81,7 @@ const applyOne = (view: SiteViewFragment, mutation: SiteViewMutationInput) => {
       break;
 
     case SiteViewOperation.DELETE:
-      if (typeof mutationView[key] === "object") {
+      if (typeof mutationView[key] === 'object') {
         delete mutationView[key];
       }
       if (Array.isArray(mutationView[key])) {
@@ -104,8 +104,8 @@ const getLastHashByPath = (
   let currentView = view as any;
   while (currentComponents.length && currentView) {
     if (Array.isArray(currentView)) {
-      currentView = find(propEq("name", key), currentView);
-    } else if (typeof currentView === "object") {
+      currentView = find(propEq('name', key), currentView);
+    } else if (typeof currentView === 'object') {
       currentView = currentView[key];
     } else {
       currentView = null;

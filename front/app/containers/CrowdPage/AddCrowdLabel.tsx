@@ -40,7 +40,7 @@ class AddCrowdLabel extends React.Component<
 
   static getDerivedStateFromProps = (
     props: AddCrowdLabelProps,
-    state: AddCrowdLabelState,
+    state: AddCrowdLabelState
   ) => {
     const key = props.forceAddLabel && props.forceAddLabel.key;
     if (key && state.prevForceAddLabel !== props.forceAddLabel) {

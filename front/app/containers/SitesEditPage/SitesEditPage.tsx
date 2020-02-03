@@ -27,7 +27,7 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
   handleSave = (
     updateSite: UpdateSiteMutationFn,
     updateSiteView: UpdateSiteViewMutationFn,
-    site: SiteFragment,
+    site: SiteFragment
   ) => (input: CreateSiteInput, mutations: SiteViewMutationInput[]) => {
     updateSite({
       variables: {
@@ -49,8 +49,7 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
       <SiteProvider id={parseInt(this.props.match.params.id, 10)}>
         {site => (
           <UpdateSiteViewMutation
-            onCompleted={() => this.props.history.push('/sites')}
-          >
+            onCompleted={() => this.props.history.push('/sites')}>
             {updateSiteView => (
               <UpdateSiteMutation>
                 {updateSite => (
