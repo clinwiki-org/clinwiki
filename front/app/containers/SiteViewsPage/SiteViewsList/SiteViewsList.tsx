@@ -19,10 +19,10 @@ import {
 import CreateSiteViewMutation, {
   CreateSiteViewMutationFn
 } from "mutations/CreateSiteViewMutation";
-import { CreateSiteViewInput, SiteViewMutationInput } from "types/globalTypes";
 
 interface SiteViewsListProps {
   site: any;
+  refresh: any;
 }
 
 interface SiteViewsListState {
@@ -52,9 +52,9 @@ class SiteViewsList extends React.Component<
     }
   };
 
-  handleSave = (createSiteView: CreateSiteViewMutationFn) => () => {
+  handleSave = (createSiteView: CreateSiteViewMutationFn) => {
     const { form } = this.state;
-    console.log("igethere");
+
     createSiteView({
       variables: {
         input: {
@@ -63,10 +63,18 @@ class SiteViewsList extends React.Component<
           description: "description",
           default: false,
           mutations: [],
-          siteId: this.props.site.siteId
+          siteId: this.props.site.id
         }
       }
-    }).then(res => console.log("mutation happened or something", res));
+    }).then(res => {
+      this.props.refresh();
+      this.setState({
+        form: {
+          siteViewName: "",
+          siteViewPath: ""
+        }
+      });
+    });
   };
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +85,7 @@ class SiteViewsList extends React.Component<
 
   render() {
     const { siteViews } = this.props.site;
+    const { refresh } = this.props;
     return (
       <CreateSiteViewMutation>
         {createSiteView => (
@@ -94,7 +103,7 @@ class SiteViewsList extends React.Component<
                   <tbody>
                     <>
                       {siteViews.map(view => (
-                        <SiteViewItem siteView={view} />
+                        <SiteViewItem siteView={view} refresh={refresh} />
                       ))}
                     </>
                     <tr>
@@ -102,7 +111,7 @@ class SiteViewsList extends React.Component<
                         <FormControl
                           name="siteViewName"
                           placeholder="Site Name"
-                          // value={this.state.form.siteViewName}
+                          value={this.state.form.siteViewName}
                           onChange={this.handleInputChange}
                         />
                       </td>
@@ -110,14 +119,13 @@ class SiteViewsList extends React.Component<
                         <FormControl
                           name="siteViewPath"
                           placeholder="Site View Path"
-                          // value={this.state.form.siteViewPath}
+                          value={this.state.form.siteViewPath}
                           onChange={this.handleInputChange}
                         />
                       </td>
                       <td>
                         <StyledButton
                           onClick={() => {
-                            console.log("hello?");
                             this.handleSave(createSiteView);
                           }}
                         >

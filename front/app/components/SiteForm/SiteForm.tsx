@@ -26,6 +26,7 @@ interface SiteFormProps {
   history: History;
   location: Location;
   onSave: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
+  refresh: any;
 }
 
 interface SiteFormState {
@@ -72,10 +73,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       }
     }
   `;
-
-  componentDidMount = () => {
-    console.log(this.state.mutations, "mutations");
-  };
 
   static getDerivedStateFromProps = (
     props: SiteFormProps,
@@ -167,7 +164,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               />
             )}
           />
-          {/* <Route
+          <Route
             path={`${path}/search`}
             render={() => (
               <SearchForm view={view} onAddMutation={this.handleAddMutation} />
@@ -182,10 +179,15 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 onAddMutation={this.handleAddMutation}
               />
             )}
-          /> */}
+          />
           <Route
             path={`${path}/siteviews`}
-            render={() => <SiteViewsPage site={this.props.site} />}
+            render={() => (
+              <SiteViewsPage
+                site={this.props.site}
+                refresh={this.props.refresh}
+              />
+            )}
           />
           <Redirect to={`${path}/main`} />
         </Switch>

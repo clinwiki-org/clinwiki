@@ -61,6 +61,7 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
                     location={this.props.location}
                     match={this.props.match}
                     site={{ ...site, name: "" }}
+                    refresh={null}
                     onSave={this.handleSave(createSite, updateSiteView)}
                   />
                 )}

@@ -50,7 +50,7 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
   render() {
     return (
       <SiteProvider id={parseInt(this.props.match.params.id, 10)}>
-        {site => (
+        {(site, refetch) => (
           <UpdateSiteViewMutation
             onCompleted={() => this.props.history.push("/sites")}
           >
@@ -61,6 +61,7 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
                     match={this.props.match}
                     history={this.props.history}
                     location={this.props.location}
+                    refresh={refetch}
                     site={site}
                     onSave={this.handleSave(updateSite, updateSiteView, site)}
                   />

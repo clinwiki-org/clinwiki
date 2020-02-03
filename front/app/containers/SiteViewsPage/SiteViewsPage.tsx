@@ -8,6 +8,7 @@ interface SiteViewsPageProps {
   // siteViews: SiteViewFragment[];
   // onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
   site: any;
+  refresh: any;
 }
 
 interface SiteViewsPageState {
@@ -64,10 +65,7 @@ class SiteViewsPage extends React.Component<
     // const path = trimPath(this.props.site.match.path);
     return (
       <Container>
-        <h3 style={{ color: "white", marginLeft: 15 }}>
-          {this.props.site.name}
-        </h3>
-        <SiteViewsList site={this.props.site} />
+        <SiteViewsList site={this.props.site} refresh={this.props.refresh} />
         {/* {this.renderTabs()} */}
         {/* <Switch>
           <Route
