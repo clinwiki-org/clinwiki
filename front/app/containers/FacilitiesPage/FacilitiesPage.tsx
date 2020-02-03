@@ -269,7 +269,6 @@ class FacilitiesPage extends React.PureComponent<
           ) {
             return null;
           }
-          console.log(data, 'data');
           this.props.onLoaded && this.props.onLoaded();
           const facilities = data.study.facilities;
           const items = pipe(

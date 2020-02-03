@@ -381,7 +381,6 @@ class FacilityCard extends React.PureComponent<any> {
       name,
     } = this.props;
     let newTitle;
-    console.log(name);
     if (name) {
       newTitle = facilityExpanded ? name : this.truncateString(name, 33, true);
     } else newTitle = title;
