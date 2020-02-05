@@ -114,6 +114,8 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search {
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView {
   __typename: "SiteView";
+  name: string | null;
+  url: string | null;
   id: number;
   study: UpdateSiteViewMutation_updateSiteView_siteView_study;
   search: UpdateSiteViewMutation_updateSiteView_siteView_search;

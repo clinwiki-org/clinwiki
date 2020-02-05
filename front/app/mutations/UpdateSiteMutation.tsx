@@ -1,17 +1,17 @@
-import * as React from 'react';
-import { gql } from 'apollo-boost';
-import { Mutation, MutationFn, MutationResult } from 'react-apollo';
+import * as React from "react";
+import { gql } from "apollo-boost";
+import { Mutation, MutationFn, MutationResult } from "react-apollo";
 import {
   UpdateSiteMutation as UpdateSiteMutationType,
-  UpdateSiteMutationVariables,
-} from 'types/UpdateSiteMutation';
-import SiteItem from 'components/SiteItem';
-import SiteProvider from 'containers/SiteProvider';
+  UpdateSiteMutationVariables
+} from "types/UpdateSiteMutation";
+import { SiteItem } from "components/SiteItem";
+import SiteProvider from "containers/SiteProvider";
 
 interface UpdateSiteMutationProps {
   children: (
     mutate: UpdateSiteMutationFn,
-    result: MutationResult<UpdateSiteMutationType>,
+    result: MutationResult<UpdateSiteMutationType>
   ) => React.ReactNode;
 }
 

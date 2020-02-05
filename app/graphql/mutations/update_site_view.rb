@@ -4,7 +4,7 @@ module Mutations
     field :errors, [String], null: true
 
     argument :name, String, required: true
-    argument :default, Boolean, required: false
+    argument :default, Boolean, required: true
     argument :url, String, required: true
     argument :description, String, required: false
     argument :id, Int, required: true

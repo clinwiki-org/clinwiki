@@ -130,6 +130,8 @@ export interface SiteProviderQuery_site_siteView_search {
 
 export interface SiteProviderQuery_site_siteView {
   __typename: "SiteView";
+  name: string | null;
+  url: string | null;
   id: number;
   study: SiteProviderQuery_site_siteView_study;
   search: SiteProviderQuery_site_siteView_search;
@@ -242,6 +244,8 @@ export interface SiteProviderQuery_site_siteViews_search {
 
 export interface SiteProviderQuery_site_siteViews {
   __typename: "SiteView";
+  name: string | null;
+  url: string | null;
   id: number;
   study: SiteProviderQuery_site_siteViews_study;
   search: SiteProviderQuery_site_siteViews_search;

@@ -130,6 +130,8 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search {
 
 export interface UpdateSiteMutation_updateSite_site_siteView {
   __typename: "SiteView";
+  name: string | null;
+  url: string | null;
   id: number;
   study: UpdateSiteMutation_updateSite_site_siteView_study;
   search: UpdateSiteMutation_updateSite_site_siteView_search;
@@ -242,6 +244,8 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search {
 
 export interface UpdateSiteMutation_updateSite_site_siteViews {
   __typename: "SiteView";
+  name: string | null;
+  url: string | null;
   id: number;
   study: UpdateSiteMutation_updateSite_site_siteViews_study;
   search: UpdateSiteMutation_updateSite_site_siteViews_search;
