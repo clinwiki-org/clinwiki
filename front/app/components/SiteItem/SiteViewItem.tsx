@@ -6,12 +6,18 @@ import { SiteViewFragment } from "types/SiteViewFragment";
 import DeleteSiteViewMutation, {
   DeleteSiteViewMutationFn
 } from "mutations/DeleteSiteViewMutation";
+import { History, Location } from "history";
+import { Switch, Route, match, Redirect } from "react-router";
+import { capitalize, trimPath } from "utils/helpers";
+import SiteViewEdit from "containers/SiteViewsPage/SiteViewEdit/SiteViewEdit";
 
 interface SiteViewItemProps {
-  // onEdit: (id: number) => void | null;
-  // onDelete?: (id: number) => void | null;
+  match: match<{}>;
+  history: History;
+  location: Location;
   refresh: () => void;
   siteView: SiteViewFragment;
+  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 const StyledButton = styled(Button)`
@@ -33,17 +39,26 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       });
     }
   };
-  componentDidMount = () => {
-    console.log(this.props.siteView);
-  };
 
   render() {
+    const id = this.props.siteView.id;
+    console.log(this.props);
+    const url = trimPath(this.props.match.url);
+    const path = trimPath(this.props.match.path);
+    console.log(url, path);
+
     return (
       <tr>
         <td>{this.props.siteView.name}</td>
         <td>{this.props.siteView.url}</td>
         <td>
-          <StyledButton>Edit</StyledButton>
+          <StyledButton
+            onClick={() => {
+              this.props.history.push(`${url}/${id}/site_view_edit`);
+            }}
+          >
+            Edit
+          </StyledButton>
           <DeleteSiteViewMutation>
             {deleteSiteView => (
               <StyledButton onClick={() => this.handleDelete(deleteSiteView)}>
@@ -52,6 +67,22 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
             )}
           </DeleteSiteViewMutation>
         </td>
+        <Switch>
+          <Route
+            path={`${path}/:id/site_view_edit`}
+            render={() => (
+              <SiteViewEdit
+                history={this.props.history}
+                location={this.props.location}
+                match={this.props.match}
+                view={this.props.siteView}
+                onAddMutation={this.props.onAddMutation}
+                id={id}
+              />
+            )}
+          />
+          {/* <Redirect to={`${path}`} /> */}
+        </Switch>
       </tr>
     );
   }

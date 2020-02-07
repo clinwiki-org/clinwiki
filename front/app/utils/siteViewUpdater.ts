@@ -58,12 +58,6 @@ export const updateView = (
   return result;
 };
 
-// export const createView = (
-//   view: SiteViewFragment
-// ) : SiteViewFragment => {
-
-// }
-
 const tryParse = (data, defaultValue) => {
   try {
     return JSON.parse(data);
