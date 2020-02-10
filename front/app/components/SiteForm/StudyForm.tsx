@@ -86,15 +86,14 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
 
   renderBasicSection = (
     section: Section,
-    data: SiteStudyBasicGenericSectionFragment,
+    data: SiteStudyBasicGenericSectionFragment
   ) => {
     return (
       <div>
         <StyledCheckbox
           name={`set:study.basicSections.${section.name}.hide`}
           checked={data.hide}
-          onChange={this.handleCheckboxToggle(data.hide)}
-        >
+          onChange={this.handleCheckboxToggle(data.hide)}>
           Hide Section
         </StyledCheckbox>
       </div>
@@ -103,7 +102,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
 
   renderExtendedSection = (
     section: Section,
-    data: SiteStudyExtendedGenericSectionFragment,
+    data: SiteStudyExtendedGenericSectionFragment
   ) => {
     const fields = data.fields || this.props.view.study.allFields;
     return (
@@ -111,8 +110,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
         <StyledCheckbox
           name={`set:study.extendedSections.${section.name}.hide`}
           checked={data.hide}
-          onChange={this.handleCheckboxToggle(data.hide)}
-        >
+          onChange={this.handleCheckboxToggle(data.hide)}>
           Hide Section
         </StyledCheckbox>
         <label>Section name</label>
@@ -134,8 +132,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
           name={`set:study.${section.name}.selected.kind`}
           componentClass="select"
           onChange={this.props.onAddMutation}
-          value={data.selected.kind}
-        >
+          value={data.selected.kind}>
           <option value="BLACKLIST">All except</option>
           <option value="WHITELIST">Only</option>
         </StyledFormControl>
@@ -199,11 +196,8 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
     }));
     // @ts-ignore
     const sortedExtendedSections = sortBy(
-      pipe(
-        prop('order'),
-        parseInt,
-      ),
-      extendedSections,
+      pipe(prop('order'), parseInt),
+      extendedSections
     );
     return [...basicSections, ...sortedExtendedSections] as Section[];
   };
@@ -214,7 +208,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
       reject(isEmpty),
       map(x => `/${x}`),
       // @ts-ignore
-      reverse,
+      reverse
     )(trimPath(this.props.location.pathname)) as string[];
 
     for (const component of pathComponents) {
@@ -235,8 +229,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
               bsStyle="pills"
               stacked
               activeKey={this.getCurrentSectionPath()}
-              onSelect={this.handleSelect}
-            >
+              onSelect={this.handleSelect}>
               {this.getSections().map((section: Section) => (
                 <NavItem key={section.path} eventKey={section.path}>
                   {section.displayName}
@@ -266,16 +259,16 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
                             // @ts-ignore
                             find(
                               propEq('title', section.displayName),
-                              this.props.view.study.basicSections,
-                            ),
+                              this.props.view.study.basicSections
+                            )
                           )
                         : this.renderExtendedSection(
                             section,
                             // @ts-ignore
                             find(
                               propEq('title', section.displayName),
-                              this.props.view.study.extendedSections,
-                            ),
+                              this.props.view.study.extendedSections
+                            )
                           )
                     }
                   />

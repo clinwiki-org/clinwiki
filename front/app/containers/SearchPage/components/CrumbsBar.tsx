@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Grid,
   Row,
@@ -10,20 +10,20 @@ import {
   FormGroup,
   ButtonGroup,
   ControlLabel,
-  ListGroup,
+  ListGroup, 
   ListGroupItem
-} from "react-bootstrap";
-import * as FontAwesome from "react-fontawesome";
-import gql from "graphql-tag";
-import { ApolloConsumer } from "react-apollo";
-import * as Autosuggest from "react-autosuggest";
-import styled from "styled-components";
-import aggToField from "utils/aggs/aggToField";
-import MultiCrumb from "components/MultiCrumb";
-import SiteProvider from "containers/SiteProvider";
-import { MAX_WINDOW_SIZE, aggsOrdered } from "../../../utils/constants";
-import { PulseLoader } from "react-spinners";
-import CurrentUser from "containers/CurrentUser";
+} from 'react-bootstrap';
+import * as FontAwesome from 'react-fontawesome';
+import gql from 'graphql-tag';
+import { ApolloConsumer } from 'react-apollo';
+import * as Autosuggest from 'react-autosuggest';
+import styled from 'styled-components';
+import aggToField from 'utils/aggs/aggToField';
+import MultiCrumb from 'components/MultiCrumb';
+import SiteProvider from 'containers/SiteProvider';
+import { MAX_WINDOW_SIZE, aggsOrdered } from '../../../utils/constants';
+import { PulseLoader, BeatLoader } from 'react-spinners';
+import CurrentUser from 'containers/CurrentUser';
 
 const AUTOSUGGEST_QUERY = gql`
   query SearchPageAggBucketsQuery(
@@ -54,6 +54,7 @@ const AUTOSUGGEST_QUERY = gql`
     ) {
       autocomplete {
         name
+        isCrowd
         results {
           key
           docCount
@@ -139,12 +140,15 @@ const CrumbsBarStyleWrappper = styled.div`
     padding-bottom: 10px;
   }
 `;
+const LoaderWrapper = styled.div`
+  margin: 20px 20px;
 
-import { AggCallback, SearchParams } from "../Types";
-import { isEmpty } from "ramda";
-import { SiteFragment } from "types/SiteFragment";
+  text-align: center;
+`;
+import { AggCallback, SearchParams } from '../Types';
+import { isEmpty } from 'ramda';
+import { SiteFragment } from 'types/SiteFragment';
 
-//
 interface CrumbsBarProps {
   searchParams: SearchParams;
   onBulkUpdate: () => void;
@@ -166,6 +170,7 @@ interface CrumbsBarProps {
 interface CrumbsBarState {
   searchTerm: string;
   suggestions: any;
+  isSuggestionLoading: boolean;
   cardsBtnColor: string;
   tableBtnColor: string;
   showFilters: boolean;
@@ -178,7 +183,7 @@ const Crumb = ({ category, value, onClick }) => {
       <FontAwesome
         className="remove"
         name="remove"
-        style={{ cursor: "pointer", color: "#cc1111", margin: "0 0 0 3px" }}
+        style={{ cursor: 'pointer', color: '#cc1111', margin: '0 0 0 3px' }}
         onClick={onClick}
       />
     </Label>
@@ -192,20 +197,21 @@ export default class CrumbsBar extends React.Component<
   constructor(props) {
     super(props);
 
-    let cardsColor = "";
-    let tableColor = "";
+    let cardsColor = '';
+    let tableColor = '';
 
-    if (window.localStorage.getItem("showCards") === "true") {
-      cardsColor = "#55B88D";
-      tableColor = "#90a79d";
+    if (window.localStorage.getItem('showCards') === 'true') {
+      cardsColor = '#55B88D';
+      tableColor = '#90a79d';
     } else {
-      cardsColor = "#90a79d";
-      tableColor = "#55B88D";
+      cardsColor = '#90a79d';
+      tableColor = '#55B88D';
     }
 
     this.state = {
-      searchTerm: "",
+      searchTerm: '',
       suggestions: [],
+      isSuggestionLoading: true,
       cardsBtnColor: cardsColor,
       tableBtnColor: tableColor,
       showFilters: false
@@ -243,7 +249,7 @@ export default class CrumbsBar extends React.Component<
           category={cat}
           values={agg.values}
           onClick={val => removeFilter(agg.field, val, true)}
-          key={cat + agg.values.join("")}
+          key={cat + agg.values.join('')}
         />
       );
     }
@@ -257,8 +263,7 @@ export default class CrumbsBar extends React.Component<
           bsSize="small"
           key="reset"
           onClick={this.props.onReset}
-          style={{ margin: "5px 0px 5px 10px" }}
-        >
+          style={{ marginLeft: '10px' }}>
           Reset
         </Button>
       );
@@ -276,9 +281,9 @@ export default class CrumbsBar extends React.Component<
     }
     if (aggFields.length <= 0) {
       aggFields = [
-        "browse_condition_mesh_terms",
-        "browse_interventions_mesh_terms",
-        "facility_countries"
+        'browse_condition_mesh_terms',
+        'browse_interventions_mesh_terms',
+        'facility_countries',
       ];
     }
     return aggFields;
@@ -315,37 +320,43 @@ export default class CrumbsBar extends React.Component<
     const query = AUTOSUGGEST_QUERY;
 
     const variables = {
-      agg: "browse_condition_mesh_terms",
+      agg: 'browse_condition_mesh_terms',
       aggFilters: searchParams.aggFilters,
       aggOptionsFilter: searchTerm,
-      crowdAggFilters: [],
+      crowdAggFilters: searchParams.crowdAggFilters,
       page: 0,
       pageSize: 5,
       q: {
         children: newParams,
-        key: "AND"
+        key: 'AND',
       },
       sorts: [],
       aggFields: aggFields,
-      crowdAggFields: crowdAggFields
+      crowdAggFields: crowdAggFields,
     };
 
     const response = await apolloClient.query({
       query,
-      variables
+      variables,
     });
     const array = response.data.autocomplete.autocomplete;
 
     this.setState({
-      suggestions: array
+      suggestions: array,
+      isSuggestionLoading: false,
     });
   };
 
-  onSuggestionsFetchRequested = () => {};
+  onSuggestionsFetchRequested = () => {
+    this.setState({
+      isSuggestionLoading: true,
+    });
+  };
 
   onSuggestionsClearRequested = () => {
     this.setState({
-      suggestions: []
+      suggestions: [],
+      isSuggestionLoading: true,
     });
   };
 
@@ -356,6 +367,23 @@ export default class CrumbsBar extends React.Component<
   renderSuggestion = suggestion => {
     const capitalized = this.capitalize(suggestion.key);
     return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
+  };
+  renderSuggestionsContainer = () => {
+    const { isSuggestionLoading, suggestions } = this.state;
+
+    if (isSuggestionLoading == true) {
+      if (suggestions.length == 0) {
+        return null;
+      } else {
+        return (
+          <div className="react-autosuggest__suggestions-container--open">
+            <LoaderWrapper>
+              <BeatLoader color="#cccccc" />
+            </LoaderWrapper>
+          </div>
+        );
+      }
+    }
   };
 
   getSectionSuggestions = section => {
@@ -371,7 +399,9 @@ export default class CrumbsBar extends React.Component<
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
   ) => {
     const section = this.state.suggestions[sectionIndex];
-    this.props.addFilter(section.name, suggestionValue);
+    if (section.isCrowd) {
+      this.props.addFilter(section.name, suggestionValue, true);
+    } else this.props.addFilter(section.name, suggestionValue);
   };
 
   renderSectionTitle = section => {
@@ -385,7 +415,7 @@ export default class CrumbsBar extends React.Component<
   onChange = (e, { newValue }, apolloClient) => {
     this.setState(
       {
-        searchTerm: newValue
+        searchTerm: newValue,
       },
       () => {
         this.queryAutoSuggest(apolloClient);
@@ -394,19 +424,25 @@ export default class CrumbsBar extends React.Component<
   };
 
   clearPrimarySearch = () => {
-    this.props.removeSearchTerm("", true);
+    this.props.removeSearchTerm('', true);
   };
   onSubmit = e => {
     e.preventDefault();
     this.props.addSearchTerm(this.state.searchTerm);
-    this.setState({ searchTerm: "" });
+    this.setState({ searchTerm: '' });
   };
 
   toggledShowCards = (type, showCards) => {
-    if (type === "cards") {
-      this.setState({ cardsBtnColor: "#55B88D", tableBtnColor: "#90a79d" });
-    } else if (type === "table") {
-      this.setState({ cardsBtnColor: "#90a79d", tableBtnColor: "#55B88D" });
+    if (type === 'cards') {
+      this.setState({
+        cardsBtnColor: '#55B88D',
+        tableBtnColor: '#90a79d',
+      });
+    } else if (type === 'table') {
+      this.setState({
+        cardsBtnColor: '#90a79d',
+        tableBtnColor: '#55B88D',
+      });
     }
     this.props.toggledShowCards(showCards);
   };
@@ -433,17 +469,17 @@ export default class CrumbsBar extends React.Component<
           <FontAwesome
             className="arrow-left"
             name="arrow-left"
-            style={{ cursor: "pointer", margin: "5px" }}
+            style={{ cursor: 'pointer', margin: '5px' }}
             onClick={() => this.props.update.page(this.props.page - 1)}
           />
         ) : (
           <FontAwesome
             className="arrow-left"
             name="arrow-left"
-            style={{ margin: "5px", color: "gray" }}
+            style={{ margin: '5px', color: 'gray' }}
           />
         )}
-        page{" "}
+        page{' '}
         <b>
           {this.props.loading ? (
             <div id="divsononeline">
@@ -453,20 +489,20 @@ export default class CrumbsBar extends React.Component<
             `${Math.min(this.props.page + 1, this.props.pagesTotal)}/${
               this.props.pagesTotal
             }`
-          )}{" "}
+          )}{' '}
         </b>
         {this.props.page + 1 < this.props.pagesTotal && !this.props.loading ? (
           <FontAwesome
             className="arrow-right"
             name="arrow-right"
-            style={{ cursor: "pointer", margin: "5px" }}
+            style={{ cursor: 'pointer', margin: '5px' }}
             onClick={() => this.props.update.page(this.props.page + 1)}
           />
         ) : (
           <FontAwesome
             className="arrow-right"
             name="arrow-right"
-            style={{ margin: "5px", color: "gray" }}
+            style={{ margin: '5px', color: 'gray' }}
           />
         )}
         <div>{this.props.recordsTotal} results</div>
@@ -480,7 +516,8 @@ export default class CrumbsBar extends React.Component<
   };
 
   render() {
-    const { searchTerm, suggestions } = this.state;
+    const { searchTerm, suggestions, isSuggestionLoading } = this.state;
+
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -488,36 +525,87 @@ export default class CrumbsBar extends React.Component<
             <Grid className='crumbs-bar'>
               <Row>
                 <Col xs={8} md={8}>
-                  <Form inline className='searchInput' onSubmit={this.onSubmit}>
-                    <FormGroup>
-                      <div style={{ display: 'flex', flexDirection: 'row' }}>
-                        <b style={{ marginRight: '8px', marginTop: '4px' }}>
-                          <ControlLabel>Search Within: </ControlLabel>{' '}
-                        </b>
-                        <Autosuggest
-                          multiSection={true}
-                          suggestions={suggestions}
-                          inputProps={{
-                            value: searchTerm,
-                            onChange: (e, searchTerm) =>
-                              this.onChange(e, searchTerm, apolloClient)
-                          }}
-                          renderSuggestion={this.renderSuggestion}
-                          renderSectionTitle={this.renderSectionTitle}
-                          getSectionSuggestions={this.getSectionSuggestions}
-                          onSuggestionSelected={this.onSuggestionSelected}
-                          onSuggestionsFetchRequested={
-                            this.onSuggestionsFetchRequested
-                          }
-                          onSuggestionsClearRequested={
-                            this.onSuggestionsClearRequested
-                          }
-                          getSuggestionValue={this.getSuggestionValue}
-                        />
-                      </div>
-                    </FormGroup>
-                    <Button type='submit'>
-                      <FontAwesome name='search' />
+                  <Form inline className="searchInput" onSubmit={this.onSubmit}>
+                    {isSuggestionLoading ? (
+                      <FormGroup>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                          }}>
+                          <b
+                            style={{
+                              marginRight: '8px',
+                              marginTop: '4px',
+                            }}>
+                            <ControlLabel>Search Within: </ControlLabel>{' '}
+                          </b>
+
+                          <Autosuggest
+                            multiSection={true}
+                            suggestions={suggestions}
+                            inputProps={{
+                              value: searchTerm,
+                              onChange: (e, searchTerm) =>
+                                this.onChange(e, searchTerm, apolloClient),
+                            }}
+                            renderSuggestion={this.renderSuggestion}
+                            renderSuggestionsContainer={
+                              this.renderSuggestionsContainer
+                            }
+                            renderSectionTitle={this.renderSectionTitle}
+                            getSectionSuggestions={this.getSectionSuggestions}
+                            onSuggestionSelected={this.onSuggestionSelected}
+                            onSuggestionsFetchRequested={
+                              this.onSuggestionsFetchRequested
+                            }
+                            onSuggestionsClearRequested={
+                              this.onSuggestionsClearRequested
+                            }
+                            getSuggestionValue={this.getSuggestionValue}
+                          />
+                        </div>
+                      </FormGroup>
+                    ) : (
+                      <FormGroup>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                          }}>
+                          <b
+                            style={{
+                              marginRight: '8px',
+                              marginTop: '4px',
+                            }}>
+                            <ControlLabel>Search Within: </ControlLabel>{' '}
+                          </b>
+
+                          <Autosuggest
+                            multiSection={true}
+                            suggestions={suggestions}
+                            inputProps={{
+                              value: searchTerm,
+                              onChange: (e, searchTerm) =>
+                                this.onChange(e, searchTerm, apolloClient),
+                            }}
+                            renderSuggestion={this.renderSuggestion}
+                            renderSectionTitle={this.renderSectionTitle}
+                            getSectionSuggestions={this.getSectionSuggestions}
+                            onSuggestionSelected={this.onSuggestionSelected}
+                            onSuggestionsFetchRequested={
+                              this.onSuggestionsFetchRequested
+                            }
+                            onSuggestionsClearRequested={
+                              this.onSuggestionsClearRequested
+                            }
+                            getSuggestionValue={this.getSuggestionValue}
+                          />
+                        </div>
+                      </FormGroup>
+                    )}
+                    <Button type="submit">
+                      <FontAwesome name="search" />
                     </Button>
                     &nbsp;
                     <CurrentUser>
@@ -532,21 +620,23 @@ export default class CrumbsBar extends React.Component<
                   </Form>
                 </Col>
                 <Col md={2} xs={4}>
-                  <div className='right-align'>
+                  <div className="right-align">
                     <ControlLabel>View Style: </ControlLabel>{' '}
                     <ButtonGroup>
                       <Button
                         onClick={() => this.toggledShowCards('cards', true)}
-                        style={{ backgroundColor: this.state.cardsBtnColor }}>
+                        style={{
+                          backgroundColor: this.state.cardsBtnColor,
+                        }}>
                         <svg
-                          aria-hidden='true'
-                          focusable='false'
-                          data-prefix='far'
-                          data-icon='th'
-                          role='img'
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 512 512'
-                          className='svg-inline--fa fa-th fa-w-16 fa-lg'
+                          aria-hidden="true"
+                          focusable="false"
+                          data-prefix="far"
+                          data-icon="th"
+                          role="img"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 512 512"
+                          className="svg-inline--fa fa-th fa-w-16 fa-lg"
                           style={{ width: '17px' }}>
                           <path
                             fill='currentColor'
@@ -558,16 +648,18 @@ export default class CrumbsBar extends React.Component<
                       </Button>
                       <Button
                         onClick={() => this.toggledShowCards('table', false)}
-                        style={{ backgroundColor: this.state.tableBtnColor }}>
+                        style={{
+                          backgroundColor: this.state.tableBtnColor,
+                        }}>
                         <svg
-                          aria-hidden='true'
-                          focusable='false'
-                          data-prefix='far'
-                          data-icon='th-list'
-                          role='img'
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 512 512'
-                          className='svg-inline--fa fa-th-list fa-w-16 fa-lg'
+                          aria-hidden="true"
+                          focusable="false"
+                          data-prefix="far"
+                          data-icon="th-list"
+                          role="img"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 512 512"
+                          className="svg-inline--fa fa-th-list fa-w-16 fa-lg"
                           style={{ width: '17px' }}>
                           <path
                             fill='currentColor'

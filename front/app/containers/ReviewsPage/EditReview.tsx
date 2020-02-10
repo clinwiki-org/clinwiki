@@ -45,7 +45,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
       trimPath,
       split('/'),
       dropLast(1),
-      join('/'),
+      join('/')
     )(this.props.match.url);
     this.props.history.push(redirectPath);
   };
@@ -54,8 +54,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
-      >
+        variables={{ nctId: this.props.match.params.nctId }}>
         {({ data, loading, error }) => {
           if (loading || error || !data || !data.study || !data.study.reviews) {
             return null;
@@ -66,7 +65,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
           const id = parseInt(this.props.match.params.id, 10);
           const review = find(
             propEq('id', id),
-            data.study.reviews,
+            data.study.reviews
           ) as ReviewsPageFragment;
           if (!review) return null;
 

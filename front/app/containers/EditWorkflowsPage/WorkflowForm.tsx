@@ -41,20 +41,15 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
 
         <StyledLabel>Facets</StyledLabel>
         <StyledFormControl
-          name={`set:workflows.${
-            this.props.workflow.name
-          }.suggestedLabelsFilter.kind`}
+          name={`set:workflows.${this.props.workflow.name}.suggestedLabelsFilter.kind`}
           componentClass="select"
           onChange={this.props.onAddMutation}
-          value={this.props.workflow.suggestedLabelsFilter.kind}
-        >
+          value={this.props.workflow.suggestedLabelsFilter.kind}>
           <option value="BLACKLIST">All except</option>
           <option value="WHITELIST">Only</option>
         </StyledFormControl>
         <MultiInput
-          name={`set:workflows.${
-            this.props.workflow.name
-          }.suggestedLabelsFilter.values`}
+          name={`set:workflows.${this.props.workflow.name}.suggestedLabelsFilter.values`}
           options={this.props.workflow.allSuggestedLabels.map(field => ({
             id: field,
             label: field,
@@ -68,36 +63,29 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
         <StyledCheckbox
           name={`set:workflows.${this.props.workflow.name}.hideReviews`}
           checked={this.props.workflow.hideReviews}
-          onChange={this.handleCheckboxToggle(this.props.workflow.hideReviews)}
-        >
+          onChange={this.handleCheckboxToggle(this.props.workflow.hideReviews)}>
           Hide Reviews section
         </StyledCheckbox>
         <StyledCheckbox
           name={`set:workflows.${this.props.workflow.name}.disableAddRating`}
           checked={this.props.workflow.disableAddRating}
           onChange={this.handleCheckboxToggle(
-            this.props.workflow.disableAddRating,
-          )}
-        >
+            this.props.workflow.disableAddRating
+          )}>
           Disable add rating
         </StyledCheckbox>
 
         <StyledLabel>Wiki sections</StyledLabel>
         <StyledFormControl
-          name={`set:workflows.${
-            this.props.workflow.name
-          }.wikiSectionsFilter.kind`}
+          name={`set:workflows.${this.props.workflow.name}.wikiSectionsFilter.kind`}
           componentClass="select"
           onChange={this.props.onAddMutation}
-          value={this.props.workflow.wikiSectionsFilter.kind}
-        >
+          value={this.props.workflow.wikiSectionsFilter.kind}>
           <option value="BLACKLIST">All except</option>
           <option value="WHITELIST">Only</option>
         </StyledFormControl>
         <MultiInput
-          name={`set:workflows.${
-            this.props.workflow.name
-          }.wikiSectionsFilter.values`}
+          name={`set:workflows.${this.props.workflow.name}.wikiSectionsFilter.values`}
           options={this.props.workflow.allWikiSections.map(field => ({
             id: field,
             label: field,
@@ -108,20 +96,15 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
         />
         <StyledLabel>Summary fields</StyledLabel>
         <StyledFormControl
-          name={`set:workflows.${
-            this.props.workflow.name
-          }.summaryFieldsFilter.kind`}
+          name={`set:workflows.${this.props.workflow.name}.summaryFieldsFilter.kind`}
           componentClass="select"
           onChange={this.props.onAddMutation}
-          value={this.props.workflow.summaryFieldsFilter.kind}
-        >
+          value={this.props.workflow.summaryFieldsFilter.kind}>
           <option value="BLACKLIST">All except</option>
           <option value="WHITELIST">Only</option>
         </StyledFormControl>
         <MultiInput
-          name={`set:workflows.${
-            this.props.workflow.name
-          }.summaryFieldsFilter.values`}
+          name={`set:workflows.${this.props.workflow.name}.summaryFieldsFilter.values`}
           options={this.props.workflow.allSummaryFields.map(field => ({
             id: field,
             label: field,

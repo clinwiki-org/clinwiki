@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Heading from 'components/Heading';
 import { Row, Col, Form, FormControl } from 'react-bootstrap';
 import { gql, ApolloClient } from 'apollo-boost';
-import { ApolloConsumer }  from 'react-apollo';
+import { ApolloConsumer } from 'react-apollo';
 import { History } from 'history';
 
 const MainContainer = styled(Col)`
@@ -12,10 +12,10 @@ const MainContainer = styled(Col)`
   padding-top: 50px;
   padding-bottom: 00px;
   .center {
-    text-align: center
+    text-align: center;
   }
   #query {
-    box-shadow: 0px 2px 25px rgba(0, 0, 0, .25);
+    box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.25);
     border: none;
     font-size: 12pt;
     max-width: 120em;
@@ -23,63 +23,65 @@ const MainContainer = styled(Col)`
 `;
 
 const HASH_QUERY = gql`
-  query SearchPageHashQuery( $q: SearchQueryInput!) {
-    searchHash(
-      params: {
-        q: $q,
-        page: 0,
-        pageSize: 25
-      }
-    )
+  query SearchPageHashQuery($q: SearchQueryInput!) {
+    searchHash(params: { q: $q, page: 0, pageSize: 25 })
   }
 `;
 
 interface LandingPageProps {
-  history : History;
+  history: History;
 }
 interface LandingPageState {
   searchTerm: string;
 }
 
-class LandingPage extends React.PureComponent<LandingPageProps, LandingPageState> {
+class LandingPage extends React.PureComponent<
+  LandingPageProps,
+  LandingPageState
+> {
   state: LandingPageState = {
     searchTerm: '',
   };
-  onSubmit = async (e, client:ApolloClient<any>) => {
+  onSubmit = async (e, client: ApolloClient<any>) => {
     e.preventDefault();
     let params = {};
     if (this.state.searchTerm.replace(/\s/g, '').length) {
-      params = { q: { key: 'AND', children: [{ key: this.state.searchTerm }] } };
+      params = {
+        q: { key: 'AND', children: [{ key: this.state.searchTerm }] },
+      };
     } else {
       params = { q: { key: 'AND', children: [] } };
     }
-    const { data } = await client.query({ query: HASH_QUERY, variables: params });
+    const { data } = await client.query({
+      query: HASH_QUERY,
+      variables: params,
+    });
     this.props.history.push(`/search/${data.searchHash}`);
   };
   searchChanged = e => {
     this.setState({ searchTerm: e.target.value });
   };
-  renderMain = (client:ApolloClient<any>) => (<MainContainer>
-    <Heading> </Heading>
-    <div className="container">
-      <Row className="justify-content-md-center">
-        <Col md={3} />
-        <Col md={6}>
-          <Form className="center" onSubmit={(e) => this.onSubmit(e, client)}>
-            <FormControl
-              id="query"
-              onChange={this.searchChanged}
-              placeholder="Enter a Search: ex) 'Glioblastoma or Musella Foundation'"
-            />
-          </Form>
-        </Col>
-      </Row>
-    </div>
-  </MainContainer>);
+  renderMain = (client: ApolloClient<any>) => (
+    <MainContainer>
+      <Heading> </Heading>
+      <div className="container">
+        <Row className="justify-content-md-center">
+          <Col md={3} />
+          <Col md={6}>
+            <Form className="center" onSubmit={e => this.onSubmit(e, client)}>
+              <FormControl
+                id="query"
+                onChange={this.searchChanged}
+                placeholder="Enter a Search: ex) 'Glioblastoma or Musella Foundation'"
+              />
+            </Form>
+          </Col>
+        </Row>
+      </div>
+    </MainContainer>
+  );
   render() {
-    return (<ApolloConsumer>
-      {client => this.renderMain(client)}
-    </ApolloConsumer>);
+    return <ApolloConsumer>{client => this.renderMain(client)}</ApolloConsumer>;
   }
 }
 

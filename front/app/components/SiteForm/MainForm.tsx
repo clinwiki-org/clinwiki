@@ -43,7 +43,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
     const newForm = set(
       editorsLens,
       this.state.addEditorEmail,
-      this.props.form,
+      this.props.form
     ) as any;
 
     this.props.onFormChange(newForm);
@@ -55,7 +55,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
     const newForm = over(
       editorsLens,
       reject(equals(email)),
-      this.props.form,
+      this.props.form
     ) as any;
 
     this.props.onFormChange(newForm);
@@ -65,7 +65,6 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
     const { name, value } = e.currentTarget;
     this.props.onFormChange({ ...this.props.form, [name]: value });
   };
-
 
   handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.currentTarget;
@@ -104,7 +103,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
               onChange={this.handleInputChange}
             />
             <StyledLabel htmlFor="subdomain">Skip landing page</StyledLabel>
-               <Checkbox
+            <Checkbox
               id="skipLanding"
               name="skipLanding"
               type="checkbox"

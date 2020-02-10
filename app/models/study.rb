@@ -291,6 +291,63 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     }
   end
 
+  def reload
+    super
+    self.extended_interventions_raw = nil
+    self.interventions_raw = nil
+  end
+
+  def interventions
+    @interventions || Study.preload_interventions(self)
+    @interventions
+  end
+
+  def interventions_raw
+    @interventions
+  end
+
+  def interventions_raw=(value)
+    @interventions = value
+  end
+
+  def self.preload_interventions(studies) # rubocop:disable Metrics/MethodLength
+    studies = studies.is_a?(Array) ? studies : [studies]
+    study_groups = studies.group_by(&:nct_id)
+    ids = studies.map(&:id)
+    ids_sql = ids.map { |id| "\'#{id}\'" }.join(",")
+    query = <<-SQL
+        SELECT 
+        -- dg.group_type,
+        -- dg.title,
+        -- dg.description,
+        -- ion.name as other_name,
+          i.id,
+          i.name,
+          i.intervention_type,
+          i.description,
+          i.nct_id
+        FROM interventions i
+        left outer join intervention_other_names ion
+          on i.id = ion.intervention_id
+        left outer join design_group_interventions dgi
+          on i.id = dgi.intervention_id
+        left outer join design_groups dg
+        on dgi.design_group_id = dg.id
+        where dg.nct_id IN (#{ids_sql})
+        order by dg.group_type
+      SQL
+
+    rows = AactRecord.connection.execute(query)
+    # Successfully executed sql query - reset interventions
+    studies.each { |study| study.interventions_raw = [] }
+    rows.each do |row|
+      intervention = Intervention.new(row)
+      study_groups[intervention.nct_id].each do |study|
+        study.interventions_raw.push(intervention)
+      end
+    end
+  end
+
   def extended_interventions
     @extended_interventions || Study.preload_extended_interventions(self)
     @extended_interventions
@@ -304,10 +361,6 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     @extended_interventions = value
   end
 
-  def reload
-    super
-    self.extended_interventions_raw = nil
-  end
 
   def geocode
     facilities.where(country: 'United States').each do |facility|

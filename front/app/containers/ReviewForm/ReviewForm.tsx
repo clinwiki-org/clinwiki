@@ -100,7 +100,7 @@ const defaultState = {
   newRating: '',
   content: RichTextEditor.createValueFromString(
     'Write your review here!',
-    'markdown',
+    'markdown'
   ),
   prevReview: null,
 };
@@ -130,7 +130,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
 
   static getDerivedStateFromProps = (
     props: ReviewFormProps,
-    state: ReviewFormState,
+    state: ReviewFormState
   ): ReviewFormState | null => {
     if (props.review != null && !equals(props.review, state.prevReview)) {
       let meta = defaultState.meta;
@@ -145,7 +145,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
         prevReview: props.review,
         content: RichTextEditor.createValueFromString(
           props.review.content,
-          'markdown',
+          'markdown'
         ),
       };
     }
@@ -178,7 +178,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   };
 
   handleSubmitReview = (
-    upsertReview: (x: { variables: ReviewFormMutationVariables }) => void,
+    upsertReview: (x: { variables: ReviewFormMutationVariables }) => void
   ) => () => {
     const id = (this.props.review && this.props.review.id) || undefined;
     upsertReview({
@@ -215,8 +215,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
               {key !== 'Overall Rating' && (
                 <Button
                   bsSize="xsmall"
-                  onClick={() => this.handleRatingDelete(key)}
-                >
+                  onClick={() => this.handleRatingDelete(key)}>
                   <FontAwesome name="minus" />
                 </Button>
               )}
@@ -276,7 +275,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                   newStudy = over(
                     reviewsLens,
                     reviews => [review, ...(reviews as any)],
-                    study,
+                    study
                   );
                 } else {
                   const reviewLens = lensPath(['reviews', idx]);
@@ -291,16 +290,14 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                 });
 
                 this.props.afterSave && this.props.afterSave(review);
-              }}
-            >
+              }}>
               {upsertReview => {
                 this.submitReview = this.handleSubmitReview(upsertReview);
                 return (
                   !this.props.hideSaveButton && (
                     <Button
                       style={{ marginTop: 10 }}
-                      onClick={this.handleSubmitReview(upsertReview)}
-                    >
+                      onClick={this.handleSubmitReview(upsertReview)}>
                       Submit
                     </Button>
                   )

@@ -11,18 +11,18 @@ import {
 import { SiteViewFragment } from 'types/SiteViewFragment';
 
 export const preselectedFilters = (
-  view: SiteViewFragment,
+  view: SiteViewFragment
 ): { aggFilters: AggFilterInput[]; crowdAggFilters: AggFilterInput[] } => {
   const aggFilters = reject(
     field => isEmpty(field.preselected.values),
-    view.search.aggs.fields,
+    view.search.aggs.fields
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
   }));
   const crowdAggFilters = reject(
     field => isEmpty(field.preselected.values),
-    view.search.crowdAggs.fields,
+    view.search.crowdAggs.fields
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
@@ -39,19 +39,19 @@ export const displayFields = <
   kind: FilterKind,
   filterValues: string[],
   fields: T[],
-  sortByValues?: boolean,
+  sortByValues?: boolean
 ): T[] => {
   const fieldFilterFn = kind === FilterKind.BLACKLIST ? reject : filter;
   const filtered = fieldFilterFn(
     (field: T) => filterValues.includes(field.name),
-    fields,
+    fields
   );
   const sortF = sortByValues ? x => indexOf(x.name, filterValues) : getRank;
   return sortBy(sortF, filtered);
 };
 
 const getRank = <T extends { name: string; rank: number | string | null }>(
-  field: T,
+  field: T
 ): number => {
   if (field.rank == null) return Number.POSITIVE_INFINITY;
   return typeof field.rank === 'number' ? field.rank : parseInt(field.rank, 10);

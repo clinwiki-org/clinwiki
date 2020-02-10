@@ -55,8 +55,7 @@ class InterventionsPage extends React.PureComponent<InterventionsPageProps> {
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}
-      >
+        variables={{ nctId: this.props.match.params.nctId }}>
         {({ data, loading, error }) => {
           if (loading || error || !data || !data.study) return null;
           this.props.onLoaded && this.props.onLoaded();
@@ -64,7 +63,7 @@ class InterventionsPage extends React.PureComponent<InterventionsPageProps> {
           const fields = displayFields(
             this.props.metaData.selected.kind,
             this.props.metaData.selected.values,
-            this.props.metaData.fields.map(name => ({ name, rank: null })),
+            this.props.metaData.fields.map(name => ({ name, rank: null }))
           ).map(prop('name'));
 
           return (

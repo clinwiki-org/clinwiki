@@ -1,6 +1,6 @@
-import * as React from "react";
-import styled from "styled-components";
-import FacilityInfoCard from "./FacilityInfoCard";
+import * as React from 'react';
+import styled from 'styled-components';
+import FacilityInfoCard from './FacilityInfoCard';
 
 const K_CIRCLE_SIZE = 30;
 const K_STICK_SIZE = 10;
@@ -124,17 +124,17 @@ const WarningHoverStick = styled.div`
 
 class MapMarker extends React.PureComponent<any> {
   state = {
-    clicked: false
+    clicked: false,
   };
 
   markerClicked = () => {
     this.setState({
-      clicked: !this.state.clicked
+      clicked: !this.state.clicked,
     });
   };
 
   render() {
-    if (this.props.geoStatus === "good") {
+    if (this.props.geoStatus === 'good') {
       return (
         <MarkerContainer onClick={() => this.markerClicked()}>
           {this.props.$hover || this.state.clicked ? (
@@ -172,7 +172,7 @@ class MapMarker extends React.PureComponent<any> {
         </MarkerContainer>
       );
     }
-    if (this.props.geoStatus === "zip") {
+    if (this.props.geoStatus === 'zip') {
       return (
         <MarkerContainer onClick={() => this.markerClicked()}>
           {this.props.$hover || this.state.clicked ? (

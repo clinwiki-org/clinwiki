@@ -122,13 +122,19 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
           this.props.workflow.allSummaryFields.map(name => ({
             name,
             rank: null,
-          })),
+          }))
         ).map(prop('name'))
-      : ["nctId", "type", "overallStatus", "completionDate", "enrollment", "source"];
+      : [
+          'nctId',
+          'type',
+          'overallStatus',
+          'completionDate',
+          'enrollment',
+          'source',
+        ];
 
     return (
       <div className="container">
-
         <Helmet>
           <title>{`Wiki - ${this.props.study.briefTitle}`}</title>
         </Helmet>
@@ -136,23 +142,26 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
         <CollapsiblePanel header={this.props.study.briefTitle || ''}>
           <Table striped bordered condensed>
             <tbody>
-              { allowedFields.map(name =>
-                  name == "nctId" ?
-                    // Special case nctID to include a link
-                    <tr key={name}>
-                      <th>NCT ID</th>
-                      <td>
-                        <a href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`} target="_blank">
+              {allowedFields.map(name =>
+                name == 'nctId' ? (
+                  // Special case nctID to include a link
+                  <tr key={name}>
+                    <th>NCT ID</th>
+                    <td>
+                      <a
+                        href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`}
+                        target="_blank">
                         {this.props.study.nctId}
-                        </a>
-                      </td>
-                    </tr>
-                    :
-                    <tr key={name}>
-                      <th>{sentanceCaseFromCamelCase(name)}</th>
-                      <td>{this.props.study[name]}</td>
-                    </tr>)
-              }
+                      </a>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr key={name}>
+                    <th>{sentanceCaseFromCamelCase(name)}</th>
+                    <td>{this.props.study[name]}</td>
+                  </tr>
+                )
+              )}
             </tbody>
           </Table>
         </CollapsiblePanel>

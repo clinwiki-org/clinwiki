@@ -33,9 +33,10 @@ const MultiCrumb = styled.div`
 }
 .crumb-container{
   border: 2px solid #ddd;
-  border-radius: 10px;
+  border-radius: 4px;
   padding: 0 5px 0 5px;
   color: #55B88D;
+  margin: 1px;
 }
 .crumb-icon{
   cursor: pointer;

@@ -1,18 +1,18 @@
-export default function (field, bucketKey) {
+export default function(field, bucketKey) {
   switch (field) {
     case 'average_rating':
-      return ({
+      return {
         0: '☆☆☆☆☆',
         1: '★☆☆☆☆',
         2: '★★☆☆☆',
         3: '★★★☆☆',
         4: '★★★★☆',
         5: '★★★★★',
-      }[bucketKey]);
+      }[bucketKey];
     case 'completion_date':
     case 'start_date':
-      return (new Date(parseInt(bucketKey, 10)).getFullYear());
+      return new Date(parseInt(bucketKey, 10)).getFullYear();
     default:
-      return (bucketKey);
+      return bucketKey;
   }
 }

@@ -72,7 +72,7 @@ class ResetPasswordPage extends React.Component<
     resetPassword({ variables: { input: this.state.form } }).then(() =>
       this.setState({
         errors: ['Password reset instructions have been sent to your email.'],
-      }),
+      })
     );
   };
 
@@ -106,8 +106,7 @@ class ResetPasswordPage extends React.Component<
                     errors: ['Instructions have been sent to your email'],
                   });
                 }
-              }}
-            >
+              }}>
               {resetPassword => (
                 <StyledButton onClick={this.handleResetPassword(resetPassword)}>
                   Send Instructions

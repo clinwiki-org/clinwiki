@@ -24,7 +24,12 @@ export const defaultPageSize = 25;
 export type AggCallback = (
   aggName: string,
   key: string,
-  isCrowd?: boolean,
+  isCrowd?: boolean
+) => void;
+export type AggregateAggCallback = (
+  aggName: string,
+  keys: string[],
+  isCrowd?: boolean
 ) => void;
 export interface AggBucket {
   key: string;
@@ -70,17 +75,14 @@ export function flattenAggs(aggs: AggFilterMap): AggFilterListItem[] {
 
 export function expandAggs(aggs: AggFilterListItem[]) {
   if (aggs) {
-    return aggs.reduce(
-      (acc, agg) => {
-        acc[agg.field] = new Set(agg.values);
-        return acc;
-      },
-      {} as AggFilterMap,
-    );
+    return aggs.reduce((acc, agg) => {
+      acc[agg.field] = new Set(agg.values);
+      return acc;
+    }, {} as AggFilterMap);
   }
   return null;
 }
 
-export function maskAgg(aggs : AggFilterListItem[], toRemove : string) {
+export function maskAgg(aggs: AggFilterListItem[], toRemove: string) {
   return filter(a => a.field != toRemove, aggs);
 }

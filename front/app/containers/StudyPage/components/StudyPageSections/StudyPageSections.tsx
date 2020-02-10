@@ -18,9 +18,7 @@ interface StudyPageSectionsProps {
 }
 
 class StudyPageSections extends React.Component<StudyPageSectionsProps> {
-
   render() {
-
     const sectionsComponents = this.props.sections.map(section => {
       return (
         <StudyPageSection
@@ -34,14 +32,13 @@ class StudyPageSections extends React.Component<StudyPageSectionsProps> {
           workflowsView={this.props.workflowsView}
           history={this.props.history}
           location={this.props.location}
-          match={this.props.match} />
+          match={this.props.match}
+        />
       );
     });
 
     return <div>{sectionsComponents}</div>;
-
   }
-
 }
 
 export default StudyPageSections;

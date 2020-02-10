@@ -27,7 +27,7 @@ class CrowdLabel extends React.Component<CrowdLabelProps, CrowdLabelState> {
 
   static getDerivedStateFromProps = (
     props: CrowdLabelProps,
-    state: CrowdLabelState,
+    state: CrowdLabelState
   ) => {
     if (state.value == null) {
       return { ...state, value: props.value, prevPropsValue: props.value };
@@ -54,7 +54,7 @@ class CrowdLabel extends React.Component<CrowdLabelProps, CrowdLabelState> {
       this.props.onSubmitClick(
         this.props.name,
         this.props.value,
-        this.state.value || '',
+        this.state.value || ''
       );
     this.setState({ inEditMode: false });
   };
