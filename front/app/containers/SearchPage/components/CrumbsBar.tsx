@@ -10,8 +10,8 @@ import {
   FormGroup,
   ButtonGroup,
   ControlLabel,
-  ListGroup, 
-  ListGroupItem
+  ListGroup,
+  ListGroupItem,
 } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import gql from 'graphql-tag';
@@ -121,7 +121,8 @@ const CrumbsBarStyleWrappper = styled.div`
       }
 
       b {
-        padding: 5px 1px 5px 1px;      }
+        padding: 5px 1px 5px 1px;
+      }
 
       b:last-of-type {
         padding-right: 0px;
@@ -214,7 +215,7 @@ export default class CrumbsBar extends React.Component<
       isSuggestionLoading: true,
       cardsBtnColor: cardsColor,
       tableBtnColor: tableColor,
-      showFilters: false
+      showFilters: false,
     };
   }
 
@@ -263,7 +264,7 @@ export default class CrumbsBar extends React.Component<
           bsSize="small"
           key="reset"
           onClick={this.props.onReset}
-          style={{ marginLeft: '10px' }}>
+          style={{ margin: '5px 0px 5px 10px' }}>
           Reset
         </Button>
       );
@@ -446,9 +447,9 @@ export default class CrumbsBar extends React.Component<
     }
     this.props.toggledShowCards(showCards);
   };
-  toggleShowFilters = () =>{
-    this.setState({showFilters: !this.state.showFilters})
-  }
+  toggleShowFilters = () => {
+    this.setState({ showFilters: !this.state.showFilters });
+  };
   loadPaginator = () => {
     if (this.props.showCards) {
       return (
@@ -522,7 +523,7 @@ export default class CrumbsBar extends React.Component<
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>
           {apolloClient => (
-            <Grid className='crumbs-bar'>
+            <Grid className="crumbs-bar">
               <Row>
                 <Col xs={8} md={8}>
                   <Form inline className="searchInput" onSubmit={this.onSubmit}>
@@ -612,7 +613,7 @@ export default class CrumbsBar extends React.Component<
                       {user =>
                         user && user.roles.includes('admin') ? (
                           <Button onClick={this.props.onBulkUpdate}>
-                            Bulk Update <FontAwesome name='truck' />
+                            Bulk Update <FontAwesome name="truck" />
                           </Button>
                         ) : null
                       }
@@ -639,10 +640,10 @@ export default class CrumbsBar extends React.Component<
                           className="svg-inline--fa fa-th fa-w-16 fa-lg"
                           style={{ width: '17px' }}>
                           <path
-                            fill='currentColor'
+                            fill="currentColor"
                             // tslint:disable-next-line: max-line-length
-                            d='M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM197.3 72h117.3v96H197.3zm0 136h117.3v96H197.3zm-40 232H52c-6.6 0-12-5.4-12-12v-84h117.3zm0-136H40v-96h117.3zm0-136H40V84c0-6.6 5.4-12 12-12h105.3zm157.4 272H197.3v-96h117.3v96zm157.3 0H354.7v-96H472zm0-136H354.7v-96H472zm0-136H354.7V72H472z'
-                            className=''
+                            d="M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM197.3 72h117.3v96H197.3zm0 136h117.3v96H197.3zm-40 232H52c-6.6 0-12-5.4-12-12v-84h117.3zm0-136H40v-96h117.3zm0-136H40V84c0-6.6 5.4-12 12-12h105.3zm157.4 272H197.3v-96h117.3v96zm157.3 0H354.7v-96H472zm0-136H354.7v-96H472zm0-136H354.7V72H472z"
+                            className=""
                           />
                         </svg>
                       </Button>
@@ -662,10 +663,10 @@ export default class CrumbsBar extends React.Component<
                           className="svg-inline--fa fa-th-list fa-w-16 fa-lg"
                           style={{ width: '17px' }}>
                           <path
-                            fill='currentColor'
+                            fill="currentColor"
                             // tslint:disable-next-line: max-line-length
-                            d='M0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48H48C21.49 32 0 53.49 0 80zm472 224H197.333v-96H472v96zm0 40v84c0 6.627-5.373 12-12 12H197.333v-96H472zM40 208h117.333v96H40v-96zm157.333-40V72H460c6.627 0 12 5.373 12 12v84H197.333zm-40-96v96H40V84c0-6.627 5.373-12 12-12h105.333zM40 344h117.333v96H52c-6.627 0-12-5.373-12-12v-84z'
-                            className=''
+                            d="M0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48H48C21.49 32 0 53.49 0 80zm472 224H197.333v-96H472v96zm0 40v84c0 6.627-5.373 12-12 12H197.333v-96H472zM40 208h117.333v96H40v-96zm157.333-40V72H460c6.627 0 12 5.373 12 12v84H197.333zm-40-96v96H40V84c0-6.627 5.373-12 12-12h105.333zM40 344h117.333v96H52c-6.627 0-12-5.373-12-12v-84z"
+                            className=""
                           />
                         </svg>
                       </Button>
@@ -682,7 +683,7 @@ export default class CrumbsBar extends React.Component<
                   style={{
                     padding: '10px 0px',
                     display: 'flex',
-                    flexWrap: 'wrap'
+                    flexWrap: 'wrap',
                   }}>
                   <ListGroup
                     style={{
@@ -691,41 +692,45 @@ export default class CrumbsBar extends React.Component<
                       border: '1px solid #ddd',
                       borderRadius: ' 5px',
                       background: '#fff',
-                      width: '100%'
+                      width: '100%',
                     }}>
                     <ListGroupItem
                       style={{
                         minWidth: '100%',
-                        backgroundColor: 'rgba(85, 184, 141, 0.5)'
+                        backgroundColor: 'rgba(85, 184, 141, 0.5)',
                       }}
                       onClick={this.toggleShowFilters}>
                       {' '}
                       Filters:{' '}
-                     { this.state.showFilters? (<b>
-                        <FontAwesome
-                          className='chevron-up'
-                          name='chevron-up'
-                          style={{
-                            cursor: 'pointer',
-                            color: '#555',
-                            margin: '0 0 0 3px',
-                            float: 'right'
-                          }}
-                          // onClick={() => this.toggleShowValue()}
-                        />
-                      </b>):(<b>
-                        <FontAwesome
-                          className='chevron-down'
-                          name='chevron-down'
-                          style={{
-                            cursor: 'pointer',
-                            color: '#555',
-                            margin: '0 0 0 3px',
-                            float: 'right'
-                          }}
-                          // onClick={() => this.toggleShowValue()}
-                        />
-                      </b>)}
+                      {this.state.showFilters ? (
+                        <b>
+                          <FontAwesome
+                            className="chevron-up"
+                            name="chevron-up"
+                            style={{
+                              cursor: 'pointer',
+                              color: '#555',
+                              margin: '0 0 0 3px',
+                              float: 'right',
+                            }}
+                            // onClick={() => this.toggleShowValue()}
+                          />
+                        </b>
+                      ) : (
+                        <b>
+                          <FontAwesome
+                            className="chevron-down"
+                            name="chevron-down"
+                            style={{
+                              cursor: 'pointer',
+                              color: '#555',
+                              margin: '0 0 0 3px',
+                              float: 'right',
+                            }}
+                            // onClick={() => this.toggleShowValue()}
+                          />
+                        </b>
+                      )}
                     </ListGroupItem>
                     {this.state.showFilters
                       ? Array.from(
