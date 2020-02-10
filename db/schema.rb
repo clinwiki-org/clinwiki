@@ -88,9 +88,7 @@ ActiveRecord::Schema.define(version: 2020_01_16_205007) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
-    t.boolean "default", default: false, null: false
-    t.string "description", default: ""
-    t.string "url", default: ""
+    t.boolean "default"
     t.index ["site_id"], name: "index_site_views_on_site_id"
   end
 

@@ -243,6 +243,15 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         ],
       },
       search: {
+        config:{
+          fields:{
+          showPresearch:false,
+          showFacetBar:true,
+          showAutoSuggest:true,
+          showBreadCrumbs:true,
+          showResults:true,
+          }
+        },
         aggs: {
           selected: {
             kind: "BLACKLIST",
