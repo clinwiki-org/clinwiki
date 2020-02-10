@@ -8,6 +8,9 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
+  validates :url, uniqueness: { scope: :site }
+
+
   class << self
     def default
       new(id: 0, updates: [])
