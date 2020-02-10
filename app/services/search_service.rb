@@ -273,7 +273,6 @@ class SearchService # rubocop:disable Metrics/ClassLength
     else
       view = current_site.site_views.find_by(url: url).view
     end
-    byebug
     fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
     field = fields.find { |f| f[:name] == agg_name }
     field&.dig(:visibleOptions, :values) || []
