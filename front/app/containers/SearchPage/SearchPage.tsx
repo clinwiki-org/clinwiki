@@ -284,6 +284,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   getDefaultParams = (view: SiteViewFragment) => {
+    // this.setState({
+    //   //@ts-ignore
+    //   removeSelectAll: false
+    // })
     return { ...DEFAULT_PARAMS, ...preselectedFilters(view) };
   };
 
@@ -349,8 +353,20 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleResetFilters = (view: SiteViewFragment) => () => {
-    this.setState({ params: this.getDefaultParams(view) });
+    console.log('resetting filters dawg')
+    this.setState({ 
+      params: this.getDefaultParams(view),
+      // @ts-ignore
+      removeSelectAll: true,
+    });
   };
+
+  resetSelectAll = () => {
+    this.setState({
+      // @ts-ignore
+      removeSelectAll: false
+    })
+  }
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
@@ -424,10 +440,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         crowdFilters={this.transformFilters(crowdAggFilters)}
         addFilter={pipe(addFilter, this.handleUpdateParams)}
         addFilters={pipe(addFilters, this.handleUpdateParams)}
-        //addFilters={addFilters}
         removeFilter={pipe(removeFilter, this.handleUpdateParams)}
         removeFilters={pipe(removeFilters, this.handleUpdateParams)}
         updateParams={this.handleUpdateParams}
+        //@ts-ignore
+        removeSelectAll={this.state.removeSelectAll}
+        resetSelectAll={this.resetSelectAll}
         // @ts-ignore
         searchParams={this.state.params}
         opened={opened}

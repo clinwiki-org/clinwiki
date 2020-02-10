@@ -173,6 +173,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     prevParams: null,
     sortKind: SortKind.Alpha,
     desc: true,
+    //@ts-ignore
+    checkboxValue: false
   };
 
   static getDerivedStateFromProps(
@@ -245,13 +247,31 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       newParams.push(key);
     });
 
+    //@ts-ignore
+    if (this.props.removeSelectAll) {
+      console.log('meh')
+      this.setState({
+        //@ts-ignore
+        checkboxValue: false
+      })
+    }
+
     if (this.isAllSelected() != true) {
       if (!this.props.addFilters) return;
       this.props.addFilters(agg, newParams, false);
+      this.setState({
+        //@ts-ignore
+        checkboxValue: true
+      })
     } else {
       if (!this.props.removeFilters) return;
+      this.setState({
+        //@ts-ignore
+        checkboxValue: false
+      })
       this.props.removeFilters(agg, newParams, false);
     }
+    
   };
   isAllSelected = (): boolean => {
     const { buckets } = this.state;
@@ -494,13 +514,25 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     });
   };
 
+  checkSelect = () => {
+    //@ts-ignore
+   if (this.props.removeSelectAll) {
+     this.setState({
+       //@ts-ignore
+       checkboxValue: false
+     }, () => {
+       //@ts-ignore
+       this.props.resetSelectAll()
+     })
+   }
+  }
   render() {
     const { agg } = this.props;
     const { isOpen } = this.state;
-
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
-
+    //@ts-ignore
+    console.log('HEY TOM', this.props.removeSelectAll)
     return (
       <SiteProvider>
         {site => (
@@ -526,7 +558,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                       <Panel.Body>{this.renderFilter()}</Panel.Body>
                       <Panel.Body>
                         <Checkbox
-                          // checked={this.selectAll(agg)}
+                        //@ts-ignore
+                          checked={this.props.removeSelectAll ? this.checkSelect() : this.state.checkboxValue}
                           // checked={this.isSelected("Select All")}
                           onChange={() => this.selectAll(agg)}
                           //onChange={() => this.toggleAgg(agg, key)}
