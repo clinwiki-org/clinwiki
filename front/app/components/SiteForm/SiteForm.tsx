@@ -15,6 +15,7 @@ import { Switch, Route, match, Redirect } from "react-router";
 import MainForm from "./MainForm";
 import SearchForm from "./SearchForm";
 import SiteViewsForm from "./SiteViewsForm";
+import SiteViewsRouter from './SiteViewsRouter'
 import { StyledContainer } from "./Styled";
 import { Link } from "react-router-dom";
 import { History, Location } from "history";
@@ -114,9 +115,9 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const path = trimPath(this.props.match.url);
     const sections = [
       { path: "/main", value: "Main" },
-      { path: "/search", value: "Search" },
+      { path: "/siteviews", value: "Search Views" },
       { path: "/study", value: "Study" },
-      { path: "/siteViews", value: "Site Views" }
+      // { path: "/siteViews", value: "Site Views" }
     ];
 
     const locationComponents = this.props.location.pathname.split("/");
@@ -162,9 +163,14 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
             )}
           />
           <Route
-            path={`${path}/search`}
-            render={() => (
-              <SearchForm view={view} onAddMutation={this.handleAddMutation} />
+            path={`${path}/siteviews`}
+            render={(props) => (
+              //@ts-ignore
+              <SiteViewsRouter
+              {...props}
+              //@ts-ignore 
+              siteViews={allViews}
+              onAddMutation={this.handleAddMutation}/>
             )}
           />
           <Route
@@ -177,14 +183,14 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               />
             )}
           />
-          <Route
+          {/* <Route
             path={`${path}/siteviews`}
             render={() => (
               <SiteViewsForm
                 siteViews={allViews}
                 onAddMutation={this.handleAddMutation}
               />
-            )}
+            )} */}
           />
           <Redirect to={`${path}/main`} />
         </Switch>

@@ -11,6 +11,7 @@ import aggToField from 'utils/aggs/aggToField';
 import { FilterKind } from 'types/globalTypes';
 import { Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
+import { Switch, Route, match, Redirect } from "react-router";
 
 interface SearchFormProps {
   view: SiteViewFragment;
@@ -52,8 +53,16 @@ const StyledCheckbox = styled(Checkbox)`
 class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   state: SearchFormState = { showAllAggs: false, showAllCrowdAggs: false };
 
-  getCrowdFields = () => {
-    return this.props.view.search.crowdAggs.fields.map(field => ({
+
+
+  componentDidUpdate(prevProps, prevState) {
+   // @ts-ignore
+    
+    const siteviewId = this.props.match.params.id
+    console.log('NEW SEARCH', siteviewId)
+  }
+  getCrowdFields = (view) => {
+    return view.search.crowdAggs.fields.map(field => ({
       id: field.name,
       label: sentanceCase(field.name)
     }));
@@ -70,7 +79,13 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   handleFieldsOrderChange = () => {};
 
   render() {
-    const view = this.props.view;
+    //@ts-ignore
+    console.log('SITEVEWS', this.props.siteViews)
+    //@ts-ignore
+    const siteviewId = this.props.match.params.id;
+    //@ts-ignore
+    const view = this.props.siteViews.find((view) => siteviewId == view.id);
+    console.log('VIW',view)
 
     const fields = displayFields(
       this.state.showAllAggs
@@ -131,6 +146,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <AggField
                 kind="aggs"
                 key={field.name}
+                //@ts-ignore
                 field={field}
                 onAddMutation={this.props.onAddMutation}
               />
@@ -159,7 +175,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledFormControl>
             <MultiInput
               name="set:search.crowdAggs.selected.values"
-              options={this.getCrowdFields()}
+              //@ts-ignore
+              options={this.getCrowdFields(view)}
               placeholder="Add facet"
               value={view.search.crowdAggs.selected.values}
               onChange={this.props.onAddMutation}
@@ -169,6 +186,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <AggField
                 kind="crowdAggs"
                 key={field.name}
+                //@ts-ignore
                 field={field}
                 onAddMutation={this.props.onAddMutation}
               />
