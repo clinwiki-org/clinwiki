@@ -3,12 +3,20 @@ import styled from "styled-components";
 import { gql } from "apollo-boost";
 import { Button } from "react-bootstrap";
 import { SiteViewFragment } from "types/SiteViewFragment";
-import { Route , withRouter} from 'react-router-dom';
+import { withRouter} from 'react-router-dom';
+import { match } from "react-router";
+import { trimPath } from "utils/helpers";
+import DeleteSiteViewMutation, {
+  DeleteSiteViewMutationFn
+} from "mutations/DeleteSiteViewMutation";
 
 interface SiteViewItemProps {
-  // onEdit: (id: number) => void | null;
-  // onDelete?: (id: number) => void | null;
+  match: match<{}>;
+  history: History;
+  location: Location;
+  refresh: () => void;
   siteView: SiteViewFragment;
+  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 const StyledButton = styled(Button)`
@@ -24,7 +32,28 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
      //  @ts-ignore
     this.props.history.push(`/sites/${siteId}/edit/siteviews/${siteViewId}/edit`)
  }
+
+ handleDelete = (deleteSiteView: DeleteSiteViewMutationFn) => {
+  if (!window) return;
+  if (window.confirm("Are you sure?")) {
+    deleteSiteView({
+      variables: {
+        input: {
+          id: this.props.siteView.id
+        }
+      }
+    }).then(res => {
+      this.props.refresh();
+    });
+  }
+};
   render() {
+    const id = this.props.siteView.id;
+    console.log(this.props);
+    const url = trimPath(this.props.match.url);
+    const path = trimPath(this.props.match.path);
+    console.log(url, path);
+
     return (
       <tr>
         <td>{this.props.siteView.name}</td>
@@ -32,6 +61,13 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
           <StyledButton>Delete</StyledButton>
+          <DeleteSiteViewMutation>
+            {deleteSiteView => (
+              <StyledButton onClick={() => this.handleDelete(deleteSiteView)}>
+                Delete
+              </StyledButton>
+            )}
+          </DeleteSiteViewMutation>
         </td>
       </tr>
     );

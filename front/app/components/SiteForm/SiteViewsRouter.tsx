@@ -110,37 +110,6 @@ class SiteViewRouter extends React.Component<SiteViewRouterProps, SiteViewRouter
     this.setState({ form });
   };
 
-  // renderTabs = () => {
-  //   const path = trimPath(this.props.match.url);
-  //   const sections = [
-  //     { path: "/main", value: "Main" },
-  //     { path: "/search", value: "Search" },
-  //     { path: "/study", value: "Study" },
-  //     { path: "/siteViews", value: "Site Views" }
-  //   ];
-
-  //   const locationComponents = this.props.location.pathname.split("/");
-  //   let activeKey = last(locationComponents);
-  //   if (locationComponents[locationComponents.length - 2] === "study") {
-  //     activeKey = "study";
-  //   }
-  //   activeKey = `/${activeKey}`;
-
-  //   return (
-  //     <StyledNav
-  //       bsStyle="pills"
-  //       activeKey={activeKey}
-  //       onSelect={key => this.props.history.push(`${path}${key}`)}
-  //     >
-  //       {sections.map(section => (
-  //         <NavItem key={`${section.path}`} eventKey={`${section.path}`}>
-  //           {section.value}
-  //         </NavItem>
-  //       ))}
-  //     </StyledNav>
-  //   );
-  // };
-
   render() {
     console.log('ROUTER NEW', this.props)
     // const view = updateView(this.props.site.siteView, this.state.mutations);

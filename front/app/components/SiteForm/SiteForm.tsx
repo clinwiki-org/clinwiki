@@ -16,6 +16,7 @@ import MainForm from "./MainForm";
 import SearchForm from "./SearchForm";
 import SiteViewsForm from "./SiteViewsForm";
 import SiteViewsRouter from './SiteViewsRouter'
+import SiteViewsList from "containers/SiteViewsPage/SiteViewsList";
 import { StyledContainer } from "./Styled";
 import { Link } from "react-router-dom";
 import { History, Location } from "history";
@@ -27,6 +28,7 @@ interface SiteFormProps {
   history: History;
   location: Location;
   onSave: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
+  refresh: any;
 }
 
 interface SiteFormState {
@@ -120,6 +122,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       // { path: "/siteViews", value: "Site Views" }
     ];
 
+
     const locationComponents = this.props.location.pathname.split("/");
     let activeKey = last(locationComponents);
     if (locationComponents[locationComponents.length - 2] === "study") {
@@ -145,7 +148,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
-    const allViews = this.props.site.siteViews;
     return (
       <Container>
         <h3 style={{ color: "white", marginLeft: 15 }}>
@@ -186,8 +188,12 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           {/* <Route
             path={`${path}/siteviews`}
             render={() => (
-              <SiteViewsForm
-                siteViews={allViews}
+              <SiteViewsList
+                site={this.props.site}
+                refresh={this.props.refresh}
+                match={this.props.match}
+                history={this.props.history}
+                location={this.props.location}
                 onAddMutation={this.handleAddMutation}
               />
             )} */}

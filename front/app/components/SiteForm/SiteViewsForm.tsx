@@ -20,7 +20,11 @@ import {
   FormControl
 } from "react-bootstrap";
 import { History, Location } from "history";
+import { CreateSiteViewInput, SiteViewMutationInput } from "types/globalTypes";
 import StyledButton from "containers/LoginPage/StyledButton";
+import CreateSiteViewMutation, {
+  CreateSiteViewMutationFn
+} from "mutations/CreateSiteViewMutation";
 
 interface SiteViewsFormProps {
   siteViews: SiteViewFragment[];
@@ -48,6 +52,15 @@ class SiteViewsForm extends React.Component<
       siteURL: null
     }
   };
+
+  // handleSave = (createSiteView: CreateSiteViewMutationFn) => (
+  //   input: CreateSiteViewInput,
+  //   mutations: SiteViewMutationInput[]
+  // ) => {
+  //   createSiteView({ variables: {input}}).then(res => {
+
+  //   })
+  // };
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
@@ -94,7 +107,7 @@ class SiteViewsForm extends React.Component<
                     />
                   </td>
                   <td>
-                    <StyledButton onClick={console.log(this.state.form)}>
+                    <StyledButton onClick={() => console.log(this.state.form)}>
                       + Add Site View
                     </StyledButton>
                   </td>
