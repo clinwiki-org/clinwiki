@@ -148,6 +148,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
+    console.log('YO', this.props.site)
     return (
       <Container>
         <h3 style={{ color: "white", marginLeft: 15 }}>
@@ -171,7 +172,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               <SiteViewsRouter
               {...props}
               //@ts-ignore 
-              siteViews={allViews}
+              siteViews={this.props.site.siteViews}
               onAddMutation={this.handleAddMutation}/>
             )}
           />
