@@ -1,5 +1,4 @@
 import * as React from "react";
-import { equals, prop, last } from "ramda";
 import styled from "styled-components";
 import { gql } from "apollo-boost";
 import { capitalize, trimPath } from "utils/helpers";
@@ -19,10 +18,15 @@ import {
 import CreateSiteViewMutation, {
   CreateSiteViewMutationFn
 } from "mutations/CreateSiteViewMutation";
+import { History, Location } from "history";
 
 interface SiteViewsListProps {
   site: any;
   refresh: any;
+  match: any;
+  history: History;
+  location: Location;
+  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 interface SiteViewsListState {
@@ -30,6 +34,7 @@ interface SiteViewsListState {
     siteViewName: string;
     siteViewPath: string;
   };
+  id: string | undefined;
 }
 
 const StyledContainer = styled.div`
@@ -49,7 +54,8 @@ class SiteViewsList extends React.Component<
     form: {
       siteViewName: "",
       siteViewPath: ""
-    }
+    },
+    id: undefined
   };
 
   handleSave = (createSiteView: CreateSiteViewMutationFn) => {
@@ -86,6 +92,7 @@ class SiteViewsList extends React.Component<
   render() {
     const { siteViews } = this.props.site;
     const { refresh } = this.props;
+
     return (
       <CreateSiteViewMutation>
         {createSiteView => (
@@ -103,7 +110,14 @@ class SiteViewsList extends React.Component<
                   <tbody>
                     <>
                       {siteViews.map(view => (
-                        <SiteViewItem siteView={view} refresh={refresh} />
+                        <SiteViewItem
+                          siteView={view}
+                          refresh={refresh}
+                          onAddMutation={this.props.onAddMutation}
+                          match={this.props.match}
+                          history={this.props.history}
+                          location={this.props.location}
+                        />
                       ))}
                     </>
                     <tr>

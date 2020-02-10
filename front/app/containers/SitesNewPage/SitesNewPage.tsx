@@ -38,7 +38,7 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
             id,
             mutations: mutations.map(serializeMutation),
             name: "Default",
-            url: "",
+            url: "default",
             default: true
           }
         }

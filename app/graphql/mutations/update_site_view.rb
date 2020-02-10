@@ -3,9 +3,9 @@ module Mutations
     field :site_view, Types::SiteViewType, null: true
     field :errors, [String], null: true
 
-    argument :name, String, required: true
-    argument :default, Boolean, required: true
-    argument :url, String, required: true
+    argument :name, String, required: false
+    argument :default, Boolean, required: false
+    argument :url, String, required: false
     argument :description, String, required: false
     argument :id, Int, required: true
     argument :mutations, [Types::SiteViewMutationInputType], required: true
