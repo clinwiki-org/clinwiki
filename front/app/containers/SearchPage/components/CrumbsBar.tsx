@@ -215,7 +215,7 @@ export default class CrumbsBar extends React.Component<
       isSuggestionLoading: true,
       cardsBtnColor: cardsColor,
       tableBtnColor: tableColor,
-      showFilters: false,
+      showFilters: true,
     };
   }
 
