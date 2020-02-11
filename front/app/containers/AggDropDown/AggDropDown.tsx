@@ -145,6 +145,8 @@ interface AggDropDownState {
   prevParams: SearchParams | null;
   desc: boolean;
   sortKind: SortKind;
+  checkboxValue: boolean;
+
 }
 
 interface AggDropDownProps {
@@ -161,6 +163,7 @@ interface AggDropDownProps {
   display?: FieldDisplay;
   visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
+  
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -173,7 +176,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     prevParams: null,
     sortKind: SortKind.Alpha,
     desc: true,
-    //@ts-ignore
     checkboxValue: false
   };
 
@@ -251,7 +253,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     if (this.props.removeSelectAll) {
       console.log('meh')
       this.setState({
-        //@ts-ignore
         checkboxValue: false
       })
     }
@@ -260,13 +261,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       if (!this.props.addFilters) return;
       this.props.addFilters(agg, newParams, false);
       this.setState({
-        //@ts-ignore
         checkboxValue: true
       })
     } else {
       if (!this.props.removeFilters) return;
       this.setState({
-        //@ts-ignore
         checkboxValue: false
       })
       this.props.removeFilters(agg, newParams, false);
@@ -518,7 +517,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     //@ts-ignore
    if (this.props.removeSelectAll) {
      this.setState({
-       //@ts-ignore
        checkboxValue: false
      }, () => {
        //@ts-ignore

@@ -231,6 +231,7 @@ interface SearchPageState {
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
   showCards: Boolean;
+  removeSelectAll:boolean;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -249,6 +250,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchAggs: {},
     searchCrowdAggs: {},
     showCards: localStorage.getItem('showCards') === 'true' ? true : false,
+    removeSelectAll:false
   };
 
   numberOfPages: number = 0;
@@ -356,14 +358,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     console.log('resetting filters dawg')
     this.setState({ 
       params: this.getDefaultParams(view),
-      // @ts-ignore
       removeSelectAll: true,
     });
   };
 
   resetSelectAll = () => {
     this.setState({
-      // @ts-ignore
       removeSelectAll: false
     })
   }
@@ -443,7 +443,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         removeFilter={pipe(removeFilter, this.handleUpdateParams)}
         removeFilters={pipe(removeFilters, this.handleUpdateParams)}
         updateParams={this.handleUpdateParams}
-        //@ts-ignore
         removeSelectAll={this.state.removeSelectAll}
         resetSelectAll={this.resetSelectAll}
         // @ts-ignore
