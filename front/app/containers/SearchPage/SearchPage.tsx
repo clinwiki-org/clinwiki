@@ -19,6 +19,7 @@ import { Query, ApolloConsumer } from "react-apollo";
 import {
   path,
   map,
+  filter,
   dissoc,
   pathOr,
   prop,
@@ -412,7 +413,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  renderSearch = (hash: string | null, view: SiteViewFragment) => {
+  renderSearch = (
+    hash: string | null,
+    view: SiteViewFragment,
+    siteViews: SiteViewFragment[]
+  ) => {
     return (
       <ParamsQueryComponent
         query={PARAMS_QUERY}
@@ -446,8 +451,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             // this.setState({ params });
             return null;
           }
-          const siteviewUrl = this.props.match.params.siteviewUrl
-          console.log('siteviewURL', siteviewUrl)
+
+          // current site view url should match w/one of the site views url
+          const checkUrls = filter(
+            siteViews => siteViews.url === this.props.match.params.siteviewUrl,
+            siteViews
+          );
+
+          const siteViewUrl =
+            checkUrls.length === 1 // not sure if I should be checking for duplicates
+              ? this.props.match.params.siteviewUrl
+              : "default";
+
+          // console.log("checkUrls", checkUrls);
+          // console.log("site views", siteViews);
+          // console.log("currentSiteViewUrl", currentSiteViewUrl);
           return (
             <HashQueryComponent
               query={HASH_QUERY}
@@ -458,9 +476,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
-                  return <Redirect to={`/search/${siteviewUrl}/${data.searchHash}`} />;
+                  return (
+                    <Redirect
+                      to={`/search/${siteViewUrl}/${data.searchHash}`}
+                    />
+                  );
                 }
-      
+
                 return (
                   <SearchView
                     params={params}
@@ -510,7 +532,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
-    console.log('SEARCH PROPS', this.props);
+    console.log("SEARCH PROPS", this.props);
 
     if (this.state.showCards) {
       window.addEventListener("scroll", this.handleScroll);
@@ -539,25 +561,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           <MainContainer md={10}>
             <SiteProvider>
               {site => {
-              console.log('Search Page', site)
-              return (
-                <SearchView
-                  params={this.state.params as any}
-                  onBulkUpdate={this.handleBulkUpdateClick}
-                  openedAgg={this.state.openedAgg}
-                  onUpdateParams={this.handleUpdateParams}
-                  onRowClick={this.handleRowClick}
-                  onOpenAgg={this.handleOpenAgg}
-                  onAggsUpdate={this.handleAggsUpdate}
-                  onResetFilters={this.handleResetFilters(site.siteView)}
-                  previousSearchData={this.previousSearchData}
-                  returnPreviousSearchData={() => this.returnPreviousSearchData}
-                  searchHash={""}
-                  showCards={this.state.showCards}
-                  toggledShowCards={this.toggledShowCards}
-                  returnNumberOfPages={this.returnNumberOfPages}
-                />
-              )}}
+                console.log("Search Page", site);
+                return (
+                  <SearchView
+                    params={this.state.params as any}
+                    onBulkUpdate={this.handleBulkUpdateClick}
+                    openedAgg={this.state.openedAgg}
+                    onUpdateParams={this.handleUpdateParams}
+                    onRowClick={this.handleRowClick}
+                    onOpenAgg={this.handleOpenAgg}
+                    onAggsUpdate={this.handleAggsUpdate}
+                    onResetFilters={this.handleResetFilters(site.siteView)}
+                    previousSearchData={this.previousSearchData}
+                    returnPreviousSearchData={() =>
+                      this.returnPreviousSearchData
+                    }
+                    searchHash={""}
+                    showCards={this.state.showCards}
+                    toggledShowCards={this.toggledShowCards}
+                    returnNumberOfPages={this.returnNumberOfPages}
+                  />
+                );
+              }}
             </SiteProvider>
           </MainContainer>
         </Row>
@@ -581,21 +606,20 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <Route
           render={() => (
             <SiteProvider>
-              {site => 
-              {
-                console.log('YO', site)
-              return (
-                <Row>
-                  <SidebarContainer md={2}>
-                    {this.renderAggs()}
-                  </SidebarContainer>
-                  <div id="main_search" style={{ overflowY: "auto" }}>
-                    <MainContainer style={{ width: "100%" }}>
-                      {this.renderSearch(hash, site.siteView)}
-                    </MainContainer>
-                  </div>
-                </Row>
-              )
+              {site => {
+                console.log("YO", site);
+                return (
+                  <Row>
+                    <SidebarContainer md={2}>
+                      {this.renderAggs()}
+                    </SidebarContainer>
+                    <div id="main_search" style={{ overflowY: "auto" }}>
+                      <MainContainer style={{ width: "100%" }}>
+                        {this.renderSearch(hash, site.siteView, site.siteViews)}
+                      </MainContainer>
+                    </div>
+                  </Row>
+                );
               }}
             </SiteProvider>
           )}
