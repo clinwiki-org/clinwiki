@@ -25,6 +25,9 @@ interface SiteViewRouterProps {
   site: SiteFragment;
   history: History;
   location: Location;
+  siteViews: any;
+  refresh: any;
+  onAddMutation: any;
   onSave: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
 }
 
@@ -49,7 +52,10 @@ const StyledNav = styled(Nav)`
   margin: 15px;
 `;
 
-class SiteViewRouter extends React.Component<SiteViewRouterProps, SiteViewRouterState> {
+class SiteViewRouter extends React.Component<
+  SiteViewRouterProps,
+  SiteViewRouterState
+> {
   state: SiteViewRouterState = {
     form: {
       name: "",
@@ -111,40 +117,39 @@ class SiteViewRouter extends React.Component<SiteViewRouterProps, SiteViewRouter
   };
 
   render() {
-    console.log('ROUTER NEW', this.props)
     // const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
     //@ts-ignore
     const allViews = this.props.siteViews;
+    const site = this.props.site;
     return (
-        <Switch>
-           <Route
-            path={`${path}/:id/edit`}
-            render={(props) => (
+      <Switch>
+        <Route
+          path={`${path}/:id/edit`}
+          render={props => (
+            //@ts-ignore
+            <SearchForm
               //@ts-ignore
-                 <SearchForm 
-                 //@ts-ignore
-                 {...props}
-                 //@ts-ignore
-                 siteViews={allViews} 
-                 onAddMutation={this.handleAddMutation} />
-
-           
-            )}
-          />
-           <Route
-            path={`${path}`}
-            render={() => (
+              {...props}
               //@ts-ignore
-              <SiteViewsForm
-              //@ts-ignore
-                siteViews={this.props.siteViews}       
-                // onAddMutation={this.handleAddMutation}
-              />
-              )}
+              siteViews={allViews}
+              onAddMutation={this.handleAddMutation}
             />
-          {/* <Redirect to={`${path}/main`} /> */}
-        </Switch>
+          )}
+        />
+        <Route
+          path={`${path}`}
+          render={() => (
+            <SiteViewsForm
+              siteViews={this.props.siteViews}
+              site={site}
+              refresh={this.props.refresh}
+              onAddMutation={this.handleAddMutation}
+            />
+          )}
+        />
+        {/* <Redirect to={`${path}/main`} /> */}
+      </Switch>
     );
   }
 }

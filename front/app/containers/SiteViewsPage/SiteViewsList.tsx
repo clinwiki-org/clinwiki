@@ -114,9 +114,9 @@ class SiteViewsList extends React.Component<
                           siteView={view}
                           refresh={refresh}
                           onAddMutation={this.props.onAddMutation}
-                          match={this.props.match}
-                          history={this.props.history}
-                          location={this.props.location}
+                          // match={this.props.match}
+                          // history={this.props.history}
+                          // location={this.props.location}
                         />
                       ))}
                     </>

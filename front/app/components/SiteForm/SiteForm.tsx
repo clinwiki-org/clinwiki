@@ -15,7 +15,7 @@ import { Switch, Route, match, Redirect } from "react-router";
 import MainForm from "./MainForm";
 import SearchForm from "./SearchForm";
 import SiteViewsForm from "./SiteViewsForm";
-import SiteViewsRouter from './SiteViewsRouter'
+import SiteViewsRouter from "./SiteViewsRouter";
 import SiteViewsList from "containers/SiteViewsPage/SiteViewsList";
 import { StyledContainer } from "./Styled";
 import { Link } from "react-router-dom";
@@ -118,10 +118,9 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const sections = [
       { path: "/main", value: "Main" },
       { path: "/siteviews", value: "Search Views" },
-      { path: "/study", value: "Study" },
+      { path: "/study", value: "Study" }
       // { path: "/siteViews", value: "Site Views" }
     ];
-
 
     const locationComponents = this.props.location.pathname.split("/");
     let activeKey = last(locationComponents);
@@ -148,7 +147,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
-    console.log('YO', this.props.site)
     return (
       <Container>
         <h3 style={{ color: "white", marginLeft: 15 }}>
@@ -167,13 +165,15 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           />
           <Route
             path={`${path}/siteviews`}
-            render={(props) => (
+            render={props => (
               //@ts-ignore
               <SiteViewsRouter
-              {...props}
-              //@ts-ignore 
-              siteViews={this.props.site.siteViews}
-              onAddMutation={this.handleAddMutation}/>
+                {...props}
+                siteViews={this.props.site.siteViews}
+                refresh={this.props.refresh}
+                site={this.props.site}
+                onAddMutation={this.handleAddMutation}
+              />
             )}
           />
           <Route

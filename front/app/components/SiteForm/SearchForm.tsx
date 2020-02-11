@@ -1,16 +1,16 @@
-import * as React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import { SiteViewFragment } from 'types/SiteViewFragment';
-import { displayFields } from 'utils/siteViewHelpers';
-import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
-import MultiInput from 'components/MultiInput';
-import AggField from './AggField';
-import { sentanceCase } from 'utils/helpers';
-import { aggsOrdered, studyFields } from 'utils/constants';
-import aggToField from 'utils/aggs/aggToField';
-import { FilterKind } from 'types/globalTypes';
-import { Checkbox } from 'react-bootstrap';
-import styled from 'styled-components';
+import * as React from "react";
+import { Row, Col } from "react-bootstrap";
+import { SiteViewFragment } from "types/SiteViewFragment";
+import { displayFields } from "utils/siteViewHelpers";
+import { StyledContainer, StyledFormControl, StyledLabel } from "./Styled";
+import MultiInput from "components/MultiInput";
+import AggField from "./AggField";
+import { sentanceCase } from "utils/helpers";
+import { aggsOrdered, studyFields } from "utils/constants";
+import aggToField from "utils/aggs/aggToField";
+import { FilterKind } from "types/globalTypes";
+import { Checkbox } from "react-bootstrap";
+import styled from "styled-components";
 import { Switch, Route, match, Redirect } from "react-router";
 
 interface SearchFormProps {
@@ -53,23 +53,22 @@ const StyledCheckbox = styled(Checkbox)`
 class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   state: SearchFormState = { showAllAggs: false, showAllCrowdAggs: false };
 
+  // componentDidUpdate(prevProps, prevState) {
+  //  // @ts-ignore
 
+  //   const siteviewId = this.props.match.params.id
+  //   console.log('NEW SEARCH', siteviewId)
+  // }
 
-  componentDidUpdate(prevProps, prevState) {
-   // @ts-ignore
-    
-    const siteviewId = this.props.match.params.id
-    console.log('NEW SEARCH', siteviewId)
-  }
-  getCrowdFields = (view) => {
+  getCrowdFields = view => {
     return view.search.crowdAggs.fields.map(field => ({
       id: field.name,
       label: sentanceCase(field.name)
     }));
   };
 
-  handleShowAllToggle = (kind: 'aggs' | 'crowdAggs') => () => {
-    if (kind == 'aggs') {
+  handleShowAllToggle = (kind: "aggs" | "crowdAggs") => () => {
+    if (kind == "aggs") {
       this.setState({ showAllAggs: !this.state.showAllAggs });
     } else {
       this.setState({ showAllCrowdAggs: !this.state.showAllCrowdAggs });
@@ -80,26 +79,23 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
 
   render() {
     //@ts-ignore
-    console.log('SITEVEWS', this.props.siteViews)
-    //@ts-ignore
     const siteviewId = this.props.match.params.id;
     //@ts-ignore
-    const view = this.props.siteViews.find((view) => siteviewId == view.id);
-    console.log('VIW',view)
+    const view = this.props.siteViews.find(view => siteviewId == view.id);
 
     const fields = displayFields(
       this.state.showAllAggs
         ? FilterKind.BLACKLIST
         : view.search.aggs.selected.kind,
       this.state.showAllAggs ? [] : view.search.aggs.selected.values,
-      view.search.aggs.fields,
+      view.search.aggs.fields
     );
     const crowdFields = displayFields(
       this.state.showAllCrowdAggs
         ? FilterKind.BLACKLIST
         : view.search.crowdAggs.selected.kind,
       this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
-      view.search.crowdAggs.fields,
+      view.search.crowdAggs.fields
     );
 
     return (
@@ -119,7 +115,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <h3>Aggs visibility</h3>
               <StyledCheckbox
                 checked={this.state.showAllAggs}
-                onChange={this.handleShowAllToggle('aggs')}
+                onChange={this.handleShowAllToggle("aggs")}
               >
                 Show all
               </StyledCheckbox>
@@ -157,7 +153,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <h3>Crowd aggs visibility</h3>
               <StyledCheckbox
                 checked={this.state.showAllCrowdAggs}
-                onChange={this.handleShowAllToggle('crowdAggs')}
+                onChange={this.handleShowAllToggle("crowdAggs")}
               >
                 Show all
               </StyledCheckbox>

@@ -3,13 +3,11 @@ import styled from "styled-components";
 import { gql } from "apollo-boost";
 import { SiteViewFragment } from "types/SiteViewFragment";
 import CollapsiblePanel from "components/CollapsiblePanel";
-import { StyledContainer, StyledLabel } from "./Styled";
+import { StyledLabel } from "./Styled";
 import { SiteViewItem } from "components/SiteItem";
-import {
-  updateView,
-  createMutation,
-  getViewValueByPath
-} from "utils/siteViewUpdater";
+import CreateSiteViewMutation, {
+  CreateSiteViewMutationFn
+} from "mutations/CreateSiteViewMutation";
 import { Switch, Route, match, Redirect } from "react-router";
 import {
   Checkbox,
@@ -22,21 +20,30 @@ import {
 import { History, Location } from "history";
 import { CreateSiteViewInput, SiteViewMutationInput } from "types/globalTypes";
 import StyledButton from "containers/LoginPage/StyledButton";
-import CreateSiteViewMutation, {
-  CreateSiteViewMutationFn
-} from "mutations/CreateSiteViewMutation";
 
 interface SiteViewsFormProps {
+  site: any;
   siteViews: SiteViewFragment[];
+  refresh: any;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 interface SiteViewsFormState {
   form: {
-    siteName: string | null;
-    siteURL: string | null;
+    siteViewName: string;
+    siteViewPath: string;
   };
+  id: string | undefined;
 }
+
+const StyledContainer = styled.div`
+  padding: 20px;
+  h3,
+  h4,
+  h5 {
+    color: white;
+  }
+`;
 
 const SiteViewsTable = styled.div`
   display: flex;
@@ -48,19 +55,37 @@ class SiteViewsForm extends React.Component<
 > {
   state: SiteViewsFormState = {
     form: {
-      siteName: null,
-      siteURL: null
-    }
+      siteViewName: "",
+      siteViewPath: ""
+    },
+    id: undefined
   };
 
-  // handleSave = (createSiteView: CreateSiteViewMutationFn) => (
-  //   input: CreateSiteViewInput,
-  //   mutations: SiteViewMutationInput[]
-  // ) => {
-  //   createSiteView({ variables: {input}}).then(res => {
+  handleSave = (createSiteView: CreateSiteViewMutationFn) => {
+    const { form } = this.state;
+    console.log(this.props.site);
 
-  //   })
-  // };
+    createSiteView({
+      variables: {
+        input: {
+          name: form.siteViewName,
+          url: form.siteViewPath,
+          description: "description",
+          default: false,
+          mutations: [],
+          siteId: this.props.site.id
+        }
+      }
+    }).then(res => {
+      this.props.refresh();
+      this.setState({
+        form: {
+          siteViewName: "",
+          siteViewPath: ""
+        }
+      });
+    });
+  };
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
@@ -70,53 +95,65 @@ class SiteViewsForm extends React.Component<
 
   render() {
     const { siteViews } = this.props;
-    console.log(siteViews);
     return (
-      <StyledContainer>
-        <CollapsiblePanel header="My Site Views">
-          {siteViews.length > 0 && (
-            <Table striped bordered condensed>
-              <thead>
-                <tr>
-                  <th>Site Name</th>
-                  <th>URL</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                <>
-                  {siteViews.map(view => (
-                    <SiteViewItem siteView={view} />
-                  ))}
-                </>
-                <tr>
-                  <td>
-                    <FormControl
-                      name="siteName"
-                      placeholder="Site Name"
-                      value={this.state.form.siteName}
-                      onChange={this.handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <FormControl
-                      name="siteURL"
-                      placeholder="Site URL"
-                      value={this.state.form.siteURL}
-                      onChange={this.handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <StyledButton onClick={() => console.log(this.state.form)}>
-                      + Add Site View
-                    </StyledButton>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
-          )}
-        </CollapsiblePanel>
-      </StyledContainer>
+      <CreateSiteViewMutation>
+        {createSiteView => (
+          <StyledContainer>
+            <CollapsiblePanel header="My Site Views">
+              {siteViews.length > 0 && (
+                <Table striped bordered condensed>
+                  <thead>
+                    <tr>
+                      <th>Site Name</th>
+                      <th>URL</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <>
+                      {siteViews.map(view => (
+                        <SiteViewItem
+                          key={view.id}
+                          siteView={view}
+                          refresh={this.props.refresh}
+                          onAddMutation={this.props.onAddMutation}
+                        />
+                      ))}
+                    </>
+                    <tr>
+                      <td>
+                        <FormControl
+                          name="siteViewName"
+                          placeholder="Site Name"
+                          value={this.state.form.siteViewName}
+                          onChange={this.handleInputChange}
+                        />
+                      </td>
+                      <td>
+                        <FormControl
+                          name="siteViewPath"
+                          placeholder="Site View Path"
+                          value={this.state.form.siteViewPath}
+                          onChange={this.handleInputChange}
+                        />
+                      </td>
+                      <td>
+                        <StyledButton
+                          onClick={() => {
+                            this.handleSave(createSiteView);
+                          }}
+                        >
+                          + Add Site View
+                        </StyledButton>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              )}
+            </CollapsiblePanel>
+          </StyledContainer>
+        )}
+      </CreateSiteViewMutation>
     );
   }
 }
