@@ -146,6 +146,7 @@ interface AggDropDownState {
   desc: boolean;
   sortKind: SortKind;
   checkboxValue: boolean;
+  showLabel:boolean;
 
 }
 
@@ -175,7 +176,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     prevParams: null,
     sortKind: SortKind.Alpha,
     desc: true,
-    checkboxValue: false
+    checkboxValue: false,
+    showLabel:false
   };
 
   static getDerivedStateFromProps(
@@ -458,18 +460,47 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderFilter = () => {
     const { buckets = [], filter, desc, sortKind } = this.state;
+    const { agg } = this.props;
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return null;
     }
     return (
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <FormControl
-          type="text"
-          placeholder="filter..."
-          value={this.state.filter}
-          onChange={this.handleFilterChange}
-          style={{ flex: 4 }}
-        />
+      <div style={{ display: 'flex', flexDirection: 'row', borderBottom: "solid 1px #ddd"
+    }}>
+        <div style={{ marginTop:"1em"}}>
+          <Checkbox
+            checked={
+              //@ts-ignore
+              this.props.removeSelectAll
+                ? this.checkSelect()
+                : this.state.checkboxValue
+            }
+            // checked={this.isSelected("Select All")}
+            onChange={() => this.selectAll(agg)}
+            onMouseEnter={() => this.setState({ showLabel: true })}
+            onMouseLeave={() => this.setState({ showLabel: false })}
+            //onChange={() => this.toggleAgg(agg, key)}
+            // onChange={()=> this.props.addFilters(agg, this.state.buckets)}
+          >
+            {this.state.showLabel ? (
+              <span
+                style={{
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                  border: '1px solid #ccc',
+                  padding: '5px',
+                  position: 'absolute',
+                  left: '1em',
+                  width: '5em',
+                  color: 'black',
+                  background: 'white',
+                  borderRadius: '4px',
+                }}>
+                Select All
+              </span>
+            ) : null}
+          </Checkbox>
+        </div>
+
         <div
           style={{
             flex: 2,
@@ -490,6 +521,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggle={this.toggleNumericSort}
           />
         </div>
+        <FormControl
+          type="text"
+          placeholder="filter..."
+          value={this.state.filter}
+          onChange={this.handleFilterChange}
+          style={{ flex: 4, marginTop:"4px" }}
+        />
       </div>
     );
   };
@@ -553,18 +591,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                   {isOpen && (
                     <Panel.Collapse className="bm-panel-collapse">
                       <Panel.Body>{this.renderFilter()}</Panel.Body>
-                      <Panel.Body>
-                        <Checkbox
-                        //@ts-ignore
-                          checked={this.props.removeSelectAll ? this.checkSelect() : this.state.checkboxValue}
-                          // checked={this.isSelected("Select All")}
-                          onChange={() => this.selectAll(agg)}
-                          //onChange={() => this.toggleAgg(agg, key)}
-                          // onChange={()=> this.props.addFilters(agg, this.state.buckets)}
-                        >
-                          Select All
-                        </Checkbox>
-                      </Panel.Body>
                       <Panel.Body>
                         {this.renderBucketsPanel(apolloClient, site.siteView)}
                       </Panel.Body>
