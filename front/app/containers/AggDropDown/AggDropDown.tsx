@@ -163,7 +163,6 @@ interface AggDropDownProps {
   display?: FieldDisplay;
   visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
-  
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {

@@ -286,10 +286,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   getDefaultParams = (view: SiteViewFragment) => {
-    // this.setState({
-    //   //@ts-ignore
-    //   removeSelectAll: false
-    // })
     return { ...DEFAULT_PARAMS, ...preselectedFilters(view) };
   };
 
