@@ -164,6 +164,7 @@ interface AggDropDownProps {
   visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
   removeSelectAll?: boolean;
+  resetSelectAll?: ()=>void;
 
 }
 
@@ -250,7 +251,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       newParams.push(key);
     });
 
-    //@ts-ignore
     if (this.props.removeSelectAll) {
       console.log('meh')
       this.setState({
@@ -515,13 +515,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   checkSelect = () => {
-    //@ts-ignore
    if (this.props.removeSelectAll) {
      this.setState({
        checkboxValue: false
      }, () => {
-       //@ts-ignore
-       this.props.resetSelectAll()
+       if(this.props.resetSelectAll!= null){
+        this.props.resetSelectAll()
+       } 
      })
    }
   }
@@ -530,8 +530,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { isOpen } = this.state;
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
-    //@ts-ignore
-    console.log('HEY TOM', this.props.removeSelectAll)
     return (
       <SiteProvider>
         {site => (
@@ -557,12 +555,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                       <Panel.Body>{this.renderFilter()}</Panel.Body>
                       <Panel.Body>
                         <Checkbox
-                        //@ts-ignore
                           checked={this.props.removeSelectAll ? this.checkSelect() : this.state.checkboxValue}
-                          // checked={this.isSelected("Select All")}
                           onChange={() => this.selectAll(agg)}
-                          //onChange={() => this.toggleAgg(agg, key)}
-                          // onChange={()=> this.props.addFilters(agg, this.state.buckets)}
                         >
                           Select All
                         </Checkbox>
