@@ -54,7 +54,7 @@ class LandingPage extends React.PureComponent<LandingPageProps, LandingPageState
       params = { q: { key: 'AND', children: [] } };
     }
     const { data } = await client.query({ query: HASH_QUERY, variables: params });
-    this.props.history.push(`/search/${data.searchHash}`);
+    this.props.history.push(`/search/default/${data.searchHash}`);
   };
   searchChanged = e => {
     this.setState({ searchTerm: e.target.value });

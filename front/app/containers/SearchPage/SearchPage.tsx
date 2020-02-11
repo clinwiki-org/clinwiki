@@ -51,6 +51,7 @@ import SiteProvider from "containers/SiteProvider";
 import { SiteViewFragment } from "types/SiteViewFragment";
 import { preselectedFilters } from "utils/siteViewHelpers";
 import { stack as Menu } from "react-burger-menu";
+import { match } from "react-router";
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
@@ -440,13 +441,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             view,
             data && data.searchParams
           );
-
           // hydrate state params from hash
           if (!this.state.params) {
             // this.setState({ params });
             return null;
           }
-
+          const siteviewUrl = this.props.match.params.siteviewUrl
+          console.log('siteviewURL', siteviewUrl)
           return (
             <HashQueryComponent
               query={HASH_QUERY}
@@ -457,9 +458,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
-                  return <Redirect to={`/search/${data.searchHash}`} />;
+                  return <Redirect to={`/search/${siteviewUrl}/${data.searchHash}`} />;
                 }
-
+      
                 return (
                   <SearchView
                     params={params}
@@ -509,6 +510,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
+    console.log('SEARCH PROPS', this.props);
+
     if (this.state.showCards) {
       window.addEventListener("scroll", this.handleScroll);
     } else {
@@ -535,7 +538,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           {this.renderAggs()}
           <MainContainer md={10}>
             <SiteProvider>
-              {site => (
+              {site => {
+              console.log('Search Page', site)
+              return (
                 <SearchView
                   params={this.state.params as any}
                   onBulkUpdate={this.handleBulkUpdateClick}
@@ -552,7 +557,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   toggledShowCards={this.toggledShowCards}
                   returnNumberOfPages={this.returnNumberOfPages}
                 />
-              )}
+              )}}
             </SiteProvider>
           </MainContainer>
         </Row>
@@ -576,7 +581,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <Route
           render={() => (
             <SiteProvider>
-              {site => (
+              {site => 
+              {
+                console.log('YO', site)
+              return (
                 <Row>
                   <SidebarContainer md={2}>
                     {this.renderAggs()}
@@ -587,7 +595,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     </MainContainer>
                   </div>
                 </Row>
-              )}
+              )
+              }}
             </SiteProvider>
           )}
         />
