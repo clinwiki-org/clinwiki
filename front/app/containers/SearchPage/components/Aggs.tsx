@@ -52,6 +52,8 @@ interface AggsProps {
   opened: string | null;
   openedKind: AggKind | null;
   onOpen: (agg: string, kind: AggKind) => void;
+  removeSelectAll?: boolean;
+  resetSelectAll?: ()=>void;
 }
 
 class Aggs extends React.PureComponent<AggsProps> {
@@ -107,7 +109,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                   <AggDropDown
                     key={k}
                     agg={k}
-                    //@ts-ignore
+
                     removeSelectAll={this.props.removeSelectAll}
                     selectedKeys={crowdFilters[k] || emptySet}
                     buckets={crowdAggs[k]}
@@ -159,9 +161,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                       removeFilter={removeFilter}
                       removeFilters={removeFilters}
                       searchParams={searchParams}
-                      //@ts-ignore
                       resetSelectAll={this.props.resetSelectAll}
-                       //@ts-ignore
                       removeSelectAll={this.props.removeSelectAll}
                     />
                   ) : null

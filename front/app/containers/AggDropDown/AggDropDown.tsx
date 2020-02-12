@@ -164,6 +164,9 @@ interface AggDropDownProps {
   display?: FieldDisplay;
   visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
+  removeSelectAll?: boolean;
+  resetSelectAll?: ()=>void;
+
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -250,7 +253,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       newParams.push(key);
     });
 
-    //@ts-ignore
     if (this.props.removeSelectAll) {
       console.log('meh')
       this.setState({
@@ -470,7 +472,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         <div style={{ marginTop:"1em"}}>
           <Checkbox
             checked={
-              //@ts-ignore
               this.props.removeSelectAll
                 ? this.checkSelect()
                 : this.state.checkboxValue
@@ -551,13 +552,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   checkSelect = () => {
-    //@ts-ignore
    if (this.props.removeSelectAll) {
      this.setState({
        checkboxValue: false
      }, () => {
-       //@ts-ignore
-       this.props.resetSelectAll()
+       if(this.props.resetSelectAll!= null){
+        this.props.resetSelectAll()
+       } 
      })
    }
   }
@@ -566,8 +567,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { isOpen } = this.state;
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
-    //@ts-ignore
-    console.log('HEY TOM', this.props.removeSelectAll)
     return (
       <SiteProvider>
         {site => (
