@@ -356,8 +356,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       removeSelectAll: true,
     });
   };
+  
   handleClearFilters=()=>{
-    this.setState({params: DEFAULT_PARAMS, removeSelectAll: true
+    this.setState({
+      params: DEFAULT_PARAMS, 
+      removeSelectAll: true
     })
   }
 

@@ -109,7 +109,6 @@ class Aggs extends React.PureComponent<AggsProps> {
                   <AggDropDown
                     key={k}
                     agg={k}
-
                     removeSelectAll={this.props.removeSelectAll}
                     selectedKeys={crowdFilters[k] || emptySet}
                     buckets={crowdAggs[k]}
