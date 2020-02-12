@@ -76,6 +76,9 @@ To contribute a new feature or bug fix create a new branch off of the current st
 - If the pull request is only for review but not quite ready yet prepend "WIP" or "work in progress" to the front of the title so it doesn't get accidently merged on merge day.
 - Add a new entry to ReleaseNotes/index.tsx describing your change or bugfix.  Don't worry too much about having the "right" version as we will fix it up when it merges to staging.
 
+## Admin
+To access the sub-site config and bulk update admin features, add admin role after creating a user
+In rails console, User.find_by(email: "[email of the user]").add_role(:admin)
 
 # Testing
 

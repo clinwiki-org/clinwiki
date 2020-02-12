@@ -167,6 +167,7 @@ class FacilitiesPage extends React.PureComponent<
       latitude: number | null;
       longitude: number | null;
       geoStatus: string | null;
+      name: string | null;
     }[] = [];
     const { name, country, city, state, zip, contacts, location } = facility;
     const latitude = location?.latitude ?? null;
@@ -181,6 +182,7 @@ class FacilitiesPage extends React.PureComponent<
     const uid = `${city}-${state}-${zip}-${country}`;
 
     res.push({
+      name: name,
       key: uid,
       location: newLocation,
       index: i + 1,
@@ -202,8 +204,10 @@ class FacilitiesPage extends React.PureComponent<
     latitude,
     longitude,
     geoStatus,
+    name,
   }: {
     key: string;
+    name: string | null;
     location: string | null;
     index: number;
     status: string;
@@ -216,6 +220,7 @@ class FacilitiesPage extends React.PureComponent<
       <div>
         <FacilityCard
           key={`${key}-${index}`}
+          name={name}
           title={key}
           index={index}
           status={status}
@@ -264,7 +269,6 @@ class FacilitiesPage extends React.PureComponent<
           ) {
             return null;
           }
-
           this.props.onLoaded && this.props.onLoaded();
           const facilities = data.study.facilities;
           const items = pipe(
@@ -272,6 +276,7 @@ class FacilitiesPage extends React.PureComponent<
             // @ts-ignore
             flatten
           )(facilities) as {
+            name: string;
             key: string;
             location: string;
             index: number;
