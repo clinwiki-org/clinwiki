@@ -264,7 +264,7 @@ export default class CrumbsBar extends React.Component<
         <span>
           <Button
             bsSize="small"
-            key="reset"
+            key="defaul"
             onClick={this.props.onReset}
             style={{ margin: '5px 0px 5px 10px'}}>
             Default
