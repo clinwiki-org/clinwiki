@@ -351,12 +351,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleResetFilters = (view: SiteViewFragment) => () => {
-    console.log('resetting filters dawg')
     this.setState({ 
       params: this.getDefaultParams(view),
       removeSelectAll: true,
     });
   };
+  handleClearFilters=()=>{
+    this.setState({params: DEFAULT_PARAMS, removeSelectAll: true
+    })
+  }
 
   resetSelectAll = () => {
     this.setState({
@@ -499,20 +502,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 return (
                   <SearchView
-                    params={params}
-                    onBulkUpdate={this.handleBulkUpdateClick}
-                    openedAgg={this.state.openedAgg}
-                    onUpdateParams={this.handleUpdateParams}
-                    onRowClick={this.handleRowClick}
-                    onOpenAgg={this.handleOpenAgg}
-                    onAggsUpdate={this.handleAggsUpdate}
-                    onResetFilters={this.handleResetFilters(view)}
-                    previousSearchData={this.previousSearchData}
-                    returnPreviousSearchData={this.returnPreviousSearchData}
-                    searchHash={data.searchHash}
-                    showCards={this.state.showCards}
-                    toggledShowCards={this.toggledShowCards}
-                    returnNumberOfPages={this.returnNumberOfPages}
+                      params={params}
+                      onBulkUpdate={this.handleBulkUpdateClick}
+                      openedAgg={this.state.openedAgg}
+                      onUpdateParams={this.handleUpdateParams}
+                      onRowClick={this.handleRowClick}
+                      onOpenAgg={this.handleOpenAgg}
+                      onAggsUpdate={this.handleAggsUpdate}
+                      onResetFilters={this.handleResetFilters(view)}
+                      onClearFilters={this.handleClearFilters}
+                      previousSearchData={this.previousSearchData}
+                      returnPreviousSearchData={this.returnPreviousSearchData}
+                      searchHash={data.searchHash}
+                      showCards={this.state.showCards}
+                      toggledShowCards={this.toggledShowCards}
+                      returnNumberOfPages={this.returnNumberOfPages}
                   />
                 );
               }}
@@ -582,6 +586,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   onOpenAgg={this.handleOpenAgg}
                   onAggsUpdate={this.handleAggsUpdate}
                   onResetFilters={this.handleResetFilters(site.siteView)}
+                  onClearFilters={this.handleClearFilters}
                   previousSearchData={this.previousSearchData}
                   returnPreviousSearchData={() => this.returnPreviousSearchData}
                   searchHash={''}

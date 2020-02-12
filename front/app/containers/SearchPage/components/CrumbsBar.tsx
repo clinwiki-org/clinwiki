@@ -163,6 +163,7 @@ interface CrumbsBarProps {
   pageSize: number;
   update: { page: (n: number) => void };
   onReset: () => void;
+  onClear: () => void;
   loading: boolean;
   data: SiteFragment;
   showCards: Boolean;
@@ -259,14 +260,24 @@ export default class CrumbsBar extends React.Component<
       searchParams.crowdAggFilters.length +
       searchParams.aggFilters.length;
     if (totalLength > 0) {
-      yield (
-        <Button
-          bsSize="small"
-          key="reset"
-          onClick={this.props.onReset}
-          style={{ margin: '5px 0px 5px 10px' }}>
-          Reset
-        </Button>
+      yield(
+        <span>
+          <Button
+            bsSize="small"
+            key="reset"
+            onClick={this.props.onReset}
+            style={{ margin: '5px 0px 5px 10px'}}>
+            Default
+          </Button>
+          <Button
+            bsSize="small"
+            key="reset"
+            onClick={this.props.onClear}
+            style={{ margin: '5px 0px 5px 10px' }}
+          >
+            Clear
+          </Button>
+        </span>
       );
     }
   }
