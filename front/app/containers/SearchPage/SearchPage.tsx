@@ -231,6 +231,7 @@ interface SearchPageState {
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
   showCards: Boolean;
+  removeSelectAll:boolean;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -249,6 +250,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchAggs: {},
     searchCrowdAggs: {},
     showCards: localStorage.getItem('showCards') === 'true' ? true : false,
+    removeSelectAll:false
   };
 
   numberOfPages: number = 0;
@@ -349,8 +351,24 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleResetFilters = (view: SiteViewFragment) => () => {
-    this.setState({ params: this.getDefaultParams(view) });
+    this.setState({ 
+      params: this.getDefaultParams(view),
+      removeSelectAll: true,
+    });
   };
+  
+  handleClearFilters=()=>{
+    this.setState({
+      params: DEFAULT_PARAMS, 
+      removeSelectAll: true
+    })
+  }
+
+  resetSelectAll = () => {
+    this.setState({
+      removeSelectAll: false
+    })
+  }
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
@@ -424,10 +442,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         crowdFilters={this.transformFilters(crowdAggFilters)}
         addFilter={pipe(addFilter, this.handleUpdateParams)}
         addFilters={pipe(addFilters, this.handleUpdateParams)}
-        //addFilters={addFilters}
         removeFilter={pipe(removeFilter, this.handleUpdateParams)}
         removeFilters={pipe(removeFilters, this.handleUpdateParams)}
         updateParams={this.handleUpdateParams}
+        removeSelectAll={this.state.removeSelectAll}
+        resetSelectAll={this.resetSelectAll}
         // @ts-ignore
         searchParams={this.state.params}
         opened={opened}
@@ -486,20 +505,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 return (
                   <SearchView
-                    params={params}
-                    onBulkUpdate={this.handleBulkUpdateClick}
-                    openedAgg={this.state.openedAgg}
-                    onUpdateParams={this.handleUpdateParams}
-                    onRowClick={this.handleRowClick}
-                    onOpenAgg={this.handleOpenAgg}
-                    onAggsUpdate={this.handleAggsUpdate}
-                    onResetFilters={this.handleResetFilters(view)}
-                    previousSearchData={this.previousSearchData}
-                    returnPreviousSearchData={this.returnPreviousSearchData}
-                    searchHash={data.searchHash}
-                    showCards={this.state.showCards}
-                    toggledShowCards={this.toggledShowCards}
-                    returnNumberOfPages={this.returnNumberOfPages}
+                      params={params}
+                      onBulkUpdate={this.handleBulkUpdateClick}
+                      openedAgg={this.state.openedAgg}
+                      onUpdateParams={this.handleUpdateParams}
+                      onRowClick={this.handleRowClick}
+                      onOpenAgg={this.handleOpenAgg}
+                      onAggsUpdate={this.handleAggsUpdate}
+                      onResetFilters={this.handleResetFilters(view)}
+                      onClearFilters={this.handleClearFilters}
+                      previousSearchData={this.previousSearchData}
+                      returnPreviousSearchData={this.returnPreviousSearchData}
+                      searchHash={data.searchHash}
+                      showCards={this.state.showCards}
+                      toggledShowCards={this.toggledShowCards}
+                      returnNumberOfPages={this.returnNumberOfPages}
                   />
                 );
               }}
@@ -569,6 +589,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   onOpenAgg={this.handleOpenAgg}
                   onAggsUpdate={this.handleAggsUpdate}
                   onResetFilters={this.handleResetFilters(site.siteView)}
+                  onClearFilters={this.handleClearFilters}
                   previousSearchData={this.previousSearchData}
                   returnPreviousSearchData={() => this.returnPreviousSearchData}
                   searchHash={''}
