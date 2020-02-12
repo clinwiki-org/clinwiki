@@ -16,7 +16,8 @@ module Mutations
         return   { site_view: nil, errors: ["Site not found"] }
       end
       original_view = site.site_views.find_by(id: args[:site_view_id] )
-      view = site.site_views.new(name:args[:name], default: args[:default], url: args[:url], description: args[:description], updates:original_view.updates)
+      view = site.site_views.new(updates:original_view.updates)
+      view.attributes = args.slice(:name,:url,:description,:default)
       if view.save
         { site_view: view, errors: nil }
       else
