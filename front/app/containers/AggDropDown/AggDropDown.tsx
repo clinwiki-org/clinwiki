@@ -491,10 +491,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                   padding: '5px',
                   position: 'absolute',
                   left: '1em',
-                  width: '5em',
+                  width: '6em',
                   color: 'black',
                   background: 'white',
                   borderRadius: '4px',
+                  fontSize: "0.85em"
                 }}>
                 Select All
               </span>
