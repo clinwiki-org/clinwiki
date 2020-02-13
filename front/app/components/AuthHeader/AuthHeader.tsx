@@ -1,11 +1,11 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { History } from 'history';
+import * as React from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { History } from "history";
 
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from "react-bootstrap";
 
-import AuthButton from 'components/AuthButton';
+import AuthButton from "components/AuthButton";
 // import SearchInput from 'components/SearchInput';
 
 interface AuthHeaderProps {
@@ -32,7 +32,7 @@ const StyledWrapper = styled.div`
   }
 
   a#logo {
-    background: url('/clinwiki-50.png') center left no-repeat;
+    background: url("/clinwiki-50.png") center left no-repeat;
     background-size: 25px 25px;
     margin-left: 1px;
     padding-left: 30px;
@@ -42,19 +42,21 @@ const StyledWrapper = styled.div`
     font-size: 14px;
     opacity: 0.75;
   }
-
 `;
 
 export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
   render() {
     return (
       <StyledWrapper>
-        <Navbar collapseOnSelect
-            fluid className="navbar-fixed-top"
-            style={{ paddingLeft: '15px', paddingRight: '15px' }}>
+        <Navbar
+          collapseOnSelect
+          fluid
+          className="navbar-fixed-top"
+          style={{ paddingLeft: "15px", paddingRight: "15px" }}
+        >
           <Navbar.Header>
             <Navbar.Brand>
-              <Link id="logo" to="/search">
+              <Link id="logo" to="/search/default">
                 ClinWiki <span id="small">(beta)</span>
               </Link>
             </Navbar.Brand>
@@ -63,9 +65,13 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
           <Navbar.Collapse>
             <Nav pullRight>
               {true ? null : (
-                <NavItem eventKey={1} href="/search">Search</NavItem>
+                <NavItem eventKey={1} href="/search/default">
+                  Search
+                </NavItem>
               )}
-              <NavItem eventKey={1} href="/about">About</NavItem>
+              <NavItem eventKey={1} href="/about">
+                About
+              </NavItem>
               <AuthButton user={this.props.user} history={this.props.history} />
             </Nav>
           </Navbar.Collapse>
