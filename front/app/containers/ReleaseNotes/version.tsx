@@ -9,6 +9,9 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 11
+- Bugfixes
+
 ### Version 10
 - #156 - visible crowd aggs
 - Select all in facets
