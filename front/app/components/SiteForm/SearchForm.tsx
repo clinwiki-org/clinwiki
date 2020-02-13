@@ -24,12 +24,16 @@ import {
   serializeMutation
 } from "utils/siteViewUpdater";
 import { equals, prop, last } from "ramda";
+import { History, Location } from "history";
 
 interface SearchFormProps {
   match: match<{ id: string }>;
   view: SiteViewFragment;
   siteViews: any;
   siteViewId: any;
+  history: History;
+  location: Location;
+  site: any;
 }
 
 interface SearchFormState {
@@ -130,7 +134,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     const siteviewId = this.props.match.params.id;
     let view = this.props.siteViews.find(view => siteviewId == view.id);
     view = updateView(view, this.state.mutations);
-
+    const { site } = this.props;
     const fields = displayFields(
       this.state.showAllAggs
         ? FilterKind.BLACKLIST
@@ -145,9 +149,14 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
       view.search.crowdAggs.fields
     );
-
+    console.log(this.props.match, this.props.location, this.props.history);
+    const url = this.props.match.path.slice();
     return (
-      <UpdateSiteViewMutation>
+      <UpdateSiteViewMutation
+        onCompleted={() =>
+          this.props.history.push(`/sites/${site.id}/edit/siteviews`)
+        }
+      >
         {updateSiteView => (
           <StyledContainer>
             <h1>{view.name}</h1>

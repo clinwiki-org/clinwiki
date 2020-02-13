@@ -7,8 +7,15 @@ import { DeleteSiteViewInput } from "./globalTypes";
 // GraphQL mutation operation: DeleteSiteViewMutation
 // ====================================================
 
+export interface DeleteSiteViewMutation_deleteSiteView_siteView {
+  __typename: "Site";
+  name: string;
+  id: number;
+}
+
 export interface DeleteSiteViewMutation_deleteSiteView {
   __typename: "DeleteSiteViewPayload";
+  siteView: DeleteSiteViewMutation_deleteSiteView_siteView | null;
   error: string | null;
 }
 

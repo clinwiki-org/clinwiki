@@ -117,6 +117,8 @@ export interface CreateSiteViewMutation_createSiteView_siteView {
   name: string | null;
   url: string | null;
   id: number;
+  default: boolean | null;
+  description: string | null;
   study: CreateSiteViewMutation_createSiteView_siteView_study;
   search: CreateSiteViewMutation_createSiteView_siteView_search;
 }

@@ -56,6 +56,8 @@ const SITE_VIEW_FRAGMENT = gql`
     name
     url
     id
+    default
+    description
     study {
       ...SiteStudyPageFragment
     }

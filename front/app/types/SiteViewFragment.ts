@@ -117,6 +117,8 @@ export interface SiteViewFragment {
   name: string | null;
   url: string | null;
   id: number;
+  default: boolean | null;
+  description: string | null;
   study: SiteViewFragment_study;
   search: SiteViewFragment_search;
 }

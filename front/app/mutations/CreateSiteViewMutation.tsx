@@ -12,6 +12,7 @@ interface CreateSiteViewMutationProps {
     mutate: CreateSiteViewMutationFn,
     result: MutationResult<CreateSiteViewMutationType>
   ) => React.ReactNode;
+  onCompleted?: (any) => void;
 }
 
 const CREATE_SITE_VIEW_MUTATION = gql`

@@ -11,7 +11,7 @@ module Mutations
 
       site_view = SiteView.find { |s| s.id == id }
       return nil unless site_view
-      if current_user.has_role?(:site_owner, site_view.site)
+      if current_user.has_role?(:site_owner, site_view.site) || current_user.has_role?(:admin)
         if !site_view.default
           site_view.destroy!
         else

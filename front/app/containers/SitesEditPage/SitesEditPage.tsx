@@ -33,7 +33,9 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
     return (
       <SiteProvider id={parseInt(this.props.match.params.id, 10)}>
         {(site, refetch) => (
-          <UpdateSiteMutation>
+          <UpdateSiteMutation
+            onCompleted={() => this.props.history.push("/sites")}
+          >
             {updateSite => (
               <SiteForm
                 match={this.props.match}

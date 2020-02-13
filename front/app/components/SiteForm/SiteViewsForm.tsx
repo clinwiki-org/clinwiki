@@ -84,7 +84,6 @@ class SiteViewsForm extends React.Component<
 
   render() {
     const { siteViews } = this.props;
-    console.log("siteviewarr", siteViews);
     return (
       <CreateSiteViewMutation>
         {createSiteView => (

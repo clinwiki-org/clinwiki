@@ -88,7 +88,7 @@ class SiteViewRouter extends React.Component<
     e: { currentTarget: { name: string; value: any } },
     siteView
   ) => {
-    console.log(e);
+    // console.log(e);
     const { name, value } = e.currentTarget;
     const mutation = createMutation(name, value);
     const view = updateView(siteView, this.state.mutations);
@@ -108,7 +108,6 @@ class SiteViewRouter extends React.Component<
     const path = trimPath(this.props.match.path);
     const allViews = this.props.siteViews;
     const site = this.props.site;
-    console.log(this.props.match);
     return (
       <Switch>
         <Route
@@ -117,6 +116,7 @@ class SiteViewRouter extends React.Component<
             <SearchForm
               {...props}
               siteViews={allViews}
+              site={site}
               view={view}
               siteViewId={this.props.location}
             />

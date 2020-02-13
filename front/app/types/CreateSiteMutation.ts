@@ -133,6 +133,8 @@ export interface CreateSiteMutation_createSite_site_siteView {
   name: string | null;
   url: string | null;
   id: number;
+  default: boolean | null;
+  description: string | null;
   study: CreateSiteMutation_createSite_site_siteView_study;
   search: CreateSiteMutation_createSite_site_siteView_search;
 }
@@ -247,6 +249,8 @@ export interface CreateSiteMutation_createSite_site_siteViews {
   name: string | null;
   url: string | null;
   id: number;
+  default: boolean | null;
+  description: string | null;
   study: CreateSiteMutation_createSite_site_siteViews_study;
   search: CreateSiteMutation_createSite_site_siteViews_search;
 }

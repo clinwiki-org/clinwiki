@@ -13,6 +13,7 @@ interface UpdateSiteMutationProps {
     mutate: UpdateSiteMutationFn,
     result: MutationResult<UpdateSiteMutationType>
   ) => React.ReactNode;
+  onCompleted?: () => void;
 }
 
 const UPDATE_SITE_MUTATION = gql`
@@ -40,7 +41,10 @@ export type UpdateSiteMutationFn = MutationFn<
 class UpdateSiteMutation extends React.PureComponent<UpdateSiteMutationProps> {
   render() {
     return (
-      <UpdateSiteMutationComponent mutation={UPDATE_SITE_MUTATION}>
+      <UpdateSiteMutationComponent
+        mutation={UPDATE_SITE_MUTATION}
+        onCompleted={this.props.onCompleted}
+      >
         {this.props.children}
       </UpdateSiteMutationComponent>
     );

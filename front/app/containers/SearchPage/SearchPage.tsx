@@ -463,9 +463,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               ? this.props.match.params.siteviewUrl
               : "default";
 
-          // console.log("checkUrls", checkUrls);
-          // console.log("site views", siteViews);
-          // console.log("currentSiteViewUrl", currentSiteViewUrl);
           return (
             <HashQueryComponent
               query={HASH_QUERY}

@@ -92,12 +92,12 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   };
 
   handleSave = () => {
-    const url = this.props.location.pathname;
-    const cuttingAt = "/siteviews/";
-    const cutPath = url.replace(new RegExp(".*" + cuttingAt), "");
-    const stringId = cutPath.substring(0, cutPath.indexOf("/"));
-    const siteViewId = parseInt(stringId);
-    console.log("handlesaveid", siteViewId);
+    // const url = this.props.location.pathname;
+    // const cuttingAt = "/siteviews/";
+    // const cutPath = url.replace(new RegExp(".*" + cuttingAt), "");
+    // const stringId = cutPath.substring(0, cutPath.indexOf("/"));
+    // const siteViewId = parseInt(stringId);
+    // console.log("handlesaveid", siteViewId);
     this.props.onSave(this.state.form);
   };
 
@@ -118,12 +118,18 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
   renderTabs = () => {
     const path = trimPath(this.props.match.url);
-    const sections = [
-      { path: "/main", value: "Main" },
-      { path: "/siteviews", value: "Search Views" },
-      { path: "/study", value: "Study" }
-      // { path: "/siteViews", value: "Site Views" }
-    ];
+    let sections;
+    if (path === "/sites/new") {
+      sections = [
+        { path: "/main", value: "Main" },
+        { path: "/study", value: "Study" }
+      ];
+    } else
+      sections = [
+        { path: "/main", value: "Main" },
+        { path: "/siteviews", value: "Search Views" },
+        { path: "/study", value: "Study" }
+      ];
 
     const locationComponents = this.props.location.pathname.split("/");
     let activeKey = last(locationComponents);
@@ -150,7 +156,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
-    console.log("site", this.props.site);
     return (
       <Container>
         <h3 style={{ color: "white", marginLeft: 15 }}>

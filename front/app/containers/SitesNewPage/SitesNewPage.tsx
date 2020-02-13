@@ -12,6 +12,9 @@ import { pathOr } from "ramda";
 import { serializeMutation } from "utils/siteViewUpdater";
 import { History, Location } from "history";
 import { match } from "react-router";
+import CreateSiteViewMutation, {
+  CreateSiteViewMutationFn
+} from "mutations/CreateSiteViewMutation";
 
 interface SitesNewPageProps {
   match: match<{}>;
@@ -20,10 +23,9 @@ interface SitesNewPageProps {
 }
 
 class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
-  handleSave = (
-    createSite: CreateSiteMutationFn,
-    updateSiteView: UpdateSiteViewMutationFn
-  ) => (input: CreateSiteInput, mutations: SiteViewMutationInput[]) => {
+  handleSave = (createSite: CreateSiteMutationFn) => (
+    input: CreateSiteInput
+  ) => {
     createSite({ variables: { input } }).then(res => {
       if (!res) return;
       const id = pathOr(
@@ -32,17 +34,6 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
         res
       ) as number | null;
       if (!id) return;
-      updateSiteView({
-        variables: {
-          input: {
-            id,
-            mutations: mutations.map(serializeMutation),
-            name: "Default",
-            url: "default",
-            default: true
-          }
-        }
-      });
     });
   };
 
@@ -50,24 +41,20 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
     return (
       <SiteProvider id={0}>
         {site => (
-          <UpdateSiteViewMutation
+          <CreateSiteMutation
             onCompleted={() => this.props.history.push("/sites")}
           >
-            {updateSiteView => (
-              <CreateSiteMutation>
-                {createSite => (
-                  <SiteForm
-                    history={this.props.history}
-                    location={this.props.location}
-                    match={this.props.match}
-                    site={{ ...site, name: "" }}
-                    refresh={null}
-                    onSave={this.handleSave(createSite, updateSiteView)}
-                  />
-                )}
-              </CreateSiteMutation>
+            {createSite => (
+              <SiteForm
+                history={this.props.history}
+                location={this.props.location}
+                match={this.props.match}
+                site={{ ...site, name: "" }}
+                refresh={null}
+                onSave={this.handleSave(createSite)}
+              />
             )}
-          </UpdateSiteViewMutation>
+          </CreateSiteMutation>
         )}
       </SiteProvider>
     );
