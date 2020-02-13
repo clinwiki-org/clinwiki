@@ -29,6 +29,15 @@ const QUERY = gql`
         }
       }
     }
+    crowdAggFacets {
+    aggs {
+      name
+      buckets {
+        key
+        docCount
+      }
+    }
+  }
     study(nctId: $nctId) {
       nctId
       wikiPage {
@@ -115,8 +124,8 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
           )(meta);
 
           const aggs = pipe(
-            pathOr([], ['search', 'aggs']),
-            filter((agg: any) => agg.name.startsWith('fm_')),
+            pathOr([], ['crowdAggFacets', 'aggs']),
+            // filter((agg: any) => agg.name.startsWith('fm_')),
             map((agg: any) => {
               const name = agg.name.substring(3, 1000);
               const existingLabels = labels[name] || [];

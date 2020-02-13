@@ -23,7 +23,7 @@ const MainContainer = styled(Col)`
 `;
 
 const HASH_QUERY = gql`
-  query SearchPageHashQuery($q: SearchQueryInput!) {
+  query LandingSearchPageHashQuery($q: SearchQueryInput!) {
     searchHash(params: { q: $q, page: 0, pageSize: 25 })
   }
 `;

@@ -37,12 +37,30 @@ export interface SuggestedLabelsQuery_study {
   wikiPage: SuggestedLabelsQuery_study_wikiPage | null;
 }
 
+export interface SuggestedLabelsQuery_crowdAggFacets_aggs_buckets {
+  __typename: "AggBucket";
+  key: string;
+  docCount: number;
+}
+
+export interface SuggestedLabelsQuery_crowdAggFacets_aggs {
+  __typename: "Agg";
+  name: string;
+  buckets: SuggestedLabelsQuery_crowdAggFacets_aggs_buckets[];
+}
+
+export interface SuggestedLabelsQuery_crowdAggFacets {
+  __typename: "SearchResultSet";
+  aggs: SuggestedLabelsQuery_crowdAggFacets_aggs[] | null;
+}
+
 export interface SuggestedLabelsQuery {
   /**
    * Searches params by searchHash on server and `params` argument into it
    */
   search: SuggestedLabelsQuery_search | null;
   study: SuggestedLabelsQuery_study | null;
+  crowdAggFacets: SuggestedLabelsQuery_crowdAggFacets;
 }
 
 export interface SuggestedLabelsQueryVariables {

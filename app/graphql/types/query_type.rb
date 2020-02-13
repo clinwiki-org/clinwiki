@@ -24,6 +24,9 @@ module Types
       argument :params, type: SearchInputType, required: true
     end
 
+    field :crowd_agg_facets, SearchResultSetType, null: false do 
+      # argument :params, type: SearchInputType, required: false
+    end
     field :health, HealthType, null: false
     field :site, SiteType, "If id is missing, returns current site. If id == 0, returns default site", null: true do
       argument :id, type: Int, required: false
@@ -78,6 +81,14 @@ module Types
       search_service = SearchService.new(params)
       Hashie::Mash.new(
         aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site], is_crowd_agg: true),
+      )
+    end
+
+    def crowd_agg_facets(search_hash: nil, params: nil)
+      params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
+      search_service = SearchService.new(params)
+      Hashie::Mash.new(
+        aggs: search_service.crowd_agg_facets(site: context[ :current_site ])
       )
     end
 

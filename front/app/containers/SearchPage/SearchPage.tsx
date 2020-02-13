@@ -75,7 +75,7 @@ const HASH_QUERY = gql`
 `;
 
 export const PARAMS_QUERY = gql`
-  query SearchPageParamsQuery($hash: String) {
+  query SearchSearchPageParamsQuery($hash: String) {
     searchParams(hash: $hash) {
       q
       sorts {

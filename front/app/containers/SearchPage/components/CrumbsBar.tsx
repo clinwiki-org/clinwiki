@@ -26,7 +26,7 @@ import { PulseLoader, BeatLoader } from 'react-spinners';
 import CurrentUser from 'containers/CurrentUser';
 
 const AUTOSUGGEST_QUERY = gql`
-  query SearchPageAggBucketsQuery(
+  query CrumbsSearchPageAggBucketsQuery(
     $agg: String!
     $q: SearchQueryInput!
     $aggFilters: [AggFilterInput!]
