@@ -19,6 +19,7 @@ import { StyledContainer } from "./Styled";
 import { Link } from "react-router-dom";
 import { History, Location } from "history";
 import StudyForm from "./StudyForm";
+import UpdateSiteViewMutation from "mutations/UpdateSiteViewMutation";
 
 interface SiteViewRouterProps {
   match: match<{}>;
@@ -28,7 +29,8 @@ interface SiteViewRouterProps {
   siteViews: any;
   refresh: any;
   onAddMutation: any;
-  onSave: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
+  getId: any;
+  onSave?: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
 }
 
 interface SiteViewRouterState {
@@ -97,59 +99,61 @@ class SiteViewRouter extends React.Component<
   //   return null;
   // };
 
-  handleSave = () => {
-    this.props.onSave(this.state.form, this.state.mutations);
-  };
+  // handleSave = () => {
+  //   this.props.onSave(this.state.form, this.state.mutations);
+  // };
 
-  handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
-    const { name, value } = e.currentTarget;
-    const mutation = createMutation(name, value);
-    const view = updateView(this.props.site.siteView, this.state.mutations);
-    const currentValue = getViewValueByPath(mutation.path, view);
-    if (equals(value, currentValue)) return;
-    this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-      console.log(this.state.mutations)
-    );
-  };
+  // handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
+  //   const { name, value } = e.currentTarget;
+  //   const mutation = createMutation(name, value);
+  //   const view = updateView(this.props.site.siteView, this.state.mutations);
+  //   const currentValue = getViewValueByPath(mutation.path, view);
+  //   if (equals(value, currentValue)) return;
+  //   this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
+  //     console.log("i'm here", this.state.mutations)
+  //   );
+  // };
 
   handleFormChange = (form: CreateSiteInput) => {
     this.setState({ form });
   };
 
   render() {
-    // const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
-    //@ts-ignore
     const allViews = this.props.siteViews;
     const site = this.props.site;
     return (
-      <Switch>
-        <Route
-          path={`${path}/:id/edit`}
-          render={props => (
-            //@ts-ignore
-            <SearchForm
-              //@ts-ignore
-              {...props}
-              //@ts-ignore
-              siteViews={allViews}
-              onAddMutation={this.handleAddMutation}
+      <UpdateSiteViewMutation>
+        {updateSiteView => (
+          <Switch>
+            <Route
+              path={`${path}/:id/edit`}
+              render={props => (
+                <SearchForm
+                  {...props}
+                  siteViews={allViews}
+                  onAddMutation={this.props.onAddMutation}
+                  view={view}
+                  siteViewId={this.props.location}
+                />
+              )}
             />
-          )}
-        />
-        <Route
-          path={`${path}`}
-          render={() => (
-            <SiteViewsForm
-              siteViews={this.props.siteViews}
-              site={site}
-              refresh={this.props.refresh}
-              onAddMutation={this.handleAddMutation}
+            <Route
+              path={`${path}`}
+              render={() => (
+                <SiteViewsForm
+                  siteViews={this.props.siteViews}
+                  site={site}
+                  refresh={this.props.refresh}
+                  onAddMutation={this.props.onAddMutation}
+                />
+              )}
             />
-          )}
-        />
-        {/* <Redirect to={`${path}/main`} /> */}
-      </Switch>
+            {/* <Redirect to={`${path}/main`} /> */}
+          </Switch>
+        )}
+      </UpdateSiteViewMutation>
     );
   }
 }

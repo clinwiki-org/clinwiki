@@ -63,8 +63,6 @@ class SiteViewsForm extends React.Component<
 
   handleSave = (createSiteView: CreateSiteViewMutationFn) => {
     const { form } = this.state;
-    console.log(this.props.site);
-
     createSiteView({
       variables: {
         input: {

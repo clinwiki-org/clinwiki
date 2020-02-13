@@ -24,43 +24,71 @@ interface SitesEditPageProps {
 }
 
 class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
-  handleSave = (updateSite: UpdateSiteMutationFn) => (
-    input: CreateSiteInput
+  handleSave = (
+    updateSite: UpdateSiteMutationFn,
+    updateSiteView: UpdateSiteViewMutationFn
+  ) => (
+    input: CreateSiteInput,
+    mutations: SiteViewMutationInput[],
+    siteViewId: number
   ) => {
     updateSite({
       variables: {
         input: { ...input, id: parseInt(this.props.match.params.id, 10) }
       }
     });
-    // updateSiteView({
-    //   variables: {
-    //     input: {
-    //       mutations: mutations.map(serializeMutation),
-    //       id: site.siteView.id,
-    //       name: "default",
-    //       url: "somethin",
-    //       default: true
-    //     }
-    //   }
-    // });
+    updateSiteView({
+      variables: {
+        input: {
+          mutations: mutations.map(serializeMutation),
+          id: siteViewId,
+          default: true,
+          name: "default",
+          url: "default"
+        }
+      }
+    });
   };
+
+  // handleSave = (
+  //   updateSite: UpdateSiteMutationFn,
+  //   updateSiteView: UpdateSiteViewMutationFn,
+  //   site: SiteFragment
+  // ) => (input: CreateSiteInput, mutations: SiteViewMutationInput[]) => {
+  //   updateSite({
+  //     variables: {
+  //       input: { ...input, id: parseInt(this.props.match.params.id, 10) },
+  //     },
+  //   });
+  //   updateSiteView({
+  //     variables: {
+  //       input: {
+  //         mutations: mutations.map(serializeMutation),
+  //         id: site.siteView.id,
+  //       },
+  //     },
+  //   });
 
   render() {
     return (
       <SiteProvider id={parseInt(this.props.match.params.id, 10)}>
         {(site, refetch) => (
-          <UpdateSiteMutation>
-            {updateSite => (
-              <SiteForm
-                match={this.props.match}
-                history={this.props.history}
-                location={this.props.location}
-                refresh={refetch}
-                site={site}
-                onSave={this.handleSave(updateSite)}
-              />
+          <UpdateSiteViewMutation>
+            {updateSiteView => (
+              <UpdateSiteMutation>
+                {updateSite => (
+                  <SiteForm
+                    match={this.props.match}
+                    history={this.props.history}
+                    location={this.props.location}
+                    refresh={refetch}
+                    site={site}
+                    onSave={this.handleSave(updateSite, updateSiteView)}
+                  />
+                )}
+              </UpdateSiteMutation>
             )}
-          </UpdateSiteMutation>
+          </UpdateSiteViewMutation>
         )}
       </SiteProvider>
     );

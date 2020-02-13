@@ -27,7 +27,11 @@ interface SiteFormProps {
   site: SiteFragment;
   history: History;
   location: Location;
-  onSave: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
+  onSave: (
+    form: CreateSiteInput,
+    mutations: SiteViewMutationInput[],
+    siteViewId: number
+  ) => void;
   refresh: any;
 }
 
@@ -95,17 +99,23 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   };
 
   handleSave = () => {
-    this.props.onSave(this.state.form, this.state.mutations);
+    const url = this.props.location.pathname;
+    const cuttingAt = "/siteviews/";
+    const cutPath = url.replace(new RegExp(".*" + cuttingAt), "");
+    const stringId = cutPath.substring(0, cutPath.indexOf("/"));
+    const siteViewId = parseInt(stringId);
+    console.log("handlesaveid", siteViewId);
+    this.props.onSave(this.state.form, this.state.mutations, siteViewId);
   };
 
   handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
     const { name, value } = e.currentTarget;
     const mutation = createMutation(name, value);
-    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteViews[0], this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-      console.log(this.state.mutations)
+      console.log("handleadd", mutation, view, currentValue)
     );
   };
 

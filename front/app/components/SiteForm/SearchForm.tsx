@@ -15,6 +15,8 @@ import { Switch, Route, match, Redirect } from "react-router";
 
 interface SearchFormProps {
   view: SiteViewFragment;
+  siteViews: any;
+  siteViewId: any;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
