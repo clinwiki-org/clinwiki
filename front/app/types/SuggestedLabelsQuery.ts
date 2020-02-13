@@ -22,21 +22,6 @@ export interface SuggestedLabelsQuery_search {
   aggs: SuggestedLabelsQuery_search_aggs[] | null;
 }
 
-export interface SuggestedLabelsQuery_study_wikiPage {
-  __typename: "WikiPage";
-  nctId: string;
-  /**
-   * Json key value pairs of meta information
-   */
-  meta: string;
-}
-
-export interface SuggestedLabelsQuery_study {
-  __typename: "Study";
-  nctId: string;
-  wikiPage: SuggestedLabelsQuery_study_wikiPage | null;
-}
-
 export interface SuggestedLabelsQuery_crowdAggFacets_aggs_buckets {
   __typename: "AggBucket";
   key: string;
@@ -54,13 +39,28 @@ export interface SuggestedLabelsQuery_crowdAggFacets {
   aggs: SuggestedLabelsQuery_crowdAggFacets_aggs[] | null;
 }
 
+export interface SuggestedLabelsQuery_study_wikiPage {
+  __typename: "WikiPage";
+  nctId: string;
+  /**
+   * Json key value pairs of meta information
+   */
+  meta: string;
+}
+
+export interface SuggestedLabelsQuery_study {
+  __typename: "Study";
+  nctId: string;
+  wikiPage: SuggestedLabelsQuery_study_wikiPage | null;
+}
+
 export interface SuggestedLabelsQuery {
   /**
    * Searches params by searchHash on server and `params` argument into it
    */
   search: SuggestedLabelsQuery_search | null;
-  study: SuggestedLabelsQuery_study | null;
   crowdAggFacets: SuggestedLabelsQuery_crowdAggFacets;
+  study: SuggestedLabelsQuery_study | null;
 }
 
 export interface SuggestedLabelsQueryVariables {
