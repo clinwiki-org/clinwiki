@@ -3,20 +3,12 @@ import styled from "styled-components";
 import { gql } from "apollo-boost";
 import { SiteViewFragment } from "types/SiteViewFragment";
 import CollapsiblePanel from "components/CollapsiblePanel";
-import { StyledLabel } from "./Styled";
+
 import { SiteViewItem } from "components/SiteItem";
 import CreateSiteViewMutation, {
   CreateSiteViewMutationFn
 } from "mutations/CreateSiteViewMutation";
-import { Switch, Route, match, Redirect } from "react-router";
-import {
-  Checkbox,
-  Row,
-  Col,
-  Button,
-  Table,
-  FormControl
-} from "react-bootstrap";
+import { Table, FormControl } from "react-bootstrap";
 import { History, Location } from "history";
 import { CreateSiteViewInput, SiteViewMutationInput } from "types/globalTypes";
 import StyledButton from "containers/LoginPage/StyledButton";
@@ -25,7 +17,6 @@ interface SiteViewsFormProps {
   site: any;
   siteViews: SiteViewFragment[];
   refresh: any;
-  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 interface SiteViewsFormState {
@@ -93,6 +84,7 @@ class SiteViewsForm extends React.Component<
 
   render() {
     const { siteViews } = this.props;
+    console.log("siteviewarr", siteViews);
     return (
       <CreateSiteViewMutation>
         {createSiteView => (
@@ -114,7 +106,6 @@ class SiteViewsForm extends React.Component<
                           key={view.id}
                           siteView={view}
                           refresh={this.props.refresh}
-                          onAddMutation={this.props.onAddMutation}
                         />
                       ))}
                     </>

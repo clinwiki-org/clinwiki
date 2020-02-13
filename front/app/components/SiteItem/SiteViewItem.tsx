@@ -1,11 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
-import { gql } from "apollo-boost";
 import { Button } from "react-bootstrap";
 import { SiteViewFragment } from "types/SiteViewFragment";
 import { withRouter } from "react-router-dom";
-import { match } from "react-router";
-import { trimPath } from "utils/helpers";
 import DeleteSiteViewMutation, {
   DeleteSiteViewMutationFn
 } from "mutations/DeleteSiteViewMutation";
@@ -17,7 +14,6 @@ interface SiteViewItemProps {
   location: Location;
   refresh: () => void;
   siteView: SiteViewFragment;
-  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 const StyledButton = styled(Button)`
@@ -43,15 +39,12 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           }
         }
       }).then(res => {
+        // console.log(res);
         this.props.refresh();
       });
     }
   };
   render() {
-    const id = this.props.siteView.id;
-    const url = trimPath(this.props.match.url);
-    const path = trimPath(this.props.match.path);
-
     return (
       <tr>
         <td>{this.props.siteView.name}</td>

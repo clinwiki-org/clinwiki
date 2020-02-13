@@ -11,18 +11,31 @@ import aggToField from "utils/aggs/aggToField";
 import { FilterKind } from "types/globalTypes";
 import { Checkbox } from "react-bootstrap";
 import styled from "styled-components";
-import { Switch, Route, match, Redirect } from "react-router";
+import { match } from "react-router";
+import { Button } from "react-bootstrap";
+import { CreateSiteInput, SiteViewMutationInput } from "types/globalTypes";
+import UpdateSiteViewMutation, {
+  UpdateSiteViewMutationFn
+} from "mutations/UpdateSiteViewMutation";
+import {
+  updateView,
+  createMutation,
+  getViewValueByPath,
+  serializeMutation
+} from "utils/siteViewUpdater";
+import { equals, prop, last } from "ramda";
 
 interface SearchFormProps {
+  match: match<{ id: string }>;
   view: SiteViewFragment;
   siteViews: any;
   siteViewId: any;
-  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 interface SearchFormState {
   showAllAggs: boolean;
   showAllCrowdAggs: boolean;
+  mutations: SiteViewMutationInput[];
 }
 
 const SEARCH_FIELDS = studyFields.map(option => ({
@@ -47,20 +60,54 @@ const AggsHeaderContainer = styled.div`
   }
 `;
 
+const StyledButton = styled(Button)`
+  margin-right: 15px;
+`;
+
 const StyledCheckbox = styled(Checkbox)`
   display: flex;
   align-items: center;
 `;
 
 class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
-  state: SearchFormState = { showAllAggs: false, showAllCrowdAggs: false };
+  state: SearchFormState = {
+    showAllAggs: false,
+    showAllCrowdAggs: false,
+    mutations: []
+  };
 
-  // componentDidUpdate(prevProps, prevState) {
-  //  // @ts-ignore
+  componentDidMount() {}
 
-  //   const siteviewId = this.props.match.params.id
-  //   console.log('NEW SEARCH', siteviewId)
-  // }
+  handleSave = (updateSiteView: UpdateSiteViewMutationFn, view: any) => (
+    mutations: SiteViewMutationInput[]
+  ) => {
+    updateSiteView({
+      variables: {
+        input: {
+          mutations: this.state.mutations.map(serializeMutation),
+          id: view.id,
+          name: view.name,
+          url: view.url,
+          default: true
+        }
+      }
+    });
+  };
+
+  handleAddMutation = (
+    e: { currentTarget: { name: string; value: any } },
+    siteView
+  ) => {
+    console.log(e);
+    const { name, value } = e.currentTarget;
+    const mutation = createMutation(name, value);
+    const view = updateView(siteView, this.state.mutations);
+    const currentValue = getViewValueByPath(mutation.path, view);
+    if (equals(value, currentValue)) return;
+    this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
+      console.log("handleadd", mutation, view, currentValue)
+    );
+  };
 
   getCrowdFields = view => {
     return view.search.crowdAggs.fields.map(field => ({
@@ -80,10 +127,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   handleFieldsOrderChange = () => {};
 
   render() {
-    //@ts-ignore
     const siteviewId = this.props.match.params.id;
-    //@ts-ignore
-    const view = this.props.siteViews.find(view => siteviewId == view.id);
+    let view = this.props.siteViews.find(view => siteviewId == view.id);
+    view = updateView(view, this.state.mutations);
 
     const fields = displayFields(
       this.state.showAllAggs
@@ -101,97 +147,106 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     );
 
     return (
-      <StyledContainer>
-        <h3>Fields</h3>
-        <MultiInput
-          name="set:search.fields"
-          options={SEARCH_FIELDS}
-          placeholder="Add field"
-          draggable
-          value={view.search.fields}
-          onChange={this.props.onAddMutation}
-        />
-        <Row>
-          <Col md={6}>
-            <AggsHeaderContainer>
-              <h3>Aggs visibility</h3>
-              <StyledCheckbox
-                checked={this.state.showAllAggs}
-                onChange={this.handleShowAllToggle("aggs")}
-              >
-                Show all
-              </StyledCheckbox>
-            </AggsHeaderContainer>
-            <StyledLabel>Filter</StyledLabel>
-            <StyledFormControl
-              name="set:search.aggs.selected.kind"
-              componentClass="select"
-              onChange={this.props.onAddMutation}
-              value={view.search.aggs.selected.kind}
-            >
-              <option value="BLACKLIST">All except</option>
-              <option value="WHITELIST">Only</option>
-            </StyledFormControl>
+      <UpdateSiteViewMutation>
+        {updateSiteView => (
+          <StyledContainer>
+            <h1>{view.name}</h1>
+            <h3>Fields</h3>
             <MultiInput
-              name="set:search.aggs.selected.values"
-              options={AGGS_OPTIONS}
-              placeholder="Add facet"
-              value={view.search.aggs.selected.values}
-              onChange={this.props.onAddMutation}
+              name="set:search.fields"
+              options={SEARCH_FIELDS}
+              placeholder="Add field"
+              draggable
+              value={view.search.fields}
+              onChange={e => this.handleAddMutation(e, view)}
             />
-            <h3>Aggs settings</h3>
-            {fields.map(field => (
-              <AggField
-                kind="aggs"
-                key={field.name}
-                //@ts-ignore
-                field={field}
-                onAddMutation={this.props.onAddMutation}
-              />
-            ))}
-          </Col>
-          <Col md={6}>
-            <AggsHeaderContainer>
-              <h3>Crowd aggs visibility</h3>
-              <StyledCheckbox
-                checked={this.state.showAllCrowdAggs}
-                onChange={this.handleShowAllToggle("crowdAggs")}
-              >
-                Show all
-              </StyledCheckbox>
-            </AggsHeaderContainer>
+            <Row>
+              <Col md={6}>
+                <AggsHeaderContainer>
+                  <h3>Aggs visibility</h3>
+                  <StyledCheckbox
+                    checked={this.state.showAllAggs}
+                    onChange={this.handleShowAllToggle("aggs")}
+                  >
+                    Show all
+                  </StyledCheckbox>
+                </AggsHeaderContainer>
+                <StyledLabel>Filter</StyledLabel>
+                <StyledFormControl
+                  name="set:search.aggs.selected.kind"
+                  componentClass="select"
+                  onChange={e => this.handleAddMutation(e, view)}
+                  value={view.search.aggs.selected.kind}
+                >
+                  <option value="BLACKLIST">All except</option>
+                  <option value="WHITELIST">Only</option>
+                </StyledFormControl>
+                <MultiInput
+                  name="set:search.aggs.selected.values"
+                  options={AGGS_OPTIONS}
+                  placeholder="Add facet"
+                  value={view.search.aggs.selected.values}
+                  onChange={e => this.handleAddMutation(e, view)}
+                />
+                <h3>Aggs settings</h3>
+                {fields.map(field => (
+                  <AggField
+                    kind="aggs"
+                    key={field.name}
+                    //@ts-ignore
+                    field={field}
+                    onAddMutation={this.handleAddMutation}
+                    view={view}
+                  />
+                ))}
+              </Col>
+              <Col md={6}>
+                <AggsHeaderContainer>
+                  <h3>Crowd aggs visibility</h3>
+                  <StyledCheckbox
+                    checked={this.state.showAllCrowdAggs}
+                    onChange={this.handleShowAllToggle("crowdAggs")}
+                  >
+                    Show all
+                  </StyledCheckbox>
+                </AggsHeaderContainer>
 
-            <StyledLabel>Filter</StyledLabel>
-            <StyledFormControl
-              name="set:search.crowdAggs.selected.kind"
-              componentClass="select"
-              onChange={this.props.onAddMutation}
-              v={view.search.crowdAggs.selected.kind}
-            >
-              <option value="BLACKLIST">All except</option>
-              <option value="WHITELIST">Only</option>
-            </StyledFormControl>
-            <MultiInput
-              name="set:search.crowdAggs.selected.values"
-              //@ts-ignore
-              options={this.getCrowdFields(view)}
-              placeholder="Add facet"
-              value={view.search.crowdAggs.selected.values}
-              onChange={this.props.onAddMutation}
-            />
-            <h3>Crowd aggs settings</h3>
-            {crowdFields.map(field => (
-              <AggField
-                kind="crowdAggs"
-                key={field.name}
-                //@ts-ignore
-                field={field}
-                onAddMutation={this.props.onAddMutation}
-              />
-            ))}
-          </Col>
-        </Row>
-      </StyledContainer>
+                <StyledLabel>Filter</StyledLabel>
+                <StyledFormControl
+                  name="set:search.crowdAggs.selected.kind"
+                  componentClass="select"
+                  onChange={e => this.handleAddMutation(e, view)}
+                  v={view.search.crowdAggs.selected.kind}
+                >
+                  <option value="BLACKLIST">All except</option>
+                  <option value="WHITELIST">Only</option>
+                </StyledFormControl>
+                <MultiInput
+                  name="set:search.crowdAggs.selected.values"
+                  options={this.getCrowdFields(view)}
+                  placeholder="Add facet"
+                  value={view.search.crowdAggs.selected.values}
+                  onChange={e => this.handleAddMutation(e, view)}
+                />
+                <h3>Crowd aggs settings</h3>
+                {crowdFields.map(field => (
+                  <AggField
+                    kind="crowdAggs"
+                    key={field.name}
+                    //@ts-ignore
+                    field={field}
+                    onAddMutation={this.handleAddMutation}
+                    view={view}
+                  />
+                ))}
+              </Col>
+            </Row>
+            <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+              Save Site View
+            </StyledButton>
+          </StyledContainer>
+        )}
+      </UpdateSiteViewMutation>
     );
   }
 }

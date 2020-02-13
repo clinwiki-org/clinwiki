@@ -4,21 +4,18 @@ import { equals, prop, last } from "ramda";
 import { FormControl, Button, Nav, NavItem } from "react-bootstrap";
 import styled from "styled-components";
 import { gql } from "apollo-boost";
-import { capitalize, trimPath } from "utils/helpers";
+import { trimPath } from "utils/helpers";
 import { SiteFragment } from "types/SiteFragment";
+import { StyledContainer } from "./Styled";
 import {
   updateView,
   createMutation,
-  getViewValueByPath
+  getViewValueByPath,
+  serializeMutation
 } from "utils/siteViewUpdater";
 import { Switch, Route, match, Redirect } from "react-router";
 import MainForm from "./MainForm";
-import SearchForm from "./SearchForm";
-import SiteViewsForm from "./SiteViewsForm";
 import SiteViewsRouter from "./SiteViewsRouter";
-import SiteViewsList from "containers/SiteViewsPage/SiteViewsList";
-import { StyledContainer } from "./Styled";
-import { Link } from "react-router-dom";
 import { History, Location } from "history";
 import StudyForm from "./StudyForm";
 
@@ -27,11 +24,7 @@ interface SiteFormProps {
   site: SiteFragment;
   history: History;
   location: Location;
-  onSave: (
-    form: CreateSiteInput,
-    mutations: SiteViewMutationInput[],
-    siteViewId: number
-  ) => void;
+  onSave: any;
   refresh: any;
 }
 
@@ -105,7 +98,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const stringId = cutPath.substring(0, cutPath.indexOf("/"));
     const siteViewId = parseInt(stringId);
     console.log("handlesaveid", siteViewId);
-    this.props.onSave(this.state.form, this.state.mutations, siteViewId);
+    this.props.onSave(this.state.form);
   };
 
   handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
@@ -157,6 +150,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
+    console.log("site", this.props.site);
     return (
       <Container>
         <h3 style={{ color: "white", marginLeft: 15 }}>
@@ -182,7 +176,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 siteViews={this.props.site.siteViews}
                 refresh={this.props.refresh}
                 site={this.props.site}
-                onAddMutation={this.handleAddMutation}
+                // onAddMutation={this.handleAddMutation}
               />
             )}
           />

@@ -10,16 +10,16 @@ import { SiteFragment } from "types/SiteFragment";
 import {
   updateView,
   createMutation,
-  getViewValueByPath
+  getViewValueByPath,
+  serializeMutation
 } from "utils/siteViewUpdater";
-import MainForm from "./MainForm";
+import UpdateSiteViewMutation, {
+  UpdateSiteViewMutationFn
+} from "mutations/UpdateSiteViewMutation";
+import { History, Location } from "history";
 import SearchForm from "./SearchForm";
 import SiteViewsForm from "./SiteViewsForm";
-import { StyledContainer } from "./Styled";
-import { Link } from "react-router-dom";
-import { History, Location } from "history";
-import StudyForm from "./StudyForm";
-import UpdateSiteViewMutation from "mutations/UpdateSiteViewMutation";
+import { SiteViewFragment } from "types/SiteViewFragment";
 
 interface SiteViewRouterProps {
   match: match<{}>;
@@ -39,20 +39,6 @@ interface SiteViewRouterState {
   addEditorEmail: string;
   prevForm: CreateSiteInput | null;
 }
-
-const Container = styled.div`
-  ul > li > a {
-    color: white;
-
-    &:hover {
-      color: #333;
-    }
-  }
-`;
-
-const StyledNav = styled(Nav)`
-  margin: 15px;
-`;
 
 class SiteViewRouter extends React.Component<
   SiteViewRouterProps,
@@ -81,38 +67,37 @@ class SiteViewRouter extends React.Component<
     }
   `;
 
-  // static getDerivedStateFromProps = (
-  //   props: SiteViewRouterProps,
-  //   state: SiteViewRouterState
-  // ): SiteViewRouterState | null => {
-  //   const { name, subdomain, skipLanding, editors } = props.site;
-  //   const editorEmails = editors.map(prop("email"));
-  //   const form = {
-  //     name,
-  //     subdomain,
-  //     skipLanding,
-  //     editorEmails
-  //   };
-  //   if (form && !equals(form, state.prevForm as any)) {
-  //     return { ...state, form, prevForm: form };
-  //   }
-  //   return null;
-  // };
+  handleSave = (updateSiteView: UpdateSiteViewMutationFn) => (
+    mutations: SiteViewMutationInput[],
+    siteView: SiteViewFragment
+  ) => {
+    updateSiteView({
+      variables: {
+        input: {
+          mutations: mutations.map(serializeMutation),
+          id: siteView.id,
+          name: siteView.name,
+          url: siteView.url,
+          default: true
+        }
+      }
+    });
+  };
 
-  // handleSave = () => {
-  //   this.props.onSave(this.state.form, this.state.mutations);
-  // };
-
-  // handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
-  //   const { name, value } = e.currentTarget;
-  //   const mutation = createMutation(name, value);
-  //   const view = updateView(this.props.site.siteView, this.state.mutations);
-  //   const currentValue = getViewValueByPath(mutation.path, view);
-  //   if (equals(value, currentValue)) return;
-  //   this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-  //     console.log("i'm here", this.state.mutations)
-  //   );
-  // };
+  handleAddMutation = (
+    e: { currentTarget: { name: string; value: any } },
+    siteView
+  ) => {
+    console.log(e);
+    const { name, value } = e.currentTarget;
+    const mutation = createMutation(name, value);
+    const view = updateView(siteView, this.state.mutations);
+    const currentValue = getViewValueByPath(mutation.path, view);
+    if (equals(value, currentValue)) return;
+    this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
+      console.log("handleadd", mutation, view, currentValue)
+    );
+  };
 
   handleFormChange = (form: CreateSiteInput) => {
     this.setState({ form });
@@ -123,37 +108,32 @@ class SiteViewRouter extends React.Component<
     const path = trimPath(this.props.match.path);
     const allViews = this.props.siteViews;
     const site = this.props.site;
+    console.log(this.props.match);
     return (
-      <UpdateSiteViewMutation>
-        {updateSiteView => (
-          <Switch>
-            <Route
-              path={`${path}/:id/edit`}
-              render={props => (
-                <SearchForm
-                  {...props}
-                  siteViews={allViews}
-                  onAddMutation={this.props.onAddMutation}
-                  view={view}
-                  siteViewId={this.props.location}
-                />
-              )}
+      <Switch>
+        <Route
+          path={`${path}/:id/edit`}
+          render={props => (
+            <SearchForm
+              {...props}
+              siteViews={allViews}
+              view={view}
+              siteViewId={this.props.location}
             />
-            <Route
-              path={`${path}`}
-              render={() => (
-                <SiteViewsForm
-                  siteViews={this.props.siteViews}
-                  site={site}
-                  refresh={this.props.refresh}
-                  onAddMutation={this.props.onAddMutation}
-                />
-              )}
+          )}
+        />
+        <Route
+          path={`${path}`}
+          render={() => (
+            <SiteViewsForm
+              siteViews={this.props.siteViews}
+              site={site}
+              refresh={this.props.refresh}
             />
-            {/* <Redirect to={`${path}/main`} /> */}
-          </Switch>
-        )}
-      </UpdateSiteViewMutation>
+          )}
+        />
+        {/* <Redirect to={`${path}/main`} /> */}
+      </Switch>
     );
   }
 }

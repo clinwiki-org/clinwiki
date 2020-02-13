@@ -17,6 +17,10 @@ interface DeleteSiteViewMutationProps {
 const DELETE_SITE_VIEW_MUTATION = gql`
   mutation DeleteSiteViewMutation($input: DeleteSiteViewInput!) {
     deleteSiteView(input: $input) {
+      siteView {
+        name
+        id
+      }
       error
     }
   }
