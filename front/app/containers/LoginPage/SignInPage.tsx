@@ -124,8 +124,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                   return;
                 }
                 this.setState({ errors: ['Invalid email or password'] });
-              }}
-            >
+              }}>
               {signIn => (
                 <StyledButton onClick={this.handleSignIn(signIn)}>
                   Sign In

@@ -38,7 +38,9 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
       return (
         <li>
           <p className="navbar-btn">
-            <a href="/sign_in" className="btn btn-default">Sign in</a>
+            <a href="/sign_in" className="btn btn-default">
+              Sign in
+            </a>
           </p>
         </li>
       );
@@ -47,8 +49,7 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
       <ButtonWrapper className="pull-right">
         <DropdownButton
           title={(this.props.user && this.props.user.email) || ''}
-          id="loggedIn"
-        >
+          id="loggedIn">
           <MenuItem onClick={this.handleSitesClick}>Sites</MenuItem>
           {this.props.user && this.props.user.roles.includes('admin') && (
             <MenuItem onClick={this.handleWorkflowsClick}>Workflows</MenuItem>

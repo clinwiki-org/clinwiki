@@ -28,6 +28,9 @@ module Types
       argument :url, type: String, required: false
     end
 
+    field :crowd_agg_facets, SearchResultSetType, null: false do 
+      # argument :params, type: SearchInputType, required: false
+    end
     field :health, HealthType, null: false
     field :site, SiteType, "If id is missing, returns current site. If id == 0, returns default site", null: true do
       argument :id, type: Int, required: false
@@ -85,6 +88,14 @@ module Types
       )
     end
 
+    def crowd_agg_facets(search_hash: nil, params: nil)
+      params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
+      search_service = SearchService.new(params)
+      Hashie::Mash.new(
+        aggs: search_service.crowd_agg_facets(site: context[ :current_site ])
+      )
+    end
+
     def autocomplete(search_hash: nil, params: nil, agg_fields: [], crowd_agg_fields: [], url: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
@@ -93,14 +104,16 @@ module Types
         result = search_service.agg_buckets_for_field(field: field_name, current_site: context[:current_site], url: url)
         list << Hashie::Mash.new(
           name: field_name,
-          results: result[field_name.to_sym][:buckets]
+          results: result[field_name.to_sym][:buckets],
+          is_crowd: false
         )
       end
       crowd_agg_fields.each do |field_name|
         result = search_service.agg_buckets_for_field(field: field_name, current_site: context[:current_site], is_crowd_agg: true, url: url)
         list << Hashie::Mash.new(
           name: field_name,
-          results: result["fm_#{field_name}".to_sym][:buckets]
+          results: result["fm_#{field_name}".to_sym][:buckets],
+          is_crowd: true
         )
       end
       Hashie::Mash.new(autocomplete: list)

@@ -46,8 +46,7 @@ class UpdateSiteViewMutation extends React.PureComponent<
       <UpdateSiteViewMutationComponent
         mutation={UPDATE_SITE_VIEW_MUTATION}
         onCompleted={this.props.onCompleted}
-        onError={this.props.onError}
-      >
+        onError={this.props.onError}>
         {this.props.children}
       </UpdateSiteViewMutationComponent>
     );

@@ -35,7 +35,7 @@ import {
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
-import  PARAMS_QUERY  from '../SearchPage/PARAMS_QUERY';
+import PARAMS_QUERY from '../SearchPage/PARAMS_QUERY';
 import { SearchQueryInput } from 'types/globalTypes';
 import { SearchPageSearchQueryVariables } from 'types/SearchPageSearchQuery';
 import {
@@ -77,7 +77,9 @@ const LABELS_QUERY = gql`
         }
       }
     }
-    allCrowdAggs: aggBuckets(params: { page: 0, q: { key: "*" }, agg: "front_matter_keys" }) {
+    allCrowdAggs: aggBuckets(
+      params: { page: 0, q: { key: "*" }, agg: "front_matter_keys" }
+    ) {
       aggs {
         name
         buckets {
@@ -95,7 +97,10 @@ const LABELS_QUERY = gql`
 const el = (label: string) => label.replace(/ /g, '').replace('|', '_');
 
 const buildParams = (labels: string[]): string => {
-  return labels.reduce((s, label) => `$${el(label)}Params: SearchInput! ${s}`, '');
+  return labels.reduce(
+    (s, label) => `$${el(label)}Params: SearchInput! ${s}`,
+    ''
+  );
 };
 
 const variablesForLabels = (labels: string[], params: any) => {
@@ -170,7 +175,7 @@ interface BulkEditProps {
 interface BulkEditState {
   undoHistory: any[];
 }
-const getParsedSearchParams = (searchParams) => {
+const getParsedSearchParams = searchParams => {
   const { q, aggFilters = [], crowdAggFilters = [] } = searchParams;
   const parsedSearchParams = {
     q: q ? JSON.parse(q) : {},
@@ -191,13 +196,15 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
       : displayFields(
           workflow.suggestedLabelsFilter.kind,
           workflow.suggestedLabelsFilter.values,
-          workflow.allSuggestedLabels.map((name) => ({ name, rank: null }))
+          workflow.allSuggestedLabels.map(name => ({ name, rank: null }))
         ).map(prop('name'));
-    const hash = path(['match', 'params', 'searchId'], this.props) as string | null;
+    const hash = path(['match', 'params', 'searchId'], this.props) as
+      | string
+      | null;
 
     return (
       <Query query={PARAMS_QUERY} variables={{ hash }}>
-        {(queryParams) => {
+        {queryParams => {
           const searchParams = pathOr(
             {},
             ['data', 'searchParams'],
@@ -211,25 +218,31 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
               variables={{
                 searchHash: hash,
                 params: { ...parsedSearchParams, agg: 'front_matter_keys' },
-              }}
-            >
+              }}>
               {({ data = {}, loading, error }) => {
                 const { allCrowdAggs, myCrowdAggs } = data;
-                const recordsTotal = pathOr(0, ['search', 'recordsTotal'], data) as number;
-                const labels = uniq([
-                  ...new Set([
-                    ...extractBucketKeys(allCrowdAggs),
-                    ...extractBucketKeys(myCrowdAggs),
-                  ]),
-                ]
-                  .filter((x) => !FILTERED_LABELS.includes(x))
-                  .filter((x) => !workflow || allowedSuggestedLabels.includes(x)));
+                const recordsTotal = pathOr(
+                  0,
+                  ['search', 'recordsTotal'],
+                  data
+                ) as number;
+                const labels = uniq(
+                  [
+                    ...new Set([
+                      ...extractBucketKeys(allCrowdAggs),
+                      ...extractBucketKeys(myCrowdAggs),
+                    ]),
+                  ]
+                    .filter(x => !FILTERED_LABELS.includes(x))
+                    .filter(
+                      x => !workflow || allowedSuggestedLabels.includes(x)
+                    )
+                );
                 if (!labels.length) return null;
                 return (
                   <Query
                     query={bucketsForLabels(labels)}
-                    variables={variablesForLabels(labels, parsedSearchParams)}
-                  >
+                    variables={variablesForLabels(labels, parsedSearchParams)}>
                     {({ data = {}, loading, error }) => {
                       if (error) {
                         console.log(error);
@@ -255,15 +268,19 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                                     bulkListUpdate({
                                       variables: {
                                         input: {
-                                          updates: undoActions.map((a) => ({
+                                          updates: undoActions.map(a => ({
                                             ...omit(['__typename'], a),
-                                            state: a.state.map(omit(['__typename'])),
+                                            state: a.state.map(
+                                              omit(['__typename'])
+                                            ),
                                           })),
                                         },
                                       },
                                     }).then(() => {
-                                      this.setState((state) => ({
-                                        undoHistory: state.undoHistory.filter((x, i) => idx != i),
+                                      this.setState(state => ({
+                                        undoHistory: state.undoHistory.filter(
+                                          (x, i) => idx != i
+                                        ),
                                       }));
                                     });
                                   }}
@@ -281,21 +298,25 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                                               value,
                                               enable: true,
                                             })),
-                                            ...toRemove.map(({ name, value }) => ({
-                                              name,
-                                              value,
-                                              enable: false,
-                                            })),
+                                            ...toRemove.map(
+                                              ({ name, value }) => ({
+                                                name,
+                                                value,
+                                                enable: false,
+                                              })
+                                            ),
                                           ],
                                         },
                                       },
                                     }).then((result: any) => {
-                                      this.setState((state) => ({
+                                      this.setState(state => ({
                                         undoHistory: [
                                           ...state.undoHistory,
                                           {
                                             description,
-                                            undoActions: result.data.bulkQueryUpdate.undoActions,
+                                            undoActions:
+                                              result.data.bulkQueryUpdate
+                                                .undoActions,
                                           },
                                         ],
                                       }));
@@ -320,7 +341,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
   render() {
     return (
       <WorkflowsViewProvider>
-        {(workflowsView) => {
+        {workflowsView => {
           const workflow = pipe(
             prop('workflows'),
             find(propEq('name', 'wf_bulk'))
@@ -332,6 +353,10 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
   }
 }
 
-const FILTERED_LABELS = ['browse_condition_mesh_terms', 'overall_status', 'phase'];
+const FILTERED_LABELS = [
+  'browse_condition_mesh_terms',
+  'overall_status',
+  'phase',
+];
 
 export default BulkEditPage;

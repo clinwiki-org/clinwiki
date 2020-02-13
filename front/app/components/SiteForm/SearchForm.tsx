@@ -44,12 +44,12 @@ interface SearchFormState {
 
 const SEARCH_FIELDS = studyFields.map(option => ({
   id: option,
-  label: sentanceCase(option)
+  label: sentanceCase(option),
 }));
 
 const AGGS_OPTIONS = aggsOrdered.map(option => ({
   id: option,
-  label: sentanceCase(aggToField(option))
+  label: sentanceCase(aggToField(option)),
 }));
 
 const AggsHeaderContainer = styled.div`
@@ -116,7 +116,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   getCrowdFields = view => {
     return view.search.crowdAggs.fields.map(field => ({
       id: field.name,
-      label: sentanceCase(field.name)
+      label: sentanceCase(field.name),
     }));
   };
 

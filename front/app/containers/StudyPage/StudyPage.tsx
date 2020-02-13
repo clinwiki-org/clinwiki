@@ -178,17 +178,13 @@ const SidebarContainer = styled(Col)`
 `;
 
 const StudySummaryContainer = styled.div`
-
   .container {
-
     div {
-
       .panel-default {
-
         background: none;
         border: none;
-        borderRadius: 0;
-        boxShadow: none;
+        borderradius: 0;
+        boxshadow: none;
 
         .panel-heading {
           cursor: pointer;
@@ -197,13 +193,9 @@ const StudySummaryContainer = styled.div`
           border-bottom: 2px solid;
           border-color: #8bb7a4;
         }
-
       }
-
     }
-
   }
-
 `;
 
 const BackButtonWrapper = styled.div`
@@ -228,7 +220,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     const pathComponents = pipe(
       split('/'),
       reject(isEmpty),
-      map(x => `/${x}`),
+      map(x => `/${x}`)
     )(trimPath(this.props.location.pathname)) as string[];
 
     for (const component of pathComponents) {
@@ -244,7 +236,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     const pathComponents = pipe(
       split('/'),
       reject(isEmpty),
-      map(x => `/${x}`),
+      map(x => `/${x}`)
     )(trimPath(this.props.location.pathname)) as string[];
 
     for (const component of pathComponents) {
@@ -253,7 +245,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         return pipe(
           drop(idx),
           // @ts-ignore
-          join(''),
+          join('')
         )(pathComponents);
       }
     }
@@ -262,20 +254,20 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
-
     const sections = this.getSections(view);
     const noWikiSections = reject(propEq('name', 'wiki'), sections);
-    const wiki = find(propEq('name', 'wiki'), sections);
+    const wiki = find(propEq('name', 'wiki'), sections) as Section;
 
-    // @ts-ignore
-    const retVar = !wiki || wiki.hidden ? noWikiSections : ([...noWikiSections, wiki] as Section[]);
+    const retVar =
+      !wiki || wiki.hidden
+        ? noWikiSections
+        : ([...noWikiSections, wiki] as Section[]);
 
     console.log('getSectionsForRoutes: ');
     console.log(retVar);
 
     // @ts-ignore
     return retVar;
-
   };
 
   getComponent = (name: string): any => {
@@ -290,8 +282,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         return FacilitiesPage;
       case 'tags':
         return TagsPage;
+      case 'interventions':
+        return InterventionsPage;
       default:
-        return () => null;
+        return GenericStudySectionPage;
     }
   };
 
@@ -330,18 +324,15 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       displayName: section.title,
       kind: 'extended',
       order: section.order,
-      component: GenericStudySectionPage,
+      component: this.getComponent(section.title.toLowerCase()),
       hidden: section.hide,
       metaData: section,
     }));
 
     // @ts-ignore
     const processedExtendedSections = sortBy(
-      pipe(
-        prop('order'),
-        parseInt,
-      ),
-      extendedSections,
+      pipe(prop('order'), parseInt),
+      extendedSections
     );
     const res = [...basicSections, ...processedExtendedSections] as Section[];
 
@@ -364,14 +355,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
   handleNavButtonClick = (link: string, view: SiteViewFragment) => () => {
     this.props.history.push(
-      `${trimPath(link)}${this.getCurrentSectionFullPath(view)}`,
+      `${trimPath(link)}${this.getCurrentSectionFullPath(view)}`
     );
   };
 
   renderNavButton = (
     view: SiteViewFragment,
     name: string,
-    link?: string | null,
+    link?: string | null
   ) => {
     if (link === undefined) return null;
 
@@ -379,8 +370,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       <Button
         style={{ marginRight: 10, marginBottom: 10 }}
         onClick={this.handleNavButtonClick(link!, view)}
-        disabled={link === null}
-      >
+        disabled={link === null}>
         {name}
       </Button>
     );
@@ -389,17 +379,16 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   renderBackButton = (
     view: SiteViewFragment,
     name: string,
-    link?: string | null,
+    link?: string | null
   ) => {
     if (link === undefined) return null;
 
     return (
-      <div style={{ paddingTop: '10px' }} >
+      <div style={{ paddingTop: '10px' }}>
         <Button
           style={{ margin: 'auto', float: 'left' }}
           onClick={this.handleNavButtonClick(link!, view)}
-          disabled={link === null}
-        >
+          disabled={link === null}>
           {name}
         </Button>
       </div>
@@ -427,14 +416,16 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
             edit={false}
             value={data.study.averageRating}
           />
-          <div style={{ color: 'rgba(255, 255, 255, 0.5)' }}>{`${data.study.reviewsCount} Reviews`}</div>
+          <div
+            style={{
+              color: 'rgba(255, 255, 255, 0.5)',
+            }}>{`${data.study.reviewsCount} Reviews`}</div>
         </div>
       </ReviewsWrapper>
     );
   };
 
   render() {
-
     return (
       <SiteProvider>
         {site => (
@@ -442,14 +433,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
             {workflowsView => {
               const workflow = pipe(
                 prop('workflows'),
-                find(propEq('name', this.props.workflowName)),
+                find(propEq('name', this.props.workflowName))
               )(workflowsView) as WorkflowConfigFragment | null;
 
               return (
                 <QueryComponent
                   query={QUERY}
                   variables={{ nctId: this.props.match.params.nctId }}
-                  fetchPolicy="cache-only" >
+                  fetchPolicy="cache-only">
                   {({ data, loading, error }) => (
                     <StudyWrapper>
                       <Row md={12}>
@@ -457,28 +448,26 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           {this.renderBackButton(
                             site.siteView,
                             '⤺︎ Back',
-                            `/search/${this.props.match.params.searchId}`,
+                            `/search/${this.props.match.params.searchId}`
                           )}
                           {this.renderReviewsSummary(data)}
                         </BackButtonWrapper>
                       </Row>
                       <Row>
-
                         <MainContainer md={12}>
-
                           <div className="container">
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
                                 site.siteView,
                                 '❮❮ First',
-                                this.props.firstLink,
+                                this.props.firstLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
                                 site.siteView,
                                 '❮ Previous',
-                                this.props.prevLink,
+                                this.props.prevLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
@@ -491,14 +480,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               {this.renderNavButton(
                                 site.siteView,
                                 'Next ❯',
-                                this.props.nextLink,
+                                this.props.nextLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
                                 site.siteView,
                                 'Last ❯❯',
-                                this.props.lastLink,
+                                this.props.lastLink
                               )}
                             </div>
                           </div>
@@ -515,16 +504,17 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
                           <div className="container">
                             <StudyPageSections
-                                history={this.props.history}
-                                location={this.props.location}
-                                nctId={this.props.match.params.nctId}
-                                sections={this.getSections(site.siteView)}
-                                isWorkflow={this.props.isWorkflow}
-                                nextLink={this.props.nextLink}
-                                workflowName={this.props.workflowName}
-                                onLoad={this.handleLoaded}
-                                workflowsView={workflowsView}
-                                match={this.props.match} />
+                              history={this.props.history}
+                              location={this.props.location}
+                              nctId={this.props.match.params.nctId}
+                              sections={this.getSections(site.siteView)}
+                              isWorkflow={this.props.isWorkflow}
+                              nextLink={this.props.nextLink}
+                              workflowName={this.props.workflowName}
+                              onLoad={this.handleLoaded}
+                              workflowsView={workflowsView}
+                              match={this.props.match}
+                            />
                           </div>
 
                           <div className="container">
@@ -532,14 +522,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               {this.renderNavButton(
                                 site.siteView,
                                 '❮❮ First',
-                                this.props.firstLink,
+                                this.props.firstLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
                                 site.siteView,
                                 '❮ Previous',
-                                this.props.prevLink,
+                                this.props.prevLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
@@ -552,14 +542,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               {this.renderNavButton(
                                 site.siteView,
                                 'Next ❯',
-                                this.props.nextLink,
+                                this.props.nextLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
                                 site.siteView,
                                 'Last ❯❯',
-                                this.props.lastLink,
+                                this.props.lastLink
                               )}
                             </div>
                           </div>
@@ -568,8 +558,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                       {this.state.triggerPrefetch && (
                         <PrefetchQueryComponent
                           query={PREFETCH_QUERY}
-                          variables={{ nctId: this.props.match.params.nctId }}
-                        >
+                          variables={{ nctId: this.props.match.params.nctId }}>
                           {() => null}
                         </PrefetchQueryComponent>
                       )}

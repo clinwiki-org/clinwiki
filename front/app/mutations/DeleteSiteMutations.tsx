@@ -11,7 +11,7 @@ import { DeleteSiteMutationsSitesQuery } from 'types/DeleteSiteMutationsSitesQue
 interface DeleteSiteMutationProps {
   children: (
     mutate: DeleteSiteMutationFn,
-    result: MutationResult<DeleteSiteMutationType>,
+    result: MutationResult<DeleteSiteMutationType>
   ) => React.ReactNode;
   onCompleted?: (data: DeleteSiteMutationType) => void;
   onError?: (e: ApolloError) => void;
@@ -77,8 +77,7 @@ class DeleteSiteMutation extends React.PureComponent<DeleteSiteMutationProps> {
             query: SITES_QUERY,
             data: updatedData,
           });
-        }}
-      >
+        }}>
         {this.props.children}
       </DeleteSiteMutationComponent>
     );

@@ -141,7 +141,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
 
   updateMetaTags = (
     updater: (tags: string[]) => string[],
-    meta: string,
+    meta: string
   ): string => {
     const tags = this.getTagsFromMeta(meta);
     const parsedMeta = JSON.parse(meta);
@@ -162,7 +162,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                 contains(this.state.newTag, tags)
                   ? tags
                   : [...tags, this.state.newTag],
-              meta,
+              meta
             ),
             edits: [],
           },
@@ -180,7 +180,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   handleDeleteTag = (
     meta: string,
     deleteTag: DeleteTagMutationFn,
-    value: string,
+    value: string
   ) => () => {
     deleteTag({
       variables: { value, nctId: this.props.nctId },
@@ -227,10 +227,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
 
   render() {
     return (
-      <QueryComponent
-        query={QUERY}
-        variables={{ nctId: this.props.nctId }}
-      >
+      <QueryComponent query={QUERY} variables={{ nctId: this.props.nctId }}>
         {({ data, loading, error }) => {
           if (
             loading ||
@@ -269,8 +266,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                         {addTag => (
                           <Button
                             onClick={this.handleAddTag(meta, addTag)}
-                            style={{ marginLeft: 10 }}
-                          >
+                            style={{ marginLeft: 10 }}>
                             Add Tag
                           </Button>
                         )}

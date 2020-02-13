@@ -1,20 +1,20 @@
-import * as React from "react";
-import styled from "styled-components";
-import { Query } from "react-apollo";
-import { gql } from "apollo-boost";
-import { match } from "react-router-dom";
-import { History } from "history";
+import * as React from 'react';
+import styled from 'styled-components';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
+import { match } from 'react-router-dom';
+import { History } from 'history';
 import {
   FacilitiesPageQuery,
-  FacilitiesPageQueryVariables
-} from "types/FacilitiesPageQuery";
-import { FacilityFragment } from "types/FacilityFragment";
-import StudySummary from "components/StudySummary";
-import GoogleMapReact from "google-map-react";
-import { pipe, addIndex, map, flatten, isEmpty } from "ramda";
-import { SiteStudyBasicGenericSectionFragment } from "types/SiteStudyBasicGenericSectionFragment";
-import MapMarker from "./MapMarker";
-import FacilityCard from "./FacilityCard";
+  FacilitiesPageQueryVariables,
+} from 'types/FacilitiesPageQuery';
+import { FacilityFragment } from 'types/FacilityFragment';
+import StudySummary from 'components/StudySummary';
+import GoogleMapReact from 'google-map-react';
+import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
+import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import MapMarker from './MapMarker';
+import FacilityCard from './FacilityCard';
 
 const MappingContainer = styled.div`
   display: flex;
@@ -113,7 +113,7 @@ const QUERY = gql`
 `;
 
 const MAPOPTIONS = {
-  minZoom: 0
+  minZoom: 0,
 };
 
 class QueryComponent extends Query<
@@ -131,7 +131,7 @@ class FacilitiesPage extends React.PureComponent<
     markerClicked: false,
     facilityExpanded: false,
     mapCenter: { lat: 39.5, lng: -98.35 },
-    mapZoom: 4
+    mapZoom: 4,
   };
   static fragment = FRAGMENT;
 
@@ -140,8 +140,8 @@ class FacilitiesPage extends React.PureComponent<
       mapZoom: 4,
       mapCenter: {
         lat: 39.5,
-        lng: -98.35
-      }
+        lng: -98.35,
+      },
     });
   };
 
@@ -151,15 +151,15 @@ class FacilitiesPage extends React.PureComponent<
         mapZoom: 4,
         mapCenter: {
           lat: 39.5,
-          lng: -98.35
-        }
+          lng: -98.35,
+        },
       });
     }
   };
 
   processFacility = (facility: FacilityFragment, i: number) => {
     const res: {
-      key: string;
+      key: string | null;
       location: string;
       index: number;
       status: string;
@@ -167,27 +167,30 @@ class FacilitiesPage extends React.PureComponent<
       latitude: number | null;
       longitude: number | null;
       geoStatus: string | null;
+      name: string | null;
     }[] = [];
     const { name, country, city, state, zip, contacts, location } = facility;
     const latitude = location?.latitude ?? null;
     const longitude = location?.longitude ?? null;
     const geoStatus = location?.status ?? null;
     const newStatus = isEmpty(facility.status)
-      ? "Status Unknown"
+      ? 'Status Unknown'
       : facility.status;
     const newLocation = isEmpty(facility.state)
       ? `${city}, ${country}`
       : `${city}, ${state} ${zip}, ${country}`;
+    const uid = `${city}-${state}-${zip}-${country}`;
 
     res.push({
-      key: name,
+      name: name,
+      key: uid,
       location: newLocation,
       index: i + 1,
       status: newStatus,
       contacts: contacts,
       latitude: latitude,
       longitude: longitude,
-      geoStatus: geoStatus
+      geoStatus: geoStatus,
     });
     return res;
   };
@@ -200,9 +203,11 @@ class FacilitiesPage extends React.PureComponent<
     contacts,
     latitude,
     longitude,
-    geoStatus
+    geoStatus,
+    name,
   }: {
     key: string;
+    name: string | null;
     location: string | null;
     index: number;
     status: string;
@@ -215,6 +220,7 @@ class FacilitiesPage extends React.PureComponent<
       <div>
         <FacilityCard
           key={`${key}-${index}`}
+          name={name}
           title={key}
           index={index}
           status={status}
@@ -231,20 +237,20 @@ class FacilitiesPage extends React.PureComponent<
 
   onMarkerClick = () => {
     this.setState({
-      markerClicked: !this.state.markerClicked
+      markerClicked: !this.state.markerClicked,
     });
   };
 
   onCardNumberClick = (lat, long, status) => {
-    if (status === "bad") {
+    if (status === 'bad') {
       return null;
     } else
       this.setState({
         mapCenter: {
           lat: lat,
-          lng: long
+          lng: long,
         },
-        mapZoom: 8
+        mapZoom: 8,
       });
   };
 
@@ -263,7 +269,6 @@ class FacilitiesPage extends React.PureComponent<
           ) {
             return null;
           }
-
           this.props.onLoaded && this.props.onLoaded();
           const facilities = data.study.facilities;
           const items = pipe(
@@ -271,6 +276,7 @@ class FacilitiesPage extends React.PureComponent<
             // @ts-ignore
             flatten
           )(facilities) as {
+            name: string;
             key: string;
             location: string;
             index: number;
@@ -288,7 +294,7 @@ class FacilitiesPage extends React.PureComponent<
               <MapContainer>
                 <GoogleMapReact
                   bootstrapURLKeys={{
-                    key: "AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M"
+                    key: 'AIzaSyBfU6SDxHb6b_ZYtMWngKj8zyeRgcrhM5M',
                   }}
                   defaultCenter={{ lat: 39.5, lng: -98.35 }}
                   center={mapCenter}
@@ -296,10 +302,9 @@ class FacilitiesPage extends React.PureComponent<
                   zoom={mapZoom}
                   hoverDistance={K_HOVER_DISTANCE}
                   options={MAPOPTIONS}
-                  key={this.props}
-                >
+                  key={this.props}>
                   {facilities.map((item, index) => {
-                    if (item.location?.status ?? "bad" === "bad") {
+                    if ((item.location?.status ?? 'bad') === 'bad') {
                       return null;
                     } else
                       return (

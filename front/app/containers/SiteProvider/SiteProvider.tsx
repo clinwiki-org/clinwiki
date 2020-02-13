@@ -1,12 +1,12 @@
-import * as React from "react";
-import styled from "styled-components";
-import { Query } from "react-apollo";
-import { gql } from "apollo-boost";
+import * as React from 'react';
+import styled from 'styled-components';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import {
   SiteProviderQuery,
-  SiteProviderQueryVariables
-} from "types/SiteProviderQuery";
-import { SiteFragment } from "types/SiteFragment";
+  SiteProviderQueryVariables,
+} from 'types/SiteProviderQuery';
+import { SiteFragment } from 'types/SiteFragment';
 
 interface SiteProviderProps {
   id?: number;

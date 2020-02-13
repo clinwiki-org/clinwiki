@@ -1,6 +1,6 @@
-import * as React from "react";
-import styled from "styled-components";
-import * as FontAwesome from "react-fontawesome";
+import * as React from 'react';
+import styled from 'styled-components';
+import * as FontAwesome from 'react-fontawesome';
 
 const FacilityCardWrapper = styled.div`
   background-color: white;
@@ -196,24 +196,24 @@ class FacilityCard extends React.PureComponent<any> {
   state = {
     facilityExpanded: false,
     warningHover: false,
-    errorHover: false
+    errorHover: false,
   };
 
   toggleExpand = () => {
     this.setState({
-      facilityExpanded: !this.state.facilityExpanded
+      facilityExpanded: !this.state.facilityExpanded,
     });
   };
 
   toggleWarning = bool => {
     this.setState({
-      warningHover: bool
+      warningHover: bool,
     });
   };
 
   toggleError = bool => {
     this.setState({
-      errorHover: bool
+      errorHover: bool,
     });
   };
 
@@ -224,8 +224,8 @@ class FacilityCard extends React.PureComponent<any> {
     let shortStr = str.substr(0, n);
     return (
       (useWordBoundary
-        ? shortStr.substr(0, shortStr.lastIndexOf(" "))
-        : shortStr) + "..."
+        ? shortStr.substr(0, shortStr.lastIndexOf(' '))
+        : shortStr) + '...'
     );
   };
 
@@ -239,15 +239,14 @@ class FacilityCard extends React.PureComponent<any> {
         <FacilitySubHead>Contact Info:</FacilitySubHead>
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            marginLeft: "20px"
-          }}
-        >
+            display: 'flex',
+            flexDirection: 'column',
+            marginLeft: '20px',
+          }}>
           {contacts.map((item, index) => (
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               <ContactHead>{this.capitalize(item.contactType)}</ContactHead>
-              <div style={{ marginLeft: "20px" }}>
+              <div style={{ marginLeft: '20px' }}>
                 <Row>
                   <FacilitySubHead>Phone:</FacilitySubHead>
                   <FacilitySubText>{item.phone}</FacilitySubText>
@@ -281,63 +280,58 @@ class FacilityCard extends React.PureComponent<any> {
   };
 
   renderNumber = (geoStatus, index, latitude, longitude, numberClick) => {
-    if (geoStatus === "good") {
+    if (geoStatus === 'good') {
       return (
         <FacilityNumber
-          onClick={() => numberClick(latitude, longitude, geoStatus)}
-        >
+          onClick={() => numberClick(latitude, longitude, geoStatus)}>
           {index}
         </FacilityNumber>
       );
     }
-    if (geoStatus === "zip") {
+    if (geoStatus === 'zip') {
       return (
         <WarningNumber
           onClick={() => numberClick(latitude, longitude, geoStatus)}
           onMouseEnter={() => this.toggleWarning(true)}
-          onMouseOut={() => this.toggleWarning(false)}
-        >
+          onMouseOut={() => this.toggleWarning(false)}>
           <WarningHover
             style={
               this.state.warningHover
-                ? { visibility: "visible" }
-                : { visibility: "hidden" }
-            }
-          >
+                ? { visibility: 'visible' }
+                : { visibility: 'hidden' }
+            }>
             Partial Address Mapped
           </WarningHover>
           {index}
           <WarningPointer
             style={
               this.state.warningHover
-                ? { visibility: "visible" }
-                : { visibility: "hidden" }
+                ? { visibility: 'visible' }
+                : { visibility: 'hidden' }
             }
           />
         </WarningNumber>
       );
     }
-    if (geoStatus === "bad") {
+    if (geoStatus === 'bad') {
       return (
         <ErrorNumber
           onMouseEnter={() => this.toggleError(true)}
-          onMouseOut={() => this.toggleError(false)}
-        >
+          onMouseOut={() => this.toggleError(false)}>
           <ErrorHover
             style={
               this.state.errorHover
-                ? { visibility: "visible" }
-                : { visibility: "hidden" }
-            }
-          >
+                ? { visibility: 'visible' }
+                : { visibility: 'hidden' }
+            }>
             No Address Mapped
           </ErrorHover>
           !
           <ErrorPointer
             style={
               this.state.errorHover
-                ? { visibility: "visible" }
-                : { visibility: "hidden" }
+                ? { visibility: 'visible' }
+                : { visibility: 'hidden' }
             }
           />
         </ErrorNumber>
@@ -346,7 +340,7 @@ class FacilityCard extends React.PureComponent<any> {
   };
 
   renderLocation = (geoStatus, location) => {
-    if (geoStatus === "bad") {
+    if (geoStatus === 'bad') {
       return (
         <Row>
           <FacilitySubHead>Location:</FacilitySubHead>
@@ -354,7 +348,7 @@ class FacilityCard extends React.PureComponent<any> {
         </Row>
       );
     }
-    if (geoStatus === "zip") {
+    if (geoStatus === 'zip') {
       return (
         <Row>
           <FacilitySubHead>Location:</FacilitySubHead>
@@ -362,7 +356,7 @@ class FacilityCard extends React.PureComponent<any> {
         </Row>
       );
     }
-    if (geoStatus === "good") {
+    if (geoStatus === 'good') {
       return (
         <Row>
           <FacilitySubHead>Location</FacilitySubHead>
@@ -383,17 +377,19 @@ class FacilityCard extends React.PureComponent<any> {
       numberClick,
       latitude,
       longitude,
-      geoStatus
+      geoStatus,
+      name,
     } = this.props;
-    const newTitle = facilityExpanded
-      ? title
-      : this.truncateString(title, 33, true);
+    let newTitle;
+    if (name) {
+      newTitle = facilityExpanded ? name : this.truncateString(name, 33, true);
+    } else newTitle = title;
 
     return (
       <FacilityCardWrapper key={title}>
         <FacilityHeader>
-          <FacilityTitle>{newTitle || ""}</FacilityTitle>
-          <div style={{ width: "8%" }}>
+          <FacilityTitle>{newTitle || ''}</FacilityTitle>
+          <div style={{ width: '8%' }}>
             {this.renderNumber(
               geoStatus,
               index,
@@ -414,7 +410,7 @@ class FacilityCard extends React.PureComponent<any> {
         <FacilityFooter>
           {
             <FontAwesome
-              name={facilityExpanded ? "chevron-up" : "chevron-down"}
+              name={facilityExpanded ? 'chevron-up' : 'chevron-down'}
               onClick={this.toggleExpand}
             />
           }

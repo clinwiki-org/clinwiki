@@ -9,7 +9,7 @@ import {
 interface UpdateWikiSectionsMutationProps {
   children: (
     mutate: UpdateWikiSectionsMutationFn,
-    result: MutationResult<UpdateWikiSectionsMutationType>,
+    result: MutationResult<UpdateWikiSectionsMutationType>
   ) => React.ReactNode;
   onCompleted?: (data: UpdateWikiSectionsMutationType) => void;
   onError?: (e: ApolloError) => void;
@@ -44,8 +44,7 @@ class UpdateWikiSectionsMutation extends React.PureComponent<
       <UpdateWikiSectionsMutationComponent
         mutation={UPDATE_WIKI_SECTIONS_MUTATION}
         onCompleted={this.props.onCompleted}
-        onError={this.props.onError}
-      >
+        onError={this.props.onError}>
         {this.props.children}
       </UpdateWikiSectionsMutationComponent>
     );

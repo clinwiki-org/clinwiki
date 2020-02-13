@@ -29,6 +29,15 @@ const QUERY = gql`
         }
       }
     }
+    crowdAggFacets {
+    aggs {
+      name
+      buckets {
+        key
+        docCount
+      }
+    }
+  }
     study(nctId: $nctId) {
       nctId
       wikiPage {
@@ -66,7 +75,7 @@ const StyledPanel = styled(CollapsiblePanel)`
 
 class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
   handleSelect = (key: string, value: string) => (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     this.props.onSelect(key, value, e.currentTarget.checked);
   };
@@ -79,8 +88,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
             key={value}
             checked={checked}
             disabled={this.props.disabled}
-            onChange={this.handleSelect(key, value)}
-          >
+            onChange={this.handleSelect(key, value)}>
             {value}
           </Checkbox>
         ))}
@@ -95,15 +103,14 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
         query={QUERY}
         variables={{
           nctId: this.props.nctId,
-        }}
-      >
+        }}>
         {({ data, loading, error }) => {
           if (loading || error || !data) return null;
           let meta: { [key: string]: string } = {};
           try {
             meta = JSON.parse(
               (data.study && data.study.wikiPage && data.study.wikiPage.meta) ||
-                '{}',
+                '{}'
             );
           } catch (e) {
             console.log(`Error parsing meta: ${meta}`);
@@ -113,12 +120,12 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
             keys,
             map((key: string) => [key, meta[key].split('|')]),
             // @ts-ignore
-            fromPairs,
+            fromPairs
           )(meta);
 
           const aggs = pipe(
-            pathOr([], ['search', 'aggs']),
-            filter((agg: any) => agg.name.startsWith('fm_')),
+            pathOr([], ['crowdAggFacets', 'aggs']),
+            // filter((agg: any) => agg.name.startsWith('fm_')),
             map((agg: any) => {
               const name = agg.name.substring(3, 1000);
               const existingLabels = labels[name] || [];
@@ -131,12 +138,12 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
               ];
             }),
             // @ts-ignore
-            fromPairs,
+            fromPairs
           )(data);
 
           const aggNames = pipe(
             keys,
-            filter(name => this.props.allowedSuggestedLabels.includes(name)),
+            filter(name => this.props.allowedSuggestedLabels.includes(name))
           )(aggs) as string[];
 
           return (

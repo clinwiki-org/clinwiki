@@ -46,10 +46,7 @@ type Section = {
 const StyleWrapper = styled.div`
   .panel-heading {
     cursor: pointer;
-    ${(props: StyleWrapperProps) =>
-      props.dropdown
-        ? ''
-        : ''}
+    ${(props: StyleWrapperProps) => (props.dropdown ? '' : '')}
   }
   .panel-toggle {
     margin-top: 2px;
@@ -80,88 +77,79 @@ const StyledPanelBody = styled.div`
   }
 `;
 
-class StudyPageSection extends React.Component<StudyPageSectionProps, StudyPageSectionsState> {
-
+class StudyPageSection extends React.Component<
+  StudyPageSectionProps,
+  StudyPageSectionsState
+> {
   constructor(props) {
-
     super(props);
 
     this.state = { visible: !(window.innerWidth <= 500) };
-
   }
 
   changeTab = () => {
     this.setState({ visible: !this.state.visible });
-  }
+  };
 
   render() {
-
     return (
-
       <StyleWrapper dropdown={this.state.visible}>
-
         <Panel
-            key={this.props.section.name}
-            style={{
-              background: 'none',
-              border: 'none',
-              borderRadius: '0',
-              boxShadow: 'none',
-            }} >
+          key={this.props.section.name}
+          style={{
+            background: 'none',
+            border: 'none',
+            borderRadius: '0',
+            boxShadow: 'none',
+          }}>
           <Panel.Heading
-              style={{
-                cursor: 'pointer',
-                background: 'none',
-                color: 'black',
-                borderBottom: '2px solid',
-                borderColor: '#8bb7a4',
-              }}
-              onClick={() => this.changeTab()}>
+            style={{
+              cursor: 'pointer',
+              background: 'none',
+              color: 'black',
+              borderBottom: '2px solid',
+              borderColor: '#8bb7a4',
+            }}
+            onClick={() => this.changeTab()}>
             <FontAwesome
-                name={this.state.visible ? 'chevron-up' : 'chevron-down'}
-                className="panel-toggle"
-                style={{ float: 'left', paddingRight: '5px' }} />
+              name={this.state.visible ? 'chevron-up' : 'chevron-down'}
+              className="panel-toggle"
+              style={{ float: 'left', paddingRight: '5px' }}
+            />
             <Panel.Title componentClass="h3" style={{ fontSize: '18px' }}>
               {this.props.section.displayName}
             </Panel.Title>
           </Panel.Heading>
           <CSSTransition
-              in={this.state.visible}
-              timeout={200}
-              appear
-              classNames="transition">
-
+            in={this.state.visible}
+            timeout={200}
+            appear
+            classNames="transition">
             {() => {
-
               const Component = this.props.section.component;
 
               return (
                 <StyledPanelBody>
                   <Panel.Body>
                     <Component
-                        nctId={this.props.nctId}
-                        workflowName={this.props.workflowName}
-                        metaData={this.props.section.metaData}
-                        onLoaded={this.props.onLoad}
-                        isWorkflow={this.props.isWorkflow}
-                        history={this.props.history}
-                        match={this.props.match}
-                        location={this.props.location} />
+                      nctId={this.props.nctId}
+                      workflowName={this.props.workflowName}
+                      metaData={this.props.section.metaData}
+                      onLoaded={this.props.onLoad}
+                      isWorkflow={this.props.isWorkflow}
+                      history={this.props.history}
+                      match={this.props.match}
+                      location={this.props.location}
+                    />
                   </Panel.Body>
                 </StyledPanelBody>
               );
-
             }}
-
           </CSSTransition>
         </Panel>
-
       </StyleWrapper>
-
     );
-
   }
-
 }
 
 export default StudyPageSection;

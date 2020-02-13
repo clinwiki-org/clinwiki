@@ -80,8 +80,7 @@ class CreateSiteMutation extends React.PureComponent<CreateSiteMutationProps> {
           ]);
           const newData = set(ownStoresLens, data.createSite.site, currentData);
           cache.writeQuery({ query: OWN_SITES_QUERY, data: newData });
-        }}
-      >
+        }}>
         {this.props.children}
       </CreateSiteMutationComponent>
     );

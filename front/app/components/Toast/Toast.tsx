@@ -34,7 +34,6 @@ class Toast extends React.PureComponent<ToastProps> {
 
 const Text = styled.p``;
 const Container = styled.div`
-
   display: flex;
   justify-content: space-between;
 `;

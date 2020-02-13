@@ -142,8 +142,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       <StyledNav
         bsStyle="pills"
         activeKey={activeKey}
-        onSelect={key => this.props.history.push(`${path}${key}`)}
-      >
+        onSelect={key => this.props.history.push(`${path}${key}`)}>
         {sections.map(section => (
           <NavItem key={`${section.path}`} eventKey={`${section.path}`}>
             {section.value}

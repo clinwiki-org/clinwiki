@@ -38,7 +38,7 @@ class EditWorkflowsPage extends React.Component<
   state: EditWorkflowsPageState = { currentWorkflowName: null, mutations: [] };
 
   applyMutations = (
-    workflowsView: WorkflowsViewFragment,
+    workflowsView: WorkflowsViewFragment
   ): WorkflowsViewFragment => {
     // @ts-ignore
     return updateView(workflowsView, this.state.mutations);
@@ -72,9 +72,11 @@ class EditWorkflowsPage extends React.Component<
     return (
       <WorkflowsViewProvider>
         {rawWorkflowsView => {
-          if (!this.state.currentWorkflowName 
-              && rawWorkflowsView.workflows
-              && rawWorkflowsView.workflows.length > 0) {
+          if (
+            !this.state.currentWorkflowName &&
+            rawWorkflowsView.workflows &&
+            rawWorkflowsView.workflows.length > 0
+          ) {
             this.setState({
               currentWorkflowName: rawWorkflowsView.workflows[0].name,
             });
@@ -85,49 +87,52 @@ class EditWorkflowsPage extends React.Component<
 
           const workflow = find(
             propEq('name', this.state.currentWorkflowName),
-            workflowsView.workflows,
+            workflowsView.workflows
           ) as WorkflowConfigFragment;
 
           if (workflow == null)
-            return <Container><Row>No Workflows</Row></Container>;
-          else return (
-            <Container>
-              <Row>
-                <Col md={2}>
-                  <Nav
-                    bsStyle="pills"
-                    stacked
-                    activeKey={this.state.currentWorkflowName}
-                    onSelect={this.handleWorkflowSelect}
-                  >
-                    {workflowsView.workflows.map(workflow => (
-                      <NavItem key={workflow.name} eventKey={workflow.name}>
-                        {workflow.name}
-                      </NavItem>
-                    ))}
-                  </Nav>
-                </Col>
-                <Col md={10}>
-                  <StyledPanel>
-                    <WorkflowForm
-                      workflow={workflow}
-                      onAddMutation={this.handleAddMutation(workflowsView)}
-                    />
-                    <UpdateWorkflowsViewMutation>
-                      {updateWorflowsView => (
-                        <Button
-                          style={{ marginTop: 15 }}
-                          onClick={this.handleSave(updateWorflowsView)}
-                        >
-                          Save
-                        </Button>
-                      )}
-                    </UpdateWorkflowsViewMutation>
-                  </StyledPanel>
-                </Col>
-              </Row>
-            </Container>
-          );
+            return (
+              <Container>
+                <Row>No Workflows</Row>
+              </Container>
+            );
+          else
+            return (
+              <Container>
+                <Row>
+                  <Col md={2}>
+                    <Nav
+                      bsStyle="pills"
+                      stacked
+                      activeKey={this.state.currentWorkflowName}
+                      onSelect={this.handleWorkflowSelect}>
+                      {workflowsView.workflows.map(workflow => (
+                        <NavItem key={workflow.name} eventKey={workflow.name}>
+                          {workflow.name}
+                        </NavItem>
+                      ))}
+                    </Nav>
+                  </Col>
+                  <Col md={10}>
+                    <StyledPanel>
+                      <WorkflowForm
+                        workflow={workflow}
+                        onAddMutation={this.handleAddMutation(workflowsView)}
+                      />
+                      <UpdateWorkflowsViewMutation>
+                        {updateWorflowsView => (
+                          <Button
+                            style={{ marginTop: 15 }}
+                            onClick={this.handleSave(updateWorflowsView)}>
+                            Save
+                          </Button>
+                        )}
+                      </UpdateWorkflowsViewMutation>
+                    </StyledPanel>
+                  </Col>
+                </Row>
+              </Container>
+            );
         }}
       </WorkflowsViewProvider>
     );
