@@ -11,6 +11,7 @@ const notes = RichTextEditor.createValueFromString(
 
 ### Version 11
 - Bugfixes
+- #156 missing facets
 
 ### Version 10
 - #156 - visible crowd aggs
