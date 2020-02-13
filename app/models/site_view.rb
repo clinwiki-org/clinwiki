@@ -2,6 +2,11 @@ STAR_FIELDS = [:average_rating].freeze
 
 class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
+  after_save do
+    if default
+      site.site_views.where.not(id: id).update_all(default:false)
+    end
+  end
 
   class << self
     def default
@@ -238,6 +243,15 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         ],
       },
       search: {
+        config:{
+          fields:{
+          showPresearch:false,
+          showFacetBar:true,
+          showAutoSuggest:true,
+          showBreadCrumbs:true,
+          showResults:true,
+          }
+        },
         aggs: {
           selected: {
             kind: "BLACKLIST",

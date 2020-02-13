@@ -19,6 +19,7 @@ import { Query, ApolloConsumer } from 'react-apollo';
 import {
   path,
   map,
+  filter,
   dissoc,
   pathOr,
   prop,
@@ -44,13 +45,14 @@ import {
   SearchPageSearchQuery_search_aggs,
   SearchPageSearchQuery_search_aggs_buckets,
   SearchPageSearchQuery_crowdAggs_aggs,
-  SearchPageSearchQuery_search_studies,
-} from 'types/SearchPageSearchQuery';
-import { AggBucketMap } from './Types';
-import SiteProvider from 'containers/SiteProvider';
-import { SiteViewFragment } from 'types/SiteViewFragment';
-import { preselectedFilters } from 'utils/siteViewHelpers';
-import { stack as Menu } from 'react-burger-menu';
+  SearchPageSearchQuery_search_studies
+} from "types/SearchPageSearchQuery";
+import { AggBucketMap } from "./Types";
+import SiteProvider from "containers/SiteProvider";
+import { SiteViewFragment } from "types/SiteViewFragment";
+import { preselectedFilters } from "utils/siteViewHelpers";
+import { stack as Menu } from "react-burger-menu";
+import { match } from "react-router";
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
@@ -456,7 +458,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  renderSearch = (hash: string | null, view: SiteViewFragment) => {
+  renderSearch = (
+    hash: string | null,
+    view: SiteViewFragment,
+    siteViews: SiteViewFragment[]
+  ) => {
     return (
       <ParamsQueryComponent
         query={PARAMS_QUERY}
@@ -484,23 +490,38 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             view,
             data && data.searchParams
           );
-
           // hydrate state params from hash
           if (!this.state.params) {
             // this.setState({ params });
             return null;
           }
 
+          // current site view url should match w/one of the site views url
+          const checkUrls = filter(
+            siteViews => siteViews.url === this.props.match.params.siteviewUrl,
+            siteViews
+          );
+
+          const siteViewUrl =
+            checkUrls.length === 1 // not sure if I should be checking for duplicates
+              ? this.props.match.params.siteviewUrl
+              : "default";
+
           return (
             <HashQueryComponent
               query={HASH_QUERY}
-              variables={this.state.params || undefined}>
+              variables={this.state.params || undefined}
+            >
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
 
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
-                  return <Redirect to={`/search/${data.searchHash}`} />;
+                  return (
+                    <Redirect
+                      to={`/search/${siteViewUrl}/${data.searchHash}`}
+                    />
+                  );
                 }
 
                 return (
@@ -554,21 +575,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     if (this.state.showCards) {
-      window.addEventListener('scroll', this.handleScroll);
+      window.addEventListener("scroll", this.handleScroll);
     } else {
-      window.removeEventListener('scroll', this.handleScroll);
+      window.removeEventListener("scroll", this.handleScroll);
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   }
 
   componentDidUpdate() {
     if (this.state.showCards) {
-      window.addEventListener('scroll', this.handleScroll);
+      window.addEventListener("scroll", this.handleScroll);
     } else {
-      window.removeEventListener('scroll', this.handleScroll);
+      window.removeEventListener("scroll", this.handleScroll);
     }
   }
 

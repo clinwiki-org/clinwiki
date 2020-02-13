@@ -10,7 +10,8 @@ import { SiteFragment } from 'types/SiteFragment';
 
 interface SiteProviderProps {
   id?: number;
-  children: (site: SiteFragment) => React.ReactNode;
+  url?: string;
+  children: (site: SiteFragment, refetch: any) => React.ReactNode;
 }
 
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
@@ -52,7 +53,11 @@ const SITE_STUDY_PAGE_FRAGMENT = gql`
 
 const SITE_VIEW_FRAGMENT = gql`
   fragment SiteViewFragment on SiteView {
+    name
+    url
     id
+    default
+    description
     study {
       ...SiteStudyPageFragment
     }
@@ -116,7 +121,10 @@ const SITE_FRAGMENT = gql`
     owners {
       email
     }
-    siteView {
+    siteView(url: $url) {
+      ...SiteViewFragment
+    }
+    siteViews {
       ...SiteViewFragment
     }
   }
@@ -125,7 +133,7 @@ const SITE_FRAGMENT = gql`
 `;
 
 const QUERY = gql`
-  query SiteProviderQuery($id: Int) {
+  query SiteProviderQuery($id: Int, $url: String) {
     site(id: $id) {
       ...SiteFragment
     }
@@ -141,14 +149,14 @@ class QueryComponent extends Query<
 
 class SiteProvider extends React.PureComponent<SiteProviderProps> {
   static fragment = SITE_FRAGMENT;
-  static siteViewFragmemt = SITE_VIEW_FRAGMENT;
+  static siteViewFragment = SITE_VIEW_FRAGMENT;
 
   render() {
     return (
       <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
-        {({ data, loading, error }) => {
+        {({ data, loading, error, refetch }) => {
           if (loading || error) return null;
-          return this.props.children(data!.site!);
+          return this.props.children(data!.site!, refetch);
         }}
       </QueryComponent>
     );

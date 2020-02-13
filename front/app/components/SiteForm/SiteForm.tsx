@@ -1,30 +1,31 @@
-import * as React from 'react';
-import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
-import { equals, prop, last } from 'ramda';
-import { FormControl, Button, Nav, NavItem } from 'react-bootstrap';
-import styled from 'styled-components';
-import { gql } from 'apollo-boost';
-import { capitalize, trimPath } from 'utils/helpers';
-import { SiteFragment } from 'types/SiteFragment';
+import * as React from "react";
+import { CreateSiteInput, SiteViewMutationInput } from "types/globalTypes";
+import { equals, prop, last } from "ramda";
+import { FormControl, Button, Nav, NavItem } from "react-bootstrap";
+import styled from "styled-components";
+import { gql } from "apollo-boost";
+import { trimPath } from "utils/helpers";
+import { SiteFragment } from "types/SiteFragment";
+import { StyledContainer } from "./Styled";
 import {
   updateView,
   createMutation,
   getViewValueByPath,
-} from 'utils/siteViewUpdater';
-import { Switch, Route, match, Redirect } from 'react-router';
-import MainForm from './MainForm';
-import SearchForm from './SearchForm';
-import { StyledContainer } from './Styled';
-import { Link } from 'react-router-dom';
-import { History, Location } from 'history';
-import StudyForm from './StudyForm';
+  serializeMutation
+} from "utils/siteViewUpdater";
+import { Switch, Route, match, Redirect } from "react-router";
+import MainForm from "./MainForm";
+import SiteViewsRouter from "./SiteViewsRouter";
+import { History, Location } from "history";
+import StudyForm from "./StudyForm";
 
 interface SiteFormProps {
   match: match<{}>;
   site: SiteFragment;
   history: History;
   location: Location;
-  onSave: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
+  onSave: any;
+  refresh: any;
 }
 
 interface SiteFormState {
@@ -51,14 +52,14 @@ const StyledNav = styled(Nav)`
 class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   state: SiteFormState = {
     form: {
-      name: '',
-      subdomain: '',
+      name: "",
+      subdomain: "",
       skipLanding: false,
-      editorEmails: [],
+      editorEmails: []
     },
     mutations: [],
-    addEditorEmail: '',
-    prevForm: null,
+    addEditorEmail: "",
+    prevForm: null
   };
 
   static fragment = gql`
@@ -77,12 +78,12 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     state: SiteFormState
   ): SiteFormState | null => {
     const { name, subdomain, skipLanding, editors } = props.site;
-    const editorEmails = editors.map(prop('email'));
+    const editorEmails = editors.map(prop("email"));
     const form = {
       name,
       subdomain,
       skipLanding,
-      editorEmails,
+      editorEmails
     };
     if (form && !equals(form, state.prevForm as any)) {
       return { ...state, form, prevForm: form };
@@ -91,16 +92,24 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   };
 
   handleSave = () => {
-    this.props.onSave(this.state.form, this.state.mutations);
+    // const url = this.props.location.pathname;
+    // const cuttingAt = "/siteviews/";
+    // const cutPath = url.replace(new RegExp(".*" + cuttingAt), "");
+    // const stringId = cutPath.substring(0, cutPath.indexOf("/"));
+    // const siteViewId = parseInt(stringId);
+    // console.log("handlesaveid", siteViewId);
+    this.props.onSave(this.state.form);
   };
 
   handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
     const { name, value } = e.currentTarget;
     const mutation = createMutation(name, value);
-    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteViews[0], this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
-    this.setState({ mutations: [...this.state.mutations, mutation] });
+    this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
+      console.log("handleadd", mutation, view, currentValue)
+    );
   };
 
   handleFormChange = (form: CreateSiteInput) => {
@@ -109,16 +118,23 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
   renderTabs = () => {
     const path = trimPath(this.props.match.url);
-    const sections = [
-      { path: '/main', value: 'Main' },
-      { path: '/search', value: 'Search' },
-      { path: '/study', value: 'Study' },
-    ];
+    let sections;
+    if (path === "/sites/new") {
+      sections = [
+        { path: "/main", value: "Main" },
+        { path: "/study", value: "Study" }
+      ];
+    } else
+      sections = [
+        { path: "/main", value: "Main" },
+        { path: "/siteviews", value: "Search Views" },
+        { path: "/study", value: "Study" }
+      ];
 
-    const locationComponents = this.props.location.pathname.split('/');
+    const locationComponents = this.props.location.pathname.split("/");
     let activeKey = last(locationComponents);
-    if (locationComponents[locationComponents.length - 2] === 'study') {
-      activeKey = 'study';
+    if (locationComponents[locationComponents.length - 2] === "study") {
+      activeKey = "study";
     }
     activeKey = `/${activeKey}`;
 
@@ -141,7 +157,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const path = trimPath(this.props.match.path);
     return (
       <Container>
-        <h3 style={{ color: 'white', marginLeft: 15 }}>
+        <h3 style={{ color: "white", marginLeft: 15 }}>
           {this.props.site.name}
         </h3>
         {this.renderTabs()}
@@ -156,9 +172,16 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
             )}
           />
           <Route
-            path={`${path}/search`}
-            render={() => (
-              <SearchForm view={view} onAddMutation={this.handleAddMutation} />
+            path={`${path}/siteviews`}
+            render={props => (
+              //@ts-ignore
+              <SiteViewsRouter
+                {...props}
+                siteViews={this.props.site.siteViews}
+                refresh={this.props.refresh}
+                site={this.props.site}
+                // onAddMutation={this.handleAddMutation}
+              />
             )}
           />
           <Route
@@ -171,10 +194,23 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               />
             )}
           />
+          {/* <Route
+            path={`${path}/siteviews`}
+            render={() => (
+              <SiteViewsList
+                site={this.props.site}
+                refresh={this.props.refresh}
+                match={this.props.match}
+                history={this.props.history}
+                location={this.props.location}
+                onAddMutation={this.handleAddMutation}
+              />
+            )} */}
+          />
           <Redirect to={`${path}/main`} />
         </Switch>
         <StyledContainer>
-          <Button onClick={this.handleSave}>Save</Button>;
+          <Button onClick={this.handleSave}>Save</Button>
         </StyledContainer>
       </Container>
     );

@@ -1,18 +1,21 @@
 module Mutations
-  class UpdateSiteView < BaseMutation
+  class CreateSiteView < BaseMutation
     field :site_view, Types::SiteViewType, null: true
     field :errors, [String], null: true
 
-    argument :name, String, required: false
-    argument :default, Boolean, required: false
+    argument :name, String, required: true
     argument :url, String, required: false
     argument :description, String, required: false
-    argument :id, Int, required: true
-    argument :mutations, [Types::SiteViewMutationInputType], required: true
+    argument :default, Boolean, required: true
+    argument :mutations,[Types::SiteViewMutationInputType],required: true
+    argument :site_id, Integer, required: true
 
     def resolve(args)
-      view = site_view(args[:id])
-      view.attributes = {name:args[:name], default: args[:default], url: args[:url], description: args[:description]}
+      site = Site.find_by(id: args[:site_id])
+      if site.nil?
+        return   { site_view: nil, errors: ["Site not found"] }
+      end
+      view = site.site_views.new(name:args[:name], default: args[:default], url: args[:url], description: args[:description])
       mutations = args[:mutations].clone.map do |mutation|
         begin
           mutation[:payload] = JSON.parse(mutation[:payload])
@@ -30,8 +33,7 @@ module Mutations
     end
 
     def authorized?(args)
-      view = site_view(args[:id])
-      site = view&.site
+      site = Site.find_by(id: args[:site_id])
       return false if site.blank?
 
       current_user.present? && (
@@ -39,12 +41,6 @@ module Mutations
         current_user.has_role?(:site_owner, site) ||
         current_user.has_role?(:site_editor, site)
       )
-    end
-
-    private
-
-    def site_view(site_view_id)
-      @site_view ||= SiteView.find_by(id: site_view_id)
     end
   end
 end

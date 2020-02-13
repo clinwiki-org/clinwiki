@@ -1,19 +1,27 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import aggToField from 'utils/aggs/aggToField';
-import { FormControl } from 'react-bootstrap';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
-import AggDropDown from 'containers/AggDropDown';
-import { reject, equals } from 'ramda';
-import { AggKind } from 'containers/SearchPage/shared';
-import { Checkbox } from 'react-bootstrap';
-import { camelCase, capitalize } from 'utils/helpers';
-import MultiCrumb from 'components/MultiCrumb';
+import * as React from "react";
+import styled from "styled-components";
+import aggToField from "utils/aggs/aggToField";
+import { FormControl } from "react-bootstrap";
+import {
+  SiteViewFragment_search_aggs_fields,
+  SiteViewFragment
+} from "types/SiteViewFragment";
+import AggDropDown from "containers/AggDropDown";
+import { reject, equals } from "ramda";
+import { AggKind } from "containers/SearchPage/shared";
+import { Checkbox } from "react-bootstrap";
+import { camelCase, capitalize } from "utils/helpers";
+import MultiCrumb from "components/MultiCrumb";
+
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
   field: SiteViewFragment_search_aggs_fields;
-  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
+  onAddMutation: (
+    e: { currentTarget: { name: string; value: any } },
+    siteView: SiteViewFragment
+  ) => void;
+  view: SiteViewFragment;
 }
 
 interface AggFieldState {
@@ -107,20 +115,26 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     aggValue: string,
     isCrowd: boolean
   ) => {
-    this.props.onAddMutation({
-      currentTarget: {
-        name: `set:${this.getPath()}.${kind}.values`,
-        value: [...this.props.field[kind].values, aggValue],
+    this.props.onAddMutation(
+      {
+        currentTarget: {
+          name: `set:${this.getPath()}.${kind}.values`,
+          value: [...this.props.field[kind].values, aggValue]
+        }
       },
-    });
+      this.props.view
+    );
   };
 
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
-    this.props.onAddMutation({
-      currentTarget: { name: e.currentTarget.name, value: !value },
-    });
+    this.props.onAddMutation(
+      {
+        currentTarget: { name: e.currentTarget.name, value: !value }
+      },
+      this.props.view
+    );
   };
 
   handleRemoveFilter = (kind: 'preselected' | 'visibleOptions') => (
@@ -128,12 +142,15 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     aggValue: string,
     isCrowd: boolean
   ) => {
-    this.props.onAddMutation({
-      currentTarget: {
-        name: `set:${this.getPath()}.${kind}.values`,
-        value: reject(equals(aggValue), this.props.field.preselected.values),
+    this.props.onAddMutation(
+      {
+        currentTarget: {
+          name: `set:${this.getPath()}.${kind}.values`,
+          value: reject(equals(aggValue), this.props.field.preselected.values)
+        }
       },
-    });
+      this.props.view
+    );
   };
 
   handleOpen = (kind: 'preselected' | 'visibleOptions') => (
@@ -239,8 +256,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <StyledFormControl
               name={`set:${this.getPath()}.display`}
               componentClass="select"
-              onChange={this.props.onAddMutation}
-              defaultValue={this.props.field.display}>
+              onChange={e => this.props.onAddMutation(e, this.props.view)}
+              defaultValue={this.props.field.display}
+            >
               <option value="STRING">Text</option>
               <option value="STAR">Stars</option>
               <option value="DATE">Date</option>
