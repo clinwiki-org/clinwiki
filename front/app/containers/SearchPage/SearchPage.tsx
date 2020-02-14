@@ -642,7 +642,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           render={() => (
             <SiteProvider>
               {site => (
-                
+                console.log("Site",site),
                 <Row>
                   {showFacets?(
                   <SidebarContainer md={2}>

@@ -105,7 +105,7 @@ const SITE_VIEW_FRAGMENT = gql`
       }
     }
   }
-
+  
   ${SITE_STUDY_PAGE_FRAGMENT}
 `;
 
