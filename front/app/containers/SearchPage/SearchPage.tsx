@@ -45,14 +45,14 @@ import {
   SearchPageSearchQuery_search_aggs,
   SearchPageSearchQuery_search_aggs_buckets,
   SearchPageSearchQuery_crowdAggs_aggs,
-  SearchPageSearchQuery_search_studies
-} from "types/SearchPageSearchQuery";
-import { AggBucketMap } from "./Types";
-import SiteProvider from "containers/SiteProvider";
-import { SiteViewFragment } from "types/SiteViewFragment";
-import { preselectedFilters } from "utils/siteViewHelpers";
-import { stack as Menu } from "react-burger-menu";
-import { match } from "react-router";
+  SearchPageSearchQuery_search_studies,
+} from 'types/SearchPageSearchQuery';
+import { AggBucketMap } from './Types';
+import SiteProvider from 'containers/SiteProvider';
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import { preselectedFilters } from 'utils/siteViewHelpers';
+import { stack as Menu } from 'react-burger-menu';
+import { match } from 'react-router';
 
 const HASH_QUERY = gql`
   query SearchPageHashQuery(
@@ -233,7 +233,7 @@ interface SearchPageState {
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
   showCards: Boolean;
-  removeSelectAll:boolean;
+  removeSelectAll: boolean;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -252,7 +252,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchAggs: {},
     searchCrowdAggs: {},
     showCards: localStorage.getItem('showCards') === 'true' ? true : false,
-    removeSelectAll:false
+    removeSelectAll: false,
   };
 
   numberOfPages: number = 0;
@@ -353,24 +353,24 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleResetFilters = (view: SiteViewFragment) => () => {
-    this.setState({ 
+    this.setState({
       params: this.getDefaultParams(view),
       removeSelectAll: true,
     });
   };
-  
-  handleClearFilters=()=>{
+
+  handleClearFilters = () => {
     this.setState({
-      params: DEFAULT_PARAMS, 
-      removeSelectAll: true
-    })
-  }
+      params: DEFAULT_PARAMS,
+      removeSelectAll: true,
+    });
+  };
 
   resetSelectAll = () => {
     this.setState({
-      removeSelectAll: false
-    })
-  }
+      removeSelectAll: false,
+    });
+  };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
@@ -505,13 +505,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const siteViewUrl =
             checkUrls.length === 1 // not sure if I should be checking for duplicates
               ? this.props.match.params.siteviewUrl
-              : "default";
+              : 'default';
 
           return (
             <HashQueryComponent
               query={HASH_QUERY}
-              variables={this.state.params || undefined}
-            >
+              variables={this.state.params || undefined}>
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
 
@@ -526,21 +525,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 return (
                   <SearchView
-                      params={params}
-                      onBulkUpdate={this.handleBulkUpdateClick}
-                      openedAgg={this.state.openedAgg}
-                      onUpdateParams={this.handleUpdateParams}
-                      onRowClick={this.handleRowClick}
-                      onOpenAgg={this.handleOpenAgg}
-                      onAggsUpdate={this.handleAggsUpdate}
-                      onResetFilters={this.handleResetFilters(view)}
-                      onClearFilters={this.handleClearFilters}
-                      previousSearchData={this.previousSearchData}
-                      returnPreviousSearchData={this.returnPreviousSearchData}
-                      searchHash={data.searchHash}
-                      showCards={this.state.showCards}
-                      toggledShowCards={this.toggledShowCards}
-                      returnNumberOfPages={this.returnNumberOfPages}
+                    params={params}
+                    onBulkUpdate={this.handleBulkUpdateClick}
+                    openedAgg={this.state.openedAgg}
+                    onUpdateParams={this.handleUpdateParams}
+                    onRowClick={this.handleRowClick}
+                    onOpenAgg={this.handleOpenAgg}
+                    onAggsUpdate={this.handleAggsUpdate}
+                    onResetFilters={this.handleResetFilters(view)}
+                    onClearFilters={this.handleClearFilters}
+                    previousSearchData={this.previousSearchData}
+                    returnPreviousSearchData={this.returnPreviousSearchData}
+                    searchHash={data.searchHash}
+                    showCards={this.state.showCards}
+                    toggledShowCards={this.toggledShowCards}
+                    returnNumberOfPages={this.returnNumberOfPages}
                   />
                 );
               }}
@@ -575,21 +574,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     if (this.state.showCards) {
-      window.addEventListener("scroll", this.handleScroll);
+      window.addEventListener('scroll', this.handleScroll);
     } else {
-      window.removeEventListener("scroll", this.handleScroll);
+      window.removeEventListener('scroll', this.handleScroll);
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener('scroll', this.handleScroll);
   }
 
   componentDidUpdate() {
     if (this.state.showCards) {
-      window.addEventListener("scroll", this.handleScroll);
+      window.addEventListener('scroll', this.handleScroll);
     } else {
-      window.removeEventListener("scroll", this.handleScroll);
+      window.removeEventListener('scroll', this.handleScroll);
     }
   }
 
@@ -649,7 +648,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   </SidebarContainer>
                   <div id="main_search" style={{ overflowY: 'auto' }}>
                     <MainContainer style={{ width: '100%' }}>
-                      {this.renderSearch(hash, site.siteView)}
+                      {this.renderSearch(hash, site.siteView, site.siteViews)}
                     </MainContainer>
                   </div>
                 </Row>

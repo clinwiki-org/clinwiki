@@ -1,30 +1,30 @@
-import * as React from "react";
-import { Row, Col } from "react-bootstrap";
-import { SiteViewFragment } from "types/SiteViewFragment";
-import { displayFields } from "utils/siteViewHelpers";
-import { StyledContainer, StyledFormControl, StyledLabel } from "./Styled";
-import MultiInput from "components/MultiInput";
-import AggField from "./AggField";
-import { sentanceCase } from "utils/helpers";
-import { aggsOrdered, studyFields } from "utils/constants";
-import aggToField from "utils/aggs/aggToField";
-import { FilterKind } from "types/globalTypes";
-import { Checkbox } from "react-bootstrap";
-import styled from "styled-components";
-import { match } from "react-router";
-import { Button } from "react-bootstrap";
-import { CreateSiteInput, SiteViewMutationInput } from "types/globalTypes";
+import * as React from 'react';
+import { Row, Col } from 'react-bootstrap';
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import { displayFields } from 'utils/siteViewHelpers';
+import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
+import MultiInput from 'components/MultiInput';
+import AggField from './AggField';
+import { sentanceCase } from 'utils/helpers';
+import { aggsOrdered, studyFields } from 'utils/constants';
+import aggToField from 'utils/aggs/aggToField';
+import { FilterKind } from 'types/globalTypes';
+import { Checkbox } from 'react-bootstrap';
+import styled from 'styled-components';
+import { match } from 'react-router';
+import { Button } from 'react-bootstrap';
+import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
 import UpdateSiteViewMutation, {
-  UpdateSiteViewMutationFn
-} from "mutations/UpdateSiteViewMutation";
+  UpdateSiteViewMutationFn,
+} from 'mutations/UpdateSiteViewMutation';
 import {
   updateView,
   createMutation,
   getViewValueByPath,
-  serializeMutation
-} from "utils/siteViewUpdater";
-import { equals, prop, last } from "ramda";
-import { History, Location } from "history";
+  serializeMutation,
+} from 'utils/siteViewUpdater';
+import { equals, prop, last } from 'ramda';
+import { History, Location } from 'history';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
@@ -77,7 +77,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   state: SearchFormState = {
     showAllAggs: false,
     showAllCrowdAggs: false,
-    mutations: []
+    mutations: [],
   };
 
   componentDidMount() {}
@@ -92,9 +92,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           id: view.id,
           name: view.name,
           url: view.url,
-          default: true
-        }
-      }
+          default: true,
+        },
+      },
     });
   };
 
@@ -102,15 +102,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     e: { currentTarget: { name: string; value: any } },
     siteView
   ) => {
-    console.log(e);
     const { name, value } = e.currentTarget;
     const mutation = createMutation(name, value);
     const view = updateView(siteView, this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
-    this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-      console.log("handleadd", mutation, view, currentValue)
-    );
+    this.setState({ mutations: [...this.state.mutations, mutation] });
   };
 
   getCrowdFields = view => {
@@ -120,8 +117,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     }));
   };
 
-  handleShowAllToggle = (kind: "aggs" | "crowdAggs") => () => {
-    if (kind == "aggs") {
+  handleShowAllToggle = (kind: 'aggs' | 'crowdAggs') => () => {
+    if (kind == 'aggs') {
       this.setState({ showAllAggs: !this.state.showAllAggs });
     } else {
       this.setState({ showAllCrowdAggs: !this.state.showAllCrowdAggs });
@@ -149,14 +146,11 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
       view.search.crowdAggs.fields
     );
-    console.log(this.props.match, this.props.location, this.props.history);
-    const url = this.props.match.path.slice();
     return (
       <UpdateSiteViewMutation
         onCompleted={() =>
           this.props.history.push(`/sites/${site.id}/edit/siteviews`)
-        }
-      >
+        }>
         {updateSiteView => (
           <StyledContainer>
             <h1>{view.name}</h1>
@@ -175,8 +169,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   <h3>Aggs visibility</h3>
                   <StyledCheckbox
                     checked={this.state.showAllAggs}
-                    onChange={this.handleShowAllToggle("aggs")}
-                  >
+                    onChange={this.handleShowAllToggle('aggs')}>
                     Show all
                   </StyledCheckbox>
                 </AggsHeaderContainer>
@@ -185,8 +178,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   name="set:search.aggs.selected.kind"
                   componentClass="select"
                   onChange={e => this.handleAddMutation(e, view)}
-                  value={view.search.aggs.selected.kind}
-                >
+                  value={view.search.aggs.selected.kind}>
                   <option value="BLACKLIST">All except</option>
                   <option value="WHITELIST">Only</option>
                 </StyledFormControl>
@@ -214,8 +206,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   <h3>Crowd aggs visibility</h3>
                   <StyledCheckbox
                     checked={this.state.showAllCrowdAggs}
-                    onChange={this.handleShowAllToggle("crowdAggs")}
-                  >
+                    onChange={this.handleShowAllToggle('crowdAggs')}>
                     Show all
                   </StyledCheckbox>
                 </AggsHeaderContainer>
@@ -225,8 +216,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   name="set:search.crowdAggs.selected.kind"
                   componentClass="select"
                   onChange={e => this.handleAddMutation(e, view)}
-                  v={view.search.crowdAggs.selected.kind}
-                >
+                  v={view.search.crowdAggs.selected.kind}>
                   <option value="BLACKLIST">All except</option>
                   <option value="WHITELIST">Only</option>
                 </StyledFormControl>

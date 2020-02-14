@@ -1,25 +1,25 @@
-import * as React from "react";
-import { CreateSiteInput, SiteViewMutationInput } from "types/globalTypes";
-import { equals, prop, last } from "ramda";
-import { FormControl, Button, Nav, NavItem } from "react-bootstrap";
-import styled from "styled-components";
-import { gql } from "apollo-boost";
-import { Switch, Route, match, Redirect } from "react-router";
-import { capitalize, trimPath } from "utils/helpers";
-import { SiteFragment } from "types/SiteFragment";
+import * as React from 'react';
+import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
+import { equals, prop, last } from 'ramda';
+import { FormControl, Button, Nav, NavItem } from 'react-bootstrap';
+import styled from 'styled-components';
+import { gql } from 'apollo-boost';
+import { Switch, Route, match, Redirect } from 'react-router';
+import { capitalize, trimPath } from 'utils/helpers';
+import { SiteFragment } from 'types/SiteFragment';
 import {
   updateView,
   createMutation,
   getViewValueByPath,
-  serializeMutation
-} from "utils/siteViewUpdater";
+  serializeMutation,
+} from 'utils/siteViewUpdater';
 import UpdateSiteViewMutation, {
-  UpdateSiteViewMutationFn
-} from "mutations/UpdateSiteViewMutation";
-import { History, Location } from "history";
-import SearchForm from "./SearchForm";
-import SiteViewsForm from "./SiteViewsForm";
-import { SiteViewFragment } from "types/SiteViewFragment";
+  UpdateSiteViewMutationFn,
+} from 'mutations/UpdateSiteViewMutation';
+import { History, Location } from 'history';
+import SearchForm from './SearchForm';
+import SiteViewsForm from './SiteViewsForm';
+import { SiteViewFragment } from 'types/SiteViewFragment';
 
 interface SiteViewRouterProps {
   match: match<{}>;
@@ -46,14 +46,14 @@ class SiteViewRouter extends React.Component<
 > {
   state: SiteViewRouterState = {
     form: {
-      name: "",
-      subdomain: "",
+      name: '',
+      subdomain: '',
       skipLanding: false,
-      editorEmails: []
+      editorEmails: [],
     },
     mutations: [],
-    addEditorEmail: "",
-    prevForm: null
+    addEditorEmail: '',
+    prevForm: null,
   };
 
   static fragment = gql`
@@ -78,9 +78,9 @@ class SiteViewRouter extends React.Component<
           id: siteView.id,
           name: siteView.name,
           url: siteView.url,
-          default: true
-        }
-      }
+          default: true,
+        },
+      },
     });
   };
 
@@ -95,7 +95,7 @@ class SiteViewRouter extends React.Component<
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-      console.log("handleadd", mutation, view, currentValue)
+      console.log('handleadd', mutation, view, currentValue)
     );
   };
 
