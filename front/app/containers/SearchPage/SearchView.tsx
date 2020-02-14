@@ -610,10 +610,13 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       this.props.params.q.key === '*'
         ? []
         : (this.props.params.q.children || []).map(prop('key'));
+    
 
     return (
       <SiteProvider>
         {site => (
+
+
           <CrumbsBar
             // @ts-ignore
             searchParams={{ ...this.props.params, q }}
