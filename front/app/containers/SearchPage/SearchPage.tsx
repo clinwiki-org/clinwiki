@@ -623,7 +623,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         </Row>
       );
     }
-    let showFacets=false;
 
     const hash = path(['match', 'params', 'searchId'], this.props) as
       | string
@@ -642,9 +641,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           render={() => (
             <SiteProvider>
               {site => (
-                console.log("Site",site),
+                console.log("Site",site.siteView.search.config.fields),
                 <Row>
-                  {showFacets?(
+                  { 
+                  site.siteView.search.config.fields.showFacetBar ?(
                   <SidebarContainer md={2}>
                     {this.renderAggs()}
                   </SidebarContainer>):(null) }
