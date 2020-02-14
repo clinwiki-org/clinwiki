@@ -63,6 +63,15 @@ const SITE_VIEW_FRAGMENT = gql`
     }
     search {
       fields
+      config{
+        fields{
+          showPresearch
+          showFacetBar
+          showAutoSuggest
+          showBreadCrumbs
+          showResults
+        }
+      }
       aggs {
         fields {
           name
