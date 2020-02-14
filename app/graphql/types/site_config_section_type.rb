@@ -1,5 +1,5 @@
 module Types
   class SiteConfigSectionType < Types::BaseObject
-    field :fields, [SiteConfigFieldType], null: false
+    field :fields, SiteConfigFieldType, null: false
   end
 end
