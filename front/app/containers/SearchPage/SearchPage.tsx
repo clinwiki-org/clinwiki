@@ -641,7 +641,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           render={() => (
             <SiteProvider>
               {site => (
-                console.log("Site",site.siteView.search.config.fields),
+                // console.log("Site",site.siteView.search.config.fields.showFacetBar),
                 <Row>
                   { 
                   site.siteView.search.config.fields.showFacetBar ?(

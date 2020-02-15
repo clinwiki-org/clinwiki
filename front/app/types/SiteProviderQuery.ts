@@ -53,6 +53,20 @@ export interface SiteProviderQuery_site_siteView_study {
   extendedSections: SiteProviderQuery_site_siteView_study_extendedSections[];
 }
 
+export interface SiteProviderQuery_site_siteView_search_config_fields {
+  __typename: "SiteConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
+
+export interface SiteProviderQuery_site_siteView_search_config {
+  __typename: "SiteConfigSection";
+  fields: SiteProviderQuery_site_siteView_search_config_fields;
+}
+
 export interface SiteProviderQuery_site_siteView_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -64,18 +78,7 @@ export interface SiteProviderQuery_site_siteView_search_aggs_fields_visibleOptio
   kind: FilterKind;
   values: string[];
 }
-export interface SiteProviderQuery_site_siteView_search_config{
-  __typename: "SearchConfigSection";
-  fields: SiteProviderQuery_site_siteView_search_config_fields
-}
-export interface SiteProviderQuery_site_siteView_search_config_fields {
-  __typename: "SearchConfigField";
-  showPresearch: boolean;
-  showFacetBar: boolean;
-  showAutoSuggest: boolean;
-  showBreadCrumbs: boolean;
-  showResults: boolean;
-}
+
 export interface SiteProviderQuery_site_siteView_search_aggs_fields {
   __typename: "SiteAggField";
   name: string;
@@ -135,9 +138,9 @@ export interface SiteProviderQuery_site_siteView_search_crowdAggs {
 export interface SiteProviderQuery_site_siteView_search {
   __typename: "SiteSearchPage";
   fields: string[];
+  config: SiteProviderQuery_site_siteView_search_config;
   aggs: SiteProviderQuery_site_siteView_search_aggs;
   crowdAggs: SiteProviderQuery_site_siteView_search_crowdAggs;
-  config: SiteProviderQuery_site_siteView_search_config;
 }
 
 export interface SiteProviderQuery_site_siteView {
@@ -179,6 +182,20 @@ export interface SiteProviderQuery_site_siteViews_study {
   allFields: string[];
   basicSections: SiteProviderQuery_site_siteViews_study_basicSections[];
   extendedSections: SiteProviderQuery_site_siteViews_study_extendedSections[];
+}
+
+export interface SiteProviderQuery_site_siteViews_search_config_fields {
+  __typename: "SiteConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
+
+export interface SiteProviderQuery_site_siteViews_search_config {
+  __typename: "SiteConfigSection";
+  fields: SiteProviderQuery_site_siteViews_search_config_fields;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_aggs_fields_preselected {
@@ -252,6 +269,7 @@ export interface SiteProviderQuery_site_siteViews_search_crowdAggs {
 export interface SiteProviderQuery_site_siteViews_search {
   __typename: "SiteSearchPage";
   fields: string[];
+  config: SiteProviderQuery_site_siteViews_search_config;
   aggs: SiteProviderQuery_site_siteViews_search_aggs;
   crowdAggs: SiteProviderQuery_site_siteViews_search_crowdAggs;
 }

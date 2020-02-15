@@ -37,6 +37,20 @@ export interface CreateSiteViewMutation_createSiteView_siteView_study {
   extendedSections: CreateSiteViewMutation_createSiteView_siteView_study_extendedSections[];
 }
 
+export interface CreateSiteViewMutation_createSiteView_siteView_search_config_fields {
+  __typename: "SiteConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
+
+export interface CreateSiteViewMutation_createSiteView_siteView_search_config {
+  __typename: "SiteConfigSection";
+  fields: CreateSiteViewMutation_createSiteView_siteView_search_config_fields;
+}
+
 export interface CreateSiteViewMutation_createSiteView_siteView_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -108,6 +122,7 @@ export interface CreateSiteViewMutation_createSiteView_siteView_search_crowdAggs
 export interface CreateSiteViewMutation_createSiteView_siteView_search {
   __typename: "SiteSearchPage";
   fields: string[];
+  config: CreateSiteViewMutation_createSiteView_siteView_search_config;
   aggs: CreateSiteViewMutation_createSiteView_siteView_search_aggs;
   crowdAggs: CreateSiteViewMutation_createSiteView_siteView_search_crowdAggs;
 }

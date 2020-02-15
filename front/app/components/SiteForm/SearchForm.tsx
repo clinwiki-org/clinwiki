@@ -9,10 +9,10 @@ import { sentanceCase } from 'utils/helpers';
 import { aggsOrdered, studyFields } from 'utils/constants';
 import aggToField from 'utils/aggs/aggToField';
 import { FilterKind } from 'types/globalTypes';
-import { Checkbox } from 'react-bootstrap';
+import { Checkbox, ToggleButtonGroup, ToggleButton, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import { match } from 'react-router';
-import { Button } from 'react-bootstrap';
+// import { Button } from 'react-bootstrap';
 import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
 import UpdateSiteViewMutation, {
   UpdateSiteViewMutationFn,
@@ -23,7 +23,7 @@ import {
   getViewValueByPath,
   serializeMutation,
 } from 'utils/siteViewUpdater';
-import { equals, prop, last } from 'ramda';
+import { equals, prop, last, view } from 'ramda';
 import { History, Location } from 'history';
 
 interface SearchFormProps {
@@ -40,6 +40,7 @@ interface SearchFormState {
   showAllAggs: boolean;
   showAllCrowdAggs: boolean;
   mutations: SiteViewMutationInput[];
+  showFacetBar: boolean;
 }
 
 const SEARCH_FIELDS = studyFields.map(option => ({
@@ -78,6 +79,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     showAllAggs: false,
     showAllCrowdAggs: false,
     mutations: [],
+    showFacetBar: false,
   };
 
   componentDidMount() {}
@@ -93,6 +95,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           name: view.name,
           url: view.url,
           default: true,
+          //@ts-ignore
+          // showFacetBar: view.search.config.fields.showFacetBar
+          
         },
       },
     });
@@ -107,7 +112,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     const view = updateView(siteView, this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
-    this.setState({ mutations: [...this.state.mutations, mutation] });
+    this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
+      console.log('MUTATIONS', this.state.mutations)
+    });
   };
 
   getCrowdFields = view => {
@@ -126,6 +133,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   handleFieldsOrderChange = () => {};
+
+  handleShowFacetBar = (x, view, name) => {
+    this.setState({showFacetBar: x})
+    const e = {currentTarget:{name: name, value: x}}
+    this.handleAddMutation(e, view )
+  }
 
   render() {
     const siteviewId = this.props.match.params.id;
@@ -146,6 +159,13 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
       view.search.crowdAggs.fields
     );
+    // const config = displayFields(
+    //   this.state.showFacetBar
+    //     ? false : view.search.config.showfacetBar,
+    //     this.state.showFacetBar ? false : view.search.config.showFacetBar
+       
+    // );
+    console.log("Facet bar set to:",site.siteView.search.config.fields.showFacetBar)
     return (
       <UpdateSiteViewMutation
         onCompleted={() =>
@@ -154,6 +174,21 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         {updateSiteView => (
           <StyledContainer>
             <h1>{view.name}</h1>
+           
+            <h3>Content Config</h3>
+            <ToggleButtonGroup
+              name="set:search.config.fields.showFacetBar"
+              type="radio"
+              value={this.state.showFacetBar}
+              // defaultValue={view.search.config.fields.showFacetBar}
+              onChange={(val) => this.handleShowFacetBar(val, view, "set:search.config.fields.showFacetBar" )}>
+              <ToggleButton  value={true}>Show Facet Bar</ToggleButton>
+              <ToggleButton  value={false}>Hide Facet Bar</ToggleButton>
+            </ToggleButtonGroup>
+
+
+
+
             <h3>Fields</h3>
             <MultiInput
               name="set:search.fields"
