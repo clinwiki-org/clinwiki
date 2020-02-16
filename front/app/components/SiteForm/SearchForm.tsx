@@ -74,6 +74,11 @@ const StyledCheckbox = styled(Checkbox)`
   align-items: center;
 `;
 
+// const styledToggleButton = styled(ToggleButtonGroup)`
+//   diplay: flex;
+//   flex-direction: row;
+//   `
+
 class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   state: SearchFormState = {
     showAllAggs: false,
@@ -94,7 +99,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           id: view.id,
           name: view.name,
           url: view.url,
-          default: true,
+          default: view.default
           //@ts-ignore
           // showFacetBar: view.search.config.fields.showFacetBar
           
@@ -135,7 +140,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   handleFieldsOrderChange = () => {};
 
   handleShowFacetBar = (x, view, name) => {
-    this.setState({showFacetBar: x})
+    // this.setState({showFacetBar: x})
     const e = {currentTarget:{name: name, value: x}}
     this.handleAddMutation(e, view )
   }
@@ -159,13 +164,14 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
       view.search.crowdAggs.fields
     );
+    const showFacetBar = view.search.config.fields.showFacetBar
     // const config = displayFields(
     //   this.state.showFacetBar
     //     ? false : view.search.config.showfacetBar,
     //     this.state.showFacetBar ? false : view.search.config.showFacetBar
        
     // );
-    console.log("Facet bar set to:",site.siteView.search.config.fields.showFacetBar)
+    console.log("Facet bar set to:",view.search.config.fields.showFacetBar)
     return (
       <UpdateSiteViewMutation
         onCompleted={() =>
@@ -176,15 +182,18 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <h1>{view.name}</h1>
            
             <h3>Content Config</h3>
+            <div className="show-hide-content-group">
+              <h5>Facet Bar</h5>
             <ToggleButtonGroup
               name="set:search.config.fields.showFacetBar"
               type="radio"
-              value={this.state.showFacetBar}
+              value={showFacetBar}
               // defaultValue={view.search.config.fields.showFacetBar}
               onChange={(val) => this.handleShowFacetBar(val, view, "set:search.config.fields.showFacetBar" )}>
-              <ToggleButton  value={true}>Show Facet Bar</ToggleButton>
-              <ToggleButton  value={false}>Hide Facet Bar</ToggleButton>
+              <ToggleButton  value={true}>Shown</ToggleButton>
+              <ToggleButton  value={false}>Hidden</ToggleButton>
             </ToggleButtonGroup>
+            </div>
 
 
 
