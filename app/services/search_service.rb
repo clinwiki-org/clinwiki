@@ -158,6 +158,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
             },
           },
         )
+        body[:aggs][key][:aggs][key][:terms][:missing] = "None"
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site,url)
       visible_options_regex = one_of_regex(visibile_options)
@@ -178,14 +179,14 @@ class SearchService # rubocop:disable Metrics/ClassLength
     params = self.params.deep_dup
     bucket_sort = params[:agg_options_sort] || []
     search_results = Study.search("*", aggs: [:front_matter_keys])
-      
+
     aggs = search_results.aggs.to_h.deep_symbolize_keys
     keys = aggs[:front_matter_keys][:buckets]
       .map { |x| "#{x[:key]}" }
     facets = {}
     keys.each do |key|
       fieldAgg = agg_buckets_for_field(field:key, current_site: site, is_crowd_agg: true)
-      fieldAgg.each do |name, agg| 
+      fieldAgg.each do |name, agg|
         facets[name] = agg
       end
     end
