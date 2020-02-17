@@ -158,7 +158,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
             },
           },
         )
-        body[:aggs][key][:aggs][key][:terms][:missing] = "None"
+        
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site,url)
       visible_options_regex = one_of_regex(visibile_options)
