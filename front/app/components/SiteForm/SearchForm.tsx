@@ -99,10 +99,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           id: view.id,
           name: view.name,
           url: view.url,
-          default: view.default
+          default: view.default,
           //@ts-ignore
           // showFacetBar: view.search.config.fields.showFacetBar
-          
         },
       },
     });
@@ -118,7 +117,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
-      console.log('MUTATIONS', this.state.mutations)
+      console.log('MUTATIONS', this.state.mutations);
     });
   };
 
@@ -141,9 +140,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
 
   handleShowFacetBar = (x, view, name) => {
     // this.setState({showFacetBar: x})
-    const e = {currentTarget:{name: name, value: x}}
-    this.handleAddMutation(e, view )
-  }
+    const e = { currentTarget: { name: name, value: x } };
+    this.handleAddMutation(e, view);
+  };
 
   render() {
     const siteviewId = this.props.match.params.id;
@@ -164,14 +163,20 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
       view.search.crowdAggs.fields
     );
-    const showFacetBar = view.search.config.fields.showFacetBar
+    const showFacetBar = view.search.config.fields.showFacetBar;
     // const config = displayFields(
     //   this.state.showFacetBar
     //     ? false : view.search.config.showfacetBar,
     //     this.state.showFacetBar ? false : view.search.config.showFacetBar
-       
+
     // );
-    console.log("Facet bar set to:",view.search.config.fields.showFacetBar)
+    console.log('Facet bar set to:', view.search.config.fields.showFacetBar);
+    const showBreadCrumbs = view.search.config.fields.showBreadCrumbs;
+    // console.log("Crumbs bar set to:",view.search.config.fields.showBreadCrumbs)
+    const showAutoSuggest = view.search.config.fields.showAutoSuggest;
+    // console.log("Crumbs bar set to:",view.search.config.fields.showAutoSuggest)
+    const showResults = view.search.config.fields.showResults;
+    // console.log("Results set to:",view.search.config.fields.showResults)
     return (
       <UpdateSiteViewMutation
         onCompleted={() =>
@@ -184,19 +189,72 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <h3>Content Config</h3>
             <div className="show-hide-content-group">
               <h5>Facet Bar</h5>
-            <ToggleButtonGroup
-              name="set:search.config.fields.showFacetBar"
-              type="radio"
-              value={showFacetBar}
-              // defaultValue={view.search.config.fields.showFacetBar}
-              onChange={(val) => this.handleShowFacetBar(val, view, "set:search.config.fields.showFacetBar" )}>
-              <ToggleButton  value={true}>Shown</ToggleButton>
-              <ToggleButton  value={false}>Hidden</ToggleButton>
-            </ToggleButtonGroup>
+              <ToggleButtonGroup
+                name="set:search.config.fields.showFacetBar"
+                type="radio"
+                value={showFacetBar}
+                // defaultValue={view.search.config.fields.showFacetBar}
+                onChange={val =>
+                  this.handleShowFacetBar(
+                    val,
+                    view,
+                    'set:search.config.fields.showFacetBar'
+                  )
+                }>
+                <ToggleButton value={true}>Shown</ToggleButton>
+                <ToggleButton value={false}>Hidden</ToggleButton>
+              </ToggleButtonGroup>
+              <h5>BreadCrumbs Bar</h5>
+              <ToggleButtonGroup
+                name="set:search.config.fields.showBreadCrumbs"
+                type="radio"
+                value={showBreadCrumbs}
+                // defaultValue={view.search.config.fields.showBreadCrumbs}
+                onChange={val =>
+                  this.handleShowFacetBar(
+                    val,
+                    view,
+                    'set:search.config.fields.showBreadCrumbs'
+                  )
+                }>
+                <ToggleButton value={true}>Shown</ToggleButton>
+                <ToggleButton value={false}>Hidden</ToggleButton>
+              </ToggleButtonGroup>
+              <h5>Auto Suggest</h5>
+
+              <ToggleButtonGroup
+                name="set:search.config.fields.showAutoSuggest"
+                type="radio"
+                value={showAutoSuggest}
+                // defaultValue={view.search.config.fields.showAutoSuggest}
+                onChange={val =>
+                  this.handleShowFacetBar(
+                    val,
+                    view,
+                    'set:search.config.fields.showAutoSuggest'
+                  )
+                }>
+                <ToggleButton value={true}>Shown</ToggleButton>
+                <ToggleButton value={false}>Hidden</ToggleButton>
+              </ToggleButtonGroup>
+              <h5>Results</h5>
+
+              <ToggleButtonGroup
+                name="set:search.config.fields.showResults"
+                type="radio"
+                value={showResults}
+                // defaultValue={view.search.config.fields.showResults}
+                onChange={val =>
+                  this.handleShowFacetBar(
+                    val,
+                    view,
+                    'set:search.config.fields.showResults'
+                  )
+                }>
+                <ToggleButton value={true}>Shown</ToggleButton>
+                <ToggleButton value={false}>Hidden</ToggleButton>
+              </ToggleButtonGroup>
             </div>
-
-
-
 
             <h3>Fields</h3>
             <MultiInput

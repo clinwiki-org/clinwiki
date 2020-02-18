@@ -630,7 +630,42 @@ export default class CrumbsBar extends React.Component<
                           />
                         </div>
                       </FormGroup>
-                    )):(null)
+                    )):(                      
+                    <FormGroup>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                        }}>
+                        <b
+                          style={{
+                            marginRight: '8px',
+                            marginTop: '4px',
+                          }}>
+                          <ControlLabel>Search Within: </ControlLabel>{' '}
+                        </b>
+                              <Autosuggest
+                            multiSection={true}
+                            suggestions={[]}
+                            inputProps={{
+                              value: searchTerm,
+                              onChange: (e, searchTerm) =>
+                                this.onChange(e, searchTerm, apolloClient),
+                            }}
+                            renderSuggestion={this.renderSuggestion}
+                            renderSectionTitle={this.renderSectionTitle}
+                            getSectionSuggestions={this.getSectionSuggestions}
+                            onSuggestionSelected={this.onSuggestionSelected}
+                            onSuggestionsFetchRequested={
+                              this.onSuggestionsFetchRequested
+                            }
+                            onSuggestionsClearRequested={
+                              this.onSuggestionsClearRequested
+                            }
+                            getSuggestionValue={this.getSuggestionValue}
+                          />
+                      </div>
+                    </FormGroup>)
                     }
                     <Button type="submit">
                       <FontAwesome name="search" />
