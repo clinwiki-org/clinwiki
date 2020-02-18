@@ -463,7 +463,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     view: SiteViewFragment,
     siteViews: SiteViewFragment[]
   ) => {
-    console.log('render search', view);
+    const siteViewUrl = this.props.match.params.siteviewUrl;
     return (
       <ParamsQueryComponent
         query={PARAMS_QUERY}
@@ -541,6 +541,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     showCards={this.state.showCards}
                     toggledShowCards={this.toggledShowCards}
                     returnNumberOfPages={this.returnNumberOfPages}
+                    //@ts-ignore
+                    siteViewUrl={siteViewUrl}
                   />
                 );
               }}
@@ -599,6 +601,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       return (
           <SiteProvider>
             {site => {
+                      const siteViewUrl = this.props.match.params.siteviewUrl
+                      const siteViews = site.siteViews
+                      let thisSiteView = siteViews.find(siteview => siteview.url == siteViewUrl) || site.siteView
+                      if (siteViewUrl === 'default') {
+                        thisSiteView = site.siteView
+                      } 
               return (
                 <Row>
                   <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
@@ -611,7 +619,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       onRowClick={this.handleRowClick}
                       onOpenAgg={this.handleOpenAgg}
                       onAggsUpdate={this.handleAggsUpdate}
-                      onResetFilters={this.handleResetFilters(site.siteView)}
+                      onResetFilters={this.handleResetFilters(thisSiteView)}
                       onClearFilters={this.handleClearFilters}
                       previousSearchData={this.previousSearchData}
                       returnPreviousSearchData={() => this.returnPreviousSearchData}
@@ -647,7 +655,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               {site => {
                 const siteViewUrl = this.props.match.params.siteviewUrl
                 const siteViews = site.siteViews
-                const thisSiteView = siteViews.find(siteview => siteview.url == siteViewUrl) || site.siteView
+                let thisSiteView = siteViews.find(siteview => siteview.url == siteViewUrl) || site.siteView
+                if (siteViewUrl === 'default') {
+                  thisSiteView = site.siteView
+                } 
                 if (!thisSiteView) {
                   return (<div>Error loading data.</div>)
                 }
@@ -661,7 +672,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   </SidebarContainer>):(null) }
                   <div id="main_search" style={{ overflowY: 'auto' }}>
                     <MainContainer style={{ width: '100%' }}>
-                      {this.renderSearch(hash, thisSiteView, site.siteViews)}
+                      {this.renderSearch(hash, thisSiteView, site.siteViews, )}
                     </MainContainer>
                   </div>
                 </Row>
