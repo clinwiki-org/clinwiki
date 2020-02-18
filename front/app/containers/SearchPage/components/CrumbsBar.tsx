@@ -151,6 +151,7 @@ const LoaderWrapper = styled.div`
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
 import { SiteFragment } from 'types/SiteFragment';
+import { SiteViewFragment } from 'types/SiteViewFragment';
 
 interface CrumbsBarProps {
   searchParams: SearchParams;
@@ -170,6 +171,7 @@ interface CrumbsBarProps {
   data: SiteFragment;
   showCards: Boolean;
   toggledShowCards: Function;
+  siteViewUrl: string;
 }
 interface CrumbsBarState {
   searchTerm: string;
@@ -535,7 +537,14 @@ export default class CrumbsBar extends React.Component<
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
-    let showCrumbsBar= true;
+    const {data, siteViewUrl} = this.props
+    let thisSiteView = data.siteViews.find(siteview => siteview.url == siteViewUrl) || data.siteView
+
+    let showCrumbsBar= thisSiteView.search.config.fields.showBreadCrumbs;
+    let showAutoSuggest= thisSiteView.search.config.fields.showAutoSuggest;
+
+     console.log("CRUMBSSS",showCrumbsBar)
+     console.log("AutoSuggest", showAutoSuggest)
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -544,7 +553,7 @@ export default class CrumbsBar extends React.Component<
               <Row>
                 <Col xs={8} md={8}>
                   <Form inline className="searchInput" onSubmit={this.onSubmit}>
-                    {isSuggestionLoading ? (
+      { showAutoSuggest ? (isSuggestionLoading ? (
                       <FormGroup>
                         <div
                           style={{
@@ -621,7 +630,8 @@ export default class CrumbsBar extends React.Component<
                           />
                         </div>
                       </FormGroup>
-                    )}
+                    )):(null)
+                    }
                     <Button type="submit">
                       <FontAwesome name="search" />
                     </Button>
