@@ -53,6 +53,20 @@ export interface UpdateSiteMutation_updateSite_site_siteView_study {
   extendedSections: UpdateSiteMutation_updateSite_site_siteView_study_extendedSections[];
 }
 
+export interface UpdateSiteMutation_updateSite_site_siteView_search_config_fields {
+  __typename: "SiteConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_config {
+  __typename: "SiteConfigSection";
+  fields: UpdateSiteMutation_updateSite_site_siteView_search_config_fields;
+}
+
 export interface UpdateSiteMutation_updateSite_site_siteView_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -124,6 +138,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs {
 export interface UpdateSiteMutation_updateSite_site_siteView_search {
   __typename: "SiteSearchPage";
   fields: string[];
+  config: UpdateSiteMutation_updateSite_site_siteView_search_config;
   aggs: UpdateSiteMutation_updateSite_site_siteView_search_aggs;
   crowdAggs: UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs;
 }
@@ -167,6 +182,20 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_study {
   allFields: string[];
   basicSections: UpdateSiteMutation_updateSite_site_siteViews_study_basicSections[];
   extendedSections: UpdateSiteMutation_updateSite_site_siteViews_study_extendedSections[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_config_fields {
+  __typename: "SiteConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_config {
+  __typename: "SiteConfigSection";
+  fields: UpdateSiteMutation_updateSite_site_siteViews_search_config_fields;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_aggs_fields_preselected {
@@ -240,6 +269,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs {
 export interface UpdateSiteMutation_updateSite_site_siteViews_search {
   __typename: "SiteSearchPage";
   fields: string[];
+  config: UpdateSiteMutation_updateSite_site_siteViews_search_config;
   aggs: UpdateSiteMutation_updateSite_site_siteViews_search_aggs;
   crowdAggs: UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs;
 }

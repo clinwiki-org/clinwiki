@@ -463,6 +463,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     view: SiteViewFragment,
     siteViews: SiteViewFragment[]
   ) => {
+    const siteViewUrl = this.props.match.params.siteviewUrl;
     return (
       <ParamsQueryComponent
         query={PARAMS_QUERY}
@@ -540,6 +541,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     showCards={this.state.showCards}
                     toggledShowCards={this.toggledShowCards}
                     returnNumberOfPages={this.returnNumberOfPages}
+                    //@ts-ignore
+                    siteViewUrl={siteViewUrl}
                   />
                 );
               }}
@@ -573,6 +576,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
+    console.log('LOOKING FOR MY SITEVIEW', this.props)
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
@@ -595,32 +599,40 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   render() {
     if (this.props.ignoreUrlHash) {
       return (
-        <Row>
-          <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
           <SiteProvider>
-            {site => (
-              <MainContainer md={10}>
-                <SearchView
-                  params={this.state.params as any}
-                  onBulkUpdate={this.handleBulkUpdateClick}
-                  openedAgg={this.state.openedAgg}
-                  onUpdateParams={this.handleUpdateParams}
-                  onRowClick={this.handleRowClick}
-                  onOpenAgg={this.handleOpenAgg}
-                  onAggsUpdate={this.handleAggsUpdate}
-                  onResetFilters={this.handleResetFilters(site.siteView)}
-                  onClearFilters={this.handleClearFilters}
-                  previousSearchData={this.previousSearchData}
-                  returnPreviousSearchData={() => this.returnPreviousSearchData}
-                  searchHash={''}
-                  showCards={this.state.showCards}
-                  toggledShowCards={this.toggledShowCards}
-                  returnNumberOfPages={this.returnNumberOfPages}
-                />
-              </MainContainer>
-            )}
-          </SiteProvider>
-        </Row>
+            {site => {
+                      const siteViewUrl = this.props.match.params.siteviewUrl
+                      const siteViews = site.siteViews
+                      let thisSiteView = siteViews.find(siteview => siteview.url == siteViewUrl) || site.siteView
+                      if (siteViewUrl === 'default') {
+                        thisSiteView = site.siteView
+                      } 
+              return (
+                <Row>
+                  <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+                  <MainContainer md={10}>
+                    <SearchView
+                      params={this.state.params as any}
+                      onBulkUpdate={this.handleBulkUpdateClick}
+                      openedAgg={this.state.openedAgg}
+                      onUpdateParams={this.handleUpdateParams}
+                      onRowClick={this.handleRowClick}
+                      onOpenAgg={this.handleOpenAgg}
+                      onAggsUpdate={this.handleAggsUpdate}
+                      onResetFilters={this.handleResetFilters(thisSiteView)}
+                      onClearFilters={this.handleClearFilters}
+                      previousSearchData={this.previousSearchData}
+                      returnPreviousSearchData={() => this.returnPreviousSearchData}
+                      searchHash={''}
+                      showCards={this.state.showCards}
+                      toggledShowCards={this.toggledShowCards}
+                      returnNumberOfPages={this.returnNumberOfPages}
+                    />
+                  </MainContainer>
+                </Row> 
+              )
+            }}
+        </SiteProvider>
       );
     }
 
@@ -640,21 +652,31 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <Route
           render={() => (
             <SiteProvider>
-              {site => (
-                console.log("Site",site.siteView.search.config.fields),
+              {site => {
+                const siteViewUrl = this.props.match.params.siteviewUrl
+                const siteViews = site.siteViews
+                let thisSiteView = siteViews.find(siteview => siteview.url == siteViewUrl) || site.siteView
+                if (siteViewUrl === 'default') {
+                  thisSiteView = site.siteView
+                } 
+                if (!thisSiteView) {
+                  return (<div>Error loading data.</div>)
+                }
+                return (
+                console.log("Site",site),
                 <Row>
                   { 
-                  site.siteView.search.config.fields.showFacetBar ?(
+                  thisSiteView.search.config.fields.showFacetBar ?(
                   <SidebarContainer md={2}>
                     {this.renderAggs()}
                   </SidebarContainer>):(null) }
                   <div id="main_search" style={{ overflowY: 'auto' }}>
                     <MainContainer style={{ width: '100%' }}>
-                      {this.renderSearch(hash, site.siteView, site.siteViews)}
+                      {this.renderSearch(hash, thisSiteView, site.siteViews, )}
                     </MainContainer>
                   </div>
                 </Row>
-              )}
+              )}}
             </SiteProvider>
           )}
         />

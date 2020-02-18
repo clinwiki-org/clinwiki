@@ -37,6 +37,20 @@ export interface SiteViewFragment_study {
   extendedSections: SiteViewFragment_study_extendedSections[];
 }
 
+export interface SiteViewFragment_search_config_fields {
+  __typename: "SiteConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
+
+export interface SiteViewFragment_search_config {
+  __typename: "SiteConfigSection";
+  fields: SiteViewFragment_search_config_fields;
+}
+
 export interface SiteViewFragment_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -108,6 +122,7 @@ export interface SiteViewFragment_search_crowdAggs {
 export interface SiteViewFragment_search {
   __typename: "SiteSearchPage";
   fields: string[];
+  config: SiteViewFragment_search_config;
   aggs: SiteViewFragment_search_aggs;
   crowdAggs: SiteViewFragment_search_crowdAggs;
 }
