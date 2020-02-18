@@ -474,6 +474,7 @@ export default class CrumbsBar extends React.Component<
         </div>
       );
     }
+    
 
     return (
       <div className="right-align">
@@ -529,7 +530,7 @@ export default class CrumbsBar extends React.Component<
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
-
+    let showCrumbsBar= false;
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -688,7 +689,10 @@ export default class CrumbsBar extends React.Component<
                   {this.loadPaginator()}
                 </Col>
               </Row>
-              <Row>
+{
+            showCrumbsBar ?
+
+              (<Row>
                 <Col
                   md={12}
                   style={{
@@ -753,7 +757,7 @@ export default class CrumbsBar extends React.Component<
                       : null}{' '}
                   </ListGroup>
                 </Col>
-              </Row>
+              </Row>):(null)}
             </Grid>
           )}
         </ApolloConsumer>

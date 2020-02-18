@@ -64,7 +64,18 @@ export interface SiteProviderQuery_site_siteView_search_aggs_fields_visibleOptio
   kind: FilterKind;
   values: string[];
 }
-
+export interface SiteProviderQuery_site_siteView_search_config{
+  __typename: "SearchConfigSection";
+  fields: SiteProviderQuery_site_siteView_search_config_fields
+}
+export interface SiteProviderQuery_site_siteView_search_config_fields {
+  __typename: "SearchConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
 export interface SiteProviderQuery_site_siteView_search_aggs_fields {
   __typename: "SiteAggField";
   name: string;
@@ -126,6 +137,7 @@ export interface SiteProviderQuery_site_siteView_search {
   fields: string[];
   aggs: SiteProviderQuery_site_siteView_search_aggs;
   crowdAggs: SiteProviderQuery_site_siteView_search_crowdAggs;
+  config: SiteProviderQuery_site_siteView_search_config;
 }
 
 export interface SiteProviderQuery_site_siteView {

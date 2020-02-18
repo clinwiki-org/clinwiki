@@ -4,7 +4,11 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
   after_save do
     if default
-      site.site_views.where.not(id: id).update_all(default:false)
+      site.site_views.where.not(id: id).where(url:"").update_all(url:"oldDefault")
+      object.url.update(url:"") unless object.url == ""
+      if site.site_views.where(default:true).count > 1
+        site.site_views.where.not(id: id).update_all(default:false)
+      end
     end
   end
 
@@ -252,6 +256,38 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           showResults:true,
           }
         },
+        presearch:{
+          aggs: {
+            selected: {
+              kind: "BLACKLIST",
+              values: [],
+            },
+            fields: aggs,
+          },
+          crowdAggs: {
+            selected: {
+              kind: "BLACKLIST",
+              values: [],
+            },
+            fields: crowd_aggs,
+          },
+          button:{
+            name:"Search",
+            url:"",
+          },
+        },
+        autoSuggest:{
+          fields: %w[],
+        },
+        breadCrumbs:
+          [
+            {
+            icon:'',
+            target:"",
+            location:"",
+            }
+          ],
+
         aggs: {
           selected: {
             kind: "BLACKLIST",
@@ -259,6 +295,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           },
           fields: aggs,
         },
+
         crowdAggs: {
           selected: {
             kind: "BLACKLIST",

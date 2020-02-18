@@ -627,7 +627,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const hash = path(['match', 'params', 'searchId'], this.props) as
       | string
       | null;
-
     return (
       <Switch>
         <Route
@@ -642,10 +641,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           render={() => (
             <SiteProvider>
               {site => (
+                console.log("Site",site.siteView.search.config.fields),
                 <Row>
+                  { 
+                  site.siteView.search.config.fields.showFacetBar ?(
                   <SidebarContainer md={2}>
                     {this.renderAggs()}
-                  </SidebarContainer>
+                  </SidebarContainer>):(null) }
                   <div id="main_search" style={{ overflowY: 'auto' }}>
                     <MainContainer style={{ width: '100%' }}>
                       {this.renderSearch(hash, site.siteView, site.siteViews)}
