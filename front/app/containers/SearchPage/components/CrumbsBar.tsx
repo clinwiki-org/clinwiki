@@ -260,21 +260,20 @@ export default class CrumbsBar extends React.Component<
       searchParams.crowdAggFilters.length +
       searchParams.aggFilters.length;
     if (totalLength > 0) {
-      yield(
+      yield (
         <span>
           <Button
             bsSize="small"
             key="defaul"
             onClick={this.props.onReset}
-            style={{ margin: '5px 0px 5px 10px'}}>
+            style={{ margin: '5px 0px 5px 10px' }}>
             Default
           </Button>
           <Button
             bsSize="small"
             key="reset"
             onClick={this.props.onClear}
-            style={{ margin: '5px 0px 5px 10px' }}
-          >
+            style={{ margin: '5px 0px 5px 10px' }}>
             Clear
           </Button>
         </span>
