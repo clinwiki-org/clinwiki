@@ -46,6 +46,7 @@ import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import { stringify } from 'querystring';
 import Cards from './components/Cards';
+import { SiteViewFragment } from 'types/SiteViewFragment';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -320,11 +321,12 @@ interface SearchViewProps {
   transformFilters: any;
   removeSelectAll: any;
   resetSelectAll: any;
-  siteViewUrl: any;
   opened: any;
   openedKind: any;
   onOpen: any;
   currentSiteView: any;
+  thisSiteView?: SiteViewFragment;
+  siteViewUrl?: string;
 }
 
 interface SearchViewState {
@@ -634,6 +636,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     return (
       <SiteProvider>
         {site => {
+          let thisSiteView =
+            site.siteViews.find(
+              siteview => siteview.url == this.props.siteViewUrl
+            ) || site.siteView;
+          let showResults = thisSiteView.search.config.fields.showResults;
+
           const columns = map(
             x => this.renderColumn(x, ''),
             site.siteView.search.fields
@@ -645,16 +653,16 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           const additionalWidth = leftover / columns.length;
           columns.map(x => (x.width += additionalWidth), columns);
           if (this.props.showCards) {
-            return (
+            return showResults ? (
               <Cards
                 columns={columns}
                 data={searchData}
                 onPress={this.cardPressed}
                 loading={loading}
               />
-            );
+            ) : null;
           } else {
-            return (
+            return showResults ? (
               <ReactTable
                 ref={this.searchTable}
                 className="-striped -highlight"
@@ -678,7 +686,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 defaultSortDesc
                 noDataText={'No studies found'}
               />
-            );
+            ) : null;
           }
         }}
       </SiteProvider>

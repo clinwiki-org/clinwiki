@@ -122,11 +122,11 @@ class SearchService # rubocop:disable Metrics/ClassLength
     }
   end
 
-  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url:nil) # rubocop:disable Metrics/MethodLength
+  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url:nil)
+     # rubocop:disable Metrics/MethodLength
     params = self.params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
-
     # We don't need to keep filters of the same agg, we want broader results
     # But we need to respect all other filters
 
@@ -158,7 +158,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
             },
           },
         )
-        
+
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site,url)
       visible_options_regex = one_of_regex(visibile_options)
@@ -286,10 +286,10 @@ class SearchService # rubocop:disable Metrics/ClassLength
   def find_visibile_options(agg_name, is_crowd_agg, current_site, url)
     return [] if current_site.blank?
 
-    # TODO ability to select site view from a url
-    if !url
+    if !url || url.empty?
       view = current_site.site_views.find_by(default: true).view
     else
+
       view = current_site.site_views.find_by(url: url).view
     end
     fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
