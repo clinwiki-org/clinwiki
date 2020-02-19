@@ -1,11 +1,11 @@
-import * as React from "react";
-import { gql, ApolloError } from "apollo-boost";
-import { Mutation, MutationFn, MutationResult } from "react-apollo";
+import * as React from 'react';
+import { gql, ApolloError } from 'apollo-boost';
+import { Mutation, MutationFn, MutationResult } from 'react-apollo';
 import {
   UpdateSiteViewMutation as UpdateSiteViewMutationType,
-  UpdateSiteViewMutationVariables
-} from "types/UpdateSiteViewMutation";
-import SiteProvider from "containers/SiteProvider";
+  UpdateSiteViewMutationVariables,
+} from 'types/UpdateSiteViewMutation';
+import SiteProvider from 'containers/SiteProvider';
 
 interface UpdateSiteViewMutationProps {
   children: (

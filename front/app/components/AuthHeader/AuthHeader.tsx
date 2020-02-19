@@ -1,11 +1,11 @@
-import * as React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { History } from "history";
+import * as React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { History } from 'history';
 
-import { Navbar, Nav, NavItem } from "react-bootstrap";
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
-import AuthButton from "components/AuthButton";
+import AuthButton from 'components/AuthButton';
 // import SearchInput from 'components/SearchInput';
 
 interface AuthHeaderProps {
@@ -32,7 +32,7 @@ const StyledWrapper = styled.div`
   }
 
   a#logo {
-    background: url("/clinwiki-50.png") center left no-repeat;
+    background: url('/clinwiki-50.png') center left no-repeat;
     background-size: 25px 25px;
     margin-left: 1px;
     padding-left: 30px;
@@ -52,8 +52,7 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
           collapseOnSelect
           fluid
           className="navbar-fixed-top"
-          style={{ paddingLeft: "15px", paddingRight: "15px" }}
-        >
+          style={{ paddingLeft: '15px', paddingRight: '15px' }}>
           <Navbar.Header>
             <Navbar.Brand>
               <Link id="logo" to="/search/default">

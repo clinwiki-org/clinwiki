@@ -52,7 +52,10 @@ class LandingPage extends React.PureComponent<
     } else {
       params = { q: { key: 'AND', children: [] } };
     }
-    const { data } = await client.query({ query: HASH_QUERY, variables: params });
+    const { data } = await client.query({
+      query: HASH_QUERY,
+      variables: params,
+    });
     this.props.history.push(`/search/default/${data.searchHash}`);
   };
   searchChanged = e => {

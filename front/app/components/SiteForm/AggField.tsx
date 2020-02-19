@@ -1,18 +1,17 @@
-import * as React from "react";
-import styled from "styled-components";
-import aggToField from "utils/aggs/aggToField";
-import { FormControl } from "react-bootstrap";
+import * as React from 'react';
+import styled from 'styled-components';
+import aggToField from 'utils/aggs/aggToField';
+import { FormControl } from 'react-bootstrap';
 import {
   SiteViewFragment_search_aggs_fields,
-  SiteViewFragment
-} from "types/SiteViewFragment";
-import AggDropDown from "containers/AggDropDown";
-import { reject, equals } from "ramda";
-import { AggKind } from "containers/SearchPage/shared";
-import { Checkbox } from "react-bootstrap";
-import { camelCase, capitalize } from "utils/helpers";
-import MultiCrumb from "components/MultiCrumb";
-
+  SiteViewFragment,
+} from 'types/SiteViewFragment';
+import AggDropDown from 'containers/AggDropDown';
+import { reject, equals } from 'ramda';
+import { AggKind } from 'containers/SearchPage/shared';
+import { Checkbox } from 'react-bootstrap';
+import { camelCase, capitalize } from 'utils/helpers';
+import MultiCrumb from 'components/MultiCrumb';
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
@@ -119,8 +118,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       {
         currentTarget: {
           name: `set:${this.getPath()}.${kind}.values`,
-          value: [...this.props.field[kind].values, aggValue]
-        }
+          value: [...this.props.field[kind].values, aggValue],
+        },
       },
       this.props.view
     );
@@ -131,7 +130,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   }) => {
     this.props.onAddMutation(
       {
-        currentTarget: { name: e.currentTarget.name, value: !value }
+        currentTarget: { name: e.currentTarget.name, value: !value },
       },
       this.props.view
     );
@@ -146,8 +145,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       {
         currentTarget: {
           name: `set:${this.getPath()}.${kind}.values`,
-          value: reject(equals(aggValue), this.props.field.preselected.values)
-        }
+          value: reject(equals(aggValue), this.props.field.preselected.values),
+        },
       },
       this.props.view
     );
@@ -257,8 +256,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               name={`set:${this.getPath()}.display`}
               componentClass="select"
               onChange={e => this.props.onAddMutation(e, this.props.view)}
-              defaultValue={this.props.field.display}
-            >
+              defaultValue={this.props.field.display}>
               <option value="STRING">Text</option>
               <option value="STAR">Stars</option>
               <option value="DATE">Date</option>

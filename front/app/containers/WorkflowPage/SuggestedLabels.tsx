@@ -30,14 +30,14 @@ const QUERY = gql`
       }
     }
     crowdAggFacets {
-    aggs {
-      name
-      buckets {
-        key
-        docCount
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
       }
     }
-  }
     study(nctId: $nctId) {
       nctId
       wikiPage {

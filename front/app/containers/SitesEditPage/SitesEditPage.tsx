@@ -1,16 +1,16 @@
-import * as React from "react";
-import SiteForm from "components/SiteForm/SiteForm";
+import * as React from 'react';
+import SiteForm from 'components/SiteForm/SiteForm';
 import UpdateSiteMutation, {
-  UpdateSiteMutationFn
-} from "mutations/UpdateSiteMutation";
+  UpdateSiteMutationFn,
+} from 'mutations/UpdateSiteMutation';
 import {
   UpdateSiteInput,
   CreateSiteInput,
-  SiteViewMutationInput
-} from "types/globalTypes";
-import { match } from "react-router";
-import SiteProvider from "containers/SiteProvider";
-import { History, Location } from "history";
+  SiteViewMutationInput,
+} from 'types/globalTypes';
+import { match } from 'react-router';
+import SiteProvider from 'containers/SiteProvider';
+import { History, Location } from 'history';
 
 interface SitesEditPageProps {
   match: match<{ id: string }>;
@@ -24,8 +24,8 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
   ) => {
     updateSite({
       variables: {
-        input: { ...input, id: parseInt(this.props.match.params.id, 10) }
-      }
+        input: { ...input, id: parseInt(this.props.match.params.id, 10) },
+      },
     });
   };
 
@@ -34,8 +34,7 @@ class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
       <SiteProvider id={parseInt(this.props.match.params.id, 10)}>
         {(site, refetch) => (
           <UpdateSiteMutation
-            onCompleted={() => this.props.history.push("/sites")}
-          >
+            onCompleted={() => this.props.history.push('/sites')}>
             {updateSite => (
               <SiteForm
                 match={this.props.match}

@@ -29,21 +29,21 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
         border: none;
       }
       .crumb-container {
-        border: 2px solid #55B88D;
+        border: 2px solid #55b88d;
         border-radius: 4px;
         padding: 0 5px 0 5px;
         color: #55b88d;
         margin: 1px;
-        background: #55B88D;
+        background: #55b88d;
         color: #fff !important;
-        line-height:1.85em;
+        line-height: 1.85em;
       }
       .crumb-icon {
         cursor: pointer;
         color: #fff;
         margin: 0 0 0 3px;
       }
-      .shorten-crumb{
+      .shorten-crumb {
         background: #55b88d;
         padding: 3px 6px 3px 1px;
         border-radius: 4px;
@@ -106,13 +106,13 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
             })}
 
             <b>
-            <span className="shorten-crumb">
-              <FontAwesome
-                className="chevron-left crumb-icon"
-                name="chevron-left"
-                onClick={() => this.toggleShowValue()}
-              />
-            </span>
+              <span className="shorten-crumb">
+                <FontAwesome
+                  className="chevron-left crumb-icon"
+                  name="chevron-left"
+                  onClick={() => this.toggleShowValue()}
+                />
+              </span>
             </b>
           </ListGroupItem>
         </MultiCrumb>
