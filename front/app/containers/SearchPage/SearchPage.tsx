@@ -496,7 +496,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             // this.setState({ params });
             return null;
           }
-
+          const opened = this.state.openedAgg && this.state.openedAgg.name;
+          const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
+          const { aggFilters = [], crowdAggFilters = [] } =
+            this.state.params || {};
           // current site view url should match w/one of the site views url
           const checkUrls = filter(
             siteViews => siteViews.url === this.props.match.params.siteviewUrl,
@@ -541,8 +544,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     showCards={this.state.showCards}
                     toggledShowCards={this.toggledShowCards}
                     returnNumberOfPages={this.returnNumberOfPages}
-                    //@ts-ignore
                     siteViewUrl={siteViewUrl}
+                    searchAggs={this.state.searchAggs}
+                    crowdAggs={this.state.searchCrowdAggs}
+                    transformFilters={this.transformFilters}
+                    removeSelectAll={this.state.removeSelectAll}
+                    resetSelectAll={this.resetSelectAll}
+                    searchParams={this.state.params}
+                    opened={opened}
+                    openedKind={openedKind}
+                    onOpen={this.handleOpenAgg}
+                    currentSiteView={view}
                   />
                 );
               }}
@@ -576,7 +588,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
-    console.log('LOOKING FOR MY SITEVIEW', this.props)
+    console.log('LOOKING FOR MY SITEVIEW', this.props);
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
@@ -597,41 +609,58 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   render() {
+    const opened = this.state.openedAgg && this.state.openedAgg.name;
+    const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     if (this.props.ignoreUrlHash) {
       return (
-          <SiteProvider>
-            {site => {
-                      const siteViewUrl = this.props.match.params.siteviewUrl
-                      const siteViews = site.siteViews
-                      let thisSiteView = siteViews.find(siteview => siteview.url == siteViewUrl) || site.siteView
-                      if (siteViewUrl === 'default') {
-                        thisSiteView = site.siteView
-                      } 
-              return (
-                <Row>
-                  <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
-                  <MainContainer md={10}>
-                    <SearchView
-                      params={this.state.params as any}
-                      onBulkUpdate={this.handleBulkUpdateClick}
-                      openedAgg={this.state.openedAgg}
-                      onUpdateParams={this.handleUpdateParams}
-                      onRowClick={this.handleRowClick}
-                      onOpenAgg={this.handleOpenAgg}
-                      onAggsUpdate={this.handleAggsUpdate}
-                      onResetFilters={this.handleResetFilters(thisSiteView)}
-                      onClearFilters={this.handleClearFilters}
-                      previousSearchData={this.previousSearchData}
-                      returnPreviousSearchData={() => this.returnPreviousSearchData}
-                      searchHash={''}
-                      showCards={this.state.showCards}
-                      toggledShowCards={this.toggledShowCards}
-                      returnNumberOfPages={this.returnNumberOfPages}
-                    />
-                  </MainContainer>
-                </Row> 
-              )
-            }}
+        <SiteProvider>
+          {site => {
+            const siteViewUrl = this.props.match.params.siteviewUrl;
+            const siteViews = site.siteViews;
+            let thisSiteView =
+              siteViews.find(siteview => siteview.url == siteViewUrl) ||
+              site.siteView;
+            if (siteViewUrl === 'default') {
+              thisSiteView = site.siteView;
+            }
+            return (
+              <Row>
+                <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+                <MainContainer md={10}>
+                  <SearchView
+                    params={this.state.params as any}
+                    onBulkUpdate={this.handleBulkUpdateClick}
+                    openedAgg={this.state.openedAgg}
+                    onUpdateParams={this.handleUpdateParams}
+                    onRowClick={this.handleRowClick}
+                    onOpenAgg={this.handleOpenAgg}
+                    onAggsUpdate={this.handleAggsUpdate}
+                    onResetFilters={this.handleResetFilters(thisSiteView)}
+                    onClearFilters={this.handleClearFilters}
+                    previousSearchData={this.previousSearchData}
+                    returnPreviousSearchData={() =>
+                      this.returnPreviousSearchData
+                    }
+                    searchHash={''}
+                    showCards={this.state.showCards}
+                    toggledShowCards={this.toggledShowCards}
+                    returnNumberOfPages={this.returnNumberOfPages}
+                    siteViewUrl={siteViewUrl}
+                    searchAggs={this.state.searchAggs}
+                    crowdAggs={this.state.searchCrowdAggs}
+                    transformFilters={this.transformFilters}
+                    removeSelectAll={this.state.removeSelectAll}
+                    resetSelectAll={this.resetSelectAll}
+                    searchParams={this.state.params}
+                    opened={opened}
+                    openedKind={openedKind}
+                    onOpen={this.handleOpenAgg}
+                    currentSiteView={thisSiteView}
+                  />
+                </MainContainer>
+              </Row>
+            );
+          }}
         </SiteProvider>
       );
     }
@@ -653,30 +682,39 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           render={() => (
             <SiteProvider>
               {site => {
-                const siteViewUrl = this.props.match.params.siteviewUrl
-                const siteViews = site.siteViews
-                let thisSiteView = siteViews.find(siteview => siteview.url == siteViewUrl) || site.siteView
+                const siteViewUrl = this.props.match.params.siteviewUrl;
+                const siteViews = site.siteViews;
+                let thisSiteView =
+                  siteViews.find(siteview => siteview.url == siteViewUrl) ||
+                  site.siteView;
                 if (siteViewUrl === 'default') {
-                  thisSiteView = site.siteView
-                } 
+                  thisSiteView = site.siteView;
+                }
                 if (!thisSiteView) {
-                  return (<div>Error loading data.</div>)
+                  return <div>Error loading data.</div>;
                 }
                 return (
-                console.log("Site",site),
-                <Row>
-                  { 
-                  thisSiteView.search.config.fields.showFacetBar ?(
-                  <SidebarContainer md={2}>
-                    {this.renderAggs()}
-                  </SidebarContainer>):(null) }
-                  <div id="main_search" style={{ overflowY: 'auto' }}>
-                    <MainContainer style={{ width: '100%' }}>
-                      {this.renderSearch(hash, thisSiteView, site.siteViews, )}
-                    </MainContainer>
-                  </div>
-                </Row>
-              )}}
+                  console.log('Site', site),
+                  (
+                    <Row>
+                      {thisSiteView.search.config.fields.showFacetBar && (
+                        <SidebarContainer md={2}>
+                          {this.renderAggs()}
+                        </SidebarContainer>
+                      )}
+                      <div id="main_search" style={{ overflowY: 'auto' }}>
+                        <MainContainer style={{ width: '100%' }}>
+                          {this.renderSearch(
+                            hash,
+                            thisSiteView,
+                            site.siteViews
+                          )}
+                        </MainContainer>
+                      </div>
+                    </Row>
+                  )
+                );
+              }}
             </SiteProvider>
           )}
         />

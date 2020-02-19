@@ -27,6 +27,7 @@ import { SiteFragment } from 'types/SiteFragment';
 import { throws } from 'assert';
 import { FilterKind } from 'types/globalTypes';
 import { displayFields } from 'utils/siteViewHelpers';
+import styled from 'styled-components';
 
 const getVisibleOptionsByName: (SiteFragment) => any = compose(
   reduce(
@@ -53,8 +54,17 @@ interface AggsProps {
   openedKind: AggKind | null;
   onOpen: (agg: string, kind: AggKind) => void;
   removeSelectAll?: boolean;
-  resetSelectAll?: ()=>void;
+  resetSelectAll?: () => void;
+  updateParams: any;
+  presearch?: boolean;
+  currentSiteView?: any;
 }
+
+const PresearchContainer = styled.div`
+  display: flex;
+  width: 100%;
+  max-height: 350px;
+`;
 
 class Aggs extends React.PureComponent<AggsProps> {
   getAggs = (site: SiteFragment): string[] => {
@@ -85,11 +95,49 @@ class Aggs extends React.PureComponent<AggsProps> {
       removeFilter,
       removeFilters,
       searchParams,
+      presearch,
     } = this.props;
 
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
 
+    if (presearch) {
+      const testAggs = ['overall_status', 'facility_states', 'study_type'];
+      return (
+        <SiteProvider>
+          {(site: SiteFragment) => {
+            return (
+              <PresearchContainer>
+                {testAggs.map(k =>
+                  aggs[k] ? (
+                    <AggDropDown
+                      key={k}
+                      agg={k}
+                      selectedKeys={filters[k] || emptySet}
+                      buckets={aggs[k]}
+                      isOpen={
+                        this.props.opened === k &&
+                        this.props.openedKind === 'aggs'
+                      }
+                      onOpen={this.props.onOpen}
+                      aggKind="aggs"
+                      addFilter={addFilter}
+                      addFilters={addFilters}
+                      removeFilter={removeFilter}
+                      removeFilters={removeFilters}
+                      searchParams={searchParams}
+                      resetSelectAll={this.props.resetSelectAll}
+                      removeSelectAll={this.props.removeSelectAll}
+                      presearch
+                    />
+                  ) : null
+                )}
+              </PresearchContainer>
+            );
+          }}
+        </SiteProvider>
+      );
+    }
     if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
       crowdAggDropdowns = (
         <SiteProvider>
@@ -139,39 +187,42 @@ class Aggs extends React.PureComponent<AggsProps> {
     if (!isEmpty(aggs) && !isNil(aggs)) {
       return (
         <SiteProvider>
-          {site => (
-            <div>
+          {(site: SiteFragment) => {
+            return (
               <div>
-                {this.getAggs(site).map(k =>
-                  aggs[k] ? (
-                    <AggDropDown
-                      key={k}
-                      agg={k}
-                      selectedKeys={filters[k] || emptySet}
-                      buckets={aggs[k]}
-                      isOpen={
-                        this.props.opened === k &&
-                        this.props.openedKind === 'aggs'
-                      }
-                      onOpen={this.props.onOpen}
-                      aggKind="aggs"
-                      addFilter={addFilter}
-                      addFilters={addFilters}
-                      removeFilter={removeFilter}
-                      removeFilters={removeFilters}
-                      searchParams={searchParams}
-                      resetSelectAll={this.props.resetSelectAll}
-                      removeSelectAll={this.props.removeSelectAll}
-                    />
-                  ) : null
-                )}
+                <div>
+                  {this.getAggs(site).map(k =>
+                    aggs[k] ? (
+                      <AggDropDown
+                        key={k}
+                        agg={k}
+                        selectedKeys={filters[k] || emptySet}
+                        buckets={aggs[k]}
+                        isOpen={
+                          this.props.opened === k &&
+                          this.props.openedKind === 'aggs'
+                        }
+                        onOpen={this.props.onOpen}
+                        aggKind="aggs"
+                        addFilter={addFilter}
+                        addFilters={addFilters}
+                        removeFilter={removeFilter}
+                        removeFilters={removeFilters}
+                        searchParams={searchParams}
+                        resetSelectAll={this.props.resetSelectAll}
+                        removeSelectAll={this.props.removeSelectAll}
+                      />
+                    ) : null
+                  )}
+                </div>
+                {crowdAggDropdowns}
               </div>
-              {crowdAggDropdowns}
-            </div>
-          )}
+            );
+          }}
         </SiteProvider>
       );
     }
+
     return null;
   }
 }

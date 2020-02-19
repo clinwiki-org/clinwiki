@@ -262,21 +262,20 @@ export default class CrumbsBar extends React.Component<
       searchParams.crowdAggFilters.length +
       searchParams.aggFilters.length;
     if (totalLength > 0) {
-      yield(
+      yield (
         <span>
           <Button
             bsSize="small"
             key="defaul"
             onClick={this.props.onReset}
-            style={{ margin: '5px 0px 5px 10px'}}>
+            style={{ margin: '5px 0px 5px 10px' }}>
             Default
           </Button>
           <Button
             bsSize="small"
             key="reset"
             onClick={this.props.onClear}
-            style={{ margin: '5px 0px 5px 10px' }}
-          >
+            style={{ margin: '5px 0px 5px 10px' }}>
             Clear
           </Button>
         </span>
@@ -479,7 +478,6 @@ export default class CrumbsBar extends React.Component<
         </div>
       );
     }
-    
 
     return (
       <div className="right-align">
@@ -535,7 +533,7 @@ export default class CrumbsBar extends React.Component<
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
-    let showCrumbsBar= true;
+    let showCrumbsBar = true;
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -694,75 +692,74 @@ export default class CrumbsBar extends React.Component<
                   {this.loadPaginator()}
                 </Col>
               </Row>
-{
-            showCrumbsBar ?
-
-              (<Row>
-                <Col
-                  md={12}
-                  style={{
-                    padding: '10px 0px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                  }}>
-                  <ListGroup
+              {showCrumbsBar ? (
+                <Row>
+                  <Col
+                    md={12}
                     style={{
+                      padding: '10px 0px',
                       display: 'flex',
                       flexWrap: 'wrap',
-                      border: '1px solid #ddd',
-                      borderRadius: ' 5px',
-                      background: '#fff',
-                      width: '100%',
                     }}>
-                    <ListGroupItem
+                    <ListGroup
                       style={{
-                        minWidth: '100%',
-                        backgroundColor: 'rgba(85, 184, 141, 0.5)',
-                      }}
-                      onClick={this.toggleShowFilters}>
-                      {' '}
-                      Filters:{' '}
-                      {this.state.showFilters ? (
-                        <b>
-                          <FontAwesome
-                            className="chevron-up"
-                            name="chevron-up"
-                            style={{
-                              cursor: 'pointer',
-                              color: '#555',
-                              margin: '0 0 0 3px',
-                              float: 'right',
-                            }}
-                            // onClick={() => this.toggleShowValue()}
-                          />
-                        </b>
-                      ) : (
-                        <b>
-                          <FontAwesome
-                            className="chevron-down"
-                            name="chevron-down"
-                            style={{
-                              cursor: 'pointer',
-                              color: '#555',
-                              margin: '0 0 0 3px',
-                              float: 'right',
-                            }}
-                            // onClick={() => this.toggleShowValue()}
-                          />
-                        </b>
-                      )}
-                    </ListGroupItem>
-                    {this.state.showFilters
-                      ? Array.from(
-                          this.mkCrumbs(
-                            this.props.searchParams,
-                            this.props.removeFilter
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        border: '1px solid #ddd',
+                        borderRadius: ' 5px',
+                        background: '#fff',
+                        width: '100%',
+                      }}>
+                      <ListGroupItem
+                        style={{
+                          minWidth: '100%',
+                          backgroundColor: 'rgba(85, 184, 141, 0.5)',
+                        }}
+                        onClick={this.toggleShowFilters}>
+                        {' '}
+                        Filters:{' '}
+                        {this.state.showFilters ? (
+                          <b>
+                            <FontAwesome
+                              className="chevron-up"
+                              name="chevron-up"
+                              style={{
+                                cursor: 'pointer',
+                                color: '#555',
+                                margin: '0 0 0 3px',
+                                float: 'right',
+                              }}
+                              // onClick={() => this.toggleShowValue()}
+                            />
+                          </b>
+                        ) : (
+                          <b>
+                            <FontAwesome
+                              className="chevron-down"
+                              name="chevron-down"
+                              style={{
+                                cursor: 'pointer',
+                                color: '#555',
+                                margin: '0 0 0 3px',
+                                float: 'right',
+                              }}
+                              // onClick={() => this.toggleShowValue()}
+                            />
+                          </b>
+                        )}
+                      </ListGroupItem>
+                      {this.state.showFilters
+                        ? Array.from(
+                            this.mkCrumbs(
+                              this.props.searchParams,
+                              this.props.removeFilter
+                            )
                           )
-                        )
-                      : null}{' '}
-                  </ListGroup>
-                </Col>
-              </Row>):(null)}
+                        : null}{' '}
+                    </ListGroup>
+                  </Col>
+                </Row>
+              ) : null}
             </Grid>
           )}
         </ApolloConsumer>

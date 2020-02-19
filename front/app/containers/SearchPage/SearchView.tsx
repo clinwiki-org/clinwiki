@@ -224,6 +224,27 @@ const changeFilter = (add: boolean) => (
 };
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
+const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
+  return (params: SearchParams) => {
+    keys.forEach(k => {
+      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams),
+        console.log(k);
+    });
+    // changeFilter(true);
+    return params;
+  };
+};
+
+const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
+  return (params: SearchParams) => {
+    keys.forEach(k => {
+      params = removeFilter(aggName, k, isCrowd)(params) as SearchParams;
+    });
+    // changeFilter(true);
+    return params;
+  };
+};
+
 const addSearchTerm = (term: string) => (params: SearchParams) => {
   // have to check for empty string because if you press return two times it ends up putting it in the terms
   if (!term.replace(/\s/g, '').length) {
@@ -263,6 +284,17 @@ const SearchWrapper = styled.div`
   }
 `;
 
+const PreSearchWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  padding: 10px 30px;
+  border: solid white 1px;
+  background-color: #f2f2f2;
+  color: black;
+  margin-bottom: 1em;
+  width: 100%;
+`;
+
 interface SearchViewProps {
   params: SearchParams;
   onBulkUpdate: () => void;
@@ -282,10 +314,25 @@ interface SearchViewProps {
   showCards: Boolean;
   toggledShowCards: Function;
   returnNumberOfPages: Function;
+  searchParams: any;
+  searchAggs: any;
+  crowdAggs: any;
+  transformFilters: any;
+  removeSelectAll: any;
+  resetSelectAll: any;
+  siteViewUrl: any;
+  opened: any;
+  openedKind: any;
+  onOpen: any;
+  currentSiteView: any;
 }
 
 interface SearchViewState {
   tableWidth: number;
+  openedAgg: {
+    name: string;
+    kind: AggKind;
+  } | null;
 }
 class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   searchTable: any = 0;
@@ -294,7 +341,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     super(props);
 
     this.searchTable = React.createRef();
-    this.state = { tableWidth: 0 };
+    this.state = { tableWidth: 0, openedAgg: null };
   }
   isStarColumn = (name: string): boolean => {
     return name === 'average_rating';
@@ -480,6 +527,61 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     return check;
   };
 
+  handleOpenAgg = (name: string, kind: AggKind) => {
+    if (!this.state.openedAgg) {
+      this.setState({ openedAgg: { name, kind } });
+      return;
+    }
+    // @ts-ignore
+    const { name: currentName, kind: currentKind } = this.state.openedAgg;
+    if (name === currentName && kind === currentKind) {
+      this.setState({ openedAgg: null });
+      return;
+    }
+
+    this.setState({ openedAgg: { name, kind } });
+  };
+
+  renderPresearch = ({
+    data,
+    loading,
+    error,
+  }: {
+    data: SearchPageSearchQuery | undefined;
+    loading: boolean;
+    error: any;
+  }) => {
+    const opened = this.state.openedAgg && this.state.openedAgg.name;
+    const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
+    const { aggFilters = [], crowdAggFilters = [] } =
+      this.props.searchParams || {};
+
+    return (
+      <PreSearchWrapper>
+        <Aggs
+          aggs={this.props.searchAggs}
+          crowdAggs={this.props.crowdAggs}
+          filters={this.props.transformFilters(aggFilters)}
+          crowdFilters={this.props.transformFilters(crowdAggFilters)}
+          addFilter={pipe(addFilter, this.props.onUpdateParams)}
+          addFilters={pipe(addFilters, this.props.onUpdateParams)}
+          removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
+          removeFilters={pipe(removeFilters, this.props.onUpdateParams)}
+          updateParams={this.props.onUpdateParams}
+          removeSelectAll={this.props.removeSelectAll}
+          resetSelectAll={this.props.resetSelectAll}
+          // @ts-ignore
+          searchParams={this.props.searchParams}
+          opened={opened}
+          openedKind={openedKind}
+          onOpen={this.handleOpenAgg}
+          presearch
+          currentSiteView={this.props.currentSiteView}
+        />
+      </PreSearchWrapper>
+    );
+  };
+
   renderSearch = ({
     data,
     loading,
@@ -610,43 +712,50 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       this.props.params.q.key === '*'
         ? []
         : (this.props.params.q.children || []).map(prop('key'));
-    
 
     return (
       <SiteProvider>
         {site => {
           return (
-          <CrumbsBar
-            // @ts-ignore
-            siteViewUrl={this.props.siteViewUrl}
-            // @ts-ignore
-            searchParams={{ ...this.props.params, q }}
-            onBulkUpdate={this.props.onBulkUpdate}
-            removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
-            addSearchTerm={pipe(addSearchTerm, this.props.onUpdateParams)}
-            removeSearchTerm={pipe(removeSearchTerm, this.props.onUpdateParams)}
-            page={Math.min(this.props.params.page, pagesTotal)}
-            recordsTotal={recordsTotal}
-            pagesTotal={pagesTotal}
-            pageSize={this.props.params.pageSize}
-            update={{
-              page: pipe(changePage, this.props.onUpdateParams),
-            }}
-            data={site}
-            onReset={this.props.onResetFilters}
-            onClear={this.props.onClearFilters}
-            loading={loading}
-            showCards={this.props.showCards}
-            toggledShowCards={this.toggledShowCards}
-            addFilter={pipe(addFilter, this.props.onUpdateParams)}
-          />
-        )}}
+            <CrumbsBar
+              // @ts-ignore
+              siteViewUrl={this.props.siteViewUrl}
+              // @ts-ignore
+              searchParams={{ ...this.props.params, q }}
+              onBulkUpdate={this.props.onBulkUpdate}
+              removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
+              addSearchTerm={pipe(addSearchTerm, this.props.onUpdateParams)}
+              removeSearchTerm={pipe(
+                removeSearchTerm,
+                this.props.onUpdateParams
+              )}
+              page={Math.min(this.props.params.page, pagesTotal)}
+              recordsTotal={recordsTotal}
+              pagesTotal={pagesTotal}
+              pageSize={this.props.params.pageSize}
+              update={{
+                page: pipe(changePage, this.props.onUpdateParams),
+              }}
+              data={site}
+              onReset={this.props.onResetFilters}
+              onClear={this.props.onClearFilters}
+              loading={loading}
+              showCards={this.props.showCards}
+              toggledShowCards={this.toggledShowCards}
+              addFilter={pipe(addFilter, this.props.onUpdateParams)}
+            />
+          );
+        }}
       </SiteProvider>
     );
   };
 
   render() {
     const { page, pageSize, sorts } = this.props.params;
+    const { currentSiteView } = this.props;
+
+    // const presearch = currentSiteView.search.config.fields.showPresearch;
+    const presearch = true;
 
     return (
       <SearchWrapper>
@@ -670,6 +779,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             return (
               <Col md={12}>
                 {this.renderCrumbs({ data, loading, error })}
+                {presearch && this.renderPresearch({ data, loading, error })}
                 {this.renderSearch({ data, loading, error })}
               </Col>
             );
