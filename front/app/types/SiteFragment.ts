@@ -53,6 +53,20 @@ export interface SiteFragment_siteView_study {
   extendedSections: SiteFragment_siteView_study_extendedSections[];
 }
 
+export interface SiteFragment_siteView_search_config_fields {
+  __typename: "SiteConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
+
+export interface SiteFragment_siteView_search_config {
+  __typename: "SiteConfigSection";
+  fields: SiteFragment_siteView_search_config_fields;
+}
+
 export interface SiteFragment_siteView_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -64,18 +78,7 @@ export interface SiteFragment_siteView_search_aggs_fields_visibleOptions {
   kind: FilterKind;
   values: string[];
 }
-export interface SiteFragment_siteView_search_config{
-  __typename: "SearchConfigSection";
-  fields: SiteFragment_siteView_search_config_fields
-}
-export interface SiteFragment_siteView_search_config_fields {
-  __typename: "SearchConfigField";
-  showPresearch: boolean;
-  showFacetBar: boolean;
-  showAutoSuggest: boolean;
-  showBreadCrumbs: boolean;
-  showResults: boolean;
-}
+
 export interface SiteFragment_siteView_search_aggs_fields {
   __typename: "SiteAggField";
   name: string;
@@ -135,9 +138,9 @@ export interface SiteFragment_siteView_search_crowdAggs {
 export interface SiteFragment_siteView_search {
   __typename: "SiteSearchPage";
   fields: string[];
+  config: SiteFragment_siteView_search_config;
   aggs: SiteFragment_siteView_search_aggs;
   crowdAggs: SiteFragment_siteView_search_crowdAggs;
-  config: SiteFragment_siteView_search_config;
 }
 
 export interface SiteFragment_siteView {
@@ -179,6 +182,20 @@ export interface SiteFragment_siteViews_study {
   allFields: string[];
   basicSections: SiteFragment_siteViews_study_basicSections[];
   extendedSections: SiteFragment_siteViews_study_extendedSections[];
+}
+
+export interface SiteFragment_siteViews_search_config_fields {
+  __typename: "SiteConfigField";
+  showPresearch: boolean;
+  showFacetBar: boolean;
+  showAutoSuggest: boolean;
+  showBreadCrumbs: boolean;
+  showResults: boolean;
+}
+
+export interface SiteFragment_siteViews_search_config {
+  __typename: "SiteConfigSection";
+  fields: SiteFragment_siteViews_search_config_fields;
 }
 
 export interface SiteFragment_siteViews_search_aggs_fields_preselected {
@@ -252,6 +269,7 @@ export interface SiteFragment_siteViews_search_crowdAggs {
 export interface SiteFragment_siteViews_search {
   __typename: "SiteSearchPage";
   fields: string[];
+  config: SiteFragment_siteViews_search_config;
   aggs: SiteFragment_siteViews_search_aggs;
   crowdAggs: SiteFragment_siteViews_search_crowdAggs;
 }

@@ -36,10 +36,12 @@ const AUTOSUGGEST_QUERY = gql`
     $aggOptionsFilter: String
     $aggFields: [String!]!
     $crowdAggFields: [String!]!
+    $url: String
   ) {
     autocomplete(
       aggFields: $aggFields
       crowdAggFields: $crowdAggFields
+      url: $url
       params: {
         agg: $agg
         q: $q
@@ -330,7 +332,8 @@ export default class CrumbsBar extends React.Component<
     );
 
     const query = AUTOSUGGEST_QUERY;
-
+    //@ts-ignore
+    console.log('SVURL', this.props.siteViewUrl);
     const variables = {
       agg: 'browse_condition_mesh_terms',
       aggFilters: searchParams.aggFilters,
@@ -338,6 +341,8 @@ export default class CrumbsBar extends React.Component<
       crowdAggFilters: searchParams.crowdAggFilters,
       page: 0,
       pageSize: 5,
+      //@ts-ignore
+      url: this.props.siteViewUrl,
       q: {
         children: newParams,
         key: 'AND',
@@ -530,7 +535,7 @@ export default class CrumbsBar extends React.Component<
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
-    let showCrumbsBar= false;
+    let showCrumbsBar= true;
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>

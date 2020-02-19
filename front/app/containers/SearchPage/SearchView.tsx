@@ -614,10 +614,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     return (
       <SiteProvider>
-        {site => (
-
-
+        {site => {
+          return (
           <CrumbsBar
+            // @ts-ignore
+            siteViewUrl={this.props.siteViewUrl}
             // @ts-ignore
             searchParams={{ ...this.props.params, q }}
             onBulkUpdate={this.props.onBulkUpdate}
@@ -639,7 +640,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             toggledShowCards={this.toggledShowCards}
             addFilter={pipe(addFilter, this.props.onUpdateParams)}
           />
-        )}
+        )}}
       </SiteProvider>
     );
   };
