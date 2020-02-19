@@ -170,13 +170,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     //     this.state.showFacetBar ? false : view.search.config.showFacetBar
 
     // );
-    console.log('Facet bar set to:', view.search.config.fields.showFacetBar);
+    // console.log('Facet bar set to:', view.search.config.fields.showFacetBar);
     const showBreadCrumbs = view.search.config.fields.showBreadCrumbs;
     // console.log("Crumbs bar set to:",view.search.config.fields.showBreadCrumbs)
     const showAutoSuggest = view.search.config.fields.showAutoSuggest;
     // console.log("Crumbs bar set to:",view.search.config.fields.showAutoSuggest)
     const showResults = view.search.config.fields.showResults;
     // console.log("Results set to:",view.search.config.fields.showResults)
+    const showPresearch = view.search.config.fields.showPresearch
+    console.log("Presearch set to:",view.search.config.fields.showPresearch)
     return (
       <UpdateSiteViewMutation
         onCompleted={() =>
@@ -199,6 +201,22 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                     val,
                     view,
                     'set:search.config.fields.showFacetBar'
+                  )
+                }>
+                <ToggleButton value={true}>Shown</ToggleButton>
+                <ToggleButton value={false}>Hidden</ToggleButton>
+              </ToggleButtonGroup>
+              <h5>Pre-search</h5>
+              <ToggleButtonGroup
+                name="set:search.config.fields.showPresearch"
+                type="radio"
+                value={showPresearch}
+                // defaultValue={view.search.config.fields.showPresearch}
+                onChange={val =>
+                  this.handleShowFacetBar(
+                    val,
+                    view,
+                    'set:search.config.fields.showPresearch'
                   )
                 }>
                 <ToggleButton value={true}>Shown</ToggleButton>
