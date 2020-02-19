@@ -382,7 +382,171 @@ export default class CrumbsBar extends React.Component<
   getSuggestionValue = suggestion => {
     return suggestion.key;
   };
+  renderLoadingAutoSuggest=(suggestions, searchTerm, apolloClient, showAutoSuggest)=>{
+    if(showAutoSuggest==true){
+      return(
+        <FormGroup>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}>
+          <b
+            style={{
+              marginRight: '8px',
+              marginTop: '4px',
+            }}>
+            <ControlLabel>Search Within: </ControlLabel>{' '}
+          </b>
 
+          <Autosuggest
+            multiSection={true}
+            suggestions={suggestions}
+            inputProps={{
+              value: searchTerm,
+              onChange: (e, searchTerm) =>
+                this.onChange(e, searchTerm, apolloClient),
+            }}
+            renderSuggestion={this.renderSuggestion}
+            renderSuggestionsContainer={
+              this.renderSuggestionsContainer
+            }
+            renderSectionTitle={this.renderSectionTitle}
+            getSectionSuggestions={this.getSectionSuggestions}
+            onSuggestionSelected={this.onSuggestionSelected}
+            onSuggestionsFetchRequested={
+              this.onSuggestionsFetchRequested
+            }
+            onSuggestionsClearRequested={
+              this.onSuggestionsClearRequested
+            }
+            getSuggestionValue={this.getSuggestionValue}
+          />
+        </div>
+      </FormGroup>
+      )
+    }else if(showAutoSuggest==false){
+      console.log("rendering false")
+      return(
+    <FormGroup>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+      }}>
+      <b
+        style={{
+          marginRight: '8px',
+          marginTop: '4px',
+        }}>
+        <ControlLabel>Search Within: </ControlLabel>{' '}
+      </b>
+
+      <Autosuggest
+        multiSection={true}
+        suggestions={[]}
+        inputProps={{
+          value: searchTerm,
+          onChange: (e, searchTerm) =>
+            this.onChange(e, searchTerm, apolloClient),
+        }}
+        renderSuggestion={this.renderSuggestion}
+        renderSectionTitle={this.renderSectionTitle}
+        getSectionSuggestions={this.getSectionSuggestions}
+        onSuggestionSelected={this.onSuggestionSelected}
+        onSuggestionsFetchRequested={
+          this.onSuggestionsFetchRequested
+        }
+        onSuggestionsClearRequested={
+          this.onSuggestionsClearRequested
+        }
+        getSuggestionValue={this.getSuggestionValue}
+      />
+    </div>
+  </FormGroup>)
+  }
+  }
+  renderAutoSuggest= (suggestions, searchTerm, apolloClient, showAutoSuggest) =>{
+ if(showAutoSuggest==true){    
+   console.log("rendering true")
+   return(
+      <FormGroup>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+        <b
+          style={{
+            marginRight: '8px',
+            marginTop: '4px',
+          }}>
+          <ControlLabel>Search Within: </ControlLabel>{' '}
+        </b>
+
+        <Autosuggest
+          multiSection={true}
+          suggestions={suggestions}
+          inputProps={{
+            value: searchTerm,
+            onChange: (e, searchTerm) =>
+              this.onChange(e, searchTerm, apolloClient),
+          }}
+          renderSuggestion={this.renderSuggestion}
+          renderSectionTitle={this.renderSectionTitle}
+          getSectionSuggestions={this.getSectionSuggestions}
+          onSuggestionSelected={this.onSuggestionSelected}
+          onSuggestionsFetchRequested={
+            this.onSuggestionsFetchRequested
+          }
+          onSuggestionsClearRequested={
+            this.onSuggestionsClearRequested
+          }
+          getSuggestionValue={this.getSuggestionValue}
+        />
+      </div>
+    </FormGroup>
+    )}else if(showAutoSuggest==false){
+        console.log("rendering false")
+        return(
+      <FormGroup>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+        <b
+          style={{
+            marginRight: '8px',
+            marginTop: '4px',
+          }}>
+          <ControlLabel>Search Within: </ControlLabel>{' '}
+        </b>
+
+        <Autosuggest
+          multiSection={true}
+          suggestions={[]}
+          inputProps={{
+            value: searchTerm,
+            onChange: (e, searchTerm) =>
+              this.onChange(e, searchTerm, apolloClient),
+          }}
+          renderSuggestion={this.renderSuggestion}
+          renderSectionTitle={this.renderSectionTitle}
+          getSectionSuggestions={this.getSectionSuggestions}
+          onSuggestionSelected={this.onSuggestionSelected}
+          onSuggestionsFetchRequested={
+            this.onSuggestionsFetchRequested
+          }
+          onSuggestionsClearRequested={
+            this.onSuggestionsClearRequested
+          }
+          getSuggestionValue={this.getSuggestionValue}
+        />
+      </div>
+    </FormGroup>)
+    }
+  }
   renderSuggestion = suggestion => {
     const capitalized = this.capitalize(suggestion.key);
     return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
@@ -553,119 +717,11 @@ export default class CrumbsBar extends React.Component<
               <Row>
                 <Col xs={8} md={8}>
                   <Form inline className="searchInput" onSubmit={this.onSubmit}>
-      { showAutoSuggest ? (isSuggestionLoading ? (
-                      <FormGroup>
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                          }}>
-                          <b
-                            style={{
-                              marginRight: '8px',
-                              marginTop: '4px',
-                            }}>
-                            <ControlLabel>Search Within: </ControlLabel>{' '}
-                          </b>
-
-                          <Autosuggest
-                            multiSection={true}
-                            suggestions={suggestions}
-                            inputProps={{
-                              value: searchTerm,
-                              onChange: (e, searchTerm) =>
-                                this.onChange(e, searchTerm, apolloClient),
-                            }}
-                            renderSuggestion={this.renderSuggestion}
-                            renderSuggestionsContainer={
-                              this.renderSuggestionsContainer
-                            }
-                            renderSectionTitle={this.renderSectionTitle}
-                            getSectionSuggestions={this.getSectionSuggestions}
-                            onSuggestionSelected={this.onSuggestionSelected}
-                            onSuggestionsFetchRequested={
-                              this.onSuggestionsFetchRequested
-                            }
-                            onSuggestionsClearRequested={
-                              this.onSuggestionsClearRequested
-                            }
-                            getSuggestionValue={this.getSuggestionValue}
-                          />
-                        </div>
-                      </FormGroup>
+      { isSuggestionLoading ? (
+this.renderLoadingAutoSuggest(suggestions, searchTerm, apolloClient, showAutoSuggest)
                     ) : (
-                      <FormGroup>
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                          }}>
-                          <b
-                            style={{
-                              marginRight: '8px',
-                              marginTop: '4px',
-                            }}>
-                            <ControlLabel>Search Within: </ControlLabel>{' '}
-                          </b>
-
-                          <Autosuggest
-                            multiSection={true}
-                            suggestions={suggestions}
-                            inputProps={{
-                              value: searchTerm,
-                              onChange: (e, searchTerm) =>
-                                this.onChange(e, searchTerm, apolloClient),
-                            }}
-                            renderSuggestion={this.renderSuggestion}
-                            renderSectionTitle={this.renderSectionTitle}
-                            getSectionSuggestions={this.getSectionSuggestions}
-                            onSuggestionSelected={this.onSuggestionSelected}
-                            onSuggestionsFetchRequested={
-                              this.onSuggestionsFetchRequested
-                            }
-                            onSuggestionsClearRequested={
-                              this.onSuggestionsClearRequested
-                            }
-                            getSuggestionValue={this.getSuggestionValue}
-                          />
-                        </div>
-                      </FormGroup>
-                    )):(                      
-                    <FormGroup>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                        }}>
-                        <b
-                          style={{
-                            marginRight: '8px',
-                            marginTop: '4px',
-                          }}>
-                          <ControlLabel>Search Within: </ControlLabel>{' '}
-                        </b>
-                              <Autosuggest
-                            multiSection={true}
-                            suggestions={[]}
-                            inputProps={{
-                              value: searchTerm,
-                              onChange: (e, searchTerm) =>
-                                this.onChange(e, searchTerm, apolloClient),
-                            }}
-                            renderSuggestion={this.renderSuggestion}
-                            renderSectionTitle={this.renderSectionTitle}
-                            getSectionSuggestions={this.getSectionSuggestions}
-                            onSuggestionSelected={this.onSuggestionSelected}
-                            onSuggestionsFetchRequested={
-                              this.onSuggestionsFetchRequested
-                            }
-                            onSuggestionsClearRequested={
-                              this.onSuggestionsClearRequested
-                            }
-                            getSuggestionValue={this.getSuggestionValue}
-                          />
-                      </div>
-                    </FormGroup>)
+                      this.renderAutoSuggest(suggestions, searchTerm, apolloClient, showAutoSuggest)
+                    )
                     }
                     <Button type="submit">
                       <FontAwesome name="search" />
