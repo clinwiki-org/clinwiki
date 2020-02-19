@@ -4,7 +4,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
   after_save do
     if default
-      site.site_views.where.not(id: id).where(url:"") do |siteview|
+      site.site_views.where(url:"").where.not(id: id).where(url:"").each do |siteview|
         siteview.update(url:"oldDefault#{siteview.id}")
       end
       update(url:"") unless url == ""
