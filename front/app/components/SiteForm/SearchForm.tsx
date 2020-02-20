@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Panel, PanelGroup, DropdownButton, MenuItem } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
@@ -41,6 +41,7 @@ interface SearchFormState {
   showAllCrowdAggs: boolean;
   mutations: SiteViewMutationInput[];
   showFacetBar: boolean;
+  showFacetBarConfig: boolean;
 }
 
 const SEARCH_FIELDS = studyFields.map(option => ({
@@ -85,6 +86,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     showAllCrowdAggs: false,
     mutations: [],
     showFacetBar: false,
+    showFacetBarConfig:false,
   };
 
   componentDidMount() {}
@@ -186,12 +188,16 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         }>
         {updateSiteView => (
           <StyledContainer>
-            <h1>{view.name}</h1>
+            <h1>Search Name: {view.name}</h1>
            
-            <h3>Content Config</h3>
-            <div className="show-hide-content-group">
-              <h5>Facet Bar</h5>
-              <ToggleButtonGroup
+            <h3>Search Sections</h3>
+            <PanelGroup accordion id="accordion-uncontrolled-example"> 
+              <Panel eventKey="1">
+                <Panel.Heading>
+                  <Panel.Title toggle>Facet Bar</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body collapsible>
+                <ToggleButtonGroup
                 name="set:search.config.fields.showFacetBar"
                 type="radio"
                 value={showFacetBar}
@@ -206,45 +212,97 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <ToggleButton value={true}>Shown</ToggleButton>
                 <ToggleButton value={false}>Hidden</ToggleButton>
               </ToggleButtonGroup>
-              <h5>Pre-search</h5>
-              <ToggleButtonGroup
-                name="set:search.config.fields.showPresearch"
-                type="radio"
-                value={showPresearch}
-                // defaultValue={view.search.config.fields.showPresearch}
-                onChange={val =>
-                  this.handleShowFacetBar(
-                    val,
-                    view,
-                    'set:search.config.fields.showPresearch'
-                  )
-                }>
-                <ToggleButton value={true}>Shown</ToggleButton>
-                <ToggleButton value={false}>Hidden</ToggleButton>
-              </ToggleButtonGroup>
-              <h5>BreadCrumbs Bar</h5>
-              <ToggleButtonGroup
-                name="set:search.config.fields.showBreadCrumbs"
-                type="radio"
-                value={showBreadCrumbs}
-                // defaultValue={view.search.config.fields.showBreadCrumbs}
-                onChange={val =>
-                  this.handleShowFacetBar(
-                    val,
-                    view,
-                    'set:search.config.fields.showBreadCrumbs'
-                  )
-                }>
-                <ToggleButton value={true}>Shown</ToggleButton>
-                <ToggleButton value={false}>Hidden</ToggleButton>
-              </ToggleButtonGroup>
-              <h5>Auto Suggest</h5>
-
-              <ToggleButtonGroup
+              <Row>
+                <Col md={6}>
+                  <AggsHeaderContainer>
+                    <h3>Aggs visibility</h3>
+                    <StyledCheckbox 
+                      checked={this.state.showAllAggs}
+                      onChange={this.handleShowAllToggle('aggs')}>
+                          Show all
+                        </StyledCheckbox>
+                      </AggsHeaderContainer>
+                      <StyledLabel>Filter</StyledLabel>
+                      <StyledFormControl
+                        name="set:search.aggs.selected.kind"
+                        componentClass="select"
+                        onChange={e => this.handleAddMutation(e, view)}
+                        value={view.search.aggs.selected.kind}>
+                        <option value="BLACKLIST">All except</option>
+                        <option value="WHITELIST">Only</option>
+                      </StyledFormControl>
+                      <MultiInput
+                        name="set:search.aggs.selected.values"
+                        options={AGGS_OPTIONS}
+                        placeholder="Add facet"
+                        value={view.search.aggs.selected.values}
+                        onChange={e => this.handleAddMutation(e, view)}
+                      />
+                      <h3>Aggs settings</h3>
+                      {fields.map(field => (
+                        <AggField
+                          kind="aggs"
+                          key={field.name}
+                          //@ts-ignore
+                          field={field}
+                          onAddMutation={this.handleAddMutation}
+                          view={view}
+                        />
+                      ))}
+                    </Col>
+                    <Col md={6}>
+                      <AggsHeaderContainer>
+                        <h3>Crowd aggs visibility</h3>
+                        <StyledCheckbox
+                          checked={this.state.showAllCrowdAggs}
+                          onChange={this.handleShowAllToggle('crowdAggs')}>
+                          Show all
+                        </StyledCheckbox>
+                      </AggsHeaderContainer>
+                      <StyledLabel>Filter</StyledLabel>
+                      <StyledFormControl
+                        name="set:search.crowdAggs.selected.kind"
+                        componentClass="select"
+                        onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
+                        v={view.search.crowdAggs.selected.kind}>
+                        <option value="BLACKLIST">All except</option>
+                        <option value="WHITELIST">Only</option>
+                      </StyledFormControl>
+                      <MultiInput
+                        name="set:search.crowdAggs.selected.values"
+                        options={this.getCrowdFields(view)}
+                        placeholder="Add facet"
+                        value={view.search.crowdAggs.selected.values}
+                        onChange={e => this.handleAddMutation(e, view)}
+                      />
+                      <h3>Crowd aggs settings</h3>
+                      {crowdFields.map(field => (
+                        <AggField
+                          kind="crowdAggs"
+                          key={field.name}
+                          //@ts-ignore
+                          field={field}
+                          onAddMutation={this.handleAddMutation}
+                          view={view}
+                        />
+                      ))}
+                    </Col>
+                  </Row>
+            <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+              Save Site View
+            </StyledButton>
+                </Panel.Body>
+              </Panel>
+              <Panel eventKey="2">
+                <Panel.Heading>
+                  <Panel.Title toggle>Auto Suggest</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body collapsible>
+                <ToggleButtonGroup
                 name="set:search.config.fields.showAutoSuggest"
                 type="radio"
                 value={showAutoSuggest}
-                // defaultValue={view.search.config.fields.showAutoSuggest}
+                // defaultValue={view.search.config.fields.showFacetBar}
                 onChange={val =>
                   this.handleShowFacetBar(
                     val,
@@ -255,13 +313,200 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <ToggleButton value={true}>Shown</ToggleButton>
                 <ToggleButton value={false}>Hidden</ToggleButton>
               </ToggleButtonGroup>
-              <h5>Results</h5>
+              <Row>
+                <Col md={6}>
+                  <AggsHeaderContainer>
+                    <h3>Aggs visibility</h3>
+                    <StyledCheckbox 
+                      checked={this.state.showAllAggs}
+                      onChange={this.handleShowAllToggle('aggs')}>
+                          Show all
+                        </StyledCheckbox>
+                      </AggsHeaderContainer>
+                      <StyledLabel>Filter</StyledLabel>
+                      <StyledFormControl
+                        name="set:search.aggs.selected.kind"
+                        componentClass="select"
+                        onChange={e => this.handleAddMutation(e, view)}
+                        value={view.search.aggs.selected.kind}>
+                        <option value="BLACKLIST">All except</option>
+                        <option value="WHITELIST">Only</option>
+                      </StyledFormControl>
+                      <MultiInput
+                        name="set:search.aggs.selected.values"
+                        options={AGGS_OPTIONS}
+                        placeholder="Add facet"
+                        value={view.search.aggs.selected.values}
+                        onChange={e => this.handleAddMutation(e, view)}
+                      />
+                      <h3>Aggs settings</h3>
+                      {fields.map(field => (
+                        <AggField
+                          kind="aggs"
+                          key={field.name}
+                          //@ts-ignore
+                          field={field}
+                          onAddMutation={this.handleAddMutation}
+                          view={view}
+                        />
+                      ))}
+                    </Col>
+                    <Col md={6}>
+                      <AggsHeaderContainer>
+                        <h3>Crowd aggs visibility</h3>
+                        <StyledCheckbox
+                          checked={this.state.showAllCrowdAggs}
+                          onChange={this.handleShowAllToggle('crowdAggs')}>
+                          Show all
+                        </StyledCheckbox>
+                      </AggsHeaderContainer>
+                      <StyledLabel>Filter</StyledLabel>
+                      <StyledFormControl
+                        name="set:search.crowdAggs.selected.kind"
+                        componentClass="select"
+                        onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
+                        v={view.search.crowdAggs.selected.kind}>
+                        <option value="BLACKLIST">All except</option>
+                        <option value="WHITELIST">Only</option>
+                      </StyledFormControl>
+                      <MultiInput
+                        name="set:search.crowdAggs.selected.values"
+                        options={this.getCrowdFields(view)}
+                        placeholder="Add facet"
+                        value={view.search.crowdAggs.selected.values}
+                        onChange={e => this.handleAddMutation(e, view)}
+                      />
+                      <h3>Crowd aggs settings</h3>
+                      {crowdFields.map(field => (
+                        <AggField
+                          kind="crowdAggs"
+                          key={field.name}
+                          //@ts-ignore
+                          field={field}
+                          onAddMutation={this.handleAddMutation}
+                          view={view}
+                        />
+                      ))}
+                    </Col>
+                  </Row>
+            <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+              Save Site View
+            </StyledButton>
+                </Panel.Body>
+              </Panel>
+              <Panel eventKey="3">
+                <Panel.Heading>
+                  <Panel.Title toggle>Pre-Search</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body collapsible>
+                <ToggleButtonGroup
+                name="set:search.config.fields.showPresearch"
+                type="radio"
+                value={showPresearch}
+                // defaultValue={view.search.config.fields.showFacetBar}
+                onChange={val =>
+                  this.handleShowFacetBar(
+                    val,
+                    view,
+                    'set:search.config.fields.showPresearch'
+                  )
+                }>
+                <ToggleButton value={true}>Shown</ToggleButton>
+                <ToggleButton value={false}>Hidden</ToggleButton>
+              </ToggleButtonGroup>
+    
+              <Row>
+                <Col md={6}>
+                  <AggsHeaderContainer>
+                    <h3>Aggs visibility</h3>
+                    <StyledCheckbox 
+                      checked={this.state.showAllAggs}
+                      onChange={this.handleShowAllToggle('aggs')}>
+                          Show all
+                        </StyledCheckbox>
+                      </AggsHeaderContainer>
+                      <StyledLabel>Filter</StyledLabel>
+                      <StyledFormControl
+                        name="set:search.aggs.selected.kind"
+                        componentClass="select"
+                        onChange={e => this.handleAddMutation(e, view)}
+                        value={view.search.aggs.selected.kind}>
+                        <option value="BLACKLIST">All except</option>
+                        <option value="WHITELIST">Only</option>
+                      </StyledFormControl>
+                      <MultiInput
+                        name="set:search.aggs.selected.values"
+                        options={AGGS_OPTIONS}
+                        placeholder="Add facet"
+                        value={view.search.aggs.selected.values}
+                        onChange={e => this.handleAddMutation(e, view)}
+                      />
+                      <h3>Aggs settings</h3>
+                      {fields.map(field => (
+                        <AggField
+                          kind="aggs"
+                          key={field.name}
+                          //@ts-ignore
+                          field={field}
+                          onAddMutation={this.handleAddMutation}
+                          view={view}
+                        />
+                      ))}
+                    </Col>
+                    <Col md={6}>
+                      <AggsHeaderContainer>
+                        <h3>Crowd aggs visibility</h3>
+                        <StyledCheckbox
+                          checked={this.state.showAllCrowdAggs}
+                          onChange={this.handleShowAllToggle('crowdAggs')}>
+                          Show all
+                        </StyledCheckbox>
+                      </AggsHeaderContainer>
 
-              <ToggleButtonGroup
+                      <StyledLabel>Filter</StyledLabel>
+                      <StyledFormControl
+                        name="set:search.crowdAggs.selected.kind"
+                        componentClass="select"
+                        onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
+                        v={view.search.crowdAggs.selected.kind}>
+                        <option value="BLACKLIST">All except</option>
+                        <option value="WHITELIST">Only</option>
+                      </StyledFormControl>
+                      <MultiInput
+                        name="set:search.crowdAggs.selected.values"
+                        options={this.getCrowdFields(view)}
+                        placeholder="Add facet"
+                        value={view.search.crowdAggs.selected.values}
+                        onChange={e => this.handleAddMutation(e, view)}
+                      />
+                      <h3>Crowd aggs settings</h3>
+                      {crowdFields.map(field => (
+                        <AggField
+                          kind="crowdAggs"
+                          key={field.name}
+                          //@ts-ignore
+                          field={field}
+                          onAddMutation={this.handleAddMutation}
+                          view={view}
+                        />
+                      ))}
+                    </Col>
+                  </Row>
+            <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+              Save Site View
+            </StyledButton>
+                </Panel.Body>
+              </Panel>
+              <Panel eventKey="4">
+                <Panel.Heading>
+                  <Panel.Title toggle>Results</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body collapsible>
+                <ToggleButtonGroup
                 name="set:search.config.fields.showResults"
                 type="radio"
                 value={showResults}
-                // defaultValue={view.search.config.fields.showResults}
+                // defaultValue={view.search.config.fields.showFacetBar}
                 onChange={val =>
                   this.handleShowFacetBar(
                     val,
@@ -272,8 +517,146 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <ToggleButton value={true}>Shown</ToggleButton>
                 <ToggleButton value={false}>Hidden</ToggleButton>
               </ToggleButtonGroup>
-            </div>
+              <h3>Fields</h3>
+            <MultiInput
+              name="set:search.fields"
+              options={SEARCH_FIELDS}
+              placeholder="Add field"
+              draggable
+              value={view.search.fields}
+              onChange={e => this.handleAddMutation(e, view)}
+            />
+            
+                        <DropdownButton
+                  bsStyle="default"
+                  title="Result View"
+                  key="default"
+                  id="dropdown-basic-default"
+                >
+                  <MenuItem eventKey="1">Card View</MenuItem>
+                  <MenuItem eventKey="2">Grid View</MenuItem>
+                  <MenuItem divider />
+                  <MenuItem eventKey="4">Separated link</MenuItem>
+                </DropdownButton>
 
+            <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+              Save Site View
+            </StyledButton>
+                </Panel.Body>
+              </Panel>
+              <Panel eventKey="5">
+                <Panel.Heading>
+                  <Panel.Title toggle>Bread Crumbs Bar</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body collapsible>
+                <ToggleButtonGroup
+                name="set:search.config.fields.showBreadCrumbs"
+                type="radio"
+                value={showBreadCrumbs}
+                // defaultValue={view.search.config.fields.showFacetBar}
+                onChange={val =>
+                  this.handleShowFacetBar(
+                    val,
+                    view,
+                    'set:search.config.fields.showBreadCrumbs'
+                  )
+                }>
+                <ToggleButton value={true}>Shown</ToggleButton>
+                <ToggleButton value={false}>Hidden</ToggleButton>
+              </ToggleButtonGroup>
+    
+              <Row>
+                <Col md={6}>
+                  <AggsHeaderContainer>
+                    <h3>Aggs visibility</h3>
+                    <StyledCheckbox 
+                      checked={this.state.showAllAggs}
+                      onChange={this.handleShowAllToggle('aggs')}>
+                          Show all
+                        </StyledCheckbox>
+                      </AggsHeaderContainer>
+                      <StyledLabel>Filter</StyledLabel>
+                      <StyledFormControl
+                        name="set:search.aggs.selected.kind"
+                        componentClass="select"
+                        onChange={e => this.handleAddMutation(e, view)}
+                        value={view.search.aggs.selected.kind}>
+                        <option value="BLACKLIST">All except</option>
+                        <option value="WHITELIST">Only</option>
+                      </StyledFormControl>
+                      <MultiInput
+                        name="set:search.aggs.selected.values"
+                        options={AGGS_OPTIONS}
+                        placeholder="Add facet"
+                        value={view.search.aggs.selected.values}
+                        onChange={e => this.handleAddMutation(e, view)}
+                      />
+                      <h3>Aggs settings</h3>
+                      {fields.map(field => (
+                        <AggField
+                          kind="aggs"
+                          key={field.name}
+                          //@ts-ignore
+                          field={field}
+                          onAddMutation={this.handleAddMutation}
+                          view={view}
+                        />
+                      ))}
+                    </Col>
+                    <Col md={6}>
+                      <AggsHeaderContainer>
+                        <h3>Crowd aggs visibility</h3>
+                        <StyledCheckbox
+                          checked={this.state.showAllCrowdAggs}
+                          onChange={this.handleShowAllToggle('crowdAggs')}>
+                          Show all
+                        </StyledCheckbox>
+                      </AggsHeaderContainer>
+
+                      <StyledLabel>Filter</StyledLabel>
+                      <StyledFormControl
+                        name="set:search.crowdAggs.selected.kind"
+                        componentClass="select"
+                        onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
+                        v={view.search.crowdAggs.selected.kind}>
+                        <option value="BLACKLIST">All except</option>
+                        <option value="WHITELIST">Only</option>
+                      </StyledFormControl>
+                      <MultiInput
+                        name="set:search.crowdAggs.selected.values"
+                        options={this.getCrowdFields(view)}
+                        placeholder="Add facet"
+                        value={view.search.crowdAggs.selected.values}
+                        onChange={e => this.handleAddMutation(e, view)}
+                      />
+                      <h3>Crowd aggs settings</h3>
+                      {crowdFields.map(field => (
+                        <AggField
+                          kind="crowdAggs"
+                          key={field.name}
+                          //@ts-ignore
+                          field={field}
+                          onAddMutation={this.handleAddMutation}
+                          view={view}
+                        />
+                      ))}
+                    </Col>
+                  </Row>
+            <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+              Save Site View
+            </StyledButton>
+                </Panel.Body>
+              </Panel>
+              {/* <Panel eventKey="6">
+                <Panel.Heading>
+                  <Panel.Title toggle>Panel heading 2</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body collapsible>Panel content 2</Panel.Body>
+              </Panel> */}
+            </PanelGroup>
+            
+{/*             
+            <h1>OG STUFF</h1>
             <h3>Fields</h3>
             <MultiInput
               name="set:search.fields"
@@ -359,7 +742,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   />
                 ))}
               </Col>
-            </Row>
+            </Row> */}
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
               Save Site View
             </StyledButton>

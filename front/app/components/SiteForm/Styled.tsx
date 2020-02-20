@@ -8,6 +8,12 @@ export const StyledContainer = styled.div`
   h5 {
     color: white;
   }
+
+  .panel-group .panel{
+    margin-bottom: 0;
+    border-radius: 4px;
+    background: bottom;
+  }
 `;
 export const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;

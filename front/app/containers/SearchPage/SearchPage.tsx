@@ -278,6 +278,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const params: any = { ...this.state.params, page: 0 };
     this.previousSearchData = [];
     this.setState({ showCards, params });
+    console.log("ToggleShowParams",params)
+    console.log("LocalStorage",localStorage.getItem('showCards'))
   };
 
   previousSearchData: Array<SearchPageSearchQuery_search_studies> = [];

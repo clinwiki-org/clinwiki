@@ -305,6 +305,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   toggledShowCards = (showCards: Boolean) => {
     this.props.toggledShowCards(showCards);
+    console.log("Showcard",showCards)
+    console.log("Params",this.props.params)
     pipe(changePage, this.props.onUpdateParams);
   };
 
