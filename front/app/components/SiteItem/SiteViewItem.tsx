@@ -1,12 +1,16 @@
-import * as React from "react";
-import styled from "styled-components";
-import { Button } from "react-bootstrap";
-import { SiteViewFragment } from "types/SiteViewFragment";
-import { withRouter } from "react-router-dom";
+import * as React from 'react';
+import styled from 'styled-components';
+import { Button, Checkbox } from 'react-bootstrap';
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import { withRouter } from 'react-router-dom';
 import DeleteSiteViewMutation, {
-  DeleteSiteViewMutationFn
-} from "mutations/DeleteSiteViewMutation";
-import { History, Location } from "history";
+  DeleteSiteViewMutationFn,
+} from 'mutations/DeleteSiteViewMutation';
+import { History, Location } from 'history';
+import UpdateSiteViewMutation, {
+  UpdateSiteViewMutationFn,
+} from 'mutations/UpdateSiteViewMutation';
+import { view, update } from 'ramda';
 
 interface SiteViewItemProps {
   match: any;
@@ -29,15 +33,34 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     );
   };
 
+  handleCheckbox = (updateSiteView: UpdateSiteViewMutationFn) => {
+    const { siteView } = this.props;
+    if (siteView.default) {
+      return null;
+    }
+    updateSiteView({
+      variables: {
+        input: {
+          default: true,
+          id: siteView.id,
+          mutations: [],
+          name: siteView.name,
+        },
+      },
+    }).then(() => {
+      this.props.refresh();
+    });
+  };
+
   handleDelete = (deleteSiteView: DeleteSiteViewMutationFn) => {
     if (!window) return;
-    if (window.confirm("Are you sure?")) {
+    if (window.confirm('Are you sure?')) {
       deleteSiteView({
         variables: {
           input: {
-            id: this.props.siteView.id
-          }
-        }
+            id: this.props.siteView.id,
+          },
+        },
       }).then(res => {
         // console.log(res);
         this.props.refresh();
@@ -45,10 +68,21 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     }
   };
   render() {
+    const { siteView } = this.props;
     return (
       <tr>
-        <td>{this.props.siteView.name}</td>
-        <td>{this.props.siteView.url}</td>
+        <td>{siteView.name}</td>
+        <td>{siteView.url}</td>
+        <td>
+          <UpdateSiteViewMutation>
+            {updateSiteView => (
+              <Checkbox
+                checked={siteView.default}
+                onChange={() => this.handleCheckbox(updateSiteView)}
+              />
+            )}
+          </UpdateSiteViewMutation>
+        </td>
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
           <DeleteSiteViewMutation>

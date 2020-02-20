@@ -64,6 +64,16 @@ const PresearchContainer = styled.div`
   display: flex;
   width: 100%;
   max-height: 350px;
+  @media (max-width: 1250px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    max-height: 1500px;
+  }
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    max-height: 1500px;
+  }
 `;
 
 class Aggs extends React.PureComponent<AggsProps> {
@@ -102,7 +112,7 @@ class Aggs extends React.PureComponent<AggsProps> {
     const emptySet = new Set();
 
     if (presearch) {
-      const testAggs = ['overall_status', 'facility_states', 'study_type'];
+      const testAggs = ['overall_status', 'facility_names'];
       return (
         <SiteProvider>
           {(site: SiteFragment) => {

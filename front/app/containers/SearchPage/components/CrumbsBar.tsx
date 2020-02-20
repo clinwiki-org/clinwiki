@@ -20,7 +20,6 @@ import * as Autosuggest from 'react-autosuggest';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
-import SiteProvider from 'containers/SiteProvider';
 import { MAX_WINDOW_SIZE, aggsOrdered } from '../../../utils/constants';
 import { PulseLoader, BeatLoader } from 'react-spinners';
 import CurrentUser from 'containers/CurrentUser';
@@ -171,7 +170,8 @@ interface CrumbsBarProps {
   data: SiteFragment;
   showCards: Boolean;
   toggledShowCards: Function;
-  siteViewUrl: string;
+  siteViewUrl?: string;
+  currentSiteView: any;
 }
 interface CrumbsBarState {
   searchTerm: string;
@@ -318,23 +318,21 @@ export default class CrumbsBar extends React.Component<
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
-    const { searchParams, data } = this.props;
-
+    const { searchParams, data, currentSiteView } = this.props;
+    console.log(currentSiteView);
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
 
     const aggFields = this.getAggFieldsFromSubsiteConfig(
-      data.siteView.search.aggs.fields
+      currentSiteView.search.aggs.fields
     );
 
     const crowdAggFields = this.getCrowdAggFieldsFromSubsiteConfig(
-      data.siteView.search.crowdAggs.fields
+      currentSiteView.search.crowdAggs.fields
     );
 
     const query = AUTOSUGGEST_QUERY;
-    //@ts-ignore
-    console.log('SVURL', this.props.siteViewUrl);
     const variables = {
       agg: 'browse_condition_mesh_terms',
       aggFilters: searchParams.aggFilters,
@@ -342,8 +340,7 @@ export default class CrumbsBar extends React.Component<
       crowdAggFilters: searchParams.crowdAggFilters,
       page: 0,
       pageSize: 5,
-      //@ts-ignore
-      url: this.props.siteViewUrl,
+      url: currentSiteView.url,
       q: {
         children: newParams,
         key: 'AND',
