@@ -26,6 +26,7 @@ import { BeatLoader } from 'react-spinners';
 import * as InfiniteScroll from 'react-infinite-scroller';
 import * as FontAwesome from 'react-fontawesome';
 import Sorter from './Sorter';
+import { capitalize } from 'utils/helpers';
 
 import {
   AggBucket,
@@ -131,6 +132,57 @@ const PanelWrapper = styledComponents.div`
   }
 `;
 
+const PresearchCard = styledComponents.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid green;
+  border-radius: 12px;
+  margin: 10px;
+  flex: 1;
+  height: 300px;
+`;
+
+const PresearchHeader = styledComponents.div`
+  background-color: #55b88d;
+  padding: 5px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  height: 50px;
+`;
+
+const PresearchTitle = styledComponents.div`
+  color: white;
+  font-size: 25px;
+  font-weight: 400;
+  margin-left: 5px;
+`;
+
+const PresearchBody = styledComponents.div`
+  margin-left: 5px;
+  height: 240px;
+`;
+
+const PresearchFilter = styledComponents.div`
+  margin-left: 5px;
+  max-height: 30px;
+`;
+
+const PresearchPanel = styledComponents.div`
+  overflow-x: auto;
+  max-height: 190px;
+  margin-left: 5px;
+  margin-top 30px;
+`;
+
+const PresearchContent = styledComponents.div`
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px; 
+  background-color: white;
+  max-height: 250px;
+`;
+
 export enum SortKind {
   Alpha,
   Number,
@@ -146,7 +198,7 @@ interface AggDropDownState {
   desc: boolean;
   sortKind: SortKind;
   checkboxValue: boolean;
-  showLabel:boolean;
+  showLabel: boolean;
 }
 
 interface AggDropDownProps {
@@ -164,7 +216,8 @@ interface AggDropDownProps {
   visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
   removeSelectAll?: boolean;
-  resetSelectAll?: ()=>void;
+  resetSelectAll?: () => void;
+  presearch?: boolean;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -178,7 +231,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     sortKind: SortKind.Alpha,
     desc: true,
     checkboxValue: false,
-    showLabel:false
+    showLabel: false,
   };
 
   static getDerivedStateFromProps(
@@ -252,22 +305,22 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     });
 
     if (this.props.removeSelectAll) {
-      console.log('meh')
+      console.log('meh');
       this.setState({
-        checkboxValue: false
-      })
+        checkboxValue: false,
+      });
     }
     if (this.isAllSelected() != true) {
       if (!this.props.addFilters) return;
       this.props.addFilters(agg, newParams, false);
       this.setState({
-        checkboxValue: true
-      })
+        checkboxValue: true,
+      });
     } else {
       if (!this.props.removeFilters) return;
       this.setState({
-        checkboxValue: false
-      })
+        checkboxValue: false,
+      });
       this.props.removeFilters(agg, newParams, false);
     }
   };
@@ -463,9 +516,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     return (
-      <div style={{ display: 'flex', flexDirection: 'row', borderBottom: "solid 1px #ddd"
-    }}>
-        <div style={{ marginTop:"1em"}}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          borderBottom: 'solid 1px #ddd',
+        }}>
+        <div style={{ marginTop: '1em' }}>
           <Checkbox
             checked={
               this.props.removeSelectAll
@@ -474,8 +531,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             }
             onChange={() => this.selectAll(agg)}
             onMouseEnter={() => this.setState({ showLabel: true })}
-            onMouseLeave={() => this.setState({ showLabel: false })}
-          >
+            onMouseLeave={() => this.setState({ showLabel: false })}>
             {this.state.showLabel ? (
               <span
                 style={{
@@ -488,7 +544,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                   color: 'black',
                   background: 'white',
                   borderRadius: '4px',
-                  fontSize: "0.85em"
+                  fontSize: '0.85em',
                 }}>
                 Select All
               </span>
@@ -521,7 +577,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           placeholder="filter..."
           value={this.state.filter}
           onChange={this.handleFilterChange}
-          style={{ flex: 4, marginTop:"4px" }}
+          style={{ flex: 4, marginTop: '4px' }}
         />
       </div>
     );
@@ -546,21 +602,67 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   checkSelect = () => {
-   if (this.props.removeSelectAll) {
-     this.setState({
-       checkboxValue: false
-     }, () => {
-       if(this.props.resetSelectAll!= null){
-        this.props.resetSelectAll()
-       } 
-     })
-   }
-  }
+    if (this.props.removeSelectAll) {
+      this.setState(
+        {
+          checkboxValue: false,
+        },
+        () => {
+          if (this.props.resetSelectAll != null) {
+            this.props.resetSelectAll();
+          }
+        }
+      );
+    }
+  };
+
+  renderPresearchFilter = (apollo, siteView) => {
+    const { buckets = [], filter } = this.state;
+    if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
+      return (
+        <PresearchContent>
+          <PresearchBody>
+            {this.renderBucketsPanel(apollo, siteView)}
+          </PresearchBody>
+        </PresearchContent>
+      );
+    } else
+      return (
+        <PresearchContent>
+          <PresearchFilter>{this.renderFilter()}</PresearchFilter>
+          <PresearchPanel>
+            {this.renderBucketsPanel(apollo, siteView)}
+          </PresearchPanel>
+        </PresearchContent>
+      );
+  };
+
   render() {
-    const { agg } = this.props;
-    const { isOpen } = this.state;
+    const { agg, presearch } = this.props;
+    const { buckets = [], filter, desc, sortKind, isOpen } = this.state;
     const title = aggToField(agg);
+
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
+    if (presearch) {
+      return (
+        <SiteProvider>
+          {site => (
+            <ApolloConsumer>
+              {apolloClient => (
+                <PresearchCard>
+                  <PresearchHeader>
+                    <PresearchTitle>{capitalize(title)}</PresearchTitle>
+                  </PresearchHeader>
+                  <PresearchContent>
+                    {this.renderPresearchFilter(apolloClient, site.siteView)}
+                  </PresearchContent>
+                </PresearchCard>
+              )}
+            </ApolloConsumer>
+          )}
+        </SiteProvider>
+      );
+    }
     return (
       <SiteProvider>
         {site => (

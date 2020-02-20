@@ -62,15 +62,15 @@ const SITE_VIEW_FRAGMENT = gql`
       ...SiteStudyPageFragment
     }
     search {
-      autoSuggest{
+      autoSuggest {
         fields
       }
-      breadCrumbs{
+      breadCrumbs {
         icon
         target
         location
       }
-      presearch{
+      presearch {
         aggs {
           fields {
             name
@@ -111,16 +111,15 @@ const SITE_VIEW_FRAGMENT = gql`
             values
           }
         }
-        button{
+        button {
           name
           url
         }
       }
 
-
       fields
-      config{
-        fields{
+      config {
+        fields {
           showPresearch
           showFacetBar
           showAutoSuggest
@@ -128,7 +127,6 @@ const SITE_VIEW_FRAGMENT = gql`
           showResults
         }
       }
-
 
       aggs {
         fields {
@@ -223,7 +221,7 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
       <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
         {({ data, loading, error, refetch }) => {
           if (loading || error) return null;
-           console.log(data);
+          //  console.log(data);
           return this.props.children(data!.site!, refetch);
         }}
       </QueryComponent>

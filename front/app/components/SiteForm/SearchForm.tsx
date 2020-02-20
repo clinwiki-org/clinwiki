@@ -191,8 +191,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <h1>Search Name: {view.name}</h1>
            
             <h3>Search Sections</h3>
-            <PanelGroup accordion id="accordion-uncontrolled-example"> 
-              <Panel eventKey="1">
+            <PanelGroup  id="accordion-uncontrolled"> 
+              <Panel >
                 <Panel.Heading>
                   <Panel.Title toggle>Facet Bar</Panel.Title>
                 </Panel.Heading>
@@ -293,7 +293,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledButton>
                 </Panel.Body>
               </Panel>
-              <Panel eventKey="2">
+              <Panel>
                 <Panel.Heading>
                   <Panel.Title toggle>Auto Suggest</Panel.Title>
                 </Panel.Heading>
@@ -394,7 +394,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledButton>
                 </Panel.Body>
               </Panel>
-              <Panel eventKey="3">
+              <Panel>
                 <Panel.Heading>
                   <Panel.Title toggle>Pre-Search</Panel.Title>
                 </Panel.Heading>
@@ -497,7 +497,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledButton>
                 </Panel.Body>
               </Panel>
-              <Panel eventKey="4">
+              <Panel>
                 <Panel.Heading>
                   <Panel.Title toggle>Results</Panel.Title>
                 </Panel.Heading>
@@ -544,7 +544,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledButton>
                 </Panel.Body>
               </Panel>
-              <Panel eventKey="5">
+              <Panel>
                 <Panel.Heading>
                   <Panel.Title toggle>Bread Crumbs Bar</Panel.Title>
                 </Panel.Heading>
