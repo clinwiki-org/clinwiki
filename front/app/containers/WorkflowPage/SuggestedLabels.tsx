@@ -2,14 +2,33 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import { Button, Checkbox } from 'react-bootstrap';
+import PREFETCH_QUERY from '../StudyPage';
+import * as FontAwesome from "react-fontawesome";
+import CurrentUser from "containers/CurrentUser";
+import { Button, List, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, FormControl,
+  Form,
+  FormGroup,
+  ButtonGroup,
+  ControlLabel} from 'react-bootstrap';
+  import * as Autosuggest from "react-autosuggest";
+import SearchView from '../SearchPage/SearchView'
 import {
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables,
 } from 'types/SuggestedLabelsQuery';
-import { pipe, pathOr, prop, map, filter, fromPairs, keys } from 'ramda';
+import { pipe, pathOr, prop, map, filter, fromPairs, keys, reject, propEq, equals } from 'ramda';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-
+import * as Similarity from "./nlp_similarity";
+import WikiSections from './WikiSections';
+import { findFieldsThatChangedTypeOnInputObjectTypes } from 'graphql/utilities/findBreakingChanges';
+import SiteProvider from 'containers/SiteProvider';
+import CrumbsBar from 'containers/SearchPage/components/CrumbsBar';
+import * as Search from '../SearchPage/SearchView'
+import { SearchPageSearchQuery } from 'types/SearchPageSearchQuery';
+import { MAX_WINDOW_SIZE } from 'utils/constants';
+import { Component } from 'react';
+import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
+import { App } from './WorkSearch'
 interface SuggestedLabelsProps {
   nctId: string;
   searchHash: string | null;
@@ -17,6 +36,33 @@ interface SuggestedLabelsProps {
   disabled?: boolean;
   allowedSuggestedLabels: string[];
 }
+
+const SEARCH_QUERY = gql`
+query AllQuery($nctId: String!) {
+  study(nctId: $nctId) {
+    nctId
+    detailedDescription
+    eligibilityCriteria
+    conditions
+    briefTitle
+    overallStatus
+    createdAt
+    updatedAt
+    facilities {
+      id
+      city
+      state
+      country
+      zip
+    }
+    interventions {
+      id
+      name
+      description
+    }
+  }
+}
+`;
 
 const QUERY = gql`
   query SuggestedLabelsQuery($nctId: String!) {
@@ -51,30 +97,100 @@ const LabelsContainer = styled.div`
 
 const StyledPanel = styled(CollapsiblePanel)`
   margin: 0 10px 10px 0;
-  width: 250px;
+  width: 100%;
+  flex-wrap: wrap;
   .panel-heading h3 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
+   
   }
   .panel-body {
-    height: 150px !important;
-    overflow: scroll;
+    height: 250px !important;
+    overflow-x: hidden;
+    white-space: normal;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
   }
 `;
+const QueryResult = PREFETCH_QUERY;
 
-class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
+interface MyFilterProps {
+  params: SearchParams;
+
+}
+interface MyFilterState{
+  searchTerm: string;
+  params: SearchParams  | null;
+}
+
+interface SuggestedLabelsState{
+  searchTerm: string;
+  params: SearchParams  | null; 
+}
+
+
+
+class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, SuggestedLabelsState> {
   handleSelect = (key: string, value: string) => (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     this.props.onSelect(key, value, e.currentTarget.checked);
   };
+  
+  public getID(){
+    return this.props.nctId;
+  }
+  
+  test : string[] = [];
+ 
+  SearchList : string[] =[];
+  handleSearch = (list: string[]) => {
+  event?.preventDefault();
+  this.SearchList = list;
+  return (<Query
+  query={SEARCH_QUERY}
+  variables={{
+  nctId: this.props.nctId,
+    }}
+    >{({ loading, error, data }) => {
+      if (loading) return 'Loading...';
+      if (error) return `Error! ${error.message}`;
+      
+      let here=``;
+      this.test=Similarity.findPhrases( {wordsToFind: this.SearchList, text: JSON.stringify(data)} )
+      
+      return (
+      <tbody>
+      <tr>{this.test[0]}</tr>
+      <tr>{this.test[1]}</tr>
+      <tr>{this.test[2]}</tr>
+      <tr>{this.test[3]}</tr>
+      <tr>{this.test[4]}</tr>
+      </tbody>
+      )
+      
+//return Similarity.findPhrases( {wordsToFind: ["Karnofsky"], text: JSON.stringify(data)} );
+     }}
+  </Query>);
+
+
+}
+
+
+// phrases = Similarity.findPhrases( {wordsToFind: ["the"], text: this.hello.props} );
+
 
   renderAgg = (key: string, values: [string, boolean][]) => {
     return (
       <StyledPanel key={key} header={key} dropdown>
+        
+        <Row class="h-auto" >
+          <Col xs={4}>
+          
+          
         {values.map(([value, checked]) => (
+          
           <Checkbox
             key={value}
             checked={checked}
@@ -83,7 +199,26 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps> {
           >
             {value}
           </Checkbox>
+          
         ))}
+        </Col>
+
+        <Col xs={4}>
+          
+          <div>
+        
+        </div>
+        <div>
+        <App
+          nctid={this.props.nctId}
+          // handleSearch={this.handleSearch}
+          />
+          </div>
+          
+        </Col>
+        </Row>
+      
+  
       </StyledPanel>
     );
   };
