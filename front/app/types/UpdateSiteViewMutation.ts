@@ -37,6 +37,99 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_study {
   extendedSections: UpdateSiteViewMutation_updateSiteView_siteView_study_extendedSections[];
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest {
+  __typename: "SiteAutoSuggestSection";
+  fields: string[];
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_breadCrumbs {
+  __typename: "SiteBreadCrumbsSection";
+  icon: string;
+  target: string;
+  location: string;
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_preselected;
+  visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_visibleOptions;
+  autoSuggest: boolean;
+  rank: number | null;
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs {
+  __typename: "SiteAggSection";
+  fields: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields[];
+  selected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_selected;
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_preselected;
+  visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_visibleOptions;
+  rank: number | null;
+  autoSuggest: boolean;
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs {
+  __typename: "SiteAggSection";
+  fields: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields[];
+  selected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_selected;
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_button {
+  __typename: "PresearchButtonSection";
+  name: string;
+  url: string;
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch {
+  __typename: "SitePresearchPage";
+  aggs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs;
+  crowdAggs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs;
+  button: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_button;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_config_fields {
   __typename: "SiteConfigField";
   showPresearch: boolean;
@@ -121,6 +214,9 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search {
   __typename: "SiteSearchPage";
+  autoSuggest: UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest;
+  breadCrumbs: UpdateSiteViewMutation_updateSiteView_siteView_search_breadCrumbs[];
+  presearch: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch;
   fields: string[];
   config: UpdateSiteViewMutation_updateSiteView_siteView_search_config;
   aggs: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs;

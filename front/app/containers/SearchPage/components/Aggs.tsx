@@ -58,6 +58,7 @@ interface AggsProps {
   updateParams: any;
   presearch?: boolean;
   currentSiteView?: any;
+  preSearchAggs?: string;
 }
 
 const PresearchContainer = styled.div`
@@ -102,13 +103,18 @@ class Aggs extends React.PureComponent<AggsProps> {
     const emptySet = new Set();
 
     if (presearch) {
-      const testAggs = ['overall_status', 'facility_states', 'study_type'];
+      // const testAggs = ['overall_status', 'facility_states', 'study_type'];
       return (
         <SiteProvider>
           {(site: SiteFragment) => {
+            console.log("YO", this.props.preSearchAggs)
+            //console.log("", PresearchAggs)
+            const preSearchAggs= this.props.preSearchAggs
             return (
               <PresearchContainer>
-                {testAggs.map(k =>
+                {
+                  //@ts-ignore
+                preSearchAggs.map(k =>
                   aggs[k] ? (
                     <AggDropDown
                       key={k}

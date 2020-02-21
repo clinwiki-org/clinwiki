@@ -559,7 +559,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } =
       this.props.searchParams || {};
-
+    const preSearchAggs= this.props.currentSiteView.search.presearch.aggs.selected.values
     return (
       <PreSearchWrapper>
         <Aggs
@@ -581,6 +581,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           onOpen={this.handleOpenAgg}
           presearch
           currentSiteView={this.props.currentSiteView}
+          preSearchAggs={preSearchAggs}
         />
       </PreSearchWrapper>
     );
