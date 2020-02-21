@@ -65,6 +65,9 @@ const SITE_VIEW_FRAGMENT = gql`
       autoSuggest {
         fields
       }
+      results{
+        type
+      }
       breadCrumbs {
         icon
         target

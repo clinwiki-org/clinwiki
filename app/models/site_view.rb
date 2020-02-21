@@ -281,6 +281,9 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         autoSuggest:{
           fields: %w[],
         },
+        results:{
+          type:"table",
+        },
         breadCrumbs:
           [
             {
