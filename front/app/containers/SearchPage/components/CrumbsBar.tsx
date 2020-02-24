@@ -691,6 +691,20 @@ export default class CrumbsBar extends React.Component<
       </div>
     );
   };
+  componentDidMount(){
+    const { data, siteViewUrl } = this.props;
+    let thisSiteView =
+      data.siteViews.find(siteview => siteview.url == siteViewUrl) ||
+      data.siteView;
+
+    if(thisSiteView.search.results.type == "card"){
+      console.log("Should be toggling card"),
+    this.toggledShowCards('card', true)
+    }else{
+      this.toggledShowCards('table', false)
+
+    }
+  }
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
@@ -702,8 +716,6 @@ export default class CrumbsBar extends React.Component<
     let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
 
-    console.log('CRUMBSSS', showCrumbsBar);
-    console.log('AutoSuggest', showAutoSuggest);
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>

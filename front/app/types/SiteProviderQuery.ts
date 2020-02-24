@@ -57,6 +57,10 @@ export interface SiteProviderQuery_site_siteView_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
   fields: string[];
 }
+export interface SiteProviderQuery_site_siteView_search_results {
+  __typename: "SiteResultsSection";
+  type: string;
+}
 
 export interface SiteProviderQuery_site_siteView_search_breadCrumbs {
   __typename: "SiteBreadCrumbsSection";
@@ -231,6 +235,7 @@ export interface SiteProviderQuery_site_siteView_search_crowdAggs {
 export interface SiteProviderQuery_site_siteView_search {
   __typename: "SiteSearchPage";
   autoSuggest: SiteProviderQuery_site_siteView_search_autoSuggest;
+  results: SiteProviderQuery_site_siteView_search_results
   breadCrumbs: SiteProviderQuery_site_siteView_search_breadCrumbs[];
   presearch: SiteProviderQuery_site_siteView_search_presearch;
   fields: string[];
@@ -283,6 +288,11 @@ export interface SiteProviderQuery_site_siteViews_study {
 export interface SiteProviderQuery_site_siteViews_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
   fields: string[];
+}
+
+export interface SiteProviderQuery_site_siteViews_search_results {
+  __typename: "SiteResultsSection";
+  type: string;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_breadCrumbs {
@@ -458,6 +468,7 @@ export interface SiteProviderQuery_site_siteViews_search_crowdAggs {
 export interface SiteProviderQuery_site_siteViews_search {
   __typename: "SiteSearchPage";
   autoSuggest: SiteProviderQuery_site_siteViews_search_autoSuggest;
+  results: SiteProviderQuery_site_siteViews_search_results;
   breadCrumbs: SiteProviderQuery_site_siteViews_search_breadCrumbs[];
   presearch: SiteProviderQuery_site_siteViews_search_presearch;
   fields: string[];

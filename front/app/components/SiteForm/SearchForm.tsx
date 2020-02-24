@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col, Panel, PanelGroup, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Row, Col, Panel, PanelGroup, DropdownButton, Dropdown, MenuItem } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
@@ -77,6 +77,13 @@ const StyledCheckbox = styled(Checkbox)`
   align-items: center;
 `;
 
+const StyledButtonGroup = styled.div`
+  margin: 1em 1em 1em 0;
+
+  ul li a{
+    color:black !important;
+  }
+`
 // const styledToggleButton = styled(ToggleButtonGroup)`
 //   diplay: flex;
 //   flex-direction: row;
@@ -151,6 +158,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
 
   handleShowFacetBar = (x, view, name) => {
     // this.setState({showFacetBar: x})
+    console.log("Views from the 6", view)
     const e = { currentTarget: { name: name, value: x } };
     this.handleAddMutation(e, view);
   };
@@ -506,22 +514,37 @@ renderResultsConfig=(showResults,view,fields, crowdFields,updateSiteView )=>{
   value={view.search.fields}
   onChange={e => this.handleAddMutation(e, view)}
 />
-
-            <DropdownButton
+<StyledButtonGroup>
+    <DropdownButton
       bsStyle="default"
       title="Result View"
       key="default"
       id="dropdown-basic-default"
+      style={{margin: "1em 1em 1em 0"}} 
     >
-      <MenuItem eventKey="1">Card View</MenuItem>
-      <MenuItem eventKey="2">Grid View</MenuItem>
+      <MenuItem onClick={e => this.handleShowFacetBar(
+        'card',
+        view,
+        'set:search.results.type'
+      )}> 
+        Card View</MenuItem>
+      <MenuItem onClick={e => this.handleShowFacetBar(
+        'table',
+        view,
+        'set:search.results.type'
+      )}>Table View</MenuItem>
       <MenuItem divider />
-      <MenuItem eventKey="4">Separated link</MenuItem>
+      <MenuItem onClick={e => this.handleShowFacetBar(
+        'map',
+        view,
+        'set:search.results.type'
+      )}>Map View</MenuItem>
     </DropdownButton>
 
 <StyledButton onClick={this.handleSave(updateSiteView, view)}>
   Save Site View
 </StyledButton>
+</StyledButtonGroup>
     </Panel.Body>
   </Panel>
   );

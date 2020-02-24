@@ -58,6 +58,11 @@ export interface SiteFragment_siteView_search_autoSuggest {
   fields: string[];
 }
 
+export interface SiteFragment_siteView_search_results {
+  __typename: "SiteResultsSection";
+  type: string;
+}
+
 export interface SiteFragment_siteView_search_breadCrumbs {
   __typename: "SiteBreadCrumbsSection";
   icon: string;
@@ -231,6 +236,7 @@ export interface SiteFragment_siteView_search_crowdAggs {
 export interface SiteFragment_siteView_search {
   __typename: "SiteSearchPage";
   autoSuggest: SiteFragment_siteView_search_autoSuggest;
+  results: SiteFragment_siteView_search_results;
   breadCrumbs: SiteFragment_siteView_search_breadCrumbs[];
   presearch: SiteFragment_siteView_search_presearch;
   fields: string[];
@@ -283,6 +289,11 @@ export interface SiteFragment_siteViews_study {
 export interface SiteFragment_siteViews_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
   fields: string[];
+}
+
+export interface SiteFragment_siteViews_search_results {
+  __typename: "SiteResultsSection";
+  type: string;
 }
 
 export interface SiteFragment_siteViews_search_breadCrumbs {
@@ -458,6 +469,7 @@ export interface SiteFragment_siteViews_search_crowdAggs {
 export interface SiteFragment_siteViews_search {
   __typename: "SiteSearchPage";
   autoSuggest: SiteFragment_siteViews_search_autoSuggest;
+  results: SiteFragment_siteViews_search_results;
   breadCrumbs: SiteFragment_siteViews_search_breadCrumbs[];
   presearch: SiteFragment_siteViews_search_presearch;
   fields: string[];
