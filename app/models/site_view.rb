@@ -275,7 +275,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           },
           button:{
             name:"Search",
-            url:"",
+            target:"",
           },
         },
         autoSuggest:{
@@ -283,15 +283,18 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         },
         results:{
           type:"table",
+          buttons:{
+	           items:[
+               {
+                 icon:'',
+                 target:"",
+               }
+             ],
+	           location:"right"
+           },
+
         },
-        breadCrumbs:
-          [
-            {
-            icon:'',
-            target:"",
-            location:"",
-            }
-          ],
+        breadCrumbs:{},
 
         aggs: {
           selected: {
