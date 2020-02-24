@@ -1,5 +1,10 @@
 import * as Distance from "./distance";
 
+export interface SectionText {
+    text: string,
+    section: string,
+    indices: string[]
+  }
 
 function addPromising({promisingIndicesArray, wordWindow, correctWords, distanceBarrier, index}: {
     promisingIndicesArray: number[], wordWindow: string, correctWords: string[],  distanceBarrier: number, index: number
@@ -34,7 +39,24 @@ function countWhiteSpacesInString( {text}: {text:string} ) : number {
     return count;
 }
 
-function gettopFiveArray( {promisingIndicesArray, wordsArray, topFiveArray}: { promisingIndicesArray: number[], wordsArray: string[], topFiveArray: string[]  } ) {
+function getSectionFoundIn( {indexOfWord, wordsArray}: {indexOfWord: number,  wordsArray: string[] }) : string {
+    var arrayOfSearchTerms = [/nctId/g, /detailedDescription/g, /eligibilityCriteria/g, /conditions/g, /briefTitle/g, /overallStatus/g, 
+        /createdAt/g, /updatedAt/g, /facilities/g, /interventions/g];
+
+    for (var i = indexOfWord; i >= 0; i--) {
+        for (var j = 0; j < arrayOfSearchTerms.length; j++) {
+            var match = wordsArray[i].match(arrayOfSearchTerms[j]);
+            if (match != null) {
+                if ( match.length > 0  ) {
+                    return match[0];
+                }
+            } 
+        }
+    }
+    return "unsure";
+}
+
+function gettopFiveArray( {promisingIndicesArray, wordsArray, topFiveArray}: { promisingIndicesArray: number[], wordsArray: string[], topFiveArray: SectionText[]  } ) {
     for (var i = 0; i < promisingIndicesArray.length; i++)  {
         var index = promisingIndicesArray[i];
         var backwardsWindow = index-10;
@@ -53,14 +75,25 @@ function gettopFiveArray( {promisingIndicesArray, wordsArray, topFiveArray}: { p
         if (i > 4) {
             break;
         }
-        topFiveArray.push(sentence);
+
+        topFiveArray.push({ text:sentence, section:getSectionFoundIn ({indexOfWord: index, wordsArray: wordsArray}), indices: getWordsToHighlight()});
+        // topFiveArray.push(sentence);
     }
 }
 
 var promisingIndices =  new Array<number>();
 var words = new Array<string>();
 
-export function findPhrases( {wordsToFind, text}: {wordsToFind: string[], text: string}  ): string[] {
+export function findPhrases( {wordsToFind, text}: {wordsToFind: string[], text: string}  ): any[] {
+    
+    if (wordsToFind.length == 0) {
+        var topFive = new Array<any>();
+        for (var i = 0; i < 5; i++) {
+             topFive.push({text: "Could not find another phrase", section: "none", indices: ""});
+         }
+        return topFive;
+  }
+  
     // sort words by number of words
     var allWordsToFind =  new Array<string[]>(6);
     for (var i = 0; i < allWordsToFind.length; i++) {
@@ -78,13 +111,13 @@ export function findPhrases( {wordsToFind, text}: {wordsToFind: string[], text: 
     words = text.split(" ");
     for (var i = 0; i < words.length; i++) {
         var wordToCheck = words[i];
-        addPromising( {promisingIndicesArray: promisingIndices, wordWindow: wordToCheck, correctWords: allWordsToFind[0], distanceBarrier: 2, index: i}  );
+        addPromising( {promisingIndicesArray: promisingIndices, wordWindow: wordToCheck, correctWords: allWordsToFind[0], distanceBarrier: 3, index: i}  );
         addPromising( {promisingIndicesArray: promisingIndices, wordWindow: wordToCheck, correctWords: allWordsToFind[1], distanceBarrier: 3, index: i}  );
     }
 
     for (var i = 0; i < words.length-1; i++) {
         var wordToCheck = appendStringArrayWithSpace( {array: words.slice(i, i+2)});
-        addPromising( {promisingIndicesArray: promisingIndices, wordWindow: wordToCheck, correctWords: allWordsToFind[0], distanceBarrier: 2, index: i}  );
+        addPromising( {promisingIndicesArray: promisingIndices, wordWindow: wordToCheck, correctWords: allWordsToFind[0], distanceBarrier: 3, index: i}  );
         addPromising( {promisingIndicesArray: promisingIndices, wordWindow: wordToCheck, correctWords: allWordsToFind[1], distanceBarrier: 3, index: i}  );
     }
 
@@ -113,19 +146,19 @@ export function findPhrases( {wordsToFind, text}: {wordsToFind: string[], text: 
         return inputArray.indexOf(item) == index;
     });
     //declare top 5 array
-    var topFive = new Array<string>(5);
+    var topFive = new Array<any>();
     gettopFiveArray( { promisingIndicesArray: promisingIndices, wordsArray: words, topFiveArray: topFive  } )
 
     if (promisingIndices.length < 5) {
         for (var i = promisingIndices.length; i < 5; i++) {
-            topFive[i] = "Could not find another phrase"
+            topFive.push({text: "Could not find another phrase", section: "none", indices: ""});
         }
     }
 
-    return topFive.reverse();
+    return topFive;
 }
 
-function getWordsToHighlight() {
+export function getWordsToHighlight() {
     var wordsToHighLight = new Array<string>();
     for (var i = 0; i < promisingIndices.length; i++) {
         wordsToHighLight.push(words[promisingIndices[i]]);
@@ -138,7 +171,7 @@ function getWordsToHighlight() {
 // var arrayOfWords = ["Karnofsky", "Lansky", "KPS", "PS", "Karnofsky Score", "ECOG PS", "Performance Status",
 //   "Karnofsky Performance Status", "ECOG Performance Status", "Lansky Performance Status",
 //   "European Cooperative Oncology Group Performance Status"];
-// var str = " -  Performance score ≥ 50 (Lansky for research subjects aged 16 years or younger and\n             Karnofsky for subjects older" 
+// var str = " \"eligibilityCriteria\":\\n -  Performance score ≥ 50 (Lanksy for research subjects aged 16 years or younger and\n             Karnofsky for subjects older" 
 // var topFive = findPhrases( {wordsToFind: arrayOfWords, text: str} );
 
 // console.log(topFive);

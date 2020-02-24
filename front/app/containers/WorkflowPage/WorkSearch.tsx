@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Similarity from "./nlp_similarity";
 import List from './WorkList'
-import { Button, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, FormControl,
+import { Button, Input, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, FormControl,
     Form,
     FormGroup,
     ButtonGroup,
@@ -9,6 +9,8 @@ import { Button, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, Fo
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import * as Labels from "./SuggestedLabels";
+import styled from 'styled-components';
+import './WorkStyle.css'
 const SEARCH_QUERY = gql`
 query AllQuery($nctId: String!) {
   study(nctId: $nctId) {
@@ -35,6 +37,13 @@ query AllQuery($nctId: String!) {
   }
 }
 `;
+const StyledTable = styled(Table)`
+width: 60%;
+`
+const StyledButton = styled(Button)`
+
+margin: 20px;
+`
 
 export interface Props {
     list?: string[],
@@ -43,7 +52,8 @@ export interface Props {
   }
   
   export interface State {
-    list: string[]
+    list: string[],
+    test: Similarity.SectionText[]
   }
   
   export class App extends React.Component<Props,State> {
@@ -51,15 +61,16 @@ export interface Props {
       super(props);
       this.state={
         list: [
-          
-        ]
+        ],
+        test: [{text: "", section: "", indices: []}, {text: "", section: "", indices: []}, {text: "", section: "", indices: []}, {text: "", section: "", indices: []}, {text: "", section: "", indices: []}]
       }
       this.removeItem=this.removeItem.bind(this)
     }
-    test : string[] = [];
+    
     addItem(e: any) {
       // Prevent button click from submitting form
-      e.preventDefault();
+      e.preventDefault(); // Let's stop this event.
+      e.stopPropagation();
   
       // Create variables for our list, the item to add, and our form
       let list=this.state.list;
@@ -75,27 +86,36 @@ export interface Props {
         list.push(newItem.value);
         // Then we use that to set the state for list
         this.setState({
-          list: list
+          list: list,
+          test: Similarity.findPhrases( {wordsToFind: list, text: JSON.stringify(this.data)} ),
         });
         // Finally, we need to reset the form
         newItem.classList.remove("is-danger");
         form.reset();
+        // this.setState({test: Similarity.findPhrases( {wordsToFind: this.state.list, text: JSON.stringify(this.data)} )})
       } else
       {
         // If the input doesn't have a value, make the border red since it's required
         newItem.classList.add("is-danger");
       }
+      
     }
   
     removeItem(item: string) {
       // Put our list into an array
-      const list=this.state.list.slice();
+      let list=this.state.list;
+      const form=document.getElementById("addItemForm") as HTMLFormElement;
+      //const newItem=document.getElementById("addInput") as HTMLInputElement;
       // Check to see if item passed in matches item in array
       list.some((value,index) => {
         if(value===item)
         {
           // If item matches, remove it from array
           list.splice(index,1);
+          this.setState({
+            list: list,
+            
+          });
           return true;
         } else
         {
@@ -104,17 +124,39 @@ export interface Props {
       });
       // Set state to list
       this.setState({
-        list: list
+        list: list,
+        test: Similarity.findPhrases( {wordsToFind: list, text: JSON.stringify(this.data)}),
       });
+      // Finally, we need to reset the form
+      form.reset();
+    //   this.setState({test: Similarity.findPhrases( {wordsToFind: this.state.list, text: JSON.stringify(this.data)} )})
+      
+    
+      
     }
-    handleSearch(event: any){
-        event.preventDefault();
-        return this.state.list;
-
+    highlight(text: string, word: string) {
+        // var inputText = document.getElementById("inputText");
+        // var innerHTML = inputText.innerHTML;
+        var index = text.indexOf(word);
+        if (index >= 0) { 
+         return text.substring(0,index);
+         
+        }
+        else{
+            return text;
+        }
+      }
+    highlight2(text: string, word: string){
+        var index = text.indexOf(word);
+        if (index >= 0) { 
+            return text.substring(index + word.length);
+            
+           }
+           else{
+               return null;
+           }
     }
-    // id = document.getElementsByClassName("nctid");
-    // idchild = this.id[0] as HTMLDivElement;
-    // idstring = this.idchild.id;
+    data : string;
     
     public render() {
       return (
@@ -128,13 +170,13 @@ export interface Props {
               <section className="section">
                 <form className="form" id="addItemForm">
                   <input type="text" className="input" id="addInput" placeholder="Something that needs to be done..." />
-                  <button className="button is-info" onClick={(e) => this.addItem(e)}>
+                  <button className="button is-info buttonstyle" onClick={(e) => this.addItem(e)}>
                     Add Item
                   </button>
                   
                 </form>
                 <div>
-          <Table xs striped>
+          <StyledTable striped bordered>
             {/* <tbody> */}
             <Query
           query={SEARCH_QUERY}
@@ -146,35 +188,57 @@ export interface Props {
               if (error) return `Error! ${error.message}`;
               
               let here=``;
-              this.test=Similarity.findPhrases( {wordsToFind: this.state.list, text: JSON.stringify(data)} )
-              
+            //   this.setState({test: Similarity.findPhrases( {wordsToFind: this.state.list, text: JSON.stringify(data)} )})
+              this.data= JSON.stringify(data);
               return (
-              <tbody>
-              <tr>{this.test[0]}</tr>
-              <tr>{this.test[1]}</tr>
-              <tr>{this.test[2]}</tr>
-              <tr>{this.test[3]}</tr>
-              <tr>{this.test[4]}</tr>
-              </tbody>
+            //   <tbody>
+            //   <tr>{this.state.test[0]}</tr>
+            //   <tr>{this.state.test[1]}</tr>
+            //   <tr>{this.state.test[2]}</tr>
+            //   <tr>{this.state.test[3]}</tr>
+            //   <tr>{this.state.test[4]}</tr>
+            //   <tr>{this.state.list[0]}</tr>
+            //   </tbody>
+            null
+            
               )
               
   //return Similarity.findPhrases( {wordsToFind: ["Karnofsky"], text: JSON.stringify(data)} );
              }}
 </Query>
-              {/* <tr>{this.test[0]}</tr>
-              <tr>{this.test[1]}</tr>
-              <tr>{this.test[2]}</tr>
-              <tr>{this.test[3]}</tr>
-              <tr>{this.test[4]}</tr> */}
-
-            
-              {/* </tbody> */}
-            
-
-            
-
-          </Table>
+    <thead>
+        <tr>
+        <th>Phrase</th>
+        <th>Section</th>
+        </tr>
+    </thead>
+    <tbody>
+                <tr>
+                <td>{this.highlight(this.state.test[0].text, this.state.test[0].indices[0])}<span className="highlight">{this.state.test[0].indices[0]}</span>{this.highlight2(this.state.test[0].text, this.state.test[0].indices[0])}</td>
+                  <td>{this.state.test[0].section}</td>
+                </tr>
+                <tr>
+                  <td>{this.highlight(this.state.test[1].text, this.state.test[1].indices[1])}<span className="highlight">{this.state.test[1].indices[1]}</span>{this.highlight2(this.state.test[1].text, this.state.test[1].indices[1])}</td>
+                  <td>{this.state.test[1].section}</td>
+                </tr>
+                <tr>
+                  <td>{this.highlight(this.state.test[2].text, this.state.test[2].indices[2])}<span className="highlight">{this.state.test[2].indices[2]}</span>{this.highlight2(this.state.test[2].text, this.state.test[2].indices[2])}</td>
+                  <td>{this.state.test[2].section}</td>
+                </tr>
+                <tr>
+                  <td>{this.highlight(this.state.test[3].text, this.state.test[3].indices[3])}<span className="highlight">{this.state.test[3].indices[3]}</span>{this.highlight2(this.state.test[3].text, this.state.test[3].indices[3])}</td>
+                  <td>{this.state.test[3].section}</td>
+                </tr>
+                <tr>
+                  <td>{this.highlight(this.state.test[4].text, this.state.test[4].indices[4])}<span className="highlight">{this.state.test[4].indices[4]}</span>{this.highlight2(this.state.test[4].text, this.state.test[4].indices[4])}</td>
+                  <td>{this.state.test[4].section}</td>
+                </tr>
+              </tbody>
+        
+          </StyledTable>
+          
           </div>
+          
               </section>
             </div>
           </div>

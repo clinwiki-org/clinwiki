@@ -35,6 +35,7 @@ interface SuggestedLabelsProps {
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
   allowedSuggestedLabels: string[];
+  
 }
 
 const SEARCH_QUERY = gql`
@@ -94,7 +95,9 @@ const LabelsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
-
+const StyledCol = styled(Col)`
+width: 30%;
+`
 const StyledPanel = styled(CollapsiblePanel)`
   margin: 0 10px 10px 0;
   width: 100%;
@@ -106,7 +109,7 @@ const StyledPanel = styled(CollapsiblePanel)`
    
   }
   .panel-body {
-    height: 250px !important;
+    height: 450px !important;
     overflow-x: hidden;
     white-space: normal;
     overflow-wrap: break-word;
@@ -125,8 +128,7 @@ interface MyFilterState{
 }
 
 interface SuggestedLabelsState{
-  searchTerm: string;
-  params: SearchParams  | null; 
+  list: string[];
 }
 
 
@@ -185,8 +187,8 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
     return (
       <StyledPanel key={key} header={key} dropdown>
         
-        <Row class="h-auto" >
-          <Col xs={4}>
+        <Row>
+          <StyledCol xs={4}>
           
           
         {values.map(([value, checked]) => (
@@ -201,7 +203,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
           </Checkbox>
           
         ))}
-        </Col>
+        </StyledCol>
 
         <Col xs={4}>
           
@@ -210,9 +212,12 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
         </div>
         <div>
         <App
+          // list={this.props.list}
+          
           nctid={this.props.nctId}
           // handleSearch={this.handleSearch}
           />
+          
           </div>
           
         </Col>

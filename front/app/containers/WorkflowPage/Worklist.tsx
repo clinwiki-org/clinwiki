@@ -58,7 +58,7 @@ class List extends React.Component<ListProps,ListState> {
         
         
           {this.state.filtered.map((item: string) => (
-            <button key={item}>{item} &nbsp;
+            <button className="termstyle" key={item}>{item} &nbsp;
               <span className="delete" onClick={() => this.props.delete(item)} >x</span>
             </button>
           ))}
