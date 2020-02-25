@@ -7,7 +7,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     if default_changed? && default
 
       old_default = site.site_views.find_by(default: true)
-      old_default.update(url: "#{old_default.id} oldDefault")
+      old_default.update(url: "#{old_default.id}oldDefault")
 
       site.site_views.where.not(id: id).update_all(default:false)
 

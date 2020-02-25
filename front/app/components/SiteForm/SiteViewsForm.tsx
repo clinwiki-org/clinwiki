@@ -54,6 +54,16 @@ class SiteViewsForm extends React.Component<
 
   handleSave = (createSiteView: CreateSiteViewMutationFn) => {
     const { form } = this.state;
+    if (form.siteViewPath === 'default') {
+      alert(`Only the default site can have the url 'default'`);
+      this.setState({
+        form: {
+          siteViewName: '',
+          siteViewPath: '',
+        },
+      });
+      return null;
+    }
     createSiteView({
       variables: {
         input: {
@@ -66,13 +76,17 @@ class SiteViewsForm extends React.Component<
         },
       },
     }).then(res => {
-      this.props.refresh();
-      this.setState({
-        form: {
-          siteViewName: '',
-          siteViewPath: '',
+      this.setState(
+        {
+          form: {
+            siteViewName: '',
+            siteViewPath: '',
+          },
         },
-      });
+        () => {
+          this.props.refresh();
+        }
+      );
     });
   };
 
