@@ -57,16 +57,23 @@ export interface SiteProviderQuery_site_siteView_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
   fields: string[];
 }
+
+export interface SiteProviderQuery_site_siteView_search_results_buttons_items {
+  __typename: "ResultButtonItems";
+  icon: string;
+  target: string;
+}
+
+export interface SiteProviderQuery_site_siteView_search_results_buttons {
+  __typename: "ResultsButton";
+  items: SiteProviderQuery_site_siteView_search_results_buttons_items[];
+  location: string;
+}
+
 export interface SiteProviderQuery_site_siteView_search_results {
   __typename: "SiteResultsSection";
   type: string;
-}
-
-export interface SiteProviderQuery_site_siteView_search_breadCrumbs {
-  __typename: "SiteBreadCrumbsSection";
-  icon: string;
-  target: string;
-  location: string;
+  buttons: SiteProviderQuery_site_siteView_search_results_buttons;
 }
 
 export interface SiteProviderQuery_site_siteView_search_presearch_aggs_fields_preselected {
@@ -140,7 +147,7 @@ export interface SiteProviderQuery_site_siteView_search_presearch_crowdAggs {
 export interface SiteProviderQuery_site_siteView_search_presearch_button {
   __typename: "PresearchButtonSection";
   name: string;
-  url: string;
+  target: string;
 }
 
 export interface SiteProviderQuery_site_siteView_search_presearch {
@@ -235,8 +242,7 @@ export interface SiteProviderQuery_site_siteView_search_crowdAggs {
 export interface SiteProviderQuery_site_siteView_search {
   __typename: "SiteSearchPage";
   autoSuggest: SiteProviderQuery_site_siteView_search_autoSuggest;
-  results: SiteProviderQuery_site_siteView_search_results
-  breadCrumbs: SiteProviderQuery_site_siteView_search_breadCrumbs[];
+  results: SiteProviderQuery_site_siteView_search_results;
   presearch: SiteProviderQuery_site_siteView_search_presearch;
   fields: string[];
   config: SiteProviderQuery_site_siteView_search_config;
@@ -290,16 +296,22 @@ export interface SiteProviderQuery_site_siteViews_search_autoSuggest {
   fields: string[];
 }
 
+export interface SiteProviderQuery_site_siteViews_search_results_buttons_items {
+  __typename: "ResultButtonItems";
+  icon: string;
+  target: string;
+}
+
+export interface SiteProviderQuery_site_siteViews_search_results_buttons {
+  __typename: "ResultsButton";
+  items: SiteProviderQuery_site_siteViews_search_results_buttons_items[];
+  location: string;
+}
+
 export interface SiteProviderQuery_site_siteViews_search_results {
   __typename: "SiteResultsSection";
   type: string;
-}
-
-export interface SiteProviderQuery_site_siteViews_search_breadCrumbs {
-  __typename: "SiteBreadCrumbsSection";
-  icon: string;
-  target: string;
-  location: string;
+  buttons: SiteProviderQuery_site_siteViews_search_results_buttons;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_presearch_aggs_fields_preselected {
@@ -373,7 +385,7 @@ export interface SiteProviderQuery_site_siteViews_search_presearch_crowdAggs {
 export interface SiteProviderQuery_site_siteViews_search_presearch_button {
   __typename: "PresearchButtonSection";
   name: string;
-  url: string;
+  target: string;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_presearch {
@@ -469,7 +481,6 @@ export interface SiteProviderQuery_site_siteViews_search {
   __typename: "SiteSearchPage";
   autoSuggest: SiteProviderQuery_site_siteViews_search_autoSuggest;
   results: SiteProviderQuery_site_siteViews_search_results;
-  breadCrumbs: SiteProviderQuery_site_siteViews_search_breadCrumbs[];
   presearch: SiteProviderQuery_site_siteViews_search_presearch;
   fields: string[];
   config: SiteProviderQuery_site_siteViews_search_config;

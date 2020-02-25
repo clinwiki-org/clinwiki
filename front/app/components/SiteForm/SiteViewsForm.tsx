@@ -1,17 +1,17 @@
-import * as React from "react";
-import styled from "styled-components";
-import { gql } from "apollo-boost";
-import { SiteViewFragment } from "types/SiteViewFragment";
-import CollapsiblePanel from "components/CollapsiblePanel";
+import * as React from 'react';
+import styled from 'styled-components';
+import { gql } from 'apollo-boost';
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import CollapsiblePanel from 'components/CollapsiblePanel';
 
-import { SiteViewItem } from "components/SiteItem";
+import { SiteViewItem } from 'components/SiteItem';
 import CreateSiteViewMutation, {
-  CreateSiteViewMutationFn
-} from "mutations/CreateSiteViewMutation";
-import { Table, FormControl } from "react-bootstrap";
-import { History, Location } from "history";
-import { CreateSiteViewInput, SiteViewMutationInput } from "types/globalTypes";
-import StyledButton from "containers/LoginPage/StyledButton";
+  CreateSiteViewMutationFn,
+} from 'mutations/CreateSiteViewMutation';
+import { Table, FormControl, Checkbox } from 'react-bootstrap';
+import { History, Location } from 'history';
+import { CreateSiteViewInput, SiteViewMutationInput } from 'types/globalTypes';
+import StyledButton from 'containers/LoginPage/StyledButton';
 
 interface SiteViewsFormProps {
   site: any;
@@ -46,39 +46,53 @@ class SiteViewsForm extends React.Component<
 > {
   state: SiteViewsFormState = {
     form: {
-      siteViewName: "",
-      siteViewPath: ""
+      siteViewName: '',
+      siteViewPath: '',
     },
-    id: undefined
+    id: undefined,
   };
 
   handleSave = (createSiteView: CreateSiteViewMutationFn) => {
     const { form } = this.state;
+    if (form.siteViewPath === 'default') {
+      alert(`Only the default site can have the url 'default'`);
+      this.setState({
+        form: {
+          siteViewName: '',
+          siteViewPath: '',
+        },
+      });
+      return null;
+    }
     createSiteView({
       variables: {
         input: {
           name: form.siteViewName,
           url: form.siteViewPath,
-          description: "description",
+          description: 'description',
           default: false,
           mutations: [],
-          siteId: this.props.site.id
-        }
-      }
+          siteId: this.props.site.id,
+        },
+      },
     }).then(res => {
-      this.props.refresh();
-      this.setState({
-        form: {
-          siteViewName: "",
-          siteViewPath: ""
+      this.setState(
+        {
+          form: {
+            siteViewName: '',
+            siteViewPath: '',
+          },
+        },
+        () => {
+          this.props.refresh();
         }
-      });
+      );
     });
   };
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      form: { ...this.state.form, [e.target.name as any]: e.target.value }
+      form: { ...this.state.form, [e.target.name as any]: e.target.value },
     });
   };
 
@@ -95,6 +109,7 @@ class SiteViewsForm extends React.Component<
                     <tr>
                       <th>Site Name</th>
                       <th>URL</th>
+                      <th>Default?</th>
                       <th />
                     </tr>
                   </thead>
@@ -126,11 +141,13 @@ class SiteViewsForm extends React.Component<
                         />
                       </td>
                       <td>
+                        <Checkbox />
+                      </td>
+                      <td>
                         <StyledButton
                           onClick={() => {
                             this.handleSave(createSiteView);
-                          }}
-                        >
+                          }}>
                           + Add Site View
                         </StyledButton>
                       </td>

@@ -67,11 +67,13 @@ const SITE_VIEW_FRAGMENT = gql`
       }
       results{
         type
-      }
-      breadCrumbs {
-        icon
-        target
-        location
+        buttons{
+          items{
+            icon
+            target
+          }
+          location
+        }
       }
       presearch {
         aggs {
@@ -116,7 +118,7 @@ const SITE_VIEW_FRAGMENT = gql`
         }
         button {
           name
-          url
+          target
         }
       }
 

@@ -78,7 +78,6 @@ class SiteViewRouter extends React.Component<
           id: siteView.id,
           name: siteView.name,
           url: siteView.url,
-          default: true,
         },
       },
     });

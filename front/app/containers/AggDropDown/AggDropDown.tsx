@@ -305,7 +305,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     });
 
     if (this.props.removeSelectAll) {
-      console.log('meh');
       this.setState({
         checkboxValue: false,
       });

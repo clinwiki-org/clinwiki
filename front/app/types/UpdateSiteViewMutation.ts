@@ -42,11 +42,22 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSugge
   fields: string[];
 }
 
-export interface UpdateSiteViewMutation_updateSiteView_siteView_search_breadCrumbs {
-  __typename: "SiteBreadCrumbsSection";
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_results_buttons_items {
+  __typename: "ResultButtonItems";
   icon: string;
   target: string;
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_results_buttons {
+  __typename: "ResultsButton";
+  items: UpdateSiteViewMutation_updateSiteView_siteView_search_results_buttons_items[];
   location: string;
+}
+
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_results {
+  __typename: "SiteResultsSection";
+  type: string;
+  buttons: UpdateSiteViewMutation_updateSiteView_siteView_search_results_buttons;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_preselected {
@@ -120,7 +131,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_button {
   __typename: "PresearchButtonSection";
   name: string;
-  url: string;
+  target: string;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch {
@@ -215,7 +226,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search {
   __typename: "SiteSearchPage";
   autoSuggest: UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest;
-  breadCrumbs: UpdateSiteViewMutation_updateSiteView_siteView_search_breadCrumbs[];
+  results: UpdateSiteViewMutation_updateSiteView_siteView_search_results;
   presearch: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch;
   fields: string[];
   config: UpdateSiteViewMutation_updateSiteView_siteView_search_config;

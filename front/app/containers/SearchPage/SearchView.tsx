@@ -705,6 +705,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     loading: boolean;
     error: any;
   }) => {
+    const { currentSiteView } = this.props;
     let pagesTotal = 1;
     let recordsTotal = 0;
     if (
@@ -729,7 +730,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
         {site => {
           return (
             <CrumbsBar
-              // @ts-ignore
               siteViewUrl={this.props.siteViewUrl}
               // @ts-ignore
               searchParams={{ ...this.props.params, q }}
@@ -754,6 +754,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               showCards={this.props.showCards}
               toggledShowCards={this.toggledShowCards}
               addFilter={pipe(addFilter, this.props.onUpdateParams)}
+              currentSiteView={currentSiteView}
             />
           );
         }}
@@ -763,11 +764,10 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   render() {
     const { page, pageSize, sorts } = this.props.params;
+    console.log(this.props.params);
     const { currentSiteView } = this.props;
 
-    // const presearch = currentSiteView.search.config.fields.showPresearch;
-    const presearch = true;
-
+    const presearch = currentSiteView.search.config.fields.showPresearch;
     return (
       <SiteProvider>
       {site => {
