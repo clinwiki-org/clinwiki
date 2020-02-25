@@ -65,10 +65,15 @@ const SITE_VIEW_FRAGMENT = gql`
       autoSuggest {
         fields
       }
-      breadCrumbs {
-        icon
-        target
-        location
+      results{
+        type
+        buttons{
+          items{
+            icon
+            target
+          }
+          location
+        }
       }
       presearch {
         aggs {
@@ -113,7 +118,7 @@ const SITE_VIEW_FRAGMENT = gql`
         }
         button {
           name
-          url
+          target
         }
       }
 

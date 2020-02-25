@@ -58,11 +58,22 @@ export interface SiteFragment_siteView_search_autoSuggest {
   fields: string[];
 }
 
-export interface SiteFragment_siteView_search_breadCrumbs {
-  __typename: "SiteBreadCrumbsSection";
+export interface SiteFragment_siteView_search_results_buttons_items {
+  __typename: "ResultButtonItems";
   icon: string;
   target: string;
+}
+
+export interface SiteFragment_siteView_search_results_buttons {
+  __typename: "ResultsButton";
+  items: SiteFragment_siteView_search_results_buttons_items[];
   location: string;
+}
+
+export interface SiteFragment_siteView_search_results {
+  __typename: "SiteResultsSection";
+  type: string;
+  buttons: SiteFragment_siteView_search_results_buttons;
 }
 
 export interface SiteFragment_siteView_search_presearch_aggs_fields_preselected {
@@ -136,7 +147,7 @@ export interface SiteFragment_siteView_search_presearch_crowdAggs {
 export interface SiteFragment_siteView_search_presearch_button {
   __typename: "PresearchButtonSection";
   name: string;
-  url: string;
+  target: string;
 }
 
 export interface SiteFragment_siteView_search_presearch {
@@ -231,7 +242,7 @@ export interface SiteFragment_siteView_search_crowdAggs {
 export interface SiteFragment_siteView_search {
   __typename: "SiteSearchPage";
   autoSuggest: SiteFragment_siteView_search_autoSuggest;
-  breadCrumbs: SiteFragment_siteView_search_breadCrumbs[];
+  results: SiteFragment_siteView_search_results;
   presearch: SiteFragment_siteView_search_presearch;
   fields: string[];
   config: SiteFragment_siteView_search_config;
@@ -285,11 +296,22 @@ export interface SiteFragment_siteViews_search_autoSuggest {
   fields: string[];
 }
 
-export interface SiteFragment_siteViews_search_breadCrumbs {
-  __typename: "SiteBreadCrumbsSection";
+export interface SiteFragment_siteViews_search_results_buttons_items {
+  __typename: "ResultButtonItems";
   icon: string;
   target: string;
+}
+
+export interface SiteFragment_siteViews_search_results_buttons {
+  __typename: "ResultsButton";
+  items: SiteFragment_siteViews_search_results_buttons_items[];
   location: string;
+}
+
+export interface SiteFragment_siteViews_search_results {
+  __typename: "SiteResultsSection";
+  type: string;
+  buttons: SiteFragment_siteViews_search_results_buttons;
 }
 
 export interface SiteFragment_siteViews_search_presearch_aggs_fields_preselected {
@@ -363,7 +385,7 @@ export interface SiteFragment_siteViews_search_presearch_crowdAggs {
 export interface SiteFragment_siteViews_search_presearch_button {
   __typename: "PresearchButtonSection";
   name: string;
-  url: string;
+  target: string;
 }
 
 export interface SiteFragment_siteViews_search_presearch {
@@ -458,7 +480,7 @@ export interface SiteFragment_siteViews_search_crowdAggs {
 export interface SiteFragment_siteViews_search {
   __typename: "SiteSearchPage";
   autoSuggest: SiteFragment_siteViews_search_autoSuggest;
-  breadCrumbs: SiteFragment_siteViews_search_breadCrumbs[];
+  results: SiteFragment_siteViews_search_results;
   presearch: SiteFragment_siteViews_search_presearch;
   fields: string[];
   config: SiteFragment_siteViews_search_config;

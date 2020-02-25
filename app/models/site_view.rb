@@ -276,20 +276,26 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           },
           button:{
             name:"Search",
-            url:"",
+            target:"",
           },
         },
         autoSuggest:{
           fields: %w[],
         },
-        breadCrumbs:
-          [
-            {
-            icon:'',
-            target:"",
-            location:"",
-            }
-          ],
+        results:{
+          type:"table",
+          buttons:{
+	           items:[
+               {
+                 icon:'',
+                 target:"",
+               }
+             ],
+	           location:"right"
+           },
+
+        },
+        breadCrumbs:{},
 
         aggs: {
           selected: {
