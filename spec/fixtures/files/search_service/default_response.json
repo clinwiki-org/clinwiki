@@ -1,0 +1,34 @@
+{
+  "took": 13,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 2,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "studies_development_20200223230507337",
+        "_type": "study",
+        "_id": "NCT00761345",
+        "_score": 1,
+        "_source": {
+          "nct_id": "NCT00761345"
+        }
+      },
+      {
+        "_index": "studies_development_20200223230507337",
+        "_type": "study",
+        "_id": "NCT00761345",
+        "_score": 1,
+        "_source": {
+          "nct_id": "NCT00761346"
+        }
+      }
+    ]
+  }
+}
