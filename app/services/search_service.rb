@@ -174,6 +174,24 @@ class SearchService # rubocop:disable Metrics/ClassLength
     aggs
   end
 
+  def crowd_agg_facets(site:)
+    params = self.params.deep_dup
+    bucket_sort = params[:agg_options_sort] || []
+    search_results = Study.search("*", aggs: [:front_matter_keys])
+      
+    aggs = search_results.aggs.to_h.deep_symbolize_keys
+    keys = aggs[:front_matter_keys][:buckets]
+      .map { |x| "#{x[:key]}" }
+    facets = {}
+    keys.each do |key|
+      fieldAgg = agg_buckets_for_field(field:key, current_site: site, is_crowd_agg: true)
+      fieldAgg.each do |name, agg| 
+        facets[name] = agg
+      end
+    end
+    facets
+  end
+
   private
 
   def bucket_agg_sort(sort)

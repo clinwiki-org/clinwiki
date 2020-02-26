@@ -29,7 +29,7 @@ interface BulkEditProps {
   commit: (
     toAdd: LabelValue[],
     toRemove: LabelValue[],
-    description: string,
+    description: string
   ) => Promise<void>;
   handleUndo: (undoActions: any[], idx: number) => void;
 }
@@ -44,7 +44,7 @@ const groupByLabel = (labels: LabelValue[]) => {
       ...accum,
       [x.name]: [...(accum[x.name] || []), x.value],
     }),
-    {},
+    {}
   );
 };
 
@@ -66,7 +66,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
       this.setState(state => ({
         labelsToAdd: [...state.labelsToAdd, { name: label, value }],
         labelsToRemove: state.labelsToRemove.filter(
-          isSelected({ label, value }),
+          isSelected({ label, value })
         ),
       }));
     }
@@ -80,7 +80,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
     } else {
       this.setState(state => ({
         labelsToRemove: state.labelsToRemove.filter(
-          isSelected({ label, value }),
+          isSelected({ label, value })
         ),
       }));
     }
@@ -133,20 +133,19 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                         }
                         onChange={() =>
                           this.handleSelect(label, value, isToAdd)
-                        }
-                      >
+                        }>
                         {value}
                       </Checkbox>
                     );
                   })}
                 </StyledPanel>
-              ),
+              )
             )}
           </Container>
           {!labelsToAdd.length && !labelsToRemove.length
             ? `Select labels to update ${recordsTotal} studies`
             : ''}
-          <CrumbsBarStyleWrapper className='crumbs-bar'>
+          <CrumbsBarStyleWrapper className="crumbs-bar">
             {labelsToAdd.length ? ' Add: ' : ''}
             {labelsToAdd.length
               ? Object.keys(groupedByLabel.toAdd).map(label => (
@@ -187,21 +186,19 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                   buildDescription({
                     groupedByLabel,
                     recordsTotal,
-                  }),
+                  })
                 ).then(() =>
-                  this.setState({ labelsToRemove: [], labelsToAdd: [] }),
+                  this.setState({ labelsToRemove: [], labelsToAdd: [] })
                 )
-              }
-            >
+              }>
               Save
             </Button>
             {labelsToAdd.length || labelsToRemove.length ? (
               <Button
-                bsStyle='danger'
+                bsStyle="danger"
                 onClick={() =>
                   this.setState({ labelsToAdd: [], labelsToRemove: [] })
-                }
-              >
+                }>
                 Clear
               </Button>
             ) : null}

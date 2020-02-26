@@ -47,12 +47,7 @@ class GenericStudySectionPage extends React.PureComponent<
   GenericStudySectionPageProps
 > {
   renderItem = (key: string, value: string | number | null) => {
-    const name = pipe(
-      snakeCase,
-      split('_'),
-      map(capitalize),
-      join(' '),
-    )(key);
+    const name = pipe(snakeCase, split('_'), map(capitalize), join(' '))(key);
 
     // the value has line breaks inserted at a specific distance
     // paragraph splits have multiple line breaks
@@ -60,8 +55,13 @@ class GenericStudySectionPage extends React.PureComponent<
     const text = pipe(
       value => value.toString(),
       split(/\n{2,}/),
-      arr => arr.map((paragraph, i) => <p key={i} style={{ margin: ".5em 0" }}>{paragraph}</p>)
-    )(value || "")
+      arr =>
+        arr.map((paragraph, i) => (
+          <p key={i} style={{ margin: '.5em 0' }}>
+            {paragraph}
+          </p>
+        ))
+    )(value || '');
 
     return (
       <tr key={key}>
@@ -75,10 +75,7 @@ class GenericStudySectionPage extends React.PureComponent<
 
   render() {
     return (
-      <QueryComponent
-        query={QUERY}
-        variables={{ nctId: this.props.nctId }}
-      >
+      <QueryComponent query={QUERY} variables={{ nctId: this.props.nctId }}>
         {({ data, loading, error }) => {
           if (loading || error || !data || !data.study) {
             return null;
@@ -87,7 +84,7 @@ class GenericStudySectionPage extends React.PureComponent<
             this.props.metaData.selected.kind,
             this.props.metaData.selected.values,
             this.props.metaData.fields.map(name => ({ name, rank: null })),
-            true,
+            true
           ).map(prop('name'));
 
           this.props.onLoaded && this.props.onLoaded();
@@ -95,7 +92,7 @@ class GenericStudySectionPage extends React.PureComponent<
             <Table striped bordered condensed>
               <tbody>
                 {fields.map(field =>
-                  this.renderItem(field, data.study![field]),
+                  this.renderItem(field, data.study![field])
                 )}
               </tbody>
             </Table>

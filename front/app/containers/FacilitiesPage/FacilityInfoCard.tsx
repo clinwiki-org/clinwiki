@@ -1,5 +1,5 @@
-import * as React from "react";
-import styled from "styled-components";
+import * as React from 'react';
+import styled from 'styled-components';
 
 const CardContainer = styled.div`
   min-width: 250px;
@@ -53,8 +53,8 @@ class FacilityInfoCard extends React.PureComponent<any> {
     let shortStr = str.substr(0, n);
     return (
       (useWordBoundary
-        ? shortStr.substr(0, shortStr.lastIndexOf(" "))
-        : shortStr) + "..."
+        ? shortStr.substr(0, shortStr.lastIndexOf(' '))
+        : shortStr) + '...'
     );
   };
 
@@ -63,13 +63,12 @@ class FacilityInfoCard extends React.PureComponent<any> {
     return (
       <div>
         <CardContainer
-          style={hover ? { visibility: "visible" } : { visibility: "hidden" }}
-        >
+          style={hover ? { visibility: 'visible' } : { visibility: 'hidden' }}>
           <TitleText>{this.truncateString(name, 60, true)}</TitleText>
           <SubTitle>{address}</SubTitle>
         </CardContainer>
         <Pointer
-          style={hover ? { visibility: "visible" } : { visibility: "hidden" }}
+          style={hover ? { visibility: 'visible' } : { visibility: 'hidden' }}
         />
       </div>
     );

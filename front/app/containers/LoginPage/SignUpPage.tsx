@@ -143,8 +143,7 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
                 this.setState({
                   errors: (data && data.signUp && data.signUp.errors) || [],
                 });
-              }}
-            >
+              }}>
               {signUp => (
                 <StyledButton onClick={this.handleSignUp(signUp)}>
                   Sign Up

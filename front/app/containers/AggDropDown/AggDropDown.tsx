@@ -15,6 +15,7 @@ import {
   lensPath,
   view,
   find,
+  filter,
   propEq,
   reverse,
   identity,
@@ -29,6 +30,7 @@ import Sorter from './Sorter';
 import {
   AggBucket,
   AggCallback,
+  AggregateAggCallback,
   SearchParams,
   AggKind,
   maskAgg,
@@ -131,7 +133,7 @@ const PanelWrapper = styledComponents.div`
 
 export enum SortKind {
   Alpha,
-  Number
+  Number,
 }
 
 interface AggDropDownState {
@@ -143,8 +145,9 @@ interface AggDropDownState {
   prevParams: SearchParams | null;
   desc: boolean;
   sortKind: SortKind;
+  checkboxValue: boolean;
+  showLabel: boolean;
 }
-
 
 interface AggDropDownProps {
   agg: string;
@@ -153,10 +156,15 @@ interface AggDropDownProps {
   searchParams: SearchParams;
   aggKind: AggKind;
   selectedKeys: Set<string>;
-  addFilter: AggCallback | null;
+  addFilter: AggCallback;
+  addFilters?: AggregateAggCallback | undefined;
+  removeFilters?: AggregateAggCallback | undefined;
   removeFilter: AggCallback | null;
   display?: FieldDisplay;
+  visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
+  removeSelectAll?: boolean;
+  resetSelectAll?: () => void;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -169,11 +177,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     prevParams: null,
     sortKind: SortKind.Alpha,
     desc: true,
+    checkboxValue: false,
+    showLabel: false,
   };
 
   static getDerivedStateFromProps(
     props: AggDropDownProps,
-    state: AggDropDownState,
+    state: AggDropDownState
   ) {
     if (props.isOpen !== state.isOpen) {
       if (props.isOpen) {
@@ -233,6 +243,48 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       ? this.props.removeFilter(agg, key)
       : this.props.addFilter(agg, key);
   };
+  selectAll = (agg: string): void => {
+    const { buckets } = this.state;
+    let newParams = [];
+
+    buckets.map(({ key }) => {
+      newParams.push(key);
+    });
+
+    if (this.props.removeSelectAll) {
+      console.log('meh');
+      this.setState({
+        checkboxValue: false,
+      });
+    }
+    if (this.isAllSelected() != true) {
+      if (!this.props.addFilters) return;
+      this.props.addFilters(agg, newParams, false);
+      this.setState({
+        checkboxValue: true,
+      });
+    } else {
+      if (!this.props.removeFilters) return;
+      this.setState({
+        checkboxValue: false,
+      });
+      this.props.removeFilters(agg, newParams, false);
+    }
+  };
+  isAllSelected = (): boolean => {
+    const { buckets } = this.state;
+    let i = 0;
+    let newParams = [];
+    buckets.map(({ key }) => {
+      if (this.isSelected(key)) {
+        i++;
+      }
+    });
+    if (buckets.length == i) {
+      return true;
+    }
+    return false;
+  };
 
   getFullPagesCount = () => Math.floor(length(this.state.buckets) / PAGE_SIZE);
 
@@ -246,38 +298,40 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   handleLoadMore = async apolloClient => {
-
     const { desc, sortKind } = this.state;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
         ? [QUERY_CROWD_AGG_BUCKETA, 'crowdAggFilters']
         : [QUERY_AGG_BUCKETS, 'aggFilters'];
 
-    let aggSort = [{id: 'key', desc: false}]
+    let aggSort = [{ id: 'key', desc: false }];
 
-    if(!desc && sortKind === SortKind.Alpha) {
-      aggSort = [{id: 'key', desc: true}]
+    if (!desc && sortKind === SortKind.Alpha) {
+      aggSort = [{ id: 'key', desc: true }];
     }
 
-    if(desc && sortKind === SortKind.Number) {
-      aggSort = [{id: 'count', desc: false}]
+    if (desc && sortKind === SortKind.Number) {
+      aggSort = [{ id: 'count', desc: false }];
     }
 
-    if(!desc && sortKind === SortKind.Number) {
-      aggSort = [{id: 'count', desc: true}]
+    if (!desc && sortKind === SortKind.Number) {
+      aggSort = [{ id: 'count', desc: true }];
     }
 
     const variables = {
-      ... this.props.searchParams,
+      ...this.props.searchParams,
       aggFilters: maskAgg(this.props.searchParams.aggFilters, this.props.agg),
-      crowdAggFilters : maskAgg(this.props.searchParams.crowdAggFilters, this.props.agg),
+      crowdAggFilters: maskAgg(
+        this.props.searchParams.crowdAggFilters,
+        this.props.agg
+      ),
       agg: this.props.agg,
       pageSize: PAGE_SIZE,
       page: this.getFullPagesCount(),
       aggOptionsFilter: this.state.filter,
       aggOptionsSort: aggSort,
     };
-    
+
     const response = await apolloClient.query({
       query,
       variables,
@@ -286,37 +340,39 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const newBuckets = pathOr(
       [],
       ['data', 'aggBuckets', 'aggs', 0, 'buckets'],
-      response,
+      response
     ) as AggBucket[];
-    
+
     let buckets = pipe(
+      concat(newBuckets),
+      uniqBy(prop('key')),
+      sortBy(prop('key'))
+      // desc ? identity() : reverse(),
+    )(this.state.buckets) as AggBucket[];
+    if (!desc && sortKind === SortKind.Alpha) {
+      buckets = pipe(
         concat(newBuckets),
         uniqBy(prop('key')),
         sortBy(prop('key')),
-        // desc ? identity() : reverse(),
-      )(this.state.buckets) as AggBucket[];
-    if(!desc && sortKind === SortKind.Alpha) {
-      buckets = pipe(
-        concat(newBuckets),
-        uniqBy(prop('key')),
-        sortBy(prop('key')),
-        reverse(),
-      )(this.state.buckets) as AggBucket[];
-    } if(desc && sortKind === SortKind.Number) {
-      buckets = pipe(
-      concat(newBuckets),
-      uniqBy(prop('key')),
-      sortBy(prop('docCount')),
-      )(this.state.buckets) as AggBucket[];
-    } if(!desc && sortKind === SortKind.Number) {
-      buckets = pipe(
-      concat(newBuckets),
-      uniqBy(prop('key')),
-      sortBy(prop('docCount')),
-      reverse(),
+        reverse()
       )(this.state.buckets) as AggBucket[];
     }
-    
+    if (desc && sortKind === SortKind.Number) {
+      buckets = pipe(
+        concat(newBuckets),
+        uniqBy(prop('key')),
+        sortBy(prop('docCount'))
+      )(this.state.buckets) as AggBucket[];
+    }
+    if (!desc && sortKind === SortKind.Number) {
+      buckets = pipe(
+        concat(newBuckets),
+        uniqBy(prop('key')),
+        sortBy(prop('docCount')),
+        reverse()
+      )(this.state.buckets) as AggBucket[];
+    }
+
     const hasMore = length(this.state.buckets) !== length(buckets);
     this.setState({ buckets, hasMore });
   };
@@ -324,7 +380,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   renderBucket = (
     value: string | number,
     display: FieldDisplay,
-    docCount: number,
+    docCount: number
   ): React.ReactNode => {
     let text = '';
     switch (display) {
@@ -349,30 +405,39 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return `${text} (${docCount})`;
   };
 
-  renderBuckets = (display: FieldDisplay) => {
-    const { agg } = this.props;
+  renderBuckets = ({
+    display,
+    site,
+    field,
+  }: {
+    display: FieldDisplay;
+    site: SiteViewFragment;
+    field: SiteViewFragment_search_aggs_fields | any;
+  }) => {
+    const { agg, visibleOptions = [] } = this.props;
     const { buckets = [] } = this.state;
-
-      return pipe(
-        map(({ key, docCount }) => (
-          <Checkbox
-            key={key}
-            checked={this.isSelected(key)}
-            onChange={() => this.toggleAgg(agg, key)}
-          >
-            {this.renderBucket(key, display, docCount)}
-          </Checkbox>
-        )),
-      )(buckets);
+    return pipe(
+      filter(({ key }) =>
+        visibleOptions.length ? visibleOptions.includes(key) : true
+      ),
+      map(({ key, docCount }) => (
+        <Checkbox
+          key={key}
+          checked={this.isSelected(key)}
+          onChange={() => this.toggleAgg(agg, key)}>
+          {this.renderBucket(key, display, docCount)}
+        </Checkbox>
+      ))
+    )(buckets);
   };
 
   renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
     let display = this.props.display;
+    const field = find(propEq('name', this.props.agg), [
+      ...site.search.aggs.fields,
+      ...site.search.crowdAggs.fields,
+    ]) as SiteViewFragment_search_aggs_fields | null;
     if (!display) {
-      const field = find(propEq('name', this.props.agg), [
-        ...site.search.aggs.fields,
-        ...site.search.crowdAggs.fields,
-      ]) as SiteViewFragment_search_aggs_fields | null;
       display = (field && field.display) || FieldDisplay.STRING;
     }
     return (
@@ -385,31 +450,82 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <BeatLoader key="loader" color="#fff" />
           </div>
-        }
-      >
-        {this.renderBuckets(display)}
+        }>
+        {this.renderBuckets({ display, site, field })}
       </InfiniteScroll>
     );
   };
 
   renderFilter = () => {
     const { buckets = [], filter, desc, sortKind } = this.state;
+    const { agg } = this.props;
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return null;
     }
     return (
-      <div style={{display: 'flex', flexDirection: 'row',}}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          borderBottom: 'solid 1px #ddd',
+        }}>
+        <div style={{ marginTop: '1em' }}>
+          <Checkbox
+            checked={
+              this.props.removeSelectAll
+                ? this.checkSelect()
+                : this.state.checkboxValue
+            }
+            onChange={() => this.selectAll(agg)}
+            onMouseEnter={() => this.setState({ showLabel: true })}
+            onMouseLeave={() => this.setState({ showLabel: false })}>
+            {this.state.showLabel ? (
+              <span
+                style={{
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                  border: '1px solid #ccc',
+                  padding: '5px',
+                  position: 'absolute',
+                  left: '1em',
+                  width: '6em',
+                  color: 'black',
+                  background: 'white',
+                  borderRadius: '4px',
+                  fontSize: '0.85em',
+                }}>
+                Select All
+              </span>
+            ) : null}
+          </Checkbox>
+        </div>
+
+        <div
+          style={{
+            flex: 2,
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            display: 'flex',
+          }}>
+          <Sorter
+            type="alpha"
+            desc={desc}
+            active={sortKind === SortKind.Alpha}
+            toggle={this.toggleAlphaSort}
+          />
+          <Sorter
+            type="number"
+            desc={desc}
+            active={sortKind === SortKind.Number}
+            toggle={this.toggleNumericSort}
+          />
+        </div>
         <FormControl
           type="text"
           placeholder="filter..."
           value={this.state.filter}
           onChange={this.handleFilterChange}
-          style={{flex: 4}}
+          style={{ flex: 4, marginTop: '4px' }}
         />
-        <div style={{flex: 2, justifyContent: 'space-around', alignItems: 'center', display: 'flex'}}>
-          <Sorter type='alpha' desc={desc} active={sortKind === SortKind.Alpha} toggle={this.toggleAlphaSort}/>
-          <Sorter type='number' desc={desc} active={sortKind === SortKind.Number} toggle={this.toggleNumericSort}/>
-        </div>
       </div>
     );
   };
@@ -420,32 +536,47 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       sortKind: SortKind.Alpha,
       buckets: [],
       hasMore: true,
-    })
-  }
+    });
+  };
 
   toggleNumericSort = () => {
     this.setState({
       desc: !this.state.desc,
       sortKind: SortKind.Number,
       buckets: [],
-      hasMore: true, 
-    })
-  }
+      hasMore: true,
+    });
+  };
 
+  checkSelect = () => {
+    if (this.props.removeSelectAll) {
+      this.setState(
+        {
+          checkboxValue: false,
+        },
+        () => {
+          if (this.props.resetSelectAll != null) {
+            this.props.resetSelectAll();
+          }
+        }
+      );
+    }
+  };
   render() {
     const { agg } = this.props;
     const { isOpen } = this.state;
-
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
-
     return (
       <SiteProvider>
         {site => (
           <ApolloConsumer>
             {apolloClient => (
               <PanelWrapper>
-                <Panel onToggle={this.handleToggle} expanded={isOpen} className="bm-panel-default">
+                <Panel
+                  onToggle={this.handleToggle}
+                  expanded={isOpen}
+                  className="bm-panel-default">
                   <Panel.Heading className="bm-panel-heading">
                     <Panel.Title className="bm-panel-title" toggle>
                       <div className="flex">

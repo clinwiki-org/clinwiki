@@ -182,7 +182,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     upsertLabelMutation: (x: {
       variables: CrowdPageUpsertWikiLabelMutationVariables;
       optimisticResponse?: CrowdPageUpsertWikiLabelMutation;
-    }) => void,
+    }) => void
   ) => {
     if (!value) return;
     const currentValue = meta[key];
@@ -218,13 +218,13 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     meta: {},
     nctId: string,
     upsertLabelMutation: UpsertMutationFn,
-    deleteLabelMutation: DeleteMutationFn,
+    deleteLabelMutation: DeleteMutationFn
   ) => {
     const currentValue = meta[key];
     if (!currentValue) return null;
 
     const newValue = uniq(
-      currentValue.split('|').filter(x => x !== value),
+      currentValue.split('|').filter(x => x !== value)
     ).join('|');
     if (newValue.length === 0) {
       const newMeta = dissoc(key, meta);
@@ -271,7 +271,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     value: string,
     meta: {},
     nctId: string,
-    upsertLabelMutation: UpsertMutationFn,
+    upsertLabelMutation: UpsertMutationFn
   ) => {
     if (!value) return;
     let val = value;
@@ -302,14 +302,14 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     key: string,
     value: string,
     meta: {},
-    upsertLabelMutation: UpsertMutationFn,
+    upsertLabelMutation: UpsertMutationFn
   ) => {
     Crowd.addLabel(
       key,
       value,
       meta,
       this.props.match.params.nctId,
-      upsertLabelMutation,
+      upsertLabelMutation
     );
     this.setState({ forceAddLabel: null });
   };
@@ -317,7 +317,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
   handleDeleteLabel = (
     meta: {},
     upsertLabelMutation: UpsertMutationFn,
-    deleteLabelMutation: DeleteMutationFn,
+    deleteLabelMutation: DeleteMutationFn
   ) => (key: string, value: string) => {
     Crowd.deleteLabel(
       key,
@@ -325,7 +325,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       meta,
       this.props.match.params.nctId,
       upsertLabelMutation,
-      deleteLabelMutation,
+      deleteLabelMutation
     );
   };
 
@@ -334,7 +334,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     upsertLabelMutation: (x: {
       variables: CrowdPageUpsertWikiLabelMutationVariables;
       optimisticResponse?: CrowdPageUpsertWikiLabelMutation;
-    }) => void,
+    }) => void
   ) => (key: string, oldValue: string, value: string) => {
     Crowd.updateLabel(
       key,
@@ -342,7 +342,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       value,
       meta,
       this.props.match.params.nctId,
-      upsertLabelMutation,
+      upsertLabelMutation
     );
   };
 
@@ -357,15 +357,15 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
   renderLabels = (
     meta: {},
     upsertLabelMutation: UpsertMutationFn,
-    deleteLabelMutation: DeleteMutationFn,
+    deleteLabelMutation: DeleteMutationFn
   ) => {
     const labels = pipe(
       keys,
       map(key =>
-        (meta[key] as string).split('|').map(value => ({ key, value })),
+        (meta[key] as string).split('|').map(value => ({ key, value }))
       ),
       // @ts-ignore
-      flatten,
+      flatten
     )(meta);
 
     let content = (
@@ -407,7 +407,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
               onDeleteClick={this.handleDeleteLabel(
                 meta,
                 upsertLabelMutation,
-                deleteLabelMutation,
+                deleteLabelMutation
               )}
               onAddClick={this.handleAddInsideLabelClick}
             />
@@ -454,8 +454,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
           <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
             {deleteLabelMutation => (
               <QueryComponent
-                  query={QUERY}
-                  variables={{ nctId: this.props.nctId }} >
+                query={QUERY}
+                variables={{ nctId: this.props.nctId }}>
                 {({ data, loading, error }) => {
                   if (loading) {
                     return <LoadingPane />;
@@ -470,17 +470,15 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
                     meta = JSON.parse(data.study.wikiPage.meta || '{}');
                   } catch (e) {
                     console.error(
-                      `Error on parsing meta '${
-                        data.study.wikiPage.meta
-                      }' for nctId: ${this.props.match.params.nctId}`,
-                      e,
+                      `Error on parsing meta '${data.study.wikiPage.meta}' for nctId: ${this.props.match.params.nctId}`,
+                      e
                     );
                     return null;
                   }
                   return this.renderLabels(
                     meta,
                     upsertLabelMutation,
-                    deleteLabelMutation,
+                    deleteLabelMutation
                   );
                 }}
               </QueryComponent>

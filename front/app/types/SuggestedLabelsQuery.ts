@@ -22,6 +22,23 @@ export interface SuggestedLabelsQuery_search {
   aggs: SuggestedLabelsQuery_search_aggs[] | null;
 }
 
+export interface SuggestedLabelsQuery_crowdAggFacets_aggs_buckets {
+  __typename: "AggBucket";
+  key: string;
+  docCount: number;
+}
+
+export interface SuggestedLabelsQuery_crowdAggFacets_aggs {
+  __typename: "Agg";
+  name: string;
+  buckets: SuggestedLabelsQuery_crowdAggFacets_aggs_buckets[];
+}
+
+export interface SuggestedLabelsQuery_crowdAggFacets {
+  __typename: "SearchResultSet";
+  aggs: SuggestedLabelsQuery_crowdAggFacets_aggs[] | null;
+}
+
 export interface SuggestedLabelsQuery_study_wikiPage {
   __typename: "WikiPage";
   nctId: string;
@@ -42,6 +59,7 @@ export interface SuggestedLabelsQuery {
    * Searches params by searchHash on server and `params` argument into it
    */
   search: SuggestedLabelsQuery_search | null;
+  crowdAggFacets: SuggestedLabelsQuery_crowdAggFacets;
   study: SuggestedLabelsQuery_study | null;
 }
 

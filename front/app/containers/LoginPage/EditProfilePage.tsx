@@ -70,7 +70,7 @@ class EditProfilePage extends React.Component<
 
   static getDerivedStateFromProps = (
     props: EditProfilePageProps,
-    state: EditProfilePageState,
+    state: EditProfilePageState
   ): EditProfilePageState | null => {
     if (!equals(state.prevUser, props.user) && props.user != null) {
       return {
@@ -150,8 +150,7 @@ class EditProfilePage extends React.Component<
                     (data && data.updateProfile && data.updateProfile.errors) ||
                     [],
                 });
-              }}
-            >
+              }}>
               {editProfile => (
                 <StyledButton onClick={this.handleEditProfile(editProfile)}>
                   Save

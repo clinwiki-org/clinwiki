@@ -106,7 +106,7 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
     // @ts-ignore
     const newValues = pipe(
       map(prop('id')),
-      difference(__, this.props.value),
+      difference(__, this.props.value)
       // @ts-ignore
     )(values);
     this.props.onChange({
@@ -144,7 +144,7 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
   handleDrop = e => {
     e.preventDefault();
     const newValues = this.props.value.filter(
-      value => value !== this.state.dragging,
+      value => value !== this.state.dragging
     );
     const droppableIndex = findIndex(equals(this.state.dropping), newValues);
     this.state.dragging &&
@@ -159,7 +159,7 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
   render() {
     const options = reject(
       option => this.props.value.includes(option.id),
-      this.props.options || [],
+      this.props.options || []
     );
     return (
       <div>
@@ -179,8 +179,7 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
                 key={value}
                 draggable={this.props.draggable}
                 onDragStart={this.handleDragStart}
-                onDragEnd={this.handleDragEnd}
-              >
+                onDragEnd={this.handleDragEnd}>
                 <MultiCrumb
                   values={[value]}
                   labels={[this.getLabel(value)]}
