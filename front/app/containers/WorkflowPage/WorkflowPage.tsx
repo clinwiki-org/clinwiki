@@ -118,7 +118,7 @@ class WorkflowPage extends React.Component<
   handleSelect = (
     meta: {},
     upsertLabel: UpsertMutationFn,
-    deleteLabel: DeleteMutationFn,
+    deleteLabel: DeleteMutationFn
   ) => (key: string, value: string, checked: boolean) => {
     if (checked) {
       CrowdPage.addLabel(
@@ -126,7 +126,7 @@ class WorkflowPage extends React.Component<
         value,
         meta,
         this.props.match.params.nctId,
-        upsertLabel,
+        upsertLabel
       );
     } else {
       CrowdPage.deleteLabel(
@@ -135,7 +135,7 @@ class WorkflowPage extends React.Component<
         meta,
         this.props.match.params.nctId,
         upsertLabel,
-        deleteLabel,
+        deleteLabel
       );
     }
   };
@@ -187,22 +187,22 @@ class WorkflowPage extends React.Component<
   render() {
     return (
       <WorkflowsViewProvider>
-        {(workflowsView) => (
+        {workflowsView => (
           <CurrentUser>
             {user => {
               const workflow = pipe(
                 prop('workflows'),
-                find(propEq('name', this.props.workflowName)),
+                find(propEq('name', this.props.workflowName))
               )(workflowsView) as WorkflowConfigFragment;
               const allowedWikiSections = displayFields(
                 workflow.wikiSectionsFilter.kind,
                 workflow.wikiSectionsFilter.values,
-                workflow.allWikiSections.map(name => ({ name, rank: null })),
+                workflow.allWikiSections.map(name => ({ name, rank: null }))
               ).map(prop('name'));
               const allowedSuggestedLabels = displayFields(
                 workflow.suggestedLabelsFilter.kind,
                 workflow.suggestedLabelsFilter.values,
-                workflow.allSuggestedLabels.map(name => ({ name, rank: null })),
+                workflow.allSuggestedLabels.map(name => ({ name, rank: null }))
               ).map(prop('name'));
 
               return (
@@ -210,7 +210,9 @@ class WorkflowPage extends React.Component<
                   {user && !workflow.hideReviews && (
                     <>
                       <h3>
-                        {this.state.editReviewMode ? 'Add Review' : 'Added Review'}{' '}
+                        {this.state.editReviewMode
+                          ? 'Add Review'
+                          : 'Added Review'}{' '}
                       </h3>
                       <StyledPanel>
                         {this.renderReview(workflow.disableAddRating)}
@@ -219,8 +221,7 @@ class WorkflowPage extends React.Component<
                         <Button
                           disabled={!this.state.editReviewMode}
                           onClick={this.handleReviewSave}
-                          style={{ marginTop: 15 }}
-                        >
+                          style={{ marginTop: 15 }}>
                           Save Review
                         </Button>
                       </ButtonContainer>
@@ -231,30 +232,29 @@ class WorkflowPage extends React.Component<
 
                   <WorkflowPageQueryComponent
                     query={QUERY}
-                    variables={{ nctId: this.props.match.params.nctId }}
-                  >
+                    variables={{ nctId: this.props.match.params.nctId }}>
                     {({ data, loading, error }) => {
                       const sections = pipe(
                         drop(1),
                         filter((section: WikiSection) =>
-                          allowedWikiSections.includes(section.name),
-                        ),
+                          allowedWikiSections.includes(section.name)
+                        )
                       )(
                         extractWikiSections(
                           (data &&
                             data.study &&
                             data.study.wikiPage &&
                             data.study.wikiPage.content) ||
-                            '',
-                        ),
+                            ''
+                        )
                       ) as WikiSection[];
                       return (
                         <>
-                          <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
+                          <UpsertMutationComponent
+                            mutation={UPSERT_LABEL_MUTATION}>
                             {upsertMutation => (
                               <DeleteMutationComponent
-                                mutation={DELETE_LABEL_MUTATION}
-                              >
+                                mutation={DELETE_LABEL_MUTATION}>
                                 {deleteMutation => (
                                   <StyledPanel>
                                     <SuggestedLabels
@@ -267,10 +267,12 @@ class WorkflowPage extends React.Component<
                                         (data &&
                                           data.study &&
                                           data.study.wikiPage &&
-                                          JSON.parse(data.study.wikiPage.meta)) ||
+                                          JSON.parse(
+                                            data.study.wikiPage.meta
+                                          )) ||
                                           {},
                                         upsertMutation,
-                                        deleteMutation,
+                                        deleteMutation
                                       )}
                                       allowedSuggestedLabels={
                                         allowedSuggestedLabels
@@ -283,10 +285,13 @@ class WorkflowPage extends React.Component<
                             )}
                           </UpsertMutationComponent>
                           <CrowdPage
-                              {...this.props}
-                              nctId={this.props.nctId}
-                              workflowView
-                              forceAddLabel={this.state.selectedLabel || undefined} />
+                            {...this.props}
+                            nctId={this.props.nctId}
+                            workflowView
+                            forceAddLabel={
+                              this.state.selectedLabel || undefined
+                            }
+                          />
                           <WikiSections
                             sections={sections}
                             disabled={!user}
@@ -302,7 +307,7 @@ class WorkflowPage extends React.Component<
             }}
           </CurrentUser>
         )}
-        </WorkflowsViewProvider>
+      </WorkflowsViewProvider>
     );
   }
 }

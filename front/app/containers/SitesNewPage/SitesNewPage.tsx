@@ -22,14 +22,14 @@ interface SitesNewPageProps {
 class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
   handleSave = (
     createSite: CreateSiteMutationFn,
-    updateSiteView: UpdateSiteViewMutationFn,
+    updateSiteView: UpdateSiteViewMutationFn
   ) => (input: CreateSiteInput, mutations: SiteViewMutationInput[]) => {
     createSite({ variables: { input } }).then(res => {
       if (!res) return;
       const id = pathOr(
         null,
         ['data', 'createSite', 'site', 'siteView', 'id'],
-        res,
+        res
       ) as number | null;
       if (!id) return;
       updateSiteView({
@@ -48,8 +48,7 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
       <SiteProvider id={0}>
         {site => (
           <UpdateSiteViewMutation
-            onCompleted={() => this.props.history.push('/sites')}
-          >
+            onCompleted={() => this.props.history.push('/sites')}>
             {updateSiteView => (
               <CreateSiteMutation>
                 {createSite => (

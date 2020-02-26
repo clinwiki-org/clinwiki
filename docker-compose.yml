@@ -50,6 +50,7 @@ services:
       volumes:
          - .:/clinwiki
          - ./compose/entrypoint.sh:/usr/bin/entrypoint.sh
+         - node_modules:/clinwiki/front/node_modules
       environment:
          - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
          - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
@@ -84,4 +85,5 @@ volumes:
    es-data:
    cw-data:
    redis-data:
+   node_modules:
 

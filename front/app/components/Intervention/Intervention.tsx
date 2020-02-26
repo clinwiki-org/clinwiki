@@ -66,14 +66,14 @@ class Intervention extends React.PureComponent<InterventionProps> {
       wikipediaArticle,
     } = this.props.intervention;
     return (
-      <StyleWrapper>        
-          <Row>
-            <Col md={12}>
-              <h1>{`${capitalize(name || 'No name')} (${kind})`}</h1>
-              {description && <p>{description}</p>}
-              {this.renderInterventionText(name, wikipediaArticle)}
-            </Col>
-          </Row>
+      <StyleWrapper>
+        <Row>
+          <Col md={12}>
+            <h1>{`${capitalize(name || 'No name')} (${kind})`}</h1>
+            {description && <p>{description}</p>}
+            {this.renderInterventionText(name, wikipediaArticle)}
+          </Col>
+        </Row>
       </StyleWrapper>
     );
   }

@@ -74,9 +74,9 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
   static getDerivedStateFromProps = (
     props: SiteFormProps,
-    state: SiteFormState,
+    state: SiteFormState
   ): SiteFormState | null => {
-    const { name, subdomain, skipLanding,  editors } = props.site;
+    const { name, subdomain, skipLanding, editors } = props.site;
     const editorEmails = editors.map(prop('email'));
     const form = {
       name,
@@ -126,8 +126,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       <StyledNav
         bsStyle="pills"
         activeKey={activeKey}
-        onSelect={key => this.props.history.push(`${path}${key}`)}
-      >
+        onSelect={key => this.props.history.push(`${path}${key}`)}>
         {sections.map(section => (
           <NavItem key={`${section.path}`} eventKey={`${section.path}`}>
             {section.value}

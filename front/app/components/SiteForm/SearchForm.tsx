@@ -24,12 +24,12 @@ interface SearchFormState {
 
 const SEARCH_FIELDS = studyFields.map(option => ({
   id: option,
-  label: sentanceCase(option)
+  label: sentanceCase(option),
 }));
 
 const AGGS_OPTIONS = aggsOrdered.map(option => ({
   id: option,
-  label: sentanceCase(aggToField(option))
+  label: sentanceCase(aggToField(option)),
 }));
 
 const AggsHeaderContainer = styled.div`
@@ -55,7 +55,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   getCrowdFields = () => {
     return this.props.view.search.crowdAggs.fields.map(field => ({
       id: field.name,
-      label: sentanceCase(field.name)
+      label: sentanceCase(field.name),
     }));
   };
 
@@ -77,14 +77,14 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         ? FilterKind.BLACKLIST
         : view.search.aggs.selected.kind,
       this.state.showAllAggs ? [] : view.search.aggs.selected.values,
-      view.search.aggs.fields,
+      view.search.aggs.fields
     );
     const crowdFields = displayFields(
       this.state.showAllCrowdAggs
         ? FilterKind.BLACKLIST
         : view.search.crowdAggs.selected.kind,
       this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
-      view.search.crowdAggs.fields,
+      view.search.crowdAggs.fields
     );
 
     return (
@@ -104,8 +104,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <h3>Aggs visibility</h3>
               <StyledCheckbox
                 checked={this.state.showAllAggs}
-                onChange={this.handleShowAllToggle('aggs')}
-              >
+                onChange={this.handleShowAllToggle('aggs')}>
                 Show all
               </StyledCheckbox>
             </AggsHeaderContainer>
@@ -114,8 +113,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               name="set:search.aggs.selected.kind"
               componentClass="select"
               onChange={this.props.onAddMutation}
-              value={view.search.aggs.selected.kind}
-            >
+              value={view.search.aggs.selected.kind}>
               <option value="BLACKLIST">All except</option>
               <option value="WHITELIST">Only</option>
             </StyledFormControl>
@@ -141,8 +139,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <h3>Crowd aggs visibility</h3>
               <StyledCheckbox
                 checked={this.state.showAllCrowdAggs}
-                onChange={this.handleShowAllToggle('crowdAggs')}
-              >
+                onChange={this.handleShowAllToggle('crowdAggs')}>
                 Show all
               </StyledCheckbox>
             </AggsHeaderContainer>
@@ -152,8 +149,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               name="set:search.crowdAggs.selected.kind"
               componentClass="select"
               onChange={this.props.onAddMutation}
-              v={view.search.crowdAggs.selected.kind}
-            >
+              v={view.search.crowdAggs.selected.kind}>
               <option value="BLACKLIST">All except</option>
               <option value="WHITELIST">Only</option>
             </StyledFormControl>

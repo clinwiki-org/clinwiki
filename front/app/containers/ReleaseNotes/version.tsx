@@ -4,10 +4,21 @@ import Heading from 'components/Heading';
 import { Row, Col } from 'react-bootstrap';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 
-const notes = 
-  RichTextEditor.createValueFromString(`
+const notes = RichTextEditor.createValueFromString(
+  `
 
 # ClinWiki Version History
+
+### Version 11
+- Bugfixes
+- #156 missing facets
+
+### Version 10
+- #156 - visible crowd aggs
+- Select all in facets
+- loading for autocomplete
+- Interventions page
+- Fix crowd aggs in type ahead
 
 ### Version 9
 - Facility maps
@@ -58,15 +69,16 @@ const notes =
 
 ### Version 0
 - Everything else
-`, 'markdown');
+`,
+  'markdown'
+);
 
-export default class ReleaseNotes extends React.PureComponent<{},{}> {
-    render() {
-        return (
-        <div>
-            <RichTextEditor
-                readOnly
-                value={notes} />
-        </div>);
-    }
+export default class ReleaseNotes extends React.PureComponent<{}, {}> {
+  render() {
+    return (
+      <div>
+        <RichTextEditor readOnly value={notes} />
+      </div>
+    );
+  }
 }

@@ -11,7 +11,7 @@ import SiteProvider from 'containers/SiteProvider';
 interface UpdateSiteMutationProps {
   children: (
     mutate: UpdateSiteMutationFn,
-    result: MutationResult<UpdateSiteMutationType>,
+    result: MutationResult<UpdateSiteMutationType>
   ) => React.ReactNode;
 }
 
