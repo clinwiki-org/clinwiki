@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col, Panel, PanelGroup, DropdownButton, Dropdown, MenuItem } from 'react-bootstrap';
+import { Row, Col, Panel, PanelGroup, DropdownButton, Dropdown, MenuItem, FormControl } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
@@ -97,6 +97,16 @@ const StyledButtonGroup = styled.div`
     color:black !important;
   }
 `
+const StyledFormInput = styled(FormControl)`
+margin-bottom: 20px;
+background: none;
+border: none;
+box-shadow: none;
+color: lightgrey;
+font-size: 2em;
+padding-left: 0;
+`;
+
 // const styledToggleButton = styled(ToggleButtonGroup)`
 //   diplay: flex;
 //   flex-direction: row;
@@ -580,8 +590,31 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
         }>
         {updateSiteView => (
           <StyledContainer>
-            <h1>Search Name: {view.name}</h1>
-           
+            <span style={{
+              display: "inline",
+              width: "8em",
+              fontSize: "2em"
+            
+            }}>
+              Site Name: </span><StyledFormInput
+              name={`set:name`}
+              placeholder={view.name}
+              value={view.name}
+              onChange={e=>this.handleAddMutation(e,view)}
+            />
+
+
+            <span style={{
+              display: "inline",
+              width: "16em",
+              fontSize: "2em"
+            
+            }}>URL: clinwiki.org/search/</span><StyledFormInput
+              name={`set:url`}
+              placeholder={view.url}
+              value={view.url}
+              onChange={e=>this.handleAddMutation(e,view)}
+            />
             <h3>Search Sections</h3>
             <PanelGroup  id="accordion-uncontrolled"> 
                 {this.renderFacetBarConfig(showFacetBar,view,fields, crowdFields,updateSiteView)}
