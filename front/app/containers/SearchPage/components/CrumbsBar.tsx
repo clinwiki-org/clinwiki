@@ -316,6 +316,12 @@ export default class CrumbsBar extends React.Component<
     return crowdAggFields;
   };
 
+  getAutoSuggestFields = () => {
+    let aggFields = this.props.currentSiteView.search.autoSuggest.fields;
+      aggFields = this.props.currentSiteView.search.autoSuggest.fields;
+    return aggFields;
+  }
+
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
     const { searchParams, data, currentSiteView } = this.props;
@@ -323,10 +329,21 @@ export default class CrumbsBar extends React.Component<
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
+    
+    // let  aggFields = currentSiteView.search.autoSuggest.fields;
 
-    const aggFields = this.getAggFieldsFromSubsiteConfig(
-      currentSiteView.search.aggs.fields
-    );
+    // if (aggFields.fields.length <= 0) {
+    //   aggFields = [
+    //     'browse_condition_mesh_terms',
+    //     'browse_interventions_mesh_terms',
+    //     'facility_countries',
+    //   ];
+    // }
+
+    const aggFields = this.getAutoSuggestFields()
+
+
+    console.log('aggFields', aggFields)
 
     const crowdAggFields = this.getCrowdAggFieldsFromSubsiteConfig(
       currentSiteView.search.crowdAggs.fields
@@ -347,18 +364,22 @@ export default class CrumbsBar extends React.Component<
       },
       sorts: [],
       aggFields: aggFields,
-      crowdAggFields: crowdAggFields,
+      crowdAggFields: [],
     };
 
     const response = await apolloClient.query({
       query,
       variables,
     });
-    const array = response.data.autocomplete.autocomplete;
 
+    console.log('RESPONSE', response);
+    const array = response.data.autocomplete.autocomplete;
+    console.log('array', array)
     this.setState({
       suggestions: array,
       isSuggestionLoading: false,
+    }, () => {
+      console.log(this.state.suggestions, 'YO MOFO')
     });
   };
 
@@ -539,6 +560,7 @@ export default class CrumbsBar extends React.Component<
     }
   };
   renderSuggestion = suggestion => {
+    console.log('suggestion', suggestion)
     const capitalized = this.capitalize(suggestion.key);
     return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
   };
@@ -688,6 +710,20 @@ export default class CrumbsBar extends React.Component<
       </div>
     );
   };
+  componentDidMount(){
+    const { data, siteViewUrl } = this.props;
+    let thisSiteView =
+      data.siteViews.find(siteview => siteview.url == siteViewUrl) ||
+      data.siteView;
+
+    if(thisSiteView.search.results.type == "card"){
+      console.log("Should be toggling card"),
+    this.toggledShowCards('card', true)
+    }else{
+      this.toggledShowCards('table', false)
+
+    }
+  }
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
@@ -699,8 +735,6 @@ export default class CrumbsBar extends React.Component<
     let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
 
-    console.log('CRUMBSSS', showCrumbsBar);
-    console.log('AutoSuggest', showAutoSuggest);
     return (
       <CrumbsBarStyleWrappper>
         <ApolloConsumer>

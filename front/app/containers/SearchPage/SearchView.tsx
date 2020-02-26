@@ -351,6 +351,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   toggledShowCards = (showCards: Boolean) => {
     this.props.toggledShowCards(showCards);
+    console.log('Showcard', showCards);
+    console.log('Params', this.props.params);
     pipe(changePage, this.props.onUpdateParams);
   };
 
@@ -625,7 +627,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } =
       this.props.searchParams || {};
-
+    const preSearchAggs = this.props.currentSiteView.search.presearch.aggs
+      .selected.values;
     return (
       <SiteProvider>
         {site => {
@@ -862,36 +865,47 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const presearch = currentSiteView.search.config.fields.showPresearch;
     return (
-      <SearchWrapper>
-        <Helmet>
-          <title>Search</title>
-          <meta name="description" content="Description of SearchPage" />
-        </Helmet>
+      <SiteProvider>
+        {site => {
+          let thisSiteView =
+            site.siteViews.find(
+              siteview => siteview.url == this.props.siteViewUrl
+            ) || site.siteView;
+          let showPresearch = thisSiteView.search.config.fields.showPresearch;
 
-        <QueryComponent
-          query={QUERY}
-          variables={this.props.params}
-          onCompleted={(data: any) => {
-            if (data && data.search) {
-              this.props.onAggsUpdate(
-                this.transformAggs(data.search.aggs || []),
-                this.transformCrowdAggs(data.crowdAggs.aggs || [])
-              );
-            }
-          }}>
-          {({ data, loading, error }) => {
-            return (
-              <Col md={12}>
-                {this.renderCrumbs({ data, loading, error })}
-                {presearch && this.renderPresearch({ data, loading, error })}
-                <SearchContainer>
-                  {this.renderSearch({ data, loading, error })}
-                </SearchContainer>
-              </Col>
-            );
-          }}
-        </QueryComponent>
-      </SearchWrapper>
+          return (
+            <SearchWrapper>
+              <Helmet>
+                <title>Search</title>
+                <meta name="description" content="Description of SearchPage" />
+              </Helmet>
+
+              <QueryComponent
+                query={QUERY}
+                variables={this.props.params}
+                onCompleted={(data: any) => {
+                  if (data && data.search) {
+                    this.props.onAggsUpdate(
+                      this.transformAggs(data.search.aggs || []),
+                      this.transformCrowdAggs(data.crowdAggs.aggs || [])
+                    );
+                  }
+                }}>
+                {({ data, loading, error }) => {
+                  return (
+                    <Col md={12}>
+                      {this.renderCrumbs({ data, loading, error })}
+                      {showPresearch &&
+                        this.renderPresearch({ data, loading, error })}
+                      {this.renderSearch({ data, loading, error })}
+                    </Col>
+                  );
+                }}
+              </QueryComponent>
+            </SearchWrapper>
+          );
+        }}
+      </SiteProvider>
     );
   }
 }

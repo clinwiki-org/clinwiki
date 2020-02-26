@@ -22,6 +22,7 @@ interface AggFieldProps {
     siteView: SiteViewFragment
   ) => void;
   view: SiteViewFragment;
+  presearch?: boolean;
 }
 
 interface AggFieldState {
@@ -108,8 +109,13 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     isChecked: false,
   };
 
-  getPath = () => `search.${this.props.kind}.fields.${this.props.field.name}`;
+  getPath = (presearch) => {
+    if(presearch==true){
+      return  `search.presearch.${this.props.kind}.fields.${this.props.field.name}`
 
+    }
+      return  `search.${this.props.kind}.fields.${this.props.field.name}`
+  };
   handleAddFilter = (kind: 'preselected' | 'visibleOptions') => (
     aggName: string,
     aggValue: string,
@@ -118,7 +124,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     this.props.onAddMutation(
       {
         currentTarget: {
-          name: `set:${this.getPath()}.${kind}.values`,
+          name: `set:${this.getPath(this.props.presearch)}.${kind}.values`,
           value: [...this.props.field[kind].values, aggValue]
         }
       },
@@ -129,6 +135,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
+    console.log("this.props", this.props)
     this.props.onAddMutation(
       {
         currentTarget: { name: e.currentTarget.name, value: !value }
@@ -145,7 +152,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     this.props.onAddMutation(
       {
         currentTarget: {
-          name: `set:${this.getPath()}.${kind}.values`,
+          name: `set:${this.getPath(this.props.presearch)}.${kind}.values`,
           value: reject(equals(aggValue), this.props.field.preselected.values)
         }
       },
@@ -165,6 +172,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   };
 
   render() {
+    const { presearch } = this.props
     const selected = new Set(this.props.field.preselected.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
     return (
@@ -247,14 +255,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <div>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath()}.rank`}
+              name={`set:${this.getPath(presearch)}.rank`}
               placeholder="Order"
               value={this.props.field.rank}
               onChange={this.props.onAddMutation}
             />
             <StyledLabel>Display</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath()}.display`}
+              name={`set:${this.getPath(presearch)}.display`}
               componentClass="select"
               onChange={e => this.props.onAddMutation(e, this.props.view)}
               defaultValue={this.props.field.display}
@@ -267,7 +275,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           {this.props.field.name !== 'average_rating' && (
             <ContainerRow>
               <StyledCheckbox
-                name={`set:${this.getPath()}.autoSuggest`}
+                name={`set:${this.getPath(presearch)}.autoSuggest`}
                 checked={this.props.field.autoSuggest}
                 onChange={this.handleCheckboxToggle(
                   this.props.field.autoSuggest

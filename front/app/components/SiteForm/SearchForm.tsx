@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Panel, PanelGroup, DropdownButton, Dropdown, MenuItem, FormControl } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
@@ -39,8 +39,11 @@ interface SearchFormProps {
 interface SearchFormState {
   showAllAggs: boolean;
   showAllCrowdAggs: boolean;
+  showAllAggsPresearch: boolean;
+  showAllCrowdAggsPresearch: boolean;
   mutations: SiteViewMutationInput[];
   showFacetBar: boolean;
+  showFacetBarConfig: boolean;
 }
 
 const SEARCH_FIELDS = studyFields.map(option => ({
@@ -74,6 +77,36 @@ const StyledCheckbox = styled(Checkbox)`
   align-items: center;
 `;
 
+const StyledPanelHeading =styled.div`
+  display:flex;
+`
+const StyledShowContainer =styled.div`
+  display:flex;
+  font-size:16px;
+  margin-left:auto;
+  .checkbox{
+    margin:0;
+    padding-left:1em;
+  }
+  `
+
+const StyledButtonGroup = styled.div`
+  margin: 1em 1em 1em 0;
+
+  ul li a{
+    color:black !important;
+  }
+`
+const StyledFormInput = styled(FormControl)`
+margin-bottom: 20px;
+background: none;
+border: none;
+box-shadow: none;
+color: lightgrey;
+font-size: 2em;
+padding-left: 0;
+`;
+
 // const styledToggleButton = styled(ToggleButtonGroup)`
 //   diplay: flex;
 //   flex-direction: row;
@@ -85,6 +118,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     showAllCrowdAggs: false,
     mutations: [],
     showFacetBar: false,
+    showFacetBarConfig:false,
+    showAllAggsPresearch: false,
+    showAllCrowdAggsPresearch:false,
   };
 
   componentDidMount() {}
@@ -128,22 +164,372 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     }));
   };
 
-  handleShowAllToggle = (kind: 'aggs' | 'crowdAggs') => () => {
+  handleShowAllToggle = (kind: 'aggs' | 'crowdAggs'|'aggsPresearch'|'crowdAggsPresearch') => () => {
     if (kind == 'aggs') {
       this.setState({ showAllAggs: !this.state.showAllAggs });
-    } else {
+    } else if(kind == 'crowdAggs') {
       this.setState({ showAllCrowdAggs: !this.state.showAllCrowdAggs });
+    } else if(kind == 'aggsPresearch'){
+      this.setState({showAllAggsPresearch:!this.state.showAllAggsPresearch});
+    }else{
+      this.setState({showAllCrowdAggsPresearch:!this.state.showAllCrowdAggsPresearch});
+      
     }
   };
-
+  handleCheckboxToggle = value => (e: {
+    currentTarget: { name: string; value: any };
+  }) => {
+    console.log("this.props view", this.props.view)
+    this.handleAddMutation(
+      {
+        currentTarget: { name: e.currentTarget.name, value: !value }
+      },
+      this.props.view
+    );
+  };
   handleFieldsOrderChange = () => {};
 
   handleShowFacetBar = (x, view, name) => {
     // this.setState({showFacetBar: x})
+    console.log("Views from the 6", view)
     const e = { currentTarget: { name: name, value: x } };
     this.handleAddMutation(e, view);
   };
+  renderFacetBarConfig=(showFacetBar,view,fields, crowdFields,updateSiteView )=>{
+      return(
+        <Panel >
+        <Panel.Heading>
+          <StyledPanelHeading>
+          <Panel.Title toggle>Facet Bar</Panel.Title>
+            <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                  name="set:search.config.fields.showFacetBar"
+                  checked={showFacetBar}
+                  onChange={this.handleCheckboxToggle(showFacetBar)}
+                />
+            </StyledShowContainer>
+          </StyledPanelHeading>
+        </Panel.Heading>
+        <Panel.Body collapsible>
+      <Row>
+        <Col md={6}>
+          <AggsHeaderContainer>
+            <h3>Aggs visibility</h3>
+            <StyledCheckbox 
+              checked={this.state.showAllAggs}
+              onChange={this.handleShowAllToggle('aggs')}>
+                  Show all
+                </StyledCheckbox>
+              </AggsHeaderContainer>
+              <StyledLabel>Filter</StyledLabel>
+              <StyledFormControl
+                name="set:search.aggs.selected.kind"
+                componentClass="select"
+                onChange={e => this.handleAddMutation(e, view)}
+                value={view.search.aggs.selected.kind}>
+                <option value="BLACKLIST">All except</option>
+                <option value="WHITELIST">Only</option>
+              </StyledFormControl>
+              <MultiInput
+                name="set:search.aggs.selected.values"
+                options={AGGS_OPTIONS}
+                placeholder="Add facet"
+                value={view.search.aggs.selected.values}
+                onChange={e => this.handleAddMutation(e, view)}
+              />
+              <h3>Aggs settings</h3>
+              {fields.map(field => (
+                <AggField
+                  kind="aggs"
+                  key={field.name}
+                  //@ts-ignore
+                  field={field}
+                  onAddMutation={this.handleAddMutation}
+                  view={view}
+                />
+              ))}
+            </Col>
+            <Col md={6}>
+              <AggsHeaderContainer>
+                <h3>Crowd aggs visibility</h3>
+                <StyledCheckbox
+                  checked={this.state.showAllCrowdAggs}
+                  onChange={this.handleShowAllToggle('crowdAggs')}>
+                  Show all
+                </StyledCheckbox>
+              </AggsHeaderContainer>
+              <StyledLabel>Filter</StyledLabel>
+              <StyledFormControl
+                name="set:search.crowdAggs.selected.kind"
+                componentClass="select"
+                onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
+                v={view.search.crowdAggs.selected.kind}>
+                <option value="BLACKLIST">All except</option>
+                <option value="WHITELIST">Only</option>
+              </StyledFormControl>
+              <MultiInput
+                name="set:search.crowdAggs.selected.values"
+                options={this.getCrowdFields(view)}
+                placeholder="Add facet"
+                value={view.search.crowdAggs.selected.values}
+                onChange={e => this.handleAddMutation(e, view)}
+              />
+              <h3>Crowd aggs settings</h3>
+              {crowdFields.map(field => (
+                <AggField
+                  kind="crowdAggs"
+                  key={field.name}
+                  //@ts-ignore
+                  field={field}
+                  onAddMutation={this.handleAddMutation}
+                  view={view}
+                />
+              ))}
+            </Col>
+          </Row>
+    <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+      Save Site View
+    </StyledButton>
+        </Panel.Body>
+      </Panel>
 
+      );
+  }
+  renderAutoSuggestConfig=(showAutoSuggest,view,fields, crowdFields,updateSiteView )=>{
+    console.log("Rendering AutoSuggest", AGGS_OPTIONS.concat(this.getCrowdFields(view)))
+    return(
+      <Panel>
+      <Panel.Heading>
+        <StyledPanelHeading>
+        <Panel.Title toggle>Auto Suggest</Panel.Title>
+        <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                name="set:search.config.fields.showAutoSuggest"
+                checked={showAutoSuggest}
+                onChange={this.handleCheckboxToggle(showAutoSuggest)}
+              />
+        </StyledShowContainer>
+        </StyledPanelHeading>
+      </Panel.Heading>
+      <Panel.Body collapsible>
+    <Row>
+      <Col md={6}>
+        <AggsHeaderContainer>
+            </AggsHeaderContainer>
+            <StyledLabel>Add to Autosuggest</StyledLabel>
+            <MultiInput
+              name="set:search.autoSuggest.fields"
+              options={AGGS_OPTIONS}
+              placeholder="Add facet"
+              value={view.search.autoSuggest.fields}
+              onChange={e => this.handleAddMutation(e, view)}
+            />
+          </Col>
+        </Row>
+  <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+    Save Site View
+  </StyledButton>
+      </Panel.Body>
+    </Panel>
+    );
+}
+renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>{
+  console.log("Rendering Presearchconfig")
+  return(
+    <Panel>
+    <Panel.Heading>
+    <StyledPanelHeading>
+    <Panel.Title toggle>Pre-Search</Panel.Title>
+
+        <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                name="set:search.config.fields.showPresearch"
+                checked={showPresearch}
+                onChange={this.handleCheckboxToggle(showPresearch)}
+              />
+        </StyledShowContainer>
+        </StyledPanelHeading>
+
+    </Panel.Heading>
+    <Panel.Body collapsible>
+  <Row>
+    <Col md={6}>
+      <AggsHeaderContainer>
+        <h3>Aggs visibility</h3>
+        <StyledCheckbox 
+          checked={this.state.showAllAggsPresearch}
+          onChange={this.handleShowAllToggle('aggsPresearch')}>
+              Show all
+            </StyledCheckbox>
+          </AggsHeaderContainer>
+          <StyledLabel>Filter</StyledLabel>
+          <StyledFormControl
+            name="set:search.presearch.aggs.selected.kind"
+            componentClass="select"
+            onChange={e => this.handleAddMutation(e, view)}
+            value={view.search.presearch.aggs.selected.kind}>
+            <option value="BLACKLIST">All except</option>
+            <option value="WHITELIST">Only</option>
+          </StyledFormControl>
+          <MultiInput
+            name="set:search.presearch.aggs.selected.values"
+            options={AGGS_OPTIONS}
+            placeholder="Add facet"
+            value={view.search.presearch.aggs.selected.values}
+            onChange={e => this.handleAddMutation(e, view)}
+          />
+          <h3>Aggs settings</h3>
+          {fields.map(field => (
+            <AggField
+              kind="aggs"
+              key={field.name}
+              //@ts-ignore
+              field={field}
+              onAddMutation={this.handleAddMutation}
+              view={view}
+              presearch={true}
+            />
+          ))}
+        </Col>
+        <Col md={6}>
+          <AggsHeaderContainer>
+            <h3>Crowd aggs visibility</h3>
+            <StyledCheckbox
+              checked={this.state.showAllCrowdAggsPresearch}
+              onChange={this.handleShowAllToggle('crowdAggsPresearch')}>
+              Show all
+            </StyledCheckbox>
+          </AggsHeaderContainer>
+
+          <StyledLabel>Filter</StyledLabel>
+          <StyledFormControl
+            name="set:search.presearch.crowdAggs.selected.kind"
+            componentClass="select"
+            onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
+            v={view.search.crowdAggs.selected.kind}>
+            <option value="BLACKLIST">All except</option>
+            <option value="WHITELIST">Only</option>
+          </StyledFormControl>
+          <MultiInput
+            name="set:search.presearch.crowdAggs.selected.values"
+            options={this.getCrowdFields(view)}
+            placeholder="Add facet"
+            value={view.search.presearch.crowdAggs.selected.values}
+            onChange={e => this.handleAddMutation(e, view)}
+          />
+          <h3>Crowd aggs settings</h3>
+          {crowdFields.map(field => (
+            <AggField
+              kind="crowdAggs"
+              key={field.name}
+              //@ts-ignore
+              field={field}
+              onAddMutation={this.handleAddMutation}
+              view={view}
+              presearch={true}
+            />
+          ))}
+        </Col>
+      </Row>
+<StyledButton onClick={this.handleSave(updateSiteView, view)}>
+  Save Site View
+</StyledButton>
+    </Panel.Body>
+  </Panel>
+  );
+}
+renderResultsConfig=(showResults,view,fields, crowdFields,updateSiteView )=>{
+  return(
+    <Panel>
+    <Panel.Heading>
+    <StyledPanelHeading>
+    <Panel.Title toggle>Results</Panel.Title>
+
+        <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                name="set:search.config.fields.showResults"
+                checked={showResults}
+                onChange={this.handleCheckboxToggle(showResults)}
+              />
+        </StyledShowContainer>
+        </StyledPanelHeading>
+
+    </Panel.Heading>
+    <Panel.Body collapsible>
+  <h3>Fields</h3>
+<MultiInput
+  name="set:search.fields"
+  options={SEARCH_FIELDS}
+  placeholder="Add field"
+  draggable
+  value={view.search.fields}
+  onChange={e => this.handleAddMutation(e, view)}
+/>
+<StyledButtonGroup>
+    <DropdownButton
+      bsStyle="default"
+      title="Result View"
+      key="default"
+      id="dropdown-basic-default"
+      style={{margin: "1em 1em 1em 0"}} 
+    >
+      <MenuItem onClick={e => this.handleShowFacetBar(
+        'card',
+        view,
+        'set:search.results.type'
+      )}> 
+        Card View</MenuItem>
+      <MenuItem onClick={e => this.handleShowFacetBar(
+        'table',
+        view,
+        'set:search.results.type'
+      )}>Table View</MenuItem>
+      <MenuItem divider />
+      <MenuItem onClick={e => this.handleShowFacetBar(
+        'map',
+        view,
+        'set:search.results.type'
+      )}>Map View</MenuItem>
+    </DropdownButton>
+
+<StyledButton onClick={this.handleSave(updateSiteView, view)}>
+  Save Site View
+</StyledButton>
+</StyledButtonGroup>
+    </Panel.Body>
+  </Panel>
+  );
+}
+renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView )=>{
+  return(
+    <Panel>
+    <Panel.Heading>
+    <StyledPanelHeading>
+    <Panel.Title toggle>Bread Crumbs Bar</Panel.Title>
+        <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                name="set:search.config.fields.showBreadCrumbs"
+                checked={showBreadCrumbs}
+                onChange={this.handleCheckboxToggle(showBreadCrumbs)}
+              />
+        </StyledShowContainer>
+        </StyledPanelHeading>
+
+    </Panel.Heading>
+    <Panel.Body collapsible>
+
+<StyledButton onClick={this.handleSave(updateSiteView, view)}>
+  Save Site View
+</StyledButton>
+    </Panel.Body>
+  </Panel>
+  );
+}
   render() {
     const siteviewId = this.props.match.params.id;
     let view = this.props.siteViews.find(view => siteviewId == view.id);
@@ -163,6 +549,22 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       this.state.showAllCrowdAggs ? [] : view.search.crowdAggs.selected.values,
       view.search.crowdAggs.fields
     );
+    const fieldsPresearch = displayFields(
+      this.state.showAllAggsPresearch
+        ? FilterKind.BLACKLIST
+        : view.search.presearch.aggs.selected.kind,
+      this.state.showAllAggsPresearch ? [] : view.search.presearch.aggs.selected.values,
+      view.search.presearch.aggs.fields
+    );
+    const crowdFieldsPresearch = displayFields(
+      this.state.showAllCrowdAggsPresearch
+        ? FilterKind.BLACKLIST
+        : view.search.presearch.crowdAggs.selected.kind,
+      this.state.showAllCrowdAggsPresearch ? [] : view.search.presearch.crowdAggs.selected.values,
+      view.search.presearch.crowdAggs.fields
+    );
+
+
     const showFacetBar = view.search.config.fields.showFacetBar;
     // const config = displayFields(
     //   this.state.showFacetBar
@@ -179,6 +581,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     // console.log("Results set to:",view.search.config.fields.showResults)
     const showPresearch = view.search.config.fields.showPresearch
     console.log("Presearch set to:",view.search.config.fields.showPresearch)
+    console.log("Search form view", view);
+    console.log("SF Fields",fields);
     return (
       <UpdateSiteViewMutation
         onCompleted={() =>
@@ -186,180 +590,45 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         }>
         {updateSiteView => (
           <StyledContainer>
-            <h1>{view.name}</h1>
-           
-            <h3>Content Config</h3>
-            <div className="show-hide-content-group">
-              <h5>Facet Bar</h5>
-              <ToggleButtonGroup
-                name="set:search.config.fields.showFacetBar"
-                type="radio"
-                value={showFacetBar}
-                // defaultValue={view.search.config.fields.showFacetBar}
-                onChange={val =>
-                  this.handleShowFacetBar(
-                    val,
-                    view,
-                    'set:search.config.fields.showFacetBar'
-                  )
-                }>
-                <ToggleButton value={true}>Shown</ToggleButton>
-                <ToggleButton value={false}>Hidden</ToggleButton>
-              </ToggleButtonGroup>
-              <h5>Pre-search</h5>
-              <ToggleButtonGroup
-                name="set:search.config.fields.showPresearch"
-                type="radio"
-                value={showPresearch}
-                // defaultValue={view.search.config.fields.showPresearch}
-                onChange={val =>
-                  this.handleShowFacetBar(
-                    val,
-                    view,
-                    'set:search.config.fields.showPresearch'
-                  )
-                }>
-                <ToggleButton value={true}>Shown</ToggleButton>
-                <ToggleButton value={false}>Hidden</ToggleButton>
-              </ToggleButtonGroup>
-              <h5>BreadCrumbs Bar</h5>
-              <ToggleButtonGroup
-                name="set:search.config.fields.showBreadCrumbs"
-                type="radio"
-                value={showBreadCrumbs}
-                // defaultValue={view.search.config.fields.showBreadCrumbs}
-                onChange={val =>
-                  this.handleShowFacetBar(
-                    val,
-                    view,
-                    'set:search.config.fields.showBreadCrumbs'
-                  )
-                }>
-                <ToggleButton value={true}>Shown</ToggleButton>
-                <ToggleButton value={false}>Hidden</ToggleButton>
-              </ToggleButtonGroup>
-              <h5>Auto Suggest</h5>
-
-              <ToggleButtonGroup
-                name="set:search.config.fields.showAutoSuggest"
-                type="radio"
-                value={showAutoSuggest}
-                // defaultValue={view.search.config.fields.showAutoSuggest}
-                onChange={val =>
-                  this.handleShowFacetBar(
-                    val,
-                    view,
-                    'set:search.config.fields.showAutoSuggest'
-                  )
-                }>
-                <ToggleButton value={true}>Shown</ToggleButton>
-                <ToggleButton value={false}>Hidden</ToggleButton>
-              </ToggleButtonGroup>
-              <h5>Results</h5>
-
-              <ToggleButtonGroup
-                name="set:search.config.fields.showResults"
-                type="radio"
-                value={showResults}
-                // defaultValue={view.search.config.fields.showResults}
-                onChange={val =>
-                  this.handleShowFacetBar(
-                    val,
-                    view,
-                    'set:search.config.fields.showResults'
-                  )
-                }>
-                <ToggleButton value={true}>Shown</ToggleButton>
-                <ToggleButton value={false}>Hidden</ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-
-            <h3>Fields</h3>
-            <MultiInput
-              name="set:search.fields"
-              options={SEARCH_FIELDS}
-              placeholder="Add field"
-              draggable
-              value={view.search.fields}
-              onChange={e => this.handleAddMutation(e, view)}
+            <span style={{
+              display: "inline",
+              width: "8em",
+              fontSize: "2em"
+            
+            }}>
+              Site Name: </span><StyledFormInput
+              name={`set:name`}
+              placeholder={view.name}
+              value={view.name}
+              onChange={e=>this.handleAddMutation(e,view)}
             />
-            <Row>
-              <Col md={6}>
-                <AggsHeaderContainer>
-                  <h3>Aggs visibility</h3>
-                  <StyledCheckbox
-                    checked={this.state.showAllAggs}
-                    onChange={this.handleShowAllToggle('aggs')}>
-                    Show all
-                  </StyledCheckbox>
-                </AggsHeaderContainer>
-                <StyledLabel>Filter</StyledLabel>
-                <StyledFormControl
-                  name="set:search.aggs.selected.kind"
-                  componentClass="select"
-                  onChange={e => this.handleAddMutation(e, view)}
-                  value={view.search.aggs.selected.kind}>
-                  <option value="BLACKLIST">All except</option>
-                  <option value="WHITELIST">Only</option>
-                </StyledFormControl>
-                <MultiInput
-                  name="set:search.aggs.selected.values"
-                  options={AGGS_OPTIONS}
-                  placeholder="Add facet"
-                  value={view.search.aggs.selected.values}
-                  onChange={e => this.handleAddMutation(e, view)}
-                />
-                <h3>Aggs settings</h3>
-                {fields.map(field => (
-                  <AggField
-                    kind="aggs"
-                    key={field.name}
-                    //@ts-ignore
-                    field={field}
-                    onAddMutation={this.handleAddMutation}
-                    view={view}
-                  />
-                ))}
-              </Col>
-              <Col md={6}>
-                <AggsHeaderContainer>
-                  <h3>Crowd aggs visibility</h3>
-                  <StyledCheckbox
-                    checked={this.state.showAllCrowdAggs}
-                    onChange={this.handleShowAllToggle('crowdAggs')}>
-                    Show all
-                  </StyledCheckbox>
-                </AggsHeaderContainer>
 
-                <StyledLabel>Filter</StyledLabel>
-                <StyledFormControl
-                  name="set:search.crowdAggs.selected.kind"
-                  componentClass="select"
-                  onChange={e => this.handleAddMutation(e, view)}
-                  v={view.search.crowdAggs.selected.kind}>
-                  <option value="BLACKLIST">All except</option>
-                  <option value="WHITELIST">Only</option>
-                </StyledFormControl>
-                <MultiInput
-                  name="set:search.crowdAggs.selected.values"
-                  options={this.getCrowdFields(view)}
-                  placeholder="Add facet"
-                  value={view.search.crowdAggs.selected.values}
-                  onChange={e => this.handleAddMutation(e, view)}
-                />
-                <h3>Crowd aggs settings</h3>
-                {crowdFields.map(field => (
-                  <AggField
-                    kind="crowdAggs"
-                    key={field.name}
-                    //@ts-ignore
-                    field={field}
-                    onAddMutation={this.handleAddMutation}
-                    view={view}
-                  />
-                ))}
-              </Col>
-            </Row>
+
+            <span style={{
+              display: "inline",
+              width: "16em",
+              fontSize: "2em"
+            
+            }}>URL: clinwiki.org/search/</span><StyledFormInput
+              name={`set:url`}
+              placeholder={view.url}
+              value={view.url}
+              onChange={e=>this.handleAddMutation(e,view)}
+            />
+            <h3>Search Sections</h3>
+            <PanelGroup  id="accordion-uncontrolled"> 
+                {this.renderFacetBarConfig(showFacetBar,view,fields, crowdFields,updateSiteView)}
+                {this.renderAutoSuggestConfig(showAutoSuggest,view,fields, crowdFields,updateSiteView)}
+                {this.renderPreSearchConfig(showPresearch,view,fieldsPresearch, crowdFieldsPresearch,updateSiteView)}
+                {this.renderResultsConfig(showResults,view,fields, crowdFields,updateSiteView)}
+                {this.renderBreadCrumbsConfig(showBreadCrumbs,view,fields, crowdFields,updateSiteView)}
+              {/* <Panel eventKey="6">
+                <Panel.Heading>
+                  <Panel.Title toggle>Panel heading 2</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body collapsible>Panel content 2</Panel.Body>
+              </Panel> */}
+            </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
               Save Site View
             </StyledButton>
