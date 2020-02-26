@@ -21,6 +21,7 @@ import {
   AggKind,
   AggFilterMap,
 } from '../Types';
+import { BeatLoader } from 'react-spinners';
 import { aggsOrdered } from 'utils/constants';
 import SiteProvider from 'containers/SiteProvider';
 import { SiteFragment } from 'types/SiteFragment';
@@ -58,7 +59,7 @@ interface AggsProps {
   updateParams: any;
   presearch?: boolean;
   currentSiteView?: any;
-  preSearchAggs?: string;
+  preSearchAggs?: string[];
 }
 
 const PresearchContainer = styled.div`
@@ -108,28 +109,21 @@ class Aggs extends React.PureComponent<AggsProps> {
       searchParams,
       presearch,
       currentSiteView,
+      preSearchAggs,
     } = this.props;
 
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
-    console.log(currentSiteView);
-
-    if (presearch) {
-      const testAggs = ['overall_status', 'facility_names'];
+    if (presearch && preSearchAggs) {
       return (
         <SiteProvider>
           {(site: SiteFragment) => {
-            console.log("YO", this.props.preSearchAggs)
-            //console.log("", PresearchAggs)
-            const preSearchAggs= this.props.preSearchAggs
             return (
               <PresearchContainer>
-                {
-                  //@ts-ignore
-                preSearchAggs.map(k =>
+                {preSearchAggs.map(k =>
                   aggs[k] ? (
                     <AggDropDown
-                      key={k}
+                      key={`k-${k}`}
                       agg={k}
                       selectedKeys={filters[k] || emptySet}
                       buckets={aggs[k]}
@@ -148,7 +142,13 @@ class Aggs extends React.PureComponent<AggsProps> {
                       removeSelectAll={this.props.removeSelectAll}
                       presearch
                     />
-                  ) : null
+                  ) : (
+                    <div
+                      key={k}
+                      style={{ display: 'flex', justifyContent: 'center' }}>
+                      <BeatLoader key="loader" color="#fff" />
+                    </div>
+                  )
                 )}
               </PresearchContainer>
             );

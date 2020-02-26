@@ -351,7 +351,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   toggledShowCards = (showCards: Boolean) => {
     this.props.toggledShowCards(showCards);
-    console.log('Showcard', showCards);
     console.log('Params', this.props.params);
     pipe(changePage, this.props.onUpdateParams);
   };
@@ -657,6 +656,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 onOpen={this.handleOpenAgg}
                 presearch
                 currentSiteView={thisSiteView}
+                preSearchAggs={preSearchAggs}
               />
             </SearchContainer>
           );
@@ -860,10 +860,9 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   render() {
     const { page, pageSize, sorts } = this.props.params;
-    console.log(this.props.params);
     const { currentSiteView } = this.props;
-
-    const presearch = currentSiteView.search.config.fields.showPresearch;
+    console.log('update params', this.props.onUpdateParams);
+    console.log('currentsite', currentSiteView);
     return (
       <SiteProvider>
         {site => {
@@ -897,7 +896,9 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                       {this.renderCrumbs({ data, loading, error })}
                       {showPresearch &&
                         this.renderPresearch({ data, loading, error })}
-                      {this.renderSearch({ data, loading, error })}
+                      <SearchContainer>
+                        {this.renderSearch({ data, loading, error })}
+                      </SearchContainer>
                     </Col>
                   );
                 }}

@@ -318,32 +318,18 @@ export default class CrumbsBar extends React.Component<
 
   getAutoSuggestFields = () => {
     let aggFields = this.props.currentSiteView.search.autoSuggest.fields;
-      aggFields = this.props.currentSiteView.search.autoSuggest.fields;
+    aggFields = this.props.currentSiteView.search.autoSuggest.fields;
     return aggFields;
-  }
+  };
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
     const { searchParams, data, currentSiteView } = this.props;
-    console.log('supbitch', currentSiteView);
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
-    
-    // let  aggFields = currentSiteView.search.autoSuggest.fields;
 
-    // if (aggFields.fields.length <= 0) {
-    //   aggFields = [
-    //     'browse_condition_mesh_terms',
-    //     'browse_interventions_mesh_terms',
-    //     'facility_countries',
-    //   ];
-    // }
-
-    const aggFields = this.getAutoSuggestFields()
-
-
-    console.log('aggFields', aggFields)
+    const aggFields = this.getAutoSuggestFields();
 
     const crowdAggFields = this.getCrowdAggFieldsFromSubsiteConfig(
       currentSiteView.search.crowdAggs.fields
@@ -371,15 +357,10 @@ export default class CrumbsBar extends React.Component<
       query,
       variables,
     });
-
-    console.log('RESPONSE', response);
     const array = response.data.autocomplete.autocomplete;
-    console.log('array', array)
     this.setState({
       suggestions: array,
       isSuggestionLoading: false,
-    }, () => {
-      console.log(this.state.suggestions, 'YO MOFO')
     });
   };
 
@@ -560,7 +541,6 @@ export default class CrumbsBar extends React.Component<
     }
   };
   renderSuggestion = suggestion => {
-    console.log('suggestion', suggestion)
     const capitalized = this.capitalize(suggestion.key);
     return <span>{`${capitalized} (${suggestion.docCount})`}</span>;
   };
@@ -710,18 +690,17 @@ export default class CrumbsBar extends React.Component<
       </div>
     );
   };
-  componentDidMount(){
+  componentDidMount() {
     const { data, siteViewUrl } = this.props;
     let thisSiteView =
       data.siteViews.find(siteview => siteview.url == siteViewUrl) ||
       data.siteView;
 
-    if(thisSiteView.search.results.type == "card"){
-      console.log("Should be toggling card"),
-    this.toggledShowCards('card', true)
-    }else{
-      this.toggledShowCards('table', false)
-
+    if (thisSiteView.search.results.type == 'card') {
+      console.log('Should be toggling card'),
+        this.toggledShowCards('card', true);
+    } else {
+      this.toggledShowCards('table', false);
     }
   }
 

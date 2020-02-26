@@ -278,8 +278,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const params: any = { ...this.state.params, page: 0 };
     this.previousSearchData = [];
     this.setState({ showCards, params });
-    console.log("ToggleShowParams",params)
-    console.log("LocalStorage",localStorage.getItem('showCards'))
+    // console.log('ToggleShowParams', params);
+    // console.log('LocalStorage', localStorage.getItem('showCards'));
   };
 
   previousSearchData: Array<SearchPageSearchQuery_search_studies> = [];
@@ -695,25 +695,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   return <div>Error loading data.</div>;
                 }
                 return (
-                  console.log('Site', site),
-                  (
-                    <Row>
-                      {thisSiteView.search.config.fields.showFacetBar && (
-                        <SidebarContainer md={2}>
-                          {this.renderAggs()}
-                        </SidebarContainer>
-                      )}
-                      <div id="main_search" style={{ overflowY: 'auto' }}>
-                        <MainContainer style={{ width: '100%' }}>
-                          {this.renderSearch(
-                            hash,
-                            thisSiteView,
-                            site.siteViews
-                          )}
-                        </MainContainer>
-                      </div>
-                    </Row>
-                  )
+                  <Row>
+                    {thisSiteView.search.config.fields.showFacetBar && (
+                      <SidebarContainer md={2}>
+                        {this.renderAggs()}
+                      </SidebarContainer>
+                    )}
+                    <div id="main_search" style={{ overflowY: 'auto' }}>
+                      <MainContainer style={{ width: '100%' }}>
+                        {this.renderSearch(hash, thisSiteView, site.siteViews)}
+                      </MainContainer>
+                    </div>
+                  </Row>
                 );
               }}
             </SiteProvider>
