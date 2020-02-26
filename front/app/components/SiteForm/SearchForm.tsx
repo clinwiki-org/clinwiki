@@ -77,6 +77,19 @@ const StyledCheckbox = styled(Checkbox)`
   align-items: center;
 `;
 
+const StyledPanelHeading =styled.div`
+  display:flex;
+`
+const StyledShowContainer =styled.div`
+  display:flex;
+  font-size:16px;
+  margin-left:auto;
+  .checkbox{
+    margin:0;
+    padding-left:1em;
+  }
+  `
+
 const StyledButtonGroup = styled.div`
   margin: 1em 1em 1em 0;
 
@@ -153,7 +166,17 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       
     }
   };
-
+  handleCheckboxToggle = value => (e: {
+    currentTarget: { name: string; value: any };
+  }) => {
+    console.log("this.props view", this.props.view)
+    this.handleAddMutation(
+      {
+        currentTarget: { name: e.currentTarget.name, value: !value }
+      },
+      this.props.view
+    );
+  };
   handleFieldsOrderChange = () => {};
 
   handleShowFacetBar = (x, view, name) => {
@@ -166,24 +189,19 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       return(
         <Panel >
         <Panel.Heading>
+          <StyledPanelHeading>
           <Panel.Title toggle>Facet Bar</Panel.Title>
+            <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                  name="set:search.config.fields.showFacetBar"
+                  checked={showFacetBar}
+                  onChange={this.handleCheckboxToggle(showFacetBar)}
+                />
+            </StyledShowContainer>
+          </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
-        <ToggleButtonGroup
-        name="set:search.config.fields.showFacetBar"
-        type="radio"
-        value={showFacetBar}
-        // defaultValue={view.search.config.fields.showFacetBar}
-        onChange={val =>
-          this.handleShowFacetBar(
-            val,
-            view,
-            'set:search.config.fields.showFacetBar'
-          )
-        }>
-        <ToggleButton value={true}>Shown</ToggleButton>
-        <ToggleButton value={false}>Hidden</ToggleButton>
-      </ToggleButtonGroup>
       <Row>
         <Col md={6}>
           <AggsHeaderContainer>
@@ -273,24 +291,19 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     return(
       <Panel>
       <Panel.Heading>
+        <StyledPanelHeading>
         <Panel.Title toggle>Auto Suggest</Panel.Title>
+        <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                name="set:search.config.fields.showAutoSuggest"
+                checked={showAutoSuggest}
+                onChange={this.handleCheckboxToggle(showAutoSuggest)}
+              />
+        </StyledShowContainer>
+        </StyledPanelHeading>
       </Panel.Heading>
       <Panel.Body collapsible>
-      <ToggleButtonGroup
-      name="set:search.config.fields.showAutoSuggest"
-      type="radio"
-      value={showAutoSuggest}
-      // defaultValue={view.search.config.fields.showFacetBar}
-      onChange={val =>
-        this.handleShowFacetBar(
-          val,
-          view,
-          'set:search.config.fields.showAutoSuggest'
-        )
-      }>
-      <ToggleButton value={true}>Shown</ToggleButton>
-      <ToggleButton value={false}>Hidden</ToggleButton>
-    </ToggleButtonGroup>
     <Row>
       <Col md={6}>
         <AggsHeaderContainer>
@@ -317,25 +330,21 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
   return(
     <Panel>
     <Panel.Heading>
-      <Panel.Title toggle>Pre-Search</Panel.Title>
+    <StyledPanelHeading>
+    <Panel.Title toggle>Pre-Search</Panel.Title>
+
+        <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                name="set:search.config.fields.showPresearch"
+                checked={showPresearch}
+                onChange={this.handleCheckboxToggle(showPresearch)}
+              />
+        </StyledShowContainer>
+        </StyledPanelHeading>
+
     </Panel.Heading>
     <Panel.Body collapsible>
-    <ToggleButtonGroup
-    name="set:search.config.fields.showPresearch"
-    type="radio"
-    value={showPresearch}
-    // defaultValue={view.search.config.fields.showFacetBar}
-    onChange={val =>
-      this.handleShowFacetBar(
-        val,
-        view,
-        'set:search.config.fields.showPresearch'
-      )
-    }>
-    <ToggleButton value={true}>Shown</ToggleButton>
-    <ToggleButton value={false}>Hidden</ToggleButton>
-  </ToggleButtonGroup>
-
   <Row>
     <Col md={6}>
       <AggsHeaderContainer>
@@ -426,24 +435,21 @@ renderResultsConfig=(showResults,view,fields, crowdFields,updateSiteView )=>{
   return(
     <Panel>
     <Panel.Heading>
-      <Panel.Title toggle>Results</Panel.Title>
+    <StyledPanelHeading>
+    <Panel.Title toggle>Results</Panel.Title>
+
+        <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                name="set:search.config.fields.showResults"
+                checked={showResults}
+                onChange={this.handleCheckboxToggle(showResults)}
+              />
+        </StyledShowContainer>
+        </StyledPanelHeading>
+
     </Panel.Heading>
     <Panel.Body collapsible>
-    <ToggleButtonGroup
-    name="set:search.config.fields.showResults"
-    type="radio"
-    value={showResults}
-    // defaultValue={view.search.config.fields.showFacetBar}
-    onChange={val =>
-      this.handleShowFacetBar(
-        val,
-        view,
-        'set:search.config.fields.showResults'
-      )
-    }>
-    <ToggleButton value={true}>Shown</ToggleButton>
-    <ToggleButton value={false}>Hidden</ToggleButton>
-  </ToggleButtonGroup>
   <h3>Fields</h3>
 <MultiInput
   name="set:search.fields"
@@ -492,24 +498,21 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
   return(
     <Panel>
     <Panel.Heading>
-      <Panel.Title toggle>Bread Crumbs Bar</Panel.Title>
+    <StyledPanelHeading>
+    <Panel.Title toggle>Bread Crumbs Bar</Panel.Title>
+        <StyledShowContainer>
+            <span>Show</span>
+            <StyledCheckbox
+                name="set:search.config.fields.showBreadCrumbs"
+                checked={showBreadCrumbs}
+                onChange={this.handleCheckboxToggle(showBreadCrumbs)}
+              />
+        </StyledShowContainer>
+        </StyledPanelHeading>
+
     </Panel.Heading>
     <Panel.Body collapsible>
-    <ToggleButtonGroup
-    name="set:search.config.fields.showBreadCrumbs"
-    type="radio"
-    value={showBreadCrumbs}
-    // defaultValue={view.search.config.fields.showFacetBar}
-    onChange={val =>
-      this.handleShowFacetBar(
-        val,
-        view,
-        'set:search.config.fields.showBreadCrumbs'
-      )
-    }>
-    <ToggleButton value={true}>Shown</ToggleButton>
-    <ToggleButton value={false}>Hidden</ToggleButton>
-  </ToggleButtonGroup>
+
 <StyledButton onClick={this.handleSave(updateSiteView, view)}>
   Save Site View
 </StyledButton>
