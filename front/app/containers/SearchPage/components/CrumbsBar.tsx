@@ -319,7 +319,7 @@ export default class CrumbsBar extends React.Component<
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
     const { searchParams, data, currentSiteView } = this.props;
-    console.log(currentSiteView);
+    console.log('supbitch', currentSiteView);
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
@@ -790,9 +790,9 @@ export default class CrumbsBar extends React.Component<
                     </ButtonGroup>
                   </div>
                 </Col>
-                <Col xsHidden md={2}>
+                {/* <Col xsHidden md={2}>
                   {this.loadPaginator()}
-                </Col>
+                </Col> */}
               </Row>
               {showCrumbsBar ? (
                 <Row>

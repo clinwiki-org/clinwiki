@@ -4,6 +4,8 @@ import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
 import SearchFieldName from 'components/SearchFieldName';
 import styled from 'styled-components';
+import * as FontAwesome from 'react-fontawesome';
+import { PulseLoader, BeatLoader } from 'react-spinners';
 import { Grid, Row, Col } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { SortInput, AggFilterInput, SearchQueryInput } from 'types/globalTypes';
@@ -285,15 +287,13 @@ const SearchWrapper = styled.div`
   }
 `;
 
-const PreSearchWrapper = styled.div`
+const SearchContainer = styled.div`
   width: 100%;
-  display: flex;
   padding: 10px 30px;
   border: solid white 1px;
   background-color: #f2f2f2;
   color: black;
   margin-bottom: 1em;
-  width: 100%;
 `;
 
 interface SearchViewProps {
@@ -544,6 +544,74 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     this.setState({ openedAgg: { name, kind } });
   };
 
+  loadPaginator = (recordsTotal, loading, page, pagesTotal) => {
+    if (this.props.showCards) {
+      return (
+        <div className="right-align">
+          <div>{recordsTotal} results</div>
+          <div>
+            {recordsTotal > MAX_WINDOW_SIZE
+              ? `(showing first ${MAX_WINDOW_SIZE})`
+              : null}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="right-align">
+        {page > 0 && !loading ? (
+          <FontAwesome
+            className="arrow-left"
+            name="arrow-left"
+            style={{ cursor: 'pointer', margin: '5px' }}
+            onClick={() =>
+              pipe(changePage, this.props.onUpdateParams)(page - 1)
+            }
+          />
+        ) : (
+          <FontAwesome
+            className="arrow-left"
+            name="arrow-left"
+            style={{ margin: '5px', color: 'gray' }}
+          />
+        )}
+        page{' '}
+        <b>
+          {loading ? (
+            <div id="divsononeline">
+              <PulseLoader color="#cccccc" size={8} />
+            </div>
+          ) : (
+            `${Math.min(page + 1, pagesTotal)}/${pagesTotal}`
+          )}{' '}
+        </b>
+        {page + 1 < pagesTotal && !loading ? (
+          <FontAwesome
+            className="arrow-right"
+            name="arrow-right"
+            style={{ cursor: 'pointer', margin: '5px' }}
+            onClick={() =>
+              pipe(changePage, this.props.onUpdateParams)(page + 1)
+            }
+          />
+        ) : (
+          <FontAwesome
+            className="arrow-right"
+            name="arrow-right"
+            style={{ margin: '5px', color: 'gray' }}
+          />
+        )}
+        <div>{recordsTotal} results</div>
+        <div>
+          {recordsTotal > MAX_WINDOW_SIZE
+            ? `(showing first ${MAX_WINDOW_SIZE})`
+            : null}
+        </div>
+      </div>
+    );
+  };
+
   renderPresearch = ({
     data,
     loading,
@@ -559,7 +627,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       this.props.searchParams || {};
 
     return (
-      <PreSearchWrapper>
+      <SearchContainer>
         <Aggs
           aggs={this.props.searchAggs}
           crowdAggs={this.props.crowdAggs}
@@ -580,7 +648,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           presearch
           currentSiteView={this.props.currentSiteView}
         />
-      </PreSearchWrapper>
+      </SearchContainer>
     );
   };
 
@@ -636,6 +704,21 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     return (
       <SiteProvider>
         {site => {
+          let pagesTotal = 1;
+          let recordsTotal = 0;
+          if (
+            data &&
+            data.search &&
+            data.search.recordsTotal &&
+            this.props.params.pageSize
+          ) {
+            recordsTotal = data.search.recordsTotal;
+            pagesTotal = Math.min(
+              Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+              Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
+            );
+          }
+
           let thisSiteView =
             site.siteViews.find(
               siteview => siteview.url == this.props.siteViewUrl
@@ -663,29 +746,32 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             ) : null;
           } else {
             return showResults ? (
-              <ReactTable
-                ref={this.searchTable}
-                className="-striped -highlight"
-                columns={columns}
-                manual
-                minRows={searchData![0] !== undefined ? 1 : 3}
-                page={page}
-                pageSize={pageSize}
-                defaultSorted={camelizedSorts}
-                onPageChange={pipe(changePage, this.props.onUpdateParams)}
-                onPageSizeChange={pipe(
-                  changePageSize,
-                  this.props.onUpdateParams
-                )}
-                onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
-                data={searchData}
-                pages={totalPages}
-                loading={loading}
-                defaultPageSize={pageSize}
-                getTdProps={this.rowProps}
-                defaultSortDesc
-                noDataText={'No studies found'}
-              />
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
+                <ReactTable
+                  ref={this.searchTable}
+                  className="-striped -highlight"
+                  columns={columns}
+                  manual
+                  minRows={searchData![0] !== undefined ? 1 : 3}
+                  page={page}
+                  pageSize={pageSize}
+                  defaultSorted={camelizedSorts}
+                  onPageChange={pipe(changePage, this.props.onUpdateParams)}
+                  onPageSizeChange={pipe(
+                    changePageSize,
+                    this.props.onUpdateParams
+                  )}
+                  onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
+                  data={searchData}
+                  pages={totalPages}
+                  loading={loading}
+                  defaultPageSize={pageSize}
+                  getTdProps={this.rowProps}
+                  defaultSortDesc
+                  noDataText={'No studies found'}
+                />
+              </div>
             ) : null;
           }
         }}
@@ -788,7 +874,9 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               <Col md={12}>
                 {this.renderCrumbs({ data, loading, error })}
                 {presearch && this.renderPresearch({ data, loading, error })}
-                {this.renderSearch({ data, loading, error })}
+                <SearchContainer>
+                  {this.renderSearch({ data, loading, error })}
+                </SearchContainer>
               </Col>
             );
           }}

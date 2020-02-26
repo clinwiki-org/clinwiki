@@ -588,7 +588,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
-    console.log('LOOKING FOR MY SITEVIEW', this.props);
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
