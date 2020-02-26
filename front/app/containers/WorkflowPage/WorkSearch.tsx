@@ -41,7 +41,6 @@ const StyledTable = styled(Table)`
 width: 60%;
 `
 const StyledButton = styled(Button)`
-
 margin: 20px;
 `
 
@@ -62,7 +61,7 @@ export interface Props {
       this.state={
         list: [
         ],
-        test: [{text: "", section: "", indices: []}, {text: "", section: "", indices: []}, {text: "", section: "", indices: []}, {text: "", section: "", indices: []}, {text: "", section: "", indices: []}]
+        test: [{text: "", section: "", indices: ["","","","",""]}, {text: "", section: "", indices: ["","","","",""]}, {text: "", section: "", indices: ["","","","",""]}, {text: "", section: "", indices: ["","","","",""]}, {text: "", section: "", indices: ["","","","",""]}]
       }
       this.removeItem=this.removeItem.bind(this)
     }
@@ -153,7 +152,7 @@ export interface Props {
             
            }
            else{
-               return null;
+               return "";
            }
     }
     data : string;
@@ -246,6 +245,4 @@ export interface Props {
       );
     }
   }
-  
-
   

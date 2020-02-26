@@ -62,7 +62,7 @@ function gettopFiveArray( {promisingIndicesArray, wordsArray, topFiveArray}: { p
         var backwardsWindow = index-10;
         var forwardsWindow = index+40;
 
-        var sentence: string;
+        var sentence: string = "";
         if (backwardsWindow < 0 && forwardsWindow >= wordsArray.length) {
             sentence = appendStringArrayWithSpace( {array: wordsArray.slice(0, wordsArray.length)});
         } else if (backwardsWindow < 0 && forwardsWindow < wordsArray.length) {
@@ -89,7 +89,7 @@ export function findPhrases( {wordsToFind, text}: {wordsToFind: string[], text: 
     if (wordsToFind.length == 0) {
         var topFive = new Array<any>();
         for (var i = 0; i < 5; i++) {
-             topFive.push({text: "Could not find another phrase", section: "none", indices: ""});
+             topFive.push({text: "Could not find another phrase", section: "none", indices: ["","","","",""]});
          }
         return topFive;
   }
@@ -151,17 +151,22 @@ export function findPhrases( {wordsToFind, text}: {wordsToFind: string[], text: 
 
     if (promisingIndices.length < 5) {
         for (var i = promisingIndices.length; i < 5; i++) {
-            topFive.push({text: "Could not find another phrase", section: "none", indices: ""});
+            topFive.push({text: "Could not find another phrase", section: "none", indices: ["","","","",""]});
         }
     }
 
     return topFive;
 }
 
-export function getWordsToHighlight() {
+function getWordsToHighlight() {
     var wordsToHighLight = new Array<string>();
     for (var i = 0; i < promisingIndices.length; i++) {
         wordsToHighLight.push(words[promisingIndices[i]]);
+    }
+    if (wordsToHighLight.length < 5) {
+        for (var i = wordsToHighLight.length - 1; i < 5; i++) {
+            wordsToHighLight.push("");
+        }
     }
     return wordsToHighLight;
 }
