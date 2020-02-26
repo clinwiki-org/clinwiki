@@ -231,7 +231,7 @@ interface SearchPageState {
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
   showCards: Boolean;
-  removeSelectAll:boolean;
+  removeSelectAll: boolean;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -250,7 +250,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchAggs: {},
     searchCrowdAggs: {},
     showCards: localStorage.getItem('showCards') === 'true' ? true : false,
-    removeSelectAll:false
+    removeSelectAll: false,
   };
 
   numberOfPages: number = 0;
@@ -351,24 +351,24 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleResetFilters = (view: SiteViewFragment) => () => {
-    this.setState({ 
+    this.setState({
       params: this.getDefaultParams(view),
       removeSelectAll: true,
     });
   };
-  
-  handleClearFilters=()=>{
+
+  handleClearFilters = () => {
     this.setState({
-      params: DEFAULT_PARAMS, 
-      removeSelectAll: true
-    })
-  }
+      params: DEFAULT_PARAMS,
+      removeSelectAll: true,
+    });
+  };
 
   resetSelectAll = () => {
     this.setState({
-      removeSelectAll: false
-    })
-  }
+      removeSelectAll: false,
+    });
+  };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
@@ -505,21 +505,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
                 return (
                   <SearchView
-                      params={params}
-                      onBulkUpdate={this.handleBulkUpdateClick}
-                      openedAgg={this.state.openedAgg}
-                      onUpdateParams={this.handleUpdateParams}
-                      onRowClick={this.handleRowClick}
-                      onOpenAgg={this.handleOpenAgg}
-                      onAggsUpdate={this.handleAggsUpdate}
-                      onResetFilters={this.handleResetFilters(view)}
-                      onClearFilters={this.handleClearFilters}
-                      previousSearchData={this.previousSearchData}
-                      returnPreviousSearchData={this.returnPreviousSearchData}
-                      searchHash={data.searchHash}
-                      showCards={this.state.showCards}
-                      toggledShowCards={this.toggledShowCards}
-                      returnNumberOfPages={this.returnNumberOfPages}
+                    params={params}
+                    onBulkUpdate={this.handleBulkUpdateClick}
+                    openedAgg={this.state.openedAgg}
+                    onUpdateParams={this.handleUpdateParams}
+                    onRowClick={this.handleRowClick}
+                    onOpenAgg={this.handleOpenAgg}
+                    onAggsUpdate={this.handleAggsUpdate}
+                    onResetFilters={this.handleResetFilters(view)}
+                    onClearFilters={this.handleClearFilters}
+                    previousSearchData={this.previousSearchData}
+                    returnPreviousSearchData={this.returnPreviousSearchData}
+                    searchHash={data.searchHash}
+                    showCards={this.state.showCards}
+                    toggledShowCards={this.toggledShowCards}
+                    returnNumberOfPages={this.returnNumberOfPages}
                   />
                 );
               }}

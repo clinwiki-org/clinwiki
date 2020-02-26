@@ -146,7 +146,7 @@ interface AggDropDownState {
   desc: boolean;
   sortKind: SortKind;
   checkboxValue: boolean;
-  showLabel:boolean;
+  showLabel: boolean;
 }
 
 interface AggDropDownProps {
@@ -164,7 +164,7 @@ interface AggDropDownProps {
   visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
   removeSelectAll?: boolean;
-  resetSelectAll?: ()=>void;
+  resetSelectAll?: () => void;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -178,7 +178,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     sortKind: SortKind.Alpha,
     desc: true,
     checkboxValue: false,
-    showLabel:false
+    showLabel: false,
   };
 
   static getDerivedStateFromProps(
@@ -252,22 +252,22 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     });
 
     if (this.props.removeSelectAll) {
-      console.log('meh')
+      console.log('meh');
       this.setState({
-        checkboxValue: false
-      })
+        checkboxValue: false,
+      });
     }
     if (this.isAllSelected() != true) {
       if (!this.props.addFilters) return;
       this.props.addFilters(agg, newParams, false);
       this.setState({
-        checkboxValue: true
-      })
+        checkboxValue: true,
+      });
     } else {
       if (!this.props.removeFilters) return;
       this.setState({
-        checkboxValue: false
-      })
+        checkboxValue: false,
+      });
       this.props.removeFilters(agg, newParams, false);
     }
   };
@@ -463,9 +463,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     return (
-      <div style={{ display: 'flex', flexDirection: 'row', borderBottom: "solid 1px #ddd"
-    }}>
-        <div style={{ marginTop:"1em"}}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          borderBottom: 'solid 1px #ddd',
+        }}>
+        <div style={{ marginTop: '1em' }}>
           <Checkbox
             checked={
               this.props.removeSelectAll
@@ -474,8 +478,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             }
             onChange={() => this.selectAll(agg)}
             onMouseEnter={() => this.setState({ showLabel: true })}
-            onMouseLeave={() => this.setState({ showLabel: false })}
-          >
+            onMouseLeave={() => this.setState({ showLabel: false })}>
             {this.state.showLabel ? (
               <span
                 style={{
@@ -488,7 +491,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                   color: 'black',
                   background: 'white',
                   borderRadius: '4px',
-                  fontSize: "0.85em"
+                  fontSize: '0.85em',
                 }}>
                 Select All
               </span>
@@ -521,7 +524,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           placeholder="filter..."
           value={this.state.filter}
           onChange={this.handleFilterChange}
-          style={{ flex: 4, marginTop:"4px" }}
+          style={{ flex: 4, marginTop: '4px' }}
         />
       </div>
     );
@@ -546,16 +549,19 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   checkSelect = () => {
-   if (this.props.removeSelectAll) {
-     this.setState({
-       checkboxValue: false
-     }, () => {
-       if(this.props.resetSelectAll!= null){
-        this.props.resetSelectAll()
-       } 
-     })
-   }
-  }
+    if (this.props.removeSelectAll) {
+      this.setState(
+        {
+          checkboxValue: false,
+        },
+        () => {
+          if (this.props.resetSelectAll != null) {
+            this.props.resetSelectAll();
+          }
+        }
+      );
+    }
+  };
   render() {
     const { agg } = this.props;
     const { isOpen } = this.state;
