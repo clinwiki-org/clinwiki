@@ -627,28 +627,38 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       this.props.searchParams || {};
 
     return (
-      <SearchContainer>
-        <Aggs
-          aggs={this.props.searchAggs}
-          crowdAggs={this.props.crowdAggs}
-          filters={this.props.transformFilters(aggFilters)}
-          crowdFilters={this.props.transformFilters(crowdAggFilters)}
-          addFilter={pipe(addFilter, this.props.onUpdateParams)}
-          addFilters={pipe(addFilters, this.props.onUpdateParams)}
-          removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
-          removeFilters={pipe(removeFilters, this.props.onUpdateParams)}
-          updateParams={this.props.onUpdateParams}
-          removeSelectAll={this.props.removeSelectAll}
-          resetSelectAll={this.props.resetSelectAll}
-          // @ts-ignore
-          searchParams={this.props.searchParams}
-          opened={opened}
-          openedKind={openedKind}
-          onOpen={this.handleOpenAgg}
-          presearch
-          currentSiteView={this.props.currentSiteView}
-        />
-      </SearchContainer>
+      <SiteProvider>
+        {site => {
+          let thisSiteView =
+            site.siteViews.find(
+              siteview => siteview.url == this.props.siteViewUrl
+            ) || site.siteView;
+          return (
+            <SearchContainer>
+              <Aggs
+                aggs={this.props.searchAggs}
+                crowdAggs={this.props.crowdAggs}
+                filters={this.props.transformFilters(aggFilters)}
+                crowdFilters={this.props.transformFilters(crowdAggFilters)}
+                addFilter={pipe(addFilter, this.props.onUpdateParams)}
+                addFilters={pipe(addFilters, this.props.onUpdateParams)}
+                removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
+                removeFilters={pipe(removeFilters, this.props.onUpdateParams)}
+                updateParams={this.props.onUpdateParams}
+                removeSelectAll={this.props.removeSelectAll}
+                resetSelectAll={this.props.resetSelectAll}
+                // @ts-ignore
+                searchParams={this.props.searchParams}
+                opened={opened}
+                openedKind={openedKind}
+                onOpen={this.handleOpenAgg}
+                presearch
+                currentSiteView={thisSiteView}
+              />
+            </SearchContainer>
+          );
+        }}
+      </SiteProvider>
     );
   };
 
