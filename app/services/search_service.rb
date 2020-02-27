@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 MAX_AGGREGATION_LIMIT = 1_000_000
 ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
-DEFAULT_SORT = 'asc'
+DEFAULT_SORT = "asc"
 MAX_WINDOW_SIZE = 10_000
 
 # aggregations
 DEFAULT_AGG_SORT = {
-  id: 'key',
-  asc: true
-}
+  id: "key",
+  asc: true,
+}.freeze
 DEFAULT_AGG_OPTIONS = {
   average_rating: {
     order: { _term: :desc },
@@ -85,7 +87,7 @@ DEFAULT_AGG_OPTIONS = {
   },
 }.freeze
 
-class SearchService # rubocop:disable Metrics/ClassLength
+class SearchService
   ENABLED_AGGS = %i[
     average_rating overall_status facility_states
     facility_cities facility_names facility_countries study_type sponsors
@@ -110,7 +112,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
 
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
 
-    options = search_kick_query_options(params: params, aggs: aggs, search_after: search_after, reverse: reverse)
+    options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
     search_result = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }
@@ -122,8 +124,8 @@ class SearchService # rubocop:disable Metrics/ClassLength
     }
   end
 
-  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false) # rubocop:disable Metrics/MethodLength
-    params = self.params.deep_dup
+  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false)
+    params = @params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
 
@@ -133,7 +135,6 @@ class SearchService # rubocop:disable Metrics/ClassLength
     params[:agg_filters]&.delete_if { |filter_entry| filter_entry[:field] == field }
 
     options = search_kick_query_options(
-      params: params,
       aggs: { key => DEFAULT_AGG_OPTIONS[key]&.deep_dup || {} },
       skip_filters: [],
     )
@@ -154,7 +155,7 @@ class SearchService # rubocop:disable Metrics/ClassLength
             bucket_sort: {
               from: page * page_size,
               size: page_size,
-              sort: bucket_sort.map{|s| bucket_agg_sort(s)}
+              sort: bucket_sort.map { |s| bucket_agg_sort(s) },
             },
           },
         )
@@ -178,14 +179,14 @@ class SearchService # rubocop:disable Metrics/ClassLength
     params = self.params.deep_dup
     bucket_sort = params[:agg_options_sort] || []
     search_results = Study.search("*", aggs: [:front_matter_keys])
-      
+
     aggs = search_results.aggs.to_h.deep_symbolize_keys
     keys = aggs[:front_matter_keys][:buckets]
-      .map { |x| "#{x[:key]}" }
+      .map { |x| (x[:key]).to_s }
     facets = {}
     keys.each do |key|
-      fieldAgg = agg_buckets_for_field(field:key, current_site: site, is_crowd_agg: true)
-      fieldAgg.each do |name, agg| 
+      fieldAgg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
+      fieldAgg.each do |name, agg|
         facets[name] = agg
       end
     end
@@ -195,9 +196,9 @@ class SearchService # rubocop:disable Metrics/ClassLength
   private
 
   def bucket_agg_sort(sort)
-    order = sort[:desc] ? 'desc' : 'asc'
-    field = sort[:id] == 'count' ? :_count : :_key
-    { field => { order: order }}
+    order = sort[:desc] ? "desc" : "asc"
+    field = sort[:id] == "count" ? :_count : :_key
+    { field => { order: order } }
   end
 
   def search_query
@@ -226,26 +227,26 @@ class SearchService # rubocop:disable Metrics/ClassLength
     res.presence || "*"
   end
 
-  def search_kick_query_options(params:, aggs:, search_after: nil, reverse: false, skip_filters: [])
+  def search_kick_query_options(aggs:, search_after: nil, reverse: false, skip_filters: [])
     body_options = { search_after: search_after }.delete_if { |_, v| v.blank? }
     {
       page: (params[:page] || 0) + 1,
       per_page: params[:page_size] || DEFAULT_PAGE_SIZE,
-      order: search_kick_order_options(params: params, reverse: reverse),
+      order: search_kick_order_options(reverse: reverse),
       aggs: aggs,
-      where: search_kick_where_options(params: params, skip_filters: skip_filters),
+      where: search_kick_where_options(skip_filters: skip_filters),
       smart_aggs: true,
       body_options: body_options,
     }
   end
 
-  def search_kick_order_options(params:, reverse: false)
+  def search_kick_order_options(reverse: false)
     res = (params[:sorts] || []).map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
     res.push(nct_id: reverse ? "desc" : "asc") unless res.any? { |x| x.keys.first.to_sym == :nct_id }
     res
   end
 
-  def search_kick_where_options(params:, skip_filters: [])
+  def search_kick_where_options(skip_filters: [])
     agg_filters = params[:agg_filters] || []
     crowd_agg_filters = params[:crowd_agg_filters] || []
     search_kick_agg_filters = search_kick_where_from_filters(filters: agg_filters, skip_filters: skip_filters)
@@ -260,26 +261,38 @@ class SearchService # rubocop:disable Metrics/ClassLength
     }
   end
 
+  def key_for(filter: filter, is_crowd_agg: false)
+    "#{is_crowd_agg ? 'fm_' : ''}#{filter[:field]}".to_sym
+  end
+
+  def scalars_filter(key, filter)
+    return nil if filter.dig(:values).nil?
+
+    { _or: filter[:values].map { |val| { key => val } } }
+  end
+
+  def range_filter(key, filter)
+    range_hash = filter.slice(:gte, :lte)
+    return nil if range_hash.empty?
+
+    { key => range_hash }
+  end
+
   # Returns an array of
   # [
   #   { or: [{"tag": "123"}, {"tag": "345"}]},
   #   { or: [{"state": "NY"}] },
   # ]
   def search_kick_where_from_filters(filters: [], skip_filters: [], is_crowd_agg: false)
-    cleaned_filters =
-      filters
-        .select { |filter| filter[:field] && !filter.values.empty? }
-        .reject do |filter|
-          key_prefix = is_crowd_agg ? "fm_" : ""
-          key = "#{key_prefix}#{filter[:field]}".to_sym
-          skip_filters.include?(key)
-        end
+    filters.map do |filter|
+      key = key_for(filter: filter, is_crowd_agg: is_crowd_agg)
+      next if skip_filters.include?(key)
 
-    cleaned_filters.map do |filter|
-      key_prefix = is_crowd_agg ? "fm_" : ""
-      key = "#{key_prefix}#{filter[:field]}"
-      { _or: filter[:values].map { |val| { key => val } } }
-    end
+      [
+        scalars_filter(key, filter),
+        range_filter(key, filter),
+      ]
+    end.compact.flatten
   end
 
   def find_visibile_options(agg_name, is_crowd_agg, current_site)
