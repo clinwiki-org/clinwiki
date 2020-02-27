@@ -148,14 +148,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     siteView
   ) => {
 
-    console.log("Wite hear",e,siteView)
     const { name, value } = e.currentTarget;
     const mutation = createMutation(name, value);
-    console.log("Mutatation",mutation)
     const view = updateView(siteView, this.state.mutations);
-    console.log("SomeView", view);
     const currentValue = getViewValueByPath(mutation.path, view);
-    console.log("CurrentValue", currentValue)
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
       console.log('MUTATIONS', this.state.mutations);
@@ -240,7 +236,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       let newItem = {... items[position],
           icon: value
       }
-      console.log("NewItem", newItem)
       let newArray=[]  
       items.map((val, index)=>{
         if(index==position){
@@ -319,9 +314,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       id="dropdown-basic-default"
       style={{margin: "1em 1em 1em 0"}} 
     >
-{      ICONS.map((icon, index)=>(
+{      ICONS.map((icon)=>(
       <MenuItem 
-      key={index}
+      key={icon}
       name={`set:search.results.buttons.items`}
       onClick={e => this.handleButtonIcon(
         e,
