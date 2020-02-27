@@ -51,5 +51,6 @@ Rails.application.configure do
   config.after_initialize do
     ActiveRecord::Base.logger = Rails.logger.clone
     ActiveRecord::Base.logger.level = Logger::INFO
+    ActiveSupport::Notifications.unsubscribe("search.searchkick")
   end
 end
