@@ -465,7 +465,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     view: SiteViewFragment,
     siteViews: SiteViewFragment[]
   ) => {
-    const siteViewUrl = this.props.match.params.siteviewUrl;
     return (
       <ParamsQueryComponent
         query={PARAMS_QUERY}
@@ -495,7 +494,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           );
           // hydrate state params from hash
           if (!this.state.params) {
-            // this.setState({ params });
+            this.setState({ params });
             return null;
           }
           const opened = this.state.openedAgg && this.state.openedAgg.name;
@@ -519,7 +518,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               variables={this.state.params || undefined}>
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
-
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
                   return (

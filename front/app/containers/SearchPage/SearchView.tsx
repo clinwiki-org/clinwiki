@@ -6,7 +6,8 @@ import SearchFieldName from 'components/SearchFieldName';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { PulseLoader, BeatLoader } from 'react-spinners';
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Col, ButtonGroup, Button } from 'react-bootstrap';
+import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput, AggFilterInput, SearchQueryInput } from 'types/globalTypes';
 import {
@@ -592,9 +593,10 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             className="arrow-right"
             name="arrow-right"
             style={{ cursor: 'pointer', margin: '5px' }}
-            onClick={() =>
-              pipe(changePage, this.props.onUpdateParams)(page + 1)
-            }
+            onClick={() => {
+              pipe(changePage, this.props.onUpdateParams)(page + 1);
+              debugger;
+            }}
           />
         ) : (
           <FontAwesome
@@ -760,7 +762,15 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           } else {
             return showResults ? (
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
+                  {this.renderViewDropdown()}
+                </div>
                 <ReactTable
                   ref={this.searchTable}
                   className="-striped -highlight"
@@ -858,10 +868,32 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     );
   };
 
+  renderViewDropdown = () => {
+    return (
+      <SiteProvider>
+        {site => {
+          if (site.siteViews.length > 0) {
+            console.log(this.props.searchHash);
+            return (
+              <ButtonGroup>
+                {site.siteViews.map(view => (
+                  <Button
+                    href={`/search/${view.url}/${this.props.searchHash}`}
+                    key={view.name}>
+                    <CardIcon />
+                  </Button>
+                ))}
+              </ButtonGroup>
+            );
+          }
+        }}
+      </SiteProvider>
+    );
+  };
+
   render() {
     const { page, pageSize, sorts } = this.props.params;
     const { currentSiteView } = this.props;
-    console.log('update params', this.props.onUpdateParams);
     console.log('currentsite', currentSiteView);
     return (
       <SiteProvider>
