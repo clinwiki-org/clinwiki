@@ -295,6 +295,8 @@ const SearchContainer = styled.div`
   background-color: #f2f2f2;
   color: black;
   margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
 `;
 
 interface SearchViewProps {
@@ -637,6 +639,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             site.siteViews.find(
               siteview => siteview.url == this.props.siteViewUrl
             ) || site.siteView;
+          const presearchButton = thisSiteView.search.presearch.button;
+          const presearchText = thisSiteView.search.presearch;
           return (
             <SearchContainer>
               <Aggs
@@ -660,6 +664,15 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 currentSiteView={thisSiteView}
                 preSearchAggs={preSearchAggs}
               />
+              <div>
+                {presearchText && <div>presearch text will go here</div>}
+                {presearchButton.name && (
+                  <Button
+                    href={`/search/${site.siteViews[1].url}/${this.props.searchHash}`}>
+                    {presearchButton.name}
+                  </Button>
+                )}
+              </div>
             </SearchContainer>
           );
         }}
