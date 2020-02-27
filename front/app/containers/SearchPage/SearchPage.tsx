@@ -278,8 +278,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const params: any = { ...this.state.params, page: 0 };
     this.previousSearchData = [];
     this.setState({ showCards, params });
-    console.log("ToggleShowParams",params)
-    console.log("LocalStorage",localStorage.getItem('showCards'))
+    // console.log('ToggleShowParams', params);
+    // console.log('LocalStorage', localStorage.getItem('showCards'));
   };
 
   previousSearchData: Array<SearchPageSearchQuery_search_studies> = [];
@@ -465,7 +465,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     view: SiteViewFragment,
     siteViews: SiteViewFragment[]
   ) => {
-    const siteViewUrl = this.props.match.params.siteviewUrl;
     return (
       <ParamsQueryComponent
         query={PARAMS_QUERY}
@@ -495,7 +494,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           );
           // hydrate state params from hash
           if (!this.state.params) {
-            // this.setState({ params });
+            this.setState({ params });
             return null;
           }
           const opened = this.state.openedAgg && this.state.openedAgg.name;
@@ -519,7 +518,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               variables={this.state.params || undefined}>
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
-
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
                   return (
@@ -590,7 +588,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
-    console.log('LOOKING FOR MY SITEVIEW', this.props);
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
@@ -696,25 +693,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   return <div>Error loading data.</div>;
                 }
                 return (
-                  console.log('Site', site),
-                  (
-                    <Row>
-                      {thisSiteView.search.config.fields.showFacetBar && (
-                        <SidebarContainer md={2}>
-                          {this.renderAggs()}
-                        </SidebarContainer>
-                      )}
-                      <div id="main_search" style={{ overflowY: 'auto' }}>
-                        <MainContainer style={{ width: '100%' }}>
-                          {this.renderSearch(
-                            hash,
-                            thisSiteView,
-                            site.siteViews
-                          )}
-                        </MainContainer>
-                      </div>
-                    </Row>
-                  )
+                  <Row>
+                    {thisSiteView.search.config.fields.showFacetBar && (
+                      <SidebarContainer md={2}>
+                        {this.renderAggs()}
+                      </SidebarContainer>
+                    )}
+                    <div id="main_search" style={{ overflowY: 'auto' }}>
+                      <MainContainer style={{ width: '100%' }}>
+                        {this.renderSearch(hash, thisSiteView, site.siteViews)}
+                      </MainContainer>
+                    </div>
+                  </Row>
                 );
               }}
             </SiteProvider>

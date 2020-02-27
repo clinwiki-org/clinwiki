@@ -1,18 +1,17 @@
-import * as React from "react";
-import styled from "styled-components";
-import aggToField from "utils/aggs/aggToField";
-import { FormControl } from "react-bootstrap";
+import * as React from 'react';
+import styled from 'styled-components';
+import aggToField from 'utils/aggs/aggToField';
+import { FormControl } from 'react-bootstrap';
 import {
   SiteViewFragment_search_aggs_fields,
-  SiteViewFragment
-} from "types/SiteViewFragment";
-import AggDropDown from "containers/AggDropDown";
-import { reject, equals } from "ramda";
-import { AggKind } from "containers/SearchPage/shared";
-import { Checkbox } from "react-bootstrap";
-import { camelCase, capitalize } from "utils/helpers";
-import MultiCrumb from "components/MultiCrumb";
-
+  SiteViewFragment,
+} from 'types/SiteViewFragment';
+import AggDropDown from 'containers/AggDropDown';
+import { reject, equals } from 'ramda';
+import { AggKind } from 'containers/SearchPage/shared';
+import { Checkbox } from 'react-bootstrap';
+import { camelCase, capitalize } from 'utils/helpers';
+import MultiCrumb from 'components/MultiCrumb';
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
@@ -109,12 +108,11 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     isChecked: false,
   };
 
-  getPath = (presearch) => {
-    if(presearch==true){
-      return  `search.presearch.${this.props.kind}.fields.${this.props.field.name}`
-
+  getPath = presearch => {
+    if (presearch == true) {
+      return `search.presearch.${this.props.kind}.fields.${this.props.field.name}`;
     }
-      return  `search.${this.props.kind}.fields.${this.props.field.name}`
+    return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
   handleAddFilter = (kind: 'preselected' | 'visibleOptions') => (
     aggName: string,
@@ -125,8 +123,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       {
         currentTarget: {
           name: `set:${this.getPath(this.props.presearch)}.${kind}.values`,
-          value: [...this.props.field[kind].values, aggValue]
-        }
+          value: [...this.props.field[kind].values, aggValue],
+        },
       },
       this.props.view
     );
@@ -135,10 +133,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
-    console.log("this.props", this.props)
     this.props.onAddMutation(
       {
-        currentTarget: { name: e.currentTarget.name, value: !value }
+        currentTarget: { name: e.currentTarget.name, value: !value },
       },
       this.props.view
     );
@@ -153,8 +150,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       {
         currentTarget: {
           name: `set:${this.getPath(this.props.presearch)}.${kind}.values`,
-          value: reject(equals(aggValue), this.props.field.preselected.values)
-        }
+          value: reject(equals(aggValue), this.props.field.preselected.values),
+        },
       },
       this.props.view
     );
@@ -172,7 +169,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   };
 
   render() {
-    const { presearch } = this.props
+    const { presearch } = this.props;
     const selected = new Set(this.props.field.preselected.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
     return (
@@ -265,8 +262,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               name={`set:${this.getPath(presearch)}.display`}
               componentClass="select"
               onChange={e => this.props.onAddMutation(e, this.props.view)}
-              defaultValue={this.props.field.display}
-            >
+              defaultValue={this.props.field.display}>
               <option value="STRING">Text</option>
               <option value="STAR">Stars</option>
               <option value="DATE">Date</option>

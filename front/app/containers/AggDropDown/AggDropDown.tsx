@@ -472,14 +472,16 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       filter(({ key }) =>
         visibleOptions.length ? visibleOptions.includes(key) : true
       ),
-      map(({ key, docCount }) => (
-        <Checkbox
-          key={key}
-          checked={this.isSelected(key)}
-          onChange={() => this.toggleAgg(agg, key)}>
-          {this.renderBucket(key, display, docCount)}
-        </Checkbox>
-      ))
+      map(({ key, docCount }) => {
+        return (
+          <Checkbox
+            key={`key-${key}-${docCount}`}
+            checked={this.isSelected(key)}
+            onChange={() => this.toggleAgg(agg, key)}>
+            {this.renderBucket(key, display, docCount)}
+          </Checkbox>
+        );
+      })
     )(buckets);
   };
 
@@ -499,7 +501,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         hasMore={this.state.hasMore}
         useWindow={false}
         loader={
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
             <BeatLoader key="loader" color="#fff" />
           </div>
         }>

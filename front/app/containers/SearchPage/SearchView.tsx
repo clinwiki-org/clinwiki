@@ -4,7 +4,10 @@ import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
 import SearchFieldName from 'components/SearchFieldName';
 import styled from 'styled-components';
-import { Grid, Row, Col } from 'react-bootstrap';
+import * as FontAwesome from 'react-fontawesome';
+import { PulseLoader, BeatLoader } from 'react-spinners';
+import { Col, ButtonGroup, Button } from 'react-bootstrap';
+import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput, AggFilterInput, SearchQueryInput } from 'types/globalTypes';
 import {
@@ -285,15 +288,15 @@ const SearchWrapper = styled.div`
   }
 `;
 
-const PreSearchWrapper = styled.div`
+const SearchContainer = styled.div`
   width: 100%;
-  display: flex;
   padding: 10px 30px;
   border: solid white 1px;
   background-color: #f2f2f2;
   color: black;
   margin-bottom: 1em;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 interface SearchViewProps {
@@ -351,8 +354,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   toggledShowCards = (showCards: Boolean) => {
     this.props.toggledShowCards(showCards);
-    console.log("Showcard",showCards)
-    console.log("Params",this.props.params)
+    console.log('Params', this.props.params);
     pipe(changePage, this.props.onUpdateParams);
   };
 
@@ -546,6 +548,75 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     this.setState({ openedAgg: { name, kind } });
   };
 
+  loadPaginator = (recordsTotal, loading, page, pagesTotal) => {
+    if (this.props.showCards) {
+      return (
+        <div className="right-align">
+          <div>{recordsTotal} results</div>
+          <div>
+            {recordsTotal > MAX_WINDOW_SIZE
+              ? `(showing first ${MAX_WINDOW_SIZE})`
+              : null}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="right-align">
+        {page > 0 && !loading ? (
+          <FontAwesome
+            className="arrow-left"
+            name="arrow-left"
+            style={{ cursor: 'pointer', margin: '5px' }}
+            onClick={() =>
+              pipe(changePage, this.props.onUpdateParams)(page - 1)
+            }
+          />
+        ) : (
+          <FontAwesome
+            className="arrow-left"
+            name="arrow-left"
+            style={{ margin: '5px', color: 'gray' }}
+          />
+        )}
+        page{' '}
+        <b>
+          {loading ? (
+            <div id="divsononeline">
+              <PulseLoader color="#cccccc" size={8} />
+            </div>
+          ) : (
+            `${Math.min(page + 1, pagesTotal)}/${pagesTotal}`
+          )}{' '}
+        </b>
+        {page + 1 < pagesTotal && !loading ? (
+          <FontAwesome
+            className="arrow-right"
+            name="arrow-right"
+            style={{ cursor: 'pointer', margin: '5px' }}
+            onClick={() => {
+              pipe(changePage, this.props.onUpdateParams)(page + 1);
+              debugger;
+            }}
+          />
+        ) : (
+          <FontAwesome
+            className="arrow-right"
+            name="arrow-right"
+            style={{ margin: '5px', color: 'gray' }}
+          />
+        )}
+        <div>{recordsTotal} results</div>
+        <div>
+          {recordsTotal > MAX_WINDOW_SIZE
+            ? `(showing first ${MAX_WINDOW_SIZE})`
+            : null}
+        </div>
+      </div>
+    );
+  };
+
   renderPresearch = ({
     data,
     loading,
@@ -559,31 +630,53 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } =
       this.props.searchParams || {};
-    const preSearchAggs= this.props.currentSiteView.search.presearch.aggs.selected.values
+    const preSearchAggs = this.props.currentSiteView.search.presearch.aggs
+      .selected.values;
     return (
-      <PreSearchWrapper>
-        <Aggs
-          aggs={this.props.searchAggs}
-          crowdAggs={this.props.crowdAggs}
-          filters={this.props.transformFilters(aggFilters)}
-          crowdFilters={this.props.transformFilters(crowdAggFilters)}
-          addFilter={pipe(addFilter, this.props.onUpdateParams)}
-          addFilters={pipe(addFilters, this.props.onUpdateParams)}
-          removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
-          removeFilters={pipe(removeFilters, this.props.onUpdateParams)}
-          updateParams={this.props.onUpdateParams}
-          removeSelectAll={this.props.removeSelectAll}
-          resetSelectAll={this.props.resetSelectAll}
-          // @ts-ignore
-          searchParams={this.props.searchParams}
-          opened={opened}
-          openedKind={openedKind}
-          onOpen={this.handleOpenAgg}
-          presearch
-          currentSiteView={this.props.currentSiteView}
-          preSearchAggs={preSearchAggs}
-        />
-      </PreSearchWrapper>
+      <SiteProvider>
+        {site => {
+          let thisSiteView =
+            site.siteViews.find(
+              siteview => siteview.url == this.props.siteViewUrl
+            ) || site.siteView;
+          const presearchButton = thisSiteView.search.presearch.button;
+          const presearchText = thisSiteView.search.presearch;
+          return (
+            <SearchContainer>
+              <Aggs
+                aggs={this.props.searchAggs}
+                crowdAggs={this.props.crowdAggs}
+                filters={this.props.transformFilters(aggFilters)}
+                crowdFilters={this.props.transformFilters(crowdAggFilters)}
+                addFilter={pipe(addFilter, this.props.onUpdateParams)}
+                addFilters={pipe(addFilters, this.props.onUpdateParams)}
+                removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
+                removeFilters={pipe(removeFilters, this.props.onUpdateParams)}
+                updateParams={this.props.onUpdateParams}
+                removeSelectAll={this.props.removeSelectAll}
+                resetSelectAll={this.props.resetSelectAll}
+                // @ts-ignore
+                searchParams={this.props.searchParams}
+                opened={opened}
+                openedKind={openedKind}
+                onOpen={this.handleOpenAgg}
+                presearch
+                currentSiteView={thisSiteView}
+                preSearchAggs={preSearchAggs}
+              />
+              <div>
+                {presearchText && <div>presearch text will go here</div>}
+                {presearchButton.name && (
+                  <Button
+                    href={`/search/${site.siteViews[1].url}/${this.props.searchHash}`}>
+                    {presearchButton.name}
+                  </Button>
+                )}
+              </div>
+            </SearchContainer>
+          );
+        }}
+      </SiteProvider>
     );
   };
 
@@ -639,6 +732,21 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     return (
       <SiteProvider>
         {site => {
+          let pagesTotal = 1;
+          let recordsTotal = 0;
+          if (
+            data &&
+            data.search &&
+            data.search.recordsTotal &&
+            this.props.params.pageSize
+          ) {
+            recordsTotal = data.search.recordsTotal;
+            pagesTotal = Math.min(
+              Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+              Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
+            );
+          }
+
           let thisSiteView =
             site.siteViews.find(
               siteview => siteview.url == this.props.siteViewUrl
@@ -666,29 +774,40 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             ) : null;
           } else {
             return showResults ? (
-              <ReactTable
-                ref={this.searchTable}
-                className="-striped -highlight"
-                columns={columns}
-                manual
-                minRows={searchData![0] !== undefined ? 1 : 3}
-                page={page}
-                pageSize={pageSize}
-                defaultSorted={camelizedSorts}
-                onPageChange={pipe(changePage, this.props.onUpdateParams)}
-                onPageSizeChange={pipe(
-                  changePageSize,
-                  this.props.onUpdateParams
-                )}
-                onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
-                data={searchData}
-                pages={totalPages}
-                loading={loading}
-                defaultPageSize={pageSize}
-                getTdProps={this.rowProps}
-                defaultSortDesc
-                noDataText={'No studies found'}
-              />
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
+                  {this.renderViewDropdown()}
+                </div>
+                <ReactTable
+                  ref={this.searchTable}
+                  className="-striped -highlight"
+                  columns={columns}
+                  manual
+                  minRows={searchData![0] !== undefined ? 1 : 3}
+                  page={page}
+                  pageSize={pageSize}
+                  defaultSorted={camelizedSorts}
+                  onPageChange={pipe(changePage, this.props.onUpdateParams)}
+                  onPageSizeChange={pipe(
+                    changePageSize,
+                    this.props.onUpdateParams
+                  )}
+                  onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
+                  data={searchData}
+                  pages={totalPages}
+                  loading={loading}
+                  defaultPageSize={pageSize}
+                  getTdProps={this.rowProps}
+                  defaultSortDesc
+                  noDataText={'No studies found'}
+                />
+              </div>
             ) : null;
           }
         }}
@@ -762,56 +881,78 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     );
   };
 
-  render() {
-    const { page, pageSize, sorts } = this.props.params;
-    console.log(this.props.params);
-    const { currentSiteView } = this.props;
-
-    const presearch = currentSiteView.search.config.fields.showPresearch;
+  renderViewDropdown = () => {
     return (
       <SiteProvider>
-      {site => {
-                  let thisSiteView =
-                  site.siteViews.find(
-                    siteview => siteview.url == this.props.siteViewUrl
-                  ) || site.siteView;
-                let showPresearch = thisSiteView.search.config.fields.showPresearch;
-
-
-        return(
-          <SearchWrapper>
-            <Helmet>
-              <title>Search</title>
-              <meta name="description" content="Description of SearchPage" />
-            </Helmet>
-
-            <QueryComponent
-              query={QUERY}
-              variables={this.props.params}
-              onCompleted={(data: any) => {
-                if (data && data.search) {
-                  this.props.onAggsUpdate(
-                    this.transformAggs(data.search.aggs || []),
-                    this.transformCrowdAggs(data.crowdAggs.aggs || [])
-                  );
-                }
-              }}>
-              {({ data, loading, error }) => {
-                return (
-                  <Col md={12}>
-                    {this.renderCrumbs({ data, loading, error })}
-                    {showPresearch && this.renderPresearch({ data, loading, error })}
-                    {this.renderSearch({ data, loading, error })}
-                  </Col>
-                );
-              }}
-            </QueryComponent>
-          </SearchWrapper>
-      );
+        {site => {
+          if (site.siteViews.length > 0) {
+            console.log(this.props.searchHash);
+            return (
+              <ButtonGroup>
+                {site.siteViews.map(view => (
+                  <Button
+                    href={`/search/${view.url}/${this.props.searchHash}`}
+                    key={view.name}>
+                    <CardIcon />
+                  </Button>
+                ))}
+              </ButtonGroup>
+            );
+          }
         }}
       </SiteProvider>
+    );
+  };
 
-      );
+  render() {
+    const { page, pageSize, sorts } = this.props.params;
+    const { currentSiteView } = this.props;
+    console.log('currentsite', currentSiteView);
+    return (
+      <SiteProvider>
+        {site => {
+          let thisSiteView =
+            site.siteViews.find(
+              siteview => siteview.url == this.props.siteViewUrl
+            ) || site.siteView;
+          let showPresearch = thisSiteView.search.config.fields.showPresearch;
+
+          return (
+            <SearchWrapper>
+              <Helmet>
+                <title>Search</title>
+                <meta name="description" content="Description of SearchPage" />
+              </Helmet>
+
+              <QueryComponent
+                query={QUERY}
+                variables={this.props.params}
+                onCompleted={(data: any) => {
+                  if (data && data.search) {
+                    this.props.onAggsUpdate(
+                      this.transformAggs(data.search.aggs || []),
+                      this.transformCrowdAggs(data.crowdAggs.aggs || [])
+                    );
+                  }
+                }}>
+                {({ data, loading, error }) => {
+                  return (
+                    <Col md={12}>
+                      {this.renderCrumbs({ data, loading, error })}
+                      {showPresearch &&
+                        this.renderPresearch({ data, loading, error })}
+                      <SearchContainer>
+                        {this.renderSearch({ data, loading, error })}
+                      </SearchContainer>
+                    </Col>
+                  );
+                }}
+              </QueryComponent>
+            </SearchWrapper>
+          );
+        }}
+      </SiteProvider>
+    );
   }
 }
 
