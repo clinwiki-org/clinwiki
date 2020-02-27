@@ -147,10 +147,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     e: { currentTarget: { name: string; value: any } },
     siteView
   ) => {
+
+    console.log("Wite hear",e,siteView)
     const { name, value } = e.currentTarget;
     const mutation = createMutation(name, value);
+    console.log("Mutatation",mutation)
     const view = updateView(siteView, this.state.mutations);
+    console.log("SomeView", view);
     const currentValue = getViewValueByPath(mutation.path, view);
+    console.log("CurrentValue", currentValue)
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
       console.log('MUTATIONS', this.state.mutations);
@@ -195,6 +200,148 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     const e = { currentTarget: { name: name, value: x } };
     this.handleAddMutation(e, view);
   };
+  handleAddButton =(view)=>{
+    let name = `set:search.results.buttons.items`
+
+    let items= view.search.results.buttons.items
+    let newItem= {icon:"", target:"", __typename: "ResultButtonItems"}
+    let newItems = [...items,
+      newItem]
+
+    this.handleAddMutation({ currentTarget:{ name: name, value: newItems }}, view)
+  }
+  handleButtonTarget = (    e: { currentTarget: { name: string; value: any } },
+    siteView, position, value)=>{
+
+    let items = siteView.search.results.buttons.items
+    let newItem = {... items[position],
+        target: value
+    }
+    let newArray=[]  
+    items.map((val, index)=>{
+      if(index==position){
+        //@ts-ignore
+        newArray.push(newItem)
+      }else{
+        //@ts-ignore
+        newArray.push(val)
+      }
+
+    })
+
+    this.handleAddMutation({currentTarget:{ name:e.currentTarget.name, value:newArray}}, siteView)
+
+  }
+
+  handleButtonIcon = (    e: { currentTarget: { name: string; value: any } },
+      siteView, position, value)=>{
+  
+      let items = siteView.search.results.buttons.items
+      let newItem = {... items[position],
+          icon: value
+      }
+      console.log("NewItem", newItem)
+      let newArray=[]  
+      items.map((val, index)=>{
+        if(index==position){
+          //@ts-ignore
+          newArray.push(newItem)
+        }else{
+          //@ts-ignore
+          newArray.push(val)
+        }
+  
+      })
+
+      this.handleAddMutation({currentTarget:{ name:e.currentTarget.name, value:newArray}}, siteView)
+
+
+  }
+
+
+  renderResultsButtons =(view)=>{
+    let ICONS=['table', 'card']
+    let buttonsArray = view.search.results.buttons.items
+    console.log("b-Arrey",buttonsArray)
+    console.log("siteViews", this.props.siteViews)
+    let siteViewNames=[]
+    let siteViewUrls=[]
+    let siteViews = this.props.siteViews
+    let thisSiteView =
+    siteViews.find(siteview => siteview.url == view.url) ||
+    view.siteView;
+    console.log("HERE M8",thisSiteView)
+
+    console.log(siteViewNames)
+    return(
+
+      buttonsArray.map( (value, index) =>(
+      <Panel key={index}>
+                <Panel.Heading>
+      <Panel.Title toggle>Button {index+1}</Panel.Title>
+
+                  <StyledShowContainer>
+        </StyledShowContainer>
+                </Panel.Heading>
+                <Panel.Body collapsible>
+                  <h3>Target: {buttonsArray[index].target}</h3> 
+                  <h3>Icon: {buttonsArray[index].icon}</h3> 
+                  <StyledPanelHeading>
+            <StyledButtonGroup>
+    <DropdownButton
+      bsStyle="default"
+      title="Button Target"
+      key="default"
+      id="dropdown-basic-default"
+      style={{margin: "1em 1em 1em 0"}} 
+    >
+{      siteViews.map(site=>(
+      <MenuItem 
+      name={`set:search.results.buttons.items`}
+      onClick={e => this.handleButtonTarget(
+        e,
+        thisSiteView,
+       index, 
+       site.url
+      )}> 
+         {site.name}</MenuItem>
+
+      ))}
+
+</DropdownButton>
+</StyledButtonGroup>
+
+                  <StyledButtonGroup>
+    <DropdownButton
+      bsStyle="default"
+      title="Button Icon"
+      key="default"
+      id="dropdown-basic-default"
+      style={{margin: "1em 1em 1em 0"}} 
+    >
+{      ICONS.map((icon, index)=>(
+      <MenuItem 
+      key={index}
+      name={`set:search.results.buttons.items`}
+      onClick={e => this.handleButtonIcon(
+        e,
+        thisSiteView,
+       index, 
+       icon
+      )}> 
+         {icon}</MenuItem>
+
+      ))}
+
+</DropdownButton>
+</StyledButtonGroup>
+</StyledPanelHeading>
+                </Panel.Body>
+      </Panel> ))
+
+    )
+
+  }
   renderFacetBarConfig=(showFacetBar,view,fields, crowdFields,updateSiteView )=>{
       return(
         <Panel >
@@ -495,6 +642,12 @@ renderResultsConfig=(showResults,view,fields, crowdFields,updateSiteView )=>{
         'set:search.results.type'
       )}>Map View</MenuItem>
     </DropdownButton>
+    <PanelGroup  id="accordion-uncontrolled"> 
+    {this.renderResultsButtons(view)}
+    <StyledButton style={{marginTop:"1em"}} onClick={()=>this.handleAddButton(view)}>
+              Add Button
+            </StyledButton>
+    </PanelGroup> 
 
 <StyledButton onClick={this.handleSave(updateSiteView, view)}>
   Save Site View
