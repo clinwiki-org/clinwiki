@@ -261,7 +261,7 @@ class SearchService
     }
   end
 
-  def key_for(filter: filter, is_crowd_agg: false)
+  def key_for(filter:, is_crowd_agg: false)
     "#{is_crowd_agg ? 'fm_' : ''}#{filter[:field]}".to_sym
   end
 
