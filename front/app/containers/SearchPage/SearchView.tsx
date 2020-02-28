@@ -772,14 +772,18 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           columns.map(x => (x.width += additionalWidth), columns);
           if (this.props.showCards) {
             return showResults ? (
-              <div>                  
+              <div style={{display:"flex", flexDirection:"column"}}>
+                <div style={{display:"flex", flexDirection:"row", marginLeft:"auto"}}>
                 {this.renderViewDropdown()}
+                </div>                  
+                <div style={{display:"flex", flexDirection:"row"}}>
               <Cards
                 columns={columns}
                 data={searchData}
                 onPress={this.cardPressed}
                 loading={loading}
               />
+              </div>
               </div>
             ) : null;
           } else {
@@ -918,7 +922,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   render() {
     const { page, pageSize, sorts } = this.props.params;
     const { currentSiteView } = this.props;
-    console.log('currentsite', currentSiteView);
     return (
       <SiteProvider>
         {site => {

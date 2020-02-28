@@ -257,21 +257,17 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   renderResultsButtons =(view)=>{
     let ICONS=['table', 'card']
     let buttonsArray = view.search.results.buttons.items
-    console.log("b-Arrey",buttonsArray)
-    console.log("siteViews", this.props.siteViews)
     let siteViewNames=[]
     let siteViewUrls=[]
     let siteViews = this.props.siteViews
     let thisSiteView =
     siteViews.find(siteview => siteview.url == view.url) ||
     view.siteView;
-    console.log("HERE M8",thisSiteView)
 
-    console.log(siteViewNames)
     return(
 
       buttonsArray.map( (value, index) =>(
-      <Panel key={index}>
+      <Panel key={index+value}>
                 <Panel.Heading>
       <Panel.Title toggle>Button {index+1}</Panel.Title>
 
@@ -292,6 +288,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     >
 {      siteViews.map(site=>(
       <MenuItem 
+      key={site.name}
       name={`set:search.results.buttons.items`}
       onClick={e => this.handleButtonTarget(
         e,
@@ -430,7 +427,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               ))}
             </Col>
           </Row>
-    <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+    <StyledButton style={{margin: "1em 1em 1em 0"}} onClick={this.handleSave(updateSiteView, view)}>
       Save Site View
     </StyledButton>
         </Panel.Body>
@@ -439,7 +436,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       );
   }
   renderAutoSuggestConfig=(showAutoSuggest,view,fields, crowdFields,updateSiteView )=>{
-    console.log("Rendering AutoSuggest", AGGS_OPTIONS.concat(this.getCrowdFields(view)))
     return(
       <Panel>
       <Panel.Heading>
@@ -470,7 +466,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             />
           </Col>
         </Row>
-  <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+  <StyledButton style={{margin: "1em 1em 1em 0"}} onClick={this.handleSave(updateSiteView, view)}>
     Save Site View
   </StyledButton>
       </Panel.Body>
@@ -478,7 +474,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     );
 }
 renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>{
-  console.log("Rendering Presearchconfig")
   return(
     <Panel>
     <Panel.Heading>
@@ -576,7 +571,7 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
           ))}
         </Col>
       </Row>
-<StyledButton onClick={this.handleSave(updateSiteView, view)}>
+<StyledButton style={{margin: "1em 1em 1em 0"}} onClick={this.handleSave(updateSiteView, view)}>
   Save Site View
 </StyledButton>
     </Panel.Body>
@@ -728,9 +723,6 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
     const showResults = view.search.config.fields.showResults;
     // console.log("Results set to:",view.search.config.fields.showResults)
     const showPresearch = view.search.config.fields.showPresearch
-    console.log("Presearch set to:",view.search.config.fields.showPresearch)
-    console.log("Search form view", view);
-    console.log("SF Fields",fields);
     return (
       <UpdateSiteViewMutation
         onCompleted={() =>
