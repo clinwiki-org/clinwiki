@@ -1,0 +1,14 @@
+query SearchQuery($input: SearchInput) {
+  search(params: $input) {
+    recordsTotal
+    aggs {
+      buckets {
+        key
+        docCount
+      }
+    }
+    studies {
+      nctId
+    }
+  }
+}
