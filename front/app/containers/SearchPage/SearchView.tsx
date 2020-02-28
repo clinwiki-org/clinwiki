@@ -50,6 +50,7 @@ import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import { stringify } from 'querystring';
 import Cards from './components/Cards';
 import { SiteViewFragment } from 'types/SiteViewFragment';
+import { throws } from 'assert';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -478,6 +479,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   };
 
   componentDidMount() {
+    let defaultViewStyle = this.props.currentSiteView.search.results.type
+    if (defaultViewStyle== "table" && this.props.showCards==true){
+       this.toggledShowCards(false)
+    }else if(defaultViewStyle =="card" && this.props.showCards==false){
+      this.toggledShowCards(true)
+    }
     if (!this.props.showCards) {
       this.setState({
         tableWidth: document.getElementsByClassName('ReactTable')[0]
