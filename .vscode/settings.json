@@ -1,3 +1,4 @@
 {
-    "gitblame.commitUrl": "https://github.com/clinwiki-org/clinwiki/commit/${hash}"
+  "gitblame.commitUrl": "https://github.com/clinwiki-org/clinwiki/commit/${hash}",
+  "ruby.specCommand": "docker exec -it clinwiki bundle exec rspec"
 }

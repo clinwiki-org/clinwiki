@@ -49,10 +49,28 @@ module FrontMatterHelper
       front_matter_keys: front_matter.keys,
     }
     front_matter.each do |key, val|
-      result["fm_#{key}"] = val.is_a?(String) ? val.split("|") : val
+      result["fm_#{key}"] = cast(val)
     end
 
     result
+  end
+
+  def cast(val)
+    begin
+      return Integer(val)
+    rescue ArgumentError
+    end
+
+    begin
+      return Float(val)
+    rescue ArgumentError
+    end
+
+    parsed_time = Timeliness.parse(val)
+    return parsed_time unless parsed_time.nil?
+
+    # default to string, which we split against pipe separator
+    return val.split("|")
   end
 
   def combined_markdown(content, front_matter = {})
