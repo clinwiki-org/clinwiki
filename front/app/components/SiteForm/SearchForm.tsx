@@ -44,6 +44,7 @@ interface SearchFormState {
   mutations: SiteViewMutationInput[];
   showFacetBar: boolean;
   showFacetBarConfig: boolean;
+  resultsButtonsArray: any[];
 }
 
 const SEARCH_FIELDS = studyFields.map(option => ({
@@ -121,9 +122,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     showFacetBarConfig:false,
     showAllAggsPresearch: false,
     showAllCrowdAggsPresearch:false,
+    resultsButtonsArray: []
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    const siteviewId = this.props.match.params.id;
+    let view = this.props.siteViews.find(view => siteviewId == view.id);
+
+    this.setState({resultsButtonsArray: view.search.results.buttons.items})
+  }
 
   handleSave = (updateSiteView: UpdateSiteViewMutationFn, view: any) => (
     mutations: SiteViewMutationInput[]
@@ -209,46 +216,43 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   handleButtonTarget = (    e: { currentTarget: { name: string; value: any } },
     siteView, position, value)=>{
 
-    let items = siteView.search.results.buttons.items
+    let items = this.state.resultsButtonsArray
     let newItem = {... items[position],
         target: value
     }
-    let newArray=[]  
+    let newArray : any[]=[]  
     items.map((val, index)=>{
       if(index==position){
-        //@ts-ignore
         newArray.push(newItem)
       }else{
-        //@ts-ignore
         newArray.push(val)
       }
 
     })
 
     this.handleAddMutation({currentTarget:{ name:e.currentTarget.name, value:newArray}}, siteView)
-
+    this.setState({resultsButtonsArray: newArray })
   }
 
   handleButtonIcon = (    e: { currentTarget: { name: string; value: any } },
       siteView, position, value)=>{
   
-      let items = siteView.search.results.buttons.items
+      let items = this.state.resultsButtonsArray
       let newItem = {... items[position],
           icon: value
       }
-      let newArray=[]  
+      let newArray : any[]=[]  
       items.map((val, index)=>{
         if(index==position){
-          //@ts-ignore
           newArray.push(newItem)
         }else{
-          //@ts-ignore
           newArray.push(val)
         }
   
       })
 
       this.handleAddMutation({currentTarget:{ name:e.currentTarget.name, value:newArray}}, siteView)
+      this.setState({resultsButtonsArray: newArray })
 
 
   }
