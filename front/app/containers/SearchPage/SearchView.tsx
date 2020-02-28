@@ -765,12 +765,15 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           columns.map(x => (x.width += additionalWidth), columns);
           if (this.props.showCards) {
             return showResults ? (
+              <div>                  
+                {this.renderViewDropdown()}
               <Cards
                 columns={columns}
                 data={searchData}
                 onPress={this.cardPressed}
                 loading={loading}
               />
+              </div>
             ) : null;
           } else {
             return showResults ? (
@@ -882,6 +885,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   };
 
   renderViewDropdown = () => {
+   const { currentSiteView } = this.props
     return (
       <SiteProvider>
         {site => {
@@ -889,11 +893,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             console.log(this.props.searchHash);
             return (
               <ButtonGroup>
-                {site.siteViews.map(view => (
+                {currentSiteView.search.results.buttons.items.map((button,index) => (
                   <Button
-                    href={`/search/${view.url}/${this.props.searchHash}`}
-                    key={view.name}>
-                    <CardIcon />
+                    href={`/search/${button.target}/${this.props.searchHash}`}
+                    key={button.target+index}>
+                      {button.icon == "card" ? <CardIcon/>: <TableIcon/>}
                   </Button>
                 ))}
               </ButtonGroup>
