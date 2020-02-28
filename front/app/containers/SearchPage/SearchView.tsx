@@ -675,7 +675,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 {presearchText && <div>presearch text will go here</div>}
                 {presearchButton.name && (
                   <Button
-                    href={`/search/${site.siteViews[1].url}/${this.props.searchHash}`}>
+                    href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
                     {presearchButton.name}
                   </Button>
                 )}
