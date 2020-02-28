@@ -387,6 +387,7 @@ export default class CrumbsBar extends React.Component<
   ) => {
     if (showAutoSuggest == true) {
       return (
+        <div style={{display:"inline"}}>
         <FormGroup>
           <div
             style={{
@@ -420,42 +421,14 @@ export default class CrumbsBar extends React.Component<
             />
           </div>
         </FormGroup>
+        <Button type="submit">
+          <FontAwesome name="search" />
+        </Button> 
+        </div>       
       );
     } else if (showAutoSuggest == false) {
-      console.log('rendering false');
       return (
-        <FormGroup>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}>
-            <b
-              style={{
-                marginRight: '8px',
-                marginTop: '4px',
-              }}>
-              <ControlLabel>Search Within: </ControlLabel>{' '}
-            </b>
-
-            <Autosuggest
-              multiSection={true}
-              suggestions={[]}
-              inputProps={{
-                value: searchTerm,
-                onChange: (e, searchTerm) =>
-                  this.onChange(e, searchTerm, apolloClient),
-              }}
-              renderSuggestion={this.renderSuggestion}
-              renderSectionTitle={this.renderSectionTitle}
-              getSectionSuggestions={this.getSectionSuggestions}
-              onSuggestionSelected={this.onSuggestionSelected}
-              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-              getSuggestionValue={this.getSuggestionValue}
-            />
-          </div>
-        </FormGroup>
+        null
       );
     }
   };
@@ -466,8 +439,8 @@ export default class CrumbsBar extends React.Component<
     showAutoSuggest
   ) => {
     if (showAutoSuggest == true) {
-      console.log('rendering true');
       return (
+        <div style={{display:"inline"}}>
         <FormGroup>
           <div
             style={{
@@ -499,43 +472,16 @@ export default class CrumbsBar extends React.Component<
               getSuggestionValue={this.getSuggestionValue}
             />
           </div>
+
         </FormGroup>
+        <Button type="submit">
+            <FontAwesome name="search" />
+        </Button>
+        </div>
       );
     } else if (showAutoSuggest == false) {
-      console.log('rendering false');
       return (
-        <FormGroup>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}>
-            <b
-              style={{
-                marginRight: '8px',
-                marginTop: '4px',
-              }}>
-              <ControlLabel>Search Within: </ControlLabel>{' '}
-            </b>
-
-            <Autosuggest
-              multiSection={true}
-              suggestions={[]}
-              inputProps={{
-                value: searchTerm,
-                onChange: (e, searchTerm) =>
-                  this.onChange(e, searchTerm, apolloClient),
-              }}
-              renderSuggestion={this.renderSuggestion}
-              renderSectionTitle={this.renderSectionTitle}
-              getSectionSuggestions={this.getSectionSuggestions}
-              onSuggestionSelected={this.onSuggestionSelected}
-              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-              getSuggestionValue={this.getSuggestionValue}
-            />
-          </div>
-        </FormGroup>
+        null
       );
     }
   };
@@ -655,9 +601,6 @@ export default class CrumbsBar extends React.Component<
                           apolloClient,
                           showAutoSuggest
                         )}
-                    <Button type="submit">
-                      <FontAwesome name="search" />
-                    </Button>
                     &nbsp;
                     <CurrentUser>
                       {user =>
