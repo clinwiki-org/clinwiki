@@ -213,6 +213,26 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
 
     this.handleAddMutation({ currentTarget:{ name: name, value: newItems }}, view)
   }
+  handlePresearchButtonTarget = (    e: { currentTarget: { name: string; value: any } },
+    siteView, value)=>{
+
+    // let items = this.state.resultsButtonsArray
+    // let newItem = {... items[position],
+    //     target: value
+    // }
+    // let newArray : any[]=[]  
+    // items.map((val, index)=>{
+    //   if(index==position){
+    //     newArray.push(newItem)
+    //   }else{
+    //     newArray.push(val)
+    //   }
+
+    // })
+
+    this.handleAddMutation({currentTarget:{ name:e.currentTarget.name, value:value}}, siteView)
+    // this.setState({resultsButtonsArray: newArray })
+  }
   handleButtonTarget = (    e: { currentTarget: { name: string; value: any } },
     siteView, position, value)=>{
 
@@ -478,108 +498,150 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     );
 }
 renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>{
-  return(
+  return (
     <Panel>
-    <Panel.Heading>
-    <StyledPanelHeading>
-    <Panel.Title toggle>Pre-Search</Panel.Title>
+      <Panel.Heading>
+        <StyledPanelHeading>
+          <Panel.Title toggle>Pre-Search</Panel.Title>
 
-        <StyledShowContainer>
+          <StyledShowContainer>
             <span>Show</span>
             <StyledCheckbox
-                name="set:search.config.fields.showPresearch"
-                checked={showPresearch}
-                onChange={this.handleCheckboxToggle(showPresearch)}
-              />
-        </StyledShowContainer>
+              name="set:search.config.fields.showPresearch"
+              checked={showPresearch}
+              onChange={this.handleCheckboxToggle(showPresearch)}
+            />
+          </StyledShowContainer>
         </StyledPanelHeading>
-
-    </Panel.Heading>
-    <Panel.Body collapsible>
-  <Row>
-    <Col md={6}>
-      <AggsHeaderContainer>
-        <h3>Aggs visibility</h3>
-        <StyledCheckbox 
-          checked={this.state.showAllAggsPresearch}
-          onChange={this.handleShowAllToggle('aggsPresearch')}>
-              Show all
-            </StyledCheckbox>
-          </AggsHeaderContainer>
-          <StyledLabel>Filter</StyledLabel>
-          <StyledFormControl
-            name="set:search.presearch.aggs.selected.kind"
-            componentClass="select"
-            onChange={e => this.handleAddMutation(e, view)}
-            value={view.search.presearch.aggs.selected.kind}>
-            <option value="BLACKLIST">All except</option>
-            <option value="WHITELIST">Only</option>
-          </StyledFormControl>
-          <MultiInput
-            name="set:search.presearch.aggs.selected.values"
-            options={AGGS_OPTIONS}
-            placeholder="Add facet"
-            value={view.search.presearch.aggs.selected.values}
-            onChange={e => this.handleAddMutation(e, view)}
-          />
-          <h3>Aggs settings</h3>
-          {fields.map(field => (
-            <AggField
-              kind="aggs"
-              key={field.name}
-              //@ts-ignore
-              field={field}
-              onAddMutation={this.handleAddMutation}
-              view={view}
-              presearch={true}
+      </Panel.Heading>
+      <Panel.Body collapsible>
+        <Row>
+          <Col md={6}>
+            <AggsHeaderContainer>
+              <h3>Aggs visibility</h3>
+              <StyledCheckbox
+                checked={this.state.showAllAggsPresearch}
+                onChange={this.handleShowAllToggle('aggsPresearch')}>
+                Show all
+              </StyledCheckbox>
+            </AggsHeaderContainer>
+            <StyledLabel>Filter</StyledLabel>
+            <StyledFormControl
+              name="set:search.presearch.aggs.selected.kind"
+              componentClass="select"
+              onChange={e => this.handleAddMutation(e, view)}
+              value={view.search.presearch.aggs.selected.kind}>
+              <option value="BLACKLIST">All except</option>
+              <option value="WHITELIST">Only</option>
+            </StyledFormControl>
+            <MultiInput
+              name="set:search.presearch.aggs.selected.values"
+              options={AGGS_OPTIONS}
+              placeholder="Add facet"
+              value={view.search.presearch.aggs.selected.values}
+              onChange={e => this.handleAddMutation(e, view)}
             />
-          ))}
-        </Col>
-        <Col md={6}>
-          <AggsHeaderContainer>
-            <h3>Crowd aggs visibility</h3>
-            <StyledCheckbox
-              checked={this.state.showAllCrowdAggsPresearch}
-              onChange={this.handleShowAllToggle('crowdAggsPresearch')}>
-              Show all
-            </StyledCheckbox>
-          </AggsHeaderContainer>
+            <h3>Aggs settings</h3>
+            {fields.map(field => (
+              <AggField
+                kind="aggs"
+                key={field.name}
+                //@ts-ignore
+                field={field}
+                onAddMutation={this.handleAddMutation}
+                view={view}
+                presearch={true}
+              />
+            ))}
+          </Col>
+          <Col md={6}>
+            <AggsHeaderContainer>
+              <h3>Crowd aggs visibility</h3>
+              <StyledCheckbox
+                checked={this.state.showAllCrowdAggsPresearch}
+                onChange={this.handleShowAllToggle('crowdAggsPresearch')}>
+                Show all
+              </StyledCheckbox>
+            </AggsHeaderContainer>
 
-          <StyledLabel>Filter</StyledLabel>
-          <StyledFormControl
-            name="set:search.presearch.crowdAggs.selected.kind"
-            componentClass="select"
-            onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
-            v={view.search.crowdAggs.selected.kind}>
-            <option value="BLACKLIST">All except</option>
-            <option value="WHITELIST">Only</option>
-          </StyledFormControl>
-          <MultiInput
-            name="set:search.presearch.crowdAggs.selected.values"
-            options={this.getCrowdFields(view)}
-            placeholder="Add facet"
-            value={view.search.presearch.crowdAggs.selected.values}
-            onChange={e => this.handleAddMutation(e, view)}
-          />
-          <h3>Crowd aggs settings</h3>
-          {crowdFields.map(field => (
-            <AggField
-              kind="crowdAggs"
-              key={field.name}
-              //@ts-ignore
-              field={field}
-              onAddMutation={this.handleAddMutation}
-              view={view}
-              presearch={true}
+            <StyledLabel>Filter</StyledLabel>
+            <StyledFormControl
+              name="set:search.presearch.crowdAggs.selected.kind"
+              componentClass="select"
+              onChange={(e: { currentTarget: { name: string; value: any } }) =>
+                this.handleAddMutation(e, view)
+              }
+              v={view.search.crowdAggs.selected.kind}>
+              <option value="BLACKLIST">All except</option>
+              <option value="WHITELIST">Only</option>
+            </StyledFormControl>
+            <MultiInput
+              name="set:search.presearch.crowdAggs.selected.values"
+              options={this.getCrowdFields(view)}
+              placeholder="Add facet"
+              value={view.search.presearch.crowdAggs.selected.values}
+              onChange={e => this.handleAddMutation(e, view)}
             />
-          ))}
-        </Col>
-      </Row>
-<StyledButton style={{margin: "1em 1em 1em 0"}} onClick={this.handleSave(updateSiteView, view)}>
-  Save Site View
-</StyledButton>
-    </Panel.Body>
-  </Panel>
+            <h3>Crowd aggs settings</h3>
+            {crowdFields.map(field => (
+              <AggField
+                kind="crowdAggs"
+                key={field.name}
+                //@ts-ignore
+                field={field}
+                onAddMutation={this.handleAddMutation}
+                view={view}
+                presearch={true}
+              />
+            ))}
+          </Col>
+        </Row>
+
+        <Panel>
+          <Panel.Heading>
+            <Panel.Title toggle>Presearch Button</Panel.Title>
+
+            <StyledShowContainer />
+          </Panel.Heading>
+          <Panel.Body collapsible>
+            <h3>Text:</h3>
+            <StyledFormInput
+              name={`set:search.presearch.button.name`}
+              placeholder={view.search.presearch.button.name}
+              value={view.search.presearch.button.name}
+              onChange={e => this.handleAddMutation(e, view)}
+            />
+            <h3>Target: {view.search.presearch.button.target}</h3>
+
+            <StyledPanelHeading>
+              <StyledButtonGroup>
+                <DropdownButton
+                  bsStyle="default"
+                  title="Button Target"
+                  key="default"
+                  id="dropdown-basic-default"
+                  style={{ margin: '1em 1em 1em 0' }}>
+                  {this.props.siteViews.map(view => (
+                    <MenuItem
+                      name={`set:search.presearch.button.target`}
+                      onClick={e =>
+                        this.handlePresearchButtonTarget(e, view, view.url)
+                      }>
+                      {view.name}
+                    </MenuItem>
+                  ))}
+                </DropdownButton>
+              </StyledButtonGroup>
+            </StyledPanelHeading>
+          </Panel.Body>
+        </Panel>
+        <StyledButton
+          style={{ margin: '1em 1em 1em 0' }}
+          onClick={this.handleSave(updateSiteView, view)}>
+          Save Site View
+        </StyledButton>
+      </Panel.Body>
+    </Panel>
   );
 }
 renderResultsConfig=(showResults,view,fields, crowdFields,updateSiteView )=>{
