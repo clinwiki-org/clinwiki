@@ -261,7 +261,7 @@ export default class CrumbsBar extends React.Component<
       searchParams.aggFilters.length;
     if (totalLength > 0) {
       yield (
-        <span>
+        <span key="buttons">
           <Button
             bsSize="small"
             key="defaul"
