@@ -20,11 +20,13 @@ import {
   reverse,
   identity,
 } from 'ramda';
-import { ApolloConsumer } from 'react-apollo';
+import moment from 'moment';
+import { withApollo } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
 import * as InfiniteScroll from 'react-infinite-scroller';
 import * as FontAwesome from 'react-fontawesome';
+import HistoSlider from 'histoslider';
 import Sorter from './Sorter';
 
 import {
@@ -40,12 +42,13 @@ import gql from 'graphql-tag';
 import aggToField from 'utils/aggs/aggToField';
 import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { FieldDisplay } from 'types/globalTypes';
-import SiteProvider from 'containers/SiteProvider';
+import { withSite } from 'containers/SiteProvider/SiteProvider';
 import {
   SiteViewFragment,
   SiteViewFragment_search_aggs_fields,
 } from 'types/SiteViewFragment';
 import './AggDropDownStyle.css';
+import { SiteFragment } from 'types/SiteFragment';
 
 const PAGE_SIZE = 25;
 
@@ -165,6 +168,8 @@ interface AggDropDownProps {
   onOpen?: (agg: string, aggKind: AggKind) => void;
   removeSelectAll?: boolean;
   resetSelectAll?: () => void;
+  client: any;
+  site: SiteViewFragment;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -252,7 +257,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     });
 
     if (this.props.removeSelectAll) {
-      console.log('meh');
       this.setState({
         checkboxValue: false,
       });
@@ -297,7 +301,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.props.onOpen && this.props.onOpen(this.props.agg, this.props.aggKind);
   };
 
-  handleLoadMore = async apolloClient => {
+  handleLoadMore = async () => {
+    const { client: apolloClient } = this.props;
     const { desc, sortKind } = this.state;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
@@ -407,14 +412,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderBuckets = ({
     display,
-    site,
     field,
   }: {
     display: FieldDisplay;
-    site: SiteViewFragment;
     field: SiteViewFragment_search_aggs_fields | any;
   }) => {
-    const { agg, visibleOptions = [] } = this.props;
+    const { site, agg, visibleOptions = [] } = this.props;
     const { buckets = [] } = this.state;
     return pipe(
       filter(({ key }) =>
@@ -431,7 +434,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     )(buckets);
   };
 
-  renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
+  renderBucketsPanel = () => {
+    const { site } = this.props;
     let display = this.props.display;
     const field = find(propEq('name', this.props.agg), [
       ...site.search.aggs.fields,
@@ -443,7 +447,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return (
       <InfiniteScroll
         pageStart={0}
-        loadMore={() => this.handleLoadMore(apolloClient)}
+        loadMore={this.handleLoadMore}
         hasMore={this.state.hasMore}
         useWindow={false}
         loader={
@@ -451,7 +455,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             <BeatLoader key="loader" color="#fff" />
           </div>
         }>
-        {this.renderBuckets({ display, site, field })}
+        {this.renderBuckets({ display, field })}
       </InfiniteScroll>
     );
   };
@@ -530,6 +534,69 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     );
   };
 
+  changeSlider(a) {
+    console.log(a);
+    // here is where we will need to update the parent state to say
+    // "here is the start value, and here is the end value"
+  }
+
+  renderHistoPanel() {
+    const { client } = this.props;
+    const { isOpen, hasMore, loading, buckets } = this.state;
+    if (hasMore || loading) {
+      !loading && this.handleLoadMore();
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <BeatLoader key="loader" color="#fff" />
+        </div>
+      );
+    }
+
+    const sliderData = [] as any[];
+    buckets.forEach(({ key, docCount }) => {
+      if (docCount > 0) {
+        sliderData.push({
+          x0: key,
+          x: key,
+          y: docCount,
+        });
+      }
+    });
+
+    return (
+      <Panel.Collapse className="bm-panel-collapse">
+        <Panel.Body>
+          {
+            <HistoSlider
+              height={50}
+              width={150}
+              data={sliderData}
+              onChange={this.changeSlider}
+              showLabels={false}
+            />
+          }
+        </Panel.Body>
+      </Panel.Collapse>
+    );
+  }
+
+  renderPanel = () => {
+    const { client, site, agg } = this.props;
+    const { isOpen } = this.state;
+    if (!isOpen) {
+      return null;
+    }
+    if (agg === 'start_date') {
+      return this.renderHistoPanel();
+    }
+    return (
+      <Panel.Collapse className="bm-panel-collapse">
+        <Panel.Body>{this.renderFilter()}</Panel.Body>
+        <Panel.Body>{this.renderBucketsPanel()}</Panel.Body>
+      </Panel.Collapse>
+    );
+  };
+
   toggleAlphaSort = () => {
     this.setState({
       desc: !this.state.desc,
@@ -568,41 +635,26 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     return (
-      <SiteProvider>
-        {site => (
-          <ApolloConsumer>
-            {apolloClient => (
-              <PanelWrapper>
-                <Panel
-                  onToggle={this.handleToggle}
-                  expanded={isOpen}
-                  className="bm-panel-default">
-                  <Panel.Heading className="bm-panel-heading">
-                    <Panel.Title className="bm-panel-title" toggle>
-                      <div className="flex">
-                        <span>{title}</span>
-                        <span>
-                          <FontAwesome name={icon} />{' '}
-                        </span>
-                      </div>
-                    </Panel.Title>
-                  </Panel.Heading>
-                  {isOpen && (
-                    <Panel.Collapse className="bm-panel-collapse">
-                      <Panel.Body>{this.renderFilter()}</Panel.Body>
-                      <Panel.Body>
-                        {this.renderBucketsPanel(apolloClient, site.siteView)}
-                      </Panel.Body>
-                    </Panel.Collapse>
-                  )}
-                </Panel>
-              </PanelWrapper>
-            )}
-          </ApolloConsumer>
-        )}
-      </SiteProvider>
+      <PanelWrapper>
+        <Panel
+          onToggle={this.handleToggle}
+          expanded={isOpen}
+          className="bm-panel-default">
+          <Panel.Heading className="bm-panel-heading">
+            <Panel.Title className="bm-panel-title" toggle>
+              <div className="flex">
+                <span>{title}</span>
+                <span>
+                  <FontAwesome name={icon} />{' '}
+                </span>
+              </div>
+            </Panel.Title>
+          </Panel.Heading>
+          {this.renderPanel()}
+        </Panel>
+      </PanelWrapper>
     );
   }
 }
 
-export default AggDropDown;
+export default withApollo(withSite(AggDropDown));
