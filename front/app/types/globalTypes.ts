@@ -31,6 +31,8 @@ export enum SiteViewOperation {
 export interface AggFilterInput {
   field: string;
   values?: string[] | null;
+  gte?: string | null;
+  lte?: string | null;
 }
 
 /**
