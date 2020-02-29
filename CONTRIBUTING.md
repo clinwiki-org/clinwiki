@@ -20,7 +20,7 @@ The easiest way to start ClinWiki on your own system is to use [docker-compose](
 - Install Docker
   - Windows and Mac users install [Docker Desktop](https://www.docker.com/products/docker-desktop)
   - Linux users follow the [official install instructions for Docker for your distribution](https://docs.docker.com/install/#supported-platforms)
-- **Note: if you're using OS X, set the following environment variable `export COMPOSE_FILE=docker-compose-osx.yml`**. Install `docker-sync` via `gem install docker-sync` and then run `docker-sync start --config=docker-sync.yml` in a separate terminal. This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config.
+- **Note: if you're using OS X, you will want to run docker-compose commands with `-f docker-compose.yml -f docker-compose-osx.yml`**. Install `docker-sync` via `gem install docker-sync` and then run `docker-sync start --config=docker-sync.yml` in a separate terminal. This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config.
 - `docker-compose build`
 - `docker-compose up` or `docker-compose up -d` to run as daemon in background
 - `compose/bin/search_bootstrap`
