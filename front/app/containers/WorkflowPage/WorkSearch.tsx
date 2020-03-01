@@ -1,11 +1,14 @@
 import * as React from 'react';
 import * as Similarity from "./nlp_similarity";
-import List from './WorkList'
-import { Button, Input, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, FormControl,
-    Form,
-    FormGroup,
-    ButtonGroup,
-    ControlLabel} from 'react-bootstrap';
+import * as Distance from "./distance";
+import List from './SearchTermList'
+import {
+  Button, Input, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, FormControl,
+  Form,
+  FormGroup,
+  ButtonGroup,
+  ControlLabel
+} from 'react-bootstrap';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import * as Labels from "./SuggestedLabels";
@@ -45,204 +48,154 @@ margin: 20px;
 `
 
 export interface Props {
-    list?: string[],
-    // handleSearch: (list: string[]) => void;
-    nctid: string
-  }
-  
-  export interface State {
-    list: string[],
-    test: Similarity.SectionText[]
-  }
-  
-  export class App extends React.Component<Props,State> {
-    constructor(props: Props) {
-      super(props);
-      this.state={
-        list: [
-        ],
-        test: [{text: "", section: "", indices: ["","","","",""]}, {text: "", section: "", indices: ["","","","",""]}, {text: "", section: "", indices: ["","","","",""]}, {text: "", section: "", indices: ["","","","",""]}, {text: "", section: "", indices: ["","","","",""]}]
-      }
-      this.removeItem=this.removeItem.bind(this)
+  list?: string[],
+  nctid: string
+}
+
+export interface State {
+  value: string,
+  list: string[],
+  similarityResult: Similarity.SectionText[]
+}
+
+export class WorkSearch extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      value: "",
+      list: [],
+      similarityResult: [{ text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }]
     }
-    
-    addItem(e: any) {
-      // Prevent button click from submitting form
-      e.preventDefault(); // Let's stop this event.
-      e.stopPropagation();
-  
-      // Create variables for our list, the item to add, and our form
-      let list=this.state.list;
-      
-  
-      const newItem=document.getElementById("addInput") as HTMLInputElement;
-      const form=document.getElementById("addItemForm") as HTMLFormElement;
-  
-      // If our input has a value
-      if(newItem.value!="")
-      {
-        // Add the new item to the end of our list array
-        list.push(newItem.value);
-        // Then we use that to set the state for list
-        this.setState({
-          list: list,
-          test: Similarity.findPhrases( {wordsToFind: list, text: JSON.stringify(this.data)} ),
-        });
-        // Finally, we need to reset the form
-        newItem.classList.remove("is-danger");
-        form.reset();
-        // this.setState({test: Similarity.findPhrases( {wordsToFind: this.state.list, text: JSON.stringify(this.data)} )})
-      } else
-      {
-        // If the input doesn't have a value, make the border red since it's required
-        newItem.classList.add("is-danger");
-      }
-      
-    }
-  
-    removeItem(item: string) {
-      // Put our list into an array
-      let list=this.state.list;
-      const form=document.getElementById("addItemForm") as HTMLFormElement;
-      //const newItem=document.getElementById("addInput") as HTMLInputElement;
-      // Check to see if item passed in matches item in array
-      list.some((value,index) => {
-        if(value===item)
-        {
-          // If item matches, remove it from array
-          list.splice(index,1);
-          this.setState({
-            list: list,
-            
-          });
-          return true;
-        } else
-        {
-          return false;
-        }
-      });
-      // Set state to list
+    this.removeItem = this.removeItem.bind(this)
+  }
+
+  addItem(e: any) {
+    // Prevent button click from submitting form
+    e.preventDefault(); // Let's stop this event.
+    e.stopPropagation();
+    const form = document.getElementById("addItemForm") as HTMLFormElement;
+
+    // If our input has a value
+    if (this.state.value != "") {
+      // Add the new item to the end of our list
+      this.state.list.push(this.state.value);
+      // Then we use that to set the state for similarityResult
       this.setState({
-        list: list,
-        test: Similarity.findPhrases( {wordsToFind: list, text: JSON.stringify(this.data)}),
+        similarityResult: Similarity.findPhrases({ wordsToFind: this.state.list, text: JSON.stringify(this.data) }),
       });
+
       // Finally, we need to reset the form
       form.reset();
-    //   this.setState({test: Similarity.findPhrases( {wordsToFind: this.state.list, text: JSON.stringify(this.data)} )})
-      
-    
-      
     }
-    highlight(text: string, word: string) {
-        // var inputText = document.getElementById("inputText");
-        // var innerHTML = inputText.innerHTML;
-        var index = text.indexOf(word);
-        if (index >= 0) { 
-         return text.substring(0,index);
-         
-        }
-        else{
-            return text;
-        }
+
+  }
+
+  removeItem(item: string) {
+    // Check to see if item passed in matches item in array
+    this.state.list.some((value, index) => {
+      if (value === item) {
+        // If item matches, remove it from array
+        this.state.list.splice(index, 1);
       }
-    highlight2(text: string, word: string){
-        var index = text.indexOf(word);
-        if (index >= 0) { 
-            return text.substring(index + word.length);
-            
-           }
-           else{
-               return "";
-           }
+    });
+    Similarity.findPhrases({ wordsToFind: [""], text: this.data });
+    this.setState({
+      similarityResult: Similarity.findPhrases({ wordsToFind: this.state.list, text: JSON.stringify(this.data) }),
+    });
+  }
+
+  getPhraseBeforeKeyword(text: string, word: string) {
+    if (text.indexOf(word) >= 0) {
+      return text.substring(0, text.indexOf(word));
     }
-    data : string;
-    
-    public render() {
-      return (
-        <div className="App">
-          <div className="content">
-            <div className="container">
-              <section className="section">
-                <List items={this.state.list} delete={this.removeItem} />
-              </section>
-              <hr />
-              <section className="section">
-                <form className="form" id="addItemForm">
-                  <input type="text" className="input" id="addInput" placeholder="Something that needs to be done..." />
-                  <button className="button is-info buttonstyle" onClick={(e) => this.addItem(e)}>
-                    Add Item
-                  </button>
-                  
-                </form>
-                <div>
-          <StyledTable striped bordered>
-            {/* <tbody> */}
-            <Query
-          query={SEARCH_QUERY}
-          variables={{
-          nctId: this.props.nctid, 
-            }}
-            >{({ loading, error, data }) => {
-              if (loading) return 'Loading...';
-              if (error) return `Error! ${error.message}`;
-              
-              let here=``;
-            //   this.setState({test: Similarity.findPhrases( {wordsToFind: this.state.list, text: JSON.stringify(data)} )})
-              this.data= JSON.stringify(data);
-              return (
-            //   <tbody>
-            //   <tr>{this.state.test[0]}</tr>
-            //   <tr>{this.state.test[1]}</tr>
-            //   <tr>{this.state.test[2]}</tr>
-            //   <tr>{this.state.test[3]}</tr>
-            //   <tr>{this.state.test[4]}</tr>
-            //   <tr>{this.state.list[0]}</tr>
-            //   </tbody>
-            null
-            
-              )
-              
-  //return Similarity.findPhrases( {wordsToFind: ["Karnofsky"], text: JSON.stringify(data)} );
-             }}
-</Query>
-    <thead>
-        <tr>
-        <th>Phrase</th>
-        <th>Section</th>
-        </tr>
-    </thead>
-    <tbody>
-                <tr>
-                <td>{this.highlight(this.state.test[0].text, this.state.test[0].indices[0])}<span className="highlight">{this.state.test[0].indices[0]}</span>{this.highlight2(this.state.test[0].text, this.state.test[0].indices[0])}</td>
-                  <td>{this.state.test[0].section}</td>
-                </tr>
-                <tr>
-                  <td>{this.highlight(this.state.test[1].text, this.state.test[1].indices[1])}<span className="highlight">{this.state.test[1].indices[1]}</span>{this.highlight2(this.state.test[1].text, this.state.test[1].indices[1])}</td>
-                  <td>{this.state.test[1].section}</td>
-                </tr>
-                <tr>
-                  <td>{this.highlight(this.state.test[2].text, this.state.test[2].indices[2])}<span className="highlight">{this.state.test[2].indices[2]}</span>{this.highlight2(this.state.test[2].text, this.state.test[2].indices[2])}</td>
-                  <td>{this.state.test[2].section}</td>
-                </tr>
-                <tr>
-                  <td>{this.highlight(this.state.test[3].text, this.state.test[3].indices[3])}<span className="highlight">{this.state.test[3].indices[3]}</span>{this.highlight2(this.state.test[3].text, this.state.test[3].indices[3])}</td>
-                  <td>{this.state.test[3].section}</td>
-                </tr>
-                <tr>
-                  <td>{this.highlight(this.state.test[4].text, this.state.test[4].indices[4])}<span className="highlight">{this.state.test[4].indices[4]}</span>{this.highlight2(this.state.test[4].text, this.state.test[4].indices[4])}</td>
-                  <td>{this.state.test[4].section}</td>
-                </tr>
-              </tbody>
-        
-          </StyledTable>
-          
-          </div>
-          
-              </section>
-            </div>
-          </div>
-        </div>
-      );
+    else {
+      return text;
     }
   }
-  
+
+  getPhraseAfterKeyword(text: string, word: string) {
+    if (text.indexOf(word) >= 0) {
+      return text.substring(text.indexOf(word) + word.length);
+    }
+    else {
+      return "";
+    }
+  }
+
+
+  data: string;
+  public render() {
+    return (
+      <div className="App">
+        <div className="content">
+          <div className="container">
+            <section className="section">
+              <List items={this.state.list} delete={this.removeItem} />
+            </section>
+            <hr />
+            <section className="section">
+              <form className="form" id="addItemForm">
+                <input type="text" onChange={(e) => this.setState({ value: e.target.value })} className="input" id="addInput" />
+                <button className="button is-info buttonstyle" onClick={(e) => this.addItem(e)}>
+                  Add Item
+                  </button>
+              </form>
+              <div>
+                <StyledTable striped bordered>
+                  <Query
+                    query={SEARCH_QUERY}
+                    variables={{
+                      nctId: this.props.nctid,
+                    }}
+                  >{({ loading, error, data }) => {
+                    if (loading) return 'Loading...';
+                    if (error) return `Error! ${error.message}`;
+
+                    let here = ``;
+                    this.data = JSON.stringify(data);
+
+                    return (
+                      <div></div>
+                    )
+                  }}
+                  </Query>
+                  <thead>
+                    <tr>
+                      <th>Phrase</th>
+                      <th>Section</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{this.getPhraseBeforeKeyword(this.state.similarityResult[0].text, this.state.similarityResult[0].keyWord)}<span className="highlight">{this.state.similarityResult[0].keyWord}</span>{this.getPhraseAfterKeyword(this.state.similarityResult[0].text, this.state.similarityResult[0].keyWord)}</td>
+                      <td>{this.state.similarityResult[0].section}</td>
+                    </tr>
+                    <tr>
+                      <td>{this.getPhraseBeforeKeyword(this.state.similarityResult[1].text, this.state.similarityResult[1].keyWord)}<span className="highlight">{this.state.similarityResult[1].keyWord}</span>{this.getPhraseAfterKeyword(this.state.similarityResult[1].text, this.state.similarityResult[1].keyWord)}</td>
+                      <td>{this.state.similarityResult[1].section}</td>
+                    </tr>
+                    <tr>
+                      <td>{this.getPhraseBeforeKeyword(this.state.similarityResult[2].text, this.state.similarityResult[2].keyWord)}<span className="highlight">{this.state.similarityResult[2].keyWord}</span>{this.getPhraseAfterKeyword(this.state.similarityResult[2].text, this.state.similarityResult[2].keyWord)}</td>
+                      <td>{this.state.similarityResult[2].section}</td>
+                    </tr>
+                    <tr>
+                      <td>{this.getPhraseBeforeKeyword(this.state.similarityResult[3].text, this.state.similarityResult[3].keyWord)}<span className="highlight">{this.state.similarityResult[3].keyWord}</span>{this.getPhraseAfterKeyword(this.state.similarityResult[3].text, this.state.similarityResult[3].keyWord)}</td>
+                      <td>{this.state.similarityResult[3].section}</td>
+                    </tr>
+                    <tr>
+                      <td>{this.getPhraseBeforeKeyword(this.state.similarityResult[4].text, this.state.similarityResult[4].keyWord)}<span className="highlight">{this.state.similarityResult[4].keyWord}</span>{this.getPhraseAfterKeyword(this.state.similarityResult[4].text, this.state.similarityResult[4].keyWord)}</td>
+                      <td>{this.state.similarityResult[4].section}</td>
+                    </tr>
+                  </tbody>
+
+                </StyledTable>
+
+              </div>
+
+            </section>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}

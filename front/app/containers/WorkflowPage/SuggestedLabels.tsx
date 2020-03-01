@@ -5,12 +5,14 @@ import { gql } from 'apollo-boost';
 import PREFETCH_QUERY from '../StudyPage';
 import * as FontAwesome from "react-fontawesome";
 import CurrentUser from "containers/CurrentUser";
-import { Button, List, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, FormControl,
+import {
+  Button, List, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, FormControl,
   Form,
   FormGroup,
   ButtonGroup,
-  ControlLabel} from 'react-bootstrap';
-  import * as Autosuggest from "react-autosuggest";
+  ControlLabel
+} from 'react-bootstrap';
+import * as Autosuggest from "react-autosuggest";
 import SearchView from '../SearchPage/SearchView'
 import {
   SuggestedLabelsQuery,
@@ -28,14 +30,14 @@ import { SearchPageSearchQuery } from 'types/SearchPageSearchQuery';
 import { MAX_WINDOW_SIZE } from 'utils/constants';
 import { Component } from 'react';
 import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
-import { App } from './WorkSearch'
+import { WorkSearch } from './WorkSearch'
 interface SuggestedLabelsProps {
   nctId: string;
   searchHash: string | null;
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
   allowedSuggestedLabels: string[];
-  
+
 }
 
 const SEARCH_QUERY = gql`
@@ -98,7 +100,7 @@ const QUERY = gql`
 class QueryComponent extends Query<
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables
-> {}
+  > { }
 
 const LabelsContainer = styled.div`
   display: flex;
@@ -131,12 +133,12 @@ interface MyFilterProps {
   params: SearchParams;
 
 }
-interface MyFilterState{
+interface MyFilterState {
   searchTerm: string;
-  params: SearchParams  | null;
+  params: SearchParams | null;
 }
 
-interface SuggestedLabelsState{
+interface SuggestedLabelsState {
   list: string[];
 }
 
@@ -148,90 +150,32 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
   ) => {
     this.props.onSelect(key, value, e.currentTarget.checked);
   };
-  
-  public getID(){
+
+  public getID() {
     return this.props.nctId;
   }
-  
-  test : string[] = [];
- 
-  SearchList : string[] =[];
-  handleSearch = (list: string[]) => {
-  event?.preventDefault();
-  this.SearchList = list;
-  return (<Query
-  query={SEARCH_QUERY}
-  variables={{
-  nctId: this.props.nctId,
-    }}
-    >{({ loading, error, data }) => {
-      if (loading) return 'Loading...';
-      if (error) return `Error! ${error.message}`;
-      
-      let here=``;
-      this.test=Similarity.findPhrases( {wordsToFind: this.SearchList, text: JSON.stringify(data)} )
-      
-      return (
-      <tbody>
-      <tr>{this.test[0]}</tr>
-      <tr>{this.test[1]}</tr>
-      <tr>{this.test[2]}</tr>
-      <tr>{this.test[3]}</tr>
-      <tr>{this.test[4]}</tr>
-      </tbody>
-      )
-      
-//return Similarity.findPhrases( {wordsToFind: ["Karnofsky"], text: JSON.stringify(data)} );
-     }}
-  </Query>);
-
-
-}
-
-
-// phrases = Similarity.findPhrases( {wordsToFind: ["the"], text: this.hello.props} );
-
 
   renderAgg = (key: string, values: [string, boolean][]) => {
     return (
       <StyledPanel key={key} header={key} dropdown>
-        
         <Row>
           <StyledCol xs={4}>
-          
-          
-        {values.map(([value, checked]) => (
-          
-          <Checkbox
-            key={value}
-            checked={checked}
-            disabled={this.props.disabled}
-            onChange={this.handleSelect(key, value)}>
-            {value}
-          </Checkbox>
-          
-        ))}
-        </StyledCol>
-
-        <Col xs={4}>
-          
-          <div>
-        
-        </div>
-        <div>
-        <App
-          // list={this.props.list}
-          
-          nctid={this.props.nctId}
-          // handleSearch={this.handleSearch}
-          />
-          
-          </div>
-          
-        </Col>
+            {values.map(([value, checked]) => (
+              <Checkbox
+                key={value}
+                checked={checked}
+                disabled={this.props.disabled}
+                onChange={this.handleSelect(key, value)}>
+                {value}
+              </Checkbox>
+            ))}
+          </StyledCol>
+          <Col xs={4}>
+            <div>
+              <WorkSearch nctid={this.props.nctId} />
+            </div>
+          </Col>
         </Row>
-      
-  
       </StyledPanel>
     );
   };
@@ -250,7 +194,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
           try {
             meta = JSON.parse(
               (data.study && data.study.wikiPage && data.study.wikiPage.meta) ||
-                '{}'
+              '{}'
             );
           } catch (e) {
             console.log(`Error parsing meta: ${meta}`);

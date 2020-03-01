@@ -53,7 +53,7 @@ function gettopFiveArray(_a) {
         var index = promisingIndicesArray[i];
         var backwardsWindow = index - 10;
         var forwardsWindow = index + 40;
-        var sentence;
+        var sentence = "";
         if (backwardsWindow < 0 && forwardsWindow >= wordsArray.length) {
             sentence = appendStringArrayWithSpace({ array: wordsArray.slice(0, wordsArray.length) });
         }
@@ -69,19 +69,17 @@ function gettopFiveArray(_a) {
         if (i > 4) {
             break;
         }
-        topFiveArray.push({ text: sentence, section: getSectionFoundIn({ indexOfWord: index, wordsArray: wordsArray }) });
-        // topFiveArray.push(getSectionFoundIn ({indexOfWord: index, wordsArray: wordsArray}) + sentence);
-        // topFiveArray.push(sentence);
+        topFiveArray.push({ text: sentence, section: getSectionFoundIn({ indexOfWord: index, wordsArray: wordsArray }), keyWord: wordsArray[index] });
     }
 }
-var promisingIndices = new Array();
-var words = new Array();
 function findPhrases(_a) {
     var wordsToFind = _a.wordsToFind, text = _a.text;
+    var promisingIndices = new Array();
+    var words = new Array();
     if (wordsToFind.length == 0) {
         var topFive = new Array();
         for (var i = 0; i < 5; i++) {
-            topFive.push({ text: "Could not find another phrase", section: "none" });
+            topFive.push({ text: "Could not find another phrase", section: "none", keyWord: "" });
         }
         return topFive;
     }
@@ -133,24 +131,9 @@ function findPhrases(_a) {
     gettopFiveArray({ promisingIndicesArray: promisingIndices, wordsArray: words, topFiveArray: topFive });
     if (promisingIndices.length < 5) {
         for (var i = promisingIndices.length; i < 5; i++) {
-            topFive.push({ text: "Could not find another phrase", section: "none" });
+            topFive.push({ text: "Could not find another phrase", section: "none", keyWord: "" });
         }
     }
     return topFive;
 }
 exports.findPhrases = findPhrases;
-function getWordsToHighlight() {
-    var wordsToHighLight = new Array();
-    for (var i = 0; i < promisingIndices.length; i++) {
-        wordsToHighLight.push(words[promisingIndices[i]]);
-    }
-    return wordsToHighLight;
-}
-// how to call, please comment out when actually running
-var arrayOfWords = ["Karnofsky", "Lansky", "KPS", "PS", "Karnofsky Score", "ECOG PS", "Performance Status",
-    "Karnofsky Performance Status", "ECOG Performance Status", "Lansky Performance Status",
-    "European Cooperative Oncology Group Performance Status"];
-var str = " \"eligibilityCriteria\":\\n -  Performance score ≥ 50 (Lanksy for research subjects aged 16 years or younger and\n             Karnofsky for subjects older";
-var topFive = findPhrases({ wordsToFind: arrayOfWords, text: str });
-console.log(topFive);
-console.log(getWordsToHighlight());
