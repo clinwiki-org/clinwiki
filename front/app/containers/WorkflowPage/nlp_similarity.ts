@@ -40,9 +40,8 @@ function countWhiteSpacesInString({ text }: { text: string }): number {
 }
 
 function getSectionFoundIn({ indexOfWord, wordsArray }: { indexOfWord: number, wordsArray: string[] }): string {
-    var arrayOfSearchTerms = [/nctId/g, /detailedDescription/g, /eligibilityCriteria/g, /conditions/g, /briefTitle/g, /overallStatus/g,
-        /createdAt/g, /updatedAt/g, /facilities/g, /interventions/g];
-
+    var arrayOfSearchTerms = [/interventions/g, /facilities/g, /updatedAt/g, /createdAt/g, /overallStatus/g, /briefTitle/g, /conditions/g,
+        /eligibilityCriteria/g, /detailedDescription/g, /briefSummary/g];
     for (var i = indexOfWord; i >= 0; i--) {
         for (var j = 0; j < arrayOfSearchTerms.length; j++) {
             var match = wordsArray[i].match(arrayOfSearchTerms[j]);

@@ -18,6 +18,7 @@ const SEARCH_QUERY = gql`
 query AllQuery($nctId: String!) {
   study(nctId: $nctId) {
     nctId
+    briefSummary
     detailedDescription
     eligibilityCriteria
     conditions
