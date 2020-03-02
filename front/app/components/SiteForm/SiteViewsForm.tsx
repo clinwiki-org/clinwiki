@@ -63,6 +63,15 @@ class SiteViewsForm extends React.Component<
         },
       });
       return null;
+    }else if(form.siteViewName == '' || form.siteViewPath==''){
+      alert(`Name and URL are both required, please try again`)
+      this.setState({
+        form: {
+          siteViewName: '',
+          siteViewPath: '',
+        },
+      });
+      return null;
     }
     createSiteView({
       variables: {
