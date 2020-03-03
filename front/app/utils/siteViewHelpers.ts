@@ -13,13 +13,21 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 export const preselectedFilters = (
   view: SiteViewFragment
 ): { aggFilters: AggFilterInput[]; crowdAggFilters: AggFilterInput[] } => {
-  const aggFilters = reject(
+  let aggFilters = reject(
     field => isEmpty(field.preselected.values),
     view.search.aggs.fields
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
   }));
+  const presearchAggFilters = reject(
+    field=> isEmpty(field.preselected.values), 
+    view.search.presearch.aggs.fields
+    ).map(field=>({
+      field:field.name,
+      values: field.preselected.values,
+    }));
+    console.log("Prepre Aggs", presearchAggFilters)
   const crowdAggFilters = reject(
     field => isEmpty(field.preselected.values),
     view.search.crowdAggs.fields
@@ -27,6 +35,7 @@ export const preselectedFilters = (
     field: field.name,
     values: field.preselected.values,
   }));
+  aggFilters= aggFilters.concat(presearchAggFilters)
   return {
     aggFilters,
     crowdAggFilters,
