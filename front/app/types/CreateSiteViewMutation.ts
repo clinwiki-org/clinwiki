@@ -39,7 +39,8 @@ export interface CreateSiteViewMutation_createSiteView_siteView_study {
 
 export interface CreateSiteViewMutation_createSiteView_siteView_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
-  fields: string[];
+  aggs: string[];
+  crowdAggs: string[];
 }
 
 export interface CreateSiteViewMutation_createSiteView_siteView_search_results_buttons_items {

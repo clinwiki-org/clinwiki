@@ -55,7 +55,8 @@ export interface SiteFragment_siteView_study {
 
 export interface SiteFragment_siteView_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
-  fields: string[];
+  aggs: string[];
+  crowdAggs: string[];
 }
 
 export interface SiteFragment_siteView_search_results_buttons_items {
@@ -293,7 +294,8 @@ export interface SiteFragment_siteViews_study {
 
 export interface SiteFragment_siteViews_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
-  fields: string[];
+  aggs: string[];
+  crowdAggs: string[];
 }
 
 export interface SiteFragment_siteViews_search_results_buttons_items {

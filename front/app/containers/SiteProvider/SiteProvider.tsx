@@ -63,7 +63,8 @@ const SITE_VIEW_FRAGMENT = gql`
     }
     search {
       autoSuggest {
-        fields
+        aggs
+        crowdAggs
       }
       results{
         type
@@ -222,11 +223,12 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
   static siteViewFragment = SITE_VIEW_FRAGMENT;
 
   render() {
+    console.log("SHould be rendering QueryComponent")
     return (
       <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
         {({ data, loading, error, refetch }) => {
           if (loading || error) return null;
-          //  console.log(data);
+           console.log(data);
           return this.props.children(data!.site!, refetch);
         }}
       </QueryComponent>

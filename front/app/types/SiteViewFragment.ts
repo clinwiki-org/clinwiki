@@ -39,7 +39,8 @@ export interface SiteViewFragment_study {
 
 export interface SiteViewFragment_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
-  fields: string[];
+  aggs: string[];
+  crowdAggs: string[];
 }
 
 export interface SiteViewFragment_search_results_buttons_items {
