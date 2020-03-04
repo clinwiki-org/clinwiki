@@ -74,6 +74,10 @@ function gettopFiveArray(_a) {
 }
 function findPhrases(_a) {
     var wordsToFind = _a.wordsToFind, text = _a.text;
+    //ensure priority is given to words that were entered first in the list.
+    console.log(wordsToFind);
+    // wordsToFind = wordsToFind.reverse();
+    console.log(wordsToFind);
     var promisingIndices = new Array();
     var words = new Array();
     if (wordsToFind.length == 0) {

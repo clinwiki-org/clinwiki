@@ -11,6 +11,14 @@ function dLDistance(_a) {
         return a.length;
     a = a.toLowerCase();
     b = b.toLowerCase();
+    //don't allow more than 25% of the characters to be incorrect
+    var maxNumberOfCharacters = 0.25 * b.length;
+    //clean up the source string a, which may have escape characters.
+    a = a.replace(/\\\\n/g, "");
+    a = a.replace(/\\n/g, "");
+    a = a.replace(/\\/g, "");
+    a = a.replace(/\(/g, "");
+    a = a.replace(/\)/g, "");
     var sourceLength = a.length;
     var targetLength = b.length;
     var score = new Array();
@@ -48,6 +56,6 @@ function dLDistance(_a) {
         }
         sd[a[i - 1]] = i;
     }
-    return score[sourceLength + 1][targetLength + 1];
+    return score[sourceLength + 1][targetLength + 1] >= maxNumberOfCharacters ? 100 : score[sourceLength + 1][targetLength + 1];
 }
 exports.dLDistance = dLDistance;

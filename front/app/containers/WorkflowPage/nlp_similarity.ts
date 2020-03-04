@@ -80,6 +80,11 @@ function gettopFiveArray({ promisingIndicesArray, wordsArray, topFiveArray }: { 
 }
 
 export function findPhrases({ wordsToFind, text }: { wordsToFind: string[], text: string }): SectionText[] {
+    //ensure priority is given to words that were entered first in the list.
+    console.log(wordsToFind);
+    // wordsToFind = wordsToFind.reverse();
+    console.log(wordsToFind);
+
     var promisingIndices = new Array<number>();
     var words = new Array<string>();
     if (wordsToFind.length == 0) {
