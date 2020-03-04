@@ -95,3 +95,11 @@ gem "faraday"
 
 gem "activerecord-import", "~> 1.0"
 gem "composite_primary_keys"
+
+gem "timeliness", "~> 0.4.4"
+
+gem "webmock", "~> 3.8", :group => :test
+
+gem "rspec-snapshot", "~> 0.1.2", :group => :test
+
+gem "http_logger", "~> 0.6.0"

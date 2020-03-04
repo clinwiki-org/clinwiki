@@ -262,6 +262,7 @@
     "fontfaceobserver": "2.0.9",
     "google-map-react": "^1.1.5",
     "graphql": "^14.0.2",
+    "handlebars": "^4.7.3",
     "hoist-non-react-statics": "2.1.1",
     "html-loader": "0.4.5",
     "html-webpack-plugin": "2.29.0",
@@ -294,6 +295,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-intl": "2.4.0",
     "react-loadable": "4.0.3",
+    "react-markdown": "^4.3.1",
     "react-mock-router": "^1.0.11",
     "react-modal": "^3.1.11",
     "react-paginate": "^5.0.0",
@@ -322,11 +324,14 @@
     "webpack-hot-middleware": "2.18.0",
     "whatwg-fetch": "^3.0.0"
   },
-  "prettier" : {
+  "prettier": {
     "trailingComma": "es5",
     "tabWidth": 2,
     "semi": true,
     "singleQuote": true,
     "jsxBracketSameLine": true
+  },
+  "devDependencies": {
+    "prettier": "1.19.1"
   }
 }

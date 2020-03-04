@@ -29,3 +29,5 @@ ubuntu-artful-17.10-cloudimg-console.log
 .orig
 public/assets
 node_modules
+entrypoint.lock
+.docker-sync

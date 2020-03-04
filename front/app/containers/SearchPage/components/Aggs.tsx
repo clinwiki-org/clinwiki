@@ -53,7 +53,7 @@ interface AggsProps {
   openedKind: AggKind | null;
   onOpen: (agg: string, kind: AggKind) => void;
   removeSelectAll?: boolean;
-  resetSelectAll?: ()=>void;
+  resetSelectAll?: () => void;
 }
 
 class Aggs extends React.PureComponent<AggsProps> {

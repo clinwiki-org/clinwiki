@@ -10,8 +10,8 @@ fi
 
 bundle install
 echo MODE=$CW_MODE
-bundle exec rake db:create
-bundle exec rake db:migrate
+flock -x ./entrypoint.lock bundle exec rake db:create
+flock -x ./entrypoint.lock bundle exec rake db:migrate
 if [ $CW_MODE == "PROD" ]; then
     ./front/scripts/build
 fi
