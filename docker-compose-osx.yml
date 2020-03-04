@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  sidekiq:
+    volumes:
+      - api-sync:/clinwiki:delegated
+
+volumes:
+  api-sync:
+    external: true

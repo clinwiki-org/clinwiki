@@ -52,5 +52,6 @@ Rails.application.configure do
     ActiveRecord::Base.logger = Rails.logger.clone
     ActiveRecord::Base.logger.level = Logger::INFO
     ActiveSupport::Notifications.unsubscribe("search.searchkick")
+    HttpLogger.logger.level = :error
   end
 end
