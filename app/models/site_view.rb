@@ -280,7 +280,8 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           },
         },
         autoSuggest:{
-          fields: %w[],
+          aggs: %w[],
+          crowdAggs: %w[],
         },
         results:{
           type:"table",
