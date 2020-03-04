@@ -460,7 +460,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       );
   }
   renderAutoSuggestConfig=(showAutoSuggest,view,fields, crowdFields,updateSiteView )=>{
-    console.log("View",view )
+    // console.log("View aggs",view.search.autoSuggest.aggs)
+    // console.log("Fields", fields)
     return(
       <Panel>
       <Panel.Heading>
@@ -487,7 +488,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   Show all
                 </StyledCheckbox>
               </AggsHeaderContainer>
-              <StyledLabel>Filter</StyledLabel>
+              {/* <StyledLabel>Filter</StyledLabel>
               <StyledFormControl
                 name="set:search.aggs.selected.kind"
                 componentClass="select"
@@ -495,7 +496,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 value={view.search.aggs.selected.kind}>
                 <option value="BLACKLIST">All except</option>
                 <option value="WHITELIST">Only</option>
-              </StyledFormControl>
+              </StyledFormControl> */}
             <StyledLabel>Add to Autosuggest</StyledLabel>
             <MultiInput
               name="set:search.autoSuggest.aggs"
@@ -526,7 +527,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   Show all
                 </StyledCheckbox>
               </AggsHeaderContainer>
-              <StyledLabel>Filter</StyledLabel>
+              {/* <StyledLabel>Filter</StyledLabel>
               <StyledFormControl
                 name="set:search.crowdAggs.selected.kind"
                 componentClass="select"
@@ -534,7 +535,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 v={view.search.crowdAggs.selected.kind}>
                 <option value="BLACKLIST">All except</option>
                 <option value="WHITELIST">Only</option>
-              </StyledFormControl>
+              </StyledFormControl> */}
               <StyledLabel>Add to Autosuggest</StyledLabel>
               <MultiInput
               name="set:search.autoSuggest.crowdAggs"

@@ -303,23 +303,23 @@ export default class CrumbsBar extends React.Component<
     return aggFields;
   };
 
-  getCrowdAggFieldsFromSubsiteConfig = crowdAggs => {
-    let crowdAggFields: string[] = [];
-    if (crowdAggs.length > 0) {
-      crowdAggs.map(i => {
-        if (i.autoSuggest) {
-          crowdAggFields.push(i.name);
-        }
-      });
-    }
-    return crowdAggFields;
-  };
+  // getCrowdAggFieldsFromSubsiteConfig = crowdAggs => {
+  //   let crowdAggFields: string[] = [];
+  //   if (crowdAggs.length > 0) {
+  //     crowdAggs.map(i => {
+  //       if (i.autoSuggest) {
+  //         crowdAggFields.push(i.name);
+  //       }
+  //     });
+  //   }
+  //   return crowdAggFields;
+  // };
 
-  getAutoSuggestFields = () => {
-    let aggFields = this.props.currentSiteView.search.autoSuggest.fields;
-    aggFields = this.props.currentSiteView.search.autoSuggest.fields;
-    return aggFields;
-  };
+  // getAutoSuggestFields = () => {
+  //   let aggFields = this.props.currentSiteView.search.autoSuggest.fields;
+  //   aggFields = this.props.currentSiteView.search.autoSuggest.fields;
+  //   return aggFields;
+  // };
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
@@ -328,11 +328,10 @@ export default class CrumbsBar extends React.Component<
       return { children: [], key: i };
     });
 
-    const aggFields = this.getAutoSuggestFields();
+    const aggFields = currentSiteView.search.autoSuggest.aggs
 
-    const crowdAggFields = this.getCrowdAggFieldsFromSubsiteConfig(
-      currentSiteView.search.crowdAggs.fields
-    );
+    const crowdAggFields = currentSiteView.search.autoSuggest.crowdAggs
+
 
     const query = AUTOSUGGEST_QUERY;
     const variables = {
@@ -349,7 +348,7 @@ export default class CrumbsBar extends React.Component<
       },
       sorts: [],
       aggFields: aggFields,
-      crowdAggFields: [],
+      crowdAggFields: crowdAggFields,
     };
 
     const response = await apolloClient.query({
