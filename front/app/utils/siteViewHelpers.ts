@@ -27,15 +27,24 @@ export const preselectedFilters = (
       field:field.name,
       values: field.preselected.values,
     }));
-    console.log("Prepre Aggs", presearchAggFilters)
-  const crowdAggFilters = reject(
+    // console.log("Prepre Aggs", presearchAggFilters)
+  let crowdAggFilters = reject(
     field => isEmpty(field.preselected.values),
     view.search.crowdAggs.fields
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
   }));
+
+  const presearchCrowdAggFilters = reject(
+    field=> isEmpty(field.preselected.values), 
+    view.search.presearch.crowdAggs.fields
+    ).map(field=>({
+      field:field.name,
+      values: field.preselected.values,
+    }));
   aggFilters= aggFilters.concat(presearchAggFilters)
+  crowdAggFilters = crowdAggFilters.concat(presearchCrowdAggFilters)
   return {
     aggFilters,
     crowdAggFilters,
