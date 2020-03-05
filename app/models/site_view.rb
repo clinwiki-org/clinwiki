@@ -280,8 +280,20 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           },
         },
         autoSuggest:{
-          aggs: %w[],
-          crowdAggs: %w[],
+          aggs: {
+            selected: {
+              kind: "BLACKLIST",
+              values: aggs,
+            },
+            fields: crowd_aggs,
+          },
+          crowdAggs: {
+            selected: {
+              kind: "BLACKLIST",
+              values: [],
+            },
+            fields:  %w[],
+          },
         },
         results:{
           type:"table",
