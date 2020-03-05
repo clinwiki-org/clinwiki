@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
+import Card from './cards';
 
 interface CardsProps {
   data: any;
@@ -11,6 +12,100 @@ interface CardsProps {
 
 interface CardsState {
   loading: boolean;
+}
+
+interface OldCardProps {
+  c: any;
+  d: any;
+  index: number;
+}
+class OldCard extends React.PureComponent<OldCardProps> {
+  contentStyle = {
+    padding: '10px',
+  };
+
+  render() {
+    const { c, d, index } = this.props;
+    if (index === 0) {
+      if (c.Cell) {
+        const props = {
+          original: {
+            averageRating: d.averageRating,
+            reviewsCount: d.reviewsCount,
+          },
+        };
+
+        return (
+          <div
+            key={`${d.nctId}_${c.accessor}`}
+            style={{
+              width: '100%',
+              backgroundColor: '#55b88d80',
+              ...this.contentStyle,
+            }}>
+            <div style={{ width: '100%' }}>
+              <label style={{ marginBottom: '0px' }}>
+                {c.Header.props.field}
+              </label>
+            </div>
+            <div style={{ width: '100%' }}>{c.Cell(props)}</div>
+          </div>
+        );
+      }
+
+      return (
+        <div
+          key={`${d.nctId}_${c.accessor}`}
+          style={{
+            width: '100%',
+            backgroundColor: '#55b88d80',
+            ...this.contentStyle,
+          }}>
+          <div style={{ width: '100%' }}>
+            <label style={{ marginBottom: '0px' }}>
+              {c.Header.props.field}
+            </label>
+          </div>
+          <div style={{ width: '100%' }}>
+            <label style={{ fontSize: '20px', marginBottom: '0px' }}>
+              {d[c.accessor]}
+            </label>
+          </div>
+        </div>
+      );
+    }
+
+    if (c.Cell) {
+      const props = {
+        original: {
+          averageRating: d.averageRating,
+          reviewsCount: d.reviewsCount,
+        },
+      };
+
+      return (
+        <div
+          key={`${d.nctId}_${c.accessor}`}
+          style={{ width: '100%', ...this.contentStyle }}>
+          <div style={{ width: '100%' }}>
+            <label>{c.Header.props.field}</label>
+          </div>
+          <div style={{ width: '100%' }}>{c.Cell(props)}</div>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={`${d.nctId}_${c.accessor}`}
+        style={{ width: '100%', ...this.contentStyle }}>
+        <div style={{ width: '100%' }}>
+          <label>{c.Header.props.field}</label>
+        </div>
+        <div style={{ width: '100%' }}>{d[c.accessor]}</div>
+      </div>
+    );
+  }
 }
 
 class Cards extends React.Component<CardsProps, CardsState> {
@@ -36,10 +131,6 @@ class Cards extends React.Component<CardsProps, CardsState> {
     overflow: 'scroll',
   };
 
-  contentStyle = {
-    padding: '10px',
-  };
-
   clicked = (d: any) => {
     this.props.onPress(d);
   };
@@ -56,87 +147,9 @@ class Cards extends React.Component<CardsProps, CardsState> {
           style={{ padding: '10px', height: '500px' }}
           onClick={() => this.clicked(d)}>
           <div style={this.cardStyle}>
-            {this.props.columns.map((c, index) => {
-              if (index === 0) {
-                if (c.Cell) {
-                  const props = {
-                    original: {
-                      averageRating: d.averageRating,
-                      reviewsCount: d.reviewsCount,
-                    },
-                  };
-
-                  return (
-                    <div
-                      key={`${d.nctId}_${c.accessor}`}
-                      style={{
-                        width: '100%',
-                        backgroundColor: '#55b88d80',
-                        ...this.contentStyle,
-                      }}>
-                      <div style={{ width: '100%' }}>
-                        <label style={{ marginBottom: '0px' }}>
-                          {c.Header.props.field}
-                        </label>
-                      </div>
-                      <div style={{ width: '100%' }}>{c.Cell(props)}</div>
-                    </div>
-                  );
-                }
-
-                return (
-                  <div
-                    key={`${d.nctId}_${c.accessor}`}
-                    style={{
-                      width: '100%',
-                      backgroundColor: '#55b88d80',
-                      ...this.contentStyle,
-                    }}>
-                    <div style={{ width: '100%' }}>
-                      <label style={{ marginBottom: '0px' }}>
-                        {c.Header.props.field}
-                      </label>
-                    </div>
-                    <div style={{ width: '100%' }}>
-                      <label style={{ fontSize: '20px', marginBottom: '0px' }}>
-                        {d[c.accessor]}
-                      </label>
-                    </div>
-                  </div>
-                );
-              }
-
-              if (c.Cell) {
-                const props = {
-                  original: {
-                    averageRating: d.averageRating,
-                    reviewsCount: d.reviewsCount,
-                  },
-                };
-
-                return (
-                  <div
-                    key={`${d.nctId}_${c.accessor}`}
-                    style={{ width: '100%', ...this.contentStyle }}>
-                    <div style={{ width: '100%' }}>
-                      <label>{c.Header.props.field}</label>
-                    </div>
-                    <div style={{ width: '100%' }}>{c.Cell(props)}</div>
-                  </div>
-                );
-              }
-
-              return (
-                <div
-                  key={`${d.nctId}_${c.accessor}`}
-                  style={{ width: '100%', ...this.contentStyle }}>
-                  <div style={{ width: '100%' }}>
-                    <label>{c.Header.props.field}</label>
-                  </div>
-                  <div style={{ width: '100%' }}>{d[c.accessor]}</div>
-                </div>
-              );
-            })}
+            {this.props.columns.map((c, index) => (
+              <OldCard d={d} c={c} index={index} />
+            ))}
           </div>
         </Col>
       );
