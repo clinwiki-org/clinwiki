@@ -545,6 +545,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           if (this.props.showCards) {
             return (
               <Cards
+                site={site}
                 columns={columns}
                 data={searchData}
                 onPress={this.cardPressed}
