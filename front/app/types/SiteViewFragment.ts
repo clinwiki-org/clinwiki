@@ -37,10 +37,78 @@ export interface SiteViewFragment_study {
   extendedSections: SiteViewFragment_study_extendedSections[];
 }
 
+export interface SiteViewFragment_search_autoSuggest_aggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteViewFragment_search_autoSuggest_aggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteViewFragment_search_autoSuggest_aggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: SiteViewFragment_search_autoSuggest_aggs_fields_preselected;
+  visibleOptions: SiteViewFragment_search_autoSuggest_aggs_fields_visibleOptions;
+  autoSuggest: boolean;
+  rank: number | null;
+}
+
+export interface SiteViewFragment_search_autoSuggest_aggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteViewFragment_search_autoSuggest_aggs {
+  __typename: "SiteAggSection";
+  fields: SiteViewFragment_search_autoSuggest_aggs_fields[];
+  selected: SiteViewFragment_search_autoSuggest_aggs_selected;
+}
+
+export interface SiteViewFragment_search_autoSuggest_crowdAggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteViewFragment_search_autoSuggest_crowdAggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteViewFragment_search_autoSuggest_crowdAggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: SiteViewFragment_search_autoSuggest_crowdAggs_fields_preselected;
+  visibleOptions: SiteViewFragment_search_autoSuggest_crowdAggs_fields_visibleOptions;
+  rank: number | null;
+  autoSuggest: boolean;
+}
+
+export interface SiteViewFragment_search_autoSuggest_crowdAggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface SiteViewFragment_search_autoSuggest_crowdAggs {
+  __typename: "SiteAggSection";
+  fields: SiteViewFragment_search_autoSuggest_crowdAggs_fields[];
+  selected: SiteViewFragment_search_autoSuggest_crowdAggs_selected;
+}
+
 export interface SiteViewFragment_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
-  aggs: string[];
-  crowdAggs: string[];
+  aggs: SiteViewFragment_search_autoSuggest_aggs;
+  crowdAggs: SiteViewFragment_search_autoSuggest_crowdAggs;
 }
 
 export interface SiteViewFragment_search_results_buttons_items {

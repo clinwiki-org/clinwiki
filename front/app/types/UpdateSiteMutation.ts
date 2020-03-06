@@ -53,10 +53,78 @@ export interface UpdateSiteMutation_updateSite_site_siteView_study {
   extendedSections: UpdateSiteMutation_updateSite_site_siteView_study_extendedSections[];
 }
 
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_fields_preselected;
+  visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_fields_visibleOptions;
+  autoSuggest: boolean;
+  rank: number | null;
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs {
+  __typename: "SiteAggSection";
+  fields: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_fields[];
+  selected: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_selected;
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_fields_preselected;
+  visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_fields_visibleOptions;
+  rank: number | null;
+  autoSuggest: boolean;
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs {
+  __typename: "SiteAggSection";
+  fields: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_fields[];
+  selected: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_selected;
+}
+
 export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
-  aggs: string[];
-  crowdAggs: string[];
+  aggs: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs;
+  crowdAggs: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_results_buttons_items {
@@ -292,10 +360,78 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_study {
   extendedSections: UpdateSiteMutation_updateSite_site_siteViews_study_extendedSections[];
 }
 
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_fields_preselected;
+  visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_fields_visibleOptions;
+  autoSuggest: boolean;
+  rank: number | null;
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs {
+  __typename: "SiteAggSection";
+  fields: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_fields[];
+  selected: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_selected;
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_fields_preselected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_fields_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_fields {
+  __typename: "SiteAggField";
+  name: string;
+  display: FieldDisplay;
+  preselected: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_fields_preselected;
+  visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_fields_visibleOptions;
+  rank: number | null;
+  autoSuggest: boolean;
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_selected {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs {
+  __typename: "SiteAggSection";
+  fields: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_fields[];
+  selected: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_selected;
+}
+
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest {
   __typename: "SiteAutoSuggestSection";
-  aggs: string[];
-  crowdAggs: string[];
+  aggs: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs;
+  crowdAggs: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_results_buttons_items {
