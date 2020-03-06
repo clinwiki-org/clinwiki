@@ -4,6 +4,8 @@ import { PulseLoader } from 'react-spinners';
 import { SiteFragment } from 'types/SiteFragment';
 import Card from './cards';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
+import { MailMergeView } from 'components/MailMerge';
+import SiteForm from 'components/SiteForm';
 
 interface CardsProps {
   data: SearchPageSearchQuery_search_studies[];
@@ -15,100 +17,6 @@ interface CardsProps {
 
 interface CardsState {
   loading: boolean;
-}
-
-interface OldCardProps {
-  c: any;
-  d: any;
-  index: number;
-}
-class OldCard extends React.PureComponent<OldCardProps> {
-  contentStyle = {
-    padding: '10px',
-  };
-
-  render() {
-    const { c, d, index } = this.props;
-    if (index === 0) {
-      if (c.Cell) {
-        const props = {
-          original: {
-            averageRating: d.averageRating,
-            reviewsCount: d.reviewsCount,
-          },
-        };
-
-        return (
-          <div
-            key={`${d.nctId}_${c.accessor}`}
-            style={{
-              width: '100%',
-              backgroundColor: '#55b88d80',
-              ...this.contentStyle,
-            }}>
-            <div style={{ width: '100%' }}>
-              <label style={{ marginBottom: '0px' }}>
-                {c.Header.props.field}
-              </label>
-            </div>
-            <div style={{ width: '100%' }}>{c.Cell(props)}</div>
-          </div>
-        );
-      }
-
-      return (
-        <div
-          key={`${d.nctId}_${c.accessor}`}
-          style={{
-            width: '100%',
-            backgroundColor: '#55b88d80',
-            ...this.contentStyle,
-          }}>
-          <div style={{ width: '100%' }}>
-            <label style={{ marginBottom: '0px' }}>
-              {c.Header.props.field}
-            </label>
-          </div>
-          <div style={{ width: '100%' }}>
-            <label style={{ fontSize: '20px', marginBottom: '0px' }}>
-              {d[c.accessor]}
-            </label>
-          </div>
-        </div>
-      );
-    }
-
-    if (c.Cell) {
-      const props = {
-        original: {
-          averageRating: d.averageRating,
-          reviewsCount: d.reviewsCount,
-        },
-      };
-
-      return (
-        <div
-          key={`${d.nctId}_${c.accessor}`}
-          style={{ width: '100%', ...this.contentStyle }}>
-          <div style={{ width: '100%' }}>
-            <label>{c.Header.props.field}</label>
-          </div>
-          <div style={{ width: '100%' }}>{c.Cell(props)}</div>
-        </div>
-      );
-    }
-
-    return (
-      <div
-        key={`${d.nctId}_${c.accessor}`}
-        style={{ width: '100%', ...this.contentStyle }}>
-        <div style={{ width: '100%' }}>
-          <label>{c.Header.props.field}</label>
-        </div>
-        <div style={{ width: '100%' }}>{d[c.accessor]}</div>
-      </div>
-    );
-  }
 }
 
 class Cards extends React.Component<CardsProps, CardsState> {
@@ -123,7 +31,7 @@ class Cards extends React.Component<CardsProps, CardsState> {
     }
   }
 
-  cardStyle = {
+  cardStyle : React.CSSProperties = {
     borderWidth: 2,
     borderColor: 'rgb(85, 184, 141)',
     borderStyle: 'solid',
@@ -131,7 +39,6 @@ class Cards extends React.Component<CardsProps, CardsState> {
     background: '#ffffff',
     cursor: 'pointer',
     height: '100%',
-    overflow: 'scroll',
   };
 
   clicked = (d: any) => {
@@ -149,11 +56,11 @@ class Cards extends React.Component<CardsProps, CardsState> {
           xs={12}
           style={{ padding: '10px', height: '500px' }}
           onClick={() => this.clicked(d)}>
-          <div style={this.cardStyle}>
-            {this.props.columns.map((c, index) => (
-              <OldCard d={d} c={c} index={index} />
-            ))}
-          </div>
+          <MailMergeView
+            style={this.cardStyle}
+            template={this.props.site.siteView.search.template}
+            context={d}
+          />
         </Col>
       );
     });
