@@ -28,7 +28,7 @@ class Bucket extends React.Component<BucketProps> {
           .toString();
         break;
       default:
-        text = value.toString();
+        text = value ? value.toString() : '';
     }
     return `${text} (${docCount})`;
   }

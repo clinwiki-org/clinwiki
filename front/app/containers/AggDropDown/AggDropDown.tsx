@@ -24,11 +24,7 @@ import { get } from 'lodash';
 import moment from 'moment';
 import { withApollo } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
-import { BeatLoader } from 'react-spinners';
-import * as InfiniteScroll from 'react-infinite-scroller';
 import * as FontAwesome from 'react-fontawesome';
-import HistoSlider from 'histoslider';
-import Sorter from './Sorter';
 
 import {
   AggBucket,
@@ -50,76 +46,15 @@ import {
 } from 'types/SiteViewFragment';
 import './AggDropDownStyle.css';
 import { SiteFragment } from 'types/SiteFragment';
-import Bucket from './Bucket';
+import SortKind from './SortKind';
+import Buckets from './Buckets';
+import BucketsPanel from './BucketsPanel';
+import Filter from './Filter';
+import SearchPageCrowdAggBucketsQuery from './queries/SearchPageCrowdAggBucketsQuery';
+import SearchPageAggBucketsQuery from './queries/SearchPageAggBucketsQuery';
+import HistoPanel from './HistoPanel';
 
 const PAGE_SIZE = 25;
-
-const QUERY_AGG_BUCKETS = gql`
-  query SearchPageAggBucketsQuery(
-    $agg: String!
-    $q: SearchQueryInput!
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-    $page: Int!
-    $pageSize: Int!
-    $aggOptionsFilter: String
-    $aggOptionsSort: [SortInput!]
-  ) {
-    aggBuckets(
-      params: {
-        agg: $agg
-        q: $q
-        sorts: []
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        aggOptionsFilter: $aggOptionsFilter
-        aggOptionsSort: $aggOptionsSort
-        page: $page
-        pageSize: $pageSize
-      }
-    ) {
-      aggs {
-        name
-        buckets {
-          key
-          docCount
-        }
-      }
-    }
-  }
-`;
-
-const QUERY_CROWD_AGG_BUCKETA = gql`
-  query SearchPageCrowdAggBucketsQuery(
-    $agg: String!
-    $q: SearchQueryInput!
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-    $page: Int!
-    $pageSize: Int!
-    $aggOptionsFilter: String
-  ) {
-    aggBuckets: crowdAggBuckets(
-      params: {
-        agg: $agg
-        q: $q
-        sorts: []
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        aggOptionsFilter: $aggOptionsFilter
-        page: $page
-        pageSize: $pageSize
-      }
-    ) {
-      aggs {
-        buckets {
-          key
-          docCount
-        }
-      }
-    }
-  }
-`;
 
 const PanelWrapper = styledComponents.div`
   .flex {
@@ -135,11 +70,6 @@ const PanelWrapper = styledComponents.div`
     max-height: 400px;
   }
 `;
-
-export enum SortKind {
-  Alpha,
-  Number,
-}
 
 interface AggDropDownState {
   hasMore: boolean;
@@ -311,8 +241,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { desc, sortKind } = this.state;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
-        ? [QUERY_CROWD_AGG_BUCKETA, 'crowdAggFilters']
-        : [QUERY_AGG_BUCKETS, 'aggFilters'];
+        ? [SearchPageCrowdAggBucketsQuery, 'crowdAggFilters']
+        : [SearchPageAggBucketsQuery, 'aggFilters'];
 
     let aggSort = [{ id: 'key', desc: false }];
 
@@ -387,189 +317,83 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({ buckets, hasMore });
   };
 
-  renderBuckets = ({
-    display,
-    field,
-  }: {
-    display: FieldDisplay;
-    field: SiteViewFragment_search_aggs_fields | any;
-  }) => {
-    const { site, agg, visibleOptions = [] } = this.props;
-    const { buckets = [] } = this.state;
-    return pipe(
-      filter(({ key }) =>
-        visibleOptions.length ? visibleOptions.includes(key) : true
-      ),
-      map(({ key, docCount }) => (
-        <Checkbox
-          key={key}
-          checked={this.isSelected(key)}
-          onChange={() => this.toggleAgg(key)}>
-          <Bucket value={key} display={display} docCount={docCount} />
-        </Checkbox>
-      ))
-    )(buckets);
-  };
-
-  renderBucketsPanel = () => {
-    const { site } = this.props;
-    let display = this.props.display;
-    const field = find(propEq('name', this.props.agg), [
-      ...get(site, 'search.aggs.fields', []),
-      ...get(site, 'search.crowdAggs.fields', []),
-    ]) as SiteViewFragment_search_aggs_fields | null;
-    if (!display) {
-      display = (field && field.display) || FieldDisplay.STRING;
-    }
-    return (
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={this.handleLoadMore}
-        hasMore={this.state.hasMore}
-        useWindow={false}
-        loader={
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <BeatLoader key="loader" color="#fff" />
-          </div>
-        }>
-        {this.renderBuckets({ display, field })}
-      </InfiniteScroll>
-    );
-  };
-
-  renderFilter = () => {
-    const { buckets = [], filter, desc, sortKind } = this.state;
-    const { agg } = this.props;
-    if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
-      return null;
-    }
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          borderBottom: 'solid 1px #ddd',
-        }}>
-        <div style={{ marginTop: '1em' }}>
-          <Checkbox
-            checked={
-              this.props.removeSelectAll
-                ? this.checkSelect()
-                : this.state.checkboxValue
-            }
-            onChange={this.selectAll}
-            onMouseEnter={() => this.setState({ showLabel: true })}
-            onMouseLeave={() => this.setState({ showLabel: false })}>
-            {this.state.showLabel ? (
-              <span
-                style={{
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                  border: '1px solid #ccc',
-                  padding: '5px',
-                  position: 'absolute',
-                  left: '1em',
-                  width: '6em',
-                  color: 'black',
-                  background: 'white',
-                  borderRadius: '4px',
-                  fontSize: '0.85em',
-                }}>
-                Select All
-              </span>
-            ) : null}
-          </Checkbox>
-        </div>
-
-        <div
-          style={{
-            flex: 2,
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            display: 'flex',
-          }}>
-          <Sorter
-            type="alpha"
-            desc={desc}
-            active={sortKind === SortKind.Alpha}
-            toggle={this.toggleAlphaSort}
-          />
-          <Sorter
-            type="number"
-            desc={desc}
-            active={sortKind === SortKind.Number}
-            toggle={this.toggleNumericSort}
-          />
-        </div>
-        <FormControl
-          type="text"
-          placeholder="filter..."
-          value={this.state.filter}
-          onChange={this.handleFilterChange}
-          style={{ flex: 4, marginTop: '4px' }}
-        />
-      </div>
-    );
-  };
-
   changeSlider(a) {
     console.log(a);
     // here is where we will need to update the parent state to say
     // "here is the start value, and here is the end value"
   }
 
-  renderHistoPanel() {
-    const { client } = this.props;
-    const { isOpen, hasMore, loading, buckets } = this.state;
-    if (hasMore || loading) {
-      !loading && this.handleLoadMore();
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <BeatLoader key="loader" color="#fff" />
-        </div>
-      );
-    }
-
-    const sliderData = [] as any[];
-    buckets.forEach(({ key, docCount }) => {
-      if (docCount > 0) {
-        sliderData.push({
-          x0: key,
-          x: key,
-          y: docCount,
-        });
-      }
-    });
-
-    return (
-      <Panel.Collapse className="bm-panel-collapse">
-        <Panel.Body>
-          {
-            <HistoSlider
-              height={50}
-              width={150}
-              data={sliderData}
-              onChange={this.changeSlider}
-              showLabels={false}
-            />
-          }
-        </Panel.Body>
-      </Panel.Collapse>
-    );
-  }
-
   renderPanel = () => {
-    const { client, site, agg } = this.props;
-    const { isOpen } = this.state;
+    const {
+      client,
+      site,
+      agg,
+      visibleOptions = [],
+      removeSelectAll,
+    } = this.props;
+    const {
+      buckets = [],
+      filter,
+      desc,
+      sortKind,
+      isOpen,
+      hasMore,
+      checkboxValue,
+      showLabel,
+      loading,
+    } = this.state;
     if (!isOpen) {
       return null;
     }
     if (agg === 'start_date') {
-      return this.renderHistoPanel();
+      return (
+        <HistoPanel
+          isOpen={isOpen}
+          hasMore={hasMore}
+          loading={loading}
+          buckets={buckets}
+          handleLoadMore={this.handleLoadMore}
+          changeSlider={this.changeSlider}
+        />
+      );
     }
     return (
       <Panel.Collapse className="bm-panel-collapse">
-        <Panel.Body>{this.renderFilter()}</Panel.Body>
-        <Panel.Body>{this.renderBucketsPanel()}</Panel.Body>
+        <Panel.Body>
+          <Filter
+            agg={agg}
+            buckets={buckets}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+        </Panel.Body>
+        <Panel.Body>
+          <BucketsPanel
+            visibleOptions={visibleOptions}
+            buckets={buckets}
+            isSelected={this.isSelected}
+            toggleAgg={this.toggleAgg}
+            hasMore={hasMore}
+            handleLoadMore={this.handleLoadMore}
+            agg={agg}
+            field={
+              find(propEq('name', agg), [
+                ...get(site, 'search.aggs.fields', []),
+                ...get(site, 'search.crowdAggs.fields', []),
+              ]) as SiteViewFragment_search_aggs_fields | null
+            }
+          />
+        </Panel.Body>
       </Panel.Collapse>
     );
   };

@@ -449,6 +449,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         resetSelectAll={this.resetSelectAll}
         // @ts-ignore
         searchParams={this.state.params}
+        changeSearchParams={params =>
+          this.setState({ params: { ...this.state.params, ...params } })
+        }
         opened={opened}
         openedKind={openedKind}
         onOpen={this.handleOpenAgg}
