@@ -160,6 +160,7 @@ const SITE_VIEW_FRAGMENT = gql`
           name
           target
         }
+        instructions
       }
 
       fields

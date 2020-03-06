@@ -274,6 +274,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
             },
             fields: crowd_aggs,
           },
+          instructions:"",
           button:{
             name:"Search",
             target:"",
