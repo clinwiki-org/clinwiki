@@ -639,9 +639,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   render() {
-    const { agg, presearch } = this.props;
+    const { agg, presearch, selectedKeys } = this.props;
     const { buckets = [], filter, desc, sortKind, isOpen } = this.state;
     const title = aggToField(agg);
+    console.log('--------------');
+    console.log('agg', agg);
+    console.log('presearch?', presearch);
+    console.log('selected', selectedKeys);
+    console.log('--------------');
 
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {

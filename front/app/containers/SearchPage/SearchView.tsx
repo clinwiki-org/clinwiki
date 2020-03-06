@@ -479,12 +479,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   };
 
   componentDidMount() {
-    let defaultViewStyle = this.props.currentSiteView.search.results.type
-    let showResults = this.props.currentSiteView.search.config.showResults
-    if (defaultViewStyle== "table" && this.props.showCards==true){
-       this.toggledShowCards(false)
-    }else if(defaultViewStyle =="card" && this.props.showCards==false){
-      this.toggledShowCards(true)
+    let defaultViewStyle = this.props.currentSiteView.search.results.type;
+    let showResults = this.props.currentSiteView.search.config.showResults;
+    if (defaultViewStyle == 'table' && this.props.showCards == true) {
+      this.toggledShowCards(false);
+    } else if (defaultViewStyle == 'card' && this.props.showCards == false) {
+      this.toggledShowCards(true);
     }
     if (!this.props.showCards && showResults) {
       this.setState({
@@ -625,15 +625,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     );
   };
 
-  renderPresearch = ({
-    data,
-    loading,
-    error,
-  }: {
-    data: SearchPageSearchQuery | undefined;
-    loading: boolean;
-    error: any;
-  }) => {
+  renderPresearch = () => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } =
@@ -773,18 +765,23 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           columns.map(x => (x.width += additionalWidth), columns);
           if (this.props.showCards) {
             return showResults ? (
-              <div style={{display:"flex", flexDirection:"column"}}>
-                <div style={{display:"flex", flexDirection:"row", marginLeft:"auto"}}>
-                {this.renderViewDropdown()}
-                </div>                  
-                <div style={{display:"flex", flexDirection:"row"}}>
-              <Cards
-                columns={columns}
-                data={searchData}
-                onPress={this.cardPressed}
-                loading={loading}
-              />
-              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    marginLeft: 'auto',
+                  }}>
+                  {this.renderViewDropdown()}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <Cards
+                    columns={columns}
+                    data={searchData}
+                    onPress={this.cardPressed}
+                    loading={loading}
+                  />
+                </div>
               </div>
             ) : null;
           } else {
@@ -830,35 +827,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     );
   };
 
-  renderCrumbs = ({
-    data,
-    loading,
-    error,
-  }: {
-    data: SearchPageSearchQuery | undefined;
-    loading: boolean;
-    error: any;
-  }) => {
+  renderCrumbs = () => {
     const { currentSiteView } = this.props;
-    let pagesTotal = 1;
-    let recordsTotal = 0;
-    if (
-      data &&
-      data.search &&
-      data.search.recordsTotal &&
-      this.props.params.pageSize
-    ) {
-      recordsTotal = data.search.recordsTotal;
-      pagesTotal = Math.min(
-        Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
-        Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
-      );
-    }
     const q =
       this.props.params.q.key === '*'
         ? []
         : (this.props.params.q.children || []).map(prop('key'));
-
     return (
       <SiteProvider>
         {site => {
@@ -874,9 +848,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 removeSearchTerm,
                 this.props.onUpdateParams
               )}
-              page={Math.min(this.props.params.page, pagesTotal)}
-              recordsTotal={recordsTotal}
-              pagesTotal={pagesTotal}
               pageSize={this.props.params.pageSize}
               update={{
                 page: pipe(changePage, this.props.onUpdateParams),
@@ -884,7 +855,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               data={site}
               onReset={this.props.onResetFilters}
               onClear={this.props.onClearFilters}
-              loading={loading}
               showCards={this.props.showCards}
               toggledShowCards={this.toggledShowCards}
               addFilter={pipe(addFilter, this.props.onUpdateParams)}
@@ -897,21 +867,22 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   };
 
   renderViewDropdown = () => {
-   const { currentSiteView } = this.props
+    const { currentSiteView } = this.props;
     return (
       <SiteProvider>
         {site => {
           if (site.siteViews.length > 0) {
-            console.log(this.props.searchHash);
             return (
               <ButtonGroup>
-                {currentSiteView.search.results.buttons.items.map((button,index) => (
-                  <Button
-                    href={`/search/${button.target}/${this.props.searchHash}`}
-                    key={button.target+index}>
-                      {button.icon == "card" ? <CardIcon/>: <TableIcon/>}
-                  </Button>
-                ))}
+                {currentSiteView.search.results.buttons.items.map(
+                  (button, index) => (
+                    <Button
+                      href={`/search/${button.target}/${this.props.searchHash}`}
+                      key={button.target + index}>
+                      {button.icon == 'card' ? <CardIcon /> : <TableIcon />}
+                    </Button>
+                  )
+                )}
               </ButtonGroup>
             );
           }
@@ -938,31 +909,29 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 <title>Search</title>
                 <meta name="description" content="Description of SearchPage" />
               </Helmet>
-
-              <QueryComponent
-                query={QUERY}
-                variables={this.props.params}
-                onCompleted={(data: any) => {
-                  if (data && data.search) {
-                    this.props.onAggsUpdate(
-                      this.transformAggs(data.search.aggs || []),
-                      this.transformCrowdAggs(data.crowdAggs.aggs || [])
-                    );
-                  }
-                }}>
-                {({ data, loading, error }) => {
-                  return (
-                    <Col md={12}>
-                      {this.renderCrumbs({ data, loading, error })}
-                      {showPresearch &&
-                        this.renderPresearch({ data, loading, error })}
+              <Col md={12}>
+                {/* {this.renderCrumbs()} */}
+                {/* {showPresearch && this.renderPresearch()} */}
+                <QueryComponent
+                  query={QUERY}
+                  variables={this.props.params}
+                  onCompleted={(data: any) => {
+                    if (data && data.search) {
+                      this.props.onAggsUpdate(
+                        this.transformAggs(data.search.aggs || []),
+                        this.transformCrowdAggs(data.crowdAggs.aggs || [])
+                      );
+                    }
+                  }}>
+                  {({ data, loading, error }) => {
+                    return (
                       <SearchContainer>
                         {this.renderSearch({ data, loading, error })}
                       </SearchContainer>
-                    </Col>
-                  );
-                }}
-              </QueryComponent>
+                    );
+                  }}
+                </QueryComponent>
+              </Col>
             </SearchWrapper>
           );
         }}

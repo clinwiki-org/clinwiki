@@ -2,7 +2,7 @@ import * as React from 'react';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { Redirect, Switch, Route } from 'react-router-dom';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import {
   SearchPageHashQuery,
   SearchPageHashQueryVariables,
@@ -163,6 +163,17 @@ const SidebarContainer = styled(Col)`
   }
 `;
 
+const SearchContainer = styled.div`
+  width: 100%;
+  padding: 10px 30px;
+  border: solid white 1px;
+  background-color: #f2f2f2;
+  color: black;
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+`;
+
 const changeFilter = (add: boolean) => (
   aggName: string,
   key: string,
@@ -194,7 +205,6 @@ const changeFilter = (add: boolean) => (
   );
 };
 const addFilter = changeFilter(true);
-
 const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
@@ -607,6 +617,61 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   }
 
+  renderPresearch = () => {
+    const opened = this.state.openedAgg && this.state.openedAgg.name;
+    const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
+    const { aggFilters = [], crowdAggFilters = [] } =
+      this.props.searchParams || {};
+    return (
+      <SiteProvider>
+        {site => {
+          const siteViewUrl = this.props.match.params.siteviewUrl;
+          const siteViews = site.siteViews;
+          let thisSiteView =
+            siteViews.find(siteview => siteview.url == siteViewUrl) ||
+            site.siteView;
+          const preSearchAggs =
+            thisSiteView.search.presearch.aggs.selected.values;
+          // const presearchButton = thisSiteView.search.presearch.button;
+          // const presearchText = thisSiteView.search.presearch;
+          return (
+            <SearchContainer>
+              <Aggs
+                aggs={this.state.searchAggs}
+                crowdAggs={this.state.searchCrowdAggs}
+                filters={this.transformFilters(aggFilters)}
+                crowdFilters={this.transformFilters(crowdAggFilters)}
+                addFilter={pipe(addFilter, this.handleUpdateParams)}
+                addFilters={pipe(addFilters, this.handleUpdateParams)}
+                removeFilter={pipe(removeFilter, this.handleUpdateParams)}
+                removeFilters={pipe(removeFilters, this.handleUpdateParams)}
+                updateParams={this.handleUpdateParams}
+                removeSelectAll={this.state.removeSelectAll}
+                resetSelectAll={this.resetSelectAll}
+                // @ts-ignore
+                searchParams={this.state.params}
+                opened={opened}
+                openedKind={openedKind}
+                onOpen={this.handleOpenAgg}
+                presearch
+                preSearchAggs={preSearchAggs}
+              />
+              <div>
+                {/* {presearchText && <div>presearch text will go here</div>} */}
+                {/* {presearchButton.name && (
+                  <Button
+                    href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
+                    {presearchButton.name}
+                  </Button>
+                )} */}
+              </div>
+            </SearchContainer>
+          );
+        }}
+      </SiteProvider>
+    );
+  };
+
   render() {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
@@ -626,6 +691,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               <Row>
                 <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
                 <MainContainer md={10}>
+                  {this.renderPresearch()}
                   <SearchView
                     params={this.state.params as any}
                     onBulkUpdate={this.handleBulkUpdateClick}
@@ -701,6 +767,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     )}
                     <div id="main_search" style={{ overflowY: 'auto' }}>
                       <MainContainer style={{ width: '100%' }}>
+                        {this.renderPresearch()}
                         {this.renderSearch(hash, thisSiteView, site.siteViews)}
                       </MainContainer>
                     </div>

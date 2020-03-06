@@ -24,7 +24,7 @@ import {
 import { BeatLoader } from 'react-spinners';
 import { aggsOrdered } from 'utils/constants';
 import SiteProvider from 'containers/SiteProvider';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment, SiteFragment_editors } from 'types/SiteFragment';
 import { throws } from 'assert';
 import { FilterKind } from 'types/globalTypes';
 import { displayFields } from 'utils/siteViewHelpers';
@@ -123,7 +123,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                 {preSearchAggs.map(k =>
                   aggs[k] ? (
                     <AggDropDown
-                      key={`k-${k}`}
+                      key={k}
                       agg={k}
                       selectedKeys={filters[k] || emptySet}
                       buckets={aggs[k]}
