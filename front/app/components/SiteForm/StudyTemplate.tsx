@@ -1,6 +1,6 @@
 import * as React from 'react';
-import MailMerge from 'components/MailMerge/MailMerge';
-import StudySchema from 'components/MailMerge/StudySchema';
+import { MailMergeEditor } from 'components/MailMerge';
+import { studySchema, searchSchema } from 'components/MailMerge/StudySchema';
 import styled from 'styled-components';
 import { FormControl } from 'react-bootstrap';
 
@@ -44,8 +44,8 @@ class StudyTemplate extends React.Component<Props, State> {
               value={this.state.nct_id}
               onChange={this.updateSample}
             />
-            <MailMerge
-              schema={StudySchema}
+            <MailMergeEditor
+              schema={studySchema}
               template={this.props.template || ''}
               sample={data?.study || {}}
               onTemplateChanged={this.props.onTemplateChanged}

@@ -13,11 +13,14 @@ interface State {
   markdown: string;
 }
 const defaultStyle: React.CSSProperties = {
-  overflow: 'scroll',
   display: 'flex',
   flexDirection: 'column',
   textAlign: 'left',
   flexGrow: 1,
+
+  padding: '4px',
+  overflow: 'scroll',
+  background: '#ffffff',
 };
 
 export default class View extends React.Component<Props, State> {
