@@ -670,7 +670,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                  {presearchButton.name && (
                   <Button
                     style={{minWidth:200}}
-                    href={`/search/${presearchButton.target}${this.props.searchHash}`}>
+                    href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
                     {presearchButton.name}
                   </Button>
                 )}
@@ -922,7 +922,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               <ButtonGroup>
                 {currentSiteView.search.results.buttons.items.map((button,index) => (
                   <Button
-                    href={`/search/${button.target}${this.props.searchHash}`}
+                    href={`/search/${button.target}/${this.props.searchHash}`}
                     key={button.target+index}>
                       {button.icon == "card" ? <CardIcon/>: <TableIcon/>}
                   </Button>
