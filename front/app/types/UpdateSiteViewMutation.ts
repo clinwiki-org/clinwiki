@@ -107,6 +107,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search {
   __typename: "SiteSearchPage";
+  template: string;
   fields: string[];
   aggs: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs;
   crowdAggs: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs;

@@ -11,6 +11,7 @@ import aggToField from 'utils/aggs/aggToField';
 import { FilterKind } from 'types/globalTypes';
 import { Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
+import StudyTemplate from './StudyTemplate';
 
 interface SearchFormProps {
   view: SiteViewFragment;
@@ -89,15 +90,17 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
 
     return (
       <StyledContainer>
-        <h3>Fields</h3>
-        <MultiInput
+        <h3>Template</h3>
+        <StudyTemplate onAddMutation={this.props.onAddMutation} template={view.search.template} />
+
+        {/* <MultiInput
           name="set:search.fields"
           options={SEARCH_FIELDS}
           placeholder="Add field"
           draggable
           value={view.search.fields}
           onChange={this.props.onAddMutation}
-        />
+        /> */}
         <Row>
           <Col md={6}>
             <AggsHeaderContainer>

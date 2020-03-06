@@ -253,6 +253,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           fields: crowd_aggs,
         },
         fields: %w[nct_id average_rating brief_title overall_status start_date completion_date],
+        template: "{{nct_id}}\n{{averageRating}}\n {{briefTitle}}\n {{overallStatus}}\n {{startDate}}\n {{completionDate}}"
       },
     }
   end

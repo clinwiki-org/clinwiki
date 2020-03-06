@@ -123,6 +123,7 @@ export interface SiteProviderQuery_site_siteView_search_crowdAggs {
 
 export interface SiteProviderQuery_site_siteView_search {
   __typename: "SiteSearchPage";
+  template: string;
   fields: string[];
   aggs: SiteProviderQuery_site_siteView_search_aggs;
   crowdAggs: SiteProviderQuery_site_siteView_search_crowdAggs;

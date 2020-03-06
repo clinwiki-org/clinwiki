@@ -123,6 +123,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_crowdAggs {
 
 export interface CreateSiteMutation_createSite_site_siteView_search {
   __typename: "SiteSearchPage";
+  template: string;
   fields: string[];
   aggs: CreateSiteMutation_createSite_site_siteView_search_aggs;
   crowdAggs: CreateSiteMutation_createSite_site_siteView_search_crowdAggs;

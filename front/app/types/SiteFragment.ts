@@ -123,6 +123,7 @@ export interface SiteFragment_siteView_search_crowdAggs {
 
 export interface SiteFragment_siteView_search {
   __typename: "SiteSearchPage";
+  template: string;
   fields: string[];
   aggs: SiteFragment_siteView_search_aggs;
   crowdAggs: SiteFragment_siteView_search_crowdAggs;

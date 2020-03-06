@@ -107,6 +107,7 @@ export interface SiteViewFragment_search_crowdAggs {
 
 export interface SiteViewFragment_search {
   __typename: "SiteSearchPage";
+  template: string;
   fields: string[];
   aggs: SiteViewFragment_search_aggs;
   crowdAggs: SiteViewFragment_search_crowdAggs;
