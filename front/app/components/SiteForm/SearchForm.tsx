@@ -489,21 +489,13 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   Show all
                 </StyledCheckbox>
               </AggsHeaderContainer>
-              {/* <StyledLabel>Filter</StyledLabel>
-              <StyledFormControl
-                name="set:search.aggs.selected.kind"
-                componentClass="select"
-                onChange={e => this.handleAddMutation(e, view)}
-                value={view.search.aggs.selected.kind}>
-                <option value="BLACKLIST">All except</option>
-                <option value="WHITELIST">Only</option>
-              </StyledFormControl> */}
+         
             <StyledLabel>Add to Autosuggest</StyledLabel>
             <MultiInput
-              name="set:search.autoSuggest.aggs"
+              name="set:search.autoSuggest.aggs.fields"
               options={AGGS_OPTIONS}
               placeholder="Add facet"
-              value={view.search.autoSuggest.aggs}
+              value={view.search.autoSuggest.aggs.selected.values}
               onChange={e => this.handleAddMutation(e, view)}
             />
               <h3>Aggs settings</h3>
@@ -530,7 +522,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </AggsHeaderContainer>
               <StyledLabel>Add to Autosuggest</StyledLabel>
               <MultiInput
-              name="set:search.autoSuggest.crowdAggs"
+              name="set:search.autoSuggest.crowdAggs.fields"
               options={this.getCrowdFields(view)}
                 placeholder="Add facet"
                 value={view.search.crowdAggs.selected.values}
