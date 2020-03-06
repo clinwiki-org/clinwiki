@@ -224,6 +224,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch {
   aggs: UpdateSiteMutation_updateSite_site_siteView_search_presearch_aggs;
   crowdAggs: UpdateSiteMutation_updateSite_site_siteView_search_presearch_crowdAggs;
   button: UpdateSiteMutation_updateSite_site_siteView_search_presearch_button;
+  instructions: string;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_config_fields {
@@ -531,6 +532,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch {
   aggs: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_aggs;
   crowdAggs: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_crowdAggs;
   button: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_button;
+  instructions: string;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_config_fields {

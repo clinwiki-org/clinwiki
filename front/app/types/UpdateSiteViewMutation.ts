@@ -208,6 +208,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   aggs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs;
   crowdAggs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs;
   button: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_button;
+  instructions: string;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_config_fields {

@@ -224,6 +224,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch {
   aggs: CreateSiteMutation_createSite_site_siteView_search_presearch_aggs;
   crowdAggs: CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs;
   button: CreateSiteMutation_createSite_site_siteView_search_presearch_button;
+  instructions: string;
 }
 
 export interface CreateSiteMutation_createSite_site_siteView_search_config_fields {
@@ -531,6 +532,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch {
   aggs: CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs;
   crowdAggs: CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs;
   button: CreateSiteMutation_createSite_site_siteViews_search_presearch_button;
+  instructions: string;
 }
 
 export interface CreateSiteMutation_createSite_site_siteViews_search_config_fields {

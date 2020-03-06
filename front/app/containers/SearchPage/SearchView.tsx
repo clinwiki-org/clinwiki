@@ -300,6 +300,20 @@ const SearchContainer = styled.div`
   flex-direction: column;
 `;
 
+const InstructionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 20px;
+`;
+
+const Instructions = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+`;
+
 interface SearchViewProps {
   params: SearchParams;
   onBulkUpdate: () => void;
@@ -648,9 +662,19 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               siteview => siteview.url == this.props.siteViewUrl
             ) || site.siteView;
           const presearchButton = thisSiteView.search.presearch.button;
-          const presearchText = thisSiteView.search.presearch;
+          const presearchText = thisSiteView.search.presearch.instructions;
           return (
             <SearchContainer>
+              <InstructionsContainer>
+                {presearchText && <Instructions><h4 style={{marginRight: 10}}>Instructions:</h4> <h5>{presearchText}</h5></Instructions>}
+                 {presearchButton.name && (
+                  <Button
+                    style={{width:200}}
+                    href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
+                    {presearchButton.name}
+                  </Button>
+                )}
+              </InstructionsContainer>
               <Aggs
                 aggs={this.props.searchAggs}
                 crowdAggs={this.props.crowdAggs}
@@ -672,15 +696,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 currentSiteView={thisSiteView}
                 preSearchAggs={preSearchAggs}
               />
-              <div>
-                {presearchText && <div>presearch text will go here</div>}
-                {presearchButton.name && (
-                  <Button
-                    href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
-                    {presearchButton.name}
-                  </Button>
-                )}
-              </div>
             </SearchContainer>
           );
         }}

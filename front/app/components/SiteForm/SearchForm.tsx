@@ -100,12 +100,12 @@ const StyledButtonGroup = styled.div`
 `
 const StyledFormInput = styled(FormControl)`
 margin-bottom: 20px;
-background: none;
+background: white;
 border: none;
 box-shadow: none;
-color: lightgrey;
+color: #333;
 font-size: 2em;
-padding-left: 0;
+padding-left: 5px;
 `;
 
 // const styledToggleButton = styled(ToggleButtonGroup)`
@@ -647,7 +647,20 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
             ))}
           </Col>
         </Row>
-
+        <Panel>
+          <Panel.Heading>
+            <Panel.Title toggle>Presearch Instructions</Panel.Title>
+          </Panel.Heading>
+        <Panel.Body collapsible>
+            <h3>Instructions:</h3>
+            <StyledFormInput
+              name={`set:search.presearch.instructions`}
+              placeholder={view.search.presearch.instructions}
+              value={view.search.presearch.instructions}
+              onChange={e => this.handleAddMutation(e, view)}
+            />
+            </Panel.Body>
+        </Panel>
         <Panel>
           <Panel.Heading>
             <Panel.Title toggle>Presearch Button</Panel.Title>
@@ -686,11 +699,6 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
             </StyledPanelHeading>
           </Panel.Body>
         </Panel>
-        <StyledButton
-          style={{ margin: '1em 1em 1em 0' }}
-          onClick={this.handleSave(updateSiteView, view)}>
-          Save Site View
-        </StyledButton>
       </Panel.Body>
     </Panel>
   );

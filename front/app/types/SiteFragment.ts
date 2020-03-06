@@ -224,6 +224,7 @@ export interface SiteFragment_siteView_search_presearch {
   aggs: SiteFragment_siteView_search_presearch_aggs;
   crowdAggs: SiteFragment_siteView_search_presearch_crowdAggs;
   button: SiteFragment_siteView_search_presearch_button;
+  instructions: string;
 }
 
 export interface SiteFragment_siteView_search_config_fields {
@@ -531,6 +532,7 @@ export interface SiteFragment_siteViews_search_presearch {
   aggs: SiteFragment_siteViews_search_presearch_aggs;
   crowdAggs: SiteFragment_siteViews_search_presearch_crowdAggs;
   button: SiteFragment_siteViews_search_presearch_button;
+  instructions: string;
 }
 
 export interface SiteFragment_siteViews_search_config_fields {

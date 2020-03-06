@@ -224,6 +224,7 @@ export interface SiteProviderQuery_site_siteView_search_presearch {
   aggs: SiteProviderQuery_site_siteView_search_presearch_aggs;
   crowdAggs: SiteProviderQuery_site_siteView_search_presearch_crowdAggs;
   button: SiteProviderQuery_site_siteView_search_presearch_button;
+  instructions: string;
 }
 
 export interface SiteProviderQuery_site_siteView_search_config_fields {
@@ -531,6 +532,7 @@ export interface SiteProviderQuery_site_siteViews_search_presearch {
   aggs: SiteProviderQuery_site_siteViews_search_presearch_aggs;
   crowdAggs: SiteProviderQuery_site_siteViews_search_presearch_crowdAggs;
   button: SiteProviderQuery_site_siteViews_search_presearch_button;
+  instructions: string;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_config_fields {

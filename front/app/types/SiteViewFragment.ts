@@ -208,6 +208,7 @@ export interface SiteViewFragment_search_presearch {
   aggs: SiteViewFragment_search_presearch_aggs;
   crowdAggs: SiteViewFragment_search_presearch_crowdAggs;
   button: SiteViewFragment_search_presearch_button;
+  instructions: string;
 }
 
 export interface SiteViewFragment_search_config_fields {
