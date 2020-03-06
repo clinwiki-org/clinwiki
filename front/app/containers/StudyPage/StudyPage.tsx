@@ -85,7 +85,7 @@ const QUERY = gql`
 `;
 
 // Prefetch all sections for study
-const PREFETCH_QUERY = gql`
+export const PREFETCH_QUERY = gql`
   query StudyPagePrefetchQuery($nctId: String!) {
     study(nctId: $nctId) {
       ...StudySummaryFragment
@@ -205,7 +205,7 @@ const BackButtonWrapper = styled.div`
   padding-bottom: 10px;
 `;
 class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
-class PrefetchQueryComponent extends Query<
+export class PrefetchQueryComponent extends Query<
   StudyPagePrefetchQuery,
   StudyPagePrefetchQueryVariables
 > {}

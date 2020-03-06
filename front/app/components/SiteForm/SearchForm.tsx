@@ -91,7 +91,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     return (
       <StyledContainer>
         <h3>Template</h3>
-        <StudyTemplate onAddMutation={this.props.onAddMutation} template={view.search.template} />
+        <StudyTemplate
+          onTemplateChanged={t => this.props.onAddMutation({currentTarget: {name: "set:search.template", value: t}})}
+          template={view.search.template}
+        />
 
         {/* <MultiInput
           name="set:search.fields"

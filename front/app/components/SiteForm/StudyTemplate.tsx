@@ -1,23 +1,59 @@
 import * as React from 'react';
-import MailMerge from 'components/MailMerge/MailMerge'
-import StudySchema from 'components/MailMerge/StudySchema'
+import MailMerge from 'components/MailMerge/MailMerge';
+import StudySchema from 'components/MailMerge/StudySchema';
+import styled from 'styled-components';
+import { FormControl } from 'react-bootstrap';
+
+import {
+  PREFETCH_QUERY,
+  PrefetchQueryComponent,
+} from 'containers/StudyPage/StudyPage';
 
 interface Props {
-  template? : string;
-  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
+  template?: string;
+  onTemplateChanged?: (template: string) => void;
 }
 
 interface State {
-  nct_id? : string
+  nct_id: string;
 }
 
+const StyledFormControl = styled(FormControl)`
+  margin-bottom: 20px;
+`;
+
+const default_nctid = 'NCT00222898';
+
 class StudyTemplate extends React.Component<Props, State> {
-
+  constructor(props) {
+    super(props);
+    this.state = { nct_id: default_nctid };
+  }
+  updateSample = (e: any) => {
+    this.setState({ nct_id : e.target.value || default_nctid });
+  };
   render() {
-    return ( 
-    <div>
-
-    </div>)
+    return (
+      <PrefetchQueryComponent
+        query={PREFETCH_QUERY}
+        variables={{ nctId: this.state.nct_id }}>
+        {({ data }) => (
+          <div style={{ maxWidth: '1200px' }}>
+            <StyledFormControl
+              placeholder={default_nctid}
+              value={this.state.nct_id}
+              onChange={this.updateSample}
+            />
+            <MailMerge
+              schema={StudySchema}
+              template={this.props.template || ''}
+              sample={data?.study || {}}
+              onTemplateChanged={this.props.onTemplateChanged}
+            />
+          </div>
+        )}
+      </PrefetchQueryComponent>
+    );
   }
 }
 

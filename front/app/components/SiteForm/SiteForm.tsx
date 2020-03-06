@@ -96,6 +96,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
   handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
     const { name, value } = e.currentTarget;
+    console.log(`mutation: ${name}=${value}`);
     const mutation = createMutation(name, value);
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);

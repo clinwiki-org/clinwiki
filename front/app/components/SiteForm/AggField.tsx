@@ -232,7 +232,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <StyledFormControl
               name={`set:${this.getPath()}.rank`}
               placeholder="Order"
-              value={this.props.field.rank}
+              value={this.props.field.rank||undefined}
               onChange={this.props.onAddMutation}
             />
             <StyledLabel>Display</StyledLabel>

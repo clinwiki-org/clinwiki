@@ -6,7 +6,10 @@ interface Props {
   onCursorMove?: (selection: [number, number]) => void;
   onChange: (value: string) => void;
 }
-const defaultStyle = {};
+const defaultStyle = {
+  minWidth: '220px',
+  flexGrow: 1,
+};
 
 export default class Editor extends React.PureComponent<Props> {
   onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -18,7 +21,9 @@ export default class Editor extends React.PureComponent<Props> {
     }
   };
   render() {
-    const style = this.props.style ? { ...defaultStyle, ...this.props.style } : defaultStyle;
+    const style = this.props.style
+      ? { ...defaultStyle, ...this.props.style }
+      : defaultStyle;
     return (
       <textarea
         spellCheck={false}
