@@ -669,7 +669,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 {presearchText && <Instructions><h4 style={{marginRight: 10}}>Instructions:</h4> <h5>{presearchText}</h5></Instructions>}
                  {presearchButton.name && (
                   <Button
-                    style={{width:200}}
+                    style={{minWidth:200}}
                     href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
                     {presearchButton.name}
                   </Button>
