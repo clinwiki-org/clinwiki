@@ -20,6 +20,7 @@ import {
   reverse,
   identity,
 } from 'ramda';
+import { get } from 'lodash';
 import moment from 'moment';
 import { withApollo } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
@@ -49,6 +50,7 @@ import {
 } from 'types/SiteViewFragment';
 import './AggDropDownStyle.css';
 import { SiteFragment } from 'types/SiteFragment';
+import Bucket from './Bucket';
 
 const PAGE_SIZE = 25;
 
@@ -242,13 +244,15 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   // getBucketDocCount = (key: string): number => path([key, 'docCount'], this.props.buckets)
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
-  toggleAgg = (agg: string, key: string): void => {
+
+  toggleAgg = (key: string): void => {
     if (!this.props.addFilter || !this.props.removeFilter) return;
     return this.isSelected(key)
-      ? this.props.removeFilter(agg, key)
-      : this.props.addFilter(agg, key);
+      ? this.props.removeFilter(this.props.agg, key)
+      : this.props.addFilter(this.props.agg, key);
   };
-  selectAll = (agg: string): void => {
+
+  selectAll = (): void => {
     const { buckets } = this.state;
     let newParams = [];
 
@@ -263,7 +267,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
     if (this.isAllSelected() != true) {
       if (!this.props.addFilters) return;
-      this.props.addFilters(agg, newParams, false);
+      this.props.addFilters(this.props.agg, newParams, false);
       this.setState({
         checkboxValue: true,
       });
@@ -272,9 +276,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       this.setState({
         checkboxValue: false,
       });
-      this.props.removeFilters(agg, newParams, false);
+      this.props.removeFilters(this.props.agg, newParams, false);
     }
   };
+
   isAllSelected = (): boolean => {
     const { buckets } = this.state;
     let i = 0;
@@ -382,34 +387,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({ buckets, hasMore });
   };
 
-  renderBucket = (
-    value: string | number,
-    display: FieldDisplay,
-    docCount: number
-  ): React.ReactNode => {
-    let text = '';
-    switch (display) {
-      case FieldDisplay.STAR:
-        text = {
-          0: '☆☆☆☆☆',
-          1: '★☆☆☆☆',
-          2: '★★☆☆☆',
-          3: '★★★☆☆',
-          4: '★★★★☆',
-          5: '★★★★★',
-        }[value];
-        break;
-      case FieldDisplay.DATE:
-        text = new Date(parseInt(value.toString(), 10))
-          .getFullYear()
-          .toString();
-        break;
-      default:
-        text = value.toString();
-    }
-    return `${text} (${docCount})`;
-  };
-
   renderBuckets = ({
     display,
     field,
@@ -427,8 +404,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         <Checkbox
           key={key}
           checked={this.isSelected(key)}
-          onChange={() => this.toggleAgg(agg, key)}>
-          {this.renderBucket(key, display, docCount)}
+          onChange={() => this.toggleAgg(key)}>
+          <Bucket value={key} display={display} docCount={docCount} />
         </Checkbox>
       ))
     )(buckets);
@@ -438,8 +415,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { site } = this.props;
     let display = this.props.display;
     const field = find(propEq('name', this.props.agg), [
-      ...site.search.aggs.fields,
-      ...site.search.crowdAggs.fields,
+      ...get(site, 'search.aggs.fields', []),
+      ...get(site, 'search.crowdAggs.fields', []),
     ]) as SiteViewFragment_search_aggs_fields | null;
     if (!display) {
       display = (field && field.display) || FieldDisplay.STRING;
@@ -480,7 +457,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 ? this.checkSelect()
                 : this.state.checkboxValue
             }
-            onChange={() => this.selectAll(agg)}
+            onChange={this.selectAll}
             onMouseEnter={() => this.setState({ showLabel: true })}
             onMouseLeave={() => this.setState({ showLabel: false })}>
             {this.state.showLabel ? (
