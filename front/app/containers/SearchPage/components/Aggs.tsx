@@ -127,11 +127,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                       agg={k}
                       selectedKeys={filters[k] || emptySet}
                       buckets={aggs[k]}
-                      isOpen={
-                        this.props.opened === k &&
-                        this.props.openedKind === 'aggs'
-                      }
-                      onOpen={this.props.onOpen}
+                      isOpen={true}
                       aggKind="aggs"
                       addFilter={addFilter}
                       addFilters={addFilters}

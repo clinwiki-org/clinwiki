@@ -620,8 +620,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderPresearch = () => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
-    const { aggFilters = [], crowdAggFilters = [] } =
-      this.props.searchParams || {};
+    const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     return (
       <SiteProvider>
         {site => {
@@ -632,6 +631,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             site.siteView;
           const preSearchAggs =
             thisSiteView.search.presearch.aggs.selected.values;
+          console.log(thisSiteView);
           // const presearchButton = thisSiteView.search.presearch.button;
           // const presearchText = thisSiteView.search.presearch;
           return (
