@@ -6,7 +6,10 @@ import { SiteFragment } from 'types/SiteFragment';
 import { AggBucket } from '../SearchPage/Types';
 import { Checkbox } from 'react-bootstrap';
 import { withSite } from 'containers/SiteProvider/SiteProvider';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import Bucket from './Bucket';
+import UpdateWorkflowsViewMutation from 'mutations/UpdateWorflowsViewMutation';
 
 interface BucketsProps {
   display: FieldDisplay;
@@ -18,6 +21,7 @@ interface BucketsProps {
   isSelected: any;
   toggleAgg: any;
   aggs: any;
+  updater: AggFilterInputUpdater;
 }
 
 class Buckets extends React.Component<BucketsProps> {
@@ -32,25 +36,30 @@ class Buckets extends React.Component<BucketsProps> {
       site,
       agg,
       visibleOptions = [],
+      updater,
     } = this.props;
     return pipe(
       filter(({ key }) =>
         visibleOptions.length ? visibleOptions.includes(key) : true
       ),
-      map((bucket: AggBucket) => (
-        <Checkbox
-          key={bucket.key}
-          checked={isSelected(bucket.key)}
-          onChange={() => toggleAgg(bucket.key)}>
-          <Bucket
-            value={bucket.key}
-            display={display}
-            docCount={bucket.docCount}
-          />
-        </Checkbox>
-      ))
+      map((bucket: AggBucket) => {
+        const checked = isSelected(bucket.key);
+        const onChange = () =>
+          checked
+            ? updater.removeFilter(bucket.key)
+            : updater.addFilter(bucket.key);
+        return (
+          <Checkbox key={bucket.key} checked={checked} onChange={onChange}>
+            <Bucket
+              value={bucket.key}
+              display={display}
+              docCount={bucket.docCount}
+            />
+          </Checkbox>
+        );
+      })
     )(buckets);
   }
 }
 
-export default withSite(Buckets);
+export default withSite(withAggContext(Buckets));

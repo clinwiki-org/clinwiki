@@ -30,6 +30,8 @@ import { SiteFragment } from 'types/SiteFragment';
 import { throws } from 'assert';
 import { FilterKind } from 'types/globalTypes';
 import { displayFields } from 'utils/siteViewHelpers';
+import AggFilterInputUpdater from './AggFilterInputUpdater';
+import AggFilterUpdateContext from './AggFilterUpdateContext';
 
 const getVisibleOptionsByName: (SiteFragment) => any = compose(
   reduce(
@@ -58,6 +60,7 @@ interface AggsProps {
   removeSelectAll?: boolean;
   resetSelectAll?: () => void;
   site: SiteFragment;
+  updateSearchParams: any;
 }
 
 class Aggs extends React.PureComponent<AggsProps> {
@@ -89,6 +92,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       removeFilter,
       removeFilters,
       searchParams,
+      updateSearchParams,
       site,
     } = this.props;
 
@@ -111,27 +115,39 @@ class Aggs extends React.PureComponent<AggsProps> {
           </h4>
           {sortByNameCi(this.getCrowdAggs(site, Object.keys(crowdAggs))).map(
             k => (
-              <AggDropDown
+              <AggFilterUpdateContext.Provider
                 key={k}
-                agg={k}
-                removeSelectAll={this.props.removeSelectAll}
-                selectedKeys={crowdFilters[k] || emptySet}
-                buckets={crowdAggs[k]}
-                isOpen={
-                  this.props.opened === k &&
-                  this.props.openedKind === 'crowdAggs'
-                }
-                onOpen={this.props.onOpen}
-                aggKind="crowdAggs"
-                addFilter={(agg, item) => addFilter(agg, item, true)}
-                addFilters={(agg, items) => addFilters(agg, items, true)}
-                removeFilter={(agg, item) =>
-                  removeFilter && removeFilter(agg, item, true)
-                }
-                removeFilters={(agg, items) => removeFilters(agg, items, true)}
-                searchParams={searchParams}
-                visibleOptions={visibleOptionsByName[k]}
-              />
+                value={{
+                  updater: new AggFilterInputUpdater(
+                    k,
+                    searchParams,
+                    updateSearchParams,
+                    'crowdAggFilters'
+                  ),
+                }}>
+                <AggDropDown
+                  agg={k}
+                  removeSelectAll={this.props.removeSelectAll}
+                  selectedKeys={crowdFilters[k] || emptySet}
+                  buckets={crowdAggs[k]}
+                  isOpen={
+                    this.props.opened === k &&
+                    this.props.openedKind === 'crowdAggs'
+                  }
+                  onOpen={this.props.onOpen}
+                  aggKind="crowdAggs"
+                  addFilter={(agg, item) => addFilter(agg, item, true)}
+                  addFilters={(agg, items) => addFilters(agg, items, true)}
+                  removeFilter={(agg, item) =>
+                    removeFilter && removeFilter(agg, item, true)
+                  }
+                  removeFilters={(agg, items) =>
+                    removeFilters(agg, items, true)
+                  }
+                  searchParams={searchParams}
+                  visibleOptions={visibleOptionsByName[k]}
+                />
+              </AggFilterUpdateContext.Provider>
             )
           )}
         </div>
@@ -143,24 +159,36 @@ class Aggs extends React.PureComponent<AggsProps> {
           <div>
             {sortByNameCi(this.getAggs(site)).map(k =>
               aggs[k] ? (
-                <AggDropDown
+                <AggFilterUpdateContext.Provider
                   key={k}
-                  agg={k}
-                  selectedKeys={filters[k] || emptySet}
-                  buckets={aggs[k]}
-                  isOpen={
-                    this.props.opened === k && this.props.openedKind === 'aggs'
-                  }
-                  onOpen={this.props.onOpen}
-                  aggKind="aggs"
-                  addFilter={addFilter}
-                  addFilters={addFilters}
-                  removeFilter={removeFilter}
-                  removeFilters={removeFilters}
-                  searchParams={searchParams}
-                  resetSelectAll={this.props.resetSelectAll}
-                  removeSelectAll={this.props.removeSelectAll}
-                />
+                  value={{
+                    updater: new AggFilterInputUpdater(
+                      k,
+                      searchParams,
+                      updateSearchParams,
+                      'crowdAggFilters'
+                    ),
+                  }}>
+                  <AggDropDown
+                    key={k}
+                    agg={k}
+                    selectedKeys={filters[k] || emptySet}
+                    buckets={aggs[k]}
+                    isOpen={
+                      this.props.opened === k &&
+                      this.props.openedKind === 'aggs'
+                    }
+                    onOpen={this.props.onOpen}
+                    aggKind="aggs"
+                    addFilter={addFilter}
+                    addFilters={addFilters}
+                    removeFilter={removeFilter}
+                    removeFilters={removeFilters}
+                    searchParams={searchParams}
+                    resetSelectAll={this.props.resetSelectAll}
+                    removeSelectAll={this.props.removeSelectAll}
+                  />
+                </AggFilterUpdateContext.Provider>
               ) : null
             )}
           </div>
