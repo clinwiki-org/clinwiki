@@ -28,6 +28,7 @@ export default gql`
         name
         buckets {
           key
+          keyAsString
           docCount
         }
       }

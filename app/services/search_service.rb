@@ -25,7 +25,7 @@ DEFAULT_AGG_OPTIONS = {
   },
   start_date: {
     date_histogram: {
-      field: :completion_date,
+      field: :start_date,
       interval: :year,
     },
     limit: 10,

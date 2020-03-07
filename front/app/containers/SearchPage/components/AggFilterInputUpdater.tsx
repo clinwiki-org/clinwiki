@@ -62,6 +62,7 @@ class AggFilterInputUpdater {
       this.aggFilterInput = {
         field: agg,
       };
+      console.log('agg filter input is', this.aggFilterInput);
     }
   }
 
@@ -129,11 +130,14 @@ class AggFilterInputUpdater {
   changeRange([gte, lte]): void {
     this.aggFilterInput.gte = gte;
     this.aggFilterInput.lte = lte;
+    console.log('changing range', this.aggFilterInput);
     this.updateSearchParamsForAggFilterInput();
   }
 
-  getRangeSelection(): Array<any> {
-    return [this.aggFilterInput.gte, this.aggFilterInput.lte];
+  getRangeSelection(): Array<any> | undefined {
+    if (this.aggFilterInput.gte && this.aggFilterInput.lte) {
+      return [this.aggFilterInput.gte, this.aggFilterInput.lte];
+    }
   }
 }
 

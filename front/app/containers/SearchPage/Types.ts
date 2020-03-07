@@ -33,6 +33,7 @@ export type AggregateAggCallback = (
 ) => void;
 export interface AggBucket {
   key: string;
+  keyAsString?: string;
   docCount: number;
 }
 export interface AggItem {

@@ -25,6 +25,7 @@ export default gql`
       aggs {
         buckets {
           key
+          keyAsString
           docCount
         }
       }

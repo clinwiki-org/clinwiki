@@ -1,6 +1,9 @@
 import * as React from 'react';
+import moment from 'moment';
+import { head, last, prop, sortBy, defaultTo } from 'ramda';
 import HistoSlider from 'histoslider';
-import { Panel } from 'react-bootstrap';
+import styled from 'styled-components';
+import { Panel, Row, Col } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
@@ -14,6 +17,11 @@ interface HistoPanelProps {
   handleLoadMore: () => void;
   updater: AggFilterInputUpdater;
 }
+
+const Container = styled.div`
+  padding: 10px;
+  padding-right: 0;
+`;
 
 class HistoPanel extends React.Component<HistoPanelProps> {
   render() {
@@ -35,29 +43,66 @@ class HistoPanel extends React.Component<HistoPanelProps> {
     }
 
     const sliderData = [] as any[];
-    buckets.forEach(({ key, docCount }) => {
-      if (docCount > 0) {
+    const sliderToDate = {};
+    const dateToSlider = {};
+    let i = 0;
+    let start, end;
+
+    buckets.forEach(({ key, keyAsString, docCount }, i) => {
+      if (docCount > 0 && keyAsString !== undefined) {
+        if (start === undefined || start > keyAsString) {
+          start = keyAsString;
+        }
+        if (end === undefined || end < keyAsString) {
+          end = keyAsString;
+        }
+
         sliderData.push({
-          x0: key,
-          x: key,
+          x0: i,
+          x: i + 1,
+          //x0: moment(keyAsString.replace('Z', '')).unix(),
+          //x: moment(keyAsString.replace('Z', '')).unix() + 1000,
           y: docCount,
         });
+        i++;
+        sliderToDate[i] = keyAsString;
+        dateToSlider[keyAsString as string] = i;
+        end = keyAsString;
       }
     });
+
+    console.log('slider data is', sliderData);
 
     return (
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
-          {
-            <HistoSlider
-              height={50}
-              width={150}
-              data={sliderData}
-              onChange={updater.changeRange}
-              showLabels={false}
-              selection={updater.getRangeSelection()}
-            />
-          }
+          <Container>
+            <Row>
+              <Col>
+                <HistoSlider
+                  data={sliderData}
+                  onChange={val => {
+                    updater.changeRange([
+                      sliderToDate[Math.floor(val[0])],
+                      sliderToDate[Math.floor(val[1])],
+                    ]);
+                  }}
+                  showLabels={false}
+                  padding={10}
+                  height={100}
+                  width={180}
+                  selection={updater.getRangeSelection()}
+                  histogramStyle={{
+                    backgroundColor: '#394149',
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>Start: {moment(start).format('YYYY-MM-DD')}</Col>
+              <Col>End: {moment(end).format('YYYY-MM-DD')}</Col>
+            </Row>
+          </Container>
         </Panel.Body>
       </Panel.Collapse>
     );
