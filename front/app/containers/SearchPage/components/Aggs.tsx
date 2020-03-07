@@ -32,6 +32,7 @@ import { FilterKind } from 'types/globalTypes';
 import { displayFields } from 'utils/siteViewHelpers';
 import AggFilterInputUpdater from './AggFilterInputUpdater';
 import AggFilterUpdateContext from './AggFilterUpdateContext';
+import { withSearchParams } from './SearchParamsContext';
 
 const getVisibleOptionsByName: (SiteFragment) => any = compose(
   reduce(
@@ -95,6 +96,8 @@ class Aggs extends React.PureComponent<AggsProps> {
       updateSearchParams,
       site,
     } = this.props;
+
+    console.log('search params are', searchParams);
 
     const sortByNameCi = sortBy(compose(toLower, aggToField));
 
@@ -200,4 +203,4 @@ class Aggs extends React.PureComponent<AggsProps> {
   }
 }
 
-export default withSite(Aggs);
+export default withSite(withSearchParams(Aggs));

@@ -4,11 +4,11 @@ import styled from 'styled-components';
 import { Redirect, Switch, Route } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import {
-  SearchPageHashQuery,
+  SearchPageHashQuery as SearchPageHashQueryType,
   SearchPageHashQueryVariables,
 } from 'types/SearchPageHashQuery';
 import {
-  SearchPageParamsQuery,
+  SearchPageParamsQuery as SearchPageParamsQueryType,
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
@@ -47,61 +47,20 @@ import {
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
 import { AggBucketMap } from './Types';
-import SiteProvider from 'containers/SiteProvider';
+import { withSite } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteFragment } from 'types/SiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { stack as Menu } from 'react-burger-menu';
-
-const HASH_QUERY = gql`
-  query SearchPageHashQuery(
-    $q: SearchQueryInput!
-    $sorts: [SortInput!]
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-    $page: Int
-    $pageSize: Int
-  ) {
-    searchHash(
-      params: {
-        q: $q
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        page: $page
-        pageSize: $pageSize
-      }
-    )
-  }
-`;
-
-export const PARAMS_QUERY = gql`
-  query SearchSearchPageParamsQuery($hash: String) {
-    searchParams(hash: $hash) {
-      q
-      sorts {
-        id
-        desc
-      }
-      aggFilters {
-        field
-        values
-      }
-      crowdAggFilters {
-        field
-        values
-      }
-      page
-      pageSize
-    }
-  }
-`;
+import { SearchPageHashQuery, SearchPageParamsQuery } from './queries';
+import SearchParamsContext from './components/SearchParamsContext';
 
 class HashQueryComponent extends Query<
-  SearchPageHashQuery,
+  SearchPageHashQueryType,
   SearchPageHashQueryVariables
 > {}
 class ParamsQueryComponent extends Query<
-  SearchPageParamsQuery,
+  SearchPageParamsQueryType,
   SearchPageParamsQueryVariables
 > {}
 
@@ -220,6 +179,7 @@ interface SearchPageProps {
   history: any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
+  site: SiteFragment;
 }
 
 interface SearchPageState {
@@ -323,6 +283,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   transformFilters = (
     filters: AggFilterInput[]
   ): { [key: string]: Set<string> } => {
+    console.log('transorming filters', filters);
     return pipe(
       groupBy(prop('field')),
       map(head),
@@ -448,10 +409,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         removeSelectAll={this.state.removeSelectAll}
         resetSelectAll={this.resetSelectAll}
         // @ts-ignore
-        searchParams={this.state.params}
-        changeSearchParams={params =>
-          this.setState({ params: { ...this.state.params, ...params } })
-        }
         opened={opened}
         openedKind={openedKind}
         onOpen={this.handleOpenAgg}
@@ -462,7 +419,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
     return (
       <ParamsQueryComponent
-        query={PARAMS_QUERY}
+        query={SearchPageParamsQuery}
         variables={{ hash }}
         onCompleted={(data: any) => {
           if (!this.state.params) {
@@ -496,7 +453,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
           return (
             <HashQueryComponent
-              query={HASH_QUERY}
+              query={SearchPageHashQuery}
               variables={this.state.params || undefined}>
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
@@ -578,32 +535,37 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   render() {
     if (this.props.ignoreUrlHash) {
       return (
-        <Row>
-          <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
-          <SiteProvider>
-            {site => (
-              <MainContainer md={10}>
-                <SearchView
-                  params={this.state.params as any}
-                  onBulkUpdate={this.handleBulkUpdateClick}
-                  openedAgg={this.state.openedAgg}
-                  onUpdateParams={this.handleUpdateParams}
-                  onRowClick={this.handleRowClick}
-                  onOpenAgg={this.handleOpenAgg}
-                  onAggsUpdate={this.handleAggsUpdate}
-                  onResetFilters={this.handleResetFilters(site.siteView)}
-                  onClearFilters={this.handleClearFilters}
-                  previousSearchData={this.previousSearchData}
-                  returnPreviousSearchData={() => this.returnPreviousSearchData}
-                  searchHash={''}
-                  showCards={this.state.showCards}
-                  toggledShowCards={this.toggledShowCards}
-                  returnNumberOfPages={this.returnNumberOfPages}
-                />
-              </MainContainer>
-            )}
-          </SiteProvider>
-        </Row>
+        <SearchParamsContext.Provider
+          value={{
+            searchParams: this.state.params,
+            updateSearchParams: params =>
+              this.setState({ params: { ...this.state.params, ...params } }),
+          }}>
+          <Row>
+            <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+            <MainContainer md={10}>
+              <SearchView
+                params={this.state.params as any}
+                onBulkUpdate={this.handleBulkUpdateClick}
+                openedAgg={this.state.openedAgg}
+                onUpdateParams={this.handleUpdateParams}
+                onRowClick={this.handleRowClick}
+                onOpenAgg={this.handleOpenAgg}
+                onAggsUpdate={this.handleAggsUpdate}
+                onResetFilters={this.handleResetFilters(
+                  this.props.site.siteView
+                )}
+                onClearFilters={this.handleClearFilters}
+                previousSearchData={this.previousSearchData}
+                returnPreviousSearchData={() => this.returnPreviousSearchData}
+                searchHash={''}
+                showCards={this.state.showCards}
+                toggledShowCards={this.toggledShowCards}
+                returnNumberOfPages={this.returnNumberOfPages}
+              />
+            </MainContainer>
+          </Row>
+        </SearchParamsContext.Provider>
       );
     }
 
@@ -612,36 +574,37 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       | null;
 
     return (
-      <Switch>
-        <Route
-          path={`${this.props.match.path}/study/:nctId`}
-          component={SearchStudyPage}
-        />
-        <Route
-          path={`${this.props.match.path}/bulk/`}
-          component={BulkEditPage}
-        />
-        <Route
-          render={() => (
-            <SiteProvider>
-              {site => (
-                <Row>
-                  <SidebarContainer md={2}>
-                    {this.renderAggs()}
-                  </SidebarContainer>
-                  <div id="main_search" style={{ overflowY: 'auto' }}>
-                    <MainContainer style={{ width: '100%' }}>
-                      {this.renderSearch(hash, site.siteView)}
-                    </MainContainer>
-                  </div>
-                </Row>
-              )}
-            </SiteProvider>
-          )}
-        />
-      </Switch>
+      <SearchParamsContext.Provider
+        value={{
+          searchParams: this.state.params,
+          updateSearchParams: params =>
+            this.setState({ params: { ...this.state.params, ...params } }),
+        }}>
+        <Switch>
+          <Route
+            path={`${this.props.match.path}/study/:nctId`}
+            component={SearchStudyPage}
+          />
+          <Route
+            path={`${this.props.match.path}/bulk/`}
+            component={BulkEditPage}
+          />
+          <Route
+            render={() => (
+              <Row>
+                <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+                <div id="main_search" style={{ overflowY: 'auto' }}>
+                  <MainContainer style={{ width: '100%' }}>
+                    {this.renderSearch(hash, this.props.site.siteView)}
+                  </MainContainer>
+                </div>
+              </Row>
+            )}
+          />
+        </Switch>
+      </SearchParamsContext.Provider>
     );
   }
 }
 
-export default SearchPage;
+export default withSite(SearchPage);

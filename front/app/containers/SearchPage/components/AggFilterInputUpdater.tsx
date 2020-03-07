@@ -50,7 +50,10 @@ class AggFilterInputUpdater {
     this.agg = agg;
     this.searchParams = searchParams;
     this.updateSearchParams = updateSearchParams;
-    console.log(this.updateSearchParams);
+    this.aggFilterGrouping = grouping;
+    if (!this.searchParams || !this.updateSearchParams) {
+      return;
+    }
     const result = find(propEq('field', agg))(this.searchParams[grouping]);
     if (result) {
       this.aggFilterInput = result as AggFilterInput;
@@ -76,17 +79,23 @@ class AggFilterInputUpdater {
   updateSearchParamsForAggFilterInput(): void {
     if (this.hasNoFilters()) {
       this.updateSearchParams({
-        [this.aggFilterGrouping as string]: omit(
-          [this.agg],
+        [this.aggFilterGrouping as string]: filter(
+          (x: AggFilterInput) => x.field !== this.agg,
           this.searchParams[this.aggFilterGrouping]
         ),
       });
     } else {
-      this.updateSearchParams({
-        [this.aggFilterGrouping]: {
+      console.log('updating search params', {
+        [this.aggFilterGrouping]: [
           ...this.searchParams[this.aggFilterGrouping],
-          [this.agg]: this.aggFilterInput,
-        },
+          this.aggFilterInput,
+        ],
+      });
+      this.updateSearchParams({
+        [this.aggFilterGrouping]: [
+          ...this.searchParams[this.aggFilterGrouping],
+          this.aggFilterInput,
+        ],
       });
     }
   }
