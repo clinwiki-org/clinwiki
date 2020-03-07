@@ -25,6 +25,7 @@ import {
   equals,
   filter,
   forEach,
+  contains,
 } from 'ramda';
 
 /**
@@ -112,6 +113,27 @@ class AggFilterInputUpdater {
       ? filter(x => x !== value, this.aggFilterInput.values)
       : this.aggFilterInput.values;
     this.updateSearchParamsForAggFilterInput();
+  }
+
+  isSelected(key: string): boolean {
+    if (this.aggFilterInput.values === undefined) {
+      return false;
+    }
+    return contains(key as string, this.aggFilterInput.values as Array<string>);
+  }
+
+  toggleFilter(key: string): void {
+    this.isSelected(key) ? this.removeFilter(key) : this.addFilter(key);
+  }
+
+  changeRange([gte, lte]): void {
+    this.aggFilterInput.gte = gte;
+    this.aggFilterInput.lte = lte;
+    this.updateSearchParamsForAggFilterInput();
+  }
+
+  getRangeSelection(): Array<any> {
+    return [this.aggFilterInput.gte, this.aggFilterInput.lte];
   }
 }
 

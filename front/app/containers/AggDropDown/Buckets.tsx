@@ -31,7 +31,6 @@ class Buckets extends React.Component<BucketsProps> {
       field,
       aggs,
       buckets,
-      isSelected,
       toggleAgg,
       site,
       agg,
@@ -43,13 +42,11 @@ class Buckets extends React.Component<BucketsProps> {
         visibleOptions.length ? visibleOptions.includes(key) : true
       ),
       map((bucket: AggBucket) => {
-        const checked = isSelected(bucket.key);
-        const onChange = () =>
-          checked
-            ? updater.removeFilter(bucket.key)
-            : updater.addFilter(bucket.key);
         return (
-          <Checkbox key={bucket.key} checked={checked} onChange={onChange}>
+          <Checkbox
+            key={bucket.key}
+            checked={updater.isSelected(bucket.key)}
+            onChange={() => updater.toggleFilter(bucket.key)}>
             <Bucket
               value={bucket.key}
               display={display}

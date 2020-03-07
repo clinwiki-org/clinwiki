@@ -2,6 +2,8 @@ import * as React from 'react';
 import HistoSlider from 'histoslider';
 import { Panel } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
 
 interface HistoPanelProps {
@@ -10,7 +12,7 @@ interface HistoPanelProps {
   loading: boolean;
   buckets: Array<AggBucket>;
   handleLoadMore: () => void;
-  changeSlider: any;
+  updater: AggFilterInputUpdater;
 }
 
 class HistoPanel extends React.Component<HistoPanelProps> {
@@ -21,7 +23,7 @@ class HistoPanel extends React.Component<HistoPanelProps> {
       loading,
       buckets,
       handleLoadMore,
-      changeSlider,
+      updater,
     } = this.props;
     if (hasMore || loading) {
       handleLoadMore();
@@ -51,8 +53,9 @@ class HistoPanel extends React.Component<HistoPanelProps> {
               height={50}
               width={150}
               data={sliderData}
-              onChange={changeSlider}
+              onChange={updater.changeRange}
               showLabels={false}
+              selection={updater.getRangeSelection()}
             />
           }
         </Panel.Body>
@@ -61,4 +64,4 @@ class HistoPanel extends React.Component<HistoPanelProps> {
   }
 }
 
-export default HistoPanel;
+export default withAggContext(HistoPanel);
