@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
 import Handlebars from 'handlebars';
+import { registerHandlebarsHelpers } from './MailMergeHelpers';
 
 interface Props {
   template: string;
@@ -26,6 +27,7 @@ const defaultStyle: React.CSSProperties = {
 export default class View extends React.Component<Props, State> {
   constructor(props: Readonly<Props>) {
     super(props);
+    registerHandlebarsHelpers();
     this.state = View.getDerivedStateFromProps(props) as Readonly<State>;
   }
   static getDerivedStateFromProps(
@@ -42,14 +44,21 @@ export default class View extends React.Component<Props, State> {
         compiled: template,
         markdown: template(props.context),
       };
-    } catch {
-      return state;
+    } catch (e) {
+      const errMsg = `Template error:\n${e}`;
+      return (
+        state || {
+          template: props.template,
+          compiled: _ => errMsg,
+          markdown: errMsg,
+        }
+      );
     }
   }
   render() {
     const style = { ...defaultStyle, ...this.props.style };
     return (
-      <div style={style}>
+      <div className="mail-merge" style={style}>
         <ReactMarkdown
           className="mailmerge-view"
           source={this.state.markdown}
