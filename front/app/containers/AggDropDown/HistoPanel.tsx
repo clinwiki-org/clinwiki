@@ -1,7 +1,7 @@
 import * as React from 'react';
 import moment from 'moment';
-import { head, last, propOr, defaultTo } from 'ramda';
-import { orderBy } from 'lodash';
+import { head, last, propOr, defaultTo, map } from 'ramda';
+import { orderBy, debounce } from 'lodash';
 import HistoSlider from 'histoslider';
 import styled from 'styled-components';
 import { Panel, Row, Col } from 'react-bootstrap';
@@ -19,12 +19,18 @@ interface HistoPanelProps {
   updater: AggFilterInputUpdater;
 }
 
+interface HistoPanelState {
+  selected: Array<any>;
+}
+
 const Container = styled.div`
   padding: 10px;
   padding-right: 0;
 `;
 
-class HistoPanel extends React.Component<HistoPanelProps> {
+class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
+  componentDidUpdate() {}
+
   render() {
     const {
       isOpen,
@@ -43,6 +49,14 @@ class HistoPanel extends React.Component<HistoPanelProps> {
       );
     }
 
+    /**
+     * Populate the data for the slider.
+     * We're transforming the discrete date values,
+     * which we could just treat as unix time seconds,
+     * into much smaller integers because histoslider
+     * has trouble using these bigger values when calculating
+     * the size of the rectangles for drawing actual histogram.
+     */
     const sliderData = [] as any[];
     const sliderToDate = [] as any[];
     const dateToSlider = {};
@@ -62,8 +76,6 @@ class HistoPanel extends React.Component<HistoPanelProps> {
           sliderData.push({
             x0: i,
             x: i + 1,
-            //x0: moment(keyAsString.replace('Z', '')).unix(),
-            //x: moment(keyAsString.replace('Z', '')).unix() + 1000,
             y: docCount,
           });
           sliderToDate.push(keyAsString);
@@ -77,6 +89,24 @@ class HistoPanel extends React.Component<HistoPanelProps> {
     console.log('slider data is', sliderData);
     console.log('slider to date is', sliderToDate);
 
+    const onChange = debounce(val => {
+      console.log('onchagne val is', val);
+      console.log(
+        'setting to',
+        sliderToDate[Math.floor(val[0])] || start,
+        sliderToDate[Math.floor(val[1])] || end
+      );
+      updater.changeRange([
+        sliderToDate[Math.floor(val[0])] || start,
+        sliderToDate[Math.floor(val[1])] || end,
+      ]);
+    }, 250);
+
+    let selection = updater.getRangeSelection();
+    if (selection) {
+      selection = map(x => dateToSlider[x], selection);
+    }
+
     return (
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
@@ -85,23 +115,12 @@ class HistoPanel extends React.Component<HistoPanelProps> {
               <Col>
                 <HistoSlider
                   data={sliderData}
-                  onChange={val => {
-                    console.log('onchagne val is', val);
-                    console.log(
-                      'setting to',
-                      sliderToDate[Math.floor(val[0])] || start,
-                      sliderToDate[Math.floor(val[1])] || end
-                    );
-                    updater.changeRange([
-                      sliderToDate[Math.floor(val[0])] || start,
-                      sliderToDate[Math.floor(val[1])] || end,
-                    ]);
-                  }}
+                  onChange={onChange}
                   showLabels={false}
                   padding={10}
                   height={100}
                   width={180}
-                  selection={updater.getRangeSelection()}
+                  selection={selection}
                   histogramStyle={{
                     backgroundColor: '#394149',
                   }}
