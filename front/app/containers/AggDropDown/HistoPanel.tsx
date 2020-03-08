@@ -103,8 +103,23 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
     }, 250);
 
     let selection = updater.getRangeSelection();
+    let startParsed;
+    let endParsed;
     if (selection) {
+      startParsed = moment(selection[0])
+        .utc(false)
+        .format('YYYY-MM-DD');
+      endParsed = moment(selection[1])
+        .utc(false)
+        .format('YYYY-MM-DD');
       selection = map(x => dateToSlider[x], selection);
+    } else {
+      startParsed = moment(start)
+        .utc(false)
+        .format('YYYY-MM-DD');
+      endParsed = moment(end)
+        .utc(false)
+        .format('YYYY-MM-DD');
     }
 
     return (
@@ -128,8 +143,8 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
               </Col>
             </Row>
             <Row>
-              <Col>Start: {moment(start).format('YYYY-MM-DD')}</Col>
-              <Col>End: {moment(end).format('YYYY-MM-DD')}</Col>
+              <Col>{`Start: ${startParsed}`}</Col>
+              <Col>{`End: ${endParsed}`}</Col>
             </Row>
           </Container>
         </Panel.Body>
