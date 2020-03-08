@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
 import { SiteFragment } from 'types/SiteFragment';
-import Card from './cards';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
 import SiteForm from 'components/SiteForm';
