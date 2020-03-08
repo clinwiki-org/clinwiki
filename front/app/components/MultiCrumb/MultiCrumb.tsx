@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { AggFilterListItem } from 'containers/SearchPage/Types';
 import ValuesCrumb from './ValuesCrumb';
 import AggCrumb from './AggCrumb';
+import CrumbWrapper from './CrumbWrapper';
 
 interface MultiCrumbProps {
   category?: string;
@@ -24,12 +25,14 @@ class MultiCrumb extends React.Component<MultiCrumbProps> {
     }
     return (
       <ListGroupItem className="filter-values">
-        <ValuesCrumb
-          category={category}
-          values={values}
-          onClick={onClick}
-          labels={labels}
-        />
+        <CrumbWrapper>
+          <ValuesCrumb
+            category={category}
+            values={values}
+            onClick={onClick}
+            labels={labels}
+          />
+        </CrumbWrapper>
       </ListGroupItem>
     );
   }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-export const CrumbWrapper = styled.div`
+export default styled.div`
   .filter-values {
     background-color: transparent;
     border: none;

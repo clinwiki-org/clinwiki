@@ -6,7 +6,7 @@ import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInp
 import { withSearchParams } from 'containers/SearchPage/components/SearchParamsContext';
 import ValuesCrumb from './ValuesCrumb';
 import ValueCrumb from './ValueCrumb';
-import { update } from 'ramda';
+import CrumbWrapper from './CrumbWrapper';
 
 interface AggCrumbProps {
   grouping: string;
@@ -29,25 +29,27 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
 
     return (
       <ListGroupItem className="filter-values">
-        <i>{aggToField(agg.field)}:</i>
-        {agg.values && (
-          <ValuesCrumb
-            values={agg.values}
-            onClick={val => updater.removeFilter(val)}
-          />
-        )}
-        {agg.gte && (
-          <ValueCrumb
-            label={`Min: ${updater.getMinString()}`}
-            onClick={() => updater.changeRange([null, agg.lte])}
-          />
-        )}
-        {agg.lte && (
-          <ValueCrumb
-            label={`Max: ${updater.getMaxString()}`}
-            onClick={() => updater.changeRange([agg.gte, null])}
-          />
-        )}
+        <CrumbWrapper>
+          <i>{aggToField(agg.field)}:</i>
+          {agg.values && (
+            <ValuesCrumb
+              values={agg.values}
+              onClick={val => updater.removeFilter(val)}
+            />
+          )}
+          {agg.gte && (
+            <ValueCrumb
+              label={`Min: ${updater.getMinString()}`}
+              onClick={() => updater.changeRange([null, agg.lte])}
+            />
+          )}
+          {agg.lte && (
+            <ValueCrumb
+              label={`Max: ${updater.getMaxString()}`}
+              onClick={() => updater.changeRange([agg.gte, null])}
+            />
+          )}
+        </CrumbWrapper>
       </ListGroupItem>
     );
   }
