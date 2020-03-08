@@ -49,6 +49,8 @@ export interface AggFilterListItem {
   // These field names are used in graphql query
   field: string;
   values: string[];
+  gte?: any;
+  lte?: any;
 }
 
 export interface SortItem {

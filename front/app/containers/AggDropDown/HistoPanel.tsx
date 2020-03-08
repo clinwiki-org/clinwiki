@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import { head, last, propOr, defaultTo, map } from 'ramda';
+import { head, last, propOr, defaultTo } from 'ramda';
 import { orderBy, debounce } from 'lodash';
 import HistoSlider from 'histoslider';
 import styled from 'styled-components';
@@ -72,7 +72,6 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
           if (end === undefined || end < keyAsString) {
             end = keyAsString;
           }
-
           sliderData.push({
             x0: i,
             x: i + 1,
@@ -86,16 +85,7 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
       }
     );
 
-    console.log('slider data is', sliderData);
-    console.log('slider to date is', sliderToDate);
-
     const onChange = debounce(val => {
-      console.log('onchagne val is', val);
-      console.log(
-        'setting to',
-        sliderToDate[Math.floor(val[0])] || start,
-        sliderToDate[Math.floor(val[1])] || end
-      );
       updater.changeRange([
         sliderToDate[Math.floor(val[0])] || start,
         sliderToDate[Math.floor(val[1])] || end,
@@ -112,7 +102,10 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
       endParsed = moment(selection[1])
         .utc(false)
         .format('YYYY-MM-DD');
-      selection = map(x => dateToSlider[x], selection);
+      selection = [
+        dateToSlider[selection[0]],
+        dateToSlider[selection[1]] + 1, // needs to be inclusive of the x0 and x value.
+      ];
     } else {
       startParsed = moment(start)
         .utc(false)
