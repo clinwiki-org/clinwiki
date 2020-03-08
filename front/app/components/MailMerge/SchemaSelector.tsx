@@ -69,7 +69,7 @@ function jsonSchemaToInternal(x: JsonSchema) {
   }
   let result: string[] = [];
   jsonSchemaToInternalImpl('', x, result);
-  return result;
+  return result.sort();
 }
 
 function graphqlToInternal(x: object) {
