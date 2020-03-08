@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { AggFilterInput } from 'types/globalTypes';
 import { SearchParams } from '../shared';
 import {
@@ -78,19 +79,17 @@ class AggFilterInputUpdater {
   }
 
   updateSearchParamsForAggFilterInput(): void {
+    const allButThisAgg = filter(
+      (x: AggFilterInput) => x.field !== this.agg,
+      this.searchParams[this.aggFilterGrouping]
+    );
     if (this.hasNoFilters()) {
       this.updateSearchParams({
-        [this.aggFilterGrouping as string]: filter(
-          (x: AggFilterInput) => x.field !== this.agg,
-          this.searchParams[this.aggFilterGrouping]
-        ),
+        [this.aggFilterGrouping as string]: allButThisAgg,
       });
     } else {
       this.updateSearchParams({
-        [this.aggFilterGrouping]: [
-          ...this.searchParams[this.aggFilterGrouping],
-          this.aggFilterInput,
-        ],
+        [this.aggFilterGrouping]: [...allButThisAgg, this.aggFilterInput],
       });
     }
   }
@@ -129,6 +128,24 @@ class AggFilterInputUpdater {
   getRangeSelection(): Array<any> | undefined {
     if (this.aggFilterInput.gte && this.aggFilterInput.lte) {
       return [this.aggFilterInput.gte, this.aggFilterInput.lte];
+    }
+  }
+
+  getMinString(): string | undefined {
+    // need to check for agg type once we start using this for more than date.
+    if (this.aggFilterInput.gte) {
+      return moment(this.aggFilterInput.gte)
+        .utc(false)
+        .format('YYYY-MM-DD');
+    }
+  }
+
+  getMaxString(): string | undefined {
+    // need to check for agg type once we start using this for more than date.
+    if (this.aggFilterInput.lte) {
+      return moment(this.aggFilterInput.lte)
+        .utc(false)
+        .format('YYYY-MM-DD');
     }
   }
 }

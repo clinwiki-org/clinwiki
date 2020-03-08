@@ -6,6 +6,7 @@ import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInp
 import { withSearchParams } from 'containers/SearchPage/components/SearchParamsContext';
 import ValuesCrumb from './ValuesCrumb';
 import ValueCrumb from './ValueCrumb';
+import { update } from 'ramda';
 
 interface AggCrumbProps {
   grouping: string;
@@ -35,8 +36,18 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
             onClick={val => updater.removeFilter(val)}
           />
         )}
-        {agg.gte && <ValueCrumb label={`Min: ${agg.gte}`} onClick={() => {}} />}
-        {agg.lte && <ValueCrumb label={`Min: ${agg.lte}`} onClick={() => {}} />}
+        {agg.gte && (
+          <ValueCrumb
+            label={`Min: ${updater.getMinString()}`}
+            onClick={() => updater.changeRange([null, agg.lte])}
+          />
+        )}
+        {agg.lte && (
+          <ValueCrumb
+            label={`Max: ${updater.getMaxString()}`}
+            onClick={() => updater.changeRange([agg.gte, null])}
+          />
+        )}
       </ListGroupItem>
     );
   }
