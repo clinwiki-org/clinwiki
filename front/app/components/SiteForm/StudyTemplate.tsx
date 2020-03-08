@@ -45,7 +45,7 @@ class StudyTemplate extends React.Component<Props, State> {
               onChange={this.updateSample}
             />
             <MailMergeEditor
-              schema={studySchema}
+              schema={searchSchema}
               template={this.props.template || ''}
               sample={data?.study || {}}
               onTemplateChanged={this.props.onTemplateChanged}
