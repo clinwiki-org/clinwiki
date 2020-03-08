@@ -1,6 +1,7 @@
 import * as React from 'react';
 import moment from 'moment';
-import { head, last, prop, sortBy, defaultTo } from 'ramda';
+import { head, last, propOr, defaultTo } from 'ramda';
+import { orderBy } from 'lodash';
 import HistoSlider from 'histoslider';
 import styled from 'styled-components';
 import { Panel, Row, Col } from 'react-bootstrap';
@@ -43,35 +44,38 @@ class HistoPanel extends React.Component<HistoPanelProps> {
     }
 
     const sliderData = [] as any[];
-    const sliderToDate = {};
+    const sliderToDate = [] as any[];
     const dateToSlider = {};
     let i = 0;
     let start, end;
 
-    buckets.forEach(({ key, keyAsString, docCount }, i) => {
-      if (docCount > 0 && keyAsString !== undefined) {
-        if (start === undefined || start > keyAsString) {
-          start = keyAsString;
-        }
-        if (end === undefined || end < keyAsString) {
-          end = keyAsString;
-        }
+    orderBy(buckets, 'keyAsString').forEach(
+      ({ key, keyAsString, docCount }, i) => {
+        if (docCount > 0 && keyAsString !== undefined) {
+          if (start === undefined || start > keyAsString) {
+            start = keyAsString;
+          }
+          if (end === undefined || end < keyAsString) {
+            end = keyAsString;
+          }
 
-        sliderData.push({
-          x0: i,
-          x: i + 1,
-          //x0: moment(keyAsString.replace('Z', '')).unix(),
-          //x: moment(keyAsString.replace('Z', '')).unix() + 1000,
-          y: docCount,
-        });
-        i++;
-        sliderToDate[i] = keyAsString;
-        dateToSlider[keyAsString as string] = i;
-        end = keyAsString;
+          sliderData.push({
+            x0: i,
+            x: i + 1,
+            //x0: moment(keyAsString.replace('Z', '')).unix(),
+            //x: moment(keyAsString.replace('Z', '')).unix() + 1000,
+            y: docCount,
+          });
+          sliderToDate.push(keyAsString);
+          dateToSlider[keyAsString as string] = i;
+          end = keyAsString;
+          i++;
+        }
       }
-    });
+    );
 
     console.log('slider data is', sliderData);
+    console.log('slider to date is', sliderToDate);
 
     return (
       <Panel.Collapse className="bm-panel-collapse">
@@ -82,9 +86,15 @@ class HistoPanel extends React.Component<HistoPanelProps> {
                 <HistoSlider
                   data={sliderData}
                   onChange={val => {
+                    console.log('onchagne val is', val);
+                    console.log(
+                      'setting to',
+                      sliderToDate[Math.floor(val[0])] || start,
+                      sliderToDate[Math.floor(val[1])] || end
+                    );
                     updater.changeRange([
-                      sliderToDate[Math.floor(val[0])],
-                      sliderToDate[Math.floor(val[1])],
+                      sliderToDate[Math.floor(val[0])] || start,
+                      sliderToDate[Math.floor(val[1])] || end,
                     ]);
                   }}
                   showLabels={false}
