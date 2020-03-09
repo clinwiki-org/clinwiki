@@ -255,7 +255,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     params: SearchPageParamsQuery_searchParams | null | undefined
   ): SearchParams => {
     const defaultParams = this.getDefaultParams(view);
-    if (!params) return defaultParams;
+    if (!params) {
+      return defaultParams;
+    }
 
     const q = params.q
       ? (JSON.parse(params.q) as SearchQuery)
@@ -421,11 +423,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
+    console.log('rendering search (state then props)', this.state, this.props);
     return (
       <ParamsQueryComponent
         query={SearchPageParamsQuery}
         variables={{ hash }}
         onCompleted={(data: any) => {
+          console.log('completed', data);
           if (!this.state.params) {
             const params: SearchParams = this.searchParamsFromQuery(
               view,
@@ -446,6 +450,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const { data, loading, error } = result;
           if (error || loading) return null;
 
+          console.log('state right now is', this.state);
+
           const params: SearchParams = this.searchParamsFromQuery(
             view,
             data && data.searchParams
@@ -460,6 +466,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           return (
             <HashQueryComponent
               query={SearchPageHashQuery}
+              fetchPolicy="no-cache"
               variables={this.state.params || undefined}>
               {result => {
                 console.log('hash query component result is', result);

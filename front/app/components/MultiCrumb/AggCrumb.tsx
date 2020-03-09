@@ -39,16 +39,10 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
               onClick={val => updater.removeFilter(val)}
             />
           )}
-          {agg.gte && (
+          {agg.lte && agg.gte && (
             <ValueCrumb
-              label={`Min: ${updater.getMinString()}`}
-              onClick={() => updater.changeRange([null, agg.lte])}
-            />
-          )}
-          {agg.lte && (
-            <ValueCrumb
-              label={`Max: ${updater.getMaxString()}`}
-              onClick={() => updater.changeRange([agg.gte, null])}
+              label={`${updater.getMinString()} -- ${updater.getMaxString()}`}
+              onClick={() => updater.removeRange()}
             />
           )}
         </CrumbWrapper>

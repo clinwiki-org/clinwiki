@@ -127,6 +127,11 @@ class AggFilterInputUpdater {
     this.updateSearchParamsForAggFilterInput();
   }
 
+  removeRange(): void {
+    this.aggFilterInput = omit(['gte', 'lte'], this.aggFilterInput);
+    this.updateSearchParamsForAggFilterInput();
+  }
+
   getRangeSelection(): Array<any> | undefined {
     if (this.aggFilterInput.gte && this.aggFilterInput.lte) {
       return [this.aggFilterInput.gte, this.aggFilterInput.lte];
