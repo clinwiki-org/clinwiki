@@ -41,6 +41,8 @@ interface SearchFormState {
   showAllCrowdAggs: boolean;
   showAllAggsPresearch: boolean;
   showAllCrowdAggsPresearch: boolean;
+  showAllAggsAutoSuggest: boolean;
+  showAllCrowdAggsAutoSuggest: boolean;
   mutations: SiteViewMutationInput[];
   showFacetBar: boolean;
   showFacetBarConfig: boolean;
@@ -122,6 +124,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     showFacetBarConfig:false,
     showAllAggsPresearch: false,
     showAllCrowdAggsPresearch:false,
+    showAllAggsAutoSuggest:false,
+    showAllCrowdAggsAutoSuggest:false,
     resultsButtonsArray: []
   };
 
@@ -491,8 +495,17 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </AggsHeaderContainer>
          
             <StyledLabel>Add to Autosuggest</StyledLabel>
+            <StyledFormControl
+                name="set:search.autoSuggest.aggs.selected.kind"
+                componentClass="select"
+                //@ts-ignore
+                onChange={e => this.handleAddMutation(e,view)}
+                value={view.search.autoSuggest.aggs.selected.kind}>
+                <option value="BLACKLIST">All except</option>
+                <option value="WHITELIST">Only</option>
+              </StyledFormControl>
             <MultiInput
-              name="set:search.autoSuggest.aggs.fields"
+              name="set:search.autoSuggest.aggs.selected.values"
               options={AGGS_OPTIONS}
               placeholder="Add facet"
               value={view.search.autoSuggest.aggs.selected.values}
@@ -520,9 +533,17 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   Show all
                 </StyledCheckbox>
               </AggsHeaderContainer>
+              <StyledFormControl
+                name="set:search.autoSuggest.crowdAggs.selected.kind"
+                componentClass="select"
+                onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
+                v={view.search.autoSuggest.crowdAggs.selected.kind}>
+                <option value="BLACKLIST">All except</option>
+                <option value="WHITELIST">Only</option>
+              </StyledFormControl>
               <StyledLabel>Add to Autosuggest</StyledLabel>
               <MultiInput
-              name="set:search.autoSuggest.crowdAggs.fields"
+              name="set:search.autoSuggest.crowdAggs.selected.values"
               options={this.getCrowdFields(view)}
                 placeholder="Add facet"
                 value={view.search.crowdAggs.selected.values}
@@ -622,7 +643,7 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
               onChange={(e: { currentTarget: { name: string; value: any } }) =>
                 this.handleAddMutation(e, view)
               }
-              v={view.search.crowdAggs.selected.kind}>
+              v={view.search.presearch.crowdAggs.selected.kind}>
               <option value="BLACKLIST">All except</option>
               <option value="WHITELIST">Only</option>
             </StyledFormControl>
@@ -831,7 +852,20 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
       this.state.showAllCrowdAggsPresearch ? [] : view.search.presearch.crowdAggs.selected.values,
       view.search.presearch.crowdAggs.fields
     );
-
+    const fieldsAutoSuggest = displayFields(
+      this.state.showAllAggsAutoSuggest
+        ? FilterKind.BLACKLIST
+        : view.search.autoSuggest.aggs.selected.kind,
+      this.state.showAllAggsAutoSuggest ? [] : view.search.autoSuggest.aggs.selected.values,
+      view.search.autoSuggest.aggs.fields
+    );
+    const crowdFieldsAutoSuggest = displayFields(
+      this.state.showAllCrowdAggsAutoSuggest
+        ? FilterKind.BLACKLIST
+        : view.search.autoSuggest.crowdAggs.selected.kind,
+      this.state.showAllCrowdAggsAutoSuggest ? [] : view.search.autoSuggest.crowdAggs.selected.values,
+      view.search.autoSuggest.crowdAggs.fields
+    );
 
     const showFacetBar = view.search.config.fields.showFacetBar;
     // const config = displayFields(
@@ -883,7 +917,7 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
             <h3>Search Sections</h3>
             <PanelGroup  id="accordion-uncontrolled"> 
                 {this.renderFacetBarConfig(showFacetBar,view,fields, crowdFields,updateSiteView)}
-                {this.renderAutoSuggestConfig(showAutoSuggest,view,fields, crowdFields,updateSiteView)}
+                {this.renderAutoSuggestConfig(showAutoSuggest,view,fieldsAutoSuggest, crowdFieldsAutoSuggest,updateSiteView)}
                 {this.renderPreSearchConfig(showPresearch,view,fieldsPresearch, crowdFieldsPresearch,updateSiteView)}
                 {this.renderResultsConfig(showResults,view,fields, crowdFields,updateSiteView)}
                 {this.renderBreadCrumbsConfig(showBreadCrumbs,view,fields, crowdFields,updateSiteView)}

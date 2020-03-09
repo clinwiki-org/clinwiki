@@ -151,6 +151,7 @@ import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
 import { SiteFragment } from 'types/SiteFragment';
 import { SiteViewFragment } from 'types/SiteViewFragment';
+import { displayFields } from 'utils/siteViewHelpers';
 
 interface CrumbsBarProps {
   searchParams: SearchParams;
@@ -303,23 +304,34 @@ export default class CrumbsBar extends React.Component<
     return aggFields;
   };
 
-  // getCrowdAggFieldsFromSubsiteConfig = crowdAggs => {
-  //   let crowdAggFields: string[] = [];
-  //   if (crowdAggs.length > 0) {
-  //     crowdAggs.map(i => {
-  //       if (i.autoSuggest) {
-  //         crowdAggFields.push(i.name);
-  //       }
-  //     });
-  //   }
-  //   return crowdAggFields;
-  // };
+  getCrowdAggAutoSuggest = () => {
+    let crowdAggFields = displayFields(
+      this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.kind,
+      this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.values,
+      this.props.currentSiteView.search.autoSuggest.crowdAggs.fields
+    )
+      console.log("Auto SUggest crowdAgg Fields Query", crowdAggFields)
+      return crowdAggFields
+      let fieldsToReturn: any[]=[]
+       crowdAggFields.map(field=>{
+         fieldsToReturn.push(field.name)
+       })
+      return fieldsToReturn
+    
+  };
 
-  // getAutoSuggestFields = () => {
-  //   let aggFields = this.props.currentSiteView.search.autoSuggest.fields;
-  //   aggFields = this.props.currentSiteView.search.autoSuggest.fields;
-  //   return aggFields;
-  // };
+  getAutoSuggestFields = () => {
+    let aggFields = displayFields(
+      this.props.currentSiteView.search.autoSuggest.aggs.selected.kind,
+      this.props.currentSiteView.search.autoSuggest.aggs.selected.values,
+      this.props.currentSiteView.search.autoSuggest.aggs.fields
+    )
+    let fieldsToReturn: any[]=[]
+       aggFields.map(field=>{
+         fieldsToReturn.push(field.name)
+       })
+      return fieldsToReturn
+};
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
@@ -328,9 +340,9 @@ export default class CrumbsBar extends React.Component<
       return { children: [], key: i };
     });
 
-    const aggFields = currentSiteView.search.autoSuggest.aggs
+    const aggFields = this.getAutoSuggestFields();
 
-    const crowdAggFields = currentSiteView.search.autoSuggest.crowdAggs
+    const crowdAggFields = this.getCrowdAggAutoSuggest();
 
 
     const query = AUTOSUGGEST_QUERY;

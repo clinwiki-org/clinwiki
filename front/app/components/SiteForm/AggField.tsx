@@ -130,16 +130,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     );
   };
 
-  handleCheckboxToggle = value => (e: {
-    currentTarget: { name: string; value: any };
-  }) => {
-    this.props.onAddMutation(
-      {
-        currentTarget: { name: e.currentTarget.name, value: !value },
-      },
-      this.props.view
-    );
-  };
 
   handleRemoveFilter = (kind: 'preselected' | 'visibleOptions') => (
     aggName: string,
@@ -268,18 +258,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="DATE">Date</option>
             </StyledFormControl>
           </div>
-          {this.props.field.name !== 'average_rating' && (
-            <ContainerRow>
-              <StyledCheckbox
-                name={`set:${this.getPath(presearch)}.autoSuggest`}
-                checked={this.props.field.autoSuggest}
-                onChange={this.handleCheckboxToggle(
-                  this.props.field.autoSuggest
-                )}
-              />
-              <h5>Add to Auto-Suggest</h5>
-            </ContainerRow>
-          )}
         </Container>
       </>
     );
