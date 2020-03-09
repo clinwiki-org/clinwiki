@@ -17,7 +17,6 @@ interface MultiCrumbProps {
 
 class MultiCrumb extends React.Component<MultiCrumbProps> {
   render() {
-    console.log('mc props', this.props);
     const { category, values, agg, onClick, labels } = this.props;
 
     if (agg) {

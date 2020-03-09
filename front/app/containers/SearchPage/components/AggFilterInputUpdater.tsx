@@ -74,7 +74,6 @@ class AggFilterInputUpdater {
       if (isNil(this.aggFilterInput[field])) {
         continue;
       }
-      console.log('field is not empty', field, this.aggFilterInput);
       return false;
     }
     return true;

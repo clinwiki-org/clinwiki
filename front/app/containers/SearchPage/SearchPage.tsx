@@ -125,7 +125,6 @@ const changeFilter = (add: boolean) => (
   key: string,
   isCrowd?: boolean
 ) => (params: SearchParams) => {
-  console.log('changeFilter called:', { add, aggName, key, isCrowd });
   const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
   const lens = lensPath([propName]);
   return over(
@@ -286,7 +285,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   transformFilters = (
     filters: AggFilterInput[]
   ): { [key: string]: Set<string> } => {
-    console.log('transorming filters', filters);
     return pipe(
       groupBy(prop('field')),
       map(head),
@@ -389,9 +387,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       !equals(searchAggs, this.state.searchAggs) ||
       !equals(searchCrowdAggs, this.state.searchCrowdAggs)
     ) {
-      console.log('aggs update happened');
-      console.log({ searchAggs, stateAggs: this.state.searchAggs });
-      console.log({ searchCrowdAggs, stateAggs: this.state.searchCrowdAggs });
       this.setState({ searchAggs, searchCrowdAggs });
     }
   };
@@ -423,13 +418,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   renderSearch = (hash: string | null, view: SiteViewFragment) => {
-    console.log('rendering search (state then props)', this.state, this.props);
     return (
       <ParamsQueryComponent
         query={SearchPageParamsQuery}
         variables={{ hash }}
         onCompleted={(data: any) => {
-          console.log('completed', data);
           if (!this.state.params) {
             const params: SearchParams = this.searchParamsFromQuery(
               view,
@@ -446,11 +439,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           }
         }}>
         {result => {
-          console.log('graphql result is', result);
           const { data, loading, error } = result;
           if (error || loading) return null;
-
-          console.log('state right now is', this.state);
 
           const params: SearchParams = this.searchParamsFromQuery(
             view,
@@ -469,7 +459,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               fetchPolicy="no-cache"
               variables={this.state.params || undefined}>
               {result => {
-                console.log('hash query component result is', result);
                 const { data, loading, error } = result;
                 if (error || loading || !data) return null;
 
@@ -480,12 +469,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   searchHash !== undefined &&
                   hash !== undefined
                 ) {
-                  console.log(
-                    'had a mismatch between hashes, redirecting',
-                    searchHash,
-                    hash
-                  );
-                  console.log('redirecting', `/search/${searchHash}`);
                   return <Redirect to={`/search/${searchHash}`} />;
                 }
 
@@ -517,7 +500,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleScroll = () => {
-    console.log('scroll called');
     if (
       window.innerHeight + window.scrollY >= document.body.scrollHeight - 100 &&
       this.state.params!.page < this.numberOfPages - 1 &&
@@ -552,16 +534,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    Object.entries(this.props).forEach(
-      ([key, val]) =>
-        prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    );
-    if (this.state) {
-      Object.entries(this.state).forEach(
-        ([key, val]) =>
-          prevState[key] !== val && console.log(`State '${key}' changed`)
-      );
-    }
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
@@ -570,16 +542,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   render() {
-    console.log('search page is re-rendering');
-    console.log('search page state', this.state);
-    console.log('search page props', this.props);
     if (this.props.ignoreUrlHash) {
       return (
         <SearchParamsContext.Provider
           value={{
             searchParams: this.state.params,
             updateSearchParams: params => {
-              console.log('update search params called');
               this.setState({ params: { ...this.state.params, ...params } });
             },
           }}>

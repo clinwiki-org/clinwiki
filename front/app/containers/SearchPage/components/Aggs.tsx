@@ -97,8 +97,6 @@ class Aggs extends React.PureComponent<AggsProps> {
       site,
     } = this.props;
 
-    console.log('search params are', searchParams);
-
     const sortByNameCi = sortBy(compose(toLower, aggToField));
 
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
