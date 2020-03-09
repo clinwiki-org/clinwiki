@@ -125,6 +125,7 @@ const changeFilter = (add: boolean) => (
   key: string,
   isCrowd?: boolean
 ) => (params: SearchParams) => {
+  console.log('changeFilter called:', { add, aggName, key, isCrowd });
   const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
   const lens = lensPath([propName]);
   return over(
@@ -386,6 +387,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       !equals(searchAggs, this.state.searchAggs) ||
       !equals(searchCrowdAggs, this.state.searchCrowdAggs)
     ) {
+      console.log('aggs update happened');
+      console.log({ searchAggs, stateAggs: this.state.searchAggs });
+      console.log({ searchCrowdAggs, stateAggs: this.state.searchCrowdAggs });
       this.setState({ searchAggs, searchCrowdAggs });
     }
   };
@@ -437,7 +441,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             return null;
           }
         }}>
-        {({ data, loading, error }) => {
+        {result => {
+          console.log('graphql result is', result);
+          const { data, loading, error } = result;
           if (error || loading) return null;
 
           const params: SearchParams = this.searchParamsFromQuery(
@@ -455,12 +461,25 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <HashQueryComponent
               query={SearchPageHashQuery}
               variables={this.state.params || undefined}>
-              {({ data, loading, error }) => {
+              {result => {
+                console.log('hash query component result is', result);
+                const { data, loading, error } = result;
                 if (error || loading || !data) return null;
 
+                const { searchHash } = data;
                 // We have a mismatch between url and params in state
-                if (data.searchHash !== hash) {
-                  return <Redirect to={`/search/${data.searchHash}`} />;
+                if (
+                  searchHash !== hash &&
+                  searchHash !== undefined &&
+                  hash !== undefined
+                ) {
+                  console.log(
+                    'had a mismatch between hashes, redirecting',
+                    searchHash,
+                    hash
+                  );
+                  console.log('redirecting', `/search/${searchHash}`);
+                  return <Redirect to={`/search/${searchHash}`} />;
                 }
 
                 return (
@@ -476,7 +495,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     onClearFilters={this.handleClearFilters}
                     previousSearchData={this.previousSearchData}
                     returnPreviousSearchData={this.returnPreviousSearchData}
-                    searchHash={data.searchHash}
+                    searchHash={searchHash}
                     showCards={this.state.showCards}
                     toggledShowCards={this.toggledShowCards}
                     returnNumberOfPages={this.returnNumberOfPages}
@@ -491,6 +510,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleScroll = () => {
+    console.log('scroll called');
     if (
       window.innerHeight + window.scrollY >= document.body.scrollHeight - 100 &&
       this.state.params!.page < this.numberOfPages - 1 &&
@@ -524,7 +544,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    Object.entries(this.props).forEach(
+      ([key, val]) =>
+        prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    );
+    if (this.state) {
+      Object.entries(this.state).forEach(
+        ([key, val]) =>
+          prevState[key] !== val && console.log(`State '${key}' changed`)
+      );
+    }
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
@@ -533,13 +563,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   render() {
+    console.log('search page is re-rendering');
+    console.log('search page state', this.state);
+    console.log('search page props', this.props);
     if (this.props.ignoreUrlHash) {
       return (
         <SearchParamsContext.Provider
           value={{
             searchParams: this.state.params,
-            updateSearchParams: params =>
-              this.setState({ params: { ...this.state.params, ...params } }),
+            updateSearchParams: params => {
+              console.log('update search params called');
+              this.setState({ params: { ...this.state.params, ...params } });
+            },
           }}>
           <Row>
             <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>

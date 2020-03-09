@@ -20,7 +20,6 @@ import {
   reverse,
   identity,
 } from 'ramda';
-import { get } from 'lodash';
 import moment from 'moment';
 import { withApollo } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
@@ -388,8 +387,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             agg={agg}
             field={
               find(propEq('name', agg), [
-                ...get(site, 'search.aggs.fields', []),
-                ...get(site, 'search.crowdAggs.fields', []),
+                ...(site.search?.aggs?.fields || []),
+                ...(site.search?.crowdAggs?.fields || []),
               ]) as SiteViewFragment_search_aggs_fields | null
             }
           />

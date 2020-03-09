@@ -27,6 +27,8 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       grouping
     );
 
+    console.log(agg);
+
     return (
       <ListGroupItem className="filter-values">
         <CrumbWrapper>

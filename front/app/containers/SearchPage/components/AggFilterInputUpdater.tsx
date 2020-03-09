@@ -68,12 +68,14 @@ class AggFilterInputUpdater {
 
   hasNoFilters(): boolean {
     for (let field of this.ACCEPTED_FIELDS) {
-      if (
-        !isEmpty(this.aggFilterInput[field]) ||
-        !isNil(this.aggFilterInput[field])
-      ) {
-        return false;
+      if (isEmpty(this.aggFilterInput[field])) {
+        continue;
       }
+      if (isNil(this.aggFilterInput[field])) {
+        continue;
+      }
+      console.log('field is not empty', field, this.aggFilterInput);
+      return false;
     }
     return true;
   }

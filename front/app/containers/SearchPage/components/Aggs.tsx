@@ -169,7 +169,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                       k,
                       searchParams,
                       updateSearchParams,
-                      'crowdAggFilters'
+                      'aggFilters'
                     ),
                   }}>
                   <AggDropDown
