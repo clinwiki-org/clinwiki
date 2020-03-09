@@ -85,7 +85,7 @@ const QUERY_AGG_BUCKETS = gql`
   }
 `;
 
-const QUERY_CROWD_AGG_BUCKETA = gql`
+const QUERY_CROWD_AGG_BUCKETS = gql`
   query SearchPageCrowdAggBucketsQuery(
     $agg: String!
     $q: SearchQueryInput!
@@ -139,7 +139,8 @@ const PresearchCard = styledComponents.div`
   border-radius: 12px;
   margin: 10px;
   flex: 1;
-  height: 300px;
+  height: 310px;
+  width: 420px;
 `;
 
 const PresearchHeader = styledComponents.div`
@@ -159,7 +160,7 @@ const PresearchTitle = styledComponents.div`
 
 const PresearchBody = styledComponents.div`
   margin-left: 5px;
-  height: 240px;
+  height: 250px;
 `;
 
 const PresearchFilter = styledComponents.div`
@@ -169,7 +170,7 @@ const PresearchFilter = styledComponents.div`
 
 const PresearchPanel = styledComponents.div`
   overflow-x: auto;
-  max-height: 190px;
+  max-height: 200px;
   margin-left: 5px;
   margin-top 30px;
 `;
@@ -180,7 +181,7 @@ const PresearchContent = styledComponents.div`
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px; 
   background-color: white;
-  max-height: 250px;
+  max-height: 260px;
 `;
 
 export enum SortKind {
@@ -267,7 +268,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     };
     const prevAggValue = findAgg(state.prevParams);
     const nextAggValue = findAgg(props.searchParams);
-
+    // if (props.presearch) {
+    //   console.log('***************');
+    //   console.log(prevAggValue, nextAggValue);
+    //   console.log('***************');
+    // }
     if (
       state.isOpen &&
       !equals(state.prevParams, props.searchParams) &&
@@ -282,7 +287,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         prevParams: props.searchParams,
       };
     }
-
     return null;
   }
 
@@ -353,7 +357,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { desc, sortKind } = this.state;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
-        ? [QUERY_CROWD_AGG_BUCKETA, 'crowdAggFilters']
+        ? [QUERY_CROWD_AGG_BUCKETS, 'crowdAggFilters']
         : [QUERY_AGG_BUCKETS, 'aggFilters'];
 
     let aggSort = [{ id: 'key', desc: false }];
@@ -642,11 +646,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { agg, presearch, selectedKeys } = this.props;
     const { buckets = [], filter, desc, sortKind, isOpen } = this.state;
     const title = aggToField(agg);
-    console.log('--------------');
-    console.log('agg', agg);
-    console.log('presearch?', presearch);
-    console.log('selected', selectedKeys);
-    console.log('--------------');
+    // if (presearch) {
+    //   console.log('--------------');
+    //   console.log('agg', agg);
+    //   console.log('selectedKeys', selectedKeys);
+    //   console.log('--------------');
+    // }
 
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {

@@ -41,6 +41,7 @@ const getVisibleOptionsByName: (SiteFragment) => any = compose(
   pathOr([], ['siteView', 'search', 'crowdAggs', 'fields'])
 );
 interface AggsProps {
+  key?: any;
   aggs: AggBucketMap;
   crowdAggs: AggBucketMap;
   // selected
@@ -64,7 +65,6 @@ interface AggsProps {
 
 const PresearchContainer = styled.div`
   display: flex;
-  width: 100%;
   max-height: 350px;
   @media (max-width: 1250px) {
     display: grid;
@@ -111,10 +111,14 @@ class Aggs extends React.PureComponent<AggsProps> {
       currentSiteView,
       preSearchAggs,
     } = this.props;
-
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
     if (presearch && preSearchAggs) {
+      console.log('=========================');
+      console.log('filters', filters);
+      console.log('aggs', aggs);
+      console.log('presearchAggs', preSearchAggs);
+      console.log('=========================');
       return (
         <SiteProvider>
           {(site: SiteFragment) => {

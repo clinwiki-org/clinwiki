@@ -290,7 +290,6 @@ const SearchWrapper = styled.div`
 `;
 
 const SearchContainer = styled.div`
-  width: 100%;
   padding: 10px 30px;
   border: solid white 1px;
   background-color: #f2f2f2;
@@ -605,7 +604,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             style={{ cursor: 'pointer', margin: '5px' }}
             onClick={() => {
               pipe(changePage, this.props.onUpdateParams)(page + 1);
-              debugger;
             }}
           />
         ) : (

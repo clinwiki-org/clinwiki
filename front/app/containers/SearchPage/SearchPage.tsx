@@ -113,6 +113,7 @@ const MainContainer = styled(Col)`
   padding-top: 20px;
   padding-bottom: 20px;
   float: left;
+  width: 100%;
 
   .rt-th {
     text-transform: capitalize;
@@ -164,14 +165,15 @@ const SidebarContainer = styled(Col)`
 `;
 
 const SearchContainer = styled.div`
-  width: 100%;
-  padding: 10px 30px;
   border: solid white 1px;
   background-color: #f2f2f2;
   color: black;
   margin-bottom: 1em;
+  margin-left: 15px;
+  margin-right: 15px;
   display: flex;
   flex-direction: column;
+  padding: 10px;
 `;
 
 const changeFilter = (add: boolean) => (
@@ -386,6 +388,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
+    console.log('updatedParams', params);
     this.previousSearchData = [];
     if (!equals(params.q, this.state.params && this.state.params.q)) {
       // For now search doesn't work well with args list
@@ -447,6 +450,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
+    // this.searchParamsFromQuery();
 
     return (
       <Aggs
@@ -631,7 +635,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             site.siteView;
           const preSearchAggs =
             thisSiteView.search.presearch.aggs.selected.values;
-          console.log(thisSiteView);
           // const presearchButton = thisSiteView.search.presearch.button;
           // const presearchText = thisSiteView.search.presearch;
           return (
@@ -650,9 +653,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 resetSelectAll={this.resetSelectAll}
                 // @ts-ignore
                 searchParams={this.state.params}
-                opened={opened}
-                openedKind={openedKind}
-                onOpen={this.handleOpenAgg}
                 presearch
                 preSearchAggs={preSearchAggs}
               />
@@ -767,6 +767,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     )}
                     <div id="main_search" style={{ overflowY: 'auto' }}>
                       <MainContainer style={{ width: '100%' }}>
+                        {/* {this.renderCrumbs()} */}
                         {this.renderPresearch()}
                         {this.renderSearch(hash, thisSiteView, site.siteViews)}
                       </MainContainer>
