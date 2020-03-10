@@ -234,6 +234,7 @@ interface AggDropDownProps {
   removeSelectAll?: boolean;
   resetSelectAll?: () => void;
   presearch?: boolean;
+  currentSiteView?: any;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -390,6 +391,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   handleLoadMore = async apolloClient => {
+    console.log('HLM');
     const { desc, sortKind, buckets, filter } = this.state;
     const { agg, searchParams, presearch } = this.props;
     const [query, filterType] =
@@ -524,11 +526,20 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
     let display = this.props.display;
-    const { presearch } = this.props;
-    const field = find(propEq('name', this.props.agg), [
-      ...site.search.aggs.fields,
-      ...site.search.crowdAggs.fields,
-    ]) as SiteViewFragment_search_aggs_fields | null;
+    const fieldsArray = () => {
+      if (site.search.config.fields.showPresearch) {
+        return [
+          ...site.search.presearch.aggs.fields,
+          ...site.search.presearch.crowdAggs.fields,
+        ];
+      }
+      return [...site.search.aggs.fields, ...site.search.crowdAggs.fields];
+    };
+    //@ts-ignore
+    const field = find(
+      propEq('name', this.props.agg),
+      fieldsArray
+    ) as SiteViewFragment_search_aggs_fields | null;
     if (!display) {
       display = (field && field.display) || FieldDisplay.STRING;
     }
@@ -642,6 +653,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   renderPresearchFilter = (apollo, siteView) => {
+    console.log('what siteview', siteView);
     const { buckets = [], filter } = this.state;
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return (
@@ -678,7 +690,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                     <PresearchTitle>{capitalize(title)}</PresearchTitle>
                   </PresearchHeader>
                   <PresearchContent>
-                    {this.renderPresearchFilter(apolloClient, site.siteView)}
+                    {this.renderPresearchFilter(
+                      apolloClient,
+                      this.props.currentSiteView
+                    )}
                   </PresearchContent>
                 </PresearchCard>
               )}
@@ -711,7 +726,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                     <Panel.Collapse className="bm-panel-collapse">
                       <Panel.Body>{this.renderFilter()}</Panel.Body>
                       <Panel.Body>
-                        {this.renderBucketsPanel(apolloClient, site.siteView)}
+                        {this.renderBucketsPanel(
+                          apolloClient,
+                          this.props.currentSiteView
+                        )}
                       </Panel.Body>
                     </Panel.Collapse>
                   )}
