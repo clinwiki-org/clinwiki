@@ -6,7 +6,7 @@
 // ====================================================
 
 export interface TagsPageFragment {
-  __typename: 'WikiPage';
+  __typename: "WikiPage";
   nctId: string;
   /**
    * Json key value pairs of meta information
