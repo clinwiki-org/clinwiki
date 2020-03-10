@@ -526,6 +526,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
     let display = this.props.display;
+    const { presearch } = this.props;
     const fieldsArray = () => {
       if (site.search.config.fields.showPresearch) {
         return [
@@ -535,8 +536,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       }
       return [...site.search.aggs.fields, ...site.search.crowdAggs.fields];
     };
-    //@ts-ignore
+
     const field = find(
+      //@ts-ignore
       propEq('name', this.props.agg),
       fieldsArray
     ) as SiteViewFragment_search_aggs_fields | null;
