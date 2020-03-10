@@ -438,8 +438,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             return null;
           }
         }}>
-        {result => {
-          const { data, loading, error } = result;
+        {({ data, loading, error }) => {
           if (error || loading) return null;
 
           const params: SearchParams = this.searchParamsFromQuery(
@@ -463,8 +462,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               query={SearchPageHashQuery}
               key={`${hash}+${JSON.stringify(this.state.params)}`}
               variables={this.state.params || undefined}>
-              {result => {
-                const { data, loading, error } = result;
+              {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
 
                 const { searchHash } = data;
@@ -538,7 +536,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
