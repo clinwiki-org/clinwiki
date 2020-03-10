@@ -655,6 +655,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 searchParams={this.state.params}
                 presearch
                 preSearchAggs={preSearchAggs}
+                currentSiteView={thisSiteView}
               />
               <div>
                 {/* {presearchText && <div>presearch text will go here</div>} */}

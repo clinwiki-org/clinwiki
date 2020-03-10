@@ -136,6 +136,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                       resetSelectAll={this.props.resetSelectAll}
                       removeSelectAll={this.props.removeSelectAll}
                       presearch
+                      currentSiteView={this.props.currentSiteView}
                     />
                   ) : (
                     <div
