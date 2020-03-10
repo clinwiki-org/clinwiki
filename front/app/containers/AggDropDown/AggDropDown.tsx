@@ -305,7 +305,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return {
         hasMore: true,
         loading: false,
-        buckets: state.buckets,
+        buckets: [],
         prevParams: props.searchParams,
       };
     }
@@ -378,6 +378,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   handleSort = (desc: boolean, sortKind: SortKind) => {
     let aggSort;
+    console.log(desc, sortKind);
     if (!desc && sortKind === SortKind.Alpha) {
       aggSort = [{ id: 'key', desc: true }];
     }
@@ -386,12 +387,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
     if (!desc && sortKind === SortKind.Number) {
       aggSort = [{ id: 'count', desc: true }];
-    } else aggSort = [{ id: 'key', desc: false }];
+    }
+    if (desc && sortKind === SortKind.Alpha) {
+      aggSort = [{ id: 'key', desc: false }];
+    }
     return aggSort;
   };
 
   handleLoadMore = async apolloClient => {
-    console.log('HLM');
     const { desc, sortKind, buckets, filter } = this.state;
     const { agg, searchParams, presearch } = this.props;
     const [query, filterType] =
@@ -400,6 +403,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         : [QUERY_AGG_BUCKETS, 'aggFilters'];
 
     const aggSort = this.handleSort(desc, sortKind);
+    console.log('agg sort', aggSort);
 
     const variables = {
       ...searchParams,
@@ -425,13 +429,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     let newBuckets;
 
-    if (desc && sortKind === SortKind.Alpha) {
-      newBuckets = pipe(
-        concat(responseBuckets),
-        uniqBy(prop('key')),
-        sortBy(prop('key'))
-      )(buckets) as AggBucket[];
-    }
+    newBuckets = pipe(
+      concat(responseBuckets),
+      uniqBy(prop('key')),
+      sortBy(prop('key'))
+    )(buckets) as AggBucket[];
     if (!desc && sortKind === SortKind.Alpha) {
       newBuckets = pipe(
         concat(responseBuckets),
@@ -655,7 +657,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   renderPresearchFilter = (apollo, siteView) => {
-    console.log('what siteview', siteView);
     const { buckets = [], filter } = this.state;
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return (
