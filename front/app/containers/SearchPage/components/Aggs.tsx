@@ -114,11 +114,6 @@ class Aggs extends React.PureComponent<AggsProps> {
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
     if (presearch && preSearchAggs) {
-      console.log('=========================');
-      console.log('filters', filters);
-      console.log('aggs', aggs);
-      console.log('presearchAggs', preSearchAggs);
-      console.log('=========================');
       return (
         <SiteProvider>
           {(site: SiteFragment) => {

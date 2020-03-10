@@ -47,6 +47,7 @@ import {
   SiteViewFragment_search_aggs_fields,
 } from 'types/SiteViewFragment';
 import './AggDropDownStyle.css';
+import { KindEnum } from 'graphql';
 
 const PAGE_SIZE = 25;
 
@@ -184,6 +185,19 @@ const PresearchContent = styledComponents.div`
   max-height: 260px;
 `;
 
+const SelectAllSpan = styledComponents.span`
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: 1px solid #ccc;
+  padding: 5px;
+  position: absolute;
+  left: 1em;
+  width: 6em;
+  color: black;
+  background: white;
+  border-radius: 4px;
+  font-size: 0.85em;
+`;
+
 export enum SortKind {
   Alpha,
   Number,
@@ -200,6 +214,7 @@ interface AggDropDownState {
   sortKind: SortKind;
   checkboxValue: boolean;
   showLabel: boolean;
+  selectedKeys: any;
 }
 
 interface AggDropDownProps {
@@ -233,6 +248,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     desc: true,
     checkboxValue: false,
     showLabel: false,
+    selectedKeys: [],
   };
 
   static getDerivedStateFromProps(
@@ -268,11 +284,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     };
     const prevAggValue = findAgg(state.prevParams);
     const nextAggValue = findAgg(props.searchParams);
-    // if (props.presearch) {
-    //   console.log('***************');
-    //   console.log(prevAggValue, nextAggValue);
-    //   console.log('***************');
-    // }
+
     if (
       state.isOpen &&
       !equals(state.prevParams, props.searchParams) &&
@@ -290,16 +302,16 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return null;
   }
 
-  // getBucketKey = (key: string): string => path([key, 'key'], this.props.buckets)
-  // getBucketDocCount = (key: string): number => path([key, 'docCount'], this.props.buckets)
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
+
   toggleAgg = (agg: string, key: string): void => {
     if (!this.props.addFilter || !this.props.removeFilter) return;
     return this.isSelected(key)
       ? this.props.removeFilter(agg, key)
       : this.props.addFilter(agg, key);
   };
+
   selectAll = (agg: string): void => {
     const { buckets } = this.state;
     let newParams = [];
@@ -327,6 +339,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       this.props.removeFilters(agg, newParams, false);
     }
   };
+
   isAllSelected = (): boolean => {
     const { buckets } = this.state;
     let i = 0;
@@ -342,7 +355,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return false;
   };
 
-  getFullPagesCount = () => Math.floor(length(this.state.buckets) / PAGE_SIZE);
+  getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
 
   handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
@@ -353,38 +366,38 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.props.onOpen && this.props.onOpen(this.props.agg, this.props.aggKind);
   };
 
+  handleSort = (desc: boolean, sortKind: SortKind) => {
+    let aggSort;
+    if (!desc && sortKind === SortKind.Alpha) {
+      aggSort = [{ id: 'key', desc: true }];
+    }
+    if (desc && sortKind === SortKind.Number) {
+      aggSort = [{ id: 'count', desc: false }];
+    }
+    if (!desc && sortKind === SortKind.Number) {
+      aggSort = [{ id: 'count', desc: true }];
+    } else aggSort = [{ id: 'key', desc: false }];
+    return aggSort;
+  };
+
   handleLoadMore = async apolloClient => {
-    const { desc, sortKind } = this.state;
+    const { desc, sortKind, buckets, filter } = this.state;
+    const { agg, searchParams } = this.props;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
         ? [QUERY_CROWD_AGG_BUCKETS, 'crowdAggFilters']
         : [QUERY_AGG_BUCKETS, 'aggFilters'];
 
-    let aggSort = [{ id: 'key', desc: false }];
-
-    if (!desc && sortKind === SortKind.Alpha) {
-      aggSort = [{ id: 'key', desc: true }];
-    }
-
-    if (desc && sortKind === SortKind.Number) {
-      aggSort = [{ id: 'count', desc: false }];
-    }
-
-    if (!desc && sortKind === SortKind.Number) {
-      aggSort = [{ id: 'count', desc: true }];
-    }
+    const aggSort = this.handleSort(desc, sortKind);
 
     const variables = {
-      ...this.props.searchParams,
-      aggFilters: maskAgg(this.props.searchParams.aggFilters, this.props.agg),
-      crowdAggFilters: maskAgg(
-        this.props.searchParams.crowdAggFilters,
-        this.props.agg
-      ),
-      agg: this.props.agg,
+      ...searchParams,
+      aggFilters: maskAgg(searchParams.aggFilters, agg),
+      crowdAggFilters: maskAgg(searchParams.crowdAggFilters, agg),
+      agg: agg,
       pageSize: PAGE_SIZE,
-      page: this.getFullPagesCount(),
-      aggOptionsFilter: this.state.filter,
+      page: this.getFullPagesCount(buckets),
+      aggOptionsFilter: filter,
       aggOptionsSort: aggSort,
     };
 
@@ -393,44 +406,51 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       variables,
     });
 
-    const newBuckets = pathOr(
+    const responseBuckets = pathOr(
       [],
       ['data', 'aggBuckets', 'aggs', 0, 'buckets'],
       response
     ) as AggBucket[];
 
-    let buckets = pipe(
-      concat(newBuckets),
-      uniqBy(prop('key')),
-      sortBy(prop('key'))
-      // desc ? identity() : reverse(),
-    )(this.state.buckets) as AggBucket[];
+    let newBuckets;
+
     if (!desc && sortKind === SortKind.Alpha) {
-      buckets = pipe(
-        concat(newBuckets),
+      newBuckets = pipe(
+        concat(responseBuckets),
         uniqBy(prop('key')),
         sortBy(prop('key')),
         reverse()
-      )(this.state.buckets) as AggBucket[];
+      )(buckets) as AggBucket[];
     }
     if (desc && sortKind === SortKind.Number) {
-      buckets = pipe(
-        concat(newBuckets),
+      newBuckets = pipe(
+        concat(responseBuckets),
         uniqBy(prop('key')),
         sortBy(prop('docCount'))
-      )(this.state.buckets) as AggBucket[];
+      )(buckets) as AggBucket[];
     }
     if (!desc && sortKind === SortKind.Number) {
-      buckets = pipe(
-        concat(newBuckets),
+      newBuckets = pipe(
+        concat(responseBuckets),
         uniqBy(prop('key')),
         sortBy(prop('docCount')),
         reverse()
-      )(this.state.buckets) as AggBucket[];
-    }
+      )(buckets) as AggBucket[];
+    } else
+      newBuckets = pipe(
+        concat(responseBuckets),
+        uniqBy(prop('key')),
+        sortBy(prop('key'))
+      )(buckets) as AggBucket[];
 
-    const hasMore = length(this.state.buckets) !== length(buckets);
-    this.setState({ buckets, hasMore });
+    const hasMore = length(buckets) !== length(newBuckets);
+    this.setState({ buckets: newBuckets, hasMore }, () => {
+      console.log('=====================================');
+      console.log('handleLoadMore called on ', agg);
+      console.log('newBuckets: ', newBuckets);
+      console.log('stateBuckets: ', buckets);
+      console.log('=====================================');
+    });
   };
 
   renderBucket = (
@@ -538,21 +558,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             onMouseEnter={() => this.setState({ showLabel: true })}
             onMouseLeave={() => this.setState({ showLabel: false })}>
             {this.state.showLabel ? (
-              <span
-                style={{
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                  border: '1px solid #ccc',
-                  padding: '5px',
-                  position: 'absolute',
-                  left: '1em',
-                  width: '6em',
-                  color: 'black',
-                  background: 'white',
-                  borderRadius: '4px',
-                  fontSize: '0.85em',
-                }}>
-                Select All
-              </span>
+              <SelectAllSpan>Select All</SelectAllSpan>
             ) : null}
           </Checkbox>
         </div>
@@ -646,13 +652,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { agg, presearch, selectedKeys } = this.props;
     const { buckets = [], filter, desc, sortKind, isOpen } = this.state;
     const title = aggToField(agg);
-    // if (presearch) {
-    //   console.log('--------------');
-    //   console.log('agg', agg);
-    //   console.log('selectedKeys', selectedKeys);
-    //   console.log('--------------');
-    // }
-
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
