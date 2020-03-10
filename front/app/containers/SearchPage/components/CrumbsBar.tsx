@@ -311,7 +311,6 @@ export default class CrumbsBar extends React.Component<
       this.props.currentSiteView.search.autoSuggest.crowdAggs.fields
     )
       console.log("Auto SUggest crowdAgg Fields Query", crowdAggFields)
-      return crowdAggFields
       let fieldsToReturn: any[]=[]
        crowdAggFields.map(field=>{
          fieldsToReturn.push(field.name)
