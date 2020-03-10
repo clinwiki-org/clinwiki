@@ -316,12 +316,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({ buckets, hasMore });
   };
 
-  changeSlider(a) {
-    console.log(a);
-    // here is where we will need to update the parent state to say
-    // "here is the start value, and here is the end value"
-  }
-
   renderPanel = () => {
     const {
       client,
@@ -352,7 +346,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           loading={loading}
           buckets={buckets}
           handleLoadMore={this.handleLoadMore}
-          changeSlider={this.changeSlider}
         />
       );
     }
