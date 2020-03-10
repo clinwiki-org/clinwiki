@@ -299,6 +299,15 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         prevParams: props.searchParams,
       };
     }
+
+    if (props.presearch && !equals(state.prevParams, props.searchParams)) {
+      return {
+        hasMore: true,
+        loading: false,
+        buckets: state.buckets,
+        prevParams: props.searchParams,
+      };
+    }
     return null;
   }
 
@@ -382,7 +391,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   handleLoadMore = async apolloClient => {
     const { desc, sortKind, buckets, filter } = this.state;
-    const { agg, searchParams } = this.props;
+    const { agg, searchParams, presearch } = this.props;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
         ? [QUERY_CROWD_AGG_BUCKETS, 'crowdAggFilters']
@@ -414,6 +423,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     let newBuckets;
 
+    if (desc && sortKind === SortKind.Alpha) {
+      newBuckets = pipe(
+        concat(responseBuckets),
+        uniqBy(prop('key')),
+        sortBy(prop('key'))
+      )(buckets) as AggBucket[];
+    }
     if (!desc && sortKind === SortKind.Alpha) {
       newBuckets = pipe(
         concat(responseBuckets),
@@ -436,20 +452,17 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         sortBy(prop('docCount')),
         reverse()
       )(buckets) as AggBucket[];
-    } else
-      newBuckets = pipe(
-        concat(responseBuckets),
-        uniqBy(prop('key')),
-        sortBy(prop('key'))
-      )(buckets) as AggBucket[];
+    }
 
     const hasMore = length(buckets) !== length(newBuckets);
     this.setState({ buckets: newBuckets, hasMore }, () => {
-      console.log('=====================================');
-      console.log('handleLoadMore called on ', agg);
-      console.log('newBuckets: ', newBuckets);
-      console.log('stateBuckets: ', buckets);
-      console.log('=====================================');
+      if (presearch) {
+        console.log('=====================================');
+        console.log('handleLoadMore called on ', agg);
+        console.log('newBuckets: ', newBuckets);
+        console.log('stateBuckets: ', this.state.buckets);
+        console.log('=====================================');
+      }
     });
   };
 
@@ -511,6 +524,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
     let display = this.props.display;
+    const { presearch } = this.props;
     const field = find(propEq('name', this.props.agg), [
       ...site.search.aggs.fields,
       ...site.search.crowdAggs.fields,
@@ -526,7 +540,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         useWindow={false}
         loader={
           <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-            <BeatLoader key="loader" color="#fff" />
+            <BeatLoader key="loader" color={presearch ? '#000' : '#fff'} />
           </div>
         }>
         {this.renderBuckets({ display, site, field })}
@@ -649,8 +663,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   render() {
-    const { agg, presearch, selectedKeys } = this.props;
-    const { buckets = [], filter, desc, sortKind, isOpen } = this.state;
+    const { agg, presearch } = this.props;
+    const { isOpen } = this.state;
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
