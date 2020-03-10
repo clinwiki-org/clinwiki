@@ -453,10 +453,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             return null;
           }
 
+          /**
+           * We set a key here that is the combination of the hash and the params.
+           * This is a workaround for a cache invalidation bug in apollo-client.
+           * SEE: https://github.com/apollographql/react-apollo/issues/2202#issuecomment-479322905
+           */
           return (
             <HashQueryComponent
               query={SearchPageHashQuery}
-              fetchPolicy="no-cache"
+              key={`${hash}+${JSON.stringify(this.state.params)}`}
               variables={this.state.params || undefined}>
               {result => {
                 const { data, loading, error } = result;
