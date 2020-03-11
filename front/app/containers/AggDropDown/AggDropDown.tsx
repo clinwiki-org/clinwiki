@@ -60,8 +60,10 @@ const QUERY_AGG_BUCKETS = gql`
     $pageSize: Int!
     $aggOptionsFilter: String
     $aggOptionsSort: [SortInput!]
+    $url: String 
   ) {
     aggBuckets(
+      url: $url
       params: {
         agg: $agg
         q: $q
@@ -218,6 +220,7 @@ interface AggDropDownProps {
   removeSelectAll?: boolean;
   resetSelectAll?: () => void;
   presearch?: boolean;
+  currentSiteView?: any;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -371,6 +374,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
 
     const variables = {
+      url: this.props.currentSiteView.url,
       ...this.props.searchParams,
       aggFilters: maskAgg(this.props.searchParams.aggFilters, this.props.agg),
       crowdAggFilters: maskAgg(
@@ -384,10 +388,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       aggOptionsSort: aggSort,
     };
 
+    console.log('Variables', variables)
+
     const response = await apolloClient.query({
       query,
       variables,
     });
+
+    console.log('AGG query response', response)
 
     const newBuckets = pathOr(
       [],
@@ -655,7 +663,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                     <PresearchTitle>{capitalize(title)}</PresearchTitle>
                   </PresearchHeader>
                   <PresearchContent>
-                    {this.renderPresearchFilter(apolloClient, site.siteView)}
+                    {this.renderPresearchFilter(apolloClient, this.props.currentSiteView)}
                   </PresearchContent>
                 </PresearchCard>
               )}

@@ -202,6 +202,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 addFilter={this.handleAddFilter('preselected')}
                 removeFilter={this.handleRemoveFilter('preselected')}
                 onOpen={this.handleOpen('preselected')}
+                currentSiteView={this.props.view}
               />
             </FilterContainer>
           </FiltersContainer>
@@ -236,6 +237,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 addFilter={this.handleAddFilter('visibleOptions')}
                 removeFilter={this.handleRemoveFilter('visibleOptions')}
                 onOpen={this.handleOpen('visibleOptions')}
+                currentSiteView={this.props.view}
               />
             </FilterContainer>
           </FiltersContainer>

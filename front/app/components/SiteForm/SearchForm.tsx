@@ -34,6 +34,7 @@ interface SearchFormProps {
   history: History;
   location: Location;
   site: any;
+  // currentSiteView?: any;
 }
 
 interface SearchFormState {

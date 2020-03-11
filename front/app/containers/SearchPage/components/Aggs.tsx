@@ -79,19 +79,19 @@ const PresearchContainer = styled.div`
 `;
 
 class Aggs extends React.PureComponent<AggsProps> {
-  getAggs = (site: SiteFragment): string[] => {
+  getAggs = (siteView): string[] => {
     return displayFields(
-      site.siteView.search.aggs.selected.kind,
-      site.siteView.search.aggs.selected.values,
-      site.siteView.search.aggs.fields
+      siteView.search.aggs.selected.kind,
+      siteView.search.aggs.selected.values,
+      siteView.search.aggs.fields
     ).map(prop('name'));
   };
 
   getCrowdAggs = (site: SiteFragment, crowdAggs: string[]): string[] => {
     const displayed = displayFields(
-      site.siteView.search.crowdAggs.selected.kind,
-      site.siteView.search.crowdAggs.selected.values,
-      site.siteView.search.crowdAggs.fields
+      this.props.currentSiteView.search.crowdAggs.selected.kind,
+      this.props.currentSiteView.crowdAggs.selected.values,
+      this.props.currentSiteView.crowdAggs.fields
     ).map(prop('name'));
     return filter(x => crowdAggs.includes(x), displayed);
   };
@@ -141,6 +141,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                       resetSelectAll={this.props.resetSelectAll}
                       removeSelectAll={this.props.removeSelectAll}
                       presearch
+                      currentSiteView={this.props.currentSiteView}
                     />
                   ) : (
                     <div
@@ -194,6 +195,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                     }
                     searchParams={searchParams}
                     visibleOptions={visibleOptionsByName[k]}
+                    currentSiteView={this.props.currentSiteView}
                   />
                 ))}
               </div>
@@ -209,7 +211,7 @@ class Aggs extends React.PureComponent<AggsProps> {
             return (
               <div>
                 <div>
-                  {this.getAggs(site).map(k =>
+                  {this.getAggs(this.props.currentSiteView).map(k =>
                     aggs[k] ? (
                       <AggDropDown
                         key={k}
@@ -229,6 +231,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                         searchParams={searchParams}
                         resetSelectAll={this.props.resetSelectAll}
                         removeSelectAll={this.props.removeSelectAll}
+                        currentSiteView={this.props.currentSiteView}
                       />
                     ) : null
                   )}
