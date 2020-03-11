@@ -96,8 +96,10 @@ const QUERY_CROWD_AGG_BUCKETA = gql`
     $page: Int!
     $pageSize: Int!
     $aggOptionsFilter: String
+    $url: String
   ) {
     aggBuckets: crowdAggBuckets(
+      url: $url
       params: {
         agg: $agg
         q: $q
