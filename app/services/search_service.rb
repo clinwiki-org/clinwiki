@@ -124,8 +124,7 @@ class SearchService
     }
   end
 
-  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url:nil)
-     # rubocop:disable Metrics/MethodLength
+  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url:nil) # rubocop:disable Metrics/MethodLength
     params = self.params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
@@ -262,7 +261,7 @@ class SearchService
     }
   end
 
-  def key_for(filter: filter, is_crowd_agg: false)
+  def key_for(filter:, is_crowd_agg: false)
     "#{is_crowd_agg ? 'fm_' : ''}#{filter[:field]}".to_sym
   end
 
@@ -276,7 +275,7 @@ class SearchService
     range_hash = filter.slice(:gte, :lte)
     return nil if range_hash.empty?
 
-    { key => range_hash }
+    { key => Hash[range_hash.map { |k, v| [k, cast(v)] }] }
   end
 
   # Returns an array of
@@ -324,5 +323,25 @@ class SearchService
 
   def letter?(char)
     char =~ /[[:alpha:]]/
+  end
+
+  def cast(val)
+    return val unless val.is_a?(String)
+
+    begin
+      return Integer(val)
+    rescue ArgumentError
+    end
+
+    begin
+      return Float(val)
+    rescue ArgumentError
+    end
+
+    parsed_time = Timeliness.parse(val)
+    return parsed_time unless parsed_time.nil?
+
+    # default to string, which we split against pipe separator
+    val
   end
 end

@@ -41,6 +41,8 @@ interface SearchFormState {
   showAllCrowdAggs: boolean;
   showAllAggsPresearch: boolean;
   showAllCrowdAggsPresearch: boolean;
+  showAllAggsAutoSuggest: boolean;
+  showAllCrowdAggsAutoSuggest: boolean;
   mutations: SiteViewMutationInput[];
   showFacetBar: boolean;
   showFacetBarConfig: boolean;
@@ -100,12 +102,12 @@ const StyledButtonGroup = styled.div`
 `
 const StyledFormInput = styled(FormControl)`
 margin-bottom: 20px;
-background: none;
+background: white;
 border: none;
 box-shadow: none;
-color: lightgrey;
+color: #333;
 font-size: 2em;
-padding-left: 0;
+padding-left: 5px;
 `;
 
 // const styledToggleButton = styled(ToggleButtonGroup)`
@@ -122,6 +124,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     showFacetBarConfig:false,
     showAllAggsPresearch: false,
     showAllCrowdAggsPresearch:false,
+    showAllAggsAutoSuggest:false,
+    showAllCrowdAggsAutoSuggest:false,
     resultsButtonsArray: []
   };
 
@@ -135,6 +139,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   handleSave = (updateSiteView: UpdateSiteViewMutationFn, view: any) => (
     mutations: SiteViewMutationInput[]
   ) => {
+    console.log('save', view)
     updateSiteView({
       variables: {
         input: {
@@ -154,7 +159,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     e: { currentTarget: { name: string; value: any } },
     siteView
   ) => {
-
+    console.log('adding mutation', siteView)
     const { name, value } = e.currentTarget;
     const mutation = createMutation(name, value);
     const view = updateView(siteView, this.state.mutations);
@@ -187,12 +192,14 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
-    console.log("this.props view", this.props.view)
+    console.log("this.props view", this.props)
+    let siteViewId = this.props.match.params.id
+    let thisSiteView = this.props.siteViews.find(siteview => siteview.id == siteViewId);
     this.handleAddMutation(
       {
         currentTarget: { name: e.currentTarget.name, value: !value }
       },
-      this.props.view
+      thisSiteView
     );
   };
   handleFieldsOrderChange = () => {};
@@ -478,17 +485,82 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       <Panel.Body collapsible>
     <Row>
       <Col md={6}>
-        <AggsHeaderContainer>
-            </AggsHeaderContainer>
+      <AggsHeaderContainer>
+            <h3>Aggs visibility</h3>
+            <StyledCheckbox 
+              checked={this.state.showAllAggs}
+              onChange={this.handleShowAllToggle('aggs')}>
+                  Show all
+                </StyledCheckbox>
+              </AggsHeaderContainer>
+         
             <StyledLabel>Add to Autosuggest</StyledLabel>
+            <StyledFormControl
+                name="set:search.autoSuggest.aggs.selected.kind"
+                componentClass="select"
+                //@ts-ignore
+                onChange={e => this.handleAddMutation(e,view)}
+                value={view.search.autoSuggest.aggs.selected.kind}>
+                <option value="BLACKLIST">All except</option>
+                <option value="WHITELIST">Only</option>
+              </StyledFormControl>
             <MultiInput
-              name="set:search.autoSuggest.fields"
+              name="set:search.autoSuggest.aggs.selected.values"
               options={AGGS_OPTIONS}
               placeholder="Add facet"
-              value={view.search.autoSuggest.fields}
+              value={view.search.autoSuggest.aggs.selected.values}
               onChange={e => this.handleAddMutation(e, view)}
             />
+              <h3>Aggs settings</h3>
+              {fields.map(field => (
+                <AggField
+                  kind="aggs"
+                  key={field.name}
+                  //@ts-ignore
+                  field={field}
+                  onAddMutation={this.handleAddMutation}
+                  view={view}
+                />
+              ))}
+
           </Col>
+          <Col md={6}>
+              <AggsHeaderContainer>
+                <h3>Crowd aggs visibility</h3>
+                <StyledCheckbox
+                  checked={this.state.showAllCrowdAggs}
+                  onChange={this.handleShowAllToggle('crowdAggs')}>
+                  Show all
+                </StyledCheckbox>
+              </AggsHeaderContainer>
+              <StyledFormControl
+                name="set:search.autoSuggest.crowdAggs.selected.kind"
+                componentClass="select"
+                onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
+                v={view.search.autoSuggest.crowdAggs.selected.kind}>
+                <option value="BLACKLIST">All except</option>
+                <option value="WHITELIST">Only</option>
+              </StyledFormControl>
+              <StyledLabel>Add to Autosuggest</StyledLabel>
+              <MultiInput
+              name="set:search.autoSuggest.crowdAggs.selected.values"
+              options={this.getCrowdFields(view)}
+                placeholder="Add facet"
+                value={view.search.crowdAggs.selected.values}
+                onChange={e => this.handleAddMutation(e, view)}
+              />
+              <h3>Crowd aggs settings</h3>
+              {crowdFields.map(field => (
+                <AggField
+                  kind="crowdAggs"
+                  key={field.name}
+                  //@ts-ignore
+                  field={field}
+                  onAddMutation={this.handleAddMutation}
+                  view={view}
+                />
+              ))}
+            </Col>
         </Row>
   <StyledButton style={{margin: "1em 1em 1em 0"}} onClick={this.handleSave(updateSiteView, view)}>
     Save Site View
@@ -571,7 +643,7 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
               onChange={(e: { currentTarget: { name: string; value: any } }) =>
                 this.handleAddMutation(e, view)
               }
-              v={view.search.crowdAggs.selected.kind}>
+              v={view.search.presearch.crowdAggs.selected.kind}>
               <option value="BLACKLIST">All except</option>
               <option value="WHITELIST">Only</option>
             </StyledFormControl>
@@ -596,7 +668,20 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
             ))}
           </Col>
         </Row>
-
+        <Panel>
+          <Panel.Heading>
+            <Panel.Title toggle>Presearch Instructions</Panel.Title>
+          </Panel.Heading>
+        <Panel.Body collapsible>
+            <h3>Instructions:</h3>
+            <StyledFormInput
+              name={`set:search.presearch.instructions`}
+              placeholder={view.search.presearch.instructions}
+              value={view.search.presearch.instructions}
+              onChange={e => this.handleAddMutation(e, view)}
+            />
+            </Panel.Body>
+        </Panel>
         <Panel>
           <Panel.Heading>
             <Panel.Title toggle>Presearch Button</Panel.Title>
@@ -635,11 +720,6 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
             </StyledPanelHeading>
           </Panel.Body>
         </Panel>
-        <StyledButton
-          style={{ margin: '1em 1em 1em 0' }}
-          onClick={this.handleSave(updateSiteView, view)}>
-          Save Site View
-        </StyledButton>
       </Panel.Body>
     </Panel>
   );
@@ -772,7 +852,20 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
       this.state.showAllCrowdAggsPresearch ? [] : view.search.presearch.crowdAggs.selected.values,
       view.search.presearch.crowdAggs.fields
     );
-
+    const fieldsAutoSuggest = displayFields(
+      this.state.showAllAggsAutoSuggest
+        ? FilterKind.BLACKLIST
+        : view.search.autoSuggest.aggs.selected.kind,
+      this.state.showAllAggsAutoSuggest ? [] : view.search.autoSuggest.aggs.selected.values,
+      view.search.autoSuggest.aggs.fields
+    );
+    const crowdFieldsAutoSuggest = displayFields(
+      this.state.showAllCrowdAggsAutoSuggest
+        ? FilterKind.BLACKLIST
+        : view.search.autoSuggest.crowdAggs.selected.kind,
+      this.state.showAllCrowdAggsAutoSuggest ? [] : view.search.autoSuggest.crowdAggs.selected.values,
+      view.search.autoSuggest.crowdAggs.fields
+    );
 
     const showFacetBar = view.search.config.fields.showFacetBar;
     // const config = displayFields(
@@ -824,7 +917,7 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
             <h3>Search Sections</h3>
             <PanelGroup  id="accordion-uncontrolled"> 
                 {this.renderFacetBarConfig(showFacetBar,view,fields, crowdFields,updateSiteView)}
-                {this.renderAutoSuggestConfig(showAutoSuggest,view,fields, crowdFields,updateSiteView)}
+                {this.renderAutoSuggestConfig(showAutoSuggest,view,fieldsAutoSuggest, crowdFieldsAutoSuggest,updateSiteView)}
                 {this.renderPreSearchConfig(showPresearch,view,fieldsPresearch, crowdFieldsPresearch,updateSiteView)}
                 {this.renderResultsConfig(showResults,view,fields, crowdFields,updateSiteView)}
                 {this.renderBreadCrumbsConfig(showBreadCrumbs,view,fields, crowdFields,updateSiteView)}

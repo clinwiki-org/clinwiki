@@ -1,0 +1,417 @@
+{
+  "took": 45,
+  "timed_out": false,
+  "_shards": { "total": 5, "successful": 5, "skipped": 0, "failed": 0 },
+  "hits": {
+    "total": 46,
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00001805",
+        "_score": null,
+        "sort": ["NCT00001805"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00003046",
+        "_score": null,
+        "sort": ["NCT00003046"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00003125",
+        "_score": null,
+        "sort": ["NCT00003125"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00003157",
+        "_score": null,
+        "sort": ["NCT00003157"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00003427",
+        "_score": null,
+        "sort": ["NCT00003427"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00004074",
+        "_score": null,
+        "sort": ["NCT00004074"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00004604",
+        "_score": null,
+        "sort": ["NCT00004604"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00004895",
+        "_score": null,
+        "sort": ["NCT00004895"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00010270",
+        "_score": null,
+        "sort": ["NCT00010270"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00012246",
+        "_score": null,
+        "sort": ["NCT00012246"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00014456",
+        "_score": null,
+        "sort": ["NCT00014456"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00019435",
+        "_score": null,
+        "sort": ["NCT00019435"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00019474",
+        "_score": null,
+        "sort": ["NCT00019474"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00024063",
+        "_score": null,
+        "sort": ["NCT00024063"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00025532",
+        "_score": null,
+        "sort": ["NCT00025532"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00027534",
+        "_score": null,
+        "sort": ["NCT00027534"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00028496",
+        "_score": null,
+        "sort": ["NCT00028496"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00031681",
+        "_score": null,
+        "sort": ["NCT00031681"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00249301",
+        "_score": null,
+        "sort": ["NCT00249301"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00376987",
+        "_score": null,
+        "sort": ["NCT00376987"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00397384",
+        "_score": null,
+        "sort": ["NCT00397384"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00454363",
+        "_score": null,
+        "sort": ["NCT00454363"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00534001",
+        "_score": null,
+        "sort": ["NCT00534001"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00544193",
+        "_score": null,
+        "sort": ["NCT00544193"]
+      },
+      {
+        "_index": "studies_development_20200227004005924",
+        "_type": "study",
+        "_id": "NCT00621556",
+        "_score": null,
+        "sort": ["NCT00621556"]
+      }
+    ]
+  },
+  "aggregations": {
+    "phase": {
+      "meta": {},
+      "doc_count": 46,
+      "phase": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          { "key": "Phase 1", "doc_count": 28 },
+          { "key": "Phase 2", "doc_count": 18 }
+        ]
+      }
+    },
+    "browse_interventions_mesh_terms": {
+      "meta": {},
+      "doc_count": 46,
+      "browse_interventions_mesh_terms": {
+        "doc_count_error_upper_bound": 1,
+        "sum_other_doc_count": 58,
+        "buckets": [
+          { "key": "Antibodies", "doc_count": 7 },
+          { "key": "Everolimus", "doc_count": 5 },
+          { "key": "Sirolimus", "doc_count": 5 },
+          { "key": "Vaccines", "doc_count": 5 },
+          { "key": "Antibodies, Monoclonal", "doc_count": 4 },
+          { "key": "Irinotecan", "doc_count": 4 },
+          { "key": "Fluorouracil", "doc_count": 3 },
+          { "key": "Gemcitabine", "doc_count": 3 },
+          { "key": "Immunoglobulins", "doc_count": 3 },
+          { "key": "Immunotoxins", "doc_count": 3 }
+        ]
+      }
+    },
+    "facility_cities": {
+      "meta": {},
+      "doc_count": 46,
+      "facility_cities": {
+        "doc_count_error_upper_bound": 3,
+        "sum_other_doc_count": 407,
+        "buckets": [
+          { "key": "Chicago", "doc_count": 5 },
+          { "key": "Houston", "doc_count": 5 },
+          { "key": "Rochester", "doc_count": 5 },
+          { "key": "Bethesda", "doc_count": 4 },
+          { "key": "Billings", "doc_count": 3 },
+          { "key": "Boston", "doc_count": 3 },
+          { "key": "San Francisco", "doc_count": 3 },
+          { "key": "Scottsdale", "doc_count": 3 },
+          { "key": "Bettendorf", "doc_count": 2 },
+          { "key": "Bismarck", "doc_count": 2 }
+        ]
+      }
+    },
+    "overall_status": {
+      "meta": {},
+      "doc_count": 46,
+      "overall_status": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          { "key": "Completed", "doc_count": 29 },
+          { "key": "Terminated", "doc_count": 9 },
+          { "key": "Unknown status", "doc_count": 5 },
+          { "key": "Active, not recruiting", "doc_count": 2 },
+          { "key": "Withdrawn", "doc_count": 1 }
+        ]
+      }
+    },
+    "average_rating": {
+      "meta": {},
+      "doc_count": 46,
+      "average_rating": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [{ "key": 0, "doc_count": 46 }]
+      }
+    },
+    "rating_dimensions": {
+      "meta": {},
+      "doc_count": 46,
+      "rating_dimensions": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      }
+    },
+    "browse_condition_mesh_terms": {
+      "meta": {},
+      "doc_count": 46,
+      "browse_condition_mesh_terms": {
+        "doc_count_error_upper_bound": 6,
+        "sum_other_doc_count": 281,
+        "buckets": [
+          { "key": "Pancreatic Neoplasms", "doc_count": 46 },
+          { "key": "Stomach Neoplasms", "doc_count": 38 },
+          { "key": "Intestinal Neoplasms", "doc_count": 17 },
+          { "key": "Breast Neoplasms", "doc_count": 14 },
+          { "key": "Cholangiocarcinoma", "doc_count": 13 },
+          { "key": "Esophageal Neoplasms", "doc_count": 13 },
+          { "key": "Gallbladder Neoplasms", "doc_count": 13 },
+          { "key": "Bile Duct Neoplasms", "doc_count": 12 },
+          { "key": "Lung Neoplasms", "doc_count": 12 },
+          { "key": "Carcinoid Tumor", "doc_count": 11 }
+        ]
+      }
+    },
+    "facility_names": {
+      "meta": {},
+      "doc_count": 46,
+      "facility_names": {
+        "doc_count_error_upper_bound": 4,
+        "sum_other_doc_count": 630,
+        "buckets": [
+          { "key": "Mayo Clinic", "doc_count": 3 },
+          { "key": "Abbott-Northwestern Hospital", "doc_count": 2 },
+          { "key": "CCOP - Duluth", "doc_count": 2 },
+          { "key": "CCOP - Missouri Valley Cancer Consortium", "doc_count": 2 },
+          { "key": "Dana-Farber Cancer Institute", "doc_count": 2 },
+          { "key": "Fox Chase Cancer Center", "doc_count": 2 },
+          { "key": "M D Anderson Cancer Center", "doc_count": 2 },
+          { "key": "Mayo Clinic Cancer Center", "doc_count": 2 },
+          { "key": "Rapid City Regional Hospital", "doc_count": 2 },
+          {
+            "key": "University of Wisconsin Hospital and Clinics",
+            "doc_count": 2
+          }
+        ]
+      }
+    },
+    "facility_countries": {
+      "meta": {},
+      "doc_count": 46,
+      "facility_countries": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 1,
+        "buckets": [
+          { "key": "United States", "doc_count": 35 },
+          { "key": "Canada", "doc_count": 2 },
+          { "key": "Germany", "doc_count": 2 },
+          { "key": "China", "doc_count": 1 },
+          { "key": "Greece", "doc_count": 1 },
+          { "key": "Israel", "doc_count": 1 },
+          { "key": "Italy", "doc_count": 1 },
+          { "key": "Korea, Republic of", "doc_count": 1 },
+          { "key": "Netherlands", "doc_count": 1 },
+          { "key": "Serbia", "doc_count": 1 }
+        ]
+      }
+    },
+    "study_type": {
+      "meta": {},
+      "doc_count": 46,
+      "study_type": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [{ "key": "Interventional", "doc_count": 46 }]
+      }
+    },
+    "sponsors": {
+      "meta": {},
+      "doc_count": 46,
+      "sponsors": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 27,
+        "buckets": [
+          { "key": "National Cancer Institute (NCI)", "doc_count": 31 },
+          { "key": "Alliance for Clinical Trials in Oncology", "doc_count": 2 },
+          { "key": "City of Hope Medical Center", "doc_count": 2 },
+          { "key": "M.D. Anderson Cancer Center", "doc_count": 2 },
+          { "key": "Novartis", "doc_count": 2 },
+          { "key": "Agensys, Inc.", "doc_count": 1 },
+          { "key": "Arcispedale Santa Maria Nuova-IRCCS", "doc_count": 1 },
+          {
+            "key": "Cancer Institute and Hospital, Chinese Academy of Medical Sciences",
+            "doc_count": 1
+          },
+          { "key": "Cancer Research UK", "doc_count": 1 },
+          { "key": "Clovis Oncology, Inc.", "doc_count": 1 }
+        ]
+      }
+    },
+    "facility_states": {
+      "meta": {},
+      "doc_count": 46,
+      "facility_states": {
+        "doc_count_error_upper_bound": 1,
+        "sum_other_doc_count": 86,
+        "buckets": [
+          { "key": "Texas", "doc_count": 9 },
+          { "key": "", "doc_count": 8 },
+          { "key": "California", "doc_count": 7 },
+          { "key": "Illinois", "doc_count": 7 },
+          { "key": "Arizona", "doc_count": 5 },
+          { "key": "Maryland", "doc_count": 5 },
+          { "key": "Minnesota", "doc_count": 5 },
+          { "key": "New York", "doc_count": 5 },
+          { "key": "North Carolina", "doc_count": 5 },
+          { "key": "Pennsylvania", "doc_count": 5 }
+        ]
+      }
+    },
+    "front_matter_keys": {
+      "meta": {},
+      "doc_count": 46,
+      "front_matter_keys": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      }
+    },
+    "interventions_mesh_terms": {
+      "meta": {},
+      "doc_count": 46,
+      "interventions_mesh_terms": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 48,
+        "buckets": [
+          { "key": "laboratory biomarker analysis", "doc_count": 4 },
+          { "key": "Laboratory Biomarker Analysis", "doc_count": 3 },
+          { "key": "Everolimus", "doc_count": 2 },
+          { "key": "Pazopanib Hydrochloride", "doc_count": 2 },
+          { "key": "Pharmacological Study", "doc_count": 2 },
+          { "key": "irinotecan hydrochloride", "doc_count": 2 },
+          { "key": "oxaliplatin", "doc_count": 2 },
+          { "key": "placebo", "doc_count": 2 },
+          { "key": "24 Gy in 3 fractions", "doc_count": 1 },
+          { "key": "7-hydroxystaurosporine", "doc_count": 1 }
+        ]
+      }
+    }
+  }
+}

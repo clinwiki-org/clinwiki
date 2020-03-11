@@ -7,7 +7,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     if default_changed? && default
 
       old_default = site.site_views.find_by(default: true)
-      old_default.update(url: "#{old_default.id}oldDefault")
+      old_default.update(url: "#{old_default.id}oldDefault") if old_default
 
       site.site_views.where.not(id: id).update_all(default:false)
 
@@ -274,13 +274,27 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
             },
             fields: crowd_aggs,
           },
+          instructions:"",
           button:{
             name:"Search",
             target:"",
           },
         },
         autoSuggest:{
-          fields: %w[],
+          aggs: {
+            selected: {
+              kind: "BLACKLIST",
+              values: [],
+            },
+            fields: aggs,
+          },
+          crowdAggs: {
+            selected: {
+              kind: "BLACKLIST",
+              values: [],
+            },
+            fields:  crowd_aggs,
+          },
         },
         results:{
           type:"table",
