@@ -34,6 +34,7 @@ interface SearchFormProps {
   history: History;
   location: Location;
   site: any;
+  // currentSiteView?: any;
 }
 
 interface SearchFormState {
@@ -591,21 +592,7 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
           <Col md={6}>
             <AggsHeaderContainer>
               <h3>Aggs visibility</h3>
-              <StyledCheckbox
-                checked={this.state.showAllAggsPresearch}
-                onChange={this.handleShowAllToggle('aggsPresearch')}>
-                Show all
-              </StyledCheckbox>
             </AggsHeaderContainer>
-            <StyledLabel>Filter</StyledLabel>
-            <StyledFormControl
-              name="set:search.presearch.aggs.selected.kind"
-              componentClass="select"
-              onChange={e => this.handleAddMutation(e, view)}
-              value={view.search.presearch.aggs.selected.kind}>
-              <option value="BLACKLIST">All except</option>
-              <option value="WHITELIST">Only</option>
-            </StyledFormControl>
             <MultiInput
               name="set:search.presearch.aggs.selected.values"
               options={AGGS_OPTIONS}
@@ -629,24 +616,8 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
           <Col md={6}>
             <AggsHeaderContainer>
               <h3>Crowd aggs visibility</h3>
-              <StyledCheckbox
-                checked={this.state.showAllCrowdAggsPresearch}
-                onChange={this.handleShowAllToggle('crowdAggsPresearch')}>
-                Show all
-              </StyledCheckbox>
             </AggsHeaderContainer>
 
-            <StyledLabel>Filter</StyledLabel>
-            <StyledFormControl
-              name="set:search.presearch.crowdAggs.selected.kind"
-              componentClass="select"
-              onChange={(e: { currentTarget: { name: string; value: any } }) =>
-                this.handleAddMutation(e, view)
-              }
-              v={view.search.presearch.crowdAggs.selected.kind}>
-              <option value="BLACKLIST">All except</option>
-              <option value="WHITELIST">Only</option>
-            </StyledFormControl>
             <MultiInput
               name="set:search.presearch.crowdAggs.selected.values"
               options={this.getCrowdFields(view)}

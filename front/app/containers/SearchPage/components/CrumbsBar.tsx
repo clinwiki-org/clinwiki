@@ -281,6 +281,16 @@ export default class CrumbsBar extends React.Component<
           </Button>
         </span>
       );
+    }else{
+      yield(
+        <Button
+        bsSize="small"
+        key="defaul"
+        onClick={this.props.onReset}
+        style={{ margin: '5px 0px 5px 10px' }}>
+        Default
+      </Button>
+      )
     }
   }
 
@@ -309,13 +319,11 @@ export default class CrumbsBar extends React.Component<
       this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.values,
       this.props.currentSiteView.search.autoSuggest.crowdAggs.fields
     );
-    console.log('Auto SUggest crowdAgg Fields Query', crowdAggFields);
-    return crowdAggFields;
-    let fieldsToReturn: any[] = [];
-    crowdAggFields.map(field => {
-      fieldsToReturn.push(field.name);
-    });
-    return fieldsToReturn;
+      let fieldsToReturn: any[]=[]
+       crowdAggFields.map(field=>{
+         fieldsToReturn.push(field.name)
+       });
+      return fieldsToReturn;
   };
 
   getAutoSuggestFields = () => {

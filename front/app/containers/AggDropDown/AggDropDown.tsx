@@ -61,8 +61,10 @@ const QUERY_AGG_BUCKETS = gql`
     $pageSize: Int!
     $aggOptionsFilter: String
     $aggOptionsSort: [SortInput!]
+    $url: String 
   ) {
     aggBuckets(
+      url: $url
       params: {
         agg: $agg
         q: $q
@@ -95,8 +97,10 @@ const QUERY_CROWD_AGG_BUCKETS = gql`
     $page: Int!
     $pageSize: Int!
     $aggOptionsFilter: String
+    $url: String
   ) {
     aggBuckets: crowdAggBuckets(
+      url: $url
       params: {
         agg: $agg
         q: $q
@@ -395,7 +399,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   handleLoadMore = async apolloClient => {
     const { desc, sortKind, buckets, filter } = this.state;
-    const { agg, searchParams, presearch } = this.props;
+    const { agg, searchParams, presearch, currentSiteView } = this.props;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
         ? [QUERY_CROWD_AGG_BUCKETS, 'crowdAggFilters']
@@ -405,9 +409,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     console.log('agg sort', aggSort);
 
     const variables = {
+      url: currentSiteView.url,
       ...searchParams,
-      aggFilters: maskAgg(searchParams.aggFilters, agg),
-      crowdAggFilters: maskAgg(searchParams.crowdAggFilters, agg),
+      aggFilters: maskAgg(searchParams.aggFilters, this.props.agg),
+      crowdAggFilters: maskAgg(
+        searchParams.crowdAggFilters,
+        agg
+      ),
       agg: agg,
       pageSize: PAGE_SIZE,
       page: this.getFullPagesCount(buckets),
@@ -415,10 +423,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       aggOptionsSort: aggSort,
     };
 
+    console.log('Variables', variables)
+
     const response = await apolloClient.query({
       query,
       variables,
     });
+
 
     const responseBuckets = pathOr(
       [],

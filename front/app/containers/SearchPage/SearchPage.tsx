@@ -479,7 +479,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
-  renderAggs = () => {
+  renderAggs = (siteView) => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
@@ -503,6 +503,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         opened={opened}
         openedKind={openedKind}
         onOpen={this.handleOpenAgg}
+        currentSiteView={siteView}
       />
     );
   };
@@ -763,7 +764,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             console.log(thisSiteView);
             return (
               <Row>
-                <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
+                <SidebarContainer md={2}>{this.renderAggs(thisSiteView)}</SidebarContainer>
                 <MainContainer md={10}>
                   {this.renderPresearch()}
                   <SearchView
@@ -841,7 +842,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   <Row>
                     {showFacetBar && (
                       <SidebarContainer md={2}>
-                        {this.renderAggs()}
+                        {this.renderAggs(thisSiteView)}
                       </SidebarContainer>
                     )}
                     <div id="main_search" style={{ overflowY: 'auto' }}>
