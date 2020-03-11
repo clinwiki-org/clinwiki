@@ -12,6 +12,7 @@ import {
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
+import { MAX_WINDOW_SIZE } from 'utils/constants';
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
@@ -39,6 +40,7 @@ import {
   equals,
 } from 'ramda';
 import SearchView from './SearchView';
+import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
 import {
@@ -228,6 +230,37 @@ const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
     return params;
   };
 };
+
+const addSearchTerm = (term: string) => (params: SearchParams) => {
+  // have to check for empty string because if you press return two times it ends up putting it in the terms
+  if (!term.replace(/\s/g, '').length) {
+    return params;
+  }
+  // recycled code for removing repeated terms. might be a better way but I'm not sure.
+  const children = reject(propEq('key', term), params.q.children || []);
+  return {
+    ...params,
+    q: { ...params.q, children: [...(children || []), { key: term }] },
+    page: 0,
+  };
+};
+
+const removeSearchTerm = (term: string) => (params: SearchParams) => {
+  const children = reject(
+    propEq('key', term),
+    params.q.children || []
+  ) as SearchQuery[];
+  return {
+    ...params,
+    q: { ...params.q, children },
+    page: 0,
+  };
+};
+
+const changePage = (pageNumber: number) => (params: SearchParams) => ({
+  ...params,
+  page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / params.pageSize) - 1),
+});
 
 interface SearchPageProps {
   match: any;
@@ -622,8 +655,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   renderPresearch = () => {
-    const opened = this.state.openedAgg && this.state.openedAgg.name;
-    const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     return (
       <SiteProvider>
@@ -667,6 +698,47 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 )} */}
               </div>
             </SearchContainer>
+          );
+        }}
+      </SiteProvider>
+    );
+  };
+
+  renderCrumbs = () => {
+    const { params } = this.state;
+    const q =
+      this.state.params?.q.key === '*'
+        ? []
+        : (this.state.params?.q.children || []).map(prop('key'));
+    return (
+      <SiteProvider>
+        {site => {
+          const siteViewUrl = this.props.match.params.siteviewUrl;
+          const siteViews = site.siteViews;
+          let currentSiteView =
+            siteViews.find(siteview => siteview.url == siteViewUrl) ||
+            site.siteView;
+
+          return (
+            <CrumbsBar
+              siteViewUrl={siteViewUrl}
+              //@ts-ignore
+              searchParams={{ ...this.state.params, q }}
+              onBulkUpdate={this.handleBulkUpdateClick}
+              removeFilter={pipe(removeFilter, this.handleUpdateParams)}
+              addSearchTerm={pipe(addSearchTerm, this.handleUpdateParams)}
+              removeSearchTerm={pipe(removeSearchTerm, this.handleUpdateParams)}
+              pageSize={params?.pageSize || 25}
+              update={{
+                page: pipe(changePage, this.handleUpdateParams),
+              }}
+              data={site}
+              onReset={this.handleResetFilters(currentSiteView)}
+              onClear={this.handleClearFilters}
+              showCards={this.state.showCards}
+              addFilter={pipe(addFilter, this.handleUpdateParams)}
+              currentSiteView={currentSiteView}
+            />
           );
         }}
       </SiteProvider>
@@ -751,28 +823,36 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               {site => {
                 const siteViewUrl = this.props.match.params.siteviewUrl;
                 const siteViews = site.siteViews;
-                let thisSiteView =
+                let currentSiteView =
                   siteViews.find(siteview => siteview.url == siteViewUrl) ||
                   site.siteView;
                 if (siteViewUrl === 'default') {
-                  thisSiteView = site.siteView;
+                  currentSiteView = site.siteView;
                 }
-                if (!thisSiteView) {
+                if (!currentSiteView) {
                   return <div>Error loading data.</div>;
                 }
-                console.log(thisSiteView);
+                const {
+                  showPresearch,
+                  showFacetBar,
+                  showBreadCrumbs,
+                } = currentSiteView.search.config.fields;
                 return (
                   <Row>
-                    {thisSiteView.search.config.fields.showFacetBar && (
+                    {showFacetBar && (
                       <SidebarContainer md={2}>
                         {this.renderAggs()}
                       </SidebarContainer>
                     )}
                     <div id="main_search" style={{ overflowY: 'auto' }}>
                       <MainContainer style={{ width: '100%' }}>
-                        {/* {this.renderCrumbs()} */}
-                        {this.renderPresearch()}
-                        {this.renderSearch(hash, thisSiteView, site.siteViews)}
+                        {showBreadCrumbs && this.renderCrumbs()}
+                        {showPresearch && this.renderPresearch()}
+                        {this.renderSearch(
+                          hash,
+                          currentSiteView,
+                          site.siteViews
+                        )}
                       </MainContainer>
                     </div>
                   </Row>

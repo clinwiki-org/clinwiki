@@ -63,52 +63,51 @@ const SITE_VIEW_FRAGMENT = gql`
     }
     search {
       autoSuggest {
-
-              aggs {
-                fields {
-                  name
-                  display
-                  preselected {
-                    kind
-                    values
-                  }
-                  visibleOptions {
-                    kind
-                    values
-                  }
-                  autoSuggest
-                  rank
-                }
-                selected {
-                  kind
-                  values
-                }
-              }
-              crowdAggs {
-                fields {
-                  name
-                  display
-                  preselected {
-                    kind
-                    values
-                  }
-                  visibleOptions {
-                    kind
-                    values
-                  }
-                  rank
-                  autoSuggest
-                }
-                selected {
-                  kind
-                  values
-                }
-              }
+        aggs {
+          fields {
+            name
+            display
+            preselected {
+              kind
+              values
+            }
+            visibleOptions {
+              kind
+              values
+            }
+            autoSuggest
+            rank
+          }
+          selected {
+            kind
+            values
+          }
+        }
+        crowdAggs {
+          fields {
+            name
+            display
+            preselected {
+              kind
+              values
+            }
+            visibleOptions {
+              kind
+              values
+            }
+            rank
+            autoSuggest
+          }
+          selected {
+            kind
+            values
+          }
+        }
       }
-      results{
+      results {
         type
-        buttons{
-          items{
+        buttons {
+          items {
             icon
             target
           }
@@ -267,7 +266,6 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
       <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
         {({ data, loading, error, refetch }) => {
           if (loading || error) return null;
-          console.log(data)
           return this.props.children(data!.site!, refetch);
         }}
       </QueryComponent>

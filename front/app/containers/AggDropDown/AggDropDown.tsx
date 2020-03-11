@@ -378,7 +378,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   handleSort = (desc: boolean, sortKind: SortKind) => {
     let aggSort;
-    console.log(desc, sortKind);
     if (!desc && sortKind === SortKind.Alpha) {
       aggSort = [{ id: 'key', desc: true }];
     }
@@ -459,15 +458,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
 
     const hasMore = length(buckets) !== length(newBuckets);
-    this.setState({ buckets: newBuckets, hasMore }, () => {
-      if (presearch) {
-        console.log('=====================================');
-        console.log('handleLoadMore called on ', agg);
-        console.log('newBuckets: ', newBuckets);
-        console.log('stateBuckets: ', this.state.buckets);
-        console.log('=====================================');
-      }
-    });
+    this.setState({ buckets: newBuckets, hasMore });
   };
 
   renderBucket = (
