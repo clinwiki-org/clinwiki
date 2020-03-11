@@ -688,6 +688,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             if (siteViewUrl === 'default') {
               thisSiteView = site.siteView;
             }
+            console.log(thisSiteView);
             return (
               <Row>
                 <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
@@ -759,6 +760,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 if (!thisSiteView) {
                   return <div>Error loading data.</div>;
                 }
+                console.log(thisSiteView);
                 return (
                   <Row>
                     {thisSiteView.search.config.fields.showFacetBar && (
