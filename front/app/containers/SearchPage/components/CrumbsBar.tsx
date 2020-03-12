@@ -161,8 +161,6 @@ interface CrumbsBarProps {
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
   page: number;
-  recordsTotal: number;
-  pagesTotal: number;
   pageSize: number;
   update: { page: (n: number) => void };
   onReset: () => void;
@@ -172,6 +170,7 @@ interface CrumbsBarProps {
   showCards: Boolean;
   siteViewUrl?: string;
   currentSiteView: any;
+  toggledShowCards?: any;
 }
 interface CrumbsBarState {
   searchTerm: string;
@@ -260,9 +259,9 @@ export default class CrumbsBar extends React.Component<
       );
     }
     const totalLength =
-      searchParams.q.length +
-      searchParams.crowdAggFilters.length +
-      searchParams.aggFilters.length;
+      searchParams.q?.length +
+      searchParams.crowdAggFilters?.length +
+      searchParams.aggFilters?.length;
     if (totalLength > 0) {
       yield (
         <span>
@@ -319,13 +318,12 @@ export default class CrumbsBar extends React.Component<
       this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.kind,
       this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.values,
       this.props.currentSiteView.search.autoSuggest.crowdAggs.fields
-    )
+    );
       let fieldsToReturn: any[]=[]
        crowdAggFields.map(field=>{
          fieldsToReturn.push(field.name)
-       })
-      return fieldsToReturn
-    
+       });
+      return fieldsToReturn;
   };
 
   getAutoSuggestFields = () => {
@@ -333,13 +331,13 @@ export default class CrumbsBar extends React.Component<
       this.props.currentSiteView.search.autoSuggest.aggs.selected.kind,
       this.props.currentSiteView.search.autoSuggest.aggs.selected.values,
       this.props.currentSiteView.search.autoSuggest.aggs.fields
-    )
-    let fieldsToReturn: any[]=[]
-       aggFields.map(field=>{
-         fieldsToReturn.push(field.name)
-       })
-      return fieldsToReturn
-};
+    );
+    let fieldsToReturn: any[] = [];
+    aggFields.map(field => {
+      fieldsToReturn.push(field.name);
+    });
+    return fieldsToReturn;
+  };
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
@@ -351,7 +349,6 @@ export default class CrumbsBar extends React.Component<
     const aggFields = this.getAutoSuggestFields();
 
     const crowdAggFields = this.getCrowdAggAutoSuggest();
-
 
     const query = AUTOSUGGEST_QUERY;
     const variables = {
@@ -406,49 +403,47 @@ export default class CrumbsBar extends React.Component<
   ) => {
     if (showAutoSuggest == true) {
       return (
-        <div style={{display:"inline"}}>
-        <FormGroup>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}>
-            <b
+        <div style={{ display: 'inline' }}>
+          <FormGroup>
+            <div
               style={{
-                marginRight: '8px',
-                marginTop: '4px',
+                display: 'flex',
+                flexDirection: 'row',
               }}>
-              <ControlLabel>Search Within: </ControlLabel>{' '}
-            </b>
+              <b
+                style={{
+                  marginRight: '8px',
+                  marginTop: '4px',
+                }}>
+                <ControlLabel>Search Within: </ControlLabel>{' '}
+              </b>
 
-            <Autosuggest
-              multiSection={true}
-              suggestions={suggestions}
-              inputProps={{
-                value: searchTerm,
-                onChange: (e, searchTerm) =>
-                  this.onChange(e, searchTerm, apolloClient),
-              }}
-              renderSuggestion={this.renderSuggestion}
-              renderSuggestionsContainer={this.renderSuggestionsContainer}
-              renderSectionTitle={this.renderSectionTitle}
-              getSectionSuggestions={this.getSectionSuggestions}
-              onSuggestionSelected={this.onSuggestionSelected}
-              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-              getSuggestionValue={this.getSuggestionValue}
-            />
-          </div>
-        </FormGroup>
-        <Button type="submit">
-          <FontAwesome name="search" />
-        </Button> 
-        </div>       
+              <Autosuggest
+                multiSection={true}
+                suggestions={suggestions}
+                inputProps={{
+                  value: searchTerm,
+                  onChange: (e, searchTerm) =>
+                    this.onChange(e, searchTerm, apolloClient),
+                }}
+                renderSuggestion={this.renderSuggestion}
+                renderSuggestionsContainer={this.renderSuggestionsContainer}
+                renderSectionTitle={this.renderSectionTitle}
+                getSectionSuggestions={this.getSectionSuggestions}
+                onSuggestionSelected={this.onSuggestionSelected}
+                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                getSuggestionValue={this.getSuggestionValue}
+              />
+            </div>
+          </FormGroup>
+          <Button type="submit">
+            <FontAwesome name="search" />
+          </Button>
+        </div>
       );
     } else if (showAutoSuggest == false) {
-      return (
-        null
-      );
+      return null;
     }
   };
   renderAutoSuggest = (
@@ -459,49 +454,46 @@ export default class CrumbsBar extends React.Component<
   ) => {
     if (showAutoSuggest == true) {
       return (
-        <div style={{display:"inline"}}>
-        <FormGroup>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}>
-            <b
+        <div style={{ display: 'inline' }}>
+          <FormGroup>
+            <div
               style={{
-                marginRight: '8px',
-                marginTop: '4px',
+                display: 'flex',
+                flexDirection: 'row',
               }}>
-              <ControlLabel>Search Within: </ControlLabel>{' '}
-            </b>
+              <b
+                style={{
+                  marginRight: '8px',
+                  marginTop: '4px',
+                }}>
+                <ControlLabel>Search Within: </ControlLabel>{' '}
+              </b>
 
-            <Autosuggest
-              multiSection={true}
-              suggestions={suggestions}
-              inputProps={{
-                value: searchTerm,
-                onChange: (e, searchTerm) =>
-                  this.onChange(e, searchTerm, apolloClient),
-              }}
-              renderSuggestion={this.renderSuggestion}
-              renderSectionTitle={this.renderSectionTitle}
-              getSectionSuggestions={this.getSectionSuggestions}
-              onSuggestionSelected={this.onSuggestionSelected}
-              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-              getSuggestionValue={this.getSuggestionValue}
-            />
-          </div>
-
-        </FormGroup>
-        <Button type="submit">
+              <Autosuggest
+                multiSection={true}
+                suggestions={suggestions}
+                inputProps={{
+                  value: searchTerm,
+                  onChange: (e, searchTerm) =>
+                    this.onChange(e, searchTerm, apolloClient),
+                }}
+                renderSuggestion={this.renderSuggestion}
+                renderSectionTitle={this.renderSectionTitle}
+                getSectionSuggestions={this.getSectionSuggestions}
+                onSuggestionSelected={this.onSuggestionSelected}
+                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                getSuggestionValue={this.getSuggestionValue}
+              />
+            </div>
+          </FormGroup>
+          <Button type="submit">
             <FontAwesome name="search" />
-        </Button>
+          </Button>
         </div>
       );
     } else if (showAutoSuggest == false) {
-      return (
-        null
-      );
+      return null;
     }
   };
   renderSuggestion = suggestion => {
@@ -575,19 +567,18 @@ export default class CrumbsBar extends React.Component<
   toggleShowFilters = () => {
     this.setState({ showFilters: !this.state.showFilters });
   };
-  loadPaginator = () => {
-    return (
-      <div className="right-align">
-        <div>{this.props.recordsTotal} results</div>
-        <div>
-          {this.props.recordsTotal > MAX_WINDOW_SIZE
-            ? `(showing first ${MAX_WINDOW_SIZE})`
-            : null}
-        </div>
-      </div>
-    );
-  };
-
+  // loadPaginator = () => {
+  //   return (
+  //     <div className="right-align">
+  //       <div>{this.props.recordsTotal} results</div>
+  //       <div>
+  //         {this.props.recordsTotal > MAX_WINDOW_SIZE
+  //           ? `(showing first ${MAX_WINDOW_SIZE})`
+  //           : null}
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
@@ -632,9 +623,9 @@ export default class CrumbsBar extends React.Component<
                     </CurrentUser>
                   </Form>
                 </Col>
-                <Col xsHidden md={2}>
+                {/* <Col xsHidden md={2}>
                   {this.loadPaginator()}
-                </Col>
+                </Col> */}
               </Row>
               {showCrumbsBar ? (
                 <Row>
