@@ -13,6 +13,7 @@ module Types
       argument :search_hash, String, required: false
       argument :params, type: SearchInputType, required: false
       argument :url, type: String, required: false
+      argument :config_type, String, required: false
     end
 
     field :autocomplete, SearchResultSetType, null: false do
@@ -26,9 +27,10 @@ module Types
     field :crowd_agg_buckets, SearchResultSetType, null: false do
       argument :params, type: SearchInputType, required: true
       argument :url, type: String, required: false
+      argument :config_type, String, required: false
     end
 
-    field :crowd_agg_facets, SearchResultSetType, null: false do 
+    field :crowd_agg_facets, SearchResultSetType, null: false do
       # argument :params, type: SearchInputType, required: false
     end
     field :health, HealthType, null: false
@@ -72,19 +74,19 @@ module Types
       search_service.search
     end
 
-    def agg_buckets(search_hash: nil, params: nil, url: nil)
+    def agg_buckets(search_hash: nil, params: nil, url: nil, config_type: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site],url: url),
+        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site],url: url,, config_type: config_type),
       )
     end
 
-    def crowd_agg_buckets(search_hash: nil, params: nil, url: nil)
+    def crowd_agg_buckets(search_hash: nil, params: nil, url: nil,config_type: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site], is_crowd_agg: true, url: url),
+        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site], is_crowd_agg: true, url: url, config_type: config_type),
       )
     end
 
