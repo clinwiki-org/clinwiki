@@ -812,7 +812,7 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
     const fieldsPresearch = displayFields(
       this.state.showAllAggsPresearch
         ? FilterKind.BLACKLIST
-        : view.search.presearch.aggs.selected.kind,
+        : FilterKind.WHITELIST,
       this.state.showAllAggsPresearch ? [] : view.search.presearch.aggs.selected.values,
       view.search.presearch.aggs.fields
     );
