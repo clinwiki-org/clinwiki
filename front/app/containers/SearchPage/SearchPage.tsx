@@ -842,7 +842,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   <Row>
                     {showFacetBar && (
                       <SidebarContainer md={2}>
-                        {this.renderAggs(thisSiteView)}
+                        {this.renderAggs(currentSiteView)}
                       </SidebarContainer>
                     )}
                     <div id="main_search" style={{ overflowY: 'auto' }}>

@@ -137,6 +137,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                       removeSelectAll={this.props.removeSelectAll}
                       presearch
                       currentSiteView={this.props.currentSiteView}
+                      configType="presearch"
                     />
                   ) : (
                     <div
@@ -191,6 +192,8 @@ class Aggs extends React.PureComponent<AggsProps> {
                     searchParams={searchParams}
                     visibleOptions={visibleOptionsByName[k]}
                     currentSiteView={this.props.currentSiteView}
+                    configType="facetbar"
+
                   />
                 ))}
               </div>
@@ -227,6 +230,8 @@ class Aggs extends React.PureComponent<AggsProps> {
                         resetSelectAll={this.props.resetSelectAll}
                         removeSelectAll={this.props.removeSelectAll}
                         currentSiteView={this.props.currentSiteView}
+                        configType="facetbar"
+
                       />
                     ) : null
                   )}

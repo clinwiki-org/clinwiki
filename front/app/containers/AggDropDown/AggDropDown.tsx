@@ -62,9 +62,11 @@ const QUERY_AGG_BUCKETS = gql`
     $aggOptionsFilter: String
     $aggOptionsSort: [SortInput!]
     $url: String 
+    $configType: String
   ) {
     aggBuckets(
       url: $url
+      configType: $configType
       params: {
         agg: $agg
         q: $q
@@ -239,6 +241,7 @@ interface AggDropDownProps {
   resetSelectAll?: () => void;
   presearch?: boolean;
   currentSiteView?: any;
+  configType?:string;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -280,6 +283,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         prevParams: props.searchParams,
       };
     }
+    console.log("First if")
 
     const findAgg = (searchParams: SearchParams | null) => {
       if (!searchParams) return null;
@@ -313,6 +317,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         prevParams: props.searchParams,
       };
     }
+    // console.log("returning null")
     return null;
   }
 
@@ -399,7 +404,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   handleLoadMore = async apolloClient => {
     const { desc, sortKind, buckets, filter } = this.state;
-    const { agg, searchParams, presearch, currentSiteView } = this.props;
+    const { agg, searchParams, presearch, currentSiteView, configType } = this.props;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
         ? [QUERY_CROWD_AGG_BUCKETS, 'crowdAggFilters']
@@ -410,6 +415,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     const variables = {
       url: currentSiteView.url,
+      configType: configType,
       ...searchParams,
       aggFilters: maskAgg(searchParams.aggFilters, this.props.agg),
       crowdAggFilters: maskAgg(
@@ -511,6 +517,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }) => {
     const { agg, visibleOptions = [] } = this.props;
     const { buckets = [] } = this.state;
+    console.log("Buckets", buckets)
+    console.log("Vis options", visibleOptions)
     return pipe(
       filter(({ key }) =>
         visibleOptions.length ? visibleOptions.includes(key) : true
@@ -528,11 +536,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     )(buckets);
   };
 
-  renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
+  renderBucketsPanel = (apolloClient, site: SiteViewFragment, isPresearch) => {
     let display = this.props.display;
     const { presearch } = this.props;
     const fieldsArray = () => {
-      if (site.search.config.fields.showPresearch) {
+      if (isPresearch) {
         return [
           ...site.search.presearch.aggs.fields,
           ...site.search.presearch.crowdAggs.fields,
@@ -664,7 +672,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return (
         <PresearchContent>
           <PresearchBody>
-            {this.renderBucketsPanel(apollo, siteView)}
+            {this.renderBucketsPanel(apollo, siteView, true)}
           </PresearchBody>
         </PresearchContent>
       );
@@ -673,7 +681,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         <PresearchContent>
           <PresearchFilter>{this.renderFilter()}</PresearchFilter>
           <PresearchPanel>
-            {this.renderBucketsPanel(apollo, siteView)}
+            {this.renderBucketsPanel(apollo, siteView, true)}
           </PresearchPanel>
         </PresearchContent>
       );
@@ -733,7 +741,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                       <Panel.Body>
                         {this.renderBucketsPanel(
                           apolloClient,
-                          this.props.currentSiteView
+                          this.props.currentSiteView,
+                          false
                         )}
                       </Panel.Body>
                     </Panel.Collapse>

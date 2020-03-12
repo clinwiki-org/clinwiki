@@ -22,6 +22,7 @@ interface AggFieldProps {
   ) => void;
   view: SiteViewFragment;
   presearch?: boolean;
+  configType?: string;
 }
 
 interface AggFieldState {
@@ -203,6 +204,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 removeFilter={this.handleRemoveFilter('preselected')}
                 onOpen={this.handleOpen('preselected')}
                 currentSiteView={this.props.view}
+                configType={this.props.configType}
+                
               />
             </FilterContainer>
           </FiltersContainer>
@@ -238,6 +241,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 removeFilter={this.handleRemoveFilter('visibleOptions')}
                 onOpen={this.handleOpen('visibleOptions')}
                 currentSiteView={this.props.view}
+                configType={this.props.configType}
+
               />
             </FilterContainer>
           </FiltersContainer>
