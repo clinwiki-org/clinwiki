@@ -90,8 +90,8 @@ class Aggs extends React.PureComponent<AggsProps> {
   getCrowdAggs = (site: SiteFragment, crowdAggs: string[]): string[] => {
     const displayed = displayFields(
       this.props.currentSiteView.search.crowdAggs.selected.kind,
-      this.props.currentSiteView.crowdAggs.selected.values,
-      this.props.currentSiteView.crowdAggs.fields
+      this.props.currentSiteView.search.crowdAggs.selected.values,
+      this.props.currentSiteView.search.crowdAggs.fields
     ).map(prop('name'));
     return filter(x => crowdAggs.includes(x), displayed);
   };
