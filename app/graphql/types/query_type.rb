@@ -78,7 +78,7 @@ module Types
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site],url: url,, config_type: config_type),
+        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site],url: url, config_type: config_type),
       )
     end
 
