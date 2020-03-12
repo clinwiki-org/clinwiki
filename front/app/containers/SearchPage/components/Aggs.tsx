@@ -24,7 +24,7 @@ import {
 import { BeatLoader } from 'react-spinners';
 import { aggsOrdered } from 'utils/constants';
 import SiteProvider from 'containers/SiteProvider';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment, SiteFragment_editors } from 'types/SiteFragment';
 import { throws } from 'assert';
 import { FilterKind } from 'types/globalTypes';
 import { displayFields } from 'utils/siteViewHelpers';
@@ -41,6 +41,7 @@ const getVisibleOptionsByName: (SiteFragment) => any = compose(
   pathOr([], ['siteView', 'search', 'crowdAggs', 'fields'])
 );
 interface AggsProps {
+  key?: any;
   aggs: AggBucketMap;
   crowdAggs: AggBucketMap;
   // selected
@@ -64,7 +65,6 @@ interface AggsProps {
 
 const PresearchContainer = styled.div`
   display: flex;
-  width: 100%;
   max-height: 350px;
   @media (max-width: 1250px) {
     display: grid;
@@ -111,7 +111,6 @@ class Aggs extends React.PureComponent<AggsProps> {
       currentSiteView,
       preSearchAggs,
     } = this.props;
-
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
     if (presearch && preSearchAggs) {
@@ -123,15 +122,11 @@ class Aggs extends React.PureComponent<AggsProps> {
                 {preSearchAggs.map(k =>
                   aggs[k] ? (
                     <AggDropDown
-                      key={`k-${k}`}
+                      key={k}
                       agg={k}
                       selectedKeys={filters[k] || emptySet}
                       buckets={aggs[k]}
-                      isOpen={
-                        this.props.opened === k &&
-                        this.props.openedKind === 'aggs'
-                      }
-                      onOpen={this.props.onOpen}
+                      isOpen={true}
                       aggKind="aggs"
                       addFilter={addFilter}
                       addFilters={addFilters}
