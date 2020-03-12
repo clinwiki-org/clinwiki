@@ -304,7 +304,7 @@ class SearchService
 
       view = current_site.site_views.find_by(url: url).view
     end
-    case config_type.downcase
+    case config_type ? config_type.downcase : config_type
       when nil , "facetbar"
         fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
       when "presearch"
