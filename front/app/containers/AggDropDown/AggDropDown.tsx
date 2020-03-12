@@ -283,7 +283,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         prevParams: props.searchParams,
       };
     }
-    console.log("First if")
 
     const findAgg = (searchParams: SearchParams | null) => {
       if (!searchParams) return null;
