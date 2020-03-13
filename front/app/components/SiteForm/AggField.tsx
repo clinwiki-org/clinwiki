@@ -137,11 +137,18 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     aggValue: string,
     isCrowd: boolean
   ) => {
+    const targetValue =()=>{
+    if(kind=='preselected'){
+      return reject(equals(aggValue), this.props.field.preselected.values)    
+    }else{
+      return reject(equals(aggValue), this.props.field.visibleOptions.values) 
+    }
+  }
     this.props.onAddMutation(
       {
         currentTarget: {
           name: `set:${this.getPath(this.props.presearch)}.${kind}.values`,
-          value: reject(equals(aggValue), this.props.field.preselected.values),
+          value: targetValue(),
         },
       },
       this.props.view
