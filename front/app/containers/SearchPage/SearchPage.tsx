@@ -665,8 +665,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           let thisSiteView =
             siteViews.find(siteview => siteview.url == siteViewUrl) ||
             site.siteView;
-          const preSearchAggs =
-            thisSiteView.search.presearch.aggs.selected.values;
+          const preSearchAggs = thisSiteView.search.presearch.aggs.selected.values;
+          const preSearchCrowdAggs = thisSiteView.search.presearch.crowdAggs.selected.values;
           // const presearchButton = thisSiteView.search.presearch.button;
           // const presearchText = thisSiteView.search.presearch;
           return (
@@ -687,6 +687,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 searchParams={this.state.params}
                 presearch
                 preSearchAggs={preSearchAggs}
+                preSearchCrowdAggs={preSearchCrowdAggs}
                 currentSiteView={thisSiteView}
               />
               <div>

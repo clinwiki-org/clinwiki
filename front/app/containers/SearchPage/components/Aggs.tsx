@@ -61,6 +61,7 @@ interface AggsProps {
   presearch?: boolean;
   currentSiteView?: any;
   preSearchAggs?: string[];
+  preSearchCrowdAggs?: string[];
 }
 
 const PresearchContainer = styled.div`
@@ -110,6 +111,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       presearch,
       currentSiteView,
       preSearchAggs,
+      preSearchCrowdAggs,
     } = this.props;
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     const emptySet = new Set();
@@ -147,6 +149,37 @@ class Aggs extends React.PureComponent<AggsProps> {
                     </div>
                   )
                 )}
+                {preSearchCrowdAggs ?
+                
+                preSearchCrowdAggs.map(k =>
+                  crowdAggs[k] ? (
+                    <AggDropDown
+                      key={k}
+                      agg={k}
+                      selectedKeys={filters[k] || emptySet}
+                      buckets={crowdAggs[k]}
+                      isOpen={true}
+                      aggKind="crowdAggs"
+                      addFilter={addFilter}
+                      addFilters={addFilters}
+                      removeFilter={removeFilter}
+                      removeFilters={removeFilters}
+                      searchParams={searchParams}
+                      resetSelectAll={this.props.resetSelectAll}
+                      removeSelectAll={this.props.removeSelectAll}
+                      presearch
+                      currentSiteView={this.props.currentSiteView}
+                      configType="presearch"
+                    />
+                  ) : (
+                    <div
+                      key={k}
+                      style={{ display: 'flex', justifyContent: 'center' }}>
+                      <BeatLoader key="loader" color="#fff" />
+                    </div>
+                  )
+                ) : null
+                }
               </PresearchContainer>
             );
           }}
