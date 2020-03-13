@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import { head, last, propOr, defaultTo } from 'ramda';
+import { head, last, propOr, defaultTo, equals, isEmpty } from 'ramda';
 import { orderBy, debounce } from 'lodash';
 import HistoSlider from 'histoslider';
 import styled from 'styled-components';
@@ -9,6 +9,7 @@ import { BeatLoader } from 'react-spinners';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
+import UpdateWorkflowsViewMutation from 'mutations/UpdateWorflowsViewMutation';
 
 interface HistoPanelProps {
   isOpen: boolean;
@@ -20,7 +21,14 @@ interface HistoPanelProps {
 }
 
 interface HistoPanelState {
-  selected: Array<any>;
+  selection?: Array<any>;
+  sliderToDate?: any;
+  dateToSlider?: any;
+  sliderData?: Array<any>;
+  start?: string;
+  end?: string;
+  startParsed?: string;
+  endParsed?: string;
 }
 
 const Container = styled.div`
@@ -29,26 +37,14 @@ const Container = styled.div`
 `;
 
 class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
-  componentDidUpdate() {}
+  onChange = debounce(val => {
+    this.props.updater.changeRange([
+      this.state.sliderToDate[Math.floor(val[0])] || this.state.start,
+      this.state.sliderToDate[Math.floor(val[1])] || this.state.end,
+    ]);
+  }, 500);
 
-  render() {
-    const {
-      isOpen,
-      hasMore,
-      loading,
-      buckets,
-      handleLoadMore,
-      updater,
-    } = this.props;
-    if (hasMore || loading) {
-      handleLoadMore();
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <BeatLoader key="loader" color="#fff" />
-        </div>
-      );
-    }
-
+  bucketsToState = () => {
     /**
      * Populate the data for the slider.
      * We're transforming the discrete date values,
@@ -57,6 +53,7 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
      * has trouble using these bigger values when calculating
      * the size of the rectangles for drawing actual histogram.
      */
+    const { buckets } = this.props;
     const sliderData = [] as any[];
     const sliderToDate = [] as any[];
     const dateToSlider = {};
@@ -84,35 +81,91 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
         }
       }
     );
+    return {
+      sliderData,
+      sliderToDate,
+      dateToSlider,
+      start,
+      end,
+    };
+  };
 
-    const onChange = debounce(val => {
-      updater.changeRange([
-        sliderToDate[Math.floor(val[0])] || start,
-        sliderToDate[Math.floor(val[1])] || end,
-      ]);
-    }, 250);
+  constructor(props) {
+    // i still need to figure this all out
+    // i want to get the slider state to work independent of the requests.
+    super(props);
+    this.state = {
+      ...this.bucketsToState(),
+    };
+  }
 
-    let selection = updater.getRangeSelection();
-    let startParsed;
-    let endParsed;
-    if (selection) {
-      startParsed = moment(selection[0])
-        .utc(false)
-        .format('YYYY-MM-DD');
-      endParsed = moment(selection[1])
-        .utc(false)
-        .format('YYYY-MM-DD');
-      selection = [
-        dateToSlider[selection[0]],
-        dateToSlider[selection[1]] + 1, // needs to be inclusive of the x0 and x value.
-      ];
-    } else {
-      startParsed = moment(start)
-        .utc(false)
-        .format('YYYY-MM-DD');
-      endParsed = moment(end)
-        .utc(false)
-        .format('YYYY-MM-DD');
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.buckets !== this.props.buckets) {
+      const bts = this.bucketsToState();
+      return this.setState({
+        ...bts,
+        selection: [0, this.props.buckets.length],
+      });
+    }
+
+    let {
+      sliderData = [],
+      selection = [-1, -1],
+      dateToSlider = {},
+      sliderToDate = {},
+      start = '',
+      end = '',
+    } = this.state;
+
+    if (prevState.selection !== selection) {
+      this.onChange(selection);
+    }
+  }
+
+  render() {
+    const {
+      isOpen,
+      hasMore,
+      loading,
+      buckets,
+      handleLoadMore,
+      updater,
+    } = this.props;
+    if (!this.state || !buckets) {
+      return null;
+    }
+    const { selection } = this.state;
+    const { sliderToDate, dateToSlider, sliderData, start, end } = this.state;
+    if (hasMore || loading) {
+      handleLoadMore();
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <BeatLoader key="loader" color="#fff" />
+        </div>
+      );
+    }
+
+    if (isEmpty(sliderData)) {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>None</div>
+      );
+    }
+
+    let startParsed = '?';
+    let endParsed = '?';
+
+    if (selection && selection.length == 2) {
+      const [start, end] = selection;
+      if (sliderToDate[start]) {
+        startParsed = moment(sliderToDate[start])
+          .utc(false)
+          .format('YYYY-MM-DD');
+      }
+      if (sliderToDate[end]) {
+        endParsed = moment(sliderToDate[end])
+          .utc(false)
+          .format('YYYY-MM-DD');
+      }
     }
 
     return (
@@ -123,7 +176,9 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
               <Col>
                 <HistoSlider
                   data={sliderData}
-                  onChange={onChange}
+                  onChange={x => {
+                    this.setState({ selection: x.map(Math.ceil) });
+                  }}
                   showLabels={false}
                   padding={10}
                   height={100}
