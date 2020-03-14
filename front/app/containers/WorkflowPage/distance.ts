@@ -14,12 +14,7 @@ export function dLDistance({ a, b }: { a: string; b: string; }) {
   var maxNumberOfCharacters = 0.25*b.length;  
 
   //clean up the source string a, which may have escape characters.
-  a = a.replace(/\\\\n/g, "");
-  a = a.replace(/\\n/g, "");
-  a = a.replace(/\\/g, "");
-  a = a.replace(/\(/g,"");
-  a = a.replace(/\)/g,"");
-  
+  a = removeEscapeCharactersAndPunctuation({str: a});
 
   var sourceLength = a.length;
   var targetLength = b.length;
@@ -58,4 +53,17 @@ export function dLDistance({ a, b }: { a: string; b: string; }) {
   }
 
   return score[sourceLength + 1][targetLength + 1] >= maxNumberOfCharacters ? 100 : score[sourceLength + 1][targetLength + 1];  
+}
+
+export function removeEscapeCharactersAndPunctuation({ str }: { str: string }) {
+  str = removeEscapeCharacters({str: str});
+  str = str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+  return str;
+}
+
+export function removeEscapeCharacters({str}: {str: string}) {
+  str = str.replace(/\\\\n/g, "");
+  str = str.replace(/\\n/g, "");
+  str = str.replace(/\\/g, "");
+  return str;
 }
