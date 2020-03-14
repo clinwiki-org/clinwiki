@@ -37,6 +37,11 @@ const Container = styled.div`
 `;
 
 class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
+  /**
+   * perform the actual request to update the search.
+   * note the usage of debounce to decouple slider change
+   * from search params change.
+   */
   onChange = debounce(val => {
     this.props.updater.changeRange([
       this.state.sliderToDate[Math.floor(val[0])] || this.state.start,
