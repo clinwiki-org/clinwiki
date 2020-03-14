@@ -57,7 +57,29 @@ export function dLDistance({ a, b }: { a: string; b: string; }) {
 
 export function removeEscapeCharactersAndPunctuation({ str }: { str: string }) {
   str = removeEscapeCharacters({str: str});
-  str = str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+  str = str.replace(/\[/g, "");
+  str = str.replace(/\./g, "");
+  str = str.replace(/\,/g, "");
+  str = str.replace(/\\/g, "");
+  str = str.replace(/\//g, "");
+  str = str.replace(/\#/g, "");
+  str = str.replace(/\!/g, "");
+  str = str.replace(/\$/g, "");
+  str = str.replace(/\%/g, "");
+  str = str.replace(/\^/g, "");
+  str = str.replace(/\&/g, "");
+  str = str.replace(/\*/g, "");
+  str = str.replace(/\;/g, "");
+  str = str.replace(/\:/g, "");
+  str = str.replace(/\{/g, "");
+  str = str.replace(/\}/g, "");
+  str = str.replace(/\=/g, "");
+  str = str.replace(/\-/g, "");
+  str = str.replace(/\_/g, "");
+  str = str.replace(/\`/g, "");
+  str = str.replace(/\~/g, "");
+  str = str.replace(/\(/g, "");
+  str = str.replace(/\)/g, "");
   return str;
 }
 

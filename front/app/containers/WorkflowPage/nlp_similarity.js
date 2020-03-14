@@ -16,7 +16,7 @@ function appendStringArrayWithSpace(_a) {
     for (var i = 0; i < array.length; i++) {
         string += array[i] + " ";
     }
-    string = Distance.removeEscapeCharactersAndPunctuation({ str: string });
+    string = Distance.removeEscapeCharacters({ str: string });
     return string;
 }
 function countWhiteSpacesInString(_a) {
