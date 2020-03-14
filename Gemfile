@@ -31,7 +31,7 @@ gem "turbolinks"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.7"
 # bundle exec rake doc:rails generates the API under doc/api.
-gem "rake", "~> 11.3"
+gem "rake", "~> 12.3"
 gem "sdoc", "~> 0.4.0", group: :doc
 #  Lets us spawn processes in the background
 gem "spawnling", "~>2.1"
@@ -81,7 +81,7 @@ group :development, :test do
 end
 
 gem "activejob-traffic_control", ">= 0.1.3"
-gem "jwt"
+gem "jwt", '>=2.2.0'
 gem "sidekiq"
 gem "sidekiq-cron"
 gem "rack-cors"
@@ -95,3 +95,11 @@ gem "faraday"
 
 gem "activerecord-import", "~> 1.0"
 gem "composite_primary_keys"
+
+gem "timeliness", "~> 0.4.4"
+
+gem "webmock", "~> 3.8", :group => :test
+
+gem "rspec-snapshot", "~> 0.1.2", :group => :test
+
+gem "http_logger", "~> 0.6.0"
