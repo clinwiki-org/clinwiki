@@ -479,7 +479,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
-  renderAggs = (siteView) => {
+  renderAggs = siteView => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
@@ -655,7 +655,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   }
 
-  renderPresearch = () => {
+  renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     return (
       <SiteProvider>
@@ -665,12 +665,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           let thisSiteView =
             siteViews.find(siteview => siteview.url == siteViewUrl) ||
             site.siteView;
-          const preSearchAggs = thisSiteView.search.presearch.aggs.selected.values;
-          const preSearchCrowdAggs = thisSiteView.search.presearch.crowdAggs.selected.values;
-          // const presearchButton = thisSiteView.search.presearch.button;
-          // const presearchText = thisSiteView.search.presearch;
+          const preSearchAggs =
+            thisSiteView.search.presearch.aggs.selected.values;
+          const preSearchCrowdAggs =
+            thisSiteView.search.presearch.crowdAggs.selected.values;
+          const presearchButton = thisSiteView.search.presearch.button;
+          const presearchInstructions =
+            thisSiteView.search.presearch.instructions;
           return (
             <SearchContainer>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                {presearchInstructions && <div>{presearchInstructions}</div>}
+                {presearchButton.name && hash && (
+                  <Button href={`/search/${presearchButton.target}/${hash}`}>
+                    {presearchButton.name}
+                  </Button>
+                )}
+              </div>
               <Aggs
                 aggs={this.state.searchAggs}
                 crowdAggs={this.state.searchCrowdAggs}
@@ -690,15 +706,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 preSearchCrowdAggs={preSearchCrowdAggs}
                 currentSiteView={thisSiteView}
               />
-              <div>
-                {/* {presearchText && <div>presearch text will go here</div>} */}
-                {/* {presearchButton.name && (
-                  <Button
-                    href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
-                    {presearchButton.name}
-                  </Button>
-                )} */}
-              </div>
             </SearchContainer>
           );
         }}
@@ -765,9 +772,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             console.log(thisSiteView);
             return (
               <Row>
-                <SidebarContainer md={2}>{this.renderAggs(thisSiteView)}</SidebarContainer>
+                <SidebarContainer md={2}>
+                  {this.renderAggs(thisSiteView)}
+                </SidebarContainer>
                 <MainContainer md={10}>
-                  {this.renderPresearch()}
+                  {this.renderPresearch(null)}
                   <SearchView
                     params={this.state.params as any}
                     onBulkUpdate={this.handleBulkUpdateClick}
@@ -849,7 +858,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     <div id="main_search" style={{ overflowY: 'auto' }}>
                       <MainContainer style={{ width: '100%' }}>
                         {showBreadCrumbs && this.renderCrumbs()}
-                        {showPresearch && this.renderPresearch()}
+                        {showPresearch && this.renderPresearch(hash)}
                         {this.renderSearch(
                           hash,
                           currentSiteView,
