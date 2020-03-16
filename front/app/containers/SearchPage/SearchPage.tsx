@@ -178,6 +178,19 @@ const SearchContainer = styled.div`
   padding: 10px;
 `;
 
+const InstructionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 20px;
+`;
+const Instructions = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+`;
+
 const changeFilter = (add: boolean) => (
   aggName: string,
   key: string,
@@ -672,21 +685,19 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const presearchButton = thisSiteView.search.presearch.button;
           const presearchInstructions =
             thisSiteView.search.presearch.instructions;
+          const presearchText = thisSiteView.search.presearch.instructions;
           return (
             <SearchContainer>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                {presearchInstructions && <div>{presearchInstructions}</div>}
-                {presearchButton.name && hash && (
-                  <Button href={`/search/${presearchButton.target}/${hash}`}>
-                    {presearchButton.name}
-                  </Button>
-                )}
-              </div>
+            <InstructionsContainer>
+              {presearchText && <Instructions><h4 style={{marginRight: 10}}>Instructions:</h4> <h5>{presearchText}</h5></Instructions>}
+               {presearchButton.name && (
+                <Button
+                  style={{minWidth:200}}
+                  href={`/search/${presearchButton.target}/${hash}`}>
+                  {presearchButton.name}
+                </Button>
+              )}
+            </InstructionsContainer>
               <Aggs
                 aggs={this.state.searchAggs}
                 crowdAggs={this.state.searchCrowdAggs}
