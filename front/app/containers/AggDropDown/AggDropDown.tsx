@@ -290,6 +290,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       const key = props.aggKind === 'aggs' ? 'aggFilters' : 'crowdAggFilters';
       return find(agg => agg.field === props.agg, searchParams[key]);
     };
+    if (props.presearch && !equals(state.prevParams, props.searchParams)) {
+      return {
+        hasMore: true,
+        loading: false,
+        buckets: [],
+        prevParams: props.searchParams,
+      };
+    }
     const prevAggValue = findAgg(state.prevParams);
     const nextAggValue = findAgg(props.searchParams);
 
@@ -308,14 +316,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       };
     }
 
-    if (props.presearch && !equals(state.prevParams, props.searchParams)) {
-      return {
-        hasMore: true,
-        loading: false,
-        buckets: [],
-        prevParams: props.searchParams,
-      };
-    }
+
     // console.log("returning null")
     return null;
   }
