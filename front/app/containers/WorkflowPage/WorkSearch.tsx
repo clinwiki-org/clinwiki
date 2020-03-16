@@ -74,7 +74,8 @@ export class WorkSearch extends React.Component<Props, State> {
     // Prevent button click from submitting form
     e.preventDefault(); // Let's stop this event.
     e.stopPropagation();
-    const form = document.getElementById("addItemForm") as HTMLFormElement;
+
+    const form = document.getElementsByClassName("form") as HTMLCollectionOf<HTMLFormElement>;
 
     // If our input has a value
     if (this.state.value != "") {
@@ -86,7 +87,10 @@ export class WorkSearch extends React.Component<Props, State> {
       });
 
       // Finally, we need to reset the form
-      form.reset();
+      Array.from(form).forEach(function (element) { 
+        element.reset()
+      }); 
+      // form.reset();
     }
 
   }
@@ -135,12 +139,12 @@ export class WorkSearch extends React.Component<Props, State> {
             </section>
             <hr />
             <section className="section">
-              <form className="form" id="addItemForm">
-                <input type="text" onChange={(e) => this.setState({ value: e.target.value })} className="input" id="addInput" />
+              <form className="form">
+                <input type="text" onChange={(e) => this.setState({ value: e.target.value })} className="input"/>
                 <button className="button is-info buttonstyle" onClick={(e) => this.addItem(e)}>
                   Add Item
                   </button>
-              </form>
+              </form>   
               <div>
                 <StyledTable striped bordered>
                   <Query
