@@ -411,7 +411,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         : [QUERY_AGG_BUCKETS, 'aggFilters'];
 
     const aggSort = this.handleSort(desc, sortKind);
-    console.log('agg sort', aggSort);
 
     const variables = {
       url: currentSiteView.url,
@@ -429,7 +428,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       aggOptionsSort: aggSort,
     };
 
-    console.log('Variables', variables)
 
     const response = await apolloClient.query({
       query,
@@ -517,8 +515,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }) => {
     const { agg, visibleOptions = [] } = this.props;
     const { buckets = [] } = this.state;
-    console.log("Buckets", buckets)
-    console.log("Vis options", visibleOptions)
     return pipe(
       filter(({ key }) =>
         visibleOptions.length ? visibleOptions.includes(key) : true
@@ -552,7 +548,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const field = find(
       //@ts-ignore
       propEq('name', this.props.agg),
-      fieldsArray
+      fieldsArray()
     ) as SiteViewFragment_search_aggs_fields | null;
     if (!display) {
       display = (field && field.display) || FieldDisplay.STRING;
