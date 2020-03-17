@@ -114,7 +114,57 @@ class Aggs extends React.PureComponent<AggsProps> {
       preSearchCrowdAggs,
     } = this.props;
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
+    let crowdAggPresearch: React.ReactElement<any> | null = null;
     const emptySet = new Set();
+
+    if (preSearchCrowdAggs && crowdAggs) {
+      crowdAggPresearch = (
+        <SiteProvider>
+          {(site: SiteFragment) => {
+            return (
+              <span>
+                {preSearchCrowdAggs.map(k =>
+                  crowdAggs[k] ? (
+                      <AggDropDown
+                        key={k}
+                        agg={k}
+                        selectedKeys={crowdFilters[k] || emptySet}
+                        buckets={crowdAggs[k]}
+                        isOpen={true}
+                        aggKind="crowdAggs"
+                        addFilter={(agg, item) => addFilter(agg, item, true)}
+                        addFilters={(agg, items) =>
+                          addFilters(agg, items, true)
+                        }
+                        removeFilter={(agg, item) =>
+                          removeFilter && removeFilter(agg, item, true)
+                        }
+                        removeFilters={(agg, items) =>
+                          removeFilters(agg, items, true)
+                        }
+                        searchParams={searchParams}
+                        resetSelectAll={this.props.resetSelectAll}
+                        removeSelectAll={this.props.removeSelectAll}
+                        presearch
+                        currentSiteView={this.props.currentSiteView}
+                        configType="presearch"
+                      />
+
+                  ) : (
+                    <div
+                      key={k}
+                      style={{ display: 'flex', justifyContent: 'center' }}>
+                      <BeatLoader key="loader" color="#fff" />
+                    </div>
+                  )
+                )}
+              </span>
+            );
+          }}
+        </SiteProvider>
+      );
+    }
+
     if (presearch && preSearchAggs) {
       return (
         <SiteProvider>
@@ -149,37 +199,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                     </div>
                   )
                 )}
-                {preSearchCrowdAggs ?
-                
-                preSearchCrowdAggs.map(k =>
-                  crowdAggs[k] ? (
-                    <AggDropDown
-                      key={k}
-                      agg={k}
-                      selectedKeys={filters[k] || emptySet}
-                      buckets={crowdAggs[k]}
-                      isOpen={true}
-                      aggKind="crowdAggs"
-                      addFilter={addFilter}
-                      addFilters={addFilters}
-                      removeFilter={removeFilter}
-                      removeFilters={removeFilters}
-                      searchParams={searchParams}
-                      resetSelectAll={this.props.resetSelectAll}
-                      removeSelectAll={this.props.removeSelectAll}
-                      presearch
-                      currentSiteView={this.props.currentSiteView}
-                      configType="presearch"
-                    />
-                  ) : (
-                    <div
-                      key={k}
-                      style={{ display: 'flex', justifyContent: 'center' }}>
-                      <BeatLoader key="loader" color="#fff" />
-                    </div>
-                  )
-                ) : null
-                }
+                {crowdAggPresearch}
               </PresearchContainer>
             );
           }}
