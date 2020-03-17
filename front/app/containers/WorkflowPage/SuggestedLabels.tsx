@@ -172,7 +172,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
           </StyledCol>
           <Col xs={4}>
             <div>
-              <WorkSearch nctid={this.props.nctId} />
+              <WorkSearch nctid={this.props.nctId}/>
             </div>
           </Col>
         </Row>
@@ -239,6 +239,6 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
       </QueryComponent>
     );
   }
-}
 
+}
 export default SuggestedLabels;

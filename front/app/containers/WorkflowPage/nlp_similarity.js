@@ -16,6 +16,7 @@ function appendStringArrayWithSpace(_a) {
     for (var i = 0; i < array.length; i++) {
         string += array[i] + " ";
     }
+    string = Distance.removeEscapeCharacters({ str: string });
     return string;
 }
 function countWhiteSpacesInString(_a) {
@@ -69,7 +70,8 @@ function gettopFiveArray(_a) {
         if (i > 4) {
             break;
         }
-        topFiveArray.push({ text: sentence, section: getSectionFoundIn({ indexOfWord: index, wordsArray: wordsArray }), keyWord: wordsArray[index] });
+        var toHighlight = Distance.removeEscapeCharacters({ str: wordsArray[index] });
+        topFiveArray.push({ text: sentence, section: getSectionFoundIn({ indexOfWord: index, wordsArray: wordsArray }), keyWord: toHighlight });
     }
 }
 function findPhrases(_a) {
