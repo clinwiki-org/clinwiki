@@ -499,7 +499,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     } else if (defaultViewStyle == 'card' && this.props.showCards == false) {
       this.toggledShowCards(true);
     }
-    if (!this.props.showCards && showResults) {
+    if (!this.props.showCards) {
       this.setState({
         tableWidth: document.getElementsByClassName('ReactTable')[0]
           .clientWidth,
