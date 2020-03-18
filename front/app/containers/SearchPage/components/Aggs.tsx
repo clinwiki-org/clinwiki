@@ -38,7 +38,19 @@ const getVisibleOptionsByName: (SiteFragment) => any = compose(
     }),
     {}
   ),
-  pathOr([], ['siteView', 'search', 'crowdAggs', 'fields'])
+  
+  pathOr([], ['search', 'crowdAggs', 'fields'])
+);
+const getVisibleOptionsByNamePresearch: (SiteFragment) => any = compose(
+  reduce(
+    (byName, { name, visibleOptions }) => ({
+      ...byName,
+      [name]: visibleOptions.values,
+    }),
+    {}
+  ),
+  
+  pathOr([], [ 'search', 'presearch','crowdAggs', 'fields'])
 );
 interface AggsProps {
   key?: any;
@@ -121,6 +133,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       crowdAggPresearch = (
         <SiteProvider>
           {(site: SiteFragment) => {
+            const visibleOptionsByName = getVisibleOptionsByNamePresearch(currentSiteView);
             return (
               <span>
                 {preSearchCrowdAggs.map(k =>
@@ -129,7 +142,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                         key={k}
                         agg={k}
                         selectedKeys={crowdFilters[k] || emptySet}
-                        buckets={crowdAggs[k]}
+                        buckets={preSearchCrowdAggs[k]}
                         isOpen={true}
                         aggKind="crowdAggs"
                         addFilter={(agg, item) => addFilter(agg, item, true)}
@@ -148,6 +161,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                         presearch
                         currentSiteView={this.props.currentSiteView}
                         configType="presearch"
+                        visibleOptions={visibleOptionsByName[k]}
                       />
 
                   ) : (
@@ -210,7 +224,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       crowdAggDropdowns = (
         <SiteProvider>
           {(site: SiteFragment) => {
-            const visibleOptionsByName = getVisibleOptionsByName(site);
+            const visibleOptionsByName = getVisibleOptionsByName(currentSiteView);
             return (
               <div>
                 <h4
