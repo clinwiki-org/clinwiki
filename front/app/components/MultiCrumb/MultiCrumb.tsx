@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ListGroupItem } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 interface MultiCrumbProps {
   category?: string;
@@ -12,6 +12,24 @@ interface MultiCrumbProps {
 interface MultiCrumbState {
   showValue: boolean;
 }
+
+const crumbKeyframe = keyframes`
+  0% {
+    border-color: 4px solid silver;
+    background-color: #66dda9; 
+  }
+
+  50% {
+    border-color: 2px solid silver;
+    background-color: #5fce9d;
+  }
+
+  100% {
+    border: 2px solid #55b88d;
+    background-color: #55b88d;
+  }
+`;
+
 class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
   state: MultiCrumbState = {
     showValue: false,
@@ -37,6 +55,7 @@ class MultiCrumb extends React.Component<MultiCrumbProps, MultiCrumbState> {
         background: #55b88d;
         color: #fff !important;
         line-height: 1.85em;
+        animation: ${crumbKeyframe} 2s ease-in-out;
       }
       .crumb-icon {
         cursor: pointer;
