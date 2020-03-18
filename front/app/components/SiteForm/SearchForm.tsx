@@ -896,12 +896,6 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
                 {this.renderPreSearchConfig(showPresearch,view,fieldsPresearch, crowdFieldsPresearch,updateSiteView)}
                 {this.renderResultsConfig(showResults,view,fields, crowdFields,updateSiteView)}
                 {this.renderBreadCrumbsConfig(showBreadCrumbs,view,fields, crowdFields,updateSiteView)}
-              {/* <Panel eventKey="6">
-                <Panel.Heading>
-                  <Panel.Title toggle>Panel heading 2</Panel.Title>
-                </Panel.Heading>
-                <Panel.Body collapsible>Panel content 2</Panel.Body>
-              </Panel> */}
             </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
               Save Site View

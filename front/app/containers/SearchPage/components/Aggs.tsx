@@ -89,6 +89,9 @@ const PresearchContainer = styled.div`
     flex-direction: column;
     max-height: 1500px;
   }
+  span{
+    display: contents
+  }
 `;
 
 class Aggs extends React.PureComponent<AggsProps> {
