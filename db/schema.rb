@@ -30,15 +30,16 @@ ActiveRecord::Schema.define(version: 2020_01_16_205007) do
     t.integer "user_id"
   end
 
-  create_table "facility_locations", primary_key: ["name", "city", "state", "zip", "country"], force: :cascade do |t|
-    t.string "name", null: false
-    t.string "city", null: false
-    t.string "state", null: false
-    t.string "zip", null: false
-    t.string "country", null: false
+  create_table "facility_locations", force: :cascade do |t|
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "country"
     t.float "latitude"
     t.float "longitude"
     t.string "status"
+    t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
