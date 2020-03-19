@@ -36,6 +36,7 @@ const MainWrapper = styled.div``;
 
 class App extends React.PureComponent<AppProps> {
   render() {
+    console.log("History",this.props.history.location.search)
     return (
       <AppWrapper>
         <CurrentUser>
@@ -45,7 +46,7 @@ class App extends React.PureComponent<AppProps> {
           className="main container-fluid"
           style={{ paddingTop: '50px' }}>
           <Switch>
-            <Route exact path="/" component={LandingPage} />
+            <Route exact path="/" component={this.props.history.location.search ? SearchPage:LandingPage} />
             <Route exact path="/about" component={AboutPage} />
             <Route exact path="/version" component={ReleaseNotes} />
             <Route path="/search/:searchId" component={SearchPage} />

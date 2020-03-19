@@ -33,6 +33,7 @@ export interface AllQuery_study_interventions {
 export interface AllQuery_study {
   __typename: "Study";
   nctId: string;
+  briefSummary: string | null;
   detailedDescription: string | null;
   eligibilityCriteria: string;
   conditions: string | null;

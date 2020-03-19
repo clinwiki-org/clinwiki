@@ -218,6 +218,7 @@ const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 interface SearchPageProps {
   match: any;
   history: any;
+  location:any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
 }
@@ -294,11 +295,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     params: SearchPageParamsQuery_searchParams | null | undefined
   ): SearchParams => {
     const defaultParams = this.getDefaultParams(view);
+    console.log("DefaultParam", defaultParams)
     if (!params) return defaultParams;
-
     const q = params.q
       ? (JSON.parse(params.q) as SearchQuery)
       : defaultParams.q;
+      console.log("Q",q)
 
     const aggFilters = map(
       dissoc('__typename'),
@@ -463,6 +465,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         variables={{ hash }}
         onCompleted={(data: any) => {
           if (!this.state.params) {
+            console.log("ChekM8", this.props)
             const params: SearchParams = this.searchParamsFromQuery(
               view,
               data && data.searchParams
@@ -496,6 +499,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               query={HASH_QUERY}
               variables={this.state.params || undefined}>
               {({ data, loading, error }) => {
+
+                console.log("QUERY", params)
                 if (error || loading || !data) return null;
 
                 // We have a mismatch between url and params in state
@@ -553,11 +558,47 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
+    //@ts-ignore
+    console.log("DUNDUNDUN",this.props)//.location.search)
+    const urlSearch =pipe(addFilter, this.handleUpdateParams)
+    console.log("Need Location", this.props.location.search)
+    
+    
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
+      if(this.props.location.search){
+        let q = {key:"AND",children:[{children: [], key: this.props.location.search}]} 
+        this.setState({
+          params: {
+            q: q,
+            aggFilters: [],
+            crowdAggFilters:[],
+            sorts:[],
+            page: 0,
+            pageSize:25
+          },
+        });
+      }
+
     } else {
       window.removeEventListener('scroll', this.handleScroll);
+      if(this.props.location.search){
+        let q = {key:"AND",children:[{children: [], key: this.props.location.search}]} 
+        this.setState({
+          params: {
+            q: q,
+            aggFilters: [],
+            crowdAggFilters:[],
+            sorts:[],
+            page: 0,
+            pageSize:25
+          },
+        });
+      }
     }
+    console.log("about to go down")
+    
+
   }
 
   componentWillUnmount() {
@@ -603,7 +644,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         </Row>
       );
     }
-
+    console.log("Props", this.props)
+    console.log("Hashbuilding", this.props.match.params)
     const hash = path(['match', 'params', 'searchId'], this.props) as
       | string
       | null;
