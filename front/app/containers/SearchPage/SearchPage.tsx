@@ -560,6 +560,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   componentDidMount() {
     let searchTerm = this.props.location.search
     searchTerm = searchTerm.slice(2)
+    searchTerm = searchTerm.replace(/\+/g, " ")
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
       if(this.props.location.search){
