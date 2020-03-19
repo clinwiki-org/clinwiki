@@ -558,16 +558,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
-    //@ts-ignore
-    console.log("DUNDUNDUN",this.props)//.location.search)
-    const urlSearch =pipe(addFilter, this.handleUpdateParams)
-    console.log("Need Location", this.props.location.search)
-    
-    
+    let searchTerm = this.props.location.search
+    searchTerm = searchTerm.slice(2)
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
       if(this.props.location.search){
-        let q = {key:"AND",children:[{children: [], key: this.props.location.search}]} 
+        let q = {key:"AND",children:[{children: [], key: searchTerm}]} 
         this.setState({
           params: {
             q: q,
@@ -583,7 +579,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } else {
       window.removeEventListener('scroll', this.handleScroll);
       if(this.props.location.search){
-        let q = {key:"AND",children:[{children: [], key: this.props.location.search}]} 
+        let q = {key:"AND",children:[{children: [], key: searchTerm}]} 
         this.setState({
           params: {
             q: q,
@@ -596,7 +592,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         });
       }
     }
-    console.log("about to go down")
     
 
   }
