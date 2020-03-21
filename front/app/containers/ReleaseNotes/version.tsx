@@ -9,6 +9,10 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 12
+- Google OAuth
+- Workflow "typo" search functionality
+
 ### Version 11
 - Bugfixes
 - #156 missing facets
