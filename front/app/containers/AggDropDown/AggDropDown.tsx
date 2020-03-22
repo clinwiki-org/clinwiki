@@ -51,7 +51,7 @@ import BucketsPanel from './BucketsPanel';
 import Filter from './Filter';
 import SearchPageCrowdAggBucketsQuery from './queries/SearchPageCrowdAggBucketsQuery';
 import SearchPageAggBucketsQuery from './queries/SearchPageAggBucketsQuery';
-import HistoPanel from './HistoPanel';
+import RangeSelector from './RangeSelector';
 
 const PAGE_SIZE = 25;
 
@@ -67,6 +67,21 @@ const PanelWrapper = styledComponents.div`
     padding: 5px;
     overflow-x: auto;
     max-height: 400px;
+  }
+  #range-dropdown {
+    padding: 5px;
+    max-height: 400px;
+    overflow-x: visible;
+  }
+  .range-selector {
+    padding: 5px;
+    padding-right: 15px;
+  }
+  .range-selector .dropdown {
+    width: 100%;
+  }
+  .range-selector button {
+    width: 100%;
   }
 `;
 
@@ -340,7 +355,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
     if (agg === 'start_date') {
       return (
-        <HistoPanel
+        <RangeSelector
           isOpen={isOpen}
           hasMore={hasMore}
           loading={loading}

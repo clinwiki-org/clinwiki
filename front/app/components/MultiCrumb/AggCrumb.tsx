@@ -27,22 +27,32 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       grouping
     );
 
+    let crumb = <div></div>;
+    if (agg.values && agg.values.length > 0) {
+      crumb = (
+        <ValuesCrumb
+          values={agg.values}
+          onClick={val => updater.removeFilter(val)}
+        />
+      );
+    } else if (agg.lte || agg.gte) {
+      let label = `${updater.getMinString()} -- ${updater.getMaxString()}`;
+      if (!agg.lte) {
+        label = `≥ ${updater.getMinString()}`;
+      }
+      if (!agg.gte) {
+        label = `≤ ${updater.getMaxString()}`;
+      }
+      crumb = (
+        <ValueCrumb label={label} onClick={() => updater.removeRange()} />
+      );
+    }
+
     return (
       <ListGroupItem className="filter-values">
         <CrumbWrapper>
           <i>{aggToField(agg.field)}:</i>
-          {agg.values && (
-            <ValuesCrumb
-              values={agg.values}
-              onClick={val => updater.removeFilter(val)}
-            />
-          )}
-          {agg.lte && agg.gte && (
-            <ValueCrumb
-              label={`${updater.getMinString()} -- ${updater.getMaxString()}`}
-              onClick={() => updater.removeRange()}
-            />
-          )}
+          {crumb}
         </CrumbWrapper>
       </ListGroupItem>
     );

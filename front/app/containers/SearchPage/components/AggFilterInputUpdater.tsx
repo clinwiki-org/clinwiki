@@ -132,7 +132,7 @@ class AggFilterInputUpdater {
   }
 
   getRangeSelection(): Array<any> | undefined {
-    if (this.aggFilterInput.gte && this.aggFilterInput.lte) {
+    if (this.aggFilterInput.gte || this.aggFilterInput.lte) {
       return [this.aggFilterInput.gte, this.aggFilterInput.lte];
     }
   }
