@@ -10,6 +10,7 @@ import { SearchQueryInput, AggFilterInput, SortInput } from "./globalTypes";
 export interface SearchPageAggBucketsQuery_aggBuckets_aggs_buckets {
   __typename: "AggBucket";
   key: string;
+  keyAsString: string | null;
   docCount: number;
 }
 
