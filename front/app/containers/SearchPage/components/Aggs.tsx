@@ -23,7 +23,6 @@ import {
 } from '../Types';
 import { BeatLoader } from 'react-spinners';
 import { aggsOrdered } from 'utils/constants';
-import SiteProvider from 'containers/SiteProvider';
 import { SiteFragment, SiteFragment_editors } from 'types/SiteFragment';
 import { throws } from 'assert';
 import { FilterKind } from 'types/globalTypes';
@@ -133,11 +132,10 @@ class Aggs extends React.PureComponent<AggsProps> {
     const emptySet = new Set();
 
     if (preSearchCrowdAggs && crowdAggs) {
+      const visibleOptionsByName = getVisibleOptionsByNamePresearch(
+        currentSiteView
+      );
       crowdAggPresearch = (
-        <SiteProvider>
-          {(site: SiteFragment) => {
-            const visibleOptionsByName = getVisibleOptionsByNamePresearch(currentSiteView);
-            return (
               <span>
                 {preSearchCrowdAggs.map(k =>
                   crowdAggs[k] ? (
@@ -177,15 +175,10 @@ class Aggs extends React.PureComponent<AggsProps> {
                 )}
               </span>
             );
-          }}
-        </SiteProvider>
-      );
     }
 
     if (presearch && preSearchAggs) {
-      return (
-        <SiteProvider>
-          {(site: SiteFragment) => {
+
             return (
               <PresearchContainer>
                 {preSearchAggs.map(k =>
@@ -219,16 +212,12 @@ class Aggs extends React.PureComponent<AggsProps> {
                 {crowdAggPresearch}
               </PresearchContainer>
             );
-          }}
-        </SiteProvider>
-      );
-    }
+          }
+
     if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
+      const visibleOptionsByName = getVisibleOptionsByName(currentSiteView);
+
       crowdAggDropdowns = (
-        <SiteProvider>
-          {(site: SiteFragment) => {
-            const visibleOptionsByName = getVisibleOptionsByName(currentSiteView);
-            return (
               <div>
                 <h4
                   style={{
@@ -238,7 +227,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                   }}>
                   Crowd Facets
                 </h4>
-                {this.getCrowdAggs(site, Object.keys(crowdAggs)).map(k => (
+                {this.getCrowdAggs(currentSiteView, Object.keys(crowdAggs)).map(k => (
                   <AggDropDown
                     key={k}
                     agg={k}
@@ -268,14 +257,8 @@ class Aggs extends React.PureComponent<AggsProps> {
                 ))}
               </div>
             );
-          }}
-        </SiteProvider>
-      );
-    }
+          }
     if (!isEmpty(aggs) && !isNil(aggs)) {
-      return (
-        <SiteProvider>
-          {(site: SiteFragment) => {
             return (
               <div>
                 <div>
@@ -309,11 +292,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                 {crowdAggDropdowns}
               </div>
             );
-          }}
-        </SiteProvider>
-      );
-    }
-
+          }
     return null;
   }
 }

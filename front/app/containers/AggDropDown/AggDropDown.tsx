@@ -662,13 +662,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
   };
 
-  renderPresearchFilter = (apollo, siteView) => {
+  renderPresearchFilter = (apolloClient, siteView) => {
     const { buckets = [], filter } = this.state;
     if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
       return (
         <PresearchContent>
           <PresearchBody>
-            {this.renderBucketsPanel(apollo, siteView, true)}
+            {this.renderBucketsPanel( apolloClient, siteView, true)}
           </PresearchBody>
         </PresearchContent>
       );
@@ -677,7 +677,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         <PresearchContent>
           <PresearchFilter>{this.renderFilter()}</PresearchFilter>
           <PresearchPanel>
-            {this.renderBucketsPanel(apollo, siteView, true)}
+            {this.renderBucketsPanel( apolloClient, siteView, true)}
           </PresearchPanel>
         </PresearchContent>
       );
@@ -690,11 +690,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
-        <SiteProvider>
-          {site => (
-            <ApolloConsumer>
-              {apolloClient => (
-                <PresearchCard>
+          <ApolloConsumer>
+            {apolloClient => (
+               <PresearchCard>
                   <PresearchHeader>
                     <PresearchTitle>{capitalize(title)}</PresearchTitle>
                   </PresearchHeader>
@@ -707,13 +705,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 </PresearchCard>
               )}
             </ApolloConsumer>
-          )}
-        </SiteProvider>
-      );
-    }
+      )}
     return (
-      <SiteProvider>
-        {site => (
           <ApolloConsumer>
             {apolloClient => (
               <PanelWrapper>
@@ -745,12 +738,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                   )}
                 </Panel>
               </PanelWrapper>
-            )}
-          </ApolloConsumer>
-        )}
-      </SiteProvider>
-    );
-  }
+             )}
+             </ApolloConsumer>
+    )}
 }
 
 export default AggDropDown;
