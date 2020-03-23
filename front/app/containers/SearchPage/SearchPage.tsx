@@ -197,8 +197,7 @@ const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
     keys.forEach(k => {
-      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams),
-        console.log(k);
+      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams)
     });
     // changeFilter(true);
     return params;
@@ -295,12 +294,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     params: SearchPageParamsQuery_searchParams | null | undefined
   ): SearchParams => {
     const defaultParams = this.getDefaultParams(view);
-    console.log("DefaultParam", defaultParams)
     if (!params) return defaultParams;
     const q = params.q
       ? (JSON.parse(params.q) as SearchQuery)
       : defaultParams.q;
-      console.log("Q",q)
 
     const aggFilters = map(
       dissoc('__typename'),
@@ -465,7 +462,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         variables={{ hash }}
         onCompleted={(data: any) => {
           if (!this.state.params) {
-            console.log("ChekM8", this.props)
             const params: SearchParams = this.searchParamsFromQuery(
               view,
               data && data.searchParams
@@ -500,7 +496,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               variables={this.state.params || undefined}>
               {({ data, loading, error }) => {
 
-                console.log("QUERY", params)
                 if (error || loading || !data) return null;
 
                 // We have a mismatch between url and params in state
@@ -640,8 +635,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         </Row>
       );
     }
-    console.log("Props", this.props)
-    console.log("Hashbuilding", this.props.match.params)
     const hash = path(['match', 'params', 'searchId'], this.props) as
       | string
       | null;

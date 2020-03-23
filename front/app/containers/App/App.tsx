@@ -36,7 +36,6 @@ const MainWrapper = styled.div``;
 
 class App extends React.PureComponent<AppProps> {
   render() {
-    console.log("History",this.props.history.location.search)
     return (
       <AppWrapper>
         <CurrentUser>
