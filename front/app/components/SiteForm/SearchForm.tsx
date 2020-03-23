@@ -490,15 +490,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       <Col md={6}>
       <AggsHeaderContainer>
             <h3>Aggs visibility</h3>
-            <StyledCheckbox 
+            {/* <StyledCheckbox 
               checked={this.state.showAllAggs}
               onChange={this.handleShowAllToggle('aggs')}>
                   Show all
-                </StyledCheckbox>
+                </StyledCheckbox> */}
               </AggsHeaderContainer>
          
             <StyledLabel>Add to Autosuggest</StyledLabel>
-            <StyledFormControl
+            {/* <StyledFormControl
                 name="set:search.autoSuggest.aggs.selected.kind"
                 componentClass="select"
                 //@ts-ignore
@@ -506,7 +506,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 value={view.search.autoSuggest.aggs.selected.kind}>
                 <option value="BLACKLIST">All except</option>
                 <option value="WHITELIST">Only</option>
-              </StyledFormControl>
+              </StyledFormControl> */}
             <MultiInput
               name="set:search.autoSuggest.aggs.selected.values"
               options={AGGS_OPTIONS}
@@ -530,20 +530,20 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           <Col md={6}>
               <AggsHeaderContainer>
                 <h3>Crowd aggs visibility</h3>
-                <StyledCheckbox
+                {/* <StyledCheckbox
                   checked={this.state.showAllCrowdAggs}
                   onChange={this.handleShowAllToggle('crowdAggs')}>
                   Show all
-                </StyledCheckbox>
+                </StyledCheckbox> */}
               </AggsHeaderContainer>
-              <StyledFormControl
+              {/* <StyledFormControl
                 name="set:search.autoSuggest.crowdAggs.selected.kind"
                 componentClass="select"
                 onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
                 v={view.search.autoSuggest.crowdAggs.selected.kind}>
                 <option value="BLACKLIST">All except</option>
                 <option value="WHITELIST">Only</option>
-              </StyledFormControl>
+              </StyledFormControl> */}
               <StyledLabel>Add to Autosuggest</StyledLabel>
               <MultiInput
               name="set:search.autoSuggest.crowdAggs.selected.values"
@@ -830,14 +830,14 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
     const fieldsAutoSuggest = displayFields(
       this.state.showAllAggsAutoSuggest
         ? FilterKind.BLACKLIST
-        : view.search.autoSuggest.aggs.selected.kind,
+        : FilterKind.WHITELIST,
       this.state.showAllAggsAutoSuggest ? [] : view.search.autoSuggest.aggs.selected.values,
       view.search.autoSuggest.aggs.fields
     );
     const crowdFieldsAutoSuggest = displayFields(
       this.state.showAllCrowdAggsAutoSuggest
         ? FilterKind.BLACKLIST
-        : view.search.autoSuggest.crowdAggs.selected.kind,
+        : FilterKind.WHITELIST,
       this.state.showAllCrowdAggsAutoSuggest ? [] : view.search.autoSuggest.crowdAggs.selected.values,
       view.search.autoSuggest.crowdAggs.fields
     );
