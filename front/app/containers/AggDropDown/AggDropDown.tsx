@@ -511,9 +511,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }) => {
     const { agg, visibleOptions = [] } = this.props;
     const { buckets = [] } = this.state;
-    if (buckets.length === 0) {
-      return <div>no results</div>;
-    }
+    // if (buckets.length === 0) {
+    //   return <div>no results</div>;
+    // }
     return pipe(
       filter(({ key }) =>
         visibleOptions.length ? visibleOptions.includes(key) : true
