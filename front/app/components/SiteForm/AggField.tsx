@@ -21,7 +21,6 @@ interface AggFieldProps {
     siteView: SiteViewFragment
   ) => void;
   view: SiteViewFragment;
-  presearch?: boolean;
   configType?: string;
 }
 
@@ -109,9 +108,11 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     isChecked: false,
   };
 
-  getPath = presearch => {
-    if (presearch == true) {
+  getPath = configType => {
+    if (configType == 'presearch') {
       return `search.presearch.${this.props.kind}.fields.${this.props.field.name}`;
+    }else if(configType == 'autosuggest'){
+      return `search.autoSuggest.${this.props.kind}.fields.${this.props.field.name}`;
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
@@ -123,7 +124,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     this.props.onAddMutation(
       {
         currentTarget: {
-          name: `set:${this.getPath(this.props.presearch)}.${kind}.values`,
+          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
           value: [...this.props.field[kind].values, aggValue],
         },
       },
@@ -147,7 +148,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     this.props.onAddMutation(
       {
         currentTarget: {
-          name: `set:${this.getPath(this.props.presearch)}.${kind}.values`,
+          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
           value: targetValue(),
         },
       },
@@ -167,7 +168,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   };
 
   render() {
-    const { presearch } = this.props;
+    const { configType } = this.props;
     const selected = new Set(this.props.field.preselected.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
     return (
@@ -256,14 +257,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <div>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath(presearch)}.rank`}
+              name={`set:${this.getPath(configType)}.rank`}
               placeholder="Order"
               value={this.props.field.rank}
               onChange={this.props.onAddMutation}
             />
             <StyledLabel>Display</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath(presearch)}.display`}
+              name={`set:${this.getPath(configType)}.display`}
               componentClass="select"
               onChange={e => this.props.onAddMutation(e, this.props.view)}
               defaultValue={this.props.field.display}>

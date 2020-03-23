@@ -523,6 +523,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   field={field}
                   onAddMutation={this.handleAddMutation}
                   view={view}
+                  configType="autosuggest"
                 />
               ))}
 
@@ -549,7 +550,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               name="set:search.autoSuggest.crowdAggs.selected.values"
               options={this.getCrowdFields(view)}
                 placeholder="Add facet"
-                value={view.search.crowdAggs.selected.values}
+                value={view.search.autoSuggest.crowdAggs.selected.values}
                 onChange={e => this.handleAddMutation(e, view)}
               />
               <h3>Crowd aggs settings</h3>
@@ -561,6 +562,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   field={field}
                   onAddMutation={this.handleAddMutation}
                   view={view}
+                  configType="autosuggest"
                 />
               ))}
             </Col>
@@ -611,7 +613,6 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
                 field={field}
                 onAddMutation={this.handleAddMutation}
                 view={view}
-                presearch={true}
                 configType="presearch"
               />
             ))}
@@ -637,7 +638,6 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
                 field={field}
                 onAddMutation={this.handleAddMutation}
                 view={view}
-                presearch={true}
                 configType="presearch"
               />
             ))}
