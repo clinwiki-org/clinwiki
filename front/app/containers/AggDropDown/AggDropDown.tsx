@@ -165,11 +165,6 @@ const PresearchTitle = styledComponents.div`
   margin-left: 5px;
 `;
 
-const PresearchBody = styledComponents.div`
-  margin-left: 5px;
-  height: 250px;
-`;
-
 const PresearchFilter = styledComponents.div`
   margin-left: 5px;
   max-height: 30px;
@@ -178,8 +173,9 @@ const PresearchFilter = styledComponents.div`
 const PresearchPanel = styledComponents.div`
   overflow-x: auto;
   max-height: 200px;
+  min-height: 200px;
   margin-left: 5px;
-  margin-top 30px;
+  margin-top: 30px;
 `;
 
 const PresearchContent = styledComponents.div`
@@ -515,6 +511,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }) => {
     const { agg, visibleOptions = [] } = this.props;
     const { buckets = [] } = this.state;
+    if (buckets.length === 0) {
+      return <div>no results</div>;
+    }
     return pipe(
       filter(({ key }) =>
         visibleOptions.length ? visibleOptions.includes(key) : true

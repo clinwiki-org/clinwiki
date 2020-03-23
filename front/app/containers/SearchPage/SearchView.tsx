@@ -493,7 +493,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   componentDidMount() {
     let defaultViewStyle = this.props.currentSiteView.search.results.type;
-    let showResults = this.props.currentSiteView.search.config.fields.showResults;
+    let showResults = this.props.currentSiteView.search.config.fields
+      .showResults;
     if (defaultViewStyle == 'table' && this.props.showCards == true) {
       this.toggledShowCards(false);
     } else if (defaultViewStyle == 'card' && this.props.showCards == false) {
@@ -656,13 +657,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           return (
             <SearchContainer>
               <InstructionsContainer>
-                {presearchText && <Instructions><h4 style={{marginRight: 10}}>Instructions:</h4> <h5>{presearchText}</h5></Instructions>}
-                 {presearchButton.name && (
-                  <Button
-                    style={{minWidth:200}}
-                    href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
-                    {presearchButton.name}
-                  </Button>
+                {presearchText && (
+                  <Instructions>
+                    <h4 style={{ marginRight: 10 }}>Instructions:</h4>{' '}
+                    <h5>{presearchText}</h5>
+                  </Instructions>
                 )}
               </InstructionsContainer>
               <Aggs
@@ -686,6 +685,13 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 currentSiteView={thisSiteView}
                 preSearchAggs={preSearchAggs}
               />
+              {presearchButton.name && (
+                <Button
+                  style={{ minWidth: 200 }}
+                  href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
+                  {presearchButton.name}
+                </Button>
+              )}
             </SearchContainer>
           );
         }}
