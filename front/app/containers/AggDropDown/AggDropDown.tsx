@@ -572,9 +572,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   renderFilter = () => {
     const { buckets = [], filter, desc, sortKind } = this.state;
     const { agg } = this.props;
-    if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
-      return null;
-    }
     return (
       <div
         style={{
@@ -664,23 +661,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderPresearchFilter = (apolloClient, siteView) => {
     const { buckets = [], filter } = this.state;
-    if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
-      return (
-        <PresearchContent>
-          <PresearchBody>
-            {this.renderBucketsPanel( apolloClient, siteView, true)}
-          </PresearchBody>
-        </PresearchContent>
-      );
-    } else
-      return (
-        <PresearchContent>
-          <PresearchFilter>{this.renderFilter()}</PresearchFilter>
-          <PresearchPanel>
-            {this.renderBucketsPanel( apolloClient, siteView, true)}
-          </PresearchPanel>
-        </PresearchContent>
-      );
+    return (
+      <PresearchContent>
+        <PresearchFilter>{this.renderFilter()}</PresearchFilter>
+        <PresearchPanel>
+          {this.renderBucketsPanel(apolloClient, siteView, true)}
+        </PresearchPanel>
+      </PresearchContent>
+    );
   };
 
   render() {
@@ -690,57 +678,59 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
-          <ApolloConsumer>
-            {apolloClient => (
-               <PresearchCard>
-                  <PresearchHeader>
-                    <PresearchTitle>{capitalize(title)}</PresearchTitle>
-                  </PresearchHeader>
-                  <PresearchContent>
-                    {this.renderPresearchFilter(
-                      apolloClient,
-                      this.props.currentSiteView
-                    )}
-                  </PresearchContent>
-                </PresearchCard>
-              )}
-            </ApolloConsumer>
-      )}
+        <ApolloConsumer>
+          {apolloClient => (
+            <PresearchCard>
+              <PresearchHeader>
+                <PresearchTitle>{capitalize(title)}</PresearchTitle>
+              </PresearchHeader>
+              <PresearchContent>
+                {this.renderPresearchFilter(
+                  apolloClient,
+                  this.props.currentSiteView
+                )}
+              </PresearchContent>
+            </PresearchCard>
+          )}
+        </ApolloConsumer>
+      );
+    }
     return (
-          <ApolloConsumer>
-            {apolloClient => (
-              <PanelWrapper>
-                <Panel
-                  onToggle={this.handleToggle}
-                  expanded={isOpen}
-                  className="bm-panel-default">
-                  <Panel.Heading className="bm-panel-heading">
-                    <Panel.Title className="bm-panel-title" toggle>
-                      <div className="flex">
-                        <span>{title}</span>
-                        <span>
-                          <FontAwesome name={icon} />{' '}
-                        </span>
-                      </div>
-                    </Panel.Title>
-                  </Panel.Heading>
-                  {isOpen && (
-                    <Panel.Collapse className="bm-panel-collapse">
-                      <Panel.Body>{this.renderFilter()}</Panel.Body>
-                      <Panel.Body>
-                        {this.renderBucketsPanel(
-                          apolloClient,
-                          this.props.currentSiteView,
-                          false
-                        )}
-                      </Panel.Body>
-                    </Panel.Collapse>
-                  )}
-                </Panel>
-              </PanelWrapper>
-             )}
-             </ApolloConsumer>
-    )}
+      <ApolloConsumer>
+        {apolloClient => (
+          <PanelWrapper>
+            <Panel
+              onToggle={this.handleToggle}
+              expanded={isOpen}
+              className="bm-panel-default">
+              <Panel.Heading className="bm-panel-heading">
+                <Panel.Title className="bm-panel-title" toggle>
+                  <div className="flex">
+                    <span>{title}</span>
+                    <span>
+                      <FontAwesome name={icon} />{' '}
+                    </span>
+                  </div>
+                </Panel.Title>
+              </Panel.Heading>
+              {isOpen && (
+                <Panel.Collapse className="bm-panel-collapse">
+                  <Panel.Body>{this.renderFilter()}</Panel.Body>
+                  <Panel.Body>
+                    {this.renderBucketsPanel(
+                      apolloClient,
+                      this.props.currentSiteView,
+                      false
+                    )}
+                  </Panel.Body>
+                </Panel.Collapse>
+              )}
+            </Panel>
+          </PanelWrapper>
+        )}
+      </ApolloConsumer>
+    );
+  }
 }
 
 export default AggDropDown;
