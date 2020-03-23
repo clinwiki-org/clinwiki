@@ -515,18 +515,18 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     ) as SearchPageSearchQuery_search_studies[];
     const tableWidth = 1175;
 
-    //OWERA: high computational complexity here for little return
-    searchData = Array.from(
-      new Set(this.props.previousSearchData.concat(searchData))
-    );
+    // //OWERA: high computational complexity here for little return
+    // searchData = Array.from(
+    //   new Set(this.props.previousSearchData.concat(searchData))
+    // );
 
     // Eliminates undefined items from the searchData array
-    searchData = searchData.filter(el => {
-      return el != null;
-    });
+    // searchData = searchData.filter(el => {
+    //   return el != null;
+    // });
 
     // Returns the new searchData to the SearchPage component
-    this.props.returnPreviousSearchData(searchData);
+    // this.props.returnPreviousSearchData(searchData);
 
     const isMobile = this.mobileAndTabletcheck();
 
@@ -559,7 +559,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 className="-striped -highlight"
                 columns={columns}
                 manual
-                minRows={searchData![0] !== undefined ? 1 : 3}
+                minRows={3}
                 page={page}
                 pageSize={pageSize}
                 defaultSorted={camelizedSorts}

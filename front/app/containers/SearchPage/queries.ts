@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const SearchPageHashQuery = gql`
-  query SearchPageHashQuery(
+export const SearchPageHashMutation = gql`
+  mutation SearchPageHashMutation(
     $q: SearchQueryInput!
     $sorts: [SortInput!]
     $aggFilters: [AggFilterInput!]
@@ -9,16 +9,22 @@ export const SearchPageHashQuery = gql`
     $page: Int
     $pageSize: Int
   ) {
-    searchHash(
-      params: {
-        q: $q
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        page: $page
-        pageSize: $pageSize
+    provisionSearchHash(
+      input: {
+        params: {
+          q: $q
+          sorts: $sorts
+          aggFilters: $aggFilters
+          crowdAggFilters: $crowdAggFilters
+          page: $page
+          pageSize: $pageSize
+        }
       }
-    )
+    ) {
+      searchHash {
+        short
+      }
+    }
   }
 `;
 

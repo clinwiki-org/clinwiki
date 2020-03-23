@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { Redirect, Switch, Route } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import {
-  SearchPageHashQuery as SearchPageHashQueryType,
-  SearchPageHashQueryVariables,
-} from 'types/SearchPageHashQuery';
+  SearchPageHashMutation as SearchPageHashMutationType,
+  SearchPageHashMutationVariables,
+} from 'types/SearchPageHashMutation';
 import {
   SearchPageParamsQuery as SearchPageParamsQueryType,
   SearchPageParamsQueryVariables,
@@ -15,7 +15,7 @@ import {
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
-import { Query, ApolloConsumer } from 'react-apollo';
+import { Query, graphql, ApolloConsumer } from 'react-apollo';
 import {
   path,
   map,
@@ -52,13 +52,9 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import { SiteFragment } from 'types/SiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { stack as Menu } from 'react-burger-menu';
-import { SearchPageHashQuery, SearchPageParamsQuery } from './queries';
+import { SearchPageHashMutation, SearchPageParamsQuery } from './queries';
 import SearchParamsContext from './components/SearchParamsContext';
 
-class HashQueryComponent extends Query<
-  SearchPageHashQueryType,
-  SearchPageHashQueryVariables
-> {}
 class ParamsQueryComponent extends Query<
   SearchPageParamsQueryType,
   SearchPageParamsQueryVariables
@@ -180,6 +176,7 @@ interface SearchPageProps {
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
   site: SiteFragment;
+  mutate: any;
 }
 
 interface SearchPageState {
@@ -235,7 +232,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     localStorage.setItem('showCards', showCards.toString());
     const params: any = { ...this.state.params, page: 0 };
     this.previousSearchData = [];
-    this.setState({ showCards, params });
+    this.setState({ showCards, params }, () =>
+      this.updateSearchParams(this.state.params)
+    );
   };
 
   previousSearchData: Array<SearchPageSearchQuery_search_studies> = [];
@@ -245,15 +244,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.previousSearchData = previousSearchData;
   };
 
-  getDefaultParams = (view: SiteViewFragment) => {
-    return { ...DEFAULT_PARAMS, ...preselectedFilters(view) };
+  getDefaultParams = () => {
+    return {
+      ...DEFAULT_PARAMS,
+      ...preselectedFilters(this.props.site.siteView),
+    };
   };
 
   searchParamsFromQuery = (
-    view: SiteViewFragment,
     params: SearchPageParamsQuery_searchParams | null | undefined
   ): SearchParams => {
-    const defaultParams = this.getDefaultParams(view);
+    const defaultParams = this.getDefaultParams();
     if (!params) {
       return defaultParams;
     }
@@ -312,24 +313,33 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     };
   };
 
-  handleResetFilters = (view: SiteViewFragment) => () => {
-    this.setState({
-      params: this.getDefaultParams(view),
-      removeSelectAll: true,
-    });
+  handleResetFilters = () => {
+    this.setState(
+      {
+        params: this.getDefaultParams(),
+        removeSelectAll: true,
+      },
+      () => this.updateSearchParams(this.state.params)
+    );
   };
 
   handleClearFilters = () => {
-    this.setState({
-      params: DEFAULT_PARAMS,
-      removeSelectAll: true,
-    });
+    this.setState(
+      {
+        params: DEFAULT_PARAMS,
+        removeSelectAll: true,
+      },
+      () => this.updateSearchParams(this.state.params)
+    );
   };
 
   resetSelectAll = () => {
-    this.setState({
-      removeSelectAll: false,
-    });
+    this.setState(
+      {
+        removeSelectAll: false,
+      },
+      () => this.updateSearchParams(this.state.params)
+    );
   };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
@@ -341,7 +351,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.setState({ openedAgg: null });
     }
 
-    this.setState({ params });
+    this.setState({ params }, () => this.updateSearchParams(this.state.params));
   };
 
   isWorkflow = () => {
@@ -387,7 +397,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       !equals(searchAggs, this.state.searchAggs) ||
       !equals(searchCrowdAggs, this.state.searchCrowdAggs)
     ) {
-      this.setState({ searchAggs, searchCrowdAggs });
+      this.setState({ searchAggs, searchCrowdAggs }, () =>
+        this.updateSearchParams(this.state.params)
+      );
     }
   };
 
@@ -417,33 +429,23 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  renderSearch = (hash: string | null, view: SiteViewFragment) => {
+  renderSearch = () => {
+    const hash = this.getHashFromLocation();
+    const { site } = this.props;
     return (
       <ParamsQueryComponent
+        key={`${hash}+${JSON.stringify(this.state?.params)}`}
         query={SearchPageParamsQuery}
         variables={{ hash }}
-        onCompleted={(data: any) => {
-          if (!this.state.params) {
-            const params: SearchParams = this.searchParamsFromQuery(
-              view,
-              data && data.searchParams
-            );
-            this.setState({
-              params: {
-                ...params,
-                page: 0,
-                pageSize: 25,
-              },
-            });
-            return null;
-          }
+        onCompleted={async (data: any) => {
+          this.updateStateFromHash(data.searchParams);
         }}>
-        {({ data, loading, error }) => {
+        {result => {
+          const { data, loading, error } = result;
           if (error || loading) return null;
 
           const params: SearchParams = this.searchParamsFromQuery(
-            view,
-            data && data.searchParams
+            data!.searchParams
           );
 
           // hydrate state params from hash
@@ -452,50 +454,25 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             return null;
           }
 
-          /**
-           * We set a key here that is the combination of the hash and the params.
-           * This is a workaround for a cache invalidation bug in apollo-client.
-           * SEE: https://github.com/apollographql/react-apollo/issues/2202#issuecomment-479322905
-           */
           return (
-            <HashQueryComponent
-              query={SearchPageHashQuery}
-              key={`${hash}+${JSON.stringify(this.state.params)}`}
-              variables={this.state.params || undefined}>
-              {({ data, loading, error }) => {
-                if (error || loading || !data) return null;
-
-                const { searchHash } = data;
-                // We have a mismatch between url and params in state
-                if (
-                  searchHash !== hash &&
-                  searchHash !== undefined &&
-                  hash !== undefined
-                ) {
-                  return <Redirect to={`/search/${searchHash}`} />;
-                }
-
-                return (
-                  <SearchView
-                    params={params}
-                    onBulkUpdate={this.handleBulkUpdateClick}
-                    openedAgg={this.state.openedAgg}
-                    onUpdateParams={this.handleUpdateParams}
-                    onRowClick={this.handleRowClick}
-                    onOpenAgg={this.handleOpenAgg}
-                    onAggsUpdate={this.handleAggsUpdate}
-                    onResetFilters={this.handleResetFilters(view)}
-                    onClearFilters={this.handleClearFilters}
-                    previousSearchData={this.previousSearchData}
-                    returnPreviousSearchData={this.returnPreviousSearchData}
-                    searchHash={searchHash}
-                    showCards={this.state.showCards}
-                    toggledShowCards={this.toggledShowCards}
-                    returnNumberOfPages={this.returnNumberOfPages}
-                  />
-                );
-              }}
-            </HashQueryComponent>
+            <SearchView
+              key={`${hash}+${JSON.stringify(params)}`}
+              params={params}
+              onBulkUpdate={this.handleBulkUpdateClick}
+              openedAgg={this.state.openedAgg}
+              onUpdateParams={this.handleUpdateParams}
+              onRowClick={this.handleRowClick}
+              onOpenAgg={this.handleOpenAgg}
+              onAggsUpdate={this.handleAggsUpdate}
+              onResetFilters={this.handleResetFilters}
+              onClearFilters={this.handleClearFilters}
+              previousSearchData={this.previousSearchData}
+              returnPreviousSearchData={this.returnPreviousSearchData}
+              searchHash={hash || ''}
+              showCards={this.state.showCards}
+              toggledShowCards={this.toggledShowCards}
+              returnNumberOfPages={this.returnNumberOfPages}
+            />
           );
         }}
       </ParamsQueryComponent>
@@ -514,7 +491,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         ...this.state.params,
         page: this.state.params!.page + 1,
       };
-      this.setState({ params });
+      this.setState({ params }, () =>
+        this.updateSearchParams(this.state.params)
+      );
 
       setTimeout(() => {
         window.addEventListener('scroll', this.handleScroll);
@@ -536,13 +515,43 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.showCards) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
   }
+
+  getHashFromLocation(): string | null {
+    return path(['match', 'params', 'searchId'], this.props) as string | null;
+  }
+
+  updateStateFromHash(searchParams) {
+    console.log('updating state from hash', this.state, searchParams);
+    const params: SearchParams = this.searchParamsFromQuery(searchParams);
+    this.setState({
+      params: {
+        ...params,
+        page: 0,
+        pageSize: 25,
+      },
+    });
+  }
+
+  updateSearchParams = async params => {
+    this.setState({
+      ...this.state,
+      params: { ...(this.state?.params || {}), ...params },
+    });
+    const variables = { ...this.state.params, ...params };
+    const { data } = await this.props.mutate({ variables });
+    if (data?.provisionSearchHash?.searchHash?.short) {
+      this.props.history.push(
+        `/search/${data!.provisionSearchHash!.searchHash!.short}`
+      );
+    }
+  };
 
   render() {
     if (this.props.ignoreUrlHash) {
@@ -565,9 +574,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 onRowClick={this.handleRowClick}
                 onOpenAgg={this.handleOpenAgg}
                 onAggsUpdate={this.handleAggsUpdate}
-                onResetFilters={this.handleResetFilters(
-                  this.props.site.siteView
-                )}
+                onResetFilters={this.handleResetFilters}
                 onClearFilters={this.handleClearFilters}
                 previousSearchData={this.previousSearchData}
                 returnPreviousSearchData={() => this.returnPreviousSearchData}
@@ -582,16 +589,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       );
     }
 
-    const hash = path(['match', 'params', 'searchId'], this.props) as
-      | string
-      | null;
+    const hash = this.getHashFromLocation();
 
     return (
       <SearchParamsContext.Provider
         value={{
           searchParams: this.state.params,
-          updateSearchParams: params =>
-            this.setState({ params: { ...this.state.params, ...params } }),
+          updateSearchParams: this.updateSearchParams,
         }}>
         <Switch>
           <Route
@@ -608,7 +612,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 <SidebarContainer md={2}>{this.renderAggs()}</SidebarContainer>
                 <div id="main_search" style={{ overflowY: 'auto' }}>
                   <MainContainer style={{ width: '100%' }}>
-                    {this.renderSearch(hash, this.props.site.siteView)}
+                    {this.renderSearch()}
                   </MainContainer>
                 </div>
               </Row>
@@ -620,4 +624,4 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 }
 
-export default withSite(SearchPage);
+export default withSite(graphql(SearchPageHashMutation)(SearchPage));
