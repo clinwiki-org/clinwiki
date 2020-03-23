@@ -12,7 +12,6 @@ export const aggsOrdered = [
   'phase',
   'rating_dimensions',
   'sponsors',
-  'start_date',
   'study_type',
 ];
 

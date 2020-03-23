@@ -2,10 +2,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: SearchPageParamsQuery
+// GraphQL query operation: SearchSearchPageParamsQuery
 // ====================================================
 
-export interface SearchPageParamsQuery_searchParams_sorts {
+export interface SearchSearchPageParamsQuery_searchParams_sorts {
   __typename: "Sort";
   /**
    * Column to sort by
@@ -17,7 +17,7 @@ export interface SearchPageParamsQuery_searchParams_sorts {
   desc: boolean | null;
 }
 
-export interface SearchPageParamsQuery_searchParams_aggFilters {
+export interface SearchSearchPageParamsQuery_searchParams_aggFilters {
   __typename: "AggFilter";
   /**
    * The field we are filtering on
@@ -29,7 +29,7 @@ export interface SearchPageParamsQuery_searchParams_aggFilters {
   values: string[];
 }
 
-export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
+export interface SearchSearchPageParamsQuery_searchParams_crowdAggFilters {
   __typename: "AggFilter";
   /**
    * The field we are filtering on
@@ -41,26 +41,26 @@ export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
   values: string[];
 }
 
-export interface SearchPageParamsQuery_searchParams {
+export interface SearchSearchPageParamsQuery_searchParams {
   __typename: "SearchParams";
   /**
    * A Json version of the SearchQueryInput type
    */
   q: string | null;
-  sorts: SearchPageParamsQuery_searchParams_sorts[] | null;
-  aggFilters: SearchPageParamsQuery_searchParams_aggFilters[] | null;
-  crowdAggFilters: SearchPageParamsQuery_searchParams_crowdAggFilters[] | null;
+  sorts: SearchSearchPageParamsQuery_searchParams_sorts[] | null;
+  aggFilters: SearchSearchPageParamsQuery_searchParams_aggFilters[] | null;
+  crowdAggFilters: SearchSearchPageParamsQuery_searchParams_crowdAggFilters[] | null;
   page: number | null;
   pageSize: number | null;
 }
 
-export interface SearchPageParamsQuery {
+export interface SearchSearchPageParamsQuery {
   /**
    * Search params from hash
    */
-  searchParams: SearchPageParamsQuery_searchParams | null;
+  searchParams: SearchSearchPageParamsQuery_searchParams | null;
 }
 
-export interface SearchPageParamsQueryVariables {
+export interface SearchSearchPageParamsQueryVariables {
   hash?: string | null;
 }

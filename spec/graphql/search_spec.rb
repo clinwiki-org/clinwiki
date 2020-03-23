@@ -9,7 +9,7 @@ describe "search queries" do
 
   shared_examples "it properly maps data from query to es and back" do |slug|
     before do
-      stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search")
+      stub_request(:get, "http://elastic:9200/studies_test/_search")
         .to_return(
           status: 200,
           body: file_fixture("graphql/search/#{slug}_response.json").read,
@@ -39,27 +39,22 @@ describe "search queries" do
 
   describe "agg filters" do
     context "scalar values" do
-      let(:variables) {
-        {
-          input: {
-            q: { key: "stomach" },
-            aggFilters: [{ field: "phase", values: ["Phase 1", "Phase 2"] }],
-          },
-        }
-      }
+      let(:variables) { { input: {
+        q: { key: "stomach" },
+        aggFilters: [{ field: "phase", values: ["Phase 1", "Phase 2"] }]
+      } } }
       it_behaves_like "it properly maps data from query to es and back", "basic_agg_filter_search"
     end
 
     context "ranged values" do
       context "with a date scalar" do
-        let(:variables) {
-          { input: {
-            q: { key: "stomach" },
-            aggFilters: [{ field: "start_date", gte: "2010-01-01" }],
-          } }
-        }
+        let(:variables) { { input: {
+          q: { key: "stomach" },
+          aggFilters: [{ field: "start_date", gte: "2010-01-01"}]
+        } } }
         it_behaves_like "it properly maps data from query to es and back", "range_filter_search"
       end
     end
+
   end
 end

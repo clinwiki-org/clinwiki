@@ -31,10 +31,11 @@ import SiteProvider from 'containers/SiteProvider';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import BulkEditView from './BulkEditView';
 import {
+  SearchPageParamsQuery,
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
-import { SearchPageParamsQuery } from '../SearchPage/queries';
+import PARAMS_QUERY from '../SearchPage/PARAMS_QUERY';
 import { SearchQueryInput } from 'types/globalTypes';
 import { SearchPageSearchQueryVariables } from 'types/SearchPageSearchQuery';
 import {
@@ -202,7 +203,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
       | null;
 
     return (
-      <Query query={SearchPageParamsQuery} variables={{ hash }}>
+      <Query query={PARAMS_QUERY} variables={{ hash }}>
         {queryParams => {
           const searchParams = pathOr(
             {},

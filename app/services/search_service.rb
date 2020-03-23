@@ -25,7 +25,7 @@ DEFAULT_AGG_OPTIONS = {
   },
   start_date: {
     date_histogram: {
-      field: :start_date,
+      field: :completion_date,
       interval: :year,
     },
     limit: 10,
@@ -93,7 +93,7 @@ class SearchService
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
-    front_matter_keys start_date
+    front_matter_keys
   ].freeze
 
   attr_reader :params

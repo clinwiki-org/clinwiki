@@ -134,10 +134,6 @@ const QUERY = gql`
   ${SITE_FRAGMENT}
 `;
 
-export const withSite = Component => props => (
-  <SiteProvider>{site => <Component {...props} site={site} />}</SiteProvider>
-);
-
 class QueryComponent extends Query<
   SiteProviderQuery,
   SiteProviderQueryVariables

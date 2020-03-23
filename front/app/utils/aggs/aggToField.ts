@@ -18,5 +18,4 @@ export default val =>
     browse_condition_mesh_terms: 'mesh term',
     browse_interventions_mesh_terms: 'browse intervention mesh term',
     interventions_mesh_terms: 'interventions',
-    rating_dimensions: 'rating dimensions',
   });

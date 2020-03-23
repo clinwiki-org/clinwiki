@@ -7,18 +7,9 @@ describe SearchService do
     let(:params) { { q: { "children" => [{ "children" => [], "key" => "foo" }], "key" => "AND" } } }
 
     it "sends a request to elasticsearch" do
-      stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search")
+      stub_get = stub_request(:get, "http://elastic:9200/studies_test/_search")
         .with(
-          body: hash_including("query" => {
-            "bool" => {
-              "must" => {
-                "query_string": {
-                  "query" => "(foo)",
-                },
-              },
-              "filter" => [{ "bool" => { "must" => [] } }],
-            },
-          }),
+          body: hash_including("query" => { "bool" => { "must" => { "query_string": { "query" => "(foo)" } }, "filter" => [{ "bool" => { "must" => [] } }] } }),
         )
         .to_return(
           status: 200,
@@ -40,10 +31,7 @@ describe SearchService do
                     { "key": "baz", "children" => [] },
                     { "key": "qux", "children" => [] },
                   ] }, {
-                    "children" => [{
-                      "key" => "or",
-                      "children" => [{ "key": "zoom", "children" => [] }, { "key": "zag" }],
-                    }],
+                    "children" => [{ "key" => "or", "children" => [{ "key": "zoom", "children" => [] }, { "key": "zag" }] }],
                     "key" => "and",
                   }
                 ],
@@ -56,11 +44,9 @@ describe SearchService do
       }
 
       it "knows how to build a query from the AST" do
-        stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search")
+        stub_get = stub_request(:get, "http://elastic:9200/studies_test/_search")
           .with(
-            body: hash_including("query" => { "bool" => { "must" => { "query_string": {
-              "query" => "(((baz) OR (qux)) AND (((zoom) OR (zag))))",
-            } }, "filter" => [{ "bool" => { "must" => [] } }] } }),
+            body: hash_including("query" => { "bool" => { "must" => { "query_string": { "query" => "(((baz) OR (qux)) AND (((zoom) OR (zag))))" } }, "filter" => [{ "bool" => { "must" => [] } }] } }),
           )
           .to_return(
             status: 200,
@@ -74,15 +60,10 @@ describe SearchService do
 
     describe "filtering" do
       describe "scalar agg filters" do
-        let(:params) {
-          {
-            q: { "key" => "foo", "children" => [] },
-            agg_filters: [{ field: "browse_condition_mesh_terms", values: ["Foo", "Bar"] }],
-          }
-        }
+        let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [{ field: "browse_condition_mesh_terms", values: ["Foo", "Bar"] }] } }
 
         it "filters by ags" do
-          stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search")
+          stub_get = stub_request(:get, "http://elastic:9200/studies_test/_search")
             .to_return(
               status: 200,
               body: file_fixture("search_service/default_response.json"),
@@ -94,15 +75,10 @@ describe SearchService do
       end
 
       describe "range agg filters" do
-        let(:params) {
-          {
-            q: { "key" => "foo", "children" => [] },
-            agg_filters: [{ field: "start_date", gte: Date.new(2010, 1, 1), lte: Date.new(2020, 1, 1) }],
-          }
-        }
+        let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [{ field: "start_date", gte: Date.new(2010, 1, 1), lte: Date.new(2020, 1, 1) }] } }
 
         it "filters by ags" do
-          stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search")
+          stub_get = stub_request(:get, "http://elastic:9200/studies_test/_search")
             .to_return(
               status: 200,
               body: file_fixture("search_service/default_response.json"),
