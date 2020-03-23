@@ -638,67 +638,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     );
   };
 
-  renderPresearch = () => {
-    const opened = this.state.openedAgg && this.state.openedAgg.name;
-    const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
-    const { aggFilters = [], crowdAggFilters = [] } =
-      this.props.searchParams || {};
-    const preSearchAggs = this.props.currentSiteView.search.presearch.aggs
-      .selected.values;
-    return (
-      <SiteProvider>
-        {site => {
-          let thisSiteView =
-            site.siteViews.find(
-              siteview => siteview.url == this.props.siteViewUrl
-            ) || site.siteView;
-          const presearchButton = thisSiteView.search.presearch.button;
-          const presearchText = thisSiteView.search.presearch.instructions;
-          return (
-            <SearchContainer>
-              <InstructionsContainer>
-                {presearchText && (
-                  <Instructions>
-                    <h4 style={{ marginRight: 10 }}>Instructions:</h4>{' '}
-                    <h5>{presearchText}</h5>
-                  </Instructions>
-                )}
-              </InstructionsContainer>
-              <Aggs
-                aggs={this.props.searchAggs}
-                crowdAggs={this.props.crowdAggs}
-                filters={this.props.transformFilters(aggFilters)}
-                crowdFilters={this.props.transformFilters(crowdAggFilters)}
-                addFilter={pipe(addFilter, this.props.onUpdateParams)}
-                addFilters={pipe(addFilters, this.props.onUpdateParams)}
-                removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
-                removeFilters={pipe(removeFilters, this.props.onUpdateParams)}
-                updateParams={this.props.onUpdateParams}
-                removeSelectAll={this.props.removeSelectAll}
-                resetSelectAll={this.props.resetSelectAll}
-                // @ts-ignore
-                searchParams={this.props.searchParams}
-                opened={opened}
-                openedKind={openedKind}
-                onOpen={this.handleOpenAgg}
-                presearch
-                currentSiteView={thisSiteView}
-                preSearchAggs={preSearchAggs}
-              />
-              {presearchButton.name && (
-                <Button
-                  style={{ minWidth: 200 }}
-                  href={`/search/${presearchButton.target}/${this.props.searchHash}`}>
-                  {presearchButton.name}
-                </Button>
-              )}
-            </SearchContainer>
-          );
-        }}
-      </SiteProvider>
-    );
-  };
-
   renderSearch = ({
     data,
     loading,

@@ -688,16 +688,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const presearchText = thisSiteView.search.presearch.instructions;
           return (
             <SearchContainer>
-            <InstructionsContainer>
-              {presearchText && <Instructions><h4 style={{marginRight: 10}}>Instructions:</h4> <h5>{presearchText}</h5></Instructions>}
-               {presearchButton.name && (
-                <Button
-                  style={{minWidth:200}}
-                  href={`/search/${presearchButton.target}/${hash}`}>
-                  {presearchButton.name}
-                </Button>
-              )}
-            </InstructionsContainer>
+              <InstructionsContainer>
+                {presearchText && (
+                  <Instructions>
+                    {/* <h4 style={{ marginRight: 10 }}>Instructions:</h4>{' '} */}
+                    <h5>{presearchText}</h5>
+                  </Instructions>
+                )}
+              </InstructionsContainer>
               <Aggs
                 aggs={this.state.searchAggs}
                 crowdAggs={this.state.searchCrowdAggs}
@@ -717,6 +715,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 preSearchCrowdAggs={preSearchCrowdAggs}
                 currentSiteView={thisSiteView}
               />
+              {presearchButton.name && (
+                <Button
+                  style={{ width: 200, marginLeft: 13 }}
+                  href={`/search/${presearchButton.target}/${hash}`}>
+                  {presearchButton.name}
+                </Button>
+              )}
             </SearchContainer>
           );
         }}
