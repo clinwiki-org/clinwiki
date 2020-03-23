@@ -27,6 +27,14 @@ export interface SearchPageParamsQuery_searchParams_aggFilters {
    * The values we are filtering for that field
    */
   values: string[];
+  /**
+   * The start value (inclusive) for a range query
+   */
+  gte: string | null;
+  /**
+   * The end value (inclusive) for a range query
+   */
+  lte: string | null;
 }
 
 export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
@@ -39,6 +47,14 @@ export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
    * The values we are filtering for that field
    */
   values: string[];
+  /**
+   * The start value (inclusive) for a range query
+   */
+  gte: string | null;
+  /**
+   * The end value (inclusive) for a range query
+   */
+  lte: string | null;
 }
 
 export interface SearchPageParamsQuery_searchParams {

@@ -24,7 +24,7 @@ module Types
       argument :params, type: SearchInputType, required: true
     end
 
-    field :crowd_agg_facets, SearchResultSetType, null: false do 
+    field :crowd_agg_facets, SearchResultSetType, null: false do
       # argument :params, type: SearchInputType, required: false
     end
     field :health, HealthType, null: false
