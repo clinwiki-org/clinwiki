@@ -70,7 +70,6 @@ const QUERY = gql`
       aggs {
         buckets {
           key
-          keyAsString
           docCount
         }
       }

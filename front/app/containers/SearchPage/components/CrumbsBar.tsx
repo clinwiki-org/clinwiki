@@ -20,7 +20,6 @@ import * as Autosuggest from 'react-autosuggest';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
-import AggCrumb from 'components/MultiCrumb/AggCrumb';
 import SiteProvider from 'containers/SiteProvider';
 import { MAX_WINDOW_SIZE, aggsOrdered } from '../../../utils/constants';
 import { PulseLoader, BeatLoader } from 'react-spinners';
@@ -232,29 +231,27 @@ export default class CrumbsBar extends React.Component<
         />
       );
     }
-    let aggFilterCounter = 0;
     for (const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key];
       const cat = aggToField(agg.field);
       yield (
-        <AggCrumb
-          grouping="aggFilters"
-          agg={agg}
-          key={`aggFilters${aggFilterCounter++}`}
+        <MultiCrumb
+          category={cat}
+          values={agg.values}
+          onClick={val => removeFilter(agg.field, val)}
+          key={cat + agg.values.join()}
         />
       );
     }
-    let crowdAggFilterCounter = 0;
     for (const key in searchParams.crowdAggFilters) {
       const agg = searchParams.crowdAggFilters[key];
       const cat = aggToField(agg.field);
       yield (
-        <AggCrumb
-          grouping="crowdAggFilters"
+        <MultiCrumb
           category={cat}
           values={agg.values}
-          agg={agg}
-          key={`crowdAggFilters${aggFilterCounter++}`}
+          onClick={val => removeFilter(agg.field, val, true)}
+          key={cat + agg.values.join('')}
         />
       );
     }
@@ -264,7 +261,7 @@ export default class CrumbsBar extends React.Component<
       searchParams.aggFilters.length;
     if (totalLength > 0) {
       yield (
-        <span key="buttons">
+        <span>
           <Button
             bsSize="small"
             key="defaul"
