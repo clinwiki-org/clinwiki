@@ -262,14 +262,14 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         presearch:{
           aggs: {
             selected: {
-              kind: "BLACKLIST",
+              kind: "WHITELIST",
               values: [],
             },
             fields: aggs,
           },
           crowdAggs: {
             selected: {
-              kind: "BLACKLIST",
+              kind: "WHITELIST",
               values: [],
             },
             fields: crowd_aggs,
@@ -283,14 +283,14 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         autoSuggest:{
           aggs: {
             selected: {
-              kind: "BLACKLIST",
+              kind: "WHITELIST",
               values: [],
             },
             fields: aggs,
           },
           crowdAggs: {
             selected: {
-              kind: "BLACKLIST",
+              kind: "WHITELIST",
               values: [],
             },
             fields:  crowd_aggs,
