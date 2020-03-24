@@ -133,7 +133,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   componentDidMount() {
     const siteviewId = this.props.match.params.id;
     let view = this.props.siteViews.find(view => siteviewId == view.id);
-
     this.setState({resultsButtonsArray: view.search.results.buttons.items})
   }
 
@@ -255,9 +254,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       }else{
         newArray.push(val)
       }
-
     })
-
+    if(newArray.length==position){
+      newArray.push(newItem)
+    }
     this.handleAddMutation({currentTarget:{ name:e.currentTarget.name, value:newArray}}, siteView)
     this.setState({resultsButtonsArray: newArray })
   }
@@ -461,9 +461,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               ))}
             </Col>
           </Row>
-    <StyledButton style={{margin: "1em 1em 1em 0"}} onClick={this.handleSave(updateSiteView, view)}>
-      Save Site View
-    </StyledButton>
         </Panel.Body>
       </Panel>
 
@@ -567,9 +564,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               ))}
             </Col>
         </Row>
-  <StyledButton style={{margin: "1em 1em 1em 0"}} onClick={this.handleSave(updateSiteView, view)}>
-    Save Site View
-  </StyledButton>
       </Panel.Body>
     </Panel>
     );
@@ -759,10 +753,6 @@ renderResultsConfig=(showResults,view,fields, crowdFields,updateSiteView )=>{
               Add Button
             </StyledButton>
     </PanelGroup> 
-
-<StyledButton onClick={this.handleSave(updateSiteView, view)}>
-  Save Site View
-</StyledButton>
 </StyledButtonGroup>
     </Panel.Body>
   </Panel>
@@ -786,10 +776,6 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
 
     </Panel.Heading>
     <Panel.Body collapsible>
-
-<StyledButton onClick={this.handleSave(updateSiteView, view)}>
-  Save Site View
-</StyledButton>
     </Panel.Body>
   </Panel>
   );
