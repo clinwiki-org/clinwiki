@@ -87,12 +87,25 @@ DEFAULT_AGG_OPTIONS = {
   },
 }.freeze
 
+def nested_body (key)
+  {
+    aggs:{
+      wiki_page_edits:{
+        nested: {
+          path:"wiki_page_edits"
+        },
+      }
+    }
+  }
+
+end
+
 class SearchService
   ENABLED_AGGS = %i[
     average_rating overall_status facility_states
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
-    browse_interventions_mesh_terms interventions_mesh_terms
+    browse_interventions_mesh_terms interventions_mesh_terms wiki_page_edits.email
     front_matter_keys
   ].freeze
 
@@ -115,6 +128,7 @@ class SearchService
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
     search_result = Study.search("*", options) do |body|
+
       body[:query][:bool][:must] = { query_string: { query: search_query } }
     end
     {
@@ -127,7 +141,7 @@ class SearchService
   def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false)
     params = @params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
-    key = "#{key_prefix}#{field}".to_sym
+    key = field == "wiki_page_edits.email" ? field : "#{key_prefix}#{field}".to_sym
 
     # We don't need to keep filters of the same agg, we want broader results
     # But we need to respect all other filters
@@ -148,17 +162,21 @@ class SearchService
     bucket_sort = params[:agg_options_sort] || []
 
     search_results = Study.search("*", options) do |body|
+      test = nested_body("wiki_page_edits.email")
+      test[:aggs][:wiki_page_edits][:aggs] = body[:aggs]
+      puts "Log: #{test }"
+      body[:aggs] = test[:aggs]
       body[:query][:bool][:must] = { query_string: { query: search_query } }
-      body[:aggs][key][:aggs][key][:aggs] =
-        (body[:aggs][key][:aggs][key][:aggs] || {}).merge(
-          agg_bucket_sort: {
-            bucket_sort: {
-              from: page * page_size,
-              size: page_size,
-              sort: bucket_sort.map { |s| bucket_agg_sort(s) },
-            },
-          },
-        )
+      # body[:aggs][key][:aggs][key][:aggs] =
+      #   (body[:aggs][key][:aggs][key][:aggs] || {}).merge(
+      #     agg_bucket_sort: {
+      #       bucket_sort: {
+      #         from: page * page_size,
+      #         size: page_size,
+      #         sort: bucket_sort.map { |s| bucket_agg_sort(s) },
+      #       },
+      #     },
+      #   )
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site)
       visible_options_regex = one_of_regex(visibile_options)
