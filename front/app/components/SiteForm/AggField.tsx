@@ -22,6 +22,7 @@ interface AggFieldProps {
   ) => void;
   view: SiteViewFragment;
   configType?: string;
+  returnAll?: Boolean;
 }
 
 interface AggFieldState {
@@ -213,6 +214,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 onOpen={this.handleOpen('preselected')}
                 currentSiteView={this.props.view}
                 configType={this.props.configType}
+                returnAll={this.props.returnAll}
                 
               />
             </FilterContainer>
@@ -250,6 +252,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 onOpen={this.handleOpen('visibleOptions')}
                 currentSiteView={this.props.view}
                 configType={this.props.configType}
+                returnAll={this.props.returnAll}
 
               />
             </FilterContainer>

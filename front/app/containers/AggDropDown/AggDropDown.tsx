@@ -63,10 +63,12 @@ const QUERY_AGG_BUCKETS = gql`
     $aggOptionsSort: [SortInput!]
     $url: String
     $configType: String
+    $returnAll: Boolean
   ) {
     aggBuckets(
       url: $url
       configType: $configType
+      returnAll: $ returnAll
       params: {
         agg: $agg
         q: $q
@@ -238,6 +240,7 @@ interface AggDropDownProps {
   presearch?: boolean;
   currentSiteView?: any;
   configType?: string;
+  returnAll?:Boolean;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -405,6 +408,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       presearch,
       currentSiteView,
       configType,
+      returnAll,
     } = this.props;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
@@ -416,6 +420,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const variables = {
       url: currentSiteView.url,
       configType: configType,
+      returnAll: returnAll,
       ...searchParams,
       aggFilters: maskAgg(searchParams.aggFilters, this.props.agg),
       crowdAggFilters: maskAgg(searchParams.crowdAggFilters, agg),
