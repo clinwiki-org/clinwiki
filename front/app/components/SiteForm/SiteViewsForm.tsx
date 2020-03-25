@@ -17,6 +17,7 @@ interface SiteViewsFormProps {
   site: any;
   siteViews: SiteViewFragment[];
   refresh: any;
+  handleForm:any;
 }
 
 interface SiteViewsFormState {
@@ -104,7 +105,9 @@ class SiteViewsForm extends React.Component<
       form: { ...this.state.form, [e.target.name as any]: e.target.value },
     });
   };
-
+  componentDidMount(){
+    this.props.handleForm()
+  }
   render() {
     const { siteViews } = this.props;
     return (

@@ -31,6 +31,8 @@ interface SiteViewRouterProps {
   onAddMutation: any;
   getId: any;
   onSave?: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
+  handleSiteViewEdit?: any;
+  handleForm:any;
 }
 
 interface SiteViewRouterState {
@@ -118,6 +120,7 @@ class SiteViewRouter extends React.Component<
               site={site}
               view={view}
               siteViewId={this.props.location}
+              handleSiteViewEdit={this.props.handleSiteViewEdit}
             />
           )}
         />
@@ -128,6 +131,7 @@ class SiteViewRouter extends React.Component<
               siteViews={this.props.siteViews}
               site={site}
               refresh={this.props.refresh}
+              handleForm={this.props.handleForm}
             />
           )}
         />

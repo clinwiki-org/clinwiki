@@ -34,6 +34,7 @@ interface SearchFormProps {
   history: History;
   location: Location;
   site: any;
+  handleSiteViewEdit?: any;
   // currentSiteView?: any;
 }
 
@@ -131,6 +132,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   componentDidMount() {
+    this.props.handleSiteViewEdit()
     const siteviewId = this.props.match.params.id;
     let view = this.props.siteViews.find(view => siteviewId == view.id);
     this.setState({resultsButtonsArray: view.search.results.buttons.items})
@@ -206,7 +208,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
 
   handleShowFacetBar = (x, view, name) => {
     // this.setState({showFacetBar: x})
-    console.log("Views from the 6", view)
     const e = { currentTarget: { name: name, value: x } };
     this.handleAddMutation(e, view);
   };
