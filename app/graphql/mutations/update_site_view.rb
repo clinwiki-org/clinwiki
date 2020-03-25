@@ -12,7 +12,7 @@ module Mutations
 
     def resolve(args)
       view = site_view(args[:id])
-      view.attributes = {name:args[:name], default: args[:default], url: args[:url], description: args[:description]}
+      view.attributes = args.slice(:name,:url,:description,:default)
       mutations = args[:mutations].clone.map do |mutation|
         begin
           mutation[:payload] = JSON.parse(mutation[:payload])
