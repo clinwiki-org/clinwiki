@@ -171,6 +171,7 @@ interface CrumbsBarProps {
   siteViewUrl?: string;
   currentSiteView: any;
   toggledShowCards?: any;
+  totalResults: number;
 }
 interface CrumbsBarState {
   searchTerm: string;
@@ -281,16 +282,16 @@ export default class CrumbsBar extends React.Component<
           </Button>
         </span>
       );
-    }else{
-      yield(
+    } else {
+      yield (
         <Button
-        bsSize="small"
-        key="defaul"
-        onClick={this.props.onReset}
-        style={{ margin: '5px 0px 5px 10px' }}>
-        Default
-      </Button>
-      )
+          bsSize="small"
+          key="defaul"
+          onClick={this.props.onReset}
+          style={{ margin: '5px 0px 5px 10px' }}>
+          Default
+        </Button>
+      );
     }
   }
 
@@ -319,11 +320,11 @@ export default class CrumbsBar extends React.Component<
       this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.values,
       this.props.currentSiteView.search.autoSuggest.crowdAggs.fields
     );
-      let fieldsToReturn: any[]=[]
-       crowdAggFields.map(field=>{
-         fieldsToReturn.push(field.name)
-       });
-      return fieldsToReturn;
+    let fieldsToReturn: any[] = [];
+    crowdAggFields.map(field => {
+      fieldsToReturn.push(field.name);
+    });
+    return fieldsToReturn;
   };
 
   getAutoSuggestFields = () => {
@@ -623,9 +624,7 @@ export default class CrumbsBar extends React.Component<
                     </CurrentUser>
                   </Form>
                 </Col>
-                {/* <Col xsHidden md={2}>
-                  {this.loadPaginator()}
-                </Col> */}
+                <div>Total Results: {this.props.totalResults} studies</div>
               </Row>
               {showCrumbsBar ? (
                 <Row>

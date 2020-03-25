@@ -292,6 +292,7 @@ interface SearchPageState {
   searchCrowdAggs: AggBucketMap;
   showCards: Boolean;
   removeSelectAll: boolean;
+  totalRecords: number;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -311,6 +312,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchCrowdAggs: {},
     showCards: localStorage.getItem('showCards') === 'true' ? true : false,
     removeSelectAll: false,
+    totalRecords: 0,
   };
 
   numberOfPages: number = 0;
@@ -616,6 +618,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     openedKind={openedKind}
                     onOpen={this.handleOpenAgg}
                     currentSiteView={view}
+                    getTotalResults={this.getTotalResults}
                   />
                 );
               }}
@@ -667,6 +670,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       window.removeEventListener('scroll', this.handleScroll);
     }
   }
+
+  getTotalResults = total => {
+    if (total) {
+      this.setState({
+        totalRecords: total,
+      });
+    }
+    return null;
+  };
 
   renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
@@ -730,7 +742,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   renderCrumbs = () => {
-    const { params } = this.state;
+    const { params, totalRecords } = this.state;
     const q =
       this.state.params?.q.key === '*'
         ? []
@@ -763,6 +775,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               showCards={this.state.showCards}
               addFilter={pipe(addFilter, this.handleUpdateParams)}
               currentSiteView={currentSiteView}
+              totalResults={this.state.totalRecords}
             />
           );
         }}
@@ -785,7 +798,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             if (siteViewUrl === 'default') {
               thisSiteView = site.siteView;
             }
-            console.log(thisSiteView);
+            // console.log(thisSiteView);
             return (
               <Row>
                 <SidebarContainer md={2}>
@@ -822,6 +835,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     openedKind={openedKind}
                     onOpen={this.handleOpenAgg}
                     currentSiteView={thisSiteView}
+                    getTotalResults={this.getTotalResults}
                   />
                 </MainContainer>
               </Row>

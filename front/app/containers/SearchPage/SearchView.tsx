@@ -344,6 +344,7 @@ interface SearchViewProps {
   currentSiteView: any;
   thisSiteView?: SiteViewFragment;
   siteViewUrl?: string;
+  getTotalResults: Function;
 }
 
 interface SearchViewState {
@@ -352,6 +353,8 @@ interface SearchViewState {
     name: string;
     kind: AggKind;
   } | null;
+  totalResults: any;
+  firstRender: boolean;
 }
 class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   searchTable: any = 0;
@@ -360,7 +363,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     super(props);
 
     this.searchTable = React.createRef();
-    this.state = { tableWidth: 0, openedAgg: null };
+    this.state = {
+      tableWidth: 0,
+      openedAgg: null,
+      totalResults: 0,
+      firstRender: true,
+    };
   }
   isStarColumn = (name: string): boolean => {
     return name === 'average_rating';
@@ -785,45 +793,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     );
   };
 
-  renderCrumbs = () => {
-    const { currentSiteView } = this.props;
-    const q =
-      this.props.params.q.key === '*'
-        ? []
-        : (this.props.params.q.children || []).map(prop('key'));
-    return (
-      <SiteProvider>
-        {site => {
-          return (
-            <CrumbsBar
-              siteViewUrl={this.props.siteViewUrl}
-              // @ts-ignore
-              searchParams={{ ...this.props.params, q }}
-              onBulkUpdate={this.props.onBulkUpdate}
-              removeFilter={pipe(removeFilter, this.props.onUpdateParams)}
-              addSearchTerm={pipe(addSearchTerm, this.props.onUpdateParams)}
-              removeSearchTerm={pipe(
-                removeSearchTerm,
-                this.props.onUpdateParams
-              )}
-              pageSize={this.props.params.pageSize}
-              update={{
-                page: pipe(changePage, this.props.onUpdateParams),
-              }}
-              data={site}
-              onReset={this.props.onResetFilters}
-              onClear={this.props.onClearFilters}
-              showCards={this.props.showCards}
-              toggledShowCards={this.toggledShowCards}
-              addFilter={pipe(addFilter, this.props.onUpdateParams)}
-              currentSiteView={currentSiteView}
-            />
-          );
-        }}
-      </SiteProvider>
-    );
-  };
-
   renderViewDropdown = () => {
     const { currentSiteView } = this.props;
     return (
@@ -850,8 +819,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   };
 
   render() {
-    const { page, pageSize, sorts } = this.props.params;
-    const { currentSiteView } = this.props;
     return (
       <SiteProvider>
         {site => {
@@ -859,8 +826,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             site.siteViews.find(
               siteview => siteview.url == this.props.siteViewUrl
             ) || site.siteView;
-          let showPresearch = thisSiteView.search.config.fields.showPresearch;
-
           return (
             <SearchWrapper>
               <Helmet>
@@ -878,6 +843,21 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                       this.props.onAggsUpdate(
                         this.transformAggs(data.search.aggs || []),
                         this.transformCrowdAggs(data.crowdAggs.aggs || [])
+                      );
+                    }
+                    const totalRecords = pathOr(
+                      0,
+                      ['search', 'recordsTotal'],
+                      data
+                    );
+                    if (this.state.firstRender) {
+                      this.setState(
+                        {
+                          totalResults: totalRecords,
+                          firstRender: false,
+                        },
+                        () =>
+                          this.props.getTotalResults(this.state.totalResults)
                       );
                     }
                   }}>
