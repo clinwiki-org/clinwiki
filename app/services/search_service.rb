@@ -124,7 +124,7 @@ class SearchService
     }
   end
 
-  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url:nil,config_type: nil) # rubocop:disable Metrics/MethodLength
+  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url:nil,config_type: nil, return_all: false) # rubocop:disable Metrics/MethodLength
     params = self.params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
@@ -159,15 +159,16 @@ class SearchService
           },
         )
 
-
-      visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type)
-      visible_options_regex = one_of_regex(visibile_options)
-      regex = visible_options_regex
-      if params[:agg_options_filter].present?
-        filter_regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
-        regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
+      unless return_all
+        visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type)
+        visible_options_regex = one_of_regex(visibile_options)
+        regex = visible_options_regex
+        if params[:agg_options_filter].present?
+          filter_regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
+          regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
+        end
+        body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
       end
-      body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
