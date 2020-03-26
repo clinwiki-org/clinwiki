@@ -137,21 +137,29 @@ class AggFilterInputUpdater {
     }
   }
 
+  isDateAgg(): boolean {
+    return this.agg.match(/date/) !== null;
+  }
+
   getMinString(): string | undefined {
     // need to check for agg type once we start using this for more than date.
     if (this.aggFilterInput.gte) {
-      return moment(this.aggFilterInput.gte)
-        .utc(false)
-        .format('YYYY-MM-DD');
+      return this.isDateAgg()
+        ? moment(this.aggFilterInput.gte)
+            .utc(false)
+            .format('YYYY-MM-DD')
+        : this.aggFilterInput.gte;
     }
   }
 
   getMaxString(): string | undefined {
     // need to check for agg type once we start using this for more than date.
     if (this.aggFilterInput.lte) {
-      return moment(this.aggFilterInput.lte)
-        .utc(false)
-        .format('YYYY-MM-DD');
+      return this.isDateAgg()
+        ? moment(this.aggFilterInput.lte)
+            .utc(false)
+            .format('YYYY-MM-DD')
+        : this.aggFilterInput.lte;
     }
   }
 }
