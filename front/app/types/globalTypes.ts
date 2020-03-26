@@ -7,6 +7,7 @@
 
 export enum FieldDisplay {
   DATE = "DATE",
+  RANGE = "RANGE",
   STAR = "STAR",
   STRING = "STRING",
 }

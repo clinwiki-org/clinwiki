@@ -115,7 +115,7 @@ interface AggDropDownProps {
   removeSelectAll?: boolean;
   resetSelectAll?: () => void;
   client: any;
-  site: SiteViewFragment;
+  site: SiteFragment;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -353,7 +353,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     if (!isOpen) {
       return null;
     }
-    if (agg === 'start_date') {
+    const field = find(propEq('name', agg), [
+      ...(site.siteView?.search?.aggs?.fields || []),
+      ...(site.siteView?.search?.crowdAggs?.fields || []),
+    ]) as SiteViewFragment_search_aggs_fields | null;
+    if (field?.display === FieldDisplay.RANGE) {
       return (
         <RangeSelector
           isOpen={isOpen}
@@ -393,12 +397,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             hasMore={hasMore}
             handleLoadMore={this.handleLoadMore}
             agg={agg}
-            field={
-              find(propEq('name', agg), [
-                ...(site.search?.aggs?.fields || []),
-                ...(site.search?.crowdAggs?.fields || []),
-              ]) as SiteViewFragment_search_aggs_fields | null
-            }
+            field={field}
           />
         </Panel.Body>
       </Panel.Collapse>
