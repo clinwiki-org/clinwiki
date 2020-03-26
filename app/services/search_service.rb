@@ -189,7 +189,8 @@ class SearchService
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
-
+    aggs = aggs.dig(:wiki_page_edits,:"wiki_page_edits.email").select{|key| key == :"wiki_page_edits.email"} if key =="wiki_page_edits.email"
+    puts "log::::::::::::::::::::::::::::::::::::::::::: #{aggs}"
     aggs
   end
 
