@@ -12,7 +12,17 @@ import {
 } from 'ramda';
 import { orderBy, debounce } from 'lodash';
 import styled from 'styled-components';
-import { Panel, Row, Col, DropdownButton, MenuItem } from 'react-bootstrap';
+import {
+  Panel,
+  Row,
+  Col,
+  MenuItem,
+  Form,
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  Button,
+} from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
@@ -31,6 +41,8 @@ interface RangeSelectorProps {
 interface RangeSelectorState {
   start?: any;
   end?: any;
+  startText?: any;
+  endText?: any;
 }
 
 const Container = styled.div`
@@ -42,10 +54,15 @@ class RangeSelector extends React.Component<
   RangeSelectorProps,
   RangeSelectorState
 > {
-  state = {
-    start: null,
-    end: null,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      start: null,
+      end: null,
+      startText: this.props.updater.aggFilterInput.gte,
+      endText: this.props.updater.aggFilterInput.lte,
+    };
+  }
 
   onChange = () =>
     this.props.updater.changeRange([
@@ -62,8 +79,9 @@ class RangeSelector extends React.Component<
       handleLoadMore,
       updater,
     } = this.props;
-    if (hasMore || loading) {
-      handleLoadMore();
+    const { startText, endText } = this.state;
+    if (/*hasMore ||*/ loading) {
+      // handleLoadMore();
       return (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <BeatLoader key="loader" color="#fff" />
@@ -71,44 +89,41 @@ class RangeSelector extends React.Component<
       );
     }
 
-    if (isEmpty(buckets)) {
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>None</div>
-      );
-    }
+    // if (isEmpty(buckets)) {
+    //   return (
+    //     <div style={{ display: 'flex', justifyContent: 'center' }}>None</div>
+    //   );
+    // }
 
-    // start date is the will be all values from first to end date or last
+    // const start: any[] = [];
+    // buckets.forEach(({ key, keyAsString = null }) => {
+    //   const identifier = keyAsString || key;
+    //   if (
+    //     identifier === null ||
+    //     (this.props?.updater?.aggFilterInput?.lte &&
+    //       identifier >= this.props?.updater?.aggFilterInput?.lte)
+    //   ) {
+    //     return;
+    //   }
+    //   start.push(identifier);
+    // });
 
-    const start: any[] = [];
-    buckets.forEach(({ key, keyAsString = null }) => {
-      const identifier = keyAsString || key;
-      if (
-        identifier === null ||
-        (this.props?.updater?.aggFilterInput?.lte &&
-          identifier >= this.props?.updater?.aggFilterInput?.lte)
-      ) {
-        return;
-      }
-      start.push(identifier);
-    });
-
-    // end date will be all values after start date
-    const end: any[] = [];
-    buckets.forEach(({ key, keyAsString = null }) => {
-      const identifier = keyAsString || key;
-      if (
-        identifier === null ||
-        (this.props?.updater?.aggFilterInput?.gte &&
-          identifier <= this.props?.updater?.aggFilterInput?.gte)
-      ) {
-        return;
-      }
-      end.push(identifier);
-    });
+    // const end: any[] = [];
+    // buckets.forEach(({ key, keyAsString = null }) => {
+    //   const identifier = keyAsString || key;
+    //   if (
+    //     identifier === null ||
+    //     (this.props?.updater?.aggFilterInput?.gte &&
+    //       identifier <= this.props?.updater?.aggFilterInput?.gte)
+    //   ) {
+    //     return;
+    //   }
+    //   end.push(identifier);
+    // });
 
     // we need a smarter sort function than default.
-    start.sort();
-    end.sort();
+    // start.sort();
+    // end.sort();
 
     return (
       <Panel.Collapse className="bm-panel-collapse">
@@ -116,42 +131,55 @@ class RangeSelector extends React.Component<
           <Container>
             <Row>
               <Col className="range-selector">
-                <DropdownButton
-                  title={updater.getMinString() || 'Start'}
-                  className="range-selector-button">
-                  {start.map(value => (
-                    <MenuItem
-                      key={`start${value}`}
-                      onSelect={() =>
+                <Form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    this.setState(
+                      { ...this.state, start: startText, end: endText },
+                      this.onChange
+                    );
+                  }}>
+                  <FormGroup>
+                    <ControlLabel>Start</ControlLabel>
+                    <FormControl
+                      type="text"
+                      value={startText}
+                      onChange={e =>
+                        this.setState({
+                          ...this.state,
+                          startText: e.target.value,
+                        })
+                      }
+                      onBlur={e =>
                         this.setState(
-                          { ...this.state, start: value },
+                          { ...this.state, start: startText },
                           this.onChange
                         )
-                      }>
-                      {value}
-                    </MenuItem>
-                  ))}
-                </DropdownButton>
-              </Col>
-            </Row>
-            <Row>
-              <Col className="range-selector">
-                <DropdownButton
-                  title={updater.getMaxString() || 'End'}
-                  className="range-selector-button">
-                  {end.map(value => (
-                    <MenuItem
-                      key={`end${value}`}
-                      onSelect={() =>
+                      }></FormControl>
+                  </FormGroup>
+                  <FormGroup>
+                    <ControlLabel>End</ControlLabel>
+                    <FormControl
+                      type="text"
+                      value={endText}
+                      onChange={e =>
+                        this.setState({
+                          ...this.state,
+                          endText: e.target.value,
+                        })
+                      }
+                      onBlur={e =>
                         this.setState(
-                          { ...this.state, end: value },
+                          { ...this.state, end: endText },
                           this.onChange
                         )
-                      }>
-                      {value}
-                    </MenuItem>
-                  ))}
-                </DropdownButton>
+                      }></FormControl>
+                  </FormGroup>
+                  <FormGroup>
+                    {/* this is a placebo, it's really done on onblur */}
+                    <Button type="submit">Enter</Button>
+                  </FormGroup>
+                </Form>
               </Col>
             </Row>
           </Container>

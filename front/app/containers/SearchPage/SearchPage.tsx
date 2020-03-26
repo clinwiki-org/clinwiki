@@ -528,7 +528,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   updateStateFromHash(searchParams) {
-    console.log('updating state from hash', this.state, searchParams);
     const params: SearchParams = this.searchParamsFromQuery(searchParams);
     this.setState({
       params: {
