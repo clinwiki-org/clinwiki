@@ -17,7 +17,7 @@ interface SiteViewsFormProps {
   site: any;
   siteViews: SiteViewFragment[];
   refresh: any;
-  handleForm:any;
+  handleForm: any;
 }
 
 interface SiteViewsFormState {
@@ -26,6 +26,7 @@ interface SiteViewsFormState {
     siteViewPath: string;
   };
   id: string | undefined;
+  textToCopy: string;
 }
 
 const StyledContainer = styled.div`
@@ -51,6 +52,7 @@ class SiteViewsForm extends React.Component<
       siteViewPath: '',
     },
     id: undefined,
+    textToCopy: '',
   };
 
   handleSave = (createSiteView: CreateSiteViewMutationFn) => {
@@ -64,8 +66,8 @@ class SiteViewsForm extends React.Component<
         },
       });
       return null;
-    }else if(form.siteViewName == '' || form.siteViewPath==''){
-      alert(`Name and URL are both required, please try again`)
+    } else if (form.siteViewName == '' || form.siteViewPath == '') {
+      alert(`Name and URL are both required, please try again`);
       this.setState({
         form: {
           siteViewName: '',
@@ -105,8 +107,8 @@ class SiteViewsForm extends React.Component<
       form: { ...this.state.form, [e.target.name as any]: e.target.value },
     });
   };
-  componentDidMount(){
-    this.props.handleForm()
+  componentDidMount() {
+    this.props.handleForm();
   }
   render() {
     const { siteViews } = this.props;
@@ -122,6 +124,7 @@ class SiteViewsForm extends React.Component<
                       <th>Site Name</th>
                       <th>URL</th>
                       <th>Default?</th>
+                      <th>URL Preview</th>
                       <th />
                     </tr>
                   </thead>
@@ -132,6 +135,7 @@ class SiteViewsForm extends React.Component<
                           key={view.id}
                           siteView={view}
                           refresh={this.props.refresh}
+                          site={this.props.site}
                         />
                       ))}
                     </>

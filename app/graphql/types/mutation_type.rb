@@ -23,5 +23,6 @@ module Types
     field :bulkListUpdate, mutation: Mutations::BulkListUpdate
     field :createSiteView, mutation: Mutations::CreateSiteView
     field :deleteSiteView, mutation: Mutations::DeleteSiteView
+    field :copySiteView, mutation: Mutations::CopySiteView
   end
 end

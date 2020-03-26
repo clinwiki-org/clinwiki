@@ -833,8 +833,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 <meta name="description" content="Description of SearchPage" />
               </Helmet>
               <Col md={12}>
-                {/* {this.renderCrumbs()} */}
-                {/* {showPresearch && this.renderPresearch()} */}
                 <QueryComponent
                   query={QUERY}
                   variables={this.props.params}

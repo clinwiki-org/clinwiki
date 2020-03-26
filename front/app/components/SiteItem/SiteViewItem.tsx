@@ -10,6 +10,9 @@ import { History, Location } from 'history';
 import UpdateSiteViewMutation, {
   UpdateSiteViewMutationFn,
 } from 'mutations/UpdateSiteViewMutation';
+import CopySiteViewMutation, {
+  CopySiteViewMutationFn,
+} from 'mutations/CopySiteViewMutation';
 
 interface SiteViewItemProps {
   match: any;
@@ -17,11 +20,13 @@ interface SiteViewItemProps {
   location: Location;
   refresh: () => void;
   siteView: SiteViewFragment;
+  site: any;
 }
 
 const StyledButton = styled(Button)`
   margin-right: 15px;
 `;
+// const PreviewText;
 
 class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   handleEditClick = () => {
@@ -73,12 +78,34 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     }
   };
 
+  handleCopy = (copySiteView: CopySiteViewMutationFn) => {
+    const { siteView, site } = this.props;
+    const copiedName = `${siteView.name}copy`;
+    const copiedUrl = `${siteView.url}copy`;
+    copySiteView({
+      variables: {
+        input: {
+          name: copiedName,
+          url: copiedUrl,
+          default: false,
+          siteId: site.id,
+          siteViewId: siteView.id,
+        },
+      },
+    }).then(res => {
+      this.props.refresh();
+    });
+  };
+
   render() {
     const { siteView } = this.props;
+    const urlString = 'clinwiki.org/search/' + siteView.url;
+    // console.log(urlString);
     return (
       <tr>
         <td>{siteView.name}</td>
         <td>{siteView.url}</td>
+
         <td>
           <UpdateSiteViewMutation>
             {updateSiteView => (
@@ -89,8 +116,16 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
             )}
           </UpdateSiteViewMutation>
         </td>
+        <td>{urlString}</td>
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
+          <CopySiteViewMutation>
+            {copySiteView => (
+              <StyledButton onClick={() => this.handleCopy(copySiteView)}>
+                Copy
+              </StyledButton>
+            )}
+          </CopySiteViewMutation>
           <DeleteSiteViewMutation>
             {deleteSiteView => (
               <StyledButton onClick={() => this.handleDelete(deleteSiteView)}>

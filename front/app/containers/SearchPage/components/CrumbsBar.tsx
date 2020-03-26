@@ -624,7 +624,9 @@ export default class CrumbsBar extends React.Component<
                     </CurrentUser>
                   </Form>
                 </Col>
-                <div>Total Results: {this.props.totalResults} studies</div>
+                <div>
+                  <b>Total Results:</b> {this.props.totalResults} studies
+                </div>
               </Row>
               {showCrumbsBar ? (
                 <Row>
