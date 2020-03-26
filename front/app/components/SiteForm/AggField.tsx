@@ -132,8 +132,54 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       this.props.view
     );
   };
+  handleSelectAll =(kind: 'preselected' | 'visibleOptions') => (
+    aggName: string,
+    newParams: any,
+    isCrowd: boolean
+  ) => {
 
+    this.props.onAddMutation(
+      {
+        currentTarget: {
+          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
+          value:  newParams,
+        },
+      },
+      this.props.view
+    );
+  };
 
+  handleDeSelectAll = (kind: 'preselected' | 'visibleOptions') => (
+    aggName: string,
+    newParams: any,
+    isCrowd: boolean
+  ) => {
+    const targetValue =()=>{
+    if(kind=='preselected'){
+      let newArray= this.props.field.preselected.values
+       newParams.map(key=>{
+        newArray =reject(equals(key), newArray)
+      });
+      return newArray
+    }else{
+      let newArray= this.props.field.visibleOptions.values
+       newParams.map(key=>{
+        newArray =reject(equals(key), newArray)
+      });
+      console.log("Final Array hope", newArray)
+      return newArray
+    }
+  }
+    this.props.onAddMutation(
+      {
+        currentTarget: {
+          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
+          value: targetValue(),
+        },
+      },
+      this.props.view
+    );
+  };
   handleRemoveFilter = (kind: 'preselected' | 'visibleOptions') => (
     aggName: string,
     aggValue: string,
@@ -156,7 +202,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       this.props.view
     );
   };
-
   handleOpen = (kind: 'preselected' | 'visibleOptions') => (
     agg: string,
     aggKind: AggKind
@@ -210,7 +255,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 isOpen={this.state.isValuesOpen}
                 selectedKeys={selected}
                 addFilter={this.handleAddFilter('preselected')}
+                addAllFilters={this.handleSelectAll('preselected')}
                 removeFilter={this.handleRemoveFilter('preselected')}
+                removeAllFilters={this.handleDeSelectAll('preselected')}
                 onOpen={this.handleOpen('preselected')}
                 currentSiteView={this.props.view}
                 configType={this.props.configType}
@@ -248,7 +295,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 isOpen={this.state.isVisibleOptionsOpen}
                 selectedKeys={visibleOptions}
                 addFilter={this.handleAddFilter('visibleOptions')}
+                addAllFilters={this.handleSelectAll('visibleOptions')}
                 removeFilter={this.handleRemoveFilter('visibleOptions')}
+                removeAllFilters={this.handleDeSelectAll('visibleOptions')}
                 onOpen={this.handleOpen('visibleOptions')}
                 currentSiteView={this.props.view}
                 configType={this.props.configType}
