@@ -420,6 +420,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   onAddMutation={this.handleAddMutation}
                   view={view}
                   configType="facetbar"
+                  returnAll={true}
                 />
               ))}
             </Col>
@@ -458,6 +459,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   onAddMutation={this.handleAddMutation}
                   view={view}
                   configType="facetbar"
+                  returnAll={true}
+
                 />
               ))}
             </Col>
@@ -522,6 +525,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   onAddMutation={this.handleAddMutation}
                   view={view}
                   configType="autosuggest"
+                  returnAll={true}
+
                 />
               ))}
 
@@ -561,6 +566,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   onAddMutation={this.handleAddMutation}
                   view={view}
                   configType="autosuggest"
+                  returnAll={true}
                 />
               ))}
             </Col>
@@ -609,6 +615,7 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
                 onAddMutation={this.handleAddMutation}
                 view={view}
                 configType="presearch"
+                returnAll={true}
               />
             ))}
           </Col>
@@ -634,6 +641,7 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
                 onAddMutation={this.handleAddMutation}
                 view={view}
                 configType="presearch"
+                returnAll={true}
               />
             ))}
           </Col>

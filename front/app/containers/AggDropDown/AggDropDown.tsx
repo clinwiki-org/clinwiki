@@ -63,10 +63,12 @@ const QUERY_AGG_BUCKETS = gql`
     $aggOptionsSort: [SortInput!]
     $url: String
     $configType: String
+    $returnAll: Boolean
   ) {
     aggBuckets(
       url: $url
       configType: $configType
+      returnAll: $ returnAll
       params: {
         agg: $agg
         q: $q
@@ -228,6 +230,8 @@ interface AggDropDownProps {
   selectedKeys: Set<string>;
   addFilter: AggCallback;
   addFilters?: AggregateAggCallback | undefined;
+  addAllFilters?:any;
+  removeAllFilters?:any;
   removeFilters?: AggregateAggCallback | undefined;
   removeFilter: AggCallback | null;
   display?: FieldDisplay;
@@ -238,6 +242,7 @@ interface AggDropDownProps {
   presearch?: boolean;
   currentSiteView?: any;
   configType?: string;
+  returnAll?:Boolean;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -328,8 +333,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   selectAll = (agg: string): void => {
     const { buckets } = this.state;
-    let newParams = [];
-
+    let newParams: any[] = [];
     buckets.map(({ key }) => {
       newParams.push(key);
     });
@@ -340,13 +344,25 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       });
     }
     if (this.isAllSelected() != true) {
-      if (!this.props.addFilters) return;
+      if (!this.props.addFilters){
+        this.props.addAllFilters(agg, newParams, false);
+        this.setState({
+          checkboxValue: true,
+        });
+        return;
+        }
       this.props.addFilters(agg, newParams, false);
       this.setState({
         checkboxValue: true,
       });
     } else {
-      if (!this.props.removeFilters) return;
+      if (!this.props.removeFilters) {
+        this.props.removeAllFilters(agg, newParams, false);    
+        this.setState({
+          checkboxValue: false,
+        });
+        return;
+      }
       this.setState({
         checkboxValue: false,
       });
@@ -405,6 +421,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       presearch,
       currentSiteView,
       configType,
+      returnAll,
     } = this.props;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
@@ -416,6 +433,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const variables = {
       url: currentSiteView.url,
       configType: configType,
+      returnAll: returnAll,
       ...searchParams,
       aggFilters: maskAgg(searchParams.aggFilters, this.props.agg),
       crowdAggFilters: maskAgg(searchParams.crowdAggFilters, agg),
