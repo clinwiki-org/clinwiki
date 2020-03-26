@@ -159,8 +159,7 @@ class SearchService
           },
         )
 
-      unless return_all
-        visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type)
+        visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type, return_all)
         visible_options_regex = one_of_regex(visibile_options)
         regex = visible_options_regex
         if params[:agg_options_filter].present?
@@ -168,7 +167,6 @@ class SearchService
           regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
         end
         body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
-      end
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
@@ -296,8 +294,8 @@ class SearchService
     end.compact.flatten
   end
 
-  def find_visibile_options(agg_name, is_crowd_agg, current_site, url, config_type)
-    return [] if current_site.blank?
+  def find_visibile_options(agg_name, is_crowd_agg, current_site, url, config_type, return_all)
+    return [] if current_site.blank? || return_all
 
     if !url || url.empty?
       view = current_site.site_views.find_by(default: true).view
