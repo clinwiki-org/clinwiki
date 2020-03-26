@@ -95,16 +95,20 @@ DEFAULT_AGG_OPTIONS = {
 }.freeze
 
 def nested_body (key)
+  nested_object = key.split(".")[0]
   {
     aggs:{
-      wiki_page_edits:{
+      "#{nested_object}":{
         nested: {
-          path:"wiki_page_edits"
+          path:"#{nested_object}"
         },
       }
     }
   }
+end
 
+def nested_result_aggs(field,aggs)
+    aggs.dig(:"#{field.split(".")[0]}",:"#{field}").select{|key| key == :"#{field}"}
 end
 
 class SearchService
@@ -169,24 +173,25 @@ class SearchService
     bucket_sort = params[:agg_options_sort] || []
 
     search_results = Study.search("*", options) do |body|
-      test = nested_body("wiki_page_edits.email")
-      test[:aggs][:wiki_page_edits][:aggs] = body[:aggs]
-      puts "Log: #{test }"
-      body[:aggs] = test[:aggs]
-      body[:query][:bool][:must] = { query_string: { query: search_query } }
-      # body[:aggs][key][:aggs][key][:aggs] =
-      #   (body[:aggs][key][:aggs][key][:aggs] || {}).merge(
-      #     agg_bucket_sort: {
-      #       bucket_sort: {
-      #         from: page * page_size,
-      #         size: page_size,
-      #         sort: bucket_sort.map { |s| bucket_agg_sort(s) },
-      #       },
-      #     },
-      #   )
-
       unless key == :average_rating || body[:aggs][key][:aggs][key][:date_histogram].present?
         body[:aggs][key][:aggs][key][:terms][:missing] = missing_identifier_for_key(key)
+      end
+
+      body[:query][:bool][:must] = { query_string: { query: search_query } }
+      body[:aggs][key][:aggs][key][:aggs] =
+        (body[:aggs][key][:aggs][key][:aggs] || {}).merge(
+          agg_bucket_sort: {
+            bucket_sort: {
+              from: page * page_size,
+              size: page_size,
+              sort: bucket_sort.map { |s| bucket_agg_sort(s) },
+            },
+          },
+        )
+      if field.include?"."
+        test = nested_body("wiki_page_edits.email")
+        test[:aggs][:wiki_page_edits][:aggs] = body[:aggs]
+        body[:aggs] = test[:aggs]
       end
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site)
@@ -200,8 +205,7 @@ class SearchService
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
-    aggs = aggs.dig(:wiki_page_edits,:"wiki_page_edits.email").select{|key| key == :"wiki_page_edits.email"} if key =="wiki_page_edits.email"
-    puts "log::::::::::::::::::::::::::::::::::::::::::: #{aggs}"
+    aggs = nested_result_aggs(field,aggs) if field.include?"."
     aggs
   end
 
