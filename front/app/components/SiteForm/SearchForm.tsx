@@ -161,17 +161,37 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     e: { currentTarget: { name: string; value: any } },
     siteView
   ) => {
-    console.log('adding mutation', siteView)
     const { name, value } = e.currentTarget;
+    console.log("NV", name,value)
     const mutation = createMutation(name, value);
+    console.log("mutation", mutation)
+    console.log("SiteView", siteView)
+    console.log("StateMutatioms" ,this.state.mutations)
     const view = updateView(siteView, this.state.mutations);
+    console.log("view",view)
     const currentValue = getViewValueByPath(mutation.path, view);
+    console.log("CurrentValue", currentValue)
+    console.log("NewValue",value)
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
       console.log('MUTATIONS', this.state.mutations);
     });
   };
 
+  handleDeleteButton= (view, index)=>{
+    console.log("UHHHHH",view)
+      let name = `set:search.results.buttons.items`
+  
+      let items= view.search.results.buttons.items
+      console.log("Items",items.length)
+      items.splice(index,1)
+      //let removedItem = items.splice(index,1)
+
+      console.log(index)
+    console.log("That new new",items)
+    console.log("??", view)
+        this.handleAddMutation({ currentTarget:{ name: name, value: items}}, view)
+     }
   getCrowdFields = view => {
     return view.search.crowdAggs.fields.map(field => ({
       id: field.name,
@@ -302,10 +322,16 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       buttonsArray.map( (value, index) =>(
       <Panel key={index+value}>
                 <Panel.Heading>
-      <Panel.Title toggle>Button {index+1}</Panel.Title>
+                <StyledPanelHeading>
 
-                  <StyledShowContainer>
+      <Panel.Title toggle>Button {index+1} </Panel.Title>
+      
+      <StyledShowContainer>
+                  <span onClick={()=>this.handleDeleteButton(thisSiteView, index)}>X</span>
+
         </StyledShowContainer>
+        </StyledPanelHeading>
+
                 </Panel.Heading>
                 <Panel.Body collapsible>
                   <h3>Target: {buttonsArray[index].target}</h3> 
