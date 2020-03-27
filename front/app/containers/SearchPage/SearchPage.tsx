@@ -688,8 +688,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const siteViewUrl = this.props.match.params.siteviewUrl;
           const siteViews = site.siteViews;
           let thisSiteView =
-            siteViews.find(siteview => siteview.url == siteViewUrl) ||
-            site.siteView;
+          siteViews.find(
+            siteview =>
+              //@ts-ignore
+              siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
+          ) || site.siteView;
           const preSearchAggs =
             thisSiteView.search.presearch.aggs.selected.values;
           const preSearchCrowdAggs =
