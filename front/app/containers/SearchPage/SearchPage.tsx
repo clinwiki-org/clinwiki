@@ -566,7 +566,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             this.state.params || {};
           // current site view url should match w/one of the site views url
           const checkUrls = filter(
-            siteViews => siteViews.url === this.props.match.params.siteviewUrl,
+            siteViews => siteViews.url == this.props.match.params.siteviewUrl,
             siteViews
           );
 
