@@ -13,6 +13,7 @@ import UpdateSiteViewMutation, {
 import CopySiteViewMutation, {
   CopySiteViewMutationFn,
 } from 'mutations/CopySiteViewMutation';
+import { Link } from 'react-router-dom';
 
 interface SiteViewItemProps {
   match: any;
@@ -116,7 +117,9 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
             )}
           </UpdateSiteViewMutation>
         </td>
-        <td>{urlString}</td>
+        <td>
+          <Link to={`/search/${siteView.url}`}>{urlString}</Link>
+        </td>
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
           <CopySiteViewMutation>

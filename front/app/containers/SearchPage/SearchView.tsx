@@ -370,6 +370,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       firstRender: true,
     };
   }
+
   isStarColumn = (name: string): boolean => {
     return name === 'average_rating';
   };
@@ -533,6 +534,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     } else {
       if (!this.props.showCards)
         window.removeEventListener('resize', this.updateState);
+    }
+    if (this.state.totalResults) {
     }
   }
 
@@ -711,6 +714,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
               Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
             );
+          }
+          if (recordsTotal != this.state.totalResults) {
+            this.setState({
+              totalResults: recordsTotal,
+            });
           }
 
           let thisSiteView =
