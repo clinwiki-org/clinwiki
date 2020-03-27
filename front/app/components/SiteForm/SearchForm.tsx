@@ -162,16 +162,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     siteView
   ) => {
     const { name, value } = e.currentTarget;
-    console.log("NV", name,value)
-    const mutation = createMutation(name, value);
-    console.log("mutation", mutation)
-    console.log("SiteView", siteView)
-    console.log("StateMutatioms" ,this.state.mutations)
+    const mutation = createMutation(name, value)
     const view = updateView(siteView, this.state.mutations);
-    console.log("view",view)
     const currentValue = getViewValueByPath(mutation.path, view);
-    console.log("CurrentValue", currentValue)
-    console.log("NewValue",value)
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
       console.log('MUTATIONS', this.state.mutations);
@@ -183,25 +176,16 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     siteView
   ) => {
     const { name, value } = e.currentTarget;
-    console.log("NV", name,value)
     const mutation = createMutation(name, value);
-    console.log("mutation", mutation)
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
       console.log('MUTATIONS', this.state.mutations);
     });
   };
   handleDeleteButton= (view, index)=>{
-    console.log("UHHHHH",view)
       let name = `set:search.results.buttons.items`
   
       let items= view.search.results.buttons.items
-      console.log("Items",items.length)
       items.splice(index,1)
-      //let removedItem = items.splice(index,1)
-
-      console.log(index)
-    console.log("That new new",items)
-    console.log("??", view)
         this.handleAddMutationForDeleteButton({ currentTarget:{ name: name, value: items}}, view)
      }
   getCrowdFields = view => {
@@ -529,23 +513,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       <Col md={6}>
       <AggsHeaderContainer>
             <h3>Aggs visibility</h3>
-            {/* <StyledCheckbox 
-              checked={this.state.showAllAggs}
-              onChange={this.handleShowAllToggle('aggs')}>
-                  Show all
-                </StyledCheckbox> */}
               </AggsHeaderContainer>
          
             <StyledLabel>Add to Autosuggest</StyledLabel>
-            {/* <StyledFormControl
-                name="set:search.autoSuggest.aggs.selected.kind"
-                componentClass="select"
-                //@ts-ignore
-                onChange={e => this.handleAddMutation(e,view)}
-                value={view.search.autoSuggest.aggs.selected.kind}>
-                <option value="BLACKLIST">All except</option>
-                <option value="WHITELIST">Only</option>
-              </StyledFormControl> */}
             <MultiInput
               name="set:search.autoSuggest.aggs.selected.values"
               options={AGGS_OPTIONS}
@@ -572,20 +542,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           <Col md={6}>
               <AggsHeaderContainer>
                 <h3>Crowd aggs visibility</h3>
-                {/* <StyledCheckbox
-                  checked={this.state.showAllCrowdAggs}
-                  onChange={this.handleShowAllToggle('crowdAggs')}>
-                  Show all
-                </StyledCheckbox> */}
               </AggsHeaderContainer>
-              {/* <StyledFormControl
-                name="set:search.autoSuggest.crowdAggs.selected.kind"
-                componentClass="select"
-                onChange={(e: { currentTarget: { name: string; value: any; }; }) => this.handleAddMutation(e, view)}
-                v={view.search.autoSuggest.crowdAggs.selected.kind}>
-                <option value="BLACKLIST">All except</option>
-                <option value="WHITELIST">Only</option>
-              </StyledFormControl> */}
               <StyledLabel>Add to Autosuggest</StyledLabel>
               <MultiInput
               name="set:search.autoSuggest.crowdAggs.selected.values"
@@ -876,19 +833,9 @@ renderBreadCrumbsConfig=(showBreadCrumbs,view,fields, crowdFields,updateSiteView
     );
 
     const showFacetBar = view.search.config.fields.showFacetBar;
-    // const config = displayFields(
-    //   this.state.showFacetBar
-    //     ? false : view.search.config.showfacetBar,
-    //     this.state.showFacetBar ? false : view.search.config.showFacetBar
-
-    // );
-    // console.log('Facet bar set to:', view.search.config.fields.showFacetBar);
     const showBreadCrumbs = view.search.config.fields.showBreadCrumbs;
-    // console.log("Crumbs bar set to:",view.search.config.fields.showBreadCrumbs)
     const showAutoSuggest = view.search.config.fields.showAutoSuggest;
-    // console.log("Crumbs bar set to:",view.search.config.fields.showAutoSuggest)
     const showResults = view.search.config.fields.showResults;
-    // console.log("Results set to:",view.search.config.fields.showResults)
     const showPresearch = view.search.config.fields.showPresearch
     return (
       <UpdateSiteViewMutation
