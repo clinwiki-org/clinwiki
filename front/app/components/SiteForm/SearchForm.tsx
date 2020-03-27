@@ -178,6 +178,18 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     });
   };
 
+  handleAddMutationForDeleteButton = (
+    e: { currentTarget: { name: string; value: any } },
+    siteView
+  ) => {
+    const { name, value } = e.currentTarget;
+    console.log("NV", name,value)
+    const mutation = createMutation(name, value);
+    console.log("mutation", mutation)
+    this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
+      console.log('MUTATIONS', this.state.mutations);
+    });
+  };
   handleDeleteButton= (view, index)=>{
     console.log("UHHHHH",view)
       let name = `set:search.results.buttons.items`
@@ -190,7 +202,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       console.log(index)
     console.log("That new new",items)
     console.log("??", view)
-        this.handleAddMutation({ currentTarget:{ name: name, value: items}}, view)
+        this.handleAddMutationForDeleteButton({ currentTarget:{ name: name, value: items}}, view)
      }
   getCrowdFields = view => {
     return view.search.crowdAggs.fields.map(field => ({
