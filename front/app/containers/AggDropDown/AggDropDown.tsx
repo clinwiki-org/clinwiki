@@ -102,9 +102,13 @@ const QUERY_CROWD_AGG_BUCKETS = gql`
     $pageSize: Int!
     $aggOptionsFilter: String
     $url: String
+    $configType: String
+    $returnAll: Boolean    
   ) {
     aggBuckets: crowdAggBuckets(
       url: $url
+      configType: $configType
+      returnAll: $ returnAll
       params: {
         agg: $agg
         q: $q
