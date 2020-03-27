@@ -100,8 +100,13 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
 
   render() {
     const { siteView, site } = this.props;
-    console.log(this.props.site);
-    const urlString = `https://${site.subdomain}.clinwiki.org/search/${siteView.url}`;
+
+    let urlString;
+    if (site.subdomain != 'default') {
+      urlString = `https://${site.subdomain}.clinwiki.org/search/${siteView.url}`;
+    } else {
+      urlString = `https://clinwiki.org/search/${siteView.url}`;
+    }
 
     return (
       <tr>
