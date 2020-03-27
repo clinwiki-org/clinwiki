@@ -793,7 +793,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             const siteViewUrl = this.props.match.params.siteviewUrl;
             const siteViews = site.siteViews;
             let thisSiteView =
-              siteViews.find(siteview => siteview.url == siteViewUrl) ||
+            //@ts-ignore
+            siteViews.find(
+              siteview =>
+                //@ts-ignore
+                siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
+            ) || site.siteView;
               site.siteView;
             if (siteViewUrl === 'default') {
               thisSiteView = site.siteView;
