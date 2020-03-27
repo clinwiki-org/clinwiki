@@ -41,12 +41,14 @@ export const SearchPageParamsQuery = gql`
         values
         gte
         lte
+        includeMissingFields
       }
       crowdAggFilters {
         field
         values
         gte
         lte
+        includeMissingFields
       }
       page
       pageSize

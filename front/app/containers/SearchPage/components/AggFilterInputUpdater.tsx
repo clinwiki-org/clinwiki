@@ -41,7 +41,7 @@ class AggFilterInputUpdater {
   updateSearchParams: any;
   agg: string;
 
-  ACCEPTED_FIELDS = ['values', 'gte', 'lte'];
+  ACCEPTED_FIELDS = ['values', 'gte', 'lte', 'includeMissingFields'];
 
   constructor(
     agg: string,
@@ -161,6 +161,16 @@ class AggFilterInputUpdater {
             .format('YYYY-MM-DD')
         : this.aggFilterInput.lte;
     }
+  }
+
+  allowsMissing(): boolean {
+    return this.aggFilterInput!.includeMissingFields || false;
+  }
+
+  toggleAllowMissing(): void {
+    this.aggFilterInput.includeMissingFields = !this.aggFilterInput
+      .includeMissingFields;
+    this.updateSearchParamsForAggFilterInput();
   }
 }
 

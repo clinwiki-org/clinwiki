@@ -10,6 +10,7 @@ import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInp
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import Bucket from './Bucket';
 import UpdateWorkflowsViewMutation from 'mutations/UpdateWorflowsViewMutation';
+import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 
 interface BucketsProps {
   display: FieldDisplay;
@@ -38,8 +39,10 @@ class Buckets extends React.Component<BucketsProps> {
       updater,
     } = this.props;
     return pipe(
-      filter(({ key }) =>
-        visibleOptions.length ? visibleOptions.includes(key) : true
+      filter(
+        (bucket: AggBucket) =>
+          !bucketKeyIsMissing(bucket) &&
+          (visibleOptions.length ? visibleOptions.includes(bucket.key) : true)
       ),
       map((bucket: AggBucket) => {
         return (

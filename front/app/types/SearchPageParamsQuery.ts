@@ -35,6 +35,10 @@ export interface SearchPageParamsQuery_searchParams_aggFilters {
    * The end value (inclusive) for a range query
    */
   lte: string | null;
+  /**
+   * Whether to include missing fields
+   */
+  includeMissingFields: boolean | null;
 }
 
 export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
@@ -55,6 +59,10 @@ export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
    * The end value (inclusive) for a range query
    */
   lte: string | null;
+  /**
+   * Whether to include missing fields
+   */
+  includeMissingFields: boolean | null;
 }
 
 export interface SearchPageParamsQuery_searchParams {

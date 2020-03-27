@@ -34,6 +34,7 @@ export interface AggFilterInput {
   values?: string[] | null;
   gte?: string | null;
   lte?: string | null;
+  includeMissingFields?: boolean | null;
 }
 
 /**

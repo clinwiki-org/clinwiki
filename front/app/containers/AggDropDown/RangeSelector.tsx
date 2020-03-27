@@ -13,7 +13,6 @@ import {
 import { orderBy, debounce } from 'lodash';
 import styled from 'styled-components';
 import {
-  Panel,
   Row,
   Col,
   MenuItem,
@@ -45,11 +44,6 @@ interface RangeSelectorState {
   endText?: any;
 }
 
-const Container = styled.div`
-  padding: 10px;
-  padding-right: 0;
-`;
-
 class RangeSelector extends React.Component<
   RangeSelectorProps,
   RangeSelectorState
@@ -80,8 +74,8 @@ class RangeSelector extends React.Component<
       updater,
     } = this.props;
     const { startText, endText } = this.state;
-    if (/*hasMore ||*/ loading) {
-      // handleLoadMore();
+    if (hasMore || loading) {
+      handleLoadMore();
       return (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <BeatLoader key="loader" color="#fff" />
@@ -126,65 +120,56 @@ class RangeSelector extends React.Component<
     // end.sort();
 
     return (
-      <Panel.Collapse className="bm-panel-collapse">
-        <Panel.Body id="range-dropdown">
-          <Container>
-            <Row>
-              <Col className="range-selector">
-                <Form
-                  onSubmit={e => {
-                    e.preventDefault();
-                    this.setState(
-                      { ...this.state, start: startText, end: endText },
-                      this.onChange
-                    );
-                  }}>
-                  <FormGroup>
-                    <ControlLabel>Start</ControlLabel>
-                    <FormControl
-                      type="text"
-                      value={startText}
-                      onChange={e =>
-                        this.setState({
-                          ...this.state,
-                          startText: e.target.value,
-                        })
-                      }
-                      onBlur={e =>
-                        this.setState(
-                          { ...this.state, start: startText },
-                          this.onChange
-                        )
-                      }></FormControl>
-                  </FormGroup>
-                  <FormGroup>
-                    <ControlLabel>End</ControlLabel>
-                    <FormControl
-                      type="text"
-                      value={endText}
-                      onChange={e =>
-                        this.setState({
-                          ...this.state,
-                          endText: e.target.value,
-                        })
-                      }
-                      onBlur={e =>
-                        this.setState(
-                          { ...this.state, end: endText },
-                          this.onChange
-                        )
-                      }></FormControl>
-                  </FormGroup>
-                  <FormGroup>
-                    {/* this is a placebo, it's really done on onblur */}
-                    <Button type="submit">Enter</Button>
-                  </FormGroup>
-                </Form>
-              </Col>
-            </Row>
-          </Container>
-        </Panel.Body>
-      </Panel.Collapse>
+      <Row>
+        <Col className="range-selector">
+          <Form
+            onSubmit={e => {
+              e.preventDefault();
+              this.setState(
+                { ...this.state, start: startText, end: endText },
+                this.onChange
+              );
+            }}>
+            <FormGroup>
+              <ControlLabel>Start</ControlLabel>
+              <FormControl
+                type="text"
+                value={startText}
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    startText: e.target.value,
+                  })
+                }
+                onBlur={e =>
+                  this.setState(
+                    { ...this.state, start: startText },
+                    this.onChange
+                  )
+                }></FormControl>
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>End</ControlLabel>
+              <FormControl
+                type="text"
+                value={endText}
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    endText: e.target.value,
+                  })
+                }
+                onBlur={e =>
+                  this.setState({ ...this.state, end: endText }, this.onChange)
+                }></FormControl>
+            </FormGroup>
+            <FormGroup>
+              {/* this is a placebo, it's really done on onblur */}
+              <Button type="submit">Enter</Button>
+            </FormGroup>
+          </Form>
+        </Col>
+      </Row>
     );
   }
 }

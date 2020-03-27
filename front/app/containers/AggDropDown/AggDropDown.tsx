@@ -52,8 +52,14 @@ import Filter from './Filter';
 import SearchPageCrowdAggBucketsQuery from './queries/SearchPageCrowdAggBucketsQuery';
 import SearchPageAggBucketsQuery from './queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
+import AllowMissingCheckbox from './AllowMissingCheckbox';
 
 const PAGE_SIZE = 25;
+
+const Container = styledComponents.div`
+  padding: 10px;
+  padding-right: 0;
+`;
 
 const PanelWrapper = styledComponents.div`
   .flex {
@@ -359,13 +365,24 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     ]) as SiteViewFragment_search_aggs_fields | null;
     if (field?.display === FieldDisplay.RANGE) {
       return (
-        <RangeSelector
-          isOpen={isOpen}
-          hasMore={hasMore}
-          loading={loading}
-          buckets={buckets}
-          handleLoadMore={this.handleLoadMore}
-        />
+        <Panel.Collapse id="range-selector">
+          <Panel.Body>
+            <Container>
+              <RangeSelector
+                isOpen={isOpen}
+                hasMore={hasMore}
+                loading={loading}
+                buckets={buckets}
+                handleLoadMore={this.handleLoadMore}
+              />
+            </Container>
+            {!loading && (
+              <Container>
+                <AllowMissingCheckbox buckets={buckets} />
+              </Container>
+            )}
+          </Panel.Body>
+        </Panel.Collapse>
       );
     }
     return (
@@ -399,6 +416,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             agg={agg}
             field={field}
           />
+          <AllowMissingCheckbox buckets={buckets} />
         </Panel.Body>
       </Panel.Collapse>
     );
