@@ -99,9 +99,15 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   };
 
   render() {
-    const { siteView } = this.props;
-    const urlString = 'clinwiki.org/search/' + siteView.url;
-    // console.log(urlString);
+    const { siteView, site } = this.props;
+
+    let urlString;
+    if (site.subdomain != 'default') {
+      urlString = `https://${site.subdomain}.clinwiki.org/search/${siteView.url}`;
+    } else {
+      urlString = `https://clinwiki.org/search/${siteView.url}`;
+    }
+
     return (
       <tr>
         <td>{siteView.name}</td>
@@ -118,7 +124,9 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           </UpdateSiteViewMutation>
         </td>
         <td>
-          <Link to={`/search/${siteView.url}`}>{urlString}</Link>
+          <a target="_blank" href={urlString}>
+            {urlString}
+          </a>
         </td>
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
