@@ -39,4 +39,5 @@ export interface SearchPageAggBucketsQueryVariables {
   aggOptionsSort?: SortInput[] | null;
   url?: string | null;
   configType?: string | null;
+  returnAll?: boolean | null;
 }
