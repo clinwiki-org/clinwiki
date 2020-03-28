@@ -133,7 +133,7 @@ class RangeSelector extends React.Component<
             <FormGroup>
               <ControlLabel>Start</ControlLabel>
               <FormControl
-                type="text"
+                type="date"
                 value={startText}
                 onChange={e =>
                   this.setState({
@@ -151,7 +151,7 @@ class RangeSelector extends React.Component<
             <FormGroup>
               <ControlLabel>End</ControlLabel>
               <FormControl
-                type="text"
+                type="date"
                 value={endText}
                 onChange={e =>
                   this.setState({
