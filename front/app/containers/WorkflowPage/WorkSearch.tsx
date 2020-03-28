@@ -14,6 +14,7 @@ import { gql } from 'apollo-boost';
 import * as Labels from "./SuggestedLabels";
 import styled from 'styled-components';
 import './WorkStyle.css'
+import { runInThisContext } from 'vm';
 const SEARCH_QUERY = gql`
 query AllQuery($nctId: String!) {
   study(nctId: $nctId) {
@@ -60,14 +61,64 @@ export interface State {
 }
 
 export class WorkSearch extends React.Component<Props, State> {
+  data: string;
+
+  public renderQuery() {
+    return(<Query
+      query={SEARCH_QUERY}
+      variables={{
+        nctId: this.props.nctid,
+      }}
+    >{({ loading, error, data }) => {
+      if (loading) return 'Loading...';
+      if (error) return `Error! ${error.message}`;
+
+      let here = ``;
+      this.data = JSON.stringify(data);
+      // initData = JSON.stringify(data);
+      // console.log(initData.length);
+      console.log("Running Query");
+      // console.log(this.data.length);
+      return (
+        <div id="whatever">{this.data}</div>
+      )
+    }}
+    </Query>);
+  }
+
   constructor(props: Props) {
     super(props);
-    this.state = {
-      value: "",
-      list: [],
-      similarityResult: [{ text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }]
+    if(typeof this.props.list !== 'undefined') {
+      this.state = {
+        value: "",
+        list: this.props.list,
+        similarityResult: [{ text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }]
+      }
+    } else {
+      this.state = {
+        value: "",
+        list: [],
+        similarityResult: [{ text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }, { text: "", section: "", keyWord: "" }]
+      }
     }
     this.removeItem = this.removeItem.bind(this)
+  }
+
+  initRun(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof this.props.list !== "undefined") {
+      for (var i = 0; i < this.state.list.length; i++) {
+        if (this.props.list.indexOf(this.state.list[i]) < 0) {
+          this.state.list.splice(i, 1);
+        }
+      }
+      this.setState({
+        similarityResult: Similarity.findPhrases({ wordsToFind: this.state.list, text: JSON.stringify(this.data) }),
+      });
+    } else {
+      this.state.list.splice(0, this.state.list.length);
+    }
   }
 
   addItem(e: any) {
@@ -90,7 +141,6 @@ export class WorkSearch extends React.Component<Props, State> {
       Array.from(form).forEach(function (element) { 
         element.reset()
       }); 
-      // form.reset();
     }
 
   }
@@ -127,15 +177,15 @@ export class WorkSearch extends React.Component<Props, State> {
     }
   }
 
-
-  data: string;
+  firstRender: boolean = true;
+  
   public render() {
     return (
       <div className="App">
         <div className="content">
           <div className="container">
             <section className="section">
-              <List items={this.state.list} delete={this.removeItem} />
+              <List items={this.state.list} nctid={this.props.nctid}  delete={this.removeItem} />
             </section>
             <hr />
             <section className="section">
@@ -143,7 +193,10 @@ export class WorkSearch extends React.Component<Props, State> {
                 <input type="text" onChange={(e) => this.setState({ value: e.target.value })} className="input"/>
                 <button className="button is-info buttonstyle" onClick={(e) => this.addItem(e)}>
                   Add Item
-                  </button>
+                </button>
+                <button className="button is-info buttonstyle" onClick={(e) => this.initRun(e)}>
+                  Reset
+                </button>
               </form>   
               <div>
                 <StyledTable striped bordered>
@@ -152,18 +205,18 @@ export class WorkSearch extends React.Component<Props, State> {
                     variables={{
                       nctId: this.props.nctid,
                     }}
-                  >{({ loading, error, data }) => {
+                  > 
+                  {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
-
                     let here = ``;
                     this.data = JSON.stringify(data);
-
                     return (
                       <div></div>
                     )
                   }}
                   </Query>
+                  
                   <thead>
                     <tr>
                       <th>Phrase</th>
@@ -202,5 +255,8 @@ export class WorkSearch extends React.Component<Props, State> {
         </div>
       </div>
     );
+    
   }
+  
+
 }
