@@ -36,7 +36,7 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         />
       );
     } else if (agg.lte || agg.gte) {
-      let label = `${updater.getMinString()} -- ${updater.getMaxString()}`;
+      let label = `${updater.getMinString()} — ${updater.getMaxString()}`;
       if (!agg.lte) {
         label = `≥ ${updater.getMinString()}`;
       }

@@ -120,7 +120,6 @@ class RangeSelector extends React.Component<
     // end.sort();
 
     return (
-      <Row>
         <Col className="range-selector">
           <Form
             onSubmit={e => {
@@ -169,7 +168,6 @@ class RangeSelector extends React.Component<
             </FormGroup>
           </Form>
         </Col>
-      </Row>
     );
   }
 }
