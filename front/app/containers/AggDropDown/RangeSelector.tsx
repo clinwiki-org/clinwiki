@@ -53,15 +53,15 @@ class RangeSelector extends React.Component<
     this.state = {
       start: null,
       end: null,
-      startText: this.props.updater.aggFilterInput.gte,
-      endText: this.props.updater.aggFilterInput.lte,
+      startText: this.props.updater.input.gte,
+      endText: this.props.updater.input.lte,
     };
   }
 
   onChange = () =>
     this.props.updater.changeRange([
-      this.state.start || this.props.updater.aggFilterInput.gte,
-      this.state.end || this.props.updater.aggFilterInput.lte,
+      this.state.start || this.props.updater.input.gte,
+      this.state.end || this.props.updater.input.lte,
     ]);
 
   render() {
@@ -94,8 +94,8 @@ class RangeSelector extends React.Component<
     //   const identifier = keyAsString || key;
     //   if (
     //     identifier === null ||
-    //     (this.props?.updater?.aggFilterInput?.lte &&
-    //       identifier >= this.props?.updater?.aggFilterInput?.lte)
+    //     (this.props?.updater?.input?.lte &&
+    //       identifier >= this.props?.updater?.input?.lte)
     //   ) {
     //     return;
     //   }
@@ -107,8 +107,8 @@ class RangeSelector extends React.Component<
     //   const identifier = keyAsString || key;
     //   if (
     //     identifier === null ||
-    //     (this.props?.updater?.aggFilterInput?.gte &&
-    //       identifier <= this.props?.updater?.aggFilterInput?.gte)
+    //     (this.props?.updater?.input?.gte &&
+    //       identifier <= this.props?.updater?.input?.gte)
     //   ) {
     //     return;
     //   }
@@ -120,54 +120,54 @@ class RangeSelector extends React.Component<
     // end.sort();
 
     return (
-        <Col className="range-selector">
-          <Form
-            onSubmit={e => {
-              e.preventDefault();
-              this.setState(
-                { ...this.state, start: startText, end: endText },
-                this.onChange
-              );
-            }}>
-            <FormGroup>
-              <ControlLabel>Start</ControlLabel>
-              <FormControl
-                type="date"
-                value={startText}
-                onChange={e =>
-                  this.setState({
-                    ...this.state,
-                    startText: e.target.value,
-                  })
-                }
-                onBlur={e =>
-                  this.setState(
-                    { ...this.state, start: startText },
-                    this.onChange
-                  )
-                }></FormControl>
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>End</ControlLabel>
-              <FormControl
-                type="date"
-                value={endText}
-                onChange={e =>
-                  this.setState({
-                    ...this.state,
-                    endText: e.target.value,
-                  })
-                }
-                onBlur={e =>
-                  this.setState({ ...this.state, end: endText }, this.onChange)
-                }></FormControl>
-            </FormGroup>
-            <FormGroup>
-              {/* this is a placebo, it's really done on onblur */}
-              <Button type="submit">Enter</Button>
-            </FormGroup>
-          </Form>
-        </Col>
+      <Col className="range-selector">
+        <Form
+          onSubmit={e => {
+            e.preventDefault();
+            this.setState(
+              { ...this.state, start: startText, end: endText },
+              this.onChange
+            );
+          }}>
+          <FormGroup>
+            <ControlLabel>Start</ControlLabel>
+            <FormControl
+              type="date"
+              value={startText}
+              onChange={e =>
+                this.setState({
+                  ...this.state,
+                  startText: e.target.value,
+                })
+              }
+              onBlur={e =>
+                this.setState(
+                  { ...this.state, start: startText },
+                  this.onChange
+                )
+              }></FormControl>
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>End</ControlLabel>
+            <FormControl
+              type="date"
+              value={endText}
+              onChange={e =>
+                this.setState({
+                  ...this.state,
+                  endText: e.target.value,
+                })
+              }
+              onBlur={e =>
+                this.setState({ ...this.state, end: endText }, this.onChange)
+              }></FormControl>
+          </FormGroup>
+          <FormGroup>
+            {/* this is a placebo, it's really done on onblur */}
+            <Button type="submit">Enter</Button>
+          </FormGroup>
+        </Form>
+      </Col>
     );
   }
 }

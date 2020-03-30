@@ -9,7 +9,7 @@ import { AggKind } from 'containers/SearchPage/shared';
 import { Checkbox } from 'react-bootstrap';
 import { camelCase, capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
-import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { AggFilterSiteConfigUpdater } from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
 
 interface AggFieldProps {
@@ -185,15 +185,12 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <FilterContainer>
               <AggFilterInputUpdateContext.Provider
                 value={{
-                  updater: new AggFilterInputUpdater(
+                  updater: new AggFilterSiteConfigUpdater(
                     this.props.field.name,
-                    searchParams,
-                    () => {
-                      console.log('todo: how often do we actually use this?');
-                    },
-                    this.props.kind === 'aggs'
-                      ? 'aggFilters'
-                      : 'crowdAggFilters'
+                    this.props.field.preselected,
+                    this.props.onAddMutation,
+                    this.props.kind,
+                    'preselected'
                   ),
                 }}>
                 <AggDropDown
@@ -226,15 +223,12 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <FilterContainer>
               <AggFilterInputUpdateContext.Provider
                 value={{
-                  updater: new AggFilterInputUpdater(
+                  updater: new AggFilterSiteConfigUpdater(
                     this.props.field.name,
-                    searchParams,
-                    () => {
-                      console.log('todo: how often do we actually use this?');
-                    },
-                    this.props.kind === 'aggs'
-                      ? 'aggFilters'
-                      : 'crowdAggFilters'
+                    this.props.field.visibleOptions,
+                    this.props.onAddMutation,
+                    this.props.kind,
+                    'visibleOptions'
                   ),
                 }}>
                 <AggDropDown

@@ -30,48 +30,69 @@ import {
 } from 'ramda';
 
 /**
- * The purpose of this class is to construct
- * a new set of search params based on the agg
- * filter input provided
+ * This class gives us an encapsulated tool for representing agg
+ * configurations both for search filters as well as setting defaults
  */
-class AggFilterInputUpdater {
-  aggFilterInput: AggFilterInput;
-  searchParams: SearchParams;
-  aggFilterGrouping: string;
-  updateSearchParams: any;
+abstract class AggFilterInputUpdaterBase {
+  input: AggFilterInput;
+  settings: SearchParams | any;
+  grouping: string;
+  updateSettings: any;
   agg: string;
 
   ACCEPTED_FIELDS = ['values', 'gte', 'lte', 'includeMissingFields'];
 
   constructor(
     agg: string,
-    searchParams: SearchParams | any,
-    updateSearchParams: any,
+    settings: SearchParams | any,
+    updateSettings: any,
     grouping: string
   ) {
     this.agg = agg;
-    this.searchParams = searchParams;
-    this.updateSearchParams = updateSearchParams;
-    this.aggFilterGrouping = grouping;
-    if (!this.searchParams || !this.updateSearchParams) {
+    this.settings = settings;
+    this.updateSettings = updateSettings;
+    this.grouping = grouping;
+    if (!this.settings || !this.updateSettings) {
       return;
     }
-    const result = find(propEq('field', agg))(this.searchParams[grouping]);
+    this.configureInput();
+  }
+
+  abstract onUpdateFilter(): void;
+
+  configureInput() {
+    const result = find(propEq('field', this.agg))(
+      this.settings[this.grouping]
+    );
     if (result) {
-      this.aggFilterInput = result as AggFilterInput;
+      this.input = result as AggFilterInput;
     } else {
-      this.aggFilterInput = {
-        field: agg,
+      this.input = {
+        field: this.agg,
       };
     }
   }
 
+  addFilter(value: string) {
+    this.input.values = this.input.values
+      ? [...this.input.values, value]
+      : [value];
+    this.onUpdateFilter();
+  }
+
+  removeFilter(value: string) {
+    this.input.values = this.input.values
+      ? filter(x => x !== value, this.input.values)
+      : this.input.values;
+    this.onUpdateFilter();
+  }
+
   hasNoFilters(): boolean {
     for (let field of this.ACCEPTED_FIELDS) {
-      if (isEmpty(this.aggFilterInput[field])) {
+      if (isEmpty(this.input[field])) {
         continue;
       }
-      if (isNil(this.aggFilterInput[field])) {
+      if (isNil(this.input[field])) {
         continue;
       }
       return false;
@@ -79,41 +100,11 @@ class AggFilterInputUpdater {
     return true;
   }
 
-  updateSearchParamsForAggFilterInput(): void {
-    const allButThisAgg = filter(
-      (x: AggFilterInput) => x.field !== this.agg,
-      this.searchParams[this.aggFilterGrouping]
-    );
-    if (this.hasNoFilters()) {
-      this.updateSearchParams({
-        [this.aggFilterGrouping as string]: allButThisAgg,
-      });
-    } else {
-      this.updateSearchParams({
-        [this.aggFilterGrouping]: [...allButThisAgg, this.aggFilterInput],
-      });
-    }
-  }
-
-  addFilter(value: string) {
-    this.aggFilterInput.values = this.aggFilterInput.values
-      ? [...this.aggFilterInput.values, value]
-      : [value];
-    this.updateSearchParamsForAggFilterInput();
-  }
-
-  removeFilter(value: string) {
-    this.aggFilterInput.values = this.aggFilterInput.values
-      ? filter(x => x !== value, this.aggFilterInput.values)
-      : this.aggFilterInput.values;
-    this.updateSearchParamsForAggFilterInput();
-  }
-
   isSelected(key: string): boolean {
-    if (this.aggFilterInput.values === undefined) {
+    if (this.input.values === undefined) {
       return false;
     }
-    return contains(key as string, this.aggFilterInput.values as Array<string>);
+    return contains(key as string, this.input.values as Array<string>);
   }
 
   toggleFilter(key: string): void {
@@ -121,19 +112,19 @@ class AggFilterInputUpdater {
   }
 
   changeRange([gte, lte]): void {
-    this.aggFilterInput.gte = gte;
-    this.aggFilterInput.lte = lte;
-    this.updateSearchParamsForAggFilterInput();
+    this.input.gte = gte;
+    this.input.lte = lte;
+    this.onUpdateFilter();
   }
 
   removeRange(): void {
-    this.aggFilterInput = omit(['gte', 'lte'], this.aggFilterInput);
-    this.updateSearchParamsForAggFilterInput();
+    this.input = omit(['gte', 'lte'], this.input);
+    this.onUpdateFilter();
   }
 
   getRangeSelection(): Array<any> | undefined {
-    if (this.aggFilterInput.gte || this.aggFilterInput.lte) {
-      return [this.aggFilterInput.gte, this.aggFilterInput.lte];
+    if (this.input.gte || this.input.lte) {
+      return [this.input.gte, this.input.lte];
     }
   }
 
@@ -143,34 +134,82 @@ class AggFilterInputUpdater {
 
   getMinString(): string | undefined {
     // need to check for agg type once we start using this for more than date.
-    if (this.aggFilterInput.gte) {
+    if (this.input.gte) {
       return this.isDateAgg()
-        ? moment(this.aggFilterInput.gte)
+        ? moment(this.input.gte)
             .utc(false)
             .format('YYYY-MM-DD')
-        : this.aggFilterInput.gte;
+        : this.input.gte;
     }
   }
 
   getMaxString(): string | undefined {
     // need to check for agg type once we start using this for more than date.
-    if (this.aggFilterInput.lte) {
+    if (this.input.lte) {
       return this.isDateAgg()
-        ? moment(this.aggFilterInput.lte)
+        ? moment(this.input.lte)
             .utc(false)
             .format('YYYY-MM-DD')
-        : this.aggFilterInput.lte;
+        : this.input.lte;
     }
   }
 
   allowsMissing(): boolean {
-    return this.aggFilterInput!.includeMissingFields || false;
+    return this.input!.includeMissingFields || false;
   }
 
   toggleAllowMissing(): void {
-    this.aggFilterInput.includeMissingFields = !this.aggFilterInput
-      .includeMissingFields;
-    this.updateSearchParamsForAggFilterInput();
+    this.input.includeMissingFields = !this.input.includeMissingFields;
+    this.onUpdateFilter();
+  }
+}
+
+/**
+ * Responsible for updating aggs in the context of a search
+ */
+class AggFilterInputUpdater extends AggFilterInputUpdaterBase {
+  onUpdateFilter(): void {
+    const allButThisAgg = filter(
+      (x: AggFilterInput) => x.field !== this.agg,
+      this.settings[this.grouping]
+    );
+    if (this.hasNoFilters()) {
+      this.updateSettings({
+        [this.grouping as string]: allButThisAgg,
+      });
+    } else {
+      this.updateSettings({
+        [this.grouping]: [...allButThisAgg, this.input],
+      });
+    }
+  }
+}
+
+export class AggFilterSiteConfigUpdater extends AggFilterInputUpdaterBase {
+  kind: 'preselected' | 'visibleOptions';
+  constructor(
+    agg: string,
+    settings: SearchParams | any,
+    updateSettings: any,
+    grouping: string,
+    kind: 'preselected' | 'visibleOptions'
+  ) {
+    super(agg, settings, updateSettings, grouping);
+    this.kind = kind;
+  }
+
+  configureInput() {
+    this.input = { ...this.settings };
+  }
+
+  onUpdateFilter(): void {
+    const name = `set:search.${this.grouping}.fields.${this.agg}.${this.kind}.values`;
+    this.updateSettings({
+      currentTarget: {
+        name,
+        value: this.input.values,
+      },
+    });
   }
 }
 
