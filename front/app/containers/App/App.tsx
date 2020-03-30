@@ -4,6 +4,7 @@ import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage';
 import NotConfiguredPage from 'containers/NotConfiguredPage';
 import SearchPage from 'containers/SearchPage';
+import ProfilePage from 'containers/ProfilePage'
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
@@ -60,7 +61,8 @@ class App extends React.PureComponent<AppProps> {
             />
             <Route path="/study/:nctId" component={StudyPage} />
             <Route path="/intervention/:id" component={InterventionPage} />
-            <Route path="/profile" component={EditProfilePage} />
+            <Route exact path="/profile" component={EditProfilePage} />
+            <Route path="/profile/:id" component={ProfilePage}/>
             <Route path="/workflows" component={EditWorkflowsPage} />
             <Route path="/sites/:id/edit" component={SitesEditPage} />
             <Route path="/sites/new" component={SitesNewPage} />
