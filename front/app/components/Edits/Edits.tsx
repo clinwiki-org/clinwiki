@@ -95,13 +95,13 @@ class Edits extends React.PureComponent<EditsProps> {
     if (!user) return 'Anonymous';
     if (user.firstName) {
       const userName = (
-        <Link to={`profile/${user.id}`}>
+        <Link to={`/profile/${user.id}`}>
           `${user.firstName} ${user.lastName && user.lastName[0]}`
         </Link>
       );
       return userName;
     }
-    const userName = <Link to={`profile/${user.id}`}>{user.email}</Link>;
+    const userName = <Link to={`/profile/${user.id}`}>{user.email}</Link>;
     return userName;
   };
 
