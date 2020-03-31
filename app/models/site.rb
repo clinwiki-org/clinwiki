@@ -29,6 +29,26 @@ class Site < ApplicationRecord
 
   def create_site_view
     self.site_views.new(name:"Primary",default:true)
+    self.site_views.new(name:"User History",url:"user", default: false, updates: default_user_updates )
     save!
+  end
+
+  def default_user_updates
+    [ {"path"=>["search", "config", "fields", "showFacetBar"],
+         "payload"=>"false",
+         "operation"=>"set"},
+        {"path"=>["search", "config", "fields", "showAutoSuggest"],
+         "payload"=>"false",
+         "operation"=>"set"},
+        {"path"=>["search", "config", "fields", "showBreadCrumbs"],
+         "payload"=>"false",
+         "operation"=>"set"},
+        {"path"=>["search", "config", "fields", "showResults"],
+         "payload"=>"true",
+         "operation"=>"set"},
+     {"path"=>["search", "type"],
+     "payload"=>"user",
+         "operation"=>"set"}
+    ]
   end
 end

@@ -62,6 +62,7 @@ const SITE_VIEW_FRAGMENT = gql`
       ...SiteStudyPageFragment
     }
     search {
+      type
       autoSuggest {
         aggs {
           fields {

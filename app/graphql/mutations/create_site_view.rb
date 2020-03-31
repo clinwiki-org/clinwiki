@@ -7,6 +7,7 @@ module Mutations
     argument :url, String, required: false
     argument :description, String, required: false
     argument :default, Boolean, required: true
+    argument :type, String, required: false
     argument :mutations,[Types::SiteViewMutationInputType],required: true
     argument :site_id, Integer, required: true
 
@@ -15,7 +16,8 @@ module Mutations
       if site.nil?
         return   { site_view: nil, errors: ["Site not found"] }
       end
-      view = site.site_views.new(name:args[:name], default: args[:default], url: args[:url], description: args[:description])
+      view = site.site_views.new()
+      view.attributes = args.slice(:name,:url,:description,:default, :type)
       mutations = args[:mutations].clone.map do |mutation|
         begin
           mutation[:payload] = JSON.parse(mutation[:payload])
