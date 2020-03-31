@@ -9,6 +9,9 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 13
+- Support for date and value range filters
+
 ### Version 12
 - Google OAuth
 - Workflow "typo" search functionality
