@@ -12,6 +12,7 @@ export const aggsOrdered = [
   'phase',
   'rating_dimensions',
   'sponsors',
+  'start_date',
   'study_type',
 ];
 
@@ -88,3 +89,6 @@ export const starColor = '#7ed964';
 export const MAX_WINDOW_SIZE = 10000;
 
 export const DEFAULT_SEARCH_HASH = 'ANUr6Wwa';
+
+export const STRING_MISSING_IDENTIFIER = 'MISSING';
+export const DATE_MISSING_IDENTIFIER = '-99999999999';

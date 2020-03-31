@@ -12,6 +12,8 @@ import { AggKind } from 'containers/SearchPage/shared';
 import { Checkbox } from 'react-bootstrap';
 import { camelCase, capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
@@ -217,6 +219,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     const { configType } = this.props;
     const selected = new Set(this.props.field.preselected.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
+    const searchParams = {
+      q: ({ key: 'AND', children: [] } as unknown) as string[],
+      page: 0,
+      pageSize: 25,
+      aggFilters: [],
+      crowdAggFilters: [],
+      sorts: [],
+    };
     return (
       <>
         <h4>
@@ -240,30 +250,37 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           </CrumbsContainer>
           <FiltersContainer>
             <FilterContainer>
-              <AggDropDown
-                agg={this.props.field.name}
-                aggKind={this.props.kind}
-                searchParams={{
-                  q: ({ key: 'AND', children: [] } as unknown) as string[],
-                  page: 0,
-                  pageSize: 25,
-                  aggFilters: [],
-                  crowdAggFilters: [],
-                  sorts: [],
-                }}
-                display={this.props.field.display}
-                isOpen={this.state.isValuesOpen}
-                selectedKeys={selected}
-                addFilter={this.handleAddFilter('preselected')}
-                addAllFilters={this.handleSelectAll('preselected')}
-                removeFilter={this.handleRemoveFilter('preselected')}
-                removeAllFilters={this.handleDeSelectAll('preselected')}
-                onOpen={this.handleOpen('preselected')}
-                currentSiteView={this.props.view}
-                configType={this.props.configType}
-                returnAll={this.props.returnAll}
-                
-              />
+              <AggFilterInputUpdateContext.Provider
+                value={{
+                  updater: new AggFilterInputUpdater(
+                    this.props.field.name,
+                    searchParams,
+                    () => {
+                      console.log('todo: how often do we actually use this?');
+                    },
+                    this.props.kind === 'aggs'
+                      ? 'aggFilters'
+                      : 'crowdAggFilters'
+                  ),
+                }}>
+                <AggDropDown
+                  agg={this.props.field.name}
+                  aggKind={this.props.kind}
+                  searchParams={searchParams}
+                  display={this.props.field.display}
+                  isOpen={this.state.isValuesOpen}
+                  selectedKeys={selected}
+                  addFilter={this.handleAddFilter('preselected')}
+                  addAllFilters={this.handleSelectAll('preselected')}
+                  removeFilter={this.handleRemoveFilter('preselected')}
+                  removeAllFilters={this.handleDeSelectAll('preselected')}
+                  onOpen={this.handleOpen('preselected')}
+                  currentSiteView={this.props.view}
+                  configType={this.props.configType}
+                  returnAll={this.props.returnAll}
+
+                />
+              </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
           </FiltersContainer>
           <StyledLabel>Visible options</StyledLabel>
@@ -280,30 +297,44 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           </CrumbsContainer>
           <FiltersContainer>
             <FilterContainer>
-              <AggDropDown
-                agg={this.props.field.name}
-                aggKind={this.props.kind}
-                searchParams={{
-                  q: ({ key: 'AND', children: [] } as unknown) as string[],
-                  page: 0,
-                  pageSize: 25,
-                  aggFilters: [],
-                  crowdAggFilters: [],
-                  sorts: [],
-                }}
-                display={this.props.field.display}
-                isOpen={this.state.isVisibleOptionsOpen}
-                selectedKeys={visibleOptions}
-                addFilter={this.handleAddFilter('visibleOptions')}
-                addAllFilters={this.handleSelectAll('visibleOptions')}
-                removeFilter={this.handleRemoveFilter('visibleOptions')}
-                removeAllFilters={this.handleDeSelectAll('visibleOptions')}
-                onOpen={this.handleOpen('visibleOptions')}
-                currentSiteView={this.props.view}
-                configType={this.props.configType}
-                returnAll={this.props.returnAll}
+              <AggFilterInputUpdateContext.Provider
+                value={{
+                  updater: new AggFilterInputUpdater(
+                    this.props.field.name,
+                    searchParams,
+                    () => {
+                      console.log('todo: how often do we actually use this?');
+                    },
+                    this.props.kind === 'aggs'
+                      ? 'aggFilters'
+                      : 'crowdAggFilters'
+                  ),
+                }}>
+                <AggDropDown
+                  agg={this.props.field.name}
+                  aggKind={this.props.kind}
+                  searchParams={{
+                    q: ({ key: 'AND', children: [] } as unknown) as string[],
+                    page: 0,
+                    pageSize: 25,
+                    aggFilters: [],
+                    crowdAggFilters: [],
+                    sorts: [],
+                  }}
+                  display={this.props.field.display}
+                  isOpen={this.state.isVisibleOptionsOpen}
+                  selectedKeys={visibleOptions}
+                  addFilter={this.handleAddFilter('visibleOptions')}
+                  addAllFilters={this.handleSelectAll('visibleOptions')}
+                  removeFilter={this.handleRemoveFilter('visibleOptions')}
+                  removeAllFilters={this.handleDeSelectAll('visibleOptions')}
+                  onOpen={this.handleOpen('visibleOptions')}
+                  currentSiteView={this.props.view}
+                  configType={this.props.configType}
+                  returnAll={this.props.returnAll}
 
-              />
+                />
+              </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
           </FiltersContainer>
           <div>
@@ -323,6 +354,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="STRING">Text</option>
               <option value="STAR">Stars</option>
               <option value="DATE">Date</option>
+              <option value="RANGE">Range</option>
             </StyledFormControl>
           </div>
         </Container>

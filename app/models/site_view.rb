@@ -1,4 +1,5 @@
 STAR_FIELDS = [:average_rating].freeze
+RANGE_FIELDS = [:start_date].freeze
 
 class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
@@ -349,13 +350,19 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     crowd_agg_names.map { |agg| default_agg_params(agg) }
   end
 
+  def default_agg_param_display(name)
+    return "STAR" if STAR_FIELDS.include?(name.to_sym)
+    return "RANGE" if RANGE_FIELDS.include?(name.to_sym)
+
+    "STRING"
+  end
+
   def default_agg_params(name)
-    display = STAR_FIELDS.include?(name.to_sym) ? "STAR" : "STRING"
     {
       name: name,
       rank: nil,
       autoSuggest: false,
-      display: display,
+      display: default_agg_param_display(name),
       preselected: {
         kind: "WHITELIST",
         values: [],

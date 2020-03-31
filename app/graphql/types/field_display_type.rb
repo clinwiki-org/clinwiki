@@ -3,5 +3,6 @@ module Types
     value "STRING"
     value "STAR"
     value "DATE"
+    value "RANGE"
   end
 end
