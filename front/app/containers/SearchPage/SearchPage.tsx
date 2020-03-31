@@ -911,64 +911,64 @@ console.log("SViewURL", siteViewUrl())
       | null;
       console.log("About to hit the switch")
       let siteViewType= this.state.siteViewType
-    if (siteViewType=="user"){
-      console.log("Hiiting USER block")
-      return (
-        <Switch>
-          <Route
-            render={() => (
-              <SiteProvider>
-                {site => {
-                  // const siteViewUrl = this.props.match.params.siteviewUrl;
-                  const siteViewUrl = "user"
-                  const siteViews = site.siteViews;
-                  let currentSiteView =
-                    //@ts-ignore
-                    siteViews.find(
-                      siteview =>
-                        //@ts-ignore
-                        siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
-                    ) || site.siteView;
-  console.log("CurrentSite", currentSiteView)
-                  // if (siteViewUrl === 'user') {
-                  //   currentSiteView = site.siteView;
-                  // }
-                  if (!currentSiteView) {
-                    return <div>Error loading data.</div>;
-                  }
-                  const {
-                    showPresearch,
-                    showFacetBar,
-                    showBreadCrumbs,
-                  } = currentSiteView.search.config.fields;
-                  return (
-                    <Row>
-                      {showFacetBar && (
-                        <SidebarContainer md={2}>
-                          {this.renderAggs(currentSiteView)}
-                        </SidebarContainer>
-                      )}
-                      <div id="main_search" style={{ overflowY: 'auto' }}>
-                        <MainContainer style={{ width: '100%' }}>
-                          {showBreadCrumbs && this.renderCrumbs()}
-                          {showPresearch && this.renderPresearch(hash)}
-                          {this.renderSearch(
-                            hash,
-                            currentSiteView,
-                            site.siteViews
-                          )}
-                        </MainContainer>
-                      </div>
-                    </Row>
-                  );
-                }}
-              </SiteProvider>
-            )}
-          />
-        </Switch>
-      );
+  //   if (siteViewType=="user"){
+  //     console.log("Hiiting USER block")
+  //     return (
+  //       <Switch>
+  //         <Route
+  //           render={() => (
+  //             <SiteProvider>
+  //               {site => {
+  //                 // const siteViewUrl = this.props.match.params.siteviewUrl;
+  //                 const siteViewUrl = "user"
+  //                 const siteViews = site.siteViews;
+  //                 let currentSiteView =
+  //                   //@ts-ignore
+  //                   siteViews.find(
+  //                     siteview =>
+  //                       //@ts-ignore
+  //                       siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
+  //                   ) || site.siteView;
+  // console.log("CurrentSite", currentSiteView)
+  //                 // if (siteViewUrl === 'user') {
+  //                 //   currentSiteView = site.siteView;
+  //                 // }
+  //                 if (!currentSiteView) {
+  //                   return <div>Error loading data.</div>;
+  //                 }
+  //                 const {
+  //                   showPresearch,
+  //                   showFacetBar,
+  //                   showBreadCrumbs,
+  //                 } = currentSiteView.search.config.fields;
+  //                 return (
+  //                   <Row>
+  //                     {showFacetBar && (
+  //                       <SidebarContainer md={2}>
+  //                         {this.renderAggs(currentSiteView)}
+  //                       </SidebarContainer>
+  //                     )}
+  //                     <div id="main_search" style={{ overflowY: 'auto' }}>
+  //                       <MainContainer style={{ width: '100%' }}>
+  //                         {showBreadCrumbs && this.renderCrumbs()}
+  //                         {showPresearch && this.renderPresearch(hash)}
+  //                         {this.renderSearch(
+  //                           hash,
+  //                           currentSiteView,
+  //                           site.siteViews
+  //                         )}
+  //                       </MainContainer>
+  //                     </div>
+  //                   </Row>
+  //                 );
+  //               }}
+  //             </SiteProvider>
+  //           )}
+  //         />
+  //       </Switch>
+  //     );
 
-    }else{
+  //   }else{
       console.log("Hitting ELSE block")
       return (
         <Switch>
@@ -984,17 +984,22 @@ console.log("SViewURL", siteViewUrl())
             render={() => (
               <SiteProvider>
                 {site => {
-                  const siteViewUrl = this.props.match.params.siteviewUrl;
-                  const siteViews = site.siteViews;
+          const siteViewUrl = () =>{
+            if(this.state.siteViewType!=="user"){ 
+              return this.props.match.params.siteviewUrl;
+            }
+            return "user"
+          }                  
+          const siteViews = site.siteViews;
                   let currentSiteView =
                     //@ts-ignore
                     siteViews.find(
                       siteview =>
                         //@ts-ignore
-                        siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
+                        siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
                     ) || site.siteView;
   
-                  if (siteViewUrl === 'default') {
+                  if (siteViewUrl() === 'default') {
                     currentSiteView = site.siteView;
                   }
                   if (!currentSiteView) {
@@ -1035,6 +1040,6 @@ console.log("SViewURL", siteViewUrl())
     }
 
   }
-}
+// }
 
 export default SearchPage;
