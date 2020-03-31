@@ -7,6 +7,7 @@ import {
   WikiPageEditFragment_user,
 } from 'types/WikiPageEditFragment';
 import { gql } from 'apollo-boost';
+import { Link } from 'react-router-dom';
 
 interface EditsProps {
   edits: WikiPageEditFragment[];
@@ -89,15 +90,23 @@ class Edits extends React.PureComponent<EditsProps> {
     }
   `;
 
+  //Links added here, user id passed in here
   getName = (user: WikiPageEditFragment_user | null) => {
     if (!user) return 'Anonymous';
     if (user.firstName) {
-      return `${user.firstName} ${user.lastName && user.lastName[0]}`;
+      const userName = (
+        <Link to={`/profile/${user.id}`}>
+          `${user.firstName} ${user.lastName && user.lastName[0]}`
+        </Link>
+      );
+      return userName;
     }
-    return user.email;
+    const userName = <Link to={`/profile/${user.id}`}>{user.email}</Link>;
+    return userName;
   };
 
   render() {
+    console.log(this.props.edits, 'edits');
     return (
       <StyleWrapper striped bordered>
         <tbody>
