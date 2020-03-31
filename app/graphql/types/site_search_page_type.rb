@@ -1,5 +1,6 @@
 module Types
   class SiteSearchPageType < Types::BaseObject
+    field :type, String, null:false
     field :aggs, SiteAggSectionType, null: false
     field :crowd_aggs, SiteAggSectionType, null: false
     field :fields, [String], null: false

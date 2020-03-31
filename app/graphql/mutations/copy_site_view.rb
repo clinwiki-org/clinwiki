@@ -5,6 +5,7 @@ module Mutations
 
     argument :name, String, required: true
     argument :url, String, required: false
+    argument :type,String, required: false
     argument :description, String, required: false
     argument :default, Boolean, required: true
     argument :site_id, Integer, required: true
@@ -17,7 +18,7 @@ module Mutations
       end
       original_view = site.site_views.find_by(id: args[:site_view_id] )
       view = site.site_views.new(updates:original_view.updates)
-      view.attributes = args.slice(:name,:url,:description,:default)
+      view.attributes = args.slice(:name,:url,:description,:default,:type)
       if view.save
         { site_view: view, errors: nil }
       else
