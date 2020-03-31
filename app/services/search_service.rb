@@ -145,8 +145,7 @@ class SearchService
   def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false)
     params = @params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
-    key = field == "wiki_page_edits.email" ? field : "#{key_prefix}#{field}".to_sym
-
+    key = field.include?(".") ? field : "#{key_prefix}#{field}".to_sym
     # We don't need to keep filters of the same agg, we want broader results
     # But we need to respect all other filters
 
@@ -191,10 +190,11 @@ class SearchService
         regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
       end
       body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
+
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
-    puts "log:::::::::::::::::::::::::::#{aggs}"
+
     aggs =  nested_result_aggs(field,aggs) if field.include?"."
     aggs
   end
