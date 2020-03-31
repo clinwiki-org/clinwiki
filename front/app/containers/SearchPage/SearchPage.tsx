@@ -566,7 +566,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             this.state.params || {};
           // current site view url should match w/one of the site views url
           const checkUrls = filter(
-            siteViews => siteViews.url == this.props.match.params.siteviewUrl,
+            // siteViews => siteViews.url == this.props.match.params.siteviewUrl,
+            siteViews => siteViews.url == "default",
             siteViews
           );
 
@@ -582,13 +583,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
                 // We have a mismatch between url and params in state
-                if (data.searchHash !== hash) {
-                  return (
-                    <Redirect
-                      to={`/search/${siteViewUrl}/${data.searchHash}`}
-                    />
-                  );
-                }
+                // if (data.searchHash !== hash) {
+                //   console.log("Redirecting to hash")
+                //   return (
+                //     <Redirect
+                //       to={`/search/${siteViewUrl}/${data.searchHash}`}
+                //     />
+                //   );
+                // }
 
                 return (
                   <SearchView
@@ -685,7 +687,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return (
       <SiteProvider>
         {site => {
-          const siteViewUrl = this.props.match.params.siteviewUrl;
+          const siteViewUrl = "default";
+          // const siteViewUrl = this.props.match.params.siteviewUrl;
           const siteViews = site.siteViews;
           let thisSiteView =
           siteViews.find(
@@ -753,7 +756,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return (
       <SiteProvider>
         {site => {
-          const siteViewUrl = this.props.match.params.siteviewUrl;
+          const siteViewUrl = "default"
+          // const siteViewUrl = this.props.match.params.siteviewUrl;
           const siteViews = site.siteViews;
           let currentSiteView =
           siteViews.find(
@@ -790,6 +794,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
+    console.log("SP Props", this.props)
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     if (this.props.ignoreUrlHash) {
@@ -861,19 +866,20 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       | null;
     return (
       <Switch>
-        <Route
+        {/* <Route
           path={`${this.props.match.path}/study/:nctId`}
           component={SearchStudyPage}
         />
         <Route
           path={`${this.props.match.path}/bulk/`}
           component={BulkEditPage}
-        />
+        /> */}
         <Route
           render={() => (
             <SiteProvider>
               {site => {
-                const siteViewUrl = this.props.match.params.siteviewUrl;
+                // const siteViewUrl = this.props.match.params.siteviewUrl;
+                const siteViewUrl = "default"
                 const siteViews = site.siteViews;
                 let currentSiteView =
                   //@ts-ignore

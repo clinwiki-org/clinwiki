@@ -9,7 +9,7 @@ interface ProfilePageProps {
 
 
 
-class SitesPage extends React.PureComponent<ProfilePageProps> {
+class SitesPage extends React.Component<ProfilePageProps> {
 
   componentDidMount(){
     console.log("This.props", this.props)
@@ -19,7 +19,7 @@ class SitesPage extends React.PureComponent<ProfilePageProps> {
     return (
       <div>
      <h2>Profile Page</h2>
-      {/* <SearchPage/> */}
+      <SearchPage/>
       </div>
     );
   }
