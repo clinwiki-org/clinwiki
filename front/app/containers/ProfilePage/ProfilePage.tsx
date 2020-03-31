@@ -1,25 +1,30 @@
-import * as React from "react";
-import styled from "styled-components";
+import * as React from 'react';
+import styled from 'styled-components';
 import SearchPage from 'containers/SearchPage';
 import { match } from 'react-router-dom';
+import { History, Location } from 'history';
 
 interface ProfilePageProps {
   history: History;
+  location: Location;
+  match: any;
 }
 
-
-
 class SitesPage extends React.Component<ProfilePageProps> {
-
-  componentDidMount(){
-    console.log("This.props", this.props)
+  componentDidMount() {
+    console.log('This.props', this.props);
   }
 
+  getUserEdits = (userId: string) => {
+    console.log(userId);
+  };
+
   render() {
+    this.getUserEdits(this.props.match.params.id);
     return (
       <div>
-     <h2>Profile Page</h2>
-      <SearchPage/>
+        <h2>Profile Page</h2>
+        <SearchPage />
       </div>
     );
   }
