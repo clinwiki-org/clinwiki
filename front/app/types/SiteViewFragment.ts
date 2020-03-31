@@ -295,6 +295,7 @@ export interface SiteViewFragment_search_crowdAggs {
 
 export interface SiteViewFragment_search {
   __typename: "SiteSearchPage";
+  type: string;
   autoSuggest: SiteViewFragment_search_autoSuggest;
   results: SiteViewFragment_search_results;
   presearch: SiteViewFragment_search_presearch;

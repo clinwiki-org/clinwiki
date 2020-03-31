@@ -58,6 +58,7 @@ export interface BulkQueryUpdateInput {
 export interface CopySiteViewInput {
   name: string;
   url?: string | null;
+  type?: string | null;
   description?: string | null;
   default: boolean;
   siteId: number;
@@ -84,6 +85,7 @@ export interface CreateSiteViewInput {
   url?: string | null;
   description?: string | null;
   default: boolean;
+  type?: string | null;
   mutations: SiteViewMutationInput[];
   siteId: number;
   clientMutationId?: string | null;
@@ -217,6 +219,7 @@ export interface UpdateSiteViewInput {
   name?: string | null;
   default?: boolean | null;
   url?: string | null;
+  type?: string | null;
   description?: string | null;
   id: number;
   mutations: SiteViewMutationInput[];
