@@ -253,6 +253,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         ],
       },
       search: {
+        type:"search",
         config:{
           fields:{
           showPresearch:false,
@@ -333,6 +334,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
       },
     }
   end
+
 
   def aggs
     SearchService::ENABLED_AGGS.sort.reject { |x| x == :front_matter_keys }.map { |agg| default_agg_params(agg) }
