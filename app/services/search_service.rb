@@ -5,6 +5,9 @@ ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
 DEFAULT_SORT = "asc"
 MAX_WINDOW_SIZE = 10_000
+# we're duck typing string to number for now
+STRING_MISSING_IDENTIFIER = "-99999999999"
+DATE_MISSING_IDENTIFIER = "1500-01-01"
 
 # aggregations
 DEFAULT_AGG_SORT = {
@@ -25,8 +28,11 @@ DEFAULT_AGG_OPTIONS = {
   },
   start_date: {
     date_histogram: {
-      field: :completion_date,
+      field: :start_date,
       interval: :year,
+      # this should work, but it isn't
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html
+      missing: DATE_MISSING_IDENTIFIER,
     },
     limit: 10,
   },
@@ -34,6 +40,7 @@ DEFAULT_AGG_OPTIONS = {
     date_histogram: {
       field: :completion_date,
       interval: :year,
+      missing: DATE_MISSING_IDENTIFIER,
     },
     limit: 10,
   },
@@ -93,7 +100,7 @@ class SearchService
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
-    front_matter_keys
+    front_matter_keys start_date
   ].freeze
 
   attr_reader :params
@@ -160,6 +167,10 @@ class SearchService
           },
         )
 
+      unless key == :average_rating || body[:aggs][key][:aggs][key][:date_histogram].present?
+        body[:aggs][key][:aggs][key][:terms][:missing] = missing_identifier_for_key(key)
+      end
+
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site)
       visible_options_regex = one_of_regex(visibile_options)
       regex = visible_options_regex
@@ -177,7 +188,6 @@ class SearchService
 
   def crowd_agg_facets(site:)
     params = self.params.deep_dup
-    bucket_sort = params[:agg_options_sort] || []
     search_results = Study.search("*", aggs: [:front_matter_keys])
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
@@ -185,8 +195,8 @@ class SearchService
       .map { |x| (x[:key]).to_s }
     facets = {}
     keys.each do |key|
-      fieldAgg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
-      fieldAgg.each do |name, agg|
+      field_agg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
+      field_agg.each do |name, agg|
         facets[name] = agg
       end
     end
@@ -194,6 +204,12 @@ class SearchService
   end
 
   private
+
+  def missing_identifier_for_key(key)
+    return DATE_MISSING_IDENTIFIER if key.to_s =~ /\b?date\b?/
+
+    STRING_MISSING_IDENTIFIER
+  end
 
   def bucket_agg_sort(sort)
     order = sort[:desc] ? "desc" : "asc"
@@ -268,14 +284,19 @@ class SearchService
   def scalars_filter(key, filter)
     return nil if filter.dig(:values).nil?
 
-    { _or: filter[:values].map { |val| { key => val } } }
+    selected_scalar_values = filter[:values].map { |val| { key => val } }
+    selected_scalar_values << { key => nil } if filter.fetch(:include_missing_fields, false)
+    { _or: selected_scalar_values }
   end
 
   def range_filter(key, filter)
     range_hash = filter.slice(:gte, :lte)
     return nil if range_hash.empty?
 
-    { key => Hash[range_hash.map { |k, v| [k, cast(v)] }] }
+    select_for_range = { key => Hash[range_hash.map { |k, v| [k, cast(v)] }] }
+    return { _or: [select_for_range, { key => nil }] } if filter.fetch(:include_missing_fields, false)
+
+    select_for_range
   end
 
   # Returns an array of
@@ -334,7 +355,8 @@ class SearchService
     end
 
     parsed_time = Timeliness.parse(val)
-    return parsed_time unless parsed_time.nil?
+
+    return parsed_time.utc unless parsed_time.nil?
 
     # default to string, which we split against pipe separator
     val

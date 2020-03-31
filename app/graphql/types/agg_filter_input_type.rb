@@ -6,5 +6,6 @@ module Types
              required: false, default_value: []
     argument :gte, String, description: "The start value (inclusive) for a range query", required: false
     argument :lte, String, description: "The end value (inclusive) for a range query", required: false
+    argument :include_missing_fields, Boolean, description: "Whether to include missing fields in the query", required: false
   end
 end

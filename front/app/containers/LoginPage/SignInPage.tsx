@@ -100,39 +100,27 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
     // const form= {
     //   email: response.profileObj.email
     // }
-    this.setState({
-      form: {
-        ...this.state.form,
-        email: response.profileObj.email,
-        //@ts-ignore
-        oAuthToken: response.tokenObj.id_token
+    this.setState(
+      {
+        form: {
+          ...this.state.form,
+          email: response.profileObj.email,
+          //@ts-ignore
+          oAuthToken: response.tokenObj.id_token,
+        },
+      },
+      () => {
+        const input = this.state.form;
+        signIn({ variables: { input: this.state.form } });
       }
-    }, ()=> {
-      const input = this.state.form
-      signIn({ variables: { input: this.state.form } });
-    })
-
-  }
+    );
+  };
 
   render() {
     return (
       <StyledWrapper>
         <Col md={12}>
           <StyledContainer>
-            <StyledFormControl
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={this.state.form.email}
-              onChange={this.handleInputChange}
-            />
-            <StyledFormControl
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={this.state.form.password}
-              onChange={this.handleInputChange}
-            />
             <SignInMutationComponent
               mutation={SIGN_IN_MUTATION}
               onCompleted={this.handleSignInCompleted}
@@ -150,29 +138,54 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                 this.setState({ errors: ['Invalid email or password'] });
               }}>
               {signIn => (
-                <div>
-                  <StyledButton onClick={this.handleSignIn(signIn)}>
-                    Sign In
-                  </StyledButton>
-                  <div style={{ display: "block", marginTop: 10 }}>
-                  <GoogleLogin
-                    clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
-                    buttonText="Sign in With Google"
-                    //@ts-ignore
-                    onSuccess={(response) => this.responseGoogle(response, signIn)}
-                    //@ts-ignore
-                    onFailure={this.responseGoogle}
-                    cookiePolicy={'single_host_origin'}
+                <form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    this.handleSignIn(signIn);
+                  }}>
+                  <StyledFormControl
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    value={this.state.form.email}
+                    onChange={this.handleInputChange}
                   />
+                  <StyledFormControl
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    value={this.state.form.password}
+                    onChange={this.handleInputChange}
+                  />
+
+                  <div>
+                    <StyledButton
+                      type="submit"
+                      onClick={this.handleSignIn(signIn)}>
+                      Sign In
+                    </StyledButton>
+                    <div style={{ display: 'block', marginTop: 10 }}>
+                      <GoogleLogin
+                        clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
+                        buttonText="Sign in With Google"
+                        //@ts-ignore
+                        onSuccess={response =>
+                          this.responseGoogle(response, signIn)
+                        }
+                        //@ts-ignore
+                        onFailure={this.responseGoogle}
+                        cookiePolicy={'single_host_origin'}
+                      />
+                    </div>
                   </div>
-                </div>
+                  {this.renderErrors()}
+                  <LinkContainer>
+                    <Link to="/sign_up">Sign up</Link>
+                    <Link to="/reset_password">Reset password</Link>
+                  </LinkContainer>
+                </form>
               )}
             </SignInMutationComponent>
-            {this.renderErrors()}
-            <LinkContainer>
-              <Link to="/sign_up">Sign up</Link>
-              <Link to="/reset_password">Reset password</Link>
-            </LinkContainer>
           </StyledContainer>
         </Col>
       </StyledWrapper>

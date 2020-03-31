@@ -44,6 +44,7 @@ const SEARCH_QUERY = gql`
 query AllQuery($nctId: String!) {
   study(nctId: $nctId) {
     nctId
+    briefSummary
     detailedDescription
     eligibilityCriteria
     conditions
@@ -155,6 +156,8 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
     return this.props.nctId;
   }
 
+  
+
   renderAgg = (key: string, values: [string, boolean][]) => {
     return (
       <StyledPanel key={key} header={key} dropdown>
@@ -172,7 +175,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
           </StyledCol>
           <Col xs={4}>
             <div>
-              <WorkSearch nctid={this.props.nctId}/>
+              <WorkSearch nctid={this.props.nctId} />
             </div>
           </Col>
         </Row>
@@ -180,7 +183,9 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
     );
   };
 
+  
   render() {
+
     if (!this.props.searchHash) return null;
     return (
       <QueryComponent
