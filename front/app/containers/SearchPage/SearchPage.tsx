@@ -570,14 +570,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           // current site view url should match w/one of the site views url
           const checkUrls = () =>{
           if(this.state.siteViewType != 'user'){
-            console.log("check Urls SEARCH")
             return filter(
             siteViews => siteViews.url == this.props.match.params.siteviewUrl,
             //siteViews => siteViews.url == "default",
              siteViews
            );
           }
-          console.log("check URls USER")
           return filter(            
             siteViews => siteViews.url == "user",
              siteViews
@@ -596,7 +594,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             return "default"
           }
 
-console.log("SViewURL", siteViewUrl())
+          console.log("SViewURL", siteViewUrl())
           return (
             <HashQueryComponent
               query={HASH_QUERY}
@@ -605,7 +603,6 @@ console.log("SViewURL", siteViewUrl())
                 if (error || loading || !data) return null;
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
-                  console.log("Redirecting to hash")
                   if(this.state.siteViewType !== "user") {
                   return (
                     <Redirect
@@ -681,15 +678,11 @@ console.log("SViewURL", siteViewUrl())
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
-    console.log("Still in mount")
     if(this.props.userId){
-      console.log("Setting siteviewType to user")
       this.setState({
         siteViewType: "user"
       })
     }else{
-      console.log("Setting siteviewType to search")
-
       this.setState({
         siteViewType: 'search'
       })
@@ -797,7 +790,6 @@ console.log("SViewURL", siteViewUrl())
             return "user"
           }
           const siteViews = site.siteViews;
-          console.log("SITEVIEW", siteViews)
           let currentSiteView =
           siteViews.find(
             siteview =>
@@ -837,7 +829,6 @@ console.log("SViewURL", siteViewUrl())
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     if (this.props.ignoreUrlHash) {
-      console.log("Hitting Ignore Blocl")
       return (
         <SiteProvider>
           {site => {
@@ -909,10 +900,8 @@ console.log("SViewURL", siteViewUrl())
     const hash = path(['match', 'params', 'searchId'], this.props) as
       | string
       | null;
-      console.log("About to hit the switch")
       let siteViewType= this.state.siteViewType
 
-      console.log("Hitting ELSE block")
       return (
         <Switch>
           <Route
@@ -928,7 +917,7 @@ console.log("SViewURL", siteViewUrl())
               <SiteProvider>
                 {site => {
           const siteViewUrl = () =>{
-            if(this.state.siteViewType!=="user"){ 
+            if(siteViewType!=="user"){ 
               return this.props.match.params.siteviewUrl;
             }
             return "user"
