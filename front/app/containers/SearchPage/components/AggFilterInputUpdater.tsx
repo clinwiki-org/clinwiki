@@ -33,7 +33,7 @@ import {
  * This class gives us an encapsulated tool for representing agg
  * configurations both for search filters as well as setting defaults
  */
-abstract class AggFilterInputUpdaterBase {
+abstract class AbstractAggFilterInputUpdater {
   input: AggFilterInput;
   settings: SearchParams | any;
   grouping: string;
@@ -167,7 +167,7 @@ abstract class AggFilterInputUpdaterBase {
 /**
  * Responsible for updating aggs in the context of a search
  */
-class AggFilterInputUpdater extends AggFilterInputUpdaterBase {
+class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
   onUpdateFilter(): void {
     const allButThisAgg = filter(
       (x: AggFilterInput) => x.field !== this.agg,
@@ -185,7 +185,7 @@ class AggFilterInputUpdater extends AggFilterInputUpdaterBase {
   }
 }
 
-export class AggFilterSiteConfigUpdater extends AggFilterInputUpdaterBase {
+export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
   kind: 'preselected' | 'visibleOptions';
   constructor(
     agg: string,
