@@ -280,6 +280,7 @@ interface SearchPageProps {
   history: any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
+  userId?: string;
 }
 
 interface SearchPageState {
@@ -293,6 +294,7 @@ interface SearchPageState {
   showCards: Boolean;
   removeSelectAll: boolean;
   totalRecords: number;
+  siteViewType: string;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -313,6 +315,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     showCards: localStorage.getItem('showCards') === 'true' ? true : false,
     removeSelectAll: false,
     totalRecords: 0,
+    siteViewType:'',
   };
 
   numberOfPages: number = 0;
@@ -565,17 +568,37 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const { aggFilters = [], crowdAggFilters = [] } =
             this.state.params || {};
           // current site view url should match w/one of the site views url
-          const checkUrls = filter(
-            // siteViews => siteViews.url == this.props.match.params.siteviewUrl,
-            siteViews => siteViews.url == "default",
-            siteViews
-          );
+          const checkUrls = () =>{
+          if(this.state.siteViewType != 'user'){
+            return filter(
+            siteViews => siteViews.url == this.props.match.params.siteviewUrl,
+            //siteViews => siteViews.url == "default",
+             siteViews
+           );
+          }
+          return filter(            
+            siteViews => siteViews.url == "user",
+             siteViews
+           );
+        }
 
-          const siteViewUrl =
-            checkUrls.length === 1 // not sure if I should be checking for duplicates
-              ? this.props.match.params.siteviewUrl
-              : 'default';
+          const siteViewUrl = () =>{
+            if(checkUrls().length === 1){
+              if(this.state.siteViewType !== "user"){
+                console.log("PARAMS", this.props.match.params)
+                let url:any [] = checkUrls()
+                console.log("URL",url[0].url)
+                let siteUrl = url[0].url
 
+                return siteUrl
+              }
+              return "user"
+            }
+            console.log("Check urls !==1")
+            return "default"
+          }
+
+          // console.log("SViewURL1", siteViewUrl())
           return (
             <HashQueryComponent
               query={HASH_QUERY}
@@ -583,14 +606,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               {({ data, loading, error }) => {
                 if (error || loading || !data) return null;
                 // We have a mismatch between url and params in state
-                // if (data.searchHash !== hash) {
-                //   console.log("Redirecting to hash")
-                //   return (
-                //     <Redirect
-                //       to={`/search/${siteViewUrl}/${data.searchHash}`}
-                //     />
-                //   );
-                // }
+                if (data.searchHash !== hash) {
+                  if(this.state.siteViewType !== "user") {
+                  return (
+                    <Redirect
+                      to={`/search/${siteViewUrl()}/${data.searchHash}`}
+                    />
+                  )}
+                }
 
                 return (
                   <SearchView
@@ -609,7 +632,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     showCards={this.state.showCards}
                     toggledShowCards={this.toggledShowCards}
                     returnNumberOfPages={this.returnNumberOfPages}
-                    siteViewUrl={siteViewUrl}
+                    siteViewUrl={siteViewUrl()}
                     searchAggs={this.state.searchAggs}
                     crowdAggs={this.state.searchCrowdAggs}
                     transformFilters={this.transformFilters}
@@ -659,6 +682,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
+    if(this.props.userId){
+      this.setState({
+        siteViewType: "user"
+      })
+    }else{
+      this.setState({
+        siteViewType: 'search'
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -687,8 +719,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return (
       <SiteProvider>
         {site => {
-          const siteViewUrl = "default";
-          // const siteViewUrl = this.props.match.params.siteviewUrl;
+          const siteViewUrl = this.props.match.params.siteviewUrl;
           const siteViews = site.siteViews;
           let thisSiteView =
           siteViews.find(
@@ -756,19 +787,24 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return (
       <SiteProvider>
         {site => {
-          const siteViewUrl = "default"
-          // const siteViewUrl = this.props.match.params.siteviewUrl;
+          const siteViewUrl = () =>{
+            //note about this if block at Line 928
+           if(this.state.siteViewType!=="user" && this.state.siteViewType!==""){ 
+              return this.props.match.params.siteviewUrl;
+            }
+            return "user"
+          }
           const siteViews = site.siteViews;
           let currentSiteView =
           siteViews.find(
             siteview =>
               //@ts-ignore
-              siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
+              siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
           ) || site.siteView;
 
           return (
             <CrumbsBar
-              siteViewUrl={siteViewUrl}
+              siteViewUrl={siteViewUrl()}
               //@ts-ignore
               searchParams={{ ...this.state.params, q }}
               onBulkUpdate={this.handleBulkUpdateClick}
@@ -801,17 +837,22 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       return (
         <SiteProvider>
           {site => {
-            const siteViewUrl = this.props.match.params.siteviewUrl;
+          const siteViewUrl = () =>{
+            if(this.state.siteViewType!=="user"){ 
+              return this.props.match.params.siteviewUrl;
+            }
+            return "user"
+          }
             const siteViews = site.siteViews;
             let thisSiteView =
             //@ts-ignore
             siteViews.find(
               siteview =>
                 //@ts-ignore
-                siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
+                siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
             ) || site.siteView;
               site.siteView;
-            if (siteViewUrl === 'default') {
+            if (siteViewUrl() === 'default') {
               thisSiteView = site.siteView;
             }
             // console.log(thisSiteView);
@@ -840,7 +881,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     showCards={this.state.showCards}
                     toggledShowCards={this.toggledShowCards}
                     returnNumberOfPages={this.returnNumberOfPages}
-                    siteViewUrl={siteViewUrl}
+                    siteViewUrl={siteViewUrl()}
                     searchAggs={this.state.searchAggs}
                     crowdAggs={this.state.searchCrowdAggs}
                     transformFilters={this.transformFilters}
@@ -864,69 +905,85 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const hash = path(['match', 'params', 'searchId'], this.props) as
       | string
       | null;
-    return (
-      <Switch>
-        {/* <Route
-          path={`${this.props.match.path}/study/:nctId`}
-          component={SearchStudyPage}
-        />
-        <Route
-          path={`${this.props.match.path}/bulk/`}
-          component={BulkEditPage}
-        /> */}
-        <Route
-          render={() => (
-            <SiteProvider>
-              {site => {
-                // const siteViewUrl = this.props.match.params.siteviewUrl;
-                const siteViewUrl = "default"
-                const siteViews = site.siteViews;
-                let currentSiteView =
-                  //@ts-ignore
-                  siteViews.find(
-                    siteview =>
-                      //@ts-ignore
-                      siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
-                  ) || site.siteView;
+      let siteViewType= this.state.siteViewType
 
-                if (siteViewUrl === 'default') {
-                  currentSiteView = site.siteView;
-                }
-                if (!currentSiteView) {
-                  return <div>Error loading data.</div>;
-                }
-                const {
-                  showPresearch,
-                  showFacetBar,
-                  showBreadCrumbs,
-                } = currentSiteView.search.config.fields;
-                return (
-                  <Row>
-                    {showFacetBar && (
-                      <SidebarContainer md={2}>
-                        {this.renderAggs(currentSiteView)}
-                      </SidebarContainer>
-                    )}
-                    <div id="main_search" style={{ overflowY: 'auto' }}>
-                      <MainContainer style={{ width: '100%' }}>
-                        {showBreadCrumbs && this.renderCrumbs()}
-                        {showPresearch && this.renderPresearch(hash)}
-                        {this.renderSearch(
-                          hash,
-                          currentSiteView,
-                          site.siteViews
-                        )}
-                      </MainContainer>
-                    </div>
-                  </Row>
-                );
-              }}
-            </SiteProvider>
-          )}
-        />
-      </Switch>
-    );
+      return (
+        <Switch>
+          <Route
+            path={`${this.props.match.path}/study/:nctId`}
+            component={SearchStudyPage}
+          />
+          <Route
+            path={`${this.props.match.path}/bulk/`}
+            component={BulkEditPage}
+          />
+          <Route
+            render={() => (
+              <SiteProvider>
+                {site => {
+          const siteViewUrl = () =>{
+            /*------
+            console.log("S-Type", siteViewType)
+            siteViewType coming back as an empty string when coming from Link in WikiEdits 
+            Seems like the component isn't remounting (or updating as I tried to handle in componentDidUpdate but no dice) 
+            so it never gets set to either user or search
+      
+            below if statement only use to handle siteViewType !=="user" so it incorrectly fall in there
+            --------*/
+            if(siteViewType!=="user" && siteViewType !==""){
+              return this.props.match.params.siteviewUrl;
+            }
+            return "user"
+          }                  
+          const siteViews = site.siteViews;
+                  let currentSiteView =
+                    //@ts-ignore
+                    siteViews.find(
+                      siteview =>
+                        //@ts-ignore
+                        siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
+                    ) || site.siteView;
+  
+                  if (siteViewUrl() === 'default') {
+                    currentSiteView = site.siteView;
+                  }
+                  if (!currentSiteView) {
+                    return <div>Error loading data.</div>;
+                  }
+                  const {
+                    showPresearch,
+                    showFacetBar,
+                    showBreadCrumbs,
+                  } = currentSiteView.search.config.fields;
+                  return (
+                    <Row>
+                      {showFacetBar && (
+                        <SidebarContainer md={2}>
+                          {this.renderAggs(currentSiteView)}
+                        </SidebarContainer>
+                      )}
+                      <div id="main_search" style={{ overflowY: 'auto' }}>
+                        <MainContainer style={{ width: '100%' }}>
+                          {showBreadCrumbs && this.renderCrumbs()}
+                          {showPresearch && this.renderPresearch(hash)}
+                          {this.renderSearch(
+                            hash,
+                            currentSiteView,
+                            site.siteViews
+                          )}
+                        </MainContainer>
+                      </div>
+                    </Row>
+                  );
+                }}
+              </SiteProvider>
+            )}
+          />
+        </Switch>
+      );
+
+    }
+
   }
-}
 
 export default SearchPage;
