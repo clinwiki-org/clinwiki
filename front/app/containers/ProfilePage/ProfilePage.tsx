@@ -15,12 +15,18 @@ class SitesPage extends React.Component<ProfilePageProps> {
     console.log('This.props', this.props);
   }
 
-  getUserEdits = (userId: string) => {
-    console.log(userId);
+  getUserParams = (userId: string) => {
+    return {
+      q: { key: 'AND', children: [] },
+      aggFilters: [{ field: 'userId', values: [userId] }],
+      crowdAggFilters: [],
+      sorts: [],
+      page: 0,
+      pageSize: 25,
+    };
   };
 
   render() {
-    this.getUserEdits(this.props.match.params.id);
     return (
       <div>
         <h2>Profile Page</h2>
@@ -29,6 +35,7 @@ class SitesPage extends React.Component<ProfilePageProps> {
           location={this.props.location}
           match={this.props.match}
           userId={this.props.match.params.id}
+          profileParams={this.getUserParams(this.props.match.params.id)}
         />
       </div>
     );

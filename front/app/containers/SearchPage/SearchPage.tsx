@@ -38,6 +38,7 @@ import {
   view,
   remove,
   equals,
+  props,
 } from 'ramda';
 import SearchView from './SearchView';
 import CrumbsBar from './components/CrumbsBar';
@@ -281,6 +282,7 @@ interface SearchPageProps {
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
   userId?: string;
+  profileParams?: any;
 }
 
 interface SearchPageState {
@@ -315,7 +317,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     showCards: localStorage.getItem('showCards') === 'true' ? true : false,
     removeSelectAll: false,
     totalRecords: 0,
-    siteViewType:'',
+    siteViewType: '',
   };
 
   numberOfPages: number = 0;
@@ -327,6 +329,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     props: SearchPageProps,
     state: SearchPageState
   ) {
+    // if (props.userId) {
+    //   return {
+    //     params: props.searchParams || DEFAULT_PARAMS,
+    //   };
+    // }
     if (state.params == null && props.ignoreUrlHash) {
       return {
         params: props.searchParams || DEFAULT_PARAMS,
@@ -353,7 +360,27 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   getDefaultParams = (view: SiteViewFragment) => {
-    return { ...DEFAULT_PARAMS, ...preselectedFilters(view) };
+    if (this.props.userId) {
+      // console.log(
+      //   'this should make the correct obj',
+      //   this.props.profileParams,
+      //   preselectedFilters(view)
+      // );
+      const profileViewParams = this.props.profileParams;
+      // const siteFilters = preselectedFilters(view);
+      // this.props.profileParams.push(siteFilters.aggFilters)
+
+      return { ...profileViewParams, ...preselectedFilters(view) };
+    }
+    console.log(
+      'this should make the correct obj',
+      DEFAULT_PARAMS,
+      preselectedFilters(view)
+    );
+    return {
+      ...DEFAULT_PARAMS,
+      ...preselectedFilters(view),
+    };
   };
 
   searchParamsFromQuery = (
@@ -361,6 +388,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     params: SearchPageParamsQuery_searchParams | null | undefined
   ): SearchParams => {
     const defaultParams = this.getDefaultParams(view);
+    console.log('default params', defaultParams);
     if (!params) return defaultParams;
 
     const q = params.q
@@ -376,7 +404,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       params.crowdAggFilters || []
     ) as AggFilterInput[];
     const sorts = map(dissoc('__typename'), params.sorts || []) as SortInput[];
-
+    console.log('aggfilters', aggFilters);
     return {
       aggFilters,
       crowdAggFilters,
@@ -502,7 +530,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     // this.searchParamsFromQuery();
-
     return (
       <Aggs
         aggs={this.state.searchAggs}
@@ -558,6 +585,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             view,
             data && data.searchParams
           );
+          console.log('params', params);
           // hydrate state params from hash
           if (!this.state.params) {
             this.setState({ params });
@@ -568,35 +596,33 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const { aggFilters = [], crowdAggFilters = [] } =
             this.state.params || {};
           // current site view url should match w/one of the site views url
-          const checkUrls = () =>{
-          if(this.state.siteViewType != 'user'){
-            return filter(
-            siteViews => siteViews.url == this.props.match.params.siteviewUrl,
-            //siteViews => siteViews.url == "default",
-             siteViews
-           );
-          }
-          return filter(            
-            siteViews => siteViews.url == "user",
-             siteViews
-           );
-        }
-
-          const siteViewUrl = () =>{
-            if(checkUrls().length === 1){
-              if(this.state.siteViewType !== "user"){
-                console.log("PARAMS", this.props.match.params)
-                let url:any [] = checkUrls()
-                console.log("URL",url[0].url)
-                let siteUrl = url[0].url
-
-                return siteUrl
-              }
-              return "user"
+          const checkUrls = () => {
+            if (this.state.siteViewType != 'user') {
+              return filter(
+                siteViews =>
+                  siteViews.url == this.props.match.params.siteviewUrl,
+                //siteViews => siteViews.url == "default",
+                siteViews
+              );
             }
-            console.log("Check urls !==1")
-            return "default"
-          }
+            return filter(siteViews => siteViews.url == 'user', siteViews);
+          };
+
+          const siteViewUrl = () => {
+            if (checkUrls().length === 1) {
+              if (this.state.siteViewType !== 'user') {
+                console.log('PARAMS', this.props.match.params);
+                let url: any[] = checkUrls();
+                console.log('URL', url[0].url);
+                let siteUrl = url[0].url;
+
+                return siteUrl;
+              }
+              return 'user';
+            }
+            console.log('Check urls !==1');
+            return 'default';
+          };
 
           // console.log("SViewURL1", siteViewUrl())
           return (
@@ -607,12 +633,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 if (error || loading || !data) return null;
                 // We have a mismatch between url and params in state
                 if (data.searchHash !== hash) {
-                  if(this.state.siteViewType !== "user") {
-                  return (
-                    <Redirect
-                      to={`/search/${siteViewUrl()}/${data.searchHash}`}
-                    />
-                  )}
+                  if (this.state.siteViewType !== 'user') {
+                    return (
+                      <Redirect
+                        to={`/search/${siteViewUrl()}/${data.searchHash}`}
+                      />
+                    );
+                  }
                 }
 
                 return (
@@ -682,14 +709,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
-    if(this.props.userId){
+    if (this.props.userId) {
       this.setState({
-        siteViewType: "user"
-      })
-    }else{
+        siteViewType: 'user',
+      });
+    } else {
       this.setState({
-        siteViewType: 'search'
-      })
+        siteViewType: 'search',
+      });
     }
   }
 
@@ -722,11 +749,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const siteViewUrl = this.props.match.params.siteviewUrl;
           const siteViews = site.siteViews;
           let thisSiteView =
-          siteViews.find(
-            siteview =>
-              //@ts-ignore
-              siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
-          ) || site.siteView;
+            siteViews.find(
+              siteview =>
+                //@ts-ignore
+                siteview.url.toLowerCase() == siteViewUrl.toLowerCase()
+            ) || site.siteView;
           const preSearchAggs =
             thisSiteView.search.presearch.aggs.selected.values;
           const preSearchCrowdAggs =
@@ -778,8 +805,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  renderCrumbs = () => {
-    const { params, totalRecords } = this.state;
+  renderCrumbs = siteView => {
+    const { params } = this.state;
+    console.log('renderCrumbs', this.state.params);
+    // if (this.props.userId) {
+    //   this.getDefaultParams(siteView);
+    // }
     const q =
       this.state.params?.q.key === '*'
         ? []
@@ -787,20 +818,23 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return (
       <SiteProvider>
         {site => {
-          const siteViewUrl = () =>{
+          const siteViewUrl = () => {
             //note about this if block at Line 928
-           if(this.state.siteViewType!=="user" && this.state.siteViewType!==""){ 
+            if (
+              this.state.siteViewType !== 'user' &&
+              this.state.siteViewType !== ''
+            ) {
               return this.props.match.params.siteviewUrl;
             }
-            return "user"
-          }
+            return 'user';
+          };
           const siteViews = site.siteViews;
           let currentSiteView =
-          siteViews.find(
-            siteview =>
-              //@ts-ignore
-              siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
-          ) || site.siteView;
+            siteViews.find(
+              siteview =>
+                //@ts-ignore
+                siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
+            ) || site.siteView;
 
           return (
             <CrumbsBar
@@ -830,28 +864,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
-    console.log("SP Props", this.props)
+    console.log('SP Props', this.props);
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     if (this.props.ignoreUrlHash) {
       return (
         <SiteProvider>
           {site => {
-          const siteViewUrl = () =>{
-            if(this.state.siteViewType!=="user"){ 
-              return this.props.match.params.siteviewUrl;
-            }
-            return "user"
-          }
+            const siteViewUrl = () => {
+              if (this.state.siteViewType !== 'user') {
+                return this.props.match.params.siteviewUrl;
+              }
+              return 'user';
+            };
             const siteViews = site.siteViews;
             let thisSiteView =
-            //@ts-ignore
-            siteViews.find(
-              siteview =>
-                //@ts-ignore
-                siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
-            ) || site.siteView;
-              site.siteView;
+              //@ts-ignore
+              siteViews.find(
+                siteview =>
+                  //@ts-ignore
+                  siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
+              ) || site.siteView;
+            site.siteView;
             if (siteViewUrl() === 'default') {
               thisSiteView = site.siteView;
             }
@@ -905,24 +939,24 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const hash = path(['match', 'params', 'searchId'], this.props) as
       | string
       | null;
-      let siteViewType= this.state.siteViewType
+    let siteViewType = this.state.siteViewType;
 
-      return (
-        <Switch>
-          <Route
-            path={`${this.props.match.path}/study/:nctId`}
-            component={SearchStudyPage}
-          />
-          <Route
-            path={`${this.props.match.path}/bulk/`}
-            component={BulkEditPage}
-          />
-          <Route
-            render={() => (
-              <SiteProvider>
-                {site => {
-          const siteViewUrl = () =>{
-            /*------
+    return (
+      <Switch>
+        <Route
+          path={`${this.props.match.path}/study/:nctId`}
+          component={SearchStudyPage}
+        />
+        <Route
+          path={`${this.props.match.path}/bulk/`}
+          component={BulkEditPage}
+        />
+        <Route
+          render={() => (
+            <SiteProvider>
+              {site => {
+                const siteViewUrl = () => {
+                  /*------
             console.log("S-Type", siteViewType)
             siteViewType coming back as an empty string when coming from Link in WikiEdits 
             Seems like the component isn't remounting (or updating as I tried to handle in componentDidUpdate but no dice) 
@@ -930,60 +964,58 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       
             below if statement only use to handle siteViewType !=="user" so it incorrectly fall in there
             --------*/
-            if(siteViewType!=="user" && siteViewType !==""){
-              return this.props.match.params.siteviewUrl;
-            }
-            return "user"
-          }                  
-          const siteViews = site.siteViews;
-                  let currentSiteView =
-                    //@ts-ignore
-                    siteViews.find(
-                      siteview =>
-                        //@ts-ignore
-                        siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
-                    ) || site.siteView;
-  
-                  if (siteViewUrl() === 'default') {
-                    currentSiteView = site.siteView;
+                  if (siteViewType !== 'user' && siteViewType !== '') {
+                    return this.props.match.params.siteviewUrl;
                   }
-                  if (!currentSiteView) {
-                    return <div>Error loading data.</div>;
-                  }
-                  const {
-                    showPresearch,
-                    showFacetBar,
-                    showBreadCrumbs,
-                  } = currentSiteView.search.config.fields;
-                  return (
-                    <Row>
-                      {showFacetBar && (
-                        <SidebarContainer md={2}>
-                          {this.renderAggs(currentSiteView)}
-                        </SidebarContainer>
-                      )}
-                      <div id="main_search" style={{ overflowY: 'auto' }}>
-                        <MainContainer style={{ width: '100%' }}>
-                          {showBreadCrumbs && this.renderCrumbs()}
-                          {showPresearch && this.renderPresearch(hash)}
-                          {this.renderSearch(
-                            hash,
-                            currentSiteView,
-                            site.siteViews
-                          )}
-                        </MainContainer>
-                      </div>
-                    </Row>
-                  );
-                }}
-              </SiteProvider>
-            )}
-          />
-        </Switch>
-      );
+                  return 'user';
+                };
+                const siteViews = site.siteViews;
+                let currentSiteView =
+                  //@ts-ignore
+                  siteViews.find(
+                    siteview =>
+                      //@ts-ignore
+                      siteview.url.toLowerCase() == siteViewUrl().toLowerCase()
+                  ) || site.siteView;
 
-    }
-
+                if (siteViewUrl() === 'default') {
+                  currentSiteView = site.siteView;
+                }
+                if (!currentSiteView) {
+                  return <div>Error loading data.</div>;
+                }
+                const {
+                  showPresearch,
+                  showFacetBar,
+                  showBreadCrumbs,
+                } = currentSiteView.search.config.fields;
+                return (
+                  <Row>
+                    {showFacetBar && (
+                      <SidebarContainer md={2}>
+                        {this.renderAggs(currentSiteView)}
+                      </SidebarContainer>
+                    )}
+                    <div id="main_search" style={{ overflowY: 'auto' }}>
+                      <MainContainer style={{ width: '100%' }}>
+                        {showBreadCrumbs && this.renderCrumbs(currentSiteView)}
+                        {showPresearch && this.renderPresearch(hash)}
+                        {this.renderSearch(
+                          hash,
+                          currentSiteView,
+                          site.siteViews
+                        )}
+                      </MainContainer>
+                    </div>
+                  </Row>
+                );
+              }}
+            </SiteProvider>
+          )}
+        />
+      </Switch>
+    );
   }
+}
 
 export default SearchPage;
