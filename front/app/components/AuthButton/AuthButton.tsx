@@ -42,7 +42,6 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
   }
 
   handleAdminClick = (url) => {
-    console.log('clicked admin view', url)
     const linkUrl = '/search/' + url
     this.props.history.push(linkUrl);
   }
