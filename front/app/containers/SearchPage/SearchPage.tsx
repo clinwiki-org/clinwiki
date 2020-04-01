@@ -788,7 +788,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       <SiteProvider>
         {site => {
           const siteViewUrl = () =>{
-            if(this.state.siteViewType!=="user"){ 
+            //note about this if block at Line 928
+           if(this.state.siteViewType!=="user" && this.state.siteViewType!==""){ 
               return this.props.match.params.siteviewUrl;
             }
             return "user"
@@ -921,7 +922,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               <SiteProvider>
                 {site => {
           const siteViewUrl = () =>{
-            if(siteViewType!=="user"){ 
+            /*------
+            console.log("S-Type", siteViewType)
+            siteViewType coming back as an empty string when coming from Link in WikiEdits 
+            Seems like the component isn't remounting (or updating as I tried to handle in componentDidUpdate but no dice) 
+            so it never gets set to either user or search
+      
+            below if statement only use to handle siteViewType !=="user" so it incorrectly fall in there
+            --------*/
+            if(siteViewType!=="user" && siteViewType !==""){
               return this.props.match.params.siteviewUrl;
             }
             return "user"
