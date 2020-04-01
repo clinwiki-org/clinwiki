@@ -586,7 +586,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             if(checkUrls().length === 1){
               if(this.state.siteViewType !== "user"){
                 console.log("PARAMS", this.props.match.params)
-                return this.props.match.params.siteViewUrl
+                let url:any [] = checkUrls()
+                console.log("URL",url[0].url)
+                let siteUrl = url[0].url
+
+                return siteUrl
               }
               return "user"
             }
@@ -594,7 +598,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             return "default"
           }
 
-          console.log("SViewURL", siteViewUrl())
+          // console.log("SViewURL1", siteViewUrl())
           return (
             <HashQueryComponent
               query={HASH_QUERY}
