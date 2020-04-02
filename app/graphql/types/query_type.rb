@@ -60,7 +60,7 @@ module Types
     field :search_params, SearchParamsType, "Search params from hash", null: true do
       argument :hash, type: String, required: false
     end
-    field :user, UserType, "Public Profile User", null:false do
+    field :user, PublicUserType, "Public Profile User", null:false do
       argument :user_id, type: Integer, required: true
     end
 
