@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, Checkbox, FormControl } from 'react-bootstrap';
+import { Button, Checkbox, FormControl, MenuItem, DropdownButton } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { withRouter } from 'react-router-dom';
 import DeleteSiteViewMutation, {
@@ -97,9 +97,26 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       this.props.refresh();
     });
   };
-
+  handleChangeType =(updateSiteView: UpdateSiteViewMutationFn) => {
+    const { siteView } = this.props;
+    let mutationArray: any[] = [{path:["search","type"], operation: "SET", payload: "admin"}]
+    console.log("Wee Doggies")
+    updateSiteView({
+      variables: {
+        input: {
+          default: true,
+          id: siteView.id,
+          mutations: mutationArray,
+          name: siteView.name,
+        },
+      },
+    }).then(() => {
+      this.props.refresh();
+    });
+  };
   render() {
     const { siteView, site } = this.props;
+    const siteViewTypes: any[]=["admin", "user", "search"]
 
     let urlString;
     if (site.subdomain != 'default') {
@@ -123,6 +140,29 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
             )}
           </UpdateSiteViewMutation>
         </td>
+        <td>
+        <UpdateSiteViewMutation>
+            {updateSiteView => (
+                      <DropdownButton
+                        bsStyle="default"
+                        title="Change Type"
+                        key="default"
+                        id="dropdown-basic-default"
+                        style={{margin: "1em 1em 1em 0"}}>
+                  {      siteViewTypes.map(site=>(
+                        <MenuItem 
+                        key={site}
+                        name={`set:search.type`}
+                        onClick={e => this.handleChangeType(updateSiteView)
+                        }> 
+                          {site}</MenuItem>
+
+                        ))}
+
+                       </DropdownButton>
+                                   )}
+                                   </UpdateSiteViewMutation>
+                      </td>
         <td>
           <a target="_blank" href={urlString}>
             {urlString}
