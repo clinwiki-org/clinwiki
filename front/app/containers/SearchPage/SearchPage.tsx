@@ -254,7 +254,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   searchParamsFromQuery = (
     params: SearchPageParamsQuery_searchParams | null | undefined
   ): SearchParams => {
-    const defaultParams = this.getDefaultParams(view);
+    const defaultParams = this.getDefaultParams();
     if (!params) return defaultParams;
 
     const q = params.q
@@ -502,43 +502,36 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
-    let searchTerm = this.props.location.search
-    searchTerm = searchTerm.slice(2)
-    searchTerm = searchTerm.replace(/\+/g, " ")
-    if (this.state.showCards) {
-      window.addEventListener('scroll', this.handleScroll);
-      if(this.props.location.search){
-        let q = {key:"AND",children:[{children: [], key: searchTerm}]} 
-        this.setState({
+    let searchTerm = this.props.location.search;
+    searchTerm = searchTerm.slice(2);
+    searchTerm = searchTerm.replace(/\+/g, ' ');
+    if (this.props.location.search) {
+      let q = { key: 'AND', children: [{ children: [], key: searchTerm }] };
+      this.setState(
+        {
           params: {
             q: q,
             aggFilters: [],
-            crowdAggFilters:[],
-            sorts:[],
+            crowdAggFilters: [],
+            sorts: [],
             page: 0,
-            pageSize:25
+            pageSize: 25,
           },
-        });
+        },
+        () => this.updateSearchParams(this.state.params)
+      );
+      if (this.state.showCards) {
+        window.addEventListener('scroll', this.handleScroll);
+      } else {
+        window.removeEventListener('scroll', this.handleScroll);
       }
-
     } else {
-      window.removeEventListener('scroll', this.handleScroll);
-      if(this.props.location.search){
-        let q = {key:"AND",children:[{children: [], key: searchTerm}]} 
-        this.setState({
-          params: {
-            q: q,
-            aggFilters: [],
-            crowdAggFilters:[],
-            sorts:[],
-            page: 0,
-            pageSize:25
-          },
-        });
+      if (this.state.showCards) {
+        window.addEventListener('scroll', this.handleScroll);
+      } else {
+        window.removeEventListener('scroll', this.handleScroll);
       }
     }
-    
-
   }
 
   componentWillUnmount() {
