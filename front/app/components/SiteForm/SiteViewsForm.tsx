@@ -112,25 +112,15 @@ class SiteViewsForm extends React.Component<
   }
   render() {
     const { siteViews } = this.props;
-    const filteredSearchSites = () =>{
-        return filter(
-        siteViews => siteViews.search.type == "search",
-         siteViews
-       );
-      }
-    const filteredUserSites = () =>{
-        return filter(
-        siteViews => siteViews.search.type == "user",
-         siteViews
-       );
-      }
-    const filteredAdminSites = () =>{
-        return filter(
-        siteViews => siteViews.search.type == "admin",
-         siteViews
-       );
-      }
-    
+    const filteredSearchSites = () => {
+      return filter(siteViews => siteViews.search.type == 'search', siteViews);
+    };
+    const filteredUserSites = () => {
+      return filter(siteViews => siteViews.search.type == 'user', siteViews);
+    };
+    const filteredAdminSites = () => {
+      return filter(siteViews => siteViews.search.type == 'admin', siteViews);
+    };
     return (
       <CreateSiteViewMutation>
         {createSiteView => (
@@ -201,6 +191,7 @@ class SiteViewsForm extends React.Component<
                       <th>Site Name</th>
                       <th>URL</th>
                       <th>Default?</th>
+                      <th>Siteview Type</th>
                       <th>URL Preview</th>
                       <th />
                     </tr>
@@ -307,7 +298,6 @@ class SiteViewsForm extends React.Component<
                 </Table>
               )}
             </CollapsiblePanel>
-
           </StyledContainer>
         )}
       </CreateSiteViewMutation>
