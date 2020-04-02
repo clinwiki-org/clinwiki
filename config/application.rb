@@ -35,6 +35,8 @@ module Clinwiki
       "#{config.root}/app/docs"
     ]
 
+    config.es_url = ENV.fetch("SEARCHBOX_URL", ENV.fetch("ELASTICSEARCH_URL", "http://localhost:9200"))
+
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins 'http://localhost:3001',

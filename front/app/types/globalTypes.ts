@@ -7,6 +7,7 @@
 
 export enum FieldDisplay {
   DATE = "DATE",
+  RANGE = "RANGE",
   STAR = "STAR",
   STRING = "STRING",
 }
@@ -33,6 +34,7 @@ export interface AggFilterInput {
   values?: string[] | null;
   gte?: string | null;
   lte?: string | null;
+  includeMissingFields?: boolean | null;
 }
 
 /**

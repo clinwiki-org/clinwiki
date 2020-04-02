@@ -20,12 +20,10 @@ import {
   reverse,
   identity,
 } from 'ramda';
-import { ApolloConsumer } from 'react-apollo';
+import moment from 'moment';
+import { withApollo } from 'react-apollo';
 import { Checkbox, Panel, FormControl } from 'react-bootstrap';
-import { BeatLoader } from 'react-spinners';
-import * as InfiniteScroll from 'react-infinite-scroller';
 import * as FontAwesome from 'react-fontawesome';
-import Sorter from './Sorter';
 
 import {
   AggBucket,
@@ -40,80 +38,27 @@ import gql from 'graphql-tag';
 import aggToField from 'utils/aggs/aggToField';
 import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { FieldDisplay } from 'types/globalTypes';
-import SiteProvider from 'containers/SiteProvider';
+import { withSite } from 'containers/SiteProvider/SiteProvider';
 import {
   SiteViewFragment,
   SiteViewFragment_search_aggs_fields,
 } from 'types/SiteViewFragment';
 import './AggDropDownStyle.css';
+import { SiteFragment } from 'types/SiteFragment';
+import SortKind from './SortKind';
+import Buckets from './Buckets';
+import BucketsPanel from './BucketsPanel';
+import Filter from './Filter';
+import SearchPageCrowdAggBucketsQuery from './queries/SearchPageCrowdAggBucketsQuery';
+import SearchPageAggBucketsQuery from './queries/SearchPageAggBucketsQuery';
+import RangeSelector from './RangeSelector';
+import AllowMissingCheckbox from './AllowMissingCheckbox';
 
 const PAGE_SIZE = 25;
 
-const QUERY_AGG_BUCKETS = gql`
-  query SearchPageAggBucketsQuery(
-    $agg: String!
-    $q: SearchQueryInput!
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-    $page: Int!
-    $pageSize: Int!
-    $aggOptionsFilter: String
-    $aggOptionsSort: [SortInput!]
-  ) {
-    aggBuckets(
-      params: {
-        agg: $agg
-        q: $q
-        sorts: []
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        aggOptionsFilter: $aggOptionsFilter
-        aggOptionsSort: $aggOptionsSort
-        page: $page
-        pageSize: $pageSize
-      }
-    ) {
-      aggs {
-        name
-        buckets {
-          key
-          docCount
-        }
-      }
-    }
-  }
-`;
-
-const QUERY_CROWD_AGG_BUCKETA = gql`
-  query SearchPageCrowdAggBucketsQuery(
-    $agg: String!
-    $q: SearchQueryInput!
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-    $page: Int!
-    $pageSize: Int!
-    $aggOptionsFilter: String
-  ) {
-    aggBuckets: crowdAggBuckets(
-      params: {
-        agg: $agg
-        q: $q
-        sorts: []
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        aggOptionsFilter: $aggOptionsFilter
-        page: $page
-        pageSize: $pageSize
-      }
-    ) {
-      aggs {
-        buckets {
-          key
-          docCount
-        }
-      }
-    }
-  }
+const Container = styledComponents.div`
+  padding: 10px;
+  padding-right: 0;
 `;
 
 const PanelWrapper = styledComponents.div`
@@ -129,12 +74,22 @@ const PanelWrapper = styledComponents.div`
     overflow-x: auto;
     max-height: 400px;
   }
+  #range-dropdown {
+    padding: 5px;
+    max-height: 400px;
+    overflow-x: visible;
+  }
+  .range-selector {
+    padding: 5px;
+    padding-right: 15px;
+  }
+  .range-selector .dropdown {
+    width: 100%;
+  }
+  .range-selector button {
+    width: 100%;
+  }
 `;
-
-export enum SortKind {
-  Alpha,
-  Number,
-}
 
 interface AggDropDownState {
   hasMore: boolean;
@@ -165,6 +120,8 @@ interface AggDropDownProps {
   onOpen?: (agg: string, aggKind: AggKind) => void;
   removeSelectAll?: boolean;
   resetSelectAll?: () => void;
+  client: any;
+  site: SiteFragment;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -237,13 +194,15 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   // getBucketDocCount = (key: string): number => path([key, 'docCount'], this.props.buckets)
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
-  toggleAgg = (agg: string, key: string): void => {
+
+  toggleAgg = (key: string): void => {
     if (!this.props.addFilter || !this.props.removeFilter) return;
     return this.isSelected(key)
-      ? this.props.removeFilter(agg, key)
-      : this.props.addFilter(agg, key);
+      ? this.props.removeFilter(this.props.agg, key)
+      : this.props.addFilter(this.props.agg, key);
   };
-  selectAll = (agg: string): void => {
+
+  selectAll = (): void => {
     const { buckets } = this.state;
     let newParams = [];
 
@@ -252,14 +211,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     });
 
     if (this.props.removeSelectAll) {
-      console.log('meh');
       this.setState({
         checkboxValue: false,
       });
     }
     if (this.isAllSelected() != true) {
       if (!this.props.addFilters) return;
-      this.props.addFilters(agg, newParams, false);
+      this.props.addFilters(this.props.agg, newParams, false);
       this.setState({
         checkboxValue: true,
       });
@@ -268,9 +226,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       this.setState({
         checkboxValue: false,
       });
-      this.props.removeFilters(agg, newParams, false);
+      this.props.removeFilters(this.props.agg, newParams, false);
     }
   };
+
   isAllSelected = (): boolean => {
     const { buckets } = this.state;
     let i = 0;
@@ -297,12 +256,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.props.onOpen && this.props.onOpen(this.props.agg, this.props.aggKind);
   };
 
-  handleLoadMore = async apolloClient => {
+  handleLoadMore = async () => {
+    const { client: apolloClient } = this.props;
     const { desc, sortKind } = this.state;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
-        ? [QUERY_CROWD_AGG_BUCKETA, 'crowdAggFilters']
-        : [QUERY_AGG_BUCKETS, 'aggFilters'];
+        ? [SearchPageCrowdAggBucketsQuery, 'crowdAggFilters']
+        : [SearchPageAggBucketsQuery, 'aggFilters'];
 
     let aggSort = [{ id: 'key', desc: false }];
 
@@ -377,156 +337,88 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({ buckets, hasMore });
   };
 
-  renderBucket = (
-    value: string | number,
-    display: FieldDisplay,
-    docCount: number
-  ): React.ReactNode => {
-    let text = '';
-    switch (display) {
-      case FieldDisplay.STAR:
-        text = {
-          0: '☆☆☆☆☆',
-          1: '★☆☆☆☆',
-          2: '★★☆☆☆',
-          3: '★★★☆☆',
-          4: '★★★★☆',
-          5: '★★★★★',
-        }[value];
-        break;
-      case FieldDisplay.DATE:
-        text = new Date(parseInt(value.toString(), 10))
-          .getFullYear()
-          .toString();
-        break;
-      default:
-        text = value.toString();
-    }
-    return `${text} (${docCount})`;
-  };
-
-  renderBuckets = ({
-    display,
-    site,
-    field,
-  }: {
-    display: FieldDisplay;
-    site: SiteViewFragment;
-    field: SiteViewFragment_search_aggs_fields | any;
-  }) => {
-    const { agg, visibleOptions = [] } = this.props;
-    const { buckets = [] } = this.state;
-    return pipe(
-      filter(({ key }) =>
-        visibleOptions.length ? visibleOptions.includes(key) : true
-      ),
-      map(({ key, docCount }) => (
-        <Checkbox
-          key={key}
-          checked={this.isSelected(key)}
-          onChange={() => this.toggleAgg(agg, key)}>
-          {this.renderBucket(key, display, docCount)}
-        </Checkbox>
-      ))
-    )(buckets);
-  };
-
-  renderBucketsPanel = (apolloClient, site: SiteViewFragment) => {
-    let display = this.props.display;
-    const field = find(propEq('name', this.props.agg), [
-      ...site.search.aggs.fields,
-      ...site.search.crowdAggs.fields,
-    ]) as SiteViewFragment_search_aggs_fields | null;
-    if (!display) {
-      display = (field && field.display) || FieldDisplay.STRING;
-    }
-    return (
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={() => this.handleLoadMore(apolloClient)}
-        hasMore={this.state.hasMore}
-        useWindow={false}
-        loader={
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <BeatLoader key="loader" color="#fff" />
-          </div>
-        }>
-        {this.renderBuckets({ display, site, field })}
-      </InfiniteScroll>
-    );
-  };
-
-  renderFilter = () => {
-    const { buckets = [], filter, desc, sortKind } = this.state;
-    const { agg } = this.props;
-    if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
+  renderPanel = () => {
+    const {
+      client,
+      site,
+      agg,
+      visibleOptions = [],
+      removeSelectAll,
+    } = this.props;
+    const {
+      buckets = [],
+      filter,
+      desc,
+      sortKind,
+      isOpen,
+      hasMore,
+      checkboxValue,
+      showLabel,
+      loading,
+    } = this.state;
+    if (!isOpen) {
       return null;
     }
+    const field = find(propEq('name', agg), [
+      ...(site.siteView?.search?.aggs?.fields || []),
+      ...(site.siteView?.search?.crowdAggs?.fields || []),
+    ]) as SiteViewFragment_search_aggs_fields | null;
+    if (field?.display === FieldDisplay.RANGE) {
+      return (
+        <Panel.Collapse id="range-selector">
+          <Panel.Body>
+            <Container>
+              <RangeSelector
+                isOpen={isOpen}
+                hasMore={hasMore}
+                loading={loading}
+                buckets={buckets}
+                handleLoadMore={this.handleLoadMore}
+              />
+            </Container>
+            {!loading && (
+              <Container>
+                <AllowMissingCheckbox buckets={buckets} />
+              </Container>
+            )}
+          </Panel.Body>
+        </Panel.Collapse>
+      );
+    }
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          borderBottom: 'solid 1px #ddd',
-        }}>
-        <div style={{ marginTop: '1em' }}>
-          <Checkbox
-            checked={
-              this.props.removeSelectAll
-                ? this.checkSelect()
-                : this.state.checkboxValue
-            }
-            onChange={() => this.selectAll(agg)}
-            onMouseEnter={() => this.setState({ showLabel: true })}
-            onMouseLeave={() => this.setState({ showLabel: false })}>
-            {this.state.showLabel ? (
-              <span
-                style={{
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                  border: '1px solid #ccc',
-                  padding: '5px',
-                  position: 'absolute',
-                  left: '1em',
-                  width: '6em',
-                  color: 'black',
-                  background: 'white',
-                  borderRadius: '4px',
-                  fontSize: '0.85em',
-                }}>
-                Select All
-              </span>
-            ) : null}
-          </Checkbox>
-        </div>
-
-        <div
-          style={{
-            flex: 2,
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            display: 'flex',
-          }}>
-          <Sorter
-            type="alpha"
+      <Panel.Collapse className="bm-panel-collapse">
+        <Panel.Body>
+          <Filter
+            agg={agg}
+            buckets={buckets}
+            filter={filter}
             desc={desc}
-            active={sortKind === SortKind.Alpha}
-            toggle={this.toggleAlphaSort}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
           />
-          <Sorter
-            type="number"
-            desc={desc}
-            active={sortKind === SortKind.Number}
-            toggle={this.toggleNumericSort}
+        </Panel.Body>
+        <Panel.Body>
+          <BucketsPanel
+            visibleOptions={visibleOptions}
+            buckets={buckets}
+            isSelected={this.isSelected}
+            toggleAgg={this.toggleAgg}
+            hasMore={hasMore}
+            handleLoadMore={this.handleLoadMore}
+            agg={agg}
+            field={field}
           />
-        </div>
-        <FormControl
-          type="text"
-          placeholder="filter..."
-          value={this.state.filter}
-          onChange={this.handleFilterChange}
-          style={{ flex: 4, marginTop: '4px' }}
-        />
-      </div>
+          <AllowMissingCheckbox buckets={buckets} />
+        </Panel.Body>
+      </Panel.Collapse>
     );
   };
 
@@ -568,41 +460,26 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     return (
-      <SiteProvider>
-        {site => (
-          <ApolloConsumer>
-            {apolloClient => (
-              <PanelWrapper>
-                <Panel
-                  onToggle={this.handleToggle}
-                  expanded={isOpen}
-                  className="bm-panel-default">
-                  <Panel.Heading className="bm-panel-heading">
-                    <Panel.Title className="bm-panel-title" toggle>
-                      <div className="flex">
-                        <span>{title}</span>
-                        <span>
-                          <FontAwesome name={icon} />{' '}
-                        </span>
-                      </div>
-                    </Panel.Title>
-                  </Panel.Heading>
-                  {isOpen && (
-                    <Panel.Collapse className="bm-panel-collapse">
-                      <Panel.Body>{this.renderFilter()}</Panel.Body>
-                      <Panel.Body>
-                        {this.renderBucketsPanel(apolloClient, site.siteView)}
-                      </Panel.Body>
-                    </Panel.Collapse>
-                  )}
-                </Panel>
-              </PanelWrapper>
-            )}
-          </ApolloConsumer>
-        )}
-      </SiteProvider>
+      <PanelWrapper>
+        <Panel
+          onToggle={this.handleToggle}
+          expanded={isOpen}
+          className="bm-panel-default">
+          <Panel.Heading className="bm-panel-heading">
+            <Panel.Title className="bm-panel-title" toggle>
+              <div className="flex">
+                <span>{title}</span>
+                <span>
+                  <FontAwesome name={icon} />{' '}
+                </span>
+              </div>
+            </Panel.Title>
+          </Panel.Heading>
+          {this.renderPanel()}
+        </Panel>
+      </PanelWrapper>
     );
   }
 }
 
-export default AggDropDown;
+export default withApollo(withSite(AggDropDown));
