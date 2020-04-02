@@ -23,7 +23,7 @@ interface AggFieldProps {
     siteView: SiteViewFragment
   ) => void;
   view: SiteViewFragment;
-  configType?: string;
+  configType?: "presearch" | "autosuggest" | 'facetbar';
   returnAll?: Boolean;
 }
 
@@ -134,7 +134,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       this.props.view
     );
   };
-  handleSelectAll =(kind: 'preselected' | 'visibleOptions') => (
+  handleSelectAll = (kind: 'preselected' | 'visibleOptions') => (
     aggName: string,
     newParams: any,
     isCrowd: boolean

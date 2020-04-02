@@ -37,4 +37,6 @@ export interface SearchPageCrowdAggBucketsQueryVariables {
   pageSize: number;
   aggOptionsFilter?: string | null;
   url?: string | null;
+  configType?: string | null;
+  returnAll?: boolean | null;
 }

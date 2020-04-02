@@ -150,8 +150,7 @@ const LoaderWrapper = styled.div`
 `;
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
-import { SiteFragment } from 'types/SiteFragment';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 
 interface CrumbsBarProps {
@@ -161,16 +160,13 @@ interface CrumbsBarProps {
   addFilter: AggCallback;
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
-  page: number;
-  pageSize: number;
   update: { page: (n: number) => void };
   onReset: () => void;
   onClear: () => void;
-  loading: boolean;
   data: SiteFragment;
   showCards: Boolean;
   siteViewUrl?: string;
-  currentSiteView: any;
+  currentSiteView: SiteFragment_siteView;
   toggledShowCards?: any;
   totalResults: number;
 }

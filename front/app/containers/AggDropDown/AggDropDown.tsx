@@ -20,11 +20,10 @@ import {
   reverse,
   identity,
 } from 'ramda';
-import moment from 'moment';
 import { withApollo } from 'react-apollo';
-import { Checkbox, Panel, FormControl } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-
+import { capitalize } from 'utils/helpers';
 import {
   AggBucket,
   AggCallback,
@@ -33,10 +32,7 @@ import {
   AggKind,
   maskAgg,
 } from '../SearchPage/Types';
-
-import gql from 'graphql-tag';
 import aggToField from 'utils/aggs/aggToField';
-import aggKeyToInner from 'utils/aggs/aggKeyToInner';
 import { FieldDisplay } from 'types/globalTypes';
 import { withSite } from 'containers/SiteProvider/SiteProvider';
 import {
@@ -44,16 +40,14 @@ import {
   SiteViewFragment_search_aggs_fields,
 } from 'types/SiteViewFragment';
 import './AggDropDownStyle.css';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import SortKind from './SortKind';
-import Buckets from './Buckets';
 import BucketsPanel from './BucketsPanel';
 import Filter from './Filter';
 import SearchPageCrowdAggBucketsQuery from './queries/SearchPageCrowdAggBucketsQuery';
 import SearchPageAggBucketsQuery from './queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
-
 const PAGE_SIZE = 25;
 
 const Container = styledComponents.div`
@@ -90,13 +84,57 @@ const PanelWrapper = styledComponents.div`
     width: 100%;
   }
 `;
-  .range-selector .dropdown {
-    width: 100%;
-  }
-  .range-selector button {
-    width: 100%;
-  }
+
+// Presearch styles
+
+const PresearchCard = styledComponents.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid green;
+  border-radius: 12px;
+  margin: 10px;
+  flex: 1;
+  height: 310px;
+  width: 420px;
 `;
+
+const PresearchHeader = styledComponents.div`
+  background-color: #55b88d;
+  padding: 5px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  height: 50px;
+`;
+
+const PresearchTitle = styledComponents.div`
+  color: white;
+  font-size: 25px;
+  font-weight: 400;
+  margin-left: 5px;
+`;
+
+const PresearchFilter = styledComponents.div`
+  margin-left: 5px;
+  max-height: 30px;
+`;
+
+const PresearchPanel = styledComponents.div`
+  overflow-x: auto;
+  max-height: 200px;
+  min-height: 200px;
+  margin-left: 5px;
+  margin-top: 30px;
+`;
+
+const PresearchContent = styledComponents.div`
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px; 
+  background-color: white;
+  max-height: 260px;
+`;
+
 
 interface AggDropDownState {
   hasMore: boolean;
@@ -120,15 +158,21 @@ interface AggDropDownProps {
   selectedKeys: Set<string>;
   addFilter: AggCallback;
   addFilters?: AggregateAggCallback | undefined;
+  addAllFilters?:any;
+  removeAllFilters?:any;
   removeFilters?: AggregateAggCallback | undefined;
   removeFilter: AggCallback | null;
   display?: FieldDisplay;
   visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
   removeSelectAll?: boolean;
+  presearch?: boolean;
+  configType?: "presearch" | "autosuggest" | 'facetbar';
+  returnAll?: boolean;
   resetSelectAll?: () => void;
   client: any;
   site: SiteFragment;
+  currentSiteView: SiteFragment_siteView;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -176,6 +220,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       const key = props.aggKind === 'aggs' ? 'aggFilters' : 'crowdAggFilters';
       return find(agg => agg.field === props.agg, searchParams[key]);
     };
+    if (props.presearch && !equals(state.prevParams, props.searchParams)) {
+      return {
+        hasMore: true,
+        loading: false,
+        buckets: [],
+        prevParams: props.searchParams,
+      };
+    }
     const prevAggValue = findAgg(state.prevParams);
     const nextAggValue = findAgg(props.searchParams);
 
@@ -197,8 +249,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return null;
   }
 
-  // getBucketKey = (key: string): string => path([key, 'key'], this.props.buckets)
-  // getBucketDocCount = (key: string): number => path([key, 'docCount'], this.props.buckets)
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
 
@@ -209,7 +259,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       : this.props.addFilter(this.props.agg, key);
   };
 
-  selectAll = (): void => {
+  selectAll = (agg:string): void => {
     const { buckets } = this.state;
     let newParams = [];
 
@@ -223,13 +273,25 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       });
     }
     if (this.isAllSelected() != true) {
-      if (!this.props.addFilters) return;
+      if (!this.props.addFilters) {
+        this.props.addAllFilters(agg, newParams, false);
+        this.setState({
+          checkboxValue: true,
+        });
+        return;
+      }
       this.props.addFilters(this.props.agg, newParams, false);
       this.setState({
         checkboxValue: true,
       });
     } else {
-      if (!this.props.removeFilters) return;
+      if (!this.props.removeFilters) {
+        this.props.removeAllFilters(agg, newParams, false);
+        this.setState({
+          checkboxValue: false
+        });
+        return;
+      }
       this.setState({
         checkboxValue: false,
       });
@@ -252,7 +314,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return false;
   };
 
-  getFullPagesCount = () => Math.floor(length(this.state.buckets) / PAGE_SIZE);
+  getFullPagesCount = (buckets) => Math.floor(length(buckets) / PAGE_SIZE);
 
   handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
@@ -262,41 +324,47 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   handleToggle = () => {
     this.props.onOpen && this.props.onOpen(this.props.agg, this.props.aggKind);
   };
-  
+ 
+  handleSort = (desc: boolean, sortKind: SortKind) => {
+    switch(sortKind) {
+      case SortKind.Alpha:
+        return [{ id: 'key', desc: desc }]
+      case SortKind.Number:
+        return [{ id: 'count', desc: desc }]
+    }
+  };
 
   handleLoadMore = async () => {
     const { client: apolloClient } = this.props;
-    const { desc, sortKind } = this.state;
+    const { desc, sortKind, buckets, filter } = this.state;
+    const {
+      agg,
+      searchParams,
+      currentSiteView,
+      configType,
+      returnAll,
+    } = this.props;
     const [query, filterType] =
       this.props.aggKind === 'crowdAggs'
         ? [SearchPageCrowdAggBucketsQuery, 'crowdAggFilters']
         : [SearchPageAggBucketsQuery, 'aggFilters'];
 
-    let aggSort = [{ id: 'key', desc: false }];
-
-    if (!desc && sortKind === SortKind.Alpha) {
-      aggSort = [{ id: 'key', desc: true }];
-    }
-
-    if (desc && sortKind === SortKind.Number) {
-      aggSort = [{ id: 'count', desc: false }];
-    }
-
-    if (!desc && sortKind === SortKind.Number) {
-      aggSort = [{ id: 'count', desc: true }];
-    }
+    let aggSort = this.handleSort(desc, sortKind);
 
     const variables = {
-      ...this.props.searchParams,
-      aggFilters: maskAgg(this.props.searchParams.aggFilters, this.props.agg),
+      ...searchParams,
+      url: currentSiteView.url,
+      configType: configType,
+      returnAll: returnAll,
+      aggFilters: maskAgg(searchParams.aggFilters, this.props.agg),
       crowdAggFilters: maskAgg(
         this.props.searchParams.crowdAggFilters,
         this.props.agg
       ),
-      agg: this.props.agg,
+      agg: agg,
       pageSize: PAGE_SIZE,
-      page: this.getFullPagesCount(),
-      aggOptionsFilter: this.state.filter,
+      page: this.getFullPagesCount(this.state.buckets),
+      aggOptionsFilter: filter,
       aggOptionsSort: aggSort,
     };
 
@@ -305,50 +373,56 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       variables,
     });
 
-    const newBuckets = pathOr(
+    const responseBuckets = pathOr(
       [],
       ['data', 'aggBuckets', 'aggs', 0, 'buckets'],
       response
     ) as AggBucket[];
 
-    let buckets = pipe(
-      concat(newBuckets),
+    let newBuckets = pipe(
+      concat(responseBuckets),
       uniqBy(prop('key')),
       sortBy(prop('key'))
-      // desc ? identity() : reverse(),
-    )(this.state.buckets) as AggBucket[];
+    )(buckets) as AggBucket[];
+
     if (!desc && sortKind === SortKind.Alpha) {
-      buckets = pipe(
-        concat(newBuckets),
+      newBuckets = pipe(
+        concat(responseBuckets),
         uniqBy(prop('key')),
         sortBy(prop('key')),
         reverse()
       )(this.state.buckets) as AggBucket[];
     }
     if (desc && sortKind === SortKind.Number) {
-      buckets = pipe(
-        concat(newBuckets),
+      newBuckets = pipe(
+        concat(responseBuckets),
         uniqBy(prop('key')),
         sortBy(prop('docCount'))
       )(this.state.buckets) as AggBucket[];
     }
     if (!desc && sortKind === SortKind.Number) {
-      buckets = pipe(
-        concat(newBuckets),
+      newBuckets = pipe(
+        concat(responseBuckets),
         uniqBy(prop('key')),
         sortBy(prop('docCount')),
         reverse()
       )(this.state.buckets) as AggBucket[];
     }
 
-    const hasMore = length(this.state.buckets) !== length(buckets);
-    this.setState({ buckets, hasMore });
+    const hasMore = length(buckets) !== length(newBuckets);
+    this.setState({ buckets : newBuckets, hasMore });
   };
 
-  renderPanel = () => {
+  findFields = () => {
+    const { agg, site } = this.props;
+    return find(propEq('name', agg), [
+      ...(site.siteView?.search?.aggs?.fields || []),
+      ...(site.siteView?.search?.crowdAggs?.fields || []),
+    ]) as SiteViewFragment_search_aggs_fields | null;
+  }
+
+  renderPanel = (isPresearch:boolean) => {
     const {
-      client,
-      site,
       agg,
       visibleOptions = [],
       removeSelectAll,
@@ -367,10 +441,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     if (!isOpen) {
       return null;
     }
-    const field = find(propEq('name', agg), [
-      ...(site.siteView?.search?.aggs?.fields || []),
-      ...(site.siteView?.search?.crowdAggs?.fields || []),
-    ]) as SiteViewFragment_search_aggs_fields | null;
+    const field = this.findFields();
     if (field?.display === FieldDisplay.RANGE) {
       return (
         <Panel.Collapse id="range-selector">
@@ -397,7 +468,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
           <Filter
-            agg={agg}
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -415,6 +485,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         </Panel.Body>
         <Panel.Body>
           <BucketsPanel
+            isPresearch={isPresearch}
             visibleOptions={visibleOptions}
             buckets={buckets}
             isSelected={this.isSelected}
@@ -462,14 +533,66 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       );
     }
   };
+
+  renderPresearchFilter = () => {
+    const { agg, removeSelectAll, visibleOptions } = this.props;
+    const {
+      buckets = [],
+      filter,
+      desc,
+      sortKind,
+      hasMore,
+      checkboxValue,
+      showLabel,
+    } = this.state;
+    const field = this.findFields();
+    return (
+      <PresearchContent>
+        <PresearchFilter>
+          <Filter
+            buckets={buckets}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })} />
+          </PresearchFilter>
+        <PresearchPanel>
+          <BucketsPanel
+            isPresearch={true}
+            visibleOptions={visibleOptions}
+            buckets={buckets}
+            isSelected={this.isSelected}
+            toggleAgg={this.toggleAgg}
+            hasMore={hasMore}
+            handleLoadMore={this.handleLoadMore}
+            agg={agg}
+            field={field}
+          />
+        </PresearchPanel>
+      </PresearchContent>
+    );
+  };
+
   render() {
-    const { agg } = this.props;
+    const { agg, presearch } = this.props;
     const { isOpen } = this.state;
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
-    	<PresearchCard>
-	// TODO
-	</PresearchCard>
+    if (presearch) {
+      <PresearchCard>
+        <PresearchHeader>
+          <PresearchTitle>{capitalize(title)}</PresearchTitle>
+        </PresearchHeader>
+        <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
+      </PresearchCard>
     }
     else {
     return (
@@ -488,10 +611,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
               </div>
             </Panel.Title>
           </Panel.Heading>
-          {this.renderPanel()}
+          {this.renderPanel(false)}
         </Panel>
       </PanelWrapper>
     );
+    }
   }
 }
 

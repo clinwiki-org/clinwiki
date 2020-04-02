@@ -26,7 +26,7 @@ import {
 import { BeatLoader } from 'react-spinners';
 import aggToField from 'utils/aggs/aggToField';
 import { withSite } from 'containers/SiteProvider/SiteProvider';
-import { SiteFragment, SiteFragment_editors } from 'types/SiteFragment';
+import { SiteFragment, SiteFragment_siteView  } from 'types/SiteFragment';
 import { throws } from 'assert';
 import { FilterKind } from 'types/globalTypes';
 import { displayFields } from 'utils/siteViewHelpers';
@@ -76,7 +76,7 @@ interface AggsProps {
   resetSelectAll?: () => void;
   updateParams: any;
   presearch?: boolean;
-  currentSiteView?: any;
+  currentSiteView: SiteFragment_siteView;
   preSearchAggs?: string[];
   preSearchCrowdAggs?: string[];  
   site: SiteFragment;
@@ -110,7 +110,7 @@ class Aggs extends React.PureComponent<AggsProps> {
     ).map(prop('name'));
   };
 
-  getCrowdAggs = (site: SiteFragment, crowdAggs: string[]): string[] => {
+  getCrowdAggs = (crowdAggs: string[]): string[] => {
     const displayed = displayFields(
       this.props.currentSiteView.search.crowdAggs.selected.kind,
       this.props.currentSiteView.search.crowdAggs.selected.values,
@@ -240,7 +240,7 @@ class Aggs extends React.PureComponent<AggsProps> {
             }}>
             Crowd Facets
           </h4>
-          {sortByNameCi(this.getCrowdAggs(currentSiteView, Object.keys(crowdAggs))).map(
+          {sortByNameCi(this.getCrowdAggs(Object.keys(crowdAggs))).map(
             k => (
               <AggFilterUpdateContext.Provider
                 key={k}

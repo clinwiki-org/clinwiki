@@ -10,6 +10,7 @@ import { withSite } from 'containers/SiteProvider/SiteProvider';
 import Buckets from './Buckets';
 
 interface BucketsPanelProps {
+  isPresearch: boolean;
   field: SiteViewFragment_search_aggs_fields | any;
   agg: string;
   visibleOptions: any;
@@ -17,7 +18,6 @@ interface BucketsPanelProps {
   buckets: Array<AggBucket>;
   isSelected: any;
   toggleAgg: any;
-  aggs: any;
   hasMore: boolean;
   handleLoadMore: any;
 }
@@ -25,6 +25,7 @@ interface BucketsPanelProps {
 class BucketsPanel extends React.Component<BucketsPanelProps> {
   render() {
     const {
+      isPresearch,
       field,
       agg,
       visibleOptions,
@@ -32,7 +33,6 @@ class BucketsPanel extends React.Component<BucketsPanelProps> {
       buckets,
       isSelected,
       toggleAgg,
-      aggs,
       hasMore,
       handleLoadMore,
     } = this.props;
@@ -43,8 +43,8 @@ class BucketsPanel extends React.Component<BucketsPanelProps> {
         hasMore={hasMore}
         useWindow={false}
         loader={
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <BeatLoader key="loader" color="#fff" />
+          <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
+            <BeatLoader key="loader" color={isPresearch ? '#000' : '#fff'} />
           </div>
         }>
         <Buckets

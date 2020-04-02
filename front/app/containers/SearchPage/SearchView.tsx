@@ -9,7 +9,8 @@ import { PulseLoader, BeatLoader } from 'react-spinners';
 import { Col, ButtonGroup, Button } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
-import { SortInput, AggFilterInput, SearchQueryInput } from 'types/globalTypes';
+import { SortInput, AggFilterInput } from 'types/globalTypes';
+import { SiteFragment_siteView } from 'types/SiteFragment';
 import {
   map,
   pipe,
@@ -42,15 +43,11 @@ import {
 } from 'types/SearchPageSearchQuery';
 import { Query } from 'react-apollo';
 import 'react-table/react-table.css';
-import Aggs from './components/Aggs';
-import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
 import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
-import { stringify } from 'querystring';
 import Cards from './components/Cards';
 import { SiteViewFragment } from 'types/SiteViewFragment';
-import { throws } from 'assert';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -342,9 +339,8 @@ interface SearchViewProps {
   opened: any;
   openedKind: any;
   onOpen: any;
-  currentSiteView: any;
+  currentSiteView: SiteFragment_siteView;
   thisSiteView?: SiteViewFragment;
-  siteViewUrl?: string;
   getTotalResults: Function;
 }
 
@@ -699,9 +695,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const isMobile = this.mobileAndTabletcheck();
 
-    return (
-      <SiteProvider>
-        {site => {
+    const {currentSiteView} = this.props;
+
           let pagesTotal = 1;
           let recordsTotal = 0;
           if (
@@ -722,15 +717,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             });
           }
 
-          let thisSiteView =
-            site.siteViews.find(
-              siteview => siteview.url == this.props.siteViewUrl
-            ) || site.siteView;
-          let showResults = thisSiteView.search.config.fields.showResults;
+          const showResults = currentSiteView.search.config.fields.showResults;
 
           const columns = map(
             x => this.renderColumn(x, ''),
-            site.siteView.search.fields
+            currentSiteView.search.fields
           );
           const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
           const leftover = isMobile
@@ -797,9 +788,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               </div>
             ) : null;
           }
-        }}
-      </SiteProvider>
-    );
   };
 
   renderViewDropdown = () => {
@@ -829,13 +817,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   render() {
     return (
-      <SiteProvider>
-        {site => {
-          let thisSiteView =
-            site.siteViews.find(
-              siteview => siteview.url == this.props.siteViewUrl
-            ) || site.siteView;
-          return (
             <SearchWrapper>
               <Helmet>
                 <title>Search</title>
@@ -878,9 +859,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 </QueryComponent>
               </Col>
             </SearchWrapper>
-          );
-        }}
-      </SiteProvider>
     );
   }
 }

@@ -253,7 +253,14 @@ const QUERY = gql`
 `;
 
 export const withSite = Component => props => (
-  <SiteProvider>{site => <Component {...props} site={site} />}</SiteProvider>
+  <SiteProvider>
+    {site => {
+      const siteViewUrl = props?.match?.params?.siteviewUrl?.toLowerCase();
+      const siteViews = site.siteViews;
+      const currentSite = siteViews.find(siteview => siteview?.url?.toLowerCase() === siteViewUrl) || site.siteView;
+      return <Component {...props} site={site} currentSiteView={currentSite} />;
+    }}
+  </SiteProvider>
 );
 
 class QueryComponent extends Query<
@@ -269,7 +276,6 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
     return (
       <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
         {({ data, loading, error, refetch }) => {
-           console.log(data)
           if (loading || error) return null;
           return this.props.children(data!.site!, refetch);
         }}
