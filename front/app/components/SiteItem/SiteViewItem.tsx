@@ -103,25 +103,51 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       this.props.refresh();
     });
   };
-  handleChangeType = (updateSiteView: UpdateSiteViewMutationFn) => {
+  // handleChangeType = (updateSiteView: UpdateSiteViewMutationFn) => {
+  //   const { siteView } = this.props;
+  //   let mutationArray: any[] = [
+  //     { path: ['search', 'type'], operation: 'SET', payload: 'admin' },
+  //   ];
+  //   console.log('Wee Doggies');
+  //   updateSiteView({
+  //     variables: {
+  //       input: {
+  //         default: true,
+  //         id: siteView.id,
+  //         mutations: mutationArray,
+  //         name: siteView.name,
+  //       },
+  //     },
+  //   }).then(() => {
+  //     this.props.refresh();
+  //   });
+  // };
+
+  handleChangeType = (
+    updateSiteView: UpdateSiteViewMutationFn,
+    type: string
+  ) => {
     const { siteView } = this.props;
-    let mutationArray: any[] = [
-      { path: ['search', 'type'], operation: 'SET', payload: 'admin' },
+      let mutationArray: any[] = [
+      { path: ['search', 'type'], operation: 'SET', payload: type },
     ];
     console.log('Wee Doggies');
+
     updateSiteView({
       variables: {
         input: {
-          default: true,
+          default: false,
           id: siteView.id,
           mutations: mutationArray,
-          name: siteView.name,
+          url: `searchView${siteView.id}`,
         },
       },
     }).then(() => {
+      console.log("refreshing")
       this.props.refresh();
     });
   };
+
   render() {
     const { siteView, site } = this.props;
     const siteViewTypes: any[] = ['admin', 'user', 'search'];
@@ -157,12 +183,12 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
                 key="default"
                 id="dropdown-basic-default"
                 style={{ margin: '1em 1em 1em 0' }}>
-                {siteViewTypes.map(site => (
+                {siteViewTypes.map(type => (
                   <MenuItem
-                    key={site}
+                    key={type}
                     name={`set:search.type`}
-                    onClick={e => this.handleChangeType(updateSiteView)}>
-                    {site}
+                    onClick={e => this.handleChangeType(updateSiteView, type)}>
+                    {type}
                   </MenuItem>
                 ))}
               </DropdownButton>
