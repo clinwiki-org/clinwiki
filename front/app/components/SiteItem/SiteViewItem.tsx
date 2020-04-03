@@ -133,7 +133,10 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     let mutationArray: any[] = [
       { path: ['search', 'type'], operation: 'SET', payload: type },
     ];
-    console.log('Wee Doggies');
+    if (siteView.default) {
+      alert('There must be a default site.');
+      return null;
+    }
 
     updateSiteView({
       variables: {
