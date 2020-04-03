@@ -35,6 +35,7 @@ const StyledButton = styled(Button)`
   margin-right: 15px;
 `;
 // const PreviewText;
+const siteViewTypes: any[] = ['admin', 'user', 'search'];
 
 class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   handleEditClick = () => {
@@ -104,26 +105,33 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       this.props.refresh();
     });
   };
-  // handleChangeType = (updateSiteView: UpdateSiteViewMutationFn) => {
-  //   const { siteView } = this.props;
-  //   let mutationArray: any[] = [
-  //     { path: ['search', 'type'], operation: 'SET', payload: 'admin' },
-  //   ];
-  //   console.log('Wee Doggies');
-  //   updateSiteView({
-  //     variables: {
-  //       input: {
-  //         default: true,
-  //         id: siteView.id,
-  //         mutations: mutationArray,
-  //         name: siteView.name,
-  //       },
-  //     },
-  //   }).then(() => {
-  //     this.props.refresh();
-  //   });
-  // };
 
+  renderDropDown = siteViewUrl => {
+    if (siteViewUrl == 'default' || siteViewUrl == 'user') {
+      return;
+    }
+    return (
+      <UpdateSiteViewMutation>
+        {updateSiteView => (
+          <DropdownButton
+            bsStyle="default"
+            title="Change Type"
+            key="default"
+            id="dropdown-basic-default"
+            style={{ margin: '1em 1em 1em 0' }}>
+            {siteViewTypes.map(type => (
+              <MenuItem
+                key={type}
+                name={`set:search.type`}
+                onClick={e => this.handleChangeType(updateSiteView, type)}>
+                {type}
+              </MenuItem>
+            ))}
+          </DropdownButton>
+        )}
+      </UpdateSiteViewMutation>
+    );
+  };
   handleChangeType = (
     updateSiteView: UpdateSiteViewMutationFn,
     type: string
@@ -154,7 +162,6 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
 
   render() {
     const { siteView, site, type } = this.props;
-    const siteViewTypes: any[] = ['admin', 'user', 'search'];
 
     let urlString;
     if (site.subdomain != 'default') {
@@ -181,28 +188,6 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         )}
 
         <td>
-          <UpdateSiteViewMutation>
-            {updateSiteView => (
-              <DropdownButton
-                bsStyle="default"
-                title="Change Type"
-                key="default"
-                id="dropdown-basic-default"
-                style={{ margin: '1em 1em 1em 0' }}>
-                {siteViewTypes.map(type => (
-                  <MenuItem
-                    key={type}
-                    name={`set:search.type`}
-                    onClick={e => this.handleChangeType(updateSiteView, type)}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </DropdownButton>
-            )}
-          </UpdateSiteViewMutation>
-        </td>
-
-        <td>
           <a target="_blank" href={urlString}>
             {urlString}
           </a>
@@ -223,6 +208,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
               </StyledButton>
             )}
           </DeleteSiteViewMutation>
+          {this.renderDropDown(siteView.url)}
         </td>
       </tr>
     );
