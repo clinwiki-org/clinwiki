@@ -152,7 +152,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           default: false,
           id: siteView.id,
           mutations: mutationArray,
-          url: `searchView${siteView.id}`,
+          url: siteView.url
         },
       },
     }).then(() => {
