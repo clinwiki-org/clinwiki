@@ -96,7 +96,7 @@ class Edits extends React.PureComponent<EditsProps> {
     if (user.firstName) {
       const userName = (
         <Link to={`/profile/${user.id}`}>
-          `${user.firstName} ${user.lastName && user.lastName[0]}`
+          {`${user.firstName} ${user.lastName && user.lastName[0]}`}
         </Link>
       );
       return userName;
