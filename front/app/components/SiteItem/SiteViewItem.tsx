@@ -20,6 +20,7 @@ import CopySiteViewMutation, {
   CopySiteViewMutationFn,
 } from 'mutations/CopySiteViewMutation';
 import { Link } from 'react-router-dom';
+import 'override.css';
 
 interface SiteViewItemProps {
   match: any;

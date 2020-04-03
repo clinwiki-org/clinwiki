@@ -49,6 +49,7 @@ import {
 import './AggDropDownStyle.css';
 import { KindEnum } from 'graphql';
 
+
 const PAGE_SIZE = 25;
 
 const QUERY_AGG_BUCKETS = gql`
