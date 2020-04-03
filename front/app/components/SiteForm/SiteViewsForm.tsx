@@ -249,7 +249,6 @@ class SiteViewsForm extends React.Component<
                       <th>Site Name</th>
                       <th>URL</th>
                       <th>Default?</th>
-                      <th>Siteview Type</th>
                       <th>URL Preview</th>
                       <th />
                     </tr>
@@ -308,7 +307,6 @@ class SiteViewsForm extends React.Component<
                       <th>Site Name</th>
                       <th>URL</th>
                       {/* <th>Default?</th> */}
-                      <th>Siteview Type</th>
                       <th>URL Preview</th>
                       <th />
                     </tr>
@@ -364,7 +362,6 @@ class SiteViewsForm extends React.Component<
                       <th>Site Name</th>
                       <th>URL</th>
                       {/* <th>Default?</th> */}
-                      <th>Siteview Type</th>
                       <th>URL Preview</th>
                       <th />
                     </tr>
