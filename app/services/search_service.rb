@@ -133,7 +133,9 @@ class SearchService
     options[:includes] = includes
     search_result = Study.search("*", options) do |body|
 
-      body[:query][:bool][:must] = { query_string: { query: search_query } }
+      body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
+      body[:query][:bool][:must] << nested_matches unless nested_matches.empty?
+
     end
     {
       recordsTotal: search_result.total_entries,
@@ -145,7 +147,8 @@ class SearchService
   def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false)
     params = @params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
-    key = field.include?(".") ? field : "#{key_prefix}#{field}".to_sym
+    key = "#{key_prefix}#{field}".to_sym
+    top_key, nested_key = key.to_s.split(".") if key.to_s.include?(".")
     # We don't need to keep filters of the same agg, we want broader results
     # But we need to respect all other filters
 
@@ -177,10 +180,11 @@ class SearchService
             },
           },
         )
-      if field.include?"."
-        test = nested_body("wiki_page_edits.email")
-        test[:aggs][:wiki_page_edits][:aggs] = body[:aggs]
-        body[:aggs] = test[:aggs]
+      if top_key
+        nesting = nested_body(field)
+        ##Needs to be a symbol for the nested value not just wiki_page_edits
+        nesting[:aggs][top_key.to_sym][:aggs] = body[:aggs]
+        body[:aggs] = nesting[:aggs]
       end
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site)
       visible_options_regex = one_of_regex(visibile_options)
@@ -291,8 +295,38 @@ class SearchService
 
   def scalars_filter(key, filter)
     return nil if filter.dig(:values).nil?
+    return nil unless key.to_s.include? "."
 
     { _or: filter[:values].map { |val| { key => val } } }
+  end
+
+  def nested_matches
+    nested_keys = params[:agg_filters].select {|filter| filter[:field].to_s.include?(".") }
+    nested_keys.map{ |filter| nested_filter(key_for(filter:filter), filter) }
+  end
+
+  def nested_filter(key,filter)
+    return nil if filter.dig(:values).nil?
+    return nil unless key.to_s.include? "."
+    top_key, nested_key = key.to_s.split(".")
+
+      { "nested" =>
+         {
+           "path" => top_key, "query" =>
+           {
+             "bool" =>
+             {
+               "must" =>
+               {
+                 "match" =>
+                 {
+                  _or: filter[:values].map{ |value| { key => value } }
+                 }
+               }
+             }
+            }
+          }
+        }
   end
 
   def range_filter(key, filter)

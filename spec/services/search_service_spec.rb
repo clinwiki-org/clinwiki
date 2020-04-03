@@ -90,4 +90,28 @@ describe SearchService do
       end
     end
   end
+    describe 'nested filter' do
+      let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [ ]}}
+      subject {SearchService.new(params).send(:nested_filter,key,value)}
+      context "for a non nested key" do
+        let (:key) {"hello"}
+        let (:value) {"test"}
+
+        it { is_expected.to be_nil}
+      end
+      context "for a nested key" do
+        let (:key) {"hello.stuff"}
+        let(:value) { { values: ["stuff1", "stuff2"] } }
+
+        it "should return a nested filter" do
+            expect(subject).to eql({
+              _or: [
+                { hello: { nested: { stuff: "stuff1" } }},
+                { hello: { nested: { stuff: "stuff2" } }}
+              ]
+              }
+            )
+        end
+      end
+    end
 end
