@@ -359,24 +359,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.previousSearchData = previousSearchData;
   };
 
-  getDefaultParams = (view: SiteViewFragment) => {
-    if (this.props.userId) {
-      // console.log(
-      //   'this should make the correct obj',
-      //   this.props.profileParams,
-      //   preselectedFilters(view)
-      // );
-      const profileViewParams = this.props.profileParams;
-      // const siteFilters = preselectedFilters(view);
-      // this.props.profileParams.push(siteFilters.aggFilters)
+  getDefaultParams = (view: SiteViewFragment, userId: string | undefined) => {
+    if (userId) {
+      const profileViewParams = preselectedFilters(view);
+      profileViewParams.aggFilters.push({ field: 'userId', values: [userId] });
 
-      return { ...profileViewParams, ...preselectedFilters(view) };
+      return { ...DEFAULT_PARAMS, ...profileViewParams };
     }
-    console.log(
-      'this should make the correct obj',
-      DEFAULT_PARAMS,
-      preselectedFilters(view)
-    );
     return {
       ...DEFAULT_PARAMS,
       ...preselectedFilters(view),
@@ -387,8 +376,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     view: SiteViewFragment,
     params: SearchPageParamsQuery_searchParams | null | undefined
   ): SearchParams => {
-    const defaultParams = this.getDefaultParams(view);
-    console.log('default params', defaultParams);
+    const defaultParams = this.getDefaultParams(view, this.props.userId);
+
     if (!params) return defaultParams;
 
     const q = params.q
@@ -447,7 +436,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleResetFilters = (view: SiteViewFragment) => () => {
     this.setState({
-      params: this.getDefaultParams(view),
+      params: this.getDefaultParams(view, this.props.userId),
       removeSelectAll: true,
     });
   };
