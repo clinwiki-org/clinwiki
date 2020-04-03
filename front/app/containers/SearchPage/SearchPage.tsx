@@ -613,6 +613,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       to={`/search/${siteViewUrl()}/${data.searchHash}`}
                     />
                   )}
+                  else{
+                    return (
+                      <Redirect
+                        to={`/profile/${this.props.userId}/${data.searchHash}`}
+                      />)
+                  }
                 }
 
                 return (

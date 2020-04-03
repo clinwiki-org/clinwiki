@@ -62,7 +62,8 @@ class App extends React.PureComponent<AppProps> {
             <Route path="/study/:nctId" component={StudyPage} />
             <Route path="/intervention/:id" component={InterventionPage} />
             <Route exact path="/profile" component={EditProfilePage} />
-            <Route path="/profile/:id" component={ProfilePage}/>
+            <Route path="/profile/:id/:searchId" component={ProfilePage}/>
+            <Route path="/profile/:id/" component={ProfilePage}/>
             <Route path="/workflows" component={EditWorkflowsPage} />
             <Route path="/sites/:id/edit" component={SitesEditPage} />
             <Route path="/sites/new" component={SitesNewPage} />
