@@ -28,6 +28,7 @@ interface SiteViewItemProps {
   refresh: () => void;
   siteView: SiteViewFragment;
   site: any;
+  type: string;
 }
 
 const StyledButton = styled(Button)`
@@ -128,7 +129,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     type: string
   ) => {
     const { siteView } = this.props;
-      let mutationArray: any[] = [
+    let mutationArray: any[] = [
       { path: ['search', 'type'], operation: 'SET', payload: type },
     ];
     console.log('Wee Doggies');
@@ -143,13 +144,13 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         },
       },
     }).then(() => {
-      console.log("refreshing")
+      console.log('refreshing');
       this.props.refresh();
     });
   };
 
   render() {
-    const { siteView, site } = this.props;
+    const { siteView, site, type } = this.props;
     const siteViewTypes: any[] = ['admin', 'user', 'search'];
 
     let urlString;
@@ -163,17 +164,19 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       <tr>
         <td>{siteView.name}</td>
         <td>{siteView.url}</td>
+        {type === 'search' && (
+          <td>
+            <UpdateSiteViewMutation>
+              {updateSiteView => (
+                <Checkbox
+                  checked={siteView.default}
+                  onChange={() => this.handleCheckbox(updateSiteView)}
+                />
+              )}
+            </UpdateSiteViewMutation>
+          </td>
+        )}
 
-        <td>
-          <UpdateSiteViewMutation>
-            {updateSiteView => (
-              <Checkbox
-                checked={siteView.default}
-                onChange={() => this.handleCheckbox(updateSiteView)}
-              />
-            )}
-          </UpdateSiteViewMutation>
-        </td>
         <td>
           <UpdateSiteViewMutation>
             {updateSiteView => (
@@ -195,6 +198,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
             )}
           </UpdateSiteViewMutation>
         </td>
+
         <td>
           <a target="_blank" href={urlString}>
             {urlString}
