@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { gql } from 'apollo-boost';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-
+import { filter } from 'ramda';
 import { SiteViewItem } from 'components/SiteItem';
 import CreateSiteViewMutation, {
   CreateSiteViewMutationFn,
 } from 'mutations/CreateSiteViewMutation';
-import { Table, FormControl, Checkbox } from 'react-bootstrap';
+import { Table, FormControl, Checkbox, MenuItem, DropdownButton } from 'react-bootstrap';
 import { History, Location } from 'history';
 import { CreateSiteViewInput, SiteViewMutationInput } from 'types/globalTypes';
 import StyledButton from 'containers/LoginPage/StyledButton';
@@ -112,11 +112,20 @@ class SiteViewsForm extends React.Component<
   }
   render() {
     const { siteViews } = this.props;
+    const filteredSearchSites = () => {
+      return filter(siteViews => siteViews.search.type == 'search', siteViews);
+    };
+    const filteredUserSites = () => {
+      return filter(siteViews => siteViews.search.type == 'user', siteViews);
+    };
+    const filteredAdminSites = () => {
+      return filter(siteViews => siteViews.search.type == 'admin', siteViews);
+    };
     return (
       <CreateSiteViewMutation>
         {createSiteView => (
           <StyledContainer>
-            <CollapsiblePanel header="My Site Views">
+            <CollapsiblePanel header="Site Views">
               {siteViews.length > 0 && (
                 <Table striped bordered condensed>
                   <thead>
@@ -124,13 +133,130 @@ class SiteViewsForm extends React.Component<
                       <th>Site Name</th>
                       <th>URL</th>
                       <th>Default?</th>
+                      <th>Siteview Type</th>
                       <th>URL Preview</th>
                       <th />
                     </tr>
                   </thead>
                   <tbody>
                     <>
-                      {siteViews.map(view => (
+                      {filteredSearchSites().map(view => (
+                        <SiteViewItem
+                          key={view.id}
+                          siteView={view}
+                          refresh={this.props.refresh}
+                          site={this.props.site}
+                        />
+                      ))}
+                    </>
+                    <tr>
+                      <td>
+                        <FormControl
+                          name="siteViewName"
+                          placeholder="Site Name"
+                          value={this.state.form.siteViewName}
+                          onChange={this.handleInputChange}
+                        />
+                      </td>
+                      <td>
+                        <FormControl
+                          name="siteViewPath"
+                          placeholder="Site View Path"
+                          value={this.state.form.siteViewPath}
+                          onChange={this.handleInputChange}
+                        />
+                      </td>
+                      <td>
+                        <Checkbox />
+                      </td>
+
+                      <td>
+                        <StyledButton
+                          onClick={() => {
+                            this.handleSave(createSiteView);
+                          }}>
+                          + Add Site View
+                        </StyledButton>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              )}
+            </CollapsiblePanel>
+            <CollapsiblePanel header="User Views">
+              {siteViews.length > 0 && (
+                <Table striped bordered condensed>
+                  <thead>
+                    <tr>
+                      <th>Site Name</th>
+                      <th>URL</th>
+                      <th>Default?</th>
+                      <th>Siteview Type</th>
+                      <th>URL Preview</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <>
+                      {filteredUserSites().map(view => (
+                        <SiteViewItem
+                          key={view.id}
+                          siteView={view}
+                          refresh={this.props.refresh}
+                          site={this.props.site}
+                        />
+                      ))}
+                    </>
+                    <tr>
+                      <td>
+                        <FormControl
+                          name="siteViewName"
+                          placeholder="Site Name"
+                          value={this.state.form.siteViewName}
+                          onChange={this.handleInputChange}
+                        />
+                      </td>
+                      <td>
+                        <FormControl
+                          name="siteViewPath"
+                          placeholder="Site View Path"
+                          value={this.state.form.siteViewPath}
+                          onChange={this.handleInputChange}
+                        />
+                      </td>
+                      <td>
+                        <Checkbox />
+                      </td>
+                      <td>
+                        <StyledButton
+                          onClick={() => {
+                            this.handleSave(createSiteView);
+                          }}>
+                          + Add Site View
+                        </StyledButton>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              )}
+            </CollapsiblePanel>
+
+            <CollapsiblePanel header="Admin Views">
+              {siteViews.length > 0 && (
+                <Table striped bordered condensed>
+                  <thead>
+                    <tr>
+                      <th>Site Name</th>
+                      <th>URL</th>
+                      <th>Default?</th>
+                      <th>Siteview Type</th>
+                      <th>URL Preview</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <>
+                      {filteredAdminSites().map(view => (
                         <SiteViewItem
                           key={view.id}
                           siteView={view}
