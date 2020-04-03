@@ -60,6 +60,9 @@ module Types
     field :search_params, SearchParamsType, "Search params from hash", null: true do
       argument :hash, type: String, required: false
     end
+    field :user, PublicUserType, "Public Profile User", null:false do
+      argument :user_id, type: Integer, required: true
+    end
 
     field :workflows_view, WorkflowsViewType, "Workflows config", null: false
 
@@ -121,6 +124,12 @@ module Types
         )
       end
       Hashie::Mash.new(autocomplete: list)
+    end
+
+
+    def user(user_id: nil)
+      user = User.find_by_id(user_id)
+      return user
     end
 
     # autocomplete {
