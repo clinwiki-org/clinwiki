@@ -7,7 +7,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -30,7 +43,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -53,7 +79,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -76,7 +115,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -99,7 +151,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -122,7 +187,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -145,7 +223,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -168,7 +259,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -191,7 +295,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -214,7 +331,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -237,7 +367,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -260,7 +403,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -283,7 +439,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -306,7 +475,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -329,7 +511,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -352,7 +547,20 @@
             {
               "bool": {
                 "must": [
+                  {
+                    "bool": {
+                      "filter": [
 
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
                 ]
               }
             }
@@ -374,7 +582,28 @@
       "must": [
         {
           "query_string": {
-            "query": "(((baz) OR (qux)) AND (((zoom) OR (zag))))"
+            "query": "foo"
+          }
+        },
+        {
+          "nested": {
+            "path": "wiki_page_edit",
+            "query": {
+              "bool": {
+                "should": [
+                  {
+                    "match": {
+                      "wiki_page_edit.email": "foo@bar.com"
+                    }
+                  },
+                  {
+                    "match": {
+                      "wiki_page_edit.email": "baz@qux.com"
+                    }
+                  }
+                ]
+              }
+            }
           }
         }
       ],
@@ -382,7 +611,20 @@
         {
           "bool": {
             "must": [
+              {
+                "bool": {
+                  "filter": [
 
+                  ]
+                }
+              },
+              {
+                "bool": {
+                  "filter": [
+
+                  ]
+                }
+              }
             ]
           }
         }

@@ -205,10 +205,11 @@ class SearchService
       body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
     end
 
+    aggs = search_results.aggs.to_h.deep_symbolize_keys
     if field.include? "."
       nested_result_aggs(field, aggs)
     else
-      search_results.aggs.to_h.deep_symbolize_keys
+      aggs
     end
   end
 
@@ -317,7 +318,7 @@ class SearchService
   end
 
   def nested_filters
-    nested = params[:agg_filters].select { |filter| filter[:field].to_s.include?(".") }
+    nested = params.fetch(:agg_filters, []).select { |filter| filter[:field].to_s.include?(".") }
     nested.map { |filter| nested_filter(key_for(filter: filter), filter) }
   end
 
@@ -339,6 +340,7 @@ class SearchService
   end
 
   def range_filter(key, filter)
+    return nil if key.to_s.include? "."
     range_hash = filter.slice(:gte, :lte)
     return nil if range_hash.empty?
 
