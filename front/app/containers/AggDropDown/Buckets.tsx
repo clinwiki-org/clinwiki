@@ -14,14 +14,9 @@ import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 
 interface BucketsProps {
   display: FieldDisplay;
-  field: SiteViewFragment_search_aggs_fields | any;
-  agg: string;
   visibleOptions: any;
-  site: SiteFragment;
   buckets: Array<AggBucket>;
   isSelected: any;
-  toggleAgg: any;
-  aggs: any;
   updater: AggFilterInputUpdater;
 }
 
@@ -29,12 +24,7 @@ class Buckets extends React.Component<BucketsProps> {
   render() {
     const {
       display,
-      field,
-      aggs,
       buckets,
-      toggleAgg,
-      site,
-      agg,
       visibleOptions = [],
       updater,
     } = this.props;
@@ -62,4 +52,4 @@ class Buckets extends React.Component<BucketsProps> {
   }
 }
 
-export default withSite(withAggContext(Buckets));
+export default withAggContext(Buckets);

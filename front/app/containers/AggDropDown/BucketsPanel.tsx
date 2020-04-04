@@ -12,12 +12,9 @@ import Buckets from './Buckets';
 interface BucketsPanelProps {
   isPresearch: boolean;
   field: SiteViewFragment_search_aggs_fields | any;
-  agg: string;
   visibleOptions: any;
-  site: SiteFragment;
   buckets: Array<AggBucket>;
   isSelected: any;
-  toggleAgg: any;
   hasMore: boolean;
   handleLoadMore: any;
 }
@@ -27,12 +24,9 @@ class BucketsPanel extends React.Component<BucketsPanelProps> {
     const {
       isPresearch,
       field,
-      agg,
       visibleOptions,
-      site,
       buckets,
       isSelected,
-      toggleAgg,
       hasMore,
       handleLoadMore,
     } = this.props;
@@ -48,18 +42,14 @@ class BucketsPanel extends React.Component<BucketsPanelProps> {
           </div>
         }>
         <Buckets
-          field={field}
           display={(field && field.display) || FieldDisplay.STRING}
-          site={site}
-          agg={agg}
           visibleOptions={visibleOptions}
           buckets={buckets}
           isSelected={isSelected}
-          toggleAgg={toggleAgg}
         />
       </InfiniteScroll>
     );
   }
 }
 
-export default withSite(BucketsPanel);
+export default BucketsPanel;

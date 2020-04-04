@@ -252,13 +252,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
 
-  toggleAgg = (key: string): void => {
-    if (!this.props.addFilter || !this.props.removeFilter) return;
-    return this.isSelected(key)
-      ? this.props.removeFilter(this.props.agg, key)
-      : this.props.addFilter(this.props.agg, key);
-  };
-
   selectAll = (agg:string): void => {
     const { buckets } = this.state;
     let newParams = [];
@@ -423,7 +416,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   renderPanel = (isPresearch:boolean) => {
     const {
-      agg,
       visibleOptions = [],
       removeSelectAll,
     } = this.props;
@@ -489,10 +481,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             visibleOptions={visibleOptions}
             buckets={buckets}
             isSelected={this.isSelected}
-            toggleAgg={this.toggleAgg}
             hasMore={hasMore}
             handleLoadMore={this.handleLoadMore}
-            agg={agg}
             field={field}
           />
           <AllowMissingCheckbox buckets={buckets} />
@@ -570,10 +560,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             visibleOptions={visibleOptions}
             buckets={buckets}
             isSelected={this.isSelected}
-            toggleAgg={this.toggleAgg}
             hasMore={hasMore}
             handleLoadMore={this.handleLoadMore}
-            agg={agg}
             field={field}
           />
         </PresearchPanel>
