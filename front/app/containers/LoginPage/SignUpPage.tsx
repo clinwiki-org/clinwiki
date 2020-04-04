@@ -63,7 +63,7 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
       email: '',
       password: '',
       passwordConfirmation: '',
-      oAuthToken: ''
+      oAuthToken: '',
     },
     errors: [],
   };
@@ -76,7 +76,10 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
 
   handleSignUp = (signUp: SignUpMutationFn) => () => {
     if (this.state.form.password === this.state.form.passwordConfirmation) {
-      const input = omit(['passwordConfirmation','oAuthToken'], this.state.form);
+      const input = omit(
+        ['passwordConfirmation', 'oAuthToken'],
+        this.state.form
+      );
       //@ts-ignore
       signUp({ variables: { input } });
     }
@@ -102,22 +105,23 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
   };
 
   responseGoogle = (response, signUp) => {
-    console.log(response);
     // const form= {
     //   email: response.profileObj.email
     // }
-    this.setState({
-      form: {
-        ...this.state.form,
-        email: response.profileObj.email,
-        oAuthToken: response.tokenObj.id_token
+    this.setState(
+      {
+        form: {
+          ...this.state.form,
+          email: response.profileObj.email,
+          oAuthToken: response.tokenObj.id_token,
+        },
+      },
+      () => {
+        const input = omit(['passwordConfirmation'], this.state.form);
+        signUp({ variables: { input } });
       }
-    }, ()=> {
-      const input = omit(['passwordConfirmation'], this.state.form);
-      signUp({ variables: { input } });
-    })
-
-  }
+    );
+  };
 
   render() {
     return (
@@ -167,24 +171,25 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
               }}>
               {signUp => (
                 <div>
-                <StyledButton onClick={this.handleSignUp(signUp)}>
-                  Sign Up
-                </StyledButton>
-                <div style={{ display: "block", marginTop: 10 }}>
-                  <GoogleLogin
-                    clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
-                    buttonText="Sign Up With Google?"
-                    //@ts-ignore
-                    onSuccess={(response) => this.responseGoogle(response, signUp)}
-                    //@ts-ignore
-                    onFailure={this.responseGoogle}
-                    cookiePolicy={'single_host_origin'}
-                  />
-                 </div>
+                  <StyledButton onClick={this.handleSignUp(signUp)}>
+                    Sign Up
+                  </StyledButton>
+                  <div style={{ display: 'block', marginTop: 10 }}>
+                    <GoogleLogin
+                      clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
+                      buttonText="Sign Up With Google?"
+                      //@ts-ignore
+                      onSuccess={response =>
+                        this.responseGoogle(response, signUp)
+                      }
+                      //@ts-ignore
+                      onFailure={this.responseGoogle}
+                      cookiePolicy={'single_host_origin'}
+                    />
+                  </div>
                 </div>
               )}
             </SignUpMutationComponent>
-
 
             {this.renderErrors()}
             <LinkContainer>

@@ -12,16 +12,13 @@ import { AggKind } from 'containers/SearchPage/shared';
 import { Checkbox } from 'react-bootstrap';
 import { camelCase, capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
-import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { AggFilterSiteConfigUpdater } from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
   field: SiteViewFragment_search_aggs_fields;
-  onAddMutation: (
-    e: { currentTarget: { name: string; value: any } },
-    siteView: SiteViewFragment
-  ) => void;
+  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
   view: SiteViewFragment;
   configType?: "presearch" | "autosuggest" | 'facetbar';
   returnAll?: Boolean;
@@ -119,91 +116,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
-  handleAddFilter = (kind: 'preselected' | 'visibleOptions') => (
-    aggName: string,
-    aggValue: string,
-    isCrowd: boolean
-  ) => {
-    this.props.onAddMutation(
-      {
-        currentTarget: {
-          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
-          value: [...this.props.field[kind].values, aggValue],
-        },
-      },
-      this.props.view
-    );
-  };
-  handleSelectAll = (kind: 'preselected' | 'visibleOptions') => (
-    aggName: string,
-    newParams: any,
-    isCrowd: boolean
-  ) => {
-
-    this.props.onAddMutation(
-      {
-        currentTarget: {
-          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
-          value:  newParams,
-        },
-      },
-      this.props.view
-    );
+  handleCheckboxToggle = value => (e: {
+    currentTarget: { name: string; value: any };
+  }) => {
+    this.props.onAddMutation({
+      currentTarget: { name: e.currentTarget.name, value: !value },
+    });
   };
 
-  handleDeSelectAll = (kind: 'preselected' | 'visibleOptions') => (
-    aggName: string,
-    newParams: any,
-    isCrowd: boolean
-  ) => {
-    const targetValue =()=>{
-    if(kind=='preselected'){
-      let newArray= this.props.field.preselected.values
-       newParams.map(key=>{
-        newArray =reject(equals(key), newArray)
-      });
-      return newArray
-    }else{
-      let newArray= this.props.field.visibleOptions.values
-       newParams.map(key=>{
-        newArray =reject(equals(key), newArray)
-      });
-      console.log("Final Array hope", newArray)
-      return newArray
-    }
-  }
-    this.props.onAddMutation(
-      {
-        currentTarget: {
-          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
-          value: targetValue(),
-        },
-      },
-      this.props.view
-    );
-  };
-  handleRemoveFilter = (kind: 'preselected' | 'visibleOptions') => (
-    aggName: string,
-    aggValue: string,
-    isCrowd: boolean
-  ) => {
-    const targetValue =()=>{
-    if(kind=='preselected'){
-      return reject(equals(aggValue), this.props.field.preselected.values)    
-    }else{
-      return reject(equals(aggValue), this.props.field.visibleOptions.values) 
-    }
-  }
-    this.props.onAddMutation(
-      {
-        currentTarget: {
-          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
-          value: targetValue(),
-        },
-      },
-      this.props.view
-    );
-  };
   handleOpen = (kind: 'preselected' | 'visibleOptions') => (
     agg: string,
     aggKind: AggKind
@@ -227,6 +147,20 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       crowdAggFilters: [],
       sorts: [],
     };
+    const preselectedUpdater = new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.preselected,
+      this.props.onAddMutation,
+      this.props.kind,
+      'preselected'
+    );
+    const visibleOptionsUpdater = new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.visibleOptions,
+      this.props.onAddMutation,
+      this.props.kind,
+      'visibleOptions'
+    );
     return (
       <>
         <h4>
@@ -242,9 +176,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <MultiCrumb
                 key={value}
                 values={[value]}
-                onClick={value =>
-                  this.handleRemoveFilter('preselected')('', value, false)
-                }
+                onClick={value => preselectedUpdater.removeFilter(value)}
               />
             ))}
           </CrumbsContainer>
@@ -252,16 +184,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <FilterContainer>
               <AggFilterInputUpdateContext.Provider
                 value={{
-                  updater: new AggFilterInputUpdater(
-                    this.props.field.name,
-                    searchParams,
-                    () => {
-                      console.log('todo: how often do we actually use this?');
-                    },
-                    this.props.kind === 'aggs'
-                      ? 'aggFilters'
-                      : 'crowdAggFilters'
-                  ),
+                  updater: preselectedUpdater,
                 }}>
                 <AggDropDown
                   agg={this.props.field.name}
@@ -270,10 +193,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                   display={this.props.field.display}
                   isOpen={this.state.isValuesOpen}
                   selectedKeys={selected}
-                  addFilter={this.handleAddFilter('preselected')}
-                  addAllFilters={this.handleSelectAll('preselected')}
-                  removeFilter={this.handleRemoveFilter('preselected')}
-                  removeAllFilters={this.handleDeSelectAll('preselected')}
                   onOpen={this.handleOpen('preselected')}
                   currentSiteView={this.props.view}
                   configType={this.props.configType}
@@ -289,9 +208,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <MultiCrumb
                 key={value}
                 values={[value]}
-                onClick={value =>
-                  this.handleRemoveFilter('visibleOptions')('', value, false)
-                }
+                onClick={value => visibleOptionsUpdater.removeFilter(value)}
               />
             ))}
           </CrumbsContainer>
@@ -299,16 +216,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <FilterContainer>
               <AggFilterInputUpdateContext.Provider
                 value={{
-                  updater: new AggFilterInputUpdater(
-                    this.props.field.name,
-                    searchParams,
-                    () => {
-                      console.log('todo: how often do we actually use this?');
-                    },
-                    this.props.kind === 'aggs'
-                      ? 'aggFilters'
-                      : 'crowdAggFilters'
-                  ),
+                  updater: visibleOptionsUpdater,
                 }}>
                 <AggDropDown
                   agg={this.props.field.name}
@@ -324,10 +232,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                   display={this.props.field.display}
                   isOpen={this.state.isVisibleOptionsOpen}
                   selectedKeys={visibleOptions}
-                  addFilter={this.handleAddFilter('visibleOptions')}
-                  addAllFilters={this.handleSelectAll('visibleOptions')}
-                  removeFilter={this.handleRemoveFilter('visibleOptions')}
-                  removeAllFilters={this.handleDeSelectAll('visibleOptions')}
+
                   onOpen={this.handleOpen('visibleOptions')}
                   currentSiteView={this.props.view}
                   configType={this.props.configType}
@@ -349,7 +254,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <StyledFormControl
               name={`set:${this.getPath(configType)}.display`}
               componentClass="select"
-              onChange={e => this.props.onAddMutation(e, this.props.view)}
+              onChange={this.props.onAddMutation}
               defaultValue={this.props.field.display}>
               <option value="STRING">Text</option>
               <option value="STAR">Stars</option>

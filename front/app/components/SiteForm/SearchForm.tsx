@@ -439,7 +439,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   key={field.name}
                   //@ts-ignore
                   field={field}
-                  onAddMutation={this.handleAddMutation}
+                  onAddMutation={mut => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="facetbar"
                   returnAll={true}
@@ -478,7 +478,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   key={field.name}
                   //@ts-ignore
                   field={field}
-                  onAddMutation={this.handleAddMutation}
+                  onAddMutation={mut => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="facetbar"
                   returnAll={true}
@@ -528,9 +528,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <AggField
                   kind="aggs"
                   key={field.name}
-                  //@ts-ignore
                   field={field}
-                  onAddMutation={this.handleAddMutation}
+                  onAddMutation={mut => this.handleAddMutation(mut,view)}
                   view={view}
                   configType="autosuggest"
                   returnAll={true}
@@ -558,7 +557,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   key={field.name}
                   //@ts-ignore
                   field={field}
-                  onAddMutation={this.handleAddMutation}
+                  onAddMutation={mut => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="autosuggest"
                   returnAll={true}
@@ -607,7 +606,7 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
                 key={field.name}
                 //@ts-ignore
                 field={field}
-                onAddMutation={this.handleAddMutation}
+                onAddMutation={mut => this.handleAddMutation(mut,view)}
                 view={view}
                 configType="presearch"
                 returnAll={true}
@@ -633,7 +632,7 @@ renderPreSearchConfig=(showPresearch,view,fields, crowdFields,updateSiteView )=>
                 key={field.name}
                 //@ts-ignore
                 field={field}
-                onAddMutation={this.handleAddMutation}
+                onAddMutation={mut => this.handleAddMutation(mut,view)}
                 view={view}
                 configType="presearch"
                 returnAll={true}

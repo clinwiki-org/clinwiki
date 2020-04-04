@@ -19,7 +19,6 @@ function AllowMissingCheckbox(props: AllowMissingCheckboxProps) {
       totalMissing = bucket.docCount;
     }
   });
-  console.log(totalMissing);
   return (
     <Checkbox
       checked={updater.allowsMissing()}
