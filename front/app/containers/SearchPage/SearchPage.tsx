@@ -620,9 +620,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
+    const siteViewUrl = this.props.match.params.siteViewUrl || 'default';
     if (data?.provisionSearchHash?.searchHash?.short) {
       this.props.history.push(
-        `/search/${data!.provisionSearchHash!.searchHash!.short}`
+        `/search/${siteViewUrl}/${data!.provisionSearchHash!.searchHash!.short}`
       );
     }
   };  
@@ -693,7 +694,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         : (this.state.params?.q.children || []).map(prop('key'));
   
     const searchParams = { 
-      ... this.props.searchParams!,
+      ... this.state.params!,
       q
     };
 
