@@ -247,7 +247,7 @@ class SearchService
   def search_query
     @search_query ||= begin
       ast = (params[:q].presence || { key: "*" }).deep_symbolize_keys
-      query = query_ast_to_query_string(ast)
+      query_ast_to_query_string(ast)
     end
   end
 
