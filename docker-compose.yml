@@ -1,89 +1,93 @@
-version: '3'
+version: "3"
 services:
-   nginx:
-      image: nginx:stable
-      container_name: nginx
-      ports:
-         - 80:80
-      volumes:
-         - ./compose/nginx:/etc/nginx/conf.d/
-      depends_on: 
-         - clinwiki
-   db:
-      image: postgres:11.5
-      container_name: clinwiki-db
-      ports:
-         - 15432:5432
-      environment:
-         - POSTGRES_USER=clinwiki
-         - POSTGRES_PASSWORD=ZetIFOnXd78H
-      volumes:
-         - cw-data:/var/lib/postgresq/data
-   elastic:
-      image: elasticsearch:6.8.1
-      container_name: elastic
-      ports:
-         - 9200:9200
-      environment:
-         - discovery.type=single-node
-      ulimits:
-         memlock:
-            soft: -1
-            hard: -1
-      volumes:
-         - es-data:/usr/share/elasticsearch/data/
-   redis:
-      image: redis:5.0.5
-      container_name: redis
-      #ports:
-      #   - 6379:6379
-      volumes:
-         - redis-data:/data
-   clinwiki:
-      image: cwlite
-      build: 
-         context: .
-         dockerfile: compose/Dockerfile
-      container_name: clinwiki
-      ports:
-         - 3000:3000
-      volumes:
-         - .:/clinwiki
-         - ./compose/entrypoint.sh:/usr/bin/entrypoint.sh
-         - node_modules:/clinwiki/front/node_modules
-      environment:
-         - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
-         - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
-         - REDIS_URL=redis://redis:6379/0
-         - SEARCHBOX_URL=http://elastic:9200
-         - CW_MODE=${CW_MODE}
-      depends_on: 
-         - db
-         - elastic
-         - redis
-   sidekiq:
-      image: cwlite
-      build: 
-         context: .
-         dockerfile: compose/Dockerfile
-      container_name: sidekiq
-      volumes:
-         - .:/clinwiki
-      environment:
-         - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
-         - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
-         - REDIS_URL=redis://redis:6379/0
-         - SEARCHBOX_URL=http://elastic:9200
-         - CW_MODE=WORKER
-      depends_on: 
-         - db
-         - elastic
-         - redis
-      command: bundle exec sidekiq -C config/sidekiq.yml
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./compose/nginx:/etc/nginx/conf.d/
+    depends_on:
+      - clinwiki
+  db:
+    image: postgres:11.5
+    container_name: clinwiki-db
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRES_USER=clinwiki
+      - POSTGRES_PASSWORD=ZetIFOnXd78H
+    volumes:
+      - cw-data:/var/lib/postgresq/data
+  elastic:
+    image: elasticsearch:6.8.1
+    container_name: elastic
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - http.port=9200
+      - http.cors.enabled=true
+      - http.cors.allow-origin=http://localhost:3030,http://127.0.0.1:3030,http://localhost:1358,http://127.0.0.1:1358,https://opensource.appbase.io
+      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      - http.cors.allow-credentials=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-data:/usr/share/elasticsearch/data/
+  redis:
+    image: redis:5.0.5
+    container_name: redis
+    #ports:
+    #   - 6379:6379
+    volumes:
+      - redis-data:/data
+  clinwiki:
+    image: cwlite
+    build:
+      context: .
+      dockerfile: compose/Dockerfile
+    container_name: clinwiki
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/clinwiki
+      - ./compose/entrypoint.sh:/usr/bin/entrypoint.sh
+      - node_modules:/clinwiki/front/node_modules
+    environment:
+      - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
+      - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
+      - REDIS_URL=redis://redis:6379/0
+      - SEARCHBOX_URL=http://elastic:9200
+      - CW_MODE=${CW_MODE}
+    depends_on:
+      - db
+      - elastic
+      - redis
+  sidekiq:
+    image: cwlite
+    build:
+      context: .
+      dockerfile: compose/Dockerfile
+    container_name: sidekiq
+    volumes:
+      - .:/clinwiki
+    environment:
+      - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
+      - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
+      - REDIS_URL=redis://redis:6379/0
+      - SEARCHBOX_URL=http://elastic:9200
+      - CW_MODE=WORKER
+    depends_on:
+      - db
+      - elastic
+      - redis
+    command: bundle exec sidekiq -C config/sidekiq.yml
 
 volumes:
-   es-data:
-   cw-data:
-   redis-data:
-   node_modules:
-
+  es-data:
+  cw-data:
+  redis-data:
+  node_modules:

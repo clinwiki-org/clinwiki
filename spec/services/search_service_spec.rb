@@ -9,15 +9,13 @@ describe SearchService do
     it "sends a request to elasticsearch" do
       stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search")
         .with(
-          body: hash_including("query" => {
-            "bool" => {
-              "must" => {
-                "query_string": {
-                  "query" => "(foo)",
-                },
-              },
-              "filter" => [{ "bool" => { "must" => [] } }],
-            },
+          body: hash_including({
+            "query" => {
+              "bool" => {
+                "must" => [{ "query_string": { "query" => "(foo)" } }],
+                "filter" => [{ "bool" => { "must" => [] } }]
+              }
+            }
           }),
         )
         .to_return(
@@ -114,28 +112,34 @@ describe SearchService do
       end
     end
   end
-    describe 'nested filter' do
-      let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [ ]}}
-      subject {SearchService.new(params).send(:nested_filter,key,value)}
-      context "for a non nested key" do
-        let (:key) {"hello"}
-        let (:value) {"test"}
+  describe "nested filter" do
+    let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [] } }
+    subject { SearchService.new(params).send(:nested_filter, key, filter) }
+    context "for a non nested key" do
+      let (:key) { "hello" }
+      let (:filter) { { field: "hello", values: ["test"] } }
 
-        it { is_expected.to be_nil}
-      end
-      context "for a nested key" do
-        let (:key) {"hello.stuff"}
-        let(:value) { { values: ["stuff1", "stuff2"] } }
+      it { is_expected.to be_nil }
+    end
+    context "for a nested key" do
+      let (:key) { "hello.stuff" }
+      let(:filter) { { field: "hello.stuff", values: ["stuff1", "stuff2"] } }
 
-        it "should return a nested filter" do
-            expect(subject).to eql({
-              _or: [
-                { hello: { nested: { stuff: "stuff1" } }},
-                { hello: { nested: { stuff: "stuff2" } }}
-              ]
+      it "should return a nested filter" do
+        expect(subject.to_json).to eql({
+          nested: {
+            path: "hello",
+            query: {
+              bool: {
+                should: [
+                  { match: { "hello.stuff" => "stuff1" } },
+                  { match: { "hello.stuff" => "stuff2" } }
+                ]
               }
-            )
-        end
+            }
+          }
+        }.to_json)
       end
     end
+  end
 end
