@@ -32,7 +32,7 @@ import { FilterKind } from 'types/globalTypes';
 import { displayFields } from 'utils/siteViewHelpers';
 import styled from 'styled-components';
 import AggFilterInputUpdater from './AggFilterInputUpdater';
-import AggFilterUpdateContext from './AggFilterUpdateContext';
+import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 
 const getVisibleOptionsByName: (SiteFragment) => any = compose(
@@ -150,8 +150,19 @@ class Aggs extends React.PureComponent<AggsProps> {
       );
       crowdAggPresearch = (
               <span>
+
                 {preSearchCrowdAggs.map(k =>
                   crowdAggs[k] ? (
+                    <AggContext.Provider
+                      key={k}
+                      value={{
+                        updater: new AggFilterInputUpdater(
+                          k,
+                          searchParams,
+                          updateSearchParams,
+                          'crowdAggFilters'
+                        ),
+                      }}>
                       <AggDropDown
                         key={k}
                         agg={k}
@@ -177,7 +188,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                         configType="presearch"
                         visibleOptions={visibleOptionsByName[k]}
                       />
-
+                      </AggContext.Provider>
                   ) : (
                     <div
                       key={k}
@@ -196,6 +207,17 @@ class Aggs extends React.PureComponent<AggsProps> {
               <PresearchContainer>
                 {preSearchAggs.map(k =>
                   aggs[k] ? (
+
+                <AggContext.Provider
+                  key={k}
+                  value={{
+                    updater: new AggFilterInputUpdater(
+                      k,
+                      searchParams,
+                      updateSearchParams,
+                      'aggFilters'
+                    ),
+                  }}>
                     <AggDropDown
                       key={k}
                       agg={k}
@@ -214,6 +236,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                       currentSiteView={this.props.currentSiteView}
                       configType="presearch"
                     />
+                </AggContext.Provider>
                   ) : (
                     <div
                       key={k}
@@ -242,7 +265,7 @@ class Aggs extends React.PureComponent<AggsProps> {
           </h4>
           {sortByNameCi(this.getCrowdAggs(Object.keys(crowdAggs))).map(
             k => (
-              <AggFilterUpdateContext.Provider
+              <AggContext.Provider
                 key={k}
                 value={{
                   updater: new AggFilterInputUpdater(
@@ -277,7 +300,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                     configType="facetbar"
 
                 />
-              </AggFilterUpdateContext.Provider>
+              </AggContext.Provider>
             )
           )}
         </div>
@@ -289,7 +312,7 @@ class Aggs extends React.PureComponent<AggsProps> {
           <div>
             {sortByNameCi(this.getAggs(this.props.currentSiteView)).map(k =>
               aggs[k] ? (
-                <AggFilterUpdateContext.Provider
+                <AggContext.Provider
                   key={k}
                   value={{
                     updater: new AggFilterInputUpdater(
@@ -321,7 +344,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                         configType="facetbar"
 
                     />
-                </AggFilterUpdateContext.Provider>
+                </AggContext.Provider>
                   ) : null
                 )}
               </div>

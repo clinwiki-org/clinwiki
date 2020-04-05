@@ -575,12 +575,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const title = aggToField(agg);
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
-      <PresearchCard>
-        <PresearchHeader>
-          <PresearchTitle>{capitalize(title)}</PresearchTitle>
-        </PresearchHeader>
-        <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
-      </PresearchCard>
+      return (
+        <PresearchCard>
+          <PresearchHeader>
+            <PresearchTitle>{capitalize(title)}</PresearchTitle>
+          </PresearchHeader>
+          <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
+        </PresearchCard>
+      );
     }
     else {
     return (
