@@ -16,7 +16,7 @@ export default gql`
     aggBuckets: crowdAggBuckets(
       url: $url
       configType: $configType
-      returnAll: $ returnAll
+      returnAll: $returnAll
       params: {
         agg: $agg
         q: $q

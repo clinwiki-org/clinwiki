@@ -257,8 +257,18 @@ export const withSite = Component => props => (
       const siteViewUrl = props?.match?.params?.siteviewUrl?.toLowerCase();
       // console.log(`withSite: ${siteViewUrl}`);
       const siteViews = site.siteViews;
-      const currentSite = siteViews.find(siteview => siteview?.url?.toLowerCase() === siteViewUrl) || site.siteView;
-      return <Component {...props} site={site} refetch={refetch} currentSiteView={currentSite} />;
+      const currentSite =
+        siteViews.find(
+          siteview => siteview?.url?.toLowerCase() === siteViewUrl
+        ) || site.siteView;
+      return (
+        <Component
+          {...props}
+          site={site}
+          refetch={refetch}
+          currentSiteView={currentSite}
+        />
+      );
     }}
   </SiteProvider>
 );

@@ -695,99 +695,96 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const isMobile = this.mobileAndTabletcheck();
 
-    const {currentSiteView} = this.props;
+    const { currentSiteView } = this.props;
 
-          let pagesTotal = 1;
-          let recordsTotal = 0;
-          if (
-            data &&
-            data.search &&
-            data.search.recordsTotal &&
-            this.props.params.pageSize
-          ) {
-            recordsTotal = data.search.recordsTotal;
-            pagesTotal = Math.min(
-              Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
-              Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
-            );
-          }
-          if (recordsTotal != this.state.totalResults) {
-            this.setState({
-              totalResults: recordsTotal,
-            });
-          }
+    let pagesTotal = 1;
+    let recordsTotal = 0;
+    if (
+      data &&
+      data.search &&
+      data.search.recordsTotal &&
+      this.props.params.pageSize
+    ) {
+      recordsTotal = data.search.recordsTotal;
+      pagesTotal = Math.min(
+        Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+        Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
+      );
+    }
+    if (recordsTotal != this.state.totalResults) {
+      this.setState({
+        totalResults: recordsTotal,
+      });
+    }
 
-          const showResults = currentSiteView.search.config.fields.showResults;
+    const showResults = currentSiteView.search.config.fields.showResults;
 
-          const columns = map(
-            x => this.renderColumn(x, ''),
-            currentSiteView.search.fields
-          );
-          const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
-          const leftover = isMobile
-            ? tableWidth - totalWidth
-            : this.state.tableWidth - totalWidth;
-          const additionalWidth = leftover / columns.length;
-          columns.map(x => (x.width += additionalWidth), columns);
-          if (this.props.showCards) {
-            return showResults ? (
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    marginLeft: 'auto',
-                  }}>
-                  {this.renderViewDropdown()}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <Cards
-                    columns={columns}
-                    data={searchData}
-                    onPress={this.cardPressed}
-                    loading={loading}
-                  />
-                </div>
-              </div>
-            ) : null;
-          } else {
-            return showResults ? (
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
-                  {this.renderViewDropdown()}
-                </div>
-                <ReactTable
-                  ref={this.searchTable}
-                  className="-striped -highlight"
-                  columns={columns}
-                  manual
-                minRows={3}
-                  page={page}
-                  pageSize={pageSize}
-                  defaultSorted={camelizedSorts}
-                  onPageChange={pipe(changePage, this.props.onUpdateParams)}
-                  onPageSizeChange={pipe(
-                    changePageSize,
-                    this.props.onUpdateParams
-                  )}
-                  onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
-                  data={searchData}
-                  pages={totalPages}
-                  loading={loading}
-                  defaultPageSize={pageSize}
-                  getTdProps={this.rowProps}
-                  defaultSortDesc
-                  noDataText={'No studies found'}
-                />
-              </div>
-            ) : null;
-          }
+    const columns = map(
+      x => this.renderColumn(x, ''),
+      currentSiteView.search.fields
+    );
+    const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
+    const leftover = isMobile
+      ? tableWidth - totalWidth
+      : this.state.tableWidth - totalWidth;
+    const additionalWidth = leftover / columns.length;
+    columns.map(x => (x.width += additionalWidth), columns);
+    if (this.props.showCards) {
+      return showResults ? (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              marginLeft: 'auto',
+            }}>
+            {this.renderViewDropdown()}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <Cards
+              columns={columns}
+              data={searchData}
+              onPress={this.cardPressed}
+              loading={loading}
+            />
+          </div>
+        </div>
+      ) : null;
+    } else {
+      return showResults ? (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
+            {this.renderViewDropdown()}
+          </div>
+          <ReactTable
+            ref={this.searchTable}
+            className="-striped -highlight"
+            columns={columns}
+            manual
+            minRows={3}
+            page={page}
+            pageSize={pageSize}
+            defaultSorted={camelizedSorts}
+            onPageChange={pipe(changePage, this.props.onUpdateParams)}
+            onPageSizeChange={pipe(changePageSize, this.props.onUpdateParams)}
+            onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
+            data={searchData}
+            pages={totalPages}
+            loading={loading}
+            defaultPageSize={pageSize}
+            getTdProps={this.rowProps}
+            defaultSortDesc
+            noDataText={'No studies found'}
+          />
+        </div>
+      ) : null;
+    }
   };
 
   renderViewDropdown = () => {
@@ -817,48 +814,43 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   render() {
     return (
-            <SearchWrapper>
-              <Helmet>
-                <title>Search</title>
-                <meta name="description" content="Description of SearchPage" />
-              </Helmet>
-              <Col md={12}>
-                <QueryComponent
-                  query={QUERY}
-                  variables={this.props.params}
-                  onCompleted={(data: any) => {
-                    if (data && data.search) {
-                      this.props.onAggsUpdate(
-                        this.transformAggs(data.search.aggs || []),
-                        this.transformCrowdAggs(data.crowdAggs.aggs || [])
-                      );
-                    }
-                    const totalRecords = pathOr(
-                      0,
-                      ['search', 'recordsTotal'],
-                      data
-                    );
-                    if (this.state.firstRender) {
-                      this.setState(
-                        {
-                          totalResults: totalRecords,
-                          firstRender: false,
-                        },
-                        () =>
-                          this.props.getTotalResults(this.state.totalResults)
-                      );
-                    }
-                  }}>
-                  {({ data, loading, error }) => {
-                    return (
-                      <SearchContainer>
-                        {this.renderSearch({ data, loading, error })}
-                      </SearchContainer>
-                    );
-                  }}
-                </QueryComponent>
-              </Col>
-            </SearchWrapper>
+      <SearchWrapper>
+        <Helmet>
+          <title>Search</title>
+          <meta name="description" content="Description of SearchPage" />
+        </Helmet>
+        <Col md={12}>
+          <QueryComponent
+            query={QUERY}
+            variables={this.props.params}
+            onCompleted={(data: any) => {
+              if (data && data.search) {
+                this.props.onAggsUpdate(
+                  this.transformAggs(data.search.aggs || []),
+                  this.transformCrowdAggs(data.crowdAggs.aggs || [])
+                );
+              }
+              const totalRecords = pathOr(0, ['search', 'recordsTotal'], data);
+              if (this.state.firstRender) {
+                this.setState(
+                  {
+                    totalResults: totalRecords,
+                    firstRender: false,
+                  },
+                  () => this.props.getTotalResults(this.state.totalResults)
+                );
+              }
+            }}>
+            {({ data, loading, error }) => {
+              return (
+                <SearchContainer>
+                  {this.renderSearch({ data, loading, error })}
+                </SearchContainer>
+              );
+            }}
+          </QueryComponent>
+        </Col>
+      </SearchWrapper>
     );
   }
 }

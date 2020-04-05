@@ -1,6 +1,4 @@
-import {
-  filter,
-} from 'ramda';
+import { filter } from 'ramda';
 import { SortInput, AggFilterInput } from 'types/globalTypes';
 
 export type Params = {};

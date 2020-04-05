@@ -29,7 +29,7 @@ import {
   contains,
 } from 'ramda';
 
-type AggFilterSettings = SearchParams|any;
+type AggFilterSettings = SearchParams | any;
 
 /**
  * This class gives us an encapsulated tool for representing agg
@@ -189,7 +189,7 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
 
 export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
   kind: 'preselected' | 'visibleOptions';
-  configType: "presearch" | "autosuggest" | 'facetbar';
+  configType: 'presearch' | 'autosuggest' | 'facetbar';
   constructor(
     agg: string,
     settings: AggFilterSettings,
@@ -208,7 +208,7 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
   }
 
   getPath() {
-    switch(this.configType) {
+    switch (this.configType) {
       case 'presearch':
         return `set:search.${this.configType}.${this.grouping}.fields.${this.agg}.${this.kind}.values`;
       case 'autosuggest':

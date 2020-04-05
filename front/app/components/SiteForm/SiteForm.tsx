@@ -33,7 +33,7 @@ interface SiteFormState {
   mutations: SiteViewMutationInput[];
   addEditorEmail: string;
   prevForm: CreateSiteInput | null;
-  inSiteViewEdit: boolean
+  inSiteViewEdit: boolean;
 }
 
 const Container = styled.div`
@@ -92,12 +92,12 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     }
     return null;
   };
-  toggleSiteViewEdit =() =>{
-    this.setState({inSiteViewEdit: true})
-  }
-  toggleEditFalse =()=>{
-    this.setState({inSiteViewEdit: false})
-  }
+  toggleSiteViewEdit = () => {
+    this.setState({ inSiteViewEdit: true });
+  };
+  toggleEditFalse = () => {
+    this.setState({ inSiteViewEdit: false });
+  };
   handleSave = () => {
     this.props.onSave(this.state.form);
   };
@@ -200,10 +200,11 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           />
           <Redirect to={`${path}/main`} />
         </Switch>
-        {this.state.inSiteViewEdit ? (null):
-        <StyledContainer>
-          <Button onClick={()=>this.handleSave()}>Save</Button>
-        </StyledContainer>}
+        {this.state.inSiteViewEdit ? null : (
+          <StyledContainer>
+            <Button onClick={() => this.handleSave()}>Save</Button>
+          </StyledContainer>
+        )}
       </Container>
     );
   }

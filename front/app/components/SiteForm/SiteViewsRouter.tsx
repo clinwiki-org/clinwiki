@@ -32,7 +32,7 @@ interface SiteViewRouterProps {
   getId: any;
   onSave?: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
   handleSiteViewEdit?: any;
-  handleForm:any;
+  handleForm: any;
 }
 
 interface SiteViewRouterState {

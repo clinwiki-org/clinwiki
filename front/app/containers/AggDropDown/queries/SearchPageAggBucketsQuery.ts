@@ -17,7 +17,7 @@ export default gql`
     aggBuckets(
       url: $url
       configType: $configType
-      returnAll: $ returnAll
+      returnAll: $returnAll
       params: {
         agg: $agg
         q: $q

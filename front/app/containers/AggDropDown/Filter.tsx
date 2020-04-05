@@ -65,9 +65,7 @@ class Filter extends React.Component<FilterProps> {
             onChange={selectAll}
             onMouseEnter={() => setShowLabel(true)}
             onMouseLeave={() => setShowLabel(false)}>
-            {showLabel ? (
-              <SelectAllSpan>Select All</SelectAllSpan>
-            ) : null}
+            {showLabel ? <SelectAllSpan>Select All</SelectAllSpan> : null}
           </Checkbox>
         </div>
 

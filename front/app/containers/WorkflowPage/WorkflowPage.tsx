@@ -258,7 +258,6 @@ class WorkflowPage extends React.Component<
                                 {deleteMutation => (
                                   <StyledPanel>
                                     <SuggestedLabels
-                                      
                                       nctId={this.props.match.params.nctId}
                                       searchHash={
                                         this.props.match.params.searchId || null

@@ -22,12 +22,7 @@ interface BucketsProps {
 
 class Buckets extends React.Component<BucketsProps> {
   render() {
-    const {
-      display,
-      buckets,
-      visibleOptions = [],
-      updater,
-    } = this.props;
+    const { display, buckets, visibleOptions = [], updater } = this.props;
     return pipe(
       filter(
         (bucket: AggBucket) =>

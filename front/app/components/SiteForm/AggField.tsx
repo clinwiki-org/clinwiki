@@ -20,7 +20,7 @@ interface AggFieldProps {
   field: SiteViewFragment_search_aggs_fields;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
   view: SiteViewFragment;
-  configType: "presearch" | "autosuggest" | 'facetbar';
+  configType: 'presearch' | 'autosuggest' | 'facetbar';
   returnAll?: Boolean;
 }
 
@@ -111,7 +111,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   getPath = configType => {
     if (configType == 'presearch') {
       return `search.presearch.${this.props.kind}.fields.${this.props.field.name}`;
-    }else if(configType == 'autosuggest'){
+    } else if (configType == 'autosuggest') {
       return `search.autoSuggest.${this.props.kind}.fields.${this.props.field.name}`;
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
@@ -168,7 +168,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       crowdAggFilters: [],
       sorts: [],
     };
-    const [ preselectedUpdater, visibleOptionsUpdater ] = this.getUpdaters();
+    const [preselectedUpdater, visibleOptionsUpdater] = this.getUpdaters();
     return (
       <>
         <h4>
@@ -205,7 +205,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                   currentSiteView={this.props.view}
                   configType={this.props.configType}
                   returnAll={this.props.returnAll}
-
                 />
               </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
@@ -240,12 +239,10 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                   display={this.props.field.display}
                   isOpen={this.state.isVisibleOptionsOpen}
                   selectedKeys={visibleOptions}
-
                   onOpen={this.handleOpen('visibleOptions')}
                   currentSiteView={this.props.view}
                   configType={this.props.configType}
                   returnAll={this.props.returnAll}
-
                 />
               </AggFilterInputUpdateContext.Provider>
             </FilterContainer>

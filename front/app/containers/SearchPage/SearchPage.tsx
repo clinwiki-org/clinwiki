@@ -537,17 +537,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               showCards={this.state.showCards}
               toggledShowCards={this.toggledShowCards}
               returnNumberOfPages={this.returnNumberOfPages}
-                    searchAggs={this.state.searchAggs}
-                    crowdAggs={this.state.searchCrowdAggs}
-                    transformFilters={this.transformFilters}
-                    removeSelectAll={this.state.removeSelectAll}
-                    resetSelectAll={this.resetSelectAll}
-                    searchParams={this.state.params}
-                    opened={opened}
-                    openedKind={openedKind}
-                    onOpen={this.handleOpenAgg}
-                    currentSiteView={currentSiteView}
-                    getTotalResults={this.getTotalResults}
+              searchAggs={this.state.searchAggs}
+              crowdAggs={this.state.searchCrowdAggs}
+              transformFilters={this.transformFilters}
+              removeSelectAll={this.state.removeSelectAll}
+              resetSelectAll={this.resetSelectAll}
+              searchParams={this.state.params}
+              opened={opened}
+              openedKind={openedKind}
+              onOpen={this.handleOpenAgg}
+              currentSiteView={currentSiteView}
+              getTotalResults={this.getTotalResults}
             />
           );
         }}
@@ -626,8 +626,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         `/search/${siteViewUrl}/${data!.provisionSearchHash!.searchHash!.short}`
       );
     }
-  };  
-  
+  };
+
   getTotalResults = total => {
     if (total) {
       this.setState({
@@ -640,8 +640,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     const { currentSiteView } = this.props;
-    const preSearchAggs =
-      currentSiteView.search.presearch.aggs.selected.values;
+    const preSearchAggs = currentSiteView.search.presearch.aggs.selected.values;
     const preSearchCrowdAggs =
       currentSiteView.search.presearch.crowdAggs.selected.values;
     const presearchButton = currentSiteView.search.presearch.button;
@@ -692,32 +691,32 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.state.params?.q.key === '*'
         ? []
         : (this.state.params?.q.children || []).map(prop('key'));
-  
-    const searchParams = { 
-      ... this.state.params!,
-      q
+
+    const searchParams = {
+      ...this.state.params!,
+      q,
     };
 
     const { currentSiteView } = this.props;
-          return (
-            <CrumbsBar
-              searchParams={searchParams}
-              onBulkUpdate={this.handleBulkUpdateClick}
-              removeFilter={pipe(removeFilter, this.handleUpdateParams)}
-              addSearchTerm={pipe(addSearchTerm, this.handleUpdateParams)}
-              removeSearchTerm={pipe(removeSearchTerm, this.handleUpdateParams)}
-              update={{
-                page: pipe(changePage, this.handleUpdateParams),
-              }}
-              data={this.props.site}
-              onReset={this.handleResetFilters}
-              onClear={this.handleClearFilters}
-              showCards={this.state.showCards}
-              addFilter={pipe(addFilter, this.handleUpdateParams)}
-              currentSiteView={currentSiteView}
-              totalResults={totalRecords}
-            />
-          );
+    return (
+      <CrumbsBar
+        searchParams={searchParams}
+        onBulkUpdate={this.handleBulkUpdateClick}
+        removeFilter={pipe(removeFilter, this.handleUpdateParams)}
+        addSearchTerm={pipe(addSearchTerm, this.handleUpdateParams)}
+        removeSearchTerm={pipe(removeSearchTerm, this.handleUpdateParams)}
+        update={{
+          page: pipe(changePage, this.handleUpdateParams),
+        }}
+        data={this.props.site}
+        onReset={this.handleResetFilters}
+        onClear={this.handleClearFilters}
+        showCards={this.state.showCards}
+        addFilter={pipe(addFilter, this.handleUpdateParams)}
+        currentSiteView={currentSiteView}
+        totalResults={totalRecords}
+      />
+    );
   };
 
   render() {
@@ -734,9 +733,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             },
           }}>
           <Row>
-            <SidebarContainer md={2}>{this.renderAggs(currentSiteView)}</SidebarContainer>
+            <SidebarContainer md={2}>
+              {this.renderAggs(currentSiteView)}
+            </SidebarContainer>
             <MainContainer md={10}>
-                  {this.renderPresearch(null)}
+              {this.renderPresearch(null)}
               <SearchView
                 params={this.state.params as any}
                 onBulkUpdate={this.handleBulkUpdateClick}
@@ -749,23 +750,23 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 onClearFilters={this.handleClearFilters}
                 previousSearchData={this.previousSearchData}
                 returnPreviousSearchData={() => this.returnPreviousSearchData}
-                  searchHash={''}
-                  showCards={this.state.showCards}
-                  toggledShowCards={this.toggledShowCards}
-                  returnNumberOfPages={this.returnNumberOfPages}
-                    searchAggs={this.state.searchAggs}
-                    crowdAggs={this.state.searchCrowdAggs}
-                    transformFilters={this.transformFilters}
-                    removeSelectAll={this.state.removeSelectAll}
-                    resetSelectAll={this.resetSelectAll}
-                    searchParams={this.state.params}
-                    opened={opened}
-                    openedKind={openedKind}
-                    onOpen={this.handleOpenAgg}
-                    currentSiteView={currentSiteView}
-                    getTotalResults={this.getTotalResults}
-                />
-              </MainContainer>
+                searchHash={''}
+                showCards={this.state.showCards}
+                toggledShowCards={this.toggledShowCards}
+                returnNumberOfPages={this.returnNumberOfPages}
+                searchAggs={this.state.searchAggs}
+                crowdAggs={this.state.searchCrowdAggs}
+                transformFilters={this.transformFilters}
+                removeSelectAll={this.state.removeSelectAll}
+                resetSelectAll={this.resetSelectAll}
+                searchParams={this.state.params}
+                opened={opened}
+                openedKind={openedKind}
+                onOpen={this.handleOpenAgg}
+                currentSiteView={currentSiteView}
+                getTotalResults={this.getTotalResults}
+              />
+            </MainContainer>
           </Row>
         </SearchParamsContext.Provider>
       );
@@ -789,33 +790,34 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             component={BulkEditPage}
           />
           <Route
-            render={() => { 
+            render={() => {
               const { currentSiteView } = this.props;
-                const {
-                  showPresearch,
-                  showFacetBar,
-                  showBreadCrumbs,
-                } = currentSiteView.search.config.fields;
-                return (
-                  <Row>
-                    {showFacetBar && (
-                      <SidebarContainer md={2}>
-                        {this.renderAggs(currentSiteView)}
-                      </SidebarContainer>
-                    )}
+              const {
+                showPresearch,
+                showFacetBar,
+                showBreadCrumbs,
+              } = currentSiteView.search.config.fields;
+              return (
+                <Row>
+                  {showFacetBar && (
+                    <SidebarContainer md={2}>
+                      {this.renderAggs(currentSiteView)}
+                    </SidebarContainer>
+                  )}
                   <div id="main_search" style={{ overflowY: 'auto' }}>
                     <MainContainer style={{ width: '100%' }}>
-                        {showBreadCrumbs && this.renderCrumbs()}
-                        {showPresearch && this.renderPresearch(hash)}
-                        {this.renderSearch()}
-                  </MainContainer>
-                </div>
-              </Row>
-            )}}
+                      {showBreadCrumbs && this.renderCrumbs()}
+                      {showPresearch && this.renderPresearch(hash)}
+                      {this.renderSearch()}
+                    </MainContainer>
+                  </div>
+                </Row>
+              );
+            }}
           />
         </Switch>
       </SearchParamsContext.Provider>
-    )
+    );
   }
 }
 

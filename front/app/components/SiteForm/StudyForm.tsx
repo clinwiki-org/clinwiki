@@ -220,8 +220,8 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
 
     return '/';
   };
-  componentDidMount(){
-  this.props.handleForm()
+  componentDidMount() {
+    this.props.handleForm();
   }
   render() {
     return (

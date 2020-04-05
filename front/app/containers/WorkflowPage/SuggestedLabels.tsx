@@ -3,69 +3,88 @@ import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import PREFETCH_QUERY from '../StudyPage';
-import * as FontAwesome from "react-fontawesome";
-import CurrentUser from "containers/CurrentUser";
+import * as FontAwesome from 'react-fontawesome';
+import CurrentUser from 'containers/CurrentUser';
 import {
-  Button, List, Checkbox, Col, Row, Container, ReactTable, ListGroup, Table, FormControl,
+  Button,
+  List,
+  Checkbox,
+  Col,
+  Row,
+  Container,
+  ReactTable,
+  ListGroup,
+  Table,
+  FormControl,
   Form,
   FormGroup,
   ButtonGroup,
-  ControlLabel
+  ControlLabel,
 } from 'react-bootstrap';
-import * as Autosuggest from "react-autosuggest";
-import SearchView from '../SearchPage/SearchView'
+import * as Autosuggest from 'react-autosuggest';
+import SearchView from '../SearchPage/SearchView';
 import {
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables,
 } from 'types/SuggestedLabelsQuery';
-import { pipe, pathOr, prop, map, filter, fromPairs, keys, reject, propEq, equals } from 'ramda';
+import {
+  pipe,
+  pathOr,
+  prop,
+  map,
+  filter,
+  fromPairs,
+  keys,
+  reject,
+  propEq,
+  equals,
+} from 'ramda';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-import * as Similarity from "./nlp_similarity";
+import * as Similarity from './nlp_similarity';
 import WikiSections from './WikiSections';
 import { findFieldsThatChangedTypeOnInputObjectTypes } from 'graphql/utilities/findBreakingChanges';
 import SiteProvider from 'containers/SiteProvider';
 import CrumbsBar from 'containers/SearchPage/components/CrumbsBar';
-import * as Search from '../SearchPage/SearchView'
+import * as Search from '../SearchPage/SearchView';
 import { SearchPageSearchQuery } from 'types/SearchPageSearchQuery';
 import { MAX_WINDOW_SIZE } from 'utils/constants';
 import { Component } from 'react';
 import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
-import { WorkSearch } from './WorkSearch'
+import { WorkSearch } from './WorkSearch';
 interface SuggestedLabelsProps {
   nctId: string;
   searchHash: string | null;
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
   allowedSuggestedLabels: string[];
-
 }
 
 const SEARCH_QUERY = gql`
-query AllQuery($nctId: String!) {
-  study(nctId: $nctId) {
-    nctId
-    briefSummary
-    detailedDescription
-    eligibilityCriteria
-    conditions
-    briefTitle
-    overallStatus
-    createdAt
-    updatedAt
-    facilities {
-      id
-      city
-      state
-      country
-      zip
-    }
-    interventions {
-      id
-      name
-      description
+  query AllQuery($nctId: String!) {
+    study(nctId: $nctId) {
+      nctId
+      briefSummary
+      detailedDescription
+      eligibilityCriteria
+      conditions
+      briefTitle
+      overallStatus
+      createdAt
+      updatedAt
+      facilities {
+        id
+        city
+        state
+        country
+        zip
+      }
+      interventions {
+        id
+        name
+        description
+      }
     }
   }
-}
 `;
 
 const QUERY = gql`
@@ -101,15 +120,15 @@ const QUERY = gql`
 class QueryComponent extends Query<
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables
-  > { }
+> {}
 
 const LabelsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
 const StyledCol = styled(Col)`
-width: 30%;
-`
+  width: 30%;
+`;
 const StyledPanel = styled(CollapsiblePanel)`
   margin: 0 10px 10px 0;
   width: 100%;
@@ -118,7 +137,6 @@ const StyledPanel = styled(CollapsiblePanel)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-   
   }
   .panel-body {
     height: 450px !important;
@@ -132,7 +150,6 @@ const QueryResult = PREFETCH_QUERY;
 
 interface MyFilterProps {
   params: SearchParams;
-
 }
 interface MyFilterState {
   searchTerm: string;
@@ -143,9 +160,10 @@ interface SuggestedLabelsState {
   list: string[];
 }
 
-
-
-class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, SuggestedLabelsState> {
+class SuggestedLabels extends React.PureComponent<
+  SuggestedLabelsProps,
+  SuggestedLabelsState
+> {
   handleSelect = (key: string, value: string) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -155,8 +173,6 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
   public getID() {
     return this.props.nctId;
   }
-
-  
 
   renderAgg = (key: string, values: [string, boolean][]) => {
     return (
@@ -183,9 +199,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
     );
   };
 
-  
   render() {
-
     if (!this.props.searchHash) return null;
     return (
       <QueryComponent
@@ -199,7 +213,7 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
           try {
             meta = JSON.parse(
               (data.study && data.study.wikiPage && data.study.wikiPage.meta) ||
-              '{}'
+                '{}'
             );
           } catch (e) {
             console.log(`Error parsing meta: ${meta}`);
@@ -244,6 +258,5 @@ class SuggestedLabels extends React.PureComponent<SuggestedLabelsProps, Suggeste
       </QueryComponent>
     );
   }
-
 }
 export default SuggestedLabels;

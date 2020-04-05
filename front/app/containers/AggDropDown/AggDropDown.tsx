@@ -135,7 +135,6 @@ const PresearchContent = styledComponents.div`
   max-height: 260px;
 `;
 
-
 interface AggDropDownState {
   hasMore: boolean;
   isOpen: boolean;
@@ -158,8 +157,8 @@ interface AggDropDownProps {
   selectedKeys: Set<string>;
   addFilter: AggCallback;
   addFilters?: AggregateAggCallback | undefined;
-  addAllFilters?:any;
-  removeAllFilters?:any;
+  addAllFilters?: any;
+  removeAllFilters?: any;
   removeFilters?: AggregateAggCallback | undefined;
   removeFilter: AggCallback | null;
   display?: FieldDisplay;
@@ -167,7 +166,7 @@ interface AggDropDownProps {
   onOpen?: (agg: string, aggKind: AggKind) => void;
   removeSelectAll?: boolean;
   presearch?: boolean;
-  configType?: "presearch" | "autosuggest" | 'facetbar';
+  configType?: 'presearch' | 'autosuggest' | 'facetbar';
   returnAll?: boolean;
   resetSelectAll?: () => void;
   client: any;
@@ -252,7 +251,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
 
-  selectAll = (agg:string): void => {
+  selectAll = (agg: string): void => {
     const { buckets } = this.state;
     let newParams = [];
 
@@ -281,7 +280,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       if (!this.props.removeFilters) {
         this.props.removeAllFilters(agg, newParams, false);
         this.setState({
-          checkboxValue: false
+          checkboxValue: false,
         });
         return;
       }
@@ -307,7 +306,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return false;
   };
 
-  getFullPagesCount = (buckets) => Math.floor(length(buckets) / PAGE_SIZE);
+  getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
 
   handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
@@ -317,13 +316,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   handleToggle = () => {
     this.props.onOpen && this.props.onOpen(this.props.agg, this.props.aggKind);
   };
- 
+
   handleSort = (desc: boolean, sortKind: SortKind) => {
-    switch(sortKind) {
+    switch (sortKind) {
       case SortKind.Alpha:
-        return [{ id: 'key', desc: desc }]
+        return [{ id: 'key', desc: desc }];
       case SortKind.Number:
-        return [{ id: 'count', desc: desc }]
+        return [{ id: 'count', desc: desc }];
     }
   };
 
@@ -403,7 +402,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
 
     const hasMore = length(buckets) !== length(newBuckets);
-    this.setState({ buckets : newBuckets, hasMore });
+    this.setState({ buckets: newBuckets, hasMore });
   };
 
   findFields = () => {
@@ -412,13 +411,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       ...(site.siteView?.search?.aggs?.fields || []),
       ...(site.siteView?.search?.crowdAggs?.fields || []),
     ]) as SiteViewFragment_search_aggs_fields | null;
-  }
+  };
 
-  renderPanel = (isPresearch:boolean) => {
-    const {
-      visibleOptions = [],
-      removeSelectAll,
-    } = this.props;
+  renderPanel = (isPresearch: boolean) => {
+    const { visibleOptions = [], removeSelectAll } = this.props;
     const {
       buckets = [],
       filter,
@@ -552,8 +548,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             handleFilterChange={this.handleFilterChange}
             toggleAlphaSort={this.toggleAlphaSort}
             toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })} />
-          </PresearchFilter>
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+        </PresearchFilter>
         <PresearchPanel>
           <BucketsPanel
             isPresearch={true}
@@ -583,28 +580,27 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
         </PresearchCard>
       );
-    }
-    else {
-    return (
-      <PanelWrapper>
-        <Panel
-          onToggle={this.handleToggle}
-          expanded={isOpen}
-          className="bm-panel-default">
-          <Panel.Heading className="bm-panel-heading">
-            <Panel.Title className="bm-panel-title" toggle>
-              <div className="flex">
-                <span>{title}</span>
-                <span>
-                  <FontAwesome name={icon} />{' '}
-                </span>
-              </div>
-            </Panel.Title>
-          </Panel.Heading>
-          {this.renderPanel(false)}
-        </Panel>
-      </PanelWrapper>
-    );
+    } else {
+      return (
+        <PanelWrapper>
+          <Panel
+            onToggle={this.handleToggle}
+            expanded={isOpen}
+            className="bm-panel-default">
+            <Panel.Heading className="bm-panel-heading">
+              <Panel.Title className="bm-panel-title" toggle>
+                <div className="flex">
+                  <span>{title}</span>
+                  <span>
+                    <FontAwesome name={icon} />{' '}
+                  </span>
+                </div>
+              </Panel.Title>
+            </Panel.Heading>
+            {this.renderPanel(false)}
+          </Panel>
+        </PanelWrapper>
+      );
     }
   }
 }
