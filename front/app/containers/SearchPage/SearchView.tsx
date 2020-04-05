@@ -659,25 +659,21 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
-    // NOTE: If we upgrade typescript we can use data?.search?.studies;
-    let searchData = path(
-      ['search', 'studies'],
-      data
-    ) as SearchPageSearchQuery_search_studies[];
+    let searchData = data?.search?.studies || [];
     const tableWidth = 1175;
 
     // //OWERA: high computational complexity here for little return
-    // searchData = Array.from(
-    //   new Set(this.props.previousSearchData.concat(searchData))
-    // );
+    searchData = Array.from(
+      new Set(this.props.previousSearchData.concat(searchData))
+    );
 
     // Eliminates undefined items from the searchData array
-    // searchData = searchData.filter(el => {
-    //   return el != null;
-    // });
+    searchData = searchData.filter(el => {
+      return el != null;
+    });
 
     // Returns the new searchData to the SearchPage component
-    // this.props.returnPreviousSearchData(searchData);
+    this.props.returnPreviousSearchData(searchData);
 
     const isMobile = this.mobileAndTabletcheck();
 
