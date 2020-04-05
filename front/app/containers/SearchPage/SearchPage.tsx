@@ -231,7 +231,7 @@ const changePage = (pageNumber: number) => (params: SearchParams) => ({
 });
 
 interface SearchPageProps {
-  match: any;
+  match: match<{ siteviewUrl: string }>;
   history: any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
@@ -567,7 +567,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
-  showingCards = () => this.props.currentSiteView.search.results.type == 'cards';
+  showingCards = () => this.props.currentSiteView.search.results.type == 'card';
 
   componentDidMount() {
     if (this.showingCards()) {
@@ -610,7 +610,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    const siteViewUrl = this.props.match.params.siteViewUrl || 'default';
+    const siteViewUrl = this.props.match.params.siteviewUrl || 'default';
     if (data?.provisionSearchHash?.searchHash?.short) {
       this.props.history.push(
         `/search/${siteViewUrl}/${data!.provisionSearchHash!.searchHash!.short}`
