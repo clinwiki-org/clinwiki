@@ -328,7 +328,6 @@ interface SearchViewProps {
   returnPreviousSearchData: Function;
   searchHash: string;
   showCards: Boolean;
-  toggledShowCards: Function;
   returnNumberOfPages: Function;
   searchParams: any;
   searchAggs: any;
@@ -370,12 +369,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   isStarColumn = (name: string): boolean => {
     return name === 'average_rating';
-  };
-
-  toggledShowCards = (showCards: Boolean) => {
-    this.props.toggledShowCards(showCards);
-    console.log('Params', this.props.params);
-    pipe(changePage, this.props.onUpdateParams);
   };
 
   // this is for the column widths. currently, some tags are making it way too wide
@@ -498,14 +491,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   };
 
   componentDidMount() {
-    let defaultViewStyle = this.props.currentSiteView.search.results.type;
-    let showResults = this.props.currentSiteView.search.config.fields
-      .showResults;
-    if (defaultViewStyle == 'table' && this.props.showCards == true) {
-      this.toggledShowCards(false);
-    } else if (defaultViewStyle == 'card' && this.props.showCards == false) {
-      this.toggledShowCards(true);
-    }
+    let showResults = this.props.currentSiteView.search.config.fields.showResults;
     if (!this.props.showCards && showResults) {
       this.setState({
         tableWidth: document.getElementsByClassName('ReactTable')[0]

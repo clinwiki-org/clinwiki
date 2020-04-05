@@ -164,18 +164,14 @@ interface CrumbsBarProps {
   onReset: () => void;
   onClear: () => void;
   data: SiteFragment;
-  showCards: Boolean;
   siteViewUrl?: string;
   currentSiteView: SiteFragment_siteView;
-  toggledShowCards?: any;
   totalResults: number;
 }
 interface CrumbsBarState {
   searchTerm: string;
   suggestions: any;
   isSuggestionLoading: boolean;
-  cardsBtnColor: string;
-  tableBtnColor: string;
   showFilters: boolean;
 }
 
@@ -200,23 +196,10 @@ export default class CrumbsBar extends React.Component<
   constructor(props) {
     super(props);
 
-    let cardsColor = '';
-    let tableColor = '';
-
-    if (window.localStorage.getItem('showCards') === 'true') {
-      cardsColor = '#55B88D';
-      tableColor = '#90a79d';
-    } else {
-      cardsColor = '#90a79d';
-      tableColor = '#55B88D';
-    }
-
     this.state = {
       searchTerm: '',
       suggestions: [],
       isSuggestionLoading: true,
-      cardsBtnColor: cardsColor,
-      tableBtnColor: tableColor,
       showFilters: true,
     };
   }

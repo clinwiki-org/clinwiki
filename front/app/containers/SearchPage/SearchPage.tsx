@@ -248,7 +248,6 @@ interface SearchPageState {
   } | null;
   searchAggs: AggBucketMap;
   searchCrowdAggs: AggBucketMap;
-  showCards: Boolean;
   removeSelectAll: boolean;
   totalRecords: number;
 }
@@ -268,7 +267,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     openedAgg: null,
     searchAggs: {},
     searchCrowdAggs: {},
-    showCards: localStorage.getItem('showCards') === 'true' ? true : false,
     removeSelectAll: false,
     totalRecords: 0,
   };
@@ -290,15 +288,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   }
-
-  toggledShowCards = (showCards: Boolean) => {
-    localStorage.setItem('showCards', showCards.toString());
-    const params: any = { ...this.state.params, page: 0 };
-    this.previousSearchData = [];
-    this.setState({ showCards, params }, () =>
-      this.updateSearchParams(this.state.params)
-    );
-  };
 
   previousSearchData: Array<SearchPageSearchQuery_search_studies> = [];
   returnPreviousSearchData = (
@@ -534,8 +523,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               previousSearchData={this.previousSearchData}
               returnPreviousSearchData={this.returnPreviousSearchData}
               searchHash={hash || ''}
-              showCards={this.state.showCards}
-              toggledShowCards={this.toggledShowCards}
+              showCards={this.showingCards()}
               returnNumberOfPages={this.returnNumberOfPages}
               searchAggs={this.state.searchAggs}
               crowdAggs={this.state.searchCrowdAggs}
@@ -559,7 +547,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     if (
       window.innerHeight + window.scrollY >= document.body.scrollHeight - 100 &&
       this.state.params!.page < this.numberOfPages - 1 &&
-      this.state.showCards
+      this.showingCards()
     ) {
       window.removeEventListener('scroll', this.handleScroll);
 
@@ -579,8 +567,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
+  showingCards = () => this.props.currentSiteView.search.results.type == 'cards';
+
   componentDidMount() {
-    if (this.state.showCards) {
+    if (this.showingCards()) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
       window.removeEventListener('scroll', this.handleScroll);
@@ -592,7 +582,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.showCards) {
+    if (this.showingCards()) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
       window.removeEventListener('scroll', this.handleScroll);
@@ -711,7 +701,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         data={this.props.site}
         onReset={this.handleResetFilters}
         onClear={this.handleClearFilters}
-        showCards={this.state.showCards}
         addFilter={pipe(addFilter, this.handleUpdateParams)}
         currentSiteView={currentSiteView}
         totalResults={totalRecords}
@@ -751,8 +740,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 previousSearchData={this.previousSearchData}
                 returnPreviousSearchData={() => this.returnPreviousSearchData}
                 searchHash={''}
-                showCards={this.state.showCards}
-                toggledShowCards={this.toggledShowCards}
+                showCards={this.showingCards()}
                 returnNumberOfPages={this.returnNumberOfPages}
                 searchAggs={this.state.searchAggs}
                 crowdAggs={this.state.searchCrowdAggs}
