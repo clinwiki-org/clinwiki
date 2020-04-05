@@ -20,7 +20,7 @@ interface AggFieldProps {
   field: SiteViewFragment_search_aggs_fields;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
   view: SiteViewFragment;
-  configType?: "presearch" | "autosuggest" | 'facetbar';
+  configType: "presearch" | "autosuggest" | 'facetbar';
   returnAll?: Boolean;
 }
 
@@ -116,6 +116,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
+
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
@@ -135,6 +136,26 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
   };
 
+  getUpdaters() {
+    const preselectedUpdater = new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.preselected,
+      this.props.onAddMutation,
+      this.props.kind,
+      'preselected',
+      this.props.configType
+    );
+    const visibleOptionsUpdater = new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.visibleOptions,
+      this.props.onAddMutation,
+      this.props.kind,
+      'visibleOptions',
+      this.props.configType
+    );
+    return [preselectedUpdater, visibleOptionsUpdater];
+  }
+
   render() {
     const { configType } = this.props;
     const selected = new Set(this.props.field.preselected.values);
@@ -147,20 +168,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       crowdAggFilters: [],
       sorts: [],
     };
-    const preselectedUpdater = new AggFilterSiteConfigUpdater(
-      this.props.field.name,
-      this.props.field.preselected,
-      this.props.onAddMutation,
-      this.props.kind,
-      'preselected'
-    );
-    const visibleOptionsUpdater = new AggFilterSiteConfigUpdater(
-      this.props.field.name,
-      this.props.field.visibleOptions,
-      this.props.onAddMutation,
-      this.props.kind,
-      'visibleOptions'
-    );
+    const [ preselectedUpdater, visibleOptionsUpdater ] = this.getUpdaters();
     return (
       <>
         <h4>
