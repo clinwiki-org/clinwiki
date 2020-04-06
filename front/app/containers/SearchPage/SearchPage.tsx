@@ -520,18 +520,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         },
         () => this.updateSearchParams(this.state.params)
       );
-      if (this.state.showCards) {
-        window.addEventListener('scroll', this.handleScroll);
-      } else {
-        window.removeEventListener('scroll', this.handleScroll);
-      }
+    } 
+    if (this.state.showCards) {
+      window.addEventListener('scroll', this.handleScroll);
     } else {
-      if (this.state.showCards) {
-        window.addEventListener('scroll', this.handleScroll);
-      } else {
-        window.removeEventListener('scroll', this.handleScroll);
-      }
+      window.removeEventListener('scroll', this.handleScroll);
     }
+
   }
 
   componentWillUnmount() {
