@@ -486,7 +486,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 onChange={(e: {
                   currentTarget: { name: string; value: any };
                 }) => this.handleAddMutation(e, view)}
-                v={view.search.crowdAggs.selected.kind}>
+                value={view.search.crowdAggs.selected.kind}>
                 <option value="BLACKLIST">All except</option>
                 <option value="WHITELIST">Only</option>
               </StyledFormControl>
