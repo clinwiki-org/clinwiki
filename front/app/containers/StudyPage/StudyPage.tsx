@@ -266,8 +266,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     console.log('getSectionsForRoutes: ');
     console.log(retVar);
 
-    // @ts-ignore
-    return retVar;
+    return retVar as Section[];
   };
 
   getComponent = (name: string): any => {
