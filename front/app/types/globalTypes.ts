@@ -7,6 +7,7 @@
 
 export enum FieldDisplay {
   DATE = "DATE",
+  RANGE = "RANGE",
   STAR = "STAR",
   STRING = "STRING",
 }
@@ -33,6 +34,7 @@ export interface AggFilterInput {
   values?: string[] | null;
   gte?: string | null;
   lte?: string | null;
+  includeMissingFields?: boolean | null;
 }
 
 /**
@@ -118,7 +120,8 @@ export interface SearchQueryInput {
  */
 export interface SignInInput {
   email: string;
-  password: string;
+  password?: string | null;
+  oAuthToken?: string | null;
   clientMutationId?: string | null;
 }
 
@@ -127,8 +130,9 @@ export interface SignInInput {
  */
 export interface SignUpInput {
   email: string;
-  password: string;
+  password?: string | null;
   defaultQueryString?: string | null;
+  oAuthToken?: string | null;
   clientMutationId?: string | null;
 }
 

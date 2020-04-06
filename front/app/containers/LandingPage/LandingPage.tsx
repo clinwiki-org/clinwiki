@@ -22,9 +22,13 @@ const MainContainer = styled(Col)`
   }
 `;
 
-const HASH_QUERY = gql`
-  query LandingSearchPageHashQuery($q: SearchQueryInput!) {
-    searchHash(params: { q: $q, page: 0, pageSize: 25 })
+const HASH_MUTATION = gql`
+  mutation LandingSearchPageHashMutation($q: SearchQueryInput!) {
+    provisionSearchHash(input: { params: { q: $q, page: 0, pageSize: 25 } }) {
+      searchHash {
+        short
+      }
+    }
   }
 `;
 
@@ -52,11 +56,13 @@ class LandingPage extends React.PureComponent<
     } else {
       params = { q: { key: 'AND', children: [] } };
     }
-    const { data } = await client.query({
-      query: HASH_QUERY,
+    const { data } = await client.mutate({
+      mutation: HASH_MUTATION,
       variables: params,
     });
-    this.props.history.push(`/search/${data.searchHash}`);
+    this.props.history.push(
+      `/search/${data.provisionSearchHash!.searchHash!.short}`
+    );
   };
   searchChanged = e => {
     this.setState({ searchTerm: e.target.value });

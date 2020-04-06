@@ -33,6 +33,7 @@ export type AggregateAggCallback = (
 ) => void;
 export interface AggBucket {
   key: string;
+  keyAsString?: string;
   docCount: number;
 }
 export interface AggItem {
@@ -48,6 +49,8 @@ export interface AggFilterListItem {
   // These field names are used in graphql query
   field: string;
   values: string[];
+  gte?: any;
+  lte?: any;
 }
 
 export interface SortItem {

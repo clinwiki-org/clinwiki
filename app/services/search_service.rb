@@ -5,6 +5,9 @@ ORDERING_MAP = { "title" => "brief_title" }.freeze
 DEFAULT_PAGE_SIZE = 25
 DEFAULT_SORT = "asc"
 MAX_WINDOW_SIZE = 10_000
+# we're duck typing string to number for now
+STRING_MISSING_IDENTIFIER = "-99999999999"
+DATE_MISSING_IDENTIFIER = "1500-01-01"
 
 # aggregations
 DEFAULT_AGG_SORT = {
@@ -25,8 +28,11 @@ DEFAULT_AGG_OPTIONS = {
   },
   start_date: {
     date_histogram: {
-      field: :completion_date,
+      field: :start_date,
       interval: :year,
+      # this should work, but it isn't
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html
+      missing: DATE_MISSING_IDENTIFIER,
     },
     limit: 10,
   },
@@ -34,6 +40,7 @@ DEFAULT_AGG_OPTIONS = {
     date_histogram: {
       field: :completion_date,
       interval: :year,
+      missing: DATE_MISSING_IDENTIFIER,
     },
     limit: 10,
   },
@@ -87,21 +94,21 @@ DEFAULT_AGG_OPTIONS = {
   },
 }.freeze
 
-def nested_body (key)
+def nested_body(key)
   nested_object = key.split(".")[0]
   {
-    aggs:{
-      "#{nested_object}":{
+    aggs: {
+      "#{nested_object}": {
         nested: {
-          path:"#{nested_object}"
+          path: nested_object.to_s,
         },
-      }
-    }
+      },
+    },
   }
 end
 
-def nested_result_aggs(field,aggs)
-    aggs.dig(:"#{field.split(".")[0]}",:"#{field}").select{|key| key == :"#{field}"}
+def nested_result_aggs(field, aggs)
+  aggs.dig(:"#{field.split(".")[0]}", :"#{field}").select { |key| key == :"#{field}" }
 end
 
 class SearchService
@@ -109,8 +116,8 @@ class SearchService
     average_rating overall_status facility_states
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
-    browse_interventions_mesh_terms interventions_mesh_terms wiki_page_edits.email
-    front_matter_keys
+    browse_interventions_mesh_terms interventions_mesh_terms
+    front_matter_keys start_date wiki_page_edits.email
   ].freeze
 
   attr_reader :params
@@ -128,14 +135,11 @@ class SearchService
       &.map { |bucket| "fm_#{bucket[:key]}" } || []
 
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
-
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
     search_result = Study.search("*", options) do |body|
-
       body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
-      body[:query][:bool][:must] << nested_matches unless nested_matches.empty?
-
+      body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
     end
     {
       recordsTotal: search_result.total_entries,
@@ -168,8 +172,12 @@ class SearchService
     bucket_sort = params[:agg_options_sort] || []
 
     search_results = Study.search("*", options) do |body|
+      unless key == :average_rating || body[:aggs][key][:aggs][key][:date_histogram].present?
+        body[:aggs][key][:aggs][key][:terms][:missing] = missing_identifier_for_key(key)
+      end
+      body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
 
-      body[:query][:bool][:must] = { query_string: { query: search_query } }
+      # key here is front_matter_keys and i have NO IDEA where it's coming from
       body[:aggs][key][:aggs][key][:aggs] =
         (body[:aggs][key][:aggs][key][:aggs] || {}).merge(
           agg_bucket_sort: {
@@ -182,10 +190,11 @@ class SearchService
         )
       if top_key
         nesting = nested_body(field)
-        ##Needs to be a symbol for the nested value not just wiki_page_edits
+        # #Needs to be a symbol for the nested value not just wiki_page_edits
         nesting[:aggs][top_key.to_sym][:aggs] = body[:aggs]
         body[:aggs] = nesting[:aggs]
       end
+
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site)
       visible_options_regex = one_of_regex(visibile_options)
       regex = visible_options_regex
@@ -194,18 +203,18 @@ class SearchService
         regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
       end
       body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
-
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
-
-    aggs =  nested_result_aggs(field,aggs) if field.include?"."
-    aggs
+    if field.include? "."
+      nested_result_aggs(field, aggs)
+    else
+      aggs
+    end
   end
 
   def crowd_agg_facets(site:)
     params = self.params.deep_dup
-    bucket_sort = params[:agg_options_sort] || []
     search_results = Study.search("*", aggs: [:front_matter_keys])
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
@@ -213,8 +222,8 @@ class SearchService
       .map { |x| (x[:key]).to_s }
     facets = {}
     keys.each do |key|
-      fieldAgg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
-      fieldAgg.each do |name, agg|
+      field_agg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
+      field_agg.each do |name, agg|
         facets[name] = agg
       end
     end
@@ -222,6 +231,12 @@ class SearchService
   end
 
   private
+
+  def missing_identifier_for_key(key)
+    return DATE_MISSING_IDENTIFIER if key.to_s =~ /\b?date\b?/
+
+    STRING_MISSING_IDENTIFIER
+  end
 
   def bucket_agg_sort(sort)
     order = sort[:desc] ? "desc" : "asc"
@@ -295,45 +310,44 @@ class SearchService
 
   def scalars_filter(key, filter)
     return nil if filter.dig(:values).nil?
-    return nil unless key.to_s.include? "."
+    return nil if key.to_s.include? "."
 
-    { _or: filter[:values].map { |val| { key => val } } }
+    selected_scalar_values = filter[:values].map { |val| { key => val } }
+    selected_scalar_values << { key => nil } if filter.fetch(:include_missing_fields, false)
+    { _or: selected_scalar_values }
   end
 
-  def nested_matches
-    nested_keys = params[:agg_filters].select {|filter| filter[:field].to_s.include?(".") }
-    nested_keys.map{ |filter| nested_filter(key_for(filter:filter), filter) }
+  def nested_filters
+    nested = params.fetch(:agg_filters, []).select { |filter| filter[:field].to_s.include?(".") }
+    nested.map { |filter| nested_filter(key_for(filter: filter), filter) }
   end
 
-  def nested_filter(key,filter)
+  def nested_filter(key, filter)
     return nil if filter.dig(:values).nil?
     return nil unless key.to_s.include? "."
-    top_key, nested_key = key.to_s.split(".")
 
-      { "nested" =>
-         {
-           "path" => top_key, "query" =>
-           {
-             "bool" =>
-             {
-               "must" =>
-               {
-                 "match" =>
-                 {
-                  _or: filter[:values].map{ |value| { key => value } }
-                 }
-               }
-             }
-            }
-          }
-        }
+    top_key, nested_key = key.to_s.split(".")
+    {
+      nested: {
+        path: top_key,
+        query: {
+          bool: {
+            should: filter[:values].map { |value| { match: { key => value } } },
+          },
+        },
+      },
+    }
   end
 
   def range_filter(key, filter)
+    return nil if key.to_s.include? "."
     range_hash = filter.slice(:gte, :lte)
     return nil if range_hash.empty?
 
-    { key => Hash[range_hash.map { |k, v| [k, cast(v)] }] }
+    select_for_range = { key => Hash[range_hash.map { |k, v| [k, cast(v)] }] }
+    return { _or: [select_for_range, { key => nil }] } if filter.fetch(:include_missing_fields, false)
+
+    select_for_range
   end
 
   # Returns an array of
@@ -392,7 +406,8 @@ class SearchService
     end
 
     parsed_time = Timeliness.parse(val)
-    return parsed_time unless parsed_time.nil?
+
+    return parsed_time.utc unless parsed_time.nil?
 
     # default to string, which we split against pipe separator
     val

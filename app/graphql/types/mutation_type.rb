@@ -21,5 +21,6 @@ module Types
     field :createFeed, mutation: Mutations::CreateFeed
     field :bulkQueryUpdate, mutation: Mutations::BulkQueryUpdate
     field :bulkListUpdate, mutation: Mutations::BulkListUpdate
+    field :provision_search_hash, mutation: Mutations::SearchHashMutation
   end
 end
