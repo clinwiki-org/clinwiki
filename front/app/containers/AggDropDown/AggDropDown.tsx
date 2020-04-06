@@ -320,9 +320,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   handleSort = (desc: boolean, sortKind: SortKind) => {
     switch (sortKind) {
       case SortKind.Alpha:
-        return [{ id: 'key', desc: desc }];
+        return [{ id: 'key', desc: !desc }];
       case SortKind.Number:
-        return [{ id: 'count', desc: desc }];
+        return [{ id: 'count', desc: !desc }];
     }
   };
 
@@ -382,7 +382,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         concat(responseBuckets),
         uniqBy(prop('key')),
         sortBy(prop('key')),
-        reverse()
+        reverse
       )(this.state.buckets) as AggBucket[];
     }
     if (desc && sortKind === SortKind.Number) {
@@ -397,7 +397,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         concat(responseBuckets),
         uniqBy(prop('key')),
         sortBy(prop('docCount')),
-        reverse()
+        reverse
       )(this.state.buckets) as AggBucket[];
     }
 
