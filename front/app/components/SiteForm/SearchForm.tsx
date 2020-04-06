@@ -111,7 +111,11 @@ const StyledShowContainer = styled.div`
 
 const StyledButtonGroup = styled.div`
   margin: 1em 1em 1em 0;
-
+   .button-label {
+    color:white;
+    font-size: 1.25em;
+    margin-right:1em;
+  }
   ul li a {
     color: black !important;
   }
@@ -362,7 +366,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         <Panel.Body collapsible>
           <StyledPanelHeading>
             <StyledButtonGroup>
-              Button Target: 
+              <span className="button-label">Button Target: </span>
               <DropdownButton
                 bsStyle="default"
                 title={buttonsArray[index].target}
@@ -383,7 +387,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledButtonGroup>
 
             <StyledButtonGroup>
-            Button Icon: 
+           <span className="button-label"> Button Icon: </span>
               <DropdownButton
                 bsStyle="default"
                 title={buttonsArray[index].icon}
@@ -704,7 +708,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               />
               <StyledPanelHeading>
                 <StyledButtonGroup>
-                Button Target
+                  <span className="button-label">Button Target</span>
                   <DropdownButton
                     bsStyle="default"
                     title={view.search.presearch.button.target}
@@ -763,7 +767,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             onChange={e => this.handleAddMutation(e, view)}
           />
           <StyledButtonGroup>
-            Results View:
+            <span className="button-label">Results View:</span>
             <DropdownButton
               bsStyle="default"
               title={view.search.results.type}
