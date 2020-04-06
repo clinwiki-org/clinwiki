@@ -176,6 +176,7 @@ class SearchService
         body[:aggs][key][:aggs][key][:terms][:missing] = missing_identifier_for_key(key)
       end
       body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
+      body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
 
       # key here is front_matter_keys and i have NO IDEA where it's coming from
       body[:aggs][key][:aggs][key][:aggs] =
