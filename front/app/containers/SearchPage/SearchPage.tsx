@@ -12,7 +12,7 @@ import {
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
-import { SearchParams, AggKind, SearchQuery, defaultPageSize } from './shared';
+import { SearchParams, AggKind, SearchQuery,  } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
@@ -46,7 +46,7 @@ import {
   SearchPageSearchQuery_crowdAggs_aggs,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { AggBucketMap } from './Types';
+import { AggBucketMap, defaultPageSize } from './Types';
 import { withSite } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { SiteFragment } from 'types/SiteFragment';
@@ -502,11 +502,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
-    let searchTerm = this.props.location.search;
-    searchTerm = searchTerm.slice(3);
-    searchTerm = searchTerm.replace(/\+/g, ' ');
+    let searchTerm = new URLSearchParams(this.props.location.search).getAll("q")
     if (this.props.location.search) {
-      let q = { key: 'AND', children: [{ children: [], key: searchTerm }] };
+      let q = { key: 'AND', children: [{ children: [], key: searchTerm.toString() }] };
       this.setState(
         {
           params: {
