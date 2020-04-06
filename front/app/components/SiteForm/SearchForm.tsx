@@ -360,13 +360,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
-          <h3>Target: {buttonsArray[index].target}</h3>
-          <h3>Icon: {buttonsArray[index].icon}</h3>
           <StyledPanelHeading>
             <StyledButtonGroup>
+              Button Target: 
               <DropdownButton
                 bsStyle="default"
-                title="Button Target"
+                title={buttonsArray[index].target}
                 key="default"
                 id="dropdown-basic-default"
                 style={{ margin: '1em 1em 1em 0' }}>
@@ -384,9 +383,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledButtonGroup>
 
             <StyledButtonGroup>
+            Button Icon: 
               <DropdownButton
                 bsStyle="default"
-                title="Button Icon"
+                title={buttonsArray[index].icon}
                 key="default"
                 id="dropdown-basic-default"
                 style={{ margin: '1em 1em 1em 0' }}>
@@ -702,13 +702,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 value={view.search.presearch.button.name}
                 onChange={e => this.handleAddMutation(e, view)}
               />
-              <h3>Target: {view.search.presearch.button.target}</h3>
-
               <StyledPanelHeading>
                 <StyledButtonGroup>
+                Button Target
                   <DropdownButton
                     bsStyle="default"
-                    title="Button Target"
+                    title={view.search.presearch.button.target}
                     key="default"
                     id="dropdown-basic-default"
                     style={{ margin: '1em 1em 1em 0' }}>
@@ -764,9 +763,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             onChange={e => this.handleAddMutation(e, view)}
           />
           <StyledButtonGroup>
+            Results View:
             <DropdownButton
               bsStyle="default"
-              title="Result View"
+              title={view.search.results.type}
               key="default"
               id="dropdown-basic-default"
               style={{ margin: '1em 1em 1em 0' }}>
