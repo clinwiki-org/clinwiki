@@ -24,3 +24,4 @@ export interface SearchQuery {
   key: string;
   children?: SearchQuery[];
 }
+export const defaultPageSize = 25

@@ -12,7 +12,7 @@ import {
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
-import { SearchParams, AggKind, SearchQuery } from './shared';
+import { SearchParams, AggKind, SearchQuery, defaultPageSize } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
@@ -197,7 +197,7 @@ const DEFAULT_PARAMS: SearchParams = {
   crowdAggFilters: [],
   sorts: [],
   page: 0,
-  pageSize: 25,
+  pageSize: defaultPageSize,
 };
 
 class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
@@ -277,7 +277,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       sorts,
       q,
       page: params.page || 0,
-      pageSize: params.pageSize || 25,
+      pageSize: params.pageSize || defaultPageSize,
     };
   };
 
@@ -503,7 +503,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = this.props.location.search;
-    searchTerm = searchTerm.slice(2);
+    searchTerm = searchTerm.slice(3);
     searchTerm = searchTerm.replace(/\+/g, ' ');
     if (this.props.location.search) {
       let q = { key: 'AND', children: [{ children: [], key: searchTerm }] };
@@ -515,7 +515,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             crowdAggFilters: [],
             sorts: [],
             page: 0,
-            pageSize: 25,
+            pageSize: defaultPageSize,
           },
         },
         () => this.updateSearchParams(this.state.params)
@@ -551,7 +551,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       params: {
         ...params,
         page: 0,
-        pageSize: 25,
+        pageSize: defaultPageSize,
       },
     });
   }
