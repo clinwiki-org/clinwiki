@@ -12,7 +12,7 @@ import {
   SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
-import { SearchParams, AggKind, SearchQuery,  } from './shared';
+import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
