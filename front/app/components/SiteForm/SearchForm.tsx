@@ -164,8 +164,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           name: view.name,
           url: view.url,
           default: view.default,
-          //@ts-ignore
-          // showFacetBar: view.search.config.fields.showFacetBar
         },
       },
     });
@@ -461,7 +459,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <AggField
                   kind="aggs"
                   key={field.name}
-                  //@ts-ignore
                   field={field}
                   onAddMutation={mut => this.handleAddMutation(mut, view)}
                   view={view}
@@ -502,7 +499,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <AggField
                   kind="crowdAggs"
                   key={field.name}
-                  //@ts-ignore
                   field={field}
                   onAddMutation={mut => this.handleAddMutation(mut, view)}
                   view={view}
@@ -583,7 +579,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <AggField
                   kind="crowdAggs"
                   key={field.name}
-                  //@ts-ignore
                   field={field}
                   onAddMutation={mut => this.handleAddMutation(mut, view)}
                   view={view}
@@ -638,7 +633,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <AggField
                   kind="aggs"
                   key={field.name}
-                  //@ts-ignore
                   field={field}
                   onAddMutation={mut => this.handleAddMutation(mut, view)}
                   view={view}
@@ -664,7 +658,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 <AggField
                   kind="crowdAggs"
                   key={field.name}
-                  //@ts-ignore
                   field={field}
                   onAddMutation={mut => this.handleAddMutation(mut, view)}
                   view={view}

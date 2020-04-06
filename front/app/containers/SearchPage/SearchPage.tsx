@@ -431,7 +431,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.setState({ openedAgg: { name, kind } });
       return;
     }
-    // @ts-ignore
     const { name: currentName, kind: currentKind } = this.state.openedAgg;
     if (name === currentName && kind === currentKind) {
       this.setState({ openedAgg: null });

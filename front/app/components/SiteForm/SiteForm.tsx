@@ -176,7 +176,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           <Route
             path={`${path}/siteviews`}
             render={props => (
-              //@ts-ignore
               <SiteViewsRouter
                 {...props}
                 siteViews={this.props.site.siteViews}

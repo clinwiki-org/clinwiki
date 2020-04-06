@@ -150,5 +150,4 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   }
 }
 
-//@ts-ignore
 export default withRouter(SiteViewItem);
