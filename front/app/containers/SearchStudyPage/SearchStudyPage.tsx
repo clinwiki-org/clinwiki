@@ -115,12 +115,12 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               history={this.props.history}
               location={this.props.location}
               match={this.props.match}
-              prevLink={prevLink}
-              nextLink={nextLink}
-              firstLink={firstLink}
-              lastLink={lastLink}
+              prevLink={hash!="" ? prevLink:undefined }
+              nextLink={hash!="" ? nextLink:undefined }
+              firstLink={hash!="" ? firstLink:undefined }
+              lastLink={hash!="" ? lastLink:undefined }
               isWorkflow={isWorkflow}
-              recordsTotal={recordsTotal}
+              recordsTotal={hash!="" ? recordsTotal:undefined }
               counterIndex={counterIndex}
               workflowName={workflowName}
             />
