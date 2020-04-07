@@ -502,9 +502,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   componentDidMount() {
-    let searchTerm = new URLSearchParams(this.props.location.search).getAll("q")
-    if (URLSearchParams(this.props.location.search).has("q")) {
-      let q = { key: 'AND', children: [{ children: [], key: searchTerm.toString() }] };
+    let searchTerm = new URLSearchParams(this.props.location.search)
+    if (searchTerm.has('q')) {
+      let q = { key: 'AND', children: [{ children: [], key: searchTerm.getAll('q').toString() }] };
       this.setState(
         {
           params: {
