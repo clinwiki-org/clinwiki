@@ -484,6 +484,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderSearch = () => {
     const hash = this.getHashFromLocation();
     const { currentSiteView } = this.props;
+    console.log("Hash", hash, currentSiteView)
     return (
       <ParamsQueryComponent
         key={`${hash}+${JSON.stringify(this.state?.params)}`}
