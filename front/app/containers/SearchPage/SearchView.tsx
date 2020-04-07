@@ -682,10 +682,10 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     if (showCards) {
       //OWERA: high computational complexity here for little return
-      searchData = Array.from(
-        new Set(this.props.previousSearchData.concat(searchData))
-      );
-      // searchData
+      // searchData = Array.from(
+      //   new Set(this.props.previousSearchData.concat(searchData))
+      // );
+      searchData
     }
 
     // Eliminates undefined items from the searchData array
