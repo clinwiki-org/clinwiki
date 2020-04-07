@@ -419,7 +419,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const suffix =
       this.isWorkflow() && !this.props.ignoreUrlHash ? '/workflow' : '';
     const prefix = this.props.ignoreUrlHash ? '' : this.props.match.url;
-    this.props.history.push(`/study/${nctId}${suffix}?=${hash}&sv=${siteViewUrl}`);
+    this.props.history.push(`/study/${nctId}${suffix}?hash=${hash}&sv=${siteViewUrl}`);
   };
 
   handleBulkUpdateClick = (hash:string, siteViewUrl:string) => {

@@ -8,6 +8,7 @@ import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
 import StudyPage from 'containers/StudyPage';
+import SearchStudyPage from 'containers/SearchStudyPage'
 import InterventionPage from 'containers/InterventionPage';
 import {
   SignInPage,
@@ -62,7 +63,7 @@ class App extends React.PureComponent<AppProps> {
               path="/study/:nctId/review/:reviewId/edit"
               component={StudyPage}
             />
-            <Route path="/study/:nctId" component={StudyPage} />
+            <Route path="/study/:nctId" component={SearchStudyPage} />
             <Route path="/intervention/:id" component={InterventionPage} />
             <Route path="/profile" component={EditProfilePage} />
             <Route path="/workflows" component={EditWorkflowsPage} />
