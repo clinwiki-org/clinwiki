@@ -111,7 +111,11 @@ const StyledShowContainer = styled.div`
 
 const StyledButtonGroup = styled.div`
   margin: 1em 1em 1em 0;
-
+   .button-label {
+    color:white;
+    font-size: 1.25em;
+    margin-right:1em;
+  }
   ul li a {
     color: black !important;
   }
@@ -358,13 +362,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
-          <h3>Target: {buttonsArray[index].target}</h3>
-          <h3>Icon: {buttonsArray[index].icon}</h3>
           <StyledPanelHeading>
             <StyledButtonGroup>
+              <span className="button-label">Button Target: </span>
               <DropdownButton
                 bsStyle="default"
-                title="Button Target"
+                title={buttonsArray[index].target}
                 key="default"
                 id="dropdown-basic-default"
                 style={{ margin: '1em 1em 1em 0' }}>
@@ -382,9 +385,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledButtonGroup>
 
             <StyledButtonGroup>
+           <span className="button-label"> Button Icon: </span>
               <DropdownButton
                 bsStyle="default"
-                title="Button Icon"
+                title={buttonsArray[index].icon}
                 key="default"
                 id="dropdown-basic-default"
                 style={{ margin: '1em 1em 1em 0' }}>
@@ -483,7 +487,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 onChange={(e: {
                   currentTarget: { name: string; value: any };
                 }) => this.handleAddMutation(e, view)}
-                v={view.search.crowdAggs.selected.kind}>
+                value={view.search.crowdAggs.selected.kind}>
                 <option value="BLACKLIST">All except</option>
                 <option value="WHITELIST">Only</option>
               </StyledFormControl>
@@ -695,13 +699,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 value={view.search.presearch.button.name}
                 onChange={e => this.handleAddMutation(e, view)}
               />
-              <h3>Target: {view.search.presearch.button.target}</h3>
-
               <StyledPanelHeading>
                 <StyledButtonGroup>
+                  <span className="button-label">Button Target</span>
                   <DropdownButton
                     bsStyle="default"
-                    title="Button Target"
+                    title={view.search.presearch.button.target}
                     key="default"
                     id="dropdown-basic-default"
                     style={{ margin: '1em 1em 1em 0' }}>
@@ -757,9 +760,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             onChange={e => this.handleAddMutation(e, view)}
           />
           <StyledButtonGroup>
+            <span className="button-label">Results View:</span>
             <DropdownButton
               bsStyle="default"
-              title="Result View"
+              title={view.search.results.type}
               key="default"
               id="dropdown-basic-default"
               style={{ margin: '1em 1em 1em 0' }}>
