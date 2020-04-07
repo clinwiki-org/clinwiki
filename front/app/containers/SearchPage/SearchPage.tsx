@@ -415,15 +415,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     )(this.state);
   };
 
-  handleRowClick = (nctId: string) => {
+  handleRowClick = (nctId: string, hash:string, siteViewUrl:string) => {
     const suffix =
       this.isWorkflow() && !this.props.ignoreUrlHash ? '/workflow' : '';
     const prefix = this.props.ignoreUrlHash ? '' : this.props.match.url;
-    this.props.history.push(`${prefix}/study/${nctId}${suffix}`);
+    this.props.history.push(`/study/${nctId}${suffix}?=${hash}&sv=${siteViewUrl}`);
   };
 
-  handleBulkUpdateClick = () => {
-    this.props.history.push(`${this.props.match.url}/bulk`);
+  handleBulkUpdateClick = (hash:string, siteViewUrl:string) => {
+    this.props.history.push(`/bulk?=${hash}&sv=${siteViewUrl}`);
   };
 
   handleOpenAgg = (name: string, kind: AggKind) => {
@@ -698,6 +698,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     };
 
     const { currentSiteView } = this.props;
+    const hash = this.getHashFromLocation()
     return (
       <CrumbsBar
         searchParams={searchParams}
@@ -714,6 +715,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         addFilter={pipe(addFilter, this.handleUpdateParams)}
         currentSiteView={currentSiteView}
         totalResults={totalRecords}
+        searchHash={hash || ''}
       />
     );
   };
@@ -780,7 +782,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         }}>
         <Switch>
           <Route
-            path={`${this.props.match.path}/study/:nctId`}
+            path={`/study/:nctId`}
             component={SearchStudyPage}
           />
           <Route

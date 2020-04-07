@@ -313,13 +313,13 @@ const Instructions = styled.div`
 
 interface SearchViewProps {
   params: SearchParams;
-  onBulkUpdate: () => void;
+  onBulkUpdate: (hash:string, siteViewUrl:string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
   onAggsUpdate: (
     aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
     crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] }
   ) => void;
-  onRowClick: (nctId: string) => void;
+  onRowClick: (nctId: string, hash:string, siteViewUrl:string) => void;
   onResetFilters: () => void;
   onClearFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
@@ -379,7 +379,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   rowProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
-        this.props.onRowClick(rowInfo.row.nctId);
+        this.props.onRowClick(rowInfo.row.nctId, this.props.searchHash, this.props.currentSiteView.url || "default"  );
         return handleOriginal();
       },
     };
@@ -528,7 +528,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   }
 
   cardPressed = card => {
-    this.props.onRowClick(card.nctId);
+    this.props.onRowClick(card.nctId,this.props.searchHash, this.props.currentSiteView.url || "default"  );
   };
 
   mobileAndTabletcheck = () => {

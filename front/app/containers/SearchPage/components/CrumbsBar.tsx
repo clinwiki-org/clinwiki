@@ -155,7 +155,7 @@ import { displayFields } from 'utils/siteViewHelpers';
 
 interface CrumbsBarProps {
   searchParams: SearchParams;
-  onBulkUpdate: () => void;
+  onBulkUpdate: (hash:string, siteViewUrl:string) => void;
   removeFilter: AggCallback;
   addFilter: AggCallback;
   addSearchTerm: (term: string) => void;
@@ -167,6 +167,7 @@ interface CrumbsBarProps {
   siteViewUrl?: string;
   currentSiteView: SiteFragment_siteView;
   totalResults: number;
+  searchHash:string;
 }
 interface CrumbsBarState {
   searchTerm: string;
@@ -598,7 +599,7 @@ export default class CrumbsBar extends React.Component<
                     <CurrentUser>
                       {user =>
                         user && user.roles.includes('admin') ? (
-                          <Button onClick={this.props.onBulkUpdate}>
+                          <Button onClick={()=>this.props.onBulkUpdate(this.props.searchHash, this.props.currentSiteView.url||"default")}>
                             Bulk Update <FontAwesome name="truck" />
                           </Button>
                         ) : null
