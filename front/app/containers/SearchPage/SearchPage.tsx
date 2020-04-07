@@ -589,7 +589,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   getHashFromLocation(): string | null {
-    return path(['match', 'params', 'searchId'], this.props) as string | null;
+    let hash = new URLSearchParams(this.props.history.location.search).getAll("hash")
+    // console.log("Correct Hash", hash)
+    return hash.toString();
   }
 
   updateStateFromHash(searchParams) {
@@ -609,11 +611,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    const siteViewUrl = this.props.match.params.siteviewUrl || 'default';
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString() || 'default';
+    // console.log("SV", siteViewUrl)
     if (data?.provisionSearchHash?.searchHash?.short) {
+      console.log("pushing")
       this.props.history.push(
-        `/search/${siteViewUrl}/${data!.provisionSearchHash!.searchHash!.short}`
+        `/search?hash=${data!.provisionSearchHash!.searchHash!.short}&sv=${siteViewUrl}`
       );
+      // this.props.history.push(
+      //   `/search/${siteViewUrl}/${data!.provisionSearchHash!.searchHash!.short}`
+      // );
     }
   };
 
@@ -666,7 +673,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         {presearchButton.name && (
           <Button
             style={{ width: 200, marginLeft: 13 }}
-            href={`/search/${presearchButton.target}/${hash}`}>
+            href={
+              `/search?hash=${hash}&sv=${presearchButton.target}`
+            }>
+            {/* href={`/search/${presearchButton.target}/${hash}`}> */}
             {presearchButton.name}
           </Button>
         )}

@@ -48,11 +48,15 @@ class App extends React.PureComponent<AppProps> {
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/about" component={AboutPage} />
             <Route exact path="/version" component={ReleaseNotes} />
-            <Redirect exact from="/search/" to="/search/default" />
+            {/* <Redirect exact from="/search/" to="/search/default" /> */}
             <Route
-              path="/search/:siteviewUrl/:searchId"
+              path="/search/"
               component={SearchPage}
             />
+            {/* <Route
+              path="/search/:siteviewUrl/:searchId"
+              component={SearchPage}
+            /> */}
             <Route path="/search/:siteviewUrl" component={SearchPage} />
             <Route
               path="/study/:nctId/review/:reviewId/edit"
