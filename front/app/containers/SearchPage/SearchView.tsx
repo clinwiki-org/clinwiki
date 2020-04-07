@@ -801,7 +801,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 {currentSiteView.search.results.buttons.items.map(
                   (button, index) => (
                     <Button
-                      href={`/search/${button.target}/${this.props.searchHash}`}
+                      href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
                       key={button.target + index}>
                       {button.icon == 'card' ? <CardIcon /> : <TableIcon />}
                     </Button>
