@@ -351,6 +351,7 @@ interface SearchViewState {
   } | null;
   totalResults: any;
   firstRender: boolean;
+  prevResults: any | null;
 }
 class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   searchTable: any = 0;
@@ -364,6 +365,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       openedAgg: null,
       totalResults: 0,
       firstRender: true,
+      prevResults: null,
     };
   }
 
@@ -491,7 +493,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   };
 
   componentDidMount() {
-    let showResults = this.props.currentSiteView.search.config.fields.showResults;
+    let showResults = this.props.currentSiteView.search.config.fields
+      .showResults;
     if (!this.props.showCards && showResults) {
       this.setState({
         tableWidth: document.getElementsByClassName('ReactTable')[0]
@@ -642,6 +645,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     error: any;
   }) => {
     const { page, pageSize, sorts } = this.props.params;
+    const { showCards } = this.props;
 
     if (error) {
       return <div>{error.message}</div>;
@@ -650,6 +654,20 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       return null;
     }
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
+
+    if (this.state.prevResults != this.state.totalResults) {
+      this.setState(
+        prev => {
+          return {
+            totalResults: totalRecords,
+            prevResults: prev.totalResults,
+          };
+        },
+        () => {
+          this.props.getTotalResults(this.state.totalResults);
+        }
+      );
+    }
     const totalPages = Math.min(
       Math.ceil(totalRecords / this.props.params.pageSize),
       Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
@@ -662,10 +680,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     let searchData = data?.search?.studies || [];
     const tableWidth = 1175;
 
-    // //OWERA: high computational complexity here for little return
-    searchData = Array.from(
-      new Set(this.props.previousSearchData.concat(searchData))
-    );
+    if (showCards) {
+      // //OWERA: high computational complexity here for little return
+      searchData = Array.from(
+        new Set(this.props.previousSearchData.concat(searchData))
+      );
+    }
 
     // Eliminates undefined items from the searchData array
     searchData = searchData.filter(el => {
@@ -810,16 +830,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 this.props.onAggsUpdate(
                   this.transformAggs(data.search.aggs || []),
                   this.transformCrowdAggs(data.crowdAggs.aggs || [])
-                );
-              }
-              const totalRecords = pathOr(0, ['search', 'recordsTotal'], data);
-              if (this.state.firstRender) {
-                this.setState(
-                  {
-                    totalResults: totalRecords,
-                    firstRender: false,
-                  },
-                  () => this.props.getTotalResults(this.state.totalResults)
                 );
               }
             }}>
