@@ -423,7 +423,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleBulkUpdateClick = (hash:string, siteViewUrl:string) => {
-    this.props.history.push(`/bulk?=${hash}&sv=${siteViewUrl}`);
+    this.props.history.push(`/bulk?hash=${hash}&sv=${siteViewUrl}`);
   };
 
   handleOpenAgg = (name: string, kind: AggKind) => {
