@@ -313,13 +313,13 @@ const Instructions = styled.div`
 
 interface SearchViewProps {
   params: SearchParams;
-  onBulkUpdate: () => void;
+  onBulkUpdate: (hash:string, siteViewUrl:string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
   onAggsUpdate: (
     aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
     crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] }
   ) => void;
-  onRowClick: (nctId: string) => void;
+  onRowClick: (nctId: string, hash:string, siteViewUrl:string) => void;
   onResetFilters: () => void;
   onClearFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
@@ -381,7 +381,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   rowProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
-        this.props.onRowClick(rowInfo.row.nctId);
+        this.props.onRowClick(rowInfo.row.nctId, this.props.searchHash, this.props.currentSiteView.url || "default"  );
         return handleOriginal();
       },
     };
@@ -531,7 +531,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   }
 
   cardPressed = card => {
-    this.props.onRowClick(card.nctId);
+    this.props.onRowClick(card.nctId,this.props.searchHash, this.props.currentSiteView.url || "default"  );
   };
 
   mobileAndTabletcheck = () => {
@@ -681,10 +681,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const tableWidth = 1175;
 
     if (showCards) {
-      // //OWERA: high computational complexity here for little return
-      searchData = Array.from(
-        new Set(this.props.previousSearchData.concat(searchData))
-      );
+      //OWERA: high computational complexity here for little return
+      // searchData = Array.from(
+      //   new Set(this.props.previousSearchData.concat(searchData))
+      // );
+      searchData
     }
 
     // Eliminates undefined items from the searchData array
@@ -800,7 +801,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 {currentSiteView.search.results.buttons.items.map(
                   (button, index) => (
                     <Button
-                      href={`/search/${button.target}/${this.props.searchHash}`}
+                      href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
                       key={button.target + index}>
                       {button.icon == 'card' ? <CardIcon /> : <TableIcon />}
                     </Button>

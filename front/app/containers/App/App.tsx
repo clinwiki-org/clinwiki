@@ -8,6 +8,7 @@ import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
 import StudyPage from 'containers/StudyPage';
+import SearchStudyPage from 'containers/SearchStudyPage'
 import InterventionPage from 'containers/InterventionPage';
 import {
   SignInPage,
@@ -48,17 +49,21 @@ class App extends React.PureComponent<AppProps> {
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/about" component={AboutPage} />
             <Route exact path="/version" component={ReleaseNotes} />
-            <Redirect exact from="/search/" to="/search/default" />
+            {/* <Redirect exact from="/search/" to="/search/default" /> */}
             <Route
-              path="/search/:siteviewUrl/:searchId"
+              path="/search/"
               component={SearchPage}
             />
+            {/* <Route
+              path="/search/:siteviewUrl/:searchId"
+              component={SearchPage}
+            /> */}
             <Route path="/search/:siteviewUrl" component={SearchPage} />
             <Route
               path="/study/:nctId/review/:reviewId/edit"
               component={StudyPage}
             />
-            <Route path="/study/:nctId" component={StudyPage} />
+            <Route path="/study/:nctId" component={SearchStudyPage} />
             <Route path="/intervention/:id" component={InterventionPage} />
             <Route path="/profile" component={EditProfilePage} />
             <Route path="/workflows" component={EditWorkflowsPage} />

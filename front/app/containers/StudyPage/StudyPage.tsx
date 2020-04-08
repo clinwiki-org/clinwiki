@@ -425,6 +425,16 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   render() {
+    const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString()
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString()
+    
+    const backLink =()=>{
+      if(hash !=""){ 
+        return `/search?hash=${hash}&sv=${siteViewUrl}`
+      }
+      return undefined
+    }
+
     return (
       <SiteProvider>
         {site => (
@@ -447,7 +457,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           {this.renderBackButton(
                             site.siteView,
                             '⤺︎ Back',
-                            `/search/${this.props.match.params.searchId}`
+                            backLink()
                           )}
                           {this.renderReviewsSummary(data)}
                         </BackButtonWrapper>
