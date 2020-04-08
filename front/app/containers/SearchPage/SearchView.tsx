@@ -313,13 +313,13 @@ const Instructions = styled.div`
 
 interface SearchViewProps {
   params: SearchParams;
-  onBulkUpdate: (hash:string, siteViewUrl:string) => void;
+  onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
   onAggsUpdate: (
     aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
     crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] }
   ) => void;
-  onRowClick: (nctId: string, hash:string, siteViewUrl:string) => void;
+  onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
   onResetFilters: () => void;
   onClearFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
@@ -381,7 +381,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   rowProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
-        this.props.onRowClick(rowInfo.row.nctId, this.props.searchHash, this.props.currentSiteView.url || "default"  );
+        this.props.onRowClick(
+          rowInfo.row.nctId,
+          this.props.searchHash,
+          this.props.currentSiteView.url || 'default'
+        );
         return handleOriginal();
       },
     };
@@ -531,7 +535,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   }
 
   cardPressed = card => {
-    this.props.onRowClick(card.nctId,this.props.searchHash, this.props.currentSiteView.url || "default"  );
+    this.props.onRowClick(
+      card.nctId,
+      this.props.searchHash,
+      this.props.currentSiteView.url || 'default'
+    );
   };
 
   mobileAndTabletcheck = () => {
@@ -685,7 +693,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       // searchData = Array.from(
       //   new Set(this.props.previousSearchData.concat(searchData))
       // );
-      searchData
+      searchData;
     }
 
     // Eliminates undefined items from the searchData array
@@ -803,7 +811,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                     <Button
                       href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
                       key={button.target + index}>
-                      {button.icon == 'card' ? <CardIcon /> : <TableIcon />}
+                      {this.renderViewButton(button.icon)}
                     </Button>
                   )
                 )}
@@ -813,6 +821,19 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
         }}
       </SiteProvider>
     );
+  };
+
+  renderViewButton = (icon: string) => {
+    switch (icon) {
+      case 'card':
+        return <CardIcon />;
+      case 'table':
+        return <TableIcon />;
+      case 'search':
+        return <FontAwesome name="search" />;
+      default:
+        return null;
+    }
   };
 
   render() {
