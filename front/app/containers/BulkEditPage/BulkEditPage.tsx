@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { match } from 'react-router';
+import { History } from 'history';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
@@ -170,6 +171,7 @@ const groupBucketsByLabel = ({ data, labels }) =>
 
 interface BulkEditProps {
   match: match<{ searchId?: string }>;
+  history:History;
 }
 interface BulkEditState {
   undoHistory: any[];
@@ -197,10 +199,8 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
           workflow.suggestedLabelsFilter.values,
           workflow.allSuggestedLabels.map(name => ({ name, rank: null }))
         ).map(prop('name'));
-    const hash = path(['match', 'params', 'searchId'], this.props) as
-      | string
-      | null;
 
+        const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString() as |string |null;
     return (
       <Query query={SearchPageParamsQuery} variables={{ hash }}>
         {queryParams => {
