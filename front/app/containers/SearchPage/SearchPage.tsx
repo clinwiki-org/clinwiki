@@ -484,7 +484,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderSearch = () => {
     const hash = this.getHashFromLocation();
     const { currentSiteView } = this.props;
-    console.log("Hash", hash, currentSiteView)
     return (
       <ParamsQueryComponent
         key={`${hash}+${JSON.stringify(this.state?.params)}`}
@@ -591,7 +590,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   getHashFromLocation(): string | null {
     let hash = new URLSearchParams(this.props.history.location.search).getAll("hash")
-    // console.log("Correct Hash", hash)
     return hash.toString();
   }
 
@@ -613,15 +611,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
     const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString() || 'default';
-    // console.log("SV", siteViewUrl)
     if (data?.provisionSearchHash?.searchHash?.short) {
       console.log("pushing")
       this.props.history.push(
         `/search?hash=${data!.provisionSearchHash!.searchHash!.short}&sv=${siteViewUrl}`
       );
-      // this.props.history.push(
-      //   `/search/${siteViewUrl}/${data!.provisionSearchHash!.searchHash!.short}`
-      // );
     }
   };
 
@@ -677,7 +671,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             href={
               `/search?hash=${hash}&sv=${presearchButton.target}`
             }>
-            {/* href={`/search/${presearchButton.target}/${hash}`}> */}
             {presearchButton.name}
           </Button>
         )}
