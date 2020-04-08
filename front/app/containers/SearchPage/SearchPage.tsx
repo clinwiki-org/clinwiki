@@ -424,8 +424,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  handleBulkUpdateClick = (hash: string, siteViewUrl: string) => {
-    this.props.history.push(`/bulk?=${hash}&sv=${siteViewUrl}`);
+  handleBulkUpdateClick = (hash:string, siteViewUrl:string) => {
+    this.props.history.push(`/bulk?hash=${hash}&sv=${siteViewUrl}`);
   };
 
   handleOpenAgg = (name: string, kind: AggKind) => {
@@ -486,7 +486,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderSearch = () => {
     const hash = this.getHashFromLocation();
     const { currentSiteView } = this.props;
-    console.log('Hash', hash, currentSiteView);
     return (
       <ParamsQueryComponent
         key={`${hash}+${JSON.stringify(this.state?.params)}`}
@@ -592,10 +591,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   getHashFromLocation(): string | null {
-    let hash = new URLSearchParams(this.props.history.location.search).getAll(
-      'hash'
-    );
-
+    let hash = new URLSearchParams(this.props.history.location.search).getAll("hash")
     return hash.toString();
   }
 
@@ -615,11 +611,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    const siteViewUrl =
-      new URLSearchParams(this.props.history.location.search)
-        .getAll('sv')
-        .toString() || 'default';
-    // console.log("SV", siteViewUrl)
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString() || 'default';
     if (data?.provisionSearchHash?.searchHash?.short) {
       console.log('pushing');
       this.props.history.push(
@@ -627,9 +619,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           data!.provisionSearchHash!.searchHash!.short
         }&sv=${siteViewUrl}`
       );
-      // this.props.history.push(
-      //   `/search/${siteViewUrl}/${data!.provisionSearchHash!.searchHash!.short}`
-      // );
     }
   };
 
@@ -682,8 +671,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         {presearchButton.name && (
           <Button
             style={{ width: 200, marginLeft: 13 }}
-            href={`/search?hash=${hash}&sv=${presearchButton.target}`}>
-            {/* href={`/search/${presearchButton.target}/${hash}`}> */}
+            href={
+              `/search?hash=${hash}&sv=${presearchButton.target}`
+            }>
             {presearchButton.name}
           </Button>
         )}
@@ -789,7 +779,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <Switch>
           <Route path={`/study/:nctId`} component={SearchStudyPage} />
           <Route
-            path={`${this.props.match.path}/bulk/`}
+            path={`${this.props.match.path}/bulk`}
             component={BulkEditPage}
           />
           <Route
