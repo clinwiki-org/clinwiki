@@ -111,10 +111,10 @@ const StyledShowContainer = styled.div`
 
 const StyledButtonGroup = styled.div`
   margin: 1em 1em 1em 0;
-   .button-label {
-    color:white;
+  .button-label {
+    color: white;
     font-size: 1.25em;
-    margin-right:1em;
+    margin-right: 1em;
   }
   ul li a {
     color: black !important;
@@ -339,7 +339,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   renderResultsButtons = view => {
-    let ICONS = ['table', 'card'];
+    let ICONS = ['table', 'card', 'search'];
     let buttonsArray = view.search.results.buttons.items;
     let siteViewNames = [];
     let siteViewUrls = [];
@@ -385,7 +385,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledButtonGroup>
 
             <StyledButtonGroup>
-           <span className="button-label"> Button Icon: </span>
+              <span className="button-label"> Button Icon: </span>
               <DropdownButton
                 bsStyle="default"
                 title={buttonsArray[index].icon}
