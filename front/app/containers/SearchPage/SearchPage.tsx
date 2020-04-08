@@ -402,7 +402,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       // Therefore we close it to refresh later on open
       this.setState({ openedAgg: null });
     }
-
+    // console.log('handle update');
     this.setState({ params }, () => this.updateSearchParams(this.state.params));
   };
 
@@ -415,14 +415,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     )(this.state);
   };
 
-  handleRowClick = (nctId: string, hash:string, siteViewUrl:string) => {
+  handleRowClick = (nctId: string, hash: string, siteViewUrl: string) => {
     const suffix =
       this.isWorkflow() && !this.props.ignoreUrlHash ? '/workflow' : '';
     const prefix = this.props.ignoreUrlHash ? '' : this.props.match.url;
-    this.props.history.push(`/study/${nctId}${suffix}?hash=${hash}&sv=${siteViewUrl}`);
+    this.props.history.push(
+      `/study/${nctId}${suffix}?hash=${hash}&sv=${siteViewUrl}`
+    );
   };
 
-  handleBulkUpdateClick = (hash:string, siteViewUrl:string) => {
+  handleBulkUpdateClick = (hash: string, siteViewUrl: string) => {
     this.props.history.push(`/bulk?=${hash}&sv=${siteViewUrl}`);
   };
 
@@ -484,7 +486,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderSearch = () => {
     const hash = this.getHashFromLocation();
     const { currentSiteView } = this.props;
-    console.log("Hash", hash, currentSiteView)
+    console.log('Hash', hash, currentSiteView);
     return (
       <ParamsQueryComponent
         key={`${hash}+${JSON.stringify(this.state?.params)}`}
@@ -590,8 +592,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   getHashFromLocation(): string | null {
-    let hash = new URLSearchParams(this.props.history.location.search).getAll("hash")
-    // console.log("Correct Hash", hash)
+    let hash = new URLSearchParams(this.props.history.location.search).getAll(
+      'hash'
+    );
+
     return hash.toString();
   }
 
@@ -600,24 +604,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.setState({
       params: {
         ...params,
-        page: 0,
-        pageSize: 25,
       },
     });
   }
   updateSearchParams = async params => {
+    console.log('sup');
     this.setState({
       ...this.state,
       params: { ...(this.state?.params || {}), ...params },
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString() || 'default';
+    const siteViewUrl =
+      new URLSearchParams(this.props.history.location.search)
+        .getAll('sv')
+        .toString() || 'default';
     // console.log("SV", siteViewUrl)
     if (data?.provisionSearchHash?.searchHash?.short) {
-      console.log("pushing")
+      console.log('pushing');
       this.props.history.push(
-        `/search?hash=${data!.provisionSearchHash!.searchHash!.short}&sv=${siteViewUrl}`
+        `/search?hash=${
+          data!.provisionSearchHash!.searchHash!.short
+        }&sv=${siteViewUrl}`
       );
       // this.props.history.push(
       //   `/search/${siteViewUrl}/${data!.provisionSearchHash!.searchHash!.short}`
@@ -674,9 +682,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         {presearchButton.name && (
           <Button
             style={{ width: 200, marginLeft: 13 }}
-            href={
-              `/search?hash=${hash}&sv=${presearchButton.target}`
-            }>
+            href={`/search?hash=${hash}&sv=${presearchButton.target}`}>
             {/* href={`/search/${presearchButton.target}/${hash}`}> */}
             {presearchButton.name}
           </Button>
@@ -698,7 +704,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     };
 
     const { currentSiteView } = this.props;
-    const hash = this.getHashFromLocation()
+    const hash = this.getHashFromLocation();
     return (
       <CrumbsBar
         searchParams={searchParams}
@@ -781,10 +787,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           updateSearchParams: this.updateSearchParams,
         }}>
         <Switch>
-          <Route
-            path={`/study/:nctId`}
-            component={SearchStudyPage}
-          />
+          <Route path={`/study/:nctId`} component={SearchStudyPage} />
           <Route
             path={`${this.props.match.path}/bulk/`}
             component={BulkEditPage}
