@@ -681,10 +681,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     const tableWidth = 1175;
 
     if (showCards) {
-      // //OWERA: high computational complexity here for little return
-      searchData = Array.from(
-        new Set(this.props.previousSearchData.concat(searchData))
-      );
+      //OWERA: high computational complexity here for little return
+      // searchData = Array.from(
+      //   new Set(this.props.previousSearchData.concat(searchData))
+      // );
+      searchData
     }
 
     // Eliminates undefined items from the searchData array
@@ -800,7 +801,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 {currentSiteView.search.results.buttons.items.map(
                   (button, index) => (
                     <Button
-                      href={`/search/${button.target}/${this.props.searchHash}`}
+                      href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
                       key={button.target + index}>
                       {button.icon == 'card' ? <CardIcon /> : <TableIcon />}
                     </Button>
