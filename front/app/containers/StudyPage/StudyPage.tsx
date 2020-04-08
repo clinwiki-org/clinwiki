@@ -231,27 +231,27 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
     return '/';
   };
+  //I believe this may be deprecated now that we are using URLSearchParams
+  // getCurrentSectionFullPath = (view: SiteViewFragment) => {
+  //   const pathComponents = pipe(
+  //     split('/'),
+  //     reject(isEmpty),
+  //     map(x => `/${x}`)
+  //   )(trimPath(this.props.location.pathname)) as string[];
 
-  getCurrentSectionFullPath = (view: SiteViewFragment) => {
-    const pathComponents = pipe(
-      split('/'),
-      reject(isEmpty),
-      map(x => `/${x}`)
-    )(trimPath(this.props.location.pathname)) as string[];
+  //   for (const component of pathComponents) {
+  //     if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
+  //       const idx = findIndex(equals(component), pathComponents);
+  //       return pipe(
+  //         drop(idx),
+  //         // @ts-ignore
+  //         join('')
+  //       )(pathComponents);
+  //     }
+  //   }
 
-    for (const component of pathComponents) {
-      if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
-        const idx = findIndex(equals(component), pathComponents);
-        return pipe(
-          drop(idx),
-          // @ts-ignore
-          join('')
-        )(pathComponents);
-      }
-    }
-
-    return '/';
-  };
+  //   return '/';
+  // };
 
   getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
     const sections = this.getSections(view);
@@ -354,7 +354,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
   handleNavButtonClick = (link: string, view: SiteViewFragment) => () => {
     this.props.history.push(
-      `${trimPath(link)}${this.getCurrentSectionFullPath(view)}`
+      `${trimPath(link)}`
     );
   };
 

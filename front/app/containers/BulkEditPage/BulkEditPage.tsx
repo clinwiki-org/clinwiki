@@ -240,11 +240,11 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                 );
                 if (!labels.length) return null;
                 //Band-aid fix to the -99999999 breaking BucketsForLabelQuery, does not like the name field as -9999999999
-                labels.map((label, index)=>{
-                  if (label==-99999999999){
-                    labels[index]= "_missing"
-                  }
-                })
+                labels.map((label, index)=>{	
+                  if (label==-99999999999){	
+                    labels[index]= "_missing"	
+                  }	
+                })	
                 return (
                   <Query
                     query={bucketsForLabels(labels)}
