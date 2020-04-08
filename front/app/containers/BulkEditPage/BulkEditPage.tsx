@@ -201,6 +201,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
         ).map(prop('name'));
 
         const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString() as |string |null;
+        console.log("HASH",hash)
     return (
       <Query query={SearchPageParamsQuery} variables={{ hash }}>
         {queryParams => {

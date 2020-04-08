@@ -23,6 +23,8 @@ import SitesPage from 'containers/SitesPage';
 import SitesNewPage from 'containers/SitesNewPage';
 import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
+import BulkEditPage from 'containers/BulkEditPage';
+
 
 interface AppProps {
   history: History;
@@ -62,6 +64,7 @@ class App extends React.PureComponent<AppProps> {
             <Route path="/intervention/:id" component={InterventionPage} />
             <Route path="/profile" component={EditProfilePage} />
             <Route path="/workflows" component={EditWorkflowsPage} />
+            <Route path={`/bulk`}	component={BulkEditPage}/>
             <Route path="/sites/:id/edit" component={SitesEditPage} />
             <Route path="/sites/new" component={SitesNewPage} />
             <Route path="/sites" component={SitesPage} />

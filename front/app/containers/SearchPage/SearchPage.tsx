@@ -774,14 +774,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           updateSearchParams: this.updateSearchParams,
         }}>
         <Switch>
-          <Route
+          {/* <Route
             path={`/study/:nctId`}
             component={SearchStudyPage}
           />
           <Route
-            path={`${this.props.match.path}/bulk/`}
+            path={`/bulk`}	
             component={BulkEditPage}
-          />
+          /> */}
           <Route
             render={() => {
               const { currentSiteView } = this.props;
