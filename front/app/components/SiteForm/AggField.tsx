@@ -2,7 +2,10 @@ import * as React from 'react';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import { FormControl } from 'react-bootstrap';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import {
+  SiteViewFragment_search_aggs_fields,
+  SiteViewFragment,
+} from 'types/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
 import { reject, equals } from 'ramda';
 import { AggKind } from 'containers/SearchPage/shared';
@@ -16,6 +19,9 @@ interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
   field: SiteViewFragment_search_aggs_fields;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
+  view: SiteViewFragment;
+  configType: 'presearch' | 'autosuggest' | 'facetbar';
+  returnAll?: Boolean;
 }
 
 interface AggFieldState {
@@ -102,7 +108,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     isChecked: false,
   };
 
-  getPath = () => `search.${this.props.kind}.fields.${this.props.field.name}`;
+  getPath = configType => {
+    if (configType == 'presearch') {
+      return `search.presearch.${this.props.kind}.fields.${this.props.field.name}`;
+    } else if (configType == 'autosuggest') {
+      return `search.autoSuggest.${this.props.kind}.fields.${this.props.field.name}`;
+    }
+    return `search.${this.props.kind}.fields.${this.props.field.name}`;
+  };
 
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
@@ -123,7 +136,28 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
   };
 
+  getUpdaters() {
+    const preselectedUpdater = new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.preselected,
+      this.props.onAddMutation,
+      this.props.kind,
+      'preselected',
+      this.props.configType
+    );
+    const visibleOptionsUpdater = new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.visibleOptions,
+      this.props.onAddMutation,
+      this.props.kind,
+      'visibleOptions',
+      this.props.configType
+    );
+    return [preselectedUpdater, visibleOptionsUpdater];
+  }
+
   render() {
+    const { configType } = this.props;
     const selected = new Set(this.props.field.preselected.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
     const searchParams = {
@@ -134,20 +168,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       crowdAggFilters: [],
       sorts: [],
     };
-    const preselectedUpdater = new AggFilterSiteConfigUpdater(
-      this.props.field.name,
-      this.props.field.preselected,
-      this.props.onAddMutation,
-      this.props.kind,
-      'preselected'
-    );
-    const visibleOptionsUpdater = new AggFilterSiteConfigUpdater(
-      this.props.field.name,
-      this.props.field.visibleOptions,
-      this.props.onAddMutation,
-      this.props.kind,
-      'visibleOptions'
-    );
+    const [preselectedUpdater, visibleOptionsUpdater] = this.getUpdaters();
     return (
       <>
         <h4>
@@ -181,6 +202,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                   isOpen={this.state.isValuesOpen}
                   selectedKeys={selected}
                   onOpen={this.handleOpen('preselected')}
+                  currentSiteView={this.props.view}
+                  configType={this.props.configType}
+                  returnAll={this.props.returnAll}
                 />
               </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
@@ -216,6 +240,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                   isOpen={this.state.isVisibleOptionsOpen}
                   selectedKeys={visibleOptions}
                   onOpen={this.handleOpen('visibleOptions')}
+                  currentSiteView={this.props.view}
+                  configType={this.props.configType}
+                  returnAll={this.props.returnAll}
                 />
               </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
@@ -223,14 +250,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <div>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath()}.rank`}
+              name={`set:${this.getPath(configType)}.rank`}
               placeholder="Order"
               value={this.props.field.rank}
               onChange={this.props.onAddMutation}
             />
             <StyledLabel>Display</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath()}.display`}
+              name={`set:${this.getPath(configType)}.display`}
               componentClass="select"
               onChange={this.props.onAddMutation}
               defaultValue={this.props.field.display}>
@@ -240,18 +267,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="RANGE">Range</option>
             </StyledFormControl>
           </div>
-          {this.props.field.name !== 'average_rating' && (
-            <ContainerRow>
-              <StyledCheckbox
-                name={`set:${this.getPath()}.autoSuggest`}
-                checked={this.props.field.autoSuggest}
-                onChange={this.handleCheckboxToggle(
-                  this.props.field.autoSuggest
-                )}
-              />
-              <h5>Add to Auto-Suggest</h5>
-            </ContainerRow>
-          )}
         </Container>
       </>
     );

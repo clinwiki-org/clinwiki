@@ -9,6 +9,7 @@ import { set, lensPath, over, reject, equals } from 'ramda';
 interface MainFormProps {
   form: CreateSiteInput;
   onFormChange: (form: CreateSiteInput) => void;
+  handleForm: any;
 }
 
 interface MainFormState {
@@ -74,7 +75,9 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
   handleEditorEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ addEditorEmail: e.currentTarget.value });
   };
-
+  componentDidMount() {
+    this.props.handleForm();
+  }
   render() {
     const noEditors =
       !this.props.form.editorEmails || !this.props.form.editorEmails.length;

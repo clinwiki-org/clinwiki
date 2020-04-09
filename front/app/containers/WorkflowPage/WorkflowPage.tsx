@@ -185,6 +185,8 @@ class WorkflowPage extends React.Component<
   };
 
   render() {
+    const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString() as |string |null;
+
     return (
       <WorkflowsViewProvider>
         {workflowsView => (
@@ -258,10 +260,9 @@ class WorkflowPage extends React.Component<
                                 {deleteMutation => (
                                   <StyledPanel>
                                     <SuggestedLabels
-                                      
                                       nctId={this.props.match.params.nctId}
                                       searchHash={
-                                        this.props.match.params.searchId || null
+                                        hash
                                       }
                                       onSelect={this.handleSelect(
                                         (data &&

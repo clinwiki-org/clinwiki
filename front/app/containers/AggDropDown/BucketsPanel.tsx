@@ -10,14 +10,11 @@ import { withSite } from 'containers/SiteProvider/SiteProvider';
 import Buckets from './Buckets';
 
 interface BucketsPanelProps {
+  isPresearch: boolean;
   field: SiteViewFragment_search_aggs_fields | any;
-  agg: string;
   visibleOptions: any;
-  site: SiteFragment;
   buckets: Array<AggBucket>;
   isSelected: any;
-  toggleAgg: any;
-  aggs: any;
   hasMore: boolean;
   handleLoadMore: any;
 }
@@ -25,14 +22,11 @@ interface BucketsPanelProps {
 class BucketsPanel extends React.Component<BucketsPanelProps> {
   render() {
     const {
+      isPresearch,
       field,
-      agg,
       visibleOptions,
-      site,
       buckets,
       isSelected,
-      toggleAgg,
-      aggs,
       hasMore,
       handleLoadMore,
     } = this.props;
@@ -43,23 +37,19 @@ class BucketsPanel extends React.Component<BucketsPanelProps> {
         hasMore={hasMore}
         useWindow={false}
         loader={
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <BeatLoader key="loader" color="#fff" />
+          <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
+            <BeatLoader key="loader" color={isPresearch ? '#000' : '#fff'} />
           </div>
         }>
         <Buckets
-          field={field}
           display={(field && field.display) || FieldDisplay.STRING}
-          site={site}
-          agg={agg}
           visibleOptions={visibleOptions}
           buckets={buckets}
           isSelected={isSelected}
-          toggleAgg={toggleAgg}
         />
       </InfiniteScroll>
     );
   }
 }
 
-export default withSite(BucketsPanel);
+export default BucketsPanel;

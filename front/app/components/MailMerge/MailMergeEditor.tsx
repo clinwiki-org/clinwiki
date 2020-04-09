@@ -18,7 +18,9 @@ export default class Editor extends React.PureComponent<Props> {
     }
   };
   render() {
-    const style = this.props.style ? { ...defaultStyle, ...this.props.style } : defaultStyle;
+    const style = this.props.style
+      ? { ...defaultStyle, ...this.props.style }
+      : defaultStyle;
     return (
       <textarea
         spellCheck={false}

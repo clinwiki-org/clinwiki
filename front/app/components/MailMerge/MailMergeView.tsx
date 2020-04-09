@@ -24,7 +24,10 @@ export default class View extends React.Component<Props, State> {
     super(props);
     this.state = View.getDerivedStateFromProps(props) as Readonly<State>;
   }
-  static getDerivedStateFromProps(props: Props, state?: State): State | undefined {
+  static getDerivedStateFromProps(
+    props: Props,
+    state?: State
+  ): State | undefined {
     if (props.template === state?.template) {
       return { ...state, markdown: state.compiled(props.context) };
     }
@@ -43,7 +46,11 @@ export default class View extends React.Component<Props, State> {
     const style = { ...defaultStyle, ...this.props.style };
     return (
       <div style={style}>
-        <ReactMarkdown className="mailmerge-view" source={this.state.markdown} escapeHtml={false} />
+        <ReactMarkdown
+          className="mailmerge-view"
+          source={this.state.markdown}
+          escapeHtml={false}
+        />
       </div>
     );
   }

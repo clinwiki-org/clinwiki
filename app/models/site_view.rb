@@ -3,6 +3,21 @@ RANGE_FIELDS = [:start_date].freeze
 
 class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
+  before_save do
+
+    if default_changed? && default
+
+      old_default = site.site_views.find_by(default: true)
+      old_default.update(url: "#{old_default.id}oldDefault") if old_default
+
+      site.site_views.where.not(id: id).update_all(default:false)
+
+      self.url = 'default'
+    end
+  end
+
+  validates :url, uniqueness: { scope: :site }
+
 
   class << self
     def default
@@ -239,6 +254,67 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         ],
       },
       search: {
+        config:{
+          fields:{
+          showPresearch:false,
+          showFacetBar:true,
+          showAutoSuggest:true,
+          showBreadCrumbs:true,
+          showResults:true,
+          }
+        },
+        presearch:{
+          aggs: {
+            selected: {
+              kind: "WHITELIST",
+              values: [],
+            },
+            fields: aggs,
+          },
+          crowdAggs: {
+            selected: {
+              kind: "WHITELIST",
+              values: [],
+            },
+            fields: crowd_aggs,
+          },
+          instructions:"",
+          button:{
+            name:"Search",
+            target:"",
+          },
+        },
+        autoSuggest:{
+          aggs: {
+            selected: {
+              kind: "WHITELIST",
+              values: [],
+            },
+            fields: aggs,
+          },
+          crowdAggs: {
+            selected: {
+              kind: "WHITELIST",
+              values: [],
+            },
+            fields:  crowd_aggs,
+          },
+        },
+        results:{
+          type:"table",
+          buttons:{
+	           items:[
+               {
+                 icon:'',
+                 target:"",
+               }
+             ],
+	           location:"right"
+           },
+
+        },
+        breadCrumbs:{},
+
         aggs: {
           selected: {
             kind: "BLACKLIST",
@@ -246,6 +322,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           },
           fields: aggs,
         },
+
         crowdAggs: {
           selected: {
             kind: "BLACKLIST",

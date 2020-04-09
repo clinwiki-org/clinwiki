@@ -231,27 +231,27 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
     return '/';
   };
+  //I believe this may be deprecated now that we are using URLSearchParams
+  // getCurrentSectionFullPath = (view: SiteViewFragment) => {
+  //   const pathComponents = pipe(
+  //     split('/'),
+  //     reject(isEmpty),
+  //     map(x => `/${x}`)
+  //   )(trimPath(this.props.location.pathname)) as string[];
 
-  getCurrentSectionFullPath = (view: SiteViewFragment) => {
-    const pathComponents = pipe(
-      split('/'),
-      reject(isEmpty),
-      map(x => `/${x}`)
-    )(trimPath(this.props.location.pathname)) as string[];
+  //   for (const component of pathComponents) {
+  //     if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
+  //       const idx = findIndex(equals(component), pathComponents);
+  //       return pipe(
+  //         drop(idx),
+  //         // @ts-ignore
+  //         join('')
+  //       )(pathComponents);
+  //     }
+  //   }
 
-    for (const component of pathComponents) {
-      if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
-        const idx = findIndex(equals(component), pathComponents);
-        return pipe(
-          drop(idx),
-          // @ts-ignore
-          join('')
-        )(pathComponents);
-      }
-    }
-
-    return '/';
-  };
+  //   return '/';
+  // };
 
   getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
     const sections = this.getSections(view);
@@ -266,8 +266,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     console.log('getSectionsForRoutes: ');
     console.log(retVar);
 
-    // @ts-ignore
-    return retVar;
+    return retVar as Section[];
   };
 
   getComponent = (name: string): any => {
@@ -355,7 +354,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
   handleNavButtonClick = (link: string, view: SiteViewFragment) => () => {
     this.props.history.push(
-      `${trimPath(link)}${this.getCurrentSectionFullPath(view)}`
+      `${trimPath(link)}`
     );
   };
 
@@ -426,6 +425,16 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   render() {
+    const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString()
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString()
+    
+    const backLink =()=>{
+      if(hash !=""){ 
+        return `/search?hash=${hash}&sv=${siteViewUrl}`
+      }
+      return undefined
+    }
+
     return (
       <SiteProvider>
         {site => (
@@ -448,7 +457,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           {this.renderBackButton(
                             site.siteView,
                             '⤺︎ Back',
-                            `/search/${this.props.match.params.searchId}`
+                            backLink()
                           )}
                           {this.renderReviewsSummary(data)}
                         </BackButtonWrapper>

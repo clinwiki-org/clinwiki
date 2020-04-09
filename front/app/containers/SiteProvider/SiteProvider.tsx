@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import {
@@ -10,7 +9,8 @@ import { SiteFragment } from 'types/SiteFragment';
 
 interface SiteProviderProps {
   id?: number;
-  children: (site: SiteFragment) => React.ReactNode;
+  url?: string;
+  children: (site: SiteFragment, refetch: any) => React.ReactNode;
 }
 
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
@@ -52,12 +52,126 @@ const SITE_STUDY_PAGE_FRAGMENT = gql`
 
 const SITE_VIEW_FRAGMENT = gql`
   fragment SiteViewFragment on SiteView {
+    name
+    url
     id
+    default
+    description
     study {
       ...SiteStudyPageFragment
     }
     search {
+      autoSuggest {
+        aggs {
+          fields {
+            name
+            display
+            preselected {
+              kind
+              values
+            }
+            visibleOptions {
+              kind
+              values
+            }
+            autoSuggest
+            rank
+          }
+          selected {
+            kind
+            values
+          }
+        }
+        crowdAggs {
+          fields {
+            name
+            display
+            preselected {
+              kind
+              values
+            }
+            visibleOptions {
+              kind
+              values
+            }
+            rank
+            autoSuggest
+          }
+          selected {
+            kind
+            values
+          }
+        }
+      }
+      results {
+        type
+        buttons {
+          items {
+            icon
+            target
+          }
+          location
+        }
+      }
+      presearch {
+        aggs {
+          fields {
+            name
+            display
+            preselected {
+              kind
+              values
+            }
+            visibleOptions {
+              kind
+              values
+            }
+            autoSuggest
+            rank
+          }
+          selected {
+            kind
+            values
+          }
+        }
+        crowdAggs {
+          fields {
+            name
+            display
+            preselected {
+              kind
+              values
+            }
+            visibleOptions {
+              kind
+              values
+            }
+            rank
+            autoSuggest
+          }
+          selected {
+            kind
+            values
+          }
+        }
+        button {
+          name
+          target
+        }
+        instructions
+      }
+
       fields
+      config {
+        fields {
+          showPresearch
+          showFacetBar
+          showAutoSuggest
+          showBreadCrumbs
+          showResults
+        }
+      }
+
       aggs {
         fields {
           name
@@ -116,7 +230,10 @@ const SITE_FRAGMENT = gql`
     owners {
       email
     }
-    siteView {
+    siteView(url: $url) {
+      ...SiteViewFragment
+    }
+    siteViews {
       ...SiteViewFragment
     }
   }
@@ -125,7 +242,7 @@ const SITE_FRAGMENT = gql`
 `;
 
 const QUERY = gql`
-  query SiteProviderQuery($id: Int) {
+  query SiteProviderQuery($id: Int, $url: String) {
     site(id: $id) {
       ...SiteFragment
     }
@@ -135,7 +252,26 @@ const QUERY = gql`
 `;
 
 export const withSite = Component => props => (
-  <SiteProvider>{site => <Component {...props} site={site} />}</SiteProvider>
+  <SiteProvider>
+    {(site, refetch) => {
+      const siteViewUrl = new URLSearchParams(props?.history?.location?.search).getAll("sv").toString();
+      // const siteViewUrl = props?.match?.params?.siteviewUrl?.toLowerCase();
+      // console.log(`withSite: ${siteViewUrl}`);
+      const siteViews = site.siteViews;
+      const currentSite =
+        siteViews.find(
+          siteview => siteview?.url?.toLowerCase() === siteViewUrl.toLowerCase()
+        ) || site.siteView;
+      return (
+        <Component
+          {...props}
+          site={site}
+          refetch={refetch}
+          currentSiteView={currentSite}
+        />
+      );
+    }}
+  </SiteProvider>
 );
 
 class QueryComponent extends Query<
@@ -145,14 +281,15 @@ class QueryComponent extends Query<
 
 class SiteProvider extends React.PureComponent<SiteProviderProps> {
   static fragment = SITE_FRAGMENT;
-  static siteViewFragmemt = SITE_VIEW_FRAGMENT;
+  static siteViewFragment = SITE_VIEW_FRAGMENT;
 
   render() {
     return (
       <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
-        {({ data, loading, error }) => {
+        {({ data, loading, error, refetch }) => {
+          if (error) console.log(`SiteProvider error: ${error}`);
           if (loading || error) return null;
-          return this.props.children(data!.site!);
+          return this.props.children(data!.site!, refetch);
         }}
       </QueryComponent>
     );

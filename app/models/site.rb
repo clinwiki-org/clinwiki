@@ -1,7 +1,7 @@
 class Site < ApplicationRecord
   resourcify
 
-  has_one :site_view, dependent: :destroy
+  has_many :site_views, dependent: :destroy
 
   after_create :create_site_view
 
@@ -28,7 +28,7 @@ class Site < ApplicationRecord
   private
 
   def create_site_view
-    self.site_view = SiteView.new
+    self.site_views.new(name:"Primary",default:true)
     save!
   end
 end

@@ -9,6 +9,9 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 14
+- configurable search views (siteview)
+
 ### Version 13
 - Support for date and value range filters
 

@@ -8,7 +8,7 @@ interface Props {
   onSelectItem?: (v: string) => void;
 }
 interface State {
-  filter : string
+  filter: string;
 }
 
 const menuStyle: React.CSSProperties = {
@@ -47,7 +47,11 @@ function jsonSchemaToInternal(x: JsonSchema) {
       return `${trunk}.${leaf}`;
     }
   }
-  function jsonSchemaToInternalImpl(path: string, x: JsonSchema, results: string[]) {
+  function jsonSchemaToInternalImpl(
+    path: string,
+    x: JsonSchema,
+    results: string[]
+  ) {
     switch (x.type) {
       case 'string':
       case 'number':
@@ -102,28 +106,28 @@ function pathToTemplate(path: string): string {
   return result;
 }
 
-export default class SchemaSelector extends React.Component<Props,State> {
-  state = { filter: "" };
+export default class SchemaSelector extends React.Component<Props, State> {
+  state = { filter: '' };
   click = (path: string) => {
     if (this.props.onSelectItem) {
       this.props.onSelectItem(pathToTemplate(path));
     }
   };
-  updateFilter = (e : React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({filter: e.target.value.toLowerCase()});
-  }
+  updateFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ filter: e.target.value.toLowerCase() });
+  };
   render() {
     const schema = jsonSchemaToInternal(this.props.schema);
     return (
       <div className="mailmerge-menu" style={menuStyle}>
         <input className="mailmerge-filter" onChange={this.updateFilter} />
         {schema
-        .filter(i => i.toLowerCase().includes(this.state.filter))
-        .map(i => (
-          <a key={i} style={linkStyle} onClick={() => this.click(i)}>
-            {i}
-          </a>
-        ))}
+          .filter(i => i.toLowerCase().includes(this.state.filter))
+          .map(i => (
+            <a key={i} style={linkStyle} onClick={() => this.click(i)}>
+              {i}
+            </a>
+          ))}
       </div>
     );
   }

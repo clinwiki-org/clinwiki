@@ -46,10 +46,15 @@ class SearchStudyPageQueryComponent extends Query<
 > {}
 class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
   render() {
+    let hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString();
+    let siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString();
+
     const variables = {
-      hash: this.props.match.params.searchId,
+      hash: hash,
       id: this.props.match.params.nctId,
     };
+    console.log("var",variables)
+
     return (
       <SearchStudyPageQueryComponent query={QUERY} variables={variables}>
         {({ data, loading, error }) => {
@@ -91,17 +96,18 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
                 ['search', 'studyEdge', 'recordsTotal'],
                 data
               ) as number);
-            nextLink = nextId && `/search/${variables.hash}/study/${nextId}`;
-            prevLink = prevId && `/search/${variables.hash}/study/${prevId}`;
+            nextLink = nextId && `/study/${nextId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+            prevLink = prevId && `/study/${prevId}?hash=${variables.hash}&sv=${siteViewUrl}`;
 
             // just so that there isn't a first button if there isn't a prev button
             // likewise for the last button
             if (prevLink != null) {
               firstLink =
-                firstId && `/search/${variables.hash}/study/${firstId}`;
+                firstId && `/study/${firstId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+                // firstId && `/search/${variables.hash}/study/${firstId}`;
             }
             if (nextLink != null && counterIndex != null) {
-              lastLink = lastId && `/search/${variables.hash}/study/${lastId}`;
+              lastLink = lastId && `/study/${lastId}?hash=${variables.hash}&sv=${siteViewUrl}`;
             }
           }
           return (
@@ -109,12 +115,12 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               history={this.props.history}
               location={this.props.location}
               match={this.props.match}
-              prevLink={prevLink}
-              nextLink={nextLink}
-              firstLink={firstLink}
-              lastLink={lastLink}
+              prevLink={hash!="" ? prevLink:undefined }
+              nextLink={hash!="" ? nextLink:undefined }
+              firstLink={hash!="" ? firstLink:undefined }
+              lastLink={hash!="" ? lastLink:undefined }
               isWorkflow={isWorkflow}
-              recordsTotal={recordsTotal}
+              recordsTotal={hash!="" ? recordsTotal:undefined }
               counterIndex={counterIndex}
               workflowName={workflowName}
             />
