@@ -9,6 +9,9 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 15
+- Support search query by query string q=...
+
 ### Version 14
 - configurable search views (siteview)
 
