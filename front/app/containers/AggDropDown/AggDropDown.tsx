@@ -406,10 +406,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   findFields = () => {
-    const { agg, site } = this.props;
+    const { agg, site, currentSiteView } = this.props;
     return find(propEq('name', agg), [
-      ...(site.siteView?.search?.aggs?.fields || []),
-      ...(site.siteView?.search?.crowdAggs?.fields || []),
+      ...(currentSiteView?.search?.aggs?.fields || []),
+      ...(currentSiteView?.search?.crowdAggs?.fields || []),
     ]) as SiteViewFragment_search_aggs_fields | null;
   };
 

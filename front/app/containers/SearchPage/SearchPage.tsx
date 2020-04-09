@@ -299,7 +299,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   getDefaultParams = () => {
     return {
       ...DEFAULT_PARAMS,
-      ...preselectedFilters(this.props.site.siteView),
+      ...preselectedFilters(this.props.currentSiteView),
     };
   };
 
@@ -400,7 +400,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       // Therefore we close it to refresh later on open
       this.setState({ openedAgg: null });
     }
-    // console.log('handle update');
     this.setState({ params }, () => this.updateSearchParams(this.state.params));
   };
 
@@ -620,7 +619,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
   }
   updateSearchParams = async params => {
-    console.log('sup');
     this.setState({
       ...this.state,
       params: { ...(this.state?.params || {}), ...params },
