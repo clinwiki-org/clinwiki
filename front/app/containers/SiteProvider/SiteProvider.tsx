@@ -254,13 +254,18 @@ const QUERY = gql`
 export const withSite = Component => props => (
   <SiteProvider>
     {(site, refetch) => {
-      const siteViewUrl = new URLSearchParams(props?.history?.location?.search).getAll("sv").toString();
+      const siteViewUrl = ()=>{
+        if (props.history){
+          return new URLSearchParams(props?.history?.location?.search).getAll("sv").toString();
+        }
+        return props.currentSiteView.url.toLowerCase();
+      }
       // const siteViewUrl = props?.match?.params?.siteviewUrl?.toLowerCase();
       // console.log(`withSite: ${siteViewUrl}`);
       const siteViews = site.siteViews;
       const currentSite =
         siteViews.find(
-          siteview => siteview?.url?.toLowerCase() === siteViewUrl.toLowerCase()
+          siteview => siteview?.url?.toLowerCase() === siteViewUrl()
         ) || site.siteView;
       return (
         <Component
