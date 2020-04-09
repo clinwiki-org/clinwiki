@@ -49,7 +49,7 @@ import {
   SearchPageSearchQuery_crowdAggs_aggs,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { AggBucketMap, AggFilterListItem } from './Types';
+import { AggBucketMap, AggFilterListItem, defaultPageSize } from './Types';
 import { withSite } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
@@ -181,8 +181,7 @@ const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
     keys.forEach(k => {
-      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams),
-        console.log(k);
+      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams)
     });
     // changeFilter(true);
     return params;
@@ -233,6 +232,7 @@ const changePage = (pageNumber: number) => (params: SearchParams) => ({
 interface SearchPageProps {
   match: match<{ siteviewUrl: string }>;
   history: any;
+  location:any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
   site: SiteFragment;
@@ -258,7 +258,7 @@ const DEFAULT_PARAMS: SearchParams = {
   crowdAggFilters: [],
   sorts: [],
   page: 0,
-  pageSize: 25,
+  pageSize: defaultPageSize,
 };
 
 class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
@@ -307,9 +307,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     params: SearchPageParamsQuery_searchParams | null | undefined
   ): SearchParams => {
     const defaultParams = this.getDefaultParams();
-    if (!params) {
-      return defaultParams;
-    }
+    if (!params) return defaultParams;
 
     const q = params.q
       ? (JSON.parse(params.q) as SearchQuery)
@@ -331,7 +329,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       sorts,
       q,
       page: params.page || 0,
-      pageSize: params.pageSize || 25,
+      pageSize: params.pageSize || defaultPageSize,
     };
   };
 
@@ -571,11 +569,29 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   showingCards = () => this.props.currentSiteView.search.results.type == 'card';
 
   componentDidMount() {
+    let searchTerm = new URLSearchParams(this.props.location.search)
+    if (searchTerm.has('q')) {
+      let q = { key: 'AND', children: [{ children: [], key: searchTerm.getAll('q').toString() }] };
+      this.setState(
+        {
+          params: {
+            q: q,
+            aggFilters: [],
+            crowdAggFilters: [],
+            sorts: [],
+            page: 0,
+            pageSize: defaultPageSize,
+          },
+        },
+        () => this.updateSearchParams(this.state.params)
+      );
+    } 
     if (this.showingCards()) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
+
   }
 
   componentWillUnmount() {
@@ -767,6 +783,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         </SearchParamsContext.Provider>
       );
     }
+
 
     const hash = this.getHashFromLocation();
 
