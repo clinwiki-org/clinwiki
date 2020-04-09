@@ -102,7 +102,7 @@ const PresearchContainer = styled.div`
 `;
 
 class Aggs extends React.PureComponent<AggsProps> {
-  getAggs = (siteView): string[] => {
+  getAggs = (siteView:SiteFragment_siteView): string[] => {
     return displayFields(
       siteView.search.aggs.selected.kind,
       siteView.search.aggs.selected.values,
@@ -131,7 +131,6 @@ class Aggs extends React.PureComponent<AggsProps> {
       removeFilters,
       searchParams,
       updateSearchParams,
-      site,
       presearch,
       currentSiteView,
       preSearchAggs,
@@ -345,4 +344,4 @@ class Aggs extends React.PureComponent<AggsProps> {
   }
 }
 
-export default withSite(withSearchParams(Aggs));
+export default withSearchParams(Aggs);
