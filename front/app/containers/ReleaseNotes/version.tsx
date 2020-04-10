@@ -11,6 +11,8 @@ const notes = RichTextEditor.createValueFromString(
 
 ### Version 15
 - Support search query by query string q=...
+- Temporarily hide workflow facet typo search
+- Show range selector in presearch where appropriate
 
 ### Version 14
 - configurable search views (siteview)
