@@ -96,6 +96,7 @@ const PresearchCard = styledComponents.div`
   flex: 1;
   height: 310px;
   width: 420px;
+  background: white;
 `;
 
 const PresearchHeader = styledComponents.div`
@@ -530,8 +531,31 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       hasMore,
       checkboxValue,
       showLabel,
+      isOpen,
+      loading
+
     } = this.state;
     const field = this.findFields();
+    if (field?.display === FieldDisplay.RANGE) {
+      return (
+          <PresearchPanel id="range-selector">
+            <Container>
+              <RangeSelector
+                isOpen={isOpen}
+                hasMore={hasMore}
+                loading={loading}
+                buckets={buckets}
+                handleLoadMore={this.handleLoadMore}
+              />
+            </Container>
+            {!loading && (
+              <Container>
+                <AllowMissingCheckbox buckets={buckets} />
+              </Container>
+            )}
+          </PresearchPanel>
+      );
+    }
     return (
       <PresearchContent>
         <PresearchFilter>
