@@ -72,7 +72,7 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
                 Donate
               </NavItem>              
               <NavItem eventKey={1} href="https://home.clinwiki.org/">
-                About
+                About ClinWiki
               </NavItem>
               <AuthButton user={this.props.user} history={this.props.history} />
             </Nav>
