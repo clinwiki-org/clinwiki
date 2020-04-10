@@ -68,6 +68,9 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
                   Search
                 </NavItem>
               )}
+              <NavItem eventKey={1} href="https://home.clinwiki.org/make-a-donation/" target=_blank>
+                Donate
+              </NavItem>              
               <NavItem eventKey={1} href="https://home.clinwiki.org/">
                 About
               </NavItem>
