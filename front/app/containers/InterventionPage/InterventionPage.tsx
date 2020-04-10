@@ -77,18 +77,12 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
           return (
             <InteventionContainer>
               <Intervention intervention={data.intervention} />
-              {/* <Grid>
-                  <Row>
-                    <Col md={12}> */}
-              <SearchPage
+              {/* <SearchPage
                 match={this.props.match}
                 history={this.props.history}
                 ignoreUrlHash
                 searchParams={searchParams}
-              />
-              {/* </Col>
-                  </Row>
-                </Grid> */}
+              /> */}
             </InteventionContainer>
           );
         }}

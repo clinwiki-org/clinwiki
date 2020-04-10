@@ -53,7 +53,6 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
       hash: hash,
       id: this.props.match.params.nctId,
     };
-    console.log("var",variables)
 
     return (
       <SearchStudyPageQueryComponent query={QUERY} variables={variables}>
