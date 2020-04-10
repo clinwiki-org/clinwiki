@@ -54,9 +54,10 @@ import { withSite } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
-import { stack as Menu } from 'react-burger-menu';
 import { match } from 'react-router';
-import { SearchPageHashMutation, SearchPageParamsQuery } from './queries';
+import SearchPageHashMutation from 'queries/SearchPageHashMutation';
+import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+
 import SearchParamsContext from './components/SearchParamsContext';
 
 class ParamsQueryComponent extends Query<
