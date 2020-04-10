@@ -3,26 +3,10 @@ import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import PREFETCH_QUERY from '../StudyPage';
-import * as FontAwesome from 'react-fontawesome';
-import CurrentUser from 'containers/CurrentUser';
 import {
-  Button,
-  List,
   Checkbox,
   Col,
-  Row,
-  Container,
-  ReactTable,
-  ListGroup,
-  Table,
-  FormControl,
-  Form,
-  FormGroup,
-  ButtonGroup,
-  ControlLabel,
 } from 'react-bootstrap';
-import * as Autosuggest from 'react-autosuggest';
-import SearchView from '../SearchPage/SearchView';
 import {
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables,
@@ -30,25 +14,12 @@ import {
 import {
   pipe,
   pathOr,
-  prop,
   map,
   filter,
   fromPairs,
   keys,
-  reject,
-  propEq,
-  equals,
 } from 'ramda';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-import * as Similarity from './nlp_similarity';
-import WikiSections from './WikiSections';
-import { findFieldsThatChangedTypeOnInputObjectTypes } from 'graphql/utilities/findBreakingChanges';
-import SiteProvider from 'containers/SiteProvider';
-import CrumbsBar from 'containers/SearchPage/components/CrumbsBar';
-import * as Search from '../SearchPage/SearchView';
-import { SearchPageSearchQuery } from 'types/SearchPageSearchQuery';
-import { MAX_WINDOW_SIZE } from 'utils/constants';
-import { Component } from 'react';
 import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
 import { WorkSearch } from './WorkSearch';
 interface SuggestedLabelsProps {
