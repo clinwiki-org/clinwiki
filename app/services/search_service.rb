@@ -106,8 +106,8 @@ class SearchService
   attr_reader :params
 
   # @param params - hash representing SearchInputType with symbols as keys.
-  def initialize(params)
-    @params = params.deep_dup.freeze
+  def initialize(initial_params = {})
+    @params = initial_params.nil? ? {} : initial_params.deep_dup.freeze
   end
 
   # Search results from params
@@ -131,8 +131,10 @@ class SearchService
     }
   end
 
-  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url: nil, config_type: nil, return_all: false) # rubocop:disable Metrics/MethodLength
+  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url: nil, config_type: nil, return_all: false)
     params = self.params.deep_dup
+    return {} if params.nil?
+
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
     # We don't need to keep filters of the same agg, we want broader results
@@ -149,9 +151,9 @@ class SearchService
     options[:smart_aggs] = true
     options[:load] = false
 
-    page = params[:page] || 0
-    page_size = params[:page_size] || DEFAULT_PAGE_SIZE
-    bucket_sort = params[:agg_options_sort] || []
+    page = params.fetch(:page, 0)
+    page_size = params.fetch(:page_size, DEFAULT_PAGE_SIZE)
+    bucket_sort = params.fetch(:agg_options_sort, [])
 
     search_results = Study.search("*", options) do |body|
       body[:query][:bool][:must] = { query_string: { query: search_query } }
@@ -187,6 +189,8 @@ class SearchService
 
   def crowd_agg_facets(site:)
     params = self.params.deep_dup
+    return {} if params.nil?
+
     search_results = Study.search("*", aggs: [:front_matter_keys])
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
@@ -245,8 +249,8 @@ class SearchService
   def search_kick_query_options(aggs:, search_after: nil, reverse: false, skip_filters: [])
     body_options = { search_after: search_after }.delete_if { |_, v| v.blank? }
     {
-      page: (params[:page] || 0) + 1,
-      per_page: params[:page_size] || DEFAULT_PAGE_SIZE,
+      page: params.fetch(:page, 0) + 1,
+      per_page: params.fetch(:page_size, DEFAULT_PAGE_SIZE),
       order: search_kick_order_options(reverse: reverse),
       aggs: aggs,
       where: search_kick_where_options(skip_filters: skip_filters),
@@ -256,14 +260,14 @@ class SearchService
   end
 
   def search_kick_order_options(reverse: false)
-    res = (params[:sorts] || []).map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
+    res = params.fetch(:sorts, []).map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
     res.push(nct_id: reverse ? "desc" : "asc") unless res.any? { |x| x.keys.first.to_sym == :nct_id }
     res
   end
 
   def search_kick_where_options(skip_filters: [])
-    agg_filters = params[:agg_filters] || []
-    crowd_agg_filters = params[:crowd_agg_filters] || []
+    agg_filters = params.fetch(:agg_filters, [])
+    crowd_agg_filters = params.fetch(:crowd_agg_filters, [])
     search_kick_agg_filters = search_kick_where_from_filters(filters: agg_filters, skip_filters: skip_filters)
     search_kick_crowd_agg_filters =
       search_kick_where_from_filters(

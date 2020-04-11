@@ -2,11 +2,10 @@ LLONG_MIN = -9223372036854775808 # rubocop:disable Style/NumericLiterals
 LLONG_MAX = 9223372036854775807 # rubocop:disable Style/NumericLiterals
 MAX_PAGE_SIZE = 200
 
-
 class StudyEdgeService
   # @param params - hash representing SearchInputType with symbols as keys.
-  def initialize(params)
-    @params = normalize_params(params).freeze
+  def initialize(params = {})
+    @params = normalize_params(params || {}).freeze
     @search_service = SearchService.new(@params)
   end
 
@@ -15,8 +14,8 @@ class StudyEdgeService
     return nil if study.blank?
 
     workflow_name = (@params[:crowd_agg_filters] || [])
-                        .map { |param| param[:field] }
-                        .find { |field| field&.downcase&.starts_with("wf_") }
+      .map { |param| param[:field] }
+      .find { |field| field&.downcase&.starts_with("wf_") }
     is_workflow = workflow_name.present?
 
     before = next_studies(study: study, reverse: true)
@@ -36,7 +35,6 @@ class StudyEdgeService
     )
   end
 
-
   private
 
   def normalize_params(params)
@@ -51,18 +49,19 @@ class StudyEdgeService
   end
 
   def last_study_id(recordsTotal)
-    unless recordsTotal > MAX_PAGE_SIZE
-      return @search_service.search&.dig(:studies)&.last&.id
-    end
+    return @search_service.search&.dig(:studies)&.last&.id unless recordsTotal > MAX_PAGE_SIZE
+
     nil
   end
 
   def next_studies(study:, reverse: false)
     return nil if study.blank?
+
     sort_values_variants(study, reverse).each do |sort_values|
       return @search_service.search(
-          search_after: sort_values,
-          reverse: reverse)
+        search_after: sort_values,
+        reverse: reverse,
+      )
     end
   end
 
@@ -86,9 +85,9 @@ class StudyEdgeService
 
     sort_values_variants(study, reverse).each do |sort_values|
       id = @search_service.search(
-          search_after: sort_values,
-          reverse: reverse,
-          )&.dig(:studies)&.first&.id
+        search_after: sort_values,
+        reverse: reverse,
+      )&.dig(:studies)&.first&.id
       return id unless id.nil?
     end
 
@@ -146,9 +145,11 @@ class StudyEdgeService
     # Finds the index of the item in the search results.
     return 1 if study.blank?
     return nil if records_total > MAX_PAGE_SIZE
+
     search_results = @search_service.search
-    index = search_results&.dig(:studies)&.index{ |x| x.id == study[:nct_id] }
+    index = search_results&.dig(:studies)&.index { |x| x.id == study[:nct_id] }
     return index + 1 unless index.nil?
+
     1
   end
 end
