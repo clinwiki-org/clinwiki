@@ -1,0 +1,18 @@
+query WikiPageEditHistory($nctId: String!) {
+  study(nctId: $nctId) {
+    wikiPage {
+      edits {
+        changeSet {
+          bodyChanged
+          frontMatterChanged
+          editLines {
+            status
+            content
+            frontMatter
+            body
+          }
+        }
+      }
+    }
+  }
+}
