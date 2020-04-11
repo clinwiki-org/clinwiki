@@ -131,14 +131,14 @@ class SearchService
     }
   end
 
-  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url:nil,config_type: nil, return_all: false) # rubocop:disable Metrics/MethodLength
+  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url: nil, config_type: nil, return_all: false) # rubocop:disable Metrics/MethodLength
     params = self.params.deep_dup
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
     # We don't need to keep filters of the same agg, we want broader results
     # But we need to respect all other filters
 
-    params[:agg_filters]&.delete_if { |filter_entry| filter_entry[:field] == field }
+    params[:agg_filters].delete_if { |filter_entry| filter_entry[:field] == field } if params[:agg_filters].present?
 
     options = search_kick_query_options(
       aggs: { key => DEFAULT_AGG_OPTIONS[key]&.deep_dup || {} },
@@ -170,14 +170,14 @@ class SearchService
         body[:aggs][key][:aggs][key][:terms][:missing] = missing_identifier_for_key(key)
       end
 
-        visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type, return_all)
-        visible_options_regex = one_of_regex(visibile_options)
-        regex = visible_options_regex
-        if params[:agg_options_filter].present?
-          filter_regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
-          regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
-        end
-        body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
+      visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type, return_all)
+      visible_options_regex = one_of_regex(visibile_options)
+      regex = visible_options_regex
+      if params[:agg_options_filter].present?
+        filter_regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
+        regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
+      end
+      body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
@@ -318,25 +318,23 @@ class SearchService
   def find_visibile_options(agg_name, is_crowd_agg, current_site, url, config_type, return_all)
     return [] if current_site.blank? || return_all
 
-    if !url || url.empty?
-      view = current_site.site_views.find_by(default: true).view
-    else
+    view = if url.blank?
+             current_site.site_views.find_by(default: true).view
+           else
 
-      view = current_site.site_views.find_by(url: url).view
-    end
+             current_site.site_views.find_by(url: url).view
+           end
     case config_type ? config_type.downcase : config_type
-      when nil , "facetbar"
-        fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
-      when "presearch"
-        fields = view.dig(:search,:presearch, is_crowd_agg ? :crowdAggs : :aggs, :fields)
-      when "autosuggest"
-        fields = view.dig(:search,:autoSuggest, is_crowd_agg ? :crowdAggs : :aggs, :fields)
+    when nil, "facetbar"
+      fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
+    when "presearch"
+      fields = view.dig(:search, :presearch, is_crowd_agg ? :crowdAggs : :aggs, :fields)
+    when "autosuggest"
+      fields = view.dig(:search, :autoSuggest, is_crowd_agg ? :crowdAggs : :aggs, :fields)
     end
 
     field = fields.find { |f| f[:name] == agg_name }
     field&.dig(:visibleOptions, :values) || []
-
-
   end
 
   def case_insensitive_regex_emulation(text)
