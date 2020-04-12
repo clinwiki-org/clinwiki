@@ -18,7 +18,7 @@ import {
 } from 'types/TagsPageDeleteWikiTagMutation';
 import WikiPage from 'containers/WikiPage';
 import { contains, reject, equals, lensPath } from 'ramda';
-import Edits from 'components/Edits';
+import Edits, { WikiPageEditFragment } from 'components/Edits';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
@@ -86,7 +86,7 @@ const DELETE_TAG_MUTATION = gql`
   }
 
   ${FRAGMENT}
-  ${Edits.fragment}
+  ${WikiPageEditFragment}
 `;
 
 const ADD_TAG_MUTATION = gql`
@@ -103,13 +103,13 @@ const ADD_TAG_MUTATION = gql`
   }
 
   ${FRAGMENT}
-  ${Edits.fragment}
+  ${WikiPageEditFragment}
 `;
 
 class AddTagMutationComponent extends Mutation<
   TagsPageAddWikiTagMutation,
   TagsPageAddWikiTagMutationVariables
-> {}
+  > { }
 
 type AddTagMutationFn = MutationFn<
   TagsPageAddWikiTagMutation,
@@ -119,14 +119,14 @@ type AddTagMutationFn = MutationFn<
 class DeleteTagMutationComponent extends Mutation<
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables
-> {}
+  > { }
 
 type DeleteTagMutationFn = MutationFn<
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables
 >;
 
-class QueryComponent extends Query<TagsPageQuery, TagsPageQueryVariables> {}
+class QueryComponent extends Query<TagsPageQuery, TagsPageQueryVariables> { }
 
 class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   static fragment = FRAGMENT;
