@@ -60,6 +60,19 @@ const StyleWrapper = styled(Table)`
   .diff li.diff-block-info {
     background: none repeat scroll 0 0 gray;
   }
+  .diff-actor {
+    font-weight: bold;
+  }
+  .diff .fa {
+    font: normal normal normal 14px/1 FontAwesome;
+  }
+  .diff-lines li {
+    white-space: pre-wrap;
+    font-family: courier;
+  }
+  .diff li {
+    height: 18px;
+  }
 `;
 
 export default StyleWrapper;
