@@ -81,7 +81,7 @@ group :development, :test do
 end
 
 gem "activejob-traffic_control", ">= 0.1.3"
-gem "jwt", '>=2.2.0'
+gem "jwt", ">=2.2.0"
 gem "sidekiq"
 gem "sidekiq-cron"
 gem "rack-cors"
@@ -98,8 +98,12 @@ gem "composite_primary_keys"
 
 gem "timeliness", "~> 0.4.4"
 
-gem "webmock", "~> 3.8", :group => :test
+gem "webmock", "~> 3.8", group: :test
 
-gem "rspec-snapshot", "~> 0.1.2", :group => :test
+gem "rspec-snapshot", "~> 0.1.2", group: :test
 
 gem "http_logger", "~> 0.6.0"
+
+gem "factory_bot", "~> 5.1", group: :test
+
+gem "faker", "~> 2.11", group: :test
