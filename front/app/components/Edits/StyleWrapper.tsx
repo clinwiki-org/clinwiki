@@ -28,16 +28,19 @@ const StyleWrapper = styled(Table)`
     margin: 0;
     height: 1em;
   }
-  .diff li.ins {
+  .diff li.ins,
+  .crowd-diff .ins td {
     background: #dfd;
     color: #080;
   }
-  .diff li.del {
+  .diff li.del,
+  .crowd-diff .del td {
     background: #fee;
     color: #b00;
   }
   .diff li:hover,
-  .diff li.hovered {
+  .diff li.hovered,
+  .crowd-diff tr:hover td {
     background: #ffc;
   }
   /* try 'whitespace:pre;' if you don't want lines to wrap */
