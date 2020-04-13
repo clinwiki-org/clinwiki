@@ -77,7 +77,6 @@ class RangeSelector extends React.Component<
       aggType
     } = this.props;
     const { startText, endText } = this.state;
-    console.log("AGGGGGG", aggType)
     if (hasMore || loading) {
       handleLoadMore();
       return (
