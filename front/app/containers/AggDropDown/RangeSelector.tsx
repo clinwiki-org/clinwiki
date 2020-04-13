@@ -23,6 +23,7 @@ import {
   Button,
 } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
+import { FieldDisplay } from 'types/globalTypes';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
@@ -35,6 +36,7 @@ interface RangeSelectorProps {
   buckets: Array<AggBucket>;
   handleLoadMore: () => void;
   updater: AggFilterInputUpdater;
+  aggType: FieldDisplay;
 }
 
 interface RangeSelectorState {
@@ -72,6 +74,7 @@ class RangeSelector extends React.Component<
       buckets,
       handleLoadMore,
       updater,
+      aggType
     } = this.props;
     const { startText, endText } = this.state;
     if (hasMore || loading) {
@@ -132,7 +135,7 @@ class RangeSelector extends React.Component<
           <FormGroup>
             <ControlLabel>Start</ControlLabel>
             <FormControl
-              type="date"
+              type={ aggType==FieldDisplay.DATE_RANGE? "date": "text"}
               value={startText}
               onChange={e =>
                 this.setState({
@@ -150,7 +153,7 @@ class RangeSelector extends React.Component<
           <FormGroup>
             <ControlLabel>End</ControlLabel>
             <FormControl
-              type="date"
+              type={ aggType== FieldDisplay.DATE_RANGE? "date": "text"}
               value={endText}
               onChange={e =>
                 this.setState({

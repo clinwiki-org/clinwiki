@@ -431,7 +431,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = this.findFields();
-    if (field?.display === FieldDisplay.RANGE) {
+    if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
       return (
         <Panel.Collapse id="range-selector">
           <Panel.Body>
@@ -442,6 +442,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 loading={loading}
                 buckets={buckets}
                 handleLoadMore={this.handleLoadMore}
+                aggType={ field?.display === FieldDisplay.DATE_RANGE ? FieldDisplay.DATE_RANGE :  FieldDisplay.NUMBER_RANGE}
               />
             </Container>
             {!loading && (
@@ -536,8 +537,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     } = this.state;
     const field = this.findFields();
-    if (field?.display === FieldDisplay.RANGE) {
-      return (
+    if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
+    return (
           <PresearchPanel id="range-selector">
             <Container>
               <RangeSelector
@@ -546,6 +547,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 loading={loading}
                 buckets={buckets}
                 handleLoadMore={this.handleLoadMore}
+                aggType={ field?.display === FieldDisplay.DATE_RANGE ? FieldDisplay.DATE_RANGE :  FieldDisplay.NUMBER_RANGE}
               />
             </Container>
             {!loading && (
@@ -555,7 +557,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             )}
           </PresearchPanel>
       );
-    }
+    } 
     return (
       <PresearchContent>
         <PresearchFilter>

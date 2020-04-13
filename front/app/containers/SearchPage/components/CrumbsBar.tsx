@@ -205,7 +205,7 @@ export default class CrumbsBar extends React.Component<
     };
   }
 
-  *mkCrumbs(searchParams: SearchParams, removeFilter) {
+  *mkCrumbs(searchParams: SearchParams, removeFilter, thisSiteView) {
     if (!isEmpty(searchParams.q)) {
       yield (
         <MultiCrumb
@@ -225,6 +225,7 @@ export default class CrumbsBar extends React.Component<
           grouping="aggFilters"
           agg={agg}
           key={`aggFilters${aggFilterCounter++}`}
+          thisSiteView={thisSiteView}
         />
       );
     }
@@ -239,6 +240,7 @@ export default class CrumbsBar extends React.Component<
           values={agg.values}
           agg={agg}
           key={`crowdAggFilters${aggFilterCounter++}`}
+          thisSiteView={thisSiteView}
         />
       );
     }
@@ -671,7 +673,8 @@ export default class CrumbsBar extends React.Component<
                         ? Array.from(
                             this.mkCrumbs(
                               this.props.searchParams,
-                              this.props.removeFilter
+                              this.props.removeFilter,
+                              thisSiteView
                             )
                           )
                         : null}{' '}
