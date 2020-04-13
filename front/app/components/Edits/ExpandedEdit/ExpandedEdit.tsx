@@ -1,10 +1,8 @@
-import * as React from "react";
-import {
-  WikiPageEditFragment,
-} from 'types/WikiPageEditFragment';
-import ExpandedAsRawDiff from "./ExpandedAsRawDiff";
-import FrontMatterExpandedEdit from "./FrontMatterExpandedEdit";
-import WikiExpandedEdit from "./WikiExpandedEdit";
+import * as React from 'react';
+import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import ExpandedAsRawDiff from './ExpandedAsRawDiff';
+import FrontMatterExpandedEdit from './FrontMatterExpandedEdit';
+import WikiExpandedEdit from './WikiExpandedEdit';
 
 interface EditProps {
   edit: WikiPageEditFragment;
@@ -12,8 +10,10 @@ interface EditProps {
 
 class ExpandedEdit extends React.Component<EditProps> {
   render() {
-    const { edit } = this.props
-    const { changeSet: { bodyChanged, frontMatterChanged } } = edit;
+    const { edit } = this.props;
+    const {
+      changeSet: { bodyChanged, frontMatterChanged },
+    } = edit;
 
     console.log(edit.changeSet);
 

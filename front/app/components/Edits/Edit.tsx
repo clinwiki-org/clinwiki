@@ -1,26 +1,23 @@
-import * as React from "react";
+import * as React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import {
-  WikiPageEditFragment,
-} from 'types/WikiPageEditFragment';
-import EditBlurb from "./EditBlurb";
-import ExpandedEdit from "./ExpandedEdit";
+import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import EditBlurb from './EditBlurb';
+import ExpandedEdit from './ExpandedEdit';
 
 interface EditProps {
   edit: WikiPageEditFragment;
 }
 
 interface EditState {
-  expanded: boolean
+  expanded: boolean;
 }
 
 class Edit extends React.Component<EditProps, EditState> {
-
   state = {
-    expanded: false
-  }
+    expanded: false,
+  };
 
-  setExpanded = (expanded) => this.setState({ ...this.state, expanded })
+  setExpanded = expanded => this.setState({ ...this.state, expanded });
 
   render() {
     const { edit } = this.props;
@@ -28,7 +25,11 @@ class Edit extends React.Component<EditProps, EditState> {
     return (
       <tr key={edit.id} style={{ padding: '10px' }}>
         <td>
-          <EditBlurb edit={edit} expanded={expanded} setExpanded={this.setExpanded} />
+          <EditBlurb
+            edit={edit}
+            expanded={expanded}
+            setExpanded={this.setExpanded}
+          />
           {expanded && (
             <Row style={{ padding: '10px', marginBottom: '10px' }}>
               <Col md={12}>
@@ -38,7 +39,7 @@ class Edit extends React.Component<EditProps, EditState> {
           )}
         </td>
       </tr>
-    )
+    );
   }
 }
 

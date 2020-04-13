@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import styled from 'styled-components';
 import { Table } from 'react-bootstrap';
 
@@ -36,7 +36,8 @@ const StyleWrapper = styled(Table)`
     background: #fee;
     color: #b00;
   }
-  .diff li:hover {
+  .diff li:hover,
+  .diff li.hovered {
     background: #ffc;
   }
   /* try 'whitespace:pre;' if you don't want lines to wrap */
@@ -64,14 +65,24 @@ const StyleWrapper = styled(Table)`
     font-weight: bold;
   }
   .diff .fa {
-    font: normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 12px/1 FontAwesome;
   }
   .diff-lines li {
     white-space: pre-wrap;
     font-family: courier;
   }
   .diff li {
-    height: 18px;
+    height: 21px;
+    min-height: 21px;
+    max-height: 21px;
+  }
+  .diff-action-column {
+    font-size: 11px;
+    text-align: right;
+    padding-right: 0;
+  }
+  .diff-column {
+    padding-left: 0;
   }
 `;
 
