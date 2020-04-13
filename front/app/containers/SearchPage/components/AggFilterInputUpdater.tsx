@@ -137,22 +137,32 @@ abstract class AbstractAggFilterInputUpdater {
   getMinString(): string | undefined {
     // need to check for agg type once we start using this for more than date.
     if (this.input.gte) {
-      return this.isDateAgg()
-        ? moment(this.input.gte)
-            .utc(false)
-            .format('YYYY-MM-DD')
-        : this.input.gte;
+      let type = 'number_range';
+      if (type == 'date_range') {
+        return this.isDateAgg()
+          ? moment(this.input.gte)
+              .utc(false)
+              .format('YYYY-MM-DD')
+          : this.input.gte;
+      } else if (type == 'number_range') {
+        return this.input.gte;
+      }
     }
   }
 
   getMaxString(): string | undefined {
     // need to check for agg type once we start using this for more than date.
     if (this.input.lte) {
-      return this.isDateAgg()
-        ? moment(this.input.lte)
-            .utc(false)
-            .format('YYYY-MM-DD')
-        : this.input.lte;
+      let type = 'number_range';
+      if (type == 'date_range') {
+        return this.isDateAgg()
+          ? moment(this.input.lte)
+              .utc(false)
+              .format('YYYY-MM-DD')
+          : this.input.lte;
+      } else if (type == 'number_range') {
+        return this.input.lte;
+      }
     }
   }
 

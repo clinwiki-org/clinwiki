@@ -35,6 +35,7 @@ interface RangeSelectorProps {
   buckets: Array<AggBucket>;
   handleLoadMore: () => void;
   updater: AggFilterInputUpdater;
+  aggType: string;
 }
 
 interface RangeSelectorState {
@@ -72,6 +73,7 @@ class RangeSelector extends React.Component<
       buckets,
       handleLoadMore,
       updater,
+      aggType
     } = this.props;
     const { startText, endText } = this.state;
     if (hasMore || loading) {
@@ -132,7 +134,7 @@ class RangeSelector extends React.Component<
           <FormGroup>
             <ControlLabel>Start</ControlLabel>
             <FormControl
-              type="date"
+              type={ aggType=="date_range"? "date": "text"}
               value={startText}
               onChange={e =>
                 this.setState({
@@ -150,7 +152,7 @@ class RangeSelector extends React.Component<
           <FormGroup>
             <ControlLabel>End</ControlLabel>
             <FormControl
-              type="date"
+              type={ aggType=="date_range"? "date": "text"}
               value={endText}
               onChange={e =>
                 this.setState({

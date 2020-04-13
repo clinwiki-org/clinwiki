@@ -442,6 +442,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 loading={loading}
                 buckets={buckets}
                 handleLoadMore={this.handleLoadMore}
+                aggType={"date_range"}
               />
             </Container>
             {!loading && (
@@ -546,6 +547,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 loading={loading}
                 buckets={buckets}
                 handleLoadMore={this.handleLoadMore}
+                aggType={"number_range"}
               />
             </Container>
             {!loading && (
