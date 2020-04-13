@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { History } from 'history';
 import { logout } from 'utils/auth';
+import { Link } from 'react-router-dom';
 
 interface AuthButtonProps {
   user: {
@@ -29,6 +30,10 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
     this.props.history.push('/workflows');
   };
 
+  handleSignInClick = () => {
+    this.props.history.push('/sign_in');
+  };
+
   handleSignOutClick = () => {
     logout(this.props.history);
   };
@@ -38,9 +43,9 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
       return (
         <li>
           <p className="navbar-btn">
-            <a href="/sign_in" className="btn btn-default">
+            <Link to="/sign_in" className="btn btn-default">
               Sign in
-            </a>
+            </Link>
           </p>
         </li>
       );
