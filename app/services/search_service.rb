@@ -92,6 +92,20 @@ DEFAULT_AGG_OPTIONS = {
     limit: 10,
     order: { "_term" => "asc" },
   },
+  :"wiki_page_edits.email" => {
+    limit: 10,
+    order: { "_term" => "asc" },
+  },
+  :"wiki_page_edits.created_at"=> {
+    date_histogram: {
+      field: :"wiki_page_edits.created_at",
+      interval: :year,
+      # this should work, but it isn't
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html
+      missing: DATE_MISSING_IDENTIFIER,
+    },
+    limit: 10,
+  },
 }.freeze
 
 def nested_body(key)
@@ -112,12 +126,13 @@ def nested_result_aggs(field, aggs)
 end
 
 class SearchService
+  #average_rating overall_status facility_states start_date
   ENABLED_AGGS = %i[
-    average_rating overall_status facility_states
+
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
-    front_matter_keys start_date wiki_page_edits.email
+    front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
   ].freeze
 
   attr_reader :params

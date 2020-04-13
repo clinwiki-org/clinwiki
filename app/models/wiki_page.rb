@@ -47,7 +47,7 @@ class WikiPage < ApplicationRecord
   def create_edit
     return if text_was == text
     raise "Cannot update WikiPage with updater not specified" if @updater.blank?
-
+    puts "log:::::::::::::::::::::::::::::::::::::::: #{id}"
     diff = Diffy::Diff.new(text_was, text)
     WikiPageEdit.create(
       user: @updater,
