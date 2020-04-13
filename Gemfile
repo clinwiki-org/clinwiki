@@ -107,3 +107,5 @@ gem "http_logger", "~> 0.6.0"
 gem "factory_bot", "~> 5.1", group: :test
 
 gem "faker", "~> 2.11", group: :test
+
+gem "database_cleaner-active_record", "~> 1.8", :group => :test
