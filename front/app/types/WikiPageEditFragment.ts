@@ -1,8 +1,6 @@
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
-import { Diff } from "./globalTypes";
-
 // ====================================================
 // GraphQL fragment: WikiPageEditFragment
 // ====================================================
@@ -27,33 +25,6 @@ export interface WikiPageEditFragment_user {
   email: string;
 }
 
-export interface WikiPageEditFragment_changeSet_editLines {
-  __typename: "WikiPageEditLine";
-  /**
-   * The type of diff line.
-   */
-  status: Diff;
-  /**
-   * The content of the line.
-   */
-  content: string;
-  /**
-   * Whether the line is in the front matter.
-   */
-  frontMatter: boolean;
-  /**
-   * Whether the line is in the body.
-   */
-  body: boolean;
-}
-
-export interface WikiPageEditFragment_changeSet {
-  __typename: "WikiPageEdits";
-  bodyChanged: boolean;
-  frontMatterChanged: boolean;
-  editLines: WikiPageEditFragment_changeSet_editLines[];
-}
-
 export interface WikiPageEditFragment {
   __typename: "WikiPageEdit";
   user: WikiPageEditFragment_user | null;
@@ -62,5 +33,4 @@ export interface WikiPageEditFragment {
   comment: string | null;
   diff: string | null;
   diffHtml: string | null;
-  changeSet: WikiPageEditFragment_changeSet;
 }
