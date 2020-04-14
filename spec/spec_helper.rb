@@ -54,6 +54,17 @@ RSpec.configure do |config|
     FactoryBot.find_definitions
   end
 
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.clean_with(:truncation, except: Study.connection.tables)
+  end
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
+
   # The settings below are suggested to provide a good initial experience
   # with RSpec, but feel free to customize to your heart's content.
   #   # These two settings work together to allow you to limit a spec run

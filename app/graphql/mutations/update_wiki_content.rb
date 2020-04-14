@@ -7,6 +7,8 @@ module Mutations
     argument :content, String, "Markdown version of the text", required: true
 
     def resolve(nct_id:, content:)
+      return nil unless current_user
+
       wiki_page = WikiPage.find_or_initialize_by(nct_id: nct_id)
       wiki_page.content = content
       wiki_page.updater = current_user
