@@ -15,16 +15,14 @@ class ExpandedEdit extends React.Component<EditProps> {
       changeSet: { bodyChanged, frontMatterChanged },
     } = edit;
 
-    console.log(edit.changeSet);
-
-    if (bodyChanged && frontMatterChanged) {
-      return <ExpandedAsRawDiff edit={edit} />;
-    }
     if (frontMatterChanged) {
       return <FrontMatterExpandedEdit edit={edit} />;
     }
+    if (bodyChanged && !frontMatterChanged) {
+      return <WikiExpandedEdit edit={edit} />;
+    }
 
-    return <WikiExpandedEdit edit={edit} />;
+    return <ExpandedAsRawDiff edit={edit} />;
   }
 }
 
