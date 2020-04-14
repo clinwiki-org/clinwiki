@@ -5,5 +5,6 @@ module Types
     value "DATE"
     value "DATE_RANGE"
     value "NUMBER_RANGE"
+    value "RANGE"
   end
 end
