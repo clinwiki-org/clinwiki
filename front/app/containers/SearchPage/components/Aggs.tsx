@@ -101,6 +101,7 @@ const PresearchContainer = styled.div`
   }
 `;
 
+
 class Aggs extends React.PureComponent<AggsProps> {
   getAggs = (siteView:SiteFragment_siteView): string[] => {
     return displayFields(
@@ -118,6 +119,10 @@ class Aggs extends React.PureComponent<AggsProps> {
     ).map(prop('name'));
     return filter(x => crowdAggs.includes(x), displayed);
   };
+
+  handleRefresh = () => {
+
+  }
 
   render() {
     const {
