@@ -15,10 +15,12 @@ import StyledError from './StyledError';
 import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
+import withTheme from './../ThemeProvider';
 
 interface SignInPageProps {
   history: History;
   location: Location;
+  theme: any
 }
 interface SignInPageState {
   form: {
@@ -47,21 +49,27 @@ class SignInMutationComponent extends Mutation<
 > {}
 type SignInMutationFn = MutationFn<SignInMutation, SignInMutationVariables>;
 
-const LinkContainer = styled.div`
-  position: absolute;
-  bottom: 30px;
-  a {
-    color: white;
-    margin-right: 15px;
-  }
-`;
+
+  const LinkContainer = 
+    styled.div`
+     position: absolute;
+     bottom: 30px;
+     background: ${props => props.theme.secondaryColor};
+     a {
+       color: ${props => props.theme.primaryColor};
+       margin-right: 15px;
+     }`
+    ;
+
+  const ThemedLinkContainer = withTheme(LinkContainer);
+
+
 
 class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   state: SignInPageState = {
     form: {
       email: '',
       password: '',
-      //@ts-ignore
       oAuthToken: '',
     },
     errors: [],
@@ -118,6 +126,8 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   };
 
   render() {
+    console.log('withTheme', this.props.theme);
+
     return (
       <StyledWrapper>
         <Col md={12}>
@@ -139,7 +149,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                 this.setState({ errors: ['Invalid email or password'] });
               }}>
               {signIn => (
-                <form
+                <form 
                   onSubmit={e => {
                     e.preventDefault();
                     this.handleSignIn(signIn);
@@ -180,10 +190,10 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                     </div>
                   </div>
                   {this.renderErrors()}
-                  <LinkContainer>
+                  <ThemedLinkContainer>
                     <Link to="/sign_up">Sign up</Link>
                     <Link to="/reset_password">Reset password</Link>
-                  </LinkContainer>
+                  </ThemedLinkContainer>
                 </form>
               )}
             </SignInMutationComponent>
@@ -194,4 +204,4 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   }
 }
 
-export default SignInPage;
+export default withTheme(SignInPage);
