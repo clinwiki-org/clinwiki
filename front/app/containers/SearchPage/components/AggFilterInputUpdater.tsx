@@ -134,28 +134,48 @@ abstract class AbstractAggFilterInputUpdater {
     return this.agg.match(/date/) !== null;
   }
 
-  getMinString(): string | undefined {
-    // need to check for agg type once we start using this for more than date.
+  getMinString(thisSiteView): string | undefined {
+    // logic handling of input based on agg type here
     if (this.input.gte) {
-      return this.isDateAgg()
-        ? moment(this.input.gte)
-            .utc(false)
-            .format('YYYY-MM-DD')
-        : this.input.gte;
+      const thisField: any = find(propEq('name', this.agg))(
+        thisSiteView.search.aggs.fields
+      );
+      switch (thisField.display) {
+        case 'DATE_RANGE':
+          return this.isDateAgg()
+            ? moment(this.input.gte)
+                .utc(false)
+                .format('YYYY-MM-DD')
+            : this.input.gte;
+        case 'NUMBER_RANGE':
+          return this.input.gte;
+        default:
+          return this.input.gte;
+      }
     }
   }
 
-  getMaxString(): string | undefined {
-    // need to check for agg type once we start using this for more than date.
+  getMaxString(thisSiteView): string | undefined {
+    // logic handling of input based on agg type here
     if (this.input.lte) {
-      return this.isDateAgg()
-        ? moment(this.input.lte)
-            .utc(false)
-            .format('YYYY-MM-DD')
-        : this.input.lte;
+      const thisField: any = find(propEq('name', this.agg))(
+        thisSiteView.search.aggs.fields
+      );
+      switch (thisField.display) {
+        case 'DATE_RANGE':
+          return this.isDateAgg()
+            ? moment(this.input.lte)
+                .utc(false)
+                .format('YYYY-MM-DD')
+            : this.input.lte;
+        case 'NUMBER_RANGE':
+          return this.input.lte;
+        default:
+          return this.input.lte;
+      }
+
     }
   }
-
   allowsMissing(): boolean {
     return this.input!.includeMissingFields || false;
   }
