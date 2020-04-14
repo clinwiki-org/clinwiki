@@ -14,7 +14,9 @@ class FrontMatterExpandedEdit extends React.Component<EditProps> {
         changeSet: { editLines },
       },
     } = this.props;
-    const fmLines = editLines.filter(({ frontMatter }) => frontMatter);
+    const fmLines = editLines.filter(
+      ({ frontMatter, content }) => frontMatter && content !== '---'
+    );
     const inserts = fmLines.filter(({ status }) => status === 'INS');
     const deletes = fmLines.filter(({ status }) => status === 'DEL');
 
@@ -23,7 +25,7 @@ class FrontMatterExpandedEdit extends React.Component<EditProps> {
     if (deletes.length > 0) {
       const [fieldName, former] = deletes[0].content.split(/:(.+)/);
       nodes.push(
-        <tr className="del">
+        <tr className="del" key={`${fieldName}-delete`}>
           <td>-</td>
           <td>{fieldName}</td>
           <td>{former}</td>
@@ -33,7 +35,7 @@ class FrontMatterExpandedEdit extends React.Component<EditProps> {
     if (inserts.length > 0) {
       const [fieldName, current] = inserts[0].content.split(/:(.+)/);
       nodes.push(
-        <tr className="ins">
+        <tr className="ins" key={`${fieldName}-insert`}>
           <td>+</td>
           <td>{fieldName}</td>
           <td>{current}</td>
@@ -46,9 +48,11 @@ class FrontMatterExpandedEdit extends React.Component<EditProps> {
         <Col md={12}>
           <Table className="crowd-diff">
             <thead>
-              <th></th>
-              <th>Field</th>
-              <th>Value</th>
+              <tr>
+                <th></th>
+                <th>Field</th>
+                <th>Value</th>
+              </tr>
             </thead>
             <tbody>{nodes}</tbody>
           </Table>

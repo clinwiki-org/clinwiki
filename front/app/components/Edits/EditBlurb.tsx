@@ -1,8 +1,8 @@
-import * as React from "react";
+import * as React from 'react';
 import { Row, Col, Table, Button } from 'react-bootstrap';
 import {
   WikiPageEditFragment,
-  WikiPageEditFragment_user
+  WikiPageEditFragment_user,
 } from 'types/WikiPageEditFragment';
 
 interface EditBlurbProps {
@@ -12,9 +12,10 @@ interface EditBlurbProps {
 }
 
 class EditBlurb extends React.Component<EditBlurbProps> {
-
   getUserIdentity() {
-    const { edit: { user } } = this.props;
+    const {
+      edit: { user },
+    } = this.props;
     if (!user) {
       return 'Anonymous';
     }
@@ -25,14 +26,21 @@ class EditBlurb extends React.Component<EditBlurbProps> {
   }
 
   getBlurb() {
-    const { edit: { changeSet: { bodyChanged, frontMatterChanged } } } = this.props;
-    if (bodyChanged && frontMatterChanged) {
-      return "made the first edit."
+    const {
+      edit: {
+        changeSet: { bodyChanged, frontMatterChanged },
+      },
+    } = this.props;
+    if (!bodyChanged && !frontMatterChanged) {
+      return 'made the first edit.';
     }
     if (frontMatterChanged) {
-      return "made a crowd data change.";
+      return 'made a crowd data change.';
     }
-    return "updated the wiki."
+    if (bodyChanged) {
+      return 'updated the wiki.';
+    }
+    return 'made a change.';
   }
 
   render() {
@@ -40,24 +48,22 @@ class EditBlurb extends React.Component<EditBlurbProps> {
     return (
       <Row style={{ marginBottom: '10px', padding: '10px' }}>
         <Col md={8}>
-          <span className="diff-actor">
-            {this.getUserIdentity()}
-          </span>
-          <span>
-            {' ' + this.getBlurb()}
-          </span>
+          <span className="diff-actor">{this.getUserIdentity()}</span>
+          <span>{' ' + this.getBlurb()}</span>
         </Col>
         <Col md={2}>
-          <small>
-            {new Date(edit.createdAt).toLocaleDateString('en-US')}
-          </small>
+          <small>{new Date(edit.createdAt).toLocaleDateString('en-US')}</small>
         </Col>
         <Col md={2} className="text-right">
-          {expanded && (<Button onClick={() => setExpanded(false)}>View Less</Button>)}
-          {!expanded && (<Button onClick={() => setExpanded(true)}>View More</Button>)}
+          {expanded && (
+            <Button onClick={() => setExpanded(false)}>View Less</Button>
+          )}
+          {!expanded && (
+            <Button onClick={() => setExpanded(true)}>View More</Button>
+          )}
         </Col>
       </Row>
-    )
+    );
   }
 }
 

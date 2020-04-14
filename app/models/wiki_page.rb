@@ -11,7 +11,7 @@ class WikiPage < ApplicationRecord
   def default_content
     <<~CONTENT
       ## Lay Summary
-      #{study.brief_summary.description.gsub(/^\s+/, '')}
+      #{study&.brief_summary&.description&.gsub(/^\s+/, '')}
 
       ## Pros
       * Add a pro here

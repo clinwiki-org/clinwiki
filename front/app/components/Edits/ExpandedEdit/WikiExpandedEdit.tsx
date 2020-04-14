@@ -65,10 +65,7 @@ class WikiExpandedEdit extends React.Component<EditProps, EditState> {
     className: `${className}${
       this.state.hoveredLine === key ? ' hovered' : ''
     }`,
-    onMouseEnter: () => {
-      console.log(key);
-      this.setState({ ...this.state, hoveredLine: key });
-    },
+    onMouseEnter: () => this.setState({ ...this.state, hoveredLine: key }),
     onMouseLeave: () => this.setState({ ...this.state, hoveredLine: null }),
   });
 
