@@ -135,43 +135,46 @@ abstract class AbstractAggFilterInputUpdater {
   }
 
   getMinString(thisSiteView): string | undefined {
-    // need to check for agg type once we start using this for more than date.
+    // logic handling of input based on agg type here
     if (this.input.gte) {
-      const thisField:any = find(propEq('name', this.agg))(
+      const thisField: any = find(propEq('name', this.agg))(
         thisSiteView.search.aggs.fields
       );
-      if (thisField && thisField.display == 'DATE_RANGE') {
-        return this.isDateAgg()
-          ? moment(this.input.gte)
-              .utc(false)
-              .format('YYYY-MM-DD')
-          : this.input.gte;
-      } else if (thisField && thisField.display == 'NUMBER_RANGE') {
-        return this.input.gte;
+      switch (thisField.display) {
+        case 'DATE_RANGE':
+          return this.isDateAgg()
+            ? moment(this.input.gte)
+                .utc(false)
+                .format('YYYY-MM-DD')
+            : this.input.gte;
+        case 'NUMBER_RANGE':
+          return this.input.gte;
+        default:
+          return this.input.gte;
       }
-      return this.input.gte;
     }
   }
 
   getMaxString(thisSiteView): string | undefined {
-    // need to check for agg type once we start using this for more than date.
+    // logic handling of input based on agg type here
     if (this.input.lte) {
-      const thisField:any = find(propEq('name', this.agg))(
+      const thisField: any = find(propEq('name', this.agg))(
         thisSiteView.search.aggs.fields
       );
-      if (thisField && thisField.display == 'DATE_RANGE') {
-        return this.isDateAgg()
-          ? moment(this.input.lte)
-              .utc(false)
-              .format('YYYY-MM-DD')
-          : this.input.lte;
-      } else if (thisField && thisField.display == 'NUMBER_RANGE') {
-        return this.input.lte;
+      switch (thisField.display) {
+        case 'DATE_RANGE':
+          return this.isDateAgg()
+            ? moment(this.input.lte)
+                .utc(false)
+                .format('YYYY-MM-DD')
+            : this.input.lte;
+        case 'NUMBER_RANGE':
+          return this.input.lte;
+        default:
+          return this.input.lte;
       }
-      return this.input.lte;
     }
   }
-
   allowsMissing(): boolean {
     return this.input!.includeMissingFields || false;
   }
