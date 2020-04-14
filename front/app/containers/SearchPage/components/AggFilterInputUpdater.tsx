@@ -139,7 +139,10 @@ abstract class AbstractAggFilterInputUpdater {
     if (this.input.gte) {
       const thisField: any = find(propEq('name', this.agg))(
         thisSiteView.search.aggs.fields
-      );
+      ) || find(propEq('name', this.agg))(
+        thisSiteView.search.crowdAggs.fields
+      ) ;
+      if(thisField.display){
       switch (thisField.display) {
         case 'DATE_RANGE':
           return this.isDateAgg()
@@ -153,6 +156,8 @@ abstract class AbstractAggFilterInputUpdater {
           return this.input.gte;
       }
     }
+    return this.input.gte
+    }
   }
 
   getMaxString(thisSiteView): string | undefined {
@@ -160,7 +165,9 @@ abstract class AbstractAggFilterInputUpdater {
     if (this.input.lte) {
       const thisField: any = find(propEq('name', this.agg))(
         thisSiteView.search.aggs.fields
-      );
+      ) || find(propEq('name', this.agg))(
+        thisSiteView.search.crowdAggs.fields
+      ) ;
       switch (thisField.display) {
         case 'DATE_RANGE':
           return this.isDateAgg()
