@@ -1,6 +1,12 @@
 STAR_FIELDS = [:average_rating].freeze
 RANGE_FIELDS = [:start_date].freeze
 
+DEFAULT_AGG_ORDER = {
+  average_rating: {
+    order: { id: "key", desc: true },
+  },
+}
+
 class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
   before_save do
@@ -357,12 +363,14 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     "STRING"
   end
 
+##Define default agg_params_order
   def default_agg_params(name)
     {
       name: name,
       rank: nil,
       autoSuggest: false,
       display: default_agg_param_display(name),
+      order: default_agg_param_order(name),
       preselected: {
         kind: "WHITELIST",
         values: [],
@@ -372,5 +380,14 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         values: [],
       },
     }
+  end
+
+  def default_agg_param_order(name)
+    order = DEFAULT_AGG_ORDER[name.to_sym]
+    if order
+      order[:order]
+    else
+      { id: "key", desc: false }
+    end
   end
 end

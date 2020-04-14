@@ -6,6 +6,7 @@ module Types
     field :display, FieldDisplayType, null: false
     field :preselected, SiteSelectType, null: false
     field :visible_options, SiteSelectType, null: false
+    field :order, SiteOrderType, null:true
 
     def display
       object[:display]
