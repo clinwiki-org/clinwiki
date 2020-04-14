@@ -256,7 +256,7 @@ export const withSite = Component => props => (
     {(site, refetch) => {
       const siteViewUrl = ()=>{
         if (props.history){
-          return new URLSearchParams(props?.history?.location?.search).getAll("sv").toString().toLocaleLowerCase();
+          return new URLSearchParams(props?.history?.location?.search).getAll("sv").toString().toLowerCase();
         }
         return props.currentSiteView.url.toLowerCase();
       }

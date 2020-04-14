@@ -173,6 +173,7 @@ abstract class AbstractAggFilterInputUpdater {
         default:
           return this.input.lte;
       }
+
     }
   }
   allowsMissing(): boolean {

@@ -44,8 +44,8 @@ import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import SortKind from './SortKind';
 import BucketsPanel from './BucketsPanel';
 import Filter from './Filter';
-import SearchPageCrowdAggBucketsQuery from './queries/SearchPageCrowdAggBucketsQuery';
-import SearchPageAggBucketsQuery from './queries/SearchPageAggBucketsQuery';
+import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQuery';
+import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
 const PAGE_SIZE = 25;
@@ -432,7 +432,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
     const field = this.findFields();
     if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
-      return (
+            return (
         <Panel.Collapse id="range-selector">
           <Panel.Body>
             <Container>
@@ -538,7 +538,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     } = this.state;
     const field = this.findFields();
     if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
-    return (
+      return (
           <PresearchPanel id="range-selector">
             <Container>
               <RangeSelector
@@ -557,7 +557,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             )}
           </PresearchPanel>
       );
-    } 
+    }
     return (
       <PresearchContent>
         <PresearchFilter>

@@ -54,9 +54,10 @@ import { withSite } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
-import { stack as Menu } from 'react-burger-menu';
 import { match } from 'react-router';
-import { SearchPageHashMutation, SearchPageParamsQuery } from './queries';
+import SearchPageHashMutation from 'queries/SearchPageHashMutation';
+import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+
 import SearchParamsContext from './components/SearchParamsContext';
 
 class ParamsQueryComponent extends Query<
@@ -415,7 +416,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   handleRowClick = (nctId: string, hash: string, siteViewUrl: string) => {
     const suffix =
       this.isWorkflow() && !this.props.ignoreUrlHash ? '/workflow' : '';
-    const prefix = this.props.ignoreUrlHash ? '' : this.props.match.url;
     this.props.history.push(
       `/study/${nctId}${suffix}?hash=${hash}&sv=${siteViewUrl}`
     );
@@ -568,7 +568,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   showingCards = () => this.props.currentSiteView.search.results.type == 'card';
 
   componentDidMount() {
-    let searchTerm = new URLSearchParams(this.props.location.search)
+    let searchTerm = new URLSearchParams(this.props.location?.search || "")
     if (searchTerm.has('q')) {
       let q = { key: 'AND', children: [{ children: [], key: searchTerm.getAll('q').toString() }] };
       this.setState(
@@ -627,7 +627,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const { data } = await this.props.mutate({ variables });
     const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString() || 'default';
     if (data?.provisionSearchHash?.searchHash?.short) {
-      console.log('pushing');
       this.props.history.push(
         `/search?hash=${
           data!.provisionSearchHash!.searchHash!.short
