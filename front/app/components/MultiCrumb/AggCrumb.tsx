@@ -7,21 +7,19 @@ import { withSearchParams } from 'containers/SearchPage/components/SearchParamsC
 import ValuesCrumb from './ValuesCrumb';
 import ValueCrumb from './ValueCrumb';
 import CrumbWrapper from './CrumbWrapper';
-import { SiteFragment } from 'types/SiteFragment';
 
 interface AggCrumbProps {
   grouping: string;
   agg: AggFilterListItem;
   searchParams: SearchParams | any;
   updateSearchParams: any;
-  thisSiteView: SiteFragment;
 }
 
 interface AggCrumbState {}
 
 class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
   render() {
-    const { agg, grouping, searchParams, updateSearchParams, thisSiteView } = this.props;
+    const { agg, grouping, searchParams, updateSearchParams } = this.props;
     const updater = new AggFilterInputUpdater(
       agg.field,
       searchParams,
@@ -38,12 +36,12 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         />
       );
     } else if (agg.lte || agg.gte) {
-      let label = `${updater.getMinString(thisSiteView)} — ${updater.getMaxString(thisSiteView)}`;
+      let label = `${updater.getMinString()} — ${updater.getMaxString()}`;
       if (!agg.lte) {
-        label = `≥ ${updater.getMinString(thisSiteView)}`;
+        label = `≥ ${updater.getMinString()}`;
       }
       if (!agg.gte) {
-        label = `≤ ${updater.getMaxString(thisSiteView)}`;
+        label = `≤ ${updater.getMaxString()}`;
       }
       crumb = (
         <ValueCrumb label={label} onClick={() => updater.removeRange()} />
