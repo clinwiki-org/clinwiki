@@ -358,7 +358,8 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def default_agg_param_display(name)
     return "STAR" if STAR_FIELDS.include?(name.to_sym)
-    return "RANGE" if RANGE_FIELDS.include?(name.to_sym)
+    return "DATE_RANGE" if RANGE_FIELDS.include?(name.to_sym)
+    return "NUMBER_RANGE" if RANGE_FIELDS.include?(name.to_sym)
 
     "STRING"
   end

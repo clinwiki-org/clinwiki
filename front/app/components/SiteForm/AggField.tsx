@@ -248,6 +248,17 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             </FilterContainer>
           </FiltersContainer>
           <div>
+          <StyledLabel>Default Sort</StyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath(configType)}.order`}
+              componentClass="select"
+              onChange={this.props.onAddMutation}
+              defaultValue={this.props.field.order}>
+              <option value="{id: 'key', desc: false}">A-Z</option>
+              <option value="{id: 'key', desc: true}">Z-A</option>
+              <option value="{id: 'count', desc: false}">1-9</option>
+              <option value="{id: 'count', desc: true}">9-1</option>
+            </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.rank`}
@@ -264,7 +275,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="STRING">Text</option>
               <option value="STAR">Stars</option>
               <option value="DATE">Date</option>
-              <option value="RANGE">Range</option>
+              <option value="DATE_RANGE">Date Range</option>
+              <option value="NUMBER_RANGE">Number Range</option>
             </StyledFormControl>
           </div>
         </Container>

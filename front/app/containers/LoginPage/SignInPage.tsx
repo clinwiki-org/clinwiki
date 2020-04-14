@@ -8,7 +8,7 @@ import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import StyledButton from './StyledButton';
 import { Link } from 'react-router-dom';
-import { History } from 'history';
+import { History, Location } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
 import CurrentUser from 'containers/CurrentUser';
 import StyledError from './StyledError';
@@ -18,6 +18,7 @@ import { GoogleLogin } from 'react-google-login';
 
 interface SignInPageProps {
   history: History;
+  location: Location;
 }
 interface SignInPageState {
   form: {
@@ -83,7 +84,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
     if (!jwt) return;
 
     setLocalJwt(jwt);
-    this.props.history.push('/');
+    this.props.history.goBack();
   };
 
   renderErrors = () => {
