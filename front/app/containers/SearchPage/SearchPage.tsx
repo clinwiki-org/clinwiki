@@ -147,6 +147,14 @@ const Instructions = styled.div`
   align-items: center;
 `;
 
+const StyledButton = styled(Button)`
+padding: 10px 15px;
+margin-left: 1.25em;
+width: 127px;
+`;
+
+
+
 const changeFilter = (add: boolean) => (
   aggName: string,
   key: string,
@@ -453,30 +461,37 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
+  handleRefresh = () => {
+    window.location.reload(false);
+  }
+
   renderAggs = siteView => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
-
+    console.log('looking for facet bug', this.state.searchAggs)
     return (
-      <Aggs
-        aggs={this.state.searchAggs}
-        crowdAggs={this.state.searchCrowdAggs}
-        filters={this.transformFilters(aggFilters)}
-        crowdFilters={this.transformFilters(crowdAggFilters)}
-        addFilter={pipe(addFilter, this.handleUpdateParams)}
-        addFilters={pipe(addFilters, this.handleUpdateParams)}
-        removeFilter={pipe(removeFilter, this.handleUpdateParams)}
-        removeFilters={pipe(removeFilters, this.handleUpdateParams)}
-        updateParams={this.handleUpdateParams}
-        removeSelectAll={this.state.removeSelectAll}
-        resetSelectAll={this.resetSelectAll}
-        // @ts-ignore
-        opened={opened}
-        openedKind={openedKind}
-        onOpen={this.handleOpenAgg}
-        currentSiteView={siteView}
-      />
+      <div>
+        <Aggs
+          aggs={this.state.searchAggs}
+          crowdAggs={this.state.searchCrowdAggs}
+          filters={this.transformFilters(aggFilters)}
+          crowdFilters={this.transformFilters(crowdAggFilters)}
+          addFilter={pipe(addFilter, this.handleUpdateParams)}
+          addFilters={pipe(addFilters, this.handleUpdateParams)}
+          removeFilter={pipe(removeFilter, this.handleUpdateParams)}
+          removeFilters={pipe(removeFilters, this.handleUpdateParams)}
+          updateParams={this.handleUpdateParams}
+          removeSelectAll={this.state.removeSelectAll}
+          resetSelectAll={this.resetSelectAll}
+          // @ts-ignore
+          opened={opened}
+          openedKind={openedKind}
+          onOpen={this.handleOpenAgg}
+          currentSiteView={siteView}
+        />
+        <StyledButton onClick={this.handleRefresh}>Refresh</StyledButton>
+      </div>
     );
   };
 
