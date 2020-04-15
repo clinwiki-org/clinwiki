@@ -27,6 +27,13 @@ const clinwikiColors = {
   sideBarColor: '#bac5d0',
   sideBarColorHover: '#fff',
   sideBarTitleFont: '#fff',
+  //offwhite container for crumbs and search
+  containerColor: '#f2f2f2',
+  //container text is usually just black
+  containerText: '#000000',
+  //color of actual crumb
+  crumbColor: '#55b88d',
+  crumbFontColor: '#fff',
 };
 
 
@@ -40,7 +47,7 @@ export const withTheme = (Component)  =>  {
       //header font color
       primaryColor: '#6BA5D6',
       secondaryColor: '#1b2a38',
-      lightHeaderFont: '#fff',
+      lightTextColor: '#fff',
       grayHeaderFont: '#777777',
       //darkBlue for header
       navBar: '#1b2a38',
@@ -49,31 +56,39 @@ export const withTheme = (Component)  =>  {
       buttonHover: '#e6e6e6',
       buttonBorderHover: '#adadad',
     };
-     return {
-      primaryColor: 'white',
-      secondaryColor: 'purple',
-      authHeader: {
-        headerBackground: colors.primaryColor,
-        font: colors.lightHeaderFont,
-        hoverFont: colors.grayHeaderFont,
-        logoFont: '#fff',
-      },
-      authButton: {
-        button: colors.button,
-        buttonFont: '#fff',
-        buttonHover: '#e6e6e6',
-        buttonBorderHover: '#adadad',
-      },
-  
-      aggSideBar: {
-        sideBarBackground: '#4d5863',
-        sideBarFont: '#bac5d0',
-        sideBarFontHover: '#fff',
-        sideBarTitleFont: '#fff',
-      },
-    };
-   }
 
+      return {
+        primaryColor: 'white',
+        secondaryColor: 'purple',
+        lightTextColor: colors.lightTextColor,
+        authHeader: {
+          headerBackground: colors.primaryColor,
+          font: colors.lightTextColor,
+          hoverFont: colors.grayHeaderFont,
+          logoFont: '#fff',
+        },
+        authButton: {
+          button: colors.button,
+          buttonFont: '#fff',
+          buttonHover: '#e6e6e6',
+          buttonBorderHover: '#adadad',
+        },
+        aggSideBar: {
+          sideBarBackground: '#4d5863',
+          sideBarFont: '#bac5d0',
+          sideBarFontHover: '#fff',
+          sideBarTitleFont: '#fff',
+        },
+        crumbsBar: {
+          containerBackground: '#f2f2f2',
+          containerFont: 'black',
+        },
+        crumbs: {
+          crumbsButtonBackground: '#55b88d',
+          crumbsButtonFont: '#fff',
+        },
+      };
+    };
 
    render() {
      return (

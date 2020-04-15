@@ -5,10 +5,8 @@ import {
   Col,
   Label,
   Button,
-  FormControl,
   Form,
   FormGroup,
-  ButtonGroup,
   ControlLabel,
   ListGroup,
   ListGroupItem,
@@ -21,9 +19,13 @@ import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
 import AggCrumb from 'components/MultiCrumb/AggCrumb';
-import { MAX_WINDOW_SIZE, aggsOrdered } from '../../../utils/constants';
-import { PulseLoader, BeatLoader } from 'react-spinners';
+import { BeatLoader } from 'react-spinners';
 import CurrentUser from 'containers/CurrentUser';
+import { AggCallback, SearchParams } from '../Types';
+import { isEmpty } from 'ramda';
+import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { displayFields } from 'utils/siteViewHelpers';
+import withTheme from 'containers/ThemeProvider';
 
 const AUTOSUGGEST_QUERY = gql`
   query CrumbsSearchPageAggBucketsQuery(
@@ -72,13 +74,14 @@ const CrumbsBarStyleWrappper = styled.div`
   .crumbs-bar {
     padding: 10px 30px;
     border: solid white 1px;
-    background-color: #f2f2f2;
-    color: black;
     margin-bottom: 1em;
-    width: 100%;
+    margin-left: 15px;
+    width: 1559px;
+    background: ${props => props.theme.crumbsBar.containerBackground};
+    color: ${props => props.theme.crumbsBar.containerFont};
 
     .container {
-      background: #d9deea;
+      background: pink;
       border: 0px;
       margin-top: 5px;
       color: #394149;
@@ -143,19 +146,18 @@ const CrumbsBarStyleWrappper = styled.div`
     padding-bottom: 10px;
   }
 `;
+
+const ThemedCrumbsBarStyleWrappper = withTheme(CrumbsBarStyleWrappper);
+
 const LoaderWrapper = styled.div`
   margin: 20px 20px;
 
   text-align: center;
 `;
-import { AggCallback, SearchParams } from '../Types';
-import { isEmpty } from 'ramda';
-import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
-import { displayFields } from 'utils/siteViewHelpers';
 
 interface CrumbsBarProps {
   searchParams: SearchParams;
-  onBulkUpdate: (hash:string, siteViewUrl:string) => void;
+  onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   removeFilter: AggCallback;
   addFilter: AggCallback;
   addSearchTerm: (term: string) => void;
@@ -167,8 +169,9 @@ interface CrumbsBarProps {
   siteViewUrl?: string;
   currentSiteView: SiteFragment_siteView;
   totalResults: number;
-  searchHash:string;
+  searchHash: string;
 }
+
 interface CrumbsBarState {
   searchTerm: string;
   suggestions: any;
@@ -572,12 +575,11 @@ export default class CrumbsBar extends React.Component<
     let thisSiteView =
       data.siteViews.find(siteview => siteview.url == siteViewUrl) ||
       data.siteView;
-
     let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
-
+    // console.log(this.props.theme);
     return (
-      <CrumbsBarStyleWrappper>
+      <ThemedCrumbsBarStyleWrappper>
         <ApolloConsumer>
           {apolloClient => (
             <Grid className="crumbs-bar">
@@ -601,7 +603,13 @@ export default class CrumbsBar extends React.Component<
                     <CurrentUser>
                       {user =>
                         user && user.roles.includes('admin') ? (
-                          <Button onClick={()=>this.props.onBulkUpdate(this.props.searchHash, this.props.currentSiteView.url||"default")}>
+                          <Button
+                            onClick={() =>
+                              this.props.onBulkUpdate(
+                                this.props.searchHash,
+                                this.props.currentSiteView.url || 'default'
+                              )
+                            }>
                             Bulk Update <FontAwesome name="truck" />
                           </Button>
                         ) : null
@@ -685,7 +693,7 @@ export default class CrumbsBar extends React.Component<
             </Grid>
           )}
         </ApolloConsumer>
-      </CrumbsBarStyleWrappper>
+      </ThemedCrumbsBarStyleWrappper>
     );
   }
 }
