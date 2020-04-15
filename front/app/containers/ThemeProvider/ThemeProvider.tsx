@@ -15,8 +15,12 @@ const clinwikiColors = {
   navBar: '#1b2a38',
   //button Green
   button: '#55B88D',
+  //hover button
   buttonHover: '#e6e6e6',
+  //hover buttonborder
   buttonBorderHover: '#adadad',
+  //agg side bar gray
+  sideBarBackground: '#4d5863',
 };
 
 export const withTheme = Component => {
@@ -38,6 +42,9 @@ export const withTheme = Component => {
           buttonFont: '#fff',
           buttonHover: '#e6e6e6',
           buttonBorderHover: '#adadad',
+        },
+        aggSideBar: {
+          sideBarBackground: '#4d5863',
         },
       };
     };
