@@ -57,23 +57,25 @@ export const withTheme = (Component)  =>  {
       buttonBorderHover: '#adadad',
     };
 
-      return {
-        primaryColor: 'white',
-        secondaryColor: 'purple',
-        lightTextColor: colors.lightTextColor,
-        authHeader: {
-          headerBackground: colors.primaryColor,
-          font: colors.lightTextColor,
-          hoverFont: colors.grayHeaderFont,
-          logoFont: '#fff',
-        },
-        authButton: {
-          button: colors.button,
-          buttonFont: '#fff',
-          buttonHover: '#e6e6e6',
-          buttonBorderHover: '#adadad',
-        },
-        aggSideBar: {
+     return {
+      primaryColor: 'white',
+      secondaryColor: 'purple',
+      lightTextColor: colors.lightTextColor,
+      button: colors.secondaryColor,
+      buttonSecondary: colors.primaryColor,
+      authHeader: {
+        headerBackground: colors.primaryColor,
+        font: colors.lightTextColor,
+        hoverFont: colors.grayHeaderFont,
+        logoFont: '#fff',
+      },
+      authButton: {
+        button: colors.button,
+        buttonFont: '#fff',
+        buttonHover: '#e6e6e6',
+        buttonBorderHover: '#adadad',
+      },
+      aggSideBar: {
           sideBarBackground: '#4d5863',
           sideBarFont: '#bac5d0',
           sideBarFontHover: '#fff',
