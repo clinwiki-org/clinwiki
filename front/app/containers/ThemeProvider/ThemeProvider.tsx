@@ -81,10 +81,11 @@ export const withTheme = Component => {
         crumbsBar: {
           containerBackground: '#f2f2f2',
           containerFont: 'black',
+          filterBarBackground: 'rgba(85, 184, 141, 0.5)',
         },
         crumbs: {
-          crumbsButtonBackground: '#55b88d',
-          crumbsButtonFont: '#fff',
+          crumbBackground: colors.primaryColor,
+          crumbFont: '#fff',
         },
       };
     };
