@@ -1,4 +1,5 @@
 import * as React from 'react';
+import SiteProvider from 'containers/SiteProvider';
 
 interface ThemeProviderProps {
   // id?: number;
@@ -8,6 +9,7 @@ interface ThemeProviderProps {
 
 //this obj is more for reference than anything else
 const clinwikiColors = {
+  primaryClinwiki: '#6BA5D6',
   //header font color
   whiteHeaderFont: '#fff',
   grayHeaderFont: '#777777',
@@ -25,14 +27,27 @@ const clinwikiColors = {
 
 export const withTheme = Component => {
   class ThemeProvider extends React.Component {
-    theme = () => {
-      let primaryColor = 'white';
-      let secondaryColor = 'purple';
+    theme = site => {
+      //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks.
+      const colors = {
+        //clinwiki defaults?
+        primaryColor: '#6BA5D6',
+        secondaryColor: '#1b2a38',
+        //header font color
+        whiteHeaderFont: '#fff',
+        grayHeaderFont: '#777777',
+        //darkBlue for header
+        navBar: '#1b2a38',
+        //button Green
+        button: '#55B88D',
+        buttonHover: '#e6e6e6',
+        buttonBorderHover: '#adadad',
+      };
       return {
         primaryColor: 'white',
         secondaryColor: 'purple',
         authHeader: {
-          headerBackground: '#1b2a38',
+          headerBackground: colors.primaryColor,
           font: '#777777',
           hoverFont: '#fff',
           logoFont: '#fff',
@@ -50,7 +65,11 @@ export const withTheme = Component => {
     };
 
     render() {
-      return <Component theme={this.theme()} {...this.props} />;
+      return (
+        <SiteProvider>
+          {site => <Component theme={this.theme(site)} {...this.props} />}
+        </SiteProvider>
+      );
     }
   }
   return ThemeProvider;
