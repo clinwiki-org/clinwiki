@@ -89,9 +89,26 @@ const CrumbsBarStyleWrappper = styled.div`
     color: #394149;
   }
   .crumbs-bar {
+<<<<<<< HEAD
     background: ${props => props.theme.crumbsBar.containerBackground};
     color: ${props => props.theme.crumbsBar.containerFont};
 
+=======
+    padding: 10px 30px;
+    border: solid white 1px;
+    margin-bottom: 1em;
+    margin-left: 15px;
+    width: 100%;
+    background: ${props => props.theme.crumbsBar.containerBackground};
+    color: ${props => props.theme.crumbsBar.containerFont};
+
+    .container {
+      border: 0px;
+      margin-top: 5px;
+      color: #394149;
+    }
+
+>>>>>>> crumbs bar mostly configured, filterBar giving some trouble
     i {
       font-style: normal;
       margin-right: 3px;
@@ -647,8 +664,12 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                       <ListGroupItem
                         style={{
                           minWidth: '100%',
+<<<<<<< HEAD
                           background: this.props.theme.button,
                           color: '#fff'
+=======
+                          background: 'rgba(85, 184, 141, 0.5)',
+>>>>>>> crumbs bar mostly configured, filterBar giving some trouble
                         }}
                         onClick={this.toggleShowFilters}>
                         {' '}

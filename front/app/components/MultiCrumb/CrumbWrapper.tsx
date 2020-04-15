@@ -18,12 +18,7 @@ const crumbKeyframe = keyframes`
     background-color: #55b88d;
   }
 `;
-<<<<<<< HEAD
-//animation temporarily removed from crumb-container
-//animation: ${crumbKeyframe} 2s ease-in-out;
-=======
 
->>>>>>> auth header styles coming from theme
 export default withTheme(styled.div`
   .filter-values {
     background-color: transparent;
