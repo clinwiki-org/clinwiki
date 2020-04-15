@@ -23,6 +23,10 @@ const clinwikiColors = {
   buttonBorderHover: '#adadad',
   //agg side bar gray
   sideBarBackground: '#4d5863',
+  //agg side bar font colors
+  sideBarColor: '#bac5d0',
+  sideBarColorHover: '#fff',
+  sideBarTitleFont: '#fff',
 };
 
 export const withTheme = (Component)  =>  {
@@ -47,8 +51,6 @@ export const withTheme = (Component)  =>  {
     };
 
      return {
-      primaryColor: 'white',
-      secondaryColor: 'purple',
       lightTextColor: colors.lightTextColor,
       button: colors.secondaryColor,
       buttonSecondary: colors.primaryColor,
@@ -63,11 +65,14 @@ export const withTheme = (Component)  =>  {
         buttonFont: '#fff',
         buttonHover: '#e6e6e6',
         buttonBorderHover: '#adadad',
+        lightTextColor: '#fff',
       },
       aggSideBar: {
-          sideBarBackground: '#4d5863',
-        },
-      
+        sideBarBackground: colors.secondaryColor,
+        sideBarFont: '#bac5d0',
+        sideBarFontHover: '#fff',
+        sideBarTitleFont: '#fff',
+      },
       };
     };
 

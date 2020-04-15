@@ -6,7 +6,7 @@ import { gql } from 'apollo-boost';
 import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import {ThemedButton} from './StyledButton';
+import {ThemedButton} from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { setLocalJwt } from 'utils/localStorage';

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { History } from 'history';
 import { logout } from 'utils/auth';
-import withTheme from '../../containers/ThemeProvider';
+import withTheme from 'containers/ThemeProvider';
 
 interface AuthButtonProps {
   user: {
