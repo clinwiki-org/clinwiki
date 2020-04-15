@@ -53,9 +53,8 @@ type SignInMutationFn = MutationFn<SignInMutation, SignInMutationVariables>;
     styled.div`
      position: absolute;
      bottom: 30px;
-     background: ${props => props.theme.secondaryColor};
      a {
-       color: ${props => props.theme.primaryColor};
+       color: ${props => props.theme.lightTextColor};
        margin-right: 15px;
      }`
     ;

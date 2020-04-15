@@ -17,10 +17,13 @@ const clinwikiColors = {
   navBar: '#1b2a38',
   //button Green
   button: '#55B88D',
+  //hover button
   buttonHover: '#e6e6e6',
+  //hover buttonborder
   buttonBorderHover: '#adadad',
+  //agg side bar gray
+  sideBarBackground: '#4d5863',
 };
-
 
 export const withTheme = (Component)  =>  {
  class ThemeProvider extends React.Component {
@@ -40,10 +43,13 @@ export const withTheme = (Component)  =>  {
       button: '#1b2a38',
       buttonHover: '#e6e6e6',
       buttonBorderHover: '#adadad',
+      lightTextColor: '#fff'
     };
+
      return {
       primaryColor: 'white',
       secondaryColor: 'purple',
+      lightTextColor: colors.lightTextColor,
       authHeader: {
         headerBackground: colors.primaryColor,
         font: colors.lightHeaderFont,
@@ -56,23 +62,20 @@ export const withTheme = (Component)  =>  {
         buttonHover: '#e6e6e6',
         buttonBorderHover: '#adadad',
       },
+      aggSideBar: {
+          sideBarBackground: '#4d5863',
+        },
+      
+      };
     };
-   }
 
-   render() {
-     return (
-       <SiteProvider>
-        {(site) => 
-        <Component
-          theme={this.theme(site)}
-        {...this.props}
-       />
-        }
-       </SiteProvider>
-     )
-   }
-
-  
+    render() {
+      return (
+        <SiteProvider>
+          {site => <Component theme={this.theme(site)} {...this.props} />}
+        </SiteProvider>
+      );
+    }
   }
   return ThemeProvider;
 };
