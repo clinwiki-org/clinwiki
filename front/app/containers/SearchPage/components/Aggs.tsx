@@ -103,7 +103,7 @@ const PresearchContainer = styled.div`
 `;
 
 const AggSideBarTitle = styled.h4`
-  color: white;
+  color: ${props => props.theme.aggSideBar.sideBarTitleFont};
   position: relative;
   left: 20px;
 `;
