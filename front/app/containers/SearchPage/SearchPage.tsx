@@ -18,10 +18,7 @@ import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
 import {ThemedButton} from '../../components/StyledComponents';
-<<<<<<< HEAD
 import { History } from 'history';
-=======
->>>>>>> added flex box to main search container, added colors for sorter, and presearch. Need to fix mobile issues caused by flexbox
 import {
   path,
   map,
