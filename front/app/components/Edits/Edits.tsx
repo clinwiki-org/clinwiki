@@ -7,6 +7,7 @@ import {
   WikiPageEditFragment_user,
 } from 'types/WikiPageEditFragment';
 import { gql } from 'apollo-boost';
+import withTheme from '../../containers/ThemeProvider';
 
 interface EditsProps {
   edits: WikiPageEditFragment[];
@@ -72,6 +73,8 @@ const StyleWrapper = styled(Table)`
   }
 `;
 
+const ThemedStyleWrapper = withTheme(StyleWrapper);
+
 class Edits extends React.PureComponent<EditsProps> {
   static fragment = gql`
     fragment WikiPageEditFragment on WikiPageEdit {
@@ -99,7 +102,7 @@ class Edits extends React.PureComponent<EditsProps> {
 
   render() {
     return (
-      <StyleWrapper striped bordered>
+      <ThemedStyleWrapper striped bordered>
         <tbody>
           {this.props.edits.map(edit => (
             <tr key={edit.id} style={{ padding: '10px' }}>
@@ -129,7 +132,7 @@ class Edits extends React.PureComponent<EditsProps> {
             </tr>
           ))}
         </tbody>
-      </StyleWrapper>
+      </ThemedStyleWrapper>
     );
   }
 }

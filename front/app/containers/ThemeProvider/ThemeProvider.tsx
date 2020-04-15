@@ -1,24 +1,62 @@
 import * as React from 'react';
 import SiteProvider from 'containers/SiteProvider';
 
-
 interface ThemeProviderProps {
   // id?: number;
   // url?: string;
   // children: (site: SiteFragment, refetch: any) => React.ReactNode;
 }
 
+//this obj is more for reference than anything else
+const clinwikiColors = {
+  //header font color
+  primaryClinwiki: '#6BA5D6',
+  whiteHeaderFont: '#fff',
+  grayHeaderFont: '#777777',
+  //darkBlue for header
+  navBar: '#1b2a38',
+  //button Green
+  button: '#55B88D',
+  buttonHover: '#e6e6e6',
+  buttonBorderHover: '#adadad',
+};
 
 
 export const withTheme = (Component)  =>  {
  class ThemeProvider extends React.Component {
 
    theme = (site) => {
-     console.log(site);
+  
+     //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks. 
+    const colors = {
+      //header font color
+      primaryColor: '#6BA5D6',
+      secondaryColor: '#1b2a38',
+      whiteHeaderFont: '#fff',
+      grayHeaderFont: '#777777',
+      //darkBlue for header
+      navBar: '#1b2a38',
+      //button Green
+      button: '#55B88D',
+      buttonHover: '#e6e6e6',
+      buttonBorderHover: '#adadad',
+    };
      return {
-       primaryColor: 'white',
-       secondaryColor: 'purple'
-     }
+      primaryColor: 'white',
+      secondaryColor: 'purple',
+      authHeader: {
+        headerBackground: colors.primaryColor,
+        font: '#777777',
+        hoverFont: '#fff',
+        logoFont: '#fff',
+      },
+      authButton: {
+        button: '#55B88D',
+        buttonFont: '#fff',
+        buttonHover: '#e6e6e6',
+        buttonBorderHover: '#adadad',
+      },
+    };
    }
 
    render() {
@@ -33,9 +71,10 @@ export const withTheme = (Component)  =>  {
        </SiteProvider>
      )
    }
-  }
-  return ThemeProvider
-}
 
+  
+  }
+  return ThemeProvider;
+};
 
 export default withTheme;
