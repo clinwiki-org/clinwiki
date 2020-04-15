@@ -57,7 +57,7 @@ import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
-
+import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
 
 class ParamsQueryComponent extends Query<
@@ -88,10 +88,11 @@ const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
   box-sizing: border-box;
+  background: ${props => props.theme.aggSideBar.sideBarBackground};
   .panel-title {
     a:hover {
       text-decoration: none;
-      color: #fff;
+      color: ${props => props.theme.aggSideBar.sideBarFontHover};
     }
   }
   .panel-default {
@@ -111,16 +112,17 @@ const SidebarContainer = styled(Col)`
       background: #394149;
       .panel-body {
         padding-left: 10px;
-        color: rgba(255, 255, 255, 0.7);
+        color: #fff;
       }
     }
     .panel-title {
       font-size: 16px;
-      color: #bac5d0;
+      color: ${props => props.theme.aggSideBar.sideBarFont};
       padding: 0px 10px;
     }
   }
 `;
+const ThemedSidebarContainer = withTheme(SidebarContainer);
 
 const SearchContainer = styled.div`
   border: solid white 1px;
@@ -182,7 +184,7 @@ const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
     keys.forEach(k => {
-      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams)
+      params = addFilter(aggName, k, isCrowd)(params) as SearchParams;
     });
     // changeFilter(true);
     return params;
@@ -233,7 +235,7 @@ const changePage = (pageNumber: number) => (params: SearchParams) => ({
 interface SearchPageProps {
   match: match<{ siteviewUrl: string }>;
   history: any;
-  location:any;
+  location: any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
   site: SiteFragment;
@@ -421,7 +423,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  handleBulkUpdateClick = (hash:string, siteViewUrl:string) => {
+  handleBulkUpdateClick = (hash: string, siteViewUrl: string) => {
     this.props.history.push(`/bulk?hash=${hash}&sv=${siteViewUrl}`);
   };
 
@@ -568,12 +570,31 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   showingCards = () => this.props.currentSiteView.search.results.type == 'card';
 
   componentDidMount() {
+    let searchTerm = new URLSearchParams(this.props.location?.search || '');
+    if (searchTerm.has('q')) {
+      let q = {
+        key: 'AND',
+        children: [{ children: [], key: searchTerm.getAll('q').toString() }],
+      };
+      this.setState(
+        {
+          params: {
+            q: q,
+            aggFilters: [],
+            crowdAggFilters: [],
+            sorts: [],
+            page: 0,
+            pageSize: defaultPageSize,
+          },
+        },
+        () => this.updateSearchParams(this.state.params)
+      );
+    }
     if (this.showingCards()) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
-
   }
 
   componentWillUnmount() {
@@ -589,7 +610,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   getHashFromLocation(): string | null {
-    let hash = new URLSearchParams(this.props.history.location.search).getAll("hash")
+    let hash = new URLSearchParams(this.props.history.location.search).getAll(
+      'hash'
+    );
     return hash.toString();
   }
 
@@ -622,7 +645,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString() || 'default';
+    const siteViewUrl =
+      new URLSearchParams(this.props.history.location.search)
+        .getAll('sv')
+        .toString() || 'default';
     if (data?.provisionSearchHash?.searchHash?.short) {
       this.props.history.push(
         `/search?hash=${
@@ -681,9 +707,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         {presearchButton.name && (
           <Button
             style={{ width: 200, marginLeft: 13 }}
-            href={
-              `/search?hash=${hash}&sv=${presearchButton.target}`
-            }>
+            href={`/search?hash=${hash}&sv=${presearchButton.target}`}>
             {presearchButton.name}
           </Button>
         )}
@@ -740,9 +764,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             },
           }}>
           <Row>
-            <SidebarContainer md={2}>
+            <ThemedSidebarContainer md={2}>
               {this.renderAggs(currentSiteView)}
-            </SidebarContainer>
+            </ThemedSidebarContainer>
             <MainContainer md={10}>
               {this.renderPresearch(null)}
               <SearchView
@@ -778,7 +802,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       );
     }
 
-
     const hash = this.getHashFromLocation();
 
     return (
@@ -807,9 +830,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               return (
                 <Row>
                   {showFacetBar && (
-                    <SidebarContainer md={2}>
+                    <ThemedSidebarContainer md={2}>
                       {this.renderAggs(currentSiteView)}
-                    </SidebarContainer>
+                    </ThemedSidebarContainer>
                   )}
                   <div id="main_search" style={{ overflowY: 'auto' }}>
                     <MainContainer style={{ width: '100%' }}>
