@@ -23,6 +23,7 @@ const clinwikiColors = {
   buttonBorderHover: '#adadad',
   //agg side bar gray
   sideBarBackground: '#4d5863',
+<<<<<<< HEAD
   //agg side bar font colors
   sideBarColor: '#bac5d0',
   sideBarColorHover: '#fff',
@@ -34,6 +35,8 @@ const clinwikiColors = {
   //color of actual crumb
   crumbColor: '#55b88d',
   crumbFontColor: '#fff',
+=======
+>>>>>>> small style additions
 };
 
 export const withTheme = Component => {
