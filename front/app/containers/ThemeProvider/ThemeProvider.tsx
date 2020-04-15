@@ -56,9 +56,9 @@ export const withTheme = Component => {
       };
 
       return {
-        primaryColor: 'white',
-        secondaryColor: 'purple',
         lightTextColor: colors.lightTextColor,
+        button: colors.secondaryColor,
+        buttonSecondary: colors.primaryColor,
         authHeader: {
           headerBackground: colors.primaryColor,
           font: colors.lightHeaderFont,
@@ -70,9 +70,10 @@ export const withTheme = Component => {
           buttonFont: '#fff',
           buttonHover: '#e6e6e6',
           buttonBorderHover: '#adadad',
+          lightTextColor: '#fff',
         },
         aggSideBar: {
-          sideBarBackground: '#4d5863',
+          sideBarBackground: colors.secondaryColor,
           sideBarFont: '#bac5d0',
           sideBarFontHover: '#fff',
           sideBarTitleFont: '#fff',
