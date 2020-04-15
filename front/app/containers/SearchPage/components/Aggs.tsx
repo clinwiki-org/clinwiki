@@ -34,6 +34,7 @@ import styled from 'styled-components';
 import AggFilterInputUpdater from './AggFilterInputUpdater';
 import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
+import withTheme from 'containers/ThemeProvider';
 
 const getVisibleOptionsByName: (SiteFragment) => any = compose(
   reduce(
@@ -101,8 +102,15 @@ const PresearchContainer = styled.div`
   }
 `;
 
+const AggSideBarTitle = styled.h4`
+  color: white;
+  position: relative;
+  left: 20px;
+`;
+const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
+
 class Aggs extends React.PureComponent<AggsProps> {
-  getAggs = (siteView:SiteFragment_siteView): string[] => {
+  getAggs = (siteView: SiteFragment_siteView): string[] => {
     return displayFields(
       siteView.search.aggs.selected.kind,
       siteView.search.aggs.selected.values,
@@ -249,14 +257,7 @@ class Aggs extends React.PureComponent<AggsProps> {
 
       crowdAggDropdowns = (
         <div>
-          <h4
-            style={{
-              color: 'white',
-              position: 'relative',
-              left: '20px',
-            }}>
-            Crowd Facets
-          </h4>
+          <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
           {sortByNameCi(this.getCrowdAggs(Object.keys(crowdAggs))).map(k => (
             <AggContext.Provider
               key={k}
