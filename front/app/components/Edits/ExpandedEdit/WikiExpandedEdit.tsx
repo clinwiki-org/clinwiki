@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as FontAwesome from 'react-fontawesome';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 
 import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
 
@@ -69,6 +69,16 @@ class WikiExpandedEdit extends React.Component<EditProps, EditState> {
     onMouseLeave: () => this.setState({ ...this.state, hoveredLine: null }),
   });
 
+  hasInvisibleLines() {
+    const { lineVisible } = this.state;
+    for (let i = 0; i < Object.keys(lineVisible).length; i++) {
+      if (!lineVisible[i]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   render() {
     const {
       edit: {
@@ -76,6 +86,7 @@ class WikiExpandedEdit extends React.Component<EditProps, EditState> {
       },
     } = this.props;
     const { lineVisible, hoveredLine } = this.state;
+    const invisibleLines = this.hasInvisibleLines();
     const nodes: any[] = [];
     const actions: any[] = [];
     let firstInvisible: number | null = null;
@@ -130,10 +141,19 @@ class WikiExpandedEdit extends React.Component<EditProps, EditState> {
             <ul>{actions}</ul>
           </div>
         </Col>
-        <Col md={11} className="diff-column">
+        <Col md={10} className="diff-column">
           <div className="diff">
             <ul className="diff-lines">{nodes}</ul>
           </div>
+        </Col>
+        <Col md={1}>
+          {invisibleLines && (
+            <Button
+              bsSize="xsmall"
+              onClick={this.expandSpans(0, editLines.length + 1)}>
+              Expand All
+            </Button>
+          )}
         </Col>
       </Row>
     );
