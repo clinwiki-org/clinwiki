@@ -759,6 +759,15 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     }
   };
 
+  handleAggsUpdated = (data?:SearchPageSearchQuery) => {
+      if (data?.search) {
+        this.props.onAggsUpdate(
+          this.transformAggs(data.search.aggs || []),
+          this.transformCrowdAggs(data.crowdAggs.aggs || [])
+        );
+      }
+  }
+
   render() {
     return (
       <SearchWrapper>
@@ -770,15 +779,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           <QueryComponent
             query={QUERY}
             variables={this.props.params}
-            onCompleted={(data: any) => {
-              if (data && data.search) {
-                this.props.onAggsUpdate(
-                  this.transformAggs(data.search.aggs || []),
-                  this.transformCrowdAggs(data.crowdAggs.aggs || [])
-                );
-              }
-            }}>
+            onCompleted={this.handleAggsUpdated}>
             {({ data, loading, error }) => {
+              // Unfortunately the onCompleted callback is not called if
+              // the data is served from cache.  There is some confusion
+              // in the documentation but this appears to be by design.
+              this.handleAggsUpdated(data); 
               return (
                 <SearchContainer>
                   {this.renderSearch({ data, loading, error })}
