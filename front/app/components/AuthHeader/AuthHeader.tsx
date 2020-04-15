@@ -22,11 +22,15 @@ const StyledWrapper = styled.div`
     border-radius: 0px;
   }
 
-  nav.navbar a.logo {
-    color: ${props => props.theme.authHeader.font} !important;
+  nav.navbar a.logo, nav.navbar a {
+    color: ${props => props.theme.authHeader.font};
   }
   a:hover {
     color: ${props => props.theme.authHeader.hoverFont} !important;
+  }
+
+  nav.navbar .dropdown-menu a {
+    color: #333;
   }
 
   a#logo {
