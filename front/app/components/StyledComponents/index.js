@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-// import { Button } from 'react-bootstrap';
-import withTheme from './../ThemeProvider';
+import withTheme from '../../containers/ThemeProvider';
 
 const StyledButton = styled.div`
   padding: 10px 15px;
@@ -18,7 +17,7 @@ const StyledButton = styled.div`
   border-radius: 4px;
   transition: .5s;
   &:hover {
-    background: ${props => props.theme.buttonSecondary} !important;
+    background: ${props => props.theme.buttonSecondary};
   }
 `;
 
