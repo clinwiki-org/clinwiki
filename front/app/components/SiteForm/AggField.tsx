@@ -14,6 +14,7 @@ import { camelCase, capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
 import { AggFilterSiteConfigUpdater } from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
+import withTheme from 'containers/ThemeProvider';
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
@@ -101,6 +102,10 @@ const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
 `;
 
+const ThemedContainer = withTheme(Container);
+const ThemedStyledLabel = withTheme(StyledLabel);
+const ThemedCrumbsContainer = withTheme(CrumbsContainer);
+
 class AggField extends React.Component<AggFieldProps, AggFieldState> {
   state: AggFieldState = {
     isValuesOpen: false,
@@ -179,9 +184,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             .map(capitalize)
             .join(' ')}
         </h4>
-        <Container>
-          <StyledLabel>Preselected values</StyledLabel>
-          <CrumbsContainer>
+        <ThemedContainer>
+          <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
+          <ThemedCrumbsContainer>
             {Array.from(selected).map(value => (
               <MultiCrumb
                 key={value}
@@ -189,7 +194,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 onClick={value => preselectedUpdater.removeFilter(value)}
               />
             ))}
-          </CrumbsContainer>
+          </ThemedCrumbsContainer>
           <FiltersContainer>
             <FilterContainer>
               <AggFilterInputUpdateContext.Provider
@@ -211,8 +216,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
           </FiltersContainer>
-          <StyledLabel>Visible options</StyledLabel>
-          <CrumbsContainer>
+          <ThemedStyledLabel>Visible options</ThemedStyledLabel>
+          <ThemedCrumbsContainer>
             {Array.from(visibleOptions).map(value => (
               <MultiCrumb
                 key={value}
@@ -220,7 +225,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 onClick={value => visibleOptionsUpdater.removeFilter(value)}
               />
             ))}
-          </CrumbsContainer>
+          </ThemedCrumbsContainer>
           <FiltersContainer>
             <FilterContainer>
               <AggFilterInputUpdateContext.Provider
@@ -275,7 +280,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               value={this.props.field.rank}
               onChange={this.props.onAddMutation}
             />
-            <StyledLabel>Display</StyledLabel>
+            <ThemedStyledLabel>Display</ThemedStyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.display`}
               componentClass="select"
@@ -288,7 +293,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="NUMBER_RANGE">Number Range</option>
             </StyledFormControl>
           </div>
-        </Container>
+        </ThemedContainer>
       </>
     );
   }
