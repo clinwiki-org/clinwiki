@@ -9,6 +9,9 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 16
+- Bugfix: Facet bar was blank when returning to search from study page
+
 ### Version 15
 - Support search query by query string q=...
 - Temporarily hide workflow facet typo search
