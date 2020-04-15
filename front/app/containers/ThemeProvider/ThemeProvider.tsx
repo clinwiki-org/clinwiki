@@ -1,4 +1,5 @@
 import * as React from 'react';
+import SiteProvider from 'containers/SiteProvider';
 
 
 interface ThemeProviderProps {
@@ -12,7 +13,8 @@ interface ThemeProviderProps {
 export const withTheme = (Component)  =>  {
  class ThemeProvider extends React.Component {
 
-   theme = () => {
+   theme = (site) => {
+     console.log(site);
      return {
        primaryColor: 'white',
        secondaryColor: 'purple'
@@ -21,10 +23,14 @@ export const withTheme = (Component)  =>  {
 
    render() {
      return (
-       <Component
-        theme={this.theme()}
-       {...this.props}
+       <SiteProvider>
+        {(site) => 
+        <Component
+          theme={this.theme(site)}
+        {...this.props}
        />
+        }
+       </SiteProvider>
      )
    }
   }
