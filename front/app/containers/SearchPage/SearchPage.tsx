@@ -17,6 +17,7 @@ import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
+import {ThemedButton} from '../../components/StyledComponents';
 import {
   path,
   map,
@@ -88,6 +89,8 @@ const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
   box-sizing: border-box;
+  min-width: 235px;
+  min-height: 100%;
   background: ${props => props.theme.aggSideBar.sideBarBackground};
   .panel-title {
     a:hover {
@@ -704,11 +707,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           currentSiteView={currentSiteView}
         />
         {presearchButton.name && (
-          <Button
+          <ThemedButton
             style={{ width: 200, marginLeft: 13 }}
             href={`/search?hash=${hash}&sv=${presearchButton.target}`}>
             {presearchButton.name}
-          </Button>
+          </ThemedButton>
         )}
       </SearchContainer>
     );
@@ -827,7 +830,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 showBreadCrumbs,
               } = currentSiteView.search.config.fields;
               return (
-                <Row>
+                <Row style={{display: 'flex'}}>
                   {showFacetBar && (
                     <ThemedSidebarContainer md={2}>
                       {this.renderAggs(currentSiteView)}
