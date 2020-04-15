@@ -12,10 +12,19 @@ interface AuthButtonProps {
     roles: string[];
   } | null;
   history: History;
+  theme: any
 }
 
 const ButtonWrapper = styled.div`
   margin-top: 7px;
+  // background: ${props => props.theme.authButton.button} !important;
+  // color: ${props => props.theme.authButton.buttonFont};
+  border-radius: 4px;
+  &:hover {
+    background: ${props => props.theme.authButton.buttonHover};
+    border-color: ${props => props.theme.authButton.buttonBorderHover};
+    text-decoration: none;
+  }
 `;
 
 const SignInWrapper = styled.a`
@@ -81,6 +90,11 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
     return (
       <ThemedButtonWrapper className="pull-right">
         <DropdownButton
+          style={{
+            background: this.props.theme.authButton.button,
+            color: this.props.theme.authButton.buttonFont,
+            borderRadius:'4px'
+          }}
           title={(this.props.user && this.props.user.email) || ''}
           id="loggedIn">
           <MenuItem onClick={this.handleSitesClick}>Sites</MenuItem>
@@ -95,4 +109,4 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
   }
 }
 
-export default AuthButton;
+export default withTheme(AuthButton);
