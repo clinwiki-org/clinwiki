@@ -27,6 +27,13 @@ const clinwikiColors = {
   sideBarColor: '#bac5d0',
   sideBarColorHover: '#fff',
   sideBarTitleFont: '#fff',
+  //offwhite container for crumbs and search
+  containerColor: '#f2f2f2',
+  //container text is usually just black
+  containerText: '#000000',
+  //color of actual crumb
+  crumbColor: '#55b88d',
+  crumbFontColor: '#fff',
 };
 
 export const withTheme = Component => {
@@ -69,6 +76,14 @@ export const withTheme = Component => {
           sideBarFont: '#bac5d0',
           sideBarFontHover: '#fff',
           sideBarTitleFont: '#fff',
+        },
+        crumbsBar: {
+          containerBackground: '#f2f2f2',
+          containerFont: 'black',
+        },
+        crumbs: {
+          crumbsButtonBackground: '#55b88d',
+          crumbsButtonFont: '#fff',
         },
       };
     };

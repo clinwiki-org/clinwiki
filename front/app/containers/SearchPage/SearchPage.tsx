@@ -666,7 +666,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <InstructionsContainer>
           {presearchText && (
             <Instructions>
-              {/* <h4 style={{ marginRight: 10 }}>Instructions:</h4>{' '} */}
               <h5>{presearchText}</h5>
             </Instructions>
           )}
@@ -821,7 +820,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     </ThemedSidebarContainer>
                   )}
                   <div id="main_search" style={{ overflowY: 'auto' }}>
-                    <MainContainer style={{ width: '100%' }}>
+                    <MainContainer>
                       {showBreadCrumbs && this.renderCrumbs()}
                       {showPresearch && this.renderPresearch(hash)}
                       {this.renderSearch()}
