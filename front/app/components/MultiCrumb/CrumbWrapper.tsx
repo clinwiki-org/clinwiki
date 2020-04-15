@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled, { keyframes } from 'styled-components';
+import withTheme from '../../containers/ThemeProvider';
 
 const crumbKeyframe = keyframes`
   0% {
@@ -18,7 +19,7 @@ const crumbKeyframe = keyframes`
   }
 `;
 
-export default styled.div`
+export default withTheme(styled.div`
   .filter-values {
     background-color: transparent;
     border: none;
@@ -44,4 +45,4 @@ export default styled.div`
     padding: 3px 6px 3px 1px;
     border-radius: 4px;
   }
-`;
+`);
