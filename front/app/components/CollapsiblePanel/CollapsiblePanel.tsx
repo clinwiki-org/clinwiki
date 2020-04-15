@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import { CSSTransition } from 'react-transition-group';
+import withTheme from '../../containers/ThemeProvider';
 
 interface CollapsiblePanelProps {
   header: string;
@@ -50,6 +51,9 @@ const StyledPanelBody = styled.div`
   }
 `;
 
+const ThemedStyleWrapper = withTheme(StyleWrapper);
+const ThemedStyledPanelBody = withTheme(StyledPanelBody);
+
 class CollapsiblePanel extends React.Component<
   CollapsiblePanelProps,
   CollapsiblePanelState
@@ -78,7 +82,7 @@ class CollapsiblePanel extends React.Component<
 
   render() {
     return (
-      <StyleWrapper {...this.props}>
+      <ThemedStyleWrapper {...this.props}>
         <Panel>
           <Panel.Heading
             onClick={() =>
@@ -107,12 +111,12 @@ class CollapsiblePanel extends React.Component<
             timeout={200}
             appear
             classNames="transition">
-            <StyledPanelBody>
+            <ThemedStyledPanelBody>
               <Panel.Body>{this.props.children}</Panel.Body>
-            </StyledPanelBody>
+            </ThemedStyledPanelBody>
           </CSSTransition>
         </Panel>
-      </StyleWrapper>
+      </ThemedStyleWrapper>
     );
   }
 }

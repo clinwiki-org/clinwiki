@@ -39,6 +39,7 @@ import {
 } from 'utils/siteViewUpdater';
 import { equals, prop, last, view } from 'ramda';
 import { History, Location } from 'history';
+import withTheme from 'containers/ThemeProvider';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
@@ -134,6 +135,9 @@ const StyledFormInput = styled(FormControl)`
 //   diplay: flex;
 //   flex-direction: row;
 //   `
+
+const ThemedAggsHeaderContainer = withTheme(AggsHeaderContainer);
+const ThemedStyledFormInput = withTheme(StyledFormInput);
 
 class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   state: SearchFormState = {
