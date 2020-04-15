@@ -10,7 +10,7 @@ interface ThemeProviderProps {
 //this obj is more for reference than anything else
 const clinwikiColors = {
   //header font color
-  primaryClinwiki: '#6BA5D6',
+  primaryClinwiki: '#55B88D',
   whiteHeaderFont: '#fff',
   grayHeaderFont: '#777777',
   //darkBlue for header
@@ -32,12 +32,12 @@ export const withTheme = (Component)  =>  {
       //header font color
       primaryColor: '#6BA5D6',
       secondaryColor: '#1b2a38',
-      whiteHeaderFont: '#fff',
+      lightHeaderFont: '#fff',
       grayHeaderFont: '#777777',
       //darkBlue for header
       navBar: '#1b2a38',
       //button Green
-      button: '#55B88D',
+      button: '#1b2a38',
       buttonHover: '#e6e6e6',
       buttonBorderHover: '#adadad',
     };
@@ -46,12 +46,12 @@ export const withTheme = (Component)  =>  {
       secondaryColor: 'purple',
       authHeader: {
         headerBackground: colors.primaryColor,
-        font: '#777777',
-        hoverFont: '#fff',
+        font: colors.lightHeaderFont,
+        hoverFont: colors.grayHeaderFont,
         logoFont: '#fff',
       },
       authButton: {
-        button: '#55B88D',
+        button: colors.button,
         buttonFont: '#fff',
         buttonHover: '#e6e6e6',
         buttonBorderHover: '#adadad',
