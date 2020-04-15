@@ -22,10 +22,12 @@ import AggCrumb from 'components/MultiCrumb/AggCrumb';
 import { BeatLoader } from 'react-spinners';
 import CurrentUser from 'containers/CurrentUser';
 import { AggCallback, SearchParams } from '../Types';
-import { isEmpty } from 'ramda';
+import { isEmpty, props } from 'ramda';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import withTheme from 'containers/ThemeProvider';
+import ThemedButton from 'components/StyledComponents/index';
+import ThemeProvider from 'containers/ThemeProvider';
 
 const AUTOSUGGEST_QUERY = gql`
   query CrumbsSearchPageAggBucketsQuery(
@@ -76,12 +78,11 @@ const CrumbsBarStyleWrappper = styled.div`
     border: solid white 1px;
     margin-bottom: 1em;
     margin-left: 15px;
-    width: 1559px;
+    width: 100%;
     background: ${props => props.theme.crumbsBar.containerBackground};
     color: ${props => props.theme.crumbsBar.containerFont};
 
     .container {
-      background: pink;
       border: 0px;
       margin-top: 5px;
       color: #394149;
@@ -155,6 +156,9 @@ const LoaderWrapper = styled.div`
   text-align: center;
 `;
 
+const ThemedListGroup = withTheme(ListGroup);
+const ThemedListGroupItem = withTheme(ListGroupItem);
+
 interface CrumbsBarProps {
   searchParams: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
@@ -193,10 +197,7 @@ const Crumb = ({ category, value, onClick }) => {
   );
 };
 
-export default class CrumbsBar extends React.Component<
-  CrumbsBarProps,
-  CrumbsBarState
-> {
+class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   constructor(props) {
     super(props);
 
@@ -252,31 +253,28 @@ export default class CrumbsBar extends React.Component<
     if (totalLength > 0) {
       yield (
         <span key="buttons">
-          <Button
-            bsSize="small"
+          <ThemedButton
             key="defaul"
             onClick={this.props.onReset}
             style={{ margin: '5px 0px 5px 10px' }}>
             Default
-          </Button>
-          <Button
-            bsSize="small"
+          </ThemedButton>
+          <ThemedButton
             key="reset"
             onClick={this.props.onClear}
             style={{ margin: '5px 0px 5px 10px' }}>
             Clear
-          </Button>
+          </ThemedButton>
         </span>
       );
     } else {
       yield (
-        <Button
-          bsSize="small"
+        <ThemedButton
           key="defaul"
           onClick={this.props.onReset}
           style={{ margin: '5px 0px 5px 10px' }}>
           Default
-        </Button>
+        </ThemedButton>
       );
     }
   }
@@ -620,6 +618,9 @@ export default class CrumbsBar extends React.Component<
                 </div>
               </Row>
               {showCrumbsBar ? (
+                // having trouble getting the theme applied to these ListGroups
+                // <ThemeProvider>
+                //   {theme => (
                 <Row>
                   <Col
                     md={12}
@@ -640,7 +641,7 @@ export default class CrumbsBar extends React.Component<
                       <ListGroupItem
                         style={{
                           minWidth: '100%',
-                          backgroundColor: 'rgba(85, 184, 141, 0.5)',
+                          background: 'rgba(85, 184, 141, 0.5)',
                         }}
                         onClick={this.toggleShowFilters}>
                         {' '}
@@ -686,7 +687,9 @@ export default class CrumbsBar extends React.Component<
                     </ListGroup>
                   </Col>
                 </Row>
-              ) : null}
+              ) : //   )}
+              // </ThemeProvider>
+              null}
             </Grid>
           )}
         </ApolloConsumer>
@@ -694,3 +697,5 @@ export default class CrumbsBar extends React.Component<
     );
   }
 }
+
+export default withTheme(CrumbsBar);
