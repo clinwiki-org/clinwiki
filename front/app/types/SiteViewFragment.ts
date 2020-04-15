@@ -37,6 +37,12 @@ export interface SiteViewFragment_study {
   extendedSections: SiteViewFragment_study_extendedSections[];
 }
 
+export interface SiteViewFragment_search_autoSuggest_aggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface SiteViewFragment_search_autoSuggest_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -51,6 +57,7 @@ export interface SiteViewFragment_search_autoSuggest_aggs_fields_visibleOptions 
 
 export interface SiteViewFragment_search_autoSuggest_aggs_fields {
   __typename: "SiteAggField";
+  order: SiteViewFragment_search_autoSuggest_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: SiteViewFragment_search_autoSuggest_aggs_fields_preselected;
@@ -71,6 +78,12 @@ export interface SiteViewFragment_search_autoSuggest_aggs {
   selected: SiteViewFragment_search_autoSuggest_aggs_selected;
 }
 
+export interface SiteViewFragment_search_autoSuggest_crowdAggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface SiteViewFragment_search_autoSuggest_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -85,6 +98,7 @@ export interface SiteViewFragment_search_autoSuggest_crowdAggs_fields_visibleOpt
 
 export interface SiteViewFragment_search_autoSuggest_crowdAggs_fields {
   __typename: "SiteAggField";
+  order: SiteViewFragment_search_autoSuggest_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: SiteViewFragment_search_autoSuggest_crowdAggs_fields_preselected;
@@ -129,6 +143,12 @@ export interface SiteViewFragment_search_results {
   buttons: SiteViewFragment_search_results_buttons;
 }
 
+export interface SiteViewFragment_search_presearch_aggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface SiteViewFragment_search_presearch_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -143,6 +163,7 @@ export interface SiteViewFragment_search_presearch_aggs_fields_visibleOptions {
 
 export interface SiteViewFragment_search_presearch_aggs_fields {
   __typename: "SiteAggField";
+  order: SiteViewFragment_search_presearch_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: SiteViewFragment_search_presearch_aggs_fields_preselected;
@@ -163,6 +184,12 @@ export interface SiteViewFragment_search_presearch_aggs {
   selected: SiteViewFragment_search_presearch_aggs_selected;
 }
 
+export interface SiteViewFragment_search_presearch_crowdAggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface SiteViewFragment_search_presearch_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -177,6 +204,7 @@ export interface SiteViewFragment_search_presearch_crowdAggs_fields_visibleOptio
 
 export interface SiteViewFragment_search_presearch_crowdAggs_fields {
   __typename: "SiteAggField";
+  order: SiteViewFragment_search_presearch_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: SiteViewFragment_search_presearch_crowdAggs_fields_preselected;
@@ -225,6 +253,12 @@ export interface SiteViewFragment_search_config {
   fields: SiteViewFragment_search_config_fields;
 }
 
+export interface SiteViewFragment_search_aggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface SiteViewFragment_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -239,6 +273,7 @@ export interface SiteViewFragment_search_aggs_fields_visibleOptions {
 
 export interface SiteViewFragment_search_aggs_fields {
   __typename: "SiteAggField";
+  order: SiteViewFragment_search_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: SiteViewFragment_search_aggs_fields_preselected;
@@ -259,6 +294,12 @@ export interface SiteViewFragment_search_aggs {
   selected: SiteViewFragment_search_aggs_selected;
 }
 
+export interface SiteViewFragment_search_crowdAggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface SiteViewFragment_search_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -273,6 +314,7 @@ export interface SiteViewFragment_search_crowdAggs_fields_visibleOptions {
 
 export interface SiteViewFragment_search_crowdAggs_fields {
   __typename: "SiteAggField";
+  order: SiteViewFragment_search_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: SiteViewFragment_search_crowdAggs_fields_preselected;

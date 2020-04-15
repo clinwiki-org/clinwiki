@@ -144,7 +144,7 @@ interface AggDropDownState {
   buckets: AggBucket[];
   prevParams: SearchParams | null;
   desc: boolean;
-  sortKind: SortKind;
+  sortKind: any;
   checkboxValue: boolean;
   showLabel: boolean;
 }
@@ -321,9 +321,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   handleSort = (desc: boolean, sortKind: SortKind) => {
     switch (sortKind) {
       case SortKind.Alpha:
-        return [{ id: 'key', desc: !desc }];
+        return [{ id: 'key', desc: desc }];
       case SortKind.Number:
-        return [{ id: 'count', desc: !desc }];
+        return [{ id: 'count', desc: desc }];
     }
   };
 
@@ -591,6 +591,32 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       </PresearchContent>
     );
   };
+
+  componentDidMount(){
+    let fields=this.props.currentSiteView.search.aggs.fields
+    const field = this.findFields();
+    if (field?.order && field.order.id=="key"){
+      console.log(`c4${field.name}`, this.state)
+      console.log("stuff", field.order)
+       this.setState({
+         sortKind: 0,
+         desc: field.order.desc  
+       })
+       console.log(`after ${field.name}`,this.state) 
+     }
+    else if(field?.order && field.order.id=="count"){
+
+      console.log(`b4 ${field.name}`, this.state)
+      console.log(`desc ${field.name}`, field.order.desc)
+      
+         this.setState({
+        sortKind: 1,
+        desc: field.order.desc
+      })
+      console.log(`after ${field.name}`,this.state) 
+
+  }
+  }
 
   render() {
     const { agg, presearch } = this.props;

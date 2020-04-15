@@ -116,7 +116,34 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
+  handleDefaultSort = (x)=>{
+    console.log("X marks the spot",x)
+    switch(x.currentTarget.value){
+      case "keyfalse":
+      let e ={currentTarget:{name: x.currentTarget.name, value: {id:"key", desc:false} }}
+      this.props.onAddMutation(e)
+      return
+      case "keytrue":
+         e ={currentTarget:{name: x.currentTarget.name, value: {id:"key", desc:true} }}
+        this.props.onAddMutation(e)
+        console.log("ZAAAA")
+        return
+      case "countfalse":
+        e ={currentTarget:{name: x.currentTarget.name, value: {id:"count", desc:false} }}
 
+        console.log("1-9")
+        this.props.onAddMutation(e)
+        return
+      case "counttrue":
+        e ={currentTarget:{name: x.currentTarget.name, value: {id:"count", desc:true} }}
+
+        console.log("someone cal 911")
+        this.props.onAddMutation(e)
+
+        return
+    }
+
+  }
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
@@ -252,12 +279,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <StyledFormControl
               name={`set:${this.getPath(configType)}.order`}
               componentClass="select"
-              onChange={this.props.onAddMutation}
-              defaultValue={this.props.field.order}>
-              <option value="{id: 'key', desc: false}">A-Z</option>
-              <option value="{id: 'key', desc: true}">Z-A</option>
-              <option value="{id: 'count', desc: false}">1-9</option>
-              <option value="{id: 'count', desc: true}">9-1</option>
+              //onChange={this.props.onAddMutation}
+              onChange={(e)=>this.handleDefaultSort(e)}
+              //@ts-ignore
+              defaultValue={this.props.field.order?.id+this.props.field.order?.desc}>
+              <option value="keyfalse">A-Z</option>
+              <option value="keytrue">Z-A</option>
+              <option value="countfalse">1-9</option>
+              <option value="counttrue">9-1</option>
             </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl

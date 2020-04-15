@@ -37,6 +37,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_study {
   extendedSections: UpdateSiteViewMutation_updateSiteView_siteView_study_extendedSections[];
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_aggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -51,6 +57,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSugge
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_aggs_fields {
   __typename: "SiteAggField";
+  order: UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_aggs_fields_preselected;
@@ -71,6 +78,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSugge
   selected: UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_aggs_selected;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_crowdAggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -85,6 +98,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSugge
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_crowdAggs_fields {
   __typename: "SiteAggField";
+  order: UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest_crowdAggs_fields_preselected;
@@ -129,6 +143,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_results {
   buttons: UpdateSiteViewMutation_updateSiteView_siteView_search_results_buttons;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -143,6 +163,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields {
   __typename: "SiteAggField";
+  order: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_preselected;
@@ -163,6 +184,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   selected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_selected;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -177,6 +204,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields {
   __typename: "SiteAggField";
+  order: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_preselected;
@@ -225,6 +253,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_config {
   fields: UpdateSiteViewMutation_updateSiteView_siteView_search_config_fields;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -239,6 +273,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fiel
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields {
   __typename: "SiteAggField";
+  order: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_preselected;
@@ -259,6 +294,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs {
   selected: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_selected;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_order {
+  __typename: "SiteOrder";
+  id: string;
+  desc: boolean;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -273,6 +314,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields {
   __typename: "SiteAggField";
+  order: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_preselected;
