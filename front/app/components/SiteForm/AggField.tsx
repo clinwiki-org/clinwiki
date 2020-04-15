@@ -255,7 +255,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             </FilterContainer>
           </FiltersContainer>
           <div>
-            <StyledLabel>Default Sort Type</StyledLabel>
+            <ThemedStyledLabel>Default Sort Type</ThemedStyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.order.sortKind`}
               componentClass="select"
@@ -274,6 +274,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="false">{this.props.field.order?.sortKind == 'count'? "9-1":"Z-A" }</option>
             </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
+            <ThemedStyledLabel>Order</ThemedStyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.rank`}
               placeholder="Order"

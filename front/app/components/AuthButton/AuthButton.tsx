@@ -5,7 +5,6 @@ import { History } from 'history';
 import { logout } from 'utils/auth';
 import withTheme from '../../containers/ThemeProvider';
 
-
 interface AuthButtonProps {
   user: {
     email: string;
