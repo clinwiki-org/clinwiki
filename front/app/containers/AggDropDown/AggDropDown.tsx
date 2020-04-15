@@ -48,6 +48,8 @@ import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQue
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
+import withTheme from '../ThemeProvider';
+
 const PAGE_SIZE = 25;
 
 const Container = styledComponents.div`
@@ -100,12 +102,14 @@ const PresearchCard = styledComponents.div`
 `;
 
 const PresearchHeader = styledComponents.div`
-  background-color: #55b88d;
+  background-color: ${props => props.theme.button};
   padding: 5px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   height: 50px;
 `;
+
+const ThemedPresearchHeader = withTheme(PresearchHeader)
 
 const PresearchTitle = styledComponents.div`
   color: white;
@@ -135,6 +139,8 @@ const PresearchContent = styledComponents.div`
   background-color: white;
   max-height: 260px;
 `;
+
+
 
 interface AggDropDownState {
   hasMore: boolean;
@@ -598,9 +604,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     if (presearch) {
       return (
         <PresearchCard>
-          <PresearchHeader>
+          <ThemedPresearchHeader>
             <PresearchTitle>{capitalize(title)}</PresearchTitle>
-          </PresearchHeader>
+          </ThemedPresearchHeader>
           <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
         </PresearchCard>
       );

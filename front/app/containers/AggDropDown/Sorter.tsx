@@ -1,11 +1,13 @@
 import * as React from 'react';
 import * as FontAwesome from 'react-fontawesome';
+import withTheme from '../ThemeProvider';
 
 interface SorterProps {
   type: string;
   desc: boolean;
   toggle: any;
   active: boolean;
+  theme: any;
 }
 
 interface SorterState {
@@ -52,14 +54,13 @@ class Sorter extends React.PureComponent<SorterProps, SorterState> {
   render() {
     const { toggle, active } = this.props;
     const { icon } = this.state;
-
     return (
       <div onClick={toggle}>
         <FontAwesome
           name={icon}
           style={
             active
-              ? { color: '#55b88d', fontSize: '26px' }
+              ? { color: this.props.theme.sorterColor, fontSize: '26px' }
               : { color: '#c0c3c5', fontSize: '26px' }
           }
         />
@@ -68,4 +69,4 @@ class Sorter extends React.PureComponent<SorterProps, SorterState> {
   }
 }
 
-export default Sorter;
+export default withTheme(Sorter);

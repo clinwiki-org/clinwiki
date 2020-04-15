@@ -59,6 +59,7 @@ export const withTheme = Component => {
         lightTextColor: colors.lightTextColor,
         button: colors.secondaryColor,
         buttonSecondary: colors.primaryColor,
+        sorterColor: colors.primaryColor,
         authHeader: {
           headerBackground: colors.primaryColor,
           font: colors.lightHeaderFont,
