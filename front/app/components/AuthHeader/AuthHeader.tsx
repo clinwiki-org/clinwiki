@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import AuthButton from 'components/AuthButton';
-import withTheme from '../../containers/ThemeProvider';
+import withTheme from 'containers/ThemeProvider';
 
 interface AuthHeaderProps {
   user: {
@@ -23,7 +23,7 @@ const StyledWrapper = styled.div`
   }
 
   nav.navbar a.logo {
-    color: ${props => props.theme.authHeader.font};
+    color: ${props => props.theme.authHeader.font} !important;
   }
   a:hover {
     color: ${props => props.theme.authHeader.hoverFont} !important;
