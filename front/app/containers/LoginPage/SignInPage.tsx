@@ -6,7 +6,7 @@ import { gql } from 'apollo-boost';
 import { SignInMutation, SignInMutationVariables } from 'types/SignInMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import StyledButton from './StyledButton';
+import {ThemedButton} from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
@@ -168,11 +168,11 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                   />
 
                   <div>
-                    <StyledButton
+                    <ThemedButton
                       type="submit"
                       onClick={this.handleSignIn(signIn)}>
                       Sign In
-                    </StyledButton>
+                    </ThemedButton>
                     <div style={{ display: 'block', marginTop: 10 }}>
                       <GoogleLogin
                         clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
