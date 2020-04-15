@@ -195,83 +195,6 @@ const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
   const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
   return { ...params, sorts: snakeSorts, page: 0 };
 };
-const changeFilter = (add: boolean) => (
-  aggName: string,
-  key: string,
-  isCrowd?: boolean
-) => (params: SearchParams) => {
-  const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
-  const lens = lensPath([propName]);
-  return over(
-    lens,
-    (aggs: AggFilterInput[]) => {
-      const index = findIndex(propEq('field', aggName), aggs);
-      if (index === -1 && add) {
-        return [...aggs, { field: aggName, values: [key] }];
-      }
-      const aggLens = lensPath([index, 'values']);
-      const updater = (values: string[]) =>
-        add ? [...values, key] : reject(x => x === key, values);
-      let res = over(aggLens, updater, aggs);
-      // Drop filter if no values left
-      if (isEmpty(view(aggLens, res))) {
-        res = remove(index, 1, res as any);
-      }
-      return res;
-    },
-    {
-      ...params,
-      page: 0,
-    }
-  );
-};
-const addFilter = changeFilter(true);
-const removeFilter = changeFilter(false);
-const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  return (params: SearchParams) => {
-    keys.forEach(k => {
-      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams),
-        console.log(k);
-    });
-    // changeFilter(true);
-    return params;
-  };
-};
-
-const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  return (params: SearchParams) => {
-    keys.forEach(k => {
-      params = removeFilter(aggName, k, isCrowd)(params) as SearchParams;
-    });
-    // changeFilter(true);
-    return params;
-  };
-};
-
-const addSearchTerm = (term: string) => (params: SearchParams) => {
-  // have to check for empty string because if you press return two times it ends up putting it in the terms
-  if (!term.replace(/\s/g, '').length) {
-    return params;
-  }
-  // recycled code for removing repeated terms. might be a better way but I'm not sure.
-  const children = reject(propEq('key', term), params.q.children || []);
-  return {
-    ...params,
-    q: { ...params.q, children: [...(children || []), { key: term }] },
-    page: 0,
-  };
-};
-const removeSearchTerm = (term: string) => (params: SearchParams) => {
-  const children = reject(
-    propEq('key', term),
-    params.q.children || []
-  ) as SearchQuery[];
-  return {
-    ...params,
-    q: { ...params.q, children },
-    page: 0,
-  };
-};
 
 class QueryComponent extends Query<
   SearchPageSearchQuery,
@@ -836,6 +759,15 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     }
   };
 
+  handleAggsUpdated = (data?:SearchPageSearchQuery) => {
+      if (data?.search) {
+        this.props.onAggsUpdate(
+          this.transformAggs(data.search.aggs || []),
+          this.transformCrowdAggs(data.crowdAggs.aggs || [])
+        );
+      }
+  }
+
   render() {
     return (
       <SearchWrapper>
@@ -847,15 +779,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           <QueryComponent
             query={QUERY}
             variables={this.props.params}
-            onCompleted={(data: any) => {
-              if (data && data.search) {
-                this.props.onAggsUpdate(
-                  this.transformAggs(data.search.aggs || []),
-                  this.transformCrowdAggs(data.crowdAggs.aggs || [])
-                );
-              }
-            }}>
+            onCompleted={this.handleAggsUpdated}>
             {({ data, loading, error }) => {
+              // Unfortunately the onCompleted callback is not called if
+              // the data is served from cache.  There is some confusion
+              // in the documentation but this appears to be by design.
+              this.handleAggsUpdated(data); 
               return (
                 <SearchContainer>
                   {this.renderSearch({ data, loading, error })}
