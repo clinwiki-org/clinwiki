@@ -89,8 +89,25 @@ const CrumbsBarStyleWrappper = styled.div`
     color: #394149;
   }
   .crumbs-bar {
+<<<<<<< HEAD
     background: ${props => props.theme.crumbsBar.containerBackground};
     color: ${props => props.theme.crumbsBar.containerFont};
+=======
+    padding: 10px 30px;
+    border: solid white 1px;
+    margin-bottom: 1em;
+    margin-left: 15px;
+    width: 1559px;
+    background: ${props => props.theme.crumbsBar.containerBackground};
+    color: ${props => props.theme.crumbsBar.containerFont};
+
+    .container {
+      background: pink;
+      border: 0px;
+      margin-top: 5px;
+      color: #394149;
+    }
+>>>>>>> crumbs bar style update
 
     i {
       font-style: normal;
@@ -580,7 +597,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       data.siteView;
     let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
-    console.log('THEMEING', this.props.theme);
     return (
       <ThemedCrumbsBarStyleWrappper>
         <ApolloConsumer>
