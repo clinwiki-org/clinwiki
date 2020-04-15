@@ -23,9 +23,10 @@ const clinwikiColors = {
   buttonBorderHover: '#adadad',
   //agg side bar gray
   sideBarBackground: '#4d5863',
-  //agg side bar font
+  //agg side bar font colors
   sideBarColor: '#bac5d0',
   sideBarColorHover: '#fff',
+  sideBarTitleFont: '#fff',
 };
 
 export const withTheme = Component => {
