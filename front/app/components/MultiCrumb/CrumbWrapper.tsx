@@ -18,30 +18,29 @@ const crumbKeyframe = keyframes`
     background-color: #55b88d;
   }
 `;
-
+//animation temporarily removed from crumb-container
+//animation: ${crumbKeyframe} 2s ease-in-out;
 export default withTheme(styled.div`
   .filter-values {
     background-color: transparent;
     border: none;
   }
   .crumb-container {
-    border: 2px solid #55b88d;
+    border: 2px solid ${props => props.theme.crumbs.crumbBackground};
     border-radius: 4px;
     padding: 0 5px 0 5px;
-    color: #55b88d;
     margin: 1px;
-    background: #55b88d;
-    color: #fff !important;
+    background: ${props => props.theme.crumbs.crumbBackground};
+    color: ${props => props.theme.crumbs.crumbFont} !important;
     line-height: 1.85em;
-    animation: ${crumbKeyframe} 2s ease-in-out;
   }
   .crumb-icon {
     cursor: pointer;
-    color: #fff;
+    color: ${props => props.theme.crumbs.crumbFont};
     margin: 0 0 0 3px;
   }
   .shorten-crumb {
-    background: #55b88d;
+    background: ${props => props.theme.crumbs.crumbBackground};
     padding: 3px 6px 3px 1px;
     border-radius: 4px;
   }
