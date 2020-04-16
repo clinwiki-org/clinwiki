@@ -1,6 +1,6 @@
 class StringForTheme < ActiveRecord::Migration[5.2]
   def change
-    add_column :sites, :themes, :text, default: "{
+    add_column :sites, :themes, :text, default: "#{{
   primaryClinwiki: '#55B88D',
   whiteHeaderFont: '#fff',
   grayHeaderFont: '#777777',
@@ -16,6 +16,6 @@ class StringForTheme < ActiveRecord::Migration[5.2]
   containerText: '#000000',
   crumbColor: '#55b88d',
   crumbFontColor: '#fff',
-  }; "
+  }.to_json} "
   end
 end
