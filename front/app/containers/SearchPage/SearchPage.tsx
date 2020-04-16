@@ -72,8 +72,10 @@ const MainContainer = styled(Col)`
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 20px;
-  float: left;
-  width: 100%;
+  flex: 1;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 
   .rt-th {
     text-transform: capitalize;
@@ -98,12 +100,23 @@ const MainContainer = styled(Col)`
   }
 `;
 
+const SearchPageWrapper = styled.div` 
+  display: flex;
+  flex-wrap:nowrap;
+  flex-direction:row;
+  @media only screen and (max-width: 1132px) {
+    flex-direction: column;
+  }
+  `;
+
+
 const ThemedMainContainer = withTheme(MainContainer);
 
 const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
   box-sizing: border-box;
+  width: 235px;
   min-width: 235px;
   min-height: 100%;
   background: ${props => props.theme.aggSideBar.sideBarBackground};
@@ -138,6 +151,9 @@ const SidebarContainer = styled(Col)`
       color: ${props => props.theme.aggSideBar.sideBarFont};
       padding: 0px 10px;
     }
+  }
+  @media only screen and (max-width: 1132px) {
+    width: 100%;
   }
 `;
 const ThemedSidebarContainer = withTheme(SidebarContainer);
@@ -852,7 +868,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 showBreadCrumbs,
               } = currentSiteView.search.config.fields;
               return (
-                <Row style={{ display: 'flex' }}>
+                <SearchPageWrapper>
                   {showFacetBar && (
                     <ThemedSidebarContainer md={2}>
                       {this.renderAggs(currentSiteView)}
@@ -863,7 +879,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       {showPresearch && this.renderPresearch(hash)}
                       {this.renderSearch()}
                     </ThemedMainContainer>
-                </Row>
+                </SearchPageWrapper>
               );
             }}
           />

@@ -88,11 +88,6 @@ const PresearchContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  @media (max-width: 1250px) {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    max-height: 1500px;
-  }
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
