@@ -646,6 +646,7 @@ export interface SiteFragment {
   name: string;
   skipLanding: boolean | null;
   subdomain: string;
+  themes: string;
   owners: SiteFragment_owners[];
   siteView: SiteFragment_siteView;
   siteViews: SiteFragment_siteViews[];

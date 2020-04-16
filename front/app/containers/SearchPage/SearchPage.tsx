@@ -858,7 +858,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       {showPresearch && this.renderPresearch(hash)}
                       {this.renderSearch()}
                     </ThemedMainContainer>
-                  </div>
                 </Row>
               );
             }}

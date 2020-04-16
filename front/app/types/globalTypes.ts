@@ -5,6 +5,12 @@
 // START Enums and Input Objects
 //==============================================================
 
+export enum Diff {
+  DEL = "DEL",
+  INS = "INS",
+  UNCHANGED = "UNCHANGED",
+}
+
 export enum FieldDisplay {
   DATE = "DATE",
   DATE_RANGE = "DATE_RANGE",
