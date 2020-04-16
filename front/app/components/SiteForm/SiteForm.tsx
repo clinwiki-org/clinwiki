@@ -79,13 +79,14 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     props: SiteFormProps,
     state: SiteFormState
   ): SiteFormState | null => {
-    const { name, subdomain, skipLanding, editors } = props.site;
+    const { name, subdomain, skipLanding, editors, themes } = props.site;
     const editorEmails = editors.map(prop('email'));
     const form = {
       name,
       subdomain,
       skipLanding,
       editorEmails,
+      themes
     };
     if (form && !equals(form, state.prevForm as any)) {
       return { ...state, form, prevForm: form };
