@@ -89,6 +89,9 @@ export const withTheme = Component => {
           crumbBackground: colors.primaryColor,
           crumbFont: '#fff',
         },
+        presearch: {
+          presearchHeaders: colors.primaryColor,
+        }
       };
     };
 
