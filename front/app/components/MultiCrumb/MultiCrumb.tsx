@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ListGroupItem } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-import styled from 'styled-components';
 import { AggFilterListItem } from 'containers/SearchPage/Types';
 import ValuesCrumb from './ValuesCrumb';
 import AggCrumb from './AggCrumb';

@@ -6,7 +6,7 @@ import {
   InterventionsPageQuery,
   InterventionsPageQueryVariables,
 } from 'types/InterventionsPageQuery';
-import { History } from 'history';
+import { History, Location } from 'history';
 import { match } from 'react-router-dom';
 
 import InterventionItem from './InterventionItem';
@@ -37,6 +37,7 @@ interface InterventionsPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyExtendedGenericSectionFragment;
+  location: Location;
 }
 
 class QueryComponent extends Query<
@@ -48,7 +49,7 @@ class InterventionsPage extends React.PureComponent<InterventionsPageProps> {
   static fragment = InterventionItem.fragment;
 
   handleItemClick = (id: number) => {
-    this.props.history.push(`/intervention/${id}`);
+    this.props.history.push(`/intervention/${id}/${this.props.location.search}`);
   };
 
   render() {

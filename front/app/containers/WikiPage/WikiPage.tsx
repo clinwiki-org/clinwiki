@@ -16,7 +16,7 @@ import * as FontAwesome from 'react-fontawesome';
 
 import LoadingPane from 'components/LoadingPane';
 import Error from 'components/Error';
-import Edits from 'components/Edits';
+import Edits, { WikiPageEditFragment } from 'components/Edits';
 import { trimPath } from 'utils/helpers';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
@@ -49,7 +49,7 @@ const FRAGMENT = gql`
     meta
   }
 
-  ${Edits.fragment}
+  ${WikiPageEditFragment}
 `;
 
 const QUERY = gql`
@@ -88,11 +88,11 @@ const Toolbar = styled.div`
   padding: 10px;
 `;
 
-class QueryComponent extends Query<WikiPageQuery, WikiPageQueryVariables> {}
+class QueryComponent extends Query<WikiPageQuery, WikiPageQueryVariables> { }
 class UpdateContentMutation extends Mutation<
   WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables
-> {}
+  > { }
 
 class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   state: WikiPageState = {
@@ -118,19 +118,20 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     this.props.onLoaded && this.props.onLoaded();
   };
 
-  handleHistory = () => {
-    this.props.history.push(`${trimPath(this.props.match.url)}/wiki/history`);
+  handleHistory = (hash: string, siteViewUrl: string) => {
+    this.props.history.push(`${trimPath(this.props.match.url)}/wiki/history?hash=${hash}&sv=${siteViewUrl}`);
   };
 
-  handleEdit = () => {
-    this.props.history.push(`${trimPath(this.props.match.url)}/wiki/edit`);
+  handleEdit = (hash: string, siteViewUrl: string) => {
+    console.log("this.props", this.props.match)
+    this.props.history.push(`${trimPath(this.props.match.url)}/wiki/edit?hash=${hash}&sv=${siteViewUrl}`);
   };
 
-  handleView = () => {
-    this.props.history.push(trimPath(this.props.match.url));
+  handleView = (hash: string, siteViewUrl: string) => {
+    this.props.history.push(`${trimPath(this.props.match.url)}?hash=${hash}&sv=${siteViewUrl}`);
   };
 
-  handlePreview = () => {
+  handlePreview = (hash: string, siteViewUrl: string) => {
     if (this.state.editorState === 'plain') {
       const text = this.getEditorText() || '';
       this.setState({
@@ -139,7 +140,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       });
     }
 
-    this.props.history.push(this.props.match.url);
+    this.props.history.push(`${this.props.match.url}?hash=${hash}&sv=${siteViewUrl}`);
   };
 
   handleMarkdownToggle = () => {
@@ -198,13 +199,13 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     );
   };
 
-  renderEditButton = (isAuthenticated: boolean) => {
+  renderEditButton = (isAuthenticated: boolean, hash: string, siteViewUrl: string) => {
     if (!isAuthenticated) return null;
 
     return (
       <Button
         type="button"
-        onClick={this.handleEdit}
+        onClick={() => this.handleEdit(hash, siteViewUrl)}
         style={{ marginLeft: '10px' }}>
         Edit <FontAwesome name="edit" />
       </Button>
@@ -231,7 +232,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     );
   };
 
-  renderToolbar = (data: WikiPageQuery, user: UserFragment | null) => {
+  renderToolbar = (data: WikiPageQuery, user: UserFragment | null, hash: string, siteViewUrl: string) => {
     const isAuthenticated = user !== null;
     return (
       <Toolbar>
@@ -243,7 +244,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                 {this.renderMarkdownButton()}{' '}
                 <Button
                   type="button"
-                  onClick={this.handlePreview}
+                  onClick={() => this.handlePreview(hash, siteViewUrl)}
                   style={{ marginLeft: '10px' }}>
                   Preview <FontAwesome name="photo" />
                 </Button>
@@ -255,10 +256,10 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
             path={this.historyPath()}
             render={() => (
               <>
-                {this.renderEditButton(isAuthenticated)}{' '}
+                {this.renderEditButton(isAuthenticated, hash, siteViewUrl)}{' '}
                 <Button
                   type="button"
-                  onClick={this.handleView}
+                  onClick={() => this.handleView(hash, siteViewUrl)}
                   style={{ marginLeft: '10px' }}>
                   View <FontAwesome name="photo" />
                 </Button>
@@ -269,10 +270,10 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
           <Route
             render={() => (
               <>
-                <Button type="button" onClick={this.handleHistory}>
+                <Button type="button" onClick={() => this.handleHistory(hash, siteViewUrl)}>
                   History <FontAwesome name="history" />
                 </Button>
-                {this.renderEditButton(isAuthenticated)}
+                {this.renderEditButton(isAuthenticated, hash, siteViewUrl)}
                 {this.renderSubmitButton(data, isAuthenticated)}
               </>
             )}
@@ -334,6 +335,8 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   };
 
   render() {
+    const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString()
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString()
     return (
       <QueryComponent
         query={QUERY}
@@ -369,7 +372,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                     />
                     <Route render={() => this.renderEditor(data)} />
                   </Switch>
-                  {this.renderToolbar(data, user)}
+                  {this.renderToolbar(data, user, hash, siteViewUrl)}
                 </div>
               )}
             </CurrentUser>

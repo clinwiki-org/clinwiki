@@ -61,7 +61,7 @@ class LandingPage extends React.PureComponent<
       variables: params,
     });
     this.props.history.push(
-      `/search/${data.provisionSearchHash!.searchHash!.short}`
+      `/search/default/${data.provisionSearchHash!.searchHash!.short}`
     );
   };
   searchChanged = e => {

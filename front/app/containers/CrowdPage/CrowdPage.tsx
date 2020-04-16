@@ -9,7 +9,7 @@ import Helmet from 'react-helmet';
 
 import LoadingPane from 'components/LoadingPane';
 import Error from 'components/Error';
-import Edits from 'components/Edits';
+import Edits, { WikiPageEditFragment } from 'components/Edits';
 import StudySummary from 'components/StudySummary';
 import ButtonCell from './ButtonCell';
 
@@ -23,7 +23,6 @@ import {
 } from 'types/CrowdPageDeleteWikiLabelMutation';
 import { CrowdPageQuery, CrowdPageQueryVariables } from 'types/CrowdPageQuery';
 
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
 import WikiPage from 'containers/WikiPage';
 import {
   keys,
@@ -102,7 +101,7 @@ export const UPSERT_LABEL_MUTATION = gql`
   }
 
   ${FRAGMENT}
-  ${Edits.fragment}
+  ${WikiPageEditFragment}
 `;
 
 export const DELETE_LABEL_MUTATION = gql`
@@ -119,7 +118,7 @@ export const DELETE_LABEL_MUTATION = gql`
   }
 
   ${FRAGMENT}
-  ${Edits.fragment}
+  ${WikiPageEditFragment}
 `;
 
 const TableWrapper = styled(Table)`
@@ -131,7 +130,7 @@ const TableWrapper = styled(Table)`
 export class UpsertMutationComponent extends Mutation<
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables
-> {}
+  > { }
 
 export type UpsertMutationFn = MutationFn<
   CrowdPageUpsertWikiLabelMutation,
@@ -141,14 +140,14 @@ export type UpsertMutationFn = MutationFn<
 export class DeleteMutationComponent extends Mutation<
   CrowdPageDeleteWikiLabelMutation,
   CrowdPageDeleteWikiLabelMutationVariables
-> {}
+  > { }
 
 export type DeleteMutationFn = MutationFn<
   CrowdPageDeleteWikiLabelMutation,
   CrowdPageDeleteWikiLabelMutationVariables
 >;
 
-class QueryComponent extends Query<CrowdPageQuery, CrowdPageQueryVariables> {}
+class QueryComponent extends Query<CrowdPageQuery, CrowdPageQueryVariables> { }
 
 class Crowd extends React.Component<CrowdProps, CrowdState> {
   state: CrowdState = {

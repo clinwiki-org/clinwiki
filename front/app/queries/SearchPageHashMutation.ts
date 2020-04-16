@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const SearchPageHashMutation = gql`
+export default gql`
   mutation SearchPageHashMutation(
     $q: SearchQueryInput!
     $sorts: [SortInput!]
@@ -24,34 +24,6 @@ export const SearchPageHashMutation = gql`
       searchHash {
         short
       }
-    }
-  }
-`;
-
-export const SearchPageParamsQuery = gql`
-  query SearchPageParamsQuery($hash: String) {
-    searchParams(hash: $hash) {
-      q
-      sorts {
-        id
-        desc
-      }
-      aggFilters {
-        field
-        values
-        gte
-        lte
-        includeMissingFields
-      }
-      crowdAggFilters {
-        field
-        values
-        gte
-        lte
-        includeMissingFields
-      }
-      page
-      pageSize
     }
   }
 `;

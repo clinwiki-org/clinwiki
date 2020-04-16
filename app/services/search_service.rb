@@ -138,8 +138,8 @@ class SearchService
   attr_reader :params
 
   # @param params - hash representing SearchInputType with symbols as keys.
-  def initialize(params)
-    @params = params.deep_dup.freeze
+  def initialize(initial_params = {})
+    @params = initial_params.nil? ? {} : initial_params.deep_dup.freeze
   end
 
   # Search results from params
@@ -163,15 +163,17 @@ class SearchService
     }
   end
 
-  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false)
-    params = @params.deep_dup
+  def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url: nil, config_type: nil, return_all: false)
+    params = self.params.deep_dup
+    return {} if params.nil?
+
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
     top_key, nested_key = key.to_s.split(".") if key.to_s.include?(".")
     # We don't need to keep filters of the same agg, we want broader results
     # But we need to respect all other filters
 
-    params[:agg_filters]&.delete_if { |filter_entry| filter_entry[:field] == field }
+    params[:agg_filters].delete_if { |filter_entry| filter_entry[:field] == field } if params[:agg_filters].present?
 
     options = search_kick_query_options(
       aggs: { key => DEFAULT_AGG_OPTIONS[key]&.deep_dup || {} },
@@ -182,9 +184,9 @@ class SearchService
     options[:smart_aggs] = true
     options[:load] = false
 
-    page = params[:page] || 0
-    page_size = params[:page_size] || DEFAULT_PAGE_SIZE
-    bucket_sort = params[:agg_options_sort] || []
+    page = params.fetch(:page, 0)
+    page_size = params.fetch(:page_size, DEFAULT_PAGE_SIZE)
+    bucket_sort = params.fetch(:agg_options_sort, [])
 
     search_results = Study.search("*", options) do |body|
       unless key == :average_rating || body[:aggs][key][:aggs][key][:date_histogram].present?
@@ -211,7 +213,7 @@ class SearchService
         body[:aggs] = nesting[:aggs]
       end
 
-      visibile_options = find_visibile_options(key, is_crowd_agg, current_site)
+      visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type, return_all)
       visible_options_regex = one_of_regex(visibile_options)
       regex = visible_options_regex
       if params[:agg_options_filter].present?
@@ -231,6 +233,8 @@ class SearchService
 
   def crowd_agg_facets(site:)
     params = self.params.deep_dup
+    return {} if params.nil?
+
     search_results = Study.search("*", aggs: [:front_matter_keys])
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
@@ -289,8 +293,8 @@ class SearchService
   def search_kick_query_options(aggs:, search_after: nil, reverse: false, skip_filters: [])
     body_options = { search_after: search_after }.delete_if { |_, v| v.blank? }
     {
-      page: (params[:page] || 0) + 1,
-      per_page: params[:page_size] || DEFAULT_PAGE_SIZE,
+      page: params.fetch(:page, 0) + 1,
+      per_page: params.fetch(:page_size, DEFAULT_PAGE_SIZE),
       order: search_kick_order_options(reverse: reverse),
       aggs: aggs,
       where: search_kick_where_options(skip_filters: skip_filters),
@@ -300,14 +304,14 @@ class SearchService
   end
 
   def search_kick_order_options(reverse: false)
-    res = (params[:sorts] || []).map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
+    res = params.fetch(:sorts, []).map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
     res.push(nct_id: reverse ? "desc" : "asc") unless res.any? { |x| x.keys.first.to_sym == :nct_id }
     res
   end
 
   def search_kick_where_options(skip_filters: [])
-    agg_filters = params[:agg_filters] || []
-    crowd_agg_filters = params[:crowd_agg_filters] || []
+    agg_filters = params.fetch(:agg_filters, [])
+    crowd_agg_filters = params.fetch(:crowd_agg_filters, [])
     search_kick_agg_filters = search_kick_where_from_filters(filters: agg_filters, skip_filters: skip_filters)
     search_kick_crowd_agg_filters =
       search_kick_where_from_filters(
@@ -383,11 +387,24 @@ class SearchService
     end.compact.flatten
   end
 
-  def find_visibile_options(agg_name, is_crowd_agg, current_site)
-    return [] if current_site.blank?
+  def find_visibile_options(agg_name, is_crowd_agg, current_site, url, config_type, return_all)
+    return [] if current_site.blank? || return_all
 
-    view = current_site.site_view.view
-    fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
+    view = if url.blank?
+             current_site.site_views.find_by(default: true).view
+           else
+
+             current_site.site_views.find_by(url: url).view
+           end
+    case config_type ? config_type.downcase : config_type
+    when nil, "facetbar"
+      fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)
+    when "presearch"
+      fields = view.dig(:search, :presearch, is_crowd_agg ? :crowdAggs : :aggs, :fields)
+    when "autosuggest"
+      fields = view.dig(:search, :autoSuggest, is_crowd_agg ? :crowdAggs : :aggs, :fields)
+    end
+
     field = fields.find { |f| f[:name] == agg_name }
     field&.dig(:visibleOptions, :values) || []
   end

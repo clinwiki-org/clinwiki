@@ -8,6 +8,8 @@ module Mutations
     argument :value, String, "Label value", required: true
 
     def resolve(nct_id:, key:, value:)
+      return nil unless current_user
+
       serializable do
         wiki_page = WikiPage.find_or_initialize_by(nct_id: nct_id)
         front_matter = wiki_page.front_matter

@@ -91,4 +91,23 @@ white-listed for CORS requests. This means you can configure a site with the sub
 
 # Testing
 
-ClinWiki doesn't currently have any automated tests (feel free to contribute some). Instead we have a manual checklist maintained in the Wiki that we will run though after features are merged to staging. [See it here](https://github.com/clinwiki-org/clinwiki/wiki/Testing-Guide)
+ClinWiki is working on increasing unit test coverage.
+
+We have a manual checklist maintained in the Wiki that
+we will run though after features are merged to staging.
+[See it here](https://github.com/clinwiki-org/clinwiki/wiki/Testing-Guide)
+
+## Running Ruby Tests
+
+```bash
+# ensure your test database exists.
+# you should only need to run this once.
+# you'll want to re-migrate the test database
+# when new migrations appear
+RAILS_ENV=test bundle exec rake db:create db:migrate
+
+bundle exec rspec spec
+```
+
+The test database is automatically configured
+in `config/environments/test.rb'

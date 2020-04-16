@@ -29,13 +29,15 @@ import {
   contains,
 } from 'ramda';
 
+type AggFilterSettings = SearchParams | any;
+
 /**
  * This class gives us an encapsulated tool for representing agg
  * configurations both for search filters as well as setting defaults
  */
 abstract class AbstractAggFilterInputUpdater {
   input: AggFilterInput;
-  settings: SearchParams | any;
+  settings: AggFilterSettings;
   grouping: string;
   updateSettings: any;
   agg: string;
@@ -44,7 +46,7 @@ abstract class AbstractAggFilterInputUpdater {
 
   constructor(
     agg: string,
-    settings: SearchParams | any,
+    settings: AggFilterSettings,
     updateSettings: any,
     grouping: string
   ) {
@@ -132,28 +134,55 @@ abstract class AbstractAggFilterInputUpdater {
     return this.agg.match(/date/) !== null;
   }
 
-  getMinString(): string | undefined {
-    // need to check for agg type once we start using this for more than date.
+  getMinString(thisSiteView): string | undefined {
+    // logic handling of input based on agg type here
     if (this.input.gte) {
-      return this.isDateAgg()
-        ? moment(this.input.gte)
-            .utc(false)
-            .format('YYYY-MM-DD')
-        : this.input.gte;
+      const thisField: any = find(propEq('name', this.agg))(
+        thisSiteView.search.aggs.fields
+      ) || find(propEq('name', this.agg))(
+        thisSiteView.search.crowdAggs.fields
+      ) ;
+      if(thisField.display){
+      switch (thisField.display) {
+        case 'DATE_RANGE':
+          return this.isDateAgg()
+            ? moment(this.input.gte)
+                .utc(false)
+                .format('YYYY-MM-DD')
+            : this.input.gte;
+        case 'NUMBER_RANGE':
+          return this.input.gte;
+        default:
+          return this.input.gte;
+      }
+    }
+    return this.input.gte
     }
   }
 
-  getMaxString(): string | undefined {
-    // need to check for agg type once we start using this for more than date.
+  getMaxString(thisSiteView): string | undefined {
+    // logic handling of input based on agg type here
     if (this.input.lte) {
-      return this.isDateAgg()
-        ? moment(this.input.lte)
-            .utc(false)
-            .format('YYYY-MM-DD')
-        : this.input.lte;
+      const thisField: any = find(propEq('name', this.agg))(
+        thisSiteView.search.aggs.fields
+      ) || find(propEq('name', this.agg))(
+        thisSiteView.search.crowdAggs.fields
+      ) ;
+      switch (thisField.display) {
+        case 'DATE_RANGE':
+          return this.isDateAgg()
+            ? moment(this.input.lte)
+                .utc(false)
+                .format('YYYY-MM-DD')
+            : this.input.lte;
+        case 'NUMBER_RANGE':
+          return this.input.lte;
+        default:
+          return this.input.lte;
+      }
+
     }
   }
-
   allowsMissing(): boolean {
     return this.input!.includeMissingFields || false;
   }
@@ -187,23 +216,38 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
 
 export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
   kind: 'preselected' | 'visibleOptions';
+  configType: 'presearch' | 'autosuggest' | 'facetbar';
   constructor(
     agg: string,
-    settings: SearchParams | any,
+    settings: AggFilterSettings,
     updateSettings: any,
-    grouping: string,
-    kind: 'preselected' | 'visibleOptions'
+    grouping: 'aggs' | 'crowdAggs',
+    kind: 'preselected' | 'visibleOptions',
+    configType: 'presearch' | 'autosuggest' | 'facetbar'
   ) {
     super(agg, settings, updateSettings, grouping);
     this.kind = kind;
+    this.configType = configType;
   }
 
   configureInput() {
     this.input = { ...this.settings };
   }
 
+  getPath() {
+    switch (this.configType) {
+      case 'presearch':
+        return `set:search.${this.configType}.${this.grouping}.fields.${this.agg}.${this.kind}.values`;
+      case 'autosuggest':
+        // Note: the capitalized S in autoSuggest
+        return `set:search.autoSuggest.${this.grouping}.fields.${this.agg}.${this.kind}.values`;
+      case 'facetbar':
+        return `set:search.${this.grouping}.fields.${this.agg}.${this.kind}.values`;
+    }
+  }
+
   onUpdateFilter(): void {
-    const name = `set:search.${this.grouping}.fields.${this.agg}.${this.kind}.values`;
+    const name = this.getPath();
     this.updateSettings({
       currentTarget: {
         name,

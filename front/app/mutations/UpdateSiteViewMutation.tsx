@@ -26,7 +26,7 @@ const UPDATE_SITE_VIEW_MUTATION = gql`
     }
   }
 
-  ${SiteProvider.siteViewFragmemt}
+  ${SiteProvider.siteViewFragment}
 `;
 
 class UpdateSiteViewMutationComponent extends Mutation<

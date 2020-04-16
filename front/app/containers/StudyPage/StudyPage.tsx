@@ -5,7 +5,6 @@ import { Nav, NavItem, Row, Col, Button, Panel } from 'react-bootstrap';
 import { Link, match, Route, Switch, Redirect } from 'react-router-dom';
 import { History, Location } from 'history';
 import ReactStars from 'react-stars';
-import * as FontAwesome from 'react-fontawesome';
 import {
   last,
   split,
@@ -32,7 +31,6 @@ import StudyPageSections from './components/StudyPageSections';
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
 import StudySummary from 'components/StudySummary';
-import WikiToggle from 'components/WikiToggle';
 import { Query } from 'react-apollo';
 import { trimPath } from 'utils/helpers';
 import ReviewsPage from 'containers/ReviewsPage';
@@ -42,7 +40,6 @@ import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
 import SiteProvider from 'containers/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
-import SitesPage from 'containers/SitesPage';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
@@ -50,8 +47,6 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { starColor } from 'utils/constants';
 import StudyPageCounter from './components/StudyPageCounter';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
-import { PulseLoader, ScaleLoader } from 'react-spinners';
-import { CSSTransition } from 'react-transition-group';
 
 interface StudyPageProps {
   history: History;
@@ -231,27 +226,27 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
     return '/';
   };
+  //I believe this may be deprecated now that we are using URLSearchParams
+  // getCurrentSectionFullPath = (view: SiteViewFragment) => {
+  //   const pathComponents = pipe(
+  //     split('/'),
+  //     reject(isEmpty),
+  //     map(x => `/${x}`)
+  //   )(trimPath(this.props.location.pathname)) as string[];
 
-  getCurrentSectionFullPath = (view: SiteViewFragment) => {
-    const pathComponents = pipe(
-      split('/'),
-      reject(isEmpty),
-      map(x => `/${x}`)
-    )(trimPath(this.props.location.pathname)) as string[];
+  //   for (const component of pathComponents) {
+  //     if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
+  //       const idx = findIndex(equals(component), pathComponents);
+  //       return pipe(
+  //         drop(idx),
+  //         // @ts-ignore
+  //         join('')
+  //       )(pathComponents);
+  //     }
+  //   }
 
-    for (const component of pathComponents) {
-      if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
-        const idx = findIndex(equals(component), pathComponents);
-        return pipe(
-          drop(idx),
-          // @ts-ignore
-          join('')
-        )(pathComponents);
-      }
-    }
-
-    return '/';
-  };
+  //   return '/';
+  // };
 
   getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
     const sections = this.getSections(view);
@@ -266,8 +261,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     console.log('getSectionsForRoutes: ');
     console.log(retVar);
 
-    // @ts-ignore
-    return retVar;
+    return retVar as Section[];
   };
 
   getComponent = (name: string): any => {
@@ -353,14 +347,13 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     this.setState({ wikiToggleValue: !this.state.wikiToggleValue });
   };
 
-  handleNavButtonClick = (link: string, view: SiteViewFragment) => () => {
+  handleNavButtonClick = (link: string) => () => {
     this.props.history.push(
-      `${trimPath(link)}${this.getCurrentSectionFullPath(view)}`
+      `${trimPath(link)}`
     );
   };
 
   renderNavButton = (
-    view: SiteViewFragment,
     name: string,
     link?: string | null
   ) => {
@@ -369,7 +362,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     return (
       <Button
         style={{ marginRight: 10, marginBottom: 10 }}
-        onClick={this.handleNavButtonClick(link!, view)}
+        onClick={this.handleNavButtonClick(link!)}
         disabled={link === null}>
         {name}
       </Button>
@@ -377,7 +370,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   renderBackButton = (
-    view: SiteViewFragment,
     name: string,
     link?: string | null
   ) => {
@@ -387,7 +379,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       <div style={{ paddingTop: '10px' }}>
         <Button
           style={{ margin: 'auto', float: 'left' }}
-          onClick={this.handleNavButtonClick(link!, view)}
+          onClick={this.handleNavButtonClick(link!)}
           disabled={link === null}>
           {name}
         </Button>
@@ -426,6 +418,16 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   render() {
+    const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString()
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString()
+    
+    const backLink =()=>{
+      if(hash !=""){ 
+        return `/search?hash=${hash}&sv=${siteViewUrl}`
+      }
+      return undefined
+    }
+
     return (
       <SiteProvider>
         {site => (
@@ -446,9 +448,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                       <Row md={12}>
                         <BackButtonWrapper>
                           {this.renderBackButton(
-                            site.siteView,
                             '⤺︎ Back',
-                            `/search/${this.props.match.params.searchId}`
+                            backLink()
                           )}
                           {this.renderReviewsSummary(data)}
                         </BackButtonWrapper>
@@ -458,14 +459,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           <div className="container">
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
-                                site.siteView,
                                 '❮❮ First',
                                 this.props.firstLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
-                                site.siteView,
                                 '❮ Previous',
                                 this.props.prevLink
                               )}
@@ -478,14 +477,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
-                                site.siteView,
                                 'Next ❯',
                                 this.props.nextLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
-                                site.siteView,
                                 'Last ❯❯',
                                 this.props.lastLink
                               )}
@@ -520,14 +517,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           <div className="container">
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
-                                site.siteView,
                                 '❮❮ First',
                                 this.props.firstLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
-                                site.siteView,
                                 '❮ Previous',
                                 this.props.prevLink
                               )}
@@ -540,14 +535,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
-                                site.siteView,
                                 'Next ❯',
                                 this.props.nextLink
                               )}
                             </div>
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
-                                site.siteView,
                                 'Last ❯❯',
                                 this.props.lastLink
                               )}

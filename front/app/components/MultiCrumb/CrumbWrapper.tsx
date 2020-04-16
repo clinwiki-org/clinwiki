@@ -1,5 +1,22 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const crumbKeyframe = keyframes`
+  0% {
+    border-color: 4px solid silver;
+    background-color: #66dda9; 
+  }
+
+  50% {
+    border-color: 2px solid silver;
+    background-color: #5fce9d;
+  }
+
+  100% {
+    border: 2px solid #55b88d;
+    background-color: #55b88d;
+  }
+`;
 
 export default styled.div`
   .filter-values {
@@ -15,6 +32,7 @@ export default styled.div`
     background: #55b88d;
     color: #fff !important;
     line-height: 1.85em;
+    animation: ${crumbKeyframe} 2s ease-in-out;
   }
   .crumb-icon {
     cursor: pointer;

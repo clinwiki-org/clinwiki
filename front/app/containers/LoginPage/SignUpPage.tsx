@@ -80,7 +80,6 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
         ['passwordConfirmation', 'oAuthToken'],
         this.state.form
       );
-      //@ts-ignore
       signUp({ variables: { input } });
     }
     this.setState({ errors: ["Password confirmation doesn't match"] });
@@ -104,7 +103,7 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
     );
   };
 
-  responseGoogle = (response, signUp) => {
+  responseGoogle = (response, signUp?) => {
     // const form= {
     //   email: response.profileObj.email
     // }
@@ -178,11 +177,9 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
                     <GoogleLogin
                       clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
                       buttonText="Sign Up With Google?"
-                      //@ts-ignore
                       onSuccess={response =>
                         this.responseGoogle(response, signUp)
                       }
-                      //@ts-ignore
                       onFailure={this.responseGoogle}
                       cookiePolicy={'single_host_origin'}
                     />

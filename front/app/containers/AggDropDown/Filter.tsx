@@ -1,13 +1,25 @@
 import * as React from 'react';
-import { string } from 'prop-types';
 import { length, isNil, isEmpty } from 'ramda';
 import { Checkbox, FormControl } from 'react-bootstrap';
 import { AggBucket } from '../SearchPage/Types';
 import SortKind from './SortKind';
 import Sorter from './Sorter';
+import styledComponents from 'styled-components';
+
+const SelectAllSpan = styledComponents.span`
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: 1px solid #ccc;
+  padding: 5px;
+  position: absolute;
+  left: 1em;
+  width: 6em;
+  color: black;
+  background: white;
+  border-radius: 4px;
+  font-size: 0.85em;
+`;
 
 interface FilterProps {
-  agg: string;
   buckets: Array<AggBucket>;
   filter: string;
   desc: boolean;
@@ -26,7 +38,6 @@ interface FilterProps {
 class Filter extends React.Component<FilterProps> {
   render() {
     const {
-      agg,
       buckets = [],
       filter,
       desc,
@@ -41,9 +52,6 @@ class Filter extends React.Component<FilterProps> {
       toggleAlphaSort,
       toggleNumericSort,
     } = this.props;
-    if (length(buckets) <= 10 && (isNil(filter) || isEmpty(filter))) {
-      return null;
-    }
     return (
       <div
         style={{
@@ -57,23 +65,7 @@ class Filter extends React.Component<FilterProps> {
             onChange={selectAll}
             onMouseEnter={() => setShowLabel(true)}
             onMouseLeave={() => setShowLabel(false)}>
-            {showLabel ? (
-              <span
-                style={{
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                  border: '1px solid #ccc',
-                  padding: '5px',
-                  position: 'absolute',
-                  left: '1em',
-                  width: '6em',
-                  color: 'black',
-                  background: 'white',
-                  borderRadius: '4px',
-                  fontSize: '0.85em',
-                }}>
-                Select All
-              </span>
-            ) : null}
+            {showLabel ? <SelectAllSpan>Select All</SelectAllSpan> : null}
           </Checkbox>
         </div>
 

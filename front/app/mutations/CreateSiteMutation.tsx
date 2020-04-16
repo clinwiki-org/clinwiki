@@ -5,7 +5,7 @@ import {
   CreateSiteMutation as CreateSiteMutationType,
   CreateSiteMutationVariables,
 } from 'types/CreateSiteMutation';
-import SiteItem from 'components/SiteItem';
+import { SiteItem } from 'components/SiteItem';
 import { SiteItemFragment } from 'types/SiteItemFragment';
 import { lensPath, set } from 'ramda';
 import { CreateSiteOwnSitesQuery } from 'types/CreateSiteOwnSitesQuery';
@@ -16,10 +16,11 @@ interface CreateSiteMutationProps {
     mutate: CreateSiteMutationFn,
     result: MutationResult<CreateSiteMutationType>
   ) => React.ReactNode;
+  onCompleted?: () => void;
 }
 
 const CREATE_SITE_MUTATION = gql`
-  mutation CreateSiteMutation($input: CreateSiteInput!) {
+  mutation CreateSiteMutation($input: CreateSiteInput!, $url: String) {
     createSite(input: $input) {
       site {
         ...SiteFragment
@@ -58,6 +59,7 @@ class CreateSiteMutation extends React.PureComponent<CreateSiteMutationProps> {
     return (
       <CreateSiteMutationComponent
         mutation={CREATE_SITE_MUTATION}
+        onCompleted={this.props.onCompleted}
         update={(cache, { data }) => {
           if (!data || !data.createSite || !data.createSite.site) return;
           let currentData: CreateSiteOwnSitesQuery | null;

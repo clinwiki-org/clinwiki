@@ -11,7 +11,7 @@ class WikiPage < ApplicationRecord
   def default_content
     <<~CONTENT
       ## Lay Summary
-      #{study.brief_summary.description.gsub(/^\s+/, '')}
+      #{study&.brief_summary&.description&.gsub(/^\s+/, '')}
 
       ## Pros
       * Add a pro here
@@ -44,14 +44,17 @@ class WikiPage < ApplicationRecord
     }
   end
 
+  def should_create_edit?
+    WikiPageEdit.where(wiki_page: self).count == 0 || text_was != text
+  end
+
   def create_edit
-    return if text_was == text
+    return unless should_create_edit?
     raise "Cannot update WikiPage with updater not specified" if @updater.blank?
     puts "log:::::::::::::::::::::::::::::::::::::::: #{id}"
     diff = Diffy::Diff.new(text_was, text)
-    WikiPageEdit.create(
+    wiki_page_edits << WikiPageEdit.new(
       user: @updater,
-      wiki_page_id: id,
       diff: diff.to_s,
       diff_html: diff.to_s(:html_simple),
     )

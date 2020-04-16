@@ -42,4 +42,5 @@ export interface CrumbsSearchPageAggBucketsQueryVariables {
   aggOptionsFilter?: string | null;
   aggFields: string[];
   crowdAggFields: string[];
+  url?: string | null;
 }

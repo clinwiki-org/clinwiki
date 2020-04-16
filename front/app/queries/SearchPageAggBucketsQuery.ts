@@ -10,8 +10,14 @@ export default gql`
     $pageSize: Int!
     $aggOptionsFilter: String
     $aggOptionsSort: [SortInput!]
+    $url: String
+    $configType: String
+    $returnAll: Boolean
   ) {
     aggBuckets(
+      url: $url
+      configType: $configType
+      returnAll: $returnAll
       params: {
         agg: $agg
         q: $q
