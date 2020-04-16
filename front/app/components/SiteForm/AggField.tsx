@@ -116,34 +116,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
-  handleDefaultSort = (x)=>{
-    console.log("X marks the spot",x)
-    switch(x.currentTarget.value){
-      case "keyfalse":
-      let e ={currentTarget:{name: x.currentTarget.name, value: {id:"key", desc:false} }}
-      this.props.onAddMutation(e)
-      return
-      case "keytrue":
-         e ={currentTarget:{name: x.currentTarget.name, value: {id:"key", desc:true} }}
-        this.props.onAddMutation(e)
-        console.log("ZAAAA")
-        return
-      case "countfalse":
-        e ={currentTarget:{name: x.currentTarget.name, value: {id:"count", desc:false} }}
-
-        console.log("1-9")
-        this.props.onAddMutation(e)
-        return
-      case "counttrue":
-        e ={currentTarget:{name: x.currentTarget.name, value: {id:"count", desc:true} }}
-
-        console.log("someone cal 911")
-        this.props.onAddMutation(e)
-
-        return
-    }
-
-  }
+  handleDefaultSortType = x => {
+    this.props.onAddMutation(x);
+  };
+  handleDefaultSortOrder = x => {
+    let xboolean = x.currentTarget.value == 'true';
+    let e = { currentTarget: { name: x.currentTarget.name, value: xboolean } };
+    this.props.onAddMutation(e);
+  };
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
@@ -275,18 +255,26 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             </FilterContainer>
           </FiltersContainer>
           <div>
-          <StyledLabel>Default Sort</StyledLabel>
+            <StyledLabel>Default Sort Type</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath(configType)}.order`}
+              name={`set:${this.getPath(configType)}.order.id`}
+              componentClass="select"
+              onChange={e => this.handleDefaultSortType(e)}
+              //@ts-ignore
+              defaultValue={this.props.field.order?.id}>
+              <option value="key">Alpha</option>
+              <option value="count">Numeric</option>
+            </StyledFormControl>
+            <StyledLabel>Default Sort Order</StyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath(configType)}.order.desc`}
               componentClass="select"
               //onChange={this.props.onAddMutation}
-              onChange={(e)=>this.handleDefaultSort(e)}
+              onChange={e => this.handleDefaultSortOrder(e)}
               //@ts-ignore
-              defaultValue={this.props.field.order?.id+this.props.field.order?.desc}>
-              <option value="keyfalse">A-Z</option>
-              <option value="keytrue">Z-A</option>
-              <option value="countfalse">1-9</option>
-              <option value="counttrue">9-1</option>
+              defaultValue={this.props.field.order?.desc}>
+              <option value="false">Ascending</option>
+              <option value="true">Descending</option>
             </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl
