@@ -1,0 +1,42 @@
+mutation CrowdPageUpsertWikiLabelMutation(
+  $nctId: String!
+  $key: String!
+  $value: String!
+) {
+  upsertWikiLabel(input: { nctId: $nctId, key: $key, value: $value }) {
+    wikiPage {
+      ...CrowdPageFragment
+      edits {
+        ...WikiPageEditFragment
+        __typename
+      }
+      __typename
+    }
+    errors
+    __typename
+  }
+}
+fragment CrowdPageFragment on WikiPage {
+  nctId
+  meta
+  __typename
+}
+fragment WikiPageEditFragment on WikiPageEdit {
+  user {
+    id
+    firstName
+    lastName
+    email
+    __typename
+  }
+  createdAt
+  id
+  comment
+  diff
+  diffHtml
+  changeSet {
+    frontMatterChanged
+    bodyChanged
+  }
+  __typename
+}

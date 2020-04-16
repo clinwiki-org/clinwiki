@@ -269,7 +269,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="STRING">Text</option>
               <option value="STAR">Stars</option>
               <option value="DATE">Date</option>
-              <option value="RANGE">Range</option>
+              <option value="DATE_RANGE">Date Range</option>
+              <option value="NUMBER_RANGE">Number Range</option>
             </StyledFormControl>
           </div>
         </ThemedContainer>

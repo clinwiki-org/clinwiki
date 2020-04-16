@@ -5,6 +5,7 @@ import { History } from 'history';
 import { logout } from 'utils/auth';
 import withTheme from 'containers/ThemeProvider';
 
+
 interface AuthButtonProps {
   user: {
     email: string;
@@ -16,8 +17,8 @@ interface AuthButtonProps {
 
 const ButtonWrapper = styled.div`
   margin-top: 7px;
-  background: ${props => props.theme.authButton.button} !important;
-  color: ${props => props.theme.authButton.buttonFont};
+  // background: ${props => props.theme.authButton.button} !important;
+  // color: ${props => props.theme.authButton.buttonFont};
   border-radius: 4px;
   &:hover {
     background: ${props => props.theme.authButton.buttonHover};
@@ -66,6 +67,10 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
 
   handleWorkflowsClick = () => {
     this.props.history.push('/workflows');
+  };
+
+  handleSignInClick = () => {
+    this.props.history.push('/sign_in');
   };
 
   handleSignOutClick = () => {

@@ -10,6 +10,7 @@ import {
 import {
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables,
+  SuggestedLabelsQuery_crowdAggFacets_aggs,
 } from 'types/SuggestedLabelsQuery';
 import {
   pipe,
@@ -60,15 +61,6 @@ const SEARCH_QUERY = gql`
 
 const QUERY = gql`
   query SuggestedLabelsQuery($nctId: String!) {
-    search(params: { page: 0, q: { key: "*" } }) {
-      aggs {
-        name
-        buckets {
-          key
-          docCount
-        }
-      }
-    }
     crowdAggFacets {
       aggs {
         name
@@ -196,10 +188,8 @@ class SuggestedLabels extends React.PureComponent<
           )(meta);
 
           const aggs = pipe(
-            pathOr([], ['crowdAggFacets', 'aggs']),
-            // filter((agg: any) => agg.name.startsWith('fm_')),
-            map((agg: any) => {
-              const name = agg.name.substring(3, 1000);
+            map((agg: SuggestedLabelsQuery_crowdAggFacets_aggs) => {
+              const name = agg.name.substring(3);
               const existingLabels = labels[name] || [];
               return [
                 name,
@@ -211,7 +201,7 @@ class SuggestedLabels extends React.PureComponent<
             }),
             // @ts-ignore
             fromPairs
-          )(data);
+          )(data?.crowdAggFacets?.aggs || []);
 
           const aggNames = pipe(
             keys,

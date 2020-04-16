@@ -25,9 +25,9 @@ describe "Wiki Page Edit History" do
     wiki_page.save
   end
 
-  it "shows the initial wiki page creation as both changed" do
-    expect(edits.last["changeSet"]["bodyChanged"]).to eql true
-    expect(edits.last["changeSet"]["frontMatterChanged"]).to eql true
+  it "shows the initial wiki page creation as neither changed" do
+    expect(edits.last["changeSet"]["bodyChanged"]).to eql false
+    expect(edits.last["changeSet"]["frontMatterChanged"]).to eql false
   end
 
   it "shows changes to content as only content changed" do

@@ -8,7 +8,7 @@ import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import {ThemedButton} from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
-import { History } from 'history';
+import { History, Location } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
 import CurrentUser from 'containers/CurrentUser';
 import StyledError from './StyledError';
@@ -19,6 +19,7 @@ import withTheme from './../ThemeProvider';
 
 interface SignInPageProps {
   history: History;
+  location: Location;
   theme: any
 }
 interface SignInPageState {
@@ -53,8 +54,9 @@ type SignInMutationFn = MutationFn<SignInMutation, SignInMutationVariables>;
     styled.div`
      position: absolute;
      bottom: 30px;
+     background: ${props => props.theme.secondaryColor};
      a {
-       color: ${props => props.theme.lightTextColor};
+       color: ${props => props.theme.primaryColor};
        margin-right: 15px;
      }`
     ;
@@ -90,7 +92,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
     if (!jwt) return;
 
     setLocalJwt(jwt);
-    this.props.history.push('/');
+    this.props.history.goBack();
   };
 
   renderErrors = () => {

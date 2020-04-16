@@ -65,7 +65,7 @@ export const withTheme = Component => {
         sorterColor: colors.primaryColor,
         authHeader: {
           headerBackground: colors.primaryColor,
-          font: colors.lightHeaderFont,
+          font: colors.lightTextColor,
           hoverFont: colors.grayHeaderFont,
           logoFont: '#fff',
         },
@@ -96,16 +96,24 @@ export const withTheme = Component => {
           resultsRowHighlight: colors.primaryColor,
           resultsPaginationButtons: colors.primaryColor,
         },
+        presearch: {
+          presearchHeaders: colors.primaryColor,
+        }
       };
     };
 
-    render() {
-      return (
-        <SiteProvider>
-          {site => <Component theme={this.theme(site)} {...this.props} />}
-        </SiteProvider>
-      );
-    }
+   render() {
+     return (
+       <SiteProvider>
+        {(site) => 
+        <Component
+          theme={this.theme(site)}
+        {...this.props}
+       />
+        }
+       </SiteProvider>
+     )
+   }
   }
   return ThemeProvider;
 };

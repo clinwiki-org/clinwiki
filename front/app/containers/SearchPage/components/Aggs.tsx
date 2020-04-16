@@ -127,6 +127,10 @@ class Aggs extends React.PureComponent<AggsProps> {
     return filter(x => crowdAggs.includes(x), displayed);
   };
 
+  handleRefresh = () => {
+
+  }
+
   render() {
     const {
       aggs,

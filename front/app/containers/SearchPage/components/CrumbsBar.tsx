@@ -214,7 +214,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     };
   }
 
-  *mkCrumbs(searchParams: SearchParams, removeFilter) {
+  *mkCrumbs(searchParams: SearchParams, removeFilter, thisSiteView) {
     if (!isEmpty(searchParams.q)) {
       yield (
         <MultiCrumb
@@ -234,6 +234,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
           grouping="aggFilters"
           agg={agg}
           key={`aggFilters${aggFilterCounter++}`}
+          thisSiteView={thisSiteView}
         />
       );
     }
@@ -248,6 +249,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
           values={agg.values}
           agg={agg}
           key={`crowdAggFilters${aggFilterCounter++}`}
+          thisSiteView={thisSiteView}
         />
       );
     }
@@ -686,7 +688,8 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         ? Array.from(
                             this.mkCrumbs(
                               this.props.searchParams,
-                              this.props.removeFilter
+                              this.props.removeFilter,
+                              thisSiteView
                             )
                           )
                         : null}{' '}
