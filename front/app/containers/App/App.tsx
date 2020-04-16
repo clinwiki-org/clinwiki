@@ -45,7 +45,7 @@ class App extends React.PureComponent<AppProps> {
           {user => <AuthHeader user={user} history={this.props.history} />}
         </CurrentUser>
         <MainWrapper
-          className="main container-fluid"
+          className="main"
           style={{ paddingTop: '50px' }}>
           <Switch>
             <Route exact path="/" component={this.props.history.location.search ? SearchPage:LandingPage} />

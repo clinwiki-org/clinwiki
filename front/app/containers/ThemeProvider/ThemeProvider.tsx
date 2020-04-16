@@ -41,6 +41,9 @@ const clinwikiColors = {
 export const withTheme = Component => {
   class ThemeProvider extends React.Component {
     theme = site => {
+
+      const theme = JSON.parse(site.themes);
+      console.log('this theme', theme);
       //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks.
       const colors = {
         //header font color

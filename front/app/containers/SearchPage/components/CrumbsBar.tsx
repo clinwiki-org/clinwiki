@@ -580,7 +580,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       data.siteView;
     let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
-    console.log('THEMEING', this.props.theme);
     return (
       <ThemedCrumbsBarStyleWrappper>
         <ApolloConsumer>
