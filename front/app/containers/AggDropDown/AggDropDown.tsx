@@ -102,7 +102,7 @@ const PresearchCard = styledComponents.div`
 `;
 
 const PresearchHeader = styledComponents.div`
-  background-color: ${props => props.theme.button};
+  background-color: ${props => props.theme.presearch.presearchHeaders};
   padding: 5px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;

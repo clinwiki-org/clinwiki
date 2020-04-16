@@ -5,7 +5,7 @@
 // START Enums and Input Objects
 //==============================================================
 
-<<<<<<< HEAD
+
 export enum Diff {
   COMMENT = "COMMENT",
   DEL = "DEL",
@@ -13,8 +13,6 @@ export enum Diff {
   UNCHANGED = "UNCHANGED",
 }
 
-=======
->>>>>>> created a withTheme provider, ThemeProvider.tsx, along with two static variables and injected them into styled component LinkContainer as ThemedLinkContainer. Gives us ability to create default clinwiki theme in withTheme that we can then use to generate default theme in backend.
 export enum FieldDisplay {
   DATE = "DATE",
   DATE_RANGE = "DATE_RANGE",
