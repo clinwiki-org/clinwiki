@@ -11,13 +11,13 @@ interface AuthButtonProps {
     roles: string[];
   } | null;
   history: History;
-  theme: any
+  theme: any;
 }
 
 const ButtonWrapper = styled.div`
   margin-top: 7px;
-  // background: ${props => props.theme.authButton.button} !important;
-  // color: ${props => props.theme.authButton.buttonFont};
+  background: ${props => props.theme.authButton.button} !important;
+  color: ${props => props.theme.authButton.buttonFont};
   border-radius: 4px;
   &:hover {
     background: ${props => props.theme.authButton.buttonHover};
@@ -88,7 +88,7 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
           style={{
             background: this.props.theme.authButton.button,
             color: this.props.theme.authButton.buttonFont,
-            borderRadius:'4px'
+            borderRadius: '4px',
           }}
           title={(this.props.user && this.props.user.email) || ''}
           id="loggedIn">

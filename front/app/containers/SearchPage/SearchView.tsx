@@ -45,7 +45,6 @@ import { Query } from 'react-apollo';
 import 'react-table/react-table.css';
 import SiteProvider from 'containers/SiteProvider';
 import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
-import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import Cards from './components/Cards';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 
@@ -353,6 +352,7 @@ interface SearchViewState {
   firstRender: boolean;
   prevResults: any | null;
 }
+
 class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   searchTable: any = 0;
 
@@ -806,7 +806,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           if (site.siteViews.length > 0) {
             return (
               <ButtonGroup>
-                {currentSiteView.search.results.buttons.items.map(
+                {currentSiteView.search.results.buttons.items?.map(
                   (button, index) => (
                     <Button
                       href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
