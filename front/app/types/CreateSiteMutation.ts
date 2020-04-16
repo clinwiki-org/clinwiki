@@ -730,6 +730,7 @@ export interface CreateSiteMutation_createSite_site {
   name: string;
   skipLanding: boolean | null;
   subdomain: string;
+  themes: string;
   owners: CreateSiteMutation_createSite_site_owners[];
   siteView: CreateSiteMutation_createSite_site_siteView;
   siteViews: CreateSiteMutation_createSite_site_siteViews[];

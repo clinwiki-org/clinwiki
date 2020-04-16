@@ -18,6 +18,7 @@ import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
 import {ThemedButton} from '../../components/StyledComponents';
+import { History } from 'history';
 import {
   path,
   map,
@@ -670,6 +671,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return null;
   };
 
+  handlePresearchButtonClick = (hash, target) => {
+    console.log(hash, target);
+    const url = `/search?hash=${hash}&sv=${target}`
+    this.props.history.push(url);
+  }
+
   renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     const { currentSiteView } = this.props;
@@ -708,8 +715,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         />
         {presearchButton.name && (
           <ThemedButton
+            onClick={() => this.handlePresearchButtonClick(hash, presearchButton.target)}
             style={{ width: 200, marginLeft: 13 }}
-            href={`/search?hash=${hash}&sv=${presearchButton.target}`}>
+            >
             {presearchButton.name}
           </ThemedButton>
         )}

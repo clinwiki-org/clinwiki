@@ -96,8 +96,9 @@ const PresearchCard = styledComponents.div`
   border-radius: 12px;
   margin: 10px;
   flex: 1;
-  height: 310px;
-  width: 420px;
+  // height: 310px;
+  min-width: 320px;
+  max-width: 320px;
   background: white;
 `;
 
