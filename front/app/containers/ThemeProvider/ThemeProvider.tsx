@@ -125,21 +125,19 @@ export const withTheme = Component => {
           resultsRowHighlight: colors.primaryAltColor,
           resultsPaginationButtons: colors.primaryColor,
         },
+        studyPage: {
+          sectionBorderColor: colors.primaryColor,
+        },
       };
     };
 
-   render() {
-     return (
-       <SiteProvider>
-        {(site) => 
-        <Component
-          theme={this.theme(site)}
-        {...this.props}
-       />
-        }
-       </SiteProvider>
-     )
-   }
+    render() {
+      return (
+        <SiteProvider>
+          {site => <Component theme={this.theme(site)} {...this.props} />}
+        </SiteProvider>
+      );
+    }
   }
   return ThemeProvider;
 };
