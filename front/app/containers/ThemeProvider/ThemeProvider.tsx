@@ -34,6 +34,8 @@ const clinwikiColors = {
   //color of actual crumb
   crumbColor: '#55b88d',
   crumbFontColor: '#fff',
+  //react-table header offgreen
+  resultsTableHeader: '#8bb7a4',
 };
 
 export const withTheme = Component => {
@@ -44,7 +46,7 @@ export const withTheme = Component => {
         //header font color
         primaryColor: '#6BA5D6',
         secondaryColor: '#1b2a38',
-        tertiaryColor: "#73bcdf",
+        tertiaryColor: '#73bcdf',
         lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
         //darkBlue for header
@@ -88,6 +90,11 @@ export const withTheme = Component => {
         crumbs: {
           crumbBackground: colors.primaryColor,
           crumbFont: '#fff',
+        },
+        searchResults: {
+          resultsHeaderBackground: colors.primaryColor,
+          resultsRowHighlight: colors.primaryColor,
+          resultsPaginationButtons: colors.primaryColor,
         },
         presearch: {
           presearchHeaders: colors.primaryColor,
