@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_16_205007) do
+ActiveRecord::Schema.define(version: 2020_04_16_163941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,7 @@ ActiveRecord::Schema.define(version: 2020_01_16_205007) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "skip_landing"
+    t.text "themes", default: "{\n  primaryClinwiki: '#55B88D',\n  whiteHeaderFont: '#fff',\n  grayHeaderFont: '#777777',\n  navBar: '#1b2a38',\n  button: '#55B88D',\n  buttonHover: '#e6e6e6',\n  buttonBorderHover: '#adadad',\n  sideBarBackground: '#4d5863',\n  sideBarColor: '#bac5d0',\n  sideBarColorHover: '#fff',\n  sideBarTitleFont: '#fff',\n  containerColor: '#f2f2f2',\n  containerText: '#000000',\n  crumbColor: '#55b88d',\n  crumbFontColor: '#fff',\n  }; "
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
