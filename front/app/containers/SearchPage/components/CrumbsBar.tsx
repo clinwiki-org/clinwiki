@@ -90,6 +90,7 @@ const CrumbsBarStyleWrappper = styled.div`
   }
   .crumbs-bar {
 <<<<<<< HEAD
+<<<<<<< HEAD
     background: ${props => props.theme.crumbsBar.containerBackground};
     color: ${props => props.theme.crumbsBar.containerFont};
 
@@ -109,6 +110,11 @@ const CrumbsBarStyleWrappper = styled.div`
     }
 
 >>>>>>> crumbs bar mostly configured, filterBar giving some trouble
+=======
+    background: ${props => props.theme.crumbsBar.containerBackground};
+    color: ${props => props.theme.crumbsBar.containerFont};
+
+>>>>>>> finished crumbsbar initial themeing variables, made some minor changes to crumbs bar styling to make it more consistent with presearch adn search results containers
     i {
       font-style: normal;
       margin-right: 3px;
@@ -664,12 +670,8 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                       <ListGroupItem
                         style={{
                           minWidth: '100%',
-<<<<<<< HEAD
                           background: this.props.theme.button,
-                          color: '#fff'
-=======
-                          background: 'rgba(85, 184, 141, 0.5)',
->>>>>>> crumbs bar mostly configured, filterBar giving some trouble
+                          color: '#fff',
                         }}
                         onClick={this.toggleShowFilters}>
                         {' '}
