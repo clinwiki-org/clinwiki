@@ -723,24 +723,27 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   renderViewDropdown = () => {
     const { currentSiteView } = this.props;
+    console.log(currentSiteView.search.results.buttons);
+    const buttonsArray = currentSiteView.search.results.buttons.items.filter(
+      button => button.target.length > 0 && button.icon.length > 0
+    );
     return (
       <SiteProvider>
         {site => {
-          if (site.siteViews.length > 0) {
+          if (site.siteViews.length > 0 && buttonsArray.length > 0) {
             return (
               <ButtonGroup>
-                {currentSiteView.search.results.buttons.items?.map(
-                  (button, index) => (
-                    <Button
-                      href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
-                      key={button.target + index}>
-                      {this.renderViewButton(button.icon)}
-                    </Button>
-                  )
-                )}
+                {buttonsArray.map((button, index) => (
+                  <Button
+                    href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
+                    key={button.target + index}>
+                    {this.renderViewButton(button.icon)}
+                  </Button>
+                ))}
               </ButtonGroup>
             );
           }
+          return null;
         }}
       </SiteProvider>
     );
