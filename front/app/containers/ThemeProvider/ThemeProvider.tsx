@@ -36,26 +36,25 @@ const clinwikiColors = {
   crumbFontColor: '#fff',
 };
 
-
-export const withTheme = (Component)  =>  {
- class ThemeProvider extends React.Component {
-
-   theme = (site) => {
-  
-     //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks. 
-    const colors = {
-      //header font color
-      primaryColor: '#6BA5D6',
-      secondaryColor: '#1b2a38',
-      lightTextColor: '#fff',
-      grayHeaderFont: '#777777',
-      //darkBlue for header
-      navBar: '#1b2a38',
-      //button Green
-      button: '#1b2a38',
-      buttonHover: '#e6e6e6',
-      buttonBorderHover: '#adadad',
-    };
+export const withTheme = Component => {
+  class ThemeProvider extends React.Component {
+    theme = site => {
+      //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks.
+      const colors = {
+        //header font color
+        primaryColor: '#6BA5D6',
+        secondaryColor: '#1b2a38',
+        tertiaryColor: "#73bcdf",
+        lightHeaderFont: '#fff',
+        grayHeaderFont: '#777777',
+        //darkBlue for header
+        navBar: '#1b2a38',
+        //button Green
+        button: '#1b2a38',
+        buttonHover: '#e6e6e6',
+        buttonBorderHover: '#adadad',
+        lightTextColor: '#fff',
+      };
 
       return {
         lightTextColor: colors.lightTextColor,
@@ -69,7 +68,7 @@ export const withTheme = (Component)  =>  {
           logoFont: '#fff',
         },
         authButton: {
-          button: colors.primaryColor,
+          button: colors.secondaryColor,
           buttonFont: '#fff',
           buttonHover: '#e6e6e6',
           buttonBorderHover: '#adadad',
