@@ -649,7 +649,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         style={{
                           minWidth: '100%',
                           background: this.props.theme.button,
-                          color: '#fff'
+                          color: '#fff',
                         }}
                         onClick={this.toggleShowFilters}>
                         {' '}
