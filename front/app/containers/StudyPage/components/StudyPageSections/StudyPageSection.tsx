@@ -8,6 +8,7 @@ import { CSSTransition } from 'react-transition-group';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import withTheme from 'containers/ThemeProvider';
 
 interface StudyPageSectionProps {
   nctId: string;
@@ -20,6 +21,7 @@ interface StudyPageSectionProps {
   history: History;
   location: Location;
   match: match<{ nctId: string; searchId: string }>;
+  theme: any;
 }
 
 interface StudyPageSectionsState {
@@ -108,7 +110,7 @@ class StudyPageSection extends React.Component<
               background: 'none',
               color: 'black',
               borderBottom: '2px solid',
-              borderColor: '#8bb7a4',
+              borderColor: this.props.theme.studyPage.sectionBorderColor,
             }}
             onClick={() => this.changeTab()}>
             <FontAwesome
@@ -152,4 +154,4 @@ class StudyPageSection extends React.Component<
   }
 }
 
-export default StudyPageSection;
+export default withTheme(StudyPageSection);

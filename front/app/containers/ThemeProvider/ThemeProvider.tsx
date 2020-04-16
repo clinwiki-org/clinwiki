@@ -36,6 +36,8 @@ const clinwikiColors = {
   crumbFontColor: '#fff',
   //react-table header offgreen
   resultsTableHeader: '#8bb7a4',
+  //studypage divider border color
+  studyBorderColor: '#8bb7a4',
 };
 
 export const withTheme = Component => {
@@ -125,21 +127,19 @@ export const withTheme = Component => {
           resultsRowHighlight: colors.primaryAltColor,
           resultsPaginationButtons: colors.primaryColor,
         },
+        studyPage: {
+          sectionBorderColor: colors.primaryColor,
+        },
       };
     };
 
-   render() {
-     return (
-       <SiteProvider>
-        {(site) => 
-        <Component
-          theme={this.theme(site)}
-        {...this.props}
-       />
-        }
-       </SiteProvider>
-     )
-   }
+    render() {
+      return (
+        <SiteProvider>
+          {site => <Component theme={this.theme(site)} {...this.props} />}
+        </SiteProvider>
+      );
+    }
   }
   return ThemeProvider;
 };
