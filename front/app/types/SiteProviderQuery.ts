@@ -646,6 +646,7 @@ export interface SiteProviderQuery_site {
   name: string;
   skipLanding: boolean | null;
   subdomain: string;
+  themes: string;
   owners: SiteProviderQuery_site_owners[];
   siteView: SiteProviderQuery_site_siteView;
   siteViews: SiteProviderQuery_site_siteViews[];

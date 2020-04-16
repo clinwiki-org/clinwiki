@@ -70,6 +70,7 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
   };
 
   handleSignInClick = () => {
+    console.log('sign in')
     this.props.history.push('/sign_in');
   };
 
