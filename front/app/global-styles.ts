@@ -30,10 +30,6 @@ div.crumbs-bar span.label {
   background: #55B88D !important;
   color: #fff !important;
 }
-div.rt-tbody div.rt-tr:hover{
-  background: #55B88D !important;
-  color: #fff !important;
-}
 /* Pagination */
 div.pagination-bottom div.-pagination{
   padding: 0px !important;
@@ -157,7 +153,4 @@ div.DraftEditor-editorContainer{
   color: #777;
 }
 
-.ReactTable .-pagination .-btn {
-  background: #55B88D !important;
-}
 `;
