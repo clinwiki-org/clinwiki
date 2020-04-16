@@ -73,20 +73,24 @@ const AUTOSUGGEST_QUERY = gql`
 `;
 
 const CrumbsBarStyleWrappper = styled.div`
+  border: solid white 1px;
+  background-color: #f2f2f2;
+  color: black;
+  margin-bottom: 1em;
+  margin-left: 15px;
+  margin-right: 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  .container {
+    border: 0px;
+    width: 100% !important;
+    margin-top: 5px;
+    color: #394149;
+  }
   .crumbs-bar {
-    padding: 10px 30px;
-    border: solid white 1px;
-    margin-bottom: 1em;
-    margin-left: 15px;
-    width: 100%;
     background: ${props => props.theme.crumbsBar.containerBackground};
     color: ${props => props.theme.crumbsBar.containerFont};
-
-    .container {
-      border: 0px;
-      margin-top: 5px;
-      color: #394149;
-    }
 
     i {
       font-style: normal;
@@ -174,6 +178,7 @@ interface CrumbsBarProps {
   currentSiteView: SiteFragment_siteView;
   totalResults: number;
   searchHash: string;
+  theme: any;
 }
 
 interface CrumbsBarState {
@@ -422,9 +427,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
               />
             </div>
           </FormGroup>
-          <Button type="submit">
+          <ThemedButton type="submit">
             <FontAwesome name="search" />
-          </Button>
+          </ThemedButton>
         </div>
       );
     } else if (showAutoSuggest == false) {
@@ -573,7 +578,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       data.siteView;
     let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
-    // console.log(this.props.theme);
+    console.log('THEMEING', this.props.theme);
     return (
       <ThemedCrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -599,7 +604,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                     <CurrentUser>
                       {user =>
                         user && user.roles.includes('admin') ? (
-                          <Button
+                          <ThemedButton
                             onClick={() =>
                               this.props.onBulkUpdate(
                                 this.props.searchHash,
@@ -607,7 +612,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                               )
                             }>
                             Bulk Update <FontAwesome name="truck" />
-                          </Button>
+                          </ThemedButton>
                         ) : null
                       }
                     </CurrentUser>
@@ -641,7 +646,8 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                       <ListGroupItem
                         style={{
                           minWidth: '100%',
-                          background: 'rgba(85, 184, 141, 0.5)',
+                          background: this.props.theme.button,
+                          color: '#fff'
                         }}
                         onClick={this.toggleShowFilters}>
                         {' '}
@@ -653,7 +659,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                               name="chevron-up"
                               style={{
                                 cursor: 'pointer',
-                                color: '#555',
+                                color: '#fff',
                                 margin: '0 0 0 3px',
                                 float: 'right',
                               }}
@@ -667,7 +673,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                               name="chevron-down"
                               style={{
                                 cursor: 'pointer',
-                                color: '#555',
+                                color: '#fff',
                                 margin: '0 0 0 3px',
                                 float: 'right',
                               }}

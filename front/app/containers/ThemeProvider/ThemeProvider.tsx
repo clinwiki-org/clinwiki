@@ -44,6 +44,7 @@ export const withTheme = Component => {
         //header font color
         primaryColor: '#6BA5D6',
         secondaryColor: '#1b2a38',
+        tertiaryColor: "#73bcdf",
         lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
         //darkBlue for header
@@ -61,13 +62,13 @@ export const withTheme = Component => {
         buttonSecondary: colors.secondaryColor,
         sorterColor: colors.primaryColor,
         authHeader: {
-          headerBackground: colors.secondaryColor,
+          headerBackground: colors.primaryColor,
           font: colors.lightHeaderFont,
           hoverFont: colors.grayHeaderFont,
           logoFont: '#fff',
         },
         authButton: {
-          button: colors.primaryColor,
+          button: colors.secondaryColor,
           buttonFont: '#fff',
           buttonHover: '#e6e6e6',
           buttonBorderHover: '#adadad',
