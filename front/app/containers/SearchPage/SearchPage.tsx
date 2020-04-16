@@ -859,9 +859,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       {this.renderAggs(currentSiteView)}
                     </ThemedSidebarContainer>
                   )}
-                  <div
-                    id="main_search"
-                    style={{ overflowY: 'auto', width: '100%' }}>
                     <ThemedMainContainer>
                       {showBreadCrumbs && this.renderCrumbs()}
                       {showPresearch && this.renderPresearch(hash)}
