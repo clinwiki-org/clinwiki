@@ -17,8 +17,8 @@ interface AuthButtonProps {
 
 const ButtonWrapper = styled.div`
   margin-top: 7px;
-  // background: ${props => props.theme.authButton.button} !important;
-  // color: ${props => props.theme.authButton.buttonFont};
+  background: ${props => props.theme.authButton.button} !important;
+  color: ${props => props.theme.authButton.buttonFont};
   border-radius: 4px;
   &:hover {
     background: ${props => props.theme.authButton.buttonHover};

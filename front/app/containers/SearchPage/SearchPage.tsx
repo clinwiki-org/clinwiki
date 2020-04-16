@@ -18,7 +18,6 @@ import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
 import { ThemedButton } from '../../components/StyledComponents';
-
 import {
   path,
   map,
@@ -785,7 +784,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <ThemedSidebarContainer md={2}>
               {this.renderAggs(currentSiteView)}
             </ThemedSidebarContainer>
-
             <ThemedMainContainer md={10}>
               {this.renderPresearch(null)}
               <SearchView
