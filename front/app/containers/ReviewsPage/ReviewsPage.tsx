@@ -6,9 +6,8 @@ import styled from 'styled-components';
 import { gql } from 'apollo-boost';
 import { Query, Mutation } from 'react-apollo';
 import ReactStars from 'react-stars';
-
 import StudySummary from 'components/StudySummary';
-
+import ThemedButton from 'components/StyledComponents/index';
 import ReviewForm from 'containers/ReviewForm';
 import { trimPath } from 'utils/helpers';
 import {
@@ -32,6 +31,7 @@ import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { starColor } from 'utils/constants';
+import withTheme from 'containers/ThemeProvider';
 
 interface ReviewsPageProps {
   nctId: string;
@@ -41,6 +41,7 @@ interface ReviewsPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
+  theme: any;
 }
 
 const FRAGMENT = gql`
@@ -104,9 +105,7 @@ const RatingWrapper = styled.div`
   margin: 10px;
 `;
 
-const WriteReviewButton = styled(Button)`
-  margin-left: auto;
-  display: flex;
+const WriteReviewButton = styled(ThemedButton)`
   margin-bottom: 10px;
 `;
 
@@ -149,11 +148,12 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   };
 
   renderRating = (key: string, value: string) => {
+    const { theme } = this.props;
     return (
       <RatingWrapper key={key}>
         <ReactStars
           edit={false}
-          color2={starColor}
+          color2={theme.studyPage.reviewStarColor}
           count={5}
           half={false}
           value={value}
@@ -198,11 +198,11 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
             {authorized && (
               <Col md={2}>
                 <ButtonsWrapper>
-                  <Button
+                  <ThemedButton
                     style={{ marginRight: 10 }}
                     onClick={() => this.handleEditReview(review.id)}>
                     Edit
-                  </Button>
+                  </ThemedButton>
                   <DeleteReviewMutationComponent
                     mutation={DELETE_REVIEW_MUTATION}
                     update={cache => {
@@ -234,13 +234,13 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                       });
                     }}>
                     {deleteReview => (
-                      <Button
+                      <ThemedButton
                         onClick={this.handleDeleteReview(
                           deleteReview,
                           review.id
                         )}>
                         Delete
-                      </Button>
+                      </ThemedButton>
                     )}
                   </DeleteReviewMutationComponent>
                 </ButtonsWrapper>
@@ -261,9 +261,11 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
         {user => (
           <>
             {user && (
-              <WriteReviewButton onClick={this.handleWriteReview}>
-                Write a review
-              </WriteReviewButton>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <WriteReviewButton onClick={this.handleWriteReview}>
+                  Write a review
+                </WriteReviewButton>
+              </div>
             )}
             <Table striped bordered>
               <tbody>{reviews.map(this.renderReview(user))}</tbody>
@@ -310,4 +312,4 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   }
 }
 
-export default ReviewsPage;
+export default withTheme(ReviewsPage);
