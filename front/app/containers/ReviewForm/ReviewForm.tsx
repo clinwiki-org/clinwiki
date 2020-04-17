@@ -207,7 +207,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
             <Col md={6}>
               <ReactStars
                 count={5}
-                color2={starColor}
+                color2={this.props.theme.studyPage.reviewStarColor}
                 half={false}
                 value={this.state.meta[key]}
                 onChange={value => this.handleRatingChange(key, value)}
@@ -246,6 +246,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   };
 
   render() {
+    console.log('theme', this.props.theme);
     return (
       <div>
         {this.renderMeta()}
