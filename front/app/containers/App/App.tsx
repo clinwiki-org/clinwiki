@@ -24,6 +24,7 @@ import SitesNewPage from 'containers/SitesNewPage';
 import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 import BulkEditPage from 'containers/BulkEditPage';
+import withTheme from 'containers/ThemeProvider';
 
 
 interface AppProps {
@@ -31,16 +32,19 @@ interface AppProps {
 }
 
 const AppWrapper = styled.div`
-  background-color: #4d5863;
+  background-color: ${props => props.theme.backgroundColor};
   min-height: 100vh;
   min-width: 100%;
 `;
+
+const ThemedAppWrapper = withTheme(AppWrapper);
+
 const MainWrapper = styled.div``;
 
 class App extends React.PureComponent<AppProps> {
   render() {
     return (
-      <AppWrapper>
+      <ThemedAppWrapper>
         <CurrentUser>
           {user => <AuthHeader user={user} history={this.props.history} />}
         </CurrentUser>
@@ -75,7 +79,7 @@ class App extends React.PureComponent<AppProps> {
             <Route component={NotFoundPage} />
           </Switch>
         </MainWrapper>
-      </AppWrapper>
+      </ThemedAppWrapper>
     );
   }
 }
