@@ -650,7 +650,6 @@ export interface SiteProviderQuery_site {
   owners: SiteProviderQuery_site_owners[];
   siteView: SiteProviderQuery_site_siteView;
   siteViews: SiteProviderQuery_site_siteViews[];
-  themes:string;
 }
 
 export interface SiteProviderQuery {

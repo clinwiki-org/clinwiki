@@ -10,7 +10,7 @@ interface ThemeProviderProps {
 //this obj is more for reference than anything else
 const clinwikiColors = {
   //header font color
-  primaryClinwiki: '#55B88D',
+
   whiteHeaderFont: '#fff',
   grayHeaderFont: '#777777',
   //darkBlue for header
@@ -42,13 +42,31 @@ export const withTheme = Component => {
   class ThemeProvider extends React.Component {
     theme = site => {
 
-      const theme = JSON.parse(site.themes);
-      console.log('this theme', theme);
+      console.log('site', site)
+      const themeString = site.themes;
+      //fallback colors
+      let thisTheme = {
+        primaryColor: '#6BA5D6',
+        secondaryColor: '#1b2a38',
+        lightTextColor: '#fff',
+        secondaryTextColor: '#777',
+      }
+
+      //if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object. 
+      if (/^[\],:{}\s]*$/.test(themeString.replace(/\\["\\\/bfnrtu]/g, '@').
+        replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+        replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+        thisTheme = JSON.parse(site.themes)
+
+      }
+      // console.log('this theme', theme);
       //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks.
       const colors = {
         //header font color
-        primaryColor: '#6BA5D6',
-        secondaryColor: '#1b2a38',
+        primaryColor: thisTheme.primaryColor,
+        secondaryColor: thisTheme.secondaryColor,
+        lightTextColor: thisTheme.lightTextColor,
+        secondaryTextColor: thisTheme.secondaryTextColor,
         tertiaryColor: '#73bcdf',
         lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
@@ -58,19 +76,22 @@ export const withTheme = Component => {
         button: '#1b2a38',
         buttonHover: '#e6e6e6',
         buttonBorderHover: '#adadad',
-        lightTextColor: '#fff',
       };
 
+      //this is the master map of our theme. 
       return {
-        lightTextColor: colors.lightTextColor,
         button: colors.primaryColor,
         buttonSecondary: colors.secondaryColor,
         sorterColor: colors.primaryColor,
         authHeader: {
           headerBackground: colors.primaryColor,
           font: colors.lightTextColor,
-          hoverFont: colors.grayHeaderFont,
+          hoverFont: colors.secondaryTextColor,
           logoFont: '#fff',
+        },
+        authPage: {
+          signInLinks: colors.lightTextColor,
+          signInLinksHover: colors.secondaryTextColor
         },
         authButton: {
           button: colors.secondaryColor,
@@ -87,7 +108,7 @@ export const withTheme = Component => {
         },
         crumbsBar: {
           containerBackground: '#f2f2f2',
-          containerFont: 'black',
+          containerFont: '#333',
           filterBarBackground: 'rgba(85, 184, 141, 0.5)',
         },
         crumbs: {

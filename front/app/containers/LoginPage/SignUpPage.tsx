@@ -15,6 +15,7 @@ import StyledError from './StyledError';
 import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
+import {ThemedLinkContainer} from '../../components/StyledComponents'
 
 interface SignUpPageProps {
   history: History;
@@ -189,10 +190,10 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
             </SignUpMutationComponent>
 
             {this.renderErrors()}
-            <LinkContainer>
+            <ThemedLinkContainer>
               <Link to="/sign_in">Sign In</Link>
               <Link to="/reset_password">Reset password</Link>
-            </LinkContainer>
+            </ThemedLinkContainer>
           </StyledContainer>
         </Col>
       </StyledWrapper>
