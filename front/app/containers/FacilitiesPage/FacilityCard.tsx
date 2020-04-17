@@ -1,6 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
+import { FacilitiesPageQuery_study_facilities_contacts } from 'types/FacilitiesPageQuery';
+import { truncateString } from './FacilityUtils';
 
 const FacilityCardWrapper = styled.div`
   background-color: white;
@@ -217,18 +219,6 @@ class FacilityCard extends React.PureComponent<any> {
     });
   };
 
-  truncateString = (str, n, useWordBoundary) => {
-    if (!str || str.length <= n) {
-      return str;
-    }
-    let shortStr = str.substr(0, n);
-    return (
-      (useWordBoundary
-        ? shortStr.substr(0, shortStr.lastIndexOf(' '))
-        : shortStr) + '...'
-    );
-  };
-
   capitalize = str => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
@@ -382,7 +372,7 @@ class FacilityCard extends React.PureComponent<any> {
     } = this.props;
     let newTitle;
     if (name) {
-      newTitle = facilityExpanded ? name : this.truncateString(name, 33, true);
+      newTitle = facilityExpanded ? name : truncateString(name, 33, true);
     } else newTitle = title;
 
     return (

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import FacilityInfoCard from './FacilityInfoCard';
+import { FacilitiesPageQuery_study_facilities_contacts } from 'types/FacilitiesPageQuery';
 
 const K_CIRCLE_SIZE = 30;
 const K_STICK_SIZE = 10;
@@ -122,7 +123,20 @@ const WarningHoverStick = styled.div`
   background-color: #f6a202;
 `;
 
-class MapMarker extends React.PureComponent<any> {
+interface Props {
+  onClick: () => void;
+  clicked: boolean;
+  lat?: number | null;
+  lng?: number | null;
+  geoStatus?: string;
+  contacts: FacilitiesPageQuery_study_facilities_contacts[];
+  text: number;
+  name: string|null;
+  address: string;
+  $hover?: boolean;
+}
+
+class MapMarker extends React.PureComponent<Props> {
   state = {
     clicked: false,
   };
@@ -136,7 +150,7 @@ class MapMarker extends React.PureComponent<any> {
   render() {
     if (this.props.geoStatus === 'good') {
       return (
-        <MarkerContainer onClick={() => this.markerClicked()}>
+        <MarkerContainer onClick={this.markerClicked}>
           {this.props.$hover || this.state.clicked ? (
             <div>
               <HoverCircle onClick={this.props.onClick}>

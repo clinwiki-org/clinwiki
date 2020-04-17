@@ -1,5 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { FacilitiesPageQuery_study_facilities_contacts } from 'types/FacilitiesPageQuery';
+import { truncateString } from './FacilityUtils';
 
 const CardContainer = styled.div`
   min-width: 250px;
@@ -45,26 +47,22 @@ const ContactInfo = styled.p`
   margin: 0;
 `;
 
-class FacilityInfoCard extends React.PureComponent<any> {
-  truncateString = (str, n, useWordBoundary) => {
-    if (!str || str.length <= n) {
-      return str;
-    }
-    let shortStr = str.substr(0, n);
-    return (
-      (useWordBoundary
-        ? shortStr.substr(0, shortStr.lastIndexOf(' '))
-        : shortStr) + '...'
-    );
-  };
+interface Props {
+  hover?: boolean;
+  name: string | null;
+  address: string;
+  contacts: FacilitiesPageQuery_study_facilities_contacts[];
+  clicked: boolean;
+}
 
+class FacilityInfoCard extends React.PureComponent<Props> {
   render() {
     const { name, address, hover } = this.props;
     return (
       <div>
         <CardContainer
           style={hover ? { visibility: 'visible' } : { visibility: 'hidden' }}>
-          <TitleText>{this.truncateString(name, 60, true)}</TitleText>
+          <TitleText>{truncateString(name, 60, true)}</TitleText>
           <SubTitle>{address}</SubTitle>
         </CardContainer>
         <Pointer
