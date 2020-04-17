@@ -650,5 +650,4 @@ export interface SiteFragment {
   owners: SiteFragment_owners[];
   siteView: SiteFragment_siteView;
   siteViews: SiteFragment_siteViews[];
-  themes:string;
 }
