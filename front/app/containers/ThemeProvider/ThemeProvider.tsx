@@ -50,6 +50,8 @@ export const withTheme = Component => {
         secondaryColor: '#1b2a38',
         lightTextColor: '#fff',
         secondaryTextColor: '#777',
+        backgroundColor: '#4D5863;',
+        primaryAltColor: '#4889BF',
       }
 
       //if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object. 
@@ -63,11 +65,12 @@ export const withTheme = Component => {
       //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks.
       const colors = {
         //header font color
-        primaryColor: thisTheme.primaryColor,
-        secondaryColor: thisTheme.secondaryColor,
-        lightTextColor: thisTheme.lightTextColor,
-        secondaryTextColor: thisTheme.secondaryTextColor,
-        tertiaryColor: '#73bcdf',
+        primaryColor: thisTheme.primaryColor || '#6BA5D6',
+        secondaryColor: thisTheme.secondaryColor || '#1b2a38',
+        lightTextColor: thisTheme.lightTextColor || '#fff',
+        secondaryTextColor: thisTheme.secondaryTextColor || '#777',
+        backgroundColor: thisTheme.backgroundColor || '#4D5863' ,
+        primaryAltColor: thisTheme.primaryAltColor ||'#4889BF',
         lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
         //darkBlue for header
@@ -83,6 +86,7 @@ export const withTheme = Component => {
         button: colors.primaryColor,
         buttonSecondary: colors.secondaryColor,
         sorterColor: colors.primaryColor,
+        backgroundColor: colors.backgroundColor,
         authHeader: {
           headerBackground: colors.primaryColor,
           font: colors.lightTextColor,
@@ -120,7 +124,7 @@ export const withTheme = Component => {
         },
         searchResults: {
           resultsHeaderBackground: colors.primaryColor,
-          resultsRowHighlight: colors.primaryColor,
+          resultsRowHighlight: colors.primaryAltColor,
           resultsPaginationButtons: colors.primaryColor,
         },
       };
