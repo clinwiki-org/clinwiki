@@ -10,10 +10,12 @@ interface MainFormProps {
   form: CreateSiteInput;
   onFormChange: (form: CreateSiteInput) => void;
   handleForm: any;
+  handleThemeError: (boolean) => void;
 }
 
 interface MainFormState {
   addEditorEmail: string;
+  themeError: string;
 }
 
 export const AddEditorContainer = styled.div`
@@ -48,6 +50,7 @@ color: white;
 class MainForm extends React.Component<MainFormProps, MainFormState> {
   state: MainFormState = {
     addEditorEmail: '',
+    themeError: ''
   };
 
   handleAddEditor = () => {
@@ -81,7 +84,18 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
     if (name =="themes"){
-      this.props.onFormChange({ ...this.props.form, [name]: JSON.stringify(value) });
+      try {
+        let parseResponse = JSON.parse(value);
+        if (parseResponse && parseResponse.error) 
+          throw new Error(parseResponse.error);
+        this.props.onFormChange({ ...this.props.form, [name]: JSON.stringify(value) });
+        this.props.handleThemeError(false)
+        this.setState({themeError: ''})
+      } catch (e) {
+        this.setState({themeError: 'There is an error in your theme object.'})
+        this.props.handleThemeError(true)
+      }
+
     }
     this.props.onFormChange({ ...this.props.form, [name]: value });
   };
@@ -176,6 +190,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
               value={this.props.form.themes}
               onChange={this.handleInputChange}
             />
+            <div>{this.state.themeError}</div>
           </Col>
         </Row>
       </StyledContainer>

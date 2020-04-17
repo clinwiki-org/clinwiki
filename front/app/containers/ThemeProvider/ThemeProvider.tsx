@@ -41,8 +41,6 @@ const clinwikiColors = {
 export const withTheme = Component => {
   class ThemeProvider extends React.Component {
     theme = site => {
-
-      console.log('site', site)
       const themeString = site.themes;
       //fallback colors
       let thisTheme = {
