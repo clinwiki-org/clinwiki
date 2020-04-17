@@ -20,6 +20,7 @@ interface EditReviewProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
+  theme?: any;
 }
 
 const QUERY = gql`
@@ -51,6 +52,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
   };
 
   render() {
+    console.log('theme in edit', this.props.theme);
     return (
       <QueryComponent
         query={QUERY}
@@ -76,6 +78,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
               review={review}
               nctId={this.props.match.params.nctId}
               afterSave={this.handleReviewSave}
+              theme={this.props.theme}
             />
           );
         }}
