@@ -16,6 +16,7 @@ import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
 import withTheme from './../ThemeProvider';
+import {ThemedLinkContainer} from '../../components/StyledComponents';
 
 interface SignInPageProps {
   history: History;
@@ -49,19 +50,6 @@ class SignInMutationComponent extends Mutation<
 > {}
 type SignInMutationFn = MutationFn<SignInMutation, SignInMutationVariables>;
 
-
-  const LinkContainer = 
-    styled.div`
-     position: absolute;
-     bottom: 30px;
-     background: ${props => props.theme.secondaryColor};
-     a {
-       color: ${props => props.theme.primaryColor};
-       margin-right: 15px;
-     }`
-    ;
-
-  const ThemedLinkContainer = withTheme(LinkContainer);
 
 
 

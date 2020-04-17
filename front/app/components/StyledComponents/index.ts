@@ -24,4 +24,20 @@ const StyledButton = styled.div`
 
 export const ThemedButton = withTheme(StyledButton);
 
+const LinkContainer = 
+styled.div`
+ position: absolute;
+ bottom: 30px;
+ a {
+   color: ${props => props.theme.authPage.signInLinks};
+   margin-right: 15px;
+ } 
+ a:hover {
+   color: ${props => props.theme.authPage.signInLinksHover}
+ }
+ `
+;
+
+export const ThemedLinkContainer = withTheme(LinkContainer);
+
 export default ThemedButton;
