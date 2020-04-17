@@ -41,7 +41,7 @@ interface ReviewsPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
-  theme: any;
+  theme?: any;
 }
 
 const FRAGMENT = gql`
@@ -153,7 +153,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
       <RatingWrapper key={key}>
         <ReactStars
           edit={false}
-          color2={theme.studyPage.reviewStarColor}
+          color2={starColor}
           count={5}
           half={false}
           value={value}
@@ -312,4 +312,4 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   }
 }
 
-export default withTheme(ReviewsPage);
+export default ReviewsPage;
