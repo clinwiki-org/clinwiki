@@ -127,6 +127,7 @@ export const withTheme = Component => {
         },
         studyPage: {
           sectionBorderColor: colors.primaryColor,
+          reviewStarColor: colors.primaryColor,
         },
       };
     };

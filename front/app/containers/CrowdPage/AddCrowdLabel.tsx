@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Button, FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import ButtonCell from './ButtonCell';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface AddCrowdLabelProps {
   onAddLabel: (key: string, value: string) => void;
@@ -105,12 +106,12 @@ class AddCrowdLabel extends React.Component<
         <ButtonCell>
           <div>
             {this.state.inAddMode && (
-              <Button onClick={this.handleSubmit}>Submit</Button>
+              <ThemedButton onClick={this.handleSubmit}>Submit</ThemedButton>
             )}
             {!this.state.inAddMode && (
-              <Button onClick={this.handleAddClick}>
+              <ThemedButton onClick={this.handleAddClick}>
                 {this.props.name || 'Add'}
-              </Button>
+              </ThemedButton>
             )}
           </div>
         </ButtonCell>

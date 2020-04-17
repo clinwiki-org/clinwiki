@@ -62,6 +62,7 @@ interface StudyPageProps {
   workflowName: string | null;
   recordsTotal?: number;
   counterIndex?: number;
+  theme: any;
 }
 
 interface StudyPageState {
@@ -387,11 +388,17 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   renderReviewsSummary = (data: StudyPageQuery | undefined) => {
+    const { theme } = this.props;
     if (!data || !data.study) {
       return (
         <ReviewsWrapper style={{ float: 'left' }}>
           <div>
-            <ReactStars count={5} color2={starColor} edit={false} value={0} />
+            <ReactStars
+              count={5}
+              color2={theme.studyPage.reviewStarColor}
+              edit={false}
+              value={0}
+            />
             <div>{'0 Reviews'}</div>
           </div>
         </ReviewsWrapper>
@@ -403,7 +410,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         <div>
           <ReactStars
             count={5}
-            color2={starColor}
+            color2={theme.studyPage.reviewStarColor}
             edit={false}
             value={data.study.averageRating}
           />
@@ -567,4 +574,4 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   }
 }
 
-export default StudyPage;
+export default withTheme(StudyPage);

@@ -22,6 +22,7 @@ import Edits, { WikiPageEditFragment } from 'components/Edits';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface TagsPageProps {
   nctId: string;
@@ -109,7 +110,7 @@ const ADD_TAG_MUTATION = gql`
 class AddTagMutationComponent extends Mutation<
   TagsPageAddWikiTagMutation,
   TagsPageAddWikiTagMutationVariables
-  > { }
+> {}
 
 type AddTagMutationFn = MutationFn<
   TagsPageAddWikiTagMutation,
@@ -119,14 +120,14 @@ type AddTagMutationFn = MutationFn<
 class DeleteTagMutationComponent extends Mutation<
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables
-  > { }
+> {}
 
 type DeleteTagMutationFn = MutationFn<
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables
 >;
 
-class QueryComponent extends Query<TagsPageQuery, TagsPageQueryVariables> { }
+class QueryComponent extends Query<TagsPageQuery, TagsPageQueryVariables> {}
 
 class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   static fragment = FRAGMENT;
@@ -264,11 +265,11 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                       />
                       <AddTagMutationComponent mutation={ADD_TAG_MUTATION}>
                         {addTag => (
-                          <Button
+                          <ThemedButton
                             onClick={this.handleAddTag(meta, addTag)}
                             style={{ marginLeft: 10 }}>
                             Add Tag
-                          </Button>
+                          </ThemedButton>
                         )}
                       </AddTagMutationComponent>
                     </AddWrapper>
