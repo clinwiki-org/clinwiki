@@ -62,7 +62,7 @@ interface StudyPageProps {
   workflowName: string | null;
   recordsTotal?: number;
   counterIndex?: number;
-  theme: any;
+  theme?: any;
 }
 
 interface StudyPageState {
