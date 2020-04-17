@@ -583,23 +583,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   showingCards = () => this.props.currentSiteView.search.results.type == 'card';
 
   componentDidMount() {
-    let searchTerm = new URLSearchParams(this.props.location?.search || "")
-    if (searchTerm.has('q')) {
-      let q = { key: 'AND', children: [{ children: [], key: searchTerm.getAll('q').toString() }] };
-      this.setState(
-        {
-          params: {
-            q: q,
-            aggFilters: [],
-            crowdAggFilters: [],
-            sorts: [],
-            page: 0,
-            pageSize: defaultPageSize,
-          },
-        },
-        () => this.updateSearchParams(this.state.params)
-      );
-    } 
     if (this.showingCards()) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
@@ -627,6 +610,20 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   updateStateFromHash(searchParams) {
     const params: SearchParams = this.searchParamsFromQuery(searchParams);
+    let searchTerm = new URLSearchParams(this.props.location?.search || "")
+    
+    if (searchTerm.has('q')) {
+      let q = { key: 'AND', children: [{ children: [], key: searchTerm.getAll('q').toString() }] };
+      this.setState(
+        {
+          params: {
+            ...params,
+            q: q
+          },
+        },
+        () => this.updateSearchParams(this.state.params)
+      );
+    } 
     this.setState({
       params: {
         ...params,
