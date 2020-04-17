@@ -595,7 +595,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   componentDidMount(){
     let fields=this.props.currentSiteView.search.aggs.fields
     const field = this.findFields();
-    if (field?.order && field.order.id=="key"){
+    if (field?.order && field.order.sortKind =="key"){
       console.log(`c4${field.name}`, this.state)
       console.log("stuff", field.order)
        this.setState({
@@ -604,7 +604,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
        })
        console.log(`after ${field.name}`,this.state) 
      }
-    else if(field?.order && field.order.id=="count"){
+    else if(field?.order && field.order.sortKind =="count"){
 
       console.log(`b4 ${field.name}`, this.state)
       console.log(`desc ${field.name}`, field.order.desc)

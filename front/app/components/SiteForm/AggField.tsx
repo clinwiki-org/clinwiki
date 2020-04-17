@@ -120,9 +120,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     this.props.onAddMutation(x);
   };
   handleDefaultSortOrder = x => {
-    let xboolean = x.currentTarget.value == 'true';
-    let e = { currentTarget: { name: x.currentTarget.name, value: xboolean } };
-    this.props.onAddMutation(e);
+    // let xboolean = x.currentTarget.value == 'true';
+    // let e = { currentTarget: { name: x.currentTarget.name, value: xboolean } };
+    this.props.onAddMutation(x);
   };
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
@@ -257,11 +257,11 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <div>
             <StyledLabel>Default Sort Type</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath(configType)}.order.id`}
+              name={`set:${this.getPath(configType)}.order.sortKind`}
               componentClass="select"
               onChange={e => this.handleDefaultSortType(e)}
               //@ts-ignore
-              defaultValue={this.props.field.order?.id}>
+              defaultValue={this.props.field.order?.sortKind}>
               <option value="key">Alpha</option>
               <option value="count">Numeric</option>
             </StyledFormControl>
@@ -273,8 +273,10 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               onChange={e => this.handleDefaultSortOrder(e)}
               //@ts-ignore
               defaultValue={this.props.field.order?.desc}>
-              <option value="false">Ascending</option>
-              <option value="true">Descending</option>
+                //@ts-ignore
+              <option value={false}>Ascending</option>
+              //@ts-ignore
+              <option value={true}>Descending</option>
             </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl
