@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
+import withTheme from 'containers/ThemeProvider';
 
 const FacilityCardWrapper = styled.div`
   background-color: white;
@@ -20,11 +21,11 @@ const FacilityNumber = styled.div`
   position: relative;
   width: 28px;
   height: 22px;
-  border: 3px solid #324870;
+  border: 3px solid ${props => props.theme.mapSection.markerBorderColor};
   border-radius: 22px;
   background-color: white;
   text-align: center;
-  color: #55b88d;
+  color: ${props => props.theme.mapSection.markerFontColor};
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -33,6 +34,8 @@ const FacilityNumber = styled.div`
   margin: 0;
   padding-bottom: 22px;
 `;
+
+const ThemedFacilityNumber = withTheme(FacilityNumber);
 
 const WarningNumber = styled.div`
   position: relative;
@@ -103,10 +106,12 @@ const ErrorHover = styled.div`
 const FacilityTitle = styled.h2`
   width: 92%;
   font-weight: 600;
-  color: #55b88d;
+  color: ${props => props.theme.mapSection.markerFontColor};
   font-size: 20px;
   margin: 0;
 `;
+
+const ThemedFacilityTitle = withTheme(FacilityTitle);
 
 const FacilityBody = styled.div`
   padding-top: 4px;
@@ -115,10 +120,12 @@ const FacilityBody = styled.div`
 
 const FacilitySubHead = styled.div`
   font-weight: 600;
-  color: #324870;
+  color: ${props => props.theme.mapSection.markerBorderColor};
   font-size: 16px;
   margin-right: 7px;
 `;
+
+const ThemedFacilitySubHead = withTheme(FacilitySubHead);
 
 const Row = styled.div`
   flex-direction: row;
@@ -132,10 +139,12 @@ const Col = styled.div`
 
 const ContactHead = styled.div`
   font-weight: 600;
-  color: #324870;
+  color: ${props => props.theme.mapSection.markerFontColor};
   font-size: 16px;
   text-decoration: underline;
 `;
+
+const ThemedContactHead = withTheme(ContactHead);
 
 const FacilityWarning = styled.div`
   font-weight: 400;
@@ -245,18 +254,20 @@ class FacilityCard extends React.PureComponent<any> {
           }}>
           {contacts.map((item, index) => (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <ContactHead>{this.capitalize(item.contactType)}</ContactHead>
+              <ThemedContactHead>
+                {this.capitalize(item.contactType)}
+              </ThemedContactHead>
               <div style={{ marginLeft: '20px' }}>
                 <Row>
-                  <FacilitySubHead>Phone:</FacilitySubHead>
+                  <ThemedFacilitySubHead>Phone:</ThemedFacilitySubHead>
                   <FacilitySubText>{item.phone}</FacilitySubText>
                 </Row>
                 <Row>
-                  <FacilitySubHead>Email:</FacilitySubHead>
+                  <ThemedFacilitySubHead>Email:</ThemedFacilitySubHead>
                   <FacilitySubText>{item.email}</FacilitySubText>
                 </Row>
                 <Row>
-                  <FacilitySubHead>Name:</FacilitySubHead>
+                  <ThemedFacilitySubHead>Name:</ThemedFacilitySubHead>
                   <FacilitySubText>{item.name}</FacilitySubText>
                 </Row>
               </div>
@@ -273,7 +284,7 @@ class FacilityCard extends React.PureComponent<any> {
     } else
       return (
         <Row>
-          <FacilitySubHead>Contact Info:</FacilitySubHead>
+          <ThemedFacilitySubHead>Contact Info:</ThemedFacilitySubHead>
           <FacilitySubText>No Contact Info Available</FacilitySubText>
         </Row>
       );
@@ -282,10 +293,10 @@ class FacilityCard extends React.PureComponent<any> {
   renderNumber = (geoStatus, index, latitude, longitude, numberClick) => {
     if (geoStatus === 'good') {
       return (
-        <FacilityNumber
+        <ThemedFacilityNumber
           onClick={() => numberClick(latitude, longitude, geoStatus)}>
           {index}
-        </FacilityNumber>
+        </ThemedFacilityNumber>
       );
     }
     if (geoStatus === 'zip') {
@@ -343,7 +354,7 @@ class FacilityCard extends React.PureComponent<any> {
     if (geoStatus === 'bad') {
       return (
         <Row>
-          <FacilitySubHead>Location:</FacilitySubHead>
+          <ThemedFacilitySubHead>Location:</ThemedFacilitySubHead>
           <FacilityError>{location}</FacilityError>
         </Row>
       );
@@ -351,7 +362,7 @@ class FacilityCard extends React.PureComponent<any> {
     if (geoStatus === 'zip') {
       return (
         <Row>
-          <FacilitySubHead>Location:</FacilitySubHead>
+          <ThemedFacilitySubHead>Location:</ThemedFacilitySubHead>
           <FacilityWarning>{location}</FacilityWarning>
         </Row>
       );
@@ -359,7 +370,7 @@ class FacilityCard extends React.PureComponent<any> {
     if (geoStatus === 'good') {
       return (
         <Row>
-          <FacilitySubHead>Location</FacilitySubHead>
+          <ThemedFacilitySubHead>Location</ThemedFacilitySubHead>
           <FacilitySubText>{location}</FacilitySubText>
         </Row>
       );
@@ -388,7 +399,7 @@ class FacilityCard extends React.PureComponent<any> {
     return (
       <FacilityCardWrapper key={title}>
         <FacilityHeader>
-          <FacilityTitle>{newTitle || ''}</FacilityTitle>
+          <ThemedFacilityTitle>{newTitle || ''}</ThemedFacilityTitle>
           <div style={{ width: '8%' }}>
             {this.renderNumber(
               geoStatus,
@@ -401,7 +412,7 @@ class FacilityCard extends React.PureComponent<any> {
         </FacilityHeader>
         <FacilityBody>
           <Row>
-            <FacilitySubHead>Status:</FacilitySubHead>
+            <ThemedFacilitySubHead>Status:</ThemedFacilitySubHead>
             <FacilitySubText>{status}</FacilitySubText>
           </Row>
           {this.renderLocation(geoStatus, location)}
