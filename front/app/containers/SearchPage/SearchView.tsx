@@ -322,8 +322,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     // and value determined by studyfragment of that column.
     // also renders stars
 
-    const themedStarColor = this.props.theme.studyPage.reiviewStarColor;
-
+    const themedStarColor = this.props.theme.studyPage.reviewStarColor;
+    console.log('star color', themedStarColor);
     const camelCaseName = camelCase(name);
     const lowerCaseSpacing = 8;
     const upperCaseSpacing = 10;
