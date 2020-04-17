@@ -142,6 +142,7 @@ class StudyPageSection extends React.Component<
                       history={this.props.history}
                       match={this.props.match}
                       location={this.props.location}
+                      theme={this.props.theme}
                     />
                   </Panel.Body>
                 </StyledPanelBody>

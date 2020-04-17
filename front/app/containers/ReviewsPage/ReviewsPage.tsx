@@ -149,11 +149,12 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
 
   renderRating = (key: string, value: string) => {
     const { theme } = this.props;
+
     return (
       <RatingWrapper key={key}>
         <ReactStars
           edit={false}
-          color2={starColor}
+          color2={theme.studyPage.reviewStarColor}
           count={5}
           half={false}
           value={value}
@@ -292,7 +293,12 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                 path={`${this.props.match.path}/new`}
                 render={props => {
                   this.props.onLoaded && this.props.onLoaded();
-                  return <ReviewForm nctId={this.props.nctId} />;
+                  return (
+                    <ReviewForm
+                      theme={this.props.theme}
+                      nctId={this.props.nctId}
+                    />
+                  );
                 }}
               />
               <Route
