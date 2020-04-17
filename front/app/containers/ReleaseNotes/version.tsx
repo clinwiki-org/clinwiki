@@ -9,6 +9,11 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 17
+- Wiki history improvements
+- Improve range selector
+- Performance improvements on workflow facets
+
 ### Version 16
 - Bugfix: Facet bar was blank when returning to search from study page
 
