@@ -86,12 +86,8 @@ interface AggsProps {
 
 const PresearchContainer = styled.div`
   display: flex;
-  max-height: 350px;
-  @media (max-width: 1250px) {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    max-height: 1500px;
-  }
+  flex-wrap: wrap;
+  justify-content: flex-start;
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;

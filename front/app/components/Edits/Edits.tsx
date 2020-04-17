@@ -5,10 +5,10 @@ import {
 import StyleWrapper from "./StyleWrapper";
 import Edit from "./Edit";
 
-
 interface EditsProps {
   edits: WikiPageEditFragment[];
 }
+
 
 class Edits extends React.Component<EditsProps> {
   render() {

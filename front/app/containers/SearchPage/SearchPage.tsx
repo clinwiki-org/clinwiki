@@ -18,6 +18,7 @@ import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
 import {ThemedButton} from '../../components/StyledComponents';
+import { History } from 'history';
 import {
   path,
   map,
@@ -71,24 +72,51 @@ const MainContainer = styled(Col)`
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 20px;
-  float: left;
-  width: 100%;
+  flex: 1;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 
   .rt-th {
     text-transform: capitalize;
     padding: 15px !important;
-    background: #8bb7a4 !important;
+    background: ${props =>
+      props.theme.searchResults.resultsHeaderBackground} !important;
     color: #fff;
+  }
+
+  .ReactTable .-pagination .-btn {
+    background: ${props =>
+      props.theme.searchResults.resultsPaginationButtons} !important;
+  }
+
+  div.rt-tbody div.rt-tr:hover {
+    background: ${props =>
+      props.theme.searchResults.resultsRowHighlight} !important;
+    color: #fff !important;
   }
 
   .rt-table {
   }
 `;
 
+const SearchPageWrapper = styled.div` 
+  display: flex;
+  flex-wrap:nowrap;
+  flex-direction:row;
+  @media only screen and (max-width: 1132px) {
+    flex-direction: column;
+  }
+  `;
+
+
+const ThemedMainContainer = withTheme(MainContainer);
+
 const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
   box-sizing: border-box;
+  width: 235px;
   min-width: 235px;
   min-height: 100%;
   background: ${props => props.theme.aggSideBar.sideBarBackground};
@@ -124,6 +152,9 @@ const SidebarContainer = styled(Col)`
       padding: 0px 10px;
     }
   }
+  @media only screen and (max-width: 1132px) {
+    width: 100%;
+  }
 `;
 const ThemedSidebarContainer = withTheme(SidebarContainer);
 
@@ -157,7 +188,6 @@ padding: 10px 15px;
 margin-left: 1.25em;
 width: 127px;
 `;
-
 
 
 const changeFilter = (add: boolean) => (
@@ -671,6 +701,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return null;
   };
 
+  handlePresearchButtonClick = (hash, target) => {
+    console.log(hash, target);
+    const url = `/search?hash=${hash}&sv=${target}`
+    this.props.history.push(url);
+  }
+
   renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     const { currentSiteView } = this.props;
@@ -709,8 +745,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         />
         {presearchButton.name && (
           <ThemedButton
+            onClick={() => this.handlePresearchButtonClick(hash, presearchButton.target)}
             style={{ width: 200, marginLeft: 13 }}
-            href={`/search?hash=${hash}&sv=${presearchButton.target}`}>
+            >
             {presearchButton.name}
           </ThemedButton>
         )}
@@ -770,7 +807,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <ThemedSidebarContainer md={2}>
               {this.renderAggs(currentSiteView)}
             </ThemedSidebarContainer>
-            <MainContainer md={10}>
+            <ThemedMainContainer md={10}>
               {this.renderPresearch(null)}
               <SearchView
                 params={this.state.params as any}
@@ -799,7 +836,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 currentSiteView={currentSiteView}
                 getTotalResults={this.getTotalResults}
               />
-            </MainContainer>
+            </ThemedMainContainer>
           </Row>
         </SearchParamsContext.Provider>
       );
@@ -831,20 +868,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 showBreadCrumbs,
               } = currentSiteView.search.config.fields;
               return (
-                <Row style={{display: 'flex'}}>
+                <SearchPageWrapper>
                   {showFacetBar && (
                     <ThemedSidebarContainer md={2}>
                       {this.renderAggs(currentSiteView)}
                     </ThemedSidebarContainer>
                   )}
-                  <div id="main_search" style={{ overflowY: 'auto', width: '100%' }}>
-                    <MainContainer>
+                    <ThemedMainContainer>
                       {showBreadCrumbs && this.renderCrumbs()}
                       {showPresearch && this.renderPresearch(hash)}
                       {this.renderSearch()}
-                    </MainContainer>
-                  </div>
-                </Row>
+                    </ThemedMainContainer>
+                </SearchPageWrapper>
               );
             }}
           />

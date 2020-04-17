@@ -10,7 +10,7 @@ interface ThemeProviderProps {
 //this obj is more for reference than anything else
 const clinwikiColors = {
   //header font color
-  primaryClinwiki: '#55B88D',
+
   whiteHeaderFont: '#fff',
   grayHeaderFont: '#777777',
   //darkBlue for header
@@ -43,17 +43,43 @@ const clinwikiColors = {
   mapMarkerFont: '#55b88d',
   //facility card colors
   facilityCardColor: '#55b88d',
+  //react-table header offgreen
+  resultsTableHeader: '#8bb7a4',
 };
 
 export const withTheme = Component => {
   class ThemeProvider extends React.Component {
     theme = site => {
+
+      console.log('site', site)
+      const themeString = site.themes;
+      //fallback colors
+      let thisTheme = {
+        primaryColor: '#6BA5D6',
+        secondaryColor: '#1b2a38',
+        lightTextColor: '#fff',
+        secondaryTextColor: '#777',
+        backgroundColor: '#4D5863;',
+        primaryAltColor: '#4889BF',
+      }
+
+      //if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object. 
+      if (/^[\],:{}\s]*$/.test(themeString.replace(/\\["\\\/bfnrtu]/g, '@').
+        replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+        replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+        thisTheme = JSON.parse(site.themes)
+
+      }
+      // console.log('this theme', theme);
       //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks.
       const colors = {
         //header font color
-        primaryColor: '#6BA5D6',
-        secondaryColor: '#1b2a38',
-        tertiaryColor: '#73bcdf',
+        primaryColor: thisTheme.primaryColor || '#6BA5D6',
+        secondaryColor: thisTheme.secondaryColor || '#1b2a38',
+        lightTextColor: thisTheme.lightTextColor || '#fff',
+        secondaryTextColor: thisTheme.secondaryTextColor || '#777',
+        backgroundColor: thisTheme.backgroundColor || '#4D5863' ,
+        primaryAltColor: thisTheme.primaryAltColor ||'#4889BF',
         lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
         //darkBlue for header
@@ -62,19 +88,23 @@ export const withTheme = Component => {
         button: '#1b2a38',
         buttonHover: '#e6e6e6',
         buttonBorderHover: '#adadad',
-        lightTextColor: '#fff',
       };
 
+      //this is the master map of our theme. 
       return {
-        lightTextColor: colors.lightTextColor,
         button: colors.primaryColor,
         buttonSecondary: colors.secondaryColor,
         sorterColor: colors.primaryColor,
+        backgroundColor: colors.backgroundColor,
         authHeader: {
           headerBackground: colors.primaryColor,
           font: colors.lightTextColor,
-          hoverFont: colors.grayHeaderFont,
+          hoverFont: colors.secondaryTextColor,
           logoFont: '#fff',
+        },
+        authPage: {
+          signInLinks: colors.lightTextColor,
+          signInLinksHover: colors.secondaryTextColor
         },
         authButton: {
           button: colors.secondaryColor,
@@ -91,12 +121,17 @@ export const withTheme = Component => {
         },
         crumbsBar: {
           containerBackground: '#f2f2f2',
-          containerFont: 'black',
+          containerFont: '#333',
           filterBarBackground: 'rgba(85, 184, 141, 0.5)',
         },
         crumbs: {
           crumbBackground: colors.primaryColor,
           crumbFont: '#fff',
+        },
+        searchResults: {
+          resultsHeaderBackground: colors.primaryColor,
+          resultsRowHighlight: colors.primaryAltColor,
+          resultsPaginationButtons: colors.primaryColor,
         },
         presearch: {
           presearchHeaders: colors.primaryColor,
