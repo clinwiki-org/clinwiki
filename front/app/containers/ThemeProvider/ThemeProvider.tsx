@@ -36,6 +36,8 @@ const clinwikiColors = {
   crumbFontColor: '#fff',
   //studypage divider border color
   studyBorderColor: '#8bb7a4',
+  //reactstars color
+  reactStars: '#7ed964',
 };
 
 export const withTheme = Component => {
@@ -96,6 +98,7 @@ export const withTheme = Component => {
         },
         studyPage: {
           sectionBorderColor: colors.primaryColor,
+          reviewStarColor: colors.primaryColor,
         },
       };
     };
