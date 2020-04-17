@@ -218,7 +218,7 @@ class FacilityCard extends React.PureComponent<any> {
   };
 
   truncateString = (str, n, useWordBoundary) => {
-    if (str.length <= n) {
+    if (!str || str.length <= n) {
       return str;
     }
     let shortStr = str.substr(0, n);
