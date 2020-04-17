@@ -265,7 +265,7 @@ interface SearchViewProps {
   currentSiteView: SiteFragment_siteView;
   thisSiteView?: SiteViewFragment;
   getTotalResults: Function;
-  theme: any;
+  theme?: any;
 }
 
 interface SearchViewState {
@@ -321,7 +321,9 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
-    const { theme } = this.props;
+
+    const themedStarColor = this.props.theme.studyPage.reiviewStarColor;
+
     const camelCaseName = camelCase(name);
     const lowerCaseSpacing = 8;
     const upperCaseSpacing = 10;
@@ -377,7 +379,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               <div id="divsononeline">
                 <ReactStars
                   count={5}
-                  color2={theme.studyPage.reiviewStarColor}
+                  color2={themedStarColor}
                   edit={false}
                   value={Number(props.original.averageRating)}
                 />
