@@ -2,10 +2,11 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { FacilitiesPageQuery_study_facilities_contacts } from 'types/FacilitiesPageQuery';
 import { truncateString } from './FacilityUtils';
+import withTheme from 'containers/ThemeProvider';
 
 const CardContainer = styled.div`
   min-width: 250px;
-  background-color: #55b88d;
+  background-color: ${props => props.theme.mapSection.facilityCardColor};
   min-height: 75px;
   position: relative;
   bottom: 85px;
@@ -17,6 +18,8 @@ const CardContainer = styled.div`
   justify-content: space-between;
   cursor: text;
 `;
+
+const ThemedCardContainer = withTheme(CardContainer);
 
 const TitleText = styled.h1`
   color: white;
@@ -35,11 +38,13 @@ const Pointer = styled.div`
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid #55b88d;
+  border-top: 10px solid ${props => props.theme.mapSection.facilityCardColor};
   position: relative;
   bottom: 85px;
   right: -5px;
 `;
+
+const ThemedPointer = withTheme(Pointer);
 
 const ContactInfo = styled.p`
   color: white;
@@ -60,12 +65,12 @@ class FacilityInfoCard extends React.PureComponent<Props> {
     const { name, address, hover } = this.props;
     return (
       <div>
-        <CardContainer
+        <ThemedCardContainer
           style={hover ? { visibility: 'visible' } : { visibility: 'hidden' }}>
           <TitleText>{truncateString(name, 60, true)}</TitleText>
           <SubTitle>{address}</SubTitle>
-        </CardContainer>
-        <Pointer
+        </ThemedCardContainer>
+        <ThemedPointer
           style={hover ? { visibility: 'visible' } : { visibility: 'hidden' }}
         />
       </div>

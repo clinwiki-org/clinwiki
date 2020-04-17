@@ -36,6 +36,15 @@ const clinwikiColors = {
   crumbFontColor: '#fff',
   //react-table header offgreen
   resultsTableHeader: '#8bb7a4',
+  //studypage divider border color
+  studyBorderColor: '#8bb7a4',
+  //reactstars color
+  reactStars: '#7ed964',
+  //map colors
+  mapMarkerBorder: '#324870',
+  mapMarkerFont: '#55b88d',
+  //facility card colors
+  facilityCardColor: '#55b88d',
 };
 
 export const withTheme = Component => {
@@ -128,6 +137,11 @@ export const withTheme = Component => {
         studyPage: {
           sectionBorderColor: colors.primaryColor,
           reviewStarColor: colors.primaryColor,
+        },
+        mapSection: {
+          markerFontColor: colors.primaryColor,
+          markerBorderColor: colors.secondaryColor,
+          facilityCardColor: colors.primaryColor,
         },
       };
     };
