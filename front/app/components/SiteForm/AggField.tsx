@@ -267,10 +267,10 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             </StyledFormControl>
             <StyledLabel>Default Sort Order</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath(configType)}.order.desc`}
+              name={`set:${this.getPath(configType)}.order`}
               componentClass="select"
               //onChange={this.props.onAddMutation}
-              onChange={e => this.handleDefaultSortOrder(e)}
+              onChange={(e)=>this.handleDefaultSortOrder(e)}
               //@ts-ignore
               defaultValue={this.props.field.order?.desc}>
                 //@ts-ignore
