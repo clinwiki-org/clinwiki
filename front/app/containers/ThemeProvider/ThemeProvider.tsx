@@ -34,6 +34,15 @@ const clinwikiColors = {
   //color of actual crumb
   crumbColor: '#55b88d',
   crumbFontColor: '#fff',
+  //studypage divider border color
+  studyBorderColor: '#8bb7a4',
+  //reactstars color
+  reactStars: '#7ed964',
+  //map colors
+  mapMarkerBorder: '#324870',
+  mapMarkerFont: '#55b88d',
+  //facility card colors
+  facilityCardColor: '#55b88d',
   //react-table header offgreen
   resultsTableHeader: '#8bb7a4',
 };
@@ -126,22 +135,26 @@ export const withTheme = Component => {
         },
         presearch: {
           presearchHeaders: colors.primaryColor,
-        }
+        },
+        studyPage: {
+          sectionBorderColor: colors.primaryColor,
+          reviewStarColor: colors.primaryColor,
+        },
+        mapSection: {
+          markerFontColor: colors.primaryColor,
+          markerBorderColor: colors.secondaryColor,
+          facilityCardColor: colors.primaryColor,
+        },
       };
     };
 
-   render() {
-     return (
-       <SiteProvider>
-        {(site) => 
-        <Component
-          theme={this.theme(site)}
-        {...this.props}
-       />
-        }
-       </SiteProvider>
-     )
-   }
+    render() {
+      return (
+        <SiteProvider>
+          {site => <Component theme={this.theme(site)} {...this.props} />}
+        </SiteProvider>
+      );
+    }
   }
   return ThemeProvider;
 };

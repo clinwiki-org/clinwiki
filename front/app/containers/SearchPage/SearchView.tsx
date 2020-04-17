@@ -47,6 +47,7 @@ import SiteProvider from 'containers/SiteProvider';
 import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
 import Cards from './components/Cards';
 import { SiteViewFragment } from 'types/SiteViewFragment';
+import withTheme from 'containers/ThemeProvider';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -263,6 +264,7 @@ interface SearchViewProps {
   currentSiteView: SiteFragment_siteView;
   thisSiteView?: SiteViewFragment;
   getTotalResults: Function;
+  theme?: any;
 }
 
 interface SearchViewState {
@@ -319,6 +321,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
+
+    const themedStarColor = this.props.theme.studyPage.reviewStarColor;
     const camelCaseName = camelCase(name);
     const lowerCaseSpacing = 8;
     const upperCaseSpacing = 10;
@@ -374,7 +378,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               <div id="divsononeline">
                 <ReactStars
                   count={5}
-                  color2={starColor}
+                  color2={themedStarColor}
                   edit={false}
                   value={Number(props.original.averageRating)}
                 />
@@ -762,14 +766,14 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     }
   };
 
-  handleAggsUpdated = (data?:SearchPageSearchQuery) => {
-      if (data?.search) {
-        this.props.onAggsUpdate(
-          this.transformAggs(data.search.aggs || []),
-          this.transformCrowdAggs(data.crowdAggs.aggs || [])
-        );
-      }
-  }
+  handleAggsUpdated = (data?: SearchPageSearchQuery) => {
+    if (data?.search) {
+      this.props.onAggsUpdate(
+        this.transformAggs(data.search.aggs || []),
+        this.transformCrowdAggs(data.crowdAggs.aggs || [])
+      );
+    }
+  };
 
   render() {
     return (
@@ -787,7 +791,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               // Unfortunately the onCompleted callback is not called if
               // the data is served from cache.  There is some confusion
               // in the documentation but this appears to be by design.
-              this.handleAggsUpdated(data); 
+              this.handleAggsUpdated(data);
               return (
                 <SearchContainer>
                   {this.renderSearch({ data, loading, error })}
@@ -801,4 +805,4 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   }
 }
 
-export default SearchView;
+export default withTheme(SearchView);

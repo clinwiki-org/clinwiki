@@ -46,7 +46,9 @@ import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { starColor } from 'utils/constants';
 import StudyPageCounter from './components/StudyPageCounter';
+import withTheme from 'containers/ThemeProvider';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
+import ThemedButton from 'components/StyledComponents';
 
 interface StudyPageProps {
   history: History;
@@ -60,6 +62,7 @@ interface StudyPageProps {
   workflowName: string | null;
   recordsTotal?: number;
   counterIndex?: number;
+  theme?: any;
 }
 
 interface StudyPageState {
@@ -151,6 +154,8 @@ const MainContainer = styled(Col)`
   }
 `;
 
+const ThemedMainContainer = withTheme(MainContainer);
+
 const SidebarContainer = styled(Col)`
   padding-right: 0px;
   color: rgba(255, 255, 255, 0.5);
@@ -186,12 +191,14 @@ const StudySummaryContainer = styled.div`
           background: none;
           color: black;
           border-bottom: 2px solid;
-          border-color: #8bb7a4;
+          border-color: ${props => props.theme.studyPage.sectionBorderColor};
         }
       }
     }
   }
 `;
+
+const ThemedStudySummaryContainer = withTheme(StudySummaryContainer);
 
 const BackButtonWrapper = styled.div`
   width: 90%;
@@ -199,6 +206,7 @@ const BackButtonWrapper = styled.div`
   padding: 5px;
   padding-bottom: 10px;
 `;
+
 class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
 class PrefetchQueryComponent extends Query<
   StudyPagePrefetchQuery,
@@ -348,51 +356,49 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   handleNavButtonClick = (link: string) => () => {
-    this.props.history.push(
-      `${trimPath(link)}`
-    );
+    this.props.history.push(`${trimPath(link)}`);
   };
 
-  renderNavButton = (
-    name: string,
-    link?: string | null
-  ) => {
+  renderNavButton = (name: string, link?: string | null) => {
     if (link === undefined) return null;
 
     return (
-      <Button
+      <ThemedButton
         style={{ marginRight: 10, marginBottom: 10 }}
         onClick={this.handleNavButtonClick(link!)}
         disabled={link === null}>
         {name}
-      </Button>
+      </ThemedButton>
     );
   };
 
-  renderBackButton = (
-    name: string,
-    link?: string | null
-  ) => {
+  renderBackButton = (name: string, link?: string | null) => {
     if (link === undefined) return null;
 
     return (
       <div style={{ paddingTop: '10px' }}>
-        <Button
+        <ThemedButton
           style={{ margin: 'auto', float: 'left' }}
           onClick={this.handleNavButtonClick(link!)}
           disabled={link === null}>
           {name}
-        </Button>
+        </ThemedButton>
       </div>
     );
   };
 
   renderReviewsSummary = (data: StudyPageQuery | undefined) => {
+    const { theme } = this.props;
     if (!data || !data.study) {
       return (
         <ReviewsWrapper style={{ float: 'left' }}>
           <div>
-            <ReactStars count={5} color2={starColor} edit={false} value={0} />
+            <ReactStars
+              count={5}
+              color2={theme.studyPage.reviewStarColor}
+              edit={false}
+              value={0}
+            />
             <div>{'0 Reviews'}</div>
           </div>
         </ReviewsWrapper>
@@ -404,7 +410,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         <div>
           <ReactStars
             count={5}
-            color2={starColor}
+            color2={theme.studyPage.reviewStarColor}
             edit={false}
             value={data.study.averageRating}
           />
@@ -418,15 +424,19 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
 
   render() {
-    const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString()
-    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString()
-    
-    const backLink =()=>{
-      if(hash !=""){ 
-        return `/search?hash=${hash}&sv=${siteViewUrl}`
+    const hash = new URLSearchParams(this.props.history.location.search)
+      .getAll('hash')
+      .toString();
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search)
+      .getAll('sv')
+      .toString();
+
+    const backLink = () => {
+      if (hash != '') {
+        return `/search?hash=${hash}&sv=${siteViewUrl}`;
       }
-      return undefined
-    }
+      return undefined;
+    };
 
     return (
       <SiteProvider>
@@ -447,10 +457,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                     <StudyWrapper>
                       <Row md={12}>
                         <BackButtonWrapper>
-                          {this.renderBackButton(
-                            '⤺︎ Back',
-                            backLink()
-                          )}
+                          {this.renderBackButton('⤺︎ Back', backLink())}
                           {this.renderReviewsSummary(data)}
                         </BackButtonWrapper>
                       </Row>
@@ -490,13 +497,13 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           </div>
 
                           {data && data.study && (
-                            <StudySummaryContainer>
+                            <ThemedStudySummaryContainer>
                               <StudySummary
                                 study={data.study}
                                 workflow={workflow}
                                 workflowsView={workflowsView}
                               />
-                            </StudySummaryContainer>
+                            </ThemedStudySummaryContainer>
                           )}
 
                           <div className="container">
@@ -567,4 +574,4 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   }
 }
 
-export default StudyPage;
+export default withTheme(StudyPage);

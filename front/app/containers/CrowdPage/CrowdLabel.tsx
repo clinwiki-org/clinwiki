@@ -3,6 +3,7 @@ import { Button, FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import ButtonCell from './ButtonCell';
 import CurrentUser from 'containers/CurrentUser';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface CrowdLabelProps {
   name: string;
@@ -95,14 +96,18 @@ class CrowdLabel extends React.Component<CrowdLabelProps, CrowdLabelState> {
               <>
                 <ButtonCell>
                   <div>
-                    <Button onClick={this.handleAddClick}>Add</Button>
+                    <ThemedButton onClick={this.handleAddClick}>
+                      Add
+                    </ThemedButton>
                   </div>
                 </ButtonCell>
 
                 {this.state.inEditMode && (
                   <ButtonCell>
                     <div>
-                      <Button onClick={this.handleSubmitClick}>Submit</Button>
+                      <ThemedButton onClick={this.handleSubmitClick}>
+                        Submit
+                      </ThemedButton>
                     </div>
                   </ButtonCell>
                 )}
@@ -110,14 +115,18 @@ class CrowdLabel extends React.Component<CrowdLabelProps, CrowdLabelState> {
                 {!this.state.inEditMode && (
                   <ButtonCell>
                     <div>
-                      <Button onClick={this.handleEditClick}>Edit</Button>
+                      <ThemedButton onClick={this.handleEditClick}>
+                        Edit
+                      </ThemedButton>
                     </div>
                   </ButtonCell>
                 )}
 
                 <ButtonCell>
                   <div>
-                    <Button onClick={this.handleDeleteClick}>Delete</Button>
+                    <ThemedButton onClick={this.handleDeleteClick}>
+                      Delete
+                    </ThemedButton>
                   </div>
                 </ButtonCell>
               </>
