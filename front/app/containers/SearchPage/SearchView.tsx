@@ -323,7 +323,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     // also renders stars
 
     const themedStarColor = this.props.theme.studyPage.reviewStarColor;
-    console.log('star color', themedStarColor);
     const camelCaseName = camelCase(name);
     const lowerCaseSpacing = 8;
     const upperCaseSpacing = 10;
