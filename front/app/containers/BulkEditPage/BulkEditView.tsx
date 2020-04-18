@@ -123,9 +123,10 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                     const isToRemove =
                       groupedByLabel.toRemove[label] &&
                       groupedByLabel.toRemove[label].includes(value);
-                    const checkboxName = bucketKeyStringIsMissing(value)
-                      ? 'Allow Missing'
-                      : value;
+                    if (bucketKeyStringIsMissing(value)) {
+                      // don't allow bulk adding missing value to matching pages
+                      return null;
+                    }
                     return (
                       <Checkbox
                         key={`${label}-${value}`}
@@ -138,7 +139,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                         onChange={() =>
                           this.handleSelect(label, value, isToAdd)
                         }>
-                        {checkboxName}
+                        {value}
                       </Checkbox>
                     );
                   })}
