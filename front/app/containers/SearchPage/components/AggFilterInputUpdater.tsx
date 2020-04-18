@@ -60,7 +60,7 @@ abstract class AbstractAggFilterInputUpdater {
     this.configureInput();
   }
 
-  abstract onUpdateFilter(): void;
+  abstract onUpdateFilter(allowsMissingChanged?: boolean): void;
 
   configureInput() {
     const result = find(propEq('field', this.agg))(
@@ -137,37 +137,33 @@ abstract class AbstractAggFilterInputUpdater {
   getMinString(thisSiteView): string | undefined {
     // logic handling of input based on agg type here
     if (this.input.gte) {
-      const thisField: any = find(propEq('name', this.agg))(
-        thisSiteView.search.aggs.fields
-      ) || find(propEq('name', this.agg))(
-        thisSiteView.search.crowdAggs.fields
-      ) ;
-      if(thisField.display){
-      switch (thisField.display) {
-        case 'DATE_RANGE':
-          return this.isDateAgg()
-            ? moment(this.input.gte)
-                .utc(false)
-                .format('YYYY-MM-DD')
-            : this.input.gte;
-        case 'NUMBER_RANGE':
-          return this.input.gte;
-        default:
-          return this.input.gte;
+      const thisField: any =
+        find(propEq('name', this.agg))(thisSiteView.search.aggs.fields) ||
+        find(propEq('name', this.agg))(thisSiteView.search.crowdAggs.fields);
+      if (thisField.display) {
+        switch (thisField.display) {
+          case 'DATE_RANGE':
+            return this.isDateAgg()
+              ? moment(this.input.gte)
+                  .utc(false)
+                  .format('YYYY-MM-DD')
+              : this.input.gte;
+          case 'NUMBER_RANGE':
+            return this.input.gte;
+          default:
+            return this.input.gte;
+        }
       }
-    }
-    return this.input.gte
+      return this.input.gte;
     }
   }
 
   getMaxString(thisSiteView): string | undefined {
     // logic handling of input based on agg type here
     if (this.input.lte) {
-      const thisField: any = find(propEq('name', this.agg))(
-        thisSiteView.search.aggs.fields
-      ) || find(propEq('name', this.agg))(
-        thisSiteView.search.crowdAggs.fields
-      ) ;
+      const thisField: any =
+        find(propEq('name', this.agg))(thisSiteView.search.aggs.fields) ||
+        find(propEq('name', this.agg))(thisSiteView.search.crowdAggs.fields);
       switch (thisField.display) {
         case 'DATE_RANGE':
           return this.isDateAgg()
@@ -180,7 +176,6 @@ abstract class AbstractAggFilterInputUpdater {
         default:
           return this.input.lte;
       }
-
     }
   }
   allowsMissing(): boolean {
@@ -189,7 +184,7 @@ abstract class AbstractAggFilterInputUpdater {
 
   toggleAllowMissing(): void {
     this.input.includeMissingFields = !this.input.includeMissingFields;
-    this.onUpdateFilter();
+    this.onUpdateFilter(true);
   }
 }
 
@@ -197,7 +192,7 @@ abstract class AbstractAggFilterInputUpdater {
  * Responsible for updating aggs in the context of a search
  */
 class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
-  onUpdateFilter(): void {
+  onUpdateFilter(allowsMissingChanged: boolean = false): void {
     const allButThisAgg = filter(
       (x: AggFilterInput) => x.field !== this.agg,
       this.settings[this.grouping]
@@ -246,14 +241,23 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
     }
   }
 
-  onUpdateFilter(): void {
+  onUpdateFilter(allowsMissingChanged: boolean = false): void {
     const name = this.getPath();
-    this.updateSettings({
-      currentTarget: {
-        name,
-        value: this.input.values,
-      },
-    });
+    if (allowsMissingChanged) {
+      this.updateSettings({
+        currentTarget: {
+          name: name.replace(/values$/, 'includeMissingFields'),
+          value: this.allowsMissing(),
+        },
+      });
+    } else {
+      this.updateSettings({
+        currentTarget: {
+          name,
+          value: this.input.values,
+        },
+      });
+    }
   }
 }
 

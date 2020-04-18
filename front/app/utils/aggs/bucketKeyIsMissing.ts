@@ -4,13 +4,21 @@ import {
 } from 'utils/constants';
 import { AggBucket } from 'containers/SearchPage/Types';
 
-function bucketKeyIsMissing(bucket: AggBucket): boolean {
-  const { key, keyAsString } = bucket;
+export function bucketKeyStringIsMissing(key: string): boolean {
+  return key == STRING_MISSING_IDENTIFIER || key === DATE_MISSING_IDENTIFIER;
+}
+
+export function bucketKeyAsStringIsMissing(keyAsString: string): boolean {
   return (
-    key == STRING_MISSING_IDENTIFIER ||
     keyAsString === STRING_MISSING_IDENTIFIER ||
-    key === DATE_MISSING_IDENTIFIER ||
     keyAsString === DATE_MISSING_IDENTIFIER
+  );
+}
+
+function bucketKeyIsMissing(bucket: AggBucket): boolean {
+  return (
+    bucketKeyStringIsMissing(bucket.key) ||
+    bucketKeyStringIsMissing(bucket.keyAsString || '')
   );
 }
 export default bucketKeyIsMissing;

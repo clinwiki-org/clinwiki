@@ -3,23 +3,14 @@ import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import PREFETCH_QUERY from '../StudyPage';
-import {
-  Checkbox,
-  Col,
-} from 'react-bootstrap';
+import { Checkbox, Col } from 'react-bootstrap';
 import {
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables,
   SuggestedLabelsQuery_crowdAggFacets_aggs,
 } from 'types/SuggestedLabelsQuery';
-import {
-  pipe,
-  pathOr,
-  map,
-  filter,
-  fromPairs,
-  keys,
-} from 'ramda';
+import { pipe, pathOr, map, filter, fromPairs, keys } from 'ramda';
+import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
 import { WorkSearch } from './WorkSearch';
@@ -138,20 +129,24 @@ class SuggestedLabels extends React.PureComponent<
   }
 
   renderAgg = (key: string, values: [string, boolean][]) => {
+    if (bucketKeyStringIsMissing(key)) {
+      // don't suggest the "missing" label
+      return null;
+    }
     return (
       <StyledPanel key={key} header={key} dropdown>
-          {/* <Col xs={4}> */}
-            {values.map(([value, checked]) => (
-              <Checkbox
-                key={value}
-                checked={checked}
-                disabled={this.props.disabled}
-                onChange={this.handleSelect(key, value)}>
-                {value}
-              </Checkbox>
-            ))}
-          {/* </Col> */}
-          {/* <Col xs={4}>
+        {/* <Col xs={4}> */}
+        {values.map(([value, checked]) => (
+          <Checkbox
+            key={value}
+            checked={checked}
+            disabled={this.props.disabled}
+            onChange={this.handleSelect(key, value)}>
+            {value}
+          </Checkbox>
+        ))}
+        {/* </Col> */}
+        {/* <Col xs={4}>
             <div>
               <WorkSearch nctid={this.props.nctId} />
             </div>

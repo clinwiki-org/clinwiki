@@ -5,6 +5,7 @@ import Toast from 'components/Toast';
 import { ButtonToolbar, Button, Checkbox, Panel, Col } from 'react-bootstrap';
 import { checkServerIdentity } from 'tls';
 import MultiCrumb from 'components/MultiCrumb';
+import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 interface Undo {
   description: string;
   action: () => void;
@@ -122,6 +123,9 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                     const isToRemove =
                       groupedByLabel.toRemove[label] &&
                       groupedByLabel.toRemove[label].includes(value);
+                    const checkboxName = bucketKeyStringIsMissing(value)
+                      ? 'Allow Missing'
+                      : value;
                     return (
                       <Checkbox
                         key={`${label}-${value}`}
@@ -134,7 +138,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                         onChange={() =>
                           this.handleSelect(label, value, isToAdd)
                         }>
-                        {value}
+                        {checkboxName}
                       </Checkbox>
                     );
                   })}
