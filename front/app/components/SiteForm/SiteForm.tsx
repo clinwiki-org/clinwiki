@@ -18,6 +18,7 @@ import MainForm from './MainForm';
 import SiteViewsRouter from './SiteViewsRouter';
 import { History, Location } from 'history';
 import StudyForm from './StudyForm';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface SiteFormProps {
   match: match<{}>;
@@ -88,7 +89,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       subdomain,
       skipLanding,
       editorEmails,
-      themes
+      themes,
     };
     if (form && !equals(form, state.prevForm as any)) {
       return { ...state, form, prevForm: form };
@@ -120,10 +121,10 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     this.setState({ form });
   };
 
-  handleThemeError = (error) => {
-    console.log('errr', error)
-    this.setState({disableSubmit:error})
-  }
+  handleThemeError = error => {
+    console.log('errr', error);
+    this.setState({ disableSubmit: error });
+  };
 
   renderTabs = () => {
     const path = trimPath(this.props.match.url);
@@ -210,7 +211,11 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
         </Switch>
         {this.state.inSiteViewEdit ? null : (
           <StyledContainer>
-            <Button disabled={this.state.disableSubmit} onClick={() => this.handleSave()}>Save</Button>
+            <ThemedButton
+              disabled={this.state.disableSubmit}
+              onClick={() => this.handleSave()}>
+              Save
+            </ThemedButton>
           </StyledContainer>
         )}
       </Container>

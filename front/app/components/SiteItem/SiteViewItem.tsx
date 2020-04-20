@@ -14,6 +14,7 @@ import CopySiteViewMutation, {
   CopySiteViewMutationFn,
 } from 'mutations/CopySiteViewMutation';
 import { Link } from 'react-router-dom';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface SiteViewItemProps {
   match: any;
@@ -24,7 +25,7 @@ interface SiteViewItemProps {
   site: any;
 }
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(ThemedButton)`
   margin-right: 15px;
 `;
 // const PreviewText;
