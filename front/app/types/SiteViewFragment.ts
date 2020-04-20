@@ -39,7 +39,7 @@ export interface SiteViewFragment_study {
 
 export interface SiteViewFragment_search_autoSuggest_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -80,7 +80,7 @@ export interface SiteViewFragment_search_autoSuggest_aggs {
 
 export interface SiteViewFragment_search_autoSuggest_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -145,7 +145,7 @@ export interface SiteViewFragment_search_results {
 
 export interface SiteViewFragment_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -186,7 +186,7 @@ export interface SiteViewFragment_search_presearch_aggs {
 
 export interface SiteViewFragment_search_presearch_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -255,7 +255,7 @@ export interface SiteViewFragment_search_config {
 
 export interface SiteViewFragment_search_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -296,7 +296,7 @@ export interface SiteViewFragment_search_aggs {
 
 export interface SiteViewFragment_search_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 

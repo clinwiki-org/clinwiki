@@ -55,7 +55,7 @@ export interface SiteProviderQuery_site_siteView_study {
 
 export interface SiteProviderQuery_site_siteView_search_autoSuggest_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -96,7 +96,7 @@ export interface SiteProviderQuery_site_siteView_search_autoSuggest_aggs {
 
 export interface SiteProviderQuery_site_siteView_search_autoSuggest_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -161,7 +161,7 @@ export interface SiteProviderQuery_site_siteView_search_results {
 
 export interface SiteProviderQuery_site_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -202,7 +202,7 @@ export interface SiteProviderQuery_site_siteView_search_presearch_aggs {
 
 export interface SiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -271,7 +271,7 @@ export interface SiteProviderQuery_site_siteView_search_config {
 
 export interface SiteProviderQuery_site_siteView_search_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -312,7 +312,7 @@ export interface SiteProviderQuery_site_siteView_search_aggs {
 
 export interface SiteProviderQuery_site_siteView_search_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -405,7 +405,7 @@ export interface SiteProviderQuery_site_siteViews_study {
 
 export interface SiteProviderQuery_site_siteViews_search_autoSuggest_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -446,7 +446,7 @@ export interface SiteProviderQuery_site_siteViews_search_autoSuggest_aggs {
 
 export interface SiteProviderQuery_site_siteViews_search_autoSuggest_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -511,7 +511,7 @@ export interface SiteProviderQuery_site_siteViews_search_results {
 
 export interface SiteProviderQuery_site_siteViews_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -552,7 +552,7 @@ export interface SiteProviderQuery_site_siteViews_search_presearch_aggs {
 
 export interface SiteProviderQuery_site_siteViews_search_presearch_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -621,7 +621,7 @@ export interface SiteProviderQuery_site_siteViews_search_config {
 
 export interface SiteProviderQuery_site_siteViews_search_aggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 
@@ -662,7 +662,7 @@ export interface SiteProviderQuery_site_siteViews_search_aggs {
 
 export interface SiteProviderQuery_site_siteViews_search_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  id: string;
+  sortKind: string;
   desc: boolean;
 }
 

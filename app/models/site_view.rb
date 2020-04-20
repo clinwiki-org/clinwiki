@@ -3,7 +3,7 @@ RANGE_FIELDS = [:start_date].freeze
 
 DEFAULT_AGG_ORDER = {
   average_rating: {
-    order: { sortKind: "key", desc: true },
+    order: { sort_kind: "key", desc: true },
   },
 }
 
@@ -388,7 +388,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     if order
       order[:order]
     else
-      { sortKind: "key", desc: false }
+      { sort_kind: "key", desc: false }
     end
   end
 end

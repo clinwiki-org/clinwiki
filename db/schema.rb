@@ -101,7 +101,6 @@ ActiveRecord::Schema.define(version: 2020_04_16_163941) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "skip_landing"
-    t.text "themes", default: "{\"primaryClinwiki\":\"#55B88D\",\"whiteHeaderFont\":\"#fff\",\"grayHeaderFont\":\"#777777\",\"navBar\":\"#1b2a38\",\"button\":\"#55B88D\",\"buttonHover\":\"#e6e6e6\",\"buttonBorderHover\":\"#adadad\",\"sideBarBackground\":\"#4d5863\",\"sideBarColor\":\"#bac5d0\",\"sideBarColorHover\":\"#fff\",\"sideBarTitleFont\":\"#fff\",\"containerColor\":\"#f2f2f2\",\"containerText\":\"#000000\",\"crumbColor\":\"#55b88d\",\"crumbFontColor\":\"#fff\"} "
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
