@@ -6,6 +6,7 @@
 //==============================================================
 
 export enum Diff {
+  COMMENT = "COMMENT",
   DEL = "DEL",
   INS = "INS",
   UNCHANGED = "UNCHANGED",
