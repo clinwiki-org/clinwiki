@@ -321,9 +321,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   handleSort = (desc: boolean, sortKind: SortKind) => {
     switch (sortKind) {
       case SortKind.Alpha:
-        return [{ id: 'key', desc: desc }];
+        return [{ id: 'key', desc: !desc }];
       case SortKind.Number:
-        return [{ id: 'count', desc: desc }];
+        return [{ id: 'count', desc: !desc }];
     }
   };
 
@@ -431,8 +431,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = this.findFields();
-    if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
-            return (
+    if (
+      field?.display === FieldDisplay.DATE_RANGE ||
+      field?.display === FieldDisplay.NUMBER_RANGE
+    ) {
+      return (
         <Panel.Collapse id="range-selector">
           <Panel.Body>
             <Container>
@@ -442,7 +445,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 loading={loading}
                 buckets={buckets}
                 handleLoadMore={this.handleLoadMore}
-                aggType={ field?.display === FieldDisplay.DATE_RANGE ? FieldDisplay.DATE_RANGE :  FieldDisplay.NUMBER_RANGE}
+                aggType={
+                  field?.display === FieldDisplay.DATE_RANGE
+                    ? FieldDisplay.DATE_RANGE
+                    : FieldDisplay.NUMBER_RANGE
+                }
               />
             </Container>
             {!loading && (
@@ -533,29 +540,35 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       checkboxValue,
       showLabel,
       isOpen,
-      loading
-
+      loading,
     } = this.state;
     const field = this.findFields();
-    if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
+    if (
+      field?.display === FieldDisplay.DATE_RANGE ||
+      field?.display === FieldDisplay.NUMBER_RANGE
+    ) {
       return (
-          <PresearchPanel id="range-selector">
+        <PresearchPanel id="range-selector">
+          <Container>
+            <RangeSelector
+              isOpen={isOpen}
+              hasMore={hasMore}
+              loading={loading}
+              buckets={buckets}
+              handleLoadMore={this.handleLoadMore}
+              aggType={
+                field?.display === FieldDisplay.DATE_RANGE
+                  ? FieldDisplay.DATE_RANGE
+                  : FieldDisplay.NUMBER_RANGE
+              }
+            />
+          </Container>
+          {!loading && (
             <Container>
-              <RangeSelector
-                isOpen={isOpen}
-                hasMore={hasMore}
-                loading={loading}
-                buckets={buckets}
-                handleLoadMore={this.handleLoadMore}
-                aggType={ field?.display === FieldDisplay.DATE_RANGE ? FieldDisplay.DATE_RANGE :  FieldDisplay.NUMBER_RANGE}
-              />
+              <AllowMissingCheckbox buckets={buckets} />
             </Container>
-            {!loading && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
-          </PresearchPanel>
+          )}
+        </PresearchPanel>
       );
     }
     return (
@@ -592,30 +605,20 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     );
   };
 
-  componentDidMount(){
-    let fields=this.props.currentSiteView.search.aggs.fields
+  componentDidMount() {
+    let fields = this.props.currentSiteView.search.aggs.fields;
     const field = this.findFields();
-    if (field?.order && field.order.sortKind =="key"){
-      console.log(`c4${field.name}`, this.state)
-      console.log("stuff", field.order)
-       this.setState({
-         sortKind: 0,
-         desc: field.order.desc  
-       })
-       console.log(`after ${field.name}`,this.state) 
-     }
-    else if(field?.order && field.order.sortKind =="count"){
-
-      console.log(`b4 ${field.name}`, this.state)
-      console.log(`desc ${field.name}`, field.order.desc)
-      
-         this.setState({
+    if (field?.order && field.order.sortKind == 'key') {
+      this.setState({
+        sortKind: 0,
+        desc: field.order.desc,
+      });
+    } else if (field?.order && field.order.sortKind == 'count') {
+      this.setState({
         sortKind: 1,
-        desc: field.order.desc
-      })
-      console.log(`after ${field.name}`,this.state) 
-
-  }
+        desc: field.order.desc,
+      });
+    }
   }
 
   render() {

@@ -388,7 +388,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     if order
       order[:order]
     else
-      { sortKind: "key", desc: false }
+      { sortKind: "key", desc: true }
     end
   end
 end

@@ -116,13 +116,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
-  handleDefaultSortType = x => {
-    this.props.onAddMutation(x);
-  };
-  handleDefaultSortOrder = x => {
-    // let xboolean = x.currentTarget.value == 'true';
-    // let e = { currentTarget: { name: x.currentTarget.name, value: xboolean } };
-    this.props.onAddMutation(x);
+  handleDefaultSortMutation = e => {
+    this.props.onAddMutation(e);
   };
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
@@ -259,8 +254,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <StyledFormControl
               name={`set:${this.getPath(configType)}.order.sortKind`}
               componentClass="select"
-              onChange={e => this.handleDefaultSortType(e)}
-              //@ts-ignore
+              onChange={e => this.handleDefaultSortMutation(e)}
               defaultValue={this.props.field.order?.sortKind}>
               <option value="key">Alpha</option>
               <option value="count">Numeric</option>
@@ -269,14 +263,10 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <StyledFormControl
               name={`set:${this.getPath(configType)}.order.desc`}
               componentClass="select"
-              //onChange={this.props.onAddMutation}
-              onChange={(e)=>this.handleDefaultSortOrder(e)}
-              //@ts-ignore
+              onChange={(e)=>this.handleDefaultSortMutation(e)}
               defaultValue={this.props.field.order?.desc}>
-                //@ts-ignore
-              <option value={false}>Descending</option>
-              //@ts-ignore
-              <option value={true}>Ascending</option>
+              <option value="true">{this.props.field.order?.sortKind == 'count'? "1-9":"A-Z" }</option>
+              <option value="false">{this.props.field.order?.sortKind == 'count'? "9-1":"Z-A" }</option>
             </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl

@@ -316,7 +316,6 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
     return (
       <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
         {({ data, loading, error, refetch }) => {
-          console.log(data)
           if (error) console.log(`SiteProvider error: ${error}`);
           if (loading || error) return null;
           return this.props.children(data!.site!, refetch);
