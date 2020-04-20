@@ -16,7 +16,7 @@ const StyledButton = styled.div`
   vertical-align: middle;
   cursor: pointer;
   border-radius: 4px;
-  transition: .5s;
+  transition: 0.5s;
   &:hover {
     background: ${props => props.theme.buttonSecondary} !important;
   }
@@ -24,4 +24,4 @@ const StyledButton = styled.div`
 
 export const ThemedButton = withTheme(StyledButton);
 
-export default StyledButton
+export default StyledButton;
