@@ -257,7 +257,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <div>
             <StyledLabel>Default Sort Type</StyledLabel>
             <StyledFormControl
-              name={`set:${this.getPath(configType)}.order.sort_kind`}
+              name={`set:${this.getPath(configType)}.order.sortKind`}
               componentClass="select"
               onChange={e => this.handleDefaultSortType(e)}
               //@ts-ignore
