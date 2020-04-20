@@ -10,6 +10,7 @@ import { History } from 'history';
 import DeleteSiteMutation, {
   DeleteSiteMutationFn,
 } from 'mutations/DeleteSiteMutations';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface SitesPageProps {
   history: History;
@@ -96,7 +97,9 @@ class SitesPage extends React.PureComponent<SitesPageProps> {
                 {data.me.ownSites.length === 0 && 'No sites yet'}
               </CollapsiblePanel>
               <ButtonsContainer>
-                <Button onClick={this.handleCreateSite}>Create Site</Button>
+                <ThemedButton onClick={this.handleCreateSite}>
+                  Create Site
+                </ThemedButton>
               </ButtonsContainer>
               <CollapsiblePanel header="Editable Sites">
                 {data.me.editorSites.length > 0 && (

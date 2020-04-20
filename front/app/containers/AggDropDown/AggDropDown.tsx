@@ -92,8 +92,11 @@ const PanelWrapper = styledComponents.div`
 const PresearchCard = styledComponents.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid green;
   border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${props => props.theme.buttonSecondary};
+  
   margin: 10px;
   flex: 1;
   // height: 310px;
@@ -101,6 +104,8 @@ const PresearchCard = styledComponents.div`
   max-width: 320px;
   background: white;
 `;
+
+const ThemedPresearchCard = withTheme(PresearchCard);
 
 const PresearchHeader = styledComponents.div`
   background-color: ${props => props.theme.presearch.presearchHeaders};
@@ -110,7 +115,7 @@ const PresearchHeader = styledComponents.div`
   height: 50px;
 `;
 
-const ThemedPresearchHeader = withTheme(PresearchHeader)
+const ThemedPresearchHeader = withTheme(PresearchHeader);
 
 const PresearchTitle = styledComponents.div`
   color: white;
@@ -140,8 +145,6 @@ const PresearchContent = styledComponents.div`
   background-color: white;
   max-height: 260px;
 `;
-
-
 
 interface AggDropDownState {
   hasMore: boolean;
@@ -642,12 +645,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
-        <PresearchCard>
+        <ThemedPresearchCard>
           <ThemedPresearchHeader>
             <PresearchTitle>{capitalize(title)}</PresearchTitle>
           </ThemedPresearchHeader>
           <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
-        </PresearchCard>
+        </ThemedPresearchCard>
       );
     } else {
       return (

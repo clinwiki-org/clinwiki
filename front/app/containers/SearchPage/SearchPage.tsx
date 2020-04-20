@@ -17,7 +17,7 @@ import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
-import {ThemedButton} from '../../components/StyledComponents';
+import { ThemedButton } from '../../components/StyledComponents';
 import { History } from 'history';
 import {
   path,
@@ -100,15 +100,14 @@ const MainContainer = styled(Col)`
   }
 `;
 
-const SearchPageWrapper = styled.div` 
+const SearchPageWrapper = styled.div`
   display: flex;
-  flex-wrap:nowrap;
-  flex-direction:row;
+  flex-wrap: nowrap;
+  flex-direction: row;
   @media only screen and (max-width: 1132px) {
     flex-direction: column;
   }
-  `;
-
+`;
 
 const ThemedMainContainer = withTheme(MainContainer);
 
@@ -493,7 +492,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
-
     return (
       <Aggs
         aggs={this.state.searchAggs}
@@ -703,9 +701,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handlePresearchButtonClick = (hash, target) => {
     console.log(hash, target);
-    const url = `/search?hash=${hash}&sv=${target}`
+    const url = `/search?hash=${hash}&sv=${target}`;
     this.props.history.push(url);
-  }
+  };
 
   renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
@@ -745,9 +743,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         />
         {presearchButton.name && (
           <ThemedButton
-            onClick={() => this.handlePresearchButtonClick(hash, presearchButton.target)}
-            style={{ width: 200, marginLeft: 13 }}
-            >
+            onClick={() =>
+              this.handlePresearchButtonClick(hash, presearchButton.target)
+            }
+            style={{ width: 200, marginLeft: 13 }}>
             {presearchButton.name}
           </ThemedButton>
         )}
@@ -874,11 +873,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       {this.renderAggs(currentSiteView)}
                     </ThemedSidebarContainer>
                   )}
-                    <ThemedMainContainer>
-                      {showBreadCrumbs && this.renderCrumbs()}
-                      {showPresearch && this.renderPresearch(hash)}
-                      {this.renderSearch()}
-                    </ThemedMainContainer>
+                  <ThemedMainContainer>
+                    {showBreadCrumbs && this.renderCrumbs()}
+                    {showPresearch && this.renderPresearch(hash)}
+                    {this.renderSearch()}
+                  </ThemedMainContainer>
                 </SearchPageWrapper>
               );
             }}
