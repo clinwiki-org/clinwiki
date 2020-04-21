@@ -59,6 +59,7 @@ export const withTheme = Component => {
         secondaryTextColor: '#777',
         backgroundColor: '#4D5863;',
         primaryAltColor: '#4889BF',
+        sideBarColor: "#333",
       }
 
       //if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object. 
@@ -78,6 +79,7 @@ export const withTheme = Component => {
         secondaryTextColor: thisTheme.secondaryTextColor || '#777',
         backgroundColor: thisTheme.backgroundColor || '#4D5863' ,
         primaryAltColor: thisTheme.primaryAltColor ||'#4889BF',
+        sideBarColor: thisTheme.sideBarColor || '#333',
         lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
         //darkBlue for header
@@ -95,7 +97,7 @@ export const withTheme = Component => {
         sorterColor: colors.primaryColor,
         backgroundColor: colors.backgroundColor,
         authHeader: {
-          headerBackground: colors.primaryColor,
+          headerBackground: colors.secondaryColor,
           font: colors.lightTextColor,
           hoverFont: colors.secondaryTextColor,
           logoFont: '#fff',
@@ -105,14 +107,14 @@ export const withTheme = Component => {
           signInLinksHover: colors.secondaryTextColor
         },
         authButton: {
-          button: colors.secondaryColor,
+          button: colors.primaryColor,
           buttonFont: '#fff',
           buttonHover: '#e6e6e6',
           buttonBorderHover: '#adadad',
           lightTextColor: '#fff',
         },
         aggSideBar: {
-          sideBarBackground: colors.secondaryColor,
+          sideBarBackground: colors.sideBarColor,
           sideBarFont: '#bac5d0',
           sideBarFontHover: '#fff',
           sideBarTitleFont: '#fff',
