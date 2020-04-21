@@ -4,6 +4,7 @@ import {
   WikiPageEditFragment,
   WikiPageEditFragment_user,
 } from 'types/WikiPageEditFragment';
+import ThemedButton from 'components/StyledComponents';
 
 interface EditBlurbProps {
   edit: WikiPageEditFragment;
@@ -56,10 +57,14 @@ class EditBlurb extends React.Component<EditBlurbProps> {
         </Col>
         <Col md={2} className="text-right">
           {expanded && (
-            <Button onClick={() => setExpanded(false)}>View Less</Button>
+            <ThemedButton onClick={() => setExpanded(false)}>
+              View Less
+            </ThemedButton>
           )}
           {!expanded && (
-            <Button onClick={() => setExpanded(true)}>View More</Button>
+            <ThemedButton onClick={() => setExpanded(true)}>
+              View More
+            </ThemedButton>
           )}
         </Col>
       </Row>

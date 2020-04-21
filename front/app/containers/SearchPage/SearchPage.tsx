@@ -523,7 +523,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           onOpen={this.handleOpenAgg}
           currentSiteView={siteView}
         />
-        <StyledButton onClick={this.handleRefresh}>Refresh</StyledButton>
+        {/* <StyledButton onClick={this.handleRefresh}>Refresh</StyledButton> */}
       </div>
     );
   };

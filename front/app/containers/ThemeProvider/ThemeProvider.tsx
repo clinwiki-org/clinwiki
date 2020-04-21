@@ -41,10 +41,16 @@ const clinwikiColors = {
   //map colors
   mapMarkerBorder: '#324870',
   mapMarkerFont: '#55b88d',
+  mapWarningBorder: '#ffcc00',
+  mapWarningFont: '#f6a202',
+  mapErrorBorder: 'red',
+  mapErrorFont: 'red',
   //facility card colors
   facilityCardColor: '#55b88d',
   //react-table header offgreen
   resultsTableHeader: '#8bb7a4',
+  //panelheader in studies
+  panelHeading: '#8bb7a4',
 };
 
 export const withTheme = Component => {
@@ -59,14 +65,21 @@ export const withTheme = Component => {
         secondaryTextColor: '#777',
         backgroundColor: '#4D5863;',
         primaryAltColor: '#4889BF',
-      }
+      };
 
-      //if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object. 
-      if (/^[\],:{}\s]*$/.test(themeString.replace(/\\["\\\/bfnrtu]/g, '@').
-        replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
-        replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-        thisTheme = JSON.parse(site.themes)
-
+      //if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object.
+      if (
+        /^[\],:{}\s]*$/.test(
+          themeString
+            .replace(/\\["\\\/bfnrtu]/g, '@')
+            .replace(
+              /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+              ']'
+            )
+            .replace(/(?:^|:|,)(?:\s*\[)+/g, '')
+        )
+      ) {
+        thisTheme = JSON.parse(site.themes);
       }
       // console.log('this theme', theme);
       //will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks.
@@ -76,8 +89,8 @@ export const withTheme = Component => {
         secondaryColor: thisTheme.secondaryColor || '#1b2a38',
         lightTextColor: thisTheme.lightTextColor || '#fff',
         secondaryTextColor: thisTheme.secondaryTextColor || '#777',
-        backgroundColor: thisTheme.backgroundColor || '#4D5863' ,
-        primaryAltColor: thisTheme.primaryAltColor ||'#4889BF',
+        backgroundColor: thisTheme.backgroundColor || '#4D5863',
+        primaryAltColor: thisTheme.primaryAltColor || '#4889BF',
         lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
         //darkBlue for header
@@ -86,14 +99,19 @@ export const withTheme = Component => {
         button: '#1b2a38',
         buttonHover: '#e6e6e6',
         buttonBorderHover: '#adadad',
+        errorColor: 'red',
+        warningColor: '#ffcc00',
+        warningAltColor: '#f6a202',
+        warningTertiaryColor: '#ff6d36',
       };
 
-      //this is the master map of our theme. 
+      //this is the master map of our theme.
       return {
         button: colors.primaryColor,
         buttonSecondary: colors.secondaryColor,
         sorterColor: colors.primaryColor,
         backgroundColor: colors.backgroundColor,
+
         authHeader: {
           headerBackground: colors.primaryColor,
           font: colors.lightTextColor,
@@ -102,7 +120,7 @@ export const withTheme = Component => {
         },
         authPage: {
           signInLinks: colors.lightTextColor,
-          signInLinksHover: colors.secondaryTextColor
+          signInLinksHover: colors.secondaryTextColor,
         },
         authButton: {
           button: colors.secondaryColor,
@@ -137,11 +155,20 @@ export const withTheme = Component => {
         studyPage: {
           sectionBorderColor: colors.primaryColor,
           reviewStarColor: colors.primaryColor,
+          panelHeading: colors.primaryColor,
         },
         mapSection: {
           markerFontColor: colors.primaryColor,
           markerBorderColor: colors.secondaryColor,
           facilityCardColor: colors.primaryColor,
+          warningBorderColor: colors.warningColor,
+          warningFontColor: colors.warningAltColor,
+          errorBorderColor: colors.errorColor,
+          errorFontColor: colors.errorColor,
+          facilityWarningColor: colors.warningTertiaryColor,
+          facilityErrorColor: colors.errorColor,
+          facilityWarningPointer: colors.warningColor,
+          facilityErrorPointer: colors.errorColor,
         },
       };
     };
