@@ -34,11 +34,12 @@ const StyledWrapper = styled.div`
   }
 
   a#logo {
-    background: url('/clinwiki-50.png') center left no-repeat;
-    background-size: 25px 25px;
-    margin-left: 1px;
+    background: url(/clinwiki-501.png) center left no-repeat;
+    background-size: 100px 30px;
+    margin-left: 30px;
     padding-left: 30px;
     color: ${props => props.theme.authHeader.logoFont};
+    min-width: 110px;
   }
   span#small {
     font-size: 14px;
@@ -60,7 +61,7 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
           <Navbar.Header>
             <Navbar.Brand>
               <Link id="logo" to="/search?sv=default">
-                ClinWiki <span id="small">(beta)</span>
+                <span></span>
               </Link>
             </Navbar.Brand>
             <Navbar.Toggle />
