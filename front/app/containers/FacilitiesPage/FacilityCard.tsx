@@ -21,8 +21,8 @@ const FacilityNumber = styled.div`
   position: relative;
   width: 28px;
   height: 22px;
-  border: 3px solid ${props => props.theme.mapSection.markerBorderColor};
   border-radius: 22px;
+  border: 3px solid ${props => props.theme.mapSection.markerBorderColor};
   background-color: white;
   text-align: center;
   color: ${props => props.theme.mapSection.markerFontColor};
@@ -41,11 +41,11 @@ const WarningNumber = styled.div`
   position: relative;
   width: 28px;
   height: 22px;
-  border: 3px solid #ffcc00;
   border-radius: 22px;
+  border: 3px solid ${props => props.theme.mapSection.warningBorderColor};
   background-color: white;
   text-align: center;
-  color: #f6a202;
+  color: ${props => props.theme.mapSection.warningFontColor};
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -55,15 +55,17 @@ const WarningNumber = styled.div`
   padding-bottom: 22px;
 `;
 
+const ThemedWarningNumber = withTheme(WarningNumber);
+
 const ErrorNumber = styled.div`
   position: relative;
   width: 28px;
   height: 22px;
-  border: 3px solid red;
   border-radius: 22px;
+  border: 3px solid ${props => props.theme.mapSection.errorBorderColor};
   background-color: white;
   text-align: center;
-  color: red;
+  color: ${props => props.theme.mapSection.errorFontColor};
   font-size: 16px;
   font-weight: bold;
   box-shadow: 0 0 0 1px white;
@@ -72,6 +74,8 @@ const ErrorNumber = styled.div`
   padding-bottom: 22px;
   cursor: pointer;
 `;
+
+const ThemedErrorNumber = withTheme(ErrorNumber);
 
 const WarningHover = styled.div`
   width: 200px;
@@ -88,6 +92,8 @@ const WarningHover = styled.div`
   box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.36);
 `;
 
+const ThemedWarningHover = withTheme(WarningHover);
+
 const ErrorHover = styled.div`
   width: 200px;
   height: 30px;
@@ -102,6 +108,8 @@ const ErrorHover = styled.div`
   border-radius: 1px;
   box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.36);
 `;
+
+const ThemedErrorHover = withTheme(ErrorHover);
 
 const FacilityTitle = styled.h2`
   width: 92%;
@@ -148,18 +156,22 @@ const ThemedContactHead = withTheme(ContactHead);
 
 const FacilityWarning = styled.div`
   font-weight: 400;
-  color: #ff6d36;
+  color: ${props => props.theme.mapSection.facilityWarningColor};
   font-size: 14px;
   margin-top: 2px;
   margin-right: 3px;
 `;
 
+const ThemedFacilityWarning = withTheme(FacilityWarning);
+
 const FacilityError = styled.div`
   font-weight: 400;
-  color: red;
+  color: ${props => props.theme.mapSection.facilityWarningColor};
   font-size: 14px;
   margin-top: 2px;
 `;
+
+const ThemedFacilityError = withTheme(FacilityError);
 
 const FacilitySubText = styled.div`
   font-size: 14px;
@@ -182,24 +194,30 @@ const WarningPointer = styled.div`
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #ffcc00;
+  border-bottom: 10px solid
+    ${props => props.theme.mapSection.facilityWarningColor};
   position: relative;
   bottom: -3px;
   right: -1px;
   visibility: hidden;
 `;
 
+const ThemedWarningPointer = withTheme(WarningPointer);
+
 const ErrorPointer = styled.div`
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid red;
+  border-bottom: 10px solid
+    ${props => props.theme.mapSection.facilityErrorPointer};
   position: relative;
   bottom: -3px;
   right: -1px;
   visibility: hidden;
 `;
+
+const ThemedErrorPointer = withTheme(ErrorPointer);
 
 class FacilityCard extends React.PureComponent<any> {
   state = {
@@ -301,51 +319,51 @@ class FacilityCard extends React.PureComponent<any> {
     }
     if (geoStatus === 'zip') {
       return (
-        <WarningNumber
+        <ThemedWarningNumber
           onClick={() => numberClick(latitude, longitude, geoStatus)}
           onMouseEnter={() => this.toggleWarning(true)}
           onMouseOut={() => this.toggleWarning(false)}>
-          <WarningHover
+          <ThemedWarningHover
             style={
               this.state.warningHover
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }>
             Partial Address Mapped
-          </WarningHover>
+          </ThemedWarningHover>
           {index}
-          <WarningPointer
+          <ThemedWarningPointer
             style={
               this.state.warningHover
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }
           />
-        </WarningNumber>
+        </ThemedWarningNumber>
       );
     }
     if (geoStatus === 'bad') {
       return (
-        <ErrorNumber
+        <ThemedErrorNumber
           onMouseEnter={() => this.toggleError(true)}
           onMouseOut={() => this.toggleError(false)}>
-          <ErrorHover
+          <ThemedErrorHover
             style={
               this.state.errorHover
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }>
             No Address Mapped
-          </ErrorHover>
+          </ThemedErrorHover>
           !
-          <ErrorPointer
+          <ThemedErrorPointer
             style={
               this.state.errorHover
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }
           />
-        </ErrorNumber>
+        </ThemedErrorNumber>
       );
     }
   };
@@ -355,7 +373,7 @@ class FacilityCard extends React.PureComponent<any> {
       return (
         <Row>
           <ThemedFacilitySubHead>Location:</ThemedFacilitySubHead>
-          <FacilityError>{location}</FacilityError>
+          <ThemedFacilityError>{location}</ThemedFacilityError>
         </Row>
       );
     }
@@ -363,7 +381,7 @@ class FacilityCard extends React.PureComponent<any> {
       return (
         <Row>
           <ThemedFacilitySubHead>Location:</ThemedFacilitySubHead>
-          <FacilityWarning>{location}</FacilityWarning>
+          <ThemedFacilityWarning>{location}</ThemedFacilityWarning>
         </Row>
       );
     }

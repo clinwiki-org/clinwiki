@@ -16,6 +16,7 @@ import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import UpdateWorkflowsViewMutation, {
   UpdateWorkflowsViewMutationFn,
 } from 'mutations/UpdateWorflowsViewMutation';
+import ThemedButton from 'components/StyledComponents';
 
 interface EditWorkflowsPageProps {}
 interface EditWorkflowsPageState {
@@ -121,11 +122,11 @@ class EditWorkflowsPage extends React.Component<
                       />
                       <UpdateWorkflowsViewMutation>
                         {updateWorflowsView => (
-                          <Button
+                          <ThemedButton
                             style={{ marginTop: 15 }}
                             onClick={this.handleSave(updateWorflowsView)}>
                             Save
-                          </Button>
+                          </ThemedButton>
                         )}
                       </UpdateWorkflowsViewMutation>
                     </StyledPanel>
