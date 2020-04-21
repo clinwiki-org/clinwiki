@@ -5,6 +5,6 @@ module Types
     value "INS", "Inserted line"
     value "DEL", "Deleted line"
     value "UNCHANGED", "Unchanged line"
-    value "COMMENT", "A comment line"
+    value "DIFFCOMMENT", "A comment line"
   end
 end
