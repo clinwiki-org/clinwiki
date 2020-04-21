@@ -28,6 +28,7 @@ import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdate
 import { AggBucket } from '../SearchPage/Types';
 import UpdateWorkflowsViewMutation from 'mutations/UpdateWorflowsViewMutation';
 import { FieldDisplay } from 'types/globalTypes';
+import ThemedButton from 'components/StyledComponents';
 
 interface RangeSelectorProps {
   isOpen: boolean;
@@ -36,7 +37,7 @@ interface RangeSelectorProps {
   buckets: Array<AggBucket>;
   handleLoadMore: () => void;
   updater: AggFilterInputUpdater;
-  aggType: FieldDisplay
+  aggType: FieldDisplay;
 }
 
 interface RangeSelectorState {
@@ -135,7 +136,7 @@ class RangeSelector extends React.Component<
           <FormGroup>
             <ControlLabel>Start</ControlLabel>
             <FormControl
-              type={ aggType==FieldDisplay.DATE_RANGE? "date": "text"}
+              type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
               value={startText}
               onChange={e =>
                 this.setState({
@@ -153,7 +154,7 @@ class RangeSelector extends React.Component<
           <FormGroup>
             <ControlLabel>End</ControlLabel>
             <FormControl
-              type={ aggType==FieldDisplay.DATE_RANGE? "date": "text"}
+              type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
               value={endText}
               onChange={e =>
                 this.setState({
@@ -167,7 +168,7 @@ class RangeSelector extends React.Component<
           </FormGroup>
           <FormGroup>
             {/* this is a placebo, it's really done on onblur */}
-            <Button type="submit">Enter</Button>
+            <ThemedButton type="submit">Enter</ThemedButton>
           </FormGroup>
         </Form>
       </Col>
