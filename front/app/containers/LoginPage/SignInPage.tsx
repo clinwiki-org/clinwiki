@@ -20,10 +20,7 @@ import {ThemedLinkContainer} from '../../components/StyledComponents';
 
 interface SignInPageProps {
   history: History;
-<<<<<<< HEAD
   location: Location;
-=======
->>>>>>> created a withTheme provider, ThemeProvider.tsx, along with two static variables and injected them into styled component LinkContainer as ThemedLinkContainer. Gives us ability to create default clinwiki theme in withTheme that we can then use to generate default theme in backend.
   theme: any
 }
 interface SignInPageState {
