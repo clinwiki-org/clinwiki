@@ -116,7 +116,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
-
+  handleDefaultSortMutation = e => {
+    this.props.onAddMutation(e);
+  };
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
@@ -248,6 +250,24 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             </FilterContainer>
           </FiltersContainer>
           <div>
+            <StyledLabel>Default Sort Type</StyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath(configType)}.order.sortKind`}
+              componentClass="select"
+              onChange={e => this.handleDefaultSortMutation(e)}
+              defaultValue={this.props.field.order?.sortKind}>
+              <option value="key">Alpha</option>
+              <option value="count">Numeric</option>
+            </StyledFormControl>
+            <StyledLabel>Default Sort Order</StyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath(configType)}.order.desc`}
+              componentClass="select"
+              onChange={(e)=>this.handleDefaultSortMutation(e)}
+              defaultValue={this.props.field.order?.desc}>
+              <option value="true">{this.props.field.order?.sortKind == 'count'? "1-9":"A-Z" }</option>
+              <option value="false">{this.props.field.order?.sortKind == 'count'? "9-1":"Z-A" }</option>
+            </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.rank`}

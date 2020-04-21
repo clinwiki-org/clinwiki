@@ -144,7 +144,7 @@ interface AggDropDownState {
   buckets: AggBucket[];
   prevParams: SearchParams | null;
   desc: boolean;
-  sortKind: SortKind;
+  sortKind: any;
   checkboxValue: boolean;
   showLabel: boolean;
 }
@@ -431,8 +431,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = this.findFields();
-    if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
-            return (
+    if (
+      field?.display === FieldDisplay.DATE_RANGE ||
+      field?.display === FieldDisplay.NUMBER_RANGE
+    ) {
+      return (
         <Panel.Collapse id="range-selector">
           <Panel.Body>
             <Container>
@@ -442,7 +445,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 loading={loading}
                 buckets={buckets}
                 handleLoadMore={this.handleLoadMore}
-                aggType={ field?.display === FieldDisplay.DATE_RANGE ? FieldDisplay.DATE_RANGE :  FieldDisplay.NUMBER_RANGE}
+                aggType={
+                  field?.display === FieldDisplay.DATE_RANGE
+                    ? FieldDisplay.DATE_RANGE
+                    : FieldDisplay.NUMBER_RANGE
+                }
               />
             </Container>
             {!loading && (
@@ -533,29 +540,35 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       checkboxValue,
       showLabel,
       isOpen,
-      loading
-
+      loading,
     } = this.state;
     const field = this.findFields();
-    if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
+    if (
+      field?.display === FieldDisplay.DATE_RANGE ||
+      field?.display === FieldDisplay.NUMBER_RANGE
+    ) {
       return (
-          <PresearchPanel id="range-selector">
+        <PresearchPanel id="range-selector">
+          <Container>
+            <RangeSelector
+              isOpen={isOpen}
+              hasMore={hasMore}
+              loading={loading}
+              buckets={buckets}
+              handleLoadMore={this.handleLoadMore}
+              aggType={
+                field?.display === FieldDisplay.DATE_RANGE
+                  ? FieldDisplay.DATE_RANGE
+                  : FieldDisplay.NUMBER_RANGE
+              }
+            />
+          </Container>
+          {!loading && (
             <Container>
-              <RangeSelector
-                isOpen={isOpen}
-                hasMore={hasMore}
-                loading={loading}
-                buckets={buckets}
-                handleLoadMore={this.handleLoadMore}
-                aggType={ field?.display === FieldDisplay.DATE_RANGE ? FieldDisplay.DATE_RANGE :  FieldDisplay.NUMBER_RANGE}
-              />
+              <AllowMissingCheckbox buckets={buckets} />
             </Container>
-            {!loading && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
-          </PresearchPanel>
+          )}
+        </PresearchPanel>
       );
     }
     return (
@@ -591,6 +604,22 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       </PresearchContent>
     );
   };
+
+  componentDidMount() {
+    let fields = this.props.currentSiteView.search.aggs.fields;
+    const field = this.findFields();
+    if (field?.order && field.order.sortKind == 'key') {
+      this.setState({
+        sortKind: 0,
+        desc: field.order.desc,
+      });
+    } else if (field?.order && field.order.sortKind == 'count') {
+      this.setState({
+        sortKind: 1,
+        desc: field.order.desc,
+      });
+    }
+  }
 
   render() {
     const { agg, presearch } = this.props;
