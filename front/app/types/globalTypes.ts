@@ -7,6 +7,7 @@
 
 export enum Diff {
   DEL = "DEL",
+  DIFFCOMMENT = "DIFFCOMMENT",
   INS = "INS",
   UNCHANGED = "UNCHANGED",
 }
