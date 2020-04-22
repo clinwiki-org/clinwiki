@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import {ThemedButton} from '../../components/StyledComponents'
 import { WikiSection } from 'utils/helpers';
 import { Button, FormControl, Panel } from 'react-bootstrap';
 import UpdateWikiSectionsMutation, {
@@ -116,12 +117,12 @@ class WikiSections extends React.Component<
           <ButtonContainer>
             <UpdateWikiSectionsMutation>
               {mutate => (
-                <Button
+                <ThemedButton
                   onClick={this.handleSectionsSave(mutate)}
                   style={{ marginTop: 15 }}
                   disabled={isEmpty(this.state.updatedSections)}>
                   Save Sections
-                </Button>
+                </ThemedButton>
               )}
             </UpdateWikiSectionsMutation>
           </ButtonContainer>
