@@ -6,6 +6,8 @@ import { ButtonToolbar, Button, Checkbox, Panel, Col } from 'react-bootstrap';
 import { checkServerIdentity } from 'tls';
 import MultiCrumb from 'components/MultiCrumb';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
+import ThemedButton from 'components/StyledComponents';
+
 interface Undo {
   description: string;
   action: () => void;
@@ -183,7 +185,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
           </CrumbsBarStyleWrapper>
 
           <ButtonToolbar>
-            <Button
+            <ThemedButton
               onClick={() =>
                 commit(
                   labelsToAdd,
@@ -197,15 +199,15 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                 )
               }>
               Save
-            </Button>
+            </ThemedButton>
             {labelsToAdd.length || labelsToRemove.length ? (
-              <Button
+              <ThemedButton
                 bsStyle="danger"
                 onClick={() =>
                   this.setState({ labelsToAdd: [], labelsToRemove: [] })
                 }>
                 Clear
-              </Button>
+              </ThemedButton>
             ) : null}
           </ButtonToolbar>
         </PanelContainer>
