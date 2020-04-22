@@ -9,6 +9,10 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 18
+- Ability to configure sort order in site view
+- Bug fixes in wiki history
+
 ### Version 17
 - Wiki history improvements
 - Improve range selector
