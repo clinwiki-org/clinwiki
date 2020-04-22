@@ -22,7 +22,7 @@ const StyleWrapper = styled.div`
     cursor: pointer;
     ${(props: CollapsiblePanelProps) =>
       props.dropdown
-        ? 'background: #f5f5f5 !important; padding: 10px 15px !important; color: #333 !important'
+        ? 'background: #f5f5f5; padding: 10px 15px !important; color: #333 !important'
         : ''}
   }
 `;
