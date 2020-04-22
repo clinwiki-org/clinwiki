@@ -253,23 +253,27 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
         />
       );
     }
+  }
+
+  *mkDefaultClearButtons(searchParams: SearchParams) {
     const totalLength =
       searchParams.q?.length +
       searchParams.crowdAggFilters?.length +
       searchParams.aggFilters?.length;
+    console.log(totalLength);
     if (totalLength > 0) {
       yield (
         <span key="buttons">
           <ThemedButton
             key="defaul"
             onClick={this.props.onReset}
-            style={{ margin: '5px 0px 5px 10px' }}>
+            style={{ margin: '5px 0px 5px 10px', border: '1px solid white' }}>
             Default
           </ThemedButton>
           <ThemedButton
             key="reset"
             onClick={this.props.onClear}
-            style={{ margin: '5px 0px 5px 10px' }}>
+            style={{ margin: '5px 0px 5px 10px', border: '1px solid white' }}>
             Clear
           </ThemedButton>
         </span>
@@ -279,7 +283,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
         <ThemedButton
           key="defaul"
           onClick={this.props.onReset}
-          style={{ margin: '5px 0px 5px 10px' }}>
+          style={{ margin: '5px 0px 5px 10px', border: '1px solid white' }}>
           Default
         </ThemedButton>
       );
@@ -653,6 +657,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         onClick={this.toggleShowFilters}>
                         {' '}
                         Filters:{' '}
+                        {Array.from(
+                          this.mkDefaultClearButtons(this.props.searchParams)
+                        )}
                         {this.state.showFilters ? (
                           <b>
                             <FontAwesome
