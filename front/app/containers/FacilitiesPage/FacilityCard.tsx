@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { FacilitiesPageQuery_study_facilities_contacts } from 'types/FacilitiesPageQuery';
 import { truncateString } from './FacilityUtils';
+import withTheme from 'containers/ThemeProvider';
 
 const FacilityCardWrapper = styled.div`
   background-color: white;
@@ -22,11 +23,11 @@ const FacilityNumber = styled.div`
   position: relative;
   width: 28px;
   height: 22px;
-  border: 3px solid #324870;
   border-radius: 22px;
+  border: 3px solid ${props => props.theme.mapSection.markerBorderColor};
   background-color: white;
   text-align: center;
-  color: #55b88d;
+  color: ${props => props.theme.mapSection.markerFontColor};
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -35,16 +36,18 @@ const FacilityNumber = styled.div`
   margin: 0;
   padding-bottom: 22px;
 `;
+
+const ThemedFacilityNumber = withTheme(FacilityNumber);
 
 const WarningNumber = styled.div`
   position: relative;
   width: 28px;
   height: 22px;
-  border: 3px solid #ffcc00;
   border-radius: 22px;
+  border: 3px solid ${props => props.theme.mapSection.warningBorderColor};
   background-color: white;
   text-align: center;
-  color: #f6a202;
+  color: ${props => props.theme.mapSection.warningFontColor};
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -54,15 +57,17 @@ const WarningNumber = styled.div`
   padding-bottom: 22px;
 `;
 
+const ThemedWarningNumber = withTheme(WarningNumber);
+
 const ErrorNumber = styled.div`
   position: relative;
   width: 28px;
   height: 22px;
-  border: 3px solid red;
   border-radius: 22px;
+  border: 3px solid ${props => props.theme.mapSection.errorBorderColor};
   background-color: white;
   text-align: center;
-  color: red;
+  color: ${props => props.theme.mapSection.errorFontColor};
   font-size: 16px;
   font-weight: bold;
   box-shadow: 0 0 0 1px white;
@@ -71,6 +76,8 @@ const ErrorNumber = styled.div`
   padding-bottom: 22px;
   cursor: pointer;
 `;
+
+const ThemedErrorNumber = withTheme(ErrorNumber);
 
 const WarningHover = styled.div`
   width: 200px;
@@ -87,6 +94,8 @@ const WarningHover = styled.div`
   box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.36);
 `;
 
+const ThemedWarningHover = withTheme(WarningHover);
+
 const ErrorHover = styled.div`
   width: 200px;
   height: 30px;
@@ -102,13 +111,17 @@ const ErrorHover = styled.div`
   box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.36);
 `;
 
+const ThemedErrorHover = withTheme(ErrorHover);
+
 const FacilityTitle = styled.h2`
   width: 92%;
   font-weight: 600;
-  color: #55b88d;
+  color: ${props => props.theme.mapSection.markerFontColor};
   font-size: 20px;
   margin: 0;
 `;
+
+const ThemedFacilityTitle = withTheme(FacilityTitle);
 
 const FacilityBody = styled.div`
   padding-top: 4px;
@@ -117,10 +130,12 @@ const FacilityBody = styled.div`
 
 const FacilitySubHead = styled.div`
   font-weight: 600;
-  color: #324870;
+  color: ${props => props.theme.mapSection.markerBorderColor};
   font-size: 16px;
   margin-right: 7px;
 `;
+
+const ThemedFacilitySubHead = withTheme(FacilitySubHead);
 
 const Row = styled.div`
   flex-direction: row;
@@ -134,25 +149,31 @@ const Col = styled.div`
 
 const ContactHead = styled.div`
   font-weight: 600;
-  color: #324870;
+  color: ${props => props.theme.mapSection.markerFontColor};
   font-size: 16px;
   text-decoration: underline;
 `;
 
+const ThemedContactHead = withTheme(ContactHead);
+
 const FacilityWarning = styled.div`
   font-weight: 400;
-  color: #ff6d36;
+  color: ${props => props.theme.mapSection.facilityWarningColor};
   font-size: 14px;
   margin-top: 2px;
   margin-right: 3px;
 `;
 
+const ThemedFacilityWarning = withTheme(FacilityWarning);
+
 const FacilityError = styled.div`
   font-weight: 400;
-  color: red;
+  color: ${props => props.theme.mapSection.facilityWarningColor};
   font-size: 14px;
   margin-top: 2px;
 `;
+
+const ThemedFacilityError = withTheme(FacilityError);
 
 const FacilitySubText = styled.div`
   font-size: 14px;
@@ -175,24 +196,30 @@ const WarningPointer = styled.div`
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #ffcc00;
+  border-bottom: 10px solid
+    ${props => props.theme.mapSection.facilityWarningColor};
   position: relative;
   bottom: -3px;
   right: -1px;
   visibility: hidden;
 `;
 
+const ThemedWarningPointer = withTheme(WarningPointer);
+
 const ErrorPointer = styled.div`
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid red;
+  border-bottom: 10px solid
+    ${props => props.theme.mapSection.facilityErrorPointer};
   position: relative;
   bottom: -3px;
   right: -1px;
   visibility: hidden;
 `;
+
+const ThemedErrorPointer = withTheme(ErrorPointer);
 
 class FacilityCard extends React.PureComponent<any> {
   state = {
@@ -235,18 +262,20 @@ class FacilityCard extends React.PureComponent<any> {
           }}>
           {contacts.map((item, index) => (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <ContactHead>{this.capitalize(item.contactType)}</ContactHead>
+              <ThemedContactHead>
+                {this.capitalize(item.contactType)}
+              </ThemedContactHead>
               <div style={{ marginLeft: '20px' }}>
                 <Row>
-                  <FacilitySubHead>Phone:</FacilitySubHead>
+                  <ThemedFacilitySubHead>Phone:</ThemedFacilitySubHead>
                   <FacilitySubText>{item.phone}</FacilitySubText>
                 </Row>
                 <Row>
-                  <FacilitySubHead>Email:</FacilitySubHead>
+                  <ThemedFacilitySubHead>Email:</ThemedFacilitySubHead>
                   <FacilitySubText>{item.email}</FacilitySubText>
                 </Row>
                 <Row>
-                  <FacilitySubHead>Name:</FacilitySubHead>
+                  <ThemedFacilitySubHead>Name:</ThemedFacilitySubHead>
                   <FacilitySubText>{item.name}</FacilitySubText>
                 </Row>
               </div>
@@ -263,7 +292,7 @@ class FacilityCard extends React.PureComponent<any> {
     } else
       return (
         <Row>
-          <FacilitySubHead>Contact Info:</FacilitySubHead>
+          <ThemedFacilitySubHead>Contact Info:</ThemedFacilitySubHead>
           <FacilitySubText>No Contact Info Available</FacilitySubText>
         </Row>
       );
@@ -272,59 +301,59 @@ class FacilityCard extends React.PureComponent<any> {
   renderNumber = (geoStatus, index, latitude, longitude, numberClick) => {
     if (geoStatus === 'good') {
       return (
-        <FacilityNumber
+        <ThemedFacilityNumber
           onClick={() => numberClick(latitude, longitude, geoStatus)}>
           {index}
-        </FacilityNumber>
+        </ThemedFacilityNumber>
       );
     }
     if (geoStatus === 'zip') {
       return (
-        <WarningNumber
+        <ThemedWarningNumber
           onClick={() => numberClick(latitude, longitude, geoStatus)}
           onMouseEnter={() => this.toggleWarning(true)}
           onMouseOut={() => this.toggleWarning(false)}>
-          <WarningHover
+          <ThemedWarningHover
             style={
               this.state.warningHover
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }>
             Partial Address Mapped
-          </WarningHover>
+          </ThemedWarningHover>
           {index}
-          <WarningPointer
+          <ThemedWarningPointer
             style={
               this.state.warningHover
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }
           />
-        </WarningNumber>
+        </ThemedWarningNumber>
       );
     }
     if (geoStatus === 'bad') {
       return (
-        <ErrorNumber
+        <ThemedErrorNumber
           onMouseEnter={() => this.toggleError(true)}
           onMouseOut={() => this.toggleError(false)}>
-          <ErrorHover
+          <ThemedErrorHover
             style={
               this.state.errorHover
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }>
             No Address Mapped
-          </ErrorHover>
+          </ThemedErrorHover>
           !
-          <ErrorPointer
+          <ThemedErrorPointer
             style={
               this.state.errorHover
                 ? { visibility: 'visible' }
                 : { visibility: 'hidden' }
             }
           />
-        </ErrorNumber>
+        </ThemedErrorNumber>
       );
     }
   };
@@ -333,23 +362,23 @@ class FacilityCard extends React.PureComponent<any> {
     if (geoStatus === 'bad') {
       return (
         <Row>
-          <FacilitySubHead>Location:</FacilitySubHead>
-          <FacilityError>{location}</FacilityError>
+          <ThemedFacilitySubHead>Location:</ThemedFacilitySubHead>
+          <ThemedFacilityError>{location}</ThemedFacilityError>
         </Row>
       );
     }
     if (geoStatus === 'zip') {
       return (
         <Row>
-          <FacilitySubHead>Location:</FacilitySubHead>
-          <FacilityWarning>{location}</FacilityWarning>
+          <ThemedFacilitySubHead>Location:</ThemedFacilitySubHead>
+          <ThemedFacilityWarning>{location}</ThemedFacilityWarning>
         </Row>
       );
     }
     if (geoStatus === 'good') {
       return (
         <Row>
-          <FacilitySubHead>Location</FacilitySubHead>
+          <ThemedFacilitySubHead>Location</ThemedFacilitySubHead>
           <FacilitySubText>{location}</FacilitySubText>
         </Row>
       );
@@ -378,7 +407,7 @@ class FacilityCard extends React.PureComponent<any> {
     return (
       <FacilityCardWrapper key={title}>
         <FacilityHeader>
-          <FacilityTitle>{newTitle || ''}</FacilityTitle>
+          <ThemedFacilityTitle>{newTitle || ''}</ThemedFacilityTitle>
           <div style={{ width: '8%' }}>
             {this.renderNumber(
               geoStatus,
@@ -391,7 +420,7 @@ class FacilityCard extends React.PureComponent<any> {
         </FacilityHeader>
         <FacilityBody>
           <Row>
-            <FacilitySubHead>Status:</FacilitySubHead>
+            <ThemedFacilitySubHead>Status:</ThemedFacilitySubHead>
             <FacilitySubText>{status}</FacilitySubText>
           </Row>
           {this.renderLocation(geoStatus, location)}

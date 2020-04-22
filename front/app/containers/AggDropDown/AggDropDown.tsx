@@ -48,6 +48,8 @@ import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQue
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
+import withTheme from '../ThemeProvider';
+
 const PAGE_SIZE = 25;
 
 const Container = styledComponents.div`
@@ -90,22 +92,30 @@ const PanelWrapper = styledComponents.div`
 const PresearchCard = styledComponents.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid green;
   border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${props => props.theme.buttonSecondary};
+  
   margin: 10px;
   flex: 1;
-  height: 310px;
-  width: 420px;
+  // height: 310px;
+  min-width: 320px;
+  max-width: 320px;
   background: white;
 `;
 
+const ThemedPresearchCard = withTheme(PresearchCard);
+
 const PresearchHeader = styledComponents.div`
-  background-color: #55b88d;
+  background-color: ${props => props.theme.presearch.presearchHeaders};
   padding: 5px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   height: 50px;
 `;
+
+const ThemedPresearchHeader = withTheme(PresearchHeader);
 
 const PresearchTitle = styledComponents.div`
   color: white;
@@ -635,12 +645,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
-        <PresearchCard>
-          <PresearchHeader>
+        <ThemedPresearchCard>
+          <ThemedPresearchHeader>
             <PresearchTitle>{capitalize(title)}</PresearchTitle>
-          </PresearchHeader>
+          </ThemedPresearchHeader>
           <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
-        </PresearchCard>
+        </ThemedPresearchCard>
       );
     } else {
       return (

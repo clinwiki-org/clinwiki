@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-// import { Button } from 'react-bootstrap';
-import withTheme from './../ThemeProvider';
+import withTheme from '../../containers/ThemeProvider';
 
 const StyledButton = styled.div`
   padding: 10px 15px;
@@ -17,11 +16,28 @@ const StyledButton = styled.div`
   cursor: pointer;
   border-radius: 4px;
   transition: 0.5s;
+  color: #fff;
   &:hover {
-    background: ${props => props.theme.buttonSecondary} !important;
+    background: ${props => props.theme.buttonSecondary};
   }
 `;
 
 export const ThemedButton = withTheme(StyledButton);
 
-export default StyledButton;
+const LinkContainer = 
+styled.div`
+ position: absolute;
+ bottom: 30px;
+ a {
+   color: ${props => props.theme.authPage.signInLinks};
+   margin-right: 15px;
+ } 
+ a:hover {
+   color: ${props => props.theme.authPage.signInLinksHover}
+ }
+ `
+;
+
+export const ThemedLinkContainer = withTheme(LinkContainer);
+
+export default ThemedButton;

@@ -6,8 +6,8 @@
 //==============================================================
 
 export enum Diff {
-  COMMENT = "COMMENT",
   DEL = "DEL",
+  DIFFCOMMENT = "DIFFCOMMENT",
   INS = "INS",
   UNCHANGED = "UNCHANGED",
 }
@@ -122,6 +122,7 @@ export interface CreateSiteInput {
   name: string;
   subdomain: string;
   skipLanding?: boolean | null;
+  themes?: string | null;
   editorEmails?: string[] | null;
   clientMutationId?: string | null;
 }
@@ -256,6 +257,7 @@ export interface UpdateProfileInput {
 export interface UpdateSiteInput {
   id: number;
   name?: string | null;
+  themes?: string | null;
   skipLanding?: boolean | null;
   subdomain?: string | null;
   editorEmails?: string[] | null;

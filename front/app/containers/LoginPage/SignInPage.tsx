@@ -6,7 +6,7 @@ import { gql } from 'apollo-boost';
 import { SignInMutation, SignInMutationVariables } from 'types/SignInMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import StyledButton from './StyledButton';
+import {ThemedButton} from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History, Location } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
@@ -15,10 +15,13 @@ import StyledError from './StyledError';
 import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
+import withTheme from './../ThemeProvider';
+import {ThemedLinkContainer} from '../../components/StyledComponents';
 
 interface SignInPageProps {
   history: History;
   location: Location;
+  theme: any
 }
 interface SignInPageState {
   form: {
@@ -47,21 +50,14 @@ class SignInMutationComponent extends Mutation<
 > {}
 type SignInMutationFn = MutationFn<SignInMutation, SignInMutationVariables>;
 
-const LinkContainer = styled.div`
-  position: absolute;
-  bottom: 30px;
-  a {
-    color: white;
-    margin-right: 15px;
-  }
-`;
+
+
 
 class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   state: SignInPageState = {
     form: {
       email: '',
       password: '',
-      //@ts-ignore
       oAuthToken: '',
     },
     errors: [],
@@ -118,6 +114,8 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   };
 
   render() {
+    console.log('withTheme', this.props.theme);
+
     return (
       <StyledWrapper>
         <Col md={12}>
@@ -139,7 +137,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                 this.setState({ errors: ['Invalid email or password'] });
               }}>
               {signIn => (
-                <form
+                <form 
                   onSubmit={e => {
                     e.preventDefault();
                     this.handleSignIn(signIn);
@@ -160,11 +158,11 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                   />
 
                   <div>
-                    <StyledButton
+                    <ThemedButton
                       type="submit"
                       onClick={this.handleSignIn(signIn)}>
                       Sign In
-                    </StyledButton>
+                    </ThemedButton>
                     <div style={{ display: 'block', marginTop: 10 }}>
                       <GoogleLogin
                         clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
@@ -180,10 +178,10 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                     </div>
                   </div>
                   {this.renderErrors()}
-                  <LinkContainer>
+                  <ThemedLinkContainer>
                     <Link to="/sign_up">Sign up</Link>
                     <Link to="/reset_password">Reset password</Link>
-                  </LinkContainer>
+                  </ThemedLinkContainer>
                 </form>
               )}
             </SignInMutationComponent>
@@ -194,4 +192,4 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   }
 }
 
-export default SignInPage;
+export default withTheme(SignInPage);

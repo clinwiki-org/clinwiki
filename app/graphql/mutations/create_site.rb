@@ -6,6 +6,7 @@ module Mutations
     argument :name, String, required: true
     argument :subdomain, String, required: true
     argument :skip_landing, Boolean, required: false
+    argument :themes, String, required: false
     argument :editor_emails, [String], required: false
 
     def resolve(attrs)

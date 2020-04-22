@@ -37,8 +37,10 @@ import {
   getViewValueByPath,
   serializeMutation,
 } from 'utils/siteViewUpdater';
-import { equals, prop, last, view } from 'ramda';
+import { equals, prop, last, view, props } from 'ramda';
 import { History, Location } from 'history';
+import withTheme from 'containers/ThemeProvider';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
@@ -50,6 +52,7 @@ interface SearchFormProps {
   site: any;
   handleSiteViewEdit?: any;
   // currentSiteView?: any;
+  theme: any;
 }
 
 interface SearchFormState {
@@ -87,7 +90,7 @@ const AggsHeaderContainer = styled.div`
   }
 `;
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(ThemedButton)`
   margin-right: 15px;
 `;
 
@@ -134,6 +137,9 @@ const StyledFormInput = styled(FormControl)`
 //   diplay: flex;
 //   flex-direction: row;
 //   `
+
+const ThemedAggsHeaderContainer = withTheme(AggsHeaderContainer);
+const ThemedStyledFormInput = withTheme(StyledFormInput);
 
 class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   state: SearchFormState = {
@@ -364,13 +370,16 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         <Panel.Body collapsible>
           <StyledPanelHeading>
             <StyledButtonGroup>
-              <span className="button-label">Button Target: </span>
+              <span className="button-label">Target URL: </span>
               <DropdownButton
                 bsStyle="default"
                 title={buttonsArray[index].target}
                 key="default"
                 id="dropdown-basic-default"
-                style={{ margin: '1em 1em 1em 0' }}>
+                style={{
+                  margin: '1em 1em 1em 0',
+                  background: this.props.theme.button,
+                }}>
                 {siteViews.map(site => (
                   <MenuItem
                     key={site.name}
@@ -378,7 +387,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                     onClick={e =>
                       this.handleButtonTarget(e, thisSiteView, index, site.url)
                     }>
-                    {site.name}
+                    {site.url}
                   </MenuItem>
                 ))}
               </DropdownButton>
@@ -391,7 +400,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 title={buttonsArray[index].icon}
                 key="default"
                 id="dropdown-basic-default"
-                style={{ margin: '1em 1em 1em 0' }}>
+                style={{
+                  margin: '1em 1em 1em 0',
+                  background: this.props.theme.button,
+                }}>
                 {ICONS.map(icon => (
                   <MenuItem
                     key={icon}
@@ -701,20 +713,23 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               />
               <StyledPanelHeading>
                 <StyledButtonGroup>
-                  <span className="button-label">Button Target</span>
+                  <span className="button-label">Target URL</span>
                   <DropdownButton
                     bsStyle="default"
                     title={view.search.presearch.button.target}
                     key="default"
                     id="dropdown-basic-default"
-                    style={{ margin: '1em 1em 1em 0' }}>
+                    style={{
+                      margin: '1em 1em 1em 0',
+                      background: this.props.theme.button,
+                    }}>
                     {this.props.siteViews.map(view => (
                       <MenuItem
                         name={`set:search.presearch.button.target`}
                         onClick={e =>
                           this.handlePresearchButtonTarget(e, view, view.url)
                         }>
-                        {view.name}
+                        {view.url}
                       </MenuItem>
                     ))}
                   </DropdownButton>
@@ -766,7 +781,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               title={view.search.results.type}
               key="default"
               id="dropdown-basic-default"
-              style={{ margin: '1em 1em 1em 0' }}>
+              style={{
+                margin: '1em 1em 1em 0',
+                background: this.props.theme.button,
+              }}>
               <MenuItem
                 onClick={e =>
                   this.handleShowFacetBar(
@@ -983,4 +1001,4 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   }
 }
 
-export default SearchForm;
+export default withTheme(SearchForm);

@@ -17,6 +17,8 @@ import { SearchParams, AggKind, SearchQuery } from './shared';
 import SearchStudyPage from 'containers/SearchStudyPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import { Query, graphql, ApolloConsumer } from 'react-apollo';
+import { ThemedButton } from '../../components/StyledComponents';
+import { History } from 'history';
 import {
   path,
   map,
@@ -57,7 +59,7 @@ import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
-
+import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
 
 class ParamsQueryComponent extends Query<
@@ -70,28 +72,57 @@ const MainContainer = styled(Col)`
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 20px;
-  float: left;
-  width: 100%;
+  flex: 1;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 
   .rt-th {
     text-transform: capitalize;
     padding: 15px !important;
-    background: #8bb7a4 !important;
+    background: ${props =>
+      props.theme.searchResults.resultsHeaderBackground} !important;
     color: #fff;
+  }
+
+  .ReactTable .-pagination .-btn {
+    background: ${props =>
+      props.theme.searchResults.resultsPaginationButtons} !important;
+  }
+
+  div.rt-tbody div.rt-tr:hover {
+    background: ${props =>
+      props.theme.searchResults.resultsRowHighlight} !important;
+    color: #fff !important;
   }
 
   .rt-table {
   }
 `;
 
+const SearchPageWrapper = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  @media only screen and (max-width: 1132px) {
+    flex-direction: column;
+  }
+`;
+
+const ThemedMainContainer = withTheme(MainContainer);
+
 const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
   box-sizing: border-box;
+  width: 235px;
+  min-width: 235px;
+  min-height: 100%;
+  background: ${props => props.theme.aggSideBar.sideBarBackground};
   .panel-title {
     a:hover {
       text-decoration: none;
-      color: #fff;
+      color: ${props => props.theme.aggSideBar.sideBarFontHover};
     }
   }
   .panel-default {
@@ -111,16 +142,20 @@ const SidebarContainer = styled(Col)`
       background: #394149;
       .panel-body {
         padding-left: 10px;
-        color: rgba(255, 255, 255, 0.7);
+        color: #fff;
       }
     }
     .panel-title {
       font-size: 16px;
-      color: #bac5d0;
+      color: ${props => props.theme.aggSideBar.sideBarFont};
       padding: 0px 10px;
     }
   }
+  @media only screen and (max-width: 1132px) {
+    width: 100%;
+  }
 `;
+const ThemedSidebarContainer = withTheme(SidebarContainer);
 
 const SearchContainer = styled.div`
   border: solid white 1px;
@@ -182,7 +217,7 @@ const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
     keys.forEach(k => {
-      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams)
+      params = addFilter(aggName, k, isCrowd)(params) as SearchParams;
     });
     // changeFilter(true);
     return params;
@@ -233,7 +268,7 @@ const changePage = (pageNumber: number) => (params: SearchParams) => ({
 interface SearchPageProps {
   match: match<{ siteviewUrl: string }>;
   history: any;
-  location:any;
+  location: any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
   site: SiteFragment;
@@ -421,7 +456,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  handleBulkUpdateClick = (hash:string, siteViewUrl:string) => {
+  handleBulkUpdateClick = (hash: string, siteViewUrl: string) => {
     this.props.history.push(`/bulk?hash=${hash}&sv=${siteViewUrl}`);
   };
 
@@ -457,7 +492,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
-
     return (
       <Aggs
         aggs={this.state.searchAggs}
@@ -568,12 +602,31 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   showingCards = () => this.props.currentSiteView.search.results.type == 'card';
 
   componentDidMount() {
+    let searchTerm = new URLSearchParams(this.props.location?.search || '');
+    if (searchTerm.has('q')) {
+      let q = {
+        key: 'AND',
+        children: [{ children: [], key: searchTerm.getAll('q').toString() }],
+      };
+      this.setState(
+        {
+          params: {
+            q: q,
+            aggFilters: [],
+            crowdAggFilters: [],
+            sorts: [],
+            page: 0,
+            pageSize: defaultPageSize,
+          },
+        },
+        () => this.updateSearchParams(this.state.params)
+      );
+    }
     if (this.showingCards()) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
-
   }
 
   componentWillUnmount() {
@@ -589,26 +642,31 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   getHashFromLocation(): string | null {
-    let hash = new URLSearchParams(this.props.history.location.search).getAll("hash")
+    let hash = new URLSearchParams(this.props.history.location.search).getAll(
+      'hash'
+    );
     return hash.toString();
   }
 
   updateStateFromHash(searchParams) {
     const params: SearchParams = this.searchParamsFromQuery(searchParams);
-    let searchTerm = new URLSearchParams(this.props.location?.search || "")
-    
+    let searchTerm = new URLSearchParams(this.props.location?.search || '');
+
     if (searchTerm.has('q')) {
-      let q = { key: 'AND', children: [{ children: [], key: searchTerm.getAll('q').toString() }] };
+      let q = {
+        key: 'AND',
+        children: [{ children: [], key: searchTerm.getAll('q').toString() }],
+      };
       this.setState(
         {
           params: {
             ...params,
-            q: q
+            q: q,
           },
         },
         () => this.updateSearchParams(this.state.params)
       );
-    } 
+    }
     this.setState({
       params: {
         ...params,
@@ -622,7 +680,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    const siteViewUrl = new URLSearchParams(this.props.history.location.search).getAll("sv").toString() || 'default';
+    const siteViewUrl =
+      new URLSearchParams(this.props.history.location.search)
+        .getAll('sv')
+        .toString() || 'default';
     if (data?.provisionSearchHash?.searchHash?.short) {
       this.props.history.push(
         `/search?hash=${
@@ -641,6 +702,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return null;
   };
 
+  handlePresearchButtonClick = (hash, target) => {
+    console.log(hash, target);
+    const url = `/search?hash=${hash}&sv=${target}`;
+    this.props.history.push(url);
+  };
+
   renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     const { currentSiteView } = this.props;
@@ -654,7 +721,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <InstructionsContainer>
           {presearchText && (
             <Instructions>
-              {/* <h4 style={{ marginRight: 10 }}>Instructions:</h4>{' '} */}
               <h5>{presearchText}</h5>
             </Instructions>
           )}
@@ -679,13 +745,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           currentSiteView={currentSiteView}
         />
         {presearchButton.name && (
-          <Button
-            style={{ width: 200, marginLeft: 13 }}
-            href={
-              `/search?hash=${hash}&sv=${presearchButton.target}`
-            }>
+          <ThemedButton
+            onClick={() =>
+              this.handlePresearchButtonClick(hash, presearchButton.target)
+            }
+            style={{ width: 200, marginLeft: 13 }}>
             {presearchButton.name}
-          </Button>
+          </ThemedButton>
         )}
       </SearchContainer>
     );
@@ -740,10 +806,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             },
           }}>
           <Row>
-            <SidebarContainer md={2}>
+            <ThemedSidebarContainer md={2}>
               {this.renderAggs(currentSiteView)}
-            </SidebarContainer>
-            <MainContainer md={10}>
+            </ThemedSidebarContainer>
+            <ThemedMainContainer md={10}>
               {this.renderPresearch(null)}
               <SearchView
                 params={this.state.params as any}
@@ -772,12 +838,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 currentSiteView={currentSiteView}
                 getTotalResults={this.getTotalResults}
               />
-            </MainContainer>
+            </ThemedMainContainer>
           </Row>
         </SearchParamsContext.Provider>
       );
     }
-
 
     const hash = this.getHashFromLocation();
 
@@ -805,20 +870,18 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 showBreadCrumbs,
               } = currentSiteView.search.config.fields;
               return (
-                <Row>
+                <SearchPageWrapper>
                   {showFacetBar && (
-                    <SidebarContainer md={2}>
+                    <ThemedSidebarContainer md={2}>
                       {this.renderAggs(currentSiteView)}
-                    </SidebarContainer>
+                    </ThemedSidebarContainer>
                   )}
-                  <div id="main_search" style={{ overflowY: 'auto' }}>
-                    <MainContainer style={{ width: '100%' }}>
-                      {showBreadCrumbs && this.renderCrumbs()}
-                      {showPresearch && this.renderPresearch(hash)}
-                      {this.renderSearch()}
-                    </MainContainer>
-                  </div>
-                </Row>
+                  <ThemedMainContainer>
+                    {showBreadCrumbs && this.renderCrumbs()}
+                    {showPresearch && this.renderPresearch(hash)}
+                    {this.renderSearch()}
+                  </ThemedMainContainer>
+                </SearchPageWrapper>
               );
             }}
           />

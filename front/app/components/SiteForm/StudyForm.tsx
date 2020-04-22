@@ -32,6 +32,7 @@ import {
 } from 'ramda';
 import MultiInput from 'components/MultiInput';
 import { parse } from 'graphql';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface StudyFormProps {
   view: SiteViewFragment;
@@ -245,7 +246,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
                 value={this.state.newSectionName}
                 onChange={this.handleNewSectionNameChange}
               />
-              <Button onClick={this.handleAddSection}>Add</Button>
+              <ThemedButton onClick={this.handleAddSection}>Add</ThemedButton>
             </SectionForm>
           </Col>
           <Col md={10}>

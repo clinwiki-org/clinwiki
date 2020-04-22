@@ -3,12 +3,14 @@ import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import { CSSTransition } from 'react-transition-group';
+import withTheme from '../../containers/ThemeProvider';
 
 interface CollapsiblePanelProps {
   header: string;
   children: React.ReactNode;
   collapsed?: boolean;
   dropdown?: boolean;
+  theme?: any;
 }
 
 interface CollapsiblePanelState {
@@ -21,7 +23,7 @@ const StyleWrapper = styled.div`
     cursor: pointer;
     ${(props: CollapsiblePanelProps) =>
       props.dropdown
-        ? 'background: #f5f5f5 !important; padding: 10px 15px !important; color: #333 !important'
+        ? `background: ${props.theme.button}; padding: 10px 15px !important; color: #333;`
         : ''}
   }
 `;
@@ -49,6 +51,9 @@ const StyledPanelBody = styled.div`
     max-height: 0;
   }
 `;
+
+const ThemedStyleWrapper = withTheme(StyleWrapper);
+const ThemedStyledPanelBody = withTheme(StyledPanelBody);
 
 class CollapsiblePanel extends React.Component<
   CollapsiblePanelProps,
@@ -78,7 +83,7 @@ class CollapsiblePanel extends React.Component<
 
   render() {
     return (
-      <StyleWrapper {...this.props}>
+      <ThemedStyleWrapper {...this.props}>
         <Panel>
           <Panel.Heading
             onClick={() =>
@@ -107,12 +112,12 @@ class CollapsiblePanel extends React.Component<
             timeout={200}
             appear
             classNames="transition">
-            <StyledPanelBody>
+            <ThemedStyledPanelBody>
               <Panel.Body>{this.props.children}</Panel.Body>
-            </StyledPanelBody>
+            </ThemedStyledPanelBody>
           </CSSTransition>
         </Panel>
-      </StyleWrapper>
+      </ThemedStyleWrapper>
     );
   }
 }

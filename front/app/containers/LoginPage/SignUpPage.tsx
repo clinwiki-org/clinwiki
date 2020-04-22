@@ -6,7 +6,7 @@ import { gql } from 'apollo-boost';
 import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import StyledButton from './StyledButton';
+import {ThemedButton} from './StyledButton';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
@@ -15,6 +15,7 @@ import StyledError from './StyledError';
 import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
+import {ThemedLinkContainer} from '../../components/StyledComponents'
 
 interface SignUpPageProps {
   history: History;
@@ -170,9 +171,9 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
               }}>
               {signUp => (
                 <div>
-                  <StyledButton onClick={this.handleSignUp(signUp)}>
+                  <ThemedButton onClick={this.handleSignUp(signUp)}>
                     Sign Up
-                  </StyledButton>
+                  </ThemedButton>
                   <div style={{ display: 'block', marginTop: 10 }}>
                     <GoogleLogin
                       clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
@@ -189,10 +190,10 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
             </SignUpMutationComponent>
 
             {this.renderErrors()}
-            <LinkContainer>
+            <ThemedLinkContainer>
               <Link to="/sign_in">Sign In</Link>
               <Link to="/reset_password">Reset password</Link>
-            </LinkContainer>
+            </ThemedLinkContainer>
           </StyledContainer>
         </Col>
       </StyledWrapper>
