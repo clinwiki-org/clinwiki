@@ -141,6 +141,7 @@ export const withTheme = Component => {
         studyPage: {
           sectionBorderColor: colors.primaryColor,
           reviewStarColor: colors.primaryColor,
+          studyPageHeader: colors.sideBarColor
         },
         mapSection: {
           markerFontColor: colors.primaryColor,
