@@ -370,7 +370,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         <Panel.Body collapsible>
           <StyledPanelHeading>
             <StyledButtonGroup>
-              <span className="button-label">Button Target: </span>
+              <span className="button-label">Target URL: </span>
               <DropdownButton
                 bsStyle="default"
                 title={buttonsArray[index].target}
@@ -387,7 +387,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                     onClick={e =>
                       this.handleButtonTarget(e, thisSiteView, index, site.url)
                     }>
-                    {site.name}
+                    {site.url}
                   </MenuItem>
                 ))}
               </DropdownButton>
@@ -713,7 +713,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               />
               <StyledPanelHeading>
                 <StyledButtonGroup>
-                  <span className="button-label">Button Target</span>
+                  <span className="button-label">Target URL</span>
                   <DropdownButton
                     bsStyle="default"
                     title={view.search.presearch.button.target}
@@ -729,7 +729,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                         onClick={e =>
                           this.handlePresearchButtonTarget(e, view, view.url)
                         }>
-                        {view.name}
+                        {view.url}
                       </MenuItem>
                     ))}
                   </DropdownButton>
