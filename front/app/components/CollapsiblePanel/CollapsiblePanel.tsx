@@ -10,6 +10,7 @@ interface CollapsiblePanelProps {
   children: React.ReactNode;
   collapsed?: boolean;
   dropdown?: boolean;
+  theme?: any;
 }
 
 interface CollapsiblePanelState {
@@ -22,7 +23,7 @@ const StyleWrapper = styled.div`
     cursor: pointer;
     ${(props: CollapsiblePanelProps) =>
       props.dropdown
-        ? 'background: #f5f5f5; padding: 10px 15px !important; color: #333 !important'
+        ? `background: ${props.theme.button}; padding: 10px 15px !important; color: #333;`
         : ''}
   }
 `;

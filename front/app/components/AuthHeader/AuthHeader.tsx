@@ -36,7 +36,6 @@ const StyledWrapper = styled.div`
   a#logo {
     background: url(/clinwiki-501.png) center left no-repeat;
     background-size: 100px 30px;
-    margin-left: 30px;
     padding-left: 30px;
     color: ${props => props.theme.authHeader.logoFont};
     min-width: 110px;
