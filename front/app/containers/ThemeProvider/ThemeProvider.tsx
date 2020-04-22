@@ -67,7 +67,7 @@ export const withTheme = Component => {
         backgroundColor: '#4D5863;',
         primaryAltColor: '#4889BF',
         sideBarColor: '#333',
-        authHeaderColor: '#6BA5D6',
+        authHeaderColor: '#5786AD',
       };
 
       //if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object.
@@ -95,7 +95,7 @@ export const withTheme = Component => {
         backgroundColor: thisTheme.backgroundColor || '#4D5863',
         primaryAltColor: thisTheme.primaryAltColor || '#4889BF',
         sideBarColor: thisTheme.sideBarColor || '#333',
-        authHeaderColor: thisTheme.authHeaderColor || '#6BA5D6',
+        authHeaderColor: thisTheme.authHeaderColor || '#5786AD',
         lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
         //darkBlue for header
