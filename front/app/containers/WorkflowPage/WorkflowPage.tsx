@@ -23,6 +23,7 @@ import {
 } from 'types/WorkflowPageQuery';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import SiteProvider from 'containers/SiteProvider';
+import withTheme from 'containers/ThemeProvider';
 import { extractWikiSections, WikiSection } from 'utils/helpers';
 import {
   drop,
@@ -82,6 +83,7 @@ interface WorkflowPageProps {
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
   workflowsView: WorkflowsViewFragment;
+  theme?: any
 }
 
 interface WorkflowPageState {
@@ -160,6 +162,7 @@ class WorkflowPage extends React.Component<
           ref={ref => {
             this.reviewFormRef = ref;
           }}
+          theme={this.props.theme}
           nctId={this.props.match.params.nctId}
           hideSaveButton
           hideMeta={hideMeta}
@@ -314,4 +317,4 @@ class WorkflowPage extends React.Component<
   }
 }
 
-export default WorkflowPage;
+export default withTheme(WorkflowPage);

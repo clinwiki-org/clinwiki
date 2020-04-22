@@ -246,7 +246,6 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   };
 
   render() {
-    console.log('theme', this.props.theme);
     return (
       <div>
         {this.renderMeta()}
