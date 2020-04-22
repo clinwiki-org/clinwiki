@@ -650,20 +650,23 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   updateStateFromHash(searchParams) {
     const params: SearchParams = this.searchParamsFromQuery(searchParams);
-    let searchTerm = new URLSearchParams(this.props.location?.search || "")
-    
+    let searchTerm = new URLSearchParams(this.props.location?.search || '');
+
     if (searchTerm.has('q')) {
-      let q = { key: 'AND', children: [{ children: [], key: searchTerm.getAll('q').toString() }] };
+      let q = {
+        key: 'AND',
+        children: [{ children: [], key: searchTerm.getAll('q').toString() }],
+      };
       this.setState(
         {
           params: {
             ...params,
-            q: q
+            q: q,
           },
         },
         () => this.updateSearchParams(this.state.params)
       );
-    } 
+    }
     this.setState({
       params: {
         ...params,
