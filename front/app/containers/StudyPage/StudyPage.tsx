@@ -148,7 +148,7 @@ const MainContainer = styled(Col)`
   padding-bottom: 20px;
 
   .panel-heading {
-    background: #8bb7a4;
+    background: ${props => props.theme.studyPage.panelHeading};
     color: #fff;
     padding: 15px;
   }
@@ -461,7 +461,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                         </BackButtonWrapper>
                       </Row>
                       <Row>
-                        <MainContainer md={12}>
+                        <ThemedMainContainer md={12}>
                           <div className="container">
                             <div id="navbuttonsonstudypage">
                               {this.renderNavButton(
@@ -552,7 +552,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               )}
                             </div>
                           </div>
-                        </MainContainer>
+                        </ThemedMainContainer>
                       </Row>
                       {this.state.triggerPrefetch && (
                         <PrefetchQueryComponent
