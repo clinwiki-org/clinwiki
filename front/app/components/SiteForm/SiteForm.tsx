@@ -109,7 +109,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-      // console.log('handleadd', mutation, view, currentValue)
+      console.log('handleadd', mutation, view, currentValue)
     );
   };
 
