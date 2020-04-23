@@ -277,7 +277,7 @@
     "ip": "1.1.5",
     "jest-cli": "20.0.4",
     "lint-staged": "3.5.1",
-    "minimist": "1.2.2",
+    "minimist": "1.2.3",
     "moment": "^2.24.0",
     "node-plop": "0.7.0",
     "null-loader": "0.1.1",

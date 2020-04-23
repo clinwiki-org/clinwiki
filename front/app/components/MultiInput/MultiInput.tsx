@@ -16,6 +16,7 @@ import {
   clone,
   findIndex,
 } from 'ramda';
+import withTheme from '../../containers/ThemeProvider';
 
 interface MultiInputProps {
   name: string;
@@ -74,6 +75,11 @@ const AddContainer = styled.div`
     color: #333 !important;
   }
 `;
+
+const ThemedCrumbContainer = withTheme(CrumbContainer);
+const ThemedCrumbsContainer = withTheme(CrumbsContainer);
+const ThemedDropzone = withTheme(Dropzone);
+const ThemedAddContainer = withTheme(AddContainer);
 
 class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
   state: MultiInputState = {
@@ -163,18 +169,18 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
     );
     return (
       <div>
-        <CrumbsContainer>
+        <ThemedCrumbsContainer>
           {this.props.value.map((value, i) => (
             <React.Fragment key={value}>
               {(this.state.dragging || i > 0) && (
-                <Dropzone
+                <ThemedDropzone
                   id={value}
                   active={this.state.dropping === value}
                   onDragOver={this.handleDragOver}
                   onDrop={this.handleDrop}
                 />
               )}
-              <CrumbContainer
+              <ThemedCrumbContainer
                 id={value}
                 key={value}
                 draggable={this.props.draggable}
@@ -185,11 +191,11 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
                   labels={[this.getLabel(value)]}
                   onClick={this.handleDelete}
                 />
-              </CrumbContainer>
+              </ThemedCrumbContainer>
             </React.Fragment>
           ))}
-        </CrumbsContainer>
-        <AddContainer>
+        </ThemedCrumbsContainer>
+        <ThemedAddContainer>
           <Typeahead
             id={name}
             ref={this.typeahead}
@@ -201,7 +207,7 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
             onInputChange={this.handleInputChange}
             onChange={this.handleChange}
           />
-        </AddContainer>
+        </ThemedAddContainer>
       </div>
     );
   }

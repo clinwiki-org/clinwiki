@@ -261,7 +261,7 @@ class SearchService
 
   def bucket_agg_sort(sort)
     order = sort[:desc] ? "desc" : "asc"
-    field = sort[:id] == "count" ? :_count : :_key
+    field = sort[:sortKind] == "count" ? :_count : :_key
     { field => { order: order } }
   end
 

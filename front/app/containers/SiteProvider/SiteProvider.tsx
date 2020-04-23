@@ -64,6 +64,10 @@ const SITE_VIEW_FRAGMENT = gql`
       autoSuggest {
         aggs {
           fields {
+            order{
+              sortKind
+              desc
+            }
             name
             display
             preselected {
@@ -84,6 +88,10 @@ const SITE_VIEW_FRAGMENT = gql`
         }
         crowdAggs {
           fields {
+            order{
+              sortKind
+              desc
+            }
             name
             display
             preselected {
@@ -116,6 +124,10 @@ const SITE_VIEW_FRAGMENT = gql`
       presearch {
         aggs {
           fields {
+            order{
+              sortKind
+              desc
+            }
             name
             display
             preselected {
@@ -136,6 +148,10 @@ const SITE_VIEW_FRAGMENT = gql`
         }
         crowdAggs {
           fields {
+            order{
+              sortKind
+              desc
+            }
             name
             display
             preselected {
@@ -174,6 +190,10 @@ const SITE_VIEW_FRAGMENT = gql`
 
       aggs {
         fields {
+          order{
+            sortKind
+            desc
+          }
           name
           display
           preselected {
@@ -194,6 +214,10 @@ const SITE_VIEW_FRAGMENT = gql`
       }
       crowdAggs {
         fields {
+          order{
+            sortKind
+            desc
+          }
           name
           display
           preselected {
@@ -227,6 +251,7 @@ const SITE_FRAGMENT = gql`
     name
     skipLanding
     subdomain
+    themes
     owners {
       email
     }

@@ -2,18 +2,28 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { StyledContainer, StyledLabel } from './Styled';
 import { CreateSiteInput } from 'types/globalTypes';
-import { Checkbox, Row, Col, Button, Table } from 'react-bootstrap';
+import {
+  Checkbox,
+  Row,
+  Col,
+  Button,
+  Table,
+  FormControl,
+} from 'react-bootstrap';
 import StyledFormControl from 'containers/LoginPage/StyledFormControl';
 import { set, lensPath, over, reject, equals } from 'ramda';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface MainFormProps {
   form: CreateSiteInput;
   onFormChange: (form: CreateSiteInput) => void;
   handleForm: any;
+  handleThemeError: (boolean) => void;
 }
 
 interface MainFormState {
   addEditorEmail: string;
+  themeError: string;
 }
 
 export const AddEditorContainer = styled.div`
@@ -24,14 +34,37 @@ export const AddEditorContainer = styled.div`
   }
 `;
 
+const AddButton = styled(ThemedButton)`
+  margin: 15px 0 15px 10px;
+  padding-top: 10px;
+`;
+
 export const EditorActions = styled.td`
   display: flex;
   justify-content: flex-end;
 `;
 
+const StyledFormInput = styled(FormControl)`
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 15px 0 15px 0;
+  min-height: 10em;
+  box-shadow: none !important;
+  color: white;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+  }
+`;
+
 class MainForm extends React.Component<MainFormProps, MainFormState> {
   state: MainFormState = {
     addEditorEmail: '',
+    themeError: '',
   };
 
   handleAddEditor = () => {
@@ -64,6 +97,24 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
+    if (name == 'themes') {
+      try {
+        let parseResponse = JSON.parse(value);
+        if (parseResponse && parseResponse.error)
+          throw new Error(parseResponse.error);
+        this.props.onFormChange({
+          ...this.props.form,
+          [name]: JSON.stringify(value),
+        });
+        this.props.handleThemeError(false);
+        this.setState({ themeError: '' });
+      } catch (e) {
+        this.setState({
+          themeError: 'There is an error in your theme object.',
+        });
+        this.props.handleThemeError(true);
+      }
+    }
     this.props.onFormChange({ ...this.props.form, [name]: value });
   };
 
@@ -129,9 +180,10 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
                       <tr key={email}>
                         <td>{email}</td>
                         <EditorActions>
-                          <Button onClick={this.handleDeleteEditor(email)}>
+                          <ThemedButton
+                            onClick={this.handleDeleteEditor(email)}>
                             Delete
-                          </Button>
+                          </ThemedButton>
                         </EditorActions>
                       </tr>
                     ))}
@@ -146,9 +198,18 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
                   value={this.state.addEditorEmail}
                   onChange={this.handleEditorEmailChange}
                 />
-                <Button onClick={this.handleAddEditor}>Add</Button>
+                <AddButton onClick={this.handleAddEditor}>Add</AddButton>
               </AddEditorContainer>
             </div>
+            <h3>Theme</h3>
+            <StyledFormInput
+              componentClass="textarea"
+              name="themes"
+              placeholder={this.props.form.themes}
+              value={this.props.form.themes}
+              onChange={this.handleInputChange}
+            />
+            <div>{this.state.themeError}</div>
           </Col>
         </Row>
       </StyledContainer>

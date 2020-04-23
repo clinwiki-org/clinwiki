@@ -33,7 +33,7 @@ module Types
           body_changed ||= !in_front_matter
         end
         {
-          status: status,
+          status: status.gsub(/-/, ""),
           content: tag.text,
           front_matter: in_front_matter,
           body: !in_front_matter,

@@ -11,7 +11,8 @@ import CreateSiteViewMutation, {
 import { Table, FormControl, Checkbox } from 'react-bootstrap';
 import { History, Location } from 'history';
 import { CreateSiteViewInput, SiteViewMutationInput } from 'types/globalTypes';
-import StyledButton from 'containers/LoginPage/StyledButton';
+// import StyledButton from 'containers/LoginPage/StyledButton';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface SiteViewsFormProps {
   site: any;
@@ -160,12 +161,12 @@ class SiteViewsForm extends React.Component<
                         <Checkbox />
                       </td>
                       <td>
-                        <StyledButton
+                        <ThemedButton
                           onClick={() => {
                             this.handleSave(createSiteView);
                           }}>
                           + Add Site View
-                        </StyledButton>
+                        </ThemedButton>
                       </td>
                     </tr>
                   </tbody>

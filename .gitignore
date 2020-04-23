@@ -31,3 +31,4 @@ public/assets
 node_modules
 entrypoint.lock
 .docker-sync
+tmp

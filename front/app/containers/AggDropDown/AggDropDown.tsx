@@ -48,6 +48,8 @@ import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQue
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
+import withTheme from '../ThemeProvider';
+
 const PAGE_SIZE = 25;
 
 const Container = styledComponents.div`
@@ -90,22 +92,30 @@ const PanelWrapper = styledComponents.div`
 const PresearchCard = styledComponents.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid green;
   border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${props => props.theme.buttonSecondary};
+  
   margin: 10px;
   flex: 1;
-  height: 310px;
-  width: 420px;
+  // height: 310px;
+  min-width: 320px;
+  max-width: 320px;
   background: white;
 `;
 
+const ThemedPresearchCard = withTheme(PresearchCard);
+
 const PresearchHeader = styledComponents.div`
-  background-color: #55b88d;
+  background-color: ${props => props.theme.presearch.presearchHeaders};
   padding: 5px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   height: 50px;
 `;
+
+const ThemedPresearchHeader = withTheme(PresearchHeader);
 
 const PresearchTitle = styledComponents.div`
   color: white;
@@ -144,7 +154,7 @@ interface AggDropDownState {
   buckets: AggBucket[];
   prevParams: SearchParams | null;
   desc: boolean;
-  sortKind: SortKind;
+  sortKind: any;
   checkboxValue: boolean;
   showLabel: boolean;
 }
@@ -408,6 +418,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   findFields = () => {
     const { agg, site, currentSiteView } = this.props;
+    if (this.props.presearch== true){
+      return find(propEq('name', agg), [
+        ...(currentSiteView?.search?.presearch?.aggs?.fields || []),
+        ...(currentSiteView?.search?.presearch?.crowdAggs?.fields || []),
+      ]) as SiteViewFragment_search_aggs_fields | null;
+    }
     return find(propEq('name', agg), [
       ...(currentSiteView?.search?.aggs?.fields || []),
       ...(currentSiteView?.search?.crowdAggs?.fields || []),
@@ -431,8 +447,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = this.findFields();
-    if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
-            return (
+    if (
+      field?.display === FieldDisplay.DATE_RANGE ||
+      field?.display === FieldDisplay.NUMBER_RANGE
+    ) {
+      return (
         <Panel.Collapse id="range-selector">
           <Panel.Body>
             <Container>
@@ -442,7 +461,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 loading={loading}
                 buckets={buckets}
                 handleLoadMore={this.handleLoadMore}
-                aggType={ field?.display === FieldDisplay.DATE_RANGE ? FieldDisplay.DATE_RANGE :  FieldDisplay.NUMBER_RANGE}
+                aggType={
+                  field?.display === FieldDisplay.DATE_RANGE
+                    ? FieldDisplay.DATE_RANGE
+                    : FieldDisplay.NUMBER_RANGE
+                }
               />
             </Container>
             {!loading && (
@@ -533,29 +556,35 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       checkboxValue,
       showLabel,
       isOpen,
-      loading
-
+      loading,
     } = this.state;
     const field = this.findFields();
-    if (field?.display === FieldDisplay.DATE_RANGE || field?.display === FieldDisplay.NUMBER_RANGE) {
+    if (
+      field?.display === FieldDisplay.DATE_RANGE ||
+      field?.display === FieldDisplay.NUMBER_RANGE
+    ) {
       return (
-          <PresearchPanel id="range-selector">
+        <PresearchPanel id="range-selector">
+          <Container>
+            <RangeSelector
+              isOpen={isOpen}
+              hasMore={hasMore}
+              loading={loading}
+              buckets={buckets}
+              handleLoadMore={this.handleLoadMore}
+              aggType={
+                field?.display === FieldDisplay.DATE_RANGE
+                  ? FieldDisplay.DATE_RANGE
+                  : FieldDisplay.NUMBER_RANGE
+              }
+            />
+          </Container>
+          {!loading && (
             <Container>
-              <RangeSelector
-                isOpen={isOpen}
-                hasMore={hasMore}
-                loading={loading}
-                buckets={buckets}
-                handleLoadMore={this.handleLoadMore}
-                aggType={ field?.display === FieldDisplay.DATE_RANGE ? FieldDisplay.DATE_RANGE :  FieldDisplay.NUMBER_RANGE}
-              />
+              <AllowMissingCheckbox buckets={buckets} />
             </Container>
-            {!loading && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
-          </PresearchPanel>
+          )}
+        </PresearchPanel>
       );
     }
     return (
@@ -592,6 +621,23 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     );
   };
 
+  componentDidMount() {
+    let fields = this.props.currentSiteView.search.aggs.fields;
+    const field = this.findFields();
+    console.log("Presearch", this.props.presearch ,field)
+      if (field?.order && field.order.sortKind == 'key') {
+        this.setState({
+          sortKind: 0,
+          desc: field.order.desc,
+        });
+      } else if (field?.order && field.order.sortKind == 'count') {
+        this.setState({
+          sortKind: 1,
+          desc: field.order.desc,
+        });
+      }
+    }
+
   render() {
     const { agg, presearch } = this.props;
     const { isOpen } = this.state;
@@ -599,12 +645,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
-        <PresearchCard>
-          <PresearchHeader>
+        <ThemedPresearchCard>
+          <ThemedPresearchHeader>
             <PresearchTitle>{capitalize(title)}</PresearchTitle>
-          </PresearchHeader>
+          </ThemedPresearchHeader>
           <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
-        </PresearchCard>
+        </ThemedPresearchCard>
       );
     } else {
       return (

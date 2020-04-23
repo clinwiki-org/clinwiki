@@ -22,24 +22,26 @@ import * as FontAwesome from 'react-fontawesome';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { gql } from 'apollo-boost';
 import { History } from 'history';
-
+import ThemedButton from 'components/StyledComponents/index';
 import {
   ReviewFormMutation,
   ReviewFormMutationVariables,
 } from 'types/ReviewFormMutation';
 import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
 import { ReviewFormStudyFragment } from 'types/ReviewFormStudyFragment';
-
 import { trimPath } from 'utils/helpers';
 import { dataIdFromObject } from 'configureApollo';
 import { ReviewFragment } from 'types/ReviewFragment';
 import { starColor } from 'utils/constants';
+import withTheme from 'containers/ThemeProvider';
+
 interface ReviewFormProps {
   nctId: string;
   hideSaveButton?: boolean;
   hideMeta?: boolean;
   review?: ReviewsPageFragment;
   afterSave?: (review: ReviewFragment) => void;
+  theme?: any;
 }
 
 interface ReviewFormState {
@@ -205,7 +207,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
             <Col md={6}>
               <ReactStars
                 count={5}
-                color2={starColor}
+                color2={this.props.theme.studyPage.reviewStarColor}
                 half={false}
                 value={this.state.meta[key]}
                 onChange={value => this.handleRatingChange(key, value)}
@@ -213,11 +215,11 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
             </Col>
             <Col md={2} style={{ textAlign: 'right' }}>
               {key !== 'Overall Rating' && (
-                <Button
+                <ThemedButton
                   bsSize="xsmall"
                   onClick={() => this.handleRatingDelete(key)}>
                   <FontAwesome name="minus" />
-                </Button>
+                </ThemedButton>
               )}
             </Col>
           </MetaRow>
@@ -233,7 +235,9 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                 onChange={this.handleAddRatingChange}
               />
 
-              <Button onClick={this.handleAddRating}>Add Rating</Button>
+              <ThemedButton onClick={this.handleAddRating}>
+                Add Rating
+              </ThemedButton>
             </AddRatingWrapper>
           </Col>
         </Row>
@@ -295,11 +299,11 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                 this.submitReview = this.handleSubmitReview(upsertReview);
                 return (
                   !this.props.hideSaveButton && (
-                    <Button
+                    <ThemedButton
                       style={{ marginTop: 10 }}
                       onClick={this.handleSubmitReview(upsertReview)}>
                       Submit
-                    </Button>
+                    </ThemedButton>
                   )
                 );
               }}

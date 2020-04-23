@@ -7,6 +7,7 @@ import { History } from 'history';
 import {
   FacilitiesPageQuery,
   FacilitiesPageQueryVariables,
+  FacilitiesPageQuery_study_facilities_contacts,
 } from 'types/FacilitiesPageQuery';
 import { FacilityFragment } from 'types/FacilityFragment';
 import StudySummary from 'components/StudySummary';
@@ -211,7 +212,7 @@ class FacilitiesPage extends React.PureComponent<
     location: string | null;
     index: number;
     status: string;
-    contacts: Array<object>;
+    contacts: FacilitiesPageQuery_study_facilities_contacts[];
     latitude: number | null;
     longitude: number | null;
     geoStatus: string | null;
@@ -281,7 +282,7 @@ class FacilitiesPage extends React.PureComponent<
             location: string;
             index: number;
             status: string;
-            contacts: Array<object>;
+            contacts: FacilitiesPageQuery_study_facilities_contacts[]
             latitude: number | null;
             longitude: number | null;
             geoStatus: string;
@@ -315,7 +316,6 @@ class FacilitiesPage extends React.PureComponent<
                           lat={item.location?.latitude}
                           lng={item.location?.longitude}
                           geoStatus={item.location?.status}
-                          // location={item.location}
                           contacts={item.contacts}
                           text={index + 1}
                           name={item.name}

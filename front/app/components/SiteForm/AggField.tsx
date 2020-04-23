@@ -14,6 +14,7 @@ import { camelCase, capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
 import { AggFilterSiteConfigUpdater } from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
+import withTheme from 'containers/ThemeProvider';
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
@@ -101,6 +102,10 @@ const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
 `;
 
+const ThemedContainer = withTheme(Container);
+const ThemedStyledLabel = withTheme(StyledLabel);
+const ThemedCrumbsContainer = withTheme(CrumbsContainer);
+
 class AggField extends React.Component<AggFieldProps, AggFieldState> {
   state: AggFieldState = {
     isValuesOpen: false,
@@ -116,7 +121,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
-
+  handleDefaultSortMutation = e => {
+    this.props.onAddMutation(e);
+  };
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
@@ -177,9 +184,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             .map(capitalize)
             .join(' ')}
         </h4>
-        <Container>
-          <StyledLabel>Preselected values</StyledLabel>
-          <CrumbsContainer>
+        <ThemedContainer>
+          <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
+          <ThemedCrumbsContainer>
             {Array.from(selected).map(value => (
               <MultiCrumb
                 key={value}
@@ -187,7 +194,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 onClick={value => preselectedUpdater.removeFilter(value)}
               />
             ))}
-          </CrumbsContainer>
+          </ThemedCrumbsContainer>
           <FiltersContainer>
             <FilterContainer>
               <AggFilterInputUpdateContext.Provider
@@ -209,8 +216,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
           </FiltersContainer>
-          <StyledLabel>Visible options</StyledLabel>
-          <CrumbsContainer>
+          <ThemedStyledLabel>Visible options</ThemedStyledLabel>
+          <ThemedCrumbsContainer>
             {Array.from(visibleOptions).map(value => (
               <MultiCrumb
                 key={value}
@@ -218,7 +225,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 onClick={value => visibleOptionsUpdater.removeFilter(value)}
               />
             ))}
-          </CrumbsContainer>
+          </ThemedCrumbsContainer>
           <FiltersContainer>
             <FilterContainer>
               <AggFilterInputUpdateContext.Provider
@@ -248,14 +255,33 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             </FilterContainer>
           </FiltersContainer>
           <div>
+            <ThemedStyledLabel>Default Sort Type</ThemedStyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath(configType)}.order.sortKind`}
+              componentClass="select"
+              onChange={e => this.handleDefaultSortMutation(e)}
+              defaultValue={this.props.field.order?.sortKind}>
+              <option value="key">Alpha</option>
+              <option value="count">Numeric</option>
+            </StyledFormControl>
+            <StyledLabel>Default Sort Order</StyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath(configType)}.order.desc`}
+              componentClass="select"
+              onChange={(e)=>this.handleDefaultSortMutation(e)}
+              defaultValue={this.props.field.order?.desc}>
+              <option value="true">{this.props.field.order?.sortKind == 'count'? "1-9":"A-Z" }</option>
+              <option value="false">{this.props.field.order?.sortKind == 'count'? "9-1":"Z-A" }</option>
+            </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
+            <ThemedStyledLabel>Order</ThemedStyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.rank`}
               placeholder="Order"
               value={this.props.field.rank}
               onChange={this.props.onAddMutation}
             />
-            <StyledLabel>Display</StyledLabel>
+            <ThemedStyledLabel>Display</ThemedStyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.display`}
               componentClass="select"
@@ -268,7 +294,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="NUMBER_RANGE">Number Range</option>
             </StyledFormControl>
           </div>
-        </Container>
+        </ThemedContainer>
       </>
     );
   }

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Row, Col, Grid } from 'react-bootstrap';
 import { InterventionFragment } from 'types/InterventionFragment';
 import { capitalize } from 'utils/helpers';
+import withTheme from '../../containers/ThemeProvider';
 
 const StyleWrapper = styled.div`
   padding: 10px;
@@ -13,6 +14,8 @@ const StyleWrapper = styled.div`
   margin-top: 16px;
   margin-bottom: 16px;
 `;
+
+const ThemedStyleWrapper = withTheme(StyleWrapper);
 
 interface InterventionProps {
   intervention: InterventionFragment;
@@ -66,7 +69,7 @@ class Intervention extends React.PureComponent<InterventionProps> {
       wikipediaArticle,
     } = this.props.intervention;
     return (
-      <StyleWrapper>
+      <ThemedStyleWrapper>
         <Row>
           <Col md={12}>
             <h1>{`${capitalize(name || 'No name')} (${kind})`}</h1>
@@ -74,7 +77,7 @@ class Intervention extends React.PureComponent<InterventionProps> {
             {this.renderInterventionText(name, wikipediaArticle)}
           </Col>
         </Row>
-      </StyleWrapper>
+      </ThemedStyleWrapper>
     );
   }
 }

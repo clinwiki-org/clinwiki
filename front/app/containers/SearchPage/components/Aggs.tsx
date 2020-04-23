@@ -34,6 +34,7 @@ import styled from 'styled-components';
 import AggFilterInputUpdater from './AggFilterInputUpdater';
 import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
+import withTheme from 'containers/ThemeProvider';
 
 const getVisibleOptionsByName: (SiteFragment) => any = compose(
   reduce(
@@ -85,12 +86,8 @@ interface AggsProps {
 
 const PresearchContainer = styled.div`
   display: flex;
-  max-height: 350px;
-  @media (max-width: 1250px) {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    max-height: 1500px;
-  }
+  flex-wrap: wrap;
+  justify-content: flex-start;
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
@@ -101,9 +98,15 @@ const PresearchContainer = styled.div`
   }
 `;
 
+const AggSideBarTitle = styled.h4`
+  color: ${props => props.theme.aggSideBar.sideBarTitleFont};
+  position: relative;
+  left: 20px;
+`;
+const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 
 class Aggs extends React.PureComponent<AggsProps> {
-  getAggs = (siteView:SiteFragment_siteView): string[] => {
+  getAggs = (siteView: SiteFragment_siteView): string[] => {
     return displayFields(
       siteView.search.aggs.selected.kind,
       siteView.search.aggs.selected.values,
@@ -119,10 +122,6 @@ class Aggs extends React.PureComponent<AggsProps> {
     ).map(prop('name'));
     return filter(x => crowdAggs.includes(x), displayed);
   };
-
-  handleRefresh = () => {
-
-  }
 
   render() {
     const {
@@ -254,14 +253,7 @@ class Aggs extends React.PureComponent<AggsProps> {
 
       crowdAggDropdowns = (
         <div>
-          <h4
-            style={{
-              color: 'white',
-              position: 'relative',
-              left: '20px',
-            }}>
-            Crowd Facets
-          </h4>
+          <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
           {sortByNameCi(this.getCrowdAggs(Object.keys(crowdAggs))).map(k => (
             <AggContext.Provider
               key={k}
