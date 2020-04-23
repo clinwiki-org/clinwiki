@@ -274,6 +274,7 @@ interface SearchPageProps {
   site: SiteFragment;
   currentSiteView: SiteFragment_siteView;
   mutate: any;
+  email?:string;
 }
 
 interface SearchPageState {
@@ -603,6 +604,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
+    console.log("EMAIL", this.props.email, this.props)
+
+  
     if (searchTerm.has('q')) {
       let q = {
         key: 'AND',
@@ -685,6 +689,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         .getAll('sv')
         .toString() || 'default';
     if (data?.provisionSearchHash?.searchHash?.short) {
+      if(this.props.match.path =="/profile"){
+        console.log("pushing")
+        this.props.history.push(
+          `/profile?hash=${
+            data!.provisionSearchHash!.searchHash!.short
+          }&sv=${siteViewUrl}`
+        );
+      }
+console.log("pushing to search")
       this.props.history.push(
         `/search?hash=${
           data!.provisionSearchHash!.searchHash!.short

@@ -10,8 +10,10 @@ import {
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import StyledButton from './StyledButton';
+import SearchPage from 'containers/SearchPage';
 import { Link } from 'react-router-dom';
-import { History } from 'history';
+import { match } from 'react-router-dom';
+import { History, Location } from 'history';
 import StyledError from './StyledError';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
@@ -21,6 +23,8 @@ import StyledWrapper from './StyledWrapper';
 interface EditProfilePageProps {
   user: UserFragment | null;
   history: History;
+  location: Location;
+  match: match;
 }
 interface EditProfilePageState {
   form: {
@@ -160,10 +164,20 @@ class EditProfilePage extends React.Component<
             {this.renderErrors()}
           </StyledContainer>
         </Col>
+        <h2>Search Page</h2>
+        <SearchPage
+          history={this.props.history}
+          location={this.props.location}
+          match={this.props.match}
+          email={"bespinosa1931@gmail.com"}
+          //userId={this.props.match.params.id}
+          //profileParams={this.getUserParams(this.props.match.params.id)}
+        />
       </StyledWrapper>
     );
   }
 }
+
 
 const CurrentUserWrapper = props => (
   <CurrentUser>
