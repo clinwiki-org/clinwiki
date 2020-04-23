@@ -126,9 +126,8 @@ def nested_result_aggs(field, aggs)
 end
 
 class SearchService
-  #average_rating overall_status facility_states start_date
   ENABLED_AGGS = %i[
-
+    average_rating overall_status facility_states
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
@@ -155,6 +154,7 @@ class SearchService
     search_result = Study.search("*", options) do |body|
       body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
       body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
+      body[:query][:bool][:must] += nested_range_filters unless nested_range_filters.empty?
     end
     {
       recordsTotal: search_result.total_entries,
@@ -194,6 +194,7 @@ class SearchService
       end
       body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
       body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
+      body[:query][:bool][:must] += nested_range_filters unless nested_range_filters.empty?
 
       # key here is front_matter_keys and i have NO IDEA where it's coming from
       body[:aggs][key][:aggs][key][:aggs] =
@@ -342,6 +343,13 @@ class SearchService
     nested.map { |filter| nested_filter(key_for(filter: filter), filter) }
   end
 
+
+  def nested_range_filters
+    #Nested range has to include gte and lte and a dot
+    nested = params.fetch(:agg_filters, []).select { |filter| filter[:field].to_s.include?(".") && !filter.slice(:gte, :lte).empty? }
+    nested.map { |filter| nested_range_filter(key_for(filter: filter), filter) }
+  end
+
   def nested_filter(key, filter)
     return nil if filter.dig(:values).nil?
     return nil unless key.to_s.include? "."
@@ -353,6 +361,25 @@ class SearchService
         query: {
           bool: {
             should: filter[:values].map { |value| { match: { key => value } } },
+          },
+        },
+      },
+    }
+  end
+
+  def nested_range_filter(key, filter)
+    range_hash = filter.slice(:gte, :lte)
+    return nil unless key.to_s.include?(".") && !range_hash.empty?
+    top_key, nested_key = key.to_s.split(".")
+    #Not sure what happesn if nil is in lte
+    {
+      nested: {
+        path: top_key,
+        query: {
+          bool: {
+            should:{
+              range: { key=> {gte: cast(range_hash[:gte]),lte: cast(range_hash[:lte])}},
+            },
           },
         },
       },

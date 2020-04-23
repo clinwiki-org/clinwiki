@@ -1,5 +1,5 @@
 STAR_FIELDS = [:average_rating].freeze
-RANGE_FIELDS = [:start_date].freeze
+RANGE_FIELDS = [:start_date,:"wiki_page_edits.created_at" ].freeze
 
 class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
