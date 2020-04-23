@@ -18,10 +18,11 @@ import {
 } from 'types/TagsPageDeleteWikiTagMutation';
 import WikiPage from 'containers/WikiPage';
 import { contains, reject, equals, lensPath } from 'ramda';
-import Edits from 'components/Edits';
+import Edits, { WikiPageEditFragment } from 'components/Edits';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface TagsPageProps {
   nctId: string;
@@ -86,7 +87,7 @@ const DELETE_TAG_MUTATION = gql`
   }
 
   ${FRAGMENT}
-  ${Edits.fragment}
+  ${WikiPageEditFragment}
 `;
 
 const ADD_TAG_MUTATION = gql`
@@ -103,7 +104,7 @@ const ADD_TAG_MUTATION = gql`
   }
 
   ${FRAGMENT}
-  ${Edits.fragment}
+  ${WikiPageEditFragment}
 `;
 
 class AddTagMutationComponent extends Mutation<
@@ -264,11 +265,11 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
                       />
                       <AddTagMutationComponent mutation={ADD_TAG_MUTATION}>
                         {addTag => (
-                          <Button
+                          <ThemedButton
                             onClick={this.handleAddTag(meta, addTag)}
                             style={{ marginLeft: 10 }}>
                             Add Tag
-                          </Button>
+                          </ThemedButton>
                         )}
                       </AddTagMutationComponent>
                     </AddWrapper>

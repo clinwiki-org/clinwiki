@@ -5,10 +5,8 @@ import {
   Col,
   Label,
   Button,
-  FormControl,
   Form,
   FormGroup,
-  ButtonGroup,
   ControlLabel,
   ListGroup,
   ListGroupItem,
@@ -20,9 +18,16 @@ import * as Autosuggest from 'react-autosuggest';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import MultiCrumb from 'components/MultiCrumb';
-import { MAX_WINDOW_SIZE, aggsOrdered } from '../../../utils/constants';
-import { PulseLoader, BeatLoader } from 'react-spinners';
+import AggCrumb from 'components/MultiCrumb/AggCrumb';
+import { BeatLoader } from 'react-spinners';
 import CurrentUser from 'containers/CurrentUser';
+import { AggCallback, SearchParams } from '../Types';
+import { isEmpty, props } from 'ramda';
+import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { displayFields } from 'utils/siteViewHelpers';
+import withTheme from 'containers/ThemeProvider';
+import ThemedButton from 'components/StyledComponents/index';
+import ThemeProvider from 'containers/ThemeProvider';
 
 const AUTOSUGGEST_QUERY = gql`
   query CrumbsSearchPageAggBucketsQuery(
@@ -68,20 +73,24 @@ const AUTOSUGGEST_QUERY = gql`
 `;
 
 const CrumbsBarStyleWrappper = styled.div`
+  border: solid white 1px;
+  background-color: #f2f2f2;
+  color: black;
+  margin-bottom: 1em;
+  margin-left: 15px;
+  margin-right: 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  .container {
+    border: 0px;
+    width: 100% !important;
+    margin-top: 5px;
+    color: #394149;
+  }
   .crumbs-bar {
-    padding: 10px 30px;
-    border: solid white 1px;
-    background-color: #f2f2f2;
-    color: black;
-    margin-bottom: 1em;
-    width: 100%;
-
-    .container {
-      background: #d9deea;
-      border: 0px;
-      margin-top: 5px;
-      color: #394149;
-    }
+    background: ${props => props.theme.crumbsBar.containerBackground};
+    color: ${props => props.theme.crumbsBar.containerFont};
 
     i {
       font-style: normal;
@@ -142,43 +151,37 @@ const CrumbsBarStyleWrappper = styled.div`
     padding-bottom: 10px;
   }
 `;
+
+const ThemedCrumbsBarStyleWrappper = withTheme(CrumbsBarStyleWrappper);
+
 const LoaderWrapper = styled.div`
   margin: 20px 20px;
 
   text-align: center;
 `;
-import { AggCallback, SearchParams } from '../Types';
-import { isEmpty } from 'ramda';
-import { SiteFragment } from 'types/SiteFragment';
-import { SiteViewFragment } from 'types/SiteViewFragment';
-import { displayFields } from 'utils/siteViewHelpers';
 
 interface CrumbsBarProps {
   searchParams: SearchParams;
-  onBulkUpdate: () => void;
+  onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   removeFilter: AggCallback;
   addFilter: AggCallback;
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
-  page: number;
-  pageSize: number;
   update: { page: (n: number) => void };
   onReset: () => void;
   onClear: () => void;
-  loading: boolean;
   data: SiteFragment;
-  showCards: Boolean;
   siteViewUrl?: string;
-  currentSiteView: any;
-  toggledShowCards?: any;
+  currentSiteView: SiteFragment_siteView;
   totalResults: number;
+  searchHash: string;
+  theme: any;
 }
+
 interface CrumbsBarState {
   searchTerm: string;
   suggestions: any;
   isSuggestionLoading: boolean;
-  cardsBtnColor: string;
-  tableBtnColor: string;
   showFilters: boolean;
 }
 
@@ -196,35 +199,19 @@ const Crumb = ({ category, value, onClick }) => {
   );
 };
 
-export default class CrumbsBar extends React.Component<
-  CrumbsBarProps,
-  CrumbsBarState
-> {
+class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   constructor(props) {
     super(props);
-
-    let cardsColor = '';
-    let tableColor = '';
-
-    if (window.localStorage.getItem('showCards') === 'true') {
-      cardsColor = '#55B88D';
-      tableColor = '#90a79d';
-    } else {
-      cardsColor = '#90a79d';
-      tableColor = '#55B88D';
-    }
 
     this.state = {
       searchTerm: '',
       suggestions: [],
       isSuggestionLoading: true,
-      cardsBtnColor: cardsColor,
-      tableBtnColor: tableColor,
       showFilters: true,
     };
   }
 
-  *mkCrumbs(searchParams: SearchParams, removeFilter) {
+  *mkCrumbs(searchParams: SearchParams, removeFilter, thisSiteView) {
     if (!isEmpty(searchParams.q)) {
       yield (
         <MultiCrumb
@@ -235,62 +222,67 @@ export default class CrumbsBar extends React.Component<
         />
       );
     }
+    let aggFilterCounter = 0;
     for (const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key];
       const cat = aggToField(agg.field);
       yield (
-        <MultiCrumb
-          category={cat}
-          values={agg.values}
-          onClick={val => removeFilter(agg.field, val)}
-          key={cat + agg.values.join()}
+        <AggCrumb
+          grouping="aggFilters"
+          agg={agg}
+          key={`aggFilters${aggFilterCounter++}`}
+          thisSiteView={thisSiteView}
         />
       );
     }
+    let crowdAggFilterCounter = 0;
     for (const key in searchParams.crowdAggFilters) {
       const agg = searchParams.crowdAggFilters[key];
       const cat = aggToField(agg.field);
       yield (
-        <MultiCrumb
+        <AggCrumb
+          grouping="crowdAggFilters"
           category={cat}
           values={agg.values}
-          onClick={val => removeFilter(agg.field, val, true)}
-          key={cat + agg.values.join('')}
+          agg={agg}
+          key={`crowdAggFilters${aggFilterCounter++}`}
+          thisSiteView={thisSiteView}
         />
       );
     }
+  }
+
+  *mkDefaultClearButtons(searchParams: SearchParams) {
     const totalLength =
       searchParams.q?.length +
       searchParams.crowdAggFilters?.length +
       searchParams.aggFilters?.length;
+    console.log(totalLength);
     if (totalLength > 0) {
       yield (
-        <span>
-          <Button
-            bsSize="small"
+        <span key="buttons">
+          <ThemedButton
             key="defaul"
             onClick={this.props.onReset}
-            style={{ margin: '5px 0px 5px 10px' }}>
+            style={{ margin: '5px 0px 5px 10px', border: '1px solid white' }}>
             Default
-          </Button>
-          <Button
-            bsSize="small"
+          </ThemedButton>
+          <ThemedButton
             key="reset"
             onClick={this.props.onClear}
-            style={{ margin: '5px 0px 5px 10px' }}>
+            style={{ margin: '5px 0px 5px 10px', border: '1px solid white' }}>
             Clear
-          </Button>
+          </ThemedButton>
         </span>
       );
     } else {
       yield (
-        <Button
-          bsSize="small"
+        <ThemedButton
           key="defaul"
           onClick={this.props.onReset}
-          style={{ margin: '5px 0px 5px 10px' }}>
+          style={{ margin: '5px 0px 5px 10px', border: '1px solid white' }}>
           Default
-        </Button>
+        </ThemedButton>
       );
     }
   }
@@ -438,9 +430,9 @@ export default class CrumbsBar extends React.Component<
               />
             </div>
           </FormGroup>
-          <Button type="submit">
+          <ThemedButton type="submit">
             <FontAwesome name="search" />
-          </Button>
+          </ThemedButton>
         </div>
       );
     } else if (showAutoSuggest == false) {
@@ -568,18 +560,6 @@ export default class CrumbsBar extends React.Component<
   toggleShowFilters = () => {
     this.setState({ showFilters: !this.state.showFilters });
   };
-  // loadPaginator = () => {
-  //   return (
-  //     <div className="right-align">
-  //       <div>{this.props.recordsTotal} results</div>
-  //       <div>
-  //         {this.props.recordsTotal > MAX_WINDOW_SIZE
-  //           ? `(showing first ${MAX_WINDOW_SIZE})`
-  //           : null}
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
@@ -587,12 +567,10 @@ export default class CrumbsBar extends React.Component<
     let thisSiteView =
       data.siteViews.find(siteview => siteview.url == siteViewUrl) ||
       data.siteView;
-
     let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
-
     return (
-      <CrumbsBarStyleWrappper>
+      <ThemedCrumbsBarStyleWrappper>
         <ApolloConsumer>
           {apolloClient => (
             <Grid className="crumbs-bar">
@@ -616,9 +594,15 @@ export default class CrumbsBar extends React.Component<
                     <CurrentUser>
                       {user =>
                         user && user.roles.includes('admin') ? (
-                          <Button onClick={this.props.onBulkUpdate}>
+                          <ThemedButton
+                            onClick={() =>
+                              this.props.onBulkUpdate(
+                                this.props.searchHash,
+                                this.props.currentSiteView.url || 'default'
+                              )
+                            }>
                             Bulk Update <FontAwesome name="truck" />
-                          </Button>
+                          </ThemedButton>
                         ) : null
                       }
                     </CurrentUser>
@@ -649,11 +633,15 @@ export default class CrumbsBar extends React.Component<
                       <ListGroupItem
                         style={{
                           minWidth: '100%',
-                          backgroundColor: 'rgba(85, 184, 141, 0.5)',
+                          background: this.props.theme.button,
+                          color: '#fff',
                         }}
                         onClick={this.toggleShowFilters}>
                         {' '}
                         Filters:{' '}
+                        {Array.from(
+                          this.mkDefaultClearButtons(this.props.searchParams)
+                        )}
                         {this.state.showFilters ? (
                           <b>
                             <FontAwesome
@@ -661,7 +649,7 @@ export default class CrumbsBar extends React.Component<
                               name="chevron-up"
                               style={{
                                 cursor: 'pointer',
-                                color: '#555',
+                                color: '#fff',
                                 margin: '0 0 0 3px',
                                 float: 'right',
                               }}
@@ -675,7 +663,7 @@ export default class CrumbsBar extends React.Component<
                               name="chevron-down"
                               style={{
                                 cursor: 'pointer',
-                                color: '#555',
+                                color: '#fff',
                                 margin: '0 0 0 3px',
                                 float: 'right',
                               }}
@@ -688,7 +676,8 @@ export default class CrumbsBar extends React.Component<
                         ? Array.from(
                             this.mkCrumbs(
                               this.props.searchParams,
-                              this.props.removeFilter
+                              this.props.removeFilter,
+                              thisSiteView
                             )
                           )
                         : null}{' '}
@@ -699,7 +688,9 @@ export default class CrumbsBar extends React.Component<
             </Grid>
           )}
         </ApolloConsumer>
-      </CrumbsBarStyleWrappper>
+      </ThemedCrumbsBarStyleWrappper>
     );
   }
 }
+
+export default withTheme(CrumbsBar);

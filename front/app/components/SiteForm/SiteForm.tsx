@@ -18,6 +18,7 @@ import MainForm from './MainForm';
 import SiteViewsRouter from './SiteViewsRouter';
 import { History, Location } from 'history';
 import StudyForm from './StudyForm';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface SiteFormProps {
   match: match<{}>;
@@ -33,7 +34,8 @@ interface SiteFormState {
   mutations: SiteViewMutationInput[];
   addEditorEmail: string;
   prevForm: CreateSiteInput | null;
-  inSiteViewEdit: boolean
+  inSiteViewEdit: boolean;
+  disableSubmit: boolean;
 }
 
 const Container = styled.div`
@@ -58,6 +60,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       skipLanding: false,
       editorEmails: [],
     },
+    disableSubmit: false,
     mutations: [],
     addEditorEmail: '',
     prevForm: null,
@@ -79,25 +82,26 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     props: SiteFormProps,
     state: SiteFormState
   ): SiteFormState | null => {
-    const { name, subdomain, skipLanding, editors } = props.site;
+    const { name, subdomain, skipLanding, editors, themes } = props.site;
     const editorEmails = editors.map(prop('email'));
     const form = {
       name,
       subdomain,
       skipLanding,
       editorEmails,
+      themes,
     };
     if (form && !equals(form, state.prevForm as any)) {
       return { ...state, form, prevForm: form };
     }
     return null;
   };
-  toggleSiteViewEdit =() =>{
-    this.setState({inSiteViewEdit: true})
-  }
-  toggleEditFalse =()=>{
-    this.setState({inSiteViewEdit: false})
-  }
+  toggleSiteViewEdit = () => {
+    this.setState({ inSiteViewEdit: true });
+  };
+  toggleEditFalse = () => {
+    this.setState({ inSiteViewEdit: false });
+  };
   handleSave = () => {
     this.props.onSave(this.state.form);
   };
@@ -115,6 +119,11 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
   handleFormChange = (form: CreateSiteInput) => {
     this.setState({ form });
+  };
+
+  handleThemeError = error => {
+    console.log('errr', error);
+    this.setState({ disableSubmit: error });
   };
 
   renderTabs = () => {
@@ -167,6 +176,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
             path={`${path}/main`}
             render={() => (
               <MainForm
+                handleThemeError={this.handleThemeError}
                 form={this.state.form}
                 onFormChange={this.handleFormChange}
                 handleForm={this.toggleEditFalse}
@@ -176,7 +186,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           <Route
             path={`${path}/siteviews`}
             render={props => (
-              //@ts-ignore
               <SiteViewsRouter
                 {...props}
                 siteViews={this.props.site.siteViews}
@@ -200,10 +209,15 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           />
           <Redirect to={`${path}/main`} />
         </Switch>
-        {this.state.inSiteViewEdit ? (null):
-        <StyledContainer>
-          <Button onClick={()=>this.handleSave()}>Save</Button>
-        </StyledContainer>}
+        {this.state.inSiteViewEdit ? null : (
+          <StyledContainer>
+            <ThemedButton
+              disabled={this.state.disableSubmit}
+              onClick={() => this.handleSave()}>
+              Save
+            </ThemedButton>
+          </StyledContainer>
+        )}
       </Container>
     );
   }

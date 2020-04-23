@@ -1,5 +1,9 @@
 import * as React from 'react';
-import { default as SchemaSelector, SchemaType, JsonSchema } from './SchemaSelector';
+import {
+  default as SchemaSelector,
+  SchemaType,
+  JsonSchema,
+} from './SchemaSelector';
 import Viewer from './MailMergeView';
 import Editor from './MailMergeEditor';
 
@@ -33,7 +37,8 @@ export default class MailMerge extends React.Component<Props, State> {
     this.state = { template: props.template, cursorPosition: [len, len] };
   }
   setTemplate = (s: string) => this.setState({ template: s });
-  updateCursorPos = (position: [number, number]) => this.setState({ cursorPosition: position });
+  updateCursorPos = (position: [number, number]) =>
+    this.setState({ cursorPosition: position });
   insertSchemaItem = (templateString: string) => {
     const template = this.state.template;
     const before = template.slice(0, this.state.cursorPosition[0]);
@@ -55,7 +60,11 @@ export default class MailMerge extends React.Component<Props, State> {
           onChange={this.setTemplate}
           onCursorMove={this.updateCursorPos}
         />
-        <Viewer style={columnStyle} template={this.state.template} context={this.props.sample} />
+        <Viewer
+          style={columnStyle}
+          template={this.state.template}
+          context={this.props.sample}
+        />
       </div>
     );
   }

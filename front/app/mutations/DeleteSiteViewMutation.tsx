@@ -1,11 +1,11 @@
-import * as React from "react";
-import { gql } from "apollo-boost";
-import { Mutation, MutationFn, MutationResult } from "react-apollo";
+import * as React from 'react';
+import { gql } from 'apollo-boost';
+import { Mutation, MutationFn, MutationResult } from 'react-apollo';
 import {
   DeleteSiteViewMutation as DeleteSiteViewMutationType,
-  DeleteSiteViewMutationVariables
-} from "types/DeleteSiteViewMutation";
-import SiteProvider from "../containers/SiteProvider";
+  DeleteSiteViewMutationVariables,
+} from 'types/DeleteSiteViewMutation';
+import SiteProvider from '../containers/SiteProvider';
 
 interface DeleteSiteViewMutationProps {
   children: (

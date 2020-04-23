@@ -23,6 +23,7 @@ import {
 } from 'types/WorkflowPageQuery';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import SiteProvider from 'containers/SiteProvider';
+import withTheme from 'containers/ThemeProvider';
 import { extractWikiSections, WikiSection } from 'utils/helpers';
 import {
   drop,
@@ -52,6 +53,7 @@ import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
+import ThemedButton from 'components/StyledComponents';
 
 const QUERY = gql`
   query WorkflowPageQuery($nctId: String!) {
@@ -81,6 +83,7 @@ interface WorkflowPageProps {
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
   workflowsView: WorkflowsViewFragment;
+  theme?: any
 }
 
 interface WorkflowPageState {
@@ -159,6 +162,7 @@ class WorkflowPage extends React.Component<
           ref={ref => {
             this.reviewFormRef = ref;
           }}
+          theme={this.props.theme}
           nctId={this.props.match.params.nctId}
           hideSaveButton
           hideMeta={hideMeta}
@@ -178,13 +182,17 @@ class WorkflowPage extends React.Component<
           />
         </RichTextEditorContainer>
         <ButtonContainer>
-          <Button onClick={this.handleReviewEdit}>Edit</Button>
+          <ThemedButton onClick={this.handleReviewEdit}>Edit</ThemedButton>
         </ButtonContainer>
       </>
     );
   };
 
   render() {
+    const hash = new URLSearchParams(this.props.history.location.search)
+      .getAll('hash')
+      .toString() as string | null;
+
     return (
       <WorkflowsViewProvider>
         {workflowsView => (
@@ -218,12 +226,12 @@ class WorkflowPage extends React.Component<
                         {this.renderReview(workflow.disableAddRating)}
                       </StyledPanel>
                       <ButtonContainer>
-                        <Button
+                        <ThemedButton
                           disabled={!this.state.editReviewMode}
                           onClick={this.handleReviewSave}
                           style={{ marginTop: 15 }}>
                           Save Review
-                        </Button>
+                        </ThemedButton>
                       </ButtonContainer>
                     </>
                   )}
@@ -259,9 +267,7 @@ class WorkflowPage extends React.Component<
                                   <StyledPanel>
                                     <SuggestedLabels
                                       nctId={this.props.match.params.nctId}
-                                      searchHash={
-                                        this.props.match.params.searchId || null
-                                      }
+                                      searchHash={hash}
                                       onSelect={this.handleSelect(
                                         (data &&
                                           data.study &&
@@ -311,4 +317,4 @@ class WorkflowPage extends React.Component<
   }
 }
 
-export default WorkflowPage;
+export default withTheme(WorkflowPage);

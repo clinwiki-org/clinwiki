@@ -24,5 +24,6 @@ module Types
     field :createSiteView, mutation: Mutations::CreateSiteView
     field :deleteSiteView, mutation: Mutations::DeleteSiteView
     field :copySiteView, mutation: Mutations::CopySiteView
+    field :provision_search_hash, mutation: Mutations::SearchHashMutation
   end
 end

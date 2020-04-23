@@ -9,7 +9,7 @@ export const StyledContainer = styled.div`
     color: white;
   }
 
-  .panel-group .panel{
+  .panel-group .panel {
     margin-bottom: 0;
     border-radius: 4px;
     background: bottom;

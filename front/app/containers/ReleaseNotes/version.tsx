@@ -9,6 +9,33 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 18
+- Ability to configure sort order in site view
+- Bug fixes in wiki history
+
+### Version 17
+- Wiki history improvements
+- Improve range selector
+- Performance improvements on workflow facets
+
+### Version 16
+- Bugfix: Facet bar was blank when returning to search from study page
+
+### Version 15
+- Support search query by query string q=...
+- Temporarily hide workflow facet typo search
+- Show range selector in presearch where appropriate
+
+### Version 14
+- configurable search views (siteview)
+
+### Version 13
+- Support for date and value range filters
+
+### Version 12
+- Google OAuth
+- Workflow "typo" search functionality
+
 ### Version 11
 - Bugfixes
 - #156 missing facets

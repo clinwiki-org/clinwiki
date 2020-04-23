@@ -1,5 +1,6 @@
-import { gql } from 'apollo-boost';
-const PARAMS_QUERY = gql`
+import gql from 'graphql-tag';
+
+export default gql`
   query SearchPageParamsQuery($hash: String) {
     searchParams(hash: $hash) {
       q
@@ -10,15 +11,19 @@ const PARAMS_QUERY = gql`
       aggFilters {
         field
         values
+        gte
+        lte
+        includeMissingFields
       }
       crowdAggFilters {
         field
         values
+        gte
+        lte
+        includeMissingFields
       }
       page
       pageSize
     }
   }
 `;
-
-export default PARAMS_QUERY;

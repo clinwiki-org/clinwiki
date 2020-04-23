@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import {
@@ -66,6 +65,10 @@ const SITE_VIEW_FRAGMENT = gql`
       autoSuggest {
         aggs {
           fields {
+            order {
+              sortKind
+              desc
+            }
             name
             display
             preselected {
@@ -86,6 +89,10 @@ const SITE_VIEW_FRAGMENT = gql`
         }
         crowdAggs {
           fields {
+            order {
+              sortKind
+              desc
+            }
             name
             display
             preselected {
@@ -118,6 +125,10 @@ const SITE_VIEW_FRAGMENT = gql`
       presearch {
         aggs {
           fields {
+            order {
+              sortKind
+              desc
+            }
             name
             display
             preselected {
@@ -138,6 +149,10 @@ const SITE_VIEW_FRAGMENT = gql`
         }
         crowdAggs {
           fields {
+            order {
+              sortKind
+              desc
+            }
             name
             display
             preselected {
@@ -176,6 +191,10 @@ const SITE_VIEW_FRAGMENT = gql`
 
       aggs {
         fields {
+          order {
+            sortKind
+            desc
+          }
           name
           display
           preselected {
@@ -196,6 +215,10 @@ const SITE_VIEW_FRAGMENT = gql`
       }
       crowdAggs {
         fields {
+          order {
+            sortKind
+            desc
+          }
           name
           display
           preselected {
@@ -229,6 +252,7 @@ const SITE_FRAGMENT = gql`
     name
     skipLanding
     subdomain
+    themes
     owners {
       email
     }
@@ -253,6 +277,37 @@ const QUERY = gql`
   ${SITE_FRAGMENT}
 `;
 
+export const withSite = Component => props => (
+  <SiteProvider>
+    {(site, refetch) => {
+      const siteViewUrl = () => {
+        if (props.history) {
+          return new URLSearchParams(props?.history?.location?.search)
+            .getAll('sv')
+            .toString()
+            .toLowerCase();
+        }
+        return props.currentSiteView.url.toLowerCase();
+      };
+      // const siteViewUrl = props?.match?.params?.siteviewUrl?.toLowerCase();
+      // console.log(`withSite: ${siteViewUrl}`);
+      const siteViews = site.siteViews;
+      const currentSite =
+        siteViews.find(
+          siteview => siteview?.url?.toLowerCase() === siteViewUrl()
+        ) || site.siteView;
+      return (
+        <Component
+          {...props}
+          site={site}
+          refetch={refetch}
+          currentSiteView={currentSite}
+        />
+      );
+    }}
+  </SiteProvider>
+);
+
 class QueryComponent extends Query<
   SiteProviderQuery,
   SiteProviderQueryVariables
@@ -266,7 +321,7 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
     return (
       <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
         {({ data, loading, error, refetch }) => {
-          //  console.log(data)
+          if (error) console.log(`SiteProvider error: ${error}`);
           if (loading || error) return null;
           return this.props.children(data!.site!, refetch);
         }}

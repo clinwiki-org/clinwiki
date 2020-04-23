@@ -6,7 +6,7 @@ import { gql } from 'apollo-boost';
 import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import StyledButton from './StyledButton';
+import {ThemedButton} from './StyledButton';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
@@ -14,6 +14,8 @@ import CurrentUser from 'containers/CurrentUser';
 import StyledError from './StyledError';
 import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
+import { GoogleLogin } from 'react-google-login';
+import {ThemedLinkContainer} from '../../components/StyledComponents'
 
 interface SignUpPageProps {
   history: History;
@@ -21,8 +23,9 @@ interface SignUpPageProps {
 interface SignUpPageState {
   form: {
     email: string;
-    password: string;
-    passwordConfirmation: string;
+    password?: string;
+    passwordConfirmation?: string;
+    oAuthToken?: string;
   };
   errors: string[];
 }
@@ -37,7 +40,6 @@ const SIGN_UP_MUTATION = gql`
       }
     }
   }
-
   ${CurrentUser.fragment}
 `;
 
@@ -62,6 +64,7 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
       email: '',
       password: '',
       passwordConfirmation: '',
+      oAuthToken: '',
     },
     errors: [],
   };
@@ -74,7 +77,10 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
 
   handleSignUp = (signUp: SignUpMutationFn) => () => {
     if (this.state.form.password === this.state.form.passwordConfirmation) {
-      const input = omit(['passwordConfirmation'], this.state.form);
+      const input = omit(
+        ['passwordConfirmation', 'oAuthToken'],
+        this.state.form
+      );
       signUp({ variables: { input } });
     }
     this.setState({ errors: ["Password confirmation doesn't match"] });
@@ -95,6 +101,25 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
           <StyledError key={error}>{error}</StyledError>
         ))}
       </div>
+    );
+  };
+
+  responseGoogle = (response, signUp?) => {
+    // const form= {
+    //   email: response.profileObj.email
+    // }
+    this.setState(
+      {
+        form: {
+          ...this.state.form,
+          email: response.profileObj.email,
+          oAuthToken: response.tokenObj.id_token,
+        },
+      },
+      () => {
+        const input = omit(['passwordConfirmation'], this.state.form);
+        signUp({ variables: { input } });
+      }
     );
   };
 
@@ -145,16 +170,30 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
                 });
               }}>
               {signUp => (
-                <StyledButton onClick={this.handleSignUp(signUp)}>
-                  Sign Up
-                </StyledButton>
+                <div>
+                  <ThemedButton onClick={this.handleSignUp(signUp)}>
+                    Sign Up
+                  </ThemedButton>
+                  <div style={{ display: 'block', marginTop: 10 }}>
+                    <GoogleLogin
+                      clientId="933663888104-i89sklp2rsnb5g69r7jvvoetrlq52jnj.apps.googleusercontent.com"
+                      buttonText="Sign Up With Google?"
+                      onSuccess={response =>
+                        this.responseGoogle(response, signUp)
+                      }
+                      onFailure={this.responseGoogle}
+                      cookiePolicy={'single_host_origin'}
+                    />
+                  </div>
+                </div>
               )}
             </SignUpMutationComponent>
+
             {this.renderErrors()}
-            <LinkContainer>
+            <ThemedLinkContainer>
               <Link to="/sign_in">Sign In</Link>
               <Link to="/reset_password">Reset password</Link>
-            </LinkContainer>
+            </ThemedLinkContainer>
           </StyledContainer>
         </Col>
       </StyledWrapper>

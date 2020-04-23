@@ -4,6 +4,7 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { History } from 'history';
 import { logout } from 'utils/auth';
 import SiteProvider from 'containers/SiteProvider';
+import withTheme from 'containers/ThemeProvider';
 
 interface AuthButtonProps {
   user: {
@@ -11,11 +12,49 @@ interface AuthButtonProps {
     roles: string[];
   } | null;
   history: History;
+  theme: any;
 }
 
 const ButtonWrapper = styled.div`
   margin-top: 7px;
+  background: ${props => props.theme.authButton.button} !important;
+  color: ${props => props.theme.authButton.buttonFont};
+  border-radius: 4px;
+  &:hover {
+    background: ${props => props.theme.authButton.buttonHover};
+    border-color: ${props => props.theme.authButton.buttonBorderHover};
+    text-decoration: none;
+  }
 `;
+
+const SignInWrapper = styled.a`
+  background: ${props => props.theme.authButton.button};
+  color: ${props => props.theme.authButton.buttonFont};
+  border: 0px;
+  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  border-radius: 4px;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    background: ${props => props.theme.authButton.buttonHover};
+    border-color: ${props => props.theme.authButton.buttonBorderHover};
+    text-decoration: none;
+  }
+`;
+
+const ThemedButtonWrapper = withTheme(ButtonWrapper);
+const ThemedSignInWrapper = withTheme(SignInWrapper);
 
 class AuthButton extends React.PureComponent<AuthButtonProps> {
   handleSitesClick = () => {
@@ -30,57 +69,73 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
     this.props.history.push('/workflows');
   };
 
+  handleSignInClick = () => {
+    console.log('sign in');
+    this.props.history.push('/sign_in');
+  };
+
   handleSignOutClick = () => {
     logout(this.props.history);
   };
 
-  renderAdminMenuItems = (site) => {
-    const adminViews = site.siteViews.filter(siteview => siteview.search.type === "admin" )
-    return  adminViews.map((view) => {
-      return <MenuItem  onClick={() => this.handleAdminClick(view.url)}>{view.name}</MenuItem>
-    })
-  }
+  renderAdminMenuItems = site => {
+    const adminViews = site.siteViews.filter(
+      siteview => siteview.search.type === 'admin'
+    );
+    return adminViews.map(view => {
+      return (
+        <MenuItem onClick={() => this.handleAdminClick(view.url)}>
+          {view.name}
+        </MenuItem>
+      );
+    });
+  };
 
-  handleAdminClick = (url) => {
-    const linkUrl = '/search/' + url
+  handleAdminClick = url => {
+    const linkUrl = '/search/' + url;
     this.props.history.push(linkUrl);
-  }
+  };
 
   render() {
     if (!this.props.user) {
       return (
         <li>
           <p className="navbar-btn">
-            <a href="/sign_in" className="btn btn-default">
-              Sign in
-            </a>
+            <ThemedSignInWrapper href="/sign_in">Sign in</ThemedSignInWrapper>
           </p>
         </li>
       );
     }
-    
+
     return (
       <SiteProvider>
-      {site => { 
-        return (
-        <ButtonWrapper className="pull-right">
-          <DropdownButton
-            title={(this.props.user && this.props.user.email) || ''}
-            id="loggedIn">
-            <MenuItem onClick={this.handleSitesClick}>Sites</MenuItem>
-            {this.props.user && this.props.user.roles.includes('admin') && (
-              <MenuItem onClick={this.handleWorkflowsClick}>Workflows</MenuItem>
-            )}
-            <MenuItem onClick={this.handleProfileClick}>Profile</MenuItem>
-            {this.renderAdminMenuItems(site)}
-            <MenuItem onClick={this.handleSignOutClick}>Log Out</MenuItem>
-          </DropdownButton>
-        </ButtonWrapper>  
-        )
+        {site => {
+          return (
+            <ThemedButtonWrapper className="pull-right">
+              <DropdownButton
+                style={{
+                  background: this.props.theme.authButton.button,
+                  color: this.props.theme.authButton.buttonFont,
+                  borderRadius: '4px',
+                }}
+                title={(this.props.user && this.props.user.email) || ''}
+                id="loggedIn">
+                <MenuItem onClick={this.handleSitesClick}>Sites</MenuItem>
+                {this.props.user && this.props.user.roles.includes('admin') && (
+                  <MenuItem onClick={this.handleWorkflowsClick}>
+                    Workflows
+                  </MenuItem>
+                )}
+                <MenuItem onClick={this.handleProfileClick}>Profile</MenuItem>
+                {this.renderAdminMenuItems(site)}
+                <MenuItem onClick={this.handleSignOutClick}>Log Out</MenuItem>
+              </DropdownButton>
+            </ThemedButtonWrapper>
+          );
         }}
       </SiteProvider>
     );
   }
 }
 
-export default AuthButton;
+export default withTheme(AuthButton);

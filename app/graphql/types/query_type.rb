@@ -53,9 +53,6 @@ module Types
     end
 
     field :me, UserType, "Current logged in user", null: true
-    field :search_hash, String, "Search hash for search params", null: false do
-      argument :params, type: SearchInputType, required: true
-    end
 
     field :search_params, SearchParamsType, "Search params from hash", null: true do
       argument :hash, type: String, required: false
@@ -183,11 +180,6 @@ module Types
 
     def me
       context[:current_user]
-    end
-
-    def search_hash(params:)
-      params_hash = params.to_h.deep_symbolize_keys
-      ShortLink.from_long(params_hash).short
     end
 
     def search_params(hash: nil)

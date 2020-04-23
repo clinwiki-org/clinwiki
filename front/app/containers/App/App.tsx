@@ -9,6 +9,7 @@ import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
 import StudyPage from 'containers/StudyPage';
+import SearchStudyPage from 'containers/SearchStudyPage'
 import InterventionPage from 'containers/InterventionPage';
 import {
   SignInPage,
@@ -23,35 +24,40 @@ import SitesPage from 'containers/SitesPage';
 import SitesNewPage from 'containers/SitesNewPage';
 import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
+import BulkEditPage from 'containers/BulkEditPage';
+import withTheme from 'containers/ThemeProvider';
+
 
 interface AppProps {
   history: History;
 }
 
 const AppWrapper = styled.div`
-  background-color: #4d5863;
+  background-color: ${props => props.theme.backgroundColor};
   min-height: 100vh;
   min-width: 100%;
 `;
+
+const ThemedAppWrapper = withTheme(AppWrapper);
+
 const MainWrapper = styled.div``;
 
 class App extends React.PureComponent<AppProps> {
   render() {
     return (
-      <AppWrapper>
+      <ThemedAppWrapper>
         <CurrentUser>
           {user => <AuthHeader user={user} history={this.props.history} />}
         </CurrentUser>
         <MainWrapper
-          className="main container-fluid"
+          className="main"
           style={{ paddingTop: '50px' }}>
           <Switch>
-            <Route exact path="/" component={LandingPage} />
+            <Route exact path="/" component={this.props.history.location.search ? SearchPage:LandingPage} />
             <Route exact path="/about" component={AboutPage} />
             <Route exact path="/version" component={ReleaseNotes} />
-            <Redirect exact from="/search/" to="/search/default" />
             <Route
-              path="/search/:siteviewUrl/:searchId"
+              path="/search/"
               component={SearchPage}
             />
             <Route path="/search/:siteviewUrl" component={SearchPage} />
@@ -59,12 +65,13 @@ class App extends React.PureComponent<AppProps> {
               path="/study/:nctId/review/:reviewId/edit"
               component={StudyPage}
             />
-            <Route path="/study/:nctId" component={StudyPage} />
+            <Route path="/study/:nctId" component={SearchStudyPage} />
             <Route path="/intervention/:id" component={InterventionPage} />
             <Route exact path="/profile" component={EditProfilePage} />
             <Route path="/profile/:id/:searchId" component={ProfilePage}/>
             <Route path="/profile/:id/" component={ProfilePage}/>
             <Route path="/workflows" component={EditWorkflowsPage} />
+            <Route path={`/bulk`}	component={BulkEditPage}/>
             <Route path="/sites/:id/edit" component={SitesEditPage} />
             <Route path="/sites/new" component={SitesNewPage} />
             <Route path="/sites" component={SitesPage} />
@@ -75,7 +82,7 @@ class App extends React.PureComponent<AppProps> {
             <Route component={NotFoundPage} />
           </Switch>
         </MainWrapper>
-      </AppWrapper>
+      </ThemedAppWrapper>
     );
   }
 }

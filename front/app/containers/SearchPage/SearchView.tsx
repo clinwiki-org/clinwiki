@@ -9,7 +9,8 @@ import { PulseLoader, BeatLoader } from 'react-spinners';
 import { Col, ButtonGroup, Button } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
-import { SortInput, AggFilterInput, SearchQueryInput } from 'types/globalTypes';
+import { SortInput, AggFilterInput } from 'types/globalTypes';
+import { SiteFragment_siteView } from 'types/SiteFragment';
 import {
   map,
   pipe,
@@ -42,15 +43,11 @@ import {
 } from 'types/SearchPageSearchQuery';
 import { Query } from 'react-apollo';
 import 'react-table/react-table.css';
-import Aggs from './components/Aggs';
-import CrumbsBar from './components/CrumbsBar';
 import SiteProvider from 'containers/SiteProvider';
 import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
-import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
-import { stringify } from 'querystring';
 import Cards from './components/Cards';
 import { SiteViewFragment } from 'types/SiteViewFragment';
-import { throws } from 'assert';
+import withTheme from 'containers/ThemeProvider';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -75,6 +72,7 @@ const QUERY = gql`
       aggs {
         buckets {
           key
+          keyAsString
           docCount
         }
       }
@@ -197,83 +195,6 @@ const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
   const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
   return { ...params, sorts: snakeSorts, page: 0 };
 };
-const changeFilter = (add: boolean) => (
-  aggName: string,
-  key: string,
-  isCrowd?: boolean
-) => (params: SearchParams) => {
-  const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
-  const lens = lensPath([propName]);
-  return over(
-    lens,
-    (aggs: AggFilterInput[]) => {
-      const index = findIndex(propEq('field', aggName), aggs);
-      if (index === -1 && add) {
-        return [...aggs, { field: aggName, values: [key] }];
-      }
-      const aggLens = lensPath([index, 'values']);
-      const updater = (values: string[]) =>
-        add ? [...values, key] : reject(x => x === key, values);
-      let res = over(aggLens, updater, aggs);
-      // Drop filter if no values left
-      if (isEmpty(view(aggLens, res))) {
-        res = remove(index, 1, res as any);
-      }
-      return res;
-    },
-    {
-      ...params,
-      page: 0,
-    }
-  );
-};
-const addFilter = changeFilter(true);
-const removeFilter = changeFilter(false);
-const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  return (params: SearchParams) => {
-    keys.forEach(k => {
-      (params = addFilter(aggName, k, isCrowd)(params) as SearchParams),
-        console.log(k);
-    });
-    // changeFilter(true);
-    return params;
-  };
-};
-
-const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  return (params: SearchParams) => {
-    keys.forEach(k => {
-      params = removeFilter(aggName, k, isCrowd)(params) as SearchParams;
-    });
-    // changeFilter(true);
-    return params;
-  };
-};
-
-const addSearchTerm = (term: string) => (params: SearchParams) => {
-  // have to check for empty string because if you press return two times it ends up putting it in the terms
-  if (!term.replace(/\s/g, '').length) {
-    return params;
-  }
-  // recycled code for removing repeated terms. might be a better way but I'm not sure.
-  const children = reject(propEq('key', term), params.q.children || []);
-  return {
-    ...params,
-    q: { ...params.q, children: [...(children || []), { key: term }] },
-    page: 0,
-  };
-};
-const removeSearchTerm = (term: string) => (params: SearchParams) => {
-  const children = reject(
-    propEq('key', term),
-    params.q.children || []
-  ) as SearchQuery[];
-  return {
-    ...params,
-    q: { ...params.q, children },
-    page: 0,
-  };
-};
 
 class QueryComponent extends Query<
   SearchPageSearchQuery,
@@ -315,13 +236,13 @@ const Instructions = styled.div`
 
 interface SearchViewProps {
   params: SearchParams;
-  onBulkUpdate: () => void;
+  onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
   onAggsUpdate: (
     aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
     crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] }
   ) => void;
-  onRowClick: (nctId: string) => void;
+  onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
   onResetFilters: () => void;
   onClearFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
@@ -330,7 +251,6 @@ interface SearchViewProps {
   returnPreviousSearchData: Function;
   searchHash: string;
   showCards: Boolean;
-  toggledShowCards: Function;
   returnNumberOfPages: Function;
   searchParams: any;
   searchAggs: any;
@@ -341,10 +261,10 @@ interface SearchViewProps {
   opened: any;
   openedKind: any;
   onOpen: any;
-  currentSiteView: any;
+  currentSiteView: SiteFragment_siteView;
   thisSiteView?: SiteViewFragment;
-  siteViewUrl?: string;
   getTotalResults: Function;
+  theme?: any;
 }
 
 interface SearchViewState {
@@ -355,7 +275,9 @@ interface SearchViewState {
   } | null;
   totalResults: any;
   firstRender: boolean;
+  prevResults: any | null;
 }
+
 class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   searchTable: any = 0;
 
@@ -368,17 +290,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       openedAgg: null,
       totalResults: 0,
       firstRender: true,
+      prevResults: null,
     };
   }
 
   isStarColumn = (name: string): boolean => {
     return name === 'average_rating';
-  };
-
-  toggledShowCards = (showCards: Boolean) => {
-    this.props.toggledShowCards(showCards);
-    console.log('Params', this.props.params);
-    pipe(changePage, this.props.onUpdateParams);
   };
 
   // this is for the column widths. currently, some tags are making it way too wide
@@ -389,7 +306,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   rowProps = (_, rowInfo) => {
     return {
       onClick: (_, handleOriginal) => {
-        this.props.onRowClick(rowInfo.row.nctId);
+        this.props.onRowClick(
+          rowInfo.row.nctId,
+          this.props.searchHash,
+          this.props.currentSiteView.url || 'default'
+        );
         return handleOriginal();
       },
     };
@@ -400,6 +321,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     // OUTPUT render a react-table column with given header, accessor, style,
     // and value determined by studyfragment of that column.
     // also renders stars
+
+    const themedStarColor = this.props.theme.studyPage.reviewStarColor;
     const camelCaseName = camelCase(name);
     const lowerCaseSpacing = 8;
     const upperCaseSpacing = 10;
@@ -455,7 +378,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               <div id="divsononeline">
                 <ReactStars
                   count={5}
-                  color2={starColor}
+                  color2={themedStarColor}
                   edit={false}
                   value={Number(props.original.averageRating)}
                 />
@@ -501,14 +424,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   };
 
   componentDidMount() {
-    let defaultViewStyle = this.props.currentSiteView.search.results.type;
     let showResults = this.props.currentSiteView.search.config.fields
       .showResults;
-    if (defaultViewStyle == 'table' && this.props.showCards == true) {
-      this.toggledShowCards(false);
-    } else if (defaultViewStyle == 'card' && this.props.showCards == false) {
-      this.toggledShowCards(true);
-    }
     if (!this.props.showCards && showResults) {
       this.setState({
         tableWidth: document.getElementsByClassName('ReactTable')[0]
@@ -545,7 +462,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
   }
 
   cardPressed = card => {
-    this.props.onRowClick(card.nctId);
+    this.props.onRowClick(
+      card.nctId,
+      this.props.searchHash,
+      this.props.currentSiteView.url || 'default'
+    );
   };
 
   mobileAndTabletcheck = () => {
@@ -659,6 +580,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     error: any;
   }) => {
     const { page, pageSize, sorts } = this.props.params;
+    const { showCards } = this.props;
 
     if (error) {
       return <div>{error.message}</div>;
@@ -667,6 +589,20 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       return null;
     }
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
+
+    if (this.state.prevResults != this.state.totalResults) {
+      this.setState(
+        prev => {
+          return {
+            totalResults: totalRecords,
+            prevResults: prev.totalResults,
+          };
+        },
+        () => {
+          this.props.getTotalResults(this.state.totalResults);
+        }
+      );
+    }
     const totalPages = Math.min(
       Math.ceil(totalRecords / this.props.params.pageSize),
       Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
@@ -676,17 +612,16 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const idSortedLens = lensProp('id');
     const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
-    // NOTE: If we upgrade typescript we can use data?.search?.studies;
-    let searchData = path(
-      ['search', 'studies'],
-      data
-    ) as SearchPageSearchQuery_search_studies[];
+    let searchData = data?.search?.studies || [];
     const tableWidth = 1175;
 
-    //OWERA: high computational complexity here for little return
-    searchData = Array.from(
-      new Set(this.props.previousSearchData.concat(searchData))
-    );
+    if (showCards) {
+      //OWERA: high computational complexity here for little return
+      // searchData = Array.from(
+      //   new Set(this.props.previousSearchData.concat(searchData))
+      // );
+      searchData;
+    }
 
     // Eliminates undefined items from the searchData array
     searchData = searchData.filter(el => {
@@ -698,190 +633,176 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const isMobile = this.mobileAndTabletcheck();
 
-    return (
-      <SiteProvider>
-        {site => {
-          let pagesTotal = 1;
-          let recordsTotal = 0;
-          if (
-            data &&
-            data.search &&
-            data.search.recordsTotal &&
-            this.props.params.pageSize
-          ) {
-            recordsTotal = data.search.recordsTotal;
-            pagesTotal = Math.min(
-              Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
-              Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
-            );
-          }
-          if (recordsTotal != this.state.totalResults) {
-            this.setState({
-              totalResults: recordsTotal,
-            });
-          }
+    const { currentSiteView } = this.props;
 
-          let thisSiteView =
-            site.siteViews.find(
-              siteview => siteview.url == this.props.siteViewUrl
-            ) || site.siteView;
-          let showResults = thisSiteView.search.config.fields.showResults;
+    let pagesTotal = 1;
+    let recordsTotal = 0;
+    if (
+      data &&
+      data.search &&
+      data.search.recordsTotal &&
+      this.props.params.pageSize
+    ) {
+      recordsTotal = data.search.recordsTotal;
+      pagesTotal = Math.min(
+        Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+        Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
+      );
+    }
+    if (recordsTotal != this.state.totalResults) {
+      this.setState({
+        totalResults: recordsTotal,
+      });
+    }
 
-          const columns = map(
-            x => this.renderColumn(x, ''),
-            site.siteView.search.fields
-          );
-          const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
-          const leftover = isMobile
-            ? tableWidth - totalWidth
-            : this.state.tableWidth - totalWidth;
-          const additionalWidth = leftover / columns.length;
-          columns.map(x => (x.width += additionalWidth), columns);
-          if (this.props.showCards) {
-            return showResults ? (
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    marginLeft: 'auto',
-                  }}>
-                  {this.renderViewDropdown()}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <Cards
-                    columns={columns}
-                    data={searchData}
-                    onPress={this.cardPressed}
-                    loading={loading}
-                  />
-                </div>
-              </div>
-            ) : null;
-          } else {
-            return showResults ? (
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
-                  {this.renderViewDropdown()}
-                </div>
-                <ReactTable
-                  ref={this.searchTable}
-                  className="-striped -highlight"
-                  columns={columns}
-                  manual
-                  minRows={searchData![0] !== undefined ? 1 : 3}
-                  page={page}
-                  pageSize={pageSize}
-                  defaultSorted={camelizedSorts}
-                  onPageChange={pipe(changePage, this.props.onUpdateParams)}
-                  onPageSizeChange={pipe(
-                    changePageSize,
-                    this.props.onUpdateParams
-                  )}
-                  onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
-                  data={searchData}
-                  pages={totalPages}
-                  loading={loading}
-                  defaultPageSize={pageSize}
-                  getTdProps={this.rowProps}
-                  defaultSortDesc
-                  noDataText={'No studies found'}
-                />
-              </div>
-            ) : null;
-          }
-        }}
-      </SiteProvider>
+    const showResults = currentSiteView.search.config.fields.showResults;
+
+    const columns = map(
+      x => this.renderColumn(x, ''),
+      currentSiteView.search.fields
     );
+    const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
+    const leftover = isMobile
+      ? tableWidth - totalWidth
+      : this.state.tableWidth - totalWidth;
+    const additionalWidth = leftover / columns.length;
+    columns.map(x => (x.width += additionalWidth), columns);
+    if (this.props.showCards) {
+      return showResults ? (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              marginLeft: 'auto',
+            }}>
+            {this.renderViewDropdown()}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <Cards
+              columns={columns}
+              data={searchData}
+              onPress={this.cardPressed}
+              loading={loading}
+            />
+          </div>
+        </div>
+      ) : null;
+    } else {
+      return showResults ? (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
+            {this.renderViewDropdown()}
+          </div>
+          <ReactTable
+            ref={this.searchTable}
+            className="-striped -highlight"
+            columns={columns}
+            manual
+            minRows={3}
+            page={page}
+            pageSize={pageSize}
+            defaultSorted={camelizedSorts}
+            onPageChange={pipe(changePage, this.props.onUpdateParams)}
+            onPageSizeChange={pipe(changePageSize, this.props.onUpdateParams)}
+            onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
+            data={searchData}
+            pages={totalPages}
+            loading={loading}
+            defaultPageSize={pageSize}
+            getTdProps={this.rowProps}
+            defaultSortDesc
+            noDataText={'No studies found'}
+          />
+        </div>
+      ) : null;
+    }
   };
 
   renderViewDropdown = () => {
     const { currentSiteView } = this.props;
+    console.log(currentSiteView.search.results.buttons);
+    const buttonsArray = currentSiteView.search.results.buttons.items.filter(
+      button => button.target.length > 0 && button.icon.length > 0
+    );
     return (
       <SiteProvider>
         {site => {
-          if (site.siteViews.length > 0) {
+          if (site.siteViews.length > 0 && buttonsArray.length > 0) {
             return (
               <ButtonGroup>
-                {currentSiteView.search.results.buttons.items.map(
-                  (button, index) => (
-                    <Button
-                      href={`/search/${button.target}/${this.props.searchHash}`}
-                      key={button.target + index}>
-                      {button.icon == 'card' ? <CardIcon /> : <TableIcon />}
-                    </Button>
-                  )
-                )}
+                {buttonsArray.map((button, index) => (
+                  <Button
+                    href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
+                    key={button.target + index}>
+                    {this.renderViewButton(button.icon)}
+                  </Button>
+                ))}
               </ButtonGroup>
             );
           }
+          return null;
         }}
       </SiteProvider>
     );
   };
 
+  renderViewButton = (icon: string) => {
+    switch (icon) {
+      case 'card':
+        return <CardIcon />;
+      case 'table':
+        return <TableIcon />;
+      case 'search':
+        return <FontAwesome name="search" />;
+      default:
+        return null;
+    }
+  };
+
+  handleAggsUpdated = (data?: SearchPageSearchQuery) => {
+    if (data?.search) {
+      this.props.onAggsUpdate(
+        this.transformAggs(data.search.aggs || []),
+        this.transformCrowdAggs(data.crowdAggs.aggs || [])
+      );
+    }
+  };
+
   render() {
     return (
-      <SiteProvider>
-        {site => {
-          let thisSiteView =
-            site.siteViews.find(
-              siteview => siteview.url == this.props.siteViewUrl
-            ) || site.siteView;
-          return (
-            <SearchWrapper>
-              <Helmet>
-                <title>Search</title>
-                <meta name="description" content="Description of SearchPage" />
-              </Helmet>
-              <Col md={12}>
-                <QueryComponent
-                  query={QUERY}
-                  variables={this.props.params}
-                  onCompleted={(data: any) => {
-                    if (data && data.search) {
-                      this.props.onAggsUpdate(
-                        this.transformAggs(data.search.aggs || []),
-                        this.transformCrowdAggs(data.crowdAggs.aggs || [])
-                      );
-                    }
-                    const totalRecords = pathOr(
-                      0,
-                      ['search', 'recordsTotal'],
-                      data
-                    );
-                    if (this.state.firstRender) {
-                      this.setState(
-                        {
-                          totalResults: totalRecords,
-                          firstRender: false,
-                        },
-                        () =>
-                          this.props.getTotalResults(this.state.totalResults)
-                      );
-                    }
-                  }}>
-                  {({ data, loading, error }) => {
-                    return (
-                      <SearchContainer>
-                        {this.renderSearch({ data, loading, error })}
-                      </SearchContainer>
-                    );
-                  }}
-                </QueryComponent>
-              </Col>
-            </SearchWrapper>
-          );
-        }}
-      </SiteProvider>
+      <SearchWrapper>
+        <Helmet>
+          <title>Search</title>
+          <meta name="description" content="Description of SearchPage" />
+        </Helmet>
+        <Col md={12}>
+          <QueryComponent
+            query={QUERY}
+            variables={this.props.params}
+            onCompleted={this.handleAggsUpdated}>
+            {({ data, loading, error }) => {
+              // Unfortunately the onCompleted callback is not called if
+              // the data is served from cache.  There is some confusion
+              // in the documentation but this appears to be by design.
+              this.handleAggsUpdated(data);
+              return (
+                <SearchContainer>
+                  {this.renderSearch({ data, loading, error })}
+                </SearchContainer>
+              );
+            }}
+          </QueryComponent>
+        </Col>
+      </SearchWrapper>
     );
   }
 }
 
-export default SearchView;
+export default withTheme(SearchView);

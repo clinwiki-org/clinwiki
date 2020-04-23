@@ -5,23 +5,6 @@
 // GraphQL query operation: SuggestedLabelsQuery
 // ====================================================
 
-export interface SuggestedLabelsQuery_search_aggs_buckets {
-  __typename: "AggBucket";
-  key: string;
-  docCount: number;
-}
-
-export interface SuggestedLabelsQuery_search_aggs {
-  __typename: "Agg";
-  name: string;
-  buckets: SuggestedLabelsQuery_search_aggs_buckets[];
-}
-
-export interface SuggestedLabelsQuery_search {
-  __typename: "SearchResultSet";
-  aggs: SuggestedLabelsQuery_search_aggs[] | null;
-}
-
 export interface SuggestedLabelsQuery_crowdAggFacets_aggs_buckets {
   __typename: "AggBucket";
   key: string;
@@ -55,10 +38,6 @@ export interface SuggestedLabelsQuery_study {
 }
 
 export interface SuggestedLabelsQuery {
-  /**
-   * Searches params by searchHash on server and `params` argument into it
-   */
-  search: SuggestedLabelsQuery_search | null;
   crowdAggFacets: SuggestedLabelsQuery_crowdAggFacets;
   study: SuggestedLabelsQuery_study | null;
 }

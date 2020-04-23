@@ -21,6 +21,7 @@ import CopySiteViewMutation, {
 } from 'mutations/CopySiteViewMutation';
 import { Link } from 'react-router-dom';
 import 'override.css';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface SiteViewItemProps {
   match: any;
@@ -32,7 +33,7 @@ interface SiteViewItemProps {
   type: string;
 }
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(ThemedButton)`
   margin-right: 15px;
 `;
 // const PreviewText;
@@ -152,7 +153,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           default: false,
           id: siteView.id,
           mutations: mutationArray,
-          url: siteView.url
+          url: siteView.url,
         },
       },
     }).then(() => {
@@ -166,9 +167,9 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
 
     let urlString;
     if (site.subdomain != 'default') {
-      urlString = `https://${site.subdomain}.clinwiki.org/search/${siteView.url}`;
+      urlString = `https://${site.subdomain}.clinwiki.org/search?sv=${siteView.url}`;
     } else {
-      urlString = `https://clinwiki.org/search/${siteView.url}`;
+      urlString = `https://clinwiki.org/search?sv=${siteView.url}`;
     }
 
     return (
@@ -216,5 +217,4 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   }
 }
 
-//@ts-ignore
 export default withRouter(SiteViewItem);

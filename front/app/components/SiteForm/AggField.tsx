@@ -12,16 +12,16 @@ import { AggKind } from 'containers/SearchPage/shared';
 import { Checkbox } from 'react-bootstrap';
 import { camelCase, capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
+import { AggFilterSiteConfigUpdater } from 'containers/SearchPage/components/AggFilterInputUpdater';
+import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
+import withTheme from 'containers/ThemeProvider';
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
   field: SiteViewFragment_search_aggs_fields;
-  onAddMutation: (
-    e: { currentTarget: { name: string; value: any } },
-    siteView: SiteViewFragment
-  ) => void;
+  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
   view: SiteViewFragment;
-  configType?: string;
+  configType: 'presearch' | 'autosuggest' | 'facetbar';
   returnAll?: Boolean;
 }
 
@@ -102,6 +102,10 @@ const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
 `;
 
+const ThemedContainer = withTheme(Container);
+const ThemedStyledLabel = withTheme(StyledLabel);
+const ThemedCrumbsContainer = withTheme(CrumbsContainer);
+
 class AggField extends React.Component<AggFieldProps, AggFieldState> {
   state: AggFieldState = {
     isValuesOpen: false,
@@ -112,96 +116,22 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   getPath = configType => {
     if (configType == 'presearch') {
       return `search.presearch.${this.props.kind}.fields.${this.props.field.name}`;
-    }else if(configType == 'autosuggest'){
+    } else if (configType == 'autosuggest') {
       return `search.autoSuggest.${this.props.kind}.fields.${this.props.field.name}`;
     }
     return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
-  handleAddFilter = (kind: 'preselected' | 'visibleOptions') => (
-    aggName: string,
-    aggValue: string,
-    isCrowd: boolean
-  ) => {
-    this.props.onAddMutation(
-      {
-        currentTarget: {
-          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
-          value: [...this.props.field[kind].values, aggValue],
-        },
-      },
-      this.props.view
-    );
+  handleDefaultSortMutation = e => {
+    this.props.onAddMutation(e);
   };
-  handleSelectAll =(kind: 'preselected' | 'visibleOptions') => (
-    aggName: string,
-    newParams: any,
-    isCrowd: boolean
-  ) => {
-
-    this.props.onAddMutation(
-      {
-        currentTarget: {
-          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
-          value:  newParams,
-        },
-      },
-      this.props.view
-    );
+  handleCheckboxToggle = value => (e: {
+    currentTarget: { name: string; value: any };
+  }) => {
+    this.props.onAddMutation({
+      currentTarget: { name: e.currentTarget.name, value: !value },
+    });
   };
 
-  handleDeSelectAll = (kind: 'preselected' | 'visibleOptions') => (
-    aggName: string,
-    newParams: any,
-    isCrowd: boolean
-  ) => {
-    const targetValue =()=>{
-    if(kind=='preselected'){
-      let newArray= this.props.field.preselected.values
-       newParams.map(key=>{
-        newArray =reject(equals(key), newArray)
-      });
-      return newArray
-    }else{
-      let newArray= this.props.field.visibleOptions.values
-       newParams.map(key=>{
-        newArray =reject(equals(key), newArray)
-      });
-      console.log("Final Array hope", newArray)
-      return newArray
-    }
-  }
-    this.props.onAddMutation(
-      {
-        currentTarget: {
-          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
-          value: targetValue(),
-        },
-      },
-      this.props.view
-    );
-  };
-  handleRemoveFilter = (kind: 'preselected' | 'visibleOptions') => (
-    aggName: string,
-    aggValue: string,
-    isCrowd: boolean
-  ) => {
-    const targetValue =()=>{
-    if(kind=='preselected'){
-      return reject(equals(aggValue), this.props.field.preselected.values)    
-    }else{
-      return reject(equals(aggValue), this.props.field.visibleOptions.values) 
-    }
-  }
-    this.props.onAddMutation(
-      {
-        currentTarget: {
-          name: `set:${this.getPath(this.props.configType)}.${kind}.values`,
-          value: targetValue(),
-        },
-      },
-      this.props.view
-    );
-  };
   handleOpen = (kind: 'preselected' | 'visibleOptions') => (
     agg: string,
     aggKind: AggKind
@@ -213,10 +143,39 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
   };
 
+  getUpdaters() {
+    const preselectedUpdater = new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.preselected,
+      this.props.onAddMutation,
+      this.props.kind,
+      'preselected',
+      this.props.configType
+    );
+    const visibleOptionsUpdater = new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.visibleOptions,
+      this.props.onAddMutation,
+      this.props.kind,
+      'visibleOptions',
+      this.props.configType
+    );
+    return [preselectedUpdater, visibleOptionsUpdater];
+  }
+
   render() {
     const { configType } = this.props;
     const selected = new Set(this.props.field.preselected.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
+    const searchParams = {
+      q: ({ key: 'AND', children: [] } as unknown) as string[],
+      page: 0,
+      pageSize: 25,
+      aggFilters: [],
+      crowdAggFilters: [],
+      sorts: [],
+    };
+    const [preselectedUpdater, visibleOptionsUpdater] = this.getUpdaters();
     return (
       <>
         <h4>
@@ -225,107 +184,117 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             .map(capitalize)
             .join(' ')}
         </h4>
-        <Container>
-          <StyledLabel>Preselected values</StyledLabel>
-          <CrumbsContainer>
+        <ThemedContainer>
+          <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
+          <ThemedCrumbsContainer>
             {Array.from(selected).map(value => (
               <MultiCrumb
                 key={value}
                 values={[value]}
-                onClick={value =>
-                  this.handleRemoveFilter('preselected')('', value, false)
-                }
+                onClick={value => preselectedUpdater.removeFilter(value)}
               />
             ))}
-          </CrumbsContainer>
+          </ThemedCrumbsContainer>
           <FiltersContainer>
             <FilterContainer>
-              <AggDropDown
-                agg={this.props.field.name}
-                aggKind={this.props.kind}
-                searchParams={{
-                  q: ({ key: 'AND', children: [] } as unknown) as string[],
-                  page: 0,
-                  pageSize: 25,
-                  aggFilters: [],
-                  crowdAggFilters: [],
-                  sorts: [],
-                }}
-                display={this.props.field.display}
-                isOpen={this.state.isValuesOpen}
-                selectedKeys={selected}
-                addFilter={this.handleAddFilter('preselected')}
-                addAllFilters={this.handleSelectAll('preselected')}
-                removeFilter={this.handleRemoveFilter('preselected')}
-                removeAllFilters={this.handleDeSelectAll('preselected')}
-                onOpen={this.handleOpen('preselected')}
-                currentSiteView={this.props.view}
-                configType={this.props.configType}
-                returnAll={this.props.returnAll}
-                
-              />
+              <AggFilterInputUpdateContext.Provider
+                value={{
+                  updater: preselectedUpdater,
+                }}>
+                <AggDropDown
+                  agg={this.props.field.name}
+                  aggKind={this.props.kind}
+                  searchParams={searchParams}
+                  display={this.props.field.display}
+                  isOpen={this.state.isValuesOpen}
+                  selectedKeys={selected}
+                  onOpen={this.handleOpen('preselected')}
+                  currentSiteView={this.props.view}
+                  configType={this.props.configType}
+                  returnAll={this.props.returnAll}
+                />
+              </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
           </FiltersContainer>
-          <StyledLabel>Visible options</StyledLabel>
-          <CrumbsContainer>
+          <ThemedStyledLabel>Visible options</ThemedStyledLabel>
+          <ThemedCrumbsContainer>
             {Array.from(visibleOptions).map(value => (
               <MultiCrumb
                 key={value}
                 values={[value]}
-                onClick={value =>
-                  this.handleRemoveFilter('visibleOptions')('', value, false)
-                }
+                onClick={value => visibleOptionsUpdater.removeFilter(value)}
               />
             ))}
-          </CrumbsContainer>
+          </ThemedCrumbsContainer>
           <FiltersContainer>
             <FilterContainer>
-              <AggDropDown
-                agg={this.props.field.name}
-                aggKind={this.props.kind}
-                searchParams={{
-                  q: ({ key: 'AND', children: [] } as unknown) as string[],
-                  page: 0,
-                  pageSize: 25,
-                  aggFilters: [],
-                  crowdAggFilters: [],
-                  sorts: [],
-                }}
-                display={this.props.field.display}
-                isOpen={this.state.isVisibleOptionsOpen}
-                selectedKeys={visibleOptions}
-                addFilter={this.handleAddFilter('visibleOptions')}
-                addAllFilters={this.handleSelectAll('visibleOptions')}
-                removeFilter={this.handleRemoveFilter('visibleOptions')}
-                removeAllFilters={this.handleDeSelectAll('visibleOptions')}
-                onOpen={this.handleOpen('visibleOptions')}
-                currentSiteView={this.props.view}
-                configType={this.props.configType}
-                returnAll={this.props.returnAll}
-
-              />
+              <AggFilterInputUpdateContext.Provider
+                value={{
+                  updater: visibleOptionsUpdater,
+                }}>
+                <AggDropDown
+                  agg={this.props.field.name}
+                  aggKind={this.props.kind}
+                  searchParams={{
+                    q: ({ key: 'AND', children: [] } as unknown) as string[],
+                    page: 0,
+                    pageSize: 25,
+                    aggFilters: [],
+                    crowdAggFilters: [],
+                    sorts: [],
+                  }}
+                  display={this.props.field.display}
+                  isOpen={this.state.isVisibleOptionsOpen}
+                  selectedKeys={visibleOptions}
+                  onOpen={this.handleOpen('visibleOptions')}
+                  currentSiteView={this.props.view}
+                  configType={this.props.configType}
+                  returnAll={this.props.returnAll}
+                />
+              </AggFilterInputUpdateContext.Provider>
             </FilterContainer>
           </FiltersContainer>
           <div>
+            <ThemedStyledLabel>Default Sort Type</ThemedStyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath(configType)}.order.sortKind`}
+              componentClass="select"
+              onChange={e => this.handleDefaultSortMutation(e)}
+              defaultValue={this.props.field.order?.sortKind}>
+              <option value="key">Alpha</option>
+              <option value="count">Numeric</option>
+            </StyledFormControl>
+            <StyledLabel>Default Sort Order</StyledLabel>
+            <StyledFormControl
+              name={`set:${this.getPath(configType)}.order.desc`}
+              componentClass="select"
+              onChange={(e)=>this.handleDefaultSortMutation(e)}
+              defaultValue={this.props.field.order?.desc}>
+              <option value="true">{this.props.field.order?.sortKind == 'count'? "1-9":"A-Z" }</option>
+              <option value="false">{this.props.field.order?.sortKind == 'count'? "9-1":"Z-A" }</option>
+            </StyledFormControl>
             <StyledLabel>Order</StyledLabel>
+            <ThemedStyledLabel>Order</ThemedStyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.rank`}
               placeholder="Order"
               value={this.props.field.rank}
               onChange={this.props.onAddMutation}
             />
-            <StyledLabel>Display</StyledLabel>
+            <ThemedStyledLabel>Display</ThemedStyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.display`}
               componentClass="select"
-              onChange={e => this.props.onAddMutation(e, this.props.view)}
+              onChange={this.props.onAddMutation}
               defaultValue={this.props.field.display}>
               <option value="STRING">Text</option>
               <option value="STAR">Stars</option>
               <option value="DATE">Date</option>
+              <option value="DATE_RANGE">Date Range</option>
+              <option value="NUMBER_RANGE">Number Range</option>
             </StyledFormControl>
           </div>
-        </Container>
+        </ThemedContainer>
       </>
     );
   }

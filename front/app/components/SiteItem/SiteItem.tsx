@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { gql } from 'apollo-boost';
 import { SiteItemFragment } from 'types/SiteItemFragment';
-import { Button } from 'react-bootstrap';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface SiteItemProps {
   site: SiteItemFragment;
@@ -10,7 +10,7 @@ interface SiteItemProps {
   onDelete?: (id: number) => void;
 }
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(ThemedButton)`
   margin-right: 15px;
 `;
 

@@ -59,9 +59,11 @@ export const updateView = (
 };
 
 const tryParse = (data, defaultValue) => {
-  try {
-    return JSON.parse(data);
-  } catch (e) {}
+  if (typeof data === 'string') {
+    try {
+      return JSON.parse(data);
+    } catch (e) {}
+  }
   return defaultValue;
 };
 

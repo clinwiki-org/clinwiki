@@ -28,11 +28,9 @@ interface SiteViewRouterProps {
   location: Location;
   siteViews: any;
   refresh: any;
-  onAddMutation: any;
-  getId: any;
   onSave?: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
   handleSiteViewEdit?: any;
-  handleForm:any;
+  handleForm: any;
 }
 
 interface SiteViewRouterState {

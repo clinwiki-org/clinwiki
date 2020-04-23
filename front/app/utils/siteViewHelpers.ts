@@ -21,13 +21,13 @@ export const preselectedFilters = (
     values: field.preselected.values,
   }));
   const presearchAggFilters = reject(
-    field=> isEmpty(field.preselected.values), 
+    field => isEmpty(field.preselected.values),
     view.search.presearch.aggs.fields
-    ).map(field=>({
-      field:field.name,
-      values: field.preselected.values,
-    }));
-    // console.log("Prepre Aggs", presearchAggFilters)
+  ).map(field => ({
+    field: field.name,
+    values: field.preselected.values,
+  }));
+  // console.log("Prepre Aggs", presearchAggFilters)
   let crowdAggFilters = reject(
     field => isEmpty(field.preselected.values),
     view.search.crowdAggs.fields
@@ -37,14 +37,14 @@ export const preselectedFilters = (
   }));
 
   const presearchCrowdAggFilters = reject(
-    field=> isEmpty(field.preselected.values), 
+    field => isEmpty(field.preselected.values),
     view.search.presearch.crowdAggs.fields
-    ).map(field=>({
-      field:field.name,
-      values: field.preselected.values,
-    }));
-  aggFilters= aggFilters.concat(presearchAggFilters)
-  crowdAggFilters = crowdAggFilters.concat(presearchCrowdAggFilters)
+  ).map(field => ({
+    field: field.name,
+    values: field.preselected.values,
+  }));
+  aggFilters = aggFilters.concat(presearchAggFilters);
+  crowdAggFilters = crowdAggFilters.concat(presearchCrowdAggFilters);
   return {
     aggFilters,
     crowdAggFilters,

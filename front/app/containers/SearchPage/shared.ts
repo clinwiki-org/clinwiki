@@ -13,6 +13,7 @@ export type AggKind = 'aggs' | 'crowdAggs';
 
 export interface AggBucket {
   key: string;
+  keyAsString?: string;
   docCount: number;
 }
 export interface AggBucketMap {
