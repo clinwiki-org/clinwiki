@@ -8,7 +8,7 @@ module Mutations
     argument :o_auth_token, String, required:false
 
   def resolve(email:, password:, o_auth_token: nil)
-      if o_auth_token && !o_auth_token.nil?
+      if o_auth_token && !o_auth_token.empty?
         return { jwt: nil, user: nil, errors: ["Oauth token not three segments"] } if !o_auth_token.split(".").size.eql? 3
         header = Base64.decode64 (o_auth_token.split(".")[0])
         kid = header ? JSON.parse(header)["kid"] : nil
@@ -18,7 +18,7 @@ module Mutations
         provider = payload["iss"]
         user = User.find_or_create_from_payload(payload)
       else
-        user = User.find_by(email:email) unless user
+        user = User.find_by(email:email)
         return nil unless user
         return nil unless user.valid_password?(password)
       end
