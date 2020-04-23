@@ -17,7 +17,6 @@ import {
 } from 'react-bootstrap';
 import { History, Location } from 'history';
 import { CreateSiteViewInput, SiteViewMutationInput } from 'types/globalTypes';
-// import StyledButton from 'containers/LoginPage/StyledButton';
 import ThemedButton from 'components/StyledComponents/index';
 
 interface SiteViewsFormProps {

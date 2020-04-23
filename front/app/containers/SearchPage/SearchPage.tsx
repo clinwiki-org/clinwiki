@@ -376,7 +376,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       params.crowdAggFilters || []
     ) as AggFilterInput[];
     const sorts = map(dissoc('__typename'), params.sorts || []) as SortInput[];
-    console.log('aggfilters', aggFilters);
+    // console.log('aggfilters', aggFilters);
     return {
       aggFilters,
       crowdAggFilters,
@@ -551,7 +551,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             data!.searchParams,
             currentSiteView
           );
-          console.log('params', params);
+          // console.log('params', params);
           // hydrate state params from hash
           if (!this.state.params) {
             this.setState({ params });
@@ -705,24 +705,40 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       },
     });
   }
+
   updateSearchParams = async params => {
+    console.log('======================================');
+    console.log('update search params');
     this.setState({
       ...this.state,
       params: { ...(this.state?.params || {}), ...params },
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
+
     const siteViewUrl =
       new URLSearchParams(this.props.history.location.search)
         .getAll('sv')
         .toString() || 'default';
+
     if (data?.provisionSearchHash?.searchHash?.short) {
+      if (siteViewUrl === 'user') {
+        this.props.history.push(
+          `/profile/${this.props.userId}?hash=${
+            data!.provisionSearchHash!.searchHash!.short
+          }&sv=user`
+        );
+        return;
+      }
       this.props.history.push(
         `/search?hash=${
           data!.provisionSearchHash!.searchHash!.short
         }&sv=${siteViewUrl}`
       );
+      return;
     }
+
+    console.log('======================================');
   };
 
   getTotalResults = total => {
@@ -791,7 +807,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   renderCrumbs = siteView => {
     const { params, totalRecords } = this.state;
-    console.log('renderCrumbs', this.state.params);
     // if (this.props.userId) {
     //   this.getDefaultParams(siteView);
     // }
@@ -829,7 +844,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
-    console.log('SP Props', this.props);
+    // console.log('SP Props', this.props);
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { currentSiteView } = this.props;

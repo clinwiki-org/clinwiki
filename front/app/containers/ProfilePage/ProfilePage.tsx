@@ -10,7 +10,7 @@ interface ProfilePageProps {
   match: any;
 }
 
-class SitesPage extends React.Component<ProfilePageProps> {
+class ProfilePage extends React.Component<ProfilePageProps> {
   componentDidMount() {
     console.log('This.props', this.props);
   }
@@ -42,4 +42,4 @@ class SitesPage extends React.Component<ProfilePageProps> {
   }
 }
 
-export default SitesPage;
+export default ProfilePage;

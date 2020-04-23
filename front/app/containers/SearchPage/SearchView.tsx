@@ -727,7 +727,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
   renderViewDropdown = () => {
     const { currentSiteView } = this.props;
-    console.log(currentSiteView.search.results.buttons);
     const buttonsArray = currentSiteView.search.results.buttons.items.filter(
       button => button.target.length > 0 && button.icon.length > 0
     );

@@ -257,7 +257,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       searchParams.q?.length +
       searchParams.crowdAggFilters?.length +
       searchParams.aggFilters?.length;
-    console.log(totalLength);
+    // console.log(totalLength);
     if (totalLength > 0) {
       yield (
         <span key="buttons">

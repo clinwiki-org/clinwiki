@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
 import { gql } from 'apollo-boost';
-import { Link } from 'react-router-dom';
 import StyleWrapper from './StyleWrapper';
 import Edit from './Edit';
 

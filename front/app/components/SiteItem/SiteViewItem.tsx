@@ -22,6 +22,7 @@ import CopySiteViewMutation, {
 import { Link } from 'react-router-dom';
 import 'override.css';
 import ThemedButton from 'components/StyledComponents/index';
+import withTheme from 'containers/ThemeProvider/ThemeProvider';
 
 interface SiteViewItemProps {
   match: any;
@@ -31,11 +32,19 @@ interface SiteViewItemProps {
   siteView: SiteViewFragment;
   site: any;
   type: string;
+  theme?: any;
 }
 
 const StyledButton = styled(ThemedButton)`
   margin-right: 15px;
 `;
+
+const StyledDropdown = styled(DropdownButton)`
+  background-color: ${props => props.theme.button};
+`;
+
+const ThemedDropdown = withTheme(StyledDropdown);
+
 // const PreviewText;
 const siteViewTypes: any[] = ['admin', 'user', 'search'];
 
@@ -112,15 +121,20 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     if (siteViewUrl == 'default' || siteViewUrl == 'user') {
       return;
     }
+    console.log(this.props.theme);
     return (
       <UpdateSiteViewMutation>
         {updateSiteView => (
+          //needs to be themed, traditional methods of theming not working
           <DropdownButton
             bsStyle="default"
             title="Change Type"
             key="default"
             id="dropdown-basic-default"
-            style={{ margin: '1em 1em 1em 0' }}>
+            style={{
+              margin: '1em 1em 1em 0',
+              // background: this.props.theme.button,
+            }}>
             {siteViewTypes.map(type => (
               <MenuItem
                 key={type}
