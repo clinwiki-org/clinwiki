@@ -118,7 +118,7 @@ const SidebarContainer = styled(Col)`
   width: 235px;
   min-width: 235px;
   min-height: 100%;
-  background: ${props => props.theme.aggSideBar.sideBarBackground};
+  /* background: ${props => props.theme.aggSideBar.sideBarBackground}; */
   .panel-title {
     a:hover {
       text-decoration: none;
