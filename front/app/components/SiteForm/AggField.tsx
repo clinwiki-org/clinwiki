@@ -273,7 +273,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="true">{this.props.field.order?.sortKind == 'count'? "1-9":"A-Z" }</option>
               <option value="false">{this.props.field.order?.sortKind == 'count'? "9-1":"Z-A" }</option>
             </StyledFormControl>
-            <StyledLabel>Order</StyledLabel>
             <ThemedStyledLabel>Order</ThemedStyledLabel>
             <StyledFormControl
               name={`set:${this.getPath(configType)}.rank`}
