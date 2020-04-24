@@ -14,7 +14,6 @@ module Mutations
         kid = header ? JSON.parse(header)["kid"] : nil
         return { jwt: nil, user: nil, errors: ["Oauth token missing kid"] } if !kid
         payload, header = decode_jwt(o_auth_token, kid)
-        password = Devise.friendly_token(8)
         provider = payload["iss"]
         user = User.find_or_create_from_payload(payload)
       else
