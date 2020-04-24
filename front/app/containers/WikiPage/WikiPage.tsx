@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { partition, toPairs } from 'ramda';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { gql } from 'apollo-boost';
 import StudySummary from 'components/StudySummary';
@@ -21,6 +22,7 @@ import { trimPath } from 'utils/helpers';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import ExpansionContext from './ExpansionContext';
 
 interface WikiPageProps {
   nctId: string;
@@ -37,6 +39,7 @@ interface WikiPageState {
   editorState: 'rich' | 'plain';
   richEditorText: EditorValue | null;
   plainEditorText: string | null;
+  historyExpanded: any;
 }
 
 const FRAGMENT = gql`
@@ -99,6 +102,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     editorState: 'rich',
     richEditorText: null,
     plainEditorText: null,
+    historyExpanded: {},
   };
 
   static fragment = FRAGMENT;
@@ -190,10 +194,37 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     const text =
       data && data.study && data.study.wikiPage && data.study.wikiPage.content;
     if (!text || text === this.state.plainEditorText) return;
+    const historyExpanded = {};
+    data?.study?.wikiPage?.edits.forEach(edit => {
+      historyExpanded[edit.id] = false;
+    });
     this.setState({
       plainEditorText: text,
       richEditorText: RichTextEditor.createValueFromString(text, 'markdown'),
+      historyExpanded,
     });
+  };
+
+  expandAllEdits = () => {
+    const { historyExpanded } = this.state;
+    Object.keys(historyExpanded).forEach(key => {
+      historyExpanded[key] = true;
+    });
+    this.setState({ ...this.state, historyExpanded });
+  };
+
+  minimizeAllEdits = () => {
+    const { historyExpanded } = this.state;
+    Object.keys(historyExpanded).forEach(key => {
+      historyExpanded[key] = false;
+    });
+    this.setState({ ...this.state, historyExpanded });
+  };
+
+  toggleEditVisibility = (editId: string) => value => {
+    const { historyExpanded } = this.state;
+    historyExpanded[editId] = value;
+    this.setState({ ...this.state, historyExpanded });
   };
 
   renderMarkdownButton = () => {
@@ -254,7 +285,13 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     hash: string,
     siteViewUrl: string
   ) => {
+    const { historyExpanded } = this.state;
     const isAuthenticated = user !== null;
+    const [maximized, minimized] = partition(
+      ([k, v]) => v,
+      toPairs(historyExpanded)
+    );
+
     return (
       <Toolbar>
         <Switch>
@@ -277,6 +314,22 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
             path={this.historyPath()}
             render={() => (
               <>
+                {minimized.length > 0 && (
+                  <ThemedButton
+                    type="button"
+                    onClick={this.expandAllEdits}
+                    style={{ marginLeft: '10px' }}>
+                    Expand History <FontAwesome name="expand" />
+                  </ThemedButton>
+                )}
+                {maximized.length > 0 && (
+                  <ThemedButton
+                    type="button"
+                    onClick={this.minimizeAllEdits}
+                    style={{ marginLeft: '10px' }}>
+                    Minimize History <FontAwesome name="compress" />
+                  </ThemedButton>
+                )}
                 {this.renderEditButton(isAuthenticated, hash, siteViewUrl)}{' '}
                 <ThemedButton
                   type="button"
@@ -358,6 +411,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   };
 
   render() {
+    const { historyExpanded } = this.state;
     const hash = new URLSearchParams(this.props.history.location.search)
       .getAll('hash')
       .toString();
@@ -387,14 +441,20 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                     <Route
                       path={this.historyPath()}
                       render={() => (
-                        <Edits
-                          edits={
-                            (data.study &&
-                              data.study.wikiPage &&
-                              data.study.wikiPage.edits) ||
-                            []
-                          }
-                        />
+                        <ExpansionContext.Provider
+                          value={{
+                            historyExpanded,
+                            toggleEditVisibility: this.toggleEditVisibility,
+                          }}>
+                          <Edits
+                            edits={
+                              (data.study &&
+                                data.study.wikiPage &&
+                                data.study.wikiPage.edits) ||
+                              []
+                            }
+                          />
+                        </ExpansionContext.Provider>
                       )}
                     />
                     <Route render={() => this.renderEditor(data)} />

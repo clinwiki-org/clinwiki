@@ -253,7 +253,7 @@ class FacilityCard extends React.PureComponent<any> {
   renderContactList = contacts => {
     return (
       <div>
-        <FacilitySubHead>Contact Info:</FacilitySubHead>
+        <ThemedFacilitySubHead>Contact Info:</ThemedFacilitySubHead>
         <div
           style={{
             display: 'flex',

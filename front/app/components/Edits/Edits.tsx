@@ -1,10 +1,7 @@
 import * as React from 'react';
-import {
-  WikiPageEditFragment,
-} from 'types/WikiPageEditFragment';
-import StyleWrapper from "./StyleWrapper";
-import Edit from "./Edit";
-
+import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import StyleWrapper from './StyleWrapper';
+import Edit from './Edit';
 
 interface EditsProps {
   edits: WikiPageEditFragment[];
@@ -12,7 +9,7 @@ interface EditsProps {
 
 class Edits extends React.Component<EditsProps> {
   render() {
-    const { edits } = this.props
+    const { edits } = this.props;
     return (
       <StyleWrapper striped bordered>
         <tbody>
