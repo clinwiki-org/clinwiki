@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_16_163941) do
+ActiveRecord::Schema.define(version: 2020_04_24_150220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,7 +101,7 @@ ActiveRecord::Schema.define(version: 2020_04_16_163941) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "skip_landing"
-    t.text "themes", default: "{\"primaryClinwiki\":\"#55B88D\",\"whiteHeaderFont\":\"#fff\",\"grayHeaderFont\":\"#777777\",\"navBar\":\"#1b2a38\",\"button\":\"#55B88D\",\"buttonHover\":\"#e6e6e6\",\"buttonBorderHover\":\"#adadad\",\"sideBarBackground\":\"#333\",\"sideBarColor\":\"#bac5d0\",\"sideBarColorHover\":\"#fff\",\"sideBarTitleFont\":\"#fff\",\"containerColor\":\"#f2f2f2\",\"containerText\":\"#000000\",\"crumbColor\":\"#55b88d\",\"crumbFontColor\":\"#fff\"} "
+    t.text "themes", default: "{\"primaryColor\":\"#6BA5D6\",\"secondaryColor\":\"#1b2a38\",\"lightTextColor\":\"#eee\",\"secondaryTextColor\":\"#333\",\"backgroundColor\":\"#4D5863\",\"primaryAltColor\":\"#5786AD\",\"authHeaderColor\":\"#5786AD\",\"sideBarColor\":\"333\"} "
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
