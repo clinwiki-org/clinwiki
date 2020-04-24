@@ -8,7 +8,7 @@ class StringForTheme < ActiveRecord::Migration[5.2]
   button: '#55B88D',
   buttonHover: '#e6e6e6',
   buttonBorderHover: '#adadad',
-  sideBarBackground: '#4d5863',
+  sideBarBackground: '#333',
   sideBarColor: '#bac5d0',
   sideBarColorHover: '#fff',
   sideBarTitleFont: '#fff',
