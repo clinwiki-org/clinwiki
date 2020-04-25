@@ -66,7 +66,7 @@ export const withTheme = Component => {
         secondaryTextColor: '#777',
         backgroundColor: '#4D5863;',
         primaryAltColor: '#4889BF',
-        sideBarColor: '#333',
+        sideBarColor: '#4d5762',
         authHeaderColor: '#5786AD',
       };
 
@@ -94,9 +94,8 @@ export const withTheme = Component => {
         secondaryTextColor: thisTheme.secondaryTextColor || '#777',
         backgroundColor: thisTheme.backgroundColor || '#4D5863',
         primaryAltColor: thisTheme.primaryAltColor || '#4889BF',
-        sideBarColor: thisTheme.sideBarColor || '#333',
+        sideBarColor: thisTheme.sideBarColor || '#4d5762',
         authHeaderColor: thisTheme.authHeaderColor || '#5786AD',
-        lightHeaderFont: '#fff',
         grayHeaderFont: '#777777',
         //darkBlue for header
         navBar: '#1b2a38',
@@ -121,7 +120,7 @@ export const withTheme = Component => {
           headerBackground: colors.authHeaderColor,
           font: colors.lightTextColor,
           hoverFont: colors.secondaryTextColor,
-          logoFont: '#fff',
+          logoFont: colors.lightTextColor,
         },
         authPage: {
           signInLinks: colors.lightTextColor,
@@ -129,16 +128,16 @@ export const withTheme = Component => {
         },
         authButton: {
           button: colors.primaryColor,
-          buttonFont: '#fff',
+          buttonFont: colors.lightTextColor,
           buttonHover: '#e6e6e6',
           buttonBorderHover: '#adadad',
-          lightTextColor: '#fff',
+          lightTextColor: colors.lightTextColor,
         },
         aggSideBar: {
           sideBarBackground: colors.sideBarColor,
           sideBarFont: '#bac5d0',
-          sideBarFontHover: '#fff',
-          sideBarTitleFont: '#fff',
+          sideBarFontHover: colors.lightTextColor,
+          sideBarTitleFont: colors.lightTextColor,
         },
         crumbsBar: {
           containerBackground: '#f2f2f2',
