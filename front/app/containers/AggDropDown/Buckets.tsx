@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { pipe, filter, map } from 'ramda';
+import { pipe, filter, map, defaultTo } from 'ramda';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 import { FieldDisplay } from 'types/globalTypes';
 import { SiteFragment } from 'types/SiteFragment';
@@ -36,7 +36,7 @@ class Buckets extends React.Component<BucketsProps> {
             checked={updater.isSelected(bucket.key)}
             onChange={() => updater.toggleFilter(bucket.key)}>
             <Bucket
-              value={bucket.key}
+              value={defaultTo(bucket.key)(bucket.keyAsString)}
               display={display}
               docCount={bucket.docCount}
             />

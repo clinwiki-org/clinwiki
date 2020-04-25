@@ -6,7 +6,7 @@ import { gql } from 'apollo-boost';
 import { SignInMutation, SignInMutationVariables } from 'types/SignInMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import {ThemedButton} from '../../components/StyledComponents';
+import { ThemedButton } from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History, Location } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
@@ -16,12 +16,12 @@ import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
 import withTheme from './../ThemeProvider';
-import {ThemedLinkContainer} from '../../components/StyledComponents';
+import { ThemedLinkContainer } from '../../components/StyledComponents';
 
 interface SignInPageProps {
   history: History;
   location: Location;
-  theme: any
+  theme: any;
 }
 interface SignInPageState {
   form: {
@@ -49,9 +49,6 @@ class SignInMutationComponent extends Mutation<
   SignInMutationVariables
 > {}
 type SignInMutationFn = MutationFn<SignInMutation, SignInMutationVariables>;
-
-
-
 
 class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   state: SignInPageState = {
@@ -137,7 +134,7 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                 this.setState({ errors: ['Invalid email or password'] });
               }}>
               {signIn => (
-                <form 
+                <form
                   onSubmit={e => {
                     e.preventDefault();
                     this.handleSignIn(signIn);

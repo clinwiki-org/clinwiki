@@ -8,6 +8,7 @@
 export interface SuggestedLabelsQuery_crowdAggFacets_aggs_buckets {
   __typename: "AggBucket";
   key: string;
+  keyAsString: string | null;
   docCount: number;
 }
 

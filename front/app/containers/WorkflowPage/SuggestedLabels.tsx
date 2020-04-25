@@ -9,7 +9,7 @@ import {
   SuggestedLabelsQueryVariables,
   SuggestedLabelsQuery_crowdAggFacets_aggs,
 } from 'types/SuggestedLabelsQuery';
-import { pipe, pathOr, map, filter, fromPairs, keys } from 'ramda';
+import { pipe, pathOr, map, filter, fromPairs, keys, defaultTo } from 'ramda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
@@ -57,6 +57,7 @@ const QUERY = gql`
         name
         buckets {
           key
+          keyAsString
           docCount
         }
       }
@@ -129,22 +130,23 @@ class SuggestedLabels extends React.PureComponent<
   }
 
   renderAgg = (key: string, values: [string, boolean][]) => {
-    if (bucketKeyStringIsMissing(key)) {
-      // don't suggest the "missing" label
-      return null;
-    }
     return (
       <StyledPanel key={key} header={key} dropdown>
         {/* <Col xs={4}> */}
-        {values.map(([value, checked]) => (
-          <Checkbox
-            key={value}
-            checked={checked}
-            disabled={this.props.disabled}
-            onChange={this.handleSelect(key, value)}>
-            {value}
-          </Checkbox>
-        ))}
+        {values.map(([value, checked]) => {
+          if (bucketKeyStringIsMissing(value)) {
+            return null;
+          }
+          return (
+            <Checkbox
+              key={value}
+              checked={checked}
+              disabled={this.props.disabled}
+              onChange={this.handleSelect(key, value)}>
+              {value}
+            </Checkbox>
+          );
+        })}
         {/* </Col> */}
         {/* <Col xs={4}>
             <div>
@@ -188,10 +190,12 @@ class SuggestedLabels extends React.PureComponent<
               const existingLabels = labels[name] || [];
               return [
                 name,
-                agg.buckets.map(bucket => [
-                  bucket.key,
-                  existingLabels.includes(bucket.key),
-                ]),
+                agg.buckets.map(bucket => {
+                  return [
+                    defaultTo(bucket.key)(bucket.keyAsString),
+                    existingLabels.includes(bucket.key),
+                  ];
+                }),
               ];
             }),
             // @ts-ignore
