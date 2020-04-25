@@ -66,6 +66,9 @@ interface SearchFormState {
   showFacetBar: boolean;
   showFacetBarConfig: boolean;
   resultsButtonsArray: any[];
+  siteUrl: string;
+  siteViewName: string;
+  presearchIntructions: string;
 }
 
 const SEARCH_FIELDS = studyFields.map(option => ({
@@ -153,13 +156,21 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     showAllAggsAutoSuggest: false,
     showAllCrowdAggsAutoSuggest: false,
     resultsButtonsArray: [],
+    siteUrl: '',
+    siteViewName: '',
+    presearchIntructions: '',
   };
 
   componentDidMount() {
     this.props.handleSiteViewEdit();
     const siteviewId = this.props.match.params.id;
     let view = this.props.siteViews.find(view => siteviewId == view.id);
-    this.setState({ resultsButtonsArray: view.search.results.buttons.items });
+    this.setState({
+      resultsButtonsArray: view.search.results.buttons.items,
+      siteUrl: view.url,
+      siteViewName: view.name,
+      presearchIntructions: view.search.presearch.instruction,
+    });
   }
 
   handleSave = (updateSiteView: UpdateSiteViewMutationFn, view: any) => (
@@ -179,6 +190,19 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     });
   };
 
+  handleInput = (e, inputType) => {
+    switch (inputType) {
+      case 'url':
+        this.setState({ siteUrl: e.value });
+        return;
+      case 'name':
+        this.setState({ siteViewName: e.value });
+        return;
+      case 'instruction':
+        this.setState({ presearchIntructions: e.value });
+        return;
+    }
+  };
   handleAddMutation = (
     e: { currentTarget: { name: string; value: any } },
     siteView
@@ -692,8 +716,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <StyledFormInput
                 name={`set:search.presearch.instructions`}
                 placeholder={view.search.presearch.instructions}
-                value={view.search.presearch.instructions}
-                onChange={e => this.handleAddMutation(e, view)}
+                value={this.state.presearchIntructions}
+                onChange={e => this.handleInput(e, 'instructions')}
+                onBlur={e => this.handleAddMutation(e, view)}
               />
             </Panel.Body>
           </Panel>
@@ -935,8 +960,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <StyledFormInput
               name={`set:name`}
               placeholder={view.name}
-              value={view.name}
-              onChange={e => this.handleAddMutation(e, view)}
+              value={this.state.siteViewName}
+              onChange={e => this.handleInput(e, 'name')}
+              onBlur={e => this.handleAddMutation(e, view)}
             />
 
             <span
@@ -950,8 +976,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <StyledFormInput
               name={`set:url`}
               placeholder={view.url}
-              value={view.url}
-              onChange={e => this.handleAddMutation(e, view)}
+              value={this.state.siteUrl}
+              onChange={e => this.handleInput(e, 'url')}
+              onBlur={e => this.handleAddMutation(e, view)}
             />
             <h3>Search Sections</h3>
             <PanelGroup id="accordion-uncontrolled">

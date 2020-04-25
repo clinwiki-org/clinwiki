@@ -624,7 +624,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   componentDidMount() {
     let fields = this.props.currentSiteView.search.aggs.fields;
     const field = this.findFields();
-    console.log("Presearch", this.props.presearch ,field)
       if (field?.order && field.order.sortKind == 'key') {
         this.setState({
           sortKind: 0,
