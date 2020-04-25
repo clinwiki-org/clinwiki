@@ -137,7 +137,6 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
                 <form
                   onSubmit={e => {
                     e.preventDefault();
-                    console.log('here');
                     this.handleSignIn(signIn);
                   }}>
                   <StyledFormControl
