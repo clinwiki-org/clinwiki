@@ -46,24 +46,19 @@ class ExportToCsvDialog extends React.Component<ExportToCsvDialogProps> {
     }
 
     return (
-      <div>
-        this worked
-        <Modal show style={{ minHeight: '250px' }}>
-          <Modal.Dialog style={{ minHeight: '250px' }}>
-            <Modal.Header>
-              <Modal.Title>Exporting to CSV</Modal.Title>
-            </Modal.Header>
+      <Modal show style={{ minHeight: '250px' }}>
+        <Modal.Dialog style={{ minHeight: '250px' }}>
+          <Modal.Header>
+            <Modal.Title>Exporting to CSV</Modal.Title>
+          </Modal.Header>
 
-            <Modal.Body style={{ textAlign: 'center' }}>{body}</Modal.Body>
+          <Modal.Body style={{ textAlign: 'center' }}>{body}</Modal.Body>
 
-            <Modal.Footer>
-              <ThemedButton onClick={() => setExportId(null)}>
-                Close
-              </ThemedButton>
-            </Modal.Footer>
-          </Modal.Dialog>
-        </Modal>
-      </div>
+          <Modal.Footer>
+            <ThemedButton onClick={() => setExportId(null)}>Close</ThemedButton>
+          </Modal.Footer>
+        </Modal.Dialog>
+      </Modal>
     );
   }
 }
