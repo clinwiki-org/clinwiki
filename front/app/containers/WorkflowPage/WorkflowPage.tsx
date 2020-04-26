@@ -83,7 +83,7 @@ interface WorkflowPageProps {
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
   workflowsView: WorkflowsViewFragment;
-  theme?: any
+  theme?: any;
 }
 
 interface WorkflowPageState {

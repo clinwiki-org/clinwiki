@@ -268,10 +268,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             <StyledFormControl
               name={`set:${this.getPath(configType)}.order.desc`}
               componentClass="select"
-              onChange={(e)=>this.handleDefaultSortMutation(e)}
+              onChange={e => this.handleDefaultSortMutation(e)}
               defaultValue={this.props.field.order?.desc}>
-              <option value="true">{this.props.field.order?.sortKind == 'count'? "1-9":"A-Z" }</option>
-              <option value="false">{this.props.field.order?.sortKind == 'count'? "9-1":"Z-A" }</option>
+              <option value="true">
+                {this.props.field.order?.sortKind == 'count' ? '1-9' : 'A-Z'}
+              </option>
+              <option value="false">
+                {this.props.field.order?.sortKind == 'count' ? '9-1' : 'Z-A'}
+              </option>
             </StyledFormControl>
             <ThemedStyledLabel>Order</ThemedStyledLabel>
             <StyledFormControl

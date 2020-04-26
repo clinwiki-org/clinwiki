@@ -22,7 +22,8 @@ const StyledWrapper = styled.div`
     border-radius: 0px;
   }
 
-  nav.navbar a.logo, nav.navbar a {
+  nav.navbar a.logo,
+  nav.navbar a {
     color: ${props => props.theme.authHeader.font};
   }
   a:hover {

@@ -132,29 +132,29 @@ const context: ThemeContextType = {
 export const ThemeContext = React.createContext(context);
 let staticTheme: any = null;
 
-export const ProvideTheme = ({children}) => {
+export const ProvideTheme = ({ children }) => {
   return (
     <SiteProvider>
       {site => {
         return (
           <ThemeContext.Provider
-            value={
-              staticTheme || (staticTheme = themeFromSite(site))
-            }>
-              {children}
-            </ThemeContext.Provider>
+            value={staticTheme || (staticTheme = themeFromSite(site))}>
+            {children}
+          </ThemeContext.Provider>
         );
       }}
     </SiteProvider>
   );
-}
+};
 
 export const withTheme = Component => {
   class ThemeProvider extends React.Component {
     render() {
       return (
         <ThemeContext.Consumer>
-          {theme => theme ? <Component theme={theme} {...this.props} /> : null}
+          {theme =>
+            theme ? <Component theme={theme} {...this.props} /> : null
+          }
         </ThemeContext.Consumer>
       );
     }

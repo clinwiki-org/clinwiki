@@ -418,7 +418,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   findFields = () => {
     const { agg, site, currentSiteView } = this.props;
-    if (this.props.presearch== true){
+    if (this.props.presearch == true) {
       return find(propEq('name', agg), [
         ...(currentSiteView?.search?.presearch?.aggs?.fields || []),
         ...(currentSiteView?.search?.presearch?.crowdAggs?.fields || []),
@@ -624,18 +624,18 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   componentDidMount() {
     let fields = this.props.currentSiteView.search.aggs.fields;
     const field = this.findFields();
-      if (field?.order && field.order.sortKind == 'key') {
-        this.setState({
-          sortKind: 0,
-          desc: field.order.desc,
-        });
-      } else if (field?.order && field.order.sortKind == 'count') {
-        this.setState({
-          sortKind: 1,
-          desc: field.order.desc,
-        });
-      }
+    if (field?.order && field.order.sortKind == 'key') {
+      this.setState({
+        sortKind: 0,
+        desc: field.order.desc,
+      });
+    } else if (field?.order && field.order.sortKind == 'count') {
+      this.setState({
+        sortKind: 1,
+        desc: field.order.desc,
+      });
     }
+  }
 
   render() {
     const { agg, presearch } = this.props;

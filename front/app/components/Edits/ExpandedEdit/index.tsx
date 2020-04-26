@@ -1,1 +1,1 @@
-export { default } from "./ExpandedEdit";
+export { default } from './ExpandedEdit';

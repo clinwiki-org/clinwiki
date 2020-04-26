@@ -6,7 +6,7 @@ import { gql } from 'apollo-boost';
 import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import {ThemedButton} from './StyledButton';
+import { ThemedButton } from './StyledButton';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
@@ -15,7 +15,7 @@ import StyledError from './StyledError';
 import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
-import {ThemedLinkContainer} from '../../components/StyledComponents'
+import { ThemedLinkContainer } from '../../components/StyledComponents';
 
 interface SignUpPageProps {
   history: History;

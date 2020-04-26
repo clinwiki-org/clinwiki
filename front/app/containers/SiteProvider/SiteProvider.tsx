@@ -64,7 +64,7 @@ const SITE_VIEW_FRAGMENT = gql`
       autoSuggest {
         aggs {
           fields {
-            order{
+            order {
               sortKind
               desc
             }
@@ -88,7 +88,7 @@ const SITE_VIEW_FRAGMENT = gql`
         }
         crowdAggs {
           fields {
-            order{
+            order {
               sortKind
               desc
             }
@@ -124,7 +124,7 @@ const SITE_VIEW_FRAGMENT = gql`
       presearch {
         aggs {
           fields {
-            order{
+            order {
               sortKind
               desc
             }
@@ -148,7 +148,7 @@ const SITE_VIEW_FRAGMENT = gql`
         }
         crowdAggs {
           fields {
-            order{
+            order {
               sortKind
               desc
             }
@@ -190,7 +190,7 @@ const SITE_VIEW_FRAGMENT = gql`
 
       aggs {
         fields {
-          order{
+          order {
             sortKind
             desc
           }
@@ -214,7 +214,7 @@ const SITE_VIEW_FRAGMENT = gql`
       }
       crowdAggs {
         fields {
-          order{
+          order {
             sortKind
             desc
           }
@@ -279,12 +279,15 @@ const QUERY = gql`
 export const withSite = Component => props => (
   <SiteProvider>
     {(site, refetch) => {
-      const siteViewUrl = ()=>{
-        if (props.history){
-          return new URLSearchParams(props?.history?.location?.search).getAll("sv").toString().toLowerCase();
+      const siteViewUrl = () => {
+        if (props.history) {
+          return new URLSearchParams(props?.history?.location?.search)
+            .getAll('sv')
+            .toString()
+            .toLowerCase();
         }
         return props.currentSiteView.url.toLowerCase();
-      }
+      };
       // const siteViewUrl = props?.match?.params?.siteviewUrl?.toLowerCase();
       // console.log(`withSite: ${siteViewUrl}`);
       const siteViews = site.siteViews;
