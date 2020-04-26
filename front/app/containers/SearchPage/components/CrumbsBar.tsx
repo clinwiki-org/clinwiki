@@ -28,6 +28,7 @@ import { displayFields } from 'utils/siteViewHelpers';
 import withTheme from 'containers/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import ThemeProvider from 'containers/ThemeProvider';
+import ExportToCsvComponent from './ExportToCsvComponent';
 
 const AUTOSUGGEST_QUERY = gql`
   query CrumbsSearchPageAggBucketsQuery(
@@ -260,7 +261,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       searchParams.q?.length +
       searchParams.crowdAggFilters?.length +
       searchParams.aggFilters?.length;
-    console.log(totalLength);
     if (totalLength > 0) {
       yield (
         <span key="buttons">
@@ -588,27 +588,30 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       <ThemedCrumbsBarStyleWrappper>
         <ApolloConsumer>
           {apolloClient => (
-            <Grid className="crumbs-bar">
-              <Row>
-                <Col xs={8} md={8}>
-                  <Form inline className="searchInput" onSubmit={this.onSubmit}>
-                    {isSuggestionLoading
-                      ? this.renderLoadingAutoSuggest(
-                          suggestions,
-                          searchTerm,
-                          apolloClient,
-                          showAutoSuggest
-                        )
-                      : this.renderAutoSuggest(
-                          suggestions,
-                          searchTerm,
-                          apolloClient,
-                          showAutoSuggest
-                        )}
-                    &nbsp;
-                    <CurrentUser>
-                      {user =>
-                        user && user.roles.includes('admin') ? (
+            <CurrentUser>
+              {user => (
+                <Grid className="crumbs-bar">
+                  <Row>
+                    <Col xs={8} md={8}>
+                      <Form
+                        inline
+                        className="searchInput"
+                        onSubmit={this.onSubmit}>
+                        {isSuggestionLoading
+                          ? this.renderLoadingAutoSuggest(
+                              suggestions,
+                              searchTerm,
+                              apolloClient,
+                              showAutoSuggest
+                            )
+                          : this.renderAutoSuggest(
+                              suggestions,
+                              searchTerm,
+                              apolloClient,
+                              showAutoSuggest
+                            )}
+                        &nbsp;
+                        {user && user.roles.includes('admin') ? (
                           <ThemedButton
                             onClick={() =>
                               this.props.onBulkUpdate(
@@ -618,94 +621,111 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             }>
                             Bulk Update <FontAwesome name="truck" />
                           </ThemedButton>
-                        ) : null
-                      }
-                    </CurrentUser>
-                  </Form>
-                </Col>
-                <div>
-                  <b>Total Results:</b> {this.props.totalResults} studies
-                </div>
-              </Row>
-              {showCrumbsBar ? (
-                // having trouble getting the theme applied to these ListGroups
-                // <ThemeProvider>
-                //   {theme => (
-                <Row>
-                  <Col
-                    md={12}
-                    style={{
-                      padding: '10px 0px',
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                    }}>
-                    <ListGroup
-                      style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        border: '1px solid #ddd',
-                        borderRadius: ' 5px',
-                        background: '#fff',
-                        width: '100%',
-                      }}>
-                      <ListGroupItem
+                        ) : null}
+                      </Form>
+                    </Col>
+                    <Col xs={4} md={4}>
+                      {user && (
+                        <Row>
+                          <Col xs={12} md={12} style={{ textAlign: 'right' }}>
+                            <ExportToCsvComponent
+                              siteView={this.props.currentSiteView}
+                              searchHash={this.props.searchHash}
+                            />
+                          </Col>
+                        </Row>
+                      )}
+                      <Row>
+                        <Col xs={12} md={12} style={{ textAlign: 'right' }}>
+                          <b>Total Results:</b> {this.props.totalResults}{' '}
+                          studies
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                  {showCrumbsBar ? (
+                    // having trouble getting the theme applied to these ListGroups
+                    // <ThemeProvider>
+                    //   {theme => (
+                    <Row>
+                      <Col
+                        md={12}
                         style={{
-                          minWidth: '100%',
-                          background: this.props.theme.button,
-                          color: '#fff',
-                        }}
-                        onClick={this.toggleShowFilters}>
-                        {' '}
-                        Filters:{' '}
-                        {Array.from(
-                          this.mkDefaultClearButtons(this.props.searchParams)
-                        )}
-                        {this.state.showFilters ? (
-                          <b>
-                            <FontAwesome
-                              className="chevron-up"
-                              name="chevron-up"
-                              style={{
-                                cursor: 'pointer',
-                                color: '#fff',
-                                margin: '0 0 0 3px',
-                                float: 'right',
-                              }}
-                              // onClick={() => this.toggleShowValue()}
-                            />
-                          </b>
-                        ) : (
-                          <b>
-                            <FontAwesome
-                              className="chevron-down"
-                              name="chevron-down"
-                              style={{
-                                cursor: 'pointer',
-                                color: '#fff',
-                                margin: '0 0 0 3px',
-                                float: 'right',
-                              }}
-                              // onClick={() => this.toggleShowValue()}
-                            />
-                          </b>
-                        )}
-                      </ListGroupItem>
-                      {this.state.showFilters
-                        ? Array.from(
-                            this.mkCrumbs(
-                              this.props.searchParams,
-                              this.props.removeFilter,
-                              thisSiteView
-                            )
-                          )
-                        : null}{' '}
-                    </ListGroup>
-                  </Col>
-                </Row>
-              ) : //   )}
-              // </ThemeProvider>
-              null}
-            </Grid>
+                          padding: '10px 0px',
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                        }}>
+                        <ListGroup
+                          style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            border: '1px solid #ddd',
+                            borderRadius: ' 5px',
+                            background: '#fff',
+                            width: '100%',
+                          }}>
+                          <ListGroupItem
+                            style={{
+                              minWidth: '100%',
+                              background: this.props.theme.button,
+                              color: '#fff',
+                            }}
+                            onClick={this.toggleShowFilters}>
+                            {' '}
+                            Filters:{' '}
+                            {Array.from(
+                              this.mkDefaultClearButtons(
+                                this.props.searchParams
+                              )
+                            )}
+                            {this.state.showFilters ? (
+                              <b>
+                                <FontAwesome
+                                  className="chevron-up"
+                                  name="chevron-up"
+                                  style={{
+                                    cursor: 'pointer',
+                                    color: '#fff',
+                                    margin: '0 0 0 3px',
+                                    float: 'right',
+                                  }}
+                                  // onClick={() => this.toggleShowValue()}
+                                />
+                              </b>
+                            ) : (
+                              <b>
+                                <FontAwesome
+                                  className="chevron-down"
+                                  name="chevron-down"
+                                  style={{
+                                    cursor: 'pointer',
+                                    color: '#fff',
+                                    margin: '0 0 0 3px',
+                                    float: 'right',
+                                  }}
+                                  // onClick={() => this.toggleShowValue()}
+                                />
+                              </b>
+                            )}
+                          </ListGroupItem>
+                          {this.state.showFilters
+                            ? Array.from(
+                                this.mkCrumbs(
+                                  this.props.searchParams,
+                                  this.props.removeFilter,
+                                  thisSiteView
+                                )
+                              )
+                            : null}{' '}
+                        </ListGroup>
+                      </Col>
+                    </Row>
+                  ) : //   )}
+                  // </ThemeProvider>
+                  null}
+                </Grid>
+              )}
+            </CurrentUser>
           )}
         </ApolloConsumer>
       </ThemedCrumbsBarStyleWrappper>

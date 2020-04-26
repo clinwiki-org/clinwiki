@@ -110,4 +110,4 @@ gem "faker", "~> 2.11", group: :test
 
 gem "database_cleaner-active_record", "~> 1.8", group: :test
 
-gem "aws-sdk-s3", "~> 1.63"
+gem "aws-sdk-s3", "~> 1.63", require: true
