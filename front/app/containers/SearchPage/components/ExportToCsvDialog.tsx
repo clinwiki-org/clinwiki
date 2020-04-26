@@ -36,7 +36,6 @@ class ExportToCsvDialog extends React.Component<ExportToCsvDialogProps> {
       body = <span>Your export is running...</span>;
     } else {
       const openDownloadUrl = () => {
-        console.log('I got called');
         window.open(data.searchExport.downloadUrl);
         data.stopPolling();
         setExportId(null);
@@ -45,8 +44,6 @@ class ExportToCsvDialog extends React.Component<ExportToCsvDialogProps> {
         <ThemedButton onClick={openDownloadUrl}>Download Export</ThemedButton>
       );
     }
-
-    console.log('whtf');
 
     return (
       <div>
