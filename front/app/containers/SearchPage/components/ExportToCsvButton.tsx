@@ -30,7 +30,6 @@ class ExportToCsvButton extends React.Component<ExportToCsvButtonProps> {
       const { data } = await mutate({
         variables: { siteViewId: siteView.id, searchHash },
       });
-      console.log(data);
       setExportId(data.exportToCsv.searchExport.id);
     }
     return (
