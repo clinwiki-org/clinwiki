@@ -15,8 +15,6 @@ class CsvExportJob
     # using the s3 library, we can't upload a file and set the content type.
     tempfile.rewind
     @export.upload_to_s3(tempfile)
-
-    @export.save
   end
 
   def tempfile
