@@ -42,6 +42,7 @@ import '!file-loader?name=[name].[ext]!./images/heading.png';
 import 'react-toggle/style.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 /* eslint-enable import/no-unresolved, import/extensions */
+import { ProvideTheme } from 'containers/ThemeProvider/ThemeProvider';
 
 import apolloClient from './configureApollo';
 
@@ -53,20 +54,14 @@ import './global-styles';
 
 const MOUNT_NODE = document.getElementById('app');
 
-const alertOptions = {
-  position: 'top right',
-  theme: 'light',
-  transition: 'scale',
-  timeout: 5000,
-  offset: '14',
-};
-
 const render = messages => {
   ReactDOM.render(
     <LanguageProvider messages={messages} locale="en">
       <Router>
         <ApolloProvider client={apolloClient}>
-          <App />
+          <ProvideTheme>
+            <App />
+          </ProvideTheme>
         </ApolloProvider>
       </Router>
     </LanguageProvider>,
