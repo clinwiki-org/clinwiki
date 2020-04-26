@@ -49,9 +49,20 @@ describe SearchExport, type: :model do
     let(:file) { double(File) }
     it "should upload the file to aws" do
       allow(file).to receive(:read).and_return("some csv data")
-      expect_any_instance_of(Aws::S3::Object).to receive(:put).with(body: "some csv data", content_type: "application/csv;charset=utf-8")
+      expect_any_instance_of(Aws::S3::Object).to receive(:put).with(
+        body: "some csv data", content_type: "application/csv;charset=utf-8",
+      )
       allow_any_instance_of(Aws::S3::Object).to receive(:public_url).and_return("some-public-url")
       expect { export.upload_to_s3(file) }.to change { export.reload.s3_url }.to("some-public-url")
+    end
+  end
+
+  describe "self.create_and_process!" do
+    it "should return the new export and trigger the job" do
+      expect(CsvExportJob).to receive(:perform_async).with("search_export_id" => (SearchExport.last&.id || 0) + 1)
+      expect {
+        expect(described_class.create_and_process!(user: user, site_view: site_view, short_link: short_link)).to be_a(SearchExport)
+      }.to change { SearchExport.count }.by(1)
     end
   end
 end

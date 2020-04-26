@@ -7,14 +7,14 @@ module Types
       argument :search_hash, String, required: false
       argument :params, type: SearchInputType, required: false
     end
-    #aggs bucket, crowd_agg_buckets, autocomplete need urls, index url
-    #Site needs to have unique site_views urls
+    # aggs bucket, crowd_agg_buckets, autocomplete need urls, index url
+    # Site needs to have unique site_views urls
     field :agg_buckets, SearchResultSetType, null: false do
       argument :search_hash, String, required: false
       argument :params, type: SearchInputType, required: false
       argument :url, type: String, required: false
       argument :config_type, String, required: false
-      argument :return_all, Boolean, required:false
+      argument :return_all, Boolean, required: false
     end
 
     field :autocomplete, SearchResultSetType, null: false do
@@ -29,7 +29,7 @@ module Types
       argument :params, type: SearchInputType, required: true
       argument :url, type: String, required: false
       argument :config_type, String, required: false
-      argument :return_all, Boolean, required:false
+      argument :return_all, Boolean, required: false
     end
 
     field :crowd_agg_facets, SearchResultSetType, null: false do
@@ -60,12 +60,16 @@ module Types
 
     field :workflows_view, WorkflowsViewType, "Workflows config", null: false
 
-    DISPLAY_NAMES = {
-      'browse_condition_mesh_terms' => 'Browse Condition Mesh Terms',
-      'browse_interventions_mesh_terms' => 'Browse Intervention Mesh Terms',
-      'facility_countries' => 'Countries',
+    field :search_export, SearchExportType, "Retrieve an export by ID", null: true do
+      argument :search_export_id, type: Integer, required: true
+    end
 
-    }
+    DISPLAY_NAMES = {
+      "browse_condition_mesh_terms" => "Browse Condition Mesh Terms",
+      "browse_interventions_mesh_terms" => "Browse Intervention Mesh Terms",
+      "facility_countries" => "Countries",
+
+    }.freeze
 
     def search(search_hash: nil, params: nil)
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
@@ -77,15 +81,15 @@ module Types
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site],url: url, config_type: config_type, return_all: return_all),
+        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site], url: url, config_type: config_type, return_all: return_all),
       )
     end
 
-    def crowd_agg_buckets(search_hash: nil, params: nil, url: nil,config_type: nil, return_all: nil)
+    def crowd_agg_buckets(search_hash: nil, params: nil, url: nil, config_type: nil, return_all: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site], is_crowd_agg: true, url: url, config_type: config_type,return_all: return_all),
+        aggs: search_service.agg_buckets_for_field(field: params[:agg], current_site: context[:current_site], is_crowd_agg: true, url: url, config_type: config_type, return_all: return_all),
       )
     end
 
@@ -93,7 +97,7 @@ module Types
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(params)
       Hashie::Mash.new(
-        aggs: search_service.crowd_agg_facets(site: context[ :current_site ])
+        aggs: search_service.crowd_agg_facets(site: context[:current_site]),
       )
     end
 
@@ -106,7 +110,7 @@ module Types
         list << Hashie::Mash.new(
           name: field_name,
           results: result[field_name.to_sym][:buckets],
-          is_crowd: false
+          is_crowd: false,
         )
       end
       crowd_agg_fields.each do |field_name|
@@ -114,7 +118,7 @@ module Types
         list << Hashie::Mash.new(
           name: field_name,
           results: result["fm_#{field_name}".to_sym][:buckets],
-          is_crowd: true
+          is_crowd: true,
         )
       end
       Hashie::Mash.new(autocomplete: list)
@@ -126,17 +130,17 @@ module Types
     #   type
     # }
 
-  #   aggs {
-  #     name
-  #     buckets {
-  #       key
-  #       docCount
-  #       __typename
-  #     }
-  #     __typename
-  #   }
-  #   __typename
-  # }
+    #   aggs {
+    #     name
+    #     buckets {
+    #       key
+    #       docCount
+    #       __typename
+    #     }
+    #     __typename
+    #   }
+    #   __typename
+    # }
 
     def health
       ActiveRecord::Base.establish_connection
@@ -184,6 +188,12 @@ module Types
 
     def workflows_view
       WorkflowsView.instance.view
+    end
+
+    def search_export(search_export_id:)
+      return nil if current_user.nil?
+
+      SearchExport.where(user: current_user, id: search_export_id).first
     end
 
     private

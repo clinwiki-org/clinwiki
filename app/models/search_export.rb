@@ -3,6 +3,12 @@ class SearchExport < ApplicationRecord
   belongs_to :user
   belongs_to :site_view
 
+  def self.create_and_process!(user:, short_link:, site_view:)
+    export = create!(user: user, short_link: short_link, site_view: site_view)
+    CsvExportJob.perform_async("search_export_id" => export.id)
+    export
+  end
+
   def params
     JSON.parse(short_link.long)
   end
