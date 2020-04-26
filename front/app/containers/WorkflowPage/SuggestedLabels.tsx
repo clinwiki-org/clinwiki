@@ -81,12 +81,9 @@ const LabelsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
-const StyledCol = styled(Col)`
-  width: 30%;
-`;
 const StyledPanel = styled(CollapsiblePanel)`
-  margin: 0 2% 10px 2%;
-  width: 46%;
+  margin: 0 1% 10px 1%;
+  width: 23%;
   flex-wrap: wrap;
   .panel-heading h3 {
     white-space: nowrap;
@@ -132,7 +129,6 @@ class SuggestedLabels extends React.PureComponent<
   renderAgg = (key: string, values: [string, boolean][]) => {
     return (
       <StyledPanel key={key} header={key} dropdown>
-        {/* <Col xs={4}> */}
         {values.map(([value, checked]) => {
           if (bucketKeyStringIsMissing(value)) {
             return null;
@@ -147,12 +143,6 @@ class SuggestedLabels extends React.PureComponent<
             </Checkbox>
           );
         })}
-        {/* </Col> */}
-        {/* <Col xs={4}>
-            <div>
-              <WorkSearch nctid={this.props.nctId} />
-            </div>
-          </Col> */}
       </StyledPanel>
     );
   };
