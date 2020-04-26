@@ -111,3 +111,13 @@ bundle exec rspec spec
 
 The test database is automatically configured
 in `config/environments/test.rb'
+
+## AWS
+
+We use AWS for storing CSV exports in S3.
+You will need the following in your .env to develop against this locally:
+
+```
+AWS_ACCESS_KEY_ID=(ask for this)
+AWS_SECRET_ACCESS_KEY_ID=(ask for this)
+```
