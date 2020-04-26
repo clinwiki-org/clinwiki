@@ -29,8 +29,6 @@ class ExportToCsvComponent extends React.Component<
   render() {
     const { exportId } = this.state;
 
-    console.log(exportId);
-
     const setExportId = exportId => this.setState({ exportId });
 
     return (
