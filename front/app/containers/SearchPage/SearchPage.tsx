@@ -277,6 +277,7 @@ interface SearchPageProps {
   site: SiteFragment;
   currentSiteView: SiteFragment_siteView;
   mutate: any;
+  email?:string;
 }
 
 interface SearchPageState {
@@ -342,10 +343,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.previousSearchData = previousSearchData;
   };
 
-  getDefaultParams = (view: SiteViewFragment, userId: string | undefined) => {
-    if (userId) {
+  getDefaultParams = (view: SiteViewFragment, email: string | undefined) => {
+    console.log('email', email)
+    if (email) {
       const profileViewParams = preselectedFilters(view);
-      profileViewParams.aggFilters.push({ field: 'userId', values: [userId] });
+      profileViewParams.aggFilters.push({ field: 'wiki_page_edits.email', values: [email] });
 
       return { ...DEFAULT_PARAMS, ...profileViewParams };
     }
@@ -359,7 +361,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     params: SearchPageParamsQuery_searchParams | null | undefined,
     view: SiteViewFragment
   ): SearchParams => {
-    const defaultParams = this.getDefaultParams(view, this.props.userId);
+    const defaultParams = this.getDefaultParams(view, this.props.email);
 
     if (!params) return defaultParams;
 
@@ -420,7 +422,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   handleResetFilters = (view: SiteViewFragment) => () => {
     this.setState(
       {
-        params: this.getDefaultParams(view, this.props.userId),
+        params: this.getDefaultParams(view, this.props.email),
         removeSelectAll: true,
       },
       () => this.updateSearchParams(this.state.params)
@@ -626,6 +628,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
+    console.log("EMAIL", this.props.email)
+
+  
     if (searchTerm.has('q')) {
       let q = {
         key: 'AND',
@@ -650,7 +655,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
-    if (this.props.userId) {
+    if (this.props.email) {
+      console.log('USER TYPE')
       this.setState({
         siteViewType: 'user',
       });
@@ -722,13 +728,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         .toString() || 'default';
 
     if (data?.provisionSearchHash?.searchHash?.short) {
-      if (siteViewUrl === 'user') {
+      if(this.props.match.path =="/profile"){
+        console.log("pushing")
         this.props.history.push(
-          `/profile/${this.props.userId}?hash=${
+          `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=user`
-        );
-        return;
+          }&sv=${siteViewUrl}`
+        ); return;
       }
       this.props.history.push(
         `/search?hash=${
