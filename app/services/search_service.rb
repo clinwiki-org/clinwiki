@@ -92,7 +92,38 @@ DEFAULT_AGG_OPTIONS = {
     limit: 10,
     order: { "_term" => "asc" },
   },
+  :"wiki_page_edits.email" => {
+    limit: 10,
+    order: { "_term" => "asc" },
+  },
+  :"wiki_page_edits.created_at"=> {
+    date_histogram: {
+      field: :"wiki_page_edits.created_at",
+      interval: :year,
+      # this should work, but it isn't
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html
+      missing: DATE_MISSING_IDENTIFIER,
+    },
+    limit: 10,
+  },
 }.freeze
+
+def nested_body(key)
+  nested_object = key.split(".")[0]
+  {
+    aggs: {
+      "#{nested_object}": {
+        nested: {
+          path: nested_object.to_s,
+        },
+      },
+    },
+  }
+end
+
+def nested_result_aggs(field, aggs)
+  aggs.dig(:"#{field.split(".")[0]}", :"#{field}").select { |key| key == :"#{field}" }
+end
 
 class SearchService
   ENABLED_AGGS = %i[
@@ -100,7 +131,7 @@ class SearchService
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
-    front_matter_keys start_date
+    front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
   ].freeze
 
   attr_reader :params
@@ -118,11 +149,12 @@ class SearchService
       &.map { |bucket| "fm_#{bucket[:key]}" } || []
 
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
-
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
     search_result = Study.search("*", options) do |body|
-      body[:query][:bool][:must] = { query_string: { query: search_query } }
+      body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
+      body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
+      body[:query][:bool][:must] += nested_range_filters unless nested_range_filters.empty?
     end
     {
       recordsTotal: search_result.total_entries,
@@ -137,6 +169,7 @@ class SearchService
 
     key_prefix = is_crowd_agg ? "fm_" : ""
     key = "#{key_prefix}#{field}".to_sym
+    top_key, nested_key = key.to_s.split(".") if key.to_s.include?(".")
     # We don't need to keep filters of the same agg, we want broader results
     # But we need to respect all other filters
 
@@ -156,7 +189,14 @@ class SearchService
     bucket_sort = params.fetch(:agg_options_sort, [])
 
     search_results = Study.search("*", options) do |body|
-      body[:query][:bool][:must] = { query_string: { query: search_query } }
+      unless key == :average_rating || body[:aggs][key][:aggs][key][:date_histogram].present?
+        body[:aggs][key][:aggs][key][:terms][:missing] = missing_identifier_for_key(key)
+      end
+      body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
+      body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
+      body[:query][:bool][:must] += nested_range_filters unless nested_range_filters.empty?
+
+      # key here is front_matter_keys and i have NO IDEA where it's coming from
       body[:aggs][key][:aggs][key][:aggs] =
         (body[:aggs][key][:aggs][key][:aggs] || {}).merge(
           agg_bucket_sort: {
@@ -167,9 +207,11 @@ class SearchService
             },
           },
         )
-
-      unless key == :average_rating || body[:aggs][key][:aggs][key][:date_histogram].present?
-        body[:aggs][key][:aggs][key][:terms][:missing] = missing_identifier_for_key(key)
+      if top_key
+        nesting = nested_body(field)
+        # #Needs to be a symbol for the nested value not just wiki_page_edits
+        nesting[:aggs][top_key.to_sym][:aggs] = body[:aggs]
+        body[:aggs] = nesting[:aggs]
       end
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type, return_all)
@@ -183,8 +225,11 @@ class SearchService
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
-
-    aggs
+    if field.include? "."
+      nested_result_aggs(field, aggs)
+    else
+      aggs
+    end
   end
 
   def crowd_agg_facets(site:)
@@ -286,13 +331,63 @@ class SearchService
 
   def scalars_filter(key, filter)
     return nil if filter.dig(:values).nil?
+    return nil if key.to_s.include? "."
 
     selected_scalar_values = filter[:values].map { |val| { key => val } }
     selected_scalar_values << { key => nil } if filter.fetch(:include_missing_fields, false)
     { _or: selected_scalar_values }
   end
 
+  def nested_filters
+    nested = params.fetch(:agg_filters, []).select { |filter| filter[:field].to_s.include?(".") }
+    nested.map { |filter| nested_filter(key_for(filter: filter), filter) }
+  end
+
+
+  def nested_range_filters
+    #Nested range has to include gte and lte and a dot
+    nested = params.fetch(:agg_filters, []).select { |filter| filter[:field].to_s.include?(".") && !filter.slice(:gte, :lte).empty? }
+    nested.map { |filter| nested_range_filter(key_for(filter: filter), filter) }
+  end
+
+  def nested_filter(key, filter)
+    return nil if filter.dig(:values).nil?
+    return nil unless key.to_s.include? "."
+
+    top_key, nested_key = key.to_s.split(".")
+    {
+      nested: {
+        path: top_key,
+        query: {
+          bool: {
+            should: filter[:values].map { |value| { match: { key => value } } },
+          },
+        },
+      },
+    }
+  end
+
+  def nested_range_filter(key, filter)
+    range_hash = filter.slice(:gte, :lte)
+    return nil unless key.to_s.include?(".") && !range_hash.empty?
+    top_key, nested_key = key.to_s.split(".")
+    #Not sure what happesn if nil is in lte
+    {
+      nested: {
+        path: top_key,
+        query: {
+          bool: {
+            should:{
+              range: { key=> {gte: cast(range_hash[:gte]),lte: cast(range_hash[:lte])}},
+            },
+          },
+        },
+      },
+    }
+  end
+
   def range_filter(key, filter)
+    return nil if key.to_s.include? "."
     range_hash = filter.slice(:gte, :lte)
     return nil if range_hash.empty?
 
