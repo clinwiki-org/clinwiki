@@ -368,7 +368,7 @@ class SearchService
   end
 
   def nested_range_filter(key, filter)
-    range_hash = filter.slice(:gte, :lte)
+    range_hash = filter.is_a?(Hash) ? filter.slice(:gte, :lte) : {}
     return nil unless key.to_s.include?(".") && !range_hash.empty?
     top_key, nested_key = key.to_s.split(".")
     #Not sure what happesn if nil is in lte

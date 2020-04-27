@@ -202,10 +202,17 @@ describe SearchService do
       subject {SearchService.new(params).send(:nested_range_filter,key,filter)}
       context "for a non nested key" do
         let (:key) {"hello"}
-        let (:filter) {{ gte: Date.new(2010, 1, 1), lte: Date.new(2020, 1, 1)} }
+        let (:filter) {{gte: "2020-10-10", lte: "2020-10-12"} }
 
         it { is_expected.to be_nil}
       end
+      context "for a nested key without gte or lte" do
+        let (:key) {"hello.stuff"}
+        let (:filter) {"stuff"}
+
+        it { is_expected.to be_nil}
+      end
+
       context "for a nested key with range" do
         let (:key) {"hello.stuff"}
         let(:filter) { {gte: "2020-10-10", lte: "2020-10-12"} }
