@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as FontAwesome from 'react-fontawesome';
-import withTheme from '../ThemeProvider';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface SorterProps {
   type: string;
   desc: boolean;
   toggle: any;
   active: boolean;
-  theme: any;
+  theme: Theme;
 }
 
 interface SorterState {

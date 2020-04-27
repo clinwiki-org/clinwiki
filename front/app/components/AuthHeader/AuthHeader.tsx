@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import AuthButton from 'components/AuthButton';
-import withTheme from 'containers/ThemeProvider';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface AuthHeaderProps {
   user: {

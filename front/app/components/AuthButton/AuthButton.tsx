@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { History } from 'history';
 import { logout } from 'utils/auth';
-import withTheme from 'containers/ThemeProvider';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface AuthButtonProps {
   user: {
@@ -11,7 +11,7 @@ interface AuthButtonProps {
     roles: string[];
   } | null;
   history: History;
-  theme: any;
+  theme: Theme;
 }
 
 const ButtonWrapper = styled.div`
@@ -86,6 +86,7 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
         </li>
       );
     }
+    const t = this.props.theme;
     return (
       <ThemedButtonWrapper className="pull-right">
         <DropdownButton

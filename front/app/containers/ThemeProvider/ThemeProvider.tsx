@@ -1,7 +1,73 @@
 import * as React from 'react';
 import SiteProvider from 'containers/SiteProvider';
 
-function themeFromSite(site) {
+export interface Theme {
+  button: string;
+  buttonSecondary: string;
+  sorterColor: string;
+  backgroundColor: string;
+  authHeader: {
+    headerBackground: string;
+    font: string;
+    hoverFont: string;
+    logoFont: string;
+  };
+  authPage: {
+    signInLinks: string;
+    signInLinksHover: string;
+  };
+  authButton: {
+    button: string;
+    buttonFont: string;
+    buttonHover: '#e6e6e6';
+    buttonBorderHover: '#adadad';
+    lightTextColor: string;
+  };
+  aggSideBar: {
+    sideBarBackground: string;
+    sideBarFont: '#bac5d0';
+    sideBarFontHover: string;
+    sideBarTitleFont: string;
+  };
+  crumbsBar: {
+    containerBackground: '#f2f2f2';
+    containerFont: '#333';
+    filterBarBackground: 'rgba(85, 184, 141, 0.5)';
+  };
+  crumbs: {
+    crumbBackground: string;
+    crumbFont: '#fff';
+  };
+  presearch: {
+    presearchHeaders: string;
+  };
+  searchResults: {
+    resultsHeaderBackground: string;
+    resultsRowHighlight: string;
+    resultsPaginationButtons: string;
+  };
+  studyPage: {
+    sectionBorderColor: string;
+    reviewStarColor: string;
+    studyPageHeader: string;
+    panelHeading: string;
+  };
+  mapSection: {
+    markerFontColor: string;
+    markerBorderColor: string;
+    facilityCardColor: string;
+    warningBorderColor: string;
+    warningFontColor: string;
+    errorBorderColor: string;
+    errorFontColor: string;
+    facilityWarningColor: string;
+    facilityErrorColor: string;
+    facilityWarningPointer: string;
+    facilityErrorPointer: string;
+  };
+}
+
+function themeFromSite(site) : Theme {
   const themeString = site.themes;
   //fallback colors
   let thisTheme = {
@@ -121,16 +187,8 @@ function themeFromSite(site) {
   };
 }
 
-interface ThemeContextType {
-  theme: any;
-}
-
-const context: ThemeContextType = {
-  theme: {},
-};
-
-export const ThemeContext = React.createContext(context);
-let staticTheme: any = null;
+export const ThemeContext = React.createContext({} as Theme|null);
+let staticTheme: Theme|null = null;
 
 export const ProvideTheme = ({ children }) => {
   return (
@@ -147,13 +205,13 @@ export const ProvideTheme = ({ children }) => {
   );
 };
 
-export const withTheme = Component => {
-  class ThemeProvider extends React.Component {
+export function withTheme<T>(Component : React.ComponentType<T>) : React.ComponentClass<Omit<T,'theme'>> {
+  class ThemeProvider extends React.Component<Omit<T,'theme'>> {
     render() {
       return (
         <ThemeContext.Consumer>
           {theme =>
-            theme ? <Component theme={theme} {...this.props} /> : null
+            theme ? <Component theme={theme} {...this.props as T} /> : null
           }
         </ThemeContext.Consumer>
       );

@@ -39,7 +39,7 @@ import {
 } from 'utils/siteViewUpdater';
 import { equals, prop, last, view, props } from 'ramda';
 import { History, Location } from 'history';
-import withTheme from 'containers/ThemeProvider';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 
 interface SearchFormProps {
@@ -52,7 +52,7 @@ interface SearchFormProps {
   site: any;
   handleSiteViewEdit?: any;
   // currentSiteView?: any;
-  theme: any;
+  theme: Theme;
 }
 
 interface SearchFormState {

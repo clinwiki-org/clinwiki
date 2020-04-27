@@ -8,7 +8,7 @@ import { CSSTransition } from 'react-transition-group';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
-import withTheme from 'containers/ThemeProvider';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface StudyPageSectionProps {
   nctId: string;
@@ -21,7 +21,7 @@ interface StudyPageSectionProps {
   history: History;
   location: Location;
   match: match<{ nctId: string; searchId: string }>;
-  theme: any;
+  theme: Theme;
 }
 
 interface StudyPageSectionsState {

@@ -15,13 +15,13 @@ import StyledError from './StyledError';
 import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
-import withTheme from './../ThemeProvider';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import { ThemedLinkContainer } from '../../components/StyledComponents';
 
 interface SignInPageProps {
   history: History;
   location: Location;
-  theme: any;
+  theme: Theme;
 }
 interface SignInPageState {
   form: {
