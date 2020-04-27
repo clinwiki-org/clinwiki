@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import withTheme from '../../containers/ThemeProvider';
 
-const StyledButton = styled.div`
+// keep this as a button!
+const StyledButton = styled.button`
   padding: 10px 15px;
   background: ${props => props.theme.button};
   display: inline-block;
@@ -24,19 +25,17 @@ const StyledButton = styled.div`
 
 export const ThemedButton = withTheme(StyledButton);
 
-const LinkContainer = 
-styled.div`
- position: absolute;
- bottom: 30px;
- a {
-   color: ${props => props.theme.authPage.signInLinks};
-   margin-right: 15px;
- } 
- a:hover {
-   color: ${props => props.theme.authPage.signInLinksHover}
- }
- `
-;
+const LinkContainer = styled.div`
+  position: absolute;
+  bottom: 30px;
+  a {
+    color: ${props => props.theme.authPage.signInLinks};
+    margin-right: 15px;
+  }
+  a:hover {
+    color: ${props => props.theme.authPage.signInLinksHover};
+  }
+`;
 
 export const ThemedLinkContainer = withTheme(LinkContainer);
 

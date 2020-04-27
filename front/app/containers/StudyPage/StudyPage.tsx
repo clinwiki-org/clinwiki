@@ -454,7 +454,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   fetchPolicy="cache-only">
                   {({ data, loading, error }) => (
                     <StudyWrapper>
-                      <Row md={12} style={{background: this.props.theme.studyPage.studyPageHeader}}>
+                      <Row
+                        md={12}
+                        style={{
+                          background: this.props.theme.studyPage
+                            .studyPageHeader,
+                        }}>
                         <BackButtonWrapper>
                           {this.renderBackButton('⤺︎ Back', backLink())}
                           {this.renderReviewsSummary(data)}

@@ -49,6 +49,7 @@ import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
 import withTheme from '../ThemeProvider';
+import { ApolloClient } from 'apollo-boost';
 
 const PAGE_SIZE = 25;
 
@@ -180,7 +181,7 @@ interface AggDropDownProps {
   configType?: 'presearch' | 'autosuggest' | 'facetbar';
   returnAll?: boolean;
   resetSelectAll?: () => void;
-  client: any;
+  client: ApolloClient<any>;
   site: SiteFragment;
   currentSiteView: SiteFragment_siteView;
 }

@@ -140,7 +140,7 @@ interface Props {
   geoStatus?: string;
   contacts: FacilitiesPageQuery_study_facilities_contacts[];
   text: number;
-  name: string|null;
+  name: string | null;
   address: string;
   $hover?: boolean;
 }

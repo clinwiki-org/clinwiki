@@ -12,10 +12,11 @@
             "url": "http://localhost:3001/",
             "webRoot": "${workspaceFolder}"
         },
-        {
-            "type": "firefox",
+        { 
+            "type": "chrome",
             "request": "attach",
-            "name": "Attach"
-        },
+            "name": "Attach Chrome",
+            "port": 9222
+        }
     ]
 }

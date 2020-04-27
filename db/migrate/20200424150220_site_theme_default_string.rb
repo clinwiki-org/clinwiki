@@ -9,7 +9,7 @@ class SiteThemeDefaultString < ActiveRecord::Migration[5.2]
       backgroundColor:"#4D5863",
       primaryAltColor:"#5786AD",
       authHeaderColor:"#5786AD",
-      sideBarColor: "333"
+      sideBarColor: "#4d5762"
       }.to_json} ")
   end
 end

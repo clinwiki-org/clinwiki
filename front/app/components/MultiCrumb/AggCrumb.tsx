@@ -21,7 +21,13 @@ interface AggCrumbState {}
 
 class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
   render() {
-    const { agg, grouping, searchParams, updateSearchParams, thisSiteView } = this.props;
+    const {
+      agg,
+      grouping,
+      searchParams,
+      updateSearchParams,
+      thisSiteView,
+    } = this.props;
     const updater = new AggFilterInputUpdater(
       agg.field,
       searchParams,
@@ -38,7 +44,9 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         />
       );
     } else if (agg.lte || agg.gte) {
-      let label = `${updater.getMinString(thisSiteView)} — ${updater.getMaxString(thisSiteView)}`;
+      let label = `${updater.getMinString(
+        thisSiteView
+      )} — ${updater.getMaxString(thisSiteView)}`;
       if (!agg.lte) {
         label = `≥ ${updater.getMinString(thisSiteView)}`;
       }

@@ -171,7 +171,7 @@ const groupBucketsByLabel = ({ data, labels }) =>
 
 interface BulkEditProps {
   match: match<{ searchId?: string }>;
-  history:History;
+  history: History;
 }
 interface BulkEditState {
   undoHistory: any[];
@@ -200,8 +200,10 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
           workflow.allSuggestedLabels.map(name => ({ name, rank: null }))
         ).map(prop('name'));
 
-        const hash = new URLSearchParams(this.props.history.location.search).getAll("hash").toString() as |string |null;
-        console.log("HASH",hash)
+    const hash = new URLSearchParams(this.props.history.location.search)
+      .getAll('hash')
+      .toString() as string | null;
+    console.log('HASH', hash);
     return (
       <Query query={SearchPageParamsQuery} variables={{ hash }}>
         {queryParams => {
@@ -240,11 +242,11 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                 );
                 if (!labels.length) return null;
                 //Band-aid fix to the -99999999 breaking BucketsForLabelQuery, does not like the name field as -9999999999
-                labels.map((label, index)=>{	
-                  if (label==-99999999999){	
-                    labels[index]= "_missing"	
-                  }	
-                })	
+                labels.map((label, index) => {
+                  if (label == -99999999999) {
+                    labels[index] = '_missing';
+                  }
+                });
                 return (
                   <Query
                     query={bucketsForLabels(labels)}

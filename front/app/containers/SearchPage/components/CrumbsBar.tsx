@@ -25,7 +25,7 @@ import { AggCallback, SearchParams } from '../Types';
 import { isEmpty, props } from 'ramda';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
-import withTheme from 'containers/ThemeProvider';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import ThemeProvider from 'containers/ThemeProvider';
 
@@ -175,7 +175,7 @@ interface CrumbsBarProps {
   currentSiteView: SiteFragment_siteView;
   totalResults: number;
   searchHash: string;
-  theme: any;
+  theme: Theme;
 }
 
 interface CrumbsBarState {

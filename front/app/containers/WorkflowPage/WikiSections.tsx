@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {ThemedButton} from '../../components/StyledComponents'
+import { ThemedButton } from '../../components/StyledComponents';
 import { WikiSection } from 'utils/helpers';
 import { Button, FormControl, Panel } from 'react-bootstrap';
 import UpdateWikiSectionsMutation, {

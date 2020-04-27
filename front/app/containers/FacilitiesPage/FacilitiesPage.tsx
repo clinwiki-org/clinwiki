@@ -282,7 +282,7 @@ class FacilitiesPage extends React.PureComponent<
             location: string;
             index: number;
             status: string;
-            contacts: FacilitiesPageQuery_study_facilities_contacts[]
+            contacts: FacilitiesPageQuery_study_facilities_contacts[];
             latitude: number | null;
             longitude: number | null;
             geoStatus: string;

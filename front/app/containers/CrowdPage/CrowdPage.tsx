@@ -130,7 +130,7 @@ const TableWrapper = styled(Table)`
 export class UpsertMutationComponent extends Mutation<
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables
-  > { }
+> {}
 
 export type UpsertMutationFn = MutationFn<
   CrowdPageUpsertWikiLabelMutation,
@@ -140,14 +140,14 @@ export type UpsertMutationFn = MutationFn<
 export class DeleteMutationComponent extends Mutation<
   CrowdPageDeleteWikiLabelMutation,
   CrowdPageDeleteWikiLabelMutationVariables
-  > { }
+> {}
 
 export type DeleteMutationFn = MutationFn<
   CrowdPageDeleteWikiLabelMutation,
   CrowdPageDeleteWikiLabelMutationVariables
 >;
 
-class QueryComponent extends Query<CrowdPageQuery, CrowdPageQueryVariables> { }
+class QueryComponent extends Query<CrowdPageQuery, CrowdPageQueryVariables> {}
 
 class Crowd extends React.Component<CrowdProps, CrowdState> {
   state: CrowdState = {

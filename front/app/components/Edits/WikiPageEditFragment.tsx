@@ -1,6 +1,6 @@
-import * as React from "react";
-import gql from "graphql-tag";
-import WikiPage from "containers/WikiPage";
+import * as React from 'react';
+import gql from 'graphql-tag';
+import WikiPage from 'containers/WikiPage';
 
 const WikiPageEditFragment = gql`
   fragment WikiPageEditFragment on WikiPageEdit {
