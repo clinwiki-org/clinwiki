@@ -113,6 +113,30 @@ class SearchService
   # Search results from params
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false, includes: [])
+    options = search_options(search_after: search_after, reverse: reverse, includes: includes)
+    search_result = Study.search("*", options) { |body| enrich_body(body) }
+    {
+      recordsTotal: search_result.total_entries,
+      studies: search_result.results,
+      aggs: search_result.aggs,
+    }
+  end
+
+  def scroll
+    scroll_options = search_options.except(
+      :page, :per_page, :aggs
+    ).merge(scroll: "1m", load: false)
+
+    Study.search("*", scroll_options) do |body|
+      enrich_body(body)
+    end
+  end
+
+  def enrich_body(body)
+    body[:query][:bool][:must] = { query_string: { query: search_query } }
+  end
+
+  def search_options(search_after: nil, reverse: false, includes: [])
     crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
       &.dig(:front_matter_keys, :buckets)
       &.map { |bucket| "fm_#{bucket[:key]}" } || []
@@ -121,14 +145,7 @@ class SearchService
 
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
-    search_result = Study.search("*", options) do |body|
-      body[:query][:bool][:must] = { query_string: { query: search_query } }
-    end
-    {
-      recordsTotal: search_result.total_entries,
-      studies: search_result.results,
-      aggs: search_result.aggs,
-    }
+    options
   end
 
   def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url: nil, config_type: nil, return_all: false)

@@ -46,7 +46,7 @@ gem "graphql-batch"
 gem "mini_magick"
 #  User creation gem
 gem "devise"
-gem "searchkick", "3.1.0"
+gem "searchkick", "~> 4.3.0"
 gem "font-awesome-rails"
 gem "font-awesome-sass"
 gem "bootstrap-sass"
@@ -108,4 +108,6 @@ gem "factory_bot", "~> 5.1", group: :test
 
 gem "faker", "~> 2.11", group: :test
 
-gem "database_cleaner-active_record", "~> 1.8", :group => :test
+gem "database_cleaner-active_record", "~> 1.8", group: :test
+
+gem "aws-sdk-s3", "~> 1.63", require: true
