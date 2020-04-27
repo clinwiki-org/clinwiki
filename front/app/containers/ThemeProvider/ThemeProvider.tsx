@@ -1,6 +1,7 @@
 import * as React from 'react';
 import SiteProvider from 'containers/SiteProvider';
 
+// This type is really long but I don't think we'll have to change it very often
 export interface Theme {
   button: string;
   buttonSecondary: string;
