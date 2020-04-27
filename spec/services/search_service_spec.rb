@@ -196,4 +196,36 @@ describe SearchService do
         end
       end
     end
+
+    describe 'nested range filter' do
+      let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [ ]}}
+      subject {SearchService.new(params).send(:nested_range_filter,key,filter)}
+      context "for a non nested key" do
+        let (:key) {"hello"}
+        let (:filter) {{ gte: Date.new(2010, 1, 1), lte: Date.new(2020, 1, 1)} }
+
+        it { is_expected.to be_nil}
+      end
+      context "for a nested key with range" do
+        let (:key) {"hello.stuff"}
+        let(:filter) { {gte: "2020-10-10", lte: "2020-10-12"} }
+
+        it "should return a nested filter" do
+            expect(subject).to eql(
+                {
+                  nested: {
+                    path: "hello",
+                    query: {
+                      bool: {
+                        should:{
+                          range: { "hello.stuff" => {gte: Timeliness.parse(filter[:gte]).utc,lte: Timeliness.parse(filter[:lte]).utc}},
+                        },
+                      },
+                    },
+                  },
+                }
+            )
+        end
+      end
+    end
 end
