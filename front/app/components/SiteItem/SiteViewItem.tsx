@@ -1,6 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, Checkbox, FormControl } from 'react-bootstrap';
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  MenuItem,
+  DropdownButton,
+} from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { withRouter } from 'react-router-dom';
 import DeleteSiteViewMutation, {
@@ -14,7 +20,9 @@ import CopySiteViewMutation, {
   CopySiteViewMutationFn,
 } from 'mutations/CopySiteViewMutation';
 import { Link } from 'react-router-dom';
+import 'override.css';
 import ThemedButton from 'components/StyledComponents/index';
+import withTheme from 'containers/ThemeProvider/ThemeProvider';
 
 interface SiteViewItemProps {
   match: any;
@@ -23,12 +31,22 @@ interface SiteViewItemProps {
   refresh: () => void;
   siteView: SiteViewFragment;
   site: any;
+  type: string;
+  theme?: any;
 }
 
 const StyledButton = styled(ThemedButton)`
   margin-right: 15px;
 `;
+
+const StyledDropdown = styled(DropdownButton)`
+  background-color: ${props => props.theme.button};
+`;
+
+const ThemedDropdown = withTheme(StyledDropdown);
+
 // const PreviewText;
+const siteViewTypes: any[] = ['admin', 'user', 'search'];
 
 class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   handleEditClick = () => {
@@ -99,8 +117,67 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     });
   };
 
+  renderDropDown = siteViewUrl => {
+    if (siteViewUrl == 'default' || siteViewUrl == 'user') {
+      return;
+    }
+    console.log(this.props.theme);
+    return (
+      <UpdateSiteViewMutation>
+        {updateSiteView => (
+          //needs to be themed, traditional methods of theming not working
+          <DropdownButton
+            bsStyle="default"
+            title="Change Type"
+            key="default"
+            id="dropdown-basic-default"
+            style={{
+              margin: '1em 1em 1em 0',
+              // background: this.props.theme.button,
+            }}>
+            {siteViewTypes.map(type => (
+              <MenuItem
+                key={type}
+                name={`set:search.type`}
+                onClick={e => this.handleChangeType(updateSiteView, type)}>
+                {type}
+              </MenuItem>
+            ))}
+          </DropdownButton>
+        )}
+      </UpdateSiteViewMutation>
+    );
+  };
+  handleChangeType = (
+    updateSiteView: UpdateSiteViewMutationFn,
+    type: string
+  ) => {
+    const { siteView } = this.props;
+    let mutationArray: any[] = [
+      { path: ['search', 'type'], operation: 'SET', payload: type },
+    ];
+    if (siteView.default) {
+      alert('There must be a default site.');
+      return null;
+    }
+
+    updateSiteView({
+      variables: {
+        input: {
+          default: false,
+          id: siteView.id,
+          mutations: mutationArray,
+          url: siteView.url,
+        },
+      },
+    }).then(() => {
+      console.log('refreshing');
+      this.props.refresh();
+    });
+  };
+
   render() {
-    const { siteView, site } = this.props;
+    const { siteView, site, type } = this.props;
 
     let urlString;
     if (site.subdomain != 'default') {
@@ -113,17 +190,19 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       <tr>
         <td>{siteView.name}</td>
         <td>{siteView.url}</td>
+        {type === 'search' && (
+          <td>
+            <UpdateSiteViewMutation>
+              {updateSiteView => (
+                <Checkbox
+                  checked={siteView.default}
+                  onChange={() => this.handleCheckbox(updateSiteView)}
+                />
+              )}
+            </UpdateSiteViewMutation>
+          </td>
+        )}
 
-        <td>
-          <UpdateSiteViewMutation>
-            {updateSiteView => (
-              <Checkbox
-                checked={siteView.default}
-                onChange={() => this.handleCheckbox(updateSiteView)}
-              />
-            )}
-          </UpdateSiteViewMutation>
-        </td>
         <td>
           <a target="_blank" href={urlString}>
             {urlString}
@@ -145,6 +224,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
               </StyledButton>
             )}
           </DeleteSiteViewMutation>
+          {this.renderDropDown(siteView.url)}
         </td>
       </tr>
     );

@@ -160,9 +160,6 @@ const LoaderWrapper = styled.div`
   text-align: center;
 `;
 
-const ThemedListGroup = withTheme(ListGroup);
-const ThemedListGroupItem = withTheme(ListGroupItem);
-
 interface CrumbsBarProps {
   searchParams: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
@@ -260,7 +257,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       searchParams.q?.length +
       searchParams.crowdAggFilters?.length +
       searchParams.aggFilters?.length;
-    console.log(totalLength);
+    // console.log(totalLength);
     if (totalLength > 0) {
       yield (
         <span key="buttons">
@@ -563,18 +560,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   toggleShowFilters = () => {
     this.setState({ showFilters: !this.state.showFilters });
   };
-  // loadPaginator = () => {
-  //   return (
-  //     <div className="right-align">
-  //       <div>{this.props.recordsTotal} results</div>
-  //       <div>
-  //         {this.props.recordsTotal > MAX_WINDOW_SIZE
-  //           ? `(showing first ${MAX_WINDOW_SIZE})`
-  //           : null}
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
@@ -628,9 +613,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                 </div>
               </Row>
               {showCrumbsBar ? (
-                // having trouble getting the theme applied to these ListGroups
-                // <ThemeProvider>
-                //   {theme => (
                 <Row>
                   <Col
                     md={12}
@@ -702,9 +684,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                     </ListGroup>
                   </Col>
                 </Row>
-              ) : //   )}
-              // </ThemeProvider>
-              null}
+              ) : null}
             </Grid>
           )}
         </ApolloConsumer>

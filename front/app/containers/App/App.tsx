@@ -4,11 +4,12 @@ import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage';
 import NotConfiguredPage from 'containers/NotConfiguredPage';
 import SearchPage from 'containers/SearchPage';
+import ProfilePage from 'containers/ProfilePage';
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
 import StudyPage from 'containers/StudyPage';
-import SearchStudyPage from 'containers/SearchStudyPage'
+import SearchStudyPage from 'containers/SearchStudyPage';
 import InterventionPage from 'containers/InterventionPage';
 import {
   SignInPage,
@@ -25,7 +26,6 @@ import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
-
 
 interface AppProps {
   history: History;
@@ -48,17 +48,18 @@ class App extends React.PureComponent<AppProps> {
         <CurrentUser>
           {user => <AuthHeader user={user} history={this.props.history} />}
         </CurrentUser>
-        <MainWrapper
-          className="main"
-          style={{ paddingTop: '50px' }}>
+        <MainWrapper className="main" style={{ paddingTop: '50px' }}>
           <Switch>
-            <Route exact path="/" component={this.props.history.location.search ? SearchPage:LandingPage} />
+            <Route
+              exact
+              path="/"
+              component={
+                this.props.history.location.search ? SearchPage : LandingPage
+              }
+            />
             <Route exact path="/about" component={AboutPage} />
             <Route exact path="/version" component={ReleaseNotes} />
-            <Route
-              path="/search/"
-              component={SearchPage}
-            />
+            <Route path="/search/" component={SearchPage} />
             <Route path="/search/:siteviewUrl" component={SearchPage} />
             <Route
               path="/study/:nctId/review/:reviewId/edit"
@@ -66,9 +67,10 @@ class App extends React.PureComponent<AppProps> {
             />
             <Route path="/study/:nctId" component={SearchStudyPage} />
             <Route path="/intervention/:id" component={InterventionPage} />
-            <Route path="/profile" component={EditProfilePage} />
+            <Route exact path="/profile" component={EditProfilePage} />
+            <Route path="/profile/:id/" component={ProfilePage} />
             <Route path="/workflows" component={EditWorkflowsPage} />
-            <Route path={`/bulk`}	component={BulkEditPage}/>
+            <Route path={`/bulk`} component={BulkEditPage} />
             <Route path="/sites/:id/edit" component={SitesEditPage} />
             <Route path="/sites/new" component={SitesNewPage} />
             <Route path="/sites" component={SitesPage} />

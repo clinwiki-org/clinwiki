@@ -40,6 +40,7 @@ import {
   view,
   remove,
   equals,
+  props,
 } from 'ramda';
 import SearchView from './SearchView';
 import CrumbsBar from './components/CrumbsBar';
@@ -271,6 +272,8 @@ interface SearchPageProps {
   location: any;
   ignoreUrlHash?: boolean | null;
   searchParams?: SearchParams;
+  userId?: string;
+  profileParams?: any;
   site: SiteFragment;
   currentSiteView: SiteFragment_siteView;
   mutate: any;
@@ -286,6 +289,7 @@ interface SearchPageState {
   searchCrowdAggs: AggBucketMap;
   removeSelectAll: boolean;
   totalRecords: number;
+  siteViewType: string;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -305,6 +309,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchCrowdAggs: {},
     removeSelectAll: false,
     totalRecords: 0,
+    siteViewType: '',
   };
 
   numberOfPages: number = 0;
@@ -316,6 +321,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     props: SearchPageProps,
     state: SearchPageState
   ) {
+    // if (props.userId) {
+    //   return {
+    //     params: props.searchParams || DEFAULT_PARAMS,
+    //   };
+    // }
     if (state.params == null && props.ignoreUrlHash) {
       return {
         params: props.searchParams || DEFAULT_PARAMS,
@@ -332,17 +342,25 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.previousSearchData = previousSearchData;
   };
 
-  getDefaultParams = () => {
+  getDefaultParams = (view: SiteViewFragment, userId: string | undefined) => {
+    if (userId) {
+      const profileViewParams = preselectedFilters(view);
+      profileViewParams.aggFilters.push({ field: 'userId', values: [userId] });
+
+      return { ...DEFAULT_PARAMS, ...profileViewParams };
+    }
     return {
       ...DEFAULT_PARAMS,
-      ...preselectedFilters(this.props.currentSiteView),
+      ...preselectedFilters(view),
     };
   };
 
   searchParamsFromQuery = (
-    params: SearchPageParamsQuery_searchParams | null | undefined
+    params: SearchPageParamsQuery_searchParams | null | undefined,
+    view: SiteViewFragment
   ): SearchParams => {
-    const defaultParams = this.getDefaultParams();
+    const defaultParams = this.getDefaultParams(view, this.props.userId);
+
     if (!params) return defaultParams;
 
     const q = params.q
@@ -358,7 +376,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       params.crowdAggFilters || []
     ) as AggFilterInput[];
     const sorts = map(dissoc('__typename'), params.sorts || []) as SortInput[];
-
+    // console.log('aggfilters', aggFilters);
     return {
       aggFilters,
       crowdAggFilters,
@@ -399,10 +417,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     };
   };
 
-  handleResetFilters = () => {
+  handleResetFilters = (view: SiteViewFragment) => () => {
     this.setState(
       {
-        params: this.getDefaultParams(),
+        params: this.getDefaultParams(view, this.props.userId),
         removeSelectAll: true,
       },
       () => this.updateSearchParams(this.state.params)
@@ -523,15 +541,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         query={SearchPageParamsQuery}
         variables={{ hash }}
         onCompleted={async (data: any) => {
-          this.updateStateFromHash(data.searchParams);
+          this.updateStateFromHash(data.searchParams, currentSiteView);
         }}>
         {result => {
           const { data, loading, error } = result;
           if (error || loading) return null;
 
           const params: SearchParams = this.searchParamsFromQuery(
-            data!.searchParams
+            data!.searchParams,
+            currentSiteView
           );
+          // console.log('params', params);
           // hydrate state params from hash
           if (!this.state.params) {
             this.setState({ params });
@@ -539,7 +559,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           }
           const opened = this.state.openedAgg && this.state.openedAgg.name;
           const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
+          const { aggFilters = [], crowdAggFilters = [] } =
+            this.state.params || {};
 
+          // console.log("SViewURL1", siteViewUrl())
           return (
             <SearchView
               key={`${hash}+${JSON.stringify(params)}`}
@@ -627,6 +650,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
+    if (this.props.userId) {
+      this.setState({
+        siteViewType: 'user',
+      });
+    } else {
+      this.setState({
+        siteViewType: 'search',
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -648,8 +680,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return hash.toString();
   }
 
-  updateStateFromHash(searchParams) {
-    const params: SearchParams = this.searchParamsFromQuery(searchParams);
+  updateStateFromHash(searchParams, view) {
+    const params: SearchParams = this.searchParamsFromQuery(searchParams, view);
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
 
     if (searchTerm.has('q')) {
@@ -673,24 +705,40 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       },
     });
   }
+
   updateSearchParams = async params => {
+    console.log('======================================');
+    console.log('update search params');
     this.setState({
       ...this.state,
       params: { ...(this.state?.params || {}), ...params },
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
+
     const siteViewUrl =
       new URLSearchParams(this.props.history.location.search)
         .getAll('sv')
         .toString() || 'default';
+
     if (data?.provisionSearchHash?.searchHash?.short) {
+      if (siteViewUrl === 'user') {
+        this.props.history.push(
+          `/profile/${this.props.userId}?hash=${
+            data!.provisionSearchHash!.searchHash!.short
+          }&sv=user`
+        );
+        return;
+      }
       this.props.history.push(
         `/search?hash=${
           data!.provisionSearchHash!.searchHash!.short
         }&sv=${siteViewUrl}`
       );
+      return;
     }
+
+    console.log('======================================');
   };
 
   getTotalResults = total => {
@@ -757,8 +805,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  renderCrumbs = () => {
+  renderCrumbs = siteView => {
     const { params, totalRecords } = this.state;
+    // if (this.props.userId) {
+    //   this.getDefaultParams(siteView);
+    // }
     const q =
       this.state.params?.q.key === '*'
         ? []
@@ -793,6 +844,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
+    // console.log('SP Props', this.props);
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { currentSiteView } = this.props;
@@ -877,7 +929,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     </ThemedSidebarContainer>
                   )}
                   <ThemedMainContainer>
-                    {showBreadCrumbs && this.renderCrumbs()}
+                    {showBreadCrumbs && this.renderCrumbs(currentSiteView)}
                     {showPresearch && this.renderPresearch(hash)}
                     {this.renderSearch()}
                   </ThemedMainContainer>
