@@ -483,9 +483,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
               />
             </div>
           </FormGroup>
-          <Button type="submit">
+          <ThemedButton type="submit">
             <FontAwesome name="search" />
-          </Button>
+          </ThemedButton>
         </div>
       );
     } else if (showAutoSuggest == false) {
