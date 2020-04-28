@@ -34,7 +34,7 @@ class ProfilePage extends React.Component<ProfilePageProps> {
           history={this.props.history}
           location={this.props.location}
           match={this.props.match}
-          userId={this.props.match.params.id}
+          email={this.props.match.params.id}
           profileParams={this.getUserParams(this.props.match.params.id)}
         />
       </div>

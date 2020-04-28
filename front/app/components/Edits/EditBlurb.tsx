@@ -23,9 +23,9 @@ class EditBlurb extends React.Component<EditBlurbProps> {
     }
     if (user.firstName) {
       const userName = `${user.firstName} ${user.lastName && user.lastName[0]}`;
-      return <Link to={`/profile/${user.id}?sv=user`}>`${userName}`</Link>;
+      return <Link to={`/profile/${user.email}?sv=user`}>`${userName}`</Link>;
     }
-    return <Link to={`/profile/${user.id}?sv=user`}>{user.email}</Link>;
+    return <Link to={`/profile/${user.email}?sv=user`}>{user.email}</Link>;
   }
 
   getBlurb() {

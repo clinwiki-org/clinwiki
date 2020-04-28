@@ -41,6 +41,7 @@ import {
   remove,
   equals,
   props,
+  find,
 } from 'ramda';
 import SearchView from './SearchView';
 import CrumbsBar from './components/CrumbsBar';
@@ -711,7 +712,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       },
     });
   }
-
+   findFilter=(variable:string)=>{
+    let aggFilter = this.state.params?.aggFilters;
+    let response = find(propEq('field', variable ), aggFilter||[]) as {
+      field:string;
+      label:string;
+    }|null ;
+    console.log(response)
+    return response
+  }
   updateSearchParams = async params => {
     console.log('======================================');
     console.log('update search params');
@@ -732,6 +741,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         console.log("pushing")
         this.props.history.push(
           `/profile?hash=${
+            data!.provisionSearchHash!.searchHash!.short
+          }&sv=${siteViewUrl}`
+        ); return;
+      }else if(this.findFilter("wiki_page_edits.email")){
+        this.props.history.push(
+          `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short
           }&sv=${siteViewUrl}`
         ); return;
