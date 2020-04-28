@@ -19,6 +19,7 @@ import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { equals, pick } from 'ramda';
 import StyledWrapper from './StyledWrapper';
+import {ThemedMainContainer} from 'components/StyledComponents';
 
 interface EditProfilePageProps {
   user: UserFragment | null;
@@ -113,8 +114,8 @@ class EditProfilePage extends React.Component<
   render() {
     console.log('LOGGED IN USER', this.props.user)
     return (
-      <StyledWrapper>
-        <Col md={12}>
+      <ThemedMainContainer>
+        {/* <Col md={12}> */}
           <StyledContainer>
             <StyledFormControl
               name="firstName"
@@ -164,7 +165,7 @@ class EditProfilePage extends React.Component<
             </EditProfileMutationComponent>
             {this.renderErrors()}
           </StyledContainer>
-        </Col>
+        {/* </Col> */}
         <h2>My Contributions</h2>
         {this.props.user ?
         <SearchPage
@@ -175,7 +176,7 @@ class EditProfilePage extends React.Component<
           //userId={this.props.match.params.id}
           //profileParams={this.getUserParams(this.props.match.params.id)}
         /> : <div>No User</div>}
-      </StyledWrapper>
+      </ThemedMainContainer>
     );
   }
 }

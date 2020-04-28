@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import withTheme from '../../containers/ThemeProvider';
+import {Col} from 'react-bootstrap';
 
 // keep this as a button!
 const StyledButton = styled.button`
@@ -38,5 +39,44 @@ const LinkContainer = styled.div`
 `;
 
 export const ThemedLinkContainer = withTheme(LinkContainer);
+
+const MainContainer = styled(Col)`
+  background-color: #eaedf4;
+  min-height: 100vh;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  flex: 1;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .rt-th {
+    text-transform: capitalize;
+    padding: 15px !important;
+    background: ${props =>
+      props.theme.searchResults.resultsHeaderBackground} !important;
+    color: #fff;
+  }
+
+  .ReactTable .-pagination .-btn {
+    background: ${props =>
+      props.theme.searchResults.resultsPaginationButtons} !important;
+  }
+
+  div.rt-tbody div.rt-tr:hover {
+    background: ${props =>
+      props.theme.searchResults.resultsRowHighlight} !important;
+    color: #fff !important;
+  }
+
+  .rt-table {
+  }
+`;
+
+
+export const ThemedMainContainer = withTheme(MainContainer);
+
+
+
 
 export default ThemedButton;

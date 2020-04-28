@@ -62,7 +62,7 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
   };
 
   handleProfileClick = () => {
-    this.props.history.push('/profile');
+    this.props.history.push('/profile?sv=user');
   };
 
   handleWorkflowsClick = () => {
