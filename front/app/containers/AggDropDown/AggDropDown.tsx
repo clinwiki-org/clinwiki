@@ -23,7 +23,7 @@ import {
 import { withApollo } from 'react-apollo';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-import { capitalize } from 'utils/helpers';
+
 import {
   AggBucket,
   AggCallback,
@@ -50,6 +50,15 @@ import RangeSelector from './RangeSelector';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
 import withTheme from '../ThemeProvider';
 import { ApolloClient } from 'apollo-boost';
+import { capitalize } from 'utils/helpers';
+import {
+  ThemedPresearchCard,
+  ThemedPresearchHeader,
+  PresearchTitle,
+  PresearchFilter,
+  PresearchPanel,
+  PresearchContent,
+} from 'components/StyledComponents';
 
 const PAGE_SIZE = 25;
 
@@ -86,65 +95,6 @@ const PanelWrapper = styledComponents.div`
   .range-selector button {
     width: 100%;
   }
-`;
-
-// Presearch styles
-
-const PresearchCard = styledComponents.div`
-  display: flex;
-  flex-direction: column;
-  border-radius: 12px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: ${props => props.theme.buttonSecondary};
-  
-  margin: 10px;
-  flex: 1;
-  // height: 310px;
-  min-width: 320px;
-  max-width: 320px;
-  background: white;
-`;
-
-const ThemedPresearchCard = withTheme(PresearchCard);
-
-const PresearchHeader = styledComponents.div`
-  background-color: ${props => props.theme.presearch.presearchHeaders};
-  padding: 5px;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  height: 50px;
-`;
-
-const ThemedPresearchHeader = withTheme(PresearchHeader);
-
-const PresearchTitle = styledComponents.div`
-  color: white;
-  font-size: 25px;
-  font-weight: 400;
-  margin-left: 5px;
-`;
-
-const PresearchFilter = styledComponents.div`
-  margin-left: 5px;
-  max-height: 30px;
-`;
-
-const PresearchPanel = styledComponents.div`
-  overflow-x: auto;
-  max-height: 200px;
-  min-height: 200px;
-  margin-left: 5px;
-  margin-top: 30px;
-`;
-
-const PresearchContent = styledComponents.div`
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px; 
-  background-color: white;
-  max-height: 260px;
 `;
 
 interface AggDropDownState {

@@ -81,6 +81,64 @@ export const ThemedMainContainer = withTheme(MainContainer);
 
 
 
+const PresearchCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${props => props.theme.buttonSecondary};
+
+  margin: 10px;
+  flex: 1;
+  // height: 310px;
+  min-width: 320px;
+  max-width: 320px;
+  background: white;
+`;
+
+export const ThemedPresearchCard = withTheme(PresearchCard);
+
+const PresearchHeader = styled.div`
+  background-color: ${props => props.theme.presearch.presearchHeaders};
+  padding: 5px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  height: 50px;
+`;
+
+export const ThemedPresearchHeader = withTheme(PresearchHeader);
+
+export const PresearchTitle = styled.div`
+  color: white;
+  font-size: 25px;
+  font-weight: 400;
+  margin-left: 5px;
+`;
+
+export const PresearchFilter = styled.div`
+  margin-left: 5px;
+  max-height: 30px;
+`;
+
+export const PresearchPanel = styled.div`
+  overflow-x: auto;
+  max-height: 200px;
+  min-height: 200px;
+  margin-left: 5px;
+  margin-top: 30px;
+`;
+
+export const PresearchContent = styled.div`
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  background-color: white;
+  max-height: 260px;
+`;
+
+export const LargeAddButton = styled.div``;
 
 export default ThemedButton;
 

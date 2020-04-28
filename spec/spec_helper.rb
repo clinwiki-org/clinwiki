@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "active_support/testing/time_helpers"
 require "webmock/rspec"
 require "spec_helpers/webmock_helpers"
 require "factory_bot"
@@ -49,6 +50,8 @@ RSpec.configure do |config|
   config.include(WebmockHelpers)
 
   config.include FactoryBot::Syntax::Methods
+
+  config.include ActiveSupport::Testing::TimeHelpers
 
   config.before(:suite) do
     FactoryBot.find_definitions

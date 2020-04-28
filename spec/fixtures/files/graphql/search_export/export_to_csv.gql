@@ -1,0 +1,13 @@
+mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {
+  exportToCsv(input: { searchHash: $searchHash, siteViewId: $siteViewId }) {
+    searchExport {
+      id
+      user {
+        id
+      }
+      shortLink {
+        short
+      }
+    }
+  }
+}
