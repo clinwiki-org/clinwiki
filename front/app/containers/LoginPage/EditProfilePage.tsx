@@ -7,19 +7,21 @@ import {
   EditProfileMutation,
   EditProfileMutationVariables,
 } from 'types/EditProfileMutation';
-import StyledFormControl from './StyledFormControl';
-import StyledContainer from './StyledContainer';
-import StyledButton from './StyledButton';
 import SearchPage from 'containers/SearchPage';
-import { Link } from 'react-router-dom';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import StyledError from './StyledError';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { equals, pick } from 'ramda';
-import StyledWrapper from './StyledWrapper';
-import {ThemedMainContainer} from 'components/StyledComponents';
+import {
+  ThemedMainContainer,
+  SearchContainer,
+  StyledProfileLabel,
+  StyledProfileValue,
+  StyledProfileForm,
+} from 'components/StyledComponents';
+import { ThemedButton } from './StyledButton';
 
 interface EditProfilePageProps {
   user: UserFragment | null;
@@ -35,6 +37,7 @@ interface EditProfilePageState {
   };
   prevUser: UserFragment | null;
   errors: string[];
+  isEditing: boolean;
 }
 
 const EDIT_PROFILE_MUTATION = gql`
@@ -71,6 +74,7 @@ class EditProfilePage extends React.Component<
     },
     prevUser: null,
     errors: [],
+    isEditing: false,
   };
 
   static getDerivedStateFromProps = (
@@ -100,7 +104,9 @@ class EditProfilePage extends React.Component<
   handleEditProfile = (editProfile: EditProfileMutationFn) => () => {
     editProfile({ variables: { input: this.state.form } });
   };
-
+  toggleEditProfile = () => {
+    this.setState({ isEditing: !this.state.isEditing });
+  };
   renderErrors = () => {
     return (
       <div style={{ marginTop: 20 }}>
@@ -110,77 +116,120 @@ class EditProfilePage extends React.Component<
       </div>
     );
   };
+  renderEditForm = () => {
+    return (
+      <div>
+        <span onClick={() => this.toggleEditProfile()}>X</span>
 
+        <SearchContainer>
+          <StyledProfileLabel>First Name:</StyledProfileLabel>
+          <StyledProfileForm
+            name="firstName"
+            placeholder="First name"
+            value={this.state.form.firstName}
+            onChange={this.handleInputChange}
+          />
+          <StyledProfileLabel>Last Name:</StyledProfileLabel>
+
+          <StyledProfileForm
+            name="lastName"
+            placeholder="Last name"
+            value={this.state.form.lastName}
+            onChange={this.handleInputChange}
+          />
+          <StyledProfileLabel>Default Query String:</StyledProfileLabel>
+
+          <StyledProfileForm
+            name="defaultQueryString"
+            placeholder="Default query string"
+            value={this.state.form.defaultQueryString}
+            onChange={this.handleInputChange}
+          />
+
+          <EditProfileMutationComponent
+            mutation={EDIT_PROFILE_MUTATION}
+            update={(cache, { data }) => {
+              const user =
+                data && data.updateProfile && data.updateProfile.user;
+              if (user) {
+                cache.writeQuery({
+                  query: CurrentUser.query,
+                  data: {
+                    me: user,
+                  },
+                });
+                return;
+              }
+
+              this.setState({
+                errors:
+                  (data && data.updateProfile && data.updateProfile.errors) ||
+                  [],
+              });
+            }}>
+            {editProfile => (
+              <ThemedButton onClick={this.handleEditProfile(editProfile)}>
+                Save
+              </ThemedButton>
+            )}
+          </EditProfileMutationComponent>
+          {this.renderErrors()}
+        </SearchContainer>
+      </div>
+    );
+  };
+  renderProfileInfo = () => {
+    if (this.props.user) {
+      return (
+        <div>
+          <span onClick={() => this.toggleEditProfile()}> Edit Profile</span>
+
+          <SearchContainer>
+            <StyledProfileLabel>First Name:</StyledProfileLabel>
+            <StyledProfileValue>
+              {' '}
+              {this.props.user.firstName}
+            </StyledProfileValue>
+            <StyledProfileLabel>Last Name: </StyledProfileLabel>
+            <StyledProfileValue>{this.props.user.lastName}</StyledProfileValue>
+            <StyledProfileLabel>E-mail: </StyledProfileLabel>
+            <StyledProfileValue>{this.props.user.email}</StyledProfileValue>
+            <StyledProfileLabel>Default Query String: </StyledProfileLabel>
+            <StyledProfileValue>
+              {this.props.user.defaultQueryString || 'N/A'}
+            </StyledProfileValue>
+          </SearchContainer>
+        </div>
+      );
+    }
+  };
   render() {
-    console.log('LOGGED IN USER', this.props.user)
+    console.log('LOGGED IN USER', this.props.user);
     return (
       <ThemedMainContainer>
         {/* <Col md={12}> */}
-          <StyledContainer>
-            <StyledFormControl
-              name="firstName"
-              placeholder="First name"
-              value={this.state.form.firstName}
-              onChange={this.handleInputChange}
-            />
-            <StyledFormControl
-              name="lastName"
-              placeholder="Last name"
-              value={this.state.form.lastName}
-              onChange={this.handleInputChange}
-            />
-            <StyledFormControl
-              name="defaultQueryString"
-              placeholder="Default query string"
-              value={this.state.form.defaultQueryString}
-              onChange={this.handleInputChange}
-            />
-
-            <EditProfileMutationComponent
-              mutation={EDIT_PROFILE_MUTATION}
-              update={(cache, { data }) => {
-                const user =
-                  data && data.updateProfile && data.updateProfile.user;
-                if (user) {
-                  cache.writeQuery({
-                    query: CurrentUser.query,
-                    data: {
-                      me: user,
-                    },
-                  });
-                  return;
-                }
-
-                this.setState({
-                  errors:
-                    (data && data.updateProfile && data.updateProfile.errors) ||
-                    [],
-                });
-              }}>
-              {editProfile => (
-                <StyledButton onClick={this.handleEditProfile(editProfile)}>
-                  Save
-                </StyledButton>
-              )}
-            </EditProfileMutationComponent>
-            {this.renderErrors()}
-          </StyledContainer>
+        <h2>My profile</h2>
+        {this.state.isEditing == true
+          ? this.renderEditForm()
+          : this.renderProfileInfo()}
         {/* </Col> */}
         <h2>My Contributions</h2>
-        {this.props.user ?
-        <SearchPage
-          history={this.props.history}
-          location={this.props.location}
-          match={this.props.match}
-          email={this.props.user.email}
-          //userId={this.props.match.params.id}
-          //profileParams={this.getUserParams(this.props.match.params.id)}
-        /> : <div>No User</div>}
+        {this.props.user ? (
+          <SearchPage
+            history={this.props.history}
+            location={this.props.location}
+            match={this.props.match}
+            email={this.props.user.email}
+            //userId={this.props.match.params.id}
+            //profileParams={this.getUserParams(this.props.match.params.id)}
+          />
+        ) : (
+          <div>No User</div>
+        )}
       </ThemedMainContainer>
     );
   }
 }
-
 
 const CurrentUserWrapper = props => (
   <CurrentUser>

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import withTheme from '../../containers/ThemeProvider';
-import {Col} from 'react-bootstrap';
+import { Col, FormControl } from 'react-bootstrap';
 
 // keep this as a button!
 const StyledButton = styled.button`
@@ -71,6 +71,9 @@ const MainContainer = styled(Col)`
 
   .rt-table {
   }
+  span, h2{
+    padding-left: 15px;
+  }
 `;
 
 
@@ -80,3 +83,44 @@ export const ThemedMainContainer = withTheme(MainContainer);
 
 
 export default ThemedButton;
+
+export const SearchContainer = styled.div`
+  border: solid white 1px;
+  background-color: #f2f2f2;
+  color: black;
+  margin-bottom: 1em;
+  margin-left: 15px;
+  margin-right: 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+`;
+
+export const  StyledProfileLabel = styled.div`
+font-size:1em;
+font-weight:400;
+color: rgba(0,0,0,0.6);
+padding-left: 1.2em;
+`;
+export const StyledProfileValue = styled.div`
+font-size:1.25em;
+border-bottom: solid white;
+margin: 0 1em 1em 1em;
+`
+
+export const StyledProfileForm = styled(FormControl)`
+background: rgba(255,255,255,0.2);
+    font-family: 'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size: 1.25em;
+    border: none;
+    padding:0;
+    margin: 0 1em 1em 1em;
+    border-bottom: solid white;
+    width: auto;
+    box-shadow: none !important;
+    color: black;
+&::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+}
+`;
