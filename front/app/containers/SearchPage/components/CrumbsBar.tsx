@@ -625,16 +625,14 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                       </Form>
                     </Col>
                     <Col xs={4} md={4}>
-                      {user && (
-                        <Row>
-                          <Col xs={12} md={12} style={{ textAlign: 'right' }}>
-                            <ExportToCsvComponent
-                              siteView={this.props.currentSiteView}
-                              searchHash={this.props.searchHash}
-                            />
-                          </Col>
-                        </Row>
-                      )}
+                      <Row>
+                        <Col xs={12} md={12} style={{ textAlign: 'right' }}>
+                          <ExportToCsvComponent
+                            siteView={this.props.currentSiteView}
+                            searchHash={this.props.searchHash}
+                          />
+                        </Col>
+                      </Row>
                       <Row>
                         <Col xs={12} md={12} style={{ textAlign: 'right' }}>
                           <b>Total Results:</b> {this.props.totalResults}{' '}
