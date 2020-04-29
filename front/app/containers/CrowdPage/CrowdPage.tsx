@@ -274,7 +274,9 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
   ) => {
     if (!value) return;
     let val = value;
+    console.log(meta);
     if (meta[key]) {
+      console.log(meta[key]);
       const oldVal = meta[key];
       const entries = oldVal.split('|').filter(x => x !== val);
       entries.push(value);
@@ -367,6 +369,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       flatten
     )(meta);
 
+    console.log(labels);
     let content = (
       <TableWrapper striped condensed bordered>
         <thead>

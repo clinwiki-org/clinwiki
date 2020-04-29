@@ -313,16 +313,20 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                 </ThemedPresearchCard>
               )
             )}
-            {/* <ThemedPresearchCard>
+            <ThemedPresearchCard>
               <ThemedPresearchHeader>
                 <PresearchTitle>Add Label</PresearchTitle>
               </ThemedPresearchHeader>
               <PresearchContent>
                 <div>
-                  <FontAwesome inverse={true} name="plus-square" />
+                  {/* <FontAwesome
+                    style={{ color: 'green' }}
+                    inverse={false}
+                    name="plus-square"
+                  /> */}
                 </div>
               </PresearchContent>
-            </ThemedPresearchCard> */}
+            </ThemedPresearchCard>
           </Container>
           {!labelsToAdd.length && !labelsToRemove.length
             ? `Select labels to update ${recordsTotal} studies`

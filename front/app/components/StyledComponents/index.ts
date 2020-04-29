@@ -63,6 +63,9 @@ const PresearchHeader = styled.div`
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
@@ -72,6 +75,13 @@ export const PresearchTitle = styled.div`
   font-size: 25px;
   font-weight: 400;
   margin-left: 5px;
+`;
+
+export const TextFieldToggle = styled.div`
+  color: white;
+  font-size: 28px;
+  font-weight: 400;
+  margin-right: 5px;
 `;
 
 export const PresearchFilter = styled.div`

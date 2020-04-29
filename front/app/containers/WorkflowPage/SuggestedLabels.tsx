@@ -14,6 +14,15 @@ import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
 import { WorkSearch } from './WorkSearch';
+import { capitalize } from 'utils/helpers';
+import {
+  PresearchTitle,
+  PresearchContent,
+  ThemedPresearchHeader,
+  ThemedPresearchCard,
+} from 'components/StyledComponents';
+import FacetCard from 'components/FacetCard/FacetCard';
+
 interface SuggestedLabelsProps {
   nctId: string;
   searchHash: string | null;
@@ -128,7 +137,10 @@ class SuggestedLabels extends React.PureComponent<
 
   renderAgg = (key: string, values: [string, boolean][]) => {
     return (
-      <StyledPanel key={key} header={key} dropdown>
+      <FacetCard
+        label={key}
+        nctId={this.props.nctId}
+        onSelect={this.props.onSelect}>
         {values.map(([value, checked]) => {
           if (bucketKeyStringIsMissing(value)) {
             return null;
@@ -143,7 +155,7 @@ class SuggestedLabels extends React.PureComponent<
             </Checkbox>
           );
         })}
-      </StyledPanel>
+      </FacetCard>
     );
   };
 
