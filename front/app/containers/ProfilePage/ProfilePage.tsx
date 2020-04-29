@@ -28,8 +28,6 @@ class ProfilePage extends React.Component<ProfilePageProps> {
 
   render() {
     return (
-      <div>
-        <h2>Profile Page</h2>
         <SearchPage
           history={this.props.history}
           location={this.props.location}
@@ -37,7 +35,6 @@ class ProfilePage extends React.Component<ProfilePageProps> {
           email={this.props.match.params.id}
           profileParams={this.getUserParams(this.props.match.params.id)}
         />
-      </div>
     );
   }
 }
