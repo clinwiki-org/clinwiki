@@ -5,6 +5,11 @@ describe "search queries" do
   let(:variables) { {} }
   let(:context) { {} }
 
+  before do
+    # we ask for front matter every time the search service retrieves agg buckets...
+    allow_any_instance_of(SearchService).to receive(:agg_buckets_for_field).and_return({})
+  end
+
   subject { ClinwikiSchema.execute(query, variables: variables, context: context).to_h }
 
   shared_examples "it properly maps data from query to es and back" do |slug|

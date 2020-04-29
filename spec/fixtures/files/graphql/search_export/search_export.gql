@@ -1,0 +1,6 @@
+query SearchExportQuery($searchExportId: Int!) {
+  searchExport(searchExportId: $searchExportId) {
+    id
+    downloadUrl
+  }
+}
