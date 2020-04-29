@@ -1142,11 +1142,13 @@
   },
   "query": {
     "bool": {
-      "must": {
-        "query_string": {
-          "query": "foo"
+      "must": [
+        {
+          "query_string": {
+            "query": "foo"
+          }
         }
-      },
+      ],
       "filter": [
         {
           "bool": {
