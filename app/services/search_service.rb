@@ -139,6 +139,8 @@ class SearchService
   # @param params - hash representing SearchInputType with symbols as keys.
   def initialize(initial_params = {})
     @params = initial_params.nil? ? {} : initial_params.deep_dup.freeze
+    # :gte and :lte fields implicitly interpreted by searchkick
+    @params[:agg_filters].map!(&:compact) if @params[:agg_filters].present?
   end
 
   # Search results from params
@@ -210,6 +212,7 @@ class SearchService
       unless key == :average_rating || body[:aggs][key][:aggs][key][:date_histogram].present?
         body[:aggs][key][:aggs][key][:terms][:missing] = missing_identifier_for_key(key)
       end
+
       body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
       body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
       body[:query][:bool][:must] += nested_range_filters unless nested_range_filters.empty?
