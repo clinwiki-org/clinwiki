@@ -164,7 +164,7 @@ class SearchService
   end
 
   def enrich_body(body)
-    body[:query][:bool][:must] = { query_string: { query: search_query } }
+    body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
     body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
     body[:query][:bool][:must] += nested_range_filters unless nested_range_filters.empty?
   end
@@ -368,7 +368,7 @@ class SearchService
   end
 
   def nested_filter(key, filter)
-    return nil if filter.dig(:values).nil?
+    return nil if !filter.is_a?(Hash) || filter.dig(:values).nil?
     return nil unless key.to_s.include? "."
 
     top_key, nested_key = key.to_s.split(".")

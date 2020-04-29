@@ -182,7 +182,7 @@ describe SearchService do
       subject {SearchService.new(params).send(:nested_filter,key,value)}
       context "for a non nested key" do
         let (:key) {"hello"}
-        let (:value) {"test"}
+        let (:value) {{test:"stuff"}}
 
         it { is_expected.to be_nil}
       end
