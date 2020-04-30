@@ -20,6 +20,8 @@ import {
 } from 'types/CrowdPageUpsertWikiLabelMutation';
 import { findIndex, equals, uniq } from 'ramda';
 import { WikiPageEditFragment } from 'components/Edits';
+import AddFacetCard from './AddFacetCard';
+import CrowdPage from 'containers/CrowdPage';
 
 const Row = styled.div`
   display: flex;
@@ -67,10 +69,12 @@ export type UpsertMutationFn = MutationFn<
 
 interface FacetCardProps {
   nctId?: string;
-  match?: match<{ nctId: string }>;
   label: string;
-  children: any;
-  onSelect: any;
+  children?: any;
+  onSelect?: any;
+  bulk?: boolean;
+  addLabel?: boolean;
+  meta?: any;
 }
 
 interface FacetCardState {
@@ -135,27 +139,55 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     meta: {},
     upsertLabelMutation: UpsertMutationFn
   ) => {
-    // console.log('this happened');
-    // console.log(key, value, meta, this.props.nctId, upsertLabelMutation);
-    // if (this.props.nctId) {
-    //   FacetCard.addLabel(
-    //     key,
-    //     value,
-    //     meta,
-    //     this.props.nctId,
-    //     upsertLabelMutation
-    //   );
-    // } else alert('error');
+    console.log('this happened');
+    console.log(key, value, meta, this.props.nctId, upsertLabelMutation);
+    if (this.props.nctId) {
+      CrowdPage.addLabel(
+        key,
+        value,
+        meta,
+        this.props.nctId,
+        upsertLabelMutation
+      );
+    } else alert('error');
   };
 
-  handleButtonClick = () => {
-    this.props.onSelect(this.props.label, this.state.existingField, true);
+  handleButtonClick = upsertLabelMutation => {
+    this.submitExistingField(
+      this.props.label,
+      this.state.existingField,
+      this.props.meta,
+      upsertLabelMutation
+    );
     this.setState({ textFieldActive: false });
   };
 
+  handleNewFacetSubmit = (key, value, upsertLabelMutation) => {
+    this.submitExistingField(key, value, this.props.meta, upsertLabelMutation);
+  };
+
   render() {
-    const { label } = this.props;
+    const { label, addLabel } = this.props;
     const { textFieldActive, existingField } = this.state;
+    if (addLabel) {
+      return (
+        <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
+          {upsertLabelMutation => (
+            <ThemedPresearchCard>
+              <ThemedPresearchHeader>
+                <PresearchTitle>{capitalize(label)}</PresearchTitle>
+              </ThemedPresearchHeader>
+              <PresearchContent>
+                <AddFacetCard
+                  upsert={upsertLabelMutation}
+                  submitFacet={this.handleNewFacetSubmit}
+                />
+              </PresearchContent>
+            </ThemedPresearchCard>
+          )}
+        </UpsertMutationComponent>
+      );
+    }
     return (
       <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
         {upsertLabelMutation => (
@@ -182,7 +214,10 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                   onChange={this.handleExistingFieldChange}
                   style={{ marginRight: 5 }}
                 />
-                <ThemedButton onClick={this.handleButtonClick}>+</ThemedButton>
+                <ThemedButton
+                  onClick={() => this.handleButtonClick(upsertLabelMutation)}>
+                  +
+                </ThemedButton>
               </Row>
             )}
             <PresearchContent>{this.props.children}</PresearchContent>

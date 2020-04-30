@@ -14,13 +14,6 @@ import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
 import { WorkSearch } from './WorkSearch';
-import { capitalize } from 'utils/helpers';
-import {
-  PresearchTitle,
-  PresearchContent,
-  ThemedPresearchHeader,
-  ThemedPresearchCard,
-} from 'components/StyledComponents';
 import FacetCard from 'components/FacetCard/FacetCard';
 
 interface SuggestedLabelsProps {
@@ -135,10 +128,11 @@ class SuggestedLabels extends React.PureComponent<
     return this.props.nctId;
   }
 
-  renderAgg = (key: string, values: [string, boolean][]) => {
+  renderAgg = (key: string, values: [string, boolean][], meta) => {
     return (
       <FacetCard
         label={key}
+        meta={meta}
         nctId={this.props.nctId}
         onSelect={this.props.onSelect}>
         {values.map(([value, checked]) => {
@@ -209,9 +203,16 @@ class SuggestedLabels extends React.PureComponent<
             filter(name => this.props.allowedSuggestedLabels.includes(name))
           )(aggs) as string[];
 
+          console.log('wtfis meta', meta);
           return (
             <LabelsContainer>
-              {aggNames.map(key => this.renderAgg(key, aggs[key]))}
+              {aggNames.map(key => this.renderAgg(key, aggs[key], meta))}
+              <FacetCard
+                meta={meta}
+                label="Add Label"
+                addLabel
+                nctId={this.props.nctId}
+              />
             </LabelsContainer>
           );
         }}

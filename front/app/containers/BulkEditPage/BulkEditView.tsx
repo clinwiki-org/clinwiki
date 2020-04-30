@@ -6,15 +6,9 @@ import { ButtonToolbar, Button, Checkbox, Panel, Col } from 'react-bootstrap';
 import { checkServerIdentity } from 'tls';
 import MultiCrumb from 'components/MultiCrumb';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
-import { capitalize } from 'utils/helpers';
-import * as FontAwesome from 'react-fontawesome';
-import ThemedButton, {
-  PresearchTitle,
-  PresearchPanel,
-  PresearchContent,
-  ThemedPresearchHeader,
-  ThemedPresearchCard,
-} from 'components/StyledComponents';
+import ThemedButton from 'components/StyledComponents';
+import FacetCard from 'components/FacetCard/FacetCard';
+import AddFacetCard from 'components/FacetCard/AddFacetCard';
 
 interface Undo {
   description: string;
@@ -274,59 +268,41 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
           <Container>
             {labels.map(label =>
               !aggBucketsByLabel[label].all.length ? null : (
-                <ThemedPresearchCard>
-                  <ThemedPresearchHeader>
-                    <PresearchTitle>{capitalize(label)}</PresearchTitle>
-                  </ThemedPresearchHeader>
-                  <PresearchContent>
-                    {aggBucketsByLabel[label].all.map(value => {
-                      const indeterminate = aggBucketsByLabel[
-                        label
-                      ].selected.includes(value);
-                      const isToAdd =
-                        groupedByLabel.toAdd[label] &&
-                        groupedByLabel.toAdd[label].includes(value);
-                      const isToRemove =
-                        groupedByLabel.toRemove[label] &&
-                        groupedByLabel.toRemove[label].includes(value);
-                      if (bucketKeyStringIsMissing(value)) {
-                        // don't allow bulk adding missing value to matching pages
-                        return null;
-                      }
-                      return (
-                        <Checkbox
-                          key={`${label}-${value}`}
-                          checked={(indeterminate || isToAdd) && !isToRemove}
-                          inputRef={el =>
-                            el &&
-                            (el.indeterminate =
-                              indeterminate && !isToAdd && !isToRemove)
-                          }
-                          onChange={() =>
-                            this.handleSelect(label, value, isToAdd)
-                          }>
-                          {value}
-                        </Checkbox>
-                      );
-                    })}
-                  </PresearchContent>
-                </ThemedPresearchCard>
+                <FacetCard label={label} bulk>
+                  {aggBucketsByLabel[label].all.map(value => {
+                    const indeterminate = aggBucketsByLabel[
+                      label
+                    ].selected.includes(value);
+                    const isToAdd =
+                      groupedByLabel.toAdd[label] &&
+                      groupedByLabel.toAdd[label].includes(value);
+                    const isToRemove =
+                      groupedByLabel.toRemove[label] &&
+                      groupedByLabel.toRemove[label].includes(value);
+                    if (bucketKeyStringIsMissing(value)) {
+                      // don't allow bulk adding missing value to matching pages
+                      return null;
+                    }
+                    return (
+                      <Checkbox
+                        key={`${label}-${value}`}
+                        checked={(indeterminate || isToAdd) && !isToRemove}
+                        inputRef={el =>
+                          el &&
+                          (el.indeterminate =
+                            indeterminate && !isToAdd && !isToRemove)
+                        }
+                        onChange={() =>
+                          this.handleSelect(label, value, isToAdd)
+                        }>
+                        {value}
+                      </Checkbox>
+                    );
+                  })}
+                </FacetCard>
               )
             )}
-            <ThemedPresearchCard>
-              <ThemedPresearchHeader>
-                <PresearchTitle>Add Label</PresearchTitle>
-              </ThemedPresearchHeader>
-              <PresearchContent>
-                <div>
-                  {/* <FontAwesome
-                    style={{ color: 'green' }}
-                    inverse={false}
-                    name="plus-square"
-                  /> */}
-                </div>
-              </PresearchContent>
-            </ThemedPresearchCard>
+            <FacetCard label="Add Label" addLabel />
           </Container>
           {!labelsToAdd.length && !labelsToRemove.length
             ? `Select labels to update ${recordsTotal} studies`
