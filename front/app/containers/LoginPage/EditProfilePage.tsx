@@ -243,6 +243,8 @@ class EditProfilePage extends React.Component<
   }
   render() {
     console.log('LOGGED IN USER', this.props.user);
+     let userContributions = this.props.user?.contributions
+     let reviewCount = this.props.user?.reviewCount
     return (
       <ThemedMainContainer>
         <h2>My profile</h2>
@@ -253,9 +255,9 @@ class EditProfilePage extends React.Component<
         <SearchContainer>
           <ProfileScoreBoard
             totalPoints={0}
-            totalContributions={this.state.totalContributions}
-            totalReviews={0}
-            totalSearches={20}
+            totalContributions={userContributions}
+            totalReviews={reviewCount}
+            totalTags={0}
             totalFavorites={0}
             handleDisplayChange={this.handleDisplayChange}
           />

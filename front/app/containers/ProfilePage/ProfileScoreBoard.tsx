@@ -16,7 +16,7 @@ interface ProfileScoreBoardProps {
   totalPoints: any;
   totalContributions: any;
   totalReviews: any;
-  totalSearches: any;
+  totalTags: any;
   totalFavorites: any;
   handleDisplayChange:any;
 }
@@ -44,14 +44,14 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
     return (
       <div>
         <ScoreBoard>
-          <StyledLabelValuePair>
+          {/* <StyledLabelValuePair>
             <StyledProfileScoreValue>
               {this.props.totalContributions +
                 this.props.totalSearches +
                 this.props.totalReviews}
             </StyledProfileScoreValue>
             <StyledProfileScoreLabel>Total Points</StyledProfileScoreLabel>
-          </StyledLabelValuePair>
+          </StyledLabelValuePair> */}
 
           <StyledLabelValuePair>
             <StyledProfileScoreValue>
@@ -75,9 +75,9 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
           </StyledLabelValuePair>
           <StyledLabelValuePair>
             <StyledProfileScoreValue>
-              {this.props.totalSearches}
+              {this.props.totalTags}
             </StyledProfileScoreValue>
-            <StyledProfileScoreLabel>Searches</StyledProfileScoreLabel>
+            <StyledProfileScoreLabel>Tags</StyledProfileScoreLabel>
           </StyledLabelValuePair>
         </ScoreBoard>
       </div>

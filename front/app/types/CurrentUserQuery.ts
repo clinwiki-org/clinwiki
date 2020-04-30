@@ -5,6 +5,13 @@
 // GraphQL query operation: CurrentUserQuery
 // ====================================================
 
+export interface CurrentUserQuery_me_reviews {
+  __typename: "Review";
+  content: string;
+  briefTitle: string;
+  nctId: string;
+}
+
 export interface CurrentUserQuery_me {
   __typename: "User";
   /**
@@ -32,6 +39,8 @@ export interface CurrentUserQuery_me {
    * Number of reviews the user has done
    */
   reviewCount: number;
+  reviews: CurrentUserQuery_me_reviews[];
+  contributions: number;
 }
 
 export interface CurrentUserQuery {

@@ -19,4 +19,9 @@ export default val =>
     browse_interventions_mesh_terms: 'browse intervention mesh term',
     interventions_mesh_terms: 'interventions',
     rating_dimensions: 'rating dimensions',
+    wiki_page_edits: {
+      email: 'user edit',
+      create_at:'edit created at'
+    }
+
   });

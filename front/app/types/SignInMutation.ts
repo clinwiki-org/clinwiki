@@ -7,6 +7,13 @@ import { SignInInput } from "./globalTypes";
 // GraphQL mutation operation: SignInMutation
 // ====================================================
 
+export interface SignInMutation_signIn_user_reviews {
+  __typename: "Review";
+  content: string;
+  briefTitle: string;
+  nctId: string;
+}
+
 export interface SignInMutation_signIn_user {
   __typename: "User";
   /**
@@ -34,6 +41,8 @@ export interface SignInMutation_signIn_user {
    * Number of reviews the user has done
    */
   reviewCount: number;
+  reviews: SignInMutation_signIn_user_reviews[];
+  contributions: number;
 }
 
 export interface SignInMutation_signIn {

@@ -5,6 +5,13 @@
 // GraphQL fragment: UserFragment
 // ====================================================
 
+export interface UserFragment_reviews {
+  __typename: "Review";
+  content: string;
+  briefTitle: string;
+  nctId: string;
+}
+
 export interface UserFragment {
   __typename: "User";
   /**
@@ -32,4 +39,6 @@ export interface UserFragment {
    * Number of reviews the user has done
    */
   reviewCount: number;
+  reviews: UserFragment_reviews[];
+  contributions: number;
 }
