@@ -8,9 +8,18 @@ module Types
     field :own_sites, [SiteType], null: false
     field :editor_sites, [SiteType], null: false
     field :roles, [String], null: false
-
     field :feeds, [FeedType], "Feed list. Available only for current user", null: false
+    field :review_count, Integer, "Number of reviews the user has done", null: false
+    field :reviews, [ReviewType], null: false
+    field :contributions, Integer, null: false
 
+    def review_count
+      reviews.count
+    end
+
+    def contributions
+      object.wiki_pages.distinct.count
+    end
     def own_sites
       return [] if current_user.blank?
 

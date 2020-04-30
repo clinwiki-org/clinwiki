@@ -18,7 +18,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -29,7 +31,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -81,7 +85,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -92,7 +98,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -144,7 +152,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -155,7 +165,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -207,7 +219,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -218,7 +232,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -270,7 +286,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -281,7 +299,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -333,7 +353,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -344,7 +366,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -396,7 +420,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -407,7 +433,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -459,7 +487,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -470,7 +500,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -522,7 +554,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -533,7 +567,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -585,7 +621,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -596,7 +634,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -648,7 +688,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -659,7 +701,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -711,7 +755,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -722,7 +768,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -774,7 +822,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -785,7 +835,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -837,7 +889,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -848,7 +902,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -900,7 +956,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -911,7 +969,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -963,7 +1023,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Foo"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
                                       }
                                     }
                                   ]
@@ -974,7 +1036,9 @@
                                   "filter": [
                                     {
                                       "term": {
-                                        "browse_condition_mesh_terms": "Bar"
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
                                       }
                                     }
                                   ]
@@ -1007,6 +1071,73 @@
           }
         }
       }
+    },
+    "wiki_page_edits.created_at": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Foo"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "browse_condition_mesh_terms": {
+                                          "value": "Bar"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "wiki_page_edits.created_at": {
+          "terms": {
+            "field": "wiki_page_edits.created_at",
+            "size": 10
+          }
+        }
+      }
     }
   },
   "query": {
@@ -1033,7 +1164,9 @@
                               "filter": [
                                 {
                                   "term": {
-                                    "browse_condition_mesh_terms": "Foo"
+                                    "browse_condition_mesh_terms": {
+                                      "value": "Foo"
+                                    }
                                   }
                                 }
                               ]
@@ -1044,7 +1177,9 @@
                               "filter": [
                                 {
                                   "term": {
-                                    "browse_condition_mesh_terms": "Bar"
+                                    "browse_condition_mesh_terms": {
+                                      "value": "Bar"
+                                    }
                                   }
                                 }
                               ]
@@ -1076,6 +1211,5 @@
   ],
   "timeout": "11s",
   "_source": false,
-  "size": 25,
-  "from": 0
+  "size": 25
 }

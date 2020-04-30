@@ -14,14 +14,14 @@ describe SearchService do
     it "sends a request to elasticsearch" do
       stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search")
         .with(
-          body: hash_including({
+          body: hash_including(
             "query" => {
               "bool" => {
                 "must" => [{ "query_string": { "query" => "(foo)" } }],
-                "filter" => [{ "bool" => { "must" => [] } }]
-              }
-            }
-          }),
+                "filter" => [{ "bool" => { "must" => [] } }],
+              },
+            },
+          ),
         )
         .to_return(
           status: 200,
@@ -61,18 +61,16 @@ describe SearchService do
       it "knows how to build a query from the AST" do
         stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search")
           .with(
-            body: hash_including({
+            body: hash_including(
               "query" => {
                 "bool" =>
                   { "must" =>
                     [{ "query_string": {
-                        "query" => "(((baz) OR (qux)) AND (((zoom) OR (zag))))",
-                      }
-                    }],
-                    "filter" => [{ "bool" => { "must" => [] } }]
-                  }
-                }
-            }),
+                      "query" => "(((baz) OR (qux)) AND (((zoom) OR (zag))))",
+                    } }],
+                    "filter" => [{ "bool" => { "must" => [] } }] },
+              },
+            ),
           )
           .to_return(
             status: 200,
@@ -143,7 +141,6 @@ describe SearchService do
           expect(JSON.pretty_generate(JSON.parse(webmock_requests.last.body))).to match_snapshot("nested_agg_filter_query")
         end
       end
-
     end
   end
 
@@ -168,76 +165,76 @@ describe SearchService do
               bool: {
                 should: [
                   { match: { "hello.stuff" => "stuff1" } },
-                  { match: { "hello.stuff" => "stuff2" } }
-                ]
-              }
-            }
-          }
+                  { match: { "hello.stuff" => "stuff2" } },
+                ],
+              },
+            },
+          },
         }.to_json)
       end
     end
   end
-    describe 'nested filter' do
-      let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [ ]}}
-      subject {SearchService.new(params).send(:nested_filter,key,value)}
-      context "for a non nested key" do
-        let (:key) {"hello"}
-        let (:value) {"test"}
+  describe "nested filter" do
+    let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [] } }
+    subject { SearchService.new(params).send(:nested_filter, key, value) }
+    context "for a non nested key" do
+      let(:key) { "hello" }
+      let(:value) { { test: "stuff" } }
 
-        it { is_expected.to be_nil}
-      end
-      context "for a nested key" do
-        let (:key) {"hello.stuff"}
-        let(:value) { { values: ["stuff1", "stuff2"] } }
+      it { is_expected.to be_nil }
+    end
+    context "for a nested key" do
+      let(:key) { "hello.stuff" }
+      let(:value) { { values: ["stuff1", "stuff2"] } }
 
-        it "should return a nested filter" do
-            expect(subject).to eql({
-              _or: [
-                { hello: { nested: { stuff: "stuff1" } }},
-                { hello: { nested: { stuff: "stuff2" } }}
-              ]
-              }
-            )
-        end
+      it "should return a nested filter" do
+        expect(subject).to eql(
+          nested: {
+            path: "hello",
+            query: { bool: { should: [
+              { match: { "hello.stuff" => "stuff1" } },
+              { match: { "hello.stuff" => "stuff2" } },
+            ] } },
+          },
+        )
       end
     end
+  end
 
-    describe 'nested range filter' do
-      let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [ ]}}
-      subject {SearchService.new(params).send(:nested_range_filter,key,filter)}
-      context "for a non nested key" do
-        let (:key) {"hello"}
-        let (:filter) {{gte: "2020-10-10", lte: "2020-10-12"} }
+  describe "nested range filter" do
+    let(:params) { { q: { "key" => "foo", "children" => [] }, agg_filters: [] } }
+    subject { SearchService.new(params).send(:nested_range_filter, key, filter) }
+    context "for a non nested key" do
+      let (:key) { "hello" }
+      let (:filter) { { gte: "2020-10-10", lte: "2020-10-12" } }
 
-        it { is_expected.to be_nil}
-      end
-      context "for a nested key without gte or lte" do
-        let (:key) {"hello.stuff"}
-        let (:filter) {"stuff"}
+      it { is_expected.to be_nil }
+    end
+    context "for a nested key without gte or lte" do
+      let (:key) { "hello.stuff" }
+      let (:filter) { "stuff" }
 
-        it { is_expected.to be_nil}
-      end
+      it { is_expected.to be_nil }
+    end
 
-      context "for a nested key with range" do
-        let (:key) {"hello.stuff"}
-        let(:filter) { {gte: "2020-10-10", lte: "2020-10-12"} }
+    context "for a nested key with range" do
+      let (:key) { "hello.stuff" }
+      let(:filter) { { gte: "2020-10-10", lte: "2020-10-12" } }
 
-        it "should return a nested filter" do
-            expect(subject).to eql(
-                {
-                  nested: {
-                    path: "hello",
-                    query: {
-                      bool: {
-                        should:{
-                          range: { "hello.stuff" => {gte: Timeliness.parse(filter[:gte]).utc,lte: Timeliness.parse(filter[:lte]).utc}},
-                        },
-                      },
-                    },
-                  },
-                }
-            )
-        end
+      it "should return a nested filter" do
+        expect(subject).to eql(
+          nested: {
+            path: "hello",
+            query: {
+              bool: {
+                should: {
+                  range: { "hello.stuff" => { gte: Timeliness.parse(filter[:gte]).utc, lte: Timeliness.parse(filter[:lte]).utc } },
+                },
+              },
+            },
+          },
+        )
       end
     end
+  end
 end
