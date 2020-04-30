@@ -23,6 +23,7 @@ import {
 } from 'components/StyledComponents';
 import { ThemedButton } from './StyledButton';
 import ProfileScoreBoard from '../ProfilePage/ProfileScoreBoard';
+import RenderReviews from '../ProfilePage/RenderReviews';
 
 interface EditProfilePageProps {
   user: UserFragment | null;
@@ -38,6 +39,7 @@ interface EditProfilePageState {
   };
   prevUser: UserFragment | null;
   errors: string[];
+  currentDisplay: string;
   isEditing: boolean;
   totalContributions: any;
 }
@@ -78,6 +80,7 @@ class EditProfilePage extends React.Component<
     errors: [],
     isEditing: false,
     totalContributions: '',
+    currentDisplay: "contributions"
   };
 
   static getDerivedStateFromProps = (
@@ -213,6 +216,31 @@ class EditProfilePage extends React.Component<
     }
     return;
   };
+  handleDisplayChange=(display)=>{
+    this.setState({currentDisplay: display})
+  }
+  
+  renderResults =(email)=>{
+    switch(this.state.currentDisplay){
+      case "contributions":
+        return (
+          <SearchPage
+          history={this.props.history}
+          location={this.props.location}
+          match={this.props.match}
+          email={email}
+          getTotalContributions={this.handleTotalContributions}
+          //userId={this.props.match.params.id}
+          //profileParams={this.getUserParams(this.props.match.params.id)}
+        />         
+        )
+      case "reviews":
+        return(
+          <RenderReviews/>
+          )
+    }
+
+  }
   render() {
     console.log('LOGGED IN USER', this.props.user);
     return (
@@ -229,18 +257,11 @@ class EditProfilePage extends React.Component<
             totalReviews={0}
             totalSearches={20}
             totalFavorites={0}
+            handleDisplayChange={this.handleDisplayChange}
           />
         </SearchContainer>
         {this.props.user ? (
-          <SearchPage
-            history={this.props.history}
-            location={this.props.location}
-            match={this.props.match}
-            email={this.props.user.email}
-            getTotalContributions={this.handleTotalContributions}
-            //userId={this.props.match.params.id}
-            //profileParams={this.getUserParams(this.props.match.params.id)}
-          />
+       this.renderResults(this.props.user.email)
         ) : (
           <div>No User</div>
         )}

@@ -18,6 +18,7 @@ interface ProfileScoreBoardProps {
   totalReviews: any;
   totalSearches: any;
   totalFavorites: any;
+  handleDisplayChange:any;
 }
 
 class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
@@ -60,13 +61,13 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
           </StyledLabelValuePair>
         </ScoreBoard>
         <ScoreBoard>
-          <StyledLabelValuePair>
+          <StyledLabelValuePair onClick={()=>this.props.handleDisplayChange("contributions")}>
             <StyledProfileScoreValue>
               {this.props.totalContributions}
             </StyledProfileScoreValue>
             <StyledProfileScoreLabel>Contributions</StyledProfileScoreLabel>
           </StyledLabelValuePair>
-          <StyledLabelValuePair>
+          <StyledLabelValuePair onClick={()=>this.props.handleDisplayChange("reviews")}>
             <StyledProfileScoreValue>
               {this.props.totalReviews}
             </StyledProfileScoreValue>
