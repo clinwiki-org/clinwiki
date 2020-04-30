@@ -279,6 +279,7 @@ interface SearchPageProps {
   currentSiteView: SiteFragment_siteView;
   mutate: any;
   email?:string;
+  getTotalContributions?:any;
 }
 
 interface SearchPageState {
@@ -867,7 +868,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
-    // console.log('SP Props', this.props);
+    const { params, totalRecords } = this.state;
+      //@ts-ignore
+      if (this.props.email && !this.props.match.params.id) {
+      //   this.getDefaultParams(siteView);
+      this.props.getTotalContributions(totalRecords);
+      }
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { currentSiteView } = this.props;
