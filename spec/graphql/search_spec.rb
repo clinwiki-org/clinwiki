@@ -28,11 +28,11 @@ describe "search queries" do
 
     it "prepares the proper query for elasticsearch" do
       subject
-      expect(webmock_requests[0].body).to match_snapshot("#{slug}_query")
+      expect(JSON.pretty_generate(JSON.parse(webmock_requests[0].body))).to match_snapshot("#{slug}_query")
     end
 
     it "returns the proper response for the graphql server" do
-      expect(subject).to match_snapshot("#{slug}_graphql_response")
+      expect(JSON.pretty_generate(subject)).to match_snapshot("#{slug}_graphql_response")
     end
   end
 
