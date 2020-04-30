@@ -155,17 +155,37 @@ export const SearchContainer = styled.div`
 `;
 
 export const  StyledProfileLabel = styled.div`
-font-size:1em;
-font-weight:400;
-color: rgba(0,0,0,0.6);
-padding-left: 1.2em;
+  font-size:1em;
+  font-weight:400;
+  color: rgba(0,0,0,0.6);
+  padding-left: 1.2em;
+`;
+export const  StyledProfileScoreLabel = styled.div`
+  font-size:1em;
+  font-weight:400;
+  color: rgba(0,0,0,0.6);
 `;
 export const StyledProfileValue = styled.div`
 font-size:1.25em;
 border-bottom: solid white;
 margin: 0 1em 1em 1em;
-`
-
+`;
+export const StyledProfileScoreValue = styled.div`
+  font-size:1.25em;
+`;
+export const StyledLabelValuePair = styled.div`
+  margin-left:5%;
+  width:25%;
+  text-align: center;
+`;
+export const ScoreBoard = styled.div`
+  display:flex;
+  padding: 1em 0 1em 0;
+  margin: 0 1.2em;
+  :nth-child(1){
+    border-bottom: solid white;
+  }
+`;
 export const StyledProfileForm = styled(FormControl)`
 background: rgba(255,255,255,0.2);
     font-family: 'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
