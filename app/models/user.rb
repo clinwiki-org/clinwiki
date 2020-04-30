@@ -6,6 +6,8 @@ class User < ApplicationRecord
   has_many :reviews, dependent: :destroy
   has_many :user_session_studies, dependent: :destroy
   # has_many :feeds, dependent: :destroy
+  has_many :wiki_page_edits
+  has_many :wiki_pages, through: :wiki_page_edits
 
   def admin?
     false

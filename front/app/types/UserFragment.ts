@@ -28,4 +28,8 @@ export interface UserFragment {
    */
   defaultQueryString: string | null;
   roles: string[];
+  /**
+   * Number of reviews the user has done
+   */
+  reviewCount: number;
 }

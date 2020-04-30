@@ -30,6 +30,10 @@ export interface EditProfileMutation_updateProfile_user {
    */
   defaultQueryString: string | null;
   roles: string[];
+  /**
+   * Number of reviews the user has done
+   */
+  reviewCount: number;
 }
 
 export interface EditProfileMutation_updateProfile {

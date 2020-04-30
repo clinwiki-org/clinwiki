@@ -28,6 +28,10 @@ export interface CurrentUserQuery_me {
    */
   defaultQueryString: string | null;
   roles: string[];
+  /**
+   * Number of reviews the user has done
+   */
+  reviewCount: number;
 }
 
 export interface CurrentUserQuery {

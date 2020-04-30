@@ -30,6 +30,10 @@ export interface SignUpMutation_signUp_user {
    */
   defaultQueryString: string | null;
   roles: string[];
+  /**
+   * Number of reviews the user has done
+   */
+  reviewCount: number;
 }
 
 export interface SignUpMutation_signUp {

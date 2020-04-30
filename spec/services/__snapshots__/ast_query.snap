@@ -367,6 +367,29 @@
           }
         }
       }
+    },
+    "wiki_page_edits.created_at": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "wiki_page_edits.created_at": {
+          "terms": {
+            "field": "wiki_page_edits.created_at",
+            "size": 10
+          }
+        }
+      }
     }
   },
   "query": {
@@ -396,6 +419,5 @@
   ],
   "timeout": "11s",
   "_source": false,
-  "size": 25,
-  "from": 0
+  "size": 25
 }
