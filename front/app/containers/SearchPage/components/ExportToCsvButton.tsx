@@ -4,6 +4,7 @@ import { graphql } from 'react-apollo';
 import * as FontAwesome from 'react-fontawesome';
 import { SiteFragment_siteView } from 'types/SiteFragment';
 import ThemedButton from 'components/StyledComponents/index';
+import LoginModal from 'components/LoginModal';
 
 const EXPORT_TO_CSV_MUTATION = gql`
   mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {
@@ -20,23 +21,49 @@ interface ExportToCsvButtonProps {
   searchHash: string;
   mutate: any;
   setExportId: any;
+  user?: any;
 }
 
-class ExportToCsvButton extends React.Component<ExportToCsvButtonProps> {
+interface ExportToCsvButtonState {
+  showLoginModal: boolean;
+}
+
+class ExportToCsvButton extends React.Component<
+  ExportToCsvButtonProps,
+  ExportToCsvButtonState
+> {
+  state = {
+    showLoginModal: false,
+  };
   render() {
-    const { mutate, siteView, searchHash, setExportId } = this.props;
+    const { mutate, siteView, searchHash, setExportId, user } = this.props;
+    const { showLoginModal } = this.state;
+
+    const setShowLoginModal = showLoginModal => {
+      this.setState({ showLoginModal });
+    };
 
     async function onClick() {
-      const { data } = await mutate({
-        variables: { siteViewId: siteView.id, searchHash },
-      });
-      setExportId(data.exportToCsv.searchExport.id);
+      if (user) {
+        const { data } = await mutate({
+          variables: { siteViewId: siteView.id, searchHash },
+        });
+        setExportId(data.exportToCsv.searchExport.id);
+      } else {
+        setShowLoginModal(true);
+      }
     }
     return (
-      <ThemedButton onClick={onClick}>
-        Export to CSV &nbsp;
-        <FontAwesome name="file-text" />
-      </ThemedButton>
+      <>
+        <LoginModal
+          show={showLoginModal}
+          cancel={() => setShowLoginModal(false)}
+        />
+        <ThemedButton onClick={onClick}>
+          Export to CSV &nbsp;
+          <FontAwesome name="file-text" />
+        </ThemedButton>
+      </>
     );
   }
 }

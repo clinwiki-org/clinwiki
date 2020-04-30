@@ -111,8 +111,6 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   };
 
   render() {
-    console.log('withTheme', this.props.theme);
-
     return (
       <StyledWrapper>
         <Col md={12}>

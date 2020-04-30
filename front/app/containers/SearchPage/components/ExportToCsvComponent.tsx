@@ -1,6 +1,7 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
 import { SiteFragment_siteView } from 'types/SiteFragment';
+import CurrentUser from 'containers/CurrentUser';
 import ExportToCsvButton from './ExportToCsvButton';
 import ExportToCsvDialog from './ExportToCsvDialog';
 
@@ -33,11 +34,16 @@ class ExportToCsvComponent extends React.Component<
 
     return (
       <>
-        <ExportToCsvButton
-          siteView={this.props.siteView}
-          searchHash={this.props.searchHash}
-          setExportId={setExportId}
-        />
+        <CurrentUser>
+          {user => (
+            <ExportToCsvButton
+              siteView={this.props.siteView}
+              searchHash={this.props.searchHash}
+              setExportId={setExportId}
+              user={user}
+            />
+          )}
+        </CurrentUser>
         {exportId !== null ? (
           <ExportToCsvDialog exportId={exportId} setExportId={setExportId} />
         ) : null}
