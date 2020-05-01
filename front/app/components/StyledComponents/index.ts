@@ -186,6 +186,7 @@ export const StyledLabelValuePair = styled.div`
   margin-left:5%;
   width:25%;
   text-align: center;
+  cursor:pointer;
 `;
 export const ScoreBoard = styled.div`
   display:flex;

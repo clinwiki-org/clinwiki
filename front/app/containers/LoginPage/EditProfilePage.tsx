@@ -80,7 +80,7 @@ class EditProfilePage extends React.Component<
     errors: [],
     isEditing: false,
     totalContributions: '',
-    currentDisplay: "contributions"
+    currentDisplay: 'contributions',
   };
 
   static getDerivedStateFromProps = (
@@ -216,35 +216,36 @@ class EditProfilePage extends React.Component<
     }
     return;
   };
-  handleDisplayChange=(display)=>{
-    this.setState({currentDisplay: display})
-  }
-  
-  renderResults =(email)=>{
-    switch(this.state.currentDisplay){
-      case "contributions":
+  handleDisplayChange = display => {
+    this.setState({ currentDisplay: display });
+  };
+
+  renderResults = email => {
+    switch (this.state.currentDisplay) {
+      case 'contributions':
         return (
           <SearchPage
-          history={this.props.history}
-          location={this.props.location}
-          match={this.props.match}
-          email={email}
-          getTotalContributions={this.handleTotalContributions}
-          //userId={this.props.match.params.id}
-          //profileParams={this.getUserParams(this.props.match.params.id)}
-        />         
-        )
-      case "reviews":
-        return(
-          <RenderReviews/>
-          )
+            history={this.props.history}
+            location={this.props.location}
+            match={this.props.match}
+            email={email}
+            getTotalContributions={this.handleTotalContributions}
+            //userId={this.props.match.params.id}
+            //profileParams={this.getUserParams(this.props.match.params.id)}
+          />
+        );
+      case 'reviews':
+        return (
+          <RenderReviews
+            reviewData={this.props.user?.reviews}
+            history={this.props.history}
+          />
+        );
     }
-
-  }
+  };
   render() {
-    console.log('LOGGED IN USER', this.props.user);
-     let userContributions = this.props.user?.contributions
-     let reviewCount = this.props.user?.reviewCount
+    let userContributions = this.props.user?.contributions;
+    let reviewCount = this.props.user?.reviewCount;
     return (
       <ThemedMainContainer>
         <h2>My profile</h2>
@@ -257,13 +258,13 @@ class EditProfilePage extends React.Component<
             totalPoints={0}
             totalContributions={userContributions}
             totalReviews={reviewCount}
-            totalTags={0}
+            totalTags={'Coming Soon'}
             totalFavorites={0}
             handleDisplayChange={this.handleDisplayChange}
           />
         </SearchContainer>
         {this.props.user ? (
-       this.renderResults(this.props.user.email)
+          this.renderResults(this.props.user.email)
         ) : (
           <div>No User</div>
         )}

@@ -346,7 +346,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   getDefaultParams = (view: SiteViewFragment, email: string | undefined) => {
-    console.log('email', email)
     if (email) {
       const profileViewParams = preselectedFilters(view);
       profileViewParams.aggFilters.push({ field: 'wiki_page_edits.email', values: [email] });
@@ -380,7 +379,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       params.crowdAggFilters || []
     ) as AggFilterInput[];
     const sorts = map(dissoc('__typename'), params.sorts || []) as SortInput[];
-    // console.log('aggfilters', aggFilters);
     return {
       aggFilters,
       crowdAggFilters,
@@ -555,7 +553,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             data!.searchParams,
             currentSiteView
           );
-          // console.log('params', params);
           // hydrate state params from hash
           if (!this.state.params) {
             this.setState({ params });
@@ -566,7 +563,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           const { aggFilters = [], crowdAggFilters = [] } =
             this.state.params || {};
 
-          // console.log("SViewURL1", siteViewUrl())
           return (
             <SearchView
               key={`${hash}+${JSON.stringify(params)}`}
@@ -630,7 +626,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
-    console.log("EMAIL", this.props.email)
 
   
     if (searchTerm.has('q')) {
@@ -658,7 +653,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       window.removeEventListener('scroll', this.handleScroll);
     }
     if (this.props.email) {
-      console.log('USER TYPE')
       this.setState({
         siteViewType: 'user',
       });
@@ -721,12 +715,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       lte:string;
       values:any[];
     }|null ;
-    console.log(response)
     return response
   }
   updateSearchParams = async params => {
-    console.log('======================================');
-    console.log('update search params');
     this.setState({
       ...this.state,
       params: { ...(this.state?.params || {}), ...params },
@@ -741,7 +732,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
     if (data?.provisionSearchHash?.searchHash?.short) {
       if(this.props.match.path =="/profile"){
-        console.log("pushing")
         this.props.history.push(
           `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
@@ -762,7 +752,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       return;
     }
 
-    console.log('======================================');
   };
 
   getTotalResults = total => {
@@ -775,7 +764,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handlePresearchButtonClick = (hash, target) => {
-    console.log(hash, target);
     const url = `/search?hash=${hash}&sv=${target}`;
     this.props.history.push(url);
   };

@@ -1,20 +1,11 @@
 import * as React from 'react';
-import styled from 'styled-components';
-import SearchPage from 'containers/SearchPage';
-import { match } from 'react-router-dom';
 import { History, Location } from 'history';
-import {
-  StyledProfileLabel,
-  StyledProfileScoreLabel,
-  StyledLabelValuePair,
-  StyledProfileValue,
-  StyledProfileScoreValue,
-  ScoreBoard,
-  SearchContainer,
-} from 'components/StyledComponents';
+import { SearchContainer } from 'components/StyledComponents';
+import ReactTable from 'react-table'
 
 interface RenderReviewsProps {
-
+reviewData: any;
+history: History;
 }
 
 class RenderReviews extends React.Component<RenderReviewsProps> {
@@ -22,10 +13,51 @@ class RenderReviews extends React.Component<RenderReviewsProps> {
 
   };
 
+  onRowClick = (nctId: string,siteViewUrl: string) => {
+    this.props.history.push(
+      `/study/${nctId}?sv=${siteViewUrl}`
+    );
+  };
+
+  rowProps = (_, rowInfo) => {
+    return {
+      onClick: (_, handleOriginal) => {
+        this.onRowClick(
+          rowInfo.row.nctId,
+           'default'
+        );
+        return handleOriginal();
+      },
+    };
+  };
+
   render() {
+
+    const data = this.props.reviewData
+  
+    const columns = [{
+      Header: 'Nct Id',
+      accessor: 'nctId' // String-based value accessors!
+    }, {
+      Header: 'Brief Title',
+      accessor: 'briefTitle',
+      // Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
+    }, {
+      Header: 'Review Content',
+      accessor: 'content',
+      // Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
+    }]
+
     return (
       <SearchContainer>
           Showing Reviews
+          <ReactTable
+    data={data}
+    columns={columns}
+    minRows={1}
+    getTdProps={this.rowProps}
+
+  />
       </SearchContainer>
     );
   }

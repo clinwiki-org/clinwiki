@@ -22,16 +22,11 @@ interface ProfileScoreBoardProps {
 }
 
 class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
-  componentDidMount() {
-    console.log('This.props', this.props);
-  }
+
   starLogo = totalContributions => {
     if (10 > totalContributions && totalContributions > 0) {
-      console.log('Outlined star');
       return <img style={{ maxWidth: '1.25em' }} src="/star_outline.png" />;
     } else if (50 > totalContributions && totalContributions > 10) {
-      console.log('Outlined star');
-
       return <img style={{ maxWidth: '1.25em' }} src="/silver_star.png" />;
     } else if (100 > totalContributions && totalContributions > 50) {
       return <img style={{ maxWidth: '1.25em' }} src="/gold_star.png" />;
@@ -44,15 +39,6 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
     return (
       <div>
         <ScoreBoard>
-          {/* <StyledLabelValuePair>
-            <StyledProfileScoreValue>
-              {this.props.totalContributions +
-                this.props.totalSearches +
-                this.props.totalReviews}
-            </StyledProfileScoreValue>
-            <StyledProfileScoreLabel>Total Points</StyledProfileScoreLabel>
-          </StyledLabelValuePair> */}
-
           <StyledLabelValuePair>
             <StyledProfileScoreValue>
               {this.starLogo(this.props.totalContributions)}
