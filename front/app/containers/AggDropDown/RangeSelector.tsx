@@ -78,14 +78,17 @@ class RangeSelector extends React.Component<
       aggType,
     } = this.props;
     const { startText, endText } = this.state;
-    if (hasMore || loading) {
-      handleLoadMore();
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <BeatLoader key="loader" color="#fff" />
-        </div>
-      );
-    }
+    //Removing Temporarily to see if it fixes date range query issue seems
+    //Seems like we don't need a hasMore or beat loader in the Range Selector
+
+    // if (hasMore || loading) {
+    //   handleLoadMore();
+    //   return (
+    //     <div style={{ display: 'flex', justifyContent: 'center' }}>
+    //       <BeatLoader key="loader" color="#fff" />
+    //     </div>
+    //   );
+    // }
 
     // if (isEmpty(buckets)) {
     //   return (
