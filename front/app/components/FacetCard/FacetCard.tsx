@@ -167,8 +167,20 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel } = this.props;
+    const { label, addLabel, bulk } = this.props;
     const { textFieldActive, existingField } = this.state;
+    if (bulk) {
+      return (
+        <ThemedPresearchCard>
+          <ThemedPresearchHeader>
+            <PresearchTitle>{capitalize(label)}</PresearchTitle>
+          </ThemedPresearchHeader>
+          <PresearchContent style={{ overflowY: 'auto' }}>
+            {this.props.children}
+          </PresearchContent>
+        </ThemedPresearchCard>
+      );
+    }
     if (addLabel) {
       return (
         <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
@@ -177,7 +189,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
               <ThemedPresearchHeader>
                 <PresearchTitle>{capitalize(label)}</PresearchTitle>
               </ThemedPresearchHeader>
-              <PresearchContent>
+              <PresearchContent style={{ overflowY: 'auto' }}>
                 <AddFacetCard
                   upsert={upsertLabelMutation}
                   submitFacet={this.handleNewFacetSubmit}
@@ -220,7 +232,9 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                 </ThemedButton>
               </Row>
             )}
-            <PresearchContent>{this.props.children}</PresearchContent>
+            <PresearchContent style={{ overflowY: 'auto' }}>
+              {this.props.children}
+            </PresearchContent>
           </ThemedPresearchCard>
         )}
       </UpsertMutationComponent>

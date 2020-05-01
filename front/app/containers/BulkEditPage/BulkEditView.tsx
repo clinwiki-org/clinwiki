@@ -302,7 +302,6 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                 </FacetCard>
               )
             )}
-            <FacetCard label="Add Label" addLabel />
           </Container>
           {!labelsToAdd.length && !labelsToRemove.length
             ? `Select labels to update ${recordsTotal} studies`

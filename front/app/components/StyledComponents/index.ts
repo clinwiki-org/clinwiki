@@ -104,8 +104,7 @@ export const PresearchContent = styled.div`
   border-bottom-right-radius: 12px;
   background-color: white;
   max-height: 260px;
+  margin-bottom: 7px;
 `;
-
-export const LargeAddButton = styled.div``;
 
 export default ThemedButton;
