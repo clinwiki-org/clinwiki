@@ -5,25 +5,23 @@ DEFAULT_AGG_ORDER = {
   average_rating: {
     order: { sortKind: "key", desc: true },
   },
-}
+}.freeze
 
 class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
   before_save do
-
     if default_changed? && default
 
       old_default = site.site_views.find_by(default: true)
-      old_default.update(url: "#{old_default.id}oldDefault") if old_default
+      old_default&.update(url: "#{old_default.id}oldDefault")
 
-      site.site_views.where.not(id: id).update_all(default:false)
+      site.site_views.where.not(id: id).update_all(default: false)
 
-      self.url = 'default'
+      self.url = "default"
     end
   end
 
   validates :url, uniqueness: { scope: :site }
-
 
   class << self
     def default
@@ -260,16 +258,16 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         ],
       },
       search: {
-        config:{
-          fields:{
-          showPresearch:false,
-          showFacetBar:true,
-          showAutoSuggest:true,
-          showBreadCrumbs:true,
-          showResults:true,
-          }
+        config: {
+          fields: {
+            showPresearch: false,
+            showFacetBar: true,
+            showAutoSuggest: true,
+            showBreadCrumbs: true,
+            showResults: true,
+          },
         },
-        presearch:{
+        presearch: {
           aggs: {
             selected: {
               kind: "WHITELIST",
@@ -284,13 +282,13 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
             },
             fields: crowd_aggs,
           },
-          instructions:"",
-          button:{
-            name:"Search",
-            target:"",
+          instructions: "",
+          button: {
+            name: "Search",
+            target: "",
           },
         },
-        autoSuggest:{
+        autoSuggest: {
           aggs: {
             selected: {
               kind: "WHITELIST",
@@ -303,23 +301,23 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
               kind: "WHITELIST",
               values: [],
             },
-            fields:  crowd_aggs,
+            fields: crowd_aggs,
           },
         },
-        results:{
-          type:"table",
-          buttons:{
-	           items:[
-               {
-                 icon:'',
-                 target:"",
-               }
-             ],
-	           location:"right"
-           },
+        results: {
+          type: "table",
+          buttons: {
+            items: [
+              {
+                icon: "",
+                target: "",
+              },
+            ],
+            location: "right",
+          },
 
         },
-        breadCrumbs:{},
+        breadCrumbs: {},
 
         aggs: {
           selected: {
@@ -346,6 +344,8 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def crowd_agg_names
+    # this really needs to be cached in redis!
+    # see: https://guides.rubyonrails.org/caching_with_rails.html#activesupport-cache-rediscachestore
     @crowd_agg_names ||=
       Study.search("*", aggs: [:front_matter_keys], load: false, limit: 0).aggs.to_h
         .dig("front_matter_keys", "buckets")
@@ -361,10 +361,11 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     return "DATE_RANGE" if RANGE_FIELDS.include?(name.to_sym)
     return "NUMBER_RANGE" if RANGE_FIELDS.include?(name.to_sym)
     return "RANGE" if RANGE_FIELDS.include?(name.to_sym)
+
     "STRING"
   end
 
-##Define default agg_params_order
+  # #Define default agg_params_order
   def default_agg_params(name)
     {
       name: name,

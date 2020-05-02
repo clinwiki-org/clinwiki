@@ -153,4 +153,11 @@ div.DraftEditor-editorContainer{
   color: #777;
 }
 
+.modal-container {
+  position: relative;
+}
+.modal-container .modal, .modal-container .modal-backdrop {
+  position: absolute;
+}
+
 `;

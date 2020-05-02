@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 describe SearchService do
+  before do
+    # we ask for front matter every time the search service retrieves agg buckets...
+    allow_any_instance_of(SearchService).to receive(:agg_buckets_for_field).and_return({})
+  end
+
   describe "#search" do
     subject { described_class.new(params).search }
 
