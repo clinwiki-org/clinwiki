@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import { Mutation, MutationFn } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import {
@@ -9,7 +9,7 @@ import {
 } from 'types/ResetPasswordMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import StyledButton from './StyledButton';
+import ThemedButton from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import StyledError from './StyledError';
@@ -108,9 +108,9 @@ class ResetPasswordPage extends React.Component<
                 }
               }}>
               {resetPassword => (
-                <StyledButton onClick={this.handleResetPassword(resetPassword)}>
+                <ThemedButton onClick={this.handleResetPassword(resetPassword)}>
                   Send Instructions
-                </StyledButton>
+                </ThemedButton>
               )}
             </ResetPasswordMutationComponent>
             {this.renderErrors()}

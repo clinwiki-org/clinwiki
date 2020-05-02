@@ -7,20 +7,28 @@ import { checkServerIdentity } from 'tls';
 import MultiCrumb from 'components/MultiCrumb';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import ThemedButton from 'components/StyledComponents';
+import FacetCard from 'components/FacetCard/FacetCard';
+import AddFacetCard from 'components/FacetCard/AddFacetCard';
 
 interface Undo {
   description: string;
   action: () => void;
 }
+
 interface Label {
   name: string;
   values: string[];
   selectedValues: string[];
   indeterminiteValues: string[];
 }
+
 interface LabelValue {
   name: string;
   value: string;
+}
+
+interface LoadingProps {
+  readonly show: boolean;
 }
 
 interface BulkEditProps {
@@ -36,10 +44,138 @@ interface BulkEditProps {
   ) => Promise<void>;
   handleUndo: (undoActions: any[], idx: number) => void;
 }
+
 interface BulkEditState {
   labelsToAdd: LabelValue[];
   labelsToRemove: LabelValue[];
 }
+
+const CrumbsBarStyleWrapper = styled.div`
+  margin-bottom: 8px;
+  .container {
+    background: #d9deea;
+    border: 0px;
+
+    color: #394149;
+  }
+
+  i {
+    font-style: normal;
+    margin-right: 3px;
+    text-transform: capitalize;
+  }
+
+  span.label.label-default {
+    padding: 7px !important;
+    border-radius: 2px !important;
+  }
+
+  input.form-control {
+    border: 0px;
+    box-shadow: none;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  span.label {
+    background: none;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 4px;
+    margin-right: 5px;
+    text-transform: capitalize;
+
+    span.fa-remove {
+      color: #fff !important;
+      opacity: 0.5;
+      margin-left: 5px !important;
+    }
+
+    span.fa-remove:hover {
+      opacity: 1;
+    }
+
+    b {
+      padding-right: 5px;
+    }
+
+    b:last-of-type {
+      padding-right: 0px;
+    }
+  }
+
+  .right-align {
+    text-align: right;
+  }
+
+  div.row > div {
+    padding-left: 0px;
+  }
+
+  .searchInput {
+    padding-bottom: 10px;
+  }
+`;
+
+const Loading = styled.div<LoadingProps>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  transition: 0.3s;
+  opacity: 0;
+  pointer-events: none;
+  ${props =>
+    props.show
+      ? `
+      opacity:1;
+      pointer-events: initial;
+  `
+      : ''}
+  z-index: 999999;
+`;
+const ToastContainer = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+`;
+
+const MainContainer = styled(Col)`
+  background-color: #eaedf4;
+  min-height: 100vh;
+  padding: 20px;
+`;
+const PanelContainer = styled(Panel)`
+  padding: 16px;
+  position: relative;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+const Title = styled.h3`
+  margin-bottom: 20px;
+`;
+const StyledPanel = styled(CollapsiblePanel)`
+  margin: 0 10px 10px 0;
+  width: 250px;
+  .panel-heading h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+    max-width: 200px;
+  }
+  .panel-body {
+    height: 150px !important;
+    overflow: scroll;
+  }
+`;
 
 const groupByLabel = (labels: LabelValue[]) => {
   return labels.reduce(
@@ -53,6 +189,24 @@ const groupByLabel = (labels: LabelValue[]) => {
 
 const isSelected = ({ label, value }) => (x: { name: string; value: string }) =>
   x.name != label || x.value != value;
+
+const buildDescription = ({ groupedByLabel, recordsTotal }) => {
+  let desc = '';
+  if (Object.keys(groupedByLabel.toAdd).length) {
+    desc += `Added: `;
+    desc += `${Object.entries(groupedByLabel.toAdd)
+      .map(([label, values]) => `${label}: ${values}`)
+      .join('. ')}`;
+  }
+  if (Object.keys(groupedByLabel.toRemove).length) {
+    desc += `Removed: `;
+    desc += `${Object.entries(groupedByLabel.toRemove)
+      .map(([label, values]) => `${label}: ${values}`)
+      .join('. ')}`;
+  }
+  if (desc != '') desc += ` on ${recordsTotal} studies.`;
+  return desc;
+};
 
 class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
   state: BulkEditState = {
@@ -114,7 +268,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
           <Container>
             {labels.map(label =>
               !aggBucketsByLabel[label].all.length ? null : (
-                <StyledPanel key={label} header={label} dropdown>
+                <FacetCard label={label} bulk>
                   {aggBucketsByLabel[label].all.map(value => {
                     const indeterminate = aggBucketsByLabel[
                       label
@@ -145,7 +299,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                       </Checkbox>
                     );
                   })}
-                </StyledPanel>
+                </FacetCard>
               )
             )}
           </Container>
@@ -233,152 +387,4 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
   }
 }
 
-const CrumbsBarStyleWrapper = styled.div`
-  margin-bottom: 8px;
-  .container {
-    background: #d9deea;
-    border: 0px;
-
-    color: #394149;
-  }
-
-  i {
-    font-style: normal;
-    margin-right: 3px;
-    text-transform: capitalize;
-  }
-
-  span.label.label-default {
-    padding: 7px !important;
-    border-radius: 2px !important;
-  }
-
-  input.form-control {
-    border: 0px;
-    box-shadow: none;
-    margin-right: 10px;
-    margin-left: 10px;
-  }
-
-  span.label {
-    background: none;
-    padding: 5px;
-    font-size: 12px;
-    border-radius: 4px;
-    margin-right: 5px;
-    text-transform: capitalize;
-
-    span.fa-remove {
-      color: #fff !important;
-      opacity: 0.5;
-      margin-left: 5px !important;
-    }
-
-    span.fa-remove:hover {
-      opacity: 1;
-    }
-
-    b {
-      padding-right: 5px;
-    }
-
-    b:last-of-type {
-      padding-right: 0px;
-    }
-  }
-
-  .right-align {
-    text-align: right;
-  }
-
-  div.row > div {
-    padding-left: 0px;
-  }
-
-  .searchInput {
-    padding-bottom: 10px;
-  }
-`;
-
-interface LoadingProps {
-  readonly show: boolean;
-}
-
-const Loading = styled.div<LoadingProps>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  transition: 0.3s;
-  opacity: 0;
-  pointer-events: none;
-  ${props =>
-    props.show
-      ? `
-      opacity:1;
-      pointer-events: initial;
-  `
-      : ''}
-  z-index: 999999;
-`;
-const ToastContainer = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px;
-`;
-
-const buildDescription = ({ groupedByLabel, recordsTotal }) => {
-  let desc = '';
-  if (Object.keys(groupedByLabel.toAdd).length) {
-    desc += `Added: `;
-    desc += `${Object.entries(groupedByLabel.toAdd)
-      .map(([label, values]) => `${label}: ${values}`)
-      .join('. ')}`;
-  }
-  if (Object.keys(groupedByLabel.toRemove).length) {
-    desc += `Removed: `;
-    desc += `${Object.entries(groupedByLabel.toRemove)
-      .map(([label, values]) => `${label}: ${values}`)
-      .join('. ')}`;
-  }
-  if (desc != '') desc += ` on ${recordsTotal} studies.`;
-  return desc;
-};
-
-const MainContainer = styled(Col)`
-  background-color: #eaedf4;
-  min-height: 100vh;
-  padding: 20px;
-`;
-const PanelContainer = styled(Panel)`
-  padding: 16px;
-  position: relative;
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-const Title = styled.h3`
-  margin-bottom: 20px;
-`;
-const StyledPanel = styled(CollapsiblePanel)`
-  margin: 0 10px 10px 0;
-  width: 250px;
-  .panel-heading h3 {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: absolute;
-    max-width: 200px;
-  }
-  .panel-body {
-    height: 150px !important;
-    overflow: scroll;
-  }
-`;
 export default BulkEditView;

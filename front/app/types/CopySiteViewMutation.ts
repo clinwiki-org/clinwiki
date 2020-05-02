@@ -337,6 +337,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs {
 
 export interface CopySiteViewMutation_copySiteView_siteView_search {
   __typename: "SiteSearchPage";
+  type: string;
   autoSuggest: CopySiteViewMutation_copySiteView_siteView_search_autoSuggest;
   results: CopySiteViewMutation_copySiteView_siteView_search_results;
   presearch: CopySiteViewMutation_copySiteView_siteView_search_presearch;

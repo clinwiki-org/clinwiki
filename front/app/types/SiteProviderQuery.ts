@@ -353,6 +353,7 @@ export interface SiteProviderQuery_site_siteView_search_crowdAggs {
 
 export interface SiteProviderQuery_site_siteView_search {
   __typename: "SiteSearchPage";
+  type: string;
   autoSuggest: SiteProviderQuery_site_siteView_search_autoSuggest;
   results: SiteProviderQuery_site_siteView_search_results;
   presearch: SiteProviderQuery_site_siteView_search_presearch;
@@ -703,6 +704,7 @@ export interface SiteProviderQuery_site_siteViews_search_crowdAggs {
 
 export interface SiteProviderQuery_site_siteViews_search {
   __typename: "SiteSearchPage";
+  type: string;
   autoSuggest: SiteProviderQuery_site_siteViews_search_autoSuggest;
   results: SiteProviderQuery_site_siteViews_search_results;
   presearch: SiteProviderQuery_site_siteViews_search_presearch;

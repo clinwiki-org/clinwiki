@@ -4,6 +4,7 @@ import {
   WikiPageEditFragment,
   WikiPageEditFragment_user,
 } from 'types/WikiPageEditFragment';
+import { Link } from 'react-router-dom';
 import ThemedButton from 'components/StyledComponents';
 
 interface EditBlurbProps {
@@ -21,9 +22,10 @@ class EditBlurb extends React.Component<EditBlurbProps> {
       return 'Anonymous';
     }
     if (user.firstName) {
-      return `${user.firstName} ${user.lastName && user.lastName[0]}`;
+      const userName = `${user.firstName} ${user.lastName && user.lastName[0]}`;
+      return <Link to={`/profile/${user.email}?sv=user`}>`${userName}`</Link>;
     }
-    return user.email;
+    return <Link to={`/profile/${user.email}?sv=user`}>{user.email}</Link>;
   }
 
   getBlurb() {
