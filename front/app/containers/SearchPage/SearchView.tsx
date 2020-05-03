@@ -620,7 +620,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       // searchData = Array.from(
       //   new Set(this.props.previousSearchData.concat(searchData))
       // );
-      searchData;
+      // searchData;
     }
 
     // Eliminates undefined items from the searchData array

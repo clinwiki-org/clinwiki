@@ -197,7 +197,7 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
         </ThemedCrumbsContainer>
         <ThemedAddContainer>
           <Typeahead
-            id={name}
+            id={this.props.name}
             ref={this.typeahead}
             options={options}
             type="text"
