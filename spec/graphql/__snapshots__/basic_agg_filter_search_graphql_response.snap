@@ -1,1 +1,500 @@
-{"data"=>{"search"=>{"recordsTotal"=>46, "aggs"=>[{"buckets"=>[{"key"=>"Phase 1", "docCount"=>28}, {"key"=>"Phase 2", "docCount"=>18}]}, {"buckets"=>[{"key"=>"Antibodies", "docCount"=>7}, {"key"=>"Everolimus", "docCount"=>5}, {"key"=>"Sirolimus", "docCount"=>5}, {"key"=>"Vaccines", "docCount"=>5}, {"key"=>"Antibodies, Monoclonal", "docCount"=>4}, {"key"=>"Irinotecan", "docCount"=>4}, {"key"=>"Fluorouracil", "docCount"=>3}, {"key"=>"Gemcitabine", "docCount"=>3}, {"key"=>"Immunoglobulins", "docCount"=>3}, {"key"=>"Immunotoxins", "docCount"=>3}]}, {"buckets"=>[{"key"=>"Chicago", "docCount"=>5}, {"key"=>"Houston", "docCount"=>5}, {"key"=>"Rochester", "docCount"=>5}, {"key"=>"Bethesda", "docCount"=>4}, {"key"=>"Billings", "docCount"=>3}, {"key"=>"Boston", "docCount"=>3}, {"key"=>"San Francisco", "docCount"=>3}, {"key"=>"Scottsdale", "docCount"=>3}, {"key"=>"Bettendorf", "docCount"=>2}, {"key"=>"Bismarck", "docCount"=>2}]}, {"buckets"=>[{"key"=>"Completed", "docCount"=>29}, {"key"=>"Terminated", "docCount"=>9}, {"key"=>"Unknown status", "docCount"=>5}, {"key"=>"Active, not recruiting", "docCount"=>2}, {"key"=>"Withdrawn", "docCount"=>1}]}, {"buckets"=>[{"key"=>"0", "docCount"=>46}]}, {"buckets"=>[]}, {"buckets"=>[{"key"=>"Pancreatic Neoplasms", "docCount"=>46}, {"key"=>"Stomach Neoplasms", "docCount"=>38}, {"key"=>"Intestinal Neoplasms", "docCount"=>17}, {"key"=>"Breast Neoplasms", "docCount"=>14}, {"key"=>"Cholangiocarcinoma", "docCount"=>13}, {"key"=>"Esophageal Neoplasms", "docCount"=>13}, {"key"=>"Gallbladder Neoplasms", "docCount"=>13}, {"key"=>"Bile Duct Neoplasms", "docCount"=>12}, {"key"=>"Lung Neoplasms", "docCount"=>12}, {"key"=>"Carcinoid Tumor", "docCount"=>11}]}, {"buckets"=>[{"key"=>"Mayo Clinic", "docCount"=>3}, {"key"=>"Abbott-Northwestern Hospital", "docCount"=>2}, {"key"=>"CCOP - Duluth", "docCount"=>2}, {"key"=>"CCOP - Missouri Valley Cancer Consortium", "docCount"=>2}, {"key"=>"Dana-Farber Cancer Institute", "docCount"=>2}, {"key"=>"Fox Chase Cancer Center", "docCount"=>2}, {"key"=>"M D Anderson Cancer Center", "docCount"=>2}, {"key"=>"Mayo Clinic Cancer Center", "docCount"=>2}, {"key"=>"Rapid City Regional Hospital", "docCount"=>2}, {"key"=>"University of Wisconsin Hospital and Clinics", "docCount"=>2}]}, {"buckets"=>[{"key"=>"United States", "docCount"=>35}, {"key"=>"Canada", "docCount"=>2}, {"key"=>"Germany", "docCount"=>2}, {"key"=>"China", "docCount"=>1}, {"key"=>"Greece", "docCount"=>1}, {"key"=>"Israel", "docCount"=>1}, {"key"=>"Italy", "docCount"=>1}, {"key"=>"Korea, Republic of", "docCount"=>1}, {"key"=>"Netherlands", "docCount"=>1}, {"key"=>"Serbia", "docCount"=>1}]}, {"buckets"=>[{"key"=>"Interventional", "docCount"=>46}]}, {"buckets"=>[{"key"=>"National Cancer Institute (NCI)", "docCount"=>31}, {"key"=>"Alliance for Clinical Trials in Oncology", "docCount"=>2}, {"key"=>"City of Hope Medical Center", "docCount"=>2}, {"key"=>"M.D. Anderson Cancer Center", "docCount"=>2}, {"key"=>"Novartis", "docCount"=>2}, {"key"=>"Agensys, Inc.", "docCount"=>1}, {"key"=>"Arcispedale Santa Maria Nuova-IRCCS", "docCount"=>1}, {"key"=>"Cancer Institute and Hospital, Chinese Academy of Medical Sciences", "docCount"=>1}, {"key"=>"Cancer Research UK", "docCount"=>1}, {"key"=>"Clovis Oncology, Inc.", "docCount"=>1}]}, {"buckets"=>[{"key"=>"Texas", "docCount"=>9}, {"key"=>"", "docCount"=>8}, {"key"=>"California", "docCount"=>7}, {"key"=>"Illinois", "docCount"=>7}, {"key"=>"Arizona", "docCount"=>5}, {"key"=>"Maryland", "docCount"=>5}, {"key"=>"Minnesota", "docCount"=>5}, {"key"=>"New York", "docCount"=>5}, {"key"=>"North Carolina", "docCount"=>5}, {"key"=>"Pennsylvania", "docCount"=>5}]}, {"buckets"=>[]}, {"buckets"=>[{"key"=>"laboratory biomarker analysis", "docCount"=>4}, {"key"=>"Laboratory Biomarker Analysis", "docCount"=>3}, {"key"=>"Everolimus", "docCount"=>2}, {"key"=>"Pazopanib Hydrochloride", "docCount"=>2}, {"key"=>"Pharmacological Study", "docCount"=>2}, {"key"=>"irinotecan hydrochloride", "docCount"=>2}, {"key"=>"oxaliplatin", "docCount"=>2}, {"key"=>"placebo", "docCount"=>2}, {"key"=>"24 Gy in 3 fractions", "docCount"=>1}, {"key"=>"7-hydroxystaurosporine", "docCount"=>1}]}], "studies"=>[{"nctId"=>"NCT00001805"}, {"nctId"=>"NCT00003046"}, {"nctId"=>"NCT00003125"}, {"nctId"=>"NCT00003157"}, {"nctId"=>"NCT00003427"}, {"nctId"=>"NCT00004074"}, {"nctId"=>"NCT00004604"}, {"nctId"=>"NCT00004895"}, {"nctId"=>"NCT00010270"}, {"nctId"=>"NCT00012246"}, {"nctId"=>"NCT00014456"}, {"nctId"=>"NCT00019435"}, {"nctId"=>"NCT00019474"}, {"nctId"=>"NCT00024063"}, {"nctId"=>"NCT00025532"}, {"nctId"=>"NCT00027534"}, {"nctId"=>"NCT00028496"}, {"nctId"=>"NCT00031681"}, {"nctId"=>"NCT00249301"}, {"nctId"=>"NCT00376987"}, {"nctId"=>"NCT00397384"}, {"nctId"=>"NCT00454363"}, {"nctId"=>"NCT00534001"}, {"nctId"=>"NCT00544193"}, {"nctId"=>"NCT00621556"}]}}}
+{
+  "data": {
+    "search": {
+      "recordsTotal": 46,
+      "aggs": [
+        {
+          "buckets": [
+            {
+              "key": "Phase 1",
+              "docCount": 28
+            },
+            {
+              "key": "Phase 2",
+              "docCount": 18
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Antibodies",
+              "docCount": 7
+            },
+            {
+              "key": "Everolimus",
+              "docCount": 5
+            },
+            {
+              "key": "Sirolimus",
+              "docCount": 5
+            },
+            {
+              "key": "Vaccines",
+              "docCount": 5
+            },
+            {
+              "key": "Antibodies, Monoclonal",
+              "docCount": 4
+            },
+            {
+              "key": "Irinotecan",
+              "docCount": 4
+            },
+            {
+              "key": "Fluorouracil",
+              "docCount": 3
+            },
+            {
+              "key": "Gemcitabine",
+              "docCount": 3
+            },
+            {
+              "key": "Immunoglobulins",
+              "docCount": 3
+            },
+            {
+              "key": "Immunotoxins",
+              "docCount": 3
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Chicago",
+              "docCount": 5
+            },
+            {
+              "key": "Houston",
+              "docCount": 5
+            },
+            {
+              "key": "Rochester",
+              "docCount": 5
+            },
+            {
+              "key": "Bethesda",
+              "docCount": 4
+            },
+            {
+              "key": "Billings",
+              "docCount": 3
+            },
+            {
+              "key": "Boston",
+              "docCount": 3
+            },
+            {
+              "key": "San Francisco",
+              "docCount": 3
+            },
+            {
+              "key": "Scottsdale",
+              "docCount": 3
+            },
+            {
+              "key": "Bettendorf",
+              "docCount": 2
+            },
+            {
+              "key": "Bismarck",
+              "docCount": 2
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Completed",
+              "docCount": 29
+            },
+            {
+              "key": "Terminated",
+              "docCount": 9
+            },
+            {
+              "key": "Unknown status",
+              "docCount": 5
+            },
+            {
+              "key": "Active, not recruiting",
+              "docCount": 2
+            },
+            {
+              "key": "Withdrawn",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "0",
+              "docCount": 46
+            }
+          ]
+        },
+        {
+          "buckets": [
+
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Pancreatic Neoplasms",
+              "docCount": 46
+            },
+            {
+              "key": "Stomach Neoplasms",
+              "docCount": 38
+            },
+            {
+              "key": "Intestinal Neoplasms",
+              "docCount": 17
+            },
+            {
+              "key": "Breast Neoplasms",
+              "docCount": 14
+            },
+            {
+              "key": "Cholangiocarcinoma",
+              "docCount": 13
+            },
+            {
+              "key": "Esophageal Neoplasms",
+              "docCount": 13
+            },
+            {
+              "key": "Gallbladder Neoplasms",
+              "docCount": 13
+            },
+            {
+              "key": "Bile Duct Neoplasms",
+              "docCount": 12
+            },
+            {
+              "key": "Lung Neoplasms",
+              "docCount": 12
+            },
+            {
+              "key": "Carcinoid Tumor",
+              "docCount": 11
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Mayo Clinic",
+              "docCount": 3
+            },
+            {
+              "key": "Abbott-Northwestern Hospital",
+              "docCount": 2
+            },
+            {
+              "key": "CCOP - Duluth",
+              "docCount": 2
+            },
+            {
+              "key": "CCOP - Missouri Valley Cancer Consortium",
+              "docCount": 2
+            },
+            {
+              "key": "Dana-Farber Cancer Institute",
+              "docCount": 2
+            },
+            {
+              "key": "Fox Chase Cancer Center",
+              "docCount": 2
+            },
+            {
+              "key": "M D Anderson Cancer Center",
+              "docCount": 2
+            },
+            {
+              "key": "Mayo Clinic Cancer Center",
+              "docCount": 2
+            },
+            {
+              "key": "Rapid City Regional Hospital",
+              "docCount": 2
+            },
+            {
+              "key": "University of Wisconsin Hospital and Clinics",
+              "docCount": 2
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "United States",
+              "docCount": 35
+            },
+            {
+              "key": "Canada",
+              "docCount": 2
+            },
+            {
+              "key": "Germany",
+              "docCount": 2
+            },
+            {
+              "key": "China",
+              "docCount": 1
+            },
+            {
+              "key": "Greece",
+              "docCount": 1
+            },
+            {
+              "key": "Israel",
+              "docCount": 1
+            },
+            {
+              "key": "Italy",
+              "docCount": 1
+            },
+            {
+              "key": "Korea, Republic of",
+              "docCount": 1
+            },
+            {
+              "key": "Netherlands",
+              "docCount": 1
+            },
+            {
+              "key": "Serbia",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Interventional",
+              "docCount": 46
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "National Cancer Institute (NCI)",
+              "docCount": 31
+            },
+            {
+              "key": "Alliance for Clinical Trials in Oncology",
+              "docCount": 2
+            },
+            {
+              "key": "City of Hope Medical Center",
+              "docCount": 2
+            },
+            {
+              "key": "M.D. Anderson Cancer Center",
+              "docCount": 2
+            },
+            {
+              "key": "Novartis",
+              "docCount": 2
+            },
+            {
+              "key": "Agensys, Inc.",
+              "docCount": 1
+            },
+            {
+              "key": "Arcispedale Santa Maria Nuova-IRCCS",
+              "docCount": 1
+            },
+            {
+              "key": "Cancer Institute and Hospital, Chinese Academy of Medical Sciences",
+              "docCount": 1
+            },
+            {
+              "key": "Cancer Research UK",
+              "docCount": 1
+            },
+            {
+              "key": "Clovis Oncology, Inc.",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Texas",
+              "docCount": 9
+            },
+            {
+              "key": "",
+              "docCount": 8
+            },
+            {
+              "key": "California",
+              "docCount": 7
+            },
+            {
+              "key": "Illinois",
+              "docCount": 7
+            },
+            {
+              "key": "Arizona",
+              "docCount": 5
+            },
+            {
+              "key": "Maryland",
+              "docCount": 5
+            },
+            {
+              "key": "Minnesota",
+              "docCount": 5
+            },
+            {
+              "key": "New York",
+              "docCount": 5
+            },
+            {
+              "key": "North Carolina",
+              "docCount": 5
+            },
+            {
+              "key": "Pennsylvania",
+              "docCount": 5
+            }
+          ]
+        },
+        {
+          "buckets": [
+
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "laboratory biomarker analysis",
+              "docCount": 4
+            },
+            {
+              "key": "Laboratory Biomarker Analysis",
+              "docCount": 3
+            },
+            {
+              "key": "Everolimus",
+              "docCount": 2
+            },
+            {
+              "key": "Pazopanib Hydrochloride",
+              "docCount": 2
+            },
+            {
+              "key": "Pharmacological Study",
+              "docCount": 2
+            },
+            {
+              "key": "irinotecan hydrochloride",
+              "docCount": 2
+            },
+            {
+              "key": "oxaliplatin",
+              "docCount": 2
+            },
+            {
+              "key": "placebo",
+              "docCount": 2
+            },
+            {
+              "key": "24 Gy in 3 fractions",
+              "docCount": 1
+            },
+            {
+              "key": "7-hydroxystaurosporine",
+              "docCount": 1
+            }
+          ]
+        }
+      ],
+      "studies": [
+        {
+          "nctId": "NCT00001805"
+        },
+        {
+          "nctId": "NCT00003046"
+        },
+        {
+          "nctId": "NCT00003125"
+        },
+        {
+          "nctId": "NCT00003157"
+        },
+        {
+          "nctId": "NCT00003427"
+        },
+        {
+          "nctId": "NCT00004074"
+        },
+        {
+          "nctId": "NCT00004604"
+        },
+        {
+          "nctId": "NCT00004895"
+        },
+        {
+          "nctId": "NCT00010270"
+        },
+        {
+          "nctId": "NCT00012246"
+        },
+        {
+          "nctId": "NCT00014456"
+        },
+        {
+          "nctId": "NCT00019435"
+        },
+        {
+          "nctId": "NCT00019474"
+        },
+        {
+          "nctId": "NCT00024063"
+        },
+        {
+          "nctId": "NCT00025532"
+        },
+        {
+          "nctId": "NCT00027534"
+        },
+        {
+          "nctId": "NCT00028496"
+        },
+        {
+          "nctId": "NCT00031681"
+        },
+        {
+          "nctId": "NCT00249301"
+        },
+        {
+          "nctId": "NCT00376987"
+        },
+        {
+          "nctId": "NCT00397384"
+        },
+        {
+          "nctId": "NCT00454363"
+        },
+        {
+          "nctId": "NCT00534001"
+        },
+        {
+          "nctId": "NCT00544193"
+        },
+        {
+          "nctId": "NCT00621556"
+        }
+      ]
+    }
+  }
+}

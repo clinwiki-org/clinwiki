@@ -10,7 +10,7 @@ class SearchExport < ApplicationRecord
   end
 
   def params
-    JSON.parse(short_link.long)
+    JSON.parse(short_link.long).deep_symbolize_keys!
   end
 
   def fields
