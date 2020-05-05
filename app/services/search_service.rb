@@ -92,11 +92,11 @@ DEFAULT_AGG_OPTIONS = {
     limit: 10,
     order: { "_term" => "asc" },
   },
-  :"wiki_page_edits.email" => {
+  "wiki_page_edits.email": {
     limit: 10,
     order: { "_term" => "asc" },
   },
-  :"wiki_page_edits.created_at"=> {
+  "wiki_page_edits.created_at": {
     date_histogram: {
       field: :"wiki_page_edits.created_at",
       interval: :year,
@@ -166,7 +166,7 @@ class SearchService
   end
 
   def enrich_body(body)
-    body[:query][:bool][:must] =[ { query_string: { query: search_query } }]
+    body[:query][:bool][:must] = [{ query_string: { query: search_query } }]
     body[:query][:bool][:must] += nested_filters unless nested_filters.empty?
     body[:query][:bool][:must] += nested_range_filters unless nested_range_filters.empty?
   end
@@ -362,9 +362,8 @@ class SearchService
     nested.map { |filter| nested_filter(key_for(filter: filter), filter) }
   end
 
-
   def nested_range_filters
-    #Nested range has to include gte and lte and a dot
+    # Nested range has to include gte and lte and a dot
     nested = params.fetch(:agg_filters, []).select { |filter| filter[:field].to_s.include?(".") && !filter.slice(:gte, :lte).empty? }
     nested.map { |filter| nested_range_filter(key_for(filter: filter), filter) }
   end
@@ -389,15 +388,16 @@ class SearchService
   def nested_range_filter(key, filter)
     range_hash = filter.is_a?(Hash) ? filter.slice(:gte, :lte) : {}
     return nil unless key.to_s.include?(".") && !range_hash.empty?
+
     top_key, nested_key = key.to_s.split(".")
-    #Not sure what happesn if nil is in lte
+    # Not sure what happesn if nil is in lte
     {
       nested: {
         path: top_key,
         query: {
           bool: {
-            should:{
-              range: { key=> {gte: cast(range_hash[:gte]),lte: cast(range_hash[:lte])}},
+            should: {
+              range: { key => { gte: cast(range_hash[:gte]), lte: cast(range_hash[:lte]) } },
             },
           },
         },
@@ -407,6 +407,7 @@ class SearchService
 
   def range_filter(key, filter)
     return nil if key.to_s.include? "."
+
     range_hash = filter.slice(:gte, :lte)
     return nil if range_hash.empty?
 
