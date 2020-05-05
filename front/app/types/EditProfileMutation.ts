@@ -7,6 +7,13 @@ import { UpdateProfileInput } from "./globalTypes";
 // GraphQL mutation operation: EditProfileMutation
 // ====================================================
 
+export interface EditProfileMutation_updateProfile_user_reviews {
+  __typename: "Review";
+  content: string;
+  briefTitle: string;
+  nctId: string;
+}
+
 export interface EditProfileMutation_updateProfile_user {
   __typename: "User";
   /**
@@ -30,6 +37,12 @@ export interface EditProfileMutation_updateProfile_user {
    */
   defaultQueryString: string | null;
   roles: string[];
+  /**
+   * Number of reviews the user has done
+   */
+  reviewCount: number;
+  reviews: EditProfileMutation_updateProfile_user_reviews[];
+  contributions: number;
 }
 
 export interface EditProfileMutation_updateProfile {

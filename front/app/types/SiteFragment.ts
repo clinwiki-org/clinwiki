@@ -353,6 +353,7 @@ export interface SiteFragment_siteView_search_crowdAggs {
 
 export interface SiteFragment_siteView_search {
   __typename: "SiteSearchPage";
+  type: string;
   autoSuggest: SiteFragment_siteView_search_autoSuggest;
   results: SiteFragment_siteView_search_results;
   presearch: SiteFragment_siteView_search_presearch;
@@ -703,6 +704,7 @@ export interface SiteFragment_siteViews_search_crowdAggs {
 
 export interface SiteFragment_siteViews_search {
   __typename: "SiteSearchPage";
+  type: string;
   autoSuggest: SiteFragment_siteViews_search_autoSuggest;
   results: SiteFragment_siteViews_search_results;
   presearch: SiteFragment_siteViews_search_presearch;

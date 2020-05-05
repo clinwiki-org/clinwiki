@@ -424,6 +424,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
         variables={{ nctId: this.props.nctId }}
         onCompleted={this.handleQueryCompleted}>
         {({ data, loading, error }) => {
+          // console.log('wikidata', data);
           if (loading) {
             return <LoadingPane />;
           }

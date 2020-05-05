@@ -17,6 +17,14 @@ const FRAGMENT = gql`
     lastName
     defaultQueryString
     roles
+    reviewCount
+    reviews
+    {
+      content
+      briefTitle
+      nctId
+    }
+    contributions
   }
 `;
 

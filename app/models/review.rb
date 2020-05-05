@@ -6,6 +6,7 @@ class Review < ApplicationRecord
   alias stars front_matter
 
   belongs_to :user
+  belongs_to :study, foreign_key: :nct_id
 
   def default_content
     "Add your review!"

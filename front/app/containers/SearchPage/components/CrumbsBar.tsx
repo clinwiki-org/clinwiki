@@ -161,9 +161,6 @@ const LoaderWrapper = styled.div`
   text-align: center;
 `;
 
-const ThemedListGroup = withTheme(ListGroup);
-const ThemedListGroupItem = withTheme(ListGroupItem);
-
 interface CrumbsBarProps {
   searchParams: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
@@ -483,9 +480,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
               />
             </div>
           </FormGroup>
-          <Button type="submit">
+          <ThemedButton type="submit">
             <FontAwesome name="search" />
-          </Button>
+          </ThemedButton>
         </div>
       );
     } else if (showAutoSuggest == false) {
@@ -563,18 +560,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   toggleShowFilters = () => {
     this.setState({ showFilters: !this.state.showFilters });
   };
-  // loadPaginator = () => {
-  //   return (
-  //     <div className="right-align">
-  //       <div>{this.props.recordsTotal} results</div>
-  //       <div>
-  //         {this.props.recordsTotal > MAX_WINDOW_SIZE
-  //           ? `(showing first ${MAX_WINDOW_SIZE})`
-  //           : null}
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;

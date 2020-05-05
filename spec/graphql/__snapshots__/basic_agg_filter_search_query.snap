@@ -1,1 +1,1216 @@
-{"aggs":{"average_rating":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"average_rating":{"terms":{"field":"average_rating","size":10}}}},"overall_status":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"overall_status":{"terms":{"field":"overall_status","size":10}}}},"facility_states":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"facility_states":{"terms":{"field":"facility_states","size":10}}}},"facility_cities":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"facility_cities":{"terms":{"field":"facility_cities","size":10}}}},"facility_names":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"facility_names":{"terms":{"field":"facility_names","size":10}}}},"facility_countries":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"facility_countries":{"terms":{"field":"facility_countries","size":10}}}},"study_type":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"study_type":{"terms":{"field":"study_type","size":10}}}},"sponsors":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"sponsors":{"terms":{"field":"sponsors","size":10}}}},"browse_condition_mesh_terms":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"browse_condition_mesh_terms":{"terms":{"field":"browse_condition_mesh_terms","size":10}}}},"phase":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"phase":{"terms":{"field":"phase","size":10}}}},"rating_dimensions":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"rating_dimensions":{"terms":{"field":"rating_dimensions","size":10}}}},"browse_interventions_mesh_terms":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"browse_interventions_mesh_terms":{"terms":{"field":"browse_interventions_mesh_terms","size":10}}}},"interventions_mesh_terms":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"interventions_mesh_terms":{"terms":{"field":"interventions_mesh_terms","size":10}}}},"front_matter_keys":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"front_matter_keys":{"terms":{"field":"front_matter_keys","size":10}}}},"start_date":{"filter":{"bool":{"must":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"aggs":{"start_date":{"terms":{"field":"start_date","size":10}}}}},"query":{"bool":{"must":{"query_string":{"query":"stomach"}},"filter":[{"bool":{"must":[{"bool":{"filter":[{"bool":{"should":[{"bool":{"filter":[{"term":{"phase":{"value":"Phase 1"}}}]}},{"bool":{"filter":[{"term":{"phase":{"value":"Phase 2"}}}]}}]}}]}},{"bool":{"filter":[]}}]}}]}},"sort":[{"nct_id":"asc"}],"timeout":"11s","_source":false,"size":25,"from":25}
+{
+  "aggs": {
+    "average_rating": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "average_rating": {
+          "terms": {
+            "field": "average_rating",
+            "size": 10
+          }
+        }
+      }
+    },
+    "overall_status": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "overall_status": {
+          "terms": {
+            "field": "overall_status",
+            "size": 10
+          }
+        }
+      }
+    },
+    "facility_states": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "facility_states": {
+          "terms": {
+            "field": "facility_states",
+            "size": 10
+          }
+        }
+      }
+    },
+    "facility_cities": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "facility_cities": {
+          "terms": {
+            "field": "facility_cities",
+            "size": 10
+          }
+        }
+      }
+    },
+    "facility_names": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "facility_names": {
+          "terms": {
+            "field": "facility_names",
+            "size": 10
+          }
+        }
+      }
+    },
+    "facility_countries": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "facility_countries": {
+          "terms": {
+            "field": "facility_countries",
+            "size": 10
+          }
+        }
+      }
+    },
+    "study_type": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "study_type": {
+          "terms": {
+            "field": "study_type",
+            "size": 10
+          }
+        }
+      }
+    },
+    "sponsors": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "sponsors": {
+          "terms": {
+            "field": "sponsors",
+            "size": 10
+          }
+        }
+      }
+    },
+    "browse_condition_mesh_terms": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "browse_condition_mesh_terms": {
+          "terms": {
+            "field": "browse_condition_mesh_terms",
+            "size": 10
+          }
+        }
+      }
+    },
+    "phase": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "phase": {
+          "terms": {
+            "field": "phase",
+            "size": 10
+          }
+        }
+      }
+    },
+    "rating_dimensions": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "rating_dimensions": {
+          "terms": {
+            "field": "rating_dimensions",
+            "size": 10
+          }
+        }
+      }
+    },
+    "browse_interventions_mesh_terms": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "browse_interventions_mesh_terms": {
+          "terms": {
+            "field": "browse_interventions_mesh_terms",
+            "size": 10
+          }
+        }
+      }
+    },
+    "interventions_mesh_terms": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "interventions_mesh_terms": {
+          "terms": {
+            "field": "interventions_mesh_terms",
+            "size": 10
+          }
+        }
+      }
+    },
+    "front_matter_keys": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "front_matter_keys": {
+          "terms": {
+            "field": "front_matter_keys",
+            "size": 10
+          }
+        }
+      }
+    },
+    "start_date": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "start_date": {
+          "terms": {
+            "field": "start_date",
+            "size": 10
+          }
+        }
+      }
+    },
+    "wiki_page_edits.email": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "wiki_page_edits.email": {
+          "terms": {
+            "field": "wiki_page_edits.email",
+            "size": 10
+          }
+        }
+      }
+    },
+    "wiki_page_edits.created_at": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "bool": {
+                      "filter": [
+                        {
+                          "bool": {
+                            "should": [
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 1"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bool": {
+                                  "filter": [
+                                    {
+                                      "term": {
+                                        "phase": {
+                                          "value": "Phase 2"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "filter": [
+
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "aggs": {
+        "wiki_page_edits.created_at": {
+          "terms": {
+            "field": "wiki_page_edits.created_at",
+            "size": 10
+          }
+        }
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "query_string": {
+            "query": "stomach"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "bool": {
+            "must": [
+              {
+                "bool": {
+                  "filter": [
+                    {
+                      "bool": {
+                        "should": [
+                          {
+                            "bool": {
+                              "filter": [
+                                {
+                                  "term": {
+                                    "phase": {
+                                      "value": "Phase 1"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "bool": {
+                              "filter": [
+                                {
+                                  "term": {
+                                    "phase": {
+                                      "value": "Phase 2"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "bool": {
+                  "filter": [
+
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "nct_id": "asc"
+    }
+  ],
+  "timeout": "11s",
+  "_source": false,
+  "size": 25,
+  "from": 25
+}

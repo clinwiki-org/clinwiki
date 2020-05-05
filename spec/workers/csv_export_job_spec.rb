@@ -8,12 +8,12 @@ describe CsvExportJob do
 
   describe "without the export id" do
     let(:params) { {} }
-    it { expect { subject }.to raise_error }
+    it { expect { subject }.to raise_error(StandardError) }
   end
 
   describe "if the export id is malformed" do
     let(:params) { { "search_export_id" => -9 } }
-    it { expect { subject }.to raise_error }
+    it { expect { subject }.to raise_error(StandardError) }
   end
 
   describe "with a well formed export id" do
@@ -24,7 +24,7 @@ describe CsvExportJob do
 
     let!(:search_request) {
       stub_request(:get, "#{Clinwiki::Application.config.es_url}/studies_test/_search?scroll=1m")
-        .with(body: "{\"query\":{\"bool\":{\"must\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[{\"bool\":{\"must\":[]}}]}},\"sort\":[{\"nct_id\":\"asc\"}],\"timeout\":\"11s\",\"size\":10000}")
+        .with(body: "{\"query\":{\"bool\":{\"must\":[{\"query_string\":{\"query\":\"*\"}}],\"filter\":[{\"bool\":{\"must\":[]}}]}},\"sort\":[{\"nct_id\":\"asc\"}],\"timeout\":\"11s\",\"size\":10000}")
         .to_return(status: 200, body: {
           _scroll_id: "DnF1ZXJ5VGhlbk",
           hits: {

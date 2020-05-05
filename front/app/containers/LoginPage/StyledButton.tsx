@@ -5,6 +5,7 @@ import withTheme from './../ThemeProvider';
 const StyledButton = styled.div`
   padding: 10px 15px;
   background: ${props => props.theme.button};
+  color: ${props=> props.theme.authButton.buttonFont};
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;

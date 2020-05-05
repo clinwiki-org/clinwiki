@@ -97,11 +97,11 @@ class CollapsiblePanel extends React.Component<
             <Panel.Title
               componentClass="h3"
               className="pull-left"
-              style={{ fontSize: '18px' }}>
+              style={{ fontSize: '18px', color: '#333'}}>
               <FontAwesome
                 name={this.state.summaryVisible ? 'chevron-up' : 'chevron-down'}
                 className="pull-left"
-                style={{ fontSize: '14px' }}
+                style={{ fontSize: '14px', color: '#333' }}
               />
               {this.props.header}
             </Panel.Title>

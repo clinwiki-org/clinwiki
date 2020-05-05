@@ -46,7 +46,7 @@ class Sorter extends React.PureComponent<SorterProps, SorterState> {
       });
     } else {
       this.setState(prevState => {
-        icon: prevState.icon;
+        return { icon: prevState.icon };
       });
     }
   };

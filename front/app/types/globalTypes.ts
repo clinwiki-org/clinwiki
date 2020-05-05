@@ -36,45 +36,6 @@ export enum SiteViewOperation {
 }
 
 /**
- * A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.
- */
-export enum __DirectiveLocation {
-  ARGUMENT_DEFINITION = "ARGUMENT_DEFINITION",
-  ENUM = "ENUM",
-  ENUM_VALUE = "ENUM_VALUE",
-  FIELD = "FIELD",
-  FIELD_DEFINITION = "FIELD_DEFINITION",
-  FRAGMENT_DEFINITION = "FRAGMENT_DEFINITION",
-  FRAGMENT_SPREAD = "FRAGMENT_SPREAD",
-  INLINE_FRAGMENT = "INLINE_FRAGMENT",
-  INPUT_FIELD_DEFINITION = "INPUT_FIELD_DEFINITION",
-  INPUT_OBJECT = "INPUT_OBJECT",
-  INTERFACE = "INTERFACE",
-  MUTATION = "MUTATION",
-  OBJECT = "OBJECT",
-  QUERY = "QUERY",
-  SCALAR = "SCALAR",
-  SCHEMA = "SCHEMA",
-  SUBSCRIPTION = "SUBSCRIPTION",
-  UNION = "UNION",
-  VARIABLE_DEFINITION = "VARIABLE_DEFINITION",
-}
-
-/**
- * An enum describing what kind of type a given `__Type` is.
- */
-export enum __TypeKind {
-  ENUM = "ENUM",
-  INPUT_OBJECT = "INPUT_OBJECT",
-  INTERFACE = "INTERFACE",
-  LIST = "LIST",
-  NON_NULL = "NON_NULL",
-  OBJECT = "OBJECT",
-  SCALAR = "SCALAR",
-  UNION = "UNION",
-}
-
-/**
  * An Agg Filter
  */
 export interface AggFilterInput {
@@ -108,6 +69,7 @@ export interface BulkQueryUpdateInput {
 export interface CopySiteViewInput {
   name: string;
   url?: string | null;
+  type?: string | null;
   description?: string | null;
   default: boolean;
   siteId: number;
@@ -135,6 +97,7 @@ export interface CreateSiteViewInput {
   url?: string | null;
   description?: string | null;
   default: boolean;
+  type?: string | null;
   mutations: SiteViewMutationInput[];
   siteId: number;
   clientMutationId?: string | null;
@@ -271,6 +234,7 @@ export interface UpdateSiteViewInput {
   name?: string | null;
   default?: boolean | null;
   url?: string | null;
+  type?: string | null;
   description?: string | null;
   id: number;
   mutations: SiteViewMutationInput[];

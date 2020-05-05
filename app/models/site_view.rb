@@ -1,5 +1,5 @@
 STAR_FIELDS = [:average_rating].freeze
-RANGE_FIELDS = [:start_date].freeze
+RANGE_FIELDS = [:start_date,:"wiki_page_edits.created_at" ].freeze
 
 DEFAULT_AGG_ORDER = {
   average_rating: {
@@ -258,14 +258,15 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
         ],
       },
       search: {
-        config: {
-          fields: {
-            showPresearch: false,
-            showFacetBar: true,
-            showAutoSuggest: true,
-            showBreadCrumbs: true,
-            showResults: true,
-          },
+        type:"search",
+        config:{
+          fields:{
+          showPresearch:false,
+          showFacetBar:true,
+          showAutoSuggest:true,
+          showBreadCrumbs:true,
+          showResults:true,
+          }
         },
         presearch: {
           aggs: {
@@ -338,6 +339,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
       },
     }
   end
+
 
   def aggs
     SearchService::ENABLED_AGGS.sort.reject { |x| x == :front_matter_keys }.map { |agg| default_agg_params(agg) }
