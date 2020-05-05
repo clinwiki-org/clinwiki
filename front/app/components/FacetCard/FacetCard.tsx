@@ -206,7 +206,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
           <ThemedPresearchCard>
             <ThemedPresearchHeader>
               <PresearchTitle>{capitalize(label)}</PresearchTitle>
-              {!textFieldActive && (
+              {/* {!textFieldActive && (
                 <TextFieldToggle onClick={this.handlePlusClick}>
                   +
                 </TextFieldToggle>
@@ -215,7 +215,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                 <TextFieldToggle onClick={this.handlePlusClick}>
                   X
                 </TextFieldToggle>
-              )}
+              )} */}
             </ThemedPresearchHeader>
             {textFieldActive && (
               <Row>
