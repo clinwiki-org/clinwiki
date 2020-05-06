@@ -360,7 +360,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       aggFields: aggFields,
       crowdAggFields: crowdAggFields,
     };
-    console.log(variables);
     const response = await apolloClient.query({
       query,
       variables,

@@ -122,12 +122,13 @@ interface FacetCardProps {
   siteView?: any;
   values?: [string, boolean][];
   user?: any;
+  refetch?: any;
 }
 
 interface FacetCardState {
   textFieldActive: boolean;
   existingField: string;
-  suggestions: string[];
+  suggestions: any[];
   isSuggestionLoading: boolean;
   showLoginModal: boolean;
 }
@@ -199,30 +200,27 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
 
     const array = response.data.autocomplete.autocomplete[0].results;
 
-    console.log('dis the array', array);
-    console.log('values', values);
-
     array.map(({ key, docCount }, i) => {
       values?.map(([value, checked]) => {
         if (key === value) {
-          console.log('sup', key, value, checked);
           if (checked) {
-            console.log('removed', array[i]);
             array.splice(i, 1);
           }
-          if (!checked) {
+          if (key === '-99999999999') {
+            array.splice(i, 1);
+          } else {
             console.log('good data', array[i]);
           }
         }
       });
     });
-    // if (!array[0].partialString) {
-    array.unshift({ key: existingField.trim(), partialString: true });
-    // }
-    // const suggestions = uniq(array);
+
+    const newSet = new Set(array);
+    const uniqArr = [...newSet];
+    uniqArr.unshift({ key: existingField.trim(), partialString: true });
 
     this.setState({
-      suggestions: array,
+      suggestions: uniqArr,
     });
   };
 
@@ -240,6 +238,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
         this.props.nctId,
         upsertLabelMutation
       );
+      this.props.refetch();
     } else alert('error');
   };
 
@@ -280,17 +279,10 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     { suggestion, suggestionValue, suggestionIndex, method },
     upsertLabelMutation
   ) => {
-    console.log(
-      'selected',
-      event,
-      {
-        suggestion,
-        suggestionValue,
-        suggestionIndex,
-        method,
-      },
-      upsertLabelMutation
-    );
+    this.setState({
+      textFieldActive: false,
+      existingField: '',
+    });
     this.submitExistingField(
       this.props.label,
       suggestionValue,

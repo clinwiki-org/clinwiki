@@ -129,7 +129,7 @@ class SuggestedLabels extends React.PureComponent<
     return this.props.nctId;
   }
 
-  renderAgg = (key: string, values: [string, boolean][], meta) => {
+  renderAgg = (key: string, values: [string, boolean][], meta, refetch) => {
     return (
       <FacetCard
         label={key}
@@ -137,6 +137,7 @@ class SuggestedLabels extends React.PureComponent<
         nctId={this.props.nctId}
         values={values}
         onSelect={this.props.onSelect}
+        refetch={refetch}
         siteView={this.props.siteView}>
         {values.map(([value, checked]) => {
           if (bucketKeyStringIsMissing(value)) {
@@ -166,7 +167,7 @@ class SuggestedLabels extends React.PureComponent<
         variables={{
           nctId: this.props.nctId,
         }}>
-        {({ data, loading, error }) => {
+        {({ data, loading, error, refetch }) => {
           if (loading || error || !data) return null;
           let meta: { [key: string]: string } = {};
           try {
@@ -209,12 +210,15 @@ class SuggestedLabels extends React.PureComponent<
           )(aggs) as string[];
           return (
             <LabelsContainer>
-              {aggNames.map(key => this.renderAgg(key, aggs[key], meta))}
+              {aggNames.map(key =>
+                this.renderAgg(key, aggs[key], meta, refetch)
+              )}
               <FacetCard
                 meta={meta}
                 label="Add Label"
                 addLabel
                 nctId={this.props.nctId}
+                refetch={refetch}
               />
             </LabelsContainer>
           );
