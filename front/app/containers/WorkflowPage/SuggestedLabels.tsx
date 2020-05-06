@@ -22,6 +22,7 @@ interface SuggestedLabelsProps {
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
   allowedSuggestedLabels: string[];
+  siteView?: any;
 }
 
 const SEARCH_QUERY = gql`
@@ -134,20 +135,24 @@ class SuggestedLabels extends React.PureComponent<
         label={key}
         meta={meta}
         nctId={this.props.nctId}
-        onSelect={this.props.onSelect}>
+        values={values}
+        onSelect={this.props.onSelect}
+        siteView={this.props.siteView}>
         {values.map(([value, checked]) => {
           if (bucketKeyStringIsMissing(value)) {
             return null;
           }
-          return (
-            <Checkbox
-              key={value}
-              checked={checked}
-              disabled={this.props.disabled}
-              onChange={this.handleSelect(key, value)}>
-              {value}
-            </Checkbox>
-          );
+          if (checked) {
+            return (
+              <Checkbox
+                key={value}
+                checked={checked}
+                disabled={this.props.disabled}
+                onChange={this.handleSelect(key, value)}>
+                {value}
+              </Checkbox>
+            );
+          } else return null;
         })}
       </FacetCard>
     );
@@ -202,8 +207,6 @@ class SuggestedLabels extends React.PureComponent<
             keys,
             filter(name => this.props.allowedSuggestedLabels.includes(name))
           )(aggs) as string[];
-
-          console.log('wtfis meta', meta);
           return (
             <LabelsContainer>
               {aggNames.map(key => this.renderAgg(key, aggs[key], meta))}
