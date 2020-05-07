@@ -91,7 +91,7 @@ gem "front_matter_parser"
 gem "mailgun-ruby", "~>1.1.6"
 gem "graphql"
 gem "graphiql-rails", "~> 1.4.11"
-gem "faraday"
+gem "faraday", "~> 1"
 
 gem "activerecord-import", "~> 1.0"
 gem "composite_primary_keys"
