@@ -20,7 +20,7 @@ services:
     volumes:
       - cw-data:/var/lib/postgresq/data
   elastic:
-    image: elasticsearch:6.8.1
+    image: elasticsearch:6.8.8
     container_name: elastic
     ports:
       - 9200:9200
