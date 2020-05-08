@@ -26,5 +26,6 @@ module Types
     field :copySiteView, mutation: Mutations::CopySiteView
     field :provision_search_hash, mutation: Mutations::SearchHashMutation
     field :export_to_csv, mutation: Mutations::ExportToCsv
+    field :update_password, mutation: Mutations::UpdatePassword
   end
 end
