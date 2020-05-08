@@ -107,6 +107,14 @@ class PasswordReset extends React.Component<
     }
   };
 
+  handleUpdatePasswordCompleted = (data: UpdatePasswordMutation) => {
+    const jwt = data && data.updatePassword && data.updatePassword.jwt;
+    if (!jwt) return;
+
+    setLocalJwt(jwt);
+    this.props.history.push('/sign_in');
+  };
+
   render() {
     return (
       <StyledWrapper>
@@ -134,7 +142,7 @@ class PasswordReset extends React.Component<
           />
             <UpdatePasswordMutationComponent
               mutation={UPDATE_PASSWORD_MUTATION}
-              // onCompleted={this.handleUpdatePasswordCompleted}
+              onCompleted={this.handleUpdatePasswordCompleted}
               // update={(cache, { data }) => {
               //   const user = data && data.updatePassword && data.updatePassword.user;
               //   if (user) {
