@@ -30,15 +30,16 @@ ActiveRecord::Schema.define(version: 2020_04_25_183458) do
     t.integer "user_id"
   end
 
-  create_table "facility_locations", primary_key: ["name", "city", "state", "zip", "country"], force: :cascade do |t|
-    t.string "name", null: false
-    t.string "city", null: false
-    t.string "state", null: false
-    t.string "zip", null: false
-    t.string "country", null: false
+  create_table "facility_locations", force: :cascade do |t|
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "country"
     t.float "latitude"
     t.float "longitude"
     t.string "status"
+    t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
@@ -109,7 +110,7 @@ ActiveRecord::Schema.define(version: 2020_04_25_183458) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "skip_landing"
-    t.text "themes", default: "{\"primaryColor\":\"#6BA5D6\",\"secondaryColor\":\"#1b2a38\",\"lightTextColor\":\"#eee\",\"secondaryTextColor\":\"#333\",\"backgroundColor\":\"#4D5863\",\"primaryAltColor\":\"#5786AD\",\"authHeaderColor\":\"#5786AD\",\"sideBarColor\":\"333\"} "
+    t.text "themes", default: "{\"primaryColor\":\"#6BA5D6\",\"secondaryColor\":\"#1b2a38\",\"lightTextColor\":\"#eee\",\"secondaryTextColor\":\"#333\",\"backgroundColor\":\"#4D5863\",\"primaryAltColor\":\"#5786AD\",\"authHeaderColor\":\"#5786AD\",\"sideBarColor\":\"#4d5762\"} "
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
@@ -146,7 +147,6 @@ ActiveRecord::Schema.define(version: 2020_04_25_183458) do
     t.string "last_name"
     t.string "default_query_string"
     t.json "search_result_columns"
-    t.string "provider"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

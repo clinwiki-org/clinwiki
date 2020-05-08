@@ -115,13 +115,13 @@ GEM
     dotenv-rails (2.6.0)
       dotenv (= 2.6.0)
       railties (>= 3.2, < 6.0)
-    elasticsearch (7.5.0)
-      elasticsearch-api (= 7.5.0)
-      elasticsearch-transport (= 7.5.0)
-    elasticsearch-api (7.5.0)
+    elasticsearch (6.8.2)
+      elasticsearch-api (= 6.8.2)
+      elasticsearch-transport (= 6.8.2)
+    elasticsearch-api (6.8.2)
       multi_json
-    elasticsearch-transport (7.5.0)
-      faraday (>= 0.14, < 1)
+    elasticsearch-transport (6.8.2)
+      faraday (~> 1)
       multi_json
     erubi (1.9.0)
     et-orbi (1.1.7)
@@ -132,7 +132,7 @@ GEM
       activesupport (>= 4.2.0)
     faker (2.11.0)
       i18n (>= 1.6, < 2)
-    faraday (0.15.4)
+    faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.25)
     figaro (1.1.1)
@@ -208,7 +208,7 @@ GEM
       libv8 (>= 6.3)
     minitest (5.13.0)
     msgpack (1.2.6)
-    multi_json (1.13.1)
+    multi_json (1.14.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     net-ssh (5.1.0)
@@ -432,7 +432,7 @@ DEPENDENCIES
   execjs
   factory_bot (~> 5.1)
   faker (~> 2.11)
-  faraday
+  faraday (~> 1)
   figaro
   font-awesome-rails
   font-awesome-sass

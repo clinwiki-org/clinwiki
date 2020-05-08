@@ -9,6 +9,9 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 20
+- Export CSV
+
 ### Version 19
 - Themes!
 
