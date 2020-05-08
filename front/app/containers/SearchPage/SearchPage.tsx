@@ -736,13 +736,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
           }&sv=${siteViewUrl}`
-        ); return;
-      }else if(this.findFilter("wiki_page_edits.email")){
-        this.props.history.push(
-          `/profile/user?hash=${
-            data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
-        ); return;
+        );
+        return;
       }
       this.props.history.push(
         `/search?hash=${
@@ -751,7 +746,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       );
       return;
     }
-
   };
 
   getTotalResults = total => {
@@ -762,7 +756,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   };
-
+  findFilter=(variable:string)=>{	
+    let aggFilter = this.state.params?.aggFilters;	
+    let response = find(propEq('field', variable ), aggFilter||[]) as {	
+      field:string;	
+      gte:string;	
+      lte:string;	
+      values:any[];	
+    }|null ;	
+    return response	
+  }
   handlePresearchButtonClick = (hash, target) => {
     const url = `/search?hash=${hash}&sv=${target}`;
     this.props.history.push(url);
@@ -939,26 +942,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 showFacetBar,
                 showBreadCrumbs,
               } = currentSiteView.search.config.fields;
-              if(profile && profile.values.toString() !== this.props.email){
-                return (
-                  <ThemedMainContainer>
-                  <h2>{profile && profile.values.toString()}'s Contributions</h2>
-                  <SearchPageWrapper>
-                    {showFacetBar && (
-                      <ThemedSidebarContainer md={2}>
-                        {this.renderAggs(currentSiteView)}
-                      </ThemedSidebarContainer>
-                    )}
-                    <ThemedMainContainer>
-                      {showBreadCrumbs && this.renderCrumbs(currentSiteView)}
-                      {showPresearch && this.renderPresearch(hash)}
-                      {this.renderSearch()}
-                    </ThemedMainContainer>
-                  </SearchPageWrapper>
-                  </ThemedMainContainer>
-                );
-
-              }
               return (
                 <SearchPageWrapper>
                   {showFacetBar && (
