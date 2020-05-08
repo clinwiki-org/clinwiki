@@ -22,6 +22,8 @@ const ThemedCenterButton = withTheme(CenterButton);
 interface AddFacetCardProps {
   submitFacet?: any;
   upsert?: any;
+  user?: any;
+  showLogin: any;
 }
 
 interface AddFacetCardState {
@@ -40,10 +42,14 @@ class AddFacetCard extends React.PureComponent<
     showForm: false,
   };
 
-  handleButtonClick = () => {
-    this.setState({
-      showForm: true,
-    });
+  handleButtonClick = user => {
+    if (user) {
+      this.setState({
+        showForm: true,
+      });
+    } else {
+      this.props.showLogin(true);
+    }
   };
 
   handleLabelFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,8 +74,15 @@ class AddFacetCard extends React.PureComponent<
     });
   };
 
+  handleCancel = () => {
+    this.setState({
+      showForm: false,
+    });
+  };
+
   render() {
     const { label, description, showForm } = this.state;
+    const { user } = this.props;
     if (showForm) {
       return (
         <MarginContainer>
@@ -88,7 +101,12 @@ class AddFacetCard extends React.PureComponent<
             onChange={this.handleDescriptionFieldChange}
           />
           <div style={{ marginTop: 5, marginLeft: 2, marginBottom: 5 }}>
-            <ThemedButton onClick={this.handleSubmit}>Submit</ThemedButton>
+            <ThemedButton
+              style={{ marginRight: 5 }}
+              onClick={this.handleSubmit}>
+              Submit
+            </ThemedButton>
+            <ThemedButton onClick={this.handleCancel}>Cancel</ThemedButton>
           </div>
         </MarginContainer>
       );
@@ -99,7 +117,7 @@ class AddFacetCard extends React.PureComponent<
           style={{ color: 'inherit', fontSize: 'inherit' }}
           inverse={false}
           name="plus-square"
-          onClick={this.handleButtonClick}
+          onClick={() => this.handleButtonClick(user)}
         />
       </ThemedCenterButton>
     );
