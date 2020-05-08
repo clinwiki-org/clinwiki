@@ -146,7 +146,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     if (this.props.kind !== 'crowdAggs') {
       return (
         <span>
-          <ThemedStyledLabel>Display Label:</ThemedStyledLabel>
+          <ThemedStyledLabel>Agg Label:</ThemedStyledLabel>
           <StyledFormControl
             name={`set:${this.getPath(configType)}.displayName`}
             //@ts-ignore
@@ -206,6 +206,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             .join(' ')}
         </h4>
         <ThemedContainer>
+        {this.renderDisplayLabel(configType)}
           <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
           <ThemedCrumbsContainer>
             {Array.from(selected).map(value => (
@@ -317,7 +318,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="DATE_RANGE">Date Range</option>
               <option value="NUMBER_RANGE">Number Range</option>
             </StyledFormControl>
-            {this.renderDisplayLabel(configType)}
           </div>
         </ThemedContainer>
       </>
