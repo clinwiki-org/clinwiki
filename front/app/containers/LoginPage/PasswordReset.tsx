@@ -4,11 +4,24 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
+import { UpdatePasswordMutation, UpdatePasswordMutationVariables } from 'types/UpdatePasswordMutation';
 import ThemedButton from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import StyledError from './StyledError';
 import StyledWrapper from './StyledWrapper';
+
+const SIGN_IN_MUTATION = gql`
+  mutation UpdatePasswordMutation($input: UpdatePasswordInput!) {
+    updatePassword(input: $input) {
+      jwt
+      user {
+        ...UserFragment
+      }
+      errors
+    }
+  }
+`;
 
 interface PasswordResetProps {
   history: History;
