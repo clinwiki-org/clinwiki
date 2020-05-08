@@ -11,7 +11,7 @@ import { History } from 'history';
 import StyledError from './StyledError';
 import StyledWrapper from './StyledWrapper';
 
-const SIGN_IN_MUTATION = gql`
+const UPDATE_PASSWORD_MUTATION = gql`
   mutation UpdatePasswordMutation($input: UpdatePasswordInput!) {
     updatePassword(input: $input) {
       jwt

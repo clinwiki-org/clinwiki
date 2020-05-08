@@ -52,6 +52,10 @@ export interface UpdatePasswordMutation_updatePassword {
    */
   jwt: string | null;
   user: UpdatePasswordMutation_updatePassword_user;
+  /**
+   * Errors with token, either does not match user or expired
+   */
+  errors: string;
 }
 
 export interface UpdatePasswordMutation {
