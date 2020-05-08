@@ -207,12 +207,12 @@ class SuggestedLabels extends React.PureComponent<
           return (
             <LabelsContainer>
               {aggNames.map(key => this.renderAgg(key, aggs[key], meta))}
-              <FacetCard
+              {/* <FacetCard
                 meta={meta}
                 label="Add Label"
                 addLabel
                 nctId={this.props.nctId}
-              />
+              /> */}
             </LabelsContainer>
           );
         }}
