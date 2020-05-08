@@ -182,6 +182,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_ag
   order: UpdateSiteMutation_updateSite_site_siteView_search_presearch_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: UpdateSiteMutation_updateSite_site_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -292,6 +293,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_aggs_fields 
   order: UpdateSiteMutation_updateSite_site_siteView_search_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: UpdateSiteMutation_updateSite_site_siteView_search_aggs_fields_preselected;
   visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -533,6 +535,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_a
   order: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_aggs_fields_preselected;
   visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -643,6 +646,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_aggs_fields
   order: UpdateSiteMutation_updateSite_site_siteViews_search_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: UpdateSiteMutation_updateSite_site_siteViews_search_aggs_fields_preselected;
   visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;

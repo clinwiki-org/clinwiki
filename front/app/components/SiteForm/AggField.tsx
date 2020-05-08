@@ -142,6 +142,27 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       this.setState({ isVisibleOptionsOpen: !this.state.isVisibleOptionsOpen });
     }
   };
+  renderDisplayLabel = configType => {
+    if (this.props.kind !== 'crowdAggs') {
+      return (
+        <span>
+          <ThemedStyledLabel>Display Label:</ThemedStyledLabel>
+          <StyledFormControl
+            name={`set:${this.getPath(configType)}.displayName`}
+            //@ts-ignore
+            placeholder={aggToField(
+              this.props.field.name,
+              this.props.field.displayName
+            )}
+            value={this.props.field.rank}
+            onChange={this.props.onAddMutation}
+          />
+        </span>
+      );
+    } else {
+      return null;
+    }
+  };
 
   getUpdaters() {
     const preselectedUpdater = new AggFilterSiteConfigUpdater(
@@ -179,7 +200,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     return (
       <>
         <h4>
-          {aggToField(this.props.field.name)
+          {aggToField(this.props.field.name, this.props.field.name)
             .split('_')
             .map(capitalize)
             .join(' ')}
@@ -296,6 +317,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="DATE_RANGE">Date Range</option>
               <option value="NUMBER_RANGE">Number Range</option>
             </StyledFormControl>
+            {this.renderDisplayLabel(configType)}
           </div>
         </ThemedContainer>
       </>

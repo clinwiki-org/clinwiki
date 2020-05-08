@@ -140,8 +140,8 @@ class Aggs extends React.PureComponent<AggsProps> {
       preSearchAggs,
       preSearchCrowdAggs,
     } = this.props;
-
-    const sortByNameCi = sortBy(compose(toLower, aggToField));
+    //commented out because not sure how to pass two parameters when using compose 
+    // const sortByNameCi = sortBy(compose(toLower, aggToField);
 
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     let crowdAggPresearch: React.ReactElement<any> | null = null;
@@ -254,7 +254,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       crowdAggDropdowns = (
         <div>
           <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
-          {sortByNameCi(this.getCrowdAggs(Object.keys(crowdAggs))).map(k => (
+          {(this.getCrowdAggs(Object.keys(crowdAggs))).map(k => (
             <AggContext.Provider
               key={k}
               value={{
@@ -296,7 +296,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       return (
         <div>
           <div>
-            {sortByNameCi(this.getAggs(this.props.currentSiteView)).map(k =>
+            {(this.getAggs(this.props.currentSiteView)).map(k =>
               aggs[k] ? (
                 <AggContext.Provider
                   key={k}
