@@ -85,7 +85,7 @@ div.DraftEditor-editorContainer{
 }
 
 .react-autosuggest__input {
-  width: 100%;
+  width: 240px;
   height: 30px;
   padding: 10px 20px;
   font-family: Helvetica, sans-serif;
@@ -113,13 +113,12 @@ div.DraftEditor-editorContainer{
   display: block;
   position: absolute;
   top: 28px;
-  width: 100%;
+  width: 240px;
   border: 1px solid #aaa;
   background-color: #fff;
   font-family: Helvetica, sans-serif;
   font-weight: 300;
   font-size: 14px;
-  border-bottom: 1px solid black;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   z-index: 2;

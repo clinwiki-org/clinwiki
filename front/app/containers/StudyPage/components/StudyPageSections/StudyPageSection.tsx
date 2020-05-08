@@ -22,7 +22,6 @@ interface StudyPageSectionProps {
   location: Location;
   match: match<{ nctId: string; searchId: string }>;
   theme: Theme;
-  siteView?: any;
 }
 
 interface StudyPageSectionsState {
@@ -144,7 +143,6 @@ class StudyPageSection extends React.Component<
                       match={this.props.match}
                       location={this.props.location}
                       theme={this.props.theme}
-                      siteView={this.props?.siteView}
                     />
                   </Panel.Body>
                 </StyledPanelBody>

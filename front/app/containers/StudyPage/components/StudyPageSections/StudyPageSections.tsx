@@ -15,7 +15,6 @@ interface StudyPageSectionsProps {
   history: History;
   location: Location;
   match: match<{ nctId: string; searchId: string }>;
-  siteView: any;
 }
 
 class StudyPageSections extends React.Component<StudyPageSectionsProps> {
@@ -34,7 +33,6 @@ class StudyPageSections extends React.Component<StudyPageSectionsProps> {
           history={this.props.history}
           location={this.props.location}
           match={this.props.match}
-          siteView={this.props.siteView}
         />
       );
     });
