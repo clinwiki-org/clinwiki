@@ -10,14 +10,13 @@ import { Link } from 'react-router-dom';
 import { History } from 'history';
 import StyledError from './StyledError';
 import StyledWrapper from './StyledWrapper';
+import { setLocalJwt } from 'utils/localStorage';
+import { omit } from 'ramda';
 
 const UPDATE_PASSWORD_MUTATION = gql`
   mutation UpdatePasswordMutation($input: UpdatePasswordInput!) {
     updatePassword(input: $input) {
       jwt
-      user {
-        ...UserFragment
-      }
       errors
     }
   }
@@ -31,11 +30,18 @@ interface PasswordResetState {
   form: {
     // email: string;
     password: string;
-    confirmPassword: string;
+    passwordConfirmation: string
   };
+  resetPasswordToken: string;
 
   errors: string[];
 }
+
+
+class UpdatePasswordMutationComponent extends Mutation<
+UpdatePasswordMutation, UpdatePasswordMutationVariables
+> {}
+type UpdatePasswordMutationFn = MutationFn<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
 
 class PasswordReset extends React.Component<
   PasswordResetProps,
@@ -43,10 +49,10 @@ class PasswordReset extends React.Component<
 > {
   state: PasswordResetState = {
     form: {
-      // email: '',
       password: '',
-      confirmPassword: '',
+      passwordConfirmation: '',
     },
+    resetPasswordToken: '',
     errors: [],
   };
 
@@ -56,24 +62,48 @@ class PasswordReset extends React.Component<
     });
   };
 
-  handleResetSubmit = () => {
-    const { password, confirmPassword } = this.state.form;
-    if (password !== confirmPassword) {
-      console.log(password, confirmPassword);
+  getResetToken = () => {
+    let token = new URLSearchParams(this.props.history.location.search).getAll(
+      'reset_password_token'
+    );
+    console.log(token.toString());
+    this.setState({
+      //@ts-ignore
+      resetPasswordToken: token.toString()
+    })
+   
+    return token.toString();
+  } 
+
+  componentDidMount(){
+    this.getResetToken();
+  }
+
+  // handleSignUp = (signUp: SignUpMutationFn) => () => {
+  //   if (this.state.form.password === this.state.form.passwordConfirmation) {
+
+
+  handleResetSubmit = (updatePassword: UpdatePasswordMutationFn) => {
+    const { password, passwordConfirmation } = this.state.form;
+    
+    if (password !== passwordConfirmation) {
+      console.log(password, passwordConfirmation);
       alert('passwords do not match');
     }
-    if (confirmPassword.length < 8) {
-      console.log(confirmPassword);
+    if (passwordConfirmation.length < 8) {
+      console.log(passwordConfirmation);
       alert('password needs to be 8 characters');
     } else {
-      this.setState({
-        form: {
-          // email: '',
-          password: '',
-          confirmPassword: '',
-        },
-      });
-      this.props.history.push('/sign_in');
+
+      const resetPasswordToken = this.state.resetPasswordToken
+      const input = {
+        resetPasswordToken, 
+        password: this.state.form.password,
+        passwordConfirmation: this.state.form.passwordConfirmation
+      }
+    
+      updatePassword({ variables: { input } });
+      // this.props.history.push('/sign_in');
     }
   };
 
@@ -96,13 +126,32 @@ class PasswordReset extends React.Component<
             onChange={this.handleInputChange}
           />
           <StyledFormControl
-            name="confirmPassword"
+            name="passwordConfirmation"
             type="password"
             placeholder="Confirm New Password"
-            value={this.state.form.confirmPassword}
+            value={this.state.form.passwordConfirmation}
             onChange={this.handleInputChange}
           />
-          <ThemedButton onClick={this.handleResetSubmit}>Submit</ThemedButton>
+            <UpdatePasswordMutationComponent
+              mutation={UPDATE_PASSWORD_MUTATION}
+              // onCompleted={this.handleUpdatePasswordCompleted}
+              // update={(cache, { data }) => {
+              //   const user = data && data.updatePassword && data.updatePassword.user;
+              //   if (user) {
+              //     cache.writeQuery({
+              //       query: CurrentUser.query,
+              //       data: {
+              //         me: user,
+              //       },
+              //     });
+              //     return;
+              //   }
+              // }}
+              >
+              {updatePassword => (
+          <ThemedButton onClick={() => this.handleResetSubmit(updatePassword)}>Submit</ThemedButton>
+          )}
+          </UpdatePasswordMutationComponent>
         </StyledContainer>
       </StyledWrapper>
     );
