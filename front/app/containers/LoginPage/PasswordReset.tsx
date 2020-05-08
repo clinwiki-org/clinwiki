@@ -16,7 +16,7 @@ interface PasswordResetProps {
 
 interface PasswordResetState {
   form: {
-    email: string;
+    // email: string;
     password: string;
     confirmPassword: string;
   };
@@ -30,7 +30,7 @@ class PasswordReset extends React.Component<
 > {
   state: PasswordResetState = {
     form: {
-      email: '',
+      // email: '',
       password: '',
       confirmPassword: '',
     },
@@ -48,10 +48,14 @@ class PasswordReset extends React.Component<
     if (password !== confirmPassword) {
       console.log(password, confirmPassword);
       alert('passwords do not match');
+    }
+    if (confirmPassword.length < 8) {
+      console.log(confirmPassword);
+      alert('password needs to be 8 characters');
     } else {
       this.setState({
         form: {
-          email: '',
+          // email: '',
           password: '',
           confirmPassword: '',
         },
@@ -64,13 +68,13 @@ class PasswordReset extends React.Component<
     return (
       <StyledWrapper>
         <StyledContainer>
-          <StyledFormControl
+          {/* <StyledFormControl
             name="email"
             type="email"
             placeholder="Email"
             value={this.state.form.email}
             onChange={this.handleInputChange}
-          />
+          /> */}
           <StyledFormControl
             name="password"
             type="password"
