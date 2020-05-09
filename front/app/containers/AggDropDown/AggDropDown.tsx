@@ -2,23 +2,16 @@ import * as React from 'react';
 import styledComponents from 'styled-components';
 import {
   pipe,
-  map,
   length,
   prop,
   sortBy,
   pathOr,
   uniqBy,
   concat,
-  isNil,
-  isEmpty,
   equals,
-  lensPath,
-  view,
   find,
-  filter,
   propEq,
   reverse,
-  identity,
 } from 'ramda';
 import { withApollo } from 'react-apollo';
 import { Panel } from 'react-bootstrap';

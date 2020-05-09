@@ -451,7 +451,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     view,
     fields,
     crowdFields,
-    updateSiteView
   ) => {
     return (
       <Panel>
@@ -558,7 +557,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     view,
     fields,
     crowdFields,
-    updateSiteView
   ) => {
     return (
       <Panel>
@@ -638,7 +636,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     view,
     fields,
     crowdFields,
-    updateSiteView
   ) => {
     return (
       <Panel>
@@ -770,9 +767,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   renderResultsConfig = (
     showResults,
     view,
-    fields,
-    crowdFields,
-    updateSiteView
   ) => {
     return (
       <Panel>
@@ -861,7 +855,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     view,
     fields,
     crowdFields,
-    updateSiteView
   ) => {
     return (
       <Panel>
@@ -988,35 +981,28 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 view,
                 fields,
                 crowdFields,
-                updateSiteView
               )}
               {this.renderAutoSuggestConfig(
                 showAutoSuggest,
                 view,
                 fieldsAutoSuggest,
                 crowdFieldsAutoSuggest,
-                updateSiteView
               )}
               {this.renderPreSearchConfig(
                 showPresearch,
                 view,
                 fieldsPresearch,
                 crowdFieldsPresearch,
-                updateSiteView
               )}
               {this.renderResultsConfig(
                 showResults,
                 view,
-                fields,
-                crowdFields,
-                updateSiteView
               )}
               {this.renderBreadCrumbsConfig(
                 showBreadCrumbs,
                 view,
                 fields,
                 crowdFields,
-                updateSiteView
               )}
             </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
