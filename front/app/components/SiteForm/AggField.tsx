@@ -2,23 +2,33 @@ import * as React from 'react';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import { FormControl } from 'react-bootstrap';
-import {
-  SiteViewFragment_search_aggs_fields,
-  SiteViewFragment,
-} from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'types/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
-import { reject, equals } from 'ramda';
-import { AggKind } from 'containers/SearchPage/shared';
-import { Checkbox } from 'react-bootstrap';
 import { camelCase, capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
 import { AggFilterSiteConfigUpdater } from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
 import withTheme from 'containers/ThemeProvider';
+import { FieldDisplay, FilterKind } from 'types/globalTypes';
+
+interface SiteSelect {
+  kind: FilterKind;
+  values: string[];
+}
+
+interface FieldType {
+  name: string;
+  order: { sortKind: string; desc: boolean } | null;
+  display: FieldDisplay;
+  preselected?: SiteSelect | undefined;
+  visibleOptions: SiteSelect;
+  autoSuggest?: boolean;
+  rank: number | null;
+}
 
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
-  field: SiteViewFragment_search_aggs_fields;
+  field: FieldType;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
   view: SiteViewFragment;
   configType: 'presearch' | 'autosuggest' | 'facetbar';
@@ -33,12 +43,6 @@ interface AggFieldState {
 
 const FiltersContainer = styled.div`
   display: flex;
-`;
-
-const ContainerRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
 `;
 
 const CrumbsContainer = styled.div`
@@ -75,18 +79,6 @@ const FilterContainer = styled.div`
   .panel-heading {
     padding: 4px 15px;
   }
-`;
-
-const StyledKind = styled(FormControl)`
-  flex: 1 1 0;
-  margin-left: 15px;
-`;
-
-const StyledCheckbox = styled(Checkbox)`
-  display: flex;
-  align-items: center;
-  margin-left: 5px;
-  marign-top: 7px;
 `;
 
 const StyledLabel = styled.label`
@@ -132,10 +124,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     });
   };
 
-  handleOpen = (kind: 'preselected' | 'visibleOptions') => (
-    agg: string,
-    aggKind: AggKind
-  ) => {
+  handleOpen = (kind: 'preselected' | 'visibleOptions') => () => {
     if (kind === 'preselected') {
       this.setState({ isValuesOpen: !this.state.isValuesOpen });
     } else {
@@ -144,28 +133,29 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   };
 
   getUpdaters() {
-    const preselectedUpdater = new AggFilterSiteConfigUpdater(
-      this.props.field.name,
-      this.props.field.preselected,
-      this.props.onAddMutation,
-      this.props.kind,
-      'preselected',
-      this.props.configType
-    );
-    const visibleOptionsUpdater = new AggFilterSiteConfigUpdater(
-      this.props.field.name,
-      this.props.field.visibleOptions,
-      this.props.onAddMutation,
-      this.props.kind,
-      'visibleOptions',
-      this.props.configType
-    );
-    return [preselectedUpdater, visibleOptionsUpdater];
+    return [
+      new AggFilterSiteConfigUpdater(
+        this.props.field.name,
+        this.props.field?.preselected,
+        this.props.onAddMutation,
+        this.props.kind,
+        'preselected',
+        this.props.configType
+      ),
+      new AggFilterSiteConfigUpdater(
+        this.props.field.name,
+        this.props.field.visibleOptions,
+        this.props.onAddMutation,
+        this.props.kind,
+        'visibleOptions',
+        this.props.configType
+      ),
+    ];
   }
 
   render() {
-    const { configType } = this.props;
-    const selected = new Set(this.props.field.preselected.values);
+    const { configType, field } = this.props;
+    const selected = new Set(field?.preselected?.values);
     const visibleOptions = new Set(this.props.field.visibleOptions.values);
     const searchParams = {
       q: ({ key: 'AND', children: [] } as unknown) as string[],
@@ -185,37 +175,41 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             .join(' ')}
         </h4>
         <ThemedContainer>
-          <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
-          <ThemedCrumbsContainer>
-            {Array.from(selected).map(value => (
-              <MultiCrumb
-                key={value}
-                values={[value]}
-                onClick={value => preselectedUpdater.removeFilter(value)}
-              />
-            ))}
-          </ThemedCrumbsContainer>
-          <FiltersContainer>
-            <FilterContainer>
-              <AggFilterInputUpdateContext.Provider
-                value={{
-                  updater: preselectedUpdater,
-                }}>
-                <AggDropDown
-                  agg={this.props.field.name}
-                  aggKind={this.props.kind}
-                  searchParams={searchParams}
-                  display={this.props.field.display}
-                  isOpen={this.state.isValuesOpen}
-                  selectedKeys={selected}
-                  onOpen={this.handleOpen('preselected')}
-                  currentSiteView={this.props.view}
-                  configType={this.props.configType}
-                  returnAll={this.props.returnAll}
-                />
-              </AggFilterInputUpdateContext.Provider>
-            </FilterContainer>
-          </FiltersContainer>
+          {field.preselected ? (
+            <>
+              <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
+              <ThemedCrumbsContainer>
+                {Array.from(selected).map(value => (
+                  <MultiCrumb
+                    key={value}
+                    values={[value]}
+                    onClick={value => preselectedUpdater.removeFilter(value)}
+                  />
+                ))}
+              </ThemedCrumbsContainer>
+              <FiltersContainer>
+                <FilterContainer>
+                  <AggFilterInputUpdateContext.Provider
+                    value={{
+                      updater: preselectedUpdater,
+                    }}>
+                    <AggDropDown
+                      agg={this.props.field.name}
+                      aggKind={this.props.kind}
+                      searchParams={searchParams}
+                      display={this.props.field.display}
+                      isOpen={this.state.isValuesOpen}
+                      selectedKeys={selected}
+                      onOpen={this.handleOpen('preselected')}
+                      currentSiteView={this.props.view}
+                      configType={this.props.configType}
+                      returnAll={this.props.returnAll}
+                    />
+                  </AggFilterInputUpdateContext.Provider>
+                </FilterContainer>
+              </FiltersContainer>
+            </>
+          ) : null}
           <ThemedStyledLabel>Visible options</ThemedStyledLabel>
           <ThemedCrumbsContainer>
             {Array.from(visibleOptions).map(value => (

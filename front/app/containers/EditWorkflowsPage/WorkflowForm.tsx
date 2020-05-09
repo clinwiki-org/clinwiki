@@ -1,11 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { FormControl, Checkbox } from 'react-bootstrap';
+import { Panel, Row, FormControl, Checkbox } from 'react-bootstrap';
 import {
-  WorkflowConfigFragment_wikiSectionsFilter,
   WorkflowConfigFragment,
 } from 'types/WorkflowConfigFragment';
 import MultiInput from 'components/MultiInput';
+import AggField from 'components/SiteForm/AggField';
+import { fromPairs, difference } from 'ramda';
+import { withSite2 } from 'containers/SiteProvider/SiteProvider';
+import { SiteViewFragment } from 'types/SiteViewFragment';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -14,6 +17,7 @@ const StyledFormControl = styled(FormControl)`
 interface WorkflowFormProps {
   workflow: WorkflowConfigFragment;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
+  currentSiteView : SiteViewFragment
 }
 
 const StyledLabel = styled.label`
@@ -35,10 +39,25 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
   };
 
   render() {
+    const { workflow } = this.props;
+    const config = fromPairs(
+      workflow.suggestedLabelsConfig.map(c => [c.name, c])
+    );
+    const defaultFieldInfo = {
+      order: { sortKind: 'key', desc: true },
+      display: "STRING",
+      visibleOptions: { kind: "BLACKLIST", values: [] },
+    }
+    const facets =
+      workflow.suggestedLabelsFilter.kind == 'WHITELIST'
+        ? workflow.suggestedLabelsFilter.values
+        : difference(
+            workflow.allSuggestedLabels,
+            workflow.suggestedLabelsFilter.values
+          );
     return (
       <div>
         <h3>{this.props.workflow.name}</h3>
-
         <StyledLabel>Facets</StyledLabel>
         <StyledFormControl
           name={`set:workflows.${this.props.workflow.name}.suggestedLabelsFilter.kind`}
@@ -58,6 +77,27 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
           value={this.props.workflow.suggestedLabelsFilter.values}
           onChange={this.props.onAddMutation}
         />
+
+        <Panel style={{ Margin: '10px' }}>
+          <Panel.Heading>
+            <Panel.Title toggle>Facet Config</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible style={{backgroundColor: '#4d5863', color: 'white'}}>
+            <StyledLabel>Configure Crowd Labels</StyledLabel>
+            {facets.map(name => {
+              const fieldInfo = { name: name, ... defaultFieldInfo, ... config[name] };
+              return <AggField
+                kind='crowdAggs'
+                key={name}
+                field={fieldInfo}
+                onAddMutation={s => console.log(s.currentTarget)}
+                view={this.props.currentSiteView}
+                configType="facetbar"
+                returnAll={true}
+              />
+            })}
+          </Panel.Body>
+        </Panel>
 
         <StyledLabel>Reviews</StyledLabel>
         <StyledCheckbox
@@ -118,4 +158,4 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
   }
 }
 
-export default WorkflowForm;
+export default withSite2(WorkflowForm);

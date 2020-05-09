@@ -1,4 +1,5 @@
 import { gql } from 'apollo-boost';
+
 const FRAGMENT = gql`
   fragment WorkflowsViewFragment on WorkflowsView {
     id
@@ -17,6 +18,19 @@ const FRAGMENT = gql`
     suggestedLabelsFilter {
       kind
       values
+    }
+    suggestedLabelsConfig {
+      name
+      rank
+      display
+      order {
+        desc
+        sortKind
+      }
+      visibleOptions {
+        kind
+        values
+      }
     }
     wikiSectionsFilter {
       kind
