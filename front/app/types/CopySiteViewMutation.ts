@@ -1,7 +1,7 @@
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
-import { CopySiteViewInput, FilterKind, FieldDisplay } from "./globalTypes";
+import { CopySiteViewInput, FilterKind, SortKind, FieldDisplay } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: CopySiteViewMutation
@@ -39,7 +39,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_study {
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_autoSuggest_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -80,7 +80,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_autoSuggest_a
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_autoSuggest_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -145,7 +145,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_results {
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -186,7 +186,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_agg
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -255,7 +255,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_config {
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -296,7 +296,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_aggs {
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 

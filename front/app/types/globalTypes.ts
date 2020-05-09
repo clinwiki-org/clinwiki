@@ -35,6 +35,11 @@ export enum SiteViewOperation {
   SET = "SET",
 }
 
+export enum SortKind {
+  count = "count",
+  key = "key",
+}
+
 /**
  * An Agg Filter
  */
