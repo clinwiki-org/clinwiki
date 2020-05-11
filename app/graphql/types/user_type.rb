@@ -26,6 +26,15 @@ module Types
       Site.with_role(:site_owner, current_user)
     end
 
+    def rank
+      ranking = JSON.parse(context[:current_site].user_rank)
+      rank_sort = ranking.sort_by{|rank| rank["gte"]}.reverse
+      rank = rank_sort.find{|rank| contributions >= rank["gte"]}
+      rank["rank"]
+    rescue JSON::ParserError
+      "Error in parsing JSON string"
+    end
+
     def editor_sites
       return [] if current_user.blank?
 
