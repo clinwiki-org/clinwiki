@@ -131,7 +131,19 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       currentTarget: { name: e.currentTarget.name, value: !value },
     });
   };
-
+  renderNumberRangeConfig=(configType)=>{
+    return(
+      <StyledFormControl
+      name={`set:${this.getPath(configType)}.display`}
+      componentClass="select"
+      onChange={this.props.onAddMutation}
+      defaultValue={this.props.field.display}>
+      <option value="LESS_THAN">Less Than</option>
+      <option value="GREATER_THAN">Greater Than</option>
+      <option value="NUMBER_RANGE">Range</option>
+    </StyledFormControl>
+    );
+  }
   handleOpen = (kind: 'preselected' | 'visibleOptions') => (
     agg: string,
     aggKind: AggKind
@@ -295,8 +307,12 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="DATE">Date</option>
               <option value="DATE_RANGE">Date Range</option>
               <option value="NUMBER_RANGE">Number Range</option>
+              <option value="LESS_THAN">Less Than</option>
+              <option value="GREATER_THAN">Greater Than</option>
             </StyledFormControl>
           </div>
+          {/* {this.props.field.display =='NUMBER_RANGE' || 'LESS_THAN'||'GREATER_THAN' ? (this.renderNumberRangeConfig(configType)):(null)
+          }  */}
         </ThemedContainer>
       </>
     );

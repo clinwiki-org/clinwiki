@@ -60,7 +60,13 @@ class RangeSelector extends React.Component<
       endText: this.props.updater.input.lte,
     };
   }
-
+  componentDidMount=()=>{
+    // let showAlternate= true
+    // if(showAlternate){
+    //   this.setState({startText: 'Greater Than or Equal to:'})
+    // }
+  }
+  
   onChange = () =>
     this.props.updater.changeRange([
       this.state.start || this.props.updater.input.gte,
@@ -126,6 +132,75 @@ class RangeSelector extends React.Component<
     // start.sort();
     // end.sort();
 
+    let showLessThan=false;
+    let showGreater=false;
+    if(showGreater){
+      return(
+        <Col className="range-selector">
+        <Form
+          onSubmit={e => {
+            e.preventDefault();
+            this.setState(
+              { ...this.state, start: startText, end: endText },
+              this.onChange
+            );
+          }}>
+          <FormGroup>
+            <ControlLabel>Greater Than</ControlLabel>
+            <FormControl
+              type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
+              value={startText}
+              onChange={e =>
+                this.setState({
+                  ...this.state,
+                  startText: e.target.value,
+                })
+              }
+              onBlur={e =>
+                this.setState(
+                  { ...this.state, start: startText },
+                  this.onChange
+                )
+              }></FormControl>
+          </FormGroup>
+          </Form>
+          </Col>
+      )
+    }else if(showLessThan){
+      return(
+        <Col className="range-selector">
+        <Form
+          onSubmit={e => {
+            e.preventDefault();
+            this.setState(
+              { ...this.state, start: startText, end: endText },
+              this.onChange
+            );
+          }}>
+        <FormGroup>
+        <ControlLabel>Less Than</ControlLabel>
+        <FormControl
+          type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
+          value={endText}
+          onChange={e =>
+            this.setState({
+              ...this.state,
+              endText: e.target.value,
+            })
+          }
+          onBlur={e =>
+            this.setState({ ...this.state, end: endText }, this.onChange)
+          }></FormControl>
+      </FormGroup>
+      <FormGroup>
+        {/* this is a placebo, it's really done on onblur */}
+        <ThemedButton type="submit">Enter</ThemedButton>
+      </FormGroup>
+    </Form>
+  </Col>
+      );
+    }else{
+
     return (
       <Col className="range-selector">
         <Form
@@ -176,6 +251,7 @@ class RangeSelector extends React.Component<
         </Form>
       </Col>
     );
+  }
   }
 }
 
