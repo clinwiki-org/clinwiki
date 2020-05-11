@@ -13,7 +13,7 @@ module Types
       object.meta.to_json
     end
     def brief_title
-      object.study.brief_title
+      object.study ? object.study.brief_title : "Study Remmoved"
     end
 
     def user
