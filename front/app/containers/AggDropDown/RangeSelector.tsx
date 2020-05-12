@@ -38,6 +38,7 @@ interface RangeSelectorProps {
   handleLoadMore: () => void;
   updater: AggFilterInputUpdater;
   aggType: FieldDisplay;
+  field:any;
 }
 
 interface RangeSelectorState {
@@ -82,6 +83,7 @@ class RangeSelector extends React.Component<
       handleLoadMore,
       updater,
       aggType,
+      field
     } = this.props;
     const { startText, endText } = this.state;
     //Removing Temporarily to see if it fixes date range query issue seems
@@ -132,9 +134,9 @@ class RangeSelector extends React.Component<
     // start.sort();
     // end.sort();
 
-    let showLessThan=false;
-    let showGreater=false;
-    if(showGreater){
+    const startLabel = field && field.rangeStartLabel || 'Start'
+    const endLabel = field && field.rangeEndLabel || 'End'
+    if(aggType==FieldDisplay.GREATER_THAN_RANGE){
       return(
         <Col className="range-selector">
         <Form
@@ -146,9 +148,9 @@ class RangeSelector extends React.Component<
             );
           }}>
           <FormGroup>
-            <ControlLabel>Greater Than</ControlLabel>
+            <ControlLabel>{startLabel}</ControlLabel>
             <FormControl
-              type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
+              type={'text'}
               value={startText}
               onChange={e =>
                 this.setState({
@@ -163,10 +165,13 @@ class RangeSelector extends React.Component<
                 )
               }></FormControl>
           </FormGroup>
+                  {/* this is a placebo, it's really done on onblur */}
+        <ThemedButton type="submit">Enter</ThemedButton>
+
           </Form>
           </Col>
       )
-    }else if(showLessThan){
+    }else if(aggType==FieldDisplay.LESS_THAN_RANGE){
       return(
         <Col className="range-selector">
         <Form
@@ -178,9 +183,9 @@ class RangeSelector extends React.Component<
             );
           }}>
         <FormGroup>
-        <ControlLabel>Less Than</ControlLabel>
+        <ControlLabel>{endLabel}</ControlLabel>
         <FormControl
-          type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
+          type={'text'}
           value={endText}
           onChange={e =>
             this.setState({
@@ -212,7 +217,7 @@ class RangeSelector extends React.Component<
             );
           }}>
           <FormGroup>
-            <ControlLabel>Start</ControlLabel>
+            <ControlLabel>{startLabel}</ControlLabel>
             <FormControl
               type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
               value={startText}
@@ -230,7 +235,7 @@ class RangeSelector extends React.Component<
               }></FormControl>
           </FormGroup>
           <FormGroup>
-            <ControlLabel>End</ControlLabel>
+            <ControlLabel>{endLabel}</ControlLabel>
             <FormControl
               type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
               value={endText}

@@ -332,7 +332,7 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
           // console.log("ID",this.props.id)
           // console.log("url",this.props.url)
           // console.log(this.props)
-          console.log(data)
+          // console.log(data)
           if (error) console.log(`SiteProvider error: ${error}`);
           if (loading || error) return null;
           return this.props.children(data!.site!, refetch);
