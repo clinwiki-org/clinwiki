@@ -38,7 +38,7 @@ interface RangeSelectorProps {
   handleLoadMore: () => void;
   updater: AggFilterInputUpdater;
   aggType: FieldDisplay;
-  field:any;
+  field: any;
 }
 
 interface RangeSelectorState {
@@ -61,13 +61,13 @@ class RangeSelector extends React.Component<
       endText: this.props.updater.input.lte,
     };
   }
-  componentDidMount=()=>{
+  componentDidMount = () => {
     // let showAlternate= true
     // if(showAlternate){
     //   this.setState({startText: 'Greater Than or Equal to:'})
     // }
-  }
-  
+  };
+
   onChange = () =>
     this.props.updater.changeRange([
       this.state.start || this.props.updater.input.gte,
@@ -83,7 +83,7 @@ class RangeSelector extends React.Component<
       handleLoadMore,
       updater,
       aggType,
-      field
+      field,
     } = this.props;
     const { startText, endText } = this.state;
     //Removing Temporarily to see if it fixes date range query issue seems
@@ -134,129 +134,127 @@ class RangeSelector extends React.Component<
     // start.sort();
     // end.sort();
 
-    const startLabel = field && field.rangeStartLabel || 'Start'
-    const endLabel = field && field.rangeEndLabel || 'End'
-    if(aggType==FieldDisplay.GREATER_THAN_RANGE){
-      return(
+    const startLabel = (field && field.rangeStartLabel) || 'Start';
+    const endLabel = (field && field.rangeEndLabel) || 'End';
+    if (aggType == FieldDisplay.GREATER_THAN_RANGE) {
+      return (
         <Col className="range-selector">
-        <Form
-          onSubmit={e => {
-            e.preventDefault();
-            this.setState(
-              { ...this.state, start: startText, end: endText },
-              this.onChange
-            );
-          }}>
-          <FormGroup>
-            <ControlLabel>{startLabel}</ControlLabel>
-            <FormControl
-              type={'text'}
-              value={startText}
-              onChange={e =>
-                this.setState({
-                  ...this.state,
-                  startText: e.target.value,
-                })
-              }
-              onBlur={e =>
-                this.setState(
-                  { ...this.state, start: startText },
-                  this.onChange
-                )
-              }></FormControl>
-          </FormGroup>
-                  {/* this is a placebo, it's really done on onblur */}
-        <ThemedButton type="submit">Enter</ThemedButton>
-
-          </Form>
-          </Col>
-      )
-    }else if(aggType==FieldDisplay.LESS_THAN_RANGE){
-      return(
-        <Col className="range-selector">
-        <Form
-          onSubmit={e => {
-            e.preventDefault();
-            this.setState(
-              { ...this.state, start: startText, end: endText },
-              this.onChange
-            );
-          }}>
-        <FormGroup>
-        <ControlLabel>{endLabel}</ControlLabel>
-        <FormControl
-          type={'text'}
-          value={endText}
-          onChange={e =>
-            this.setState({
-              ...this.state,
-              endText: e.target.value,
-            })
-          }
-          onBlur={e =>
-            this.setState({ ...this.state, end: endText }, this.onChange)
-          }></FormControl>
-      </FormGroup>
-      <FormGroup>
-        {/* this is a placebo, it's really done on onblur */}
-        <ThemedButton type="submit">Enter</ThemedButton>
-      </FormGroup>
-    </Form>
-  </Col>
-      );
-    }else{
-
-    return (
-      <Col className="range-selector">
-        <Form
-          onSubmit={e => {
-            e.preventDefault();
-            this.setState(
-              { ...this.state, start: startText, end: endText },
-              this.onChange
-            );
-          }}>
-          <FormGroup>
-            <ControlLabel>{startLabel}</ControlLabel>
-            <FormControl
-              type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
-              value={startText}
-              onChange={e =>
-                this.setState({
-                  ...this.state,
-                  startText: e.target.value,
-                })
-              }
-              onBlur={e =>
-                this.setState(
-                  { ...this.state, start: startText },
-                  this.onChange
-                )
-              }></FormControl>
-          </FormGroup>
-          <FormGroup>
-            <ControlLabel>{endLabel}</ControlLabel>
-            <FormControl
-              type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
-              value={endText}
-              onChange={e =>
-                this.setState({
-                  ...this.state,
-                  endText: e.target.value,
-                })
-              }
-              onBlur={e =>
-                this.setState({ ...this.state, end: endText }, this.onChange)
-              }></FormControl>
-          </FormGroup>
-          <FormGroup>
+          <Form
+            onSubmit={e => {
+              e.preventDefault();
+              this.setState(
+                { ...this.state, start: startText, end: endText },
+                this.onChange
+              );
+            }}>
+            <FormGroup>
+              <ControlLabel>{startLabel}</ControlLabel>
+              <FormControl
+                type={'text'}
+                value={startText}
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    startText: e.target.value,
+                  })
+                }
+                onBlur={e =>
+                  this.setState(
+                    { ...this.state, start: startText },
+                    this.onChange
+                  )
+                }></FormControl>
+            </FormGroup>
             {/* this is a placebo, it's really done on onblur */}
             <ThemedButton type="submit">Enter</ThemedButton>
-          </FormGroup>
-        </Form>
-      </Col>
-    );
-  }
+          </Form>
+        </Col>
+      );
+    } else if (aggType == FieldDisplay.LESS_THAN_RANGE) {
+      return (
+        <Col className="range-selector">
+          <Form
+            onSubmit={e => {
+              e.preventDefault();
+              this.setState(
+                { ...this.state, start: startText, end: endText },
+                this.onChange
+              );
+            }}>
+            <FormGroup>
+              <ControlLabel>{endLabel}</ControlLabel>
+              <FormControl
+                type={'text'}
+                value={endText}
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    endText: e.target.value,
+                  })
+                }
+                onBlur={e =>
+                  this.setState({ ...this.state, end: endText }, this.onChange)
+                }></FormControl>
+            </FormGroup>
+            <FormGroup>
+              {/* this is a placebo, it's really done on onblur */}
+              <ThemedButton type="submit">Enter</ThemedButton>
+            </FormGroup>
+          </Form>
+        </Col>
+      );
+    } else {
+      return (
+        <Col className="range-selector">
+          <Form
+            onSubmit={e => {
+              e.preventDefault();
+              this.setState(
+                { ...this.state, start: startText, end: endText },
+                this.onChange
+              );
+            }}>
+            <FormGroup>
+              <ControlLabel>{startLabel}</ControlLabel>
+              <FormControl
+                type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
+                value={startText}
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    startText: e.target.value,
+                  })
+                }
+                onBlur={e =>
+                  this.setState(
+                    { ...this.state, start: startText },
+                    this.onChange
+                  )
+                }></FormControl>
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>{endLabel}</ControlLabel>
+              <FormControl
+                type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
+                value={endText}
+                onChange={e =>
+                  this.setState({
+                    ...this.state,
+                    endText: e.target.value,
+                  })
+                }
+                onBlur={e =>
+                  this.setState({ ...this.state, end: endText }, this.onChange)
+                }></FormControl>
+            </FormGroup>
+            <FormGroup>
+              {/* this is a placebo, it's really done on onblur */}
+              <ThemedButton type="submit">Enter</ThemedButton>
+            </FormGroup>
+          </Form>
+        </Col>
+      );
+    }
   }
 }
 
