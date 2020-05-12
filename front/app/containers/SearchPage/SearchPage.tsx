@@ -725,28 +725,38 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
 
-    const siteViewUrl =
-      new URLSearchParams(this.props.history.location.search)
-        .getAll('sv')
-        .toString() || 'default';
+    const searchQueryString = new URLSearchParams(
+      this.props.history.location.search
+    );
+    const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
 
-    if (data?.provisionSearchHash?.searchHash?.short) {
-      if(this.props.match.path =="/profile"){
-        this.props.history.push(
-          `/profile?hash=${
-            data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
-        );
-        return;
-      }
-      this.props.history.push(
-        `/search?hash=${
-          data!.provisionSearchHash!.searchHash!.short
-        }&sv=${siteViewUrl}`
-      );
-      return;
-    }
-  };
+        const userId = searchQueryString.getAll('uid').toString();
+
+        if (data?.provisionSearchHash?.searchHash?.short) {
+          if (this.props.match.path == '/profile') {
+            this.props.history.push(
+              `/profile?hash=${
+                data!.provisionSearchHash!.searchHash!.short
+              }&sv=${siteViewUrl}`
+            );
+            return;
+          } else if (userId) {
+            let profile = this.findFilter("wiki_page_edits.email")	
+            this.props.history.push(
+              `/profile/user?hash=${
+                data!.provisionSearchHash!.searchHash!.short
+              }&sv=${siteViewUrl}&uid=${userId}&username=${profile && profile.values.toString()}`
+            );
+            return;
+          }
+          this.props.history.push(
+            `/search?hash=${
+              data!.provisionSearchHash!.searchHash!.short
+            }&sv=${siteViewUrl}`
+          );
+          return;
+        }
+      };
 
   getTotalResults = total => {
     if (total) {
@@ -756,16 +766,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   };
-  findFilter=(variable:string)=>{	
-    let aggFilter = this.state.params?.aggFilters;	
-    let response = find(propEq('field', variable ), aggFilter||[]) as {	
-      field:string;	
-      gte:string;	
-      lte:string;	
-      values:any[];	
-    }|null ;	
-    return response	
-  }
   handlePresearchButtonClick = (hash, target) => {
     const url = `/search?hash=${hash}&sv=${target}`;
     this.props.history.push(url);

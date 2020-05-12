@@ -3,7 +3,19 @@ import styled from 'styled-components';
 import SearchPage from 'containers/SearchPage';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
-
+import {
+  ThemedMainContainer,
+  SearchContainer,
+  StyledProfileLabel,
+  StyledProfileValue,
+  StyledProfileForm,
+} from 'components/StyledComponents';
+import ThemedLoaderWrapper from '../../components/LoadingPane/LoadingPane';
+import ProfileScoreBoard from './components/ProfileScoreBoard';
+import ProfilePicture from './components/ProfilePicture';
+import ReviewsTable from './components/ReviewsTable';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
 
 interface ProfilePageProps {
   history: History;
@@ -57,9 +69,9 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
   this.setState({username:this.username()})
   }
   componentDidUpdate(currentState){
-     if(currentState.username!= this.username() ){
-       this.setState({username: this.username()})
-     }
+    //  if(currentState.username!= this.username() ){
+    //    this.setState({username: this.username()})
+    //  }
   }
   handleDisplayChange = display => {
     this.setState({ currentDisplay: display });

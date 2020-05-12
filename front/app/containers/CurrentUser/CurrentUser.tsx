@@ -19,6 +19,7 @@ const FRAGMENT = gql`
     roles
     reviewCount
     reviews
+    
     {
       content
       briefTitle

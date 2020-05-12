@@ -1,4 +1,5 @@
 import * as React from 'react';
+import ReactStars from 'react-stars';
 import styled from 'styled-components';
 import SearchPage from 'containers/SearchPage';
 import { match } from 'react-router-dom';

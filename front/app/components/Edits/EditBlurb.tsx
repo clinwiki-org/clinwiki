@@ -18,14 +18,15 @@ class EditBlurb extends React.Component<EditBlurbProps> {
     const {
       edit: { user },
     } = this.props;
+    console.log("Useer", user)
     if (!user) {
       return 'Anonymous';
     }
     if (user.firstName) {
       const userName = `${user.firstName} ${user.lastName && user.lastName[0]}`;
-      return <Link to={`/profile/${user.email}?sv=user`}>`${userName}`</Link>;
+      return <Link to={`/profile/${user.email}?sv=user&uid=${user.id}&username=${userName}`}>`${userName}`</Link>;
     }
-    return <Link to={`/profile/${user.email}?sv=user`}>{user.email}</Link>;
+    return <Link to={`/profile/${user.email}?sv=user&uid=${user.id}&username=${user.email}`}>{user.email}</Link>;
   }
 
   getBlurb() {
