@@ -219,6 +219,8 @@ class SuggestedLabels extends React.PureComponent<
                 addLabel
                 nctId={this.props.nctId}
                 refetch={refetch}
+                aggNames={aggNames}
+                siteView={this.props.siteView}
               />
             </LabelsContainer>
           );
