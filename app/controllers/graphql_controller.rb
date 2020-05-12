@@ -9,6 +9,7 @@ class GraphqlController < ApplicationController
     context = {
       current_user: current_user,
       current_site: current_site,
+      current_url: current_url,
     }
     result = ClinwikiSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
@@ -31,6 +32,19 @@ class GraphqlController < ApplicationController
     return nil if subdomain.blank?
 
     Site.find_by(subdomain: subdomain) || Site.default
+  end
+
+  def current_url
+    url = request.original_url
+    uri =
+      begin
+        URI.parse(url)
+      rescue StandardError
+        nil
+      end
+    return nil if  uri.blank?
+    return nil if  uri.host.blank?
+    uri.to_s
   end
 
   # Raises JWT::ExpiredSignature if signature is expired

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_25_183458) do
+ActiveRecord::Schema.define(version: 2020_05_12_171336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,16 +30,15 @@ ActiveRecord::Schema.define(version: 2020_04_25_183458) do
     t.integer "user_id"
   end
 
-  create_table "facility_locations", force: :cascade do |t|
-    t.string "name"
-    t.string "city"
-    t.string "state"
-    t.string "zip"
-    t.string "country"
+  create_table "facility_locations", primary_key: ["name", "city", "state", "zip", "country"], force: :cascade do |t|
+    t.string "name", null: false
+    t.string "city", null: false
+    t.string "state", null: false
+    t.string "zip", null: false
+    t.string "country", null: false
     t.float "latitude"
     t.float "longitude"
     t.string "status"
-    t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
@@ -98,9 +97,7 @@ ActiveRecord::Schema.define(version: 2020_04_25_183458) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
-    t.boolean "default", default: false, null: false
-    t.string "description", default: ""
-    t.string "url", default: ""
+    t.boolean "default"
     t.index ["site_id"], name: "index_site_views_on_site_id"
   end
 
@@ -147,6 +144,8 @@ ActiveRecord::Schema.define(version: 2020_04_25_183458) do
     t.string "last_name"
     t.string "default_query_string"
     t.json "search_result_columns"
+    t.string "provider"
+    t.string "reset_token_url"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

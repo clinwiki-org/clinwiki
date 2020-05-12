@@ -71,9 +71,9 @@ class PasswordReset extends React.Component<
       //@ts-ignore
       resetPasswordToken: token.toString()
     })
-   
+
     return token.toString();
-  } 
+  }
 
   componentDidMount(){
     this.getResetToken();
@@ -85,7 +85,7 @@ class PasswordReset extends React.Component<
 
   handleResetSubmit = (updatePassword: UpdatePasswordMutationFn) => {
     const { password, passwordConfirmation } = this.state.form;
-    
+
     if (password !== passwordConfirmation) {
       console.log(password, passwordConfirmation);
       alert('passwords do not match');
@@ -97,11 +97,11 @@ class PasswordReset extends React.Component<
 
       const resetPasswordToken = this.state.resetPasswordToken
       const input = {
-        resetPasswordToken, 
+        resetPasswordToken,
         password: this.state.form.password,
         passwordConfirmation: this.state.form.passwordConfirmation
       }
-    
+
       updatePassword({ variables: { input } });
       // this.props.history.push('/sign_in');
     }
@@ -112,7 +112,7 @@ class PasswordReset extends React.Component<
     if (!jwt) return;
 
     setLocalJwt(jwt);
-    this.props.history.push('/sign_in');
+    this.props.history.push('/');
   };
 
   render() {
