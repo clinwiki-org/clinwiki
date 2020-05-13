@@ -11,6 +11,7 @@ import { History } from 'history';
 import StyledWrapper from './StyledWrapper';
 import { setLocalJwt } from 'utils/localStorage';
 import StyledError from './StyledError';
+import CurrentUser from 'containers/CurrentUser';
 import { omit } from 'ramda';
 
 const UPDATE_PASSWORD_MUTATION = gql`
@@ -18,8 +19,12 @@ const UPDATE_PASSWORD_MUTATION = gql`
     updatePassword(input: $input) {
       jwt
       errors
+      user {
+        ...UserFragment
+      }
     }
   }
+  ${CurrentUser.fragment}
 `;
 
 interface UpdatePasswordProps {
@@ -134,6 +139,19 @@ class UpdatePassword extends React.Component<
             <UpdatePasswordMutationComponent
               mutation={UPDATE_PASSWORD_MUTATION}
               onCompleted={this.handleUpdatePasswordCompleted}
+              update={(cache, { data }) => {
+                const user = data && data.updatePassword && data.updatePassword.user;
+                if (user) {
+                  cache.writeQuery({
+                    query: CurrentUser.query,
+                    data: {
+                      me: user,
+                    },
+                  });
+                  return;
+                }
+                this.setState({ errors: ['Invalid email or password'] });
+              }}
               >
               {updatePassword => (
           <ThemedButton onClick={() => this.handleResetSubmit(updatePassword)}>Submit</ThemedButton>
