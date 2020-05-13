@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_13_182916) do
+ActiveRecord::Schema.define(version: 2020_05_12_171336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,9 +97,7 @@ ActiveRecord::Schema.define(version: 2020_05_13_182916) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
-    t.boolean "default", default: false, null: false
-    t.string "description", default: ""
-    t.string "url", default: ""
+    t.boolean "default"
     t.index ["site_id"], name: "index_site_views_on_site_id"
   end
 
@@ -110,7 +108,6 @@ ActiveRecord::Schema.define(version: 2020_05_13_182916) do
     t.datetime "updated_at", null: false
     t.boolean "skip_landing"
     t.text "themes", default: "{\"primaryColor\":\"#6BA5D6\",\"secondaryColor\":\"#1b2a38\",\"lightTextColor\":\"#eee\",\"secondaryTextColor\":\"#333\",\"backgroundColor\":\"#4D5863\",\"primaryAltColor\":\"#5786AD\",\"authHeaderColor\":\"#5786AD\",\"sideBarColor\":\"#4d5762\"} "
-    t.text "user_rank", default: "[{\"rank\":\"default\",\"gte\":0},{\"rank\":\"bronze\",\"gte\":26},{\"rank\":\"silver\",\"gte\":51},{\"rank\":\"gold\",\"gte\":75},{\"rank\":\"platinum\",\"gte\":101}] "
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
@@ -148,7 +145,6 @@ ActiveRecord::Schema.define(version: 2020_05_13_182916) do
     t.string "default_query_string"
     t.json "search_result_columns"
     t.string "provider"
-    t.string "picture_url"
     t.string "reset_token_url"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
