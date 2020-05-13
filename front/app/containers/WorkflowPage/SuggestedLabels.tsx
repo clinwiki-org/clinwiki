@@ -22,7 +22,6 @@ interface SuggestedLabelsProps {
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
   allowedSuggestedLabels: string[];
-  siteView?: any;
 }
 
 const SEARCH_QUERY = gql`
@@ -129,31 +128,26 @@ class SuggestedLabels extends React.PureComponent<
     return this.props.nctId;
   }
 
-  renderAgg = (key: string, values: [string, boolean][], meta, refetch) => {
+  renderAgg = (key: string, values: [string, boolean][], meta) => {
     return (
       <FacetCard
         label={key}
         meta={meta}
         nctId={this.props.nctId}
-        values={values}
-        onSelect={this.props.onSelect}
-        refetch={refetch}
-        siteView={this.props.siteView}>
+        onSelect={this.props.onSelect}>
         {values.map(([value, checked]) => {
           if (bucketKeyStringIsMissing(value)) {
             return null;
           }
-          if (checked) {
-            return (
-              <Checkbox
-                key={value}
-                checked={checked}
-                disabled={this.props.disabled}
-                onChange={this.handleSelect(key, value)}>
-                {value}
-              </Checkbox>
-            );
-          } else return null;
+          return (
+            <Checkbox
+              key={value}
+              checked={checked}
+              disabled={this.props.disabled}
+              onChange={this.handleSelect(key, value)}>
+              {value}
+            </Checkbox>
+          );
         })}
       </FacetCard>
     );
@@ -167,7 +161,7 @@ class SuggestedLabels extends React.PureComponent<
         variables={{
           nctId: this.props.nctId,
         }}>
-        {({ data, loading, error, refetch }) => {
+        {({ data, loading, error }) => {
           if (loading || error || !data) return null;
           let meta: { [key: string]: string } = {};
           try {
@@ -210,10 +204,8 @@ class SuggestedLabels extends React.PureComponent<
           )(aggs) as string[];
           return (
             <LabelsContainer>
-              {aggNames.map(key =>
-                this.renderAgg(key, aggs[key], meta, refetch)
-              )}
-              <FacetCard
+              {aggNames.map(key => this.renderAgg(key, aggs[key], meta))}
+             <FacetCard
                 meta={meta}
                 label="Add Label"
                 addLabel

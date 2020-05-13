@@ -16,6 +16,11 @@ if [ $CW_MODE == "PROD" ]; then
     ./front/scripts/build
 fi
 
+# load env
+if [ -f ".env" ]; then
+   . .env
+fi
+
 # This line executes the CMD from Dockerfile, command from docker-compose file or if you docker run
 echo MODE=$CW_MODE
 if [ $CW_MODE == "DEV" ]; then

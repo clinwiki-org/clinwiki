@@ -59,14 +59,10 @@ class AddFacetCard extends React.PureComponent<
     description: '',
   };
 
-  handleButtonClick = user => {
-    if (user) {
-      this.setState({
-        showForm: true,
-      });
-    } else {
-      this.props.showLogin(true);
-    }
+  handleButtonClick = () => {
+    this.setState({
+      showForm: true,
+    });
   };
 
   handleTitleFieldChange = (e, { newValue }) => {
@@ -128,12 +124,7 @@ class AddFacetCard extends React.PureComponent<
             title={title}
           />
           <div style={{ marginTop: 5, marginLeft: 2, marginBottom: 5 }}>
-            <ThemedButton
-              style={{ marginRight: 5 }}
-              onClick={this.handleSubmit}>
-              Submit
-            </ThemedButton>
-            <ThemedButton onClick={this.handleCancel}>Cancel</ThemedButton>
+            <ThemedButton onClick={this.handleSubmit}>Submit</ThemedButton>
           </div>
         </MarginContainer>
       );
@@ -144,7 +135,7 @@ class AddFacetCard extends React.PureComponent<
           style={{ color: 'inherit', fontSize: 'inherit' }}
           inverse={false}
           name="plus-square"
-          onClick={() => this.handleButtonClick(user)}
+          onClick={this.handleButtonClick}
         />
       </ThemedCenterButton>
     );

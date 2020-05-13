@@ -439,7 +439,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     };
     return (
       <SiteProvider>
-        {(site, currentSiteView) => (
+        {site => (
           <WorkflowsViewProvider>
             {workflowsView => {
               const workflow = pipe(
@@ -522,7 +522,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               onLoad={this.handleLoaded}
                               workflowsView={workflowsView}
                               match={this.props.match}
-                              siteView={currentSiteView}
                             />
                           </div>
 

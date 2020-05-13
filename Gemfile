@@ -46,6 +46,9 @@ gem "graphql-batch"
 gem "mini_magick"
 #  User creation gem
 gem "devise"
+# ** Be careful upgrading searchkick **
+# By default it will update elasticsearch/elasticsearch-api to version 7 which breaks
+# Searchly which we use for elasticsearch on production.
 gem "searchkick", "~> 4.3.0"
 gem "font-awesome-rails"
 gem "font-awesome-sass"
@@ -91,7 +94,7 @@ gem "front_matter_parser"
 gem "mailgun-ruby", "~>1.1.6"
 gem "graphql"
 gem "graphiql-rails", "~> 1.4.11"
-gem "faraday"
+gem "faraday", "~> 1"
 
 gem "activerecord-import", "~> 1.0"
 gem "composite_primary_keys"

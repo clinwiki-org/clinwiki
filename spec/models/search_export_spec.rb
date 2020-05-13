@@ -9,7 +9,7 @@ describe SearchExport, type: :model do
 
   describe "#params" do
     subject { export.params }
-    it { is_expected.to eql(JSON.parse(short_link.long)) }
+    it { is_expected.to eql(JSON.parse(short_link.long).deep_symbolize_keys!) }
   end
 
   describe "#fields" do

@@ -1,1 +1,516 @@
-{"data"=>{"search"=>{"recordsTotal"=>27, "aggs"=>[{"buckets"=>[{"key"=>"Phase 1", "docCount"=>9}, {"key"=>"N/A", "docCount"=>6}, {"key"=>"Phase 2", "docCount"=>6}, {"key"=>"Phase 1/Phase 2", "docCount"=>1}, {"key"=>"Phase 4", "docCount"=>1}]}, {"buckets"=>[{"key"=>"Antibodies", "docCount"=>3}, {"key"=>"Everolimus", "docCount"=>3}, {"key"=>"Sirolimus", "docCount"=>3}, {"key"=>"Oxaliplatin", "docCount"=>2}, {"key"=>"Antibodies, Monoclonal", "docCount"=>1}, {"key"=>"Calcium", "docCount"=>1}, {"key"=>"Capecitabine", "docCount"=>1}, {"key"=>"Darbepoetin alfa", "docCount"=>1}, {"key"=>"Fluorouracil", "docCount"=>1}, {"key"=>"Gabapentin", "docCount"=>1}]}, {"buckets"=>[{"key"=>"Houston", "docCount"=>4}, {"key"=>"Athens", "docCount"=>2}, {"key"=>"Berlin", "docCount"=>2}, {"key"=>"Chicago", "docCount"=>2}, {"key"=>"Jerusalem", "docCount"=>2}, {"key"=>"Madison", "docCount"=>2}, {"key"=>"'Aiea", "docCount"=>1}, {"key"=>"Aalst", "docCount"=>1}, {"key"=>"Adrian", "docCount"=>1}, {"key"=>"Aix en Provence", "docCount"=>1}]}, {"buckets"=>[{"key"=>"Completed", "docCount"=>14}, {"key"=>"Unknown status", "docCount"=>5}, {"key"=>"Terminated", "docCount"=>4}, {"key"=>"Active, not recruiting", "docCount"=>3}, {"key"=>"Recruiting", "docCount"=>1}]}, {"buckets"=>[{"key"=>"0", "docCount"=>27}]}, {"buckets"=>[]}, {"buckets"=>[{"key"=>"Pancreatic Neoplasms", "docCount"=>27}, {"key"=>"Stomach Neoplasms", "docCount"=>20}, {"key"=>"Intestinal Neoplasms", "docCount"=>7}, {"key"=>"Neoplasms", "docCount"=>7}, {"key"=>"Neuroendocrine Tumors", "docCount"=>7}, {"key"=>"Ovarian Neoplasms", "docCount"=>5}, {"key"=>"Adenocarcinoma", "docCount"=>4}, {"key"=>"Colonic Neoplasms", "docCount"=>4}, {"key"=>"Rectal Neoplasms", "docCount"=>4}, {"key"=>"Carcinoma", "docCount"=>3}]}, {"buckets"=>[{"key"=>"City of Hope Medical Center", "docCount"=>2}, {"key"=>"University of Wisconsin Hospital and Clinics", "docCount"=>2}, {"key"=>"21st Century Oncology", "docCount"=>1}, {"key"=>"21st Century Oncology-Fort Apache", "docCount"=>1}, {"key"=>"21st Century Oncology-Henderson", "docCount"=>1}, {"key"=>"21st Century Oncology-Vegas Tenaya", "docCount"=>1}, {"key"=>"2nd Dept of Internal Medicine, Agios Savvas Cancer Hospital", "docCount"=>1}, {"key"=>"2nd Dept of Internal Medicine, General Hospital of Athens \"Hippokratio\"", "docCount"=>1}, {"key"=>"2nd Dept of Internal Medicine, Propaedeutic, University Hospital \"Attikon\"", "docCount"=>1}, {"key"=>"2nd Dept of Medical Oncology, Metropolitan Hospital", "docCount"=>1}]}, {"buckets"=>[{"key"=>"United States", "docCount"=>13}, {"key"=>"Italy", "docCount"=>3}, {"key"=>"China", "docCount"=>2}, {"key"=>"France", "docCount"=>2}, {"key"=>"Germany", "docCount"=>2}, {"key"=>"Greece", "docCount"=>2}, {"key"=>"Israel", "docCount"=>2}, {"key"=>"Netherlands", "docCount"=>2}, {"key"=>"Austria", "docCount"=>1}, {"key"=>"Belgium", "docCount"=>1}]}, {"buckets"=>[{"key"=>"Interventional", "docCount"=>23}, {"key"=>"Observational", "docCount"=>4}]}, {"buckets"=>[{"key"=>"National Cancer Institute (NCI)", "docCount"=>7}, {"key"=>"City of Hope Medical Center", "docCount"=>2}, {"key"=>"Agensys, Inc.", "docCount"=>1}, {"key"=>"American Cancer Society (ACS) National Office", "docCount"=>1}, {"key"=>"Amgen", "docCount"=>1}, {"key"=>"Arcispedale Santa Maria Nuova-IRCCS", "docCount"=>1}, {"key"=>"Cancer Institute and Hospital, Chinese Academy of Medical Sciences", "docCount"=>1}, {"key"=>"Clalit Health Services", "docCount"=>1}, {"key"=>"Clovis Oncology, Inc.", "docCount"=>1}, {"key"=>"Columbia University", "docCount"=>1}]}, {"buckets"=>[{"key"=>"", "docCount"=>12}, {"key"=>"California", "docCount"=>6}, {"key"=>"Texas", "docCount"=>5}, {"key"=>"Illinois", "docCount"=>3}, {"key"=>"Arizona", "docCount"=>2}, {"key"=>"Maryland", "docCount"=>2}, {"key"=>"Minnesota", "docCount"=>2}, {"key"=>"New York", "docCount"=>2}, {"key"=>"Wisconsin", "docCount"=>2}, {"key"=>"Alabama", "docCount"=>1}]}, {"buckets"=>[]}, {"buckets"=>[{"key"=>"laboratory biomarker analysis", "docCount"=>3}, {"key"=>"Everolimus", "docCount"=>2}, {"key"=>"Laboratory Biomarker Analysis", "docCount"=>2}, {"key"=>"oxaliplatin", "docCount"=>2}, {"key"=>"24 Gy in 3 fractions", "docCount"=>1}, {"key"=>"ASG-5ME", "docCount"=>1}, {"key"=>"Cixutumumab", "docCount"=>1}, {"key"=>"Endoscopic ultrasound guided needle tissue acquisition.", "docCount"=>1}, {"key"=>"Everolimus followed by Pasireotide LAR + Everolimus", "docCount"=>1}, {"key"=>"Famitinib", "docCount"=>1}]}], "studies"=>[{"nctId"=>"NCT01166490"}, {"nctId"=>"NCT01191684"}, {"nctId"=>"NCT01204476"}, {"nctId"=>"NCT01233505"}, {"nctId"=>"NCT01236053"}, {"nctId"=>"NCT01263353"}, {"nctId"=>"NCT01324856"}, {"nctId"=>"NCT01384253"}, {"nctId"=>"NCT01437007"}, {"nctId"=>"NCT01444456"}, {"nctId"=>"NCT01598194"}, {"nctId"=>"NCT01643499"}, {"nctId"=>"NCT01648465"}, {"nctId"=>"NCT01675258"}, {"nctId"=>"NCT01698190"}, {"nctId"=>"NCT01747096"}, {"nctId"=>"NCT01819961"}, {"nctId"=>"NCT01841736"}, {"nctId"=>"NCT01846520"}, {"nctId"=>"NCT01898741"}, {"nctId"=>"NCT01994213"}, {"nctId"=>"NCT01996540"}, {"nctId"=>"NCT02041936"}, {"nctId"=>"NCT02042378"}, {"nctId"=>"NCT02055313"}]}}}
+{
+  "data": {
+    "search": {
+      "recordsTotal": 27,
+      "aggs": [
+        {
+          "buckets": [
+            {
+              "key": "Phase 1",
+              "docCount": 9
+            },
+            {
+              "key": "N/A",
+              "docCount": 6
+            },
+            {
+              "key": "Phase 2",
+              "docCount": 6
+            },
+            {
+              "key": "Phase 1/Phase 2",
+              "docCount": 1
+            },
+            {
+              "key": "Phase 4",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Antibodies",
+              "docCount": 3
+            },
+            {
+              "key": "Everolimus",
+              "docCount": 3
+            },
+            {
+              "key": "Sirolimus",
+              "docCount": 3
+            },
+            {
+              "key": "Oxaliplatin",
+              "docCount": 2
+            },
+            {
+              "key": "Antibodies, Monoclonal",
+              "docCount": 1
+            },
+            {
+              "key": "Calcium",
+              "docCount": 1
+            },
+            {
+              "key": "Capecitabine",
+              "docCount": 1
+            },
+            {
+              "key": "Darbepoetin alfa",
+              "docCount": 1
+            },
+            {
+              "key": "Fluorouracil",
+              "docCount": 1
+            },
+            {
+              "key": "Gabapentin",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Houston",
+              "docCount": 4
+            },
+            {
+              "key": "Athens",
+              "docCount": 2
+            },
+            {
+              "key": "Berlin",
+              "docCount": 2
+            },
+            {
+              "key": "Chicago",
+              "docCount": 2
+            },
+            {
+              "key": "Jerusalem",
+              "docCount": 2
+            },
+            {
+              "key": "Madison",
+              "docCount": 2
+            },
+            {
+              "key": "'Aiea",
+              "docCount": 1
+            },
+            {
+              "key": "Aalst",
+              "docCount": 1
+            },
+            {
+              "key": "Adrian",
+              "docCount": 1
+            },
+            {
+              "key": "Aix en Provence",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Completed",
+              "docCount": 14
+            },
+            {
+              "key": "Unknown status",
+              "docCount": 5
+            },
+            {
+              "key": "Terminated",
+              "docCount": 4
+            },
+            {
+              "key": "Active, not recruiting",
+              "docCount": 3
+            },
+            {
+              "key": "Recruiting",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "0",
+              "docCount": 27
+            }
+          ]
+        },
+        {
+          "buckets": [
+
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Pancreatic Neoplasms",
+              "docCount": 27
+            },
+            {
+              "key": "Stomach Neoplasms",
+              "docCount": 20
+            },
+            {
+              "key": "Intestinal Neoplasms",
+              "docCount": 7
+            },
+            {
+              "key": "Neoplasms",
+              "docCount": 7
+            },
+            {
+              "key": "Neuroendocrine Tumors",
+              "docCount": 7
+            },
+            {
+              "key": "Ovarian Neoplasms",
+              "docCount": 5
+            },
+            {
+              "key": "Adenocarcinoma",
+              "docCount": 4
+            },
+            {
+              "key": "Colonic Neoplasms",
+              "docCount": 4
+            },
+            {
+              "key": "Rectal Neoplasms",
+              "docCount": 4
+            },
+            {
+              "key": "Carcinoma",
+              "docCount": 3
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "City of Hope Medical Center",
+              "docCount": 2
+            },
+            {
+              "key": "University of Wisconsin Hospital and Clinics",
+              "docCount": 2
+            },
+            {
+              "key": "21st Century Oncology",
+              "docCount": 1
+            },
+            {
+              "key": "21st Century Oncology-Fort Apache",
+              "docCount": 1
+            },
+            {
+              "key": "21st Century Oncology-Henderson",
+              "docCount": 1
+            },
+            {
+              "key": "21st Century Oncology-Vegas Tenaya",
+              "docCount": 1
+            },
+            {
+              "key": "2nd Dept of Internal Medicine, Agios Savvas Cancer Hospital",
+              "docCount": 1
+            },
+            {
+              "key": "2nd Dept of Internal Medicine, General Hospital of Athens \"Hippokratio\"",
+              "docCount": 1
+            },
+            {
+              "key": "2nd Dept of Internal Medicine, Propaedeutic, University Hospital \"Attikon\"",
+              "docCount": 1
+            },
+            {
+              "key": "2nd Dept of Medical Oncology, Metropolitan Hospital",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "United States",
+              "docCount": 13
+            },
+            {
+              "key": "Italy",
+              "docCount": 3
+            },
+            {
+              "key": "China",
+              "docCount": 2
+            },
+            {
+              "key": "France",
+              "docCount": 2
+            },
+            {
+              "key": "Germany",
+              "docCount": 2
+            },
+            {
+              "key": "Greece",
+              "docCount": 2
+            },
+            {
+              "key": "Israel",
+              "docCount": 2
+            },
+            {
+              "key": "Netherlands",
+              "docCount": 2
+            },
+            {
+              "key": "Austria",
+              "docCount": 1
+            },
+            {
+              "key": "Belgium",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "Interventional",
+              "docCount": 23
+            },
+            {
+              "key": "Observational",
+              "docCount": 4
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "National Cancer Institute (NCI)",
+              "docCount": 7
+            },
+            {
+              "key": "City of Hope Medical Center",
+              "docCount": 2
+            },
+            {
+              "key": "Agensys, Inc.",
+              "docCount": 1
+            },
+            {
+              "key": "American Cancer Society (ACS) National Office",
+              "docCount": 1
+            },
+            {
+              "key": "Amgen",
+              "docCount": 1
+            },
+            {
+              "key": "Arcispedale Santa Maria Nuova-IRCCS",
+              "docCount": 1
+            },
+            {
+              "key": "Cancer Institute and Hospital, Chinese Academy of Medical Sciences",
+              "docCount": 1
+            },
+            {
+              "key": "Clalit Health Services",
+              "docCount": 1
+            },
+            {
+              "key": "Clovis Oncology, Inc.",
+              "docCount": 1
+            },
+            {
+              "key": "Columbia University",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "",
+              "docCount": 12
+            },
+            {
+              "key": "California",
+              "docCount": 6
+            },
+            {
+              "key": "Texas",
+              "docCount": 5
+            },
+            {
+              "key": "Illinois",
+              "docCount": 3
+            },
+            {
+              "key": "Arizona",
+              "docCount": 2
+            },
+            {
+              "key": "Maryland",
+              "docCount": 2
+            },
+            {
+              "key": "Minnesota",
+              "docCount": 2
+            },
+            {
+              "key": "New York",
+              "docCount": 2
+            },
+            {
+              "key": "Wisconsin",
+              "docCount": 2
+            },
+            {
+              "key": "Alabama",
+              "docCount": 1
+            }
+          ]
+        },
+        {
+          "buckets": [
+
+          ]
+        },
+        {
+          "buckets": [
+            {
+              "key": "laboratory biomarker analysis",
+              "docCount": 3
+            },
+            {
+              "key": "Everolimus",
+              "docCount": 2
+            },
+            {
+              "key": "Laboratory Biomarker Analysis",
+              "docCount": 2
+            },
+            {
+              "key": "oxaliplatin",
+              "docCount": 2
+            },
+            {
+              "key": "24 Gy in 3 fractions",
+              "docCount": 1
+            },
+            {
+              "key": "ASG-5ME",
+              "docCount": 1
+            },
+            {
+              "key": "Cixutumumab",
+              "docCount": 1
+            },
+            {
+              "key": "Endoscopic ultrasound guided needle tissue acquisition.",
+              "docCount": 1
+            },
+            {
+              "key": "Everolimus followed by Pasireotide LAR + Everolimus",
+              "docCount": 1
+            },
+            {
+              "key": "Famitinib",
+              "docCount": 1
+            }
+          ]
+        }
+      ],
+      "studies": [
+        {
+          "nctId": "NCT01166490"
+        },
+        {
+          "nctId": "NCT01191684"
+        },
+        {
+          "nctId": "NCT01204476"
+        },
+        {
+          "nctId": "NCT01233505"
+        },
+        {
+          "nctId": "NCT01236053"
+        },
+        {
+          "nctId": "NCT01263353"
+        },
+        {
+          "nctId": "NCT01324856"
+        },
+        {
+          "nctId": "NCT01384253"
+        },
+        {
+          "nctId": "NCT01437007"
+        },
+        {
+          "nctId": "NCT01444456"
+        },
+        {
+          "nctId": "NCT01598194"
+        },
+        {
+          "nctId": "NCT01643499"
+        },
+        {
+          "nctId": "NCT01648465"
+        },
+        {
+          "nctId": "NCT01675258"
+        },
+        {
+          "nctId": "NCT01698190"
+        },
+        {
+          "nctId": "NCT01747096"
+        },
+        {
+          "nctId": "NCT01819961"
+        },
+        {
+          "nctId": "NCT01841736"
+        },
+        {
+          "nctId": "NCT01846520"
+        },
+        {
+          "nctId": "NCT01898741"
+        },
+        {
+          "nctId": "NCT01994213"
+        },
+        {
+          "nctId": "NCT01996540"
+        },
+        {
+          "nctId": "NCT02041936"
+        },
+        {
+          "nctId": "NCT02042378"
+        },
+        {
+          "nctId": "NCT02055313"
+        }
+      ]
+    }
+  }
+}
