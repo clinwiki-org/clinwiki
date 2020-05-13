@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import * as Autosuggest from 'react-autosuggest';
-import { gql } from 'apollo-boost';
+import { gql, ApolloClient } from 'apollo-boost';
 import ThemedAutosuggestButton from 'components/StyledComponents';
 import { ApolloConsumer } from 'react-apollo';
 
@@ -58,11 +58,13 @@ const AUTOSUGGEST_QUERY = gql`
 interface AddDescAutoProps {
   siteView: any;
   values: any;
-  label: any;
+  handleInputChange: any;
+  description: any;
+  title: any;
 }
 
 interface AddDescAutoState {
-  suggestions: any[];
+  suggestions: any;
   input: string;
   isSuggestionLoading: boolean;
 }
@@ -77,15 +79,13 @@ class AddDescAuto extends React.PureComponent<
     isSuggestionLoading: false,
   };
 
-  queryAutoSuggest = async apolloClient => {
-    const { input } = this.state;
-    const { values, label } = this.props;
-    console.log(input);
+  getSuggestions = async apolloClient => {
+    const { values, title, description } = this.props;
     const query = AUTOSUGGEST_QUERY;
     const variables = {
       agg: 'browse_condition_mesh_terms',
       aggFilters: [],
-      aggOptionsFilter: input,
+      aggOptionsFilter: description,
       crowdAggFilters: [],
       page: 0,
       pageSize: 5,
@@ -95,7 +95,7 @@ class AddDescAuto extends React.PureComponent<
       },
       sorts: [],
       aggFields: [],
-      crowdAggFields: [],
+      crowdAggFields: [title],
     };
     const response = await apolloClient.query({
       query,
@@ -119,13 +119,12 @@ class AddDescAuto extends React.PureComponent<
       });
     });
 
-    const newSet = new Set(array);
-    const uniqArr = [...newSet];
-    uniqArr.unshift({ key: input.trim(), partialString: true });
+    const suggestions = [
+      { key: description.trim(), partialString: true },
+      ...array,
+    ];
 
-    this.setState({
-      suggestions: uniqArr,
-    });
+    return suggestions;
   };
 
   renderFieldSuggestion = suggestion => {
@@ -146,18 +145,6 @@ class AddDescAuto extends React.PureComponent<
     );
   };
 
-  handleInputChange = (e, { newValue }, apolloClient) => {
-    this.setState(
-      {
-        input: newValue,
-        suggestions: [],
-      },
-      () => {
-        this.queryAutoSuggest(apolloClient);
-      }
-    );
-  };
-
   onSuggestionSelected = (
     event,
     { suggestion, suggestionValue, suggestionIndex, method }
@@ -167,9 +154,9 @@ class AddDescAuto extends React.PureComponent<
     });
   };
 
-  onSuggestionsFetchRequested = () => {
+  onSuggestionsFetchRequested = async apolloClient => {
     this.setState({
-      isSuggestionLoading: false,
+      suggestions: await this.getSuggestions(apolloClient),
     });
   };
 
@@ -184,7 +171,9 @@ class AddDescAuto extends React.PureComponent<
   };
 
   render() {
-    const { input, suggestions } = this.state;
+    const { suggestions } = this.state;
+    const { handleInputChange, description, title } = this.props;
+    console.log(suggestions);
     return (
       <ApolloConsumer>
         {apolloClient => (
@@ -192,12 +181,14 @@ class AddDescAuto extends React.PureComponent<
             suggestions={suggestions}
             renderSuggestion={this.renderFieldSuggestion}
             inputProps={{
-              value: input,
-              onChange: (e, value) =>
-                this.handleInputChange(e, value, apolloClient),
+              disabled: title ? false : true,
+              value: description,
+              onChange: handleInputChange,
             }}
             onSuggestionSelected={this.onSuggestionSelected}
-            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+            onSuggestionsFetchRequested={() =>
+              this.onSuggestionsFetchRequested(apolloClient)
+            }
             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
             getSuggestionValue={this.getSuggestionValue}
           />

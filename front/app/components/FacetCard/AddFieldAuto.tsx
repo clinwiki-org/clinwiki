@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import * as Autosuggest from 'react-autosuggest';
 import ThemedAutosuggestButton from 'components/StyledComponents';
+import { any } from 'prop-types';
 
 const Row = styled.div`
   display: flex;
@@ -12,11 +13,12 @@ const Row = styled.div`
 
 interface AddFieldAutoProps {
   fields: any[];
-  renderSuggestion: any;
+  field: any;
+  handleInputChange: any;
+  onSuggestionSelected: any;
 }
 
 interface AddFieldAutoState {
-  input: string;
   isSuggestionLoading: boolean;
   suggestions: any[];
 }
@@ -26,31 +28,26 @@ class AddFieldAuto extends React.PureComponent<
   AddFieldAutoState
 > {
   state = {
-    input: '',
     isSuggestionLoading: false,
     suggestions: [],
   };
 
-  handleInputChange = (e, { newValue }) => {
-    this.setState({
-      input: newValue,
-    });
+  renderTitleSuggestion = suggestion => {
+    if (suggestion.partialString) {
+      return (
+        <Row>
+          <span>{`add "${suggestion.key}" as new label`}</span>
+          <ThemedAutosuggestButton>Add</ThemedAutosuggestButton>
+        </Row>
+      );
+    }
+    return (
+      <Row>
+        <span>{`${suggestion.key}`}</span>
+        <ThemedAutosuggestButton>Add</ThemedAutosuggestButton>
+      </Row>
+    );
   };
-
-  // onSuggestionSelected = (
-  //   event,
-  //   { suggestion, suggestionValue, suggestionIndex, method }
-  // ) => {
-  //   this.setState({
-  //     input: suggestionValue,
-  //   });
-  // };
-
-  // onSuggestionsFetchRequested = () => {
-  //   this.setState({
-  //     isSuggestionLoading: true,
-  //   });
-  // };
 
   onSuggestionsClearRequested = () => {
     this.setState({
@@ -59,7 +56,7 @@ class AddFieldAuto extends React.PureComponent<
   };
 
   getSuggestionValue = suggestion => {
-    return suggestion;
+    return suggestion.key;
   };
 
   escapeRegexChars = str => {
@@ -67,14 +64,24 @@ class AddFieldAuto extends React.PureComponent<
   };
 
   getSuggestions = (input, array) => {
+    const { field } = this.props;
     const escapedValue = this.escapeRegexChars(input.trim());
     if (escapedValue === '') {
       return [];
     }
 
     const regex = new RegExp('^' + escapedValue, 'i');
-    console.log('regex', regex);
-    return array.filter(item => regex.test(item));
+
+    const newArr = array.filter(item => regex.test(item));
+    let suggestions: { key: string; partialString: boolean }[] = [];
+    newArr.map(item => {
+      suggestions.push({ key: item, partialString: false });
+    });
+    const newSuggestions = [
+      { key: input.trim(), partialString: true },
+      ...suggestions,
+    ];
+    return newSuggestions;
   };
 
   onSuggestionsFetchRequested = ({ value }) => {
@@ -83,29 +90,21 @@ class AddFieldAuto extends React.PureComponent<
     });
   };
 
-  renderFieldSuggestion = suggestion => {
-    // const capitalized = capitalize(suggestion);
-    return (
-      <Row>
-        <span>{`${suggestion}`}</span>
-        <ThemedAutosuggestButton>Add</ThemedAutosuggestButton>
-      </Row>
-    );
-  };
-
   render() {
-    const { input, suggestions } = this.state;
+    const { suggestions } = this.state;
+    const { field } = this.props;
     return (
       <Autosuggest
         suggestions={suggestions}
-        renderSuggestion={this.renderFieldSuggestion}
+        renderSuggestion={this.renderTitleSuggestion}
         inputProps={{
-          value: input ? input : '',
-          onChange: this.handleInputChange,
+          value: field ? field : '',
+          onChange: this.props.handleInputChange,
         }}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
         getSuggestionValue={this.getSuggestionValue}
+        onSuggestionSelected={this.props.onSuggestionSelected}
       />
     );
   }

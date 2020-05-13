@@ -45,9 +45,7 @@ interface AddFacetCardState {
   title: string;
   description: string;
   showForm: boolean;
-  titleSuggestions: any[];
-  descriptionSuggestions: any[];
-  isSuggestionLoading: boolean;
+  descDisabled: boolean;
 }
 
 class AddFacetCard extends React.PureComponent<
@@ -55,12 +53,10 @@ class AddFacetCard extends React.PureComponent<
   AddFacetCardState
 > {
   state = {
+    showForm: false,
+    descDisabled: true,
     title: '',
     description: '',
-    showForm: false,
-    titleSuggestions: [],
-    descriptionSuggestions: [],
-    isSuggestionLoading: false,
   };
 
   handleButtonClick = user => {
@@ -73,34 +69,15 @@ class AddFacetCard extends React.PureComponent<
     }
   };
 
-  renderTitleSuggestion = suggestion => {
-    // const capitalized = capitalize(suggestion);
-    console.log(suggestion);
-    if (suggestion.partialString) {
-      return (
-        <Row>
-          <span>{`add "${suggestion}" as new description`}</span>
-          <ThemedAutosuggestButton>Add</ThemedAutosuggestButton>
-        </Row>
-      );
-    }
-    return (
-      <Row>
-        <span>{`${suggestion}`}</span>
-        <ThemedAutosuggestButton>Add</ThemedAutosuggestButton>
-      </Row>
-    );
-  };
-
-  handleTitleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  handleTitleFieldChange = (e, { newValue }) => {
     this.setState({
-      title: e.target.value,
+      title: newValue,
     });
   };
 
-  handleDescriptionFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  handleDescriptionFieldChange = (e, { newValue }) => {
     this.setState({
-      description: e.target.value,
+      description: newValue,
     });
   };
 
@@ -120,8 +97,17 @@ class AddFacetCard extends React.PureComponent<
     });
   };
 
+  onFieldSuggestionSelected = (
+    event,
+    { suggestion, suggestionValue, suggestionIndex, method }
+  ) => {
+    this.setState({
+      title: suggestionValue,
+    });
+  };
+
   render() {
-    const { title, description, showForm, titleSuggestions } = this.state;
+    const { showForm, title, description } = this.state;
     const { user, aggNames, siteView, values } = this.props;
     if (showForm) {
       return (
@@ -129,10 +115,18 @@ class AddFacetCard extends React.PureComponent<
           <MarginContainer>Label</MarginContainer>
           <AddFieldAuto
             fields={aggNames}
-            renderSuggestion={this.renderTitleSuggestion}
+            handleInputChange={this.handleTitleFieldChange}
+            field={title}
+            onSuggestionSelected={this.onFieldSuggestionSelected}
           />
           <MarginContainer>Description</MarginContainer>
-          <AddDescAuto siteView={siteView} values={values} label={'color'} />
+          <AddDescAuto
+            siteView={siteView}
+            values={values}
+            handleInputChange={this.handleDescriptionFieldChange}
+            description={description}
+            title={title}
+          />
           <div style={{ marginTop: 5, marginLeft: 2, marginBottom: 5 }}>
             <ThemedButton
               style={{ marginRight: 5 }}
