@@ -16,7 +16,7 @@ import {
   SignUpPage,
   ResetPasswordPage,
   EditProfilePage,
-  PasswordReset,
+  UpdatePassword,
 } from 'containers/LoginPage';
 import AuthHeader from 'components/AuthHeader';
 import { History } from 'history';
@@ -79,7 +79,7 @@ class App extends React.PureComponent<AppProps> {
             <Route path="/sign_in" component={SignInPage} />
             <Route path="/sign_up" component={SignUpPage} />
             <Route path="/not-configured" component={NotConfiguredPage} />
-            <Route path="/update_password" component={PasswordReset} />
+            <Route path="/update_password" component={UpdatePassword} />
             <Route component={NotFoundPage} />
           </Switch>
         </MainWrapper>

@@ -22,11 +22,11 @@ const UPDATE_PASSWORD_MUTATION = gql`
   }
 `;
 
-interface PasswordResetProps {
+interface UpdatePasswordProps {
   history: History;
 }
 
-interface PasswordResetState {
+interface UpdatePasswordState {
   form: {
     // email: string;
     password: string;
@@ -43,11 +43,11 @@ UpdatePasswordMutation, UpdatePasswordMutationVariables
 > {}
 type UpdatePasswordMutationFn = MutationFn<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
 
-class PasswordReset extends React.Component<
-  PasswordResetProps,
-  PasswordResetState
+class UpdatePassword extends React.Component<
+  UpdatePasswordProps,
+  UpdatePasswordState
 > {
-  state: PasswordResetState = {
+  state: UpdatePasswordState = {
     form: {
       password: '',
       passwordConfirmation: '',
@@ -152,4 +152,4 @@ class PasswordReset extends React.Component<
   }
 }
 
-export default PasswordReset;
+export default UpdatePassword;
