@@ -150,7 +150,7 @@ class UpdatePassword extends React.Component<
                   });
                   return;
                 }
-                this.setState({ errors: ['Invalid email or password'] });
+                this.setState({ errors: ['Invalid new password'] });
               }}
               >
               {updatePassword => (
