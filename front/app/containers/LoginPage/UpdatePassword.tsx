@@ -66,7 +66,6 @@ class UpdatePassword extends React.Component<
     let token = new URLSearchParams(this.props.history.location.search).getAll(
       'reset_password_token'
     );
-    console.log(token.toString());
     this.setState({
       resetPasswordToken: token.toString()
     })
@@ -77,10 +76,6 @@ class UpdatePassword extends React.Component<
   componentDidMount(){
     this.getResetToken();
   }
-
-  // handleSignUp = (signUp: SignUpMutationFn) => () => {
-  //   if (this.state.form.password === this.state.form.passwordConfirmation) {
-
 
   handleResetSubmit = (updatePassword: UpdatePasswordMutationFn) => {
     const { password, passwordConfirmation } = this.state.form;
@@ -115,11 +110,10 @@ class UpdatePassword extends React.Component<
       }
 
     setLocalJwt(jwt);
-    this.props.history.push('/');
+    this.props.history.push('/search');
   };
 
   render() {
-    console.log('RESSET', this.state.errors)
     return (
       <StyledWrapper>
         <StyledContainer>
