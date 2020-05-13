@@ -64,7 +64,6 @@ class AddFieldAuto extends React.PureComponent<
   };
 
   getSuggestions = (input, array) => {
-    const { field } = this.props;
     const escapedValue = this.escapeRegexChars(input.trim());
     if (escapedValue === '') {
       return [];
