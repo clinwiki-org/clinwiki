@@ -23,9 +23,9 @@ import {
   StyledProfileForm,
 } from 'components/StyledComponents';
 import { ThemedButton } from '../LoginPage/StyledButton';
-import ProfileScoreBoard from '../ProfilePage/components/ProfileScoreBoard';
-import ProfilePicture from '../ProfilePage/components/ProfilePicture';
-import ReviewsTable from '../ProfilePage/components/ReviewsTable';
+import ProfileScoreBoard from './components/ProfileScoreBoard';
+import ProfilePicture from './components/ProfilePicture';
+import ReviewsTable from './components/ReviewsTable';
 
 interface EditProfilePageProps {
   user: UserFragment | null;
@@ -192,11 +192,12 @@ class EditProfilePage extends React.Component<
             }
   };
   renderProfileInfo = () => {
+    //@ts-ignore
+    let pictureUrl =this.props.user.pictureUrl || null
     if (this.props.user) {
       return (
         <div>
-          //@ts-ignore
-          <ProfilePicture pictureUrl={this.props.user.pictureUrl}/>
+          <ProfilePicture pictureUrl={pictureUrl}/>
           <span style={{paddingLeft:'15px'}} onClick={() => this.toggleEditProfile()}> Edit Profile</span>
 
           <SearchContainer>
@@ -261,6 +262,7 @@ class EditProfilePage extends React.Component<
   render() {
     let userContributions = this.props.user?.contributions;
     let reviewCount = this.props.user?.reviewCount;
+    if(this.props.user){
     return (
       <ThemedMainContainer>
         <h2>My profile</h2>
@@ -276,6 +278,8 @@ class EditProfilePage extends React.Component<
             totalTags={'Coming Soon'}
             totalFavorites={0}
             handleDisplayChange={this.handleDisplayChange}
+            //@ts-ignore
+            rank={this.props.user.rank}
           />
         </SearchContainer>
         {this.props.user ? (
@@ -285,6 +289,8 @@ class EditProfilePage extends React.Component<
         )}
       </ThemedMainContainer>
     );
+        }
+        return(<div>No user</div>)
   }
 }
 

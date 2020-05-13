@@ -26,6 +26,7 @@ export interface User_user {
    * Number of reviews the user has done
    */
   reviewCount: number;
+  rank: string | null;
   reviews: User_user_reviews[];
   contributions: number;
   pictureUrl: string | null;

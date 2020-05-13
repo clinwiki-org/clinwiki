@@ -11,6 +11,7 @@ import {
   StyledProfileValue,
   StyledProfileScoreValue,
   ScoreBoard,
+  StyledProfileRanking,
 } from 'components/StyledComponents';
 
 interface ProfileScoreBoardProps {
@@ -19,19 +20,57 @@ interface ProfileScoreBoardProps {
   totalReviews: any;
   totalTags: any;
   totalFavorites: any;
-  handleDisplayChange:any;
+  handleDisplayChange?: any;
+  rank?:any;
 }
 
 class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
-
   starLogo = totalContributions => {
-    if (10 > totalContributions && totalContributions > 0) {
-      return <img style={{ maxWidth: '1.25em' }} src="/star_outline.png" />;
-    } else if (50 > totalContributions && totalContributions > 10) {
-      return <img style={{ maxWidth: '1.25em' }} src="/silver_star.png" />;
-    } else if (100 > totalContributions && totalContributions > 50) {
-      return <img style={{ maxWidth: '1.25em' }} src="/gold_star.png" />;
-    } else if (totalContributions > 100) {
+    if (this.props.rank == "default") {
+      return (
+        <span style={{ display: 'flex', margin: 'auto' }}>
+          <ReactStars
+            count={1}
+            color1={'#A97142'}
+            color2={'#A97142'}
+            half={false}
+            size={25}
+            // value={}
+            //onChange={value => this.handleRatingChange(key, value)}
+          />
+        </span>
+      );
+      // return <img style={{ maxWidth: '1.25em' }} src="/star_outline.png" />;
+    } else if (this.props.rank == "bronze") {
+      // return <img style={{ maxWidth: '1.25em' }} src="/silver_star.png" />;
+      return (
+        <span>
+          <ReactStars
+            count={1}
+            color1={'#C0C0C0'}
+            color2={'#C0C0C0'}
+            half={false}
+            size={25}
+            // value={}
+            //onChange={value => this.handleRatingChange(key, value)}
+          />
+        </span>
+      );
+    } else if (this.props.rank == "silver") {
+      return (
+        <span>
+          <ReactStars
+            count={1}
+            color1={'#D4AF37'}
+            color2={'#D4AF37'}
+            half={false}
+            size={25}
+            // value={}
+            //onChange={value => this.handleRatingChange(key, value)}
+          />
+        </span>
+      );
+    } else if (this.props.rank == "platinum") {
       return (
         <span>
         <ReactStars
@@ -53,20 +92,22 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
       <div>
         <ScoreBoard>
           <StyledLabelValuePair>
-            <StyledProfileScoreValue>
+            <StyledProfileRanking>
               {this.starLogo(this.props.totalContributions)}
-            </StyledProfileScoreValue>
+            </StyledProfileRanking>
             <StyledProfileScoreLabel>Star Level</StyledProfileScoreLabel>
           </StyledLabelValuePair>
         </ScoreBoard>
         <ScoreBoard>
-          <StyledLabelValuePair onClick={()=>this.props.handleDisplayChange("contributions")}>
+          <StyledLabelValuePair
+            onClick={() => this.props.handleDisplayChange('contributions')}>
             <StyledProfileScoreValue>
               {this.props.totalContributions}
             </StyledProfileScoreValue>
             <StyledProfileScoreLabel>Contributions</StyledProfileScoreLabel>
           </StyledLabelValuePair>
-          <StyledLabelValuePair onClick={()=>this.props.handleDisplayChange("reviews")}>
+          <StyledLabelValuePair
+            onClick={() => this.props.handleDisplayChange('reviews')}>
             <StyledProfileScoreValue>
               {this.props.totalReviews}
             </StyledProfileScoreValue>

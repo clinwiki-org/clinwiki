@@ -33,6 +33,7 @@ const USER_QUERY = gql`
       firstName
       lastName
       reviewCount
+      rank
       reviews {
         nctId
         briefTitle
@@ -118,6 +119,7 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
             );
           if (error) return <div>Error</div>;
           const userData = data;
+          console.log("userData",userData)
           return (
             <div>
               <ThemedMainContainer>
@@ -133,6 +135,7 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
                     totalTags={'Coming Soon'}
                     totalFavorites={0}
                     handleDisplayChange={this.handleDisplayChange}
+                    rank={userData.user.rank}
                   />
                 </SearchContainer>
                 {this.renderHeader(userData.user)}
