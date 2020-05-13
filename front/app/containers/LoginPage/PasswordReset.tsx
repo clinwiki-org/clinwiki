@@ -8,9 +8,9 @@ import { UpdatePasswordMutation, UpdatePasswordMutationVariables } from 'types/U
 import ThemedButton from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
-import StyledError from './StyledError';
 import StyledWrapper from './StyledWrapper';
 import { setLocalJwt } from 'utils/localStorage';
+import StyledError from './StyledError';
 import { omit } from 'ramda';
 
 const UPDATE_PASSWORD_MUTATION = gql`
@@ -68,7 +68,6 @@ class PasswordReset extends React.Component<
     );
     console.log(token.toString());
     this.setState({
-      //@ts-ignore
       resetPasswordToken: token.toString()
     })
 
@@ -109,23 +108,21 @@ class PasswordReset extends React.Component<
 
   handleUpdatePasswordCompleted = (data: UpdatePasswordMutation) => {
     const jwt = data && data.updatePassword && data.updatePassword.jwt;
-    if (!jwt) return;
+    if (!jwt) {
+        const errors = JSON.parse(data.updatePassword!.errors)
+        this.setState({errors})
+        return
+      }
 
     setLocalJwt(jwt);
     this.props.history.push('/');
   };
 
   render() {
+    console.log('RESSET', this.state.errors)
     return (
       <StyledWrapper>
         <StyledContainer>
-          {/* <StyledFormControl
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={this.state.form.email}
-            onChange={this.handleInputChange}
-          /> */}
           <StyledFormControl
             name="password"
             type="password"
@@ -143,23 +140,12 @@ class PasswordReset extends React.Component<
             <UpdatePasswordMutationComponent
               mutation={UPDATE_PASSWORD_MUTATION}
               onCompleted={this.handleUpdatePasswordCompleted}
-              // update={(cache, { data }) => {
-              //   const user = data && data.updatePassword && data.updatePassword.user;
-              //   if (user) {
-              //     cache.writeQuery({
-              //       query: CurrentUser.query,
-              //       data: {
-              //         me: user,
-              //       },
-              //     });
-              //     return;
-              //   }
-              // }}
               >
               {updatePassword => (
           <ThemedButton onClick={() => this.handleResetSubmit(updatePassword)}>Submit</ThemedButton>
           )}
           </UpdatePasswordMutationComponent>
+              {this.state.errors.map(error=> <StyledError>{error}</StyledError>)}
         </StyledContainer>
       </StyledWrapper>
     );
