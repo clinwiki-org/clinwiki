@@ -733,6 +733,7 @@ export interface SiteFragment {
   skipLanding: boolean | null;
   subdomain: string;
   themes: string;
+  userRank: string;
   owners: SiteFragment_owners[];
   siteView: SiteFragment_siteView;
   siteViews: SiteFragment_siteViews[];

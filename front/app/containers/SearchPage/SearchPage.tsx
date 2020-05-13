@@ -731,7 +731,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
 
         const userId = searchQueryString.getAll('uid').toString();
-
+        const userName = searchQueryString.getAll('username').toString();
         if (data?.provisionSearchHash?.searchHash?.short) {
           if (this.props.match.path == '/profile') {
             this.props.history.push(
@@ -745,7 +745,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             this.props.history.push(
               `/profile/user?hash=${
                 data!.provisionSearchHash!.searchHash!.short
-              }&sv=${siteViewUrl}&uid=${userId}&username=${profile && profile.values.toString()}`
+              }&sv=${siteViewUrl}&uid=${userId}&username=${userName}`
             );
             return;
           }

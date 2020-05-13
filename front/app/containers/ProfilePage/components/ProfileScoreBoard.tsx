@@ -21,70 +21,72 @@ interface ProfileScoreBoardProps {
   totalTags: any;
   totalFavorites: any;
   handleDisplayChange?: any;
-  rank?:any;
+  rank?: any;
 }
 
 class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
   starLogo = totalContributions => {
-    if (this.props.rank == "default") {
-      return (
-        <span style={{ display: 'flex', margin: 'auto' }}>
-          <ReactStars
-            count={1}
-            color1={'#A97142'}
-            color2={'#A97142'}
-            half={false}
-            size={25}
-            // value={}
-            //onChange={value => this.handleRatingChange(key, value)}
-          />
-        </span>
-      );
-      // return <img style={{ maxWidth: '1.25em' }} src="/star_outline.png" />;
-    } else if (this.props.rank == "bronze") {
-      // return <img style={{ maxWidth: '1.25em' }} src="/silver_star.png" />;
-      return (
-        <span>
-          <ReactStars
-            count={1}
-            color1={'#C0C0C0'}
-            color2={'#C0C0C0'}
-            half={false}
-            size={25}
-            // value={}
-            //onChange={value => this.handleRatingChange(key, value)}
-          />
-        </span>
-      );
-    } else if (this.props.rank == "silver") {
-      return (
-        <span>
-          <ReactStars
-            count={1}
-            color1={'#D4AF37'}
-            color2={'#D4AF37'}
-            half={false}
-            size={25}
-            // value={}
-            //onChange={value => this.handleRatingChange(key, value)}
-          />
-        </span>
-      );
-    } else if (this.props.rank == "platinum") {
-      return (
-        <span>
-        <ReactStars
-          count={1}
-          color1={'#E5E4E2'}
-          color2={'#E5E4E2'}
-          half={false}
-          size={25}
-          // value={}
-          //onChange={value => this.handleRatingChange(key, value)}
-        />
-      </span>
-      );
-    }
+      const firstTier = '#A97142';
+      const secondTier = '#C0C0C0';
+      const thirdTier = '#D4AF37';
+      const fourthTier = '#E5E4E2';
+
+      let color = '';
+      switch (this.props.rank) {
+        case 'default':
+          color = firstTier;
+          return (
+            <span style={{ display: 'flex', margin: 'auto' }}>
+              <ReactStars
+                count={1}
+                color1={color}
+                color2={color}
+                half={false}
+                size={25}
+              />
+            </span>
+          );
+        case 'silver':
+          color = secondTier;
+          return (
+            <span style={{ display: 'flex', margin: 'auto' }}>
+              <ReactStars
+                count={1}
+                color1={color}
+                color2={color}
+                half={false}
+                size={25}
+              />
+            </span>
+          );
+        case 'gold':
+          color = thirdTier;
+          return (
+            <span style={{ display: 'flex', margin: 'auto' }}>
+              <ReactStars
+                count={1}
+                color1={color}
+                color2={color}
+                half={false}
+                size={25}
+              />
+            </span>
+          );
+        case 'platinum':
+          color = fourthTier;
+          return (
+            <span style={{ display: 'flex', margin: 'auto' }}>
+              <ReactStars
+                count={1}
+                color1={color}
+                color2={color}
+                half={false}
+                size={25}
+              />
+            </span>
+          );
+      }
+    return;
   };
 
   render() {

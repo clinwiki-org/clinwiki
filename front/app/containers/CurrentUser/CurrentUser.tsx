@@ -55,7 +55,7 @@ class CurrentUser extends React.PureComponent<CurrentUserProps> {
           if (loading || error || !data) {
             return this.props.children(null);
           }
-          console.log("DATA",data)
+          // console.log("DATA",data)
           return this.props.children(data.me);
         }}
       </QueryComponent>

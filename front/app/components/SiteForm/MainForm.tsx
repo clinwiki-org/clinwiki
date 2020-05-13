@@ -97,7 +97,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
-    if (name == 'themes') {
+    if (name == 'themes' || name=='userRank' ) {
       try {
         let parseResponse = JSON.parse(value);
         if (parseResponse && parseResponse.error)
@@ -110,7 +110,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
         this.setState({ themeError: '' });
       } catch (e) {
         this.setState({
-          themeError: 'There is an error in your theme object.',
+          themeError: `There is an error in your ${name} object.`,
         });
         this.props.handleThemeError(true);
       }
@@ -209,9 +209,24 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
               value={this.props.form.themes}
               onChange={this.handleInputChange}
             />
-            <div>{this.state.themeError}</div>
+            {/* <div>{this.state.themeError}</div> */}
+            <h3>User Ranking</h3>
+            <StyledFormInput
+              componentClass="textarea"
+              name="userRank"
+              //@ts-ignore
+              placeholder={this.props.form.userRank}
+              //@ts-ignore
+              value={this.props.form.userRank}
+              onChange={this.handleInputChange}
+            />
+
           </Col>
+          {/* <div>{this.state.themeError}</div> */}
+
         </Row>
+        <div>{this.state.themeError}</div>
+
       </StyledContainer>
     );
   }

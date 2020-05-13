@@ -253,6 +253,7 @@ const SITE_FRAGMENT = gql`
     skipLanding
     subdomain
     themes
+    userRank
     owners {
       email
     }
