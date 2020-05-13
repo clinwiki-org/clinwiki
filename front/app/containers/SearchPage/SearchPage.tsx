@@ -279,6 +279,7 @@ interface SearchPageProps {
   currentSiteView: SiteFragment_siteView;
   mutate: any;
   email?:string;
+  intervention?:boolean;
   getTotalContributions?:any;
 }
 
@@ -626,8 +627,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
-
-  
+    console.log('url', this.props.location)
     if (searchTerm.has('q')) {
       let q = {
         key: 'AND',
@@ -652,11 +652,19 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
+
+    // not sure this is being used anymore now that we switched to url params for siteviews.
     if (this.props.email) {
       this.setState({
         siteViewType: 'user',
       });
-    } else {
+    } 
+    // if (this.props.intervention) {
+    //   this.setState({
+    //     siteViewType: 'intervention',
+    //   });
+    // } 
+    else {
       this.setState({
         siteViewType: 'search',
       });
@@ -731,13 +739,24 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         .toString() || 'default';
 
     if (data?.provisionSearchHash?.searchHash?.short) {
+      console.log('PRE INTERVENTION')
       if(this.props.match.path =="/profile"){
         this.props.history.push(
           `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
           }&sv=${siteViewUrl}`
         ); return;
-      }else if(this.findFilter("wiki_page_edits.email")){
+      }
+      if(this.props.match.path =="/intervention"){
+        console.log('INTERVENTION PAGE' )
+        this.props.history.push(
+          `/intervention?hash=${
+            data!.provisionSearchHash!.searchHash!.short
+          }&sv=intervention`
+        ); return;
+      }
+       
+      else if(this.findFilter("wiki_page_edits.email")){
         this.props.history.push(
           `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short

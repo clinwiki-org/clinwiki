@@ -36,6 +36,7 @@ import { trimPath } from 'utils/helpers';
 import ReviewsPage from 'containers/ReviewsPage';
 import InterventionsPage from 'containers/InterventionsPage';
 import FacilitiesPage from 'containers/FacilitiesPage';
+import InterventionPage from 'containers/InterventionPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
 import SiteProvider from 'containers/SiteProvider';
@@ -296,6 +297,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       basicSections: basicSectionsRaw,
       extendedSections: extendedSectionsRaw,
     } = view.study;
+    console.log("STUDY", view.study)
     const basicSections = [
       {
         name: 'workflow',
@@ -306,9 +308,19 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         hidden: !this.props.isWorkflow,
         metaData: { hide: !this.props.isWorkflow },
       },
+      // {
+      //   name: 'intervention',
+      //   path: '/intervention?sv=intervention',
+      //   displayName: 'Intervention',
+      //   kind: 'basic',
+      //   component: InterventionPage,
+      //   hidden: !this.props.isWorkflow,
+      //   metaData: { hide: !this.props.isWorkflow },
+      // },
       ...basicSectionsRaw.map(section => ({
         name: section.title.toLowerCase(),
         path:
+          
           section.title.toLowerCase() === 'wiki'
             ? '/'
             : `/${section.title.toLowerCase()}`,
@@ -320,16 +332,18 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       })),
     ];
 
-    const extendedSections = extendedSectionsRaw.map(section => ({
-      name: section.title.toLowerCase(),
-      path: `/${section.title.toLowerCase()}`,
-      displayName: section.title,
-      kind: 'extended',
-      order: section.order,
-      component: this.getComponent(section.title.toLowerCase()),
-      hidden: section.hide,
-      metaData: section,
-    }));
+    const extendedSections = extendedSectionsRaw.map(section => {
+      return ({
+        name: section.title.toLowerCase(),
+        path: `/${section.title.toLowerCase()}`,
+        displayName: section.title,
+        kind: 'extended',
+        order: section.order,
+        component: this.getComponent(section.title.toLowerCase()),
+        hidden: section.hide,
+        metaData: section,
+      })
+    } );
 
     // @ts-ignore
     const processedExtendedSections = sortBy(
