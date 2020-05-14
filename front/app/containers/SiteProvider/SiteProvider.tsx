@@ -156,6 +156,7 @@ const SITE_VIEW_FRAGMENT = gql`
             }
             name
             display
+            displayName
             preselected {
               kind
               values
@@ -223,6 +224,7 @@ const SITE_VIEW_FRAGMENT = gql`
           }
           name
           display
+          displayName
           preselected {
             kind
             values

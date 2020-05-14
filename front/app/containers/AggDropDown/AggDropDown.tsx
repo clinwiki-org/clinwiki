@@ -591,17 +591,21 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   render() {
     const { agg, presearch } = this.props;
     const { isOpen } = this.state;
-    let currentAgg =this.findFields();
+    let currentAgg = this.findFields();
     //@ts-ignore
     let configuredLabel = currentAgg.displayName;
-    const title = aggToField(agg,configuredLabel);
+    const title = aggToField(agg, configuredLabel);
 
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
         <ThemedPresearchCard>
           <ThemedPresearchHeader>
-            <PresearchTitle>{capitalize(title)}</PresearchTitle>
+            <PresearchTitle>
+              {this.props.aggKind === 'crowdAggs'
+                ? capitalize(configuredLabel) || title
+                : capitalize(title)}
+            </PresearchTitle>
           </ThemedPresearchHeader>
           <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
         </ThemedPresearchCard>
@@ -616,7 +620,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             <Panel.Heading className="bm-panel-heading">
               <Panel.Title className="bm-panel-title" toggle>
                 <div className="flex">
-                  <span>{title}</span>
+                  <span>{this.props.aggKind === 'crowdAggs' ? configuredLabel:title}</span>
                   <span>
                     <FontAwesome name={icon} />{' '}
                   </span>
