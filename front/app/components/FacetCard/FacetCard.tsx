@@ -123,6 +123,7 @@ interface FacetCardProps {
   values?: [string, boolean][];
   user?: any;
   refetch?: any;
+  aggNames?: any;
 }
 
 interface FacetCardState {
@@ -184,7 +185,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       crowdAggFilters: [],
       page: 0,
       pageSize: 5,
-      url: siteView.url,
       q: {
         children: [],
         key: 'AND',
@@ -197,6 +197,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       query,
       variables,
     });
+    // console.log(response);
 
     const array = response.data.autocomplete.autocomplete[0].results;
 
@@ -209,10 +210,11 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
           if (key === '-99999999999') {
             array.splice(i, 1);
           } else {
-            console.log('good data', array[i]);
+            // console.log('good data', array[i]);
           }
         }
       });
+
     });
 
     const newSet = new Set(array);
@@ -309,14 +311,13 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel, bulk, user } = this.props;
+    const { label, addLabel, bulk, aggNames, siteView, values } = this.props;
     const {
       textFieldActive,
       existingField,
       suggestions,
       showLoginModal,
     } = this.state;
-
     if (bulk) {
       return (
         <ThemedPresearchCard>
@@ -333,29 +334,37 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       return (
         <CurrentUser>
           {user => (
-            <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-              {upsertLabelMutation => (
-                <>
-                  <LoginModal
-                    show={showLoginModal}
-                    cancel={() => this.setShowLoginModal(false)}
-                  />
-                  <ThemedPresearchCard>
-                    <ThemedPresearchHeader>
-                      <PresearchTitle>{capitalize(label)}</PresearchTitle>
-                    </ThemedPresearchHeader>
-                    <PresearchContent style={{ overflowY: 'auto' }}>
-                      <AddFacetCard
-                        upsert={upsertLabelMutation}
-                        submitFacet={this.handleNewFacetSubmit}
-                        user={user}
-                        showLogin={this.setShowLoginModal}
+            <ApolloConsumer>
+              {apolloClient => (
+                <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
+                  {upsertLabelMutation => (
+                    <>
+                      <LoginModal
+                        show={showLoginModal}
+                        cancel={() => this.setShowLoginModal(false)}
                       />
-                    </PresearchContent>
-                  </ThemedPresearchCard>
-                </>
+                      <ThemedPresearchCard>
+                        <ThemedPresearchHeader>
+                          <PresearchTitle>{capitalize(label)}</PresearchTitle>
+                        </ThemedPresearchHeader>
+                        <PresearchContent style={{ overflowY: 'auto' }}>
+                          <AddFacetCard
+                            upsert={upsertLabelMutation}
+                            submitFacet={this.handleNewFacetSubmit}
+                            user={user}
+                            showLogin={this.setShowLoginModal}
+                            apolloClient={apolloClient}
+                            aggNames={aggNames}
+                            siteView={siteView}
+                            values={values}
+                          />
+                        </PresearchContent>
+                      </ThemedPresearchCard>
+                    </>
+                  )}
+                </UpsertMutationComponent>
               )}
-            </UpsertMutationComponent>
+            </ApolloConsumer>
           )}
         </CurrentUser>
       );

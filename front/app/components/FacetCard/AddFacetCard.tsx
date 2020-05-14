@@ -4,6 +4,10 @@ import withTheme from 'containers/ThemeProvider';
 import { FormControl } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents';
+import * as Autosuggest from 'react-autosuggest';
+import AddFieldAuto from 'components/FacetCard/AddFieldAuto';
+import AddDescAuto from 'components/FacetCard/AddDescAuto';
+import ThemedAutosuggestButton from 'components/StyledComponents';
 
 const MarginContainer = styled.div`
   margin: 4px;
@@ -17,6 +21,13 @@ const CenterButton = styled.div`
   font-size: 175px;
 `;
 
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const ThemedCenterButton = withTheme(CenterButton);
 
 interface AddFacetCardProps {
@@ -24,12 +35,17 @@ interface AddFacetCardProps {
   upsert?: any;
   user?: any;
   showLogin: any;
+  apolloClient?: any;
+  aggNames?: any;
+  siteView?: any;
+  values?: any;
 }
 
 interface AddFacetCardState {
-  label: string;
+  title: string;
   description: string;
   showForm: boolean;
+  descDisabled: boolean;
 }
 
 class AddFacetCard extends React.PureComponent<
@@ -37,9 +53,10 @@ class AddFacetCard extends React.PureComponent<
   AddFacetCardState
 > {
   state = {
-    label: '',
-    description: '',
     showForm: false,
+    descDisabled: true,
+    title: '',
+    description: '',
   };
 
   handleButtonClick = user => {
@@ -52,24 +69,24 @@ class AddFacetCard extends React.PureComponent<
     }
   };
 
-  handleLabelFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  handleTitleFieldChange = (e, { newValue }) => {
     this.setState({
-      label: e.target.value,
+      title: newValue,
     });
   };
 
-  handleDescriptionFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  handleDescriptionFieldChange = (e, { newValue }) => {
     this.setState({
-      description: e.target.value,
+      description: newValue,
     });
   };
 
   handleSubmit = () => {
-    const { label, description } = this.state;
-    this.props.submitFacet(label, description, this.props.upsert);
+    const { title, description } = this.state;
+    this.props.submitFacet(title, description, this.props.upsert);
     this.setState({
       showForm: false,
-      label: '',
+      title: '',
       description: '',
     });
   };
@@ -80,25 +97,35 @@ class AddFacetCard extends React.PureComponent<
     });
   };
 
+  onFieldSuggestionSelected = (
+    event,
+    { suggestion, suggestionValue, suggestionIndex, method }
+  ) => {
+    this.setState({
+      title: suggestionValue,
+    });
+  };
+
   render() {
-    const { label, description, showForm } = this.state;
-    const { user } = this.props;
+    const { showForm, title, description } = this.state;
+    const { user, aggNames, siteView, values } = this.props;
     if (showForm) {
       return (
         <MarginContainer>
           <MarginContainer>Label</MarginContainer>
-          <FormControl
-            name="label"
-            placeholder="Add a label"
-            value={label}
-            onChange={this.handleLabelFieldChange}
+          <AddFieldAuto
+            fields={aggNames}
+            handleInputChange={this.handleTitleFieldChange}
+            field={title}
+            onSuggestionSelected={this.onFieldSuggestionSelected}
           />
           <MarginContainer>Description</MarginContainer>
-          <FormControl
-            name="description"
-            placeholder="Add a description"
-            value={description}
-            onChange={this.handleDescriptionFieldChange}
+          <AddDescAuto
+            siteView={siteView}
+            values={values}
+            handleInputChange={this.handleDescriptionFieldChange}
+            description={description}
+            title={title}
           />
           <div style={{ marginTop: 5, marginLeft: 2, marginBottom: 5 }}>
             <ThemedButton
