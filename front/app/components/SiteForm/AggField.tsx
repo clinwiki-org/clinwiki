@@ -131,7 +131,57 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       currentTarget: { name: e.currentTarget.name, value: !value },
     });
   };
+  renderNumberRangeConfig = (configType, display) => {
+    if (display == 'NUMBER_RANGE' || display == 'DATE_RANGE') {
+      return (
+        <span>
+          <StyledLabel>Range Start Label</StyledLabel>
 
+          <StyledFormControl
+            name={`set:${this.getPath(configType)}.rangeStartLabel`}
+            placeholder="Start"
+            //@ts-ignore
+            value={this.props.field.rangeStartLabel}
+            onChange={this.props.onAddMutation}
+          />
+          <StyledLabel>Range End Label</StyledLabel>
+
+          <StyledFormControl
+            name={`set:${this.getPath(configType)}.rangeEndLabel`}
+            placeholder="End"
+            //@ts-ignore
+            value={this.props.field.rangeEndLabel}
+            onChange={this.props.onAddMutation}
+          />
+        </span>
+      );
+    } else {
+      return (
+        <span>
+          <StyledLabel>Range Label</StyledLabel>
+
+          <StyledFormControl
+            name={
+              display == 'GREATER_THAN_RANGE'
+                ? `set:${this.getPath(configType)}.rangeStartLabel`
+                : `set:${this.getPath(configType)}.rangeEndLabel`
+            }
+            //@ts-ignore
+            placeholder={display == 'GREATER_THAN_RANGE' ? this.props.field.rangeStartLabel : this.props.field.rangeEndLabel}
+
+            value={
+              display == 'GREATER_THAN_RANGE'
+              //@ts-ignore
+                ? this.props.field.rangeStartLabel
+              //@ts-ignore
+                : this.props.field.rangeEndLabel
+            }
+            onChange={this.props.onAddMutation}
+          />
+        </span>
+      );
+    }
+  };
   handleOpen = (kind: 'preselected' | 'visibleOptions') => (
     agg: string,
     aggKind: AggKind
@@ -317,8 +367,16 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               <option value="DATE">Date</option>
               <option value="DATE_RANGE">Date Range</option>
               <option value="NUMBER_RANGE">Number Range</option>
+              <option value="LESS_THAN_RANGE">Less Than Range</option>
+              <option value="GREATER_THAN_RANGE">Greater Than Range</option>
             </StyledFormControl>
           </div>
+          {this.props.field.display == 'NUMBER_RANGE' ||
+          this.props.field.display == 'LESS_THAN_RANGE' ||
+          this.props.field.display == 'GREATER_THAN_RANGE' ||
+          this.props.field.display == 'DATE_RANGE'
+            ? this.renderNumberRangeConfig(configType, this.props.field.display)
+            : null}
         </ThemedContainer>
       </>
     );

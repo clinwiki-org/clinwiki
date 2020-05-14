@@ -142,6 +142,8 @@ const SITE_VIEW_FRAGMENT = gql`
             }
             autoSuggest
             rank
+            rangeStartLabel
+            rangeEndLabel
           }
           selected {
             kind
@@ -166,6 +168,8 @@ const SITE_VIEW_FRAGMENT = gql`
             }
             rank
             autoSuggest
+            rangeStartLabel
+            rangeEndLabel
           }
           selected {
             kind
@@ -209,6 +213,8 @@ const SITE_VIEW_FRAGMENT = gql`
           }
           autoSuggest
           rank
+          rangeStartLabel
+          rangeEndLabel
         }
         selected {
           kind
@@ -233,6 +239,8 @@ const SITE_VIEW_FRAGMENT = gql`
           }
           rank
           autoSuggest
+          rangeStartLabel
+          rangeEndLabel
         }
         selected {
           kind
