@@ -9,6 +9,15 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 21
+- [#538](https://github.com/clinwiki-org/clinwiki/issues/538)
+- [#540](https://github.com/clinwiki-org/clinwiki/issues/540)
+- [#518](https://github.com/clinwiki-org/clinwiki/issues/518)
+- [#537](https://github.com/clinwiki-org/clinwiki/issues/537)
+- [#398 password reset](https://github.com/clinwiki-org/clinwiki/issues/398)
+- [#526 workflow autosuggest](https://github.com/clinwiki-org/clinwiki/issues/526)
+- [#530 Facet name config](https://github.com/clinwiki-org/clinwiki/issues/530)
+
 ### Version 20
 - Export CSV
 
