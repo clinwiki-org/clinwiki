@@ -43,6 +43,8 @@ export interface UpdatePasswordMutation_updatePassword_user {
   reviewCount: number;
   reviews: UpdatePasswordMutation_updatePassword_user_reviews[];
   contributions: number;
+  pictureUrl: string | null;
+  rank: string | null;
 }
 
 export interface UpdatePasswordMutation_updatePassword {
