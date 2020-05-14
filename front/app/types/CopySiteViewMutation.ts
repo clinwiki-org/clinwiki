@@ -171,6 +171,8 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_agg
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_selected {
@@ -212,6 +214,8 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_cro
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_selected {
@@ -282,6 +286,8 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields {
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_selected {
@@ -323,6 +329,8 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fie
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_selected {

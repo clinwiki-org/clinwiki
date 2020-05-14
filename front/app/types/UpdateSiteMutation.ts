@@ -187,6 +187,8 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_ag
   visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_aggs_selected {
@@ -228,6 +230,8 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_cr
   visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_crowdAggs_selected {
@@ -298,6 +302,8 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_aggs_fields 
   visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_aggs_selected {
@@ -339,6 +345,8 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs_fi
   visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs_selected {
@@ -540,6 +548,8 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_a
   visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_aggs_selected {
@@ -581,6 +591,8 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_c
   visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_crowdAggs_selected {
@@ -651,6 +663,8 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_aggs_fields
   visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_aggs_selected {
@@ -692,6 +706,8 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs_f
   visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs_selected {

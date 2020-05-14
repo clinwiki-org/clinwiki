@@ -15,12 +15,7 @@ import {
   SignInPage,
   SignUpPage,
   ResetPasswordPage,
-<<<<<<< HEAD
-  EditProfilePage,
   UpdatePassword,
-=======
-  
->>>>>>> c25082b5914fbecfc872577872e9768052bb7d60
 } from 'containers/LoginPage';
 import AuthHeader from 'components/AuthHeader';
 import { History } from 'history';
