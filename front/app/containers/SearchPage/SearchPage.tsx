@@ -627,7 +627,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
-    console.log('url', this.props.location)
     if (searchTerm.has('q')) {
       let q = {
         key: 'AND',
@@ -647,6 +646,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         () => this.updateSearchParams(this.state.params)
       );
     }
+    if(this.props.intervention){
+      //@ts-ignore
+      this.setState({params: this.props.searchParams})
+    }
+
     if (this.showingCards()) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
@@ -739,7 +743,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         .toString() || 'default';
 
     if (data?.provisionSearchHash?.searchHash?.short) {
-      console.log('PRE INTERVENTION')
       if(this.props.match.path =="/profile"){
         this.props.history.push(
           `/profile?hash=${
@@ -747,10 +750,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           }&sv=${siteViewUrl}`
         ); return;
       }
-      if(this.props.match.path =="/intervention"){
-        console.log('INTERVENTION PAGE' )
+      if(this.props.match.path =="/intervention/:id"){
         this.props.history.push(
-          `/intervention?hash=${
+          //@ts-ignore
+          `/intervention/${this.props.match.params.id}?hash=${
             data!.provisionSearchHash!.searchHash!.short
           }&sv=intervention`
         ); return;

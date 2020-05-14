@@ -12,6 +12,7 @@ import {
   InterventionPageQueryVariables,
 } from 'types/InterventionPageQuery';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
+import { ThemedMainContainer , StyledInterventionHeading} from 'components/StyledComponents';
 
 const QUERY = gql`
   query InterventionPageQuery($id: Int!) {
@@ -75,15 +76,17 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
           };
 
           return (
-            <InteventionContainer>
-              <Intervention intervention={data.intervention} />
-              <SearchPage
-                match={this.props.match}
-                history={this.props.history}
-                searchParams={searchParams}
-                intervention={true}
-              />
-            </InteventionContainer>
+            <ThemedMainContainer>
+              <StyledInterventionHeading>
+                <Intervention intervention={data.intervention} />
+              </StyledInterventionHeading>
+                <SearchPage
+                  match={this.props.match}
+                  history={this.props.history}
+                  searchParams={searchParams}
+                  intervention={true}
+                />
+            </ThemedMainContainer>
           );
         }}
       </QueryComponent>
@@ -91,6 +94,5 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
   }
 }
 
-const InteventionContainer = styled.div``;
 
 export default InterventionPage;

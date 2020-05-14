@@ -39,6 +39,10 @@ interface SiteViewsFormState {
     name: string;
     path: string;
   };
+  interventionViewForm: {
+    name: string;
+    path: string;
+  };
   id: string | undefined;
   textToCopy: string;
 }
@@ -70,6 +74,10 @@ class SiteViewsForm extends React.Component<
       path: '',
     },
     adminViewForm: {
+      name: '',
+      path: '',
+    },
+    interventionViewForm: {
       name: '',
       path: '',
     },
@@ -181,6 +189,33 @@ class SiteViewsForm extends React.Component<
           );
         });
         break;
+        case 'intervention':
+          createSiteView({
+            variables: {
+              input: {
+                name: userViewForm.name,
+                url: userViewForm.path,
+                description: `intervention view ${this.props.site.id}`,
+                default: false,
+                mutations: mutationArray,
+                siteId: this.props.site.id,
+              },
+            },
+          }).then(res => {
+            this.setState(
+              {
+                userViewForm: {
+                  name: '',
+                  path: '',
+                },
+              },
+              () => {
+                this.props.refresh();
+              }
+            );
+          });
+  
+   
       default:
         return null;
     }
@@ -227,7 +262,7 @@ class SiteViewsForm extends React.Component<
   }
   render() {
     const { siteViews, refresh, site } = this.props;
-    const { searchViewForm, userViewForm, adminViewForm } = this.state;
+    const { searchViewForm, userViewForm, adminViewForm, interventionViewForm } = this.state;
     const filteredSearchSites = () => {
       return filter(siteViews => siteViews.search.type == 'search', siteViews);
     };
@@ -236,6 +271,9 @@ class SiteViewsForm extends React.Component<
     };
     const filteredAdminSites = () => {
       return filter(siteViews => siteViews.search.type == 'admin', siteViews);
+    };
+    const filteredInterventionSites = () => {
+      return filter(siteViews => siteViews.search.type == 'intervention', siteViews);
     };
     return (
       <CreateSiteViewMutation>
@@ -399,6 +437,60 @@ class SiteViewsForm extends React.Component<
                         <ThemedButton
                           onClick={() => {
                             this.handleSave(createSiteView, 'admin');
+                          }}>
+                          + Add Site View
+                        </ThemedButton>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              )}
+            </CollapsiblePanel>
+            <CollapsiblePanel header="Intervention Views">
+              {siteViews.length > 0 && (
+                <Table striped bordered condensed>
+                  <thead>
+                    <tr>
+                      <th>Site Name</th>
+                      <th>URL</th>
+                      {/* <th>Default?</th> */}
+                      <th>URL Preview</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <>
+                      {filteredInterventionSites().map(view => (
+                        <SiteViewItem
+                          key={view.id}
+                          siteView={view}
+                          refresh={refresh}
+                          site={site}
+                          type={'intervention'}
+                        />
+                      ))}
+                    </>
+                    <tr>
+                      <td>
+                        <FormControl
+                          name="name"
+                          placeholder="Intervention View Name"
+                          value={interventionViewForm.name}
+                          onChange={e => this.handleInputChange(e, 'intervention')}
+                        />
+                      </td>
+                      <td>
+                        <FormControl
+                          name="path"
+                          placeholder="Intervention View Path"
+                          value={interventionViewForm.path}
+                          onChange={e => this.handleInputChange(e, 'intervention')}
+                        />
+                      </td>
+                      <td>
+                        <ThemedButton
+                          onClick={() => {
+                            this.handleSave(createSiteView, 'intervention');
                           }}>
                           + Add Site View
                         </ThemedButton>

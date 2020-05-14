@@ -212,3 +212,7 @@ background: rgba(255,255,255,0.2);
   opacity: 1;
 }
 `;
+export const StyledInterventionHeading = styled.div`
+  margin: 1em;
+  border-bottom: solid white;
+`
