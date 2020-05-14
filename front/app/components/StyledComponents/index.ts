@@ -87,9 +87,9 @@ const MainContainer = styled(Col)`
       props.theme.searchResults.resultsRowHighlight} !important;
     color: #fff !important;
   }
-  .rt-table {
-  }
-   h2{
+
+  span,
+  h2 {
     padding-left: 15px;
   }
 `;
@@ -229,3 +229,4 @@ export const StyledProfileForm = styled(FormControl)`
     opacity: 1;
   }
 `;
+

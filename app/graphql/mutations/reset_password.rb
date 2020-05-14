@@ -8,6 +8,7 @@ module Mutations
       user = User.find_by(email: email)
       return { success: true } if user.blank?
 
+      user.update(reset_token_url:context[:current_url])
       user.send_reset_password_instructions
       { success: true }
     end

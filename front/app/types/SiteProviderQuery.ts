@@ -187,6 +187,8 @@ export interface SiteProviderQuery_site_siteView_search_presearch_aggs_fields {
   visibleOptions: SiteProviderQuery_site_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface SiteProviderQuery_site_siteView_search_presearch_aggs_selected {
@@ -228,6 +230,8 @@ export interface SiteProviderQuery_site_siteView_search_presearch_crowdAggs_fiel
   visibleOptions: SiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface SiteProviderQuery_site_siteView_search_presearch_crowdAggs_selected {
@@ -298,6 +302,8 @@ export interface SiteProviderQuery_site_siteView_search_aggs_fields {
   visibleOptions: SiteProviderQuery_site_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface SiteProviderQuery_site_siteView_search_aggs_selected {
@@ -339,6 +345,8 @@ export interface SiteProviderQuery_site_siteView_search_crowdAggs_fields {
   visibleOptions: SiteProviderQuery_site_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface SiteProviderQuery_site_siteView_search_crowdAggs_selected {
@@ -540,6 +548,8 @@ export interface SiteProviderQuery_site_siteViews_search_presearch_aggs_fields {
   visibleOptions: SiteProviderQuery_site_siteViews_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_presearch_aggs_selected {
@@ -581,6 +591,8 @@ export interface SiteProviderQuery_site_siteViews_search_presearch_crowdAggs_fie
   visibleOptions: SiteProviderQuery_site_siteViews_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_presearch_crowdAggs_selected {
@@ -651,6 +663,8 @@ export interface SiteProviderQuery_site_siteViews_search_aggs_fields {
   visibleOptions: SiteProviderQuery_site_siteViews_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_aggs_selected {
@@ -692,6 +706,8 @@ export interface SiteProviderQuery_site_siteViews_search_crowdAggs_fields {
   visibleOptions: SiteProviderQuery_site_siteViews_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
+  rangeStartLabel: string | null;
+  rangeEndLabel: string | null;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_crowdAggs_selected {
@@ -737,6 +753,7 @@ export interface SiteProviderQuery_site {
   skipLanding: boolean | null;
   subdomain: string;
   themes: string;
+  userRank: string;
   owners: SiteProviderQuery_site_owners[];
   siteView: SiteProviderQuery_site_siteView;
   siteViews: SiteProviderQuery_site_siteViews[];

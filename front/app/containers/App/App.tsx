@@ -4,7 +4,7 @@ import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage';
 import NotConfiguredPage from 'containers/NotConfiguredPage';
 import SearchPage from 'containers/SearchPage';
-import ProfilePage from 'containers/ProfilePage';
+import {ProfilePage, EditProfilePage} from 'containers/ProfilePage';
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
@@ -15,7 +15,7 @@ import {
   SignInPage,
   SignUpPage,
   ResetPasswordPage,
-  EditProfilePage,
+  UpdatePassword,
 } from 'containers/LoginPage';
 import AuthHeader from 'components/AuthHeader';
 import { History } from 'history';
@@ -78,6 +78,7 @@ class App extends React.PureComponent<AppProps> {
             <Route path="/sign_in" component={SignInPage} />
             <Route path="/sign_up" component={SignUpPage} />
             <Route path="/not-configured" component={NotConfiguredPage} />
+            <Route path="/update_password" component={UpdatePassword} />
             <Route component={NotFoundPage} />
           </Switch>
         </MainWrapper>

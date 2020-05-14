@@ -765,7 +765,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   };
-
   handlePresearchButtonClick = (hash, target) => {
     const url = `/search?hash=${hash}&sv=${target}`;
     this.props.history.push(url);
@@ -942,26 +941,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 showFacetBar,
                 showBreadCrumbs,
               } = currentSiteView.search.config.fields;
-              if(profile && profile.values.toString() !== this.props.email){
-                return (
-                  <ThemedMainContainer>
-                  <h2>{profile && profile.values.toString()}'s Contributions</h2>
-                  <SearchPageWrapper>
-                    {showFacetBar && (
-                      <ThemedSidebarContainer md={2}>
-                        {this.renderAggs(currentSiteView)}
-                      </ThemedSidebarContainer>
-                    )}
-                    <ThemedMainContainer>
-                      {showBreadCrumbs && this.renderCrumbs(currentSiteView)}
-                      {showPresearch && this.renderPresearch(hash)}
-                      {this.renderSearch()}
-                    </ThemedMainContainer>
-                  </SearchPageWrapper>
-                  </ThemedMainContainer>
-                );
-
-              }
               return (
                 <SearchPageWrapper>
                   {showFacetBar && (

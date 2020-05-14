@@ -1,20 +1,20 @@
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
-import { SignUpInput } from "./globalTypes";
+import { UpdatePasswordInput } from "./globalTypes";
 
 // ====================================================
-// GraphQL mutation operation: SignUpMutation
+// GraphQL mutation operation: UpdatePasswordMutation
 // ====================================================
 
-export interface SignUpMutation_signUp_user_reviews {
+export interface UpdatePasswordMutation_updatePassword_user_reviews {
   __typename: "Review";
   content: string;
   briefTitle: string;
   nctId: string;
 }
 
-export interface SignUpMutation_signUp_user {
+export interface UpdatePasswordMutation_updatePassword_user {
   __typename: "User";
   /**
    * Id
@@ -41,29 +41,29 @@ export interface SignUpMutation_signUp_user {
    * Number of reviews the user has done
    */
   reviewCount: number;
-  reviews: SignUpMutation_signUp_user_reviews[];
+  reviews: UpdatePasswordMutation_updatePassword_user_reviews[];
   contributions: number;
   pictureUrl: string | null;
   rank: string | null;
 }
 
-export interface SignUpMutation_signUp {
-  __typename: "SignUpPayload";
+export interface UpdatePasswordMutation_updatePassword {
+  __typename: "UpdatePasswordPayload";
   /**
-   * Json web token
+   * Sign in token if no error
    */
   jwt: string | null;
-  errors: string[] | null;
   /**
-   * Signed up user
+   * Errors with token, either does not match user or expired
    */
-  user: SignUpMutation_signUp_user | null;
+  errors: string;
+  user: UpdatePasswordMutation_updatePassword_user;
 }
 
-export interface SignUpMutation {
-  signUp: SignUpMutation_signUp | null;
+export interface UpdatePasswordMutation {
+  updatePassword: UpdatePasswordMutation_updatePassword | null;
 }
 
-export interface SignUpMutationVariables {
-  input: SignUpInput;
+export interface UpdatePasswordMutationVariables {
+  input: UpdatePasswordInput;
 }

@@ -43,6 +43,8 @@ export interface EditProfileMutation_updateProfile_user {
   reviewCount: number;
   reviews: EditProfileMutation_updateProfile_user_reviews[];
   contributions: number;
+  pictureUrl: string | null;
+  rank: string | null;
 }
 
 export interface EditProfileMutation_updateProfile {

@@ -68,7 +68,7 @@ export interface Theme {
   };
 }
 
-function themeFromSite(site) : Theme {
+function themeFromSite(site): Theme {
   const themeString = site.themes;
   //fallback colors
   let thisTheme = {
@@ -107,10 +107,6 @@ function themeFromSite(site) : Theme {
     sideBarColor: thisTheme.sideBarColor || '#4d5762',
     authHeaderColor: thisTheme.authHeaderColor || '#5786AD',
     grayHeaderFont: '#777777',
-    //darkBlue for header
-    navBar: '#1b2a38',
-    //button Green
-    button: '#1b2a38',
     buttonHover: '#e6e6e6',
     buttonBorderHover: '#adadad',
     errorColor: 'red',
@@ -188,8 +184,8 @@ function themeFromSite(site) : Theme {
   };
 }
 
-export const ThemeContext = React.createContext({} as Theme|null);
-let staticTheme: Theme|null = null;
+export const ThemeContext = React.createContext({} as Theme | null);
+let staticTheme: Theme | null = null;
 
 export const ProvideTheme = ({ children }) => {
   return (
@@ -206,19 +202,21 @@ export const ProvideTheme = ({ children }) => {
   );
 };
 
-export function withTheme<T>(Component : React.ComponentType<T>) : React.ComponentClass<Omit<T,'theme'>> {
-  class ThemeProvider extends React.Component<Omit<T,'theme'>> {
+export function withTheme<T>(
+  Component: React.ComponentType<T>
+): React.ComponentClass<Omit<T, 'theme'>> {
+  class ThemeProvider extends React.Component<Omit<T, 'theme'>> {
     render() {
       return (
         <ThemeContext.Consumer>
           {theme =>
-            theme ? <Component theme={theme} {...this.props as T} /> : null
+            theme ? <Component theme={theme} {...(this.props as T)} /> : null
           }
         </ThemeContext.Consumer>
       );
     }
   }
   return ThemeProvider;
-};
+}
 
 export default withTheme;

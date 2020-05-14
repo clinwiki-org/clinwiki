@@ -14,6 +14,7 @@ import {
   StyledProfileRanking,
 } from '../../../components/StyledComponents';
 
+
 interface ProfileScoreBoardProps {
   totalPoints: any;
   totalContributions: any;
