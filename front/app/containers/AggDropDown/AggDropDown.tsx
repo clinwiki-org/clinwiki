@@ -33,6 +33,7 @@ import {
   maskAgg,
 } from '../SearchPage/Types';
 import aggToField from 'utils/aggs/aggToField';
+import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
 import { withSite } from 'containers/SiteProvider/SiteProvider';
 import {
@@ -367,22 +368,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({ buckets: newBuckets, hasMore });
   };
 
-  findFields = () => {
-    const { agg, site, currentSiteView } = this.props;
-    if (this.props.presearch == true) {
-      return find(propEq('name', agg), [
-        ...(currentSiteView?.search?.presearch?.aggs?.fields || []),
-        ...(currentSiteView?.search?.presearch?.crowdAggs?.fields || []),
-      ]) as SiteViewFragment_search_aggs_fields | null;
-    }
-    return find(propEq('name', agg), [
-      ...(currentSiteView?.search?.aggs?.fields || []),
-      ...(currentSiteView?.search?.crowdAggs?.fields || []),
-    ]) as SiteViewFragment_search_aggs_fields | null;
-  };
 
   renderPanel = (isPresearch: boolean) => {
-    const { visibleOptions = [], removeSelectAll } = this.props;
+    const { visibleOptions = [], removeSelectAll, agg, currentSiteView, presearch } = this.props;
     const {
       buckets = [],
       filter,
@@ -397,7 +385,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     if (!isOpen) {
       return null;
     }
-    const field = this.findFields();
+    const field = findFields(agg, currentSiteView, presearch);
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE
@@ -497,7 +485,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   renderPresearchFilter = () => {
-    const { agg, removeSelectAll, visibleOptions } = this.props;
+    const { agg, removeSelectAll, visibleOptions, currentSiteView, presearch } = this.props;
     const {
       buckets = [],
       filter,
@@ -509,7 +497,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       isOpen,
       loading,
     } = this.state;
-    const field = this.findFields();
+    const field = findFields(agg,currentSiteView, presearch);
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE
@@ -573,8 +561,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   componentDidMount() {
-    let fields = this.props.currentSiteView.search.aggs.fields;
-    const field = this.findFields();
+    const { agg, currentSiteView, presearch} =this.props
+    const field = findFields(agg, currentSiteView, presearch);
     if (field?.order && field.order.sortKind == 'key') {
       this.setState({
         sortKind: 0,
@@ -589,9 +577,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }
 
   render() {
-    const { agg, presearch } = this.props;
+    const { agg, presearch, currentSiteView } = this.props;
     const { isOpen } = this.state;
-    let currentAgg = this.findFields();
+    let currentAgg = findFields(agg, currentSiteView, presearch);
     //@ts-ignore
     let configuredLabel = currentAgg.displayName;
     const title = aggToField(agg, configuredLabel);
