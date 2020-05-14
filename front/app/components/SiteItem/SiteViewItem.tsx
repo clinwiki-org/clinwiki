@@ -39,14 +39,9 @@ const StyledButton = styled(ThemedButton)`
   margin-right: 15px;
 `;
 
-const StyledDropdown = styled(DropdownButton)`
-  background-color: ${props => props.theme.button};
-`;
-
-const ThemedDropdown = withTheme(StyledDropdown);
 
 // const PreviewText;
-const siteViewTypes: any[] = ['admin', 'user', 'search'];
+const siteViewTypes: any[] = ['admin', 'user', 'search','intervention'];
 
 class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   handleEditClick = () => {
@@ -133,7 +128,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
             id="dropdown-basic-default"
             style={{
               margin: '1em 1em 1em 0',
-              // background: this.props.theme.button,
+             background: this.props.theme.button,
             }}>
             {siteViewTypes.map(type => (
               <MenuItem

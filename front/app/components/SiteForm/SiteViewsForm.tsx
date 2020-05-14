@@ -18,12 +18,14 @@ import {
 import { History, Location } from 'history';
 import { CreateSiteViewInput, SiteViewMutationInput } from 'types/globalTypes';
 import ThemedButton from 'components/StyledComponents/index';
+import withTheme from 'containers/ThemeProvider/ThemeProvider';
 
 interface SiteViewsFormProps {
   site: any;
   siteViews: SiteViewFragment[];
   refresh: any;
   handleForm: any;
+  theme:any;
 }
 
 interface SiteViewsFormState {
@@ -300,6 +302,7 @@ class SiteViewsForm extends React.Component<
                           refresh={refresh}
                           site={site}
                           type={'search'}
+                          theme={this.props.theme}
                         />
                       ))}
                     </>
@@ -358,6 +361,7 @@ class SiteViewsForm extends React.Component<
                           refresh={refresh}
                           site={site}
                           type={'user'}
+                          theme={this.props.theme}
                         />
                       ))}
                     </>
@@ -413,6 +417,7 @@ class SiteViewsForm extends React.Component<
                           refresh={refresh}
                           site={site}
                           type={'admin'}
+                          theme={this.props.theme}
                         />
                       ))}
                     </>
@@ -467,6 +472,7 @@ class SiteViewsForm extends React.Component<
                           refresh={refresh}
                           site={site}
                           type={'intervention'}
+                          theme={this.props.theme}
                         />
                       ))}
                     </>
@@ -507,4 +513,4 @@ class SiteViewsForm extends React.Component<
   }
 }
 
-export default SiteViewsForm;
+export default withTheme(SiteViewsForm);
