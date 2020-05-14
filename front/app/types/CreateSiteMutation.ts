@@ -737,6 +737,7 @@ export interface CreateSiteMutation_createSite_site {
   skipLanding: boolean | null;
   subdomain: string;
   themes: string;
+  userRank: string;
   owners: CreateSiteMutation_createSite_site_owners[];
   siteView: CreateSiteMutation_createSite_site_siteView;
   siteViews: CreateSiteMutation_createSite_site_siteViews[];

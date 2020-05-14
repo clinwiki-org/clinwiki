@@ -72,6 +72,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       name
       subdomain
       skipLanding
+      userRank
       editors {
         email
       }
@@ -82,7 +83,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     props: SiteFormProps,
     state: SiteFormState
   ): SiteFormState | null => {
-    const { name, subdomain, skipLanding, editors, themes } = props.site;
+    //@ts-ignore
+    const { name, subdomain, skipLanding, editors, themes, userRank } = props.site;
     const editorEmails = editors.map(prop('email'));
     const form = {
       name,
@@ -90,6 +92,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       skipLanding,
       editorEmails,
       themes,
+      userRank
     };
     if (form && !equals(form, state.prevForm as any)) {
       return { ...state, form, prevForm: form };
@@ -103,6 +106,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     this.setState({ inSiteViewEdit: false });
   };
   handleSave = () => {
+    console.log("Handle SAve",this.state.form)
     this.props.onSave(this.state.form);
   };
 
@@ -118,6 +122,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   };
 
   handleFormChange = (form: CreateSiteInput) => {
+    console.log(form)
     this.setState({ form });
   };
 

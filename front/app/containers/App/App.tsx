@@ -4,7 +4,7 @@ import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage';
 import NotConfiguredPage from 'containers/NotConfiguredPage';
 import SearchPage from 'containers/SearchPage';
-import ProfilePage from 'containers/ProfilePage';
+import {ProfilePage, EditProfilePage} from 'containers/ProfilePage';
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
@@ -15,8 +15,12 @@ import {
   SignInPage,
   SignUpPage,
   ResetPasswordPage,
+<<<<<<< HEAD
   EditProfilePage,
   UpdatePassword,
+=======
+  
+>>>>>>> c25082b5914fbecfc872577872e9768052bb7d60
 } from 'containers/LoginPage';
 import AuthHeader from 'components/AuthHeader';
 import { History } from 'history';

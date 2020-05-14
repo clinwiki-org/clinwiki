@@ -2,26 +2,18 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: UserFragment
+// GraphQL query operation: User
 // ====================================================
 
-export interface UserFragment_reviews {
+export interface User_user_reviews {
   __typename: "Review";
-  content: string;
-  briefTitle: string;
   nctId: string;
+  briefTitle: string;
+  content: string;
 }
 
-export interface UserFragment {
-  __typename: "User";
-  /**
-   * Id
-   */
-  id: number;
-  /**
-   * Email
-   */
-  email: string;
+export interface User_user {
+  __typename: "PublicUser";
   /**
    * First name
    */
@@ -31,16 +23,22 @@ export interface UserFragment {
    */
   lastName: string | null;
   /**
-   * Default query for user
-   */
-  defaultQueryString: string | null;
-  roles: string[];
-  /**
    * Number of reviews the user has done
    */
   reviewCount: number;
-  reviews: UserFragment_reviews[];
+  rank: string | null;
+  reviews: User_user_reviews[];
   contributions: number;
   pictureUrl: string | null;
-  rank: string | null;
+}
+
+export interface User {
+  /**
+   * Public Profile User
+   */
+  user: User_user;
+}
+
+export interface UserVariables {
+  userId: number;
 }
