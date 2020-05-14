@@ -166,6 +166,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_agg
   order: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -276,6 +277,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields {
   order: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
