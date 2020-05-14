@@ -18,7 +18,7 @@ const CenterButton = styled.div`
   align-items: center;
   justify-content: center;
   color: ${props => props.theme.button};
-  font-size: 175px;
+  font-size: 150px;
 `;
 
 const Row = styled.div`
@@ -141,9 +141,9 @@ class AddFacetCard extends React.PureComponent<
     return (
       <ThemedCenterButton>
         <FontAwesome
-          style={{ color: 'inherit', fontSize: 'inherit' }}
-          inverse={false}
-          name="plus-square"
+          style={{ color: 'inherit', fontSize: 'inherit', margin: 'auto' }}
+          inverse={true}
+          name="plus-square-o"
           onClick={() => this.handleButtonClick(user)}
         />
       </ThemedCenterButton>

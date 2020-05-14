@@ -22,6 +22,7 @@ import AddFacetCard from './AddFacetCard';
 import CrowdPage from 'containers/CrowdPage';
 import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
+import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 
 const Row = styled.div`
   display: flex;
@@ -214,7 +215,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
           }
         }
       });
-
     });
 
     const newSet = new Set(array);
@@ -322,7 +322,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       return (
         <ThemedPresearchCard>
           <ThemedPresearchHeader>
-            <PresearchTitle>{capitalize(label)}</PresearchTitle>
+            <PresearchTitle>{truncateString(label, 32, true)}</PresearchTitle>
           </ThemedPresearchHeader>
           <PresearchContent style={{ overflowY: 'auto' }}>
             {this.props.children}
@@ -345,7 +345,9 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                       />
                       <ThemedPresearchCard>
                         <ThemedPresearchHeader>
-                          <PresearchTitle>{capitalize(label)}</PresearchTitle>
+                          <PresearchTitle>
+                            {truncateString(label, 32, true)}
+                          </PresearchTitle>
                         </ThemedPresearchHeader>
                         <PresearchContent style={{ overflowY: 'auto' }}>
                           <AddFacetCard
@@ -383,7 +385,9 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                     />
                     <ThemedPresearchCard>
                       <ThemedPresearchHeader>
-                        <PresearchTitle>{capitalize(label)}</PresearchTitle>
+                        <PresearchTitle>
+                          {truncateString(label, 32, true)}
+                        </PresearchTitle>
                         {!textFieldActive && (
                           <TextFieldToggle
                             onClick={() => this.handlePlusClick(user)}>
