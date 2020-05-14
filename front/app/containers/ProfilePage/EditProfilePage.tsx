@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
 import { Mutation, MutationFn } from 'react-apollo';
@@ -10,7 +11,7 @@ import {
 import SearchPage from 'containers/SearchPage';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
-import StyledError from './StyledError';
+import StyledError from '../LoginPage/StyledError';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { equals, pick } from 'ramda';
@@ -21,9 +22,10 @@ import {
   StyledProfileValue,
   StyledProfileForm,
 } from 'components/StyledComponents';
-import { ThemedButton } from './StyledButton';
-import ProfileScoreBoard from '../ProfilePage/ProfileScoreBoard';
-import RenderReviews from '../ProfilePage/RenderReviews';
+import { ThemedButton } from '../LoginPage/StyledButton';
+import ProfileScoreBoard from './components/ProfileScoreBoard';
+import ProfilePicture from './components/ProfilePicture';
+import ReviewsTable from './components/ReviewsTable';
 
 interface EditProfilePageProps {
   user: UserFragment | null;
@@ -53,7 +55,6 @@ const EDIT_PROFILE_MUTATION = gql`
       }
     }
   }
-
   ${CurrentUser.fragment}
 `;
 
@@ -109,6 +110,7 @@ class EditProfilePage extends React.Component<
 
   handleEditProfile = (editProfile: EditProfileMutationFn) => () => {
     editProfile({ variables: { input: this.state.form } });
+    this.toggleEditProfile()
   };
   toggleEditProfile = () => {
     this.setState({ isEditing: !this.state.isEditing });
@@ -123,9 +125,13 @@ class EditProfilePage extends React.Component<
     );
   };
   renderEditForm = () => {
+    if(this.props.user){
     return (
       <div>
-        <span onClick={() => this.toggleEditProfile()}>X</span>
+        //@ts-ignore
+        <ProfilePicture pictureUrl={this.props.user.pictureUrl}/>
+
+        <span style={{paddingLeft:'15px'}} onClick={() => this.toggleEditProfile()}>X</span>
 
         <SearchContainer>
           <StyledProfileLabel>First Name:</StyledProfileLabel>
@@ -183,12 +189,16 @@ class EditProfilePage extends React.Component<
         </SearchContainer>
       </div>
     );
+            }
   };
   renderProfileInfo = () => {
+    //@ts-ignore
+    let pictureUrl =this.props.user.pictureUrl || null
     if (this.props.user) {
       return (
         <div>
-          <span onClick={() => this.toggleEditProfile()}> Edit Profile</span>
+          <ProfilePicture pictureUrl={pictureUrl}/>
+          <span style={{paddingLeft:'15px'}} onClick={() => this.toggleEditProfile()}> Edit Profile</span>
 
           <SearchContainer>
             <StyledProfileLabel>First Name:</StyledProfileLabel>
@@ -224,6 +234,8 @@ class EditProfilePage extends React.Component<
     switch (this.state.currentDisplay) {
       case 'contributions':
         return (
+          <div>
+          <h2>Contributed Studies:</h2>
           <SearchPage
             history={this.props.history}
             location={this.props.location}
@@ -233,19 +245,24 @@ class EditProfilePage extends React.Component<
             //userId={this.props.match.params.id}
             //profileParams={this.getUserParams(this.props.match.params.id)}
           />
+          </div>
         );
       case 'reviews':
         return (
-          <RenderReviews
+          <div>
+          <h2>Reviewed Studies:</h2>
+          <ReviewsTable
             reviewData={this.props.user?.reviews}
             history={this.props.history}
           />
+          </div>
         );
     }
   };
   render() {
     let userContributions = this.props.user?.contributions;
     let reviewCount = this.props.user?.reviewCount;
+    if(this.props.user){
     return (
       <ThemedMainContainer>
         <h2>My profile</h2>
@@ -261,6 +278,8 @@ class EditProfilePage extends React.Component<
             totalTags={'Coming Soon'}
             totalFavorites={0}
             handleDisplayChange={this.handleDisplayChange}
+            //@ts-ignore
+            rank={this.props.user.rank}
           />
         </SearchContainer>
         {this.props.user ? (
@@ -270,6 +289,8 @@ class EditProfilePage extends React.Component<
         )}
       </ThemedMainContainer>
     );
+        }
+        return(<div>No user</div>)
   }
 }
 

@@ -61,7 +61,7 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
     return (
       <ListGroupItem className="filter-values">
         <CrumbWrapper>
-          <i>{aggToField(agg.field)}:</i>
+          <i>{aggToField(agg.field, agg.field)}:</i>
           {crumb}
         </CrumbWrapper>
       </ListGroupItem>

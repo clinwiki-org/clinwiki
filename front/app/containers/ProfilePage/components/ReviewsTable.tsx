@@ -3,12 +3,12 @@ import { History, Location } from 'history';
 import { SearchContainer } from 'components/StyledComponents';
 import ReactTable from 'react-table'
 
-interface RenderReviewsProps {
+interface ReviewsTableProps {
 reviewData: any;
 history: History;
 }
 
-class RenderReviews extends React.Component<RenderReviewsProps> {
+class ReviewsTable extends React.Component<ReviewsTableProps> {
   componentDidMount() {
 
   };
@@ -63,4 +63,4 @@ class RenderReviews extends React.Component<RenderReviewsProps> {
   }
 }
 
-export default RenderReviews;
+export default ReviewsTable;

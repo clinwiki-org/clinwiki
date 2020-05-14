@@ -26,6 +26,28 @@ const StyledButton = styled.button`
 
 export const ThemedButton = withTheme(StyledButton);
 
+const AutosuggestButton = styled.div`
+  background: ${props => props.theme.button};
+  padding: 5px 7px;
+  display: inline-block;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.5s;
+  color: #fff;
+  &:hover {
+    background: ${props => props.theme.buttonSecondary};
+  }
+`;
+
+export const ThemedAutosuggestButton = withTheme(AutosuggestButton);
+
 const LinkContainer = styled.div`
   position: absolute;
   bottom: 30px;
@@ -49,7 +71,6 @@ const MainContainer = styled(Col)`
   @media (max-width: 768px) {
     flex-direction: column;
   }
-
   .rt-th {
     text-transform: capitalize;
     padding: 15px !important;
@@ -57,29 +78,22 @@ const MainContainer = styled(Col)`
       props.theme.searchResults.resultsHeaderBackground} !important;
     color: #fff;
   }
-
   .ReactTable .-pagination .-btn {
     background: ${props =>
       props.theme.searchResults.resultsPaginationButtons} !important;
   }
-
   div.rt-tbody div.rt-tr:hover {
     background: ${props =>
       props.theme.searchResults.resultsRowHighlight} !important;
     color: #fff !important;
   }
-
-  .rt-table {
-  }
-  span, h2{
+  span,
+  h2 {
     padding-left: 15px;
   }
 `;
 
-
 export const ThemedMainContainer = withTheme(MainContainer);
-
-
 
 const PresearchCard = styled.div`
   display: flex;
@@ -88,7 +102,6 @@ const PresearchCard = styled.div`
   border-width: 1px;
   border-style: solid;
   border-color: ${props => props.theme.buttonSecondary};
-
   margin: 10px;
   flex: 1;
   // height: 310px;
@@ -163,52 +176,56 @@ export const SearchContainer = styled.div`
   padding: 10px;
 `;
 
-export const  StyledProfileLabel = styled.div`
-  font-size:1em;
-  font-weight:400;
-  color: rgba(0,0,0,0.6);
+export const StyledProfileLabel = styled.div`
+  font-size: 1em;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
   padding-left: 1.2em;
 `;
-export const  StyledProfileScoreLabel = styled.div`
-  font-size:1em;
-  font-weight:400;
-  color: rgba(0,0,0,0.6);
+export const StyledProfileScoreLabel = styled.div`
+  font-size: 1em;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
 `;
 export const StyledProfileValue = styled.div`
-font-size:1.25em;
-border-bottom: solid white;
-margin: 0 1em 1em 1em;
+  font-size: 1.25em;
+  border-bottom: solid white;
+  margin: 0 1em 1em 1em;
+`;
+export const StyledProfileRanking= styled.div`
+display:flex;
 `;
 export const StyledProfileScoreValue = styled.div`
-  font-size:1.25em;
+  font-size: 1.25em;
 `;
 export const StyledLabelValuePair = styled.div`
-  margin-left:5%;
+  margin:auto;
   width:25%;
   text-align: center;
-  cursor:pointer;
+  cursor: pointer;
 `;
 export const ScoreBoard = styled.div`
-  display:flex;
+  display: flex;
   padding: 1em 0 1em 0;
   margin: 0 1.2em;
-  :nth-child(1){
+  :nth-child(1) {
     border-bottom: solid white;
   }
 `;
 export const StyledProfileForm = styled(FormControl)`
-background: rgba(255,255,255,0.2);
-    font-family: 'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
-    font-size: 1.25em;
-    border: none;
-    padding:0;
-    margin: 0 1em 1em 1em;
-    border-bottom: solid white;
-    width: auto;
-    box-shadow: none !important;
-    color: black;
-&::placeholder {
-  color: rgba(0, 0, 0, 0.5);
-  opacity: 1;
-}
+  background: rgba(255, 255, 255, 0.2);
+  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 1.25em;
+  border: none;
+  padding: 0;
+  margin: 0 1em 1em 1em;
+  border-bottom: solid white;
+  width: auto;
+  box-shadow: none !important;
+  color: black;
+  &::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+  }
 `;
+
