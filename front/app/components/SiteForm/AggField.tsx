@@ -28,6 +28,8 @@ export interface FieldType {
   autoSuggest?: boolean;
   rank: number | null;
   displayName?: string;
+  rangeStartLabel?: string;
+  rangeEndLabel?: string;
 }
 
 interface AggFieldProps {
@@ -141,7 +143,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <StyledFormControl
             name={`set:${this.getPath(configType)}.rangeStartLabel`}
             placeholder="Start"
-            //@ts-ignore
             value={this.props.field.rangeStartLabel}
             onChange={this.props.onAddMutation}
           />
@@ -167,7 +168,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 ? `set:${this.getPath(configType)}.rangeStartLabel`
                 : `set:${this.getPath(configType)}.rangeEndLabel`
             }
-            //@ts-ignore
             placeholder={
               display == 'GREATER_THAN_RANGE'
                 ? this.props.field.rangeStartLabel
@@ -175,10 +175,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             }
             value={
               display == 'GREATER_THAN_RANGE'
-                ? //@ts-ignore
-                  this.props.field.rangeStartLabel
-                : //@ts-ignore
-                  this.props.field.rangeEndLabel
+                ? this.props.field.rangeStartLabel
+                : this.props.field.rangeEndLabel
             }
             onChange={this.props.onAddMutation}
           />
