@@ -75,11 +75,10 @@ const SEARCH_FIELDS = studyFields.map(option => ({
   id: option,
   label: sentanceCase(option),
 }));
-
 const AGGS_OPTIONS = aggsOrdered.map(option => (
   {
   id: option,
-  label: sentanceCase(aggToField(option)),
+  label: sentanceCase(aggToField(option, option)),
 }));
 
 const AggsHeaderContainer = styled.div`

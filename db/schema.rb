@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_25_183458) do
+ActiveRecord::Schema.define(version: 2020_05_13_182916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 2020_04_25_183458) do
     t.datetime "updated_at", null: false
     t.boolean "skip_landing"
     t.text "themes", default: "{\"primaryColor\":\"#6BA5D6\",\"secondaryColor\":\"#1b2a38\",\"lightTextColor\":\"#eee\",\"secondaryTextColor\":\"#333\",\"backgroundColor\":\"#4D5863\",\"primaryAltColor\":\"#5786AD\",\"authHeaderColor\":\"#5786AD\",\"sideBarColor\":\"#4d5762\"} "
+    t.text "user_rank", default: "[{\"rank\":\"default\",\"gte\":0},{\"rank\":\"bronze\",\"gte\":26},{\"rank\":\"silver\",\"gte\":51},{\"rank\":\"gold\",\"gte\":75},{\"rank\":\"platinum\",\"gte\":101}] "
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
@@ -147,6 +148,11 @@ ActiveRecord::Schema.define(version: 2020_04_25_183458) do
     t.string "last_name"
     t.string "default_query_string"
     t.json "search_result_columns"
+    t.string "picture_url"
+<<<<<<< HEAD
+    t.string "reset_token_url"
+=======
+>>>>>>> ba1a9fa2d12f50dc8cec1e2f3ad6f7f1780a2f10
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

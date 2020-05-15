@@ -724,25 +724,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-
-    const siteViewUrl =
-      new URLSearchParams(this.props.history.location.search)
-        .getAll('sv')
-        .toString() || 'default';
+    const searchQueryString = new URLSearchParams(this.props.history.location.search);
+    const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default'
+    const userId = searchQueryString.getAll('uid').toString()
 
     if (data?.provisionSearchHash?.searchHash?.short) {
-      if(this.props.match.path =="/profile"){
+      if (this.props.match.path == '/profile') {
+
         this.props.history.push(
           `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
           }&sv=${siteViewUrl}`
-        ); return;
-      }else if(this.findFilter("wiki_page_edits.email")){
+        );
+        return;
+      } else if (userId) {
+
+        let uid = searchQueryString.getAll('uid').toString();
+        let profile = this.findFilter("wiki_page_edits.email")	
         this.props.history.push(
           `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
-        ); return;
+          }&sv=${siteViewUrl}&uid=${uid}&username=${profile && profile.values.toString()}`
+          ); return;
       }
       this.props.history.push(
         `/search?hash=${
@@ -762,7 +765,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   };
-
   handlePresearchButtonClick = (hash, target) => {
     const url = `/search?hash=${hash}&sv=${target}`;
     this.props.history.push(url);
@@ -939,26 +941,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 showFacetBar,
                 showBreadCrumbs,
               } = currentSiteView.search.config.fields;
-              if(profile && profile.values.toString() !== this.props.email){
-                return (
-                  <ThemedMainContainer>
-                  <h2>{profile && profile.values.toString()}'s Contributions</h2>
-                  <SearchPageWrapper>
-                    {showFacetBar && (
-                      <ThemedSidebarContainer md={2}>
-                        {this.renderAggs(currentSiteView)}
-                      </ThemedSidebarContainer>
-                    )}
-                    <ThemedMainContainer>
-                      {showBreadCrumbs && this.renderCrumbs(currentSiteView)}
-                      {showPresearch && this.renderPresearch(hash)}
-                      {this.renderSearch()}
-                    </ThemedMainContainer>
-                  </SearchPageWrapper>
-                  </ThemedMainContainer>
-                );
-
-              }
               return (
                 <SearchPageWrapper>
                   {showFacetBar && (

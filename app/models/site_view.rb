@@ -374,7 +374,10 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
       rank: nil,
       autoSuggest: false,
       display: default_agg_param_display(name),
+      displayName: name,
       order: default_agg_param_order(name),
+      range_start_label: nil,
+      range_end_label:nil,
       preselected: {
         kind: "WHITELIST",
         values: [],

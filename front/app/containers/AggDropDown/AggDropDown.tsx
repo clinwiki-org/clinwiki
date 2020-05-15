@@ -393,7 +393,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const field = this.findFields();
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
-      field?.display === FieldDisplay.NUMBER_RANGE
+      field?.display === FieldDisplay.NUMBER_RANGE ||
+      field?.display === FieldDisplay.LESS_THAN_RANGE ||
+      field?.display === FieldDisplay.GREATER_THAN_RANGE
     ) {
       return (
         <Panel.Collapse id="range-selector">
@@ -405,11 +407,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 loading={loading}
                 buckets={buckets}
                 handleLoadMore={this.handleLoadMore}
-                aggType={
-                  field?.display === FieldDisplay.DATE_RANGE
-                    ? FieldDisplay.DATE_RANGE
-                    : FieldDisplay.NUMBER_RANGE
-                }
+                aggType={field?.display}
+                field={field}
               />
             </Container>
             {!loading && (
@@ -505,7 +504,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const field = this.findFields();
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
-      field?.display === FieldDisplay.NUMBER_RANGE
+      field?.display === FieldDisplay.NUMBER_RANGE ||
+      field?.display === FieldDisplay.LESS_THAN_RANGE ||
+      field?.display === FieldDisplay.GREATER_THAN_RANGE
     ) {
       return (
         <PresearchPanel id="range-selector">
@@ -516,11 +517,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
               loading={loading}
               buckets={buckets}
               handleLoadMore={this.handleLoadMore}
-              aggType={
-                field?.display === FieldDisplay.DATE_RANGE
-                  ? FieldDisplay.DATE_RANGE
-                  : FieldDisplay.NUMBER_RANGE
-              }
+              aggType={field?.display}
+              field={field}
             />
           </Container>
           {!loading && (
@@ -584,7 +582,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   render() {
     const { agg, presearch } = this.props;
     const { isOpen } = this.state;
-    const title = aggToField(agg);
+    let currentAgg =this.findFields();
+    //@ts-ignore
+    let configuredLabel = currentAgg.displayName;
+    const title = aggToField(agg,configuredLabel);
+
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (

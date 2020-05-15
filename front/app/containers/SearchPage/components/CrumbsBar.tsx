@@ -226,7 +226,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     let aggFilterCounter = 0;
     for (const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key];
-      const cat = aggToField(agg.field);
+      const cat = aggToField(agg.field,agg.field);
       yield (
         <AggCrumb
           grouping="aggFilters"
@@ -239,7 +239,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     let crowdAggFilterCounter = 0;
     for (const key in searchParams.crowdAggFilters) {
       const agg = searchParams.crowdAggFilters[key];
-      const cat = aggToField(agg.field);
+      const cat = aggToField(agg.field, agg.field);
       yield (
         <AggCrumb
           grouping="crowdAggFilters"
@@ -360,7 +360,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       aggFields: aggFields,
       crowdAggFields: crowdAggFields,
     };
-
     const response = await apolloClient.query({
       query,
       variables,
@@ -531,7 +530,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   renderSectionTitle = section => {
     if (section.results.length > 0) {
-      let newName = aggToField(section.name);
+      let newName = aggToField(section.name, section.name);
       newName = this.capitalize(newName);
       return <strong>{newName}</strong>;
     } else return null;

@@ -21,6 +21,7 @@ interface SuggestedLabelsProps {
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
   allowedSuggestedLabels: string[];
+  siteView?: any;
 }
 
 const QUERY = gql`
@@ -73,26 +74,31 @@ class SuggestedLabels extends React.PureComponent<
     return this.props.nctId;
   }
 
-  renderAgg = (key: string, values: [string, boolean][], meta) => {
+  renderAgg = (key: string, values: [string, boolean][], meta, refetch) => {
     return (
       <FacetCard
         label={key}
         meta={meta}
         nctId={this.props.nctId}
-        onSelect={this.props.onSelect}>
+        values={values}
+        onSelect={this.props.onSelect}
+        refetch={refetch}
+        siteView={this.props.siteView}>
         {values.map(([value, checked]) => {
           if (bucketKeyStringIsMissing(value)) {
             return null;
           }
-          return (
-            <Checkbox
-              key={value}
-              checked={checked}
-              disabled={this.props.disabled}
-              onChange={this.handleSelect(key, value)}>
-              {value}
-            </Checkbox>
-          );
+          if (checked) {
+            return (
+              <Checkbox
+                key={value}
+                checked={checked}
+                disabled={this.props.disabled}
+                onChange={this.handleSelect(key, value)}>
+                {value}
+              </Checkbox>
+            );
+          } else return null;
         })}
       </FacetCard>
     );
@@ -106,7 +112,7 @@ class SuggestedLabels extends React.PureComponent<
         variables={{
           nctId: this.props.nctId,
         }}>
-        {({ data, loading, error }) => {
+        {({ data, loading, error, refetch }) => {
           if (loading || error || !data) return null;
           let meta: { [key: string]: string } = {};
           try {
@@ -147,17 +153,20 @@ class SuggestedLabels extends React.PureComponent<
             keys,
             filter(name => this.props.allowedSuggestedLabels.includes(name))
           )(aggs) as string[];
-
-          console.log('wtfis meta', meta);
           return (
             <LabelsContainer>
-              {aggNames.map(key => this.renderAgg(key, aggs[key], meta))}
-              {/* <FacetCard
+              {aggNames.map(key =>
+                this.renderAgg(key, aggs[key], meta, refetch)
+              )}
+              <FacetCard
                 meta={meta}
                 label="Add Label"
                 addLabel
                 nctId={this.props.nctId}
-              /> */}
+                refetch={refetch}
+                aggNames={aggNames}
+                siteView={this.props.siteView}
+              />
             </LabelsContainer>
           );
         }}
