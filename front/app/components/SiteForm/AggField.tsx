@@ -27,6 +27,7 @@ export interface FieldType {
   visibleOptions: SiteSelect;
   autoSuggest?: boolean;
   rank: number | null;
+  displayName? : string
 }
 
 interface AggFieldProps {
@@ -189,14 +190,13 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       this.setState({ isVisibleOptionsOpen: !this.state.isVisibleOptionsOpen });
     }
   };
-  renderDisplayLabel = configType => {
+  renderDisplayLabel = (configType:ConfigType) => {
     if (this.props.kind !== 'crowdAggs') {
       return (
         <span>
           <ThemedStyledLabel>Agg Label:</ThemedStyledLabel>
           <StyledFormControl
             name={`set:${this.getPath(configType)}.displayName`}
-            //@ts-ignore
             placeholder={aggToField(
               this.props.field.name,
               this.props.field.displayName
@@ -257,7 +257,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
         <ThemedContainer>
           {field.preselected ? (
             <>
-              this.renderDisplayLabel(configType)}
+              {this.renderDisplayLabel(configType)}
               <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
               <ThemedCrumbsContainer>
                 {Array.from(selected).map(value => (
