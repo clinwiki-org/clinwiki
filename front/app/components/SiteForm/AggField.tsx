@@ -151,7 +151,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <StyledFormControl
             name={`set:${this.getPath(configType)}.rangeEndLabel`}
             placeholder="End"
-            //@ts-ignore
             value={this.props.field.rangeEndLabel}
             onChange={this.props.onAddMutation}
           />
