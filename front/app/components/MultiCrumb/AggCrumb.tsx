@@ -8,6 +8,7 @@ import ValuesCrumb from './ValuesCrumb';
 import ValueCrumb from './ValueCrumb';
 import CrumbWrapper from './CrumbWrapper';
 import { SiteFragment } from 'types/SiteFragment';
+import findFields from 'utils/aggs/findFields';
 
 interface AggCrumbProps {
   grouping: string;
@@ -57,11 +58,17 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         <ValueCrumb label={label} onClick={() => updater.removeRange()} />
       );
     }
-
+    const field = findFields(agg.field, thisSiteView, false);
+    const title = field?.displayName;
     return (
       <ListGroupItem className="filter-values">
         <CrumbWrapper>
-          <i>{aggToField(agg.field, agg.field)}:</i>
+          <i>
+            {grouping == 'crowdAggFilters'
+              ? title
+              : aggToField(agg.field, title)}
+            :
+          </i>
           {crumb}
         </CrumbWrapper>
       </ListGroupItem>

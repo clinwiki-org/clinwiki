@@ -2,7 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import PREFETCH_QUERY from '../StudyPage';
 import { Checkbox, Col } from 'react-bootstrap';
 import {
   SuggestedLabelsQuery,
@@ -12,8 +11,8 @@ import {
 import { pipe, pathOr, map, filter, fromPairs, keys, defaultTo } from 'ramda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
-import { WorkSearch } from './WorkSearch';
+// import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
+// import { WorkSearch } from './WorkSearch';
 import FacetCard from 'components/FacetCard/FacetCard';
 
 interface SuggestedLabelsProps {
@@ -24,34 +23,6 @@ interface SuggestedLabelsProps {
   allowedSuggestedLabels: string[];
   siteView?: any;
 }
-
-const SEARCH_QUERY = gql`
-  query AllQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      nctId
-      briefSummary
-      detailedDescription
-      eligibilityCriteria
-      conditions
-      briefTitle
-      overallStatus
-      createdAt
-      updatedAt
-      facilities {
-        id
-        city
-        state
-        country
-        zip
-      }
-      interventions {
-        id
-        name
-        description
-      }
-    }
-  }
-`;
 
 const QUERY = gql`
   query SuggestedLabelsQuery($nctId: String!) {
@@ -84,32 +55,6 @@ const LabelsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
-const StyledPanel = styled(CollapsiblePanel)`
-  margin: 0 1% 10px 1%;
-  width: 23%;
-  flex-wrap: wrap;
-  .panel-heading h3 {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .panel-body {
-    height: 450px !important;
-    overflow-x: hidden;
-    white-space: normal;
-    overflow-wrap: break-word;
-    overflow-y: scroll;
-  }
-`;
-const QueryResult = PREFETCH_QUERY;
-
-interface MyFilterProps {
-  params: SearchParams;
-}
-interface MyFilterState {
-  searchTerm: string;
-  params: SearchParams | null;
-}
 
 interface SuggestedLabelsState {
   list: string[];

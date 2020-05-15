@@ -67,6 +67,7 @@ class WorkflowsView < ApplicationRecord
         kind: "BLACKLIST",
         values: [],
       },
+      suggestedLabelsConfig: [],
       summaryFieldsFilter: {
         kind: "BLACKLIST",
         values: [],

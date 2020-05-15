@@ -192,7 +192,7 @@ abstract class AbstractAggFilterInputUpdater {
  * Responsible for updating aggs in the context of a search
  */
 class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
-  onUpdateFilter(allowsMissingChanged: boolean = false): void {
+  onUpdateFilter(): void {
     const allButThisAgg = filter(
       (x: AggFilterInput) => x.field !== this.agg,
       this.settings[this.grouping]
@@ -209,20 +209,24 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
   }
 }
 
+export type ConfigType = 'presearch' | 'autosuggest' | 'facetbar' | 'workflow';
 export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
   kind: 'preselected' | 'visibleOptions';
-  configType: 'presearch' | 'autosuggest' | 'facetbar';
+  configType: ConfigType;
+  workflowName?: string;
   constructor(
     agg: string,
     settings: AggFilterSettings,
     updateSettings: any,
     grouping: 'aggs' | 'crowdAggs',
     kind: 'preselected' | 'visibleOptions',
-    configType: 'presearch' | 'autosuggest' | 'facetbar'
+    configType: ConfigType,
+    workflowName?: string
   ) {
     super(agg, settings, updateSettings, grouping);
     this.kind = kind;
     this.configType = configType;
+    this.workflowName = workflowName;
   }
 
   configureInput() {
@@ -238,6 +242,8 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
         return `set:search.autoSuggest.${this.grouping}.fields.${this.agg}.${this.kind}.values`;
       case 'facetbar':
         return `set:search.${this.grouping}.fields.${this.agg}.${this.kind}.values`;
+      case 'workflow':
+        return `set:workflows.${this.workflowName}.suggestedLabelsConfig.${this.agg}.${this.kind}.values`;
     }
   }
 

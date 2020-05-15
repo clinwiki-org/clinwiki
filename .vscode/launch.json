@@ -10,13 +10,27 @@
             "reAttach": true,
             "name": "Launch localhost",
             "url": "http://localhost:3001/",
+            "webRoot": "${workspaceFolder}",
+            "pathMappings": [
+                {
+                    "url": "webpack:///app",
+                    "path": "${workspaceFolder}/front/app"
+                }
+            ]
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:3001",
             "webRoot": "${workspaceFolder}"
         },
-        { 
+        {
             "type": "chrome",
             "request": "attach",
             "name": "Attach Chrome",
-            "port": 9222
+            "port": 9222,
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }
