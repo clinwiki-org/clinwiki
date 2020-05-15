@@ -41,6 +41,7 @@ import {
   equals,
   isEmpty,
   prop,
+  fromPairs,
 } from 'ramda';
 import { StyledFormControl } from 'components/SiteForm/Styled';
 import UpdateWikiSectionsMutation, {
@@ -54,19 +55,7 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import ThemedButton from 'components/StyledComponents';
-
-const QUERY = gql`
-  query WorkflowPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      wikiPage {
-        nctId
-        meta
-        content
-      }
-      nctId
-    }
-  }
-`;
+import QUERY from 'queries/WorkflowPageQuery'
 
 class WorkflowPageQueryComponent extends Query<
   WorkflowPageQuery,
@@ -214,6 +203,8 @@ class WorkflowPage extends React.Component<
                 workflow.allSuggestedLabels.map(name => ({ name, rank: null }))
               ).map(prop('name'));
 
+              const suggestedLabelsConfig = fromPairs(workflow.suggestedLabelsConfig.map(c => [c.name, c]));
+
               return (
                 <div>
                   {user && !workflow.hideReviews && (
@@ -284,6 +275,7 @@ class WorkflowPage extends React.Component<
                                       allowedSuggestedLabels={
                                         allowedSuggestedLabels
                                       }
+                                      suggestedLabelsConfig={suggestedLabelsConfig}
                                       disabled={!user}
                                     />
                                   </StyledPanel>

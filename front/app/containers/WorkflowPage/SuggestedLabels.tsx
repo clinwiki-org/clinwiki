@@ -14,6 +14,7 @@ import CollapsiblePanel from 'components/CollapsiblePanel';
 // import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
 // import { WorkSearch } from './WorkSearch';
 import FacetCard from 'components/FacetCard/FacetCard';
+import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
 
 interface SuggestedLabelsProps {
   nctId: string;
@@ -21,6 +22,10 @@ interface SuggestedLabelsProps {
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
   allowedSuggestedLabels: string[];
+  suggestedLabelsConfig: Record<
+    string,
+    WorkflowConfigFragment_suggestedLabelsConfig
+  >;
   siteView?: any;
 }
 
@@ -74,7 +79,25 @@ class SuggestedLabels extends React.PureComponent<
     return this.props.nctId;
   }
 
-  renderAgg = (key: string, values: [string, boolean][], meta, refetch) => {
+  renderAgg = (
+    key: string,
+    values: [string, boolean][],
+    meta: Record<string, string>,
+    refetch,
+    config?: WorkflowConfigFragment_suggestedLabelsConfig
+  ) => {
+    // If config.visibleOptions is present replace values with the whitelist, preserve checked
+    const checkedValues = new Set(
+      values.filter(([_, checked]) => checked).map(([value, _]) => value)
+    );
+    let items = values.map(([value, _]) => value);
+    if (
+      config &&
+      config.visibleOptions.kind == 'WHITELIST' &&
+      config.visibleOptions.values.length > 0
+    ) {
+      items = config.visibleOptions.values;
+    }
     return (
       <FacetCard
         label={key}
@@ -84,21 +107,19 @@ class SuggestedLabels extends React.PureComponent<
         onSelect={this.props.onSelect}
         refetch={refetch}
         siteView={this.props.siteView}>
-        {values.map(([value, checked]) => {
+        {items.map(value => {
           if (bucketKeyStringIsMissing(value)) {
             return null;
           }
-          if (checked) {
-            return (
-              <Checkbox
-                key={value}
-                checked={checked}
-                disabled={this.props.disabled}
-                onChange={this.handleSelect(key, value)}>
-                {value}
-              </Checkbox>
-            );
-          } else return null;
+          return (
+            <Checkbox
+              key={value}
+              checked={checkedValues.has(value)}
+              disabled={this.props.disabled}
+              onChange={this.handleSelect(key, value)}>
+              {value}
+            </Checkbox>
+          );
         })}
       </FacetCard>
     );
@@ -114,12 +135,9 @@ class SuggestedLabels extends React.PureComponent<
         }}>
         {({ data, loading, error, refetch }) => {
           if (loading || error || !data) return null;
-          let meta: { [key: string]: string } = {};
+          let meta: Record<string, string> = {};
           try {
-            meta = JSON.parse(
-              (data.study && data.study.wikiPage && data.study.wikiPage.meta) ||
-                '{}'
-            );
+            meta = JSON.parse(data.study?.wikiPage?.meta || '{}');
           } catch (e) {
             console.log(`Error parsing meta: ${meta}`);
           }
@@ -156,7 +174,13 @@ class SuggestedLabels extends React.PureComponent<
           return (
             <LabelsContainer>
               {aggNames.map(key =>
-                this.renderAgg(key, aggs[key], meta, refetch)
+                this.renderAgg(
+                  key,
+                  aggs[key],
+                  meta,
+                  refetch,
+                  this.props.suggestedLabelsConfig[key]
+                )
               )}
               <FacetCard
                 meta={meta}
