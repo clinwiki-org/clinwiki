@@ -6,7 +6,10 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
 import { camelCase, capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
-import { AggFilterSiteConfigUpdater } from 'containers/SearchPage/components/AggFilterInputUpdater';
+import {
+  AggFilterSiteConfigUpdater,
+  ConfigType,
+} from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
 import withTheme from 'containers/ThemeProvider';
 import { FieldDisplay, FilterKind } from 'types/globalTypes';
@@ -16,7 +19,7 @@ interface SiteSelect {
   values: string[];
 }
 
-interface FieldType {
+export interface FieldType {
   name: string;
   order: { sortKind: string; desc: boolean } | null;
   display: FieldDisplay;
@@ -31,8 +34,9 @@ interface AggFieldProps {
   field: FieldType;
   onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
   view: SiteViewFragment;
-  configType: 'presearch' | 'autosuggest' | 'facetbar';
+  configType: ConfigType;
   returnAll?: Boolean;
+  workflowName?: string
 }
 
 interface AggFieldState {
@@ -105,13 +109,17 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     isChecked: false,
   };
 
-  getPath = configType => {
-    if (configType == 'presearch') {
-      return `search.presearch.${this.props.kind}.fields.${this.props.field.name}`;
-    } else if (configType == 'autosuggest') {
-      return `search.autoSuggest.${this.props.kind}.fields.${this.props.field.name}`;
+  getPath = (configType: ConfigType) => {
+    switch (configType) {
+      case 'presearch':
+        return `search.presearch.${this.props.kind}.fields.${this.props.field.name}`;
+      case 'autosuggest':
+        return `search.autoSuggest.${this.props.kind}.fields.${this.props.field.name}`;
+      case 'facetbar':
+        return `search.${this.props.kind}.fields.${this.props.field.name}`;
+      case 'workflow':
+        return `workflows.${this.props.workflowName}.suggestedLabelsConfig.${this.props.field.name}`;
     }
-    return `search.${this.props.kind}.fields.${this.props.field.name}`;
   };
   handleDefaultSortMutation = e => {
     this.props.onAddMutation(e);
@@ -148,7 +156,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
         this.props.onAddMutation,
         this.props.kind,
         'visibleOptions',
-        this.props.configType
+        this.props.configType,
+        this.props.workflowName
       ),
     ];
   }

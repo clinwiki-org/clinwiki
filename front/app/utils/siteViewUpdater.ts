@@ -2,6 +2,7 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import { SiteViewMutationInput, SiteViewOperation } from 'types/globalTypes';
 import { find, propEq, reject } from 'ramda';
 import { cloneDeep } from 'apollo-utilities';
+import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 
 export const createMutation = (
   name: string,
@@ -34,7 +35,7 @@ export const createMutation = (
   };
 };
 
-export const getViewValueByPath = (path: string[], view: SiteViewFragment) => {
+export const getViewValueByPath = (path: string[], view: SiteViewFragment|WorkflowsViewFragment) => {
   const [key, lastView] = getLastHashByPath(path, view);
   return lastView[key];
 };
@@ -49,10 +50,10 @@ export const serializeMutation = (
   return copy;
 };
 
-export const updateView = (
-  view: SiteViewFragment,
+export const updateView = <T extends SiteViewFragment|WorkflowsViewFragment>(
+  view: T,
   mutations: SiteViewMutationInput[]
-): SiteViewFragment => {
+): T => {
   const result = cloneDeep(view);
   mutations.forEach(mutation => applyOne(result, mutation));
   return result;
@@ -67,7 +68,7 @@ const tryParse = (data, defaultValue) => {
   return defaultValue;
 };
 
-const applyOne = (view: SiteViewFragment, mutation: SiteViewMutationInput) => {
+const applyOne = (view: SiteViewFragment|WorkflowsViewFragment, mutation: SiteViewMutationInput) => {
   const [key, mutationView] = getLastHashByPath(mutation.path, view);
   if (!mutationView) return false;
 
@@ -100,7 +101,7 @@ const applyOne = (view: SiteViewFragment, mutation: SiteViewMutationInput) => {
 
 const getLastHashByPath = (
   components: string[],
-  view: SiteViewFragment
+  view: SiteViewFragment|WorkflowsViewFragment
 ): [string, any] => {
   let [key, ...currentComponents] = components;
   let currentView = view as any;

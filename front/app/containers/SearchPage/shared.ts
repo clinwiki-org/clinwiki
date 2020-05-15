@@ -24,3 +24,10 @@ export interface SearchQuery {
   key: string;
   children?: SearchQuery[];
 }
+
+export interface MutationSource {
+  currentTarget: {
+    name : string
+    value : any
+  }
+}
