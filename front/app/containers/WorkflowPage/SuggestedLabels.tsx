@@ -8,7 +8,17 @@ import {
   SuggestedLabelsQueryVariables,
   SuggestedLabelsQuery_crowdAggFacets_aggs,
 } from 'types/SuggestedLabelsQuery';
-import { pipe, pathOr, map, filter, fromPairs, keys, defaultTo } from 'ramda';
+import {
+  pipe,
+  pathOr,
+  map,
+  filter,
+  sortWith,
+  fromPairs,
+  keys,
+  defaultTo,
+  sort,
+} from 'ramda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 // import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
@@ -97,9 +107,17 @@ class SuggestedLabels extends React.PureComponent<
       config.visibleOptions.values.length > 0
     ) {
       items = config.visibleOptions.values;
+      // 'key' means alpha
+      if (config.order?.sortKind == 'key') {
+        items.sort();
+        if (!config.order?.desc) {
+          items.reverse();
+        }
+      }
     }
     return (
       <FacetCard
+        key={key}
         label={key}
         meta={meta}
         nctId={this.props.nctId}
@@ -166,11 +184,15 @@ class SuggestedLabels extends React.PureComponent<
             // @ts-ignore
             fromPairs
           )(data?.crowdAggFacets?.aggs || []);
+          const config = this.props.suggestedLabelsConfig;
 
-          const aggNames = pipe(
-            keys,
-            filter(name => this.props.allowedSuggestedLabels.includes(name))
-          )(aggs) as string[];
+          const max = 999999;
+          const aggNames = keys(aggs)
+            .filter(name => this.props.allowedSuggestedLabels.includes(name))
+            .sort(
+              (a, b) => (config[a]?.rank || max) - (config[b]?.rank || max)
+            );
+
           return (
             <LabelsContainer>
               {aggNames.map(key =>
