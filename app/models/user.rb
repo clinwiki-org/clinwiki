@@ -20,6 +20,9 @@ class User < ApplicationRecord
       user.email = payload["email"]
       user.password = Devise.friendly_token(8)
     end
+    if !user.picture_url
+      user.picture_url = payload["picture"]
+    end
     user.save
     user
   end

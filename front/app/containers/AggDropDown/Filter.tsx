@@ -58,6 +58,7 @@ class Filter extends React.Component<FilterProps> {
           display: 'flex',
           flexDirection: 'row',
           borderBottom: 'solid 1px #ddd',
+          alignItems: 'center',
         }}>
         <div style={{ marginTop: '1em' }}>
           <Checkbox

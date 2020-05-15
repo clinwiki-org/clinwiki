@@ -43,6 +43,8 @@ export interface SignInMutation_signIn_user {
   reviewCount: number;
   reviews: SignInMutation_signIn_user_reviews[];
   contributions: number;
+  pictureUrl: string | null;
+  rank: string | null;
 }
 
 export interface SignInMutation_signIn {

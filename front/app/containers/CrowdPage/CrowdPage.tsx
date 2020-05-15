@@ -275,7 +275,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     if (!value) return;
     let val = value;
     if (meta[key]) {
-      console.log(meta[key]);
+      // console.log(meta[key]);
       const oldVal = meta[key];
       const entries = oldVal.split('|').filter(x => x !== val);
       entries.push(value);

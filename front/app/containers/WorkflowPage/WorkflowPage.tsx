@@ -84,6 +84,7 @@ interface WorkflowPageProps {
   metaData: SiteStudyBasicGenericSectionFragment;
   workflowsView: WorkflowsViewFragment;
   theme?: any;
+  siteView?: any;
 }
 
 interface WorkflowPageState {
@@ -268,6 +269,7 @@ class WorkflowPage extends React.Component<
                                     <SuggestedLabels
                                       nctId={this.props.match.params.nctId}
                                       searchHash={hash}
+                                      siteView={this.props.siteView}
                                       onSelect={this.handleSelect(
                                         (data &&
                                           data.study &&

@@ -5,6 +5,7 @@ module Types
     value "DATE"
     value "DATE_RANGE"
     value "NUMBER_RANGE"
-    value "RANGE"
+    value "LESS_THAN_RANGE"
+    value "GREATER_THAN_RANGE"
   end
 end

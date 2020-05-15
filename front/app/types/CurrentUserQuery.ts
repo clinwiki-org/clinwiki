@@ -41,6 +41,8 @@ export interface CurrentUserQuery_me {
   reviewCount: number;
   reviews: CurrentUserQuery_me_reviews[];
   contributions: number;
+  pictureUrl: string | null;
+  rank: string | null;
 }
 
 export interface CurrentUserQuery {
