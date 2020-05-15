@@ -311,7 +311,12 @@ export function withSite2<T>(
                 siteview => siteview?.url?.toLowerCase() === url
               ) || site.siteView;
             return (
-              <Component site={site} refetch={refetch} currentSiteView={currentSite} {...(this.props as T)} />
+              <Component
+                site={site}
+                refetch={refetch}
+                currentSiteView={currentSite}
+                {...(this.props as T)}
+              />
             );
           }}
         </SiteProvider>

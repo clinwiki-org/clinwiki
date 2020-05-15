@@ -193,15 +193,15 @@ export const StyledProfileValue = styled.div`
   border-bottom: solid white;
   margin: 0 1em 1em 1em;
 `;
-export const StyledProfileRanking= styled.div`
-display:flex;
+export const StyledProfileRanking = styled.div`
+  display: flex;
 `;
 export const StyledProfileScoreValue = styled.div`
   font-size: 1.25em;
 `;
 export const StyledLabelValuePair = styled.div`
-  margin:auto;
-  width:25%;
+  margin: auto;
+  width: 25%;
   text-align: center;
   cursor: pointer;
 `;
@@ -229,4 +229,3 @@ export const StyledProfileForm = styled(FormControl)`
     opacity: 1;
   }
 `;
-

@@ -5,7 +5,7 @@ import {
   UpdateWorkflowsViewMutation as UpdateWorkflowsViewMutationType,
   UpdateWorkflowsViewMutationVariables,
 } from 'types/UpdateWorkflowsViewMutation';
-import { mutation } from 'queries/WorkflowsViewProviderquery'
+import { mutation } from 'queries/WorkflowsViewProviderquery';
 
 interface UpdateWorkflowsViewMutationProps {
   children: (
@@ -15,7 +15,6 @@ interface UpdateWorkflowsViewMutationProps {
   onCompleted?: (data: UpdateWorkflowsViewMutationType) => void;
   onError?: (e: ApolloError) => void;
 }
-
 
 class UpdateWorkflowsViewMutationComponent extends Mutation<
   UpdateWorkflowsViewMutationType,

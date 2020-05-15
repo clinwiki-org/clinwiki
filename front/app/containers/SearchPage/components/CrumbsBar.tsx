@@ -226,7 +226,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     let aggFilterCounter = 0;
     for (const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key];
-      const cat = aggToField(agg.field,agg.field);
+      const cat = aggToField(agg.field, agg.field);
       yield (
         <AggCrumb
           grouping="aggFilters"

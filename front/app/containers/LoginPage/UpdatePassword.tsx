@@ -4,7 +4,10 @@ import { Mutation, MutationFn } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import { UpdatePasswordMutation, UpdatePasswordMutationVariables } from 'types/UpdatePasswordMutation';
+import {
+  UpdatePasswordMutation,
+  UpdatePasswordMutationVariables,
+} from 'types/UpdatePasswordMutation';
 import ThemedButton from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
@@ -35,18 +38,21 @@ interface UpdatePasswordState {
   form: {
     // email: string;
     password: string;
-    passwordConfirmation: string
+    passwordConfirmation: string;
   };
   resetPasswordToken: string;
 
   errors: string[];
 }
 
-
 class UpdatePasswordMutationComponent extends Mutation<
-UpdatePasswordMutation, UpdatePasswordMutationVariables
+  UpdatePasswordMutation,
+  UpdatePasswordMutationVariables
 > {}
-type UpdatePasswordMutationFn = MutationFn<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+type UpdatePasswordMutationFn = MutationFn<
+  UpdatePasswordMutation,
+  UpdatePasswordMutationVariables
+>;
 
 class UpdatePassword extends React.Component<
   UpdatePasswordProps,
@@ -72,13 +78,13 @@ class UpdatePassword extends React.Component<
       'reset_password_token'
     );
     this.setState({
-      resetPasswordToken: token.toString()
-    })
+      resetPasswordToken: token.toString(),
+    });
 
     return token.toString();
-  }
+  };
 
-  componentDidMount(){
+  componentDidMount() {
     this.getResetToken();
   }
 
@@ -93,13 +99,12 @@ class UpdatePassword extends React.Component<
       console.log(passwordConfirmation);
       alert('password needs to be 8 characters');
     } else {
-
-      const resetPasswordToken = this.state.resetPasswordToken
+      const resetPasswordToken = this.state.resetPasswordToken;
       const input = {
         resetPasswordToken,
         password: this.state.form.password,
-        passwordConfirmation: this.state.form.passwordConfirmation
-      }
+        passwordConfirmation: this.state.form.passwordConfirmation,
+      };
 
       updatePassword({ variables: { input } });
       // this.props.history.push('/sign_in');
@@ -109,10 +114,10 @@ class UpdatePassword extends React.Component<
   handleUpdatePasswordCompleted = (data: UpdatePasswordMutation) => {
     const jwt = data && data.updatePassword && data.updatePassword.jwt;
     if (!jwt) {
-        const errors = JSON.parse(data.updatePassword!.errors)
-        this.setState({errors})
-        return
-      }
+      const errors = JSON.parse(data.updatePassword!.errors);
+      this.setState({ errors });
+      return;
+    }
 
     setLocalJwt(jwt);
     this.props.history.push('/search');
@@ -136,28 +141,33 @@ class UpdatePassword extends React.Component<
             value={this.state.form.passwordConfirmation}
             onChange={this.handleInputChange}
           />
-            <UpdatePasswordMutationComponent
-              mutation={UPDATE_PASSWORD_MUTATION}
-              onCompleted={this.handleUpdatePasswordCompleted}
-              update={(cache, { data }) => {
-                const user = data && data.updatePassword && data.updatePassword.user;
-                if (user) {
-                  cache.writeQuery({
-                    query: CurrentUser.query,
-                    data: {
-                      me: user,
-                    },
-                  });
-                  return;
-                }
-                this.setState({ errors: ['Invalid new password'] });
-              }}
-              >
-              {updatePassword => (
-          <ThemedButton onClick={() => this.handleResetSubmit(updatePassword)}>Submit</ThemedButton>
-          )}
+          <UpdatePasswordMutationComponent
+            mutation={UPDATE_PASSWORD_MUTATION}
+            onCompleted={this.handleUpdatePasswordCompleted}
+            update={(cache, { data }) => {
+              const user =
+                data && data.updatePassword && data.updatePassword.user;
+              if (user) {
+                cache.writeQuery({
+                  query: CurrentUser.query,
+                  data: {
+                    me: user,
+                  },
+                });
+                return;
+              }
+              this.setState({ errors: ['Invalid new password'] });
+            }}>
+            {updatePassword => (
+              <ThemedButton
+                onClick={() => this.handleResetSubmit(updatePassword)}>
+                Submit
+              </ThemedButton>
+            )}
           </UpdatePasswordMutationComponent>
-              {this.state.errors.map(error=> <StyledError>{error}</StyledError>)}
+          {this.state.errors.map(error => (
+            <StyledError>{error}</StyledError>
+          ))}
         </StyledContainer>
       </StyledWrapper>
     );

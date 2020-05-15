@@ -35,7 +35,10 @@ export const createMutation = (
   };
 };
 
-export const getViewValueByPath = (path: string[], view: SiteViewFragment|WorkflowsViewFragment) => {
+export const getViewValueByPath = (
+  path: string[],
+  view: SiteViewFragment | WorkflowsViewFragment
+) => {
   const [key, lastView] = getLastHashByPath(path, view);
   return lastView[key];
 };
@@ -50,7 +53,7 @@ export const serializeMutation = (
   return copy;
 };
 
-export const updateView = <T extends SiteViewFragment|WorkflowsViewFragment>(
+export const updateView = <T extends SiteViewFragment | WorkflowsViewFragment>(
   view: T,
   mutations: SiteViewMutationInput[]
 ): T => {
@@ -68,7 +71,10 @@ const tryParse = (data, defaultValue) => {
   return defaultValue;
 };
 
-const applyOne = (view: SiteViewFragment|WorkflowsViewFragment, mutation: SiteViewMutationInput) => {
+const applyOne = (
+  view: SiteViewFragment | WorkflowsViewFragment,
+  mutation: SiteViewMutationInput
+) => {
   const [key, mutationView] = getLastHashByPath(mutation.path, view);
   if (!mutationView) return false;
 
@@ -101,7 +107,7 @@ const applyOne = (view: SiteViewFragment|WorkflowsViewFragment, mutation: SiteVi
 
 const getLastHashByPath = (
   components: string[],
-  view: SiteViewFragment|WorkflowsViewFragment
+  view: SiteViewFragment | WorkflowsViewFragment
 ): [string, any] => {
   let [key, ...currentComponents] = components;
   let currentView = view as any;

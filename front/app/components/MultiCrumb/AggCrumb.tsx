@@ -58,12 +58,17 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         <ValueCrumb label={label} onClick={() => updater.removeRange()} />
       );
     }
-    const field = findFields(agg.field, thisSiteView, false)
-    const title =  field?.displayName
+    const field = findFields(agg.field, thisSiteView, false);
+    const title = field?.displayName;
     return (
       <ListGroupItem className="filter-values">
         <CrumbWrapper>
-          <i>{grouping =='crowdAggFilters'? title:aggToField(agg.field, title) }:</i>
+          <i>
+            {grouping == 'crowdAggFilters'
+              ? title
+              : aggToField(agg.field, title)}
+            :
+          </i>
           {crumb}
         </CrumbWrapper>
       </ListGroupItem>

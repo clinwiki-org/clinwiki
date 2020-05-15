@@ -27,7 +27,7 @@ export interface FieldType {
   visibleOptions: SiteSelect;
   autoSuggest?: boolean;
   rank: number | null;
-  displayName? : string
+  displayName?: string;
 }
 
 interface AggFieldProps {
@@ -37,7 +37,7 @@ interface AggFieldProps {
   view: SiteViewFragment;
   configType: ConfigType;
   returnAll?: Boolean;
-  workflowName?: string
+  workflowName?: string;
 }
 
 interface AggFieldState {
@@ -168,14 +168,17 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 : `set:${this.getPath(configType)}.rangeEndLabel`
             }
             //@ts-ignore
-            placeholder={display == 'GREATER_THAN_RANGE' ? this.props.field.rangeStartLabel : this.props.field.rangeEndLabel}
-
+            placeholder={
+              display == 'GREATER_THAN_RANGE'
+                ? this.props.field.rangeStartLabel
+                : this.props.field.rangeEndLabel
+            }
             value={
               display == 'GREATER_THAN_RANGE'
-              //@ts-ignore
-                ? this.props.field.rangeStartLabel
-              //@ts-ignore
-                : this.props.field.rangeEndLabel
+                ? //@ts-ignore
+                  this.props.field.rangeStartLabel
+                : //@ts-ignore
+                  this.props.field.rangeEndLabel
             }
             onChange={this.props.onAddMutation}
           />
@@ -190,21 +193,23 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       this.setState({ isVisibleOptionsOpen: !this.state.isVisibleOptionsOpen });
     }
   };
-  renderDisplayLabel = (configType:ConfigType) => {
-      return (
-        <span>
-          <ThemedStyledLabel>{this.props.kind=='crowdAggs'? "Crowd ":null}Agg Label:</ThemedStyledLabel>
-          <StyledFormControl
-            name={`set:${this.getPath(configType)}.displayName`}
-            placeholder={aggToField(
-              this.props.field.name,
-              this.props.field.displayName
-            )}
-            value={this.props.field.rank}
-            onChange={this.props.onAddMutation}
-          />
-        </span>
-      );
+  renderDisplayLabel = (configType: ConfigType) => {
+    return (
+      <span>
+        <ThemedStyledLabel>
+          {this.props.kind == 'crowdAggs' ? 'Crowd ' : null}Agg Label:
+        </ThemedStyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.displayName`}
+          placeholder={aggToField(
+            this.props.field.name,
+            this.props.field.displayName
+          )}
+          value={this.props.field.rank}
+          onChange={this.props.onAddMutation}
+        />
+      </span>
+    );
   };
 
   getUpdaters() {

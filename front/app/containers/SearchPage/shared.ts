@@ -27,7 +27,7 @@ export interface SearchQuery {
 
 export interface MutationSource {
   currentTarget: {
-    name : string
-    value : any
-  }
+    name: string;
+    value: any;
+  };
 }

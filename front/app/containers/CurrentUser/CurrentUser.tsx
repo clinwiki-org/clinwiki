@@ -18,10 +18,7 @@ const FRAGMENT = gql`
     defaultQueryString
     roles
     reviewCount
-    reviews
-    
-    
-    {
+    reviews {
       content
       briefTitle
       nctId

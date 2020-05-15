@@ -361,9 +361,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({ buckets: newBuckets, hasMore });
   };
 
-
   renderPanel = (isPresearch: boolean) => {
-    const { visibleOptions = [], removeSelectAll, agg, currentSiteView, presearch } = this.props;
+    const {
+      visibleOptions = [],
+      removeSelectAll,
+      agg,
+      currentSiteView,
+      presearch,
+    } = this.props;
     const {
       buckets = [],
       filter,
@@ -477,7 +482,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   renderPresearchFilter = () => {
-    const { agg, removeSelectAll, visibleOptions, currentSiteView, presearch } = this.props;
+    const {
+      agg,
+      removeSelectAll,
+      visibleOptions,
+      currentSiteView,
+      presearch,
+    } = this.props;
     const {
       buckets = [],
       filter,
@@ -489,7 +500,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       isOpen,
       loading,
     } = this.state;
-    const field = findFields(agg,currentSiteView, presearch);
+    const field = findFields(agg, currentSiteView, presearch);
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -552,7 +563,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   componentDidMount() {
-    const { agg, currentSiteView, presearch} =this.props
+    const { agg, currentSiteView, presearch } = this.props;
     const field = findFields(agg, currentSiteView, presearch);
     if (field?.order && field.order.sortKind == 'key') {
       this.setState({
@@ -599,7 +610,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             <Panel.Heading className="bm-panel-heading">
               <Panel.Title className="bm-panel-title" toggle>
                 <div className="flex">
-                  <span>{this.props.aggKind === 'crowdAggs' ? configuredLabel:title}</span>
+                  <span>
+                    {this.props.aggKind === 'crowdAggs'
+                      ? configuredLabel
+                      : title}
+                  </span>
                   <span>
                     <FontAwesome name={icon} />{' '}
                   </span>

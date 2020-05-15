@@ -24,7 +24,7 @@ interface ProfilePageProps {
 }
 interface ProfilePageState {
   currentDisplay: string;
-  username:string;
+  username: string;
 }
 
 const USER_QUERY = gql`
@@ -61,15 +61,15 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
     };
   };
 
-   username = () => {
+  username = () => {
     return new URLSearchParams(this.props.location.search)
-  .getAll('username')
-  .toString();
-}
-  componentDidMount(){
-  this.setState({username:this.username()})
+      .getAll('username')
+      .toString();
+  };
+  componentDidMount() {
+    this.setState({ username: this.username() });
   }
-  componentDidUpdate(currentState){
+  componentDidUpdate(currentState) {
     //  if(currentState.username!= this.username() ){
     //    this.setState({username: this.username()})
     //  }
@@ -99,9 +99,13 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
   renderHeader = user => {
     switch (this.state.currentDisplay) {
       case 'contributions':
-        return <h2>{user.firstName || this.state.username}'s Contributed Studies</h2>;
+        return (
+          <h2>{user.firstName || this.state.username}'s Contributed Studies</h2>
+        );
       case 'reviews':
-        return <h2> {user.firstName || this.state.username}'s Reviewed Studies</h2>;
+        return (
+          <h2> {user.firstName || this.state.username}'s Reviewed Studies</h2>
+        );
     }
   };
   render() {
@@ -119,13 +123,14 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
             );
           if (error) return <div>Error</div>;
           const userData = data;
-          console.log("userData",userData)
+          console.log('userData', userData);
           return (
             <div>
               <ThemedMainContainer>
                 <ProfilePicture pictureUrl={userData.user.pictureUrl} />
                 <h2>
-                  {userData.user.firstName || this.state.username}'s Contributions
+                  {userData.user.firstName || this.state.username}'s
+                  Contributions
                 </h2>
                 <SearchContainer>
                   <ProfileScoreBoard

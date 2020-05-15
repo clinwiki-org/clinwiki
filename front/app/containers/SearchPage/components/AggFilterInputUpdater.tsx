@@ -221,7 +221,7 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
     grouping: 'aggs' | 'crowdAggs',
     kind: 'preselected' | 'visibleOptions',
     configType: ConfigType,
-    workflowName? : string
+    workflowName?: string
   ) {
     super(agg, settings, updateSettings, grouping);
     this.kind = kind;

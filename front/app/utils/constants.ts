@@ -15,7 +15,7 @@ export const aggsOrdered = [
   'start_date',
   'study_type',
   'wiki_page_edits.email',
-  'wiki_page_edits.created_at'
+  'wiki_page_edits.created_at',
 ];
 
 export const studyFields = [

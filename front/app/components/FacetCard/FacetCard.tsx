@@ -214,7 +214,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
           }
         }
       });
-
     });
 
     const newSet = new Set(array);

@@ -57,8 +57,10 @@ class EditWorkflowsPage extends React.Component<
     this.setState({ currentWorkflowName: workflow });
   };
 
-  handleAddMutations = (workflowView: WorkflowsViewFragment) => (ee: MutationSource[]) => {
-    let mutations : SiteViewMutationInput[] = [];
+  handleAddMutations = (workflowView: WorkflowsViewFragment) => (
+    ee: MutationSource[]
+  ) => {
+    let mutations: SiteViewMutationInput[] = [];
     let view = this.applyMutations(workflowView);
     for (const e of ee) {
       const { name, value } = e.currentTarget;
@@ -70,10 +72,12 @@ class EditWorkflowsPage extends React.Component<
         mutations.push(mut);
       }
     }
-    this.setState({ mutations: [...this.state.mutations, ... mutations] });
-  }
+    this.setState({ mutations: [...this.state.mutations, ...mutations] });
+  };
 
-  handleAddMutation = (workflowView: WorkflowsViewFragment) => (e: MutationSource) => {
+  handleAddMutation = (workflowView: WorkflowsViewFragment) => (
+    e: MutationSource
+  ) => {
     this.handleAddMutations(workflowView)([e]);
   };
 

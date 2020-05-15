@@ -75,8 +75,7 @@ const SEARCH_FIELDS = studyFields.map(option => ({
   id: option,
   label: sentanceCase(option),
 }));
-const AGGS_OPTIONS = aggsOrdered.map(option => (
-  {
+const AGGS_OPTIONS = aggsOrdered.map(option => ({
   id: option,
   label: sentanceCase(aggToField(option, option)),
 }));
@@ -445,12 +444,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     ));
   };
-  renderFacetBarConfig = (
-    showFacetBar,
-    view,
-    fields,
-    crowdFields,
-  ) => {
+  renderFacetBarConfig = (showFacetBar, view, fields, crowdFields) => {
     return (
       <Panel>
         <Panel.Heading>
@@ -551,12 +545,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     );
   };
-  renderAutoSuggestConfig = (
-    showAutoSuggest,
-    view,
-    fields,
-    crowdFields,
-  ) => {
+  renderAutoSuggestConfig = (showAutoSuggest, view, fields, crowdFields) => {
     return (
       <Panel>
         <Panel.Heading>
@@ -630,12 +619,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     );
   };
-  renderPreSearchConfig = (
-    showPresearch,
-    view,
-    fields,
-    crowdFields,
-  ) => {
+  renderPreSearchConfig = (showPresearch, view, fields, crowdFields) => {
     return (
       <Panel>
         <Panel.Heading>
@@ -763,10 +747,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     );
   };
-  renderResultsConfig = (
-    showResults,
-    view,
-  ) => {
+  renderResultsConfig = (showResults, view) => {
     return (
       <Panel>
         <Panel.Heading>
@@ -849,12 +830,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     );
   };
-  renderBreadCrumbsConfig = (
-    showBreadCrumbs,
-    view,
-    fields,
-    crowdFields,
-  ) => {
+  renderBreadCrumbsConfig = (showBreadCrumbs, view, fields, crowdFields) => {
     return (
       <Panel>
         <Panel.Heading>
@@ -979,29 +955,26 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 showFacetBar,
                 view,
                 fields,
-                crowdFields,
+                crowdFields
               )}
               {this.renderAutoSuggestConfig(
                 showAutoSuggest,
                 view,
                 fieldsAutoSuggest,
-                crowdFieldsAutoSuggest,
+                crowdFieldsAutoSuggest
               )}
               {this.renderPreSearchConfig(
                 showPresearch,
                 view,
                 fieldsPresearch,
-                crowdFieldsPresearch,
+                crowdFieldsPresearch
               )}
-              {this.renderResultsConfig(
-                showResults,
-                view,
-              )}
+              {this.renderResultsConfig(showResults, view)}
               {this.renderBreadCrumbsConfig(
                 showBreadCrumbs,
                 view,
                 fields,
-                crowdFields,
+                crowdFields
               )}
             </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
