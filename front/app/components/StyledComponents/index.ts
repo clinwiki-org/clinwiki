@@ -87,6 +87,7 @@ const MainContainer = styled(Col)`
       props.theme.searchResults.resultsRowHighlight} !important;
     color: #fff !important;
   }
+
   span,
   h2 {
     padding-left: 15px;

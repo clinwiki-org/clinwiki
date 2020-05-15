@@ -191,10 +191,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
   };
   renderDisplayLabel = (configType:ConfigType) => {
-    if (this.props.kind !== 'crowdAggs') {
       return (
         <span>
-          <ThemedStyledLabel>Agg Label:</ThemedStyledLabel>
+          <ThemedStyledLabel>{this.props.kind=='crowdAggs'? "Crowd ":null}Agg Label:</ThemedStyledLabel>
           <StyledFormControl
             name={`set:${this.getPath(configType)}.displayName`}
             placeholder={aggToField(
@@ -206,9 +205,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           />
         </span>
       );
-    } else {
-      return null;
-    }
   };
 
   getUpdaters() {

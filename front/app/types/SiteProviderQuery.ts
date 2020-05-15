@@ -226,6 +226,7 @@ export interface SiteProviderQuery_site_siteView_search_presearch_crowdAggs_fiel
   order: SiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: SiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: SiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -341,6 +342,7 @@ export interface SiteProviderQuery_site_siteView_search_crowdAggs_fields {
   order: SiteProviderQuery_site_siteView_search_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: SiteProviderQuery_site_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: SiteProviderQuery_site_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -587,6 +589,7 @@ export interface SiteProviderQuery_site_siteViews_search_presearch_crowdAggs_fie
   order: SiteProviderQuery_site_siteViews_search_presearch_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: SiteProviderQuery_site_siteViews_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: SiteProviderQuery_site_siteViews_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -702,6 +705,7 @@ export interface SiteProviderQuery_site_siteViews_search_crowdAggs_fields {
   order: SiteProviderQuery_site_siteViews_search_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: SiteProviderQuery_site_siteViews_search_crowdAggs_fields_preselected;
   visibleOptions: SiteProviderQuery_site_siteViews_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
