@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
-import SearchPage from 'containers/SearchPage';
+import SearchPage from '../../SearchPage'
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import {
@@ -12,7 +12,8 @@ import {
   StyledProfileScoreValue,
   ScoreBoard,
   StyledProfileRanking,
-} from 'components/StyledComponents';
+} from '../../../components/StyledComponents';
+
 
 interface ProfileScoreBoardProps {
   totalPoints: any;
