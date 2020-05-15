@@ -7,8 +7,7 @@ import { checkServerIdentity } from 'tls';
 import MultiCrumb from 'components/MultiCrumb';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import ThemedButton from 'components/StyledComponents';
-import FacetCard from 'components/FacetCard/FacetCard';
-import AddFacetCard from 'components/FacetCard/AddFacetCard';
+import BulkFacetCard from 'components/FacetCard/BulkFacetCard';
 
 interface Undo {
   description: string;
@@ -268,7 +267,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
           <Container>
             {labels.map(label =>
               !aggBucketsByLabel[label].all.length ? null : (
-                <FacetCard label={label} bulk>
+                <BulkFacetCard label={label}>
                   {aggBucketsByLabel[label].all.map(value => {
                     const indeterminate = aggBucketsByLabel[
                       label
@@ -299,7 +298,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
                       </Checkbox>
                     );
                   })}
-                </FacetCard>
+                </BulkFacetCard>
               )
             )}
           </Container>
