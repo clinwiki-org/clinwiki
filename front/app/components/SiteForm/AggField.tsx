@@ -32,6 +32,15 @@ export interface FieldType {
   rangeEndLabel?: string;
 }
 
+export interface OptionVisibility {
+  hideVisibleOptions: boolean;
+  hideSortType: boolean;
+  hideSortOrder: boolean;
+  hideRank: boolean;
+  hideDisplayType: boolean;
+  hidePreSelected: boolean;
+}
+
 interface AggFieldProps {
   kind: 'aggs' | 'crowdAggs';
   field: FieldType;
@@ -40,6 +49,7 @@ interface AggFieldProps {
   configType: ConfigType;
   returnAll?: Boolean;
   workflowName?: string;
+  optionsVisibility?: Partial<OptionVisibility>;
 }
 
 interface AggFieldState {
@@ -209,32 +219,47 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     );
   };
 
-  getUpdaters() {
-    return [
-      new AggFilterSiteConfigUpdater(
-        this.props.field.name,
-        this.props.field?.preselected,
-        this.props.onAddMutation,
-        this.props.kind,
-        'preselected',
-        this.props.configType
-      ),
-      new AggFilterSiteConfigUpdater(
-        this.props.field.name,
-        this.props.field.visibleOptions,
-        this.props.onAddMutation,
-        this.props.kind,
-        'visibleOptions',
-        this.props.configType,
-        this.props.workflowName
-      ),
-    ];
+  getPreselectUpdater() {
+    return new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field?.preselected,
+      this.props.onAddMutation,
+      this.props.kind,
+      'preselected',
+      this.props.configType
+    );
   }
 
-  render() {
-    const { configType, field } = this.props;
+  getVisibleOptionsUpdater() {
+    return new AggFilterSiteConfigUpdater(
+      this.props.field.name,
+      this.props.field.visibleOptions,
+      this.props.onAddMutation,
+      this.props.kind,
+      'visibleOptions',
+      this.props.configType,
+      this.props.workflowName
+    );
+  }
+
+  getOptionVisibility() {
+    const current = this.props.optionsVisibility || {};
+    const defaultVisibility: OptionVisibility = {
+      hideVisibleOptions: false,
+      hideSortType: false,
+      hideSortOrder: false,
+      hideRank: false,
+      hideDisplayType: false,
+      hidePreSelected: false,
+    };
+    return { ...defaultVisibility, ...current };
+  }
+
+  renderPreselected(opVis: OptionVisibility) {
+    const { field, configType } = this.props;
+    if (!field.preselected || opVis.hidePreSelected) return null;
     const selected = new Set(field?.preselected?.values);
-    const visibleOptions = new Set(this.props.field.visibleOptions.values);
+    const preselectedUpdater = this.getPreselectUpdater();
     const searchParams = {
       q: ({ key: 'AND', children: [] } as unknown) as string[],
       page: 0,
@@ -243,7 +268,173 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       crowdAggFilters: [],
       sorts: [],
     };
-    const [preselectedUpdater, visibleOptionsUpdater] = this.getUpdaters();
+    return (
+      <>
+        {this.renderDisplayLabel(configType)}
+        <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
+        <ThemedCrumbsContainer>
+          {Array.from(selected).map(value => (
+            <MultiCrumb
+              key={value}
+              values={[value]}
+              onClick={value => preselectedUpdater.removeFilter(value)}
+            />
+          ))}
+        </ThemedCrumbsContainer>
+        <FiltersContainer>
+          <FilterContainer>
+            <AggFilterInputUpdateContext.Provider
+              value={{
+                updater: preselectedUpdater,
+              }}>
+              <AggDropDown
+                agg={this.props.field.name}
+                aggKind={this.props.kind}
+                searchParams={searchParams}
+                display={this.props.field.display}
+                isOpen={this.state.isValuesOpen}
+                selectedKeys={selected}
+                onOpen={this.handleOpen('preselected')}
+                currentSiteView={this.props.view}
+                configType={this.props.configType}
+                returnAll={this.props.returnAll}
+              />
+            </AggFilterInputUpdateContext.Provider>
+          </FilterContainer>
+        </FiltersContainer>
+      </>
+    );
+  }
+
+  renderVisibleOptions(opVis: OptionVisibility) {
+    if (opVis.hideVisibleOptions) return null;
+    const visibleOptions = new Set(this.props.field.visibleOptions.values);
+    const visibleOptionsUpdater = this.getVisibleOptionsUpdater();
+    return (
+      <>
+        <ThemedStyledLabel>Visible options</ThemedStyledLabel>
+        <ThemedCrumbsContainer>
+          {Array.from(visibleOptions).map(value => (
+            <MultiCrumb
+              key={value}
+              values={[value]}
+              onClick={value => visibleOptionsUpdater.removeFilter(value)}
+            />
+          ))}
+        </ThemedCrumbsContainer>
+        <FiltersContainer>
+          <FilterContainer>
+            <AggFilterInputUpdateContext.Provider
+              value={{
+                updater: visibleOptionsUpdater,
+              }}>
+              <AggDropDown
+                agg={this.props.field.name}
+                aggKind={this.props.kind}
+                searchParams={{
+                  q: ({
+                    key: 'AND',
+                    children: [],
+                  } as unknown) as string[],
+                  page: 0,
+                  pageSize: 25,
+                  aggFilters: [],
+                  crowdAggFilters: [],
+                  sorts: [],
+                }}
+                display={this.props.field.display}
+                isOpen={this.state.isVisibleOptionsOpen}
+                selectedKeys={visibleOptions}
+                onOpen={this.handleOpen('visibleOptions')}
+                currentSiteView={this.props.view}
+                configType={this.props.configType}
+                returnAll={this.props.returnAll}
+              />
+            </AggFilterInputUpdateContext.Provider>
+          </FilterContainer>
+        </FiltersContainer>
+      </>
+    );
+  }
+
+  renderSortType(opVis: OptionVisibility) {
+    if (opVis.hideSortType) return null;
+    const configType = this.props.configType;
+    return (
+      <>
+        <ThemedStyledLabel>Default Sort Type</ThemedStyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.order.sortKind`}
+          componentClass="select"
+          onChange={e => this.handleDefaultSortMutation(e)}
+          defaultValue={this.props.field.order?.sortKind}>
+          <option value="key">Alpha</option>
+          <option value="count">Numeric</option>
+        </StyledFormControl>
+      </>
+    );
+  }
+
+  renderSortOrder(opVis: OptionVisibility) {
+    if (opVis.hideSortOrder) return null;
+    const configType = this.props.configType;
+    return (
+      <>
+        <StyledLabel>Default Sort Order</StyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.order.desc`}
+          componentClass="select"
+          onChange={e => this.handleDefaultSortMutation(e)}
+          defaultValue={this.props.field.order?.desc}>
+          <option value="true">
+            {this.props.field.order?.sortKind == 'count' ? '1-9' : 'A-Z'}
+          </option>
+          <option value="false">
+            {this.props.field.order?.sortKind == 'count' ? '9-1' : 'Z-A'}
+          </option>
+        </StyledFormControl>
+        <ThemedStyledLabel>Order</ThemedStyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.rank`}
+          placeholder="Order"
+          value={this.props.field.rank}
+          onChange={this.props.onAddMutation}
+        />
+      </>
+    );
+  }
+
+  renderDisplayType(opVis: OptionVisibility) {
+    if (opVis.hideDisplayType) return null;
+    const configType = this.props.configType;
+    return (
+      <>
+        <ThemedStyledLabel>Display</ThemedStyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.display`}
+          componentClass="select"
+          onChange={this.props.onAddMutation}
+          defaultValue={this.props.field.display}>
+          <option value="STRING">Text</option>
+          <option value="STAR">Stars</option>
+          <option value="DATE">Date</option>
+          <option value="DATE_RANGE">Date Range</option>
+          <option value="NUMBER_RANGE">Number Range</option>
+          <option value="LESS_THAN_RANGE">Less Than Range</option>
+          <option value="GREATER_THAN_RANGE">Greater Than Range</option>
+        </StyledFormControl>
+        {this.props.field.display == 'NUMBER_RANGE' ||
+        this.props.field.display == 'LESS_THAN_RANGE' ||
+        this.props.field.display == 'GREATER_THAN_RANGE' ||
+        this.props.field.display == 'DATE_RANGE'
+          ? this.renderNumberRangeConfig(configType, this.props.field.display)
+          : null}
+      </>
+    );
+  }
+
+  render() {
+    const vis = this.getOptionVisibility();
     return (
       <>
         <h4>
@@ -253,131 +444,11 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             .join(' ')}
         </h4>
         <ThemedContainer>
-          {field.preselected ? (
-            <>
-              {this.renderDisplayLabel(configType)}
-              <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
-              <ThemedCrumbsContainer>
-                {Array.from(selected).map(value => (
-                  <MultiCrumb
-                    key={value}
-                    values={[value]}
-                    onClick={value => preselectedUpdater.removeFilter(value)}
-                  />
-                ))}
-              </ThemedCrumbsContainer>
-              <FiltersContainer>
-                <FilterContainer>
-                  <AggFilterInputUpdateContext.Provider
-                    value={{
-                      updater: preselectedUpdater,
-                    }}>
-                    <AggDropDown
-                      agg={this.props.field.name}
-                      aggKind={this.props.kind}
-                      searchParams={searchParams}
-                      display={this.props.field.display}
-                      isOpen={this.state.isValuesOpen}
-                      selectedKeys={selected}
-                      onOpen={this.handleOpen('preselected')}
-                      currentSiteView={this.props.view}
-                      configType={this.props.configType}
-                      returnAll={this.props.returnAll}
-                    />
-                  </AggFilterInputUpdateContext.Provider>
-                </FilterContainer>
-              </FiltersContainer>
-            </>
-          ) : null}
-          <ThemedStyledLabel>Visible options</ThemedStyledLabel>
-          <ThemedCrumbsContainer>
-            {Array.from(visibleOptions).map(value => (
-              <MultiCrumb
-                key={value}
-                values={[value]}
-                onClick={value => visibleOptionsUpdater.removeFilter(value)}
-              />
-            ))}
-          </ThemedCrumbsContainer>
-          <FiltersContainer>
-            <FilterContainer>
-              <AggFilterInputUpdateContext.Provider
-                value={{
-                  updater: visibleOptionsUpdater,
-                }}>
-                <AggDropDown
-                  agg={this.props.field.name}
-                  aggKind={this.props.kind}
-                  searchParams={{
-                    q: ({ key: 'AND', children: [] } as unknown) as string[],
-                    page: 0,
-                    pageSize: 25,
-                    aggFilters: [],
-                    crowdAggFilters: [],
-                    sorts: [],
-                  }}
-                  display={this.props.field.display}
-                  isOpen={this.state.isVisibleOptionsOpen}
-                  selectedKeys={visibleOptions}
-                  onOpen={this.handleOpen('visibleOptions')}
-                  currentSiteView={this.props.view}
-                  configType={this.props.configType}
-                  returnAll={this.props.returnAll}
-                />
-              </AggFilterInputUpdateContext.Provider>
-            </FilterContainer>
-          </FiltersContainer>
-          <div>
-            <ThemedStyledLabel>Default Sort Type</ThemedStyledLabel>
-            <StyledFormControl
-              name={`set:${this.getPath(configType)}.order.sortKind`}
-              componentClass="select"
-              onChange={e => this.handleDefaultSortMutation(e)}
-              defaultValue={this.props.field.order?.sortKind}>
-              <option value="key">Alpha</option>
-              <option value="count">Numeric</option>
-            </StyledFormControl>
-            <StyledLabel>Default Sort Order</StyledLabel>
-            <StyledFormControl
-              name={`set:${this.getPath(configType)}.order.desc`}
-              componentClass="select"
-              onChange={e => this.handleDefaultSortMutation(e)}
-              defaultValue={this.props.field.order?.desc}>
-              <option value="true">
-                {this.props.field.order?.sortKind == 'count' ? '1-9' : 'A-Z'}
-              </option>
-              <option value="false">
-                {this.props.field.order?.sortKind == 'count' ? '9-1' : 'Z-A'}
-              </option>
-            </StyledFormControl>
-            <ThemedStyledLabel>Order</ThemedStyledLabel>
-            <StyledFormControl
-              name={`set:${this.getPath(configType)}.rank`}
-              placeholder="Order"
-              value={this.props.field.rank}
-              onChange={this.props.onAddMutation}
-            />
-            <ThemedStyledLabel>Display</ThemedStyledLabel>
-            <StyledFormControl
-              name={`set:${this.getPath(configType)}.display`}
-              componentClass="select"
-              onChange={this.props.onAddMutation}
-              defaultValue={this.props.field.display}>
-              <option value="STRING">Text</option>
-              <option value="STAR">Stars</option>
-              <option value="DATE">Date</option>
-              <option value="DATE_RANGE">Date Range</option>
-              <option value="NUMBER_RANGE">Number Range</option>
-              <option value="LESS_THAN_RANGE">Less Than Range</option>
-              <option value="GREATER_THAN_RANGE">Greater Than Range</option>
-            </StyledFormControl>
-          </div>
-          {this.props.field.display == 'NUMBER_RANGE' ||
-          this.props.field.display == 'LESS_THAN_RANGE' ||
-          this.props.field.display == 'GREATER_THAN_RANGE' ||
-          this.props.field.display == 'DATE_RANGE'
-            ? this.renderNumberRangeConfig(configType, this.props.field.display)
-            : null}
+          {this.renderPreselected(vis)}
+          {this.renderVisibleOptions(vis)}
+          {this.renderSortType(vis)}
+          {this.renderSortOrder(vis)}
+          {this.renderDisplayType(vis)}
         </ThemedContainer>
       </>
     );
