@@ -731,6 +731,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                     }}>
                     {this.props.siteViews.map(view => (
                       <MenuItem
+                        key={view.name}
                         name={`set:search.presearch.button.target`}
                         onClick={e =>
                           this.handlePresearchButtonTarget(e, view, view.url)

@@ -130,6 +130,11 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
                   configType="workflow"
                   returnAll={true}
                   workflowName={this.props.workflow.name}
+                  optionsVisibility={{
+                    hideSortType: true,
+                    hidePreSelected: true,
+                    hideDisplayType: true
+                  }}
                 />
               );
             })}

@@ -13,7 +13,6 @@ import {
   addIndex,
   map,
   pipe,
-  isNil,
   omit,
   find,
   propEq,
@@ -28,13 +27,9 @@ import {
   propOr,
   uniq,
 } from 'ramda';
-import SiteProvider from 'containers/SiteProvider';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import BulkEditView from './BulkEditView';
-import {
-  SearchPageParamsQueryVariables,
-  SearchPageParamsQuery_searchParams,
-} from 'types/SearchPageParamsQuery';
+import { SearchPageParamsQuery_searchParams, } from 'types/SearchPageParamsQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import { SearchQueryInput } from 'types/globalTypes';
 import { SearchPageSearchQueryVariables } from 'types/SearchPageSearchQuery';
