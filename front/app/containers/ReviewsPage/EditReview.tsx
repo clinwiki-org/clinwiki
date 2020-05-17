@@ -13,6 +13,7 @@ import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
 import { History } from 'history';
 import StudySummary from 'components/StudySummary';
 import { trimPath } from 'utils/helpers';
+import withTheme from 'containers/ThemeProvider';
 
 interface EditReviewProps {
   match: match<{ nctId: string; id?: string }>;
@@ -87,4 +88,4 @@ class EditReview extends React.PureComponent<EditReviewProps> {
   }
 }
 
-export default EditReview;
+export default withTheme(EditReview);

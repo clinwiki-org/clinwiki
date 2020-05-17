@@ -30,10 +30,11 @@ class Site < ApplicationRecord
   def create_site_view
     self.site_views.new(name:"Primary",default:true)
     self.site_views.new(name:"User History",url:"user", default: false, updates: default_user_updates )
+    self.site_views.new(name:"Intervention",url:"intervention",default:false, updates: default_intervention_updates )
     save!
   end
 
-  def default_user_updates
+  def self.default_user_updates
     [ {"path"=>["search", "config", "fields", "showFacetBar"],
          "payload"=>"false",
          "operation"=>"set"},
@@ -50,5 +51,21 @@ class Site < ApplicationRecord
      "payload"=>"user",
          "operation"=>"set"}
     ]
+  end
+  def self.default_intervention_updates
+    [
+      {"path"=>["search", "type"], "payload"=>"search", "operation"=>"set"},
+      {"path"=>["search", "config", "fields", "showBreadCrumbs"],
+        "payload"=>"false",
+        "operation"=>"set"},
+      {"path"=>["search", "config", "fields", "showAutoSuggest"],
+        "payload"=>"false",
+        "operation"=>"set"},
+      {"path"=>["search", "config", "fields", "showFacetBar"],
+        "payload"=>"false",
+        "operation"=>"set"},
+      {"path"=>["search", "type"],
+        "payload"=>"intervention",
+        "operation"=>"set"}]
   end
 end

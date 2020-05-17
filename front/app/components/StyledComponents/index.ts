@@ -229,3 +229,8 @@ export const StyledProfileForm = styled(FormControl)`
     opacity: 1;
   }
 `;
+export const StyledInterventionHeading = styled.div`
+  margin: 1em;
+  border-bottom: solid white;
+`
+
