@@ -22,6 +22,7 @@ import AddFacetCard from './AddFacetCard';
 import CrowdPage from 'containers/CrowdPage';
 import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
+import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
 
 const Row = styled.div`
@@ -314,6 +315,18 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       suggestions,
       showLoginModal,
     } = this.state;
+    if (bulk) {
+      return (
+        <ThemedPresearchCard>
+          <ThemedPresearchHeader>
+            <PresearchTitle>{truncateString(label, 32, true)}</PresearchTitle>
+          </ThemedPresearchHeader>
+          <PresearchContent style={{ overflowY: 'auto' }}>
+            {this.props.children}
+          </PresearchContent>
+        </ThemedPresearchCard>
+      );
+    }
     if (addLabel) {
       return (
         <CurrentUser>
@@ -329,7 +342,9 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                       />
                       <ThemedPresearchCard>
                         <ThemedPresearchHeader>
-                          <PresearchTitle>{capitalize(label)}</PresearchTitle>
+                          <PresearchTitle>
+                            {truncateString(label, 32, true)}
+                          </PresearchTitle>
                         </ThemedPresearchHeader>
                         <PresearchContent style={{ overflowY: 'auto' }}>
                           <AddFacetCard
@@ -367,7 +382,9 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                     />
                     <ThemedPresearchCard>
                       <ThemedPresearchHeader>
-                        <PresearchTitle>{capitalize(label)}</PresearchTitle>
+                        <PresearchTitle>
+                          {truncateString(label, 32, true)}
+                        </PresearchTitle>
                         {!textFieldActive && (
                           <TextFieldToggle
                             onClick={() => this.handlePlusClick(user)}>

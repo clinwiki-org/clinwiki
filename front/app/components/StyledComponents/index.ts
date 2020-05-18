@@ -105,7 +105,7 @@ const PresearchCard = styled.div`
   border-color: ${props => props.theme.buttonSecondary};
   margin: 10px;
   flex: 1;
-  // height: 310px;
+  min-height: 200px;
   min-width: 320px;
   max-width: 320px;
   background: white;
@@ -233,4 +233,3 @@ export const StyledInterventionHeading = styled.div`
   margin: 1em;
   border-bottom: solid white;
 `
-
