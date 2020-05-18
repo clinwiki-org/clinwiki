@@ -220,7 +220,6 @@ class FacilitiesPage extends React.PureComponent<
     return (
       <div key={`${key}-${name}`}>
         <FacilityCard
-          key={`${key}-${index}`}
           name={name}
           title={key}
           index={index}

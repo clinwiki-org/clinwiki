@@ -50,7 +50,7 @@ class InterventionsPage extends React.PureComponent<InterventionsPageProps> {
 
   handleItemClick = (id: number) => {
     this.props.history.push(
-      `/intervention/${id}/${this.props.location.search}`
+      `/intervention/${id}?sv=intervention`
     );
   };
 
