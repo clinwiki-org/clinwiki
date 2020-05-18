@@ -5,7 +5,7 @@ import {
   UpdateWorkflowsViewMutation as UpdateWorkflowsViewMutationType,
   UpdateWorkflowsViewMutationVariables,
 } from 'types/UpdateWorkflowsViewMutation';
-import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
+import { mutation } from 'queries/WorkflowsViewProviderquery';
 
 interface UpdateWorkflowsViewMutationProps {
   children: (
@@ -15,19 +15,6 @@ interface UpdateWorkflowsViewMutationProps {
   onCompleted?: (data: UpdateWorkflowsViewMutationType) => void;
   onError?: (e: ApolloError) => void;
 }
-
-const UPDATE_WORKFLOWS_VIEW_MUTATION = gql`
-  mutation UpdateWorkflowsViewMutation($input: UpdateWorkflowsViewInput!) {
-    updateWorkflowsView(input: $input) {
-      workflowsView {
-        ...WorkflowsViewFragment
-      }
-      errors
-    }
-  }
-
-  ${WorkflowsViewProvider.fragment}
-`;
 
 class UpdateWorkflowsViewMutationComponent extends Mutation<
   UpdateWorkflowsViewMutationType,
@@ -44,7 +31,7 @@ class UpdateWorkflowsViewMutation extends React.PureComponent<
   render() {
     return (
       <UpdateWorkflowsViewMutationComponent
-        mutation={UPDATE_WORKFLOWS_VIEW_MUTATION}
+        mutation={mutation}
         onCompleted={this.props.onCompleted}
         onError={this.props.onError}>
         {this.props.children}

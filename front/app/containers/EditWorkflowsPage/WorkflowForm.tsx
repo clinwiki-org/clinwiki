@@ -1,11 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { FormControl, Checkbox } from 'react-bootstrap';
-import {
-  WorkflowConfigFragment_wikiSectionsFilter,
-  WorkflowConfigFragment,
-} from 'types/WorkflowConfigFragment';
+import { Panel, Row, FormControl, Checkbox } from 'react-bootstrap';
+import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import MultiInput from 'components/MultiInput';
+import AggField, { FieldType } from 'components/SiteForm/AggField';
+import { fromPairs, difference, find } from 'ramda';
+import { withSite2 } from 'containers/SiteProvider/SiteProvider';
+import { SiteViewFragment } from 'types/SiteViewFragment';
+import { MutationSource } from 'containers/SearchPage/shared';
+import { DeleteSiteMutationsSitesQuery } from 'types/DeleteSiteMutationsSitesQuery';
+import { Mutation } from 'react-apollo';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -13,7 +17,8 @@ const StyledFormControl = styled(FormControl)`
 
 interface WorkflowFormProps {
   workflow: WorkflowConfigFragment;
-  onAddMutation: (e: { currentTarget: { name: string; value: any } }) => void;
+  onAddMutations: (e: MutationSource[]) => void;
+  currentSiteView: SiteViewFragment;
 }
 
 const StyledLabel = styled.label`
@@ -29,21 +34,60 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
-    this.props.onAddMutation({
-      currentTarget: { name: e.currentTarget.name, value: !value },
-    });
+    this.props.onAddMutations([
+      {
+        currentTarget: { name: e.currentTarget.name, value: !value },
+      },
+    ]);
+  };
+
+  handleAggFieldMutation = (
+    workflow: WorkflowConfigFragment,
+    aggField: FieldType
+  ) => (mut: MutationSource) => {
+    const workflowName = workflow.name;
+    let mutations: MutationSource[] = [];
+    if (
+      !find(conf => conf.name == aggField.name, workflow.suggestedLabelsConfig)
+    ) {
+      // If there is no suggestedLabelsConfig we have to add it
+      mutations.push({
+        currentTarget: {
+          name: `push:workflows.${workflowName}.suggestedLabelsConfig`,
+          value: aggField,
+        },
+      });
+    }
+    mutations.push(mut);
+    this.props.onAddMutations(mutations);
   };
 
   render() {
+    const { workflow } = this.props;
+    const config = fromPairs(
+      workflow.suggestedLabelsConfig.map(c => [c.name, c])
+    );
+    const defaultFieldInfo = {
+      order: { sortKind: 'key', desc: true },
+      display: 'STRING',
+      visibleOptions: { kind: 'WHITELIST', values: [] },
+    };
+    const facets =
+      workflow.suggestedLabelsFilter.kind == 'WHITELIST'
+        ? workflow.suggestedLabelsFilter.values
+        : difference(
+            workflow.allSuggestedLabels,
+            workflow.suggestedLabelsFilter.values
+          );
+    const onAddMutation = e => this.props.onAddMutations([e]);
     return (
       <div>
         <h3>{this.props.workflow.name}</h3>
-
         <StyledLabel>Facets</StyledLabel>
         <StyledFormControl
           name={`set:workflows.${this.props.workflow.name}.suggestedLabelsFilter.kind`}
           componentClass="select"
-          onChange={this.props.onAddMutation}
+          onChange={onAddMutation}
           value={this.props.workflow.suggestedLabelsFilter.kind}>
           <option value="BLACKLIST">All except</option>
           <option value="WHITELIST">Only</option>
@@ -56,8 +100,46 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
           }))}
           placeholder="Add field"
           value={this.props.workflow.suggestedLabelsFilter.values}
-          onChange={this.props.onAddMutation}
+          onChange={onAddMutation}
         />
+
+        <Panel style={{ Margin: '100px' }}>
+          <Panel.Heading>
+            <Panel.Title toggle>Facet Config</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body
+            collapsible
+            style={{ backgroundColor: '#4d5863', color: 'white' }}>
+            <StyledLabel>Configure Crowd Labels</StyledLabel>
+            {facets.map(name => {
+              const fieldInfo = {
+                name: name,
+                ...defaultFieldInfo,
+                ...config[name],
+              };
+              return (
+                <AggField
+                  kind="crowdAggs"
+                  key={name}
+                  field={fieldInfo}
+                  onAddMutation={this.handleAggFieldMutation(
+                    this.props.workflow,
+                    fieldInfo
+                  )}
+                  view={this.props.currentSiteView}
+                  configType="workflow"
+                  returnAll={true}
+                  workflowName={this.props.workflow.name}
+                  optionsVisibility={{
+                    hideSortType: true,
+                    hidePreSelected: true,
+                    hideDisplayType: true
+                  }}
+                />
+              );
+            })}
+          </Panel.Body>
+        </Panel>
 
         <StyledLabel>Reviews</StyledLabel>
         <StyledCheckbox
@@ -79,7 +161,7 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
         <StyledFormControl
           name={`set:workflows.${this.props.workflow.name}.wikiSectionsFilter.kind`}
           componentClass="select"
-          onChange={this.props.onAddMutation}
+          onChange={onAddMutation}
           value={this.props.workflow.wikiSectionsFilter.kind}>
           <option value="BLACKLIST">All except</option>
           <option value="WHITELIST">Only</option>
@@ -92,13 +174,13 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
           }))}
           placeholder="Add field"
           value={this.props.workflow.wikiSectionsFilter.values}
-          onChange={this.props.onAddMutation}
+          onChange={onAddMutation}
         />
         <StyledLabel>Summary fields</StyledLabel>
         <StyledFormControl
           name={`set:workflows.${this.props.workflow.name}.summaryFieldsFilter.kind`}
           componentClass="select"
-          onChange={this.props.onAddMutation}
+          onChange={onAddMutation}
           value={this.props.workflow.summaryFieldsFilter.kind}>
           <option value="BLACKLIST">All except</option>
           <option value="WHITELIST">Only</option>
@@ -111,11 +193,11 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
           }))}
           placeholder="Add field"
           value={this.props.workflow.summaryFieldsFilter.values}
-          onChange={this.props.onAddMutation}
+          onChange={onAddMutation}
         />
       </div>
     );
   }
 }
 
-export default WorkflowForm;
+export default withSite2(WorkflowForm);

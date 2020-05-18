@@ -1,6 +1,6 @@
 module Types
   class SiteOrderType < Types::BaseObject
-    field :sort_kind, String, null: false
+    field :sort_kind, SortKindType, null: false
     field :desc, Boolean, null:false
 
 

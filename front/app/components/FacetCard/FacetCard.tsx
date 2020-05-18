@@ -23,6 +23,7 @@ import CrowdPage from 'containers/CrowdPage';
 import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
+import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
 
 const Row = styled.div`
   display: flex;
@@ -113,17 +114,15 @@ export type UpsertMutationFn = MutationFn<
 >;
 
 interface FacetCardProps {
-  nctId?: string;
+  nctId: string;
   label: string;
   children?: any;
-  onSelect?: any;
-  bulk?: boolean;
+  onSelect?: (key: string, value: string, checked: boolean) => void;
   addLabel?: boolean;
-  meta?: any;
-  siteView?: any;
+  meta: Record<string,string>;
+  siteView: any;
   values?: [string, boolean][];
-  user?: any;
-  refetch?: any;
+  refetch?: ()=>void;
   aggNames?: any;
 }
 
@@ -176,10 +175,11 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
 
   queryAutoSuggest = async apolloClient => {
     const { existingField } = this.state;
-    const { siteView, label, values } = this.props;
+    const { label, values } = this.props;
 
     const query = AUTOSUGGEST_QUERY;
     const variables = {
+      // todo: probably want to query more than just browse_condition_mesh_terms
       agg: 'browse_condition_mesh_terms',
       aggFilters: [],
       aggOptionsFilter: existingField,
@@ -198,7 +198,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       query,
       variables,
     });
-    // console.log(response);
 
     const array = response.data.autocomplete.autocomplete[0].results;
 
@@ -210,8 +209,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
           }
           if (key === '-99999999999') {
             array.splice(i, 1);
-          } else {
-            // console.log('good data', array[i]);
           }
         }
       });
@@ -240,8 +237,8 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
         this.props.nctId,
         upsertLabelMutation
       );
-      this.props.refetch();
-    } else alert('error');
+      if (this.props.refetch) this.props.refetch();
+    }
   };
 
   handleButtonClick = upsertLabelMutation => {
@@ -311,7 +308,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel, bulk, aggNames, siteView, values } = this.props;
+    const { label, addLabel, aggNames, siteView, values } = this.props;
     const {
       textFieldActive,
       existingField,

@@ -158,6 +158,7 @@ const SITE_VIEW_FRAGMENT = gql`
             }
             name
             display
+            displayName
             preselected {
               kind
               values
@@ -229,6 +230,7 @@ const SITE_VIEW_FRAGMENT = gql`
           }
           name
           display
+          displayName
           preselected {
             kind
             values
@@ -287,6 +289,42 @@ const QUERY = gql`
 
   ${SITE_FRAGMENT}
 `;
+
+type ToOmit = 'site' | 'refetch' | 'currentSiteView';
+export function withSite2<T>(
+  Component: React.ComponentType<T>
+): React.ComponentClass<Omit<T, ToOmit>> {
+  class WithSiteProvider extends React.Component<Omit<T, ToOmit>> {
+    render() {
+      return (
+        <SiteProvider>
+          {(site, refetch) => {
+            const url =
+              (this.props as any)?.history?.location?.search ||
+              window.location.search;
+            const usp = new URLSearchParams(url)
+              .getAll('sv')
+              .toString()
+              .toLowerCase();
+            const currentSite =
+              site.siteViews.find(
+                siteview => siteview?.url?.toLowerCase() === url
+              ) || site.siteView;
+            return (
+              <Component
+                site={site}
+                refetch={refetch}
+                currentSiteView={currentSite}
+                {...(this.props as T)}
+              />
+            );
+          }}
+        </SiteProvider>
+      );
+    }
+  }
+  return WithSiteProvider;
+}
 
 export const withSite = Component => props => (
   <SiteProvider>

@@ -2,23 +2,16 @@ import * as React from 'react';
 import styledComponents from 'styled-components';
 import {
   pipe,
-  map,
   length,
   prop,
   sortBy,
   pathOr,
   uniqBy,
   concat,
-  isNil,
-  isEmpty,
   equals,
-  lensPath,
-  view,
   find,
-  filter,
   propEq,
   reverse,
-  identity,
 } from 'ramda';
 import { withApollo } from 'react-apollo';
 import { Panel } from 'react-bootstrap';
@@ -33,6 +26,7 @@ import {
   maskAgg,
 } from '../SearchPage/Types';
 import aggToField from 'utils/aggs/aggToField';
+import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
 import { withSite } from 'containers/SiteProvider/SiteProvider';
 import {
@@ -367,22 +361,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.setState({ buckets: newBuckets, hasMore });
   };
 
-  findFields = () => {
-    const { agg, site, currentSiteView } = this.props;
-    if (this.props.presearch == true) {
-      return find(propEq('name', agg), [
-        ...(currentSiteView?.search?.presearch?.aggs?.fields || []),
-        ...(currentSiteView?.search?.presearch?.crowdAggs?.fields || []),
-      ]) as SiteViewFragment_search_aggs_fields | null;
-    }
-    return find(propEq('name', agg), [
-      ...(currentSiteView?.search?.aggs?.fields || []),
-      ...(currentSiteView?.search?.crowdAggs?.fields || []),
-    ]) as SiteViewFragment_search_aggs_fields | null;
-  };
-
   renderPanel = (isPresearch: boolean) => {
-    const { visibleOptions = [], removeSelectAll } = this.props;
+    const {
+      visibleOptions = [],
+      removeSelectAll,
+      agg,
+      currentSiteView,
+      presearch,
+    } = this.props;
     const {
       buckets = [],
       filter,
@@ -397,7 +383,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     if (!isOpen) {
       return null;
     }
-    const field = this.findFields();
+    const field = findFields(agg, currentSiteView, presearch);
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -496,7 +482,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   renderPresearchFilter = () => {
-    const { agg, removeSelectAll, visibleOptions } = this.props;
+    const {
+      agg,
+      removeSelectAll,
+      visibleOptions,
+      currentSiteView,
+      presearch,
+    } = this.props;
     const {
       buckets = [],
       filter,
@@ -508,7 +500,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       isOpen,
       loading,
     } = this.state;
-    const field = this.findFields();
+    const field = findFields(agg, currentSiteView, presearch);
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -571,8 +563,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   componentDidMount() {
-    let fields = this.props.currentSiteView.search.aggs.fields;
-    const field = this.findFields();
+    const { agg, currentSiteView, presearch } = this.props;
+    const field = findFields(agg, currentSiteView, presearch);
     if (field?.order && field.order.sortKind == 'key') {
       this.setState({
         sortKind: 0,
@@ -587,19 +579,23 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }
 
   render() {
-    const { agg, presearch } = this.props;
+    const { agg, presearch, currentSiteView } = this.props;
     const { isOpen } = this.state;
-    let currentAgg =this.findFields();
+    let currentAgg = findFields(agg, currentSiteView, presearch);
     //@ts-ignore
     let configuredLabel = currentAgg.displayName;
-    const title = aggToField(agg,configuredLabel);
+    const title = aggToField(agg, configuredLabel);
 
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
         <ThemedPresearchCard>
           <ThemedPresearchHeader>
-            <PresearchTitle>{capitalize(title)}</PresearchTitle>
+            <PresearchTitle>
+              {this.props.aggKind === 'crowdAggs'
+                ? capitalize(configuredLabel) || title
+                : capitalize(title)}
+            </PresearchTitle>
           </ThemedPresearchHeader>
           <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
         </ThemedPresearchCard>
@@ -614,7 +610,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             <Panel.Heading className="bm-panel-heading">
               <Panel.Title className="bm-panel-title" toggle>
                 <div className="flex">
-                  <span>{title}</span>
+                  <span>
+                    {this.props.aggKind === 'crowdAggs'
+                      ? configuredLabel
+                      : title}
+                  </span>
                   <span>
                     <FontAwesome name={icon} />{' '}
                   </span>

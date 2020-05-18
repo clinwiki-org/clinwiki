@@ -1,7 +1,7 @@
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
-import { UpdateWorkflowsViewInput, FilterKind } from "./globalTypes";
+import { UpdateWorkflowsViewInput, FilterKind, FieldDisplay, SortKind } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: UpdateWorkflowsViewMutation
@@ -11,6 +11,27 @@ export interface UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_w
   __typename: "SiteSelect";
   kind: FilterKind;
   values: string[];
+}
+
+export interface UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsConfig_order {
+  __typename: "SiteOrder";
+  desc: boolean;
+  sortKind: SortKind;
+}
+
+export interface UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsConfig_visibleOptions {
+  __typename: "SiteSelect";
+  kind: FilterKind;
+  values: string[];
+}
+
+export interface UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsConfig {
+  __typename: "WorkflowAggField";
+  name: string;
+  rank: number | null;
+  display: FieldDisplay;
+  order: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsConfig_order | null;
+  visibleOptions: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsConfig_visibleOptions;
 }
 
 export interface UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_wikiSectionsFilter {
@@ -34,6 +55,7 @@ export interface UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_w
   hideReviews: boolean;
   name: string;
   suggestedLabelsFilter: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsFilter;
+  suggestedLabelsConfig: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsConfig[];
   wikiSectionsFilter: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_wikiSectionsFilter;
   summaryFieldsFilter: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_summaryFieldsFilter;
 }

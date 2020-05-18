@@ -87,6 +87,7 @@ const MainContainer = styled(Col)`
       props.theme.searchResults.resultsRowHighlight} !important;
     color: #fff !important;
   }
+
   span,
   h2 {
     padding-left: 15px;
@@ -228,3 +229,7 @@ export const StyledProfileForm = styled(FormControl)`
     opacity: 1;
   }
 `;
+export const StyledInterventionHeading = styled.div`
+  margin: 1em;
+  border-bottom: solid white;
+`

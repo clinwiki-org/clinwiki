@@ -17,6 +17,7 @@ import UpdateWorkflowsViewMutation, {
   UpdateWorkflowsViewMutationFn,
 } from 'mutations/UpdateWorflowsViewMutation';
 import ThemedButton from 'components/StyledComponents';
+import { MutationSource } from 'containers/SearchPage/shared';
 
 interface EditWorkflowsPageProps {}
 interface EditWorkflowsPageState {
@@ -41,7 +42,6 @@ class EditWorkflowsPage extends React.Component<
   applyMutations = (
     workflowsView: WorkflowsViewFragment
   ): WorkflowsViewFragment => {
-    // @ts-ignore
     return updateView(workflowsView, this.state.mutations);
   };
 
@@ -57,16 +57,28 @@ class EditWorkflowsPage extends React.Component<
     this.setState({ currentWorkflowName: workflow });
   };
 
-  handleAddMutation = (workflowView: WorkflowsViewFragment) => (e: {
-    currentTarget: { name: string; value: any };
-  }) => {
-    const { name, value } = e.currentTarget;
-    const mutation = createMutation(name, value);
-    const view = this.applyMutations(workflowView);
-    // @ts-ignore
-    const currentValue = getViewValueByPath(mutation.path, view);
-    if (equals(value, currentValue)) return;
-    this.setState({ mutations: [...this.state.mutations, mutation] });
+  handleAddMutations = (workflowView: WorkflowsViewFragment) => (
+    ee: MutationSource[]
+  ) => {
+    let mutations: SiteViewMutationInput[] = [];
+    let view = this.applyMutations(workflowView);
+    for (const e of ee) {
+      const { name, value } = e.currentTarget;
+      const mut = createMutation(name, value);
+      const currentValue = getViewValueByPath(mut.path, view);
+      // If a mutation would have no do not apply it
+      if (mut.operation != 'SET' || !equals(mut.payload, currentValue)) {
+        view = updateView(view, [mut]);
+        mutations.push(mut);
+      }
+    }
+    this.setState({ mutations: [...this.state.mutations, ...mutations] });
+  };
+
+  handleAddMutation = (workflowView: WorkflowsViewFragment) => (
+    e: MutationSource
+  ) => {
+    this.handleAddMutations(workflowView)([e]);
   };
 
   render() {
@@ -118,7 +130,7 @@ class EditWorkflowsPage extends React.Component<
                     <StyledPanel>
                       <WorkflowForm
                         workflow={workflow}
-                        onAddMutation={this.handleAddMutation(workflowsView)}
+                        onAddMutations={this.handleAddMutations(workflowsView)}
                       />
                       <UpdateWorkflowsViewMutation>
                         {updateWorflowsView => (

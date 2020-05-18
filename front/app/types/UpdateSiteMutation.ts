@@ -1,7 +1,7 @@
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
-import { UpdateSiteInput, FilterKind, FieldDisplay } from "./globalTypes";
+import { UpdateSiteInput, FilterKind, SortKind, FieldDisplay } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: UpdateSiteMutation
@@ -55,7 +55,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_study {
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -96,7 +96,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -161,7 +161,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_results {
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -205,7 +205,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_ag
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -226,6 +226,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_presearch_cr
   order: UpdateSiteMutation_updateSite_site_siteView_search_presearch_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: UpdateSiteMutation_updateSite_site_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -276,7 +277,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_config {
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -320,7 +321,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_aggs {
 
 export interface UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -341,6 +342,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs_fi
   order: UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -416,7 +418,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_study {
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -457,7 +459,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -522,7 +524,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_results {
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -566,7 +568,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_a
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -587,6 +589,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_presearch_c
   order: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -637,7 +640,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_config {
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_aggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -681,7 +684,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_aggs {
 
 export interface UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs_fields_order {
   __typename: "SiteOrder";
-  sortKind: string;
+  sortKind: SortKind;
   desc: boolean;
 }
 
@@ -702,6 +705,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs_f
   order: UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
+  displayName: string;
   preselected: UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs_fields_preselected;
   visibleOptions: UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs_fields_visibleOptions;
   rank: number | null;

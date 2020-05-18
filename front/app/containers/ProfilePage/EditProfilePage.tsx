@@ -110,7 +110,7 @@ class EditProfilePage extends React.Component<
 
   handleEditProfile = (editProfile: EditProfileMutationFn) => () => {
     editProfile({ variables: { input: this.state.form } });
-    this.toggleEditProfile()
+    this.toggleEditProfile();
   };
   toggleEditProfile = () => {
     this.setState({ isEditing: !this.state.isEditing });
@@ -125,80 +125,87 @@ class EditProfilePage extends React.Component<
     );
   };
   renderEditForm = () => {
-    if(this.props.user){
-    return (
-      <div>
-        //@ts-ignore
-        <ProfilePicture pictureUrl={this.props.user.pictureUrl}/>
-
-        <span style={{paddingLeft:'15px'}} onClick={() => this.toggleEditProfile()}>X</span>
-
-        <SearchContainer>
-          <StyledProfileLabel>First Name:</StyledProfileLabel>
-          <StyledProfileForm
-            name="firstName"
-            placeholder="First name"
-            value={this.state.form.firstName}
-            onChange={this.handleInputChange}
-          />
-          <StyledProfileLabel>Last Name:</StyledProfileLabel>
-
-          <StyledProfileForm
-            name="lastName"
-            placeholder="Last name"
-            value={this.state.form.lastName}
-            onChange={this.handleInputChange}
-          />
-          <StyledProfileLabel>Default Query String:</StyledProfileLabel>
-
-          <StyledProfileForm
-            name="defaultQueryString"
-            placeholder="Default query string"
-            value={this.state.form.defaultQueryString}
-            onChange={this.handleInputChange}
-          />
-
-          <EditProfileMutationComponent
-            mutation={EDIT_PROFILE_MUTATION}
-            update={(cache, { data }) => {
-              const user =
-                data && data.updateProfile && data.updateProfile.user;
-              if (user) {
-                cache.writeQuery({
-                  query: CurrentUser.query,
-                  data: {
-                    me: user,
-                  },
-                });
-                return;
-              }
-
-              this.setState({
-                errors:
-                  (data && data.updateProfile && data.updateProfile.errors) ||
-                  [],
-              });
-            }}>
-            {editProfile => (
-              <ThemedButton onClick={this.handleEditProfile(editProfile)}>
-                Save
-              </ThemedButton>
-            )}
-          </EditProfileMutationComponent>
-          {this.renderErrors()}
-        </SearchContainer>
-      </div>
-    );
-            }
-  };
-  renderProfileInfo = () => {
-    //@ts-ignore
-    let pictureUrl =this.props.user.pictureUrl || null
     if (this.props.user) {
       return (
         <div>
-          <ProfilePicture pictureUrl={pictureUrl}/>
-          <span style={{paddingLeft:'15px'}} onClick={() => this.toggleEditProfile()}> Edit Profile</span>
+          //@ts-ignore
+          <ProfilePicture pictureUrl={this.props.user.pictureUrl} />
+          <span
+            style={{ paddingLeft: '15px' }}
+            onClick={() => this.toggleEditProfile()}>
+            X
+          </span>
+          <SearchContainer>
+            <StyledProfileLabel>First Name:</StyledProfileLabel>
+            <StyledProfileForm
+              name="firstName"
+              placeholder="First name"
+              value={this.state.form.firstName}
+              onChange={this.handleInputChange}
+            />
+            <StyledProfileLabel>Last Name:</StyledProfileLabel>
+
+            <StyledProfileForm
+              name="lastName"
+              placeholder="Last name"
+              value={this.state.form.lastName}
+              onChange={this.handleInputChange}
+            />
+            <StyledProfileLabel>Default Query String:</StyledProfileLabel>
+
+            <StyledProfileForm
+              name="defaultQueryString"
+              placeholder="Default query string"
+              value={this.state.form.defaultQueryString}
+              onChange={this.handleInputChange}
+            />
+
+            <EditProfileMutationComponent
+              mutation={EDIT_PROFILE_MUTATION}
+              update={(cache, { data }) => {
+                const user =
+                  data && data.updateProfile && data.updateProfile.user;
+                if (user) {
+                  cache.writeQuery({
+                    query: CurrentUser.query,
+                    data: {
+                      me: user,
+                    },
+                  });
+                  return;
+                }
+
+                this.setState({
+                  errors:
+                    (data && data.updateProfile && data.updateProfile.errors) ||
+                    [],
+                });
+              }}>
+              {editProfile => (
+                <ThemedButton onClick={this.handleEditProfile(editProfile)}>
+                  Save
+                </ThemedButton>
+              )}
+            </EditProfileMutationComponent>
+            {this.renderErrors()}
+          </SearchContainer>
+        </div>
+      );
+    }
+  };
+  renderProfileInfo = () => {
+    //@ts-ignore
+    let pictureUrl = this.props.user.pictureUrl || null;
+    if (this.props.user) {
+      return (
+        <div>
+          <ProfilePicture pictureUrl={pictureUrl} />
+          <span
+            style={{ paddingLeft: '15px' }}
+            onClick={() => this.toggleEditProfile()}>
+            {' '}
+            Edit Profile
+          </span>
 
           <SearchContainer>
             <StyledProfileLabel>First Name:</StyledProfileLabel>
@@ -235,26 +242,26 @@ class EditProfilePage extends React.Component<
       case 'contributions':
         return (
           <div>
-          <h2>Contributed Studies:</h2>
-          <SearchPage
-            history={this.props.history}
-            location={this.props.location}
-            match={this.props.match}
-            email={email}
-            getTotalContributions={this.handleTotalContributions}
-            //userId={this.props.match.params.id}
-            //profileParams={this.getUserParams(this.props.match.params.id)}
-          />
+            <h2>Contributed Studies:</h2>
+            <SearchPage
+              history={this.props.history}
+              location={this.props.location}
+              match={this.props.match}
+              email={email}
+              getTotalContributions={this.handleTotalContributions}
+              //userId={this.props.match.params.id}
+              //profileParams={this.getUserParams(this.props.match.params.id)}
+            />
           </div>
         );
       case 'reviews':
         return (
           <div>
-          <h2>Reviewed Studies:</h2>
-          <ReviewsTable
-            reviewData={this.props.user?.reviews}
-            history={this.props.history}
-          />
+            <h2>Reviewed Studies:</h2>
+            <ReviewsTable
+              reviewData={this.props.user?.reviews}
+              history={this.props.history}
+            />
           </div>
         );
     }
@@ -262,35 +269,35 @@ class EditProfilePage extends React.Component<
   render() {
     let userContributions = this.props.user?.contributions;
     let reviewCount = this.props.user?.reviewCount;
-    if(this.props.user){
-    return (
-      <ThemedMainContainer>
-        <h2>My profile</h2>
-        {this.state.isEditing == true
-          ? this.renderEditForm()
-          : this.renderProfileInfo()}
-        <h2>My Contributions</h2>
-        <SearchContainer>
-          <ProfileScoreBoard
-            totalPoints={0}
-            totalContributions={userContributions}
-            totalReviews={reviewCount}
-            totalTags={'Coming Soon'}
-            totalFavorites={0}
-            handleDisplayChange={this.handleDisplayChange}
-            //@ts-ignore
-            rank={this.props.user.rank}
-          />
-        </SearchContainer>
-        {this.props.user ? (
-          this.renderResults(this.props.user.email)
-        ) : (
-          <div>No User</div>
-        )}
-      </ThemedMainContainer>
-    );
-        }
-        return(<div>No user</div>)
+    if (this.props.user) {
+      return (
+        <ThemedMainContainer>
+          <h2>My profile</h2>
+          {this.state.isEditing == true
+            ? this.renderEditForm()
+            : this.renderProfileInfo()}
+          <h2>My Contributions</h2>
+          <SearchContainer>
+            <ProfileScoreBoard
+              totalPoints={0}
+              totalContributions={userContributions}
+              totalReviews={reviewCount}
+              totalTags={'Coming Soon'}
+              totalFavorites={0}
+              handleDisplayChange={this.handleDisplayChange}
+              //@ts-ignore
+              rank={this.props.user.rank}
+            />
+          </SearchContainer>
+          {this.props.user ? (
+            this.renderResults(this.props.user.email)
+          ) : (
+            <div>No User</div>
+          )}
+        </ThemedMainContainer>
+      );
+    }
+    return <div>No user</div>;
   }
 }
 

@@ -130,7 +130,6 @@ class StudyPageSection extends React.Component<
             classNames="transition">
             {() => {
               const Component = this.props.section.component;
-
               return (
                 <StyledPanelBody>
                   <Panel.Body>
