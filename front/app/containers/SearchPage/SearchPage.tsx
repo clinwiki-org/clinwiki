@@ -756,12 +756,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         );
         return;
       } else if (userId) {
-        let uid = searchQueryString.getAll('uid').toString();
         let profile = this.findFilter('wiki_page_edits.email');
         this.props.history.push(
           `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&uid=${uid}&username=${profile && profile.values.toString()}`
+          }&sv=${siteViewUrl}&uid=${userId}&username=${profile && profile.values.toString()}`
           ); return;
       }else if(this.props.match.path =="/intervention/:id"){
       this.props.history.push(
@@ -770,16 +769,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           data!.provisionSearchHash!.searchHash!.short
         }&sv=intervention`
       ); return;
-    }else if(this.findFilter("wiki_page_edits.email")){
-
+    }else{
       this.props.history.push(
         `/search?hash=${
           data!.provisionSearchHash!.searchHash!.short
         }&sv=${siteViewUrl}`
       );
       return;
-    }else{
-      return
     }
   }
 
