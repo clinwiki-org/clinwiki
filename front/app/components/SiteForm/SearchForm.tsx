@@ -41,6 +41,7 @@ import { equals, prop, last, view, props } from 'ramda';
 import { History, Location } from 'history';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
+import RichTextEditor, { EditorValue } from 'react-rte-yt';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
@@ -68,7 +69,7 @@ interface SearchFormState {
   resultsButtonsArray: any[];
   siteUrl: string;
   siteViewName: string;
-  presearchIntructions: string;
+  presearchIntructions: EditorValue | null;
 }
 
 const SEARCH_FIELDS = studyFields.map(option => ({
@@ -157,20 +158,48 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     resultsButtonsArray: [],
     siteUrl: '',
     siteViewName: '',
-    presearchIntructions: '',
+    presearchIntructions: null,
   };
 
   componentDidMount() {
     this.props.handleSiteViewEdit();
     const siteviewId = this.props.match.params.id;
     let view = this.props.siteViews.find(view => siteviewId == view.id);
-    this.setState({
-      resultsButtonsArray: view.search.results.buttons.items,
-      siteUrl: view.url,
-      siteViewName: view.name,
-      presearchIntructions: view.search.presearch.instruction,
-    });
+    if (view.search.presearch.instructions) {
+      this.setState({
+        resultsButtonsArray: view.search.results.buttons.items,
+        siteUrl: view.url,
+        siteViewName: view.name,
+        presearchIntructions: RichTextEditor.createValueFromString(
+          view.search.presearch.instructions,
+          'markdown'
+        ),
+      });
+    } else {
+      this.setState({
+        resultsButtonsArray: view.search.results.buttons.items,
+        siteUrl: view.url,
+        siteViewName: view.name,
+        presearchIntructions: '',
+      });
+    }
   }
+
+  handleContentChange = (value: EditorValue) => {
+    this.setState({ presearchIntructions: value });
+  };
+
+  handleSubmitInstructions = siteView => {
+    this.handleAddMutation(
+      {
+        currentTarget: {
+          name: 'set:search.presearch.instructions',
+          value: this.state.presearchIntructions.toString('markdown'),
+        },
+      },
+      siteView
+    );
+  };
 
   handleSave = (updateSiteView: UpdateSiteViewMutationFn, view: any) => (
     mutations: SiteViewMutationInput[]
@@ -190,6 +219,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   handleInput = (e, inputType) => {
+    console.log('igethere');
     switch (inputType) {
       case 'url':
         this.setState({ siteUrl: e.value });
@@ -197,11 +227,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       case 'name':
         this.setState({ siteViewName: e.value });
         return;
-      case 'instruction':
-        this.setState({ presearchIntructions: e.value });
-        return;
+      // case 'instruction':
+      //   this.setState({ presearchIntructions: e.value });
+      //   return;
     }
   };
+
   handleAddMutation = (
     e: { currentTarget: { name: string; value: any } },
     siteView
@@ -694,13 +725,18 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </Panel.Heading>
             <Panel.Body collapsible>
               <h3>Instructions:</h3>
-              <StyledFormInput
-                name={`set:search.presearch.instructions`}
-                placeholder={view.search.presearch.instructions}
-                value={this.state.presearchIntructions}
-                onChange={e => this.handleInput(e, 'instructions')}
-                onBlur={e => this.handleAddMutation(e, view)}
+              <RichTextEditor
+                onChange={this.handleContentChange}
+                value={
+                  this.state.presearchIntructions ||
+                  RichTextEditor.createEmptyValue()
+                }
               />
+              <ThemedButton
+                style={{ marginTop: 10 }}
+                onClick={() => this.handleSubmitInstructions(view)}>
+                Submit
+              </ThemedButton>
             </Panel.Body>
           </Panel>
           <Panel>
@@ -729,9 +765,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                       margin: '1em 1em 1em 0',
                       background: this.props.theme.button,
                     }}>
-                    {this.props.siteViews.map(view => (
+                    {this.props.siteViews.map((view, i) => (
                       <MenuItem
-                        key={view.name}
+                        key={`${view}-${i}`}
                         name={`set:search.presearch.button.target`}
                         onClick={e =>
                           this.handlePresearchButtonTarget(e, view, view.url)
