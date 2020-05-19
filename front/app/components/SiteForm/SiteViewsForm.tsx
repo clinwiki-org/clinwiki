@@ -18,12 +18,14 @@ import {
 import { History, Location } from 'history';
 import { CreateSiteViewInput, SiteViewMutationInput } from 'types/globalTypes';
 import ThemedButton from 'components/StyledComponents/index';
+import withTheme from 'containers/ThemeProvider/ThemeProvider';
 
 interface SiteViewsFormProps {
   site: any;
   siteViews: SiteViewFragment[];
   refresh: any;
   handleForm: any;
+  theme:any;
 }
 
 interface SiteViewsFormState {
@@ -36,6 +38,10 @@ interface SiteViewsFormState {
     path: string;
   };
   adminViewForm: {
+    name: string;
+    path: string;
+  };
+  interventionViewForm: {
     name: string;
     path: string;
   };
@@ -70,6 +76,10 @@ class SiteViewsForm extends React.Component<
       path: '',
     },
     adminViewForm: {
+      name: '',
+      path: '',
+    },
+    interventionViewForm: {
       name: '',
       path: '',
     },
@@ -181,6 +191,33 @@ class SiteViewsForm extends React.Component<
           );
         });
         break;
+        case 'intervention':
+          createSiteView({
+            variables: {
+              input: {
+                name: userViewForm.name,
+                url: userViewForm.path,
+                description: `intervention view ${this.props.site.id}`,
+                default: false,
+                mutations: mutationArray,
+                siteId: this.props.site.id,
+              },
+            },
+          }).then(res => {
+            this.setState(
+              {
+                userViewForm: {
+                  name: '',
+                  path: '',
+                },
+              },
+              () => {
+                this.props.refresh();
+              }
+            );
+          });
+  
+   
       default:
         return null;
     }
@@ -227,7 +264,7 @@ class SiteViewsForm extends React.Component<
   }
   render() {
     const { siteViews, refresh, site } = this.props;
-    const { searchViewForm, userViewForm, adminViewForm } = this.state;
+    const { searchViewForm, userViewForm, adminViewForm, interventionViewForm } = this.state;
     const filteredSearchSites = () => {
       return filter(siteViews => siteViews.search.type == 'search', siteViews);
     };
@@ -236,6 +273,9 @@ class SiteViewsForm extends React.Component<
     };
     const filteredAdminSites = () => {
       return filter(siteViews => siteViews.search.type == 'admin', siteViews);
+    };
+    const filteredInterventionSites = () => {
+      return filter(siteViews => siteViews.search.type == 'intervention', siteViews);
     };
     return (
       <CreateSiteViewMutation>
@@ -262,6 +302,7 @@ class SiteViewsForm extends React.Component<
                           refresh={refresh}
                           site={site}
                           type={'search'}
+                          theme={this.props.theme}
                         />
                       ))}
                     </>
@@ -320,6 +361,7 @@ class SiteViewsForm extends React.Component<
                           refresh={refresh}
                           site={site}
                           type={'user'}
+                          theme={this.props.theme}
                         />
                       ))}
                     </>
@@ -375,6 +417,7 @@ class SiteViewsForm extends React.Component<
                           refresh={refresh}
                           site={site}
                           type={'admin'}
+                          theme={this.props.theme}
                         />
                       ))}
                     </>
@@ -408,6 +451,61 @@ class SiteViewsForm extends React.Component<
                 </Table>
               )}
             </CollapsiblePanel>
+            <CollapsiblePanel header="Intervention Views">
+              {siteViews.length > 0 && (
+                <Table striped bordered condensed>
+                  <thead>
+                    <tr>
+                      <th>Site Name</th>
+                      <th>URL</th>
+                      {/* <th>Default?</th> */}
+                      <th>URL Preview</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <>
+                      {filteredInterventionSites().map(view => (
+                        <SiteViewItem
+                          key={view.id}
+                          siteView={view}
+                          refresh={refresh}
+                          site={site}
+                          type={'intervention'}
+                          theme={this.props.theme}
+                        />
+                      ))}
+                    </>
+                    <tr>
+                      <td>
+                        <FormControl
+                          name="name"
+                          placeholder="Intervention View Name"
+                          value={interventionViewForm.name}
+                          onChange={e => this.handleInputChange(e, 'intervention')}
+                        />
+                      </td>
+                      <td>
+                        <FormControl
+                          name="path"
+                          placeholder="Intervention View Path"
+                          value={interventionViewForm.path}
+                          onChange={e => this.handleInputChange(e, 'intervention')}
+                        />
+                      </td>
+                      <td>
+                        <ThemedButton
+                          onClick={() => {
+                            this.handleSave(createSiteView, 'intervention');
+                          }}>
+                          + Add Site View
+                        </ThemedButton>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              )}
+            </CollapsiblePanel>
           </StyledContainer>
         )}
       </CreateSiteViewMutation>
@@ -415,4 +513,4 @@ class SiteViewsForm extends React.Component<
   }
 }
 
-export default SiteViewsForm;
+export default withTheme(SiteViewsForm);

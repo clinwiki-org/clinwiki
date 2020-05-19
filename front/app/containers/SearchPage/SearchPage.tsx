@@ -279,8 +279,10 @@ interface SearchPageProps {
   site: SiteFragment;
   currentSiteView: SiteFragment_siteView;
   mutate: any;
-  email?: string;
-  getTotalContributions?: any;
+  email?:string;
+  intervention?:boolean;
+  getTotalContributions?:any;
+
 }
 
 interface SearchPageState {
@@ -650,16 +652,29 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         () => this.updateSearchParams(this.state.params)
       );
     }
+    if(this.props.intervention){
+      //@ts-ignore
+      this.setState({params: this.props.searchParams})
+    }
+
     if (this.showingCards()) {
       window.addEventListener('scroll', this.handleScroll);
     } else {
       window.removeEventListener('scroll', this.handleScroll);
     }
+
+    // not sure this is being used anymore now that we switched to url params for siteviews.
     if (this.props.email) {
       this.setState({
         siteViewType: 'user',
       });
-    } else {
+    } 
+    // if (this.props.intervention) {
+    //   this.setState({
+    //     siteViewType: 'intervention',
+    //   });
+    // } 
+    else {
       this.setState({
         siteViewType: 'search',
       });
@@ -742,16 +757,20 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         );
         return;
       } else if (userId) {
-        let uid = searchQueryString.getAll('uid').toString();
         let profile = this.findFilter('wiki_page_edits.email');
         this.props.history.push(
           `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&uid=${uid}&username=${profile &&
-            profile.values.toString()}`
-        );
-        return;
-      }
+          }&sv=${siteViewUrl}&uid=${userId}&username=${profile && profile.values.toString()}`
+          ); return;
+      }else if(this.props.match.path =="/intervention/:id"){
+      this.props.history.push(
+        //@ts-ignore
+        `/intervention/${this.props.match.params.id}?hash=${
+          data!.provisionSearchHash!.searchHash!.short
+        }&sv=intervention`
+      ); return;
+    }else{
       this.props.history.push(
         `/search?hash=${
           data!.provisionSearchHash!.searchHash!.short
@@ -759,6 +778,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       );
       return;
     }
+  }
+
   };
 
   getTotalResults = total => {

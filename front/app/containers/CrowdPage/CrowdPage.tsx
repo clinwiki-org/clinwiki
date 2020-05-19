@@ -367,6 +367,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       // @ts-ignore
       flatten
     )(meta);
+
     let content = (
       <TableWrapper striped condensed bordered>
         <thead>
