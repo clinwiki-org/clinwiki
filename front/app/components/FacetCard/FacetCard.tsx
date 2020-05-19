@@ -359,7 +359,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                       <ThemedPresearchCard>
                         <ThemedPresearchHeader>
                           <PresearchTitle>
-                            {truncateString(label, 32, true)}
+                            {truncateString(label, 18, true)}
                           </PresearchTitle>
                           {!showAddFacet && (
                             <TextFieldToggle
@@ -414,7 +414,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                     <ThemedPresearchCard>
                       <ThemedPresearchHeader>
                         <PresearchTitle>
-                          {truncateString(label, 32, true)}
+                          {truncateString(label, 18, true)}
                         </PresearchTitle>
                         {!textFieldActive && (
                           <TextFieldToggle
