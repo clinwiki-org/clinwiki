@@ -10,7 +10,7 @@ services:
     depends_on:
       - clinwiki
   db:
-    image: postgres:11.5
+    image: postgres:11.8
     container_name: clinwiki-db
     ports:
       - 15432:5432

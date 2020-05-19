@@ -218,7 +218,7 @@ class FacilitiesPage extends React.PureComponent<
     geoStatus: string | null;
   }) => {
     return (
-      <div key={`${key}-${index}`}>
+      <div key={`${key}-${name}`}>
         <FacilityCard
           name={name}
           title={key}
