@@ -119,11 +119,12 @@ interface FacetCardProps {
   children?: any;
   onSelect?: (key: string, value: string, checked: boolean) => void;
   addLabel?: boolean;
-  meta: Record<string,string>;
+  meta: Record<string, string>;
   siteView: any;
   values?: [string, boolean][];
-  refetch?: ()=>void;
+  refetch?: () => void;
   aggNames?: any;
+  bulk?: any;
 }
 
 interface FacetCardState {
@@ -132,6 +133,7 @@ interface FacetCardState {
   suggestions: any[];
   isSuggestionLoading: boolean;
   showLoginModal: boolean;
+  showAddFacet: boolean;
 }
 
 class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
@@ -141,12 +143,23 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     suggestions: [],
     isSuggestionLoading: false,
     showLoginModal: false,
+    showAddFacet: false,
   };
 
   handlePlusClick = user => {
     if (user) {
       this.setState({
         textFieldActive: !this.state.textFieldActive,
+      });
+    } else {
+      this.setShowLoginModal(true);
+    }
+  };
+
+  handleAddFacetPlusClick = user => {
+    if (user) {
+      this.setState({
+        showAddFacet: !this.state.showAddFacet,
       });
     } else {
       this.setShowLoginModal(true);
@@ -308,12 +321,13 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel, aggNames, siteView, values } = this.props;
+    const { label, addLabel, aggNames, siteView, values, bulk } = this.props;
     const {
       textFieldActive,
       existingField,
       suggestions,
       showLoginModal,
+      showAddFacet,
     } = this.state;
     if (bulk) {
       return (
@@ -345,6 +359,20 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                           <PresearchTitle>
                             {truncateString(label, 32, true)}
                           </PresearchTitle>
+                          {!showAddFacet && (
+                            <TextFieldToggle
+                              onClick={() =>
+                                this.handleAddFacetPlusClick(user)
+                              }>
+                              +
+                            </TextFieldToggle>
+                          )}
+                          {showAddFacet && (
+                            <TextFieldToggle
+                              onClick={this.handleAddFacetPlusClick}>
+                              -
+                            </TextFieldToggle>
+                          )}
                         </ThemedPresearchHeader>
                         <PresearchContent style={{ overflowY: 'auto' }}>
                           <AddFacetCard
@@ -356,6 +384,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                             aggNames={aggNames}
                             siteView={siteView}
                             values={values}
+                            showAddFacet={showAddFacet}
                           />
                         </PresearchContent>
                       </ThemedPresearchCard>

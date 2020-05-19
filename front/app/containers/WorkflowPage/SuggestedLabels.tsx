@@ -100,7 +100,9 @@ class SuggestedLabels extends React.PureComponent<
     const checkedValues = new Set(
       values.filter(([_, checked]) => checked).map(([value, _]) => value)
     );
+
     let items = values.map(([value, _]) => value);
+
     if (
       config &&
       config.visibleOptions.kind == 'WHITELIST' &&
@@ -184,6 +186,7 @@ class SuggestedLabels extends React.PureComponent<
             // @ts-ignore
             fromPairs
           )(data?.crowdAggFacets?.aggs || []);
+          console.log(aggs);
           const config = this.props.suggestedLabelsConfig;
 
           const max = 999999;
@@ -192,7 +195,7 @@ class SuggestedLabels extends React.PureComponent<
             .sort(
               (a, b) => (config[a]?.rank || max) - (config[b]?.rank || max)
             );
-
+          // const includedAggs = aggs.filter(agg => )
           return (
             <LabelsContainer>
               {aggNames.map(key =>
