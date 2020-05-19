@@ -119,10 +119,10 @@ interface FacetCardProps {
   children?: any;
   onSelect?: (key: string, value: string, checked: boolean) => void;
   addLabel?: boolean;
-  meta: Record<string,string>;
+  meta: Record<string, string>;
   siteView: any;
   values?: [string, boolean][];
-  refetch?: ()=>void;
+  refetch?: () => void;
   aggNames?: any;
 }
 
@@ -315,18 +315,18 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       suggestions,
       showLoginModal,
     } = this.state;
-    if (bulk) {
-      return (
-        <ThemedPresearchCard>
-          <ThemedPresearchHeader>
-            <PresearchTitle>{truncateString(label, 32, true)}</PresearchTitle>
-          </ThemedPresearchHeader>
-          <PresearchContent style={{ overflowY: 'auto' }}>
-            {this.props.children}
-          </PresearchContent>
-        </ThemedPresearchCard>
-      );
-    }
+    // if (bulk) {
+    //   return (
+    //     <ThemedPresearchCard>
+    //       <ThemedPresearchHeader>
+    //         <PresearchTitle>{truncateString(label, 32, true)}</PresearchTitle>
+    //       </ThemedPresearchHeader>
+    //       <PresearchContent style={{ overflowY: 'auto' }}>
+    //         {this.props.children}
+    //       </PresearchContent>
+    //     </ThemedPresearchCard>
+    //   );
+    // }
     if (addLabel) {
       return (
         <CurrentUser>
