@@ -284,6 +284,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   handleLoadMore = async () => {
+    console.log("In handle load more")
     const { client: apolloClient } = this.props;
     const { desc, sortKind, buckets, filter } = this.state;
     const {
@@ -550,7 +551,16 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             field={field}
           /> */}
 
-            <TwoLevelPieChart data={data} />
+            <TwoLevelPieChart
+             data={data}
+            isPresearch={true}
+            visibleOptions={visibleOptions}
+            buckets={buckets}
+            isSelected={this.isSelected}
+            hasMore={hasMore}
+            handleLoadMore={this.handleLoadMore}
+            field={field}
+                          />
           </Container>
           {!loading && (
             <Container>

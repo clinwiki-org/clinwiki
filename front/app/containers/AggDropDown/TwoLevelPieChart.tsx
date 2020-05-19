@@ -1,13 +1,26 @@
 import * as React from 'react';
 import { PieChart, Pie, Sector } from 'recharts';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
+import { AggBucket } from '../SearchPage/Types';
+import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 
 interface TwoLevelPieChartProps {
   data: any;
+  isPresearch: boolean;
+  field: SiteViewFragment_search_aggs_fields | any;
+  visibleOptions: any;
+  buckets: Array<AggBucket>;
+  isSelected: any;
+  hasMore: boolean;
+  handleLoadMore: any;
+  updater: AggFilterInputUpdater;
 }
 
 interface TwoLevelPieChartState {
   activeIndex: any;
+  currentBuckets: any[];
+  clickedSections:any[];
 }
 
 class TwoLevelPieChart extends React.Component<
@@ -17,15 +30,32 @@ class TwoLevelPieChart extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      activeIndex: 0,
+      activeIndex: '',
+      currentBuckets: [],
+      clickedSections: [],
     };
   }
   componentDidMount = () => {
-    // let showAlternate= true
-    // if(showAlternate){
-    //   this.setState({startText: 'Greater Than or Equal to:'})
-    // }
+    this.props.handleLoadMore()
   };
+  componentDidUpdate=(prevProps)=>{
+      if(prevProps.buckets !== this.props.buckets){
+
+        let finalDataArray: any[]=[];
+        let queryDate = this.props.buckets
+        let newData = queryDate.map(bucket=>{
+            let bucketKey = bucket.key
+            let bucketDocCount= bucket.docCount
+
+            let finalBucket={ name: bucketKey, value: bucketDocCount }
+            finalDataArray.push(finalBucket)
+            return
+        })
+
+        finalDataArray.shift()
+        this.setState({currentBuckets: finalDataArray})
+      }
+  }
 
   getInitialState() {
     return {
@@ -33,8 +63,7 @@ class TwoLevelPieChart extends React.Component<
     };
   }
 
-  onPieEnter(data, index) {
-      console.log("I", index, data)
+  onPieEnter=(data, index)=> {
     this.setState({
       activeIndex: index,
     });
@@ -111,22 +140,43 @@ class TwoLevelPieChart extends React.Component<
     );
   };
 
+  onClickHelper=(data,index)=>{
+    const {currentBuckets} = this.state
+      console.log(currentBuckets)
+
+      console.log(index)
+      console.log(currentBuckets[index])
+      this.props.updater.toggleFilter(currentBuckets[index].name)
+      let sections: any[]=this.state.clickedSections
+      sections.push({index})
+      this.setState({clickedSections: sections})
+      
+      this.renderActiveShape
+      this.props.handleLoadMore()
+  }
+  handleClear =() =>{
+      this.setState({activeIndex:''})
+  }
   render() {
-    return (
-      <PieChart width={800} height={400}>
-        <Pie
-          activeIndex={this.state.activeIndex}
-          activeShape={this.renderActiveShape}
-          data={this.props.data}
-          cx={300}
-          cy={200}
-          innerRadius={60}
-          outerRadius={80}
-          fill="#8884d8"
-          onMouseEnter={this.onPieEnter}
-        />
-      </PieChart>
-    );
+    if(this.props.buckets){
+        return (
+            <PieChart width={250} height={200}>
+              <Pie
+                activeIndex={this.state.activeIndex}
+                activeShape={this.renderActiveShape}
+                data={this.state.currentBuckets}
+                cx={125}
+                cy={100}
+                innerRadius={60}
+                outerRadius={80}
+                fill="#8884d8"
+                onMouseEnter={this.onPieEnter}
+                onMouseLeave={this.handleClear}
+                onClick={this.onClickHelper}
+              />
+            </PieChart>
+          );
+    }
   }
 }
 
