@@ -123,7 +123,6 @@ class AddFacetCard extends React.PureComponent<
   };
 
   handleDescriptionFieldChange = (e, { newValue }, apolloClient) => {
-    console.log('desc', newValue);
     this.setState(
       {
         description: newValue,
@@ -137,6 +136,7 @@ class AddFacetCard extends React.PureComponent<
   getSuggestions = async apolloClient => {
     const { values } = this.props;
     const { title, description } = this.state;
+    console.log(values[title]);
     const query = AUTOSUGGEST_QUERY;
     const variables = {
       agg: 'browse_condition_mesh_terms',
@@ -160,20 +160,22 @@ class AddFacetCard extends React.PureComponent<
 
     const array = response.data.autocomplete.autocomplete[0].results;
 
-    array.map(({ key, docCount }, i) => {
-      values?.map(([value, checked]) => {
-        if (key === value) {
-          if (checked) {
-            array.splice(i, 1);
+    if (values[title]) {
+      array.map(({ key, docCount }, i) => {
+        values[title].map(([value, checked]) => {
+          if (key === value) {
+            if (checked) {
+              array.splice(i, 1);
+            }
+            if (key === '-99999999999') {
+              array.splice(i, 1);
+            } else {
+              // console.log('good data', array[i]);
+            }
           }
-          if (key === '-99999999999') {
-            array.splice(i, 1);
-          } else {
-            // console.log('good data', array[i]);
-          }
-        }
+        });
       });
-    });
+    }
 
     const suggestions = [
       { key: description.trim(), partialString: true },

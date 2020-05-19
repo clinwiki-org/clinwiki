@@ -121,10 +121,11 @@ interface FacetCardProps {
   addLabel?: boolean;
   meta: Record<string, string>;
   siteView: any;
-  values?: [string, boolean][];
+  values?: any[];
   refetch?: () => void;
   aggNames?: any;
   bulk?: any;
+  allValues?: any[];
 }
 
 interface FacetCardState {
@@ -189,7 +190,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   queryAutoSuggest = async apolloClient => {
     const { existingField } = this.state;
     const { label, values } = this.props;
-
+    console.log(values);
     const query = AUTOSUGGEST_QUERY;
     const variables = {
       // todo: probably want to query more than just browse_condition_mesh_terms
@@ -321,7 +322,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel, aggNames, siteView, values, bulk } = this.props;
+    const { label, addLabel, aggNames, siteView, bulk, allValues } = this.props;
     const {
       textFieldActive,
       existingField,
@@ -329,6 +330,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       showLoginModal,
       showAddFacet,
     } = this.state;
+    // console.log('values', values);
     if (bulk) {
       return (
         <ThemedPresearchCard>
@@ -342,6 +344,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       );
     }
     if (addLabel) {
+      console.log(allValues);
       return (
         <CurrentUser>
           {user => (
@@ -383,7 +386,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                             apolloClient={apolloClient}
                             aggNames={aggNames}
                             siteView={siteView}
-                            values={values}
+                            values={allValues}
                             showAddFacet={showAddFacet}
                           />
                         </PresearchContent>
