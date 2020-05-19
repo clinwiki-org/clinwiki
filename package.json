@@ -1,10 +1,11 @@
 {
-  "name": "required_for_heroku_buildpack",
-  "engines": {
-      "node": "10.x",
-      "yarn": "1.x"
-  },
-  "scripts": {
-      "heroku-postbuild": "./front/scripts/build"
-  }
+    "name": "required_for_heroku_buildpack",
+    "engines": {
+        "node": "10.x",
+        "yarn": "1.x"
+    },
+    "scripts": {
+        "heroku-postbuild": "./front/scripts/build"
+    },
+    "dependencies": {}
 }

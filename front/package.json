@@ -314,6 +314,7 @@
     "react-test-renderer": "^16.2.0",
     "react-toggle": "^4.0.2",
     "react-transition-group": "^2.2.1",
+    "recharts": "^1.8.5",
     "rimraf": "2.6.1",
     "sanitize.css": "^5.0.0",
     "shelljs": "^0.7.7",
