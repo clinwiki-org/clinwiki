@@ -136,7 +136,7 @@ class AddFacetCard extends React.PureComponent<
   getSuggestions = async apolloClient => {
     const { values } = this.props;
     const { title, description } = this.state;
-    console.log(values[title]);
+
     const query = AUTOSUGGEST_QUERY;
     const variables = {
       agg: 'browse_condition_mesh_terms',

@@ -190,7 +190,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   queryAutoSuggest = async apolloClient => {
     const { existingField } = this.state;
     const { label, values } = this.props;
-    console.log(values);
     const query = AUTOSUGGEST_QUERY;
     const variables = {
       // todo: probably want to query more than just browse_condition_mesh_terms

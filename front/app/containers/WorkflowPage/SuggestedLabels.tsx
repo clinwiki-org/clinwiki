@@ -187,7 +187,7 @@ class SuggestedLabels extends React.PureComponent<
             // @ts-ignore
             fromPairs
           )(data?.crowdAggFacets?.aggs || []);
-          console.log('aggs', aggs);
+
           const config = this.props.suggestedLabelsConfig;
 
           const max = 999999;
@@ -196,7 +196,9 @@ class SuggestedLabels extends React.PureComponent<
             .sort(
               (a, b) => (config[a]?.rank || max) - (config[b]?.rank || max)
             );
-          // const includedAggs = aggs.filter(agg => )
+
+          const allCrowdAggs = keys(aggs);
+
           return (
             <LabelsContainer>
               {aggNames.map(key =>
@@ -214,7 +216,7 @@ class SuggestedLabels extends React.PureComponent<
                 addLabel
                 nctId={this.props.nctId}
                 refetch={refetch}
-                aggNames={aggNames}
+                aggNames={allCrowdAggs}
                 siteView={this.props.siteView}
                 allValues={aggs}
               />
