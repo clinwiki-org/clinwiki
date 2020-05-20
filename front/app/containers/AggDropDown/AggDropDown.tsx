@@ -284,7 +284,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   handleLoadMore = async () => {
-    console.log("In handle load more")
     const { client: apolloClient } = this.props;
     const { desc, sortKind, buckets, filter } = this.state;
     const {
