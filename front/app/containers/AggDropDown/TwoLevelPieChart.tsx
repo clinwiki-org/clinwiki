@@ -20,7 +20,6 @@ interface TwoLevelPieChartProps {
 interface TwoLevelPieChartState {
   activeIndex: any;
   currentBuckets: any[];
-  clickedSections: any[];
   otherBuckets: any[];
 }
 
@@ -31,9 +30,8 @@ class TwoLevelPieChart extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      activeIndex: '',
+      activeIndex: null,
       currentBuckets: [],
-      clickedSections: [],
       otherBuckets: [],
     };
   }
@@ -41,12 +39,10 @@ class TwoLevelPieChart extends React.Component<
     this.props.handleLoadMore();
   };
   componentDidUpdate = prevProps => {
-    // console.log("COmponent Updated", prevProps, this.props)
     if (
       prevProps.buckets !== this.props.buckets &&
       this.props.buckets.length > 0
     ) {
-      // console.log("Hitting conditional in didUpdate")
       let finalDataArray: any[] = [];
       let finalOtherBucketsArray: any[] = [];
       let queryDate = this.props.buckets;
@@ -54,24 +50,24 @@ class TwoLevelPieChart extends React.Component<
         let bucketKey = bucket.key;
         let bucketDocCount = bucket.docCount;
 
-        let finalBucket = { name: bucketKey, value: bucketDocCount };
+        let currentBucket = { name: bucketKey, value: bucketDocCount };
 
         let otherBucket = { name: 'Others', value: 0 };
-        if (finalBucket.name == '-99999999999') {
+        if (currentBucket.name == '-99999999999') {
           return;
         } else if (index < 10) {
-          finalDataArray.push(finalBucket);
+          finalDataArray.push(currentBucket);
           return;
         } else if (index == 10) {
-          otherBucket.value += finalBucket.value;
+          otherBucket.value += currentBucket.value;
           finalDataArray.push(otherBucket);
-          finalOtherBucketsArray.push(finalBucket)
+          finalOtherBucketsArray.push(currentBucket)
           return;
         } else {
           let oldValue = finalDataArray[9].value;
           otherBucket = { ...otherBucket, value: oldValue + 1 };
           finalDataArray[9] = otherBucket;
-          finalOtherBucketsArray.push(finalBucket);
+          finalOtherBucketsArray.push(currentBucket);
         }
       });
 
@@ -166,12 +162,11 @@ class TwoLevelPieChart extends React.Component<
     }
   };
   handleClear = () => {
-    this.setState({ activeIndex: '' });
+    this.setState({ activeIndex: null });
   };
   render() {
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
-    console.log('Current Buckets', this.state.currentBuckets);
     if (this.props.buckets) {
       return (
         <PieChart width={250} height={220}>
@@ -179,6 +174,7 @@ class TwoLevelPieChart extends React.Component<
             activeIndex={this.state.activeIndex}
             activeShape={this.renderActiveShape}
             data={this.state.currentBuckets}
+            dataKey="value"  
             cx={125}
             cy={90}
             innerRadius={60}
@@ -188,7 +184,7 @@ class TwoLevelPieChart extends React.Component<
             onMouseLeave={this.handleClear}
             onClick={this.onClickHelper}>
             {this.state.currentBuckets.map((entry, index) => (
-              <Cell fill={COLORS[index % COLORS.length]} />
+              <Cell fill={COLORS[index % COLORS.length]} key={entry+index} />
             ))}
           </Pie>
         </PieChart>
