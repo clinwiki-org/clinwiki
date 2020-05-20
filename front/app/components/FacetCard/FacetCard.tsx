@@ -124,7 +124,6 @@ interface FacetCardProps {
   values?: any[];
   refetch?: () => void;
   aggNames?: any;
-  bulk?: any;
   allValues?: any[];
 }
 
@@ -321,7 +320,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel, aggNames, siteView, bulk, allValues } = this.props;
+    const { label, addLabel, aggNames, siteView, allValues } = this.props;
     const {
       textFieldActive,
       existingField,
@@ -329,19 +328,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       showLoginModal,
       showAddFacet,
     } = this.state;
-    // console.log('values', values);
-    if (bulk) {
-      return (
-        <ThemedPresearchCard>
-          <ThemedPresearchHeader>
-            <PresearchTitle>{truncateString(label, 32, true)}</PresearchTitle>
-          </ThemedPresearchHeader>
-          <PresearchContent style={{ overflowY: 'auto' }}>
-            {this.props.children}
-          </PresearchContent>
-        </ThemedPresearchCard>
-      );
-    }
     if (addLabel) {
       console.log(allValues);
       return (
@@ -359,7 +345,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                       <ThemedPresearchCard>
                         <ThemedPresearchHeader>
                           <PresearchTitle>
-                            {truncateString(label, 32, true)}
+                            {truncateString(label, 18, true)}
                           </PresearchTitle>
                           {!showAddFacet && (
                             <TextFieldToggle
@@ -414,7 +400,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                     <ThemedPresearchCard>
                       <ThemedPresearchHeader>
                         <PresearchTitle>
-                          {truncateString(label, 32, true)}
+                          {truncateString(label, 18, true)}
                         </PresearchTitle>
                         {!textFieldActive && (
                           <TextFieldToggle
