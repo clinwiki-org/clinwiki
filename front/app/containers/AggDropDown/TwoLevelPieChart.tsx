@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PieChart, Pie, Sector } from 'recharts';
+import { PieChart, Pie, Sector, Cell } from 'recharts';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
@@ -20,7 +20,8 @@ interface TwoLevelPieChartProps {
 interface TwoLevelPieChartState {
   activeIndex: any;
   currentBuckets: any[];
-  clickedSections:any[];
+  clickedSections: any[];
+  otherBuckets: any[];
 }
 
 class TwoLevelPieChart extends React.Component<
@@ -33,29 +34,53 @@ class TwoLevelPieChart extends React.Component<
       activeIndex: '',
       currentBuckets: [],
       clickedSections: [],
+      otherBuckets: [],
     };
   }
   componentDidMount = () => {
-    this.props.handleLoadMore()
+    this.props.handleLoadMore();
   };
-  componentDidUpdate=(prevProps)=>{
-      if(prevProps.buckets !== this.props.buckets){
+  componentDidUpdate = prevProps => {
+    // console.log("COmponent Updated", prevProps, this.props)
+    if (
+      prevProps.buckets !== this.props.buckets &&
+      this.props.buckets.length > 0
+    ) {
+      // console.log("Hitting conditional in didUpdate")
+      let finalDataArray: any[] = [];
+      let finalOtherBucketsArray: any[] = [];
+      let queryDate = this.props.buckets;
+      let newData = queryDate.map((bucket, index) => {
+        let bucketKey = bucket.key;
+        let bucketDocCount = bucket.docCount;
 
-        let finalDataArray: any[]=[];
-        let queryDate = this.props.buckets
-        let newData = queryDate.map(bucket=>{
-            let bucketKey = bucket.key
-            let bucketDocCount= bucket.docCount
+        let finalBucket = { name: bucketKey, value: bucketDocCount };
 
-            let finalBucket={ name: bucketKey, value: bucketDocCount }
-            finalDataArray.push(finalBucket)
-            return
-        })
+        let otherBucket = { name: 'Others', value: 0 };
+        if (finalBucket.name == '-99999999999') {
+          return;
+        } else if (index < 10) {
+          finalDataArray.push(finalBucket);
+          return;
+        } else if (index == 10) {
+          otherBucket.value += finalBucket.value;
+          finalDataArray.push(otherBucket);
+          finalOtherBucketsArray.push(finalBucket)
+          return;
+        } else {
+          let oldValue = finalDataArray[9].value;
+          otherBucket = { ...otherBucket, value: oldValue + 1 };
+          finalDataArray[9] = otherBucket;
+          finalOtherBucketsArray.push(finalBucket);
+        }
+      });
 
-        finalDataArray.shift()
-        this.setState({currentBuckets: finalDataArray})
-      }
-  }
+      this.setState({
+        currentBuckets: finalDataArray,
+        otherBuckets: finalOtherBucketsArray,
+      });
+    }
+  };
 
   getInitialState() {
     return {
@@ -63,11 +88,11 @@ class TwoLevelPieChart extends React.Component<
     };
   }
 
-  onPieEnter=(data, index)=> {
+  onPieEnter = (data, index) => {
     this.setState({
       activeIndex: index,
     });
-  }
+  };
 
   renderActiveShape = props => {
     const RADIAN = Math.PI / 180;
@@ -93,11 +118,15 @@ class TwoLevelPieChart extends React.Component<
     const ex = mx + (cos >= 0 ? 1 : -1) * 22;
     const ey = my;
     const textAnchor = cos >= 0 ? 'start' : 'end';
+    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
     return (
       <g>
         <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
           {payload.name}
+        </text>
+        <text x={cx} y={cy + 15} dy={8} textAnchor="middle" fill={fill}>
+          {`\n ${value} Results`}
         </text>
         <Sector
           cx={cx}
@@ -106,7 +135,7 @@ class TwoLevelPieChart extends React.Component<
           outerRadius={outerRadius}
           startAngle={startAngle}
           endAngle={endAngle}
-          fill={fill}
+          fill={COLORS[this.state.activeIndex % COLORS.length]}
         />
         <Sector
           cx={cx}
@@ -115,67 +144,55 @@ class TwoLevelPieChart extends React.Component<
           endAngle={endAngle}
           innerRadius={outerRadius + 6}
           outerRadius={outerRadius + 10}
-          fill={fill}
+          fill={COLORS[this.state.activeIndex % COLORS.length]}
         />
-        <path
-          d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-          stroke={fill}
-          fill="none"
-        />
-        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-        <text
-          x={ex + (cos >= 0 ? 1 : -1) * 12}
-          y={ey}
-          textAnchor={textAnchor}
-          fill="#333">{`PV ${value}`}</text>
-        <text
-          x={ex + (cos >= 0 ? 1 : -1) * 12}
-          y={ey}
-          dy={18}
-          textAnchor={textAnchor}
-          fill="#999">
-          {`(Rate ${(percent * 100).toFixed(2)}%)`}
-        </text>
       </g>
     );
   };
 
-  onClickHelper=(data,index)=>{
-    const {currentBuckets} = this.state
-      console.log(currentBuckets)
+  onClickHelper = (data, index) => {
+    const { currentBuckets } = this.state;
+    console.log(currentBuckets);
 
-      console.log(index)
-      console.log(currentBuckets[index])
-      this.props.updater.toggleFilter(currentBuckets[index].name)
-      let sections: any[]=this.state.clickedSections
-      sections.push({index})
-      this.setState({clickedSections: sections})
-      
-      this.renderActiveShape
-      this.props.handleLoadMore()
-  }
-  handleClear =() =>{
-      this.setState({activeIndex:''})
-  }
+    console.log(index);
+    console.log(currentBuckets[index]);
+    if (index !== 9) {
+      this.props.updater.toggleFilter(currentBuckets[index].name);
+
+    } else {
+      this.state.otherBuckets.map((otherBucket, index)=>{
+        this.props.updater.toggleFilter(otherBucket.name)
+      })
+    }
+  };
+  handleClear = () => {
+    this.setState({ activeIndex: '' });
+  };
   render() {
-    if(this.props.buckets){
-        return (
-            <PieChart width={250} height={200}>
-              <Pie
-                activeIndex={this.state.activeIndex}
-                activeShape={this.renderActiveShape}
-                data={this.state.currentBuckets}
-                cx={125}
-                cy={100}
-                innerRadius={60}
-                outerRadius={80}
-                fill="#8884d8"
-                onMouseEnter={this.onPieEnter}
-                onMouseLeave={this.handleClear}
-                onClick={this.onClickHelper}
-              />
-            </PieChart>
-          );
+    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+
+    console.log('Current Buckets', this.state.currentBuckets);
+    if (this.props.buckets) {
+      return (
+        <PieChart width={250} height={220}>
+          <Pie
+            activeIndex={this.state.activeIndex}
+            activeShape={this.renderActiveShape}
+            data={this.state.currentBuckets}
+            cx={125}
+            cy={90}
+            innerRadius={60}
+            outerRadius={80}
+            fill="#8884d8"
+            onMouseEnter={this.onPieEnter}
+            onMouseLeave={this.handleClear}
+            onClick={this.onClickHelper}>
+            {this.state.currentBuckets.map((entry, index) => (
+              <Cell fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+        </PieChart>
+      );
     }
   }
 }
