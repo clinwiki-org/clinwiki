@@ -538,17 +538,26 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       );
     } else if (field?.display === FieldDisplay.PIE_CHART) {
       return (
-        <PresearchPanel id="range-selector">
+        <PresearchPanel>
           <Container>
-            {/* <RangeSelector
-            isOpen={isOpen}
-            hasMore={hasMore}
-            loading={loading}
+
+  {/* <PresearchFilter>
+          <Filter
             buckets={buckets}
-            handleLoadMore={this.handleLoadMore}
-            aggType={field?.display}
-            field={field}
-          /> */}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+        </PresearchFilter> */}
 
             <TwoLevelPieChart
              data={data}
