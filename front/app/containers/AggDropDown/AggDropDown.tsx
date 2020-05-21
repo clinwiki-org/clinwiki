@@ -582,8 +582,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { agg, presearch, currentSiteView } = this.props;
     const { isOpen } = this.state;
     let currentAgg = findFields(agg, currentSiteView, presearch);
-    //@ts-ignore
-    let configuredLabel = currentAgg.displayName;
+    let configuredLabel = currentAgg?.displayName || "";
     const title = aggToField(agg, configuredLabel);
 
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
