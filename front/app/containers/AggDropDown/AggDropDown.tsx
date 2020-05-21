@@ -559,6 +559,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             hasMore={hasMore}
             handleLoadMore={this.handleLoadMore}
             field={field}
+            searchParams={this.props.searchParams}
                           />
           </Container>
           {!loading && (
