@@ -15,6 +15,7 @@ interface TwoLevelPieChartProps {
   hasMore: boolean;
   handleLoadMore: any;
   updater: AggFilterInputUpdater;
+  searchParams:any;
 }
 
 interface TwoLevelPieChartState {
@@ -75,6 +76,10 @@ class TwoLevelPieChart extends React.Component<
         currentBuckets: finalDataArray,
         otherBuckets: finalOtherBucketsArray,
       });
+    }
+    else if(prevProps.searchParams !== this.props.searchParams){
+      console.log(this.props)
+       this.props.handleLoadMore();
     }
   };
 
