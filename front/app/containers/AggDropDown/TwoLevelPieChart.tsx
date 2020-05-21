@@ -3,6 +3,7 @@ import { PieChart, Pie, Sector, Cell } from 'recharts';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 
 interface TwoLevelPieChartProps {
@@ -78,16 +79,9 @@ class TwoLevelPieChart extends React.Component<
       });
     }
     else if(prevProps.searchParams !== this.props.searchParams){
-      console.log(this.props)
        this.props.handleLoadMore();
     }
   };
-
-  getInitialState() {
-    return {
-      activeIndex: 0,
-    };
-  }
 
   onPieEnter = (data, index) => {
     this.setState({
@@ -124,7 +118,7 @@ class TwoLevelPieChart extends React.Component<
     return (
       <g>
         <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-          {payload.name}
+          {truncateString(payload.name,14,false)}
         </text>
         <text x={cx} y={cy + 15} dy={8} textAnchor="middle" fill={fill}>
           {`\n ${value} Results`}
@@ -153,10 +147,6 @@ class TwoLevelPieChart extends React.Component<
 
   onClickHelper = (data, index) => {
     const { currentBuckets } = this.state;
-    console.log(currentBuckets);
-
-    console.log(index);
-    console.log(currentBuckets[index]);
     if (index !== 9) {
       this.props.updater.toggleFilter(currentBuckets[index].name);
 
