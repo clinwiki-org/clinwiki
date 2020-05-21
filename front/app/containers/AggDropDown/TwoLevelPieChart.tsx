@@ -16,7 +16,7 @@ interface TwoLevelPieChartProps {
   hasMore: boolean;
   handleLoadMore: any;
   updater: AggFilterInputUpdater;
-  searchParams:any;
+  searchParams: any;
 }
 
 interface TwoLevelPieChartState {
@@ -37,6 +37,8 @@ class TwoLevelPieChart extends React.Component<
       otherBuckets: [],
     };
   }
+  COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+
   componentDidMount = () => {
     this.props.handleLoadMore();
   };
@@ -63,7 +65,7 @@ class TwoLevelPieChart extends React.Component<
         } else if (index == 10) {
           otherBucket.value += currentBucket.value;
           finalDataArray.push(otherBucket);
-          finalOtherBucketsArray.push(currentBucket)
+          finalOtherBucketsArray.push(currentBucket);
           return;
         } else {
           let oldValue = finalDataArray[9].value;
@@ -77,9 +79,8 @@ class TwoLevelPieChart extends React.Component<
         currentBuckets: finalDataArray,
         otherBuckets: finalOtherBucketsArray,
       });
-    }
-    else if(prevProps.searchParams !== this.props.searchParams){
-       this.props.handleLoadMore();
+    } else if (prevProps.searchParams !== this.props.searchParams) {
+      this.props.handleLoadMore();
     }
   };
 
@@ -113,12 +114,11 @@ class TwoLevelPieChart extends React.Component<
     const ex = mx + (cos >= 0 ? 1 : -1) * 22;
     const ey = my;
     const textAnchor = cos >= 0 ? 'start' : 'end';
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
     return (
       <g>
         <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-          {truncateString(payload.name,14,false)}
+          {truncateString(payload.name, 14, false)}
         </text>
         <text x={cx} y={cy + 15} dy={8} textAnchor="middle" fill={fill}>
           {`\n ${value} Results`}
@@ -130,7 +130,7 @@ class TwoLevelPieChart extends React.Component<
           outerRadius={outerRadius}
           startAngle={startAngle}
           endAngle={endAngle}
-          fill={COLORS[this.state.activeIndex % COLORS.length]}
+          fill={this.COLORS[this.state.activeIndex % this.COLORS.length]}
         />
         <Sector
           cx={cx}
@@ -139,7 +139,7 @@ class TwoLevelPieChart extends React.Component<
           endAngle={endAngle}
           innerRadius={outerRadius + 6}
           outerRadius={outerRadius + 10}
-          fill={COLORS[this.state.activeIndex % COLORS.length]}
+          fill={this.COLORS[this.state.activeIndex % this.COLORS.length]}
         />
       </g>
     );
@@ -149,18 +149,16 @@ class TwoLevelPieChart extends React.Component<
     const { currentBuckets } = this.state;
     if (index !== 9) {
       this.props.updater.toggleFilter(currentBuckets[index].name);
-
     } else {
-      this.state.otherBuckets.map((otherBucket, index)=>{
-        this.props.updater.toggleFilter(otherBucket.name)
-      })
+      this.state.otherBuckets.map((otherBucket, index) => {
+        this.props.updater.toggleFilter(otherBucket.name);
+      });
     }
   };
   handleClear = () => {
     this.setState({ activeIndex: null });
   };
   render() {
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
     if (this.props.buckets) {
       return (
@@ -169,7 +167,7 @@ class TwoLevelPieChart extends React.Component<
             activeIndex={this.state.activeIndex}
             activeShape={this.renderActiveShape}
             data={this.state.currentBuckets}
-            dataKey="value"  
+            dataKey="value"
             cx={125}
             cy={90}
             innerRadius={60}
@@ -179,7 +177,7 @@ class TwoLevelPieChart extends React.Component<
             onMouseLeave={this.handleClear}
             onClick={this.onClickHelper}>
             {this.state.currentBuckets.map((entry, index) => (
-              <Cell fill={COLORS[index % COLORS.length]} key={entry+index} />
+              <Cell fill={this.COLORS[index % this.COLORS.length]} key={entry + index} />
             ))}
           </Pie>
         </PieChart>
