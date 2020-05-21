@@ -540,36 +540,17 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return (
         <PresearchPanel>
           <Container>
-
-  {/* <PresearchFilter>
-          <Filter
-            buckets={buckets}
-            filter={filter}
-            desc={desc}
-            sortKind={sortKind}
-            selectAll={this.selectAll}
-            checkSelect={this.checkSelect}
-            checkboxValue={checkboxValue}
-            removeSelectAll={removeSelectAll}
-            showLabel={showLabel}
-            handleFilterChange={this.handleFilterChange}
-            toggleAlphaSort={this.toggleAlphaSort}
-            toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })}
-          />
-        </PresearchFilter> */}
-
             <TwoLevelPieChart
-             data={data}
-            isPresearch={true}
-            visibleOptions={visibleOptions}
-            buckets={buckets}
-            isSelected={this.isSelected}
-            hasMore={hasMore}
-            handleLoadMore={this.handleLoadMore}
-            field={field}
-            searchParams={this.props.searchParams}
-                          />
+              data={data}
+              isPresearch={true}
+              visibleOptions={visibleOptions}
+              buckets={buckets}
+              isSelected={this.isSelected}
+              hasMore={hasMore}
+              handleLoadMore={this.handleLoadMore}
+              field={field}
+              searchParams={this.props.searchParams}
+            />
           </Container>
           {!loading && (
             <Container>
