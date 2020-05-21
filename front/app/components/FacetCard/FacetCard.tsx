@@ -356,7 +356,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                         cancel={() => this.setShowLoginModal(false)}
                       />
                       <ThemedPresearchCard
-                        style={{ height: showAddFacet ? null : 55 }}>
+                        style={{ height: showAddFacet ? null : 60 }}>
                         <ThemedPresearchHeader>
                           <PresearchTitle>
                             {truncateString(label, 18, true)}
