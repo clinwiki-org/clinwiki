@@ -6,6 +6,7 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import AuthButton from 'components/AuthButton';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import UserProfileHeaderButton from './UserProfileHeaderButton';
+import { UserFragment } from 'types/UserFragment';
 
 const Row = styled.div`
   display: flex;
@@ -15,10 +16,7 @@ const Row = styled.div`
 `;
 
 interface AuthHeaderProps {
-  user: {
-    email: string;
-    roles: string[];
-  } | null;
+  user: UserFragment | null;
   history: History;
 }
 

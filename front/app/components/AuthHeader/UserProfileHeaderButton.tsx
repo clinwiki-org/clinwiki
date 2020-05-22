@@ -1,13 +1,15 @@
-import React, { Component, createRef } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { logout } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import SiteProvider from 'containers/SiteProvider';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
+import { UserFragment } from 'types/UserFragment';
+
+const UserButtonWrapper = styled.div``;
 
 const UserImage = styled.img`
-  background-image: url(https://avatars2.githubusercontent.com/u/30156105?s=460&u=a9ecf403d3a8771213f09ec4d9c3db28a7722459&v=4);
   width: 25px;
   height: 25px;
   border-radius: 15%;
@@ -21,15 +23,22 @@ const UserButton = styled.div`
   min-width: 120px;
   height: 35px;
   padding: 5px;
-  border-radius: 7%;
+  border-radius: 5px;
   margin-top: 7px;
-  background-color: #6ba5d6;
+  background-color: ${props => props.theme.authButton.button};
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  &:hover {
+    background: ${props => props.theme.authButton.buttonHover};
+    border-color: ${props => props.theme.authButton.buttonBorderHover};
+    text-decoration: none;
+  }
 `;
+
+const ThemedUserButton = withTheme(UserButton);
 
 const ContributionCount = styled.div`
   font-size: 16px;
@@ -43,12 +52,19 @@ const SignInButton = styled.div`
   padding: 5px 10px;
   border-radius: 7%;
   margin-top: 7px;
-  background-color: #6ba5d6;
+  background-color: ${props => props.theme.authButton.button};
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  &:hover {
+    background: ${props => props.theme.authButton.buttonHover};
+    border-color: ${props => props.theme.authButton.buttonBorderHover};
+    text-decoration: none;
+  }
 `;
+
+const ThemedSignInButton = withTheme(SignInButton);
 
 const SignIn = styled.div`
   font-size: 14px;
@@ -74,9 +90,10 @@ const DropDownMenu = styled.div`
   position: absolute;
   z-index: 100;
   top: 100%;
-  width: 120px;
+  width: 140px;
   padding-top: 2px;
   padding-bottom: 2px;
+  right: 10px;
 `;
 
 const DropDownEmail = styled.div`
@@ -111,10 +128,7 @@ const ContributionText = styled.div`
 const Row = styled.div``;
 
 interface UserProfileHeaderButtonProps {
-  user: {
-    email: string;
-    roles: string[];
-  } | null;
+  user: UserFragment | null;
   history: History;
 }
 
@@ -126,7 +140,7 @@ class UserProfileHeaderButton extends React.PureComponent<
   UserProfileHeaderButtonProps,
   UserProfileHeaderButtonState
 > {
-  private myRef = createRef<HTMLDivElement>();
+  private dropDown: HTMLDivElement;
   state = {
     showDropdown: false,
   };
@@ -137,28 +151,34 @@ class UserProfileHeaderButton extends React.PureComponent<
     });
   };
 
+  closeMenuDropdown = () => {
+    this.setState({
+      showDropdown: false,
+    });
+  };
+
   handleSitesClick = () => {
-    this.toggleMenuDropdown();
+    this.closeMenuDropdown();
     this.props.history.push('/sites');
   };
 
   handleProfileClick = () => {
-    this.toggleMenuDropdown();
+    this.closeMenuDropdown();
     this.props.history.push('/profile?sv=user');
   };
 
   handleWorkflowsClick = () => {
-    this.toggleMenuDropdown();
+    this.closeMenuDropdown();
     this.props.history.push('/workflows');
   };
 
   handleSignInClick = () => {
-    this.toggleMenuDropdown();
+    this.closeMenuDropdown();
     this.props.history.push('/sign_in');
   };
 
   handleSignOutClick = () => {
-    this.toggleMenuDropdown();
+    this.closeMenuDropdown();
     logout(this.props.history);
   };
 
@@ -180,6 +200,43 @@ class UserProfileHeaderButton extends React.PureComponent<
     });
   };
 
+  getStarColor = rank => {
+    const firstTier = '#A97142';
+    const secondTier = '#C0C0C0';
+    const thirdTier = '#D4AF37';
+    const fourthTier = '#E5E4E2';
+
+    switch (rank) {
+      case 'default':
+        return firstTier;
+      case 'silver':
+        return secondTier;
+      case 'gold':
+        return thirdTier;
+      case 'platinum':
+        return fourthTier;
+    }
+    return;
+  };
+
+  renderUserImage = url => {
+    if (url) {
+      return (
+        <UserImage
+          style={{ backgroundImage: `url(${url})` }}
+          alt="profile_img"
+        />
+      );
+    }
+    return (
+      <FontAwesome
+        className="fa-user"
+        name=" fa-user"
+        style={{ marginLeft: 6, marginRight: 2, fontSize: 23 }}
+      />
+    );
+  };
+
   componentWillMount() {
     document.addEventListener('mousedown', this.handleClick, false);
   }
@@ -188,54 +245,57 @@ class UserProfileHeaderButton extends React.PureComponent<
     document.addEventListener('mousedown', this.handleClick, false);
   }
 
-  handleClickOutside = () => {};
-
   handleClick = e => {
-    // if (this.myRef.contains(e.target)) {
-    //   return;
-    // }
-    this.handleClickOutside();
+    if (this.dropDown.contains(e.target)) {
+      return;
+    }
+    this.closeMenuDropdown();
   };
 
   render() {
     const { showDropdown } = this.state;
-    if (!this.props.user) {
+    const { user } = this.props;
+    if (!user) {
       return (
-        <SignInButton onClick={this.handleSignInClick}>
+        <ThemedSignInButton onClick={this.handleSignInClick}>
           <SignIn>Sign In</SignIn>
-        </SignInButton>
+        </ThemedSignInButton>
       );
     }
-    return (
-      <SiteProvider>
-        {site => {
-          return (
-            <div ref={this.myRef}>
-              <UserButton onClick={this.toggleMenuDropdown}>
-                <UserImage
-                  src="https://avatars2.githubusercontent.com/u/30156105?s=460&u=a9ecf403d3a8771213f09ec4d9c3db28a7722459&v=4"
-                  alt="profile_img"
-                />
-                <ContributionContainer>
-                  <ContributionCount>35</ContributionCount>
+    if (user) {
+      return (
+        <SiteProvider>
+          {site => {
+            return (
+              <UserButtonWrapper
+                innerRef={(node: any) => {
+                  this.dropDown = node;
+                }}>
+                <ThemedUserButton onClick={this.toggleMenuDropdown}>
+                  {this.renderUserImage(user.pictureUrl)}
+                  <ContributionContainer>
+                    <ContributionCount>{user.contributions}</ContributionCount>
+                    <FontAwesome
+                      name="pencil"
+                      style={{ color: 'white', marginLeft: 2 }}
+                    />
+                  </ContributionContainer>
                   <FontAwesome
-                    name="pencil"
-                    style={{ color: 'white', marginLeft: 2 }}
+                    name="star"
+                    style={{
+                      color: this.getStarColor(user.rank),
+                      fontSize: 18,
+                    }}
                   />
-                </ContributionContainer>
-                <FontAwesome
-                  name="star"
-                  style={{ color: 'gold', fontSize: 18 }}
-                />
 
-                <FontAwesome
-                  name="chevron-down"
-                  style={{ color: 'white', fontSize: 10 }}
-                />
-              </UserButton>
-              {showDropdown && (
-                <DropDownMenu>
-                  {/* <DropDownEmail>
+                  <FontAwesome
+                    name="chevron-down"
+                    style={{ color: 'white', fontSize: 10 }}
+                  />
+                </ThemedUserButton>
+                {showDropdown && (
+                  <DropDownMenu>
+                    {/* <DropDownEmail>
                     {this.props.user?.email && `Signed in as:`}
                   </DropDownEmail>
                   <DropDownEmail>
@@ -243,29 +303,30 @@ class UserProfileHeaderButton extends React.PureComponent<
                       {this.props.user?.email && `${this.props.user.email}`}
                     </b>
                   </DropDownEmail> */}
-                  <ThemedDropDownItem onClick={this.handleSitesClick}>
-                    Sites
-                  </ThemedDropDownItem>
-                  <ThemedDropDownItem onClick={this.handleProfileClick}>
-                    Profile
-                  </ThemedDropDownItem>
-                  {this.props.user &&
-                    this.props.user.roles.includes('admin') && (
-                      <ThemedDropDownItem onClick={this.handleWorkflowsClick}>
-                        Workflows
-                      </ThemedDropDownItem>
-                    )}
-                  {this.renderAdminMenuItems(site)}
-                  <ThemedDropDownItem onClick={this.handleSignOutClick}>
-                    Log Out
-                  </ThemedDropDownItem>
-                </DropDownMenu>
-              )}
-            </div>
-          );
-        }}
-      </SiteProvider>
-    );
+                    <ThemedDropDownItem onClick={this.handleSitesClick}>
+                      Sites
+                    </ThemedDropDownItem>
+                    <ThemedDropDownItem onClick={this.handleProfileClick}>
+                      Profile
+                    </ThemedDropDownItem>
+                    {this.props.user &&
+                      this.props.user.roles.includes('admin') && (
+                        <ThemedDropDownItem onClick={this.handleWorkflowsClick}>
+                          Workflows
+                        </ThemedDropDownItem>
+                      )}
+                    {this.renderAdminMenuItems(site)}
+                    <ThemedDropDownItem onClick={this.handleSignOutClick}>
+                      Log Out
+                    </ThemedDropDownItem>
+                  </DropDownMenu>
+                )}
+              </UserButtonWrapper>
+            );
+          }}
+        </SiteProvider>
+      );
+    }
   }
 }
 
