@@ -802,6 +802,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       currentSiteView.search.presearch.crowdAggs.selected.values;
     const presearchButton = currentSiteView.search.presearch.button;
     const presearchText = currentSiteView.search.presearch.instructions;
+
     return (
       <SearchContainer>
         <InstructionsContainer>
