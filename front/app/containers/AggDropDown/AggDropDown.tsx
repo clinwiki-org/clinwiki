@@ -534,7 +534,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         <PresearchPanel>
           <Container>
             <TwoLevelPieChart
-              data={data}
               isPresearch={true}
               visibleOptions={visibleOptions}
               buckets={buckets}
