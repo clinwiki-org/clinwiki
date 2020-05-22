@@ -1,7 +1,7 @@
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
-import { SearchQueryInput, AggFilterInput } from "./globalTypes";
+import { SearchQueryInput, AggFilterInput, SortInput } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: SearchPageCrowdAggBucketsQuery
@@ -36,6 +36,7 @@ export interface SearchPageCrowdAggBucketsQueryVariables {
   page: number;
   pageSize: number;
   aggOptionsFilter?: string | null;
+  aggOptionsSort?: SortInput[] | null;
   url?: string | null;
   configType?: string | null;
   returnAll?: boolean | null;
