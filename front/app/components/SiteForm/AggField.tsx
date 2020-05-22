@@ -422,6 +422,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <option value="NUMBER_RANGE">Number Range</option>
           <option value="LESS_THAN_RANGE">Less Than Range</option>
           <option value="GREATER_THAN_RANGE">Greater Than Range</option>
+          <option value="PIE_CHART">Pie Chart</option>
         </StyledFormControl>
         {this.props.field.display == 'NUMBER_RANGE' ||
         this.props.field.display == 'LESS_THAN_RANGE' ||

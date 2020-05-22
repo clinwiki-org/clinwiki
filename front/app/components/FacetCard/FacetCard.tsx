@@ -121,9 +121,11 @@ interface FacetCardProps {
   addLabel?: boolean;
   meta: Record<string, string>;
   siteView: any;
-  values?: [string, boolean][];
+  values?: any[];
   refetch?: () => void;
   aggNames?: any;
+  bulk?: any;
+  allValues?: any[];
 }
 
 interface FacetCardState {
@@ -132,6 +134,7 @@ interface FacetCardState {
   suggestions: any[];
   isSuggestionLoading: boolean;
   showLoginModal: boolean;
+  showAddFacet: boolean;
 }
 
 class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
@@ -141,12 +144,23 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     suggestions: [],
     isSuggestionLoading: false,
     showLoginModal: false,
+    showAddFacet: false,
   };
 
   handlePlusClick = user => {
     if (user) {
       this.setState({
         textFieldActive: !this.state.textFieldActive,
+      });
+    } else {
+      this.setShowLoginModal(true);
+    }
+  };
+
+  handleAddFacetPlusClick = user => {
+    if (user) {
+      this.setState({
+        showAddFacet: !this.state.showAddFacet,
       });
     } else {
       this.setShowLoginModal(true);
@@ -176,7 +190,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   queryAutoSuggest = async apolloClient => {
     const { existingField } = this.state;
     const { label, values } = this.props;
-
     const query = AUTOSUGGEST_QUERY;
     const variables = {
       // todo: probably want to query more than just browse_condition_mesh_terms
@@ -308,26 +321,28 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel, aggNames, siteView, values } = this.props;
+    const { label, addLabel, aggNames, siteView, bulk, allValues } = this.props;
     const {
       textFieldActive,
       existingField,
       suggestions,
       showLoginModal,
+      showAddFacet,
     } = this.state;
-    // if (bulk) {
-    //   return (
-    //     <ThemedPresearchCard>
-    //       <ThemedPresearchHeader>
-    //         <PresearchTitle>{truncateString(label, 32, true)}</PresearchTitle>
-    //       </ThemedPresearchHeader>
-    //       <PresearchContent style={{ overflowY: 'auto' }}>
-    //         {this.props.children}
-    //       </PresearchContent>
-    //     </ThemedPresearchCard>
-    //   );
-    // }
+    if (bulk) {
+      return (
+        <ThemedPresearchCard>
+          <ThemedPresearchHeader>
+            <PresearchTitle>{truncateString(label, 32, true)}</PresearchTitle>
+          </ThemedPresearchHeader>
+          <PresearchContent style={{ overflowY: 'auto' }}>
+            {this.props.children}
+          </PresearchContent>
+        </ThemedPresearchCard>
+      );
+    }
     if (addLabel) {
+      console.log(allValues);
       return (
         <CurrentUser>
           {user => (
@@ -343,8 +358,22 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                       <ThemedPresearchCard>
                         <ThemedPresearchHeader>
                           <PresearchTitle>
-                            {truncateString(label, 32, true)}
+                            {truncateString(label, 18, true)}
                           </PresearchTitle>
+                          {!showAddFacet && (
+                            <TextFieldToggle
+                              onClick={() =>
+                                this.handleAddFacetPlusClick(user)
+                              }>
+                              +
+                            </TextFieldToggle>
+                          )}
+                          {showAddFacet && (
+                            <TextFieldToggle
+                              onClick={this.handleAddFacetPlusClick}>
+                              -
+                            </TextFieldToggle>
+                          )}
                         </ThemedPresearchHeader>
                         <PresearchContent style={{ overflowY: 'auto' }}>
                           <AddFacetCard
@@ -355,7 +384,8 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                             apolloClient={apolloClient}
                             aggNames={aggNames}
                             siteView={siteView}
-                            values={values}
+                            values={allValues}
+                            showAddFacet={showAddFacet}
                           />
                         </PresearchContent>
                       </ThemedPresearchCard>
@@ -383,7 +413,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                     <ThemedPresearchCard>
                       <ThemedPresearchHeader>
                         <PresearchTitle>
-                          {truncateString(label, 32, true)}
+                          {truncateString(label, 18, true)}
                         </PresearchTitle>
                         {!textFieldActive && (
                           <TextFieldToggle

@@ -10,6 +10,17 @@ export const createMutation = (
 ): SiteViewMutationInput => {
   const [operation, path] = name.split(':');
   const pathComponents = path.split('.');
+  let finalPathComponents: any[]=[]
+  pathComponents.map((path, index)=>{
+    if(path=='wiki_page_edits'){
+     // console.log(pathComponents[index+1])
+      finalPathComponents.push( `${path}.${pathComponents[index+1]}`)
+    }else if(pathComponents[index-1]=='wiki_page_edits'){
+      return
+    }else{
+      finalPathComponents.push(path)
+    }
+  })
   let typedOperation: SiteViewOperation;
   switch (operation.toUpperCase()) {
     case 'PUSH':
@@ -29,7 +40,7 @@ export const createMutation = (
       break;
   }
   return {
-    path: pathComponents,
+    path: finalPathComponents,
     operation: typedOperation,
     payload: value,
   };
@@ -57,6 +68,7 @@ export const updateView = <T extends SiteViewFragment | WorkflowsViewFragment>(
   view: T,
   mutations: SiteViewMutationInput[]
 ): T => {
+  console.log('updateView');
   const result = cloneDeep(view);
   mutations.forEach(mutation => applyOne(result, mutation));
   return result;

@@ -97,10 +97,13 @@ class SuggestedLabels extends React.PureComponent<
     config?: WorkflowConfigFragment_suggestedLabelsConfig
   ) => {
     // If config.visibleOptions is present replace values with the whitelist, preserve checked
+
     const checkedValues = new Set(
       values.filter(([_, checked]) => checked).map(([value, _]) => value)
     );
+
     let items = values.map(([value, _]) => value);
+
     if (
       config &&
       config.visibleOptions.kind == 'WHITELIST' &&
@@ -121,7 +124,7 @@ class SuggestedLabels extends React.PureComponent<
         label={key}
         meta={meta}
         nctId={this.props.nctId}
-        values={values}
+        values={items}
         onSelect={this.props.onSelect}
         refetch={refetch}
         siteView={this.props.siteView}>
@@ -184,6 +187,7 @@ class SuggestedLabels extends React.PureComponent<
             // @ts-ignore
             fromPairs
           )(data?.crowdAggFacets?.aggs || []);
+
           const config = this.props.suggestedLabelsConfig;
 
           const max = 999999;
@@ -192,6 +196,8 @@ class SuggestedLabels extends React.PureComponent<
             .sort(
               (a, b) => (config[a]?.rank || max) - (config[b]?.rank || max)
             );
+
+          const allCrowdAggs = keys(aggs);
 
           return (
             <LabelsContainer>
@@ -210,8 +216,9 @@ class SuggestedLabels extends React.PureComponent<
                 addLabel
                 nctId={this.props.nctId}
                 refetch={refetch}
-                aggNames={aggNames}
+                aggNames={allCrowdAggs}
                 siteView={this.props.siteView}
+                allValues={aggs}
               />
             </LabelsContainer>
           );

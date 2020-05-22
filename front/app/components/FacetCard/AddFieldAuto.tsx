@@ -110,19 +110,19 @@ class AddFieldAuto extends React.PureComponent<
 
   render() {
     const { suggestions } = this.state;
-    const { field } = this.props;
+    const { field, handleInputChange, onSuggestionSelected } = this.props;
     return (
       <Autosuggest
         suggestions={suggestions}
         renderSuggestion={this.renderTitleSuggestion}
         inputProps={{
           value: field ? field : '',
-          onChange: this.props.handleInputChange,
+          onChange: handleInputChange,
         }}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
         getSuggestionValue={this.getSuggestionValue}
-        onSuggestionSelected={this.props.onSuggestionSelected}
+        onSuggestionSelected={onSuggestionSelected}
       />
     );
   }

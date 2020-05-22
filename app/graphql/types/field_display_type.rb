@@ -7,5 +7,6 @@ module Types
     value "NUMBER_RANGE"
     value "LESS_THAN_RANGE"
     value "GREATER_THAN_RANGE"
+    value "PIE_CHART"
   end
 end
