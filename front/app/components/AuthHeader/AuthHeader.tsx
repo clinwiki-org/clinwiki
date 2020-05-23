@@ -5,12 +5,18 @@ import { History } from 'history';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import AuthButton from 'components/AuthButton';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
+import UserProfileHeaderButton from './UserProfileHeaderButton';
+import { UserFragment } from 'types/UserFragment';
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
 
 interface AuthHeaderProps {
-  user: {
-    email: string;
-    roles: string[];
-  } | null;
+  user: UserFragment | null;
   history: History;
 }
 
@@ -77,7 +83,12 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
               <NavItem eventKey={1} href="https://home.clinwiki.org/">
                 About ClinWiki
               </NavItem>
-              <AuthButton user={this.props.user} history={this.props.history} />
+              <Row>
+                <UserProfileHeaderButton
+                  user={this.props.user}
+                  history={this.props.history}
+                />
+              </Row>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

@@ -44,6 +44,7 @@ const USER_QUERY = gql`
     }
   }
 `;
+
 class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
   state: ProfilePageState = {
     currentDisplay: 'contributions',

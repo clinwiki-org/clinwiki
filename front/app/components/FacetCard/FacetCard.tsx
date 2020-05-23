@@ -329,7 +329,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       showLoginModal,
       showAddFacet,
     } = this.state;
-    // console.log('values', values);
     if (bulk) {
       return (
         <ThemedPresearchCard>
