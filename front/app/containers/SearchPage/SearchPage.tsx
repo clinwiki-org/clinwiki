@@ -278,10 +278,9 @@ interface SearchPageProps {
   site: SiteFragment;
   currentSiteView: SiteFragment_siteView;
   mutate: any;
-  email?:string;
-  intervention?:boolean;
-  getTotalContributions?:any;
-
+  email?: string;
+  intervention?: boolean;
+  getTotalContributions?: any;
 }
 
 interface SearchPageState {
@@ -651,9 +650,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         () => this.updateSearchParams(this.state.params)
       );
     }
-    if(this.props.intervention){
+    if (this.props.intervention) {
       //@ts-ignore
-      this.setState({params: this.props.searchParams})
+      this.setState({ params: this.props.searchParams });
     }
 
     if (this.showingCards()) {
@@ -667,12 +666,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.setState({
         siteViewType: 'user',
       });
-    } 
+    }
     // if (this.props.intervention) {
     //   this.setState({
     //     siteViewType: 'intervention',
     //   });
-    // } 
+    // }
     else {
       this.setState({
         siteViewType: 'search',
@@ -760,25 +759,27 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         this.props.history.push(
           `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&uid=${userId}&username=${profile && profile.values.toString()}`
-          ); return;
-      }else if(this.props.match.path =="/intervention/:id"){
-      this.props.history.push(
-        //@ts-ignore
-        `/intervention/${this.props.match.params.id}?hash=${
-          data!.provisionSearchHash!.searchHash!.short
-        }&sv=intervention`
-      ); return;
-    }else{
-      this.props.history.push(
-        `/search?hash=${
-          data!.provisionSearchHash!.searchHash!.short
-        }&sv=${siteViewUrl}`
-      );
-      return;
+          }&sv=${siteViewUrl}&uid=${userId}&username=${profile &&
+            profile.values.toString()}`
+        );
+        return;
+      } else if (this.props.match.path == '/intervention/:id') {
+        this.props.history.push(
+          //@ts-ignore
+          `/intervention/${this.props.match.params.id}?hash=${
+            data!.provisionSearchHash!.searchHash!.short
+          }&sv=intervention`
+        );
+        return;
+      } else {
+        this.props.history.push(
+          `/search?hash=${
+            data!.provisionSearchHash!.searchHash!.short
+          }&sv=${siteViewUrl}`
+        );
+        return;
+      }
     }
-  }
-
   };
 
   getTotalResults = total => {

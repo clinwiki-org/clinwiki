@@ -196,7 +196,6 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
       kind: 'extended',
       order: section.order,
     }));
-    // @ts-ignore
     const sortedExtendedSections = sortBy(
       pipe(prop('order'), parseInt),
       extendedSections

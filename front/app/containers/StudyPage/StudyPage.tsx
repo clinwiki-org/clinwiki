@@ -297,7 +297,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       basicSections: basicSectionsRaw,
       extendedSections: extendedSectionsRaw,
     } = view.study;
-    console.log("STUDY", view.study)
+    console.log('STUDY', view.study);
     const basicSections = [
       {
         name: 'workflow',
@@ -320,7 +320,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       ...basicSectionsRaw.map(section => ({
         name: section.title.toLowerCase(),
         path:
-          
           section.title.toLowerCase() === 'wiki'
             ? '/'
             : `/${section.title.toLowerCase()}`,
@@ -333,7 +332,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     ];
 
     const extendedSections = extendedSectionsRaw.map(section => {
-      return ({
+      return {
         name: section.title.toLowerCase(),
         path: `/${section.title.toLowerCase()}`,
         displayName: section.title,
@@ -342,8 +341,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         component: this.getComponent(section.title.toLowerCase()),
         hidden: section.hide,
         metaData: section,
-      })
-    } );
+      };
+    });
 
     // @ts-ignore
     const processedExtendedSections = sortBy(

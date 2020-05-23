@@ -29,7 +29,7 @@ import {
 } from 'ramda';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import BulkEditView from './BulkEditView';
-import { SearchPageParamsQuery_searchParams, } from 'types/SearchPageParamsQuery';
+import { SearchPageParamsQuery_searchParams } from 'types/SearchPageParamsQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import { SearchQueryInput } from 'types/globalTypes';
 import { SearchPageSearchQueryVariables } from 'types/SearchPageSearchQuery';

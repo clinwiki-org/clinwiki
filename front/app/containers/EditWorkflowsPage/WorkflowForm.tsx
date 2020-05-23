@@ -133,7 +133,7 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
                   optionsVisibility={{
                     hideSortType: true,
                     hidePreSelected: true,
-                    hideDisplayType: true
+                    hideDisplayType: true,
                   }}
                 />
               );

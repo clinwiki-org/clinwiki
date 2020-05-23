@@ -49,9 +49,7 @@ class InterventionsPage extends React.PureComponent<InterventionsPageProps> {
   static fragment = InterventionItem.fragment;
 
   handleItemClick = (id: number) => {
-    this.props.history.push(
-      `/intervention/${id}?sv=intervention`
-    );
+    this.props.history.push(`/intervention/${id}?sv=intervention`);
   };
 
   render() {

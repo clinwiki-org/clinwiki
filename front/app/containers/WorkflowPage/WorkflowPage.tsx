@@ -55,7 +55,7 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import ThemedButton from 'components/StyledComponents';
-import QUERY from 'queries/WorkflowPageQuery'
+import QUERY from 'queries/WorkflowPageQuery';
 
 class WorkflowPageQueryComponent extends Query<
   WorkflowPageQuery,
@@ -203,7 +203,9 @@ class WorkflowPage extends React.Component<
                 workflow.allSuggestedLabels.map(name => ({ name, rank: null }))
               ).map(prop('name'));
 
-              const suggestedLabelsConfig = fromPairs(workflow.suggestedLabelsConfig.map(c => [c.name, c]));
+              const suggestedLabelsConfig = fromPairs(
+                workflow.suggestedLabelsConfig.map(c => [c.name, c])
+              );
 
               return (
                 <div>
@@ -275,7 +277,9 @@ class WorkflowPage extends React.Component<
                                       allowedSuggestedLabels={
                                         allowedSuggestedLabels
                                       }
-                                      suggestedLabelsConfig={suggestedLabelsConfig}
+                                      suggestedLabelsConfig={
+                                        suggestedLabelsConfig
+                                      }
                                       disabled={!user}
                                     />
                                   </StyledPanel>

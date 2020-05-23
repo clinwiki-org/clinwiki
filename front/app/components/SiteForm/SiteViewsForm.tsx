@@ -25,7 +25,7 @@ interface SiteViewsFormProps {
   siteViews: SiteViewFragment[];
   refresh: any;
   handleForm: any;
-  theme:any;
+  theme: any;
 }
 
 interface SiteViewsFormState {
@@ -191,33 +191,32 @@ class SiteViewsForm extends React.Component<
           );
         });
         break;
-        case 'intervention':
-          createSiteView({
-            variables: {
-              input: {
-                name: userViewForm.name,
-                url: userViewForm.path,
-                description: `intervention view ${this.props.site.id}`,
-                default: false,
-                mutations: mutationArray,
-                siteId: this.props.site.id,
+      case 'intervention':
+        createSiteView({
+          variables: {
+            input: {
+              name: userViewForm.name,
+              url: userViewForm.path,
+              description: `intervention view ${this.props.site.id}`,
+              default: false,
+              mutations: mutationArray,
+              siteId: this.props.site.id,
+            },
+          },
+        }).then(res => {
+          this.setState(
+            {
+              userViewForm: {
+                name: '',
+                path: '',
               },
             },
-          }).then(res => {
-            this.setState(
-              {
-                userViewForm: {
-                  name: '',
-                  path: '',
-                },
-              },
-              () => {
-                this.props.refresh();
-              }
-            );
-          });
-  
-   
+            () => {
+              this.props.refresh();
+            }
+          );
+        });
+
       default:
         return null;
     }
@@ -264,7 +263,12 @@ class SiteViewsForm extends React.Component<
   }
   render() {
     const { siteViews, refresh, site } = this.props;
-    const { searchViewForm, userViewForm, adminViewForm, interventionViewForm } = this.state;
+    const {
+      searchViewForm,
+      userViewForm,
+      adminViewForm,
+      interventionViewForm,
+    } = this.state;
     const filteredSearchSites = () => {
       return filter(siteViews => siteViews.search.type == 'search', siteViews);
     };
@@ -275,7 +279,10 @@ class SiteViewsForm extends React.Component<
       return filter(siteViews => siteViews.search.type == 'admin', siteViews);
     };
     const filteredInterventionSites = () => {
-      return filter(siteViews => siteViews.search.type == 'intervention', siteViews);
+      return filter(
+        siteViews => siteViews.search.type == 'intervention',
+        siteViews
+      );
     };
     return (
       <CreateSiteViewMutation>
@@ -482,7 +489,9 @@ class SiteViewsForm extends React.Component<
                           name="name"
                           placeholder="Intervention View Name"
                           value={interventionViewForm.name}
-                          onChange={e => this.handleInputChange(e, 'intervention')}
+                          onChange={e =>
+                            this.handleInputChange(e, 'intervention')
+                          }
                         />
                       </td>
                       <td>
@@ -490,7 +499,9 @@ class SiteViewsForm extends React.Component<
                           name="path"
                           placeholder="Intervention View Path"
                           value={interventionViewForm.path}
-                          onChange={e => this.handleInputChange(e, 'intervention')}
+                          onChange={e =>
+                            this.handleInputChange(e, 'intervention')
+                          }
                         />
                       </td>
                       <td>

@@ -362,7 +362,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
 
     const headerName = COLUMN_NAMES[name];
     return {
-      Header: <SearchFieldName field={headerName} />,
+      Header: headerName,
       accessor: camelCaseName,
       style: {
         overflowWrap: 'break-word',
