@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ReactStars from 'react-stars';
-import styled,  {keyframes}   from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 interface SubmitAnimationProps {
   resetAnimation: any;
@@ -11,17 +11,11 @@ const coolBoxKeyframes = keyframes`
     opacity: 0;
     top:25%;
     right: 13%
-
-
-
   }
-
   100%{
       opacity:1;
       top:0;
       right:1%;
-
-
   }
 
 `
@@ -48,27 +42,19 @@ animation-play-state: running;
 
 `
 class SubmitAnimation extends React.Component<SubmitAnimationProps> {
-  componentDidMount() {
-
-
-//     transform: translate(350px, -350px) rotate(360deg);
-// -webkit-transform: translate(350px, -350px) rotate(360deg);
-// -o-transform: translate(350px, -350px) rotate(360deg);
-// -moz-transform: translate(350px, -350px) rotate(360deg);
-  }
 
   render() {
     this.props.resetAnimation();
     const color = '#A97142';
     return (
       <Animation>
-          <ReactStars
-            count={1}
-            color1={color}
-            color2={color}
-            half={false}
-            size={25}
-          />
+        <ReactStars
+          count={1}
+          color1={color}
+          color2={color}
+          half={false}
+          size={25}
+        />
       </Animation>
     );
   }
