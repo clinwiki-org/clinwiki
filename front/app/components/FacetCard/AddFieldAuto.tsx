@@ -108,6 +108,13 @@ class AddFieldAuto extends React.PureComponent<
     });
   };
 
+  storeInputReference = autosuggest => {
+    if (autosuggest !== null) {
+      //@ts-ignore
+      this.input = autosuggest.input;
+    }
+  };
+
   render() {
     const { suggestions } = this.state;
     const { field, handleInputChange, onSuggestionSelected } = this.props;
@@ -118,11 +125,13 @@ class AddFieldAuto extends React.PureComponent<
         inputProps={{
           value: field ? field : '',
           onChange: handleInputChange,
+          placeholder: 'Enter a new label',
         }}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
         getSuggestionValue={this.getSuggestionValue}
         onSuggestionSelected={onSuggestionSelected}
+        ref={this.storeInputReference}
       />
     );
   }

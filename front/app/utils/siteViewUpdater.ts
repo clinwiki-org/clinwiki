@@ -13,7 +13,6 @@ export const createMutation = (
   let finalPathComponents: any[]=[]
   pathComponents.map((path, index)=>{
     if(path=='wiki_page_edits'){
-     // console.log(pathComponents[index+1])
       finalPathComponents.push( `${path}.${pathComponents[index+1]}`)
     }else if(pathComponents[index-1]=='wiki_page_edits'){
       return

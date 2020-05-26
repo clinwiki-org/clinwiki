@@ -436,13 +436,13 @@ class SearchService
 
   def find_visibile_options(agg_name, is_crowd_agg, current_site, url, config_type, return_all)
     return [] if current_site.blank? || return_all
+    site_view = current_site.site_views.find_by(url: url)
+    if site_view.nil?
+      view = current_site.site_views.find_by(default: true).view
+    else
+      view = site_view.view
+    end
 
-    view = if url.blank?
-             current_site.site_views.find_by(default: true).view
-           else
-
-             current_site.site_views.find_by(url: url).view
-           end
     case config_type ? config_type.downcase : config_type
     when nil, "facetbar"
       fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)

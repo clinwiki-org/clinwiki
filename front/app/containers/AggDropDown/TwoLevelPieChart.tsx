@@ -5,18 +5,15 @@ import { AggBucket } from '../SearchPage/Types';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
-
+import { SearchParams } from '../SearchPage/Types'
 interface TwoLevelPieChartProps {
-  data: any;
   isPresearch: boolean;
   field: SiteViewFragment_search_aggs_fields | any;
-  visibleOptions: any;
   buckets: Array<AggBucket>;
-  isSelected: any;
   hasMore: boolean;
   handleLoadMore: any;
   updater: AggFilterInputUpdater;
-  searchParams: any;
+  searchParams: SearchParams;
 }
 
 interface TwoLevelPieChartState {

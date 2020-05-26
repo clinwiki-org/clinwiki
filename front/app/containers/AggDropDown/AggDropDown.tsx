@@ -502,14 +502,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       loading,
     } = this.state;
     const field = findFields(agg, currentSiteView, presearch);
-
-    const data = [
-      { name: 'Group A', value: 400 },
-      { name: 'Group B', value: 300 },
-      { name: 'Group C', value: 300 },
-      { name: 'Group D', value: 200 },
-    ];
-
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -541,7 +533,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         <PresearchPanel>
           <Container>
             <TwoLevelPieChart
-              data={data}
               isPresearch={true}
               visibleOptions={visibleOptions}
               buckets={buckets}
@@ -614,8 +605,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const { agg, presearch, currentSiteView } = this.props;
     const { isOpen } = this.state;
     let currentAgg = findFields(agg, currentSiteView, presearch);
-    //@ts-ignore
-    let configuredLabel = currentAgg.displayName;
+    let configuredLabel = currentAgg?.displayName || "";
     const title = aggToField(agg, configuredLabel);
 
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
