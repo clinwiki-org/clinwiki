@@ -33,6 +33,7 @@ interface WikiPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
+  refetch?:any;
 }
 
 interface WikiPageState {
@@ -133,7 +134,6 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   };
 
   handleEdit = (hash: string, siteViewUrl: string) => {
-    console.log('this.props', this.props.match);
     this.props.history.push(
       `${trimPath(
         this.props.match.url
@@ -211,9 +211,8 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     this.setState({ flashAnimation: false })
   }
   handleResetAnimation = () => {
-
+    this.props.refetch()
     setTimeout(this.resetHelperFunction, 3000)
-
   }
   expandAllEdits = () => {
     const { historyExpanded } = this.state;
@@ -272,7 +271,6 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   renderSubmitButton = (data: WikiPageQuery, isAuthenticated: boolean, readOnly: boolean) => {
     if (!isAuthenticated) return false;
     if (readOnly) return false;
-    console.log(this.props)
     const editorTextState = this.getEditorText();
     const editorTextData =
       data.study && data.study.wikiPage && data.study.wikiPage.content;
