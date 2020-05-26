@@ -502,7 +502,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       loading,
     } = this.state;
     const field = findFields(agg, currentSiteView, presearch);
-
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||

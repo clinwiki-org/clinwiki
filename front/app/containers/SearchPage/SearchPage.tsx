@@ -63,6 +63,7 @@ import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
+import RichTextEditor, { EditorValue } from 'react-rte-yt';
 
 class ParamsQueryComponent extends Query<
   SearchPageParamsQueryType,
@@ -808,7 +809,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <InstructionsContainer>
           {presearchText && (
             <Instructions>
-              <h5>{presearchText}</h5>
+              <RichTextEditor
+                readOnly
+                value={RichTextEditor.createValueFromString(
+                  presearchText,
+                  'markdown'
+                )}
+              />
             </Instructions>
           )}
         </InstructionsContainer>

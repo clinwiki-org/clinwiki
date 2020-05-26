@@ -3,12 +3,31 @@ import styled from 'styled-components';
 import * as Autosuggest from 'react-autosuggest';
 import ThemedAutosuggestButton from 'components/StyledComponents';
 import { any } from 'prop-types';
+import { gql } from 'apollo-boost';
 
 const Row = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+`;
+
+const USER_QUERY = gql`
+  query User($userId: Int!) {
+    user(userId: $userId) {
+      firstName
+      lastName
+      reviewCount
+      rank
+      reviews {
+        nctId
+        briefTitle
+        content
+      }
+      contributions
+      pictureUrl
+    }
+  }
 `;
 
 interface AddFieldAutoProps {
@@ -89,6 +108,13 @@ class AddFieldAuto extends React.PureComponent<
     });
   };
 
+  storeInputReference = autosuggest => {
+    if (autosuggest !== null) {
+      //@ts-ignore
+      this.input = autosuggest.input;
+    }
+  };
+
   render() {
     const { suggestions } = this.state;
     const { field, handleInputChange, onSuggestionSelected } = this.props;
@@ -99,11 +125,13 @@ class AddFieldAuto extends React.PureComponent<
         inputProps={{
           value: field ? field : '',
           onChange: handleInputChange,
+          placeholder: 'Enter a new label',
         }}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
         getSuggestionValue={this.getSuggestionValue}
         onSuggestionSelected={onSuggestionSelected}
+        ref={this.storeInputReference}
       />
     );
   }

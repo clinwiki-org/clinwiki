@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import withTheme from 'containers/ThemeProvider';
-import ThemedButton from 'components/StyledComponents';
+import ThemedButton, { PresearchContent } from 'components/StyledComponents';
 import * as Autosuggest from 'react-autosuggest';
 import AddFieldAuto from 'components/FacetCard/AddFieldAuto';
 import ThemedAutosuggestButton from 'components/StyledComponents';
@@ -262,47 +262,49 @@ class AddFacetCard extends React.PureComponent<
     const { aggNames, showAddFacet } = this.props;
     if (showAddFacet) {
       return (
-        <MarginContainer>
-          <MarginContainer>Label</MarginContainer>
-          <AddFieldAuto
-            fields={aggNames}
-            handleInputChange={this.handleTitleFieldChange}
-            field={title}
-            onSuggestionSelected={this.onFieldSuggestionSelected}
-          />
-          <MarginContainer>Description</MarginContainer>
-          <ApolloConsumer>
-            {apolloClient => (
-              <Autosuggest
-                suggestions={descriptionSuggestions}
-                renderSuggestion={this.renderFieldSuggestion}
-                inputProps={{
-                  disabled: title ? false : true,
-                  value: description ? description : '',
-                  onChange: (e, value) =>
-                    this.handleDescriptionFieldChange(e, value, apolloClient),
-                }}
-                onSuggestionSelected={this.onSuggestionSelected}
-                onSuggestionsFetchRequested={() =>
-                  this.onSuggestionsFetchRequested(apolloClient)
-                }
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                getSuggestionValue={this.getSuggestionValue}
-              />
-            )}
-          </ApolloConsumer>
-          <div style={{ marginTop: 5, marginLeft: 2, marginBottom: 5 }}>
-            <ThemedButton
-              style={{ marginRight: 5 }}
-              onClick={this.handleSubmit}>
-              Submit
-            </ThemedButton>
-            <ThemedButton onClick={this.handleCancel}>Cancel</ThemedButton>
-          </div>
-        </MarginContainer>
+        <PresearchContent style={{ overflowY: 'auto' }}>
+          <MarginContainer>
+            <MarginContainer>Label</MarginContainer>
+            <AddFieldAuto
+              fields={aggNames}
+              handleInputChange={this.handleTitleFieldChange}
+              field={title}
+              onSuggestionSelected={this.onFieldSuggestionSelected}
+            />
+            <MarginContainer>Description</MarginContainer>
+            <ApolloConsumer>
+              {apolloClient => (
+                <Autosuggest
+                  suggestions={descriptionSuggestions}
+                  renderSuggestion={this.renderFieldSuggestion}
+                  inputProps={{
+                    disabled: title ? false : true,
+                    value: description ? description : '',
+                    onChange: (e, value) =>
+                      this.handleDescriptionFieldChange(e, value, apolloClient),
+                  }}
+                  onSuggestionSelected={this.onSuggestionSelected}
+                  onSuggestionsFetchRequested={() =>
+                    this.onSuggestionsFetchRequested(apolloClient)
+                  }
+                  onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                  getSuggestionValue={this.getSuggestionValue}
+                />
+              )}
+            </ApolloConsumer>
+            <div style={{ marginTop: 5, marginLeft: 2, marginBottom: 5 }}>
+              <ThemedButton
+                style={{ marginRight: 5 }}
+                onClick={this.handleSubmit}>
+                Submit
+              </ThemedButton>
+              <ThemedButton onClick={this.handleCancel}>Cancel</ThemedButton>
+            </div>
+          </MarginContainer>
+        </PresearchContent>
       );
     }
-    return null;
+    return <PresearchContent style={{ height: 0 }}></PresearchContent>;
   }
 }
 
