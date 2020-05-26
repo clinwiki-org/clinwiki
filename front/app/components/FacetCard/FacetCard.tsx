@@ -173,6 +173,16 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     }
   };
 
+  handleAddFacetPlusClick = user => {
+    if (user) {
+      this.setState({
+        showAddFacet: !this.state.showAddFacet,
+      });
+    } else {
+      this.setShowLoginModal(true);
+    }
+  };
+
   setShowLoginModal = showLoginModal => {
     this.setState({ showLoginModal });
   };
@@ -341,8 +351,8 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       showLoginModal,
       showAddFacet,
     } = this.state;
-
     if (addLabel) {
+      console.log(allValues);
       return (
         <CurrentUser>
           {user => (
