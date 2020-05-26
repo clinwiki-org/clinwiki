@@ -23,7 +23,7 @@ import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import ExpansionContext from './ExpansionContext';
-
+import SubmitAnimation from './components/SubmitAnimation'
 interface WikiPageProps {
   nctId: string;
   match: match<{ nctId: string }>;
@@ -40,6 +40,7 @@ interface WikiPageState {
   richEditorText: EditorValue | null;
   plainEditorText: string | null;
   historyExpanded: any;
+  flashAnimation: boolean;
 }
 
 const FRAGMENT = gql`
@@ -95,7 +96,7 @@ class QueryComponent extends Query<WikiPageQuery, WikiPageQueryVariables> {}
 class UpdateContentMutation extends Mutation<
   WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables
-> {}
+  > {}
 
 class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   state: WikiPageState = {
@@ -103,6 +104,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     richEditorText: null,
     plainEditorText: null,
     historyExpanded: {},
+    flashAnimation: false
   };
 
   static fragment = FRAGMENT;
@@ -174,6 +176,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       variables: WikiPageUpdateContentMutationVariables;
     }) => void
   ) => {
+    this.setState({ flashAnimation: true })
     updateWikiContent({
       variables: {
         nctId: this.props.nctId,
@@ -204,7 +207,14 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       historyExpanded,
     });
   };
+  resetHelperFunction = () => {
+    this.setState({ flashAnimation: false })
+  }
+  handleResetAnimation = () => {
 
+    setTimeout(this.resetHelperFunction, 3000)
+
+  }
   expandAllEdits = () => {
     const { historyExpanded } = this.state;
     Object.keys(historyExpanded).forEach(key => {
@@ -259,21 +269,25 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     );
   };
 
-  renderSubmitButton = (data: WikiPageQuery, isAuthenticated: boolean) => {
+  renderSubmitButton = (data: WikiPageQuery, isAuthenticated: boolean, readOnly: boolean) => {
     if (!isAuthenticated) return false;
-
+    if (readOnly) return false;
+    console.log(this.props)
     const editorTextState = this.getEditorText();
     const editorTextData =
       data.study && data.study.wikiPage && data.study.wikiPage.content;
     return (
       <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
         {updateWikiContent => (
-          <ThemedButton
-            onClick={() => this.handleEditSubmit(updateWikiContent)}
-            disabled={editorTextState === editorTextData}
-            style={{ marginLeft: '10px' }}>
-            Submit <FontAwesome name="pencil" />
-          </ThemedButton>
+          this.state.flashAnimation == true ? <SubmitAnimation
+            resetAnimation={this.handleResetAnimation}
+          /> :
+            <ThemedButton
+              onClick={() => this.handleEditSubmit(updateWikiContent)}
+              disabled={editorTextState === editorTextData}
+              style={{ marginLeft: '10px' }}>
+              Submit <FontAwesome name="pencil" />
+            </ThemedButton>
         )}
       </UpdateContentMutation>
     );
@@ -283,7 +297,8 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     data: WikiPageQuery,
     user: UserFragment | null,
     hash: string,
-    siteViewUrl: string
+    siteViewUrl: string,
+    readOnly: boolean
   ) => {
     const { historyExpanded } = this.state;
     const isAuthenticated = user !== null;
@@ -306,7 +321,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                   style={{ marginLeft: '10px' }}>
                   Preview <FontAwesome name="photo" />
                 </ThemedButton>
-                {this.renderSubmitButton(data, isAuthenticated)}
+                {this.renderSubmitButton(data, isAuthenticated, readOnly)}
               </>
             )}
           />
@@ -350,7 +365,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                   History <FontAwesome name="history" />
                 </ThemedButton>
                 {this.renderEditButton(isAuthenticated, hash, siteViewUrl)}
-                {this.renderSubmitButton(data, isAuthenticated)}
+                {this.renderSubmitButton(data, isAuthenticated, readOnly)}
               </>
             )}
           />
@@ -411,6 +426,8 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   };
 
   render() {
+    const readOnly = !this.props.location.pathname.includes('/wiki/edit');
+
     const { historyExpanded } = this.state;
     const hash = new URLSearchParams(this.props.history.location.search)
       .getAll('hash')
@@ -460,7 +477,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                     />
                     <Route render={() => this.renderEditor(data)} />
                   </Switch>
-                  {this.renderToolbar(data, user, hash, siteViewUrl)}
+                  {this.renderToolbar(data, user, hash, siteViewUrl, readOnly)}
                 </div>
               )}
             </CurrentUser>
