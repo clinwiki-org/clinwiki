@@ -38,6 +38,7 @@ interface StudySearchPageProps {
   match: match<{ nctId: string; searchId: string }>;
   history: History;
   location: Location;
+  refetch:any;
 }
 
 class SearchStudyPageQueryComponent extends Query<
@@ -133,6 +134,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               recordsTotal={hash != '' ? recordsTotal : undefined}
               counterIndex={counterIndex}
               workflowName={workflowName}
+              refetch={this.props.refetch}
             />
           );
         }}

@@ -64,6 +64,7 @@ interface StudyPageProps {
   recordsTotal?: number;
   counterIndex?: number;
   theme?: any;
+  refetch?:any;
 }
 
 interface StudyPageState {
@@ -297,7 +298,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       basicSections: basicSectionsRaw,
       extendedSections: extendedSectionsRaw,
     } = view.study;
-    console.log("STUDY", view.study)
     const basicSections = [
       {
         name: 'workflow',
@@ -537,6 +537,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               workflowsView={workflowsView}
                               match={this.props.match}
                               siteView={currentSiteView}
+                              refetch={this.props.refetch}
                             />
                           </div>
 
