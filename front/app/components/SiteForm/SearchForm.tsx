@@ -318,6 +318,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     let newItem = { icon: '', target: '', __typename: 'ResultButtonItems' };
     let newItems = [...items, newItem];
 
+    this.setState({resultsButtonsArray : newItems})
     this.handleAddMutation(
       { currentTarget: { name: name, value: newItems } },
       view
