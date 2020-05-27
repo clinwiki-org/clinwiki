@@ -23,3 +23,22 @@ export const logout = (history: History) => {
   setLocalJwt(null);
   apolloClient.resetStore().then(() => history.push('/'));
 };
+
+export const getStarColor = rank => {
+  const firstTier = '#A97142';
+  const secondTier = '#C0C0C0';
+  const thirdTier = '#D4AF37';
+  const fourthTier = '#E5E4E2';
+
+  switch (rank) {
+    case 'default':
+      return firstTier;
+    case 'silver':
+      return secondTier;
+    case 'gold':
+      return thirdTier;
+    case 'platinum':
+      return fourthTier;
+  }
+  return;
+};

@@ -23,6 +23,7 @@ interface StudyPageSectionProps {
   match: match<{ nctId: string; searchId: string }>;
   theme: Theme;
   siteView?: any;
+  refetch?:any;
 }
 
 interface StudyPageSectionsState {
@@ -144,6 +145,7 @@ class StudyPageSection extends React.Component<
                       location={this.props.location}
                       theme={this.props.theme}
                       siteView={this.props?.siteView}
+                      refetch={this.props.refetch}
                     />
                   </Panel.Body>
                 </StyledPanelBody>

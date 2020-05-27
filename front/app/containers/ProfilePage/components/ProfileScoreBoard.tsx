@@ -13,6 +13,7 @@ import {
   ScoreBoard,
   StyledProfileRanking,
 } from '../../../components/StyledComponents';
+import { getStarColor } from 'utils/auth';
 
 interface ProfileScoreBoardProps {
   totalPoints: any;
@@ -25,17 +26,10 @@ interface ProfileScoreBoardProps {
 }
 
 class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
-  starLogo = totalContributions => {
-    const firstTier = '#A97142';
-    const secondTier = '#C0C0C0';
-    const thirdTier = '#D4AF37';
-    const fourthTier = '#E5E4E2';
+  starLogo = () => {
 
-    let color = '';
-    switch (this.props.rank) {
-      case 'default':
-        color = firstTier;
-        return (
+    let color = getStarColor(this.props.rank)
+          return (
           <span style={{ display: 'flex', margin: 'auto' }}>
             <ReactStars
               count={1}
@@ -46,47 +40,6 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
             />
           </span>
         );
-      case 'silver':
-        color = secondTier;
-        return (
-          <span style={{ display: 'flex', margin: 'auto' }}>
-            <ReactStars
-              count={1}
-              color1={color}
-              color2={color}
-              half={false}
-              size={25}
-            />
-          </span>
-        );
-      case 'gold':
-        color = thirdTier;
-        return (
-          <span style={{ display: 'flex', margin: 'auto' }}>
-            <ReactStars
-              count={1}
-              color1={color}
-              color2={color}
-              half={false}
-              size={25}
-            />
-          </span>
-        );
-      case 'platinum':
-        color = fourthTier;
-        return (
-          <span style={{ display: 'flex', margin: 'auto' }}>
-            <ReactStars
-              count={1}
-              color1={color}
-              color2={color}
-              half={false}
-              size={25}
-            />
-          </span>
-        );
-    }
-    return;
   };
 
   render() {
@@ -95,7 +48,7 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
         <ScoreBoard>
           <StyledLabelValuePair>
             <StyledProfileRanking>
-              {this.starLogo(this.props.totalContributions)}
+              {this.starLogo()}
             </StyledProfileRanking>
             <StyledProfileScoreLabel>Star Level</StyledProfileScoreLabel>
           </StyledLabelValuePair>

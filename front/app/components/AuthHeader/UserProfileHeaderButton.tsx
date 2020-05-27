@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { logout } from 'utils/auth';
+import { logout, getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import SiteProvider from 'containers/SiteProvider';
@@ -200,24 +200,6 @@ class UserProfileHeaderButton extends React.PureComponent<
     });
   };
 
-  getStarColor = rank => {
-    const firstTier = '#A97142';
-    const secondTier = '#C0C0C0';
-    const thirdTier = '#D4AF37';
-    const fourthTier = '#E5E4E2';
-
-    switch (rank) {
-      case 'default':
-        return firstTier;
-      case 'silver':
-        return secondTier;
-      case 'gold':
-        return thirdTier;
-      case 'platinum':
-        return fourthTier;
-    }
-    return;
-  };
 
   renderUserImage = url => {
     if (url) {
@@ -283,7 +265,7 @@ class UserProfileHeaderButton extends React.PureComponent<
                   <FontAwesome
                     name="star"
                     style={{
-                      color: this.getStarColor(user.rank),
+                      color: getStarColor(user.rank),
                       fontSize: 18,
                     }}
                   />
