@@ -67,7 +67,7 @@ class App extends React.PureComponent<AppProps> {
                     component={StudyPage}
                   />
                   <Route path="/study/:nctId"
-                    render={(props) => <SearchStudyPage {...props} refetch={refetch} />}
+                    render={(props) => <SearchStudyPage {...props} user={user} refetch={refetch} />}
                   />
                   <Route path="/intervention/:id" component={InterventionPage} />
                   <Route exact path="/profile" component={EditProfilePage} />

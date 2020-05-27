@@ -11,6 +11,7 @@ import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
 import { MAX_WINDOW_SIZE } from '../../utils/constants';
+import { UserFragment } from 'types/UserFragment';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
@@ -39,6 +40,7 @@ interface StudySearchPageProps {
   history: History;
   location: Location;
   refetch:any;
+  user: UserFragment | null;
 }
 
 class SearchStudyPageQueryComponent extends Query<
@@ -135,6 +137,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               counterIndex={counterIndex}
               workflowName={workflowName}
               refetch={this.props.refetch}
+              user={this.props.user}
             />
           );
         }}

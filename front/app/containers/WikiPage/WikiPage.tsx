@@ -24,6 +24,7 @@ import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import ExpansionContext from './ExpansionContext';
 import SubmitAnimation from './components/SubmitAnimation'
+import { getStarColor } from '../../utils/auth'
 interface WikiPageProps {
   nctId: string;
   match: match<{ nctId: string }>;
@@ -33,7 +34,8 @@ interface WikiPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
-  refetch?:any;
+  refetch?: any;
+  user: UserFragment | null;
 }
 
 interface WikiPageState {
@@ -274,11 +276,15 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     const editorTextState = this.getEditorText();
     const editorTextData =
       data.study && data.study.wikiPage && data.study.wikiPage.content;
+    const userRank = this.props.user ? this.props.user.rank : 'default'
+    let rankColor = getStarColor(userRank)
+
     return (
       <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
         {updateWikiContent => (
           this.state.flashAnimation == true ? <SubmitAnimation
             resetAnimation={this.handleResetAnimation}
+            rankColor={rankColor}
           /> :
             <ThemedButton
               onClick={() => this.handleEditSubmit(updateWikiContent)}
