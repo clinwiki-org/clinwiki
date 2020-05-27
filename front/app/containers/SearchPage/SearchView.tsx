@@ -3,6 +3,7 @@ import { SearchParams, AggKind, SearchQuery } from './shared';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
 import SearchFieldName from 'components/SearchFieldName';
+import ThemedButton from 'components/StyledComponents'
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { PulseLoader, BeatLoader } from 'react-spinners';
@@ -737,11 +738,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             return (
               <ButtonGroup>
                 {buttonsArray.map((button, index) => (
-                  <Button
+                  <ThemedButton
                     href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
                     key={button.target + index}>
                     {this.renderViewButton(button.icon)}
-                  </Button>
+                  </ThemedButton>
                 ))}
               </ButtonGroup>
             );
