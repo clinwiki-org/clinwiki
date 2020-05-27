@@ -50,6 +50,7 @@ import StudyPageCounter from './components/StudyPageCounter';
 import withTheme from 'containers/ThemeProvider';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
+import { UserFragment } from 'types/UserFragment';
 
 interface StudyPageProps {
   history: History;
@@ -65,6 +66,7 @@ interface StudyPageProps {
   counterIndex?: number;
   theme?: any;
   refetch?:any;
+  user?: UserFragment | null;
 }
 
 interface StudyPageState {
@@ -538,6 +540,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               match={this.props.match}
                               siteView={currentSiteView}
                               refetch={this.props.refetch}
+                              user={this.props.user}
                             />
                           </div>
 

@@ -4,6 +4,7 @@ import styled, { keyframes } from 'styled-components';
 
 interface SubmitAnimationProps {
   resetAnimation: any;
+  rankColor:any;
 }
 
 const coolBoxKeyframes = keyframes`
@@ -45,7 +46,7 @@ class SubmitAnimation extends React.Component<SubmitAnimationProps> {
 
   render() {
     this.props.resetAnimation();
-    const color = '#A97142';
+    const color = this.props.rankColor;
     return (
       <Animation>
         <ReactStars
