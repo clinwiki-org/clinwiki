@@ -9,6 +9,11 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 22
+- Pwd reset
+- new auth header
+- map facet types
+
 ### Version 21
 - [#538](https://github.com/clinwiki-org/clinwiki/issues/538)
 - [#540](https://github.com/clinwiki-org/clinwiki/issues/540)
