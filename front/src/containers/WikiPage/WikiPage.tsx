@@ -38,7 +38,7 @@ interface WikiPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
-  metaData: SiteStudyBasicGenericSectionFragment;
+  metaData: SiteStudyBasicGenericSectionFragment;  
   refetch?: any;
   user: UserFragment | null;
 }
@@ -221,10 +221,10 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   };
   resetHelperFunction = () => {
     this.setState({ flashAnimation: false })
+    this.props.refetch()
   }
   handleResetAnimation = () => {
-    this.props.refetch()
-    setTimeout(this.resetHelperFunction, 3000)
+    setTimeout(this.resetHelperFunction, 5500)
   }
   expandAllEdits = () => {
     const { historyExpanded } = this.state;
@@ -292,10 +292,14 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     return (
       <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
         {updateWikiContent => (
-          this.state.flashAnimation === true ? <SubmitAnimation
+          this.state.flashAnimation === true ? 
+          <span>
+          <SubmitAnimation
             resetAnimation={this.handleResetAnimation}
             rankColor={rankColor}
-          /> :
+          /> 
+          </span>
+          :
             <ThemedButton
               onClick={() => this.handleEditSubmit(updateWikiContent)}
               disabled={editorTextState === editorTextData}

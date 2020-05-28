@@ -4,14 +4,37 @@ import styled, { keyframes } from 'styled-components';
 
 interface SubmitAnimationProps {
   resetAnimation: any;
-  rankColor:any;
+  rankColor: any;
 }
 
-const coolBoxKeyframes = keyframes`
+const flashKeyFrames = keyframes`
   0% {
     opacity: 0;
-    top:25%;
-    right: 13%
+
+  }
+  25%{
+    opacity:0.5
+  }
+  50%{
+    opacity: 1;
+
+  }
+
+  75%{
+      opacity:0.75;
+
+  }100%{
+    opacity: 0;
+
+  }
+
+`
+
+const coolBoxKeyframes = keyframes`
+0%{
+    opacity:0;
+    top:22%;
+    right: 11%
   }
   100%{
       opacity:1;
@@ -31,8 +54,27 @@ display: inline-block;
 position:absolute;
 background: transparent;
 width: 30px;
+opacity:0;
 
 animation-name: ${coolBoxKeyframes};
+animation-duration: 7s;
+animation-timing-function: ease;
+animation-delay: 2s;
+animation-iteration-count: 1;
+animation-direction: normal;
+animation-fill-mode: forwards;
+animation-play-state: running;
+
+`
+export const FlashAnimation = styled.div`
+
+
+
+background: transparent;
+width: 30px;
+opacity:0;
+
+animation-name: ${flashKeyFrames};
 animation-duration: 2.5s;
 animation-timing-function: ease;
 animation-delay: 0s;
@@ -42,21 +84,35 @@ animation-fill-mode: forwards;
 animation-play-state: running;
 
 `
+
 class SubmitAnimation extends React.Component<SubmitAnimationProps> {
 
   render() {
     this.props.resetAnimation();
     const color = this.props.rankColor;
     return (
-      <Animation>
-        <ReactStars
-          count={1}
-          color1={color}
-          color2={color}
-          half={false}
-          size={25}
-        />
-      </Animation>
+      <span>
+        <FlashAnimation>
+          <ReactStars
+            count={1}
+            color1={color}
+            color2={color}
+            half={false}
+            size={30}
+          />
+        </FlashAnimation>
+        <Animation>
+          <ReactStars
+            count={1}
+            color1={color}
+            color2={color}
+            half={false}
+            size={25}
+          />
+        </Animation>
+
+      </span>
+
     );
   }
 }
