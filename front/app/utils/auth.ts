@@ -29,9 +29,9 @@ export const getStarColor = rank => {
   const secondTier = '#C0C0C0';
   const thirdTier = '#D4AF37';
   const fourthTier = '#E5E4E2';
-
+  const standard = '#FFFFFF';
   switch (rank) {
-    case 'default':
+    case 'bronze':
       return firstTier;
     case 'silver':
       return secondTier;
@@ -39,6 +39,8 @@ export const getStarColor = rank => {
       return thirdTier;
     case 'platinum':
       return fourthTier;
+    case 'default':
+      return standard
   }
   return;
 };
