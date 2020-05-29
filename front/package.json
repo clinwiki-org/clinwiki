@@ -6,6 +6,15 @@
     "url": "https://github.com/clinwiki-org/cw-app"
   },
   "license": "MIT",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:clean": "rimraf ./build/",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "apollo:codegen": "rm -rf app/types && apollo codegen:generate --config=apollo.config.js --target=typescript --outputFlat app/types",
+    "prettier": "prettier --write \"**/*.ts?(x)\""
+  },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.8.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
@@ -55,16 +64,9 @@
     "reactstrap": "^8.4.1",
     "recharts": "^1.8.5",
     "remeda": "^0.0.20",
+    "rimraf": "^3.0.2",
     "styled-components": "^5.1.0",
     "typescript": "~3.9.2"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "apollo:codegen": "rm -rf app/types && apollo codegen:generate --config=apollo.config.js --target=typescript --outputFlat app/types",
-    "prettier": "prettier --write \"**/*.ts?(x)\""
   },
   "resolutions": {
     "graphql": "14.6.0"
