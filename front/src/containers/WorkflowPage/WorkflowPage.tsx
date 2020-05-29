@@ -49,6 +49,7 @@ interface WorkflowPageProps {
   workflowsView: WorkflowsViewFragment;
   theme?: any;
   siteView?: any;
+  showAnimation:any;
 }
 
 interface WorkflowPageState {
@@ -262,6 +263,7 @@ class WorkflowPage extends React.Component<
                                         suggestedLabelsConfig
                                       }
                                       disabled={!user}
+                                      showAnimation={this.props.showAnimation}
                                     />
                                   </StyledPanel>
                                 )}
@@ -275,12 +277,14 @@ class WorkflowPage extends React.Component<
                             forceAddLabel={
                               this.state.selectedLabel || undefined
                             }
+                            showAnimation={this.props.showAnimation}
                           />
                           <WikiSections
                             sections={sections}
                             disabled={!user}
                             nctId={this.props.match.params.nctId}
                             key={this.props.match.params.nctId}
+                            showAnimation={this.props.showAnimation}
                           />
                         </>
                       );

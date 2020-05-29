@@ -37,6 +37,7 @@ interface TagsPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
+  showAnimation: any;
 }
 
 interface TagsPageState {
@@ -162,6 +163,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   };
 
   handleAddTag = (meta: string, addTag: AddTagMutationFn) => () => {
+    this.props.showAnimation()
     addTag({
       optimisticResponse: {
         upsertWikiTag: {
