@@ -5,6 +5,7 @@ import { History } from 'history';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import AuthButton from 'components/AuthButton';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
+import logo from  'images/clinwiki-501.png';
 
 interface AuthHeaderProps {
   user: {
@@ -35,7 +36,7 @@ const StyledWrapper = styled.div`
   }
 
   a#logo {
-    background: url(/clinwiki-501.png) center left no-repeat;
+    background: url(${logo}) center left no-repeat;
     background-size: 100px 30px;
     padding-left: 30px;
     color: ${props => props.theme.authHeader.logoFont};

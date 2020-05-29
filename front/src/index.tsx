@@ -21,12 +21,9 @@ import './images/icon-192x192.png';
 import './images/icon-384x384.png';
 import './images/icon-512x512.png';
 import './manifest.json';
-import './images/clinwiki-50.png';
-import './images/clinwiki-501.png';
 import './images/gold_star.png';
 import './images/silver_star.png';
 import './images/star_outline.png';
-import './images/heading.png';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { ProvideTheme } from 'containers/ThemeProvider/ThemeProvider';
 
