@@ -43,6 +43,7 @@ import AddCrowdLabel from './AddCrowdLabel';
 import CurrentUser from 'containers/CurrentUser';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { UPSERT_LABEL_MUTATION, UpsertMutationComponent } from 'mutations/CrowdPageUpsertWikiLabelMutation';
 
 interface CrowdProps {
   nctId: string;
@@ -86,28 +87,8 @@ const QUERY = gql`
   ${FRAGMENT}
 `;
 
-export const UPSERT_LABEL_MUTATION = gql`
-  mutation CrowdPageUpsertWikiLabelMutation(
-    $nctId: String!
-    $key: String!
-    $value: String!
-  ) {
-    upsertWikiLabel(input: { nctId: $nctId, key: $key, value: $value }) {
-      wikiPage {
-        ...CrowdPageFragment
-        edits {
-          ...WikiPageEditFragment
-        }
-      }
-      errors
-    }
-  }
 
-  ${FRAGMENT}
-  ${WikiPageEditFragment}
-`;
-
-export const DELETE_LABEL_MUTATION = gql`
+const DELETE_LABEL_MUTATION = gql`
   mutation CrowdPageDeleteWikiLabelMutation($nctId: String!, $key: String!) {
     deleteWikiLabel(input: { nctId: $nctId, key: $key }) {
       wikiPage {
@@ -129,18 +110,6 @@ const TableWrapper = styled(Table)`
     vertical-align: middle !important;
   }
 `;
-
-export const UpsertMutationComponent = (
-  props: MutationComponentOptions<
-    CrowdPageUpsertWikiLabelMutation,
-    CrowdPageUpsertWikiLabelMutationVariables
-  >
-) => Mutation(props);
-
-export type UpsertMutationFn = MutationFunction<
-  CrowdPageUpsertWikiLabelMutation,
-  CrowdPageUpsertWikiLabelMutationVariables
->;
 
 export const DeleteMutationComponent = (
   props: MutationComponentOptions<

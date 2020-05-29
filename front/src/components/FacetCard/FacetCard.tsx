@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { gql } from 'apollo-boost';
 import {
   MutationFunction,
   ApolloConsumer,
@@ -14,11 +13,6 @@ import ThemedAutosuggestButton, {
   PresearchContent,
   TextFieldToggle,
 } from 'components/StyledComponents';
-import {
-  CrowdPageUpsertWikiLabelMutation,
-  CrowdPageUpsertWikiLabelMutationVariables,
-} from 'types/CrowdPageUpsertWikiLabelMutation';
-import { WikiPageEditFragment } from 'components/Edits';
 import * as Autosuggest from 'react-autosuggest';
 import AddFacetCard from './AddFacetCard';
 import CrowdPage from 'containers/CrowdPage';
@@ -26,6 +20,7 @@ import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
+import { UpsertMutationFn, UpsertMutationComponent, UPSERT_LABEL_MUTATION } from 'mutations/CrowdPageUpsertWikiLabelMutation';
 
 const Row = styled.div`
   display: flex;
@@ -34,45 +29,7 @@ const Row = styled.div`
   align-items: center;
 `;
 
-const FRAGMENT = gql`
-  fragment CrowdPageFragment on WikiPage {
-    nctId
-    meta
-  }
-`;
 
-export const UPSERT_LABEL_MUTATION = gql`
-  mutation CrowdPageUpsertWikiLabelMutation(
-    $nctId: String!
-    $key: String!
-    $value: String!
-  ) {
-    upsertWikiLabel(input: { nctId: $nctId, key: $key, value: $value }) {
-      wikiPage {
-        ...CrowdPageFragment
-        edits {
-          ...WikiPageEditFragment
-        }
-      }
-      errors
-    }
-  }
-
-  ${FRAGMENT}
-  ${WikiPageEditFragment}
-`;
-
-const UpsertMutationComponent = (
-  props: MutationComponentOptions<
-    CrowdPageUpsertWikiLabelMutation,
-    CrowdPageUpsertWikiLabelMutationVariables
-  >
-) => Mutation(props);
-
-export type UpsertMutationFn = MutationFunction<
-  CrowdPageUpsertWikiLabelMutation,
-  CrowdPageUpsertWikiLabelMutationVariables
->;
 
 interface FacetCardProps {
   nctId: string;

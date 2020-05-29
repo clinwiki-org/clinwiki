@@ -2,34 +2,6 @@ import * as React from 'react';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 
-const SEARCH_QUERY = gql`
-  query AllQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      nctId
-      briefSummary
-      detailedDescription
-      eligibilityCriteria
-      conditions
-      briefTitle
-      overallStatus
-      createdAt
-      updatedAt
-      facilities {
-        id
-        city
-        state
-        country
-        zip
-      }
-      interventions {
-        id
-        name
-        description
-      }
-    }
-  }
-`;
-
 export interface ListProps {
   items: string[];
   nctid: string;
