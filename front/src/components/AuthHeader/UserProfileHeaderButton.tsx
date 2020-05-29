@@ -4,7 +4,7 @@ import { logout, getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import SiteProvider from 'containers/SiteProvider';
-import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
+import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { UserFragment } from 'types/UserFragment';
 
 const UserButtonWrapper = styled.div``;
@@ -96,12 +96,6 @@ const DropDownMenu = styled.div`
   right: 10px;
 `;
 
-const DropDownEmail = styled.div`
-  background-color: #fff;
-  color: #24292e;
-  padding: 4px 8px 4px 16px;
-`;
-
 const DropDownItem = styled.div`
   background-color: #fff;
   color: #24292e;
@@ -117,15 +111,6 @@ const DropDownItem = styled.div`
 `;
 
 const ThemedDropDownItem = withTheme(DropDownItem);
-
-const ContributionText = styled.div`
-  font-size 12px;
-  font-weight: 200;
-  text-align: center;
-  color: white;
-`;
-
-const Row = styled.div``;
 
 interface UserProfileHeaderButtonProps {
   user: UserFragment | null;
@@ -231,7 +216,7 @@ class UserProfileHeaderButton extends React.PureComponent<
   }
 
   handleClick = (e) => {
-    if (this.dropDown.contains(e.target)) {
+    if (this.dropDown?.contains(e.target)) {
       return;
     }
     this.closeMenuDropdown();
@@ -253,6 +238,7 @@ class UserProfileHeaderButton extends React.PureComponent<
           {(site) => {
             return (
               <UserButtonWrapper
+                //@ts-ignore
                 innerRef={(node: any) => {
                   this.dropDown = node;
                 }}>

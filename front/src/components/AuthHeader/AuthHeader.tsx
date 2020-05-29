@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import AuthButton from 'components/AuthButton';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import logo from  'images/clinwiki-501.png';
 import UserProfileHeaderButton from './UserProfileHeaderButton';

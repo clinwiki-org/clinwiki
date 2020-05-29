@@ -14,7 +14,6 @@ import {
 import { withApollo } from 'react-apollo';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-import { PieChart, Pie, Sector } from 'recharts';
 import {
   AggBucket,
   AggCallback,

@@ -39,7 +39,7 @@ class StudyPageSections extends React.Component<StudyPageSectionsProps> {
           match={this.props.match}
           siteView={this.props.siteView}
           refetch={this.props.refetch}
-          user={this.props.user}
+          // user={this.props.user}
         />
       );
     });

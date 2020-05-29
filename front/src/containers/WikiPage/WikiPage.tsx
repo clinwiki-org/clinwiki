@@ -292,7 +292,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     return (
       <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
         {updateWikiContent => (
-          this.state.flashAnimation == true ? <SubmitAnimation
+          this.state.flashAnimation === true ? <SubmitAnimation
             resetAnimation={this.handleResetAnimation}
             rankColor={rankColor}
           /> :
