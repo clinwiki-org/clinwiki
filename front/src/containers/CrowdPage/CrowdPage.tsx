@@ -53,6 +53,7 @@ interface CrowdProps {
   nextLink?: string | null;
   forceAddLabel?: { key: string; value: string };
   metaData: SiteStudyBasicGenericSectionFragment;
+  showAnimation:any;
 }
 
 interface CrowdState {
@@ -327,6 +328,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     upsertLabelMutation: UpsertMutationFn,
     deleteLabelMutation: DeleteMutationFn
   ) => (key: string, value: string) => {
+    this.props.showAnimation()
     Crowd.deleteLabel(
       key,
       value,
@@ -344,6 +346,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       optimisticResponse?: CrowdPageUpsertWikiLabelMutation;
     }) => void
   ) => (key: string, oldValue: string, value: string) => {
+    console.log("Animeate")
+    this.props.showAnimation()
     Crowd.updateLabel(
       key,
       oldValue,
@@ -430,6 +434,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
                     this.handleAddLabel(key, value, meta, upsertLabelMutation)
                   }
                   forceAddLabel={this.state.forceAddLabel}
+                  showAnimation={this.props.showAnimation}
                 />
               )
             }

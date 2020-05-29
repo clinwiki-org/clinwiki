@@ -48,6 +48,8 @@ import {
   WorkflowsViewFragment_workflows,
 } from 'types/WorkflowsViewFragment';
 import { UserFragment } from 'types/UserFragment';
+import WorkFlowAnimation from './components/StarAnimation'
+import {getStarColor} from '../../utils/auth'
 
 interface StudyPageProps {
   history: History;
@@ -69,6 +71,7 @@ interface StudyPageProps {
 interface StudyPageState {
   // trigger prefetch for all study sections
   triggerPrefetch: boolean;
+  flashAnimation:boolean;
 }
 
 const QUERY = gql`
@@ -200,6 +203,7 @@ const PrefetchQueryComponent = (
 class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   state: StudyPageState = {
     triggerPrefetch: false,
+    flashAnimation:false,
   };
 
   getCurrentSectionPath = (view: SiteViewFragment) => {
@@ -347,7 +351,16 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   handleNavButtonClick = (link: string) => () => {
     this.props.history.push(`${trimPath(link)}`);
   };
-
+  resetHelperFunction = () => {
+    this.setState({ flashAnimation: false })
+    this.props.refetch()
+  }
+  handleShowAnimation=()=>{
+    this.setState({flashAnimation: true})
+  }
+  handleResetAnimation = () => {
+    setTimeout(this.resetHelperFunction, 6500)
+  }
   renderNavButton = (name: string, link?: string | null) => {
     if (link === undefined) return null;
 
@@ -419,7 +432,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     const siteViewUrl = new URLSearchParams(this.props.history.location.search)
       .getAll('sv')
       .toString();
-
+    const userRank = this.props.user ? this.props.user.rank : 'default'
+    let rankColor = getStarColor(userRank)
     const backLink = () => {
       if (hash !== '') {
         return `/search?hash=${hash}&sv=${siteViewUrl}`;
@@ -513,9 +527,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               workflowsView={workflowsView}
                               match={this.props.match}
                               siteView={currentSiteView}
-                              refetch={this.props.refetch}
-                              user={this.props.user}
+                              showAnimation={this.handleShowAnimation}
                             />
+            {this.state.flashAnimation ==true ?
+             <WorkFlowAnimation 
+             resetAnimation={this.handleResetAnimation} 
+             rankColor={rankColor}/>
+             : null}
+
                           </div>
 
                           <div className="container">

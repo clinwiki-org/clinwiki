@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { logout, getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
@@ -111,6 +111,46 @@ const DropDownItem = styled.div`
 `;
 
 const ThemedDropDownItem = withTheme(DropDownItem);
+const flashKeyFrames = keyframes`
+  0% {
+    opacity: 0;
+
+  }
+  25%{
+    opacity:0.5
+  }
+  50%{
+    opacity: 1;
+
+  }
+
+  75%{
+      opacity:0.75;
+
+  }100%{
+    opacity: 0;
+
+  }
+
+`
+export const HeaderAnimation = styled.div`
+
+
+display:inline-block;
+background: transparent;
+width: 25px;
+opacity:0;
+
+animation-name: ${flashKeyFrames};
+animation-duration: 2.5s;
+animation-timing-function: ease;
+animation-delay: 0s;
+animation-iteration-count: 1;
+animation-direction: normal;
+animation-fill-mode: forwards;
+animation-play-state: running;
+
+`
 
 interface UserProfileHeaderButtonProps {
   user: UserFragment | null;
@@ -119,6 +159,7 @@ interface UserProfileHeaderButtonProps {
 
 interface UserProfileHeaderButtonState {
   showDropdown: boolean;
+  flashAnimation:boolean;
 }
 
 class UserProfileHeaderButton extends React.PureComponent<
@@ -132,6 +173,7 @@ class UserProfileHeaderButton extends React.PureComponent<
   }
   state = {
     showDropdown: false,
+    flashAnimation: false,
   };
 
   toggleMenuDropdown = () => {
@@ -214,7 +256,15 @@ class UserProfileHeaderButton extends React.PureComponent<
   componentWillUnmount() {
     document.addEventListener('mousedown', this.handleClick, false);
   }
-
+  componentDidUpdate(prevProps){
+    if(prevProps!=this.props){
+      this.setState({flashAnimation:true})
+      setTimeout(this.resetHelperFunction, 2500)
+    }
+  }
+  resetHelperFunction = () => {
+    this.setState({ flashAnimation: false })
+  }
   handleClick = (e) => {
     if (this.dropDown?.contains(e.target)) {
       return;
@@ -250,13 +300,25 @@ class UserProfileHeaderButton extends React.PureComponent<
                       style={{ color: 'white', marginLeft: 2 }}
                     />
                   </ContributionContainer>
-                  <FontAwesome
-                    name="star"
-                    style={{
-                      color: getStarColor(user.rank),
-                      fontSize: 18,
-                    }}
-                  />
+                {this.state.flashAnimation==true ?
+                <HeaderAnimation>
+                <FontAwesome
+                name="star"
+                style={{
+                  color: getStarColor(user.rank),
+                  fontSize: 18,
+                }}
+              />
+              </HeaderAnimation>
+              :
+              <FontAwesome
+              name="star"
+              style={{
+                color: getStarColor(user.rank),
+                fontSize: 18,
+              }}
+            />
+              }
 
                   <FontAwesome
                     name="chevron-down"
