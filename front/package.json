@@ -50,7 +50,7 @@
     "react-scripts": "3.4.1",
     "react-spinners": "^0.8.3",
     "react-stars": "^2.2.5",
-    "react-table": "^7.1.0",
+    "react-table": "6.8.6",
     "react-transition-group": "^4.4.1",
     "reactstrap": "^8.4.1",
     "remeda": "^0.0.20",

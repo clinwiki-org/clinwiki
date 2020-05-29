@@ -32,7 +32,7 @@ import {
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
 import { Query, QueryComponentOptions } from 'react-apollo';
-// import 'react-table/react-table.css';
+import 'react-table/react-table.css';
 import SiteProvider from 'containers/SiteProvider';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
 import Cards from './components/Cards';
@@ -409,8 +409,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       .showResults;
     if (!this.props.showCards && showResults) {
       this.setState({
-        tableWidth: document.getElementsByClassName('ReactTable')[0]
-          .clientWidth,
+        tableWidth: document.getElementsByClassName('ReactTable')?.[0]?.clientWidth,
       });
       window.addEventListener('resize', this.updateState);
     }
