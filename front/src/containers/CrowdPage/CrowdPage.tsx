@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {
-  Mutation,
   Query,
   MutationFunction,
   MutationComponentOptions,
@@ -15,8 +14,8 @@ import { Helmet } from 'react-helmet';
 
 import LoadingPane from 'components/LoadingPane';
 import Error from 'components/Error';
-import { WikiPageEditFragment } from 'components/Edits';
 import StudySummary from 'components/StudySummary';
+import { DELETE_LABEL_MUTATION, FRAGMENT, DeleteMutationComponent, DeleteMutationFn } from 'mutations/CrowdPageDeleteWikiLabelMutation';
 
 import {
   CrowdPageUpsertWikiLabelMutation,
@@ -43,7 +42,11 @@ import AddCrowdLabel from './AddCrowdLabel';
 import CurrentUser from 'containers/CurrentUser';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
-import { UPSERT_LABEL_MUTATION, UpsertMutationComponent } from 'mutations/CrowdPageUpsertWikiLabelMutation';
+import {
+  UPSERT_LABEL_MUTATION,
+  UpsertMutationComponent,
+  UpsertMutationFn,
+} from 'mutations/CrowdPageUpsertWikiLabelMutation';
 
 interface CrowdProps {
   nctId: string;
@@ -54,20 +57,13 @@ interface CrowdProps {
   nextLink?: string | null;
   forceAddLabel?: { key: string; value: string };
   metaData: SiteStudyBasicGenericSectionFragment;
-  showAnimation:any;
+  showAnimation: any;
 }
 
 interface CrowdState {
   forceAddLabel: { key: string; value: string } | null;
   prevForceAddLabel: { key: string; value: string } | null;
 }
-
-const FRAGMENT = gql`
-  fragment CrowdPageFragment on WikiPage {
-    nctId
-    meta
-  }
-`;
 
 const QUERY = gql`
   query CrowdPageQuery($nctId: String!) {
@@ -87,41 +83,11 @@ const QUERY = gql`
   ${FRAGMENT}
 `;
 
-
-const DELETE_LABEL_MUTATION = gql`
-  mutation CrowdPageDeleteWikiLabelMutation($nctId: String!, $key: String!) {
-    deleteWikiLabel(input: { nctId: $nctId, key: $key }) {
-      wikiPage {
-        ...CrowdPageFragment
-        edits {
-          ...WikiPageEditFragment
-        }
-      }
-      errors
-    }
-  }
-
-  ${FRAGMENT}
-  ${WikiPageEditFragment}
-`;
-
 const TableWrapper = styled(Table)`
   td {
     vertical-align: middle !important;
   }
 `;
-
-export const DeleteMutationComponent = (
-  props: MutationComponentOptions<
-    CrowdPageDeleteWikiLabelMutation,
-    CrowdPageDeleteWikiLabelMutationVariables
-  >
-) => Mutation(props);
-
-export type DeleteMutationFn = MutationFunction<
-  CrowdPageDeleteWikiLabelMutation,
-  CrowdPageDeleteWikiLabelMutationVariables
->;
 
 const QueryComponent = (
   props: QueryComponentOptions<CrowdPageQuery, CrowdPageQueryVariables>
@@ -201,7 +167,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     if (!currentValue) return null;
 
     const newValue = uniq(
-      currentValue.split('|').filter(x => x !== value)
+      currentValue.split('|').filter((x) => x !== value)
     ).join('|');
     if (newValue.length === 0) {
       const newMeta = dissoc(key, meta);
@@ -255,7 +221,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     if (meta[key]) {
       // console.log(meta[key]);
       const oldVal = meta[key];
-      const entries = oldVal.split('|').filter(x => x !== val);
+      const entries = oldVal.split('|').filter((x) => x !== val);
       entries.push(value);
       val = uniq(entries).join('|');
     }
@@ -297,7 +263,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     upsertLabelMutation: UpsertMutationFn,
     deleteLabelMutation: DeleteMutationFn
   ) => (key: string, value: string) => {
-    this.props.showAnimation()
+    this.props.showAnimation();
     Crowd.deleteLabel(
       key,
       value,
@@ -315,8 +281,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       optimisticResponse?: CrowdPageUpsertWikiLabelMutation;
     }) => void
   ) => (key: string, oldValue: string, value: string) => {
-    console.log("Animeate")
-    this.props.showAnimation()
+    console.log('Animeate');
+    this.props.showAnimation();
     Crowd.updateLabel(
       key,
       oldValue,
@@ -342,8 +308,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
   ) => {
     const labels = pipe(
       keys,
-      map(key =>
-        (meta[key] as string).split('|').map(value => ({ key, value }))
+      map((key) =>
+        (meta[key] as string).split('|').map((value) => ({ key, value }))
       ),
       //@ts-ignore
       flatten
@@ -380,7 +346,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
           </tr>
         </thead>
         <tbody>
-          {labels.map(label => (
+          {labels.map((label) => (
             <CrowdLabel
               key={`${label.key} - ${label.value}`}
               name={label.key}
@@ -395,7 +361,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
             />
           ))}
           <CurrentUser>
-            {user =>
+            {(user) =>
               user &&
               !this.props.workflowView && (
                 <AddCrowdLabel
@@ -433,9 +399,9 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
   render() {
     return (
       <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-        {upsertLabelMutation => (
+        {(upsertLabelMutation) => (
           <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
-            {deleteLabelMutation => (
+            {(deleteLabelMutation) => (
               <QueryComponent
                 query={QUERY}
                 variables={{ nctId: this.props.nctId }}>

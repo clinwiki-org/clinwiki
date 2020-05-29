@@ -5,14 +5,7 @@ import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { match } from 'react-router';
 import ReviewForm from 'containers/ReviewForm';
 import { History } from 'history';
-import CrowdPage, {
-  UpsertMutationComponent,
-  UPSERT_LABEL_MUTATION,
-  UpsertMutationFn,
-  DeleteMutationComponent,
-  DELETE_LABEL_MUTATION,
-  DeleteMutationFn,
-} from 'containers/CrowdPage/CrowdPage';
+import CrowdPage from 'containers/CrowdPage';
 import SuggestedLabels from './SuggestedLabels';
 import { ReviewFragment } from 'types/ReviewFragment';
 import { Query, QueryComponentOptions } from 'react-apollo';
@@ -32,6 +25,8 @@ import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import ThemedButton from 'components/StyledComponents';
 import QUERY from 'queries/WorkflowPageQuery';
+import { DELETE_LABEL_MUTATION, DeleteMutationComponent, DeleteMutationFn } from 'mutations/CrowdPageDeleteWikiLabelMutation';
+import { UPSERT_LABEL_MUTATION, UpsertMutationComponent, UpsertMutationFn } from 'mutations/CrowdPageUpsertWikiLabelMutation';
 
 const WorkflowPageQueryComponent = (
   props: QueryComponentOptions<WorkflowPageQuery, WorkflowPageQueryVariables>
