@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Checkbox, Col } from 'react-bootstrap';
 import {
@@ -19,6 +19,7 @@ import {
   defaultTo,
   sort,
 } from 'ramda';
+import * as R from 'remeda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 // import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
@@ -61,10 +62,12 @@ const QUERY = gql`
   }
 `;
 
-class QueryComponent extends Query<
-  SuggestedLabelsQuery,
-  SuggestedLabelsQueryVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<
+    SuggestedLabelsQuery,
+    SuggestedLabelsQueryVariables
+  >
+) => Query(props);
 
 const LabelsContainer = styled.div`
   display: flex;
@@ -163,12 +166,9 @@ class SuggestedLabels extends React.PureComponent<
             console.log(`Error parsing meta: ${meta}`);
           }
 
-          const labels = pipe(
-            keys,
-            map((key: string) => [key, meta[key].split('|')]),
-            // @ts-ignore
-            fromPairs
-          )(meta);
+          const labels = fromPairs(
+            keys(meta).map(key => [key, meta[key].split('|')])
+          );
 
           const aggs = pipe(
             map((agg: SuggestedLabelsQuery_crowdAggFacets_aggs) => {
@@ -186,6 +186,7 @@ class SuggestedLabels extends React.PureComponent<
             }),
             // @ts-ignore
             fromPairs
+            // @ts-ignore
           )(data?.crowdAggFacets?.aggs || []);
 
           const config = this.props.suggestedLabelsConfig;

@@ -1,32 +1,14 @@
 import * as React from 'react';
-import moment from 'moment';
 import {
-  head,
-  last,
-  propOr,
-  defaultTo,
-  equals,
-  isEmpty,
-  compose,
-  sortBy,
-} from 'ramda';
-import { orderBy, debounce } from 'lodash';
-import styled from 'styled-components';
-import {
-  Row,
   Col,
-  MenuItem,
   Form,
   FormGroup,
   ControlLabel,
   FormControl,
-  Button,
 } from 'react-bootstrap';
-import { BeatLoader } from 'react-spinners';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
-import UpdateWorkflowsViewMutation from 'mutations/UpdateWorflowsViewMutation';
 import { FieldDisplay } from 'types/globalTypes';
 import ThemedButton from 'components/StyledComponents';
 
@@ -57,8 +39,8 @@ class RangeSelector extends React.Component<
     this.state = {
       start: null,
       end: null,
-      startText: this.props.updater.input.gte,
-      endText: this.props.updater.input.lte,
+      startText: this.props.updater.input?.gte,
+      endText: this.props.updater.input?.lte,
     };
   }
   componentDidMount = () => {
@@ -70,21 +52,12 @@ class RangeSelector extends React.Component<
 
   onChange = () =>
     this.props.updater.changeRange([
-      this.state.start || this.props.updater.input.gte,
-      this.state.end || this.props.updater.input.lte,
+      this.state.start || this.props.updater.input?.gte,
+      this.state.end || this.props.updater.input?.lte,
     ]);
 
   render() {
-    const {
-      isOpen,
-      hasMore,
-      loading,
-      buckets,
-      handleLoadMore,
-      updater,
-      aggType,
-      field,
-    } = this.props;
+    const { aggType, field } = this.props;
     const { startText, endText } = this.state;
     //Removing Temporarily to see if it fixes date range query issue seems
     //Seems like we don't need a hasMore or beat loader in the Range Selector
@@ -158,7 +131,7 @@ class RangeSelector extends React.Component<
                     startText: e.target.value,
                   })
                 }
-                onBlur={e =>
+                onBlur={() =>
                   this.setState(
                     { ...this.state, start: startText },
                     this.onChange
@@ -192,7 +165,7 @@ class RangeSelector extends React.Component<
                     endText: e.target.value,
                   })
                 }
-                onBlur={e =>
+                onBlur={() =>
                   this.setState({ ...this.state, end: endText }, this.onChange)
                 }></FormControl>
             </FormGroup>
@@ -225,7 +198,7 @@ class RangeSelector extends React.Component<
                     startText: e.target.value,
                   })
                 }
-                onBlur={e =>
+                onBlur={() =>
                   this.setState(
                     { ...this.state, start: startText },
                     this.onChange
@@ -243,7 +216,7 @@ class RangeSelector extends React.Component<
                     endText: e.target.value,
                   })
                 }
-                onBlur={e =>
+                onBlur={() =>
                   this.setState({ ...this.state, end: endText }, this.onChange)
                 }></FormControl>
             </FormGroup>

@@ -37,6 +37,11 @@ import {
   BulkQueryUpdateMutation,
   BulkQueryUpdateMutationVariables,
 } from 'types/BulkQueryUpdateMutation';
+import {
+  BulkLabelsQuery,
+  BulkLabelsQuery_myCrowdAggs_aggs,
+} from 'types/BulkLabelsQuery';
+import { STRING_MISSING_IDENTIFIER } from 'utils/constants';
 
 const BULK_QUERY_UPDATE_MUTATION = gql`
   mutation BulkQueryUpdateMutation($input: BulkQueryUpdateInput!) {
@@ -147,10 +152,25 @@ const bucketsForLabels = (labels: string[]) => {
   return query;
 };
 
-const extractBucketKeys = pipe(
-  pathOr([], ['aggs', 0, 'buckets']),
-  map(prop('key'))
-);
+// const extractBucketKeys = pipe(
+//   pathOr([], ['aggs', 0, 'buckets']),
+//   map(prop('key'))
+// );
+interface GotAggs {
+  aggs:
+    | {
+        name: string;
+        buckets: {
+          key: string;
+          docCount: number;
+        }[];
+      }[]
+    | null
+    | undefined;
+}
+function extractBucketKeys(arg?: GotAggs) {
+  return arg?.aggs?.[0]?.buckets?.map(k => k.key);
+}
 
 const groupBucketsByLabel = ({ data, labels }) =>
   labels.reduce(
@@ -210,7 +230,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
           const parsedSearchParams = getParsedSearchParams(searchParams);
 
           return (
-            <Query
+            <Query<BulkLabelsQuery>
               query={LABELS_QUERY}
               variables={{
                 searchHash: hash,
@@ -218,11 +238,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
               }}>
               {({ data = {}, loading, error }) => {
                 const { allCrowdAggs, myCrowdAggs } = data;
-                const recordsTotal = pathOr(
-                  0,
-                  ['search', 'recordsTotal'],
-                  data
-                ) as number;
+                const recordsTotal = data.search?.recordsTotal || 0;
                 let labels = uniq(
                   [
                     ...new Set([
@@ -230,7 +246,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                       ...extractBucketKeys(myCrowdAggs),
                     ]),
                   ]
-                    .filter(x => !FILTERED_LABELS.includes(x))
+                    .filter((x: string) => !FILTERED_LABELS.includes(x))
                     .filter(
                       x => !workflow || allowedSuggestedLabels.includes(x)
                     )
@@ -238,7 +254,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                 if (!labels.length) return null;
                 //Band-aid fix to the -99999999 breaking BucketsForLabelQuery, does not like the name field as -9999999999
                 labels.map((label, index) => {
-                  if (label == -99999999999) {
+                  if (label === STRING_MISSING_IDENTIFIER) {
                     labels[index] = '_missing';
                   }
                 });
@@ -246,7 +262,8 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                   <Query
                     query={bucketsForLabels(labels)}
                     variables={variablesForLabels(labels, parsedSearchParams)}>
-                    {({ data = {}, loading, error }) => {
+                    {arg => {
+                      const { data, error } = arg;
                       if (error) {
                         console.log(error);
                         console.log(labels);
@@ -260,73 +277,78 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                         <Mutation mutation={BULK_LIST_UPDATE_MUTATION}>
                           {(bulkListUpdate, bulkListUpdateResult) => (
                             <Mutation mutation={BULK_QUERY_UPDATE_MUTATION}>
-                              {(bulkQueryUpdate, { data, loading }) => (
-                                <BulkEditView
-                                  labels={labels}
-                                  aggBucketsByLabel={aggBucketsByLabel}
-                                  recordsTotal={recordsTotal}
-                                  loading={loading}
-                                  undoHistory={this.state.undoHistory}
-                                  handleUndo={(undoActions, idx) => {
-                                    bulkListUpdate({
-                                      variables: {
-                                        input: {
-                                          updates: undoActions.map(a => ({
-                                            ...omit(['__typename'], a),
-                                            state: a.state.map(
-                                              omit(['__typename'])
-                                            ),
-                                          })),
-                                        },
-                                      },
-                                    }).then(() => {
-                                      this.setState(state => ({
-                                        undoHistory: state.undoHistory.filter(
-                                          (x, i) => idx != i
-                                        ),
-                                      }));
-                                    });
-                                  }}
-                                  commit={(toAdd, toRemove, description) => {
-                                    return bulkQueryUpdate({
-                                      variables: {
-                                        input: {
-                                          searchParams: {
-                                            ...parsedSearchParams,
-                                            pageSize: recordsTotal,
-                                          },
-                                          aggState: [
-                                            ...toAdd.map(({ name, value }) => ({
-                                              name,
-                                              value,
-                                              enable: true,
+                              {(bulkQueryUpdate, arg) => {
+                                const { loading } = arg;
+                                return (
+                                  <BulkEditView
+                                    labels={labels}
+                                    aggBucketsByLabel={aggBucketsByLabel}
+                                    recordsTotal={recordsTotal}
+                                    loading={loading}
+                                    undoHistory={this.state.undoHistory}
+                                    handleUndo={(undoActions, idx) => {
+                                      bulkListUpdate({
+                                        variables: {
+                                          input: {
+                                            updates: undoActions.map(a => ({
+                                              ...omit(['__typename'], a),
+                                              state: a.state.map(
+                                                omit(['__typename'])
+                                              ),
                                             })),
-                                            ...toRemove.map(
-                                              ({ name, value }) => ({
-                                                name,
-                                                value,
-                                                enable: false,
-                                              })
-                                            ),
-                                          ],
-                                        },
-                                      },
-                                    }).then((result: any) => {
-                                      this.setState(state => ({
-                                        undoHistory: [
-                                          ...state.undoHistory,
-                                          {
-                                            description,
-                                            undoActions:
-                                              result.data.bulkQueryUpdate
-                                                .undoActions,
                                           },
-                                        ],
-                                      }));
-                                    });
-                                  }}
-                                />
-                              )}
+                                        },
+                                      }).then(() => {
+                                        this.setState(state => ({
+                                          undoHistory: state.undoHistory.filter(
+                                            (x, i) => idx != i
+                                          ),
+                                        }));
+                                      });
+                                    }}
+                                    commit={(toAdd, toRemove, description) => {
+                                      return bulkQueryUpdate({
+                                        variables: {
+                                          input: {
+                                            searchParams: {
+                                              ...parsedSearchParams,
+                                              pageSize: recordsTotal,
+                                            },
+                                            aggState: [
+                                              ...toAdd.map(
+                                                ({ name, value }) => ({
+                                                  name,
+                                                  value,
+                                                  enable: true,
+                                                })
+                                              ),
+                                              ...toRemove.map(
+                                                ({ name, value }) => ({
+                                                  name,
+                                                  value,
+                                                  enable: false,
+                                                })
+                                              ),
+                                            ],
+                                          },
+                                        },
+                                      }).then((result: any) => {
+                                        this.setState(state => ({
+                                          undoHistory: [
+                                            ...state.undoHistory,
+                                            {
+                                              description,
+                                              undoActions:
+                                                result.data.bulkQueryUpdate
+                                                  .undoActions,
+                                            },
+                                          ],
+                                        }));
+                                      });
+                                    }}
+                                  />
+                                );
+                              }}
                             </Mutation>
                           )}
                         </Mutation>
@@ -345,10 +367,9 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
     return (
       <WorkflowsViewProvider>
         {workflowsView => {
-          const workflow = pipe(
-            prop('workflows'),
-            find(propEq('name', 'wf_bulk'))
-          )(workflowsView) as WorkflowConfigFragment | null;
+          const workflow = workflowsView.workflows.filter(
+            w => w.name === 'wf_bulk'
+          )?.[0];
           return this.renderWorkflow(workflow);
         }}
       </WorkflowsViewProvider>

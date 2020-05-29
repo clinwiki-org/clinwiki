@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import {
   SiteProviderQuery,
@@ -302,13 +302,13 @@ export function withSite2<T>(
             const url =
               (this.props as any)?.history?.location?.search ||
               window.location.search;
-            const usp = new URLSearchParams(url)
+            const urlName = new URLSearchParams(url)
               .getAll('sv')
               .toString()
               .toLowerCase();
             const currentSite =
               site.siteViews.find(
-                siteview => siteview?.url?.toLowerCase() === url
+                siteview => siteview?.url?.toLowerCase() === urlName
               ) || site.siteView;
             return (
               <Component
@@ -357,10 +357,9 @@ export const withSite = Component => props => (
   </SiteProvider>
 );
 
-class QueryComponent extends Query<
-  SiteProviderQuery,
-  SiteProviderQueryVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<SiteProviderQuery, SiteProviderQueryVariables>
+) => Query(props);
 
 class SiteProvider extends React.PureComponent<SiteProviderProps> {
   static fragment = SITE_FRAGMENT;
@@ -376,7 +375,10 @@ class SiteProvider extends React.PureComponent<SiteProviderProps> {
           // console.log(data)
           if (error) console.log(`SiteProvider error: ${error}`);
           if (loading || error) return null;
-          return this.props.children(data!.site!, refetch);
+          return this.props.children(
+            data!.site!,
+            refetch
+          ) as JSX.Element | null;
         }}
       </QueryComponent>
     );

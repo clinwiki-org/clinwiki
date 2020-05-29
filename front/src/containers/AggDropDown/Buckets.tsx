@@ -23,27 +23,24 @@ interface BucketsProps {
 class Buckets extends React.Component<BucketsProps> {
   render() {
     const { display, buckets, visibleOptions = [], updater } = this.props;
-    return pipe(
-      filter(
-        (bucket: AggBucket) =>
+    return buckets
+      .filter(
+        bucket =>
           !bucketKeyIsMissing(bucket) &&
           (visibleOptions.length ? visibleOptions.includes(bucket.key) : true)
-      ),
-      map((bucket: AggBucket) => {
-        return (
-          <Checkbox
-            key={bucket.key}
-            checked={updater.isSelected(bucket.key)}
-            onChange={() => updater.toggleFilter(bucket.key)}>
-            <Bucket
-              value={defaultTo(bucket.key)(bucket.keyAsString)}
-              display={display}
-              docCount={bucket.docCount}
-            />
-          </Checkbox>
-        );
-      })
-    )(buckets);
+      )
+      .map(bucket => (
+        <Checkbox
+          key={bucket.key}
+          checked={updater.isSelected(bucket.key)}
+          onChange={() => updater.toggleFilter(bucket.key)}>
+          <Bucket
+            value={defaultTo(bucket.key)(bucket.keyAsString)}
+            display={display}
+            docCount={bucket.docCount}
+          />
+        </Checkbox>
+      ));
   }
 }
 

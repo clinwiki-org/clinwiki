@@ -1,6 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Mutation, MutationFn } from 'react-apollo';
+import {
+  Mutation,
+  MutationFunction,
+  MutationComponentOptions,
+} from 'react-apollo';
 import { gql } from 'apollo-boost';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
@@ -45,11 +49,14 @@ interface UpdatePasswordState {
   errors: string[];
 }
 
-class UpdatePasswordMutationComponent extends Mutation<
-  UpdatePasswordMutation,
-  UpdatePasswordMutationVariables
-> {}
-type UpdatePasswordMutationFn = MutationFn<
+const UpdatePasswordMutationComponent = (
+  props: MutationComponentOptions<
+    UpdatePasswordMutation,
+    UpdatePasswordMutationVariables
+  >
+) => Mutation(props);
+
+type UpdatePasswordMutationFn = MutationFunction<
   UpdatePasswordMutation,
   UpdatePasswordMutationVariables
 >;

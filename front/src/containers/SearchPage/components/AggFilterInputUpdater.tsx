@@ -1,33 +1,7 @@
 import moment from 'moment';
 import { AggFilterInput } from 'types/globalTypes';
 import { SearchParams } from '../shared';
-import {
-  path,
-  map,
-  dissoc,
-  pathOr,
-  prop,
-  any,
-  pipe,
-  groupBy,
-  head,
-  propOr,
-  lensPath,
-  over,
-  find,
-  findIndex,
-  propEq,
-  reject,
-  isEmpty,
-  isNil,
-  omit,
-  view,
-  remove,
-  equals,
-  filter,
-  forEach,
-  contains,
-} from 'ramda';
+import { find, propEq, isEmpty, isNil, omit, filter, contains } from 'ramda';
 
 type AggFilterSettings = SearchParams | any;
 
@@ -36,7 +10,7 @@ type AggFilterSettings = SearchParams | any;
  * configurations both for search filters as well as setting defaults
  */
 abstract class AbstractAggFilterInputUpdater {
-  input: AggFilterInput;
+  input?: AggFilterInput;
   settings: AggFilterSettings;
   grouping: string;
   updateSettings: any;
@@ -76,25 +50,29 @@ abstract class AbstractAggFilterInputUpdater {
   }
 
   addFilter(value: string) {
-    this.input.values = this.input.values
-      ? [...this.input.values, value]
-      : [value];
-    this.onUpdateFilter();
+    if (this.input) {
+      this.input.values = this.input?.values
+        ? [...this.input.values, value]
+        : [value];
+      this.onUpdateFilter();
+    }
   }
 
   removeFilter(value: string) {
-    this.input.values = this.input.values
-      ? filter(x => x !== value, this.input.values)
-      : this.input.values;
-    this.onUpdateFilter();
+    if (this.input) {
+      this.input.values = this.input.values
+        ? filter(x => x !== value, this.input.values)
+        : this.input.values;
+      this.onUpdateFilter();
+    }
   }
 
   hasNoFilters(): boolean {
     for (let field of this.ACCEPTED_FIELDS) {
-      if (isEmpty(this.input[field])) {
+      if (isEmpty(this.input?.[field])) {
         continue;
       }
-      if (isNil(this.input[field])) {
+      if (isNil(this.input?.[field])) {
         continue;
       }
       return false;
@@ -103,7 +81,7 @@ abstract class AbstractAggFilterInputUpdater {
   }
 
   isSelected(key: string): boolean {
-    if (this.input.values === undefined) {
+    if (this.input?.values === undefined) {
       return false;
     }
     return contains(key as string, this.input.values as Array<string>);
@@ -114,19 +92,25 @@ abstract class AbstractAggFilterInputUpdater {
   }
 
   changeRange([gte, lte]): void {
-    this.input.gte = gte;
-    this.input.lte = lte;
-    this.onUpdateFilter();
+    if (this.input) {
+      this.input.gte = gte;
+      this.input.lte = lte;
+      this.onUpdateFilter();
+    }
   }
 
   removeRange(): void {
-    this.input = omit(['gte', 'lte'], this.input);
-    this.onUpdateFilter();
+    if (this.input) {
+      this.input = omit(['gte', 'lte'], this.input);
+      this.onUpdateFilter();
+    }
   }
 
   getRangeSelection(): Array<any> | undefined {
-    if (this.input.gte || this.input.lte) {
-      return [this.input.gte, this.input.lte];
+    if (this.input) {
+      if (this.input.gte || this.input.lte) {
+        return [this.input.gte, this.input.lte];
+      }
     }
   }
 
@@ -136,7 +120,7 @@ abstract class AbstractAggFilterInputUpdater {
 
   getMinString(thisSiteView): string | undefined {
     // logic handling of input based on agg type here
-    if (this.input.gte) {
+    if (this.input?.gte) {
       const thisField: any =
         find(propEq('name', this.agg))(thisSiteView.search.aggs.fields) ||
         find(propEq('name', this.agg))(thisSiteView.search.crowdAggs.fields);
@@ -160,7 +144,7 @@ abstract class AbstractAggFilterInputUpdater {
 
   getMaxString(thisSiteView): string | undefined {
     // logic handling of input based on agg type here
-    if (this.input.lte) {
+    if (this.input?.lte) {
       const thisField: any =
         find(propEq('name', this.agg))(thisSiteView.search.aggs.fields) ||
         find(propEq('name', this.agg))(thisSiteView.search.crowdAggs.fields);
@@ -183,8 +167,10 @@ abstract class AbstractAggFilterInputUpdater {
   }
 
   toggleAllowMissing(): void {
-    this.input.includeMissingFields = !this.input.includeMissingFields;
-    this.onUpdateFilter(true);
+    if (this.input) {
+      this.input.includeMissingFields = !this.input.includeMissingFields;
+      this.onUpdateFilter(true);
+    }
   }
 }
 
@@ -260,7 +246,7 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
       this.updateSettings({
         currentTarget: {
           name,
-          value: this.input.values,
+          value: this.input?.values,
         },
       });
     }

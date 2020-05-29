@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
@@ -117,10 +117,12 @@ const MAPOPTIONS = {
   minZoom: 0,
 };
 
-class QueryComponent extends Query<
-  FacilitiesPageQuery,
-  FacilitiesPageQueryVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<
+    FacilitiesPageQuery,
+    FacilitiesPageQueryVariables
+  >
+) => Query(props);
 
 class FacilitiesPage extends React.PureComponent<
   FacilitiesPageProps,
@@ -271,10 +273,13 @@ class FacilitiesPage extends React.PureComponent<
           }
           this.props.onLoaded && this.props.onLoaded();
           const facilities = data.study.facilities;
+          // @ts-ignore
           const items = pipe(
+            // @ts-ignore
             addIndex(map)(this.processFacility),
             // @ts-ignore
             flatten
+            // @ts-ignore
           )(facilities) as {
             name: string;
             key: string;

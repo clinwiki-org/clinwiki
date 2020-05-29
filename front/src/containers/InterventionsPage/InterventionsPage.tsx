@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { Table } from 'react-bootstrap';
 import { gql } from 'apollo-boost';
 import {
@@ -40,10 +40,12 @@ interface InterventionsPageProps {
   location: Location;
 }
 
-class QueryComponent extends Query<
-  InterventionsPageQuery,
-  InterventionsPageQueryVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<
+    InterventionsPageQuery,
+    InterventionsPageQueryVariables
+  >
+) => Query(props);
 
 class InterventionsPage extends React.PureComponent<InterventionsPageProps> {
   static fragment = InterventionItem.fragment;
@@ -65,7 +67,7 @@ class InterventionsPage extends React.PureComponent<InterventionsPageProps> {
             this.props.metaData.selected.kind,
             this.props.metaData.selected.values,
             this.props.metaData.fields.map(name => ({ name, rank: null }))
-          ).map(prop('name'));
+          ).map(prop('name')) as string[];
 
           return (
             <div>

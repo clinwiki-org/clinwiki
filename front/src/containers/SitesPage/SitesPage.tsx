@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { Table, Button } from 'react-bootstrap';
 import { SitesPageQuery } from 'types/SitesPageQuery';
@@ -42,7 +42,8 @@ const ButtonsContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-class QueryComponent extends Query<SitesPageQuery> {}
+const QueryComponent = (props: QueryComponentOptions<SitesPageQuery>) =>
+  Query(props);
 
 class SitesPage extends React.PureComponent<SitesPageProps> {
   handleCreateSite = () => {

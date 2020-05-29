@@ -115,7 +115,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
   `;
 
   render() {
-    const allowedFields = this.props.workflow
+    const allowedFields: string[] = this.props.workflow
       ? displayFields(
           this.props.workflow.summaryFieldsFilter.kind,
           this.props.workflow.summaryFieldsFilter.values,

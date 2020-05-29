@@ -17,7 +17,6 @@ import { trimPath } from 'utils/helpers';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import {
-  pipe,
   split,
   reject,
   isEmpty,
@@ -30,6 +29,7 @@ import {
   isNil,
   find,
 } from 'ramda';
+import * as R from 'remeda';
 import MultiInput from 'components/MultiInput';
 import { parse } from 'graphql';
 import ThemedButton from 'components/StyledComponents/index';
@@ -197,20 +197,21 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
       order: section.order,
     }));
     const sortedExtendedSections = sortBy(
-      pipe(prop('order'), parseInt),
+      section => section.order || 999999,
       extendedSections
     );
     return [...basicSections, ...sortedExtendedSections] as Section[];
   };
 
   getCurrentSectionPath = (): string => {
-    const pathComponents = pipe(
-      split('/'),
-      reject(isEmpty),
-      map(x => `/${x}`),
-      // @ts-ignore
-      reverse
-    )(trimPath(this.props.location.pathname)) as string[];
+    const pathName = this.props.location.pathname;
+    const pathComponents = R.pipe(
+      pathName,
+      s => s.split('/'),
+      R.reject(isEmpty),
+      R.map(x => `/${x}`),
+      R.reverse()
+    );
 
     for (const component of pathComponents) {
       if (findIndex(propEq('path', component), this.getSections()) >= 0) {
@@ -259,7 +260,6 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
                       section.kind === 'basic'
                         ? this.renderBasicSection(
                             section,
-                            // @ts-ignore
                             find(
                               propEq('title', section.displayName),
                               this.props.view.study.basicSections
@@ -267,7 +267,6 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
                           )
                         : this.renderExtendedSection(
                             section,
-                            // @ts-ignore
                             find(
                               propEq('title', section.displayName),
                               this.props.view.study.extendedSections

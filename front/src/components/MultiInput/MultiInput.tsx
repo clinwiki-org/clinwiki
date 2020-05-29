@@ -109,12 +109,10 @@ class MultiInput extends React.Component<MultiInputProps, MultiInputState> {
   };
 
   handleChange = (values: { id: string; value: string[] }[]) => {
-    // @ts-ignore
-    const newValues = pipe(
-      map(prop('id')),
-      difference(__, this.props.value)
-      // @ts-ignore
-    )(values);
+    const newValues = difference(
+      values.map(i => i.id),
+      this.props.value
+    );
     this.props.onChange({
       currentTarget: {
         name: this.props.name,

@@ -83,7 +83,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     props: SiteFormProps,
     state: SiteFormState
   ): SiteFormState | null => {
-    //@ts-ignore
     const {
       name,
       subdomain,
@@ -92,7 +91,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       themes,
       userRank,
     } = props.site;
-    const editorEmails = editors.map(prop('email'));
+    const editorEmails = editors.map(prop('email')) as string[];
     const form = {
       name,
       subdomain,

@@ -1,12 +1,7 @@
 import * as React from 'react';
-import { gql } from 'apollo-boost';
 import styled from 'styled-components';
-import { Redirect, Switch, Route } from 'react-router-dom';
-import { Row, Col, Button } from 'react-bootstrap';
-import {
-  SearchPageHashMutation as SearchPageHashMutationType,
-  SearchPageHashMutationVariables,
-} from 'types/SearchPageHashMutation';
+import { Switch, Route } from 'react-router-dom';
+import { Row, Col } from 'react-bootstrap';
 import {
   SearchPageParamsQuery as SearchPageParamsQueryType,
   SearchPageParamsQueryVariables,
@@ -14,17 +9,11 @@ import {
 } from 'types/SearchPageParamsQuery';
 import { MAX_WINDOW_SIZE } from 'utils/constants';
 import { SearchParams, AggKind, SearchQuery } from './shared';
-import SearchStudyPage from 'containers/SearchStudyPage';
-import BulkEditPage from 'containers/BulkEditPage';
-import { Query, graphql, ApolloConsumer } from 'react-apollo';
+import { Query, graphql, QueryComponentOptions } from 'react-apollo';
 import { ThemedButton } from '../../components/StyledComponents';
-import { History } from 'history';
 import {
-  path,
   map,
-  filter,
   dissoc,
-  pathOr,
   prop,
   any,
   pipe,
@@ -40,7 +29,6 @@ import {
   view,
   remove,
   equals,
-  props,
   find,
 } from 'ramda';
 import SearchView from './SearchView';
@@ -53,7 +41,7 @@ import {
   SearchPageSearchQuery_crowdAggs_aggs,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { AggBucketMap, AggFilterListItem, defaultPageSize } from './Types';
+import { AggBucketMap, defaultPageSize } from './Types';
 import { withSite } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
@@ -64,10 +52,12 @@ import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
 
-class ParamsQueryComponent extends Query<
-  SearchPageParamsQueryType,
-  SearchPageParamsQueryVariables
-> {}
+const ParamsQueryComponent = (
+  props: QueryComponentOptions<
+    SearchPageParamsQueryType,
+    SearchPageParamsQueryVariables
+  >
+) => Query(props);
 
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
@@ -191,8 +181,9 @@ const changeFilter = (add: boolean) => (
 ) => (params: SearchParams) => {
   const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
   const lens = lensPath([propName]);
-  return over(
+  return (over(
     lens,
+    //@ts-ignore
     (aggs: AggFilterInput[]) => {
       const index = findIndex(propEq('field', aggName), aggs);
       if (index === -1 && add) {
@@ -212,14 +203,14 @@ const changeFilter = (add: boolean) => (
       ...params,
       page: 0,
     }
-  );
+  ) as unknown) as SearchParams;
 };
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
     keys.forEach(k => {
-      params = addFilter(aggName, k, isCrowd)(params) as SearchParams;
+      params = addFilter(aggName, k, isCrowd)(params);
     });
     // changeFilter(true);
     return params;
@@ -229,7 +220,7 @@ const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
     keys.forEach(k => {
-      params = removeFilter(aggName, k, isCrowd)(params) as SearchParams;
+      params = removeFilter(aggName, k, isCrowd)(params);
     });
     // changeFilter(true);
     return params;
@@ -397,7 +388,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     filters: AggFilterInput[]
   ): { [key: string]: Set<string> } => {
     return pipe(
-      groupBy(prop('field')),
+      groupBy<AggFilterInput>(prop('field')),
       map(head),
       map(propOr([], 'values')),
       map(arr => new Set(arr))
@@ -408,7 +399,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     aggs: SearchPageSearchQuery_search_aggs[]
   ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
     return pipe(
-      groupBy(prop('name')),
+      groupBy<SearchPageSearchQuery_search_aggs>(prop('name')),
       map(head),
       map(prop('buckets'))
     )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
@@ -417,8 +408,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   transformCrowdAggs = (
     aggs: SearchPageSearchQuery_crowdAggs_aggs[]
   ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
-    // @ts-ignore
-    return pipe(head, prop('buckets'), groupBy(prop('key')))(aggs) as {
+    return pipe(prop('buckets'), groupBy(prop('key')))(aggs[0]) as {
       [key: string]: SearchPageSearchQuery_search_aggs_buckets[];
     };
   };
@@ -465,11 +455,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   isWorkflow = () => {
     return pipe(
-      pathOr([], ['params', 'crowdAggFilters']),
+      //@ts-ignore
       map(prop('field')),
-      // @ts-ignore
+      //@ts-ignore
       any(x => (x as string).toLowerCase().includes('wf_'))
-    )(this.state);
+      //@ts-ignore
+    )(this.state.params?.crowdAggFilters || []);
   };
 
   handleRowClick = (nctId: string, hash: string, siteViewUrl: string) => {
@@ -564,8 +555,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           }
           const opened = this.state.openedAgg && this.state.openedAgg.name;
           const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
-          const { aggFilters = [], crowdAggFilters = [] } =
-            this.state.params || {};
 
           return (
             <SearchView
@@ -577,7 +566,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               onRowClick={this.handleRowClick}
               onOpenAgg={this.handleOpenAgg}
               onAggsUpdate={this.handleAggsUpdate}
-              onResetFilters={this.handleResetFilters}
               onClearFilters={this.handleClearFilters}
               previousSearchData={this.previousSearchData}
               returnPreviousSearchData={this.returnPreviousSearchData}
@@ -844,12 +832,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  renderCrumbs = siteView => {
-    const { params, totalRecords } = this.state;
+  renderCrumbs = (siteView: SiteViewFragment) => {
+    const { totalRecords } = this.state;
     // if (this.props.userId) {
     //   this.getDefaultParams(siteView);
     // }
-    const q =
+    const q: string[] =
       this.state.params?.q.key === '*'
         ? []
         : (this.state.params?.q.children || []).map(prop('key'));
@@ -872,7 +860,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           page: pipe(changePage, this.handleUpdateParams),
         }}
         data={this.props.site}
-        onReset={this.handleResetFilters}
+        onReset={this.handleResetFilters(siteView)}
         onClear={this.handleClearFilters}
         addFilter={pipe(addFilter, this.handleUpdateParams)}
         currentSiteView={currentSiteView}
@@ -883,7 +871,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
-    const { params, totalRecords } = this.state;
+    const { totalRecords } = this.state;
     //@ts-ignore
     if (this.props.email && !this.props.match.params.id) {
       //   this.getDefaultParams(siteView);
@@ -915,7 +903,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 onRowClick={this.handleRowClick}
                 onOpenAgg={this.handleOpenAgg}
                 onAggsUpdate={this.handleAggsUpdate}
-                onResetFilters={this.handleResetFilters}
                 onClearFilters={this.handleClearFilters}
                 previousSearchData={this.previousSearchData}
                 returnPreviousSearchData={() => this.returnPreviousSearchData}
@@ -941,7 +928,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
 
     const hash = this.getHashFromLocation();
-    let profile = this.findFilter('wiki_page_edits.email');
 
     return (
       <SearchParamsContext.Provider
@@ -988,4 +974,5 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 }
 
+//@ts-ignore getDerivedStateFromProps
 export default withSite(graphql(SearchPageHashMutation)(SearchPage));

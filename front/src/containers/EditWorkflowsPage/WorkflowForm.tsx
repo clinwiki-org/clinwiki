@@ -1,7 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Panel, Row, FormControl, Checkbox } from 'react-bootstrap';
-import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
+import {
+  WorkflowConfigFragment,
+  WorkflowConfigFragment_suggestedLabelsConfig,
+} from 'types/WorkflowConfigFragment';
 import MultiInput from 'components/MultiInput';
 import AggField, { FieldType } from 'components/SiteForm/AggField';
 import { fromPairs, difference, find } from 'ramda';
@@ -10,6 +13,7 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import { MutationSource } from 'containers/SearchPage/shared';
 import { DeleteSiteMutationsSitesQuery } from 'types/DeleteSiteMutationsSitesQuery';
 import { Mutation } from 'react-apollo';
+import { stringify } from 'querystring';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -113,9 +117,9 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
             <StyledLabel>Configure Crowd Labels</StyledLabel>
             {facets.map(name => {
               const fieldInfo = {
-                name: name,
                 ...defaultFieldInfo,
                 ...config[name],
+                name: name,
               };
               return (
                 <AggField

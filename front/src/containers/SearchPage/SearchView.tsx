@@ -2,14 +2,13 @@ import * as React from 'react';
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
-import SearchFieldName from 'components/SearchFieldName';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
-import { PulseLoader, BeatLoader } from 'react-spinners';
+import { PulseLoader } from 'react-spinners';
 import { Col, ButtonGroup, Button } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
-import { SortInput, AggFilterInput } from 'types/globalTypes';
+import { SortInput } from 'types/globalTypes';
 import { SiteFragment_siteView } from 'types/SiteFragment';
 import {
   map,
@@ -41,8 +40,8 @@ import {
   SearchPageSearchQuery_crowdAggs_aggs,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { Query } from 'react-apollo';
-import 'react-table/react-table.css';
+import { Query, QueryComponentOptions } from 'react-apollo';
+// import 'react-table/react-table.css';
 import SiteProvider from 'containers/SiteProvider';
 import { studyFields, starColor, MAX_WINDOW_SIZE } from 'utils/constants';
 import Cards from './components/Cards';
@@ -196,10 +195,12 @@ const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
   return { ...params, sorts: snakeSorts, page: 0 };
 };
 
-class QueryComponent extends Query<
-  SearchPageSearchQuery,
-  SearchPageSearchQueryVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<
+    SearchPageSearchQuery,
+    SearchPageSearchQueryVariables
+  >
+) => Query(props);
 
 const SearchWrapper = styled.div`
   .rt-tr {
@@ -243,7 +244,6 @@ interface SearchViewProps {
     crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] }
   ) => void;
   onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
-  onResetFilters: () => void;
   onClearFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
   openedAgg: { name: string; kind: AggKind } | null;
@@ -396,10 +396,12 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     aggs: SearchPageSearchQuery_search_aggs[]
   ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
     return pipe(
-      groupBy(prop('name')),
+      groupBy<SearchPageSearchQuery_search_aggs>(prop('name')),
       map(head),
       map(prop('buckets'))
-    )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
+    )(aggs) as {
+      [key: string]: SearchPageSearchQuery_search_aggs_buckets[];
+    };
   };
 
   transformCrowdAggs = (
@@ -711,6 +713,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             defaultSorted={camelizedSorts}
             onPageChange={pipe(changePage, this.props.onUpdateParams)}
             onPageSizeChange={pipe(changePageSize, this.props.onUpdateParams)}
+            //@ts-ignore
             onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
             data={searchData}
             pages={totalPages}

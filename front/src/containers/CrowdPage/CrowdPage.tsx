@@ -1,11 +1,17 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Mutation, Query, MutationFn } from 'react-apollo';
+import {
+  Mutation,
+  Query,
+  MutationFunction,
+  MutationComponentOptions,
+  QueryComponentOptions,
+} from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
 import { Grid, Table } from 'react-bootstrap';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 
 import LoadingPane from 'components/LoadingPane';
 import Error from 'components/Error';
@@ -127,27 +133,33 @@ const TableWrapper = styled(Table)`
   }
 `;
 
-export class UpsertMutationComponent extends Mutation<
-  CrowdPageUpsertWikiLabelMutation,
-  CrowdPageUpsertWikiLabelMutationVariables
-> {}
+export const UpsertMutationComponent = (
+  props: MutationComponentOptions<
+    CrowdPageUpsertWikiLabelMutation,
+    CrowdPageUpsertWikiLabelMutationVariables
+  >
+) => Mutation(props);
 
-export type UpsertMutationFn = MutationFn<
+export type UpsertMutationFn = MutationFunction<
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables
 >;
 
-export class DeleteMutationComponent extends Mutation<
-  CrowdPageDeleteWikiLabelMutation,
-  CrowdPageDeleteWikiLabelMutationVariables
-> {}
+export const DeleteMutationComponent = (
+  props: MutationComponentOptions<
+    CrowdPageDeleteWikiLabelMutation,
+    CrowdPageDeleteWikiLabelMutationVariables
+  >
+) => Mutation(props);
 
-export type DeleteMutationFn = MutationFn<
+export type DeleteMutationFn = MutationFunction<
   CrowdPageDeleteWikiLabelMutation,
   CrowdPageDeleteWikiLabelMutationVariables
 >;
 
-class QueryComponent extends Query<CrowdPageQuery, CrowdPageQueryVariables> {}
+const QueryComponent = (
+  props: QueryComponentOptions<CrowdPageQuery, CrowdPageQueryVariables>
+) => Query(props);
 
 class Crowd extends React.Component<CrowdProps, CrowdState> {
   state: CrowdState = {
@@ -364,9 +376,10 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       map(key =>
         (meta[key] as string).split('|').map(value => ({ key, value }))
       ),
-      // @ts-ignore
+      //@ts-ignore
       flatten
-    )(meta);
+      //@ts-ignore
+    )(meta) as { key: string; value: string }[];
 
     let content = (
       <TableWrapper striped condensed bordered>

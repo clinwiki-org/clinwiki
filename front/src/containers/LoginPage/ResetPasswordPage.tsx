@@ -1,7 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Row, Col, Button } from 'react-bootstrap';
-import { Mutation, MutationFn } from 'react-apollo';
+import { Col } from 'react-bootstrap';
+import {
+  Mutation,
+  MutationComponentOptions,
+  MutationFunction,
+} from 'react-apollo';
 import { gql } from 'apollo-boost';
 import {
   ResetPasswordMutation,
@@ -33,11 +37,14 @@ const RESET_PASSWORD_MUTATION = gql`
   }
 `;
 
-class ResetPasswordMutationComponent extends Mutation<
-  ResetPasswordMutation,
-  ResetPasswordMutationVariables
-> {}
-type ResetPasswordMutationFn = MutationFn<
+const ResetPasswordMutationComponent = (
+  props: MutationComponentOptions<
+    ResetPasswordMutation,
+    ResetPasswordMutationVariables
+  >
+) => Mutation(props);
+
+type ResetPasswordMutationFn = MutationFunction<
   ResetPasswordMutation,
   ResetPasswordMutationVariables
 >;

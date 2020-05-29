@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, Panel, FormControl } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { match } from 'react-router';
 import ReviewForm from 'containers/ReviewForm';
@@ -12,55 +12,30 @@ import CrowdPage, {
   DeleteMutationComponent,
   DELETE_LABEL_MUTATION,
   DeleteMutationFn,
-} from 'containers/CrowdPage';
+} from 'containers/CrowdPage/CrowdPage';
 import SuggestedLabels from './SuggestedLabels';
 import { ReviewFragment } from 'types/ReviewFragment';
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import {
   WorkflowPageQuery,
   WorkflowPageQueryVariables,
 } from 'types/WorkflowPageQuery';
-import { SiteViewFragment } from 'types/SiteViewFragment';
-import SiteProvider from 'containers/SiteProvider';
 import withTheme from 'containers/ThemeProvider';
 import { extractWikiSections, WikiSection } from 'utils/helpers';
-import {
-  drop,
-  addIndex,
-  map,
-  pipe,
-  isNil,
-  find,
-  propEq,
-  lensPath,
-  set,
-  keys,
-  reject,
-  filter,
-  equals,
-  isEmpty,
-  prop,
-  fromPairs,
-} from 'ramda';
-import { StyledFormControl } from 'components/SiteForm/Styled';
-import UpdateWikiSectionsMutation, {
-  UpdateWikiSectionsMutationFn,
-} from 'mutations/UpdateWikiSectionsMutation';
+import { drop, pipe, propEq, filter, fromPairs } from 'ramda';
+import * as R from 'remeda';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import CurrentUser from 'containers/CurrentUser';
 import WikiSections from './WikiSections';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
-import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import ThemedButton from 'components/StyledComponents';
 import QUERY from 'queries/WorkflowPageQuery';
 
-class WorkflowPageQueryComponent extends Query<
-  WorkflowPageQuery,
-  WorkflowPageQueryVariables
-> {}
+const WorkflowPageQueryComponent = (
+  props: QueryComponentOptions<WorkflowPageQuery, WorkflowPageQueryVariables>
+) => Query(props);
 
 interface WorkflowPageProps {
   nctId: string;
@@ -188,20 +163,26 @@ class WorkflowPage extends React.Component<
         {workflowsView => (
           <CurrentUser>
             {user => {
-              const workflow = pipe(
-                prop('workflows'),
-                find(propEq('name', this.props.workflowName))
-              )(workflowsView) as WorkflowConfigFragment;
+              const workflow = R.pipe(
+                workflowsView,
+                R.prop('workflows'),
+                R.find(propEq('name', this.props.workflowName))
+              );
+              if (workflow == null) return null;
+
               const allowedWikiSections = displayFields(
                 workflow.wikiSectionsFilter.kind,
                 workflow.wikiSectionsFilter.values,
                 workflow.allWikiSections.map(name => ({ name, rank: null }))
-              ).map(prop('name'));
+              ).map(R.prop('name'));
               const allowedSuggestedLabels = displayFields(
                 workflow.suggestedLabelsFilter.kind,
                 workflow.suggestedLabelsFilter.values,
-                workflow.allSuggestedLabels.map(name => ({ name, rank: null }))
-              ).map(prop('name'));
+                workflow.allSuggestedLabels.map(name => ({
+                  name,
+                  rank: null,
+                }))
+              ).map(R.prop('name'));
 
               const suggestedLabelsConfig = fromPairs(
                 workflow.suggestedLabelsConfig.map(c => [c.name, c])
@@ -235,7 +216,7 @@ class WorkflowPage extends React.Component<
                   <WorkflowPageQueryComponent
                     query={QUERY}
                     variables={{ nctId: this.props.match.params.nctId }}>
-                    {({ data, loading, error }) => {
+                    {({ data }) => {
                       const sections = pipe(
                         drop(1),
                         filter((section: WikiSection) =>

@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { gql, ApolloError } from 'apollo-boost';
-import { Mutation, MutationFn, MutationResult } from 'react-apollo';
+import {
+  Mutation,
+  MutationComponentOptions,
+  MutationFunction,
+  MutationResult,
+} from 'react-apollo';
 import {
   UpdateSiteViewMutation as UpdateSiteViewMutationType,
   UpdateSiteViewMutationVariables,
@@ -11,7 +16,7 @@ interface UpdateSiteViewMutationProps {
   children: (
     mutate: UpdateSiteViewMutationFn,
     result: MutationResult<UpdateSiteViewMutationType>
-  ) => React.ReactNode;
+  ) => JSX.Element;
   onCompleted?: (data: UpdateSiteViewMutationType) => void;
   onError?: (e: ApolloError) => void;
 }
@@ -29,11 +34,13 @@ const UPDATE_SITE_VIEW_MUTATION = gql`
   ${SiteProvider.siteViewFragment}
 `;
 
-class UpdateSiteViewMutationComponent extends Mutation<
-  UpdateSiteViewMutationType,
-  UpdateSiteViewMutationVariables
-> {}
-export type UpdateSiteViewMutationFn = MutationFn<
+const UpdateSiteViewMutationComponent = (
+  props: MutationComponentOptions<
+    UpdateSiteViewMutationType,
+    UpdateSiteViewMutationVariables
+  >
+) => Mutation(props);
+export type UpdateSiteViewMutationFn = MutationFunction<
   UpdateSiteViewMutationType,
   UpdateSiteViewMutationVariables
 >;

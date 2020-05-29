@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { gql } from 'apollo-boost';
-import { Mutation, MutationFn, MutationResult } from 'react-apollo';
+import {
+  Mutation,
+  MutationComponentOptions,
+  MutationFunction,
+  MutationResult,
+} from 'react-apollo';
 import {
   CopySiteViewMutation as CopySiteViewMutationType,
   CopySiteViewMutationVariables,
@@ -11,7 +16,7 @@ interface CopySiteViewMutationProps {
   children: (
     mutate: CopySiteViewMutationFn,
     result: MutationResult<CopySiteViewMutationType>
-  ) => React.ReactNode;
+  ) => JSX.Element;
   onCompleted?: (any) => void;
 }
 
@@ -28,11 +33,13 @@ const COPY_SITE_VIEW_MUTATION = gql`
   ${SiteProvider.siteViewFragment}
 `;
 
-class CopySiteViewMutationComponent extends Mutation<
-  CopySiteViewMutationType,
-  CopySiteViewMutationVariables
-> {}
-export type CopySiteViewMutationFn = MutationFn<
+const CopySiteViewMutationComponent = (
+  props: MutationComponentOptions<
+    CopySiteViewMutationType,
+    CopySiteViewMutationVariables
+  >
+) => Mutation(props);
+export type CopySiteViewMutationFn = MutationFunction<
   CopySiteViewMutationType,
   CopySiteViewMutationVariables
 >;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Table } from 'react-bootstrap';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
@@ -38,10 +38,12 @@ const QUERY = gql`
   ${StudySummary.fragment}
 `;
 
-class QueryComponent extends Query<
-  GenericStudySectionPageQuery,
-  GenericStudySectionPageQueryVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<
+    GenericStudySectionPageQuery,
+    GenericStudySectionPageQueryVariables
+  >
+) => Query(props);
 
 class GenericStudySectionPage extends React.PureComponent<
   GenericStudySectionPageProps
@@ -85,7 +87,7 @@ class GenericStudySectionPage extends React.PureComponent<
             this.props.metaData.selected.values,
             this.props.metaData.fields.map(name => ({ name, rank: null })),
             true
-          ).map(prop('name'));
+          ).map(prop('name')) as string[];
 
           this.props.onLoaded && this.props.onLoaded();
           return (

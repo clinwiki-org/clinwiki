@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import styled from 'styled-components';
 import { match } from 'react-router-dom';
-import { pipe, path, isNil } from 'ramda';
-import { Grid, Row, Col } from 'react-bootstrap';
 import Intervention from 'components/Intervention';
 import SearchPage from 'containers/SearchPage/index';
 import {
@@ -27,10 +24,12 @@ const QUERY = gql`
   ${Intervention.fragment}
 `;
 
-class QueryComponent extends Query<
-  InterventionPageQuery,
-  InterventionPageQueryVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<
+    InterventionPageQuery,
+    InterventionPageQueryVariables
+  >
+) => Query(props);
 
 interface InterventionPageProps {
   match?: match<{ id: string }>;
@@ -39,9 +38,8 @@ interface InterventionPageProps {
 
 class InterventionPage extends React.PureComponent<InterventionPageProps> {
   getInterventionsId = () => {
-    return pipe(path(['match', 'params', 'id']), (x: string) =>
-      x ? parseInt(x, 10) : null
-    )(this.props);
+    const x = this.props.match?.params?.id;
+    return x ? parseInt(x, 10) : null;
   };
 
   setInterventionTerm = name => {
@@ -57,7 +55,7 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
 
   render() {
     const id = this.getInterventionsId();
-    if (isNil(id)) return null;
+    if (id == null) return null;
 
     return (
       <QueryComponent query={QUERY} variables={{ id }}>

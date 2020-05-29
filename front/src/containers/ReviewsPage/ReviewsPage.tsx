@@ -4,7 +4,12 @@ import { Button, Row, Col, Table, Label } from 'react-bootstrap';
 import { History } from 'history';
 import styled from 'styled-components';
 import { gql } from 'apollo-boost';
-import { Query, Mutation } from 'react-apollo';
+import {
+  Query,
+  Mutation,
+  QueryComponentOptions,
+  MutationComponentOptions,
+} from 'react-apollo';
 import ReactStars from 'react-stars';
 import StudySummary from 'components/StudySummary';
 import ThemedButton from 'components/StyledComponents/index';
@@ -114,11 +119,15 @@ const ButtonsWrapper = styled.div`
   justify-content: flex-end;
 `;
 
-class QueryComponent extends Query<ReviewPageQuery, ReviewPageQueryVariables> {}
-class DeleteReviewMutationComponent extends Mutation<
-  ReviewsPageDeleteReviewMutation,
-  ReviewsPageDeleteReviewMutationVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<ReviewPageQuery, ReviewPageQueryVariables>
+) => Query(props);
+const DeleteReviewMutationComponent = (
+  props: MutationComponentOptions<
+    ReviewsPageDeleteReviewMutation,
+    ReviewsPageDeleteReviewMutationVariables
+  >
+) => Mutation(props);
 
 class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   static fragment = FRAGMENT;

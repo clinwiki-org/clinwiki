@@ -2,8 +2,12 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { capitalize } from 'utils/helpers';
 import { gql } from 'apollo-boost';
-import { Mutation, MutationFn } from 'react-apollo';
-import { ApolloConsumer } from 'react-apollo';
+import {
+  MutationFunction,
+  ApolloConsumer,
+  Mutation,
+  MutationComponentOptions,
+} from 'react-apollo';
 import ThemedAutosuggestButton, {
   ThemedPresearchCard,
   ThemedPresearchHeader,
@@ -11,7 +15,6 @@ import ThemedAutosuggestButton, {
   PresearchContent,
   TextFieldToggle,
 } from 'components/StyledComponents';
-import { uniq } from 'ramda';
 import {
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables,
@@ -103,12 +106,14 @@ export const UPSERT_LABEL_MUTATION = gql`
   ${WikiPageEditFragment}
 `;
 
-export class UpsertMutationComponent extends Mutation<
-  CrowdPageUpsertWikiLabelMutation,
-  CrowdPageUpsertWikiLabelMutationVariables
-> {}
+const UpsertMutationComponent = (
+  props: MutationComponentOptions<
+    CrowdPageUpsertWikiLabelMutation,
+    CrowdPageUpsertWikiLabelMutationVariables
+  >
+) => Mutation(props);
 
-export type UpsertMutationFn = MutationFn<
+export type UpsertMutationFn = MutationFunction<
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables
 >;

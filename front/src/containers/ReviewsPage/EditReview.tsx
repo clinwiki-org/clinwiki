@@ -1,6 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import {
   EditReviewQuery,
@@ -39,7 +38,9 @@ const QUERY = gql`
   ${StudySummary.fragment}
 `;
 
-class QueryComponent extends Query<EditReviewQuery, EditReviewQueryVariables> {}
+const QueryComponent = (
+  props: QueryComponentOptions<EditReviewQuery, EditReviewQueryVariables>
+) => Query(props);
 
 class EditReview extends React.PureComponent<EditReviewProps> {
   handleReviewSave = () => {

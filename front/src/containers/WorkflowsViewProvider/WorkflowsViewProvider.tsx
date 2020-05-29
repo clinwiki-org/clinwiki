@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { WorkflowsViewProviderQuery } from 'types/WorkflowsViewProviderQuery';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { query } from 'queries/WorkflowsViewProviderquery';
@@ -8,7 +8,9 @@ interface WorkflowsViewProviderProps {
   children: (workflows: WorkflowsViewFragment) => React.ReactNode;
 }
 
-class QueryComponent extends Query<WorkflowsViewProviderQuery> {}
+const QueryComponent = (
+  props: QueryComponentOptions<WorkflowsViewProviderQuery>
+) => Query(props);
 
 class WorkflowsViewProvider extends React.PureComponent<
   WorkflowsViewProviderProps
@@ -18,7 +20,7 @@ class WorkflowsViewProvider extends React.PureComponent<
       <QueryComponent query={query}>
         {({ data, loading, error }) => {
           if (loading || error || !data) return null;
-          return this.props.children(data.workflowsView);
+          return this.props.children(data.workflowsView) as JSX.Element;
         }}
       </QueryComponent>
     );

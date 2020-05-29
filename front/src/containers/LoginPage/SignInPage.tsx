@@ -1,7 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
-import { Mutation, MutationFn } from 'react-apollo';
+import {
+  Mutation,
+  MutationComponentOptions,
+  MutationFunction,
+} from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { SignInMutation, SignInMutationVariables } from 'types/SignInMutation';
 import StyledFormControl from './StyledFormControl';
@@ -44,11 +48,14 @@ const SIGN_IN_MUTATION = gql`
   ${CurrentUser.fragment}
 `;
 
-class SignInMutationComponent extends Mutation<
+const SignInMutationComponent = (
+  props: MutationComponentOptions<SignInMutation, SignInMutationVariables>
+) => Mutation(props);
+
+type SignInMutationFn = MutationFunction<
   SignInMutation,
   SignInMutationVariables
-> {}
-type SignInMutationFn = MutationFn<SignInMutation, SignInMutationVariables>;
+>;
 
 class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   state: SignInPageState = {

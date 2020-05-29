@@ -12,7 +12,12 @@ import {
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
 import { Panel, Button, FormControl } from 'react-bootstrap';
-import { Query, Mutation } from 'react-apollo';
+import {
+  Query,
+  Mutation,
+  QueryComponentOptions,
+  MutationComponentOptions,
+} from 'react-apollo';
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoadingPane from 'components/LoadingPane';
@@ -91,11 +96,16 @@ const Toolbar = styled.div`
   padding: 10px;
 `;
 
-class QueryComponent extends Query<WikiPageQuery, WikiPageQueryVariables> {}
-class UpdateContentMutation extends Mutation<
-  WikiPageUpdateContentMutation,
-  WikiPageUpdateContentMutationVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<WikiPageQuery, WikiPageQueryVariables>
+) => Query(props);
+
+const UpdateContentMutation = (
+  props: MutationComponentOptions<
+    WikiPageUpdateContentMutation,
+    WikiPageUpdateContentMutationVariables
+  >
+) => Mutation(props);
 
 class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
   state: WikiPageState = {

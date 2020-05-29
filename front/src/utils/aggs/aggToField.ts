@@ -1,7 +1,6 @@
 import { propOr } from 'ramda';
 
-// aggToField
-export default (val, expectedVal) => {
+const aggToField = (val: string, expectedVal?: string): string => {
   return propOr(val, val, {
     // average_rating: 'average rating',
     average_rating: expectedVal == val ? 'average rating' : expectedVal,
@@ -28,3 +27,5 @@ export default (val, expectedVal) => {
       expectedVal == val ? 'wiki date range' : expectedVal,
   });
 };
+
+export default aggToField;

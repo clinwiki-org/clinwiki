@@ -31,7 +31,7 @@ import StudyPageSections from './components/StudyPageSections';
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
 import StudySummary from 'components/StudySummary';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { trimPath } from 'utils/helpers';
 import ReviewsPage from 'containers/ReviewsPage';
 import InterventionsPage from 'containers/InterventionsPage';
@@ -50,6 +50,10 @@ import StudyPageCounter from './components/StudyPageCounter';
 import withTheme from 'containers/ThemeProvider';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
+import {
+  WorkflowsViewFragment,
+  WorkflowsViewFragment_workflows,
+} from 'types/WorkflowsViewFragment';
 
 interface StudyPageProps {
   history: History;
@@ -69,7 +73,6 @@ interface StudyPageProps {
 interface StudyPageState {
   // trigger prefetch for all study sections
   triggerPrefetch: boolean;
-  wikiToggleValue: boolean;
 }
 
 const QUERY = gql`
@@ -208,16 +211,19 @@ const BackButtonWrapper = styled.div`
   padding-bottom: 10px;
 `;
 
-class QueryComponent extends Query<StudyPageQuery, StudyPageQueryVariables> {}
-class PrefetchQueryComponent extends Query<
-  StudyPagePrefetchQuery,
-  StudyPagePrefetchQueryVariables
-> {}
+const QueryComponent = (
+  props: QueryComponentOptions<StudyPageQuery, StudyPageQueryVariables>
+) => Query(props);
+const PrefetchQueryComponent = (
+  props: QueryComponentOptions<
+    StudyPagePrefetchQuery,
+    StudyPagePrefetchQueryVariables
+  >
+) => Query(props);
 
 class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   state: StudyPageState = {
     triggerPrefetch: false,
-    wikiToggleValue: true,
   };
 
   getCurrentSectionPath = (view: SiteViewFragment) => {
@@ -344,7 +350,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       };
     });
 
-    // @ts-ignore
     const processedExtendedSections = sortBy(
       pipe(prop('order'), parseInt),
       extendedSections
@@ -362,10 +367,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     if (!this.state.triggerPrefetch) {
       this.setState({ triggerPrefetch: true });
     }
-  };
-
-  handleWikiToggleChange = () => {
-    this.setState({ wikiToggleValue: !this.state.wikiToggleValue });
   };
 
   handleNavButtonClick = (link: string) => () => {
@@ -456,9 +457,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
           <WorkflowsViewProvider>
             {workflowsView => {
               const workflow = pipe(
-                prop('workflows'),
-                find(propEq('name', this.props.workflowName))
-              )(workflowsView) as WorkflowConfigFragment | null;
+                find<WorkflowsViewFragment_workflows>(
+                  propEq('name', this.props.workflowName)
+                )
+              )(workflowsView.workflows) as WorkflowConfigFragment | null;
 
               return (
                 <QueryComponent

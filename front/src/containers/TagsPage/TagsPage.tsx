@@ -1,7 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Table, Row, Col, Button, FormControl } from 'react-bootstrap';
-import { Query, Mutation, MutationFn } from 'react-apollo';
+import {
+  Query,
+  Mutation,
+  MutationFunction,
+  MutationComponentOptions,
+  QueryComponentOptions,
+} from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
@@ -107,27 +113,33 @@ const ADD_TAG_MUTATION = gql`
   ${WikiPageEditFragment}
 `;
 
-class AddTagMutationComponent extends Mutation<
-  TagsPageAddWikiTagMutation,
-  TagsPageAddWikiTagMutationVariables
-> {}
+const AddTagMutationComponent = (
+  props: MutationComponentOptions<
+    TagsPageAddWikiTagMutation,
+    TagsPageAddWikiTagMutationVariables
+  >
+) => Mutation(props);
 
-type AddTagMutationFn = MutationFn<
+type AddTagMutationFn = MutationFunction<
   TagsPageAddWikiTagMutation,
   TagsPageAddWikiTagMutationVariables
 >;
 
-class DeleteTagMutationComponent extends Mutation<
-  TagsPageDeleteWikiTagMutation,
-  TagsPageDeleteWikiTagMutationVariables
-> {}
+const DeleteTagMutationComponent = (
+  props: MutationComponentOptions<
+    TagsPageDeleteWikiTagMutation,
+    TagsPageDeleteWikiTagMutationVariables
+  >
+) => Mutation(props);
 
-type DeleteTagMutationFn = MutationFn<
+type DeleteTagMutationFn = MutationFunction<
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables
 >;
 
-class QueryComponent extends Query<TagsPageQuery, TagsPageQueryVariables> {}
+const QueryComponent = (
+  props: QueryComponentOptions<TagsPageQuery, TagsPageQueryVariables>
+) => Query(props);
 
 class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   static fragment = FRAGMENT;

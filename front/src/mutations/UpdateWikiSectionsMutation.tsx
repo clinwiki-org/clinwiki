@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { gql, ApolloError } from 'apollo-boost';
-import { Mutation, MutationFn, MutationResult } from 'react-apollo';
+import {
+  Mutation,
+  MutationComponentOptions,
+  MutationFunction,
+  MutationResult,
+} from 'react-apollo';
 import {
   UpdateWikiSectionsMutation as UpdateWikiSectionsMutationType,
   UpdateWikiSectionsMutationVariables,
@@ -10,7 +15,7 @@ interface UpdateWikiSectionsMutationProps {
   children: (
     mutate: UpdateWikiSectionsMutationFn,
     result: MutationResult<UpdateWikiSectionsMutationType>
-  ) => React.ReactNode;
+  ) => JSX.Element;
   onCompleted?: (data: UpdateWikiSectionsMutationType) => void;
   onError?: (e: ApolloError) => void;
 }
@@ -27,11 +32,13 @@ const UPDATE_WIKI_SECTIONS_MUTATION = gql`
   }
 `;
 
-class UpdateWikiSectionsMutationComponent extends Mutation<
-  UpdateWikiSectionsMutationType,
-  UpdateWikiSectionsMutationVariables
-> {}
-export type UpdateWikiSectionsMutationFn = MutationFn<
+const UpdateWikiSectionsMutationComponent = (
+  props: MutationComponentOptions<
+    UpdateWikiSectionsMutationType,
+    UpdateWikiSectionsMutationVariables
+  >
+) => Mutation(props);
+export type UpdateWikiSectionsMutationFn = MutationFunction<
   UpdateWikiSectionsMutationType,
   UpdateWikiSectionsMutationVariables
 >;

@@ -28,7 +28,7 @@ import {
 import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
-import { withSite } from 'containers/SiteProvider/SiteProvider';
+import { withSite2 } from 'containers/SiteProvider/SiteProvider';
 import {
   SiteViewFragment,
   SiteViewFragment_search_aggs_fields,
@@ -134,7 +134,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   state = {
     hasMore: true,
     loading: false,
-    buckets: [],
+    buckets: [] as AggBucket[],
     filter: '',
     isOpen: false,
     prevParams: null,
@@ -209,7 +209,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   selectAll = (agg: string): void => {
     const { buckets } = this.state;
-    let newParams = [];
+    let newParams: string[] = [];
 
     buckets.map(({ key }) => {
       newParams.push(key);
@@ -327,34 +327,32 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       response
     ) as AggBucket[];
 
+    const allBuckets = buckets.concat(responseBuckets);
+
     let newBuckets = pipe(
-      concat(responseBuckets),
-      uniqBy(prop('key')),
-      sortBy(prop('key'))
-    )(buckets) as AggBucket[];
+      uniqBy<AggBucket>(prop('key')),
+      sortBy<AggBucket>(prop('key'))
+    )(allBuckets);
 
     if (!desc && sortKind === SortKind.Alpha) {
       newBuckets = pipe(
-        concat(responseBuckets),
-        uniqBy(prop('key')),
+        uniqBy<AggBucket>(prop('key')),
         sortBy(prop('key')),
         reverse
-      )(this.state.buckets) as AggBucket[];
+      )(allBuckets) as AggBucket[];
     }
     if (desc && sortKind === SortKind.Number) {
       newBuckets = pipe(
-        concat(responseBuckets),
         uniqBy(prop('key')),
-        sortBy(prop('docCount'))
-      )(this.state.buckets) as AggBucket[];
+        sortBy<AggBucket>(prop('docCount'))
+      )(allBuckets) as AggBucket[];
     }
     if (!desc && sortKind === SortKind.Number) {
       newBuckets = pipe(
-        concat(responseBuckets),
         uniqBy(prop('key')),
-        sortBy(prop('docCount')),
+        sortBy<AggBucket>(prop('docCount')),
         reverse
-      )(this.state.buckets) as AggBucket[];
+      )(allBuckets) as AggBucket[];
     }
 
     const hasMore = length(buckets) !== length(newBuckets);
@@ -628,4 +626,5 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }
 }
 
-export default withApollo(withSite(AggDropDown));
+// @ts-ignore
+export default withApollo<any>(withSite2(AggDropDown));

@@ -2,14 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { StyledContainer, StyledLabel } from './Styled';
 import { CreateSiteInput } from 'types/globalTypes';
-import {
-  Checkbox,
-  Row,
-  Col,
-  Button,
-  Table,
-  FormControl,
-} from 'react-bootstrap';
+import { Checkbox, Row, Col, Table, FormControl } from 'react-bootstrap';
 import StyledFormControl from 'containers/LoginPage/StyledFormControl';
 import { set, lensPath, over, reject, equals } from 'ramda';
 import ThemedButton from 'components/StyledComponents/index';
@@ -97,7 +90,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
-    if (name == 'themes' || name == 'userRank') {
+    if (name === 'themes' || name === 'userRank') {
       try {
         let parseResponse = JSON.parse(value);
         if (parseResponse && parseResponse.error)

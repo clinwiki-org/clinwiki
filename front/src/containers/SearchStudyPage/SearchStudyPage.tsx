@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { gql } from 'apollo-boost';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import {
@@ -10,7 +10,6 @@ import {
 import { path, pathOr, test } from 'ramda';
 import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
-import { MAX_WINDOW_SIZE } from '../../utils/constants';
 
 const QUERY = gql`
   query SearchStudyPageQuery($hash: String!, $id: String!) {
@@ -40,10 +39,12 @@ interface StudySearchPageProps {
   location: Location;
 }
 
-class SearchStudyPageQueryComponent extends Query<
-  SearchStudyPageQuery,
-  SearchStudyPageQueryVariables
-> {}
+const SearchStudyPageQueryComponent = (
+  props: QueryComponentOptions<
+    SearchStudyPageQuery,
+    SearchStudyPageQueryVariables
+  >
+) => Query(props);
 class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
   render() {
     let hash = new URLSearchParams(this.props.history.location.search)

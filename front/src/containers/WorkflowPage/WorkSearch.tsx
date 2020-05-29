@@ -70,7 +70,7 @@ export interface State {
 }
 
 export class WorkSearch extends React.Component<Props, State> {
-  data: string;
+  data: string | undefined;
 
   public renderQuery() {
     return (
@@ -79,16 +79,13 @@ export class WorkSearch extends React.Component<Props, State> {
         variables={{
           nctId: this.props.nctid,
         }}>
-        {({ loading, error, data }) => {
-          if (loading) return 'Loading...';
-          if (error) return `Error! ${error.message}`;
+        {arg => {
+          const { loading, error, data } = arg;
+          if (loading) return <>'Loading...'</>;
+          if (error) return <>`Error! ${error.message}`</>;
 
-          let here = ``;
           this.data = JSON.stringify(data);
-          // initData = JSON.stringify(data);
-          // console.log(initData.length);
           console.log('Running Query');
-          // console.log(this.data.length);
           return <div id="whatever">{this.data}</div>;
         }}
       </Query>
@@ -181,7 +178,7 @@ export class WorkSearch extends React.Component<Props, State> {
         this.state.list.splice(index, 1);
       }
     });
-    Similarity.findPhrases({ wordsToFind: [''], text: this.data });
+    Similarity.findPhrases({ wordsToFind: [''], text: this.data || '' });
     this.setState({
       similarityResult: Similarity.findPhrases({
         wordsToFind: this.state.list,
@@ -246,10 +243,10 @@ export class WorkSearch extends React.Component<Props, State> {
                     variables={{
                       nctId: this.props.nctid,
                     }}>
-                    {({ loading, error, data }) => {
-                      if (loading) return 'Loading...';
-                      if (error) return `Error! ${error.message}`;
-                      let here = ``;
+                    {arg => {
+                      const { loading, error, data } = arg;
+                      if (loading) return <>'Loading...'</>;
+                      if (error) return <>`Error! ${error.message}`</>;
                       this.data = JSON.stringify(data);
                       return <div></div>;
                     }}

@@ -160,21 +160,6 @@ const Container = styled.div`
 const Title = styled.h3`
   margin-bottom: 20px;
 `;
-const StyledPanel = styled(CollapsiblePanel)`
-  margin: 0 10px 10px 0;
-  width: 250px;
-  .panel-heading h3 {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: absolute;
-    max-width: 200px;
-  }
-  .panel-body {
-    height: 150px !important;
-    overflow: scroll;
-  }
-`;
 
 const groupByLabel = (labels: LabelValue[]) => {
   return labels.reduce(

@@ -2,7 +2,11 @@ import * as React from 'react';
 import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
-import { Mutation, MutationFn } from 'react-apollo';
+import {
+  Mutation,
+  MutationFunction,
+  MutationComponentOptions,
+} from 'react-apollo';
 import { gql } from 'apollo-boost';
 import {
   EditProfileMutation,
@@ -58,11 +62,14 @@ const EDIT_PROFILE_MUTATION = gql`
   ${CurrentUser.fragment}
 `;
 
-class EditProfileMutationComponent extends Mutation<
-  EditProfileMutation,
-  EditProfileMutationVariables
-> {}
-type EditProfileMutationFn = MutationFn<
+const EditProfileMutationComponent = (
+  props: MutationComponentOptions<
+    EditProfileMutation,
+    EditProfileMutationVariables
+  >
+) => Mutation(props);
+
+type EditProfileMutationFn = MutationFunction<
   EditProfileMutation,
   EditProfileMutationVariables
 >;

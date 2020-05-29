@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { gql } from 'apollo-boost';
-import { Mutation, MutationFn, MutationResult } from 'react-apollo';
+import {
+  Mutation,
+  MutationComponentOptions,
+  MutationFunction,
+  MutationResult,
+} from 'react-apollo';
 import {
   CreateSiteMutation as CreateSiteMutationType,
   CreateSiteMutationVariables,
@@ -15,7 +20,7 @@ interface CreateSiteMutationProps {
   children: (
     mutate: CreateSiteMutationFn,
     result: MutationResult<CreateSiteMutationType>
-  ) => React.ReactNode;
+  ) => JSX.Element;
   onCompleted?: () => void;
 }
 
@@ -32,11 +37,13 @@ const CREATE_SITE_MUTATION = gql`
   ${SiteProvider.fragment}
 `;
 
-class CreateSiteMutationComponent extends Mutation<
-  CreateSiteMutationType,
-  CreateSiteMutationVariables
-> {}
-export type CreateSiteMutationFn = MutationFn<
+const CreateSiteMutationComponent = (
+  props: MutationComponentOptions<
+    CreateSiteMutationType,
+    CreateSiteMutationVariables
+  >
+) => Mutation(props);
+export type CreateSiteMutationFn = MutationFunction<
   CreateSiteMutationType,
   CreateSiteMutationVariables
 >;

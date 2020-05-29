@@ -60,7 +60,6 @@ class List extends React.Component<ListProps, ListState> {
     });
   }
 
-  data: string;
   render() {
     return (
       <div>

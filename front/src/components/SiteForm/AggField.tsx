@@ -4,7 +4,7 @@ import aggToField from 'utils/aggs/aggToField';
 import { FormControl } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
-import { camelCase, capitalize } from 'utils/helpers';
+import { capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
 import {
   AggFilterSiteConfigUpdater,

@@ -1,7 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
-import { Mutation, MutationFn } from 'react-apollo';
+import {
+  Mutation,
+  MutationFunction,
+  MutationComponentOptions,
+} from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
 import StyledFormControl from './StyledFormControl';
@@ -43,20 +47,13 @@ const SIGN_UP_MUTATION = gql`
   ${CurrentUser.fragment}
 `;
 
-class SignUpMutationComponent extends Mutation<
+const SignUpMutationComponent = (
+  props: MutationComponentOptions<SignUpMutation, SignUpMutationVariables>
+) => Mutation(props);
+type SignUpMutationFn = MutationFunction<
   SignUpMutation,
   SignUpMutationVariables
-> {}
-type SignUpMutationFn = MutationFn<SignUpMutation, SignUpMutationVariables>;
-
-const LinkContainer = styled.div`
-  position: absolute;
-  bottom: 30px;
-  a {
-    color: white;
-    margin-right: 15px;
-  }
-`;
+>;
 
 class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
   state: SignUpPageState = {

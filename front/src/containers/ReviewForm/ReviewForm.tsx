@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Row, Col, Button, FormControl, Panel } from 'react-bootstrap';
 import { match } from 'react-router-dom';
-import { Mutation } from 'react-apollo';
+import { Mutation, MutationComponentOptions } from 'react-apollo';
 import styled from 'styled-components';
 import {
   keys,
@@ -119,10 +119,12 @@ const AddRatingWrapper = styled.div`
   }
 `;
 
-class ReviewFormMutationComponent extends Mutation<
-  ReviewFormMutation,
-  ReviewFormMutationVariables
-> {}
+const ReviewFormMutationComponent = (
+  props: MutationComponentOptions<
+    ReviewFormMutation,
+    ReviewFormMutationVariables
+  >
+) => Mutation(props);
 
 class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   state: ReviewFormState = defaultState;
@@ -297,14 +299,13 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
               }}>
               {upsertReview => {
                 this.submitReview = this.handleSubmitReview(upsertReview);
+                if (this.props.hideSaveButton) return null;
                 return (
-                  !this.props.hideSaveButton && (
-                    <ThemedButton
-                      style={{ marginTop: 10 }}
-                      onClick={this.handleSubmitReview(upsertReview)}>
-                      Submit
-                    </ThemedButton>
-                  )
+                  <ThemedButton
+                    style={{ marginTop: 10 }}
+                    onClick={this.handleSubmitReview(upsertReview)}>
+                    Submit
+                  </ThemedButton>
                 );
               }}
             </ReviewFormMutationComponent>

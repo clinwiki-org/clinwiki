@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Query } from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { CurrentUserQuery } from 'types/CurrentUserQuery';
 import { UserFragment } from 'types/UserFragment';
@@ -39,7 +39,8 @@ const QUERY = gql`
   ${FRAGMENT}
 `;
 
-class QueryComponent extends Query<CurrentUserQuery> {}
+const QueryComponent = (props: QueryComponentOptions<CurrentUserQuery>) =>
+  Query(props);
 
 class CurrentUser extends React.PureComponent<CurrentUserProps> {
   static fragment = FRAGMENT;
@@ -50,10 +51,9 @@ class CurrentUser extends React.PureComponent<CurrentUserProps> {
       <QueryComponent query={QUERY}>
         {({ data, loading, error }) => {
           if (loading || error || !data) {
-            return this.props.children(null);
+            return this.props.children(null) as JSX.Element | null;
           }
-          // console.log("DATA",data)
-          return this.props.children(data.me);
+          return this.props.children(data.me) as JSX.Element | null;
         }}
       </QueryComponent>
     );

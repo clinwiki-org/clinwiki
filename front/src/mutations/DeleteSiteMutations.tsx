@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { gql, ApolloError } from 'apollo-boost';
-import { Mutation, MutationFn, MutationResult } from 'react-apollo';
+import {
+  Mutation,
+  MutationFunction,
+  MutationComponentOptions,
+  MutationResult,
+} from 'react-apollo';
 import {
   DeleteSiteMutation as DeleteSiteMutationType,
   DeleteSiteMutationVariables,
@@ -12,7 +17,7 @@ interface DeleteSiteMutationProps {
   children: (
     mutate: DeleteSiteMutationFn,
     result: MutationResult<DeleteSiteMutationType>
-  ) => React.ReactNode;
+  ) => JSX.Element;
   onCompleted?: (data: DeleteSiteMutationType) => void;
   onError?: (e: ApolloError) => void;
 }
@@ -41,11 +46,13 @@ const SITES_QUERY = gql`
   }
 `;
 
-class DeleteSiteMutationComponent extends Mutation<
-  DeleteSiteMutationType,
-  DeleteSiteMutationVariables
-> {}
-export type DeleteSiteMutationFn = MutationFn<
+const DeleteSiteMutationComponent = (
+  props: MutationComponentOptions<
+    DeleteSiteMutationType,
+    DeleteSiteMutationVariables
+  >
+) => Mutation(props);
+export type DeleteSiteMutationFn = MutationFunction<
   DeleteSiteMutationType,
   DeleteSiteMutationVariables
 >;

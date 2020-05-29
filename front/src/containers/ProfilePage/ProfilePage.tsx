@@ -114,7 +114,8 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
       .toString();
     return (
       <Query query={USER_QUERY} variables={{ userId: parseInt(userId) }}>
-        {({ loading, error, data }) => {
+        {arg => {
+          const { loading, error, data } = arg;
           if (loading)
             return (
               <ThemedMainContainer>

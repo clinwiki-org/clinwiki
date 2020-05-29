@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { gql, ApolloError } from 'apollo-boost';
-import { Mutation, MutationFn, MutationResult } from 'react-apollo';
+import {
+  Mutation,
+  MutationComponentOptions,
+  MutationFunction,
+  MutationResult,
+} from 'react-apollo';
 import {
   UpdateWorkflowsViewMutation as UpdateWorkflowsViewMutationType,
   UpdateWorkflowsViewMutationVariables,
@@ -11,16 +16,18 @@ interface UpdateWorkflowsViewMutationProps {
   children: (
     mutate: UpdateWorkflowsViewMutationFn,
     result: MutationResult<UpdateWorkflowsViewMutationType>
-  ) => React.ReactNode;
+  ) => JSX.Element;
   onCompleted?: (data: UpdateWorkflowsViewMutationType) => void;
   onError?: (e: ApolloError) => void;
 }
 
-class UpdateWorkflowsViewMutationComponent extends Mutation<
-  UpdateWorkflowsViewMutationType,
-  UpdateWorkflowsViewMutationVariables
-> {}
-export type UpdateWorkflowsViewMutationFn = MutationFn<
+const UpdateWorkflowsViewMutationComponent = (
+  props: MutationComponentOptions<
+    UpdateWorkflowsViewMutationType,
+    UpdateWorkflowsViewMutationVariables
+  >
+) => Mutation(props);
+export type UpdateWorkflowsViewMutationFn = MutationFunction<
   UpdateWorkflowsViewMutationType,
   UpdateWorkflowsViewMutationVariables
 >;

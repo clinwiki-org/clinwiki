@@ -1,13 +1,15 @@
 import * as React from 'react';
-import styled from 'styled-components';
-import Heading from 'components/Heading';
-import { Row, Col } from 'react-bootstrap';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor from 'react-rte-yt';
 
 const notes = RichTextEditor.createValueFromString(
   `
 
 # ClinWiki Version History
+
+### Version 23
+- Updated front end dependencies
+
+### Version 22
 
 ### Version 21
 - [#538](https://github.com/clinwiki-org/clinwiki/issues/538)

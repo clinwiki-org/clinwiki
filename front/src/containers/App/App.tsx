@@ -26,6 +26,7 @@ import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
+import GlobalStyle from 'global-styles';
 
 interface AppProps {
   history: History;
