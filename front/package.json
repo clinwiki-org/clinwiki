@@ -7,6 +7,7 @@
   },
   "license": "MIT",
   "scripts": {
+    "prestart": "yarn apollo:codegen",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:clean": "rimraf ./build/",
