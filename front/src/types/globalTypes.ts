@@ -1,4 +1,6 @@
 /* tslint:disable */
+/* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 //==============================================================
@@ -160,7 +162,7 @@ export interface SearchInput {
 }
 
 /**
- *     An input type for a search query param (q).
+ * An input type for a search query param (q).
  * This is a tree like structure where leafs are the search terms and
  * tree nodes are the AND / OR conditions.
  */
