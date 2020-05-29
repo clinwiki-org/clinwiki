@@ -17,7 +17,7 @@ module Mutations
         provider = payload["iss"]
         user = User.find_or_create_from_payload(payload)
       else
-        user = User.find_by(email:email)
+        user = User.find_by(email:email.downcase)
         return nil unless user
         return nil unless user.valid_password?(password)
       end
