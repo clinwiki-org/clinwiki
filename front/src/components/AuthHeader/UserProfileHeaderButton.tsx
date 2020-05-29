@@ -238,8 +238,7 @@ class UserProfileHeaderButton extends React.PureComponent<
           {(site) => {
             return (
               <UserButtonWrapper
-                //@ts-ignore
-                innerRef={(node: any) => {
+                ref={(node: any) => {
                   this.dropDown = node;
                 }}>
                 <ThemedUserButton onClick={this.toggleMenuDropdown}>
