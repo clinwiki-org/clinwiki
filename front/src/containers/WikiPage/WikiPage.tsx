@@ -11,7 +11,7 @@ import {
   WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
-import { Panel, Button, FormControl } from 'react-bootstrap';
+import { Panel, FormControl } from 'react-bootstrap';
 import {
   Query,
   Mutation,

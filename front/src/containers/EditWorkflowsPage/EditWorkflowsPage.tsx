@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Row, Col, Nav, NavItem, Panel, Button } from 'react-bootstrap';
+import { Row, Col, Nav, NavItem, Panel } from 'react-bootstrap';
 import { find, propEq, equals } from 'ramda';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import WorkflowForm from './WorkflowForm';
@@ -67,7 +67,7 @@ class EditWorkflowsPage extends React.Component<
       const mut = createMutation(name, value);
       const currentValue = getViewValueByPath(mut.path, view);
       // If a mutation would have no do not apply it
-      if (mut.operation != 'SET' || !equals(mut.payload, currentValue)) {
+      if (mut.operation !== 'SET' || !equals(mut.payload, currentValue)) {
         view = updateView(view, [mut]);
         mutations.push(mut);
       }

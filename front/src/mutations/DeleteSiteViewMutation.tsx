@@ -10,7 +10,6 @@ import {
   DeleteSiteViewMutation as DeleteSiteViewMutationType,
   DeleteSiteViewMutationVariables,
 } from 'types/DeleteSiteViewMutation';
-import SiteProvider from '../containers/SiteProvider';
 
 interface DeleteSiteViewMutationProps {
   children: (

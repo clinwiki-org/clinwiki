@@ -1,15 +1,11 @@
 import * as React from 'react';
-import { pipe, filter, map, defaultTo } from 'ramda';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { defaultTo } from 'ramda';
 import { FieldDisplay } from 'types/globalTypes';
-import { SiteFragment } from 'types/SiteFragment';
 import { AggBucket } from '../SearchPage/Types';
 import { Checkbox } from 'react-bootstrap';
-import { withSite } from 'containers/SiteProvider/SiteProvider';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import Bucket from './Bucket';
-import UpdateWorkflowsViewMutation from 'mutations/UpdateWorflowsViewMutation';
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 
 interface BucketsProps {

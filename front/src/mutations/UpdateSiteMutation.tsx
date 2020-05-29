@@ -10,7 +10,6 @@ import {
   UpdateSiteMutation as UpdateSiteMutationType,
   UpdateSiteMutationVariables,
 } from 'types/UpdateSiteMutation';
-import { SiteItem } from 'components/SiteItem';
 import SiteProvider from 'containers/SiteProvider';
 
 interface UpdateSiteMutationProps {

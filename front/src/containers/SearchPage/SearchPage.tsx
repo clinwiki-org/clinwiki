@@ -614,7 +614,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
-  showingCards = () => this.props.currentSiteView.search.results.type == 'card';
+  showingCards = () => this.props.currentSiteView.search.results.type === 'card';
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
@@ -735,7 +735,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const userId = searchQueryString.getAll('uid').toString();
 
     if (data?.provisionSearchHash?.searchHash?.short) {
-      if (this.props.match.path == '/profile') {
+      if (this.props.match.path === '/profile') {
         this.props.history.push(
           `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
@@ -751,7 +751,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             profile.values.toString()}`
         );
         return;
-      } else if (this.props.match.path == '/intervention/:id') {
+      } else if (this.props.match.path === '/intervention/:id') {
         this.props.history.push(
           //@ts-ignore
           `/intervention/${this.props.match.params.id}?hash=${

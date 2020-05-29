@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import { Checkbox, Col } from 'react-bootstrap';
+import { Checkbox } from 'react-bootstrap';
 import {
   SuggestedLabelsQuery,
   SuggestedLabelsQueryVariables,
@@ -10,18 +10,12 @@ import {
 } from 'types/SuggestedLabelsQuery';
 import {
   pipe,
-  pathOr,
   map,
-  filter,
-  sortWith,
   fromPairs,
   keys,
   defaultTo,
-  sort,
 } from 'ramda';
-import * as R from 'remeda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
-import CollapsiblePanel from 'components/CollapsiblePanel';
 // import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
 // import { WorkSearch } from './WorkSearch';
 import FacetCard from 'components/FacetCard/FacetCard';
@@ -109,12 +103,12 @@ class SuggestedLabels extends React.PureComponent<
 
     if (
       config &&
-      config.visibleOptions.kind == 'WHITELIST' &&
+      config.visibleOptions.kind === 'WHITELIST' &&
       config.visibleOptions.values.length > 0
     ) {
       items = config.visibleOptions.values;
       // 'key' means alpha
-      if (config.order?.sortKind == 'key') {
+      if (config.order?.sortKind === 'key') {
         items.sort();
         if (!config.order?.desc) {
           items.reverse();

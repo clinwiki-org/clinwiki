@@ -27,9 +27,7 @@ import './images/gold_star.png';
 import './images/silver_star.png';
 import './images/star_outline.png';
 import './images/heading.png';
-// import 'react-toggle/style.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-/* eslint-enable import/no-unresolved, import/extensions */
 import { ProvideTheme } from 'containers/ThemeProvider/ThemeProvider';
 
 import apolloClient from './configureApollo';

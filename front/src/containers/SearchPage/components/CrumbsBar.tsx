@@ -3,7 +3,6 @@ import {
   Grid,
   Row,
   Col,
-  Label,
   Form,
   FormGroup,
   ControlLabel,
@@ -21,12 +20,11 @@ import AggCrumb from 'components/MultiCrumb/AggCrumb';
 import { BeatLoader } from 'react-spinners';
 import CurrentUser from 'containers/CurrentUser';
 import { AggCallback, SearchParams } from '../Types';
-import { isEmpty, props } from 'ramda';
+import { isEmpty } from 'ramda';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
-import ThemeProvider from 'containers/ThemeProvider';
 import ExportToCsvComponent from './ExportToCsvComponent';
 
 const AUTOSUGGEST_QUERY = gql`
@@ -185,19 +183,6 @@ interface CrumbsBarState {
   showFilters: boolean;
 }
 
-const Crumb = ({ category, value, onClick }) => {
-  return (
-    <Label>
-      <i>{category}:</i> <b>{value}</b>
-      <FontAwesome
-        className="remove"
-        name="remove"
-        style={{ cursor: 'pointer', color: '#cc1111', margin: '0 0 0 3px' }}
-        onClick={onClick}
-      />
-    </Label>
-  );
-};
 
 class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   constructor(props) {
@@ -211,7 +196,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     };
   }
 
-  *mkCrumbs(searchParams: SearchParams, removeFilter, thisSiteView) {
+  *mkCrumbs(searchParams: SearchParams, thisSiteView) {
     if (!isEmpty(searchParams.q)) {
       yield (
         <MultiCrumb
@@ -225,7 +210,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     let aggFilterCounter = 0;
     for (const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key];
-      const cat = aggToField(agg.field, agg.field);
       yield (
         <AggCrumb
           grouping="aggFilters"
@@ -235,7 +219,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
         />
       );
     }
-    let crowdAggFilterCounter = 0;
     for (const key in searchParams.crowdAggFilters) {
       const agg = searchParams.crowdAggFilters[key];
       const cat = aggToField(agg.field, agg.field);
@@ -333,7 +316,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
-    const { searchParams, data, currentSiteView } = this.props;
+    const { searchParams, currentSiteView } = this.props;
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
@@ -392,7 +375,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     apolloClient,
     showAutoSuggest
   ) => {
-    if (showAutoSuggest == true) {
+    if (showAutoSuggest === true) {
       return (
         <div style={{ display: 'inline' }}>
           <FormGroup>
@@ -433,7 +416,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
           </ThemedButton>
         </div>
       );
-    } else if (showAutoSuggest == false) {
+    } else if (showAutoSuggest === false) {
       return null;
     }
   };
@@ -443,7 +426,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     apolloClient,
     showAutoSuggest
   ) => {
-    if (showAutoSuggest == true) {
+    if (showAutoSuggest === true) {
       return (
         <div style={{ display: 'inline' }}>
           <FormGroup>
@@ -483,7 +466,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
           </ThemedButton>
         </div>
       );
-    } else if (showAutoSuggest == false) {
+    } else if (showAutoSuggest === false) {
       return null;
     }
   };
@@ -494,8 +477,8 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   renderSuggestionsContainer = () => {
     const { isSuggestionLoading, suggestions } = this.state;
 
-    if (isSuggestionLoading == true) {
-      if (suggestions.length == 0) {
+    if (isSuggestionLoading === true) {
+      if (suggestions.length === 0) {
         return null;
       } else {
         return (
@@ -519,7 +502,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   onSuggestionSelected = (
     event,
-    { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
+    { suggestionValue, sectionIndex }
   ) => {
     const section = this.state.suggestions[sectionIndex];
     if (section.isCrowd) {
@@ -563,7 +546,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
     const { data, siteViewUrl } = this.props;
     let thisSiteView =
-      data.siteViews.find(siteview => siteview.url == siteViewUrl) ||
+      data.siteViews.find(siteview => siteview.url === siteViewUrl) ||
       data.siteView;
     let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
@@ -693,7 +676,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             ? Array.from(
                                 this.mkCrumbs(
                                   this.props.searchParams,
-                                  this.props.removeFilter,
                                   thisSiteView
                                 )
                               )

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { Table } from 'react-bootstrap';
 import { gql } from 'apollo-boost';
 import { StudySummaryFragment } from 'types/StudySummaryFragment';
@@ -143,14 +142,16 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
           <Table striped bordered condensed>
             <tbody>
               {allowedFields.map(name =>
-                name == 'nctId' ? (
+                name === 'nctId' ? (
                   // Special case nctID to include a link
                   <tr key={name}>
                     <th>NCT ID</th>
                     <td>
                       <a
                         href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`}
-                        target="_blank">
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >
                         {this.props.study.nctId}
                       </a>
                     </td>

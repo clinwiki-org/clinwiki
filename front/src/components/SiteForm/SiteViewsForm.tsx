@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { gql } from 'apollo-boost';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { filter } from 'ramda';
@@ -12,11 +11,7 @@ import {
   Table,
   FormControl,
   Checkbox,
-  MenuItem,
-  DropdownButton,
 } from 'react-bootstrap';
-import { History, Location } from 'history';
-import { CreateSiteViewInput, SiteViewMutationInput } from 'types/globalTypes';
 import ThemedButton from 'components/StyledComponents/index';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 
@@ -58,9 +53,6 @@ const StyledContainer = styled.div`
   }
 `;
 
-const SiteViewsTable = styled.div`
-  display: flex;
-`;
 
 class SiteViewsForm extends React.Component<
   SiteViewsFormProps,
@@ -103,7 +95,7 @@ class SiteViewsForm extends React.Component<
             },
           });
           return null;
-        } else if (searchViewForm.name == '' || searchViewForm.path == '') {
+        } else if (searchViewForm.name === '' || searchViewForm.path === '') {
           alert(`Name and URL are both required, please try again`);
           this.setState({
             searchViewForm: {
@@ -124,7 +116,7 @@ class SiteViewsForm extends React.Component<
               siteId: this.props.site.id,
             },
           },
-        }).then(res => {
+        }).then(() => {
           this.setState(
             {
               searchViewForm: {
@@ -150,7 +142,7 @@ class SiteViewsForm extends React.Component<
               siteId: this.props.site.id,
             },
           },
-        }).then(res => {
+        }).then(() => {
           this.setState(
             {
               userViewForm: {
@@ -177,7 +169,7 @@ class SiteViewsForm extends React.Component<
               siteId: this.props.site.id,
             },
           },
-        }).then(res => {
+        }).then(() => {
           this.setState(
             {
               adminViewForm: {
@@ -203,7 +195,7 @@ class SiteViewsForm extends React.Component<
               siteId: this.props.site.id,
             },
           },
-        }).then(res => {
+        }).then(() => {
           this.setState(
             {
               userViewForm: {
@@ -216,10 +208,11 @@ class SiteViewsForm extends React.Component<
             }
           );
         });
-
+        break;
       default:
         return null;
     }
+    return null;
   };
 
   handleInputChange = (
@@ -270,17 +263,17 @@ class SiteViewsForm extends React.Component<
       interventionViewForm,
     } = this.state;
     const filteredSearchSites = () => {
-      return filter(siteViews => siteViews.search.type == 'search', siteViews);
+      return filter(siteViews => siteViews.search.type === 'search', siteViews);
     };
     const filteredUserSites = () => {
-      return filter(siteViews => siteViews.search.type == 'user', siteViews);
+      return filter(siteViews => siteViews.search.type === 'user', siteViews);
     };
     const filteredAdminSites = () => {
-      return filter(siteViews => siteViews.search.type == 'admin', siteViews);
+      return filter(siteViews => siteViews.search.type === 'admin', siteViews);
     };
     const filteredInterventionSites = () => {
       return filter(
-        siteViews => siteViews.search.type == 'intervention',
+        siteViews => siteViews.search.type === 'intervention',
         siteViews
       );
     };

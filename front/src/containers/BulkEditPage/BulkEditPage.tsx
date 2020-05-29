@@ -1,45 +1,22 @@
 import * as React from 'react';
 import { match } from 'react-router';
 import { History } from 'history';
-import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { gql } from 'apollo-boost';
 import { Query, Mutation } from 'react-apollo';
 import {
-  path,
   pathOr,
-  drop,
-  addIndex,
-  map,
-  pipe,
   omit,
-  find,
-  propEq,
-  lensPath,
-  set,
-  keys,
-  reject,
-  filter,
-  equals,
-  isEmpty,
   prop,
-  propOr,
   uniq,
 } from 'ramda';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import BulkEditView from './BulkEditView';
 import { SearchPageParamsQuery_searchParams } from 'types/SearchPageParamsQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
-import { SearchQueryInput } from 'types/globalTypes';
-import { SearchPageSearchQueryVariables } from 'types/SearchPageSearchQuery';
-import {
-  BulkQueryUpdateMutation,
-  BulkQueryUpdateMutationVariables,
-} from 'types/BulkQueryUpdateMutation';
 import {
   BulkLabelsQuery,
-  BulkLabelsQuery_myCrowdAggs_aggs,
 } from 'types/BulkLabelsQuery';
 import { STRING_MISSING_IDENTIFIER } from 'utils/constants';
 
@@ -236,7 +213,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                 searchHash: hash,
                 params: { ...parsedSearchParams, agg: 'front_matter_keys' },
               }}>
-              {({ data = {}, loading, error }) => {
+              {({ data = {} }) => {
                 const { allCrowdAggs, myCrowdAggs } = data;
                 const recordsTotal = data.search?.recordsTotal || 0;
                 let labels = uniq(
@@ -275,7 +252,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                       // console.log('BUCKETS', { labels, aggBucketsByLabel });
                       return (
                         <Mutation mutation={BULK_LIST_UPDATE_MUTATION}>
-                          {(bulkListUpdate, bulkListUpdateResult) => (
+                          {(bulkListUpdate) => (
                             <Mutation mutation={BULK_QUERY_UPDATE_MUTATION}>
                               {(bulkQueryUpdate, arg) => {
                                 const { loading } = arg;
@@ -301,7 +278,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                                       }).then(() => {
                                         this.setState(state => ({
                                           undoHistory: state.undoHistory.filter(
-                                            (x, i) => idx != i
+                                            (x, i) => idx !== i
                                           ),
                                         }));
                                       });

@@ -8,7 +8,6 @@ import {
   Checkbox,
   Panel,
   FormControl,
-  Button,
 } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { History, Location } from 'history';
@@ -17,21 +16,14 @@ import { trimPath } from 'utils/helpers';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import {
-  split,
-  reject,
   isEmpty,
-  map,
   findIndex,
   propEq,
-  reverse,
   sortBy,
-  prop,
-  isNil,
   find,
 } from 'ramda';
 import * as R from 'remeda';
 import MultiInput from 'components/MultiInput';
-import { parse } from 'graphql';
 import ThemedButton from 'components/StyledComponents/index';
 
 interface StudyFormProps {

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
-import { Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import {
   Mutation,
   MutationComponentOptions,
@@ -16,7 +15,6 @@ import { History, Location } from 'history';
 import { setLocalJwt } from 'utils/localStorage';
 import CurrentUser from 'containers/CurrentUser';
 import StyledError from './StyledError';
-import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';
 import { GoogleLogin } from 'react-google-login';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
@@ -74,8 +72,6 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
   };
 
   handleSignIn = (signIn: SignInMutationFn) => () => {
-    const input = omit(['oAuthToken'], this.state.form);
-    //@ts-ignore
     signIn({ variables: { input: this.state.form } });
   };
 
@@ -111,7 +107,6 @@ class SignInPage extends React.Component<SignInPageProps, SignInPageState> {
         },
       },
       () => {
-        const input = this.state.form;
         signIn({ variables: { input: this.state.form } });
       }
     );

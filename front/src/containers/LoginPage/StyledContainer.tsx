@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import withTheme from './../ThemeProvider';
 
 const StyledWrapper = styled.div`
   position: relative;

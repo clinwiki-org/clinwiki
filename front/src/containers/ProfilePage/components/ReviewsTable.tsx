@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { History, Location } from 'history';
+import { History } from 'history';
 import { SearchContainer } from 'components/StyledComponents';
 import ReactTable from 'react-table';
 

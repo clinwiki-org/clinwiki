@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Button, FormControl } from 'react-bootstrap';
-import styled from 'styled-components';
+import { FormControl } from 'react-bootstrap';
 import ButtonCell from './ButtonCell';
 import CurrentUser from 'containers/CurrentUser';
 import ThemedButton from 'components/StyledComponents/index';

@@ -3,7 +3,6 @@ import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { Modal } from 'react-bootstrap';
 import ThemedButton from 'components/StyledComponents/index';
-import ExportToCsvButton from './ExportToCsvButton';
 
 const SEARCH_EXPORT_QUERY = gql`
   query SearchExportQuery($searchExportId: Int!) {

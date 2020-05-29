@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
-import { Row, Col, Grid } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { InterventionFragment } from 'types/InterventionFragment';
 import { capitalize } from 'utils/helpers';
 import withTheme from '../../containers/ThemeProvider';
@@ -43,7 +43,7 @@ class Intervention extends React.PureComponent<InterventionProps> {
         <div>
           <h4>
             Wikipedia entry for{' '}
-            <a href={wikipediaArticle.url} target="_blank">
+            <a href={wikipediaArticle.url} target="_blank" rel="noopener noreferrer">
               {wikipediaArticle.title}
             </a>
           </h4>
@@ -54,7 +54,7 @@ class Intervention extends React.PureComponent<InterventionProps> {
 
     return (
       <p>
-        <a href={`https://en.wikipedia.org/wiki/${name}`} target="_blank">
+        <a href={`https://en.wikipedia.org/wiki/${name}`} target="_blank" rel="noopener noreferrer">
           View on Wikipedia
         </a>
       </p>

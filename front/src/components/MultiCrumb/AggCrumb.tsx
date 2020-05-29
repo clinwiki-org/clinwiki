@@ -64,7 +64,7 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       <ListGroupItem className="filter-values">
         <CrumbWrapper>
           <i>
-            {grouping == 'crowdAggFilters'
+            {grouping === 'crowdAggFilters'
               ? title
               : aggToField(agg.field, title)}
             :

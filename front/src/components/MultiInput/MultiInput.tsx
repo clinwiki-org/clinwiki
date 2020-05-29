@@ -5,15 +5,9 @@ import equals from 'ramda/es/equals';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import MultiCrumb from 'components/MultiCrumb';
 import {
-  __,
-  prop,
-  pipe,
-  map,
   difference,
   find,
   propEq,
-  isNil,
-  clone,
   findIndex,
 } from 'ramda';
 import withTheme from '../../containers/ThemeProvider';

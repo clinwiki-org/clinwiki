@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Row, Col, Table } from 'react-bootstrap';
 import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
-import DeleteSiteMutation from 'mutations/DeleteSiteMutations';
 
 interface EditProps {
   edit: WikiPageEditFragment;

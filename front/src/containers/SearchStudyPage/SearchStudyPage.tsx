@@ -7,7 +7,7 @@ import {
   SearchStudyPageQuery,
   SearchStudyPageQueryVariables,
 } from 'types/SearchStudyPageQuery';
-import { path, pathOr, test } from 'ramda';
+import { path, pathOr } from 'ramda';
 import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
 
@@ -126,12 +126,12 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               history={this.props.history}
               location={this.props.location}
               match={this.props.match}
-              prevLink={hash != '' ? prevLink : undefined}
-              nextLink={hash != '' ? nextLink : undefined}
-              firstLink={hash != '' ? firstLink : undefined}
-              lastLink={hash != '' ? lastLink : undefined}
+              prevLink={hash !== '' ? prevLink : undefined}
+              nextLink={hash !== '' ? nextLink : undefined}
+              firstLink={hash !== '' ? firstLink : undefined}
+              lastLink={hash !== '' ? lastLink : undefined}
               isWorkflow={isWorkflow}
-              recordsTotal={hash != '' ? recordsTotal : undefined}
+              recordsTotal={hash !== '' ? recordsTotal : undefined}
               counterIndex={counterIndex}
               workflowName={workflowName}
             />

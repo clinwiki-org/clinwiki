@@ -7,10 +7,8 @@ import {
   sortBy,
   pathOr,
   uniqBy,
-  concat,
   equals,
   find,
-  propEq,
   reverse,
 } from 'ramda';
 import { withApollo } from 'react-apollo';
@@ -29,10 +27,6 @@ import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
 import { withSite2 } from 'containers/SiteProvider/SiteProvider';
-import {
-  SiteViewFragment,
-  SiteViewFragment_search_aggs_fields,
-} from 'types/SiteViewFragment';
 import './AggDropDownStyle.css';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
 import SortKind from './SortKind';
@@ -42,7 +36,6 @@ import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQue
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
-import withTheme from '../ThemeProvider';
 import { ApolloClient } from 'apollo-boost';
 import { capitalize } from 'utils/helpers';
 import {
@@ -220,7 +213,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         checkboxValue: false,
       });
     }
-    if (this.isAllSelected() != true) {
+    if (this.isAllSelected() !== true) {
       if (!this.props.addFilters) {
         this.props.addAllFilters(agg, newParams, false);
         this.setState({
@@ -250,13 +243,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   isAllSelected = (): boolean => {
     const { buckets } = this.state;
     let i = 0;
-    let newParams = [];
     buckets.map(({ key }) => {
       if (this.isSelected(key)) {
         i++;
       }
     });
-    if (buckets.length == i) {
+    if (buckets.length === i) {
       return true;
     }
     return false;
@@ -292,7 +284,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       configType,
       returnAll,
     } = this.props;
-    const [query, filterType] =
+    const [query] =
       this.props.aggKind === 'crowdAggs'
         ? [SearchPageCrowdAggBucketsQuery, 'crowdAggFilters']
         : [SearchPageAggBucketsQuery, 'aggFilters'];
@@ -563,12 +555,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   componentDidMount() {
     const { agg, currentSiteView, presearch } = this.props;
     const field = findFields(agg, currentSiteView, presearch);
-    if (field?.order && field.order.sortKind == 'key') {
+    if (field?.order && field.order.sortKind === 'key') {
       this.setState({
         sortKind: 0,
         desc: field.order.desc,
       });
-    } else if (field?.order && field.order.sortKind == 'count') {
+    } else if (field?.order && field.order.sortKind === 'count') {
       this.setState({
         sortKind: 1,
         desc: field.order.desc,

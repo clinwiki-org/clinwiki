@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import {
   Mutation,
   MutationFunction,
@@ -13,13 +12,11 @@ import {
   UpdatePasswordMutationVariables,
 } from 'types/UpdatePasswordMutation';
 import ThemedButton from '../../components/StyledComponents';
-import { Link } from 'react-router-dom';
 import { History } from 'history';
 import StyledWrapper from './StyledWrapper';
 import { setLocalJwt } from 'utils/localStorage';
 import StyledError from './StyledError';
 import CurrentUser from 'containers/CurrentUser';
-import { omit } from 'ramda';
 
 const UPDATE_PASSWORD_MUTATION = gql`
   mutation UpdatePasswordMutation($input: UpdatePasswordInput!) {

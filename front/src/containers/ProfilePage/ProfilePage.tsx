@@ -1,14 +1,9 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import SearchPage from 'containers/SearchPage';
-import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import {
   ThemedMainContainer,
   SearchContainer,
-  StyledProfileLabel,
-  StyledProfileValue,
-  StyledProfileForm,
 } from 'components/StyledComponents';
 import ThemedLoaderWrapper from '../../components/LoadingPane/LoadingPane';
 import ProfileScoreBoard from './components/ProfileScoreBoard';

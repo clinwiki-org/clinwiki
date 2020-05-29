@@ -1,9 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {
-  Button,
   Checkbox,
-  FormControl,
   MenuItem,
   DropdownButton,
 } from 'react-bootstrap';
@@ -19,10 +17,8 @@ import UpdateSiteViewMutation, {
 import CopySiteViewMutation, {
   CopySiteViewMutationFn,
 } from 'mutations/CopySiteViewMutation';
-import { Link } from 'react-router-dom';
 import 'override.css';
 import ThemedButton from 'components/StyledComponents/index';
-import withTheme from 'containers/ThemeProvider/ThemeProvider';
 
 interface SiteViewItemProps {
   match: any;
@@ -85,7 +81,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
             id: siteView.id,
           },
         },
-      }).then(res => {
+      }).then(() => {
         // console.log(res);
         this.props.refresh();
       });
@@ -106,13 +102,13 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           siteViewId: siteView.id,
         },
       },
-    }).then(res => {
+    }).then(() => {
       this.props.refresh();
     });
   };
 
   renderDropDown = siteViewUrl => {
-    if (siteViewUrl == 'default' || siteViewUrl == 'user') {
+    if (siteViewUrl === 'default' || siteViewUrl === 'user') {
       return;
     }
     console.log(this.props.theme);
@@ -133,7 +129,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
               <MenuItem
                 key={type}
                 name={`set:search.type`}
-                onClick={e => this.handleChangeType(updateSiteView, type)}>
+                onClick={() => this.handleChangeType(updateSiteView, type)}>
                 {type}
               </MenuItem>
             ))}
@@ -174,7 +170,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     const { siteView, site, type } = this.props;
 
     let urlString;
-    if (site.subdomain != 'default') {
+    if (site.subdomain !== 'default') {
       urlString = `https://${site.subdomain}.clinwiki.org/search?sv=${siteView.url}`;
     } else {
       urlString = `https://clinwiki.org/search?sv=${siteView.url}`;
@@ -198,7 +194,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         )}
 
         <td>
-          <a target="_blank" href={urlString}>
+          <a target="_blank" href={urlString} rel="noopener noreferrer">
             {urlString}
           </a>
         </td>

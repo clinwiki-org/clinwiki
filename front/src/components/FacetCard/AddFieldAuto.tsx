@@ -2,7 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import * as Autosuggest from 'react-autosuggest';
 import ThemedAutosuggestButton from 'components/StyledComponents';
-import { any } from 'prop-types';
 
 const Row = styled.div`
   display: flex;

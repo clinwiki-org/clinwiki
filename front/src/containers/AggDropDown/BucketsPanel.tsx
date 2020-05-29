@@ -1,12 +1,9 @@
 import * as React from 'react';
 import * as InfiniteScroll from 'react-infinite-scroller';
 import { BeatLoader } from 'react-spinners';
-import { any } from 'ramda';
 import { FieldDisplay } from 'types/globalTypes';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
-import { SiteFragment } from 'types/SiteFragment';
 import { AggBucket } from '../SearchPage/Types';
-import { withSite } from 'containers/SiteProvider/SiteProvider';
 import Buckets from './Buckets';
 
 interface BucketsPanelProps {

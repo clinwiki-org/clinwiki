@@ -1,4 +1,4 @@
-import { keys, pipe, split, map, join } from 'ramda';
+import { pipe, split, map, join } from 'ramda';
 
 export const capitalize = (x: string): string =>
   x.charAt(0).toUpperCase() + x.slice(1);

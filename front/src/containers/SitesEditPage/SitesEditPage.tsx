@@ -4,9 +4,7 @@ import UpdateSiteMutation, {
   UpdateSiteMutationFn,
 } from 'mutations/UpdateSiteMutation';
 import {
-  UpdateSiteInput,
   CreateSiteInput,
-  SiteViewMutationInput,
 } from 'types/globalTypes';
 import { match } from 'react-router';
 import SiteProvider from 'containers/SiteProvider';

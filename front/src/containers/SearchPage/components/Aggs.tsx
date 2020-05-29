@@ -2,16 +2,10 @@ import * as React from 'react';
 import {
   isEmpty,
   isNil,
-  reject,
   filter,
-  equals,
   prop,
-  tap,
   compose,
   reduce,
-  sortBy,
-  toLower,
-  intersection,
   pathOr,
 } from 'ramda';
 import AggDropDown from 'containers/AggDropDown';
@@ -24,11 +18,7 @@ import {
   AggFilterMap,
 } from '../Types';
 import { BeatLoader } from 'react-spinners';
-import aggToField from 'utils/aggs/aggToField';
-import { withSite } from 'containers/SiteProvider/SiteProvider';
 import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
-import { throws } from 'assert';
-import { FilterKind } from 'types/globalTypes';
 import { displayFields } from 'utils/siteViewHelpers';
 import styled from 'styled-components';
 import AggFilterInputUpdater from './AggFilterInputUpdater';

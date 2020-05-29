@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { Table } from 'react-bootstrap';
 import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';

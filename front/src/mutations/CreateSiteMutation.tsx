@@ -11,7 +11,6 @@ import {
   CreateSiteMutationVariables,
 } from 'types/CreateSiteMutation';
 import { SiteItem } from 'components/SiteItem';
-import { SiteItemFragment } from 'types/SiteItemFragment';
 import { lensPath, set } from 'ramda';
 import { CreateSiteOwnSitesQuery } from 'types/CreateSiteOwnSitesQuery';
 import SiteProvider from 'containers/SiteProvider';

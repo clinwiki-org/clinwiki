@@ -10,14 +10,13 @@ import {
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
-import { Grid, Table } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
 import LoadingPane from 'components/LoadingPane';
 import Error from 'components/Error';
-import Edits, { WikiPageEditFragment } from 'components/Edits';
+import { WikiPageEditFragment } from 'components/Edits';
 import StudySummary from 'components/StudySummary';
-import ButtonCell from './ButtonCell';
 
 import {
   CrowdPageUpsertWikiLabelMutation,
@@ -29,13 +28,11 @@ import {
 } from 'types/CrowdPageDeleteWikiLabelMutation';
 import { CrowdPageQuery, CrowdPageQueryVariables } from 'types/CrowdPageQuery';
 
-import WikiPage from 'containers/WikiPage';
 import {
   keys,
   pipe,
   flatten,
   map,
-  split,
   findIndex,
   equals,
   uniq,
@@ -43,7 +40,6 @@ import {
 } from 'ramda';
 import CrowdLabel from './CrowdLabel';
 import AddCrowdLabel from './AddCrowdLabel';
-import { WikiPageFragment } from 'types/WikiPageFragment';
 import CurrentUser from 'containers/CurrentUser';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';

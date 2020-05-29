@@ -1,6 +1,5 @@
-import * as React from 'react';
 import styled from 'styled-components';
-import { Row, Col, Form, FormControl } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 
 const Heading = styled(Row)`
   height: 100px;

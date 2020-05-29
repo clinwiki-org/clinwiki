@@ -2,8 +2,6 @@ import { FilterKind, AggFilterInput } from 'types/globalTypes';
 import {
   reject,
   filter,
-  pipe,
-  sortWith,
   sortBy,
   isEmpty,
   indexOf,

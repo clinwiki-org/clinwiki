@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { gql, ApolloError } from 'apollo-boost';
+import { ApolloError } from 'apollo-boost';
 import {
   Mutation,
   MutationComponentOptions,

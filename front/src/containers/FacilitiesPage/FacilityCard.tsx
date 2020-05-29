@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
-import { FacilitiesPageQuery_study_facilities_contacts } from 'types/FacilitiesPageQuery';
 import { truncateString } from './FacilityUtils';
 import withTheme from 'containers/ThemeProvider';
 
@@ -139,11 +138,6 @@ const ThemedFacilitySubHead = withTheme(FacilitySubHead);
 
 const Row = styled.div`
   flex-direction: row;
-  display: flex;
-`;
-
-const Col = styled.div`
-  flex-direction: column;
   display: flex;
 `;
 

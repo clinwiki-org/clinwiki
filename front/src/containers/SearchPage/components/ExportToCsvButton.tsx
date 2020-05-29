@@ -2,7 +2,6 @@ import * as React from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import * as FontAwesome from 'react-fontawesome';
-import { SiteFragment_siteView } from 'types/SiteFragment';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
 

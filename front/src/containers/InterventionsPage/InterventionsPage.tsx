@@ -11,7 +11,6 @@ import { match } from 'react-router-dom';
 
 import InterventionItem from './InterventionItem';
 import StudySummary from 'components/StudySummary';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import { prop } from 'ramda';
 import { displayFields } from 'utils/siteViewHelpers';

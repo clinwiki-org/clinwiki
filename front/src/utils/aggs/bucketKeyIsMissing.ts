@@ -5,7 +5,7 @@ import {
 import { AggBucket } from 'containers/SearchPage/Types';
 
 export function bucketKeyStringIsMissing(key: string): boolean {
-  return key == STRING_MISSING_IDENTIFIER || key === DATE_MISSING_IDENTIFIER;
+  return key === STRING_MISSING_IDENTIFIER || key === DATE_MISSING_IDENTIFIER;
 }
 
 export function bucketKeyAsStringIsMissing(keyAsString: string): boolean {

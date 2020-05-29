@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { length, isNil, isEmpty } from 'ramda';
 import { Checkbox, FormControl } from 'react-bootstrap';
 import { AggBucket } from '../SearchPage/Types';
 import SortKind from './SortKind';
@@ -38,7 +37,6 @@ interface FilterProps {
 class Filter extends React.Component<FilterProps> {
   render() {
     const {
-      buckets = [],
       filter,
       desc,
       sortKind,

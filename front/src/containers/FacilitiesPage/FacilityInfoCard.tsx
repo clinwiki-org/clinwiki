@@ -46,12 +46,6 @@ const Pointer = styled.div`
 
 const ThemedPointer = withTheme(Pointer);
 
-const ContactInfo = styled.p`
-  color: white;
-  font-size: 14px;
-  margin: 0;
-`;
-
 interface Props {
   hover?: boolean;
   name: string | null;

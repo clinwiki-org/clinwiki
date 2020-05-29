@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Row, Col, Button, FormControl, Panel } from 'react-bootstrap';
-import { match } from 'react-router-dom';
+import { Row, Col, FormControl, Panel } from 'react-bootstrap';
 import { Mutation, MutationComponentOptions } from 'react-apollo';
 import styled from 'styled-components';
 import {
@@ -8,10 +7,6 @@ import {
   lensPath,
   set,
   dissocPath,
-  pipe,
-  split,
-  dropLast,
-  join,
   equals,
   findIndex,
   propEq,
@@ -21,7 +16,6 @@ import ReactStars from 'react-stars';
 import * as FontAwesome from 'react-fontawesome';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { gql } from 'apollo-boost';
-import { History } from 'history';
 import ThemedButton from 'components/StyledComponents/index';
 import {
   ReviewFormMutation,
@@ -29,11 +23,8 @@ import {
 } from 'types/ReviewFormMutation';
 import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
 import { ReviewFormStudyFragment } from 'types/ReviewFormStudyFragment';
-import { trimPath } from 'utils/helpers';
 import { dataIdFromObject } from 'configureApollo';
 import { ReviewFragment } from 'types/ReviewFragment';
-import { starColor } from 'utils/constants';
-import withTheme from 'containers/ThemeProvider';
 
 interface ReviewFormProps {
   nctId: string;

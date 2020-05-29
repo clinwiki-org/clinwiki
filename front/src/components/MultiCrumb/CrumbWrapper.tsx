@@ -1,23 +1,22 @@
-import * as React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import withTheme from '../../containers/ThemeProvider';
 
-const crumbKeyframe = keyframes`
-  0% {
-    border-color: 4px solid silver;
-    background-color: #66dda9; 
-  }
+// const crumbKeyframe = keyframes`
+//   0% {
+//     border-color: 4px solid silver;
+//     background-color: #66dda9; 
+//   }
 
-  50% {
-    border-color: 2px solid silver;
-    background-color: #5fce9d;
-  }
+//   50% {
+//     border-color: 2px solid silver;
+//     background-color: #5fce9d;
+//   }
 
-  100% {
-    border: 2px solid #55b88d;
-    background-color: #55b88d;
-  }
-`;
+//   100% {
+//     border: 2px solid #55b88d;
+//     background-color: #55b88d;
+//   }
+// `;
 //animation temporarily removed from crumb-container
 //animation: ${crumbKeyframe} 2s ease-in-out;
 export default withTheme(styled.div`

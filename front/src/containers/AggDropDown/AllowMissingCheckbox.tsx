@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { find, prop, propEq, defaultTo } from 'ramda';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { Checkbox } from 'react-bootstrap';

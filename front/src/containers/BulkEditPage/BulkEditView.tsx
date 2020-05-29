@@ -1,25 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import CollapsiblePanel from 'components/CollapsiblePanel';
 import Toast from 'components/Toast';
-import { ButtonToolbar, Button, Checkbox, Panel, Col } from 'react-bootstrap';
-import { checkServerIdentity } from 'tls';
+import { ButtonToolbar, Checkbox, Panel, Col } from 'react-bootstrap';
 import MultiCrumb from 'components/MultiCrumb';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import ThemedButton from 'components/StyledComponents';
 import BulkFacetCard from 'components/FacetCard/BulkFacetCard';
 
-interface Undo {
-  description: string;
-  action: () => void;
-}
 
-interface Label {
-  name: string;
-  values: string[];
-  selectedValues: string[];
-  indeterminiteValues: string[];
-}
 
 interface LabelValue {
   name: string;
@@ -172,7 +160,7 @@ const groupByLabel = (labels: LabelValue[]) => {
 };
 
 const isSelected = ({ label, value }) => (x: { name: string; value: string }) =>
-  x.name != label || x.value != value;
+  x.name !== label || x.value !== value;
 
 const buildDescription = ({ groupedByLabel, recordsTotal }) => {
   let desc = '';
@@ -188,7 +176,7 @@ const buildDescription = ({ groupedByLabel, recordsTotal }) => {
       .map(([label, values]) => `${label}: ${values}`)
       .join('. ')}`;
   }
-  if (desc != '') desc += ` on ${recordsTotal} studies.`;
+  if (desc !== '') desc += ` on ${recordsTotal} studies.`;
   return desc;
 };
 

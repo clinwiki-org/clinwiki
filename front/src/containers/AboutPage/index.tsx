@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Heading from 'components/Heading';
-import { Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
@@ -37,14 +37,18 @@ class AboutPage extends React.PureComponent<{}, {}> {
           </p>
           <p>
             Special thanks to our supporters,
-            <a href="https://www.cancercommon s.org" target="_blank">
+            <a
+              href="https://www.cancercommons.org"
+              target="_blank"
+              rel="noopener noreferrer">
               {' '}
               Cancer Commons
             </a>{' '}
             and
             <a
               href="http://www.orangecountync.gov/departments/outside_agency_non-profit_funding/funding_process.php"
-              target="_blank">
+              target="_blank"
+              rel="noopener noreferrer">
               {' '}
               Orange County
             </a>

@@ -17,7 +17,7 @@ class ProfilePicture extends React.Component<ProfilePictureProps> {
             maxWidth: '5em',
           }}
           src={this.props.pictureUrl}
-          alt="profile-picture"
+          alt="profile"
         />
       );
     } else {

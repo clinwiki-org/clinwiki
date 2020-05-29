@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { ThemedButton } from '../../components/StyledComponents';
 import { WikiSection } from 'utils/helpers';
-import { Button, FormControl, Panel } from 'react-bootstrap';
+import { FormControl, Panel } from 'react-bootstrap';
 import UpdateWikiSectionsMutation, {
   UpdateWikiSectionsMutationFn,
 } from 'mutations/UpdateWikiSectionsMutation';
@@ -13,7 +13,6 @@ import {
   propEq,
   isNil,
   keys,
-  equals,
   isEmpty,
 } from 'ramda';
 
@@ -102,7 +101,7 @@ class WikiSections extends React.Component<
   };
 
   render() {
-    if (this.props.sections.length == 0) return null;
+    if (this.props.sections.length === 0) return null;
 
     return (
       <>

@@ -5,7 +5,6 @@ import {
   Panel,
   PanelGroup,
   DropdownButton,
-  Dropdown,
   MenuItem,
   FormControl,
 } from 'react-bootstrap';
@@ -18,16 +17,11 @@ import { sentanceCase } from 'utils/helpers';
 import { aggsOrdered, studyFields } from 'utils/constants';
 import aggToField from 'utils/aggs/aggToField';
 import { FilterKind } from 'types/globalTypes';
-import {
-  Checkbox,
-  ToggleButtonGroup,
-  ToggleButton,
-  Button,
-} from 'react-bootstrap';
+import { Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
 import { match } from 'react-router';
 // import { Button } from 'react-bootstrap';
-import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
+import { SiteViewMutationInput } from 'types/globalTypes';
 import UpdateSiteViewMutation, {
   UpdateSiteViewMutationFn,
 } from 'mutations/UpdateSiteViewMutation';
@@ -37,7 +31,7 @@ import {
   getViewValueByPath,
   serializeMutation,
 } from 'utils/siteViewUpdater';
-import { equals, prop, last, view, props } from 'ramda';
+import { equals } from 'ramda';
 import { History, Location } from 'history';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
@@ -71,11 +65,11 @@ interface SearchFormState {
   presearchIntructions: string;
 }
 
-const SEARCH_FIELDS = studyFields.map(option => ({
+const SEARCH_FIELDS = studyFields.map((option) => ({
   id: option,
   label: sentanceCase(option),
 }));
-const AGGS_OPTIONS = aggsOrdered.map(option => ({
+const AGGS_OPTIONS = aggsOrdered.map((option) => ({
   id: option,
   label: sentanceCase(aggToField(option, option)),
 }));
@@ -135,14 +129,6 @@ const StyledFormInput = styled(FormControl)`
   padding-left: 5px;
 `;
 
-// const styledToggleButton = styled(ToggleButtonGroup)`
-//   diplay: flex;
-//   flex-direction: row;
-//   `
-
-const ThemedAggsHeaderContainer = withTheme(AggsHeaderContainer);
-const ThemedStyledFormInput = withTheme(StyledFormInput);
-
 class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   state: SearchFormState = {
     showAllAggs: false,
@@ -163,7 +149,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   componentDidMount() {
     this.props.handleSiteViewEdit();
     const siteviewId = this.props.match.params.id;
-    let view = this.props.siteViews.find(view => siteviewId == view.id);
+    let view = this.props.siteViews.find((view) => siteviewId === view.id);
     this.setState({
       resultsButtonsArray: view.search.results.buttons.items,
       siteUrl: view.url,
@@ -172,9 +158,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     });
   }
 
-  handleSave = (updateSiteView: UpdateSiteViewMutationFn, view: any) => (
-    mutations: SiteViewMutationInput[]
-  ) => {
+  handleSave = (updateSiteView: UpdateSiteViewMutationFn, view: any) => () => {
     console.log('save', view);
     updateSiteView({
       variables: {
@@ -216,10 +200,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     });
   };
 
-  handleAddMutationForDeleteButton = (
-    e: { currentTarget: { name: string; value: any } },
-    siteView
-  ) => {
+  handleAddMutationForDeleteButton = (e: {
+    currentTarget: { name: string; value: any };
+  }) => {
     const { name, value } = e.currentTarget;
     const mutation = createMutation(name, value);
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
@@ -231,13 +214,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
 
     let items = view.search.results.buttons.items;
     items.splice(index, 1);
-    this.handleAddMutationForDeleteButton(
-      { currentTarget: { name: name, value: items } },
-      view
-    );
+    this.handleAddMutationForDeleteButton({
+      currentTarget: { name: name, value: items },
+    });
   };
-  getCrowdFields = view => {
-    return view.search.crowdAggs.fields.map(field => ({
+  getCrowdFields = (view) => {
+    return view.search.crowdAggs.fields.map((field) => ({
       id: field.name,
       label: sentanceCase(field.name),
     }));
@@ -246,11 +228,11 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   handleShowAllToggle = (
     kind: 'aggs' | 'crowdAggs' | 'aggsPresearch' | 'crowdAggsPresearch'
   ) => () => {
-    if (kind == 'aggs') {
+    if (kind === 'aggs') {
       this.setState({ showAllAggs: !this.state.showAllAggs });
-    } else if (kind == 'crowdAggs') {
+    } else if (kind === 'crowdAggs') {
       this.setState({ showAllCrowdAggs: !this.state.showAllCrowdAggs });
-    } else if (kind == 'aggsPresearch') {
+    } else if (kind === 'aggsPresearch') {
       this.setState({ showAllAggsPresearch: !this.state.showAllAggsPresearch });
     } else {
       this.setState({
@@ -258,13 +240,13 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       });
     }
   };
-  handleCheckboxToggle = value => (e: {
+  handleCheckboxToggle = (value) => (e: {
     currentTarget: { name: string; value: any };
   }) => {
     console.log('this.props view', this.props);
     let siteViewId = this.props.match.params.id;
     let thisSiteView = this.props.siteViews.find(
-      siteview => siteview.id == siteViewId
+      (siteview) => siteview.id === siteViewId
     );
     this.handleAddMutation(
       {
@@ -280,7 +262,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     const e = { currentTarget: { name: name, value: x } };
     this.handleAddMutation(e, view);
   };
-  handleAddButton = view => {
+  handleAddButton = (view) => {
     let name = `set:search.results.buttons.items`;
 
     let items = view.search.results.buttons.items;
@@ -327,13 +309,13 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     let newItem = { ...items[position], target: value };
     let newArray: any[] = [];
     items.map((val, index) => {
-      if (index == position) {
+      if (index === position) {
         newArray.push(newItem);
       } else {
         newArray.push(val);
       }
     });
-    if (newArray.length == position) {
+    if (newArray.length === position) {
       newArray.push(newItem);
     }
     this.handleAddMutation(
@@ -353,7 +335,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     let newItem = { ...items[position], icon: value };
     let newArray: any[] = [];
     items.map((val, index) => {
-      if (index == position) {
+      if (index === position) {
         newArray.push(newItem);
       } else {
         newArray.push(val);
@@ -367,14 +349,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     this.setState({ resultsButtonsArray: newArray });
   };
 
-  renderResultsButtons = view => {
+  renderResultsButtons = (view) => {
     let ICONS = ['table', 'card', 'search'];
     let buttonsArray = view.search.results.buttons.items;
-    let siteViewNames = [];
-    let siteViewUrls = [];
     let siteViews = this.props.siteViews;
     let thisSiteView =
-      siteViews.find(siteview => siteview.url == view.url) || view.siteView;
+      siteViews.find((siteview) => siteview.url === view.url) || view.siteView;
 
     return buttonsArray.map((value, index) => (
       <Panel key={index + value}>
@@ -403,11 +383,11 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   margin: '1em 1em 1em 0',
                   background: this.props.theme.button,
                 }}>
-                {siteViews.map(site => (
+                {siteViews.map((site) => (
                   <MenuItem
                     key={site.name}
                     name={`set:search.results.buttons.items`}
-                    onClick={e =>
+                    onClick={(e) =>
                       this.handleButtonTarget(e, thisSiteView, index, site.url)
                     }>
                     {site.url}
@@ -427,11 +407,11 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   margin: '1em 1em 1em 0',
                   background: this.props.theme.button,
                 }}>
-                {ICONS.map(icon => (
+                {ICONS.map((icon) => (
                   <MenuItem
                     key={icon}
                     name={`set:search.results.buttons.items`}
-                    onClick={e =>
+                    onClick={(e) =>
                       this.handleButtonIcon(e, thisSiteView, index, icon)
                     }>
                     {icon}
@@ -475,7 +455,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <StyledFormControl
                 name="set:search.aggs.selected.kind"
                 componentClass="select"
-                onChange={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleAddMutation(e, view)}
                 value={view.search.aggs.selected.kind}>
                 <option value="BLACKLIST">All except</option>
                 <option value="WHITELIST">Only</option>
@@ -485,15 +465,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 options={AGGS_OPTIONS}
                 placeholder="Add facet"
                 value={view.search.aggs.selected.values}
-                onChange={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleAddMutation(e, view)}
               />
               <h3>Aggs settings</h3>
-              {fields.map(field => (
+              {fields.map((field) => (
                 <AggField
                   kind="aggs"
                   key={field.name}
                   field={field}
-                  onAddMutation={mut => this.handleAddMutation(mut, view)}
+                  onAddMutation={(mut) => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="facetbar"
                   returnAll={true}
@@ -525,15 +505,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 options={this.getCrowdFields(view)}
                 placeholder="Add facet"
                 value={view.search.crowdAggs.selected.values}
-                onChange={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleAddMutation(e, view)}
               />
               <h3>Crowd aggs settings</h3>
-              {crowdFields.map(field => (
+              {crowdFields.map((field) => (
                 <AggField
                   kind="crowdAggs"
                   key={field.name}
                   field={field}
-                  onAddMutation={mut => this.handleAddMutation(mut, view)}
+                  onAddMutation={(mut) => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="facetbar"
                   returnAll={true}
@@ -574,15 +554,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 options={AGGS_OPTIONS}
                 placeholder="Add facet"
                 value={view.search.autoSuggest.aggs.selected.values}
-                onChange={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleAddMutation(e, view)}
               />
               <h3>Aggs settings</h3>
-              {fields.map(field => (
+              {fields.map((field) => (
                 <AggField
                   kind="aggs"
                   key={field.name}
                   field={field}
-                  onAddMutation={mut => this.handleAddMutation(mut, view)}
+                  onAddMutation={(mut) => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="autosuggest"
                   returnAll={true}
@@ -599,15 +579,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 options={this.getCrowdFields(view)}
                 placeholder="Add facet"
                 value={view.search.autoSuggest.crowdAggs.selected.values}
-                onChange={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleAddMutation(e, view)}
               />
               <h3>Crowd aggs settings</h3>
-              {crowdFields.map(field => (
+              {crowdFields.map((field) => (
                 <AggField
                   kind="crowdAggs"
                   key={field.name}
                   field={field}
-                  onAddMutation={mut => this.handleAddMutation(mut, view)}
+                  onAddMutation={(mut) => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="autosuggest"
                   returnAll={true}
@@ -647,15 +627,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 options={AGGS_OPTIONS}
                 placeholder="Add facet"
                 value={view.search.presearch.aggs.selected.values}
-                onChange={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleAddMutation(e, view)}
               />
               <h3>Aggs settings</h3>
-              {fields.map(field => (
+              {fields.map((field) => (
                 <AggField
                   kind="aggs"
                   key={field.name}
                   field={field}
-                  onAddMutation={mut => this.handleAddMutation(mut, view)}
+                  onAddMutation={(mut) => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="presearch"
                   returnAll={true}
@@ -672,15 +652,15 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 options={this.getCrowdFields(view)}
                 placeholder="Add facet"
                 value={view.search.presearch.crowdAggs.selected.values}
-                onChange={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleAddMutation(e, view)}
               />
               <h3>Crowd aggs settings</h3>
-              {crowdFields.map(field => (
+              {crowdFields.map((field) => (
                 <AggField
                   kind="crowdAggs"
                   key={field.name}
                   field={field}
-                  onAddMutation={mut => this.handleAddMutation(mut, view)}
+                  onAddMutation={(mut) => this.handleAddMutation(mut, view)}
                   view={view}
                   configType="presearch"
                   returnAll={true}
@@ -698,8 +678,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 name={`set:search.presearch.instructions`}
                 placeholder={view.search.presearch.instructions}
                 value={this.state.presearchIntructions}
-                onChange={e => this.handleInput(e, 'instructions')}
-                onBlur={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleInput(e, 'instructions')}
+                onBlur={(e) => this.handleAddMutation(e, view)}
               />
             </Panel.Body>
           </Panel>
@@ -715,7 +695,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 name={`set:search.presearch.button.name`}
                 placeholder={view.search.presearch.button.name}
                 value={view.search.presearch.button.name}
-                onChange={e => this.handleAddMutation(e, view)}
+                onChange={(e) => this.handleAddMutation(e, view)}
               />
               <StyledPanelHeading>
                 <StyledButtonGroup>
@@ -729,11 +709,11 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                       margin: '1em 1em 1em 0',
                       background: this.props.theme.button,
                     }}>
-                    {this.props.siteViews.map(view => (
+                    {this.props.siteViews.map((view) => (
                       <MenuItem
                         key={view.name}
                         name={`set:search.presearch.button.target`}
-                        onClick={e =>
+                        onClick={(e) =>
                           this.handlePresearchButtonTarget(e, view, view.url)
                         }>
                         {view.url}
@@ -773,7 +753,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             placeholder="Add field"
             draggable
             value={view.search.fields}
-            onChange={e => this.handleAddMutation(e, view)}
+            onChange={(e) => this.handleAddMutation(e, view)}
           />
           <StyledButtonGroup>
             <span className="button-label">Results View:</span>
@@ -787,7 +767,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 background: this.props.theme.button,
               }}>
               <MenuItem
-                onClick={e =>
+                onClick={() =>
                   this.handleShowFacetBar(
                     'card',
                     view,
@@ -797,7 +777,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 Card View
               </MenuItem>
               <MenuItem
-                onClick={e =>
+                onClick={() =>
                   this.handleShowFacetBar(
                     'table',
                     view,
@@ -808,7 +788,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </MenuItem>
               <MenuItem divider />
               <MenuItem
-                onClick={e =>
+                onClick={() =>
                   this.handleShowFacetBar(
                     'map',
                     view,
@@ -831,7 +811,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     );
   };
-  renderBreadCrumbsConfig = (showBreadCrumbs, view, fields, crowdFields) => {
+  renderBreadCrumbsConfig = (showBreadCrumbs) => {
     return (
       <Panel>
         <Panel.Heading>
@@ -853,7 +833,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
   render() {
     const siteviewId = this.props.match.params.id;
-    let view = this.props.siteViews.find(view => siteviewId == view.id);
+    let view = this.props.siteViews.find((view) => siteviewId === view.id);
     view = updateView(view, this.state.mutations);
     const { site } = this.props;
     const fields = displayFields(
@@ -917,7 +897,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         onCompleted={() =>
           this.props.history.push(`/sites/${site.id}/edit/siteviews`)
         }>
-        {updateSiteView => (
+        {(updateSiteView) => (
           <StyledContainer>
             <span
               style={{
@@ -931,8 +911,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               name={`set:name`}
               placeholder={view.name}
               value={this.state.siteViewName}
-              onChange={e => this.handleInput(e, 'name')}
-              onBlur={e => this.handleAddMutation(e, view)}
+              onChange={(e) => this.handleInput(e, 'name')}
+              onBlur={(e) => this.handleAddMutation(e, view)}
             />
 
             <span
@@ -947,8 +927,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               name={`set:url`}
               placeholder={view.url}
               value={this.state.siteUrl}
-              onChange={e => this.handleInput(e, 'url')}
-              onBlur={e => this.handleAddMutation(e, view)}
+              onChange={(e) => this.handleInput(e, 'url')}
+              onBlur={(e) => this.handleAddMutation(e, view)}
             />
             <h3>Search Sections</h3>
             <PanelGroup id="accordion-uncontrolled">
@@ -971,12 +951,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 crowdFieldsPresearch
               )}
               {this.renderResultsConfig(showResults, view)}
-              {this.renderBreadCrumbsConfig(
-                showBreadCrumbs,
-                view,
-                fields,
-                crowdFields
-              )}
+              {this.renderBreadCrumbsConfig(showBreadCrumbs)}
             </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
               Save Site View

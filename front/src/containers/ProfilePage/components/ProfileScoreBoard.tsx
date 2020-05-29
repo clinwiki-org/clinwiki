@@ -1,10 +1,8 @@
 import * as React from 'react';
 import ReactStars from 'react-stars';
 import {
-  StyledProfileLabel,
   StyledProfileScoreLabel,
   StyledLabelValuePair,
-  StyledProfileValue,
   StyledProfileScoreValue,
   ScoreBoard,
   StyledProfileRanking,
@@ -21,7 +19,7 @@ interface ProfileScoreBoardProps {
 }
 
 class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
-  starLogo = totalContributions => {
+  starLogo = () => {
     const firstTier = '#A97142';
     const secondTier = '#C0C0C0';
     const thirdTier = '#D4AF37';
@@ -91,7 +89,7 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
         <ScoreBoard>
           <StyledLabelValuePair>
             <StyledProfileRanking>
-              {this.starLogo(this.props.totalContributions)}
+              {this.starLogo()}
             </StyledProfileRanking>
             <StyledProfileScoreLabel>Star Level</StyledProfileScoreLabel>
           </StyledLabelValuePair>

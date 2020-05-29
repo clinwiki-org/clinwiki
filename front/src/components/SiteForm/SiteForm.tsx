@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
 import { equals, prop, last } from 'ramda';
-import { FormControl, Button, Nav, NavItem } from 'react-bootstrap';
+import { Nav, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { gql } from 'apollo-boost';
 import { trimPath } from 'utils/helpers';
@@ -11,7 +11,6 @@ import {
   updateView,
   createMutation,
   getViewValueByPath,
-  serializeMutation,
 } from 'utils/siteViewUpdater';
 import { Switch, Route, match, Redirect } from 'react-router';
 import MainForm from './MainForm';

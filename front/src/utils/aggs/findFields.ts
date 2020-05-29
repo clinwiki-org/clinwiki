@@ -3,7 +3,7 @@ import { propEq, find } from 'ramda';
 
 // aggToField
 export default (agg, siteView, presearch) => {
-  if (presearch == true) {
+  if (presearch === true) {
     return find(propEq('name', agg), [
       ...(siteView?.search?.presearch?.aggs?.fields || []),
       ...(siteView?.search?.presearch?.crowdAggs?.fields || []),

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { capitalize } from 'utils/helpers';
 import { gql } from 'apollo-boost';
 import {
   MutationFunction,
@@ -26,7 +25,6 @@ import CrowdPage from 'containers/CrowdPage';
 import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
-import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
 
 const Row = styled.div`
   display: flex;
@@ -218,7 +216,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
 
     const array = response.data.autocomplete.autocomplete[0].results;
 
-    array.map(({ key, docCount }, i) => {
+    array.map(({ key }, i) => {
       values?.map(([value, checked]) => {
         if (key === value) {
           if (checked) {
@@ -291,8 +289,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   onSuggestionSelected = (
-    event,
-    { suggestion, suggestionValue, suggestionIndex, method },
+    { suggestionValue },
     upsertLabelMutation
   ) => {
     this.setState({
@@ -434,21 +431,13 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                               ),
                           }}
                           onSuggestionSelected={(
-                            event,
                             {
-                              suggestion,
                               suggestionValue,
-                              suggestionIndex,
-                              method,
                             }
                           ) =>
                             this.onSuggestionSelected(
-                              event,
                               {
-                                suggestion,
                                 suggestionValue,
-                                suggestionIndex,
-                                method,
                               },
                               upsertLabelMutation
                             )

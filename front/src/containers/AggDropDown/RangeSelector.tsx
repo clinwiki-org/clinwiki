@@ -109,7 +109,7 @@ class RangeSelector extends React.Component<
 
     const startLabel = (field && field.rangeStartLabel) || 'Start';
     const endLabel = (field && field.rangeEndLabel) || 'End';
-    if (aggType == FieldDisplay.GREATER_THAN_RANGE) {
+    if (aggType === FieldDisplay.GREATER_THAN_RANGE) {
       return (
         <Col className="range-selector">
           <Form
@@ -143,7 +143,7 @@ class RangeSelector extends React.Component<
           </Form>
         </Col>
       );
-    } else if (aggType == FieldDisplay.LESS_THAN_RANGE) {
+    } else if (aggType === FieldDisplay.LESS_THAN_RANGE) {
       return (
         <Col className="range-selector">
           <Form
@@ -190,7 +190,7 @@ class RangeSelector extends React.Component<
             <FormGroup>
               <ControlLabel>{startLabel}</ControlLabel>
               <FormControl
-                type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
+                type={aggType === FieldDisplay.DATE_RANGE ? 'date' : 'text'}
                 value={startText}
                 onChange={e =>
                   this.setState({
@@ -208,7 +208,7 @@ class RangeSelector extends React.Component<
             <FormGroup>
               <ControlLabel>{endLabel}</ControlLabel>
               <FormControl
-                type={aggType == FieldDisplay.DATE_RANGE ? 'date' : 'text'}
+                type={aggType === FieldDisplay.DATE_RANGE ? 'date' : 'text'}
                 value={endText}
                 onChange={e =>
                   this.setState({

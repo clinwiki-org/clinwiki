@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import withTheme from 'containers/ThemeProvider';
 import ThemedButton from 'components/StyledComponents';
 import * as Autosuggest from 'react-autosuggest';
 import AddFieldAuto from 'components/FacetCard/AddFieldAuto';
@@ -12,13 +11,6 @@ const MarginContainer = styled.div`
   margin: 4px;
 `;
 
-const CenterButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${props => props.theme.button};
-  font-size: 150px;
-`;
 
 const Row = styled.div`
   display: flex;
@@ -26,8 +18,6 @@ const Row = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-
-const ThemedCenterButton = withTheme(CenterButton);
 
 const AUTOSUGGEST_QUERY = gql`
   query CrumbsSearchPageAggBucketsQuery(
@@ -161,7 +151,7 @@ class AddFacetCard extends React.PureComponent<
     const array = response.data.autocomplete.autocomplete[0].results;
 
     if (values[title]) {
-      array.map(({ key, docCount }, i) => {
+      array.map(({ key }, i) => {
         values[title].map(([value, checked]) => {
           if (key === value) {
             if (checked) {
@@ -206,7 +196,7 @@ class AddFacetCard extends React.PureComponent<
 
   onFieldSuggestionSelected = (
     event,
-    { suggestion, suggestionValue, suggestionIndex, method }
+    { suggestionValue }
   ) => {
     this.setState({
       title: suggestionValue,
@@ -215,14 +205,14 @@ class AddFacetCard extends React.PureComponent<
 
   onSuggestionSelected = (
     event,
-    { suggestion, suggestionValue, suggestionIndex, method }
+    { suggestionValue }
   ) => {
     this.setState({
       description: suggestionValue,
     });
   };
 
-  onSuggestionsFetchRequested = async apolloClient => {
+  onSuggestionsFetchRequested = async () => {
     this.setState({
       isSuggestionLoading: true,
     });
@@ -284,7 +274,7 @@ class AddFacetCard extends React.PureComponent<
                 }}
                 onSuggestionSelected={this.onSuggestionSelected}
                 onSuggestionsFetchRequested={() =>
-                  this.onSuggestionsFetchRequested(apolloClient)
+                  this.onSuggestionsFetchRequested()
                 }
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                 getSuggestionValue={this.getSuggestionValue}

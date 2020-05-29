@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
-import { equals, prop, last } from 'ramda';
-import { FormControl, Button, Nav, NavItem } from 'react-bootstrap';
-import styled from 'styled-components';
+import { equals } from 'ramda';
 import { gql } from 'apollo-boost';
-import { Switch, Route, match, Redirect } from 'react-router';
-import { capitalize, trimPath } from 'utils/helpers';
+import { Switch, Route, match } from 'react-router';
+import { trimPath } from 'utils/helpers';
 import { SiteFragment } from 'types/SiteFragment';
 import {
   updateView,
@@ -13,7 +11,7 @@ import {
   getViewValueByPath,
   serializeMutation,
 } from 'utils/siteViewUpdater';
-import UpdateSiteViewMutation, {
+import {
   UpdateSiteViewMutationFn,
 } from 'mutations/UpdateSiteViewMutation';
 import { History, Location } from 'history';

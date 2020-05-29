@@ -105,7 +105,6 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
         </li>
       );
     }
-    const t = this.props.theme;
     return (
       <SiteProvider>
         {site => {

@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { gql } from 'apollo-boost';
 import styled from 'styled-components';
-import { Nav, NavItem, Row, Col, Button, Panel } from 'react-bootstrap';
-import { Link, match, Route, Switch, Redirect } from 'react-router-dom';
+import { Row, Col } from 'react-bootstrap';
+import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import ReactStars from 'react-stars';
 import {
-  last,
   split,
   pipe,
   findIndex,
@@ -16,9 +15,6 @@ import {
   map,
   isEmpty,
   reject,
-  drop,
-  join,
-  equals,
   find,
 } from 'ramda';
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
@@ -36,7 +32,6 @@ import { trimPath } from 'utils/helpers';
 import ReviewsPage from 'containers/ReviewsPage';
 import InterventionsPage from 'containers/InterventionsPage';
 import FacilitiesPage from 'containers/FacilitiesPage';
-import InterventionPage from 'containers/InterventionPage';
 import TagsPage from 'containers/TagsPage';
 import WorkflowPage from 'containers/WorkflowPage';
 import SiteProvider from 'containers/SiteProvider';
@@ -45,13 +40,11 @@ import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGeneri
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
-import { starColor } from 'utils/constants';
 import StudyPageCounter from './components/StudyPageCounter';
 import withTheme from 'containers/ThemeProvider';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
 import {
-  WorkflowsViewFragment,
   WorkflowsViewFragment_workflows,
 } from 'types/WorkflowsViewFragment';
 
@@ -160,26 +153,6 @@ const MainContainer = styled(Col)`
 
 const ThemedMainContainer = withTheme(MainContainer);
 
-const SidebarContainer = styled(Col)`
-  padding-right: 0px;
-  color: rgba(255, 255, 255, 0.5);
-  padding-top: 10px !important;
-
-  li {
-    a {
-      font-size: 16px;
-      color: #bac5d0;
-      border-bottom: 1px solid #4c545e;
-      text-align: left;
-    }
-
-    a:hover {
-      background: #394149;
-      border-radius: 0px;
-      color: #fff;
-    }
-  }
-`;
 
 const StudySummaryContainer = styled.div`
   .container {
@@ -446,7 +419,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       .toString();
 
     const backLink = () => {
-      if (hash != '') {
+      if (hash !== '') {
         return `/search?hash=${hash}&sv=${siteViewUrl}`;
       }
       return undefined;
@@ -467,7 +440,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   query={QUERY}
                   variables={{ nctId: this.props.match.params.nctId }}
                   fetchPolicy="cache-only">
-                  {({ data, loading, error }) => (
+                  {({ data }) => (
                     <StudyWrapper>
                       <Row
                         md={12}

@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Row, Col, Table, Button } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import {
   WikiPageEditFragment,
-  WikiPageEditFragment_user,
 } from 'types/WikiPageEditFragment';
 import { Link } from 'react-router-dom';
 import ThemedButton from 'components/StyledComponents';

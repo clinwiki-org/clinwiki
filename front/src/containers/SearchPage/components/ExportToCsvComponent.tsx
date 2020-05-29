@@ -1,17 +1,8 @@
 import * as React from 'react';
-import gql from 'graphql-tag';
-import { SiteFragment_siteView } from 'types/SiteFragment';
 import CurrentUser from 'containers/CurrentUser';
 import ExportToCsvButton from './ExportToCsvButton';
 import ExportToCsvDialog from './ExportToCsvDialog';
 
-const SEARCH_EXPORT_QUERY = gql`
-  query SearchExportQuery($searchExportId: Int!) {
-    searchExport(searchExportId: $searchExportId) {
-      downloadUrl
-    }
-  }
-`;
 
 interface ExportToCsvComponentProps {
   siteView: any;

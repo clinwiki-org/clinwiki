@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as FontAwesome from 'react-fontawesome';
 import ValuesExpander from './ValuesExpander';
 import ValueCrumb from './ValueCrumb';
 

@@ -52,5 +52,5 @@ export interface SearchParams {
 }
 
 export function maskAgg(aggs: AggFilterInput[], toRemove: string) {
-  return filter(a => a.field != toRemove, aggs);
+  return filter(a => a.field !== toRemove, aggs);
 }

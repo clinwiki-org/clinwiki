@@ -145,7 +145,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     });
   };
   renderNumberRangeConfig = (configType, display) => {
-    if (display == 'NUMBER_RANGE' || display == 'DATE_RANGE') {
+    if (display === 'NUMBER_RANGE' || display === 'DATE_RANGE') {
       return (
         <span>
           <StyledLabel>Range Start Label</StyledLabel>
@@ -173,17 +173,17 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
 
           <StyledFormControl
             name={
-              display == 'GREATER_THAN_RANGE'
+              display === 'GREATER_THAN_RANGE'
                 ? `set:${this.getPath(configType)}.rangeStartLabel`
                 : `set:${this.getPath(configType)}.rangeEndLabel`
             }
             placeholder={
-              display == 'GREATER_THAN_RANGE'
+              display === 'GREATER_THAN_RANGE'
                 ? this.props.field.rangeStartLabel
                 : this.props.field.rangeEndLabel
             }
             value={
-              display == 'GREATER_THAN_RANGE'
+              display === 'GREATER_THAN_RANGE'
                 ? this.props.field.rangeStartLabel
                 : this.props.field.rangeEndLabel
             }
@@ -204,7 +204,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     return (
       <span>
         <ThemedStyledLabel>
-          {this.props.kind == 'crowdAggs' ? 'Crowd ' : null}Agg Label:
+          {this.props.kind === 'crowdAggs' ? 'Crowd ' : null}Agg Label:
         </ThemedStyledLabel>
         <StyledFormControl
           name={`set:${this.getPath(configType)}.displayName`}
@@ -387,10 +387,10 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           onChange={e => this.handleDefaultSortMutation(e)}
           defaultValue={this.props.field.order?.desc}>
           <option value="true">
-            {this.props.field.order?.sortKind == 'count' ? '1-9' : 'A-Z'}
+            {this.props.field.order?.sortKind === 'count' ? '1-9' : 'A-Z'}
           </option>
           <option value="false">
-            {this.props.field.order?.sortKind == 'count' ? '9-1' : 'Z-A'}
+            {this.props.field.order?.sortKind === 'count' ? '9-1' : 'Z-A'}
           </option>
         </StyledFormControl>
         <ThemedStyledLabel>Order</ThemedStyledLabel>
@@ -423,10 +423,10 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <option value="LESS_THAN_RANGE">Less Than Range</option>
           <option value="GREATER_THAN_RANGE">Greater Than Range</option>
         </StyledFormControl>
-        {this.props.field.display == 'NUMBER_RANGE' ||
-        this.props.field.display == 'LESS_THAN_RANGE' ||
-        this.props.field.display == 'GREATER_THAN_RANGE' ||
-        this.props.field.display == 'DATE_RANGE'
+        {this.props.field.display === 'NUMBER_RANGE' ||
+        this.props.field.display === 'LESS_THAN_RANGE' ||
+        this.props.field.display === 'GREATER_THAN_RANGE' ||
+        this.props.field.display === 'DATE_RANGE'
           ? this.renderNumberRangeConfig(configType, this.props.field.display)
           : null}
       </>

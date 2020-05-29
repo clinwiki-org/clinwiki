@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Table, Row, Col, Button, FormControl } from 'react-bootstrap';
+import { Table, Row, Col, FormControl } from 'react-bootstrap';
 import {
   Query,
   Mutation,
@@ -22,9 +22,8 @@ import {
   TagsPageDeleteWikiTagMutation,
   TagsPageDeleteWikiTagMutationVariables,
 } from 'types/TagsPageDeleteWikiTagMutation';
-import WikiPage from 'containers/WikiPage';
-import { contains, reject, equals, lensPath } from 'ramda';
-import Edits, { WikiPageEditFragment } from 'components/Edits';
+import { contains, reject, equals } from 'ramda';
+import { WikiPageEditFragment } from 'components/Edits';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';

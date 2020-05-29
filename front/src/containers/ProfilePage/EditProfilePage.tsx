@@ -1,7 +1,4 @@
 import * as React from 'react';
-import * as FontAwesome from 'react-fontawesome';
-import styled from 'styled-components';
-import { Row, Col } from 'react-bootstrap';
 import {
   Mutation,
   MutationFunction,
@@ -280,7 +277,7 @@ class EditProfilePage extends React.Component<
       return (
         <ThemedMainContainer>
           <h2>My profile</h2>
-          {this.state.isEditing == true
+          {this.state.isEditing === true
             ? this.renderEditForm()
             : this.renderProfileInfo()}
           <h2>My Contributions</h2>

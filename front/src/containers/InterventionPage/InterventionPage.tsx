@@ -8,7 +8,7 @@ import {
   InterventionPageQuery,
   InterventionPageQueryVariables,
 } from 'types/InterventionPageQuery';
-import { SearchQuery, SearchParams } from '../SearchPage/shared';
+import { SearchParams } from '../SearchPage/shared';
 import {
   ThemedMainContainer,
   StyledInterventionHeading,
@@ -43,14 +43,6 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
   };
 
   setInterventionTerm = name => {
-    const searchQuery = {
-      a: [
-        {
-          field: 'interventions_mesh_terms',
-          values: [name],
-        },
-      ],
-    };
   };
 
   render() {

@@ -85,7 +85,7 @@ class WikiExpandedEdit extends React.Component<EditProps, EditState> {
         changeSet: { editLines },
       },
     } = this.props;
-    const { lineVisible, hoveredLine } = this.state;
+    const { lineVisible } = this.state;
     const invisibleLines = this.hasInvisibleLines();
     const nodes: any[] = [];
     const actions: any[] = [];

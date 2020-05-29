@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Switch, Route, match } from 'react-router-dom';
-import { Button, Row, Col, Table, Label } from 'react-bootstrap';
+import { Row, Col, Table, Label } from 'react-bootstrap';
 import { History } from 'history';
 import styled from 'styled-components';
 import { gql } from 'apollo-boost';
@@ -35,8 +35,6 @@ import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
-import { starColor } from 'utils/constants';
-import withTheme from 'containers/ThemeProvider';
 
 interface ReviewsPageProps {
   nctId: string;
@@ -300,7 +298,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
             <Switch>
               <Route
                 path={`${this.props.match.path}/new`}
-                render={props => {
+                render={() => {
                   this.props.onLoaded && this.props.onLoaded();
                   return (
                     <ReviewForm
