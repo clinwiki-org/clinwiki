@@ -53,6 +53,7 @@
     "react-table": "6.8.6",
     "react-transition-group": "^4.4.1",
     "reactstrap": "^8.4.1",
+    "recharts": "^1.8.5",
     "remeda": "^0.0.20",
     "styled-components": "^5.1.0",
     "typescript": "~3.9.2"

@@ -5,7 +5,7 @@ import { CurrentUserQuery } from 'types/CurrentUserQuery';
 import { UserFragment } from 'types/UserFragment';
 
 interface CurrentUserProps {
-  children: (user: UserFragment | null) => React.ReactNode;
+  children: (user: UserFragment | null, refetch?:any) => React.ReactNode;
 }
 
 const FRAGMENT = gql`
@@ -48,11 +48,11 @@ class CurrentUser extends React.PureComponent<CurrentUserProps> {
   render() {
     return (
       <QueryComponent query={QUERY}>
-        {({ data, loading, error }) => {
+        {({ data, loading, error, refetch }) => {
           if (loading || error || !data) {
             return this.props.children(null) as JSX.Element | null;
           }
-          return this.props.children(data.me) as JSX.Element | null;
+          return this.props.children(data.me, refetch) as JSX.Element | null;
         }}
       </QueryComponent>
     );

@@ -149,11 +149,20 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     showAddFacet: false,
   };
 
+  input: any;
+
   handlePlusClick = user => {
     if (user) {
-      this.setState({
-        textFieldActive: !this.state.textFieldActive,
-      });
+      this.setState(
+        {
+          textFieldActive: !this.state.textFieldActive,
+        },
+        () => {
+          if (this.state.textFieldActive) {
+            this.input.focus();
+          }
+        }
+      );
     } else {
       this.setShowLoginModal(true);
     }
@@ -321,6 +330,12 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     return suggestion.key;
   };
 
+  storeInputReference = autosuggest => {
+    if (autosuggest !== null) {
+      this.input = autosuggest.input;
+    }
+  };
+
   render() {
     const { label, addLabel, aggNames, siteView, allValues } = this.props;
     const {
@@ -330,7 +345,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       showLoginModal,
       showAddFacet,
     } = this.state;
-
+    
     if (addLabel) {
       console.log(allValues);
       return (
@@ -345,7 +360,8 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                         show={showLoginModal}
                         cancel={() => this.setShowLoginModal(false)}
                       />
-                      <ThemedPresearchCard>
+                      <ThemedPresearchCard
+                        style={{ height: showAddFacet ? null : 60 }}>
                         <ThemedPresearchHeader>
                           <PresearchTitle>
                             {truncateString(label, 18, true)}
@@ -365,19 +381,17 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                             </TextFieldToggle>
                           )}
                         </ThemedPresearchHeader>
-                        <PresearchContent style={{ overflowY: 'auto' }}>
-                          <AddFacetCard
-                            upsert={upsertLabelMutation}
-                            submitFacet={this.handleNewFacetSubmit}
-                            user={user}
-                            showLogin={this.setShowLoginModal}
-                            apolloClient={apolloClient}
-                            aggNames={aggNames}
-                            siteView={siteView}
-                            values={allValues}
-                            showAddFacet={showAddFacet}
-                          />
-                        </PresearchContent>
+                        <AddFacetCard
+                          upsert={upsertLabelMutation}
+                          submitFacet={this.handleNewFacetSubmit}
+                          user={user}
+                          showLogin={this.setShowLoginModal}
+                          apolloClient={apolloClient}
+                          aggNames={aggNames}
+                          siteView={siteView}
+                          values={allValues}
+                          showAddFacet={showAddFacet}
+                        />
                       </ThemedPresearchCard>
                     </>
                   )}
@@ -422,6 +436,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                           suggestions={suggestions}
                           renderSuggestion={this.renderSuggestion}
                           inputProps={{
+                            placeholder: 'enter a new description...',
                             value: existingField,
                             onChange: (e, existingField) =>
                               this.handleExistingFieldChange(
@@ -449,6 +464,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                             this.onSuggestionsClearRequested
                           }
                           getSuggestionValue={this.getSuggestionValue}
+                          ref={this.storeInputReference}
                         />
                       )}
                       <PresearchContent style={{ overflowY: 'auto' }}>

@@ -96,6 +96,10 @@ div.DraftEditor-editorContainer{
   margin-right: 8px;
 }
 
+.react-autosuggest__input::placeholder {
+  color: black
+}
+
 .react-autosuggest__input--focused {
   outline: none;
 }

@@ -9,6 +9,7 @@ export default gql`
     $page: Int!
     $pageSize: Int!
     $aggOptionsFilter: String
+    $aggOptionsSort: [SortInput!]
     $url: String
     $configType: String
     $returnAll: Boolean
@@ -24,6 +25,7 @@ export default gql`
         aggFilters: $aggFilters
         crowdAggFilters: $crowdAggFilters
         aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: $aggOptionsSort
         page: $page
         pageSize: $pageSize
       }

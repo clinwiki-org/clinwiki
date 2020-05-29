@@ -14,7 +14,7 @@ import {
 import { withApollo } from 'react-apollo';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-
+import { PieChart, Pie, Sector } from 'recharts';
 import {
   AggBucket,
   AggCallback,
@@ -35,6 +35,7 @@ import Filter from './Filter';
 import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQuery';
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
+import TwoLevelPieChart from './TwoLevelPieChart';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
 import { ApolloClient } from 'apollo-boost';
 import { capitalize } from 'utils/helpers';
@@ -508,6 +509,28 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
               handleLoadMore={this.handleLoadMore}
               aggType={field?.display}
               field={field}
+            />
+          </Container>
+          {!loading && (
+            <Container>
+              <AllowMissingCheckbox buckets={buckets} />
+            </Container>
+          )}
+        </PresearchPanel>
+      );
+    } else if (field?.display === FieldDisplay.PIE_CHART) {
+      return (
+        <PresearchPanel>
+          <Container>
+            <TwoLevelPieChart
+              isPresearch={true}
+              visibleOptions={visibleOptions}
+              buckets={buckets}
+              isSelected={this.isSelected}
+              hasMore={hasMore}
+              handleLoadMore={this.handleLoadMore}
+              field={field}
+              searchParams={this.props.searchParams}
             />
           </Container>
           {!loading && (
