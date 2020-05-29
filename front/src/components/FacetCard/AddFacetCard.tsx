@@ -5,61 +5,17 @@ import * as Autosuggest from 'react-autosuggest';
 import AddFieldAuto from 'components/FacetCard/AddFieldAuto';
 import ThemedAutosuggestButton from 'components/StyledComponents';
 import { ApolloConsumer } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
 
 const MarginContainer = styled.div`
   margin: 4px;
 `;
-
 
 const Row = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-`;
-
-const AUTOSUGGEST_QUERY = gql`
-  query CrumbsSearchPageAggBucketsQuery(
-    $agg: String!
-    $q: SearchQueryInput!
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-    $page: Int!
-    $pageSize: Int!
-    $aggOptionsFilter: String
-    $aggFields: [String!]!
-    $crowdAggFields: [String!]!
-    $url: String
-  ) {
-    autocomplete(
-      aggFields: $aggFields
-      crowdAggFields: $crowdAggFields
-      url: $url
-      params: {
-        agg: $agg
-        q: $q
-        sorts: []
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        aggOptionsFilter: $aggOptionsFilter
-        aggOptionsSort: [{ id: "count", desc: true }]
-        page: $page
-        pageSize: $pageSize
-      }
-    ) {
-      autocomplete {
-        name
-        isCrowd
-        results {
-          key
-          docCount
-        }
-        __typename
-      }
-      __typename
-    }
-  }
 `;
 
 interface AddFacetCardProps {

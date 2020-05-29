@@ -25,55 +25,13 @@ import CrowdPage from 'containers/CrowdPage';
 import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
 
 const Row = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-`;
-
-const AUTOSUGGEST_QUERY = gql`
-  query CrumbsSearchPageAggBucketsQuery(
-    $agg: String!
-    $q: SearchQueryInput!
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-    $page: Int!
-    $pageSize: Int!
-    $aggOptionsFilter: String
-    $aggFields: [String!]!
-    $crowdAggFields: [String!]!
-    $url: String
-  ) {
-    autocomplete(
-      aggFields: $aggFields
-      crowdAggFields: $crowdAggFields
-      url: $url
-      params: {
-        agg: $agg
-        q: $q
-        sorts: []
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        aggOptionsFilter: $aggOptionsFilter
-        aggOptionsSort: [{ id: "count", desc: true }]
-        page: $page
-        pageSize: $pageSize
-      }
-    ) {
-      autocomplete {
-        name
-        isCrowd
-        results {
-          key
-          docCount
-        }
-        __typename
-      }
-      __typename
-    }
-  }
 `;
 
 const FRAGMENT = gql`

@@ -26,49 +26,7 @@ import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import ExportToCsvComponent from './ExportToCsvComponent';
-
-const AUTOSUGGEST_QUERY = gql`
-  query CrumbsSearchPageAggBucketsQuery(
-    $agg: String!
-    $q: SearchQueryInput!
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-    $page: Int!
-    $pageSize: Int!
-    $aggOptionsFilter: String
-    $aggFields: [String!]!
-    $crowdAggFields: [String!]!
-    $url: String
-  ) {
-    autocomplete(
-      aggFields: $aggFields
-      crowdAggFields: $crowdAggFields
-      url: $url
-      params: {
-        agg: $agg
-        q: $q
-        sorts: []
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        aggOptionsFilter: $aggOptionsFilter
-        aggOptionsSort: [{ id: "count", desc: true }]
-        page: $page
-        pageSize: $pageSize
-      }
-    ) {
-      autocomplete {
-        name
-        isCrowd
-        results {
-          key
-          docCount
-        }
-        __typename
-      }
-      __typename
-    }
-  }
-`;
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
 
 const CrumbsBarStyleWrappper = styled.div`
   border: solid white 1px;

@@ -12,7 +12,7 @@
     "build:clean": "rimraf ./build/",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "apollo:codegen": "rm -rf app/types && apollo codegen:generate --config=apollo.config.js --target=typescript --outputFlat app/types",
+    "apollo:codegen": "rm -rf src/types && apollo codegen:generate --config=apollo.config.js --target=typescript --outputFlat src/types",
     "prettier": "prettier --write \"**/*.ts?(x)\""
   },
   "dependencies": {
