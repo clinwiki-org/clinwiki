@@ -123,6 +123,7 @@ interface FacetCardProps {
   refetch?: () => void;
   aggNames?: any;
   allValues?: any[];
+  showAnimation:any;
 }
 
 interface FacetCardState {
@@ -271,6 +272,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   handleNewFacetSubmit = (key, value, upsertLabelMutation) => {
+    this.props.showAnimation()
     this.submitExistingField(key, value, this.props.meta, upsertLabelMutation);
   };
 

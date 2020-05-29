@@ -2,7 +2,7 @@ import * as React from 'react';
 import ReactStars from 'react-stars';
 import styled, { keyframes } from 'styled-components';
 
-interface SubmitAnimationProps {
+interface WorkFlowAnimationProps {
   resetAnimation: any;
   rankColor: any;
 }
@@ -32,32 +32,29 @@ const flashKeyFrames = keyframes`
 
 const coolBoxKeyframes = keyframes`
 0%{
-    opacity:0;
-    top:22%;
-    right: 11%
+    opacity:0.5;
+    right: 45%;
+    top:50%;
   }
   100%{
       opacity:1;
+      right:0;
       top:0;
-      right:1%;
   }
 
 `
-export const AnimationContainer = styled.div`
-width:40px;
-padding-left:10px;
-`
+
 export const Animation = styled.div`
 
 
 display: inline-block;
-position:absolute;
+position:fixed;
 background: transparent;
 width: 30px;
 opacity:0;
 
 animation-name: ${coolBoxKeyframes};
-animation-duration: 7s;
+animation-duration: 6s;
 animation-timing-function: ease;
 animation-delay: 2s;
 animation-iteration-count: 1;
@@ -69,10 +66,13 @@ animation-play-state: running;
 export const FlashAnimation = styled.div`
 
 
-
+position:fixed;
 background: transparent;
-width: 30px;
+width: 50px;
 opacity:0;
+left:50%;
+top:50%;
+
 
 animation-name: ${flashKeyFrames};
 animation-duration: 2.5s;
@@ -85,7 +85,7 @@ animation-play-state: running;
 
 `
 
-class SubmitAnimation extends React.Component<SubmitAnimationProps> {
+class WorkFlowAnimation extends React.Component<WorkFlowAnimationProps> {
 
   render() {
     this.props.resetAnimation();
@@ -98,7 +98,7 @@ class SubmitAnimation extends React.Component<SubmitAnimationProps> {
             color1={color}
             color2={color}
             half={false}
-            size={30}
+            size={40}
           />
         </FlashAnimation>
         <Animation>
@@ -117,4 +117,4 @@ class SubmitAnimation extends React.Component<SubmitAnimationProps> {
   }
 }
 
-export default SubmitAnimation;
+export default WorkFlowAnimation;

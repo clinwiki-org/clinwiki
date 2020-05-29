@@ -17,8 +17,7 @@ interface StudyPageSectionsProps {
   location: Location;
   match: match<{ nctId: string; searchId: string }>;
   siteView: any;
-  refetch?:any;
-  user?: UserFragment| null;
+  showAnimation:any;
 }
 
 class StudyPageSections extends React.Component<StudyPageSectionsProps> {
@@ -38,8 +37,7 @@ class StudyPageSections extends React.Component<StudyPageSectionsProps> {
           location={this.props.location}
           match={this.props.match}
           siteView={this.props.siteView}
-          refetch={this.props.refetch}
-          user={this.props.user}
+          showAnimation={this.props.showAnimation}
         />
       );
     });

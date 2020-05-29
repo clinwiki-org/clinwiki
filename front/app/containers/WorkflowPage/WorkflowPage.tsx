@@ -55,7 +55,7 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import ThemedButton from 'components/StyledComponents';
-import QUERY from 'queries/WorkflowPageQuery'
+import QUERY from 'queries/WorkflowPageQuery';
 
 class WorkflowPageQueryComponent extends Query<
   WorkflowPageQuery,
@@ -74,6 +74,7 @@ interface WorkflowPageProps {
   workflowsView: WorkflowsViewFragment;
   theme?: any;
   siteView?: any;
+  showAnimation:any;
 }
 
 interface WorkflowPageState {
@@ -277,6 +278,7 @@ class WorkflowPage extends React.Component<
                                       }
                                       suggestedLabelsConfig={suggestedLabelsConfig}
                                       disabled={!user}
+                                      showAnimation={this.props.showAnimation}
                                     />
                                   </StyledPanel>
                                 )}
@@ -290,12 +292,14 @@ class WorkflowPage extends React.Component<
                             forceAddLabel={
                               this.state.selectedLabel || undefined
                             }
+                            showAnimation={this.props.showAnimation}
                           />
                           <WikiSections
                             sections={sections}
                             disabled={!user}
                             nctId={this.props.match.params.nctId}
                             key={this.props.match.params.nctId}
+                            showAnimation={this.props.showAnimation}
                           />
                         </>
                       );

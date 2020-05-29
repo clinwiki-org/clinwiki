@@ -37,6 +37,7 @@ interface SuggestedLabelsProps {
     WorkflowConfigFragment_suggestedLabelsConfig
   >;
   siteView?: any;
+  showAnimation:any;
 }
 
 const QUERY = gql`
@@ -82,6 +83,7 @@ class SuggestedLabels extends React.PureComponent<
   handleSelect = (key: string, value: string) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    this.props.showAnimation()
     this.props.onSelect(key, value, e.currentTarget.checked);
   };
 
@@ -127,7 +129,9 @@ class SuggestedLabels extends React.PureComponent<
         values={items}
         onSelect={this.props.onSelect}
         refetch={refetch}
-        siteView={this.props.siteView}>
+        siteView={this.props.siteView}
+        showAnimation={this.props.showAnimation}
+        >
         {items.map(value => {
           if (bucketKeyStringIsMissing(value)) {
             return null;
@@ -219,6 +223,7 @@ class SuggestedLabels extends React.PureComponent<
                 aggNames={allCrowdAggs}
                 siteView={this.props.siteView}
                 allValues={aggs}
+                showAnimation={this.props.showAnimation}
               />
             </LabelsContainer>
           );

@@ -23,8 +23,6 @@ import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import ExpansionContext from './ExpansionContext';
-import SubmitAnimation from './components/SubmitAnimation'
-import { getStarColor } from '../../utils/auth'
 interface WikiPageProps {
   nctId: string;
   match: match<{ nctId: string }>;
@@ -34,8 +32,7 @@ interface WikiPageProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;  
-  refetch?: any;
-  user: UserFragment | null;
+  showAnimation:any;
 }
 
 interface WikiPageState {
@@ -43,7 +40,6 @@ interface WikiPageState {
   richEditorText: EditorValue | null;
   plainEditorText: string | null;
   historyExpanded: any;
-  flashAnimation: boolean;
 }
 
 const FRAGMENT = gql`
@@ -107,7 +103,6 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     richEditorText: null,
     plainEditorText: null,
     historyExpanded: {},
-    flashAnimation: false
   };
 
   static fragment = FRAGMENT;
@@ -178,7 +173,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       variables: WikiPageUpdateContentMutationVariables;
     }) => void
   ) => {
-    this.setState({ flashAnimation: true })
+    this.props.showAnimation()
     updateWikiContent({
       variables: {
         nctId: this.props.nctId,
@@ -209,13 +204,6 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       historyExpanded,
     });
   };
-  resetHelperFunction = () => {
-    this.setState({ flashAnimation: false })
-    this.props.refetch()
-  }
-  handleResetAnimation = () => {
-    setTimeout(this.resetHelperFunction, 5500)
-  }
   expandAllEdits = () => {
     const { historyExpanded } = this.state;
     Object.keys(historyExpanded).forEach(key => {
@@ -276,20 +264,10 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     const editorTextState = this.getEditorText();
     const editorTextData =
       data.study && data.study.wikiPage && data.study.wikiPage.content;
-    const userRank = this.props.user ? this.props.user.rank : 'default'
-    let rankColor = getStarColor(userRank)
 
     return (
       <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
         {updateWikiContent => (
-          this.state.flashAnimation == true ? 
-          <span>
-          <SubmitAnimation
-            resetAnimation={this.handleResetAnimation}
-            rankColor={rankColor}
-          /> 
-          </span>
-          :
             <ThemedButton
               onClick={() => this.handleEditSubmit(updateWikiContent)}
               disabled={editorTextState === editorTextData}

@@ -21,6 +21,7 @@ interface WikiSectionsProps {
   nctId: string;
   sections: WikiSection[];
   disabled: boolean;
+  showAnimation:any;
 }
 
 interface WikiSectionsState {
@@ -57,6 +58,7 @@ class WikiSections extends React.Component<
   handleSectionsSave = (
     updateWikiSections: UpdateWikiSectionsMutationFn
   ) => () => {
+    this.props.showAnimation()
     updateWikiSections({
       variables: {
         input: {
