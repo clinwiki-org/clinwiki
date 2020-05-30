@@ -39,8 +39,6 @@ const AppWrapper = styled.div`
 
 const ThemedAppWrapper = withTheme(AppWrapper);
 
-const MainWrapper = styled.div``;
-
 class App extends React.PureComponent<AppProps> {
   render() {
     return (
@@ -49,7 +47,7 @@ class App extends React.PureComponent<AppProps> {
           {(user, refetch) =>
             <span>
               <AuthHeader user={user} history={this.props.history} />
-              <MainWrapper className="main" style={{ paddingTop: '50px' }}>
+              <div className="main" style={{ paddingTop: '50px' }}>
                 <Switch>
                   <Route
                     exact
@@ -84,7 +82,7 @@ class App extends React.PureComponent<AppProps> {
                   <Route path="/update_password" component={UpdatePassword} />
                   <Route component={NotFoundPage} />
                 </Switch>
-              </MainWrapper>
+              </div>
             </span>
           }
         </CurrentUser>

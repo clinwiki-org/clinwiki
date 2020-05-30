@@ -137,7 +137,6 @@ type Section = {
     | SiteStudyExtendedGenericSectionFragment;
 };
 
-const StudyWrapper = styled.div``;
 const ReviewsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -457,7 +456,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   variables={{ nctId: this.props.match.params.nctId }}
                   fetchPolicy="cache-only">
                   {({ data }) => (
-                    <StudyWrapper>
+                    <div>
                       <Row
                         md={12}
                         style={{
@@ -578,7 +577,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           {() => null}
                         </PrefetchQueryComponent>
                       )}
-                    </StudyWrapper>
+                    </div>
                   )}
                 </QueryComponent>
               );

@@ -7,8 +7,6 @@ import SiteProvider from 'containers/SiteProvider';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { UserFragment } from 'types/UserFragment';
 
-const UserButtonWrapper = styled.div``;
-
 const UserImage = styled.img`
   width: 25px;
   height: 25px;
@@ -287,7 +285,7 @@ class UserProfileHeaderButton extends React.PureComponent<
         <SiteProvider>
           {(site) => {
             return (
-              <UserButtonWrapper
+              <div
                 ref={(node: any) => {
                   this.dropDown = node;
                 }}>
@@ -353,7 +351,7 @@ class UserProfileHeaderButton extends React.PureComponent<
                     </ThemedDropDownItem>
                   </DropDownMenu>
                 )}
-              </UserButtonWrapper>
+              </div>
             );
           }}
         </SiteProvider>
