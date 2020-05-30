@@ -10,7 +10,6 @@ import {
   ListGroupItem,
 } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-import gql from 'graphql-tag';
 import { ApolloConsumer } from 'react-apollo';
 import * as Autosuggest from 'react-autosuggest';
 import styled from 'styled-components';
