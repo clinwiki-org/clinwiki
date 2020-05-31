@@ -129,10 +129,6 @@ const bucketsForLabels = (labels: string[]) => {
   return query;
 };
 
-// const extractBucketKeys = pipe(
-//   pathOr([], ['aggs', 0, 'buckets']),
-//   map(prop('key'))
-// );
 interface GotAggs {
   aggs:
     | {
@@ -146,7 +142,7 @@ interface GotAggs {
     | undefined;
 }
 function extractBucketKeys(arg?: GotAggs) {
-  return arg?.aggs?.[0]?.buckets?.map(k => k.key);
+  return arg?.aggs?.[0]?.buckets?.map(k => k.key) || [];
 }
 
 const groupBucketsByLabel = ({ data, labels }) =>
