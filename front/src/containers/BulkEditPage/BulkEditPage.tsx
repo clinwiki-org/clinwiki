@@ -150,8 +150,8 @@ const groupBucketsByLabel = ({ data, labels }) =>
     (accum, label) => ({
       ...accum,
       [label]: {
-        all: extractBucketKeys(data[`${el(label)}All`]),
-        selected: extractBucketKeys(data[`${el(label)}Selected`]),
+        all: extractBucketKeys(data?.[`${el(label)}All`]),
+        selected: extractBucketKeys(data?.[`${el(label)}Selected`]),
       },
     }),
     {}
