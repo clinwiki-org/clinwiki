@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
-import ReactStars from 'react-stars';
 import {
   split,
   pipe,
@@ -48,8 +47,7 @@ import {
   WorkflowsViewFragment_workflows,
 } from 'types/WorkflowsViewFragment';
 import { UserFragment } from 'types/UserFragment';
-import WorkFlowAnimation from './components/StarAnimation'
-import {getStarColor} from '../../utils/auth'
+import StudyPageHeader from './components/StudyPageHeader'
 
 interface StudyPageProps {
   history: History;
@@ -73,8 +71,7 @@ interface StudyPageState {
   triggerPrefetch: boolean;
   flashAnimation:boolean;
   wikiToggleValue: boolean;
-  like: boolean;
-  dislike: boolean;
+
 }
 
 const QUERY = gql`
@@ -140,12 +137,7 @@ type Section = {
     | SiteStudyExtendedGenericSectionFragment;
 };
 
-const ReviewsWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 10px;
-  margin-top: 30px;
-`;
+
 
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
@@ -167,38 +159,6 @@ const StudyHeader = styled.div`
   justify-content: center;
 `;
 
-const LikesRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin: 10px;
-  padding: 10px;
-  margin-top: 19px;
-`;
-
-const ThumbsRow = styled.div`
-  margin: 3px;
-  flex-direction: row;
-  display: flex;
-`;
-
-const ThumbIcon = styled.div`
-  margin: 2px;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-const BackButtonContainer = styled.div``;
-
-const ReactionsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const LikesText = styled.div`
-  font-size: 20px;
-  color: #b8b8b8;
-  margin-left: 4px;
-`;
 
 const ThemedMainContainer = withTheme(MainContainer);
 
@@ -226,15 +186,7 @@ const StudySummaryContainer = styled.div`
 
 const ThemedStudySummaryContainer = withTheme(StudySummaryContainer);
 
-const HeaderContentWrapper = styled.div`
-  width: 90%;
-  padding: 5px;
-  padding-bottom: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
+
 
 const QueryComponent = (
   props: QueryComponentOptions<StudyPageQuery, StudyPageQueryVariables>
@@ -251,8 +203,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     triggerPrefetch: false,
     flashAnimation:false,
     wikiToggleValue: true,
-    like: false,
-    dislike: false,
   };
 
   getCurrentSectionPath = (view: SiteViewFragment) => {
@@ -398,31 +348,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     }
   };
 
-  thumbsUpClick = () => {
-    if (this.state.like) {
-      this.setState({
-        like: false,
-      });
-    } else {
-      this.setState({
-        like: true,
-        dislike: false,
-      });
-    }
-  };
 
-  thumbsDownClick = () => {
-    if (this.state.dislike) {
-      this.setState({
-        dislike: false,
-      });
-    } else {
-      this.setState({
-        dislike: true,
-        like: false,
-      });
-    }
-  };
 
   handleWikiToggleChange = () => {
     this.setState({ wikiToggleValue: !this.state.wikiToggleValue });
@@ -454,72 +380,11 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     );
   };
 
-  renderBackButton = (name: string, link?: string | null) => {
-    if (link === undefined) return null;
 
-    return (
-      <div style={{ paddingTop: '10px' }}>
-        <ThemedButton
-          style={{ margin: 'auto', float: 'left' }}
-          onClick={this.handleNavButtonClick(link!)}
-          disabled={link === null}>
-          {name}
-        </ThemedButton>
-      </div>
-    );
-  };
 
-  renderReviewsSummary = (data: StudyPageQuery | undefined) => {
-    const { theme } = this.props;
-    if (!data || !data.study) {
-      return (
-        <ReviewsWrapper>
-          <div>
-            <ReactStars
-              count={5}
-              color2={theme.studyPage.reviewStarColor}
-              edit={false}
-              value={0}
-            />
-            <div>{'0 Reviews'}</div>
-          </div>
-        </ReviewsWrapper>
-      );
-    }
-
-    return (
-      <ReviewsWrapper>
-        <div>
-          <ReactStars
-            count={5}
-            color2={theme.studyPage.reviewStarColor}
-            edit={false}
-            value={data.study.averageRating}
-          />
-          <div
-            style={{
-              color: 'rgba(255, 255, 255, 0.5)',
-            }}>{`${data.study.reviewsCount} Reviews`}</div>
-        </div>
-      </ReviewsWrapper>
-    );
-  };
 
   render() {
-    const hash = new URLSearchParams(this.props.history.location.search)
-      .getAll('hash')
-      .toString();
-    const siteViewUrl = new URLSearchParams(this.props.history.location.search)
-      .getAll('sv')
-      .toString();
-    const userRank = this.props.user ? this.props.user.rank : 'default'
-    let rankColor = getStarColor(userRank)
-    const backLink = () => {
-      if (hash !== '') {
-        return `/search?hash=${hash}&sv=${siteViewUrl}`;
-      }
-      return undefined;
-    };
+
     return (
       <SiteProvider>
         {(site, currentSiteView) => (
@@ -543,46 +408,13 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           background: this.props.theme.studyPage
                             .studyPageHeader,
                         }}>
-                        <HeaderContentWrapper>
-                          <BackButtonContainer>
-                            {this.renderBackButton('⤺︎ Back', backLink())}
-                          </BackButtonContainer>
-                          <ReactionsContainer>
-                            <LikesRow>
-                              <ThumbsRow>
-                                <ThumbIcon>
-                                  <FontAwesome
-                                    name="thumbs-up"
-                                    style={{
-                                      color: this.state.like ? 'green' : '#fff',
-                                      fontSize: 24,
-                                    }}
-                                    onClick={this.thumbsUpClick}
-                                  />
-                                </ThumbIcon>
-                                <LikesText>120</LikesText>
-                              </ThumbsRow>
-                              <ThumbsRow>
-                                <ThumbIcon>
-                                  <FontAwesome
-                                    name="thumbs-down"
-                                    style={{
-                                      color: this.state.dislike
-                                        ? 'red'
-                                        : '#fff',
-                                      fontSize: 24,
-                                    }}
-                                    onClick={this.thumbsDownClick}
-                                  />
-                                </ThumbIcon>
-                                <LikesText style={{ color: '#B8B8B8' }}>
-                                  20
-                                </LikesText>
-                              </ThumbsRow>
-                            </LikesRow>
-                            {this.renderReviewsSummary(data)}
-                          </ReactionsContainer>
-                        </HeaderContentWrapper>
+                          <StudyPageHeader
+                          navButtonClick={this.handleNavButtonClick}
+                          history={this.props.history}
+                          user={this.props.user}
+                          data={data}
+                          theme={this.props.theme}
+                          />
                       </StudyHeader>
 
                       <Row>
@@ -645,12 +477,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               siteView={currentSiteView}
                               showAnimation={this.handleShowAnimation}
                             />
-            {this.state.flashAnimation ==true ?
-             <WorkFlowAnimation 
-             resetAnimation={this.handleResetAnimation} 
-             rankColor={rankColor}/>
-             : null}
-
                           </div>
 
                           <div className="container">
