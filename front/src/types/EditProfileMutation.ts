@@ -16,6 +16,16 @@ export interface EditProfileMutation_updateProfile_user_reviews {
   nctId: string;
 }
 
+export interface EditProfileMutation_updateProfile_user_likedStudies {
+  __typename: "Study";
+  nctId: string;
+  averageRating: number;
+  briefTitle: string;
+  overallStatus: string;
+  startDate: any | null;
+  completionDate: any | null;
+}
+
 export interface EditProfileMutation_updateProfile_user {
   __typename: "User";
   /**
@@ -47,6 +57,8 @@ export interface EditProfileMutation_updateProfile_user {
   contributions: number;
   pictureUrl: string | null;
   rank: string | null;
+  likeCount: number | null;
+  likedStudies: EditProfileMutation_updateProfile_user_likedStudies[] | null;
 }
 
 export interface EditProfileMutation_updateProfile {

@@ -268,6 +268,17 @@ class EditProfilePage extends React.Component<
             />
           </div>
         );
+      case 'likes':
+        return (
+          <div>
+            <h2>Liked Studies:</h2>
+            <ReviewsTable
+            //@ts-ignore
+              reviewData={this.props.user?.likedStudies}
+              history={this.props.history}
+            />
+          </div>
+        );
     }
   };
   render() {
@@ -289,8 +300,9 @@ class EditProfilePage extends React.Component<
               totalTags={'Coming Soon'}
               totalFavorites={0}
               handleDisplayChange={this.handleDisplayChange}
-              //@ts-ignore
               rank={this.props.user.rank}
+              likeCount={this.props.user.likeCount}
+              likedStudies={this.props.user.likedStudies}
             />
           </SearchContainer>
           {this.props.user ? (

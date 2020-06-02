@@ -23,7 +23,7 @@ import {
   StudyPagePrefetchQueryVariables,
 } from 'types/StudyPagePrefetchQuery';
 import StudyPageSections from './components/StudyPageSections';
-
+import * as FontAwesome from 'react-fontawesome';
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
 import StudySummary from 'components/StudySummary';
@@ -72,6 +72,9 @@ interface StudyPageState {
   // trigger prefetch for all study sections
   triggerPrefetch: boolean;
   flashAnimation:boolean;
+  wikiToggleValue: boolean;
+  like: boolean;
+  dislike: boolean;
 }
 
 const QUERY = gql`
@@ -141,6 +144,7 @@ const ReviewsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-right: 10px;
+  margin-top: 30px;
 `;
 
 const MainContainer = styled(Col)`
@@ -154,6 +158,46 @@ const MainContainer = styled(Col)`
     color: #fff;
     padding: 15px;
   }
+`;
+
+const StudyHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 90px;
+  justify-content: center;
+`;
+
+const LikesRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  padding: 10px;
+  margin-top: 19px;
+`;
+
+const ThumbsRow = styled.div`
+  margin: 3px;
+  flex-direction: row;
+  display: flex;
+`;
+
+const ThumbIcon = styled.div`
+  margin: 2px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+const BackButtonContainer = styled.div``;
+
+const ReactionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const LikesText = styled.div`
+  font-size: 20px;
+  color: #b8b8b8;
+  margin-left: 4px;
 `;
 
 const ThemedMainContainer = withTheme(MainContainer);
@@ -182,11 +226,14 @@ const StudySummaryContainer = styled.div`
 
 const ThemedStudySummaryContainer = withTheme(StudySummaryContainer);
 
-const BackButtonWrapper = styled.div`
+const HeaderContentWrapper = styled.div`
   width: 90%;
-  margin: auto;
   padding: 5px;
   padding-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const QueryComponent = (
@@ -203,6 +250,9 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   state: StudyPageState = {
     triggerPrefetch: false,
     flashAnimation:false,
+    wikiToggleValue: true,
+    like: false,
+    dislike: false,
   };
 
   getCurrentSectionPath = (view: SiteViewFragment) => {
@@ -282,6 +332,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       basicSections: basicSectionsRaw,
       extendedSections: extendedSectionsRaw,
     } = view.study;
+    console.log('STUDY', view.study);
     const basicSections = [
       {
         name: 'workflow',
@@ -347,6 +398,36 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     }
   };
 
+  thumbsUpClick = () => {
+    if (this.state.like) {
+      this.setState({
+        like: false,
+      });
+    } else {
+      this.setState({
+        like: true,
+        dislike: false,
+      });
+    }
+  };
+
+  thumbsDownClick = () => {
+    if (this.state.dislike) {
+      this.setState({
+        dislike: false,
+      });
+    } else {
+      this.setState({
+        dislike: true,
+        like: false,
+      });
+    }
+  };
+
+  handleWikiToggleChange = () => {
+    this.setState({ wikiToggleValue: !this.state.wikiToggleValue });
+  };
+
   handleNavButtonClick = (link: string) => () => {
     this.props.history.push(`${trimPath(link)}`);
   };
@@ -392,7 +473,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     const { theme } = this.props;
     if (!data || !data.study) {
       return (
-        <ReviewsWrapper style={{ float: 'left' }}>
+        <ReviewsWrapper>
           <div>
             <ReactStars
               count={5}
@@ -455,19 +536,55 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                   query={QUERY}
                   variables={{ nctId: this.props.match.params.nctId }}
                   fetchPolicy="cache-only">
-                  {({ data }) => (
+                  {({ data, loading, error }) => (
                     <div>
-                      <Row
-                        md={12}
+                      <StudyHeader
                         style={{
                           background: this.props.theme.studyPage
                             .studyPageHeader,
                         }}>
-                        <BackButtonWrapper>
-                          {this.renderBackButton('⤺︎ Back', backLink())}
-                          {this.renderReviewsSummary(data)}
-                        </BackButtonWrapper>
-                      </Row>
+                        <HeaderContentWrapper>
+                          <BackButtonContainer>
+                            {this.renderBackButton('⤺︎ Back', backLink())}
+                          </BackButtonContainer>
+                          <ReactionsContainer>
+                            <LikesRow>
+                              <ThumbsRow>
+                                <ThumbIcon>
+                                  <FontAwesome
+                                    name="thumbs-up"
+                                    style={{
+                                      color: this.state.like ? 'green' : '#fff',
+                                      fontSize: 24,
+                                    }}
+                                    onClick={this.thumbsUpClick}
+                                  />
+                                </ThumbIcon>
+                                <LikesText>120</LikesText>
+                              </ThumbsRow>
+                              <ThumbsRow>
+                                <ThumbIcon>
+                                  <FontAwesome
+                                    name="thumbs-down"
+                                    style={{
+                                      color: this.state.dislike
+                                        ? 'red'
+                                        : '#fff',
+                                      fontSize: 24,
+                                    }}
+                                    onClick={this.thumbsDownClick}
+                                  />
+                                </ThumbIcon>
+                                <LikesText style={{ color: '#B8B8B8' }}>
+                                  20
+                                </LikesText>
+                              </ThumbsRow>
+                            </LikesRow>
+                            {this.renderReviewsSummary(data)}
+                          </ReactionsContainer>
+                        </HeaderContentWrapper>
+                      </StudyHeader>
+
                       <Row>
                         <ThemedMainContainer md={12}>
                           <div className="container">

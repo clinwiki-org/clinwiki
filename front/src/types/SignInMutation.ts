@@ -16,6 +16,16 @@ export interface SignInMutation_signIn_user_reviews {
   nctId: string;
 }
 
+export interface SignInMutation_signIn_user_likedStudies {
+  __typename: "Study";
+  nctId: string;
+  averageRating: number;
+  briefTitle: string;
+  overallStatus: string;
+  startDate: any | null;
+  completionDate: any | null;
+}
+
 export interface SignInMutation_signIn_user {
   __typename: "User";
   /**
@@ -47,6 +57,8 @@ export interface SignInMutation_signIn_user {
   contributions: number;
   pictureUrl: string | null;
   rank: string | null;
+  likeCount: number | null;
+  likedStudies: SignInMutation_signIn_user_likedStudies[] | null;
 }
 
 export interface SignInMutation_signIn {
