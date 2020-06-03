@@ -207,18 +207,18 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         this.setState({ showReactions: !this.state.showReactions })
 
     }
-    handleSelectorClick=(e)=>{
+    handleSelectorClick = (e) => {
         console.log("CLICK CLACK", e)
         let newObject = {
             emoji: `${e}`,
             by: `${this.props.user.email}`
         }
-        console.log("NEW",newObject)
-        let oldArray= this.state.counters
+        console.log("NEW", newObject)
+        let oldArray = this.state.counters
         console.log('OLD', oldArray)
 
-       oldArray.push(newObject)
-        this.setState({counters: oldArray, showReactions:false })
+        oldArray.push(newObject)
+        this.setState({ counters: oldArray, showReactions: false })
     }
     render() {
 
