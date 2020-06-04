@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 
 interface StudyPageCounterProps {
   counter: number;

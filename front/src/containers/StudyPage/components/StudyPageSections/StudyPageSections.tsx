@@ -3,7 +3,6 @@ import StudyPageSection from './StudyPageSection';
 import { match } from 'react-router-dom';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { History, Location } from 'history';
-import { UserFragment } from 'types/UserFragment';
 
 interface StudyPageSectionsProps {
   nctId: string;

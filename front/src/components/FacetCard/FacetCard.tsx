@@ -1,10 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {
-  MutationFunction,
   ApolloConsumer,
-  Mutation,
-  MutationComponentOptions,
 } from 'react-apollo';
 import ThemedAutosuggestButton, {
   ThemedPresearchCard,

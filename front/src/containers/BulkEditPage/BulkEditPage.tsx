@@ -5,11 +5,10 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { gql } from 'apollo-boost';
 import { Query, Mutation } from 'react-apollo';
-import { pathOr, omit, prop, uniq } from 'ramda';
+import { omit, prop } from 'ramda';
 import * as R from 'remeda';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import BulkEditView from './BulkEditView';
-import { SearchPageParamsQuery_searchParams } from 'types/SearchPageParamsQuery';
 import SearchPageParamsQuery, {
   SearchPageParamsQueryComponent,
 } from 'queries/SearchPageParamsQuery';
