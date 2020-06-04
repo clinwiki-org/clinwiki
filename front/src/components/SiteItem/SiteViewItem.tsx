@@ -114,9 +114,9 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     console.log(this.props.theme);
     return (
       <UpdateSiteViewMutation>
-        {updateSiteView => (
+        {updateSiteView => {
           //needs to be themed, traditional methods of theming not working
-          <DropdownButton
+          return (<DropdownButton
             bsStyle="default"
             title="Change Type"
             key="default"
@@ -133,8 +133,8 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
                 {type}
               </MenuItem>
             ))}
-          </DropdownButton>
-        )}
+          </DropdownButton>);
+ }}
       </UpdateSiteViewMutation>
     );
   };
