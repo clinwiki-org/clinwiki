@@ -8,6 +8,7 @@ const notes = RichTextEditor.createValueFromString(
 
 ### Version 23
 - Updated front end dependencies
+- Improvements to nested facet query
 
 
 ### Version 22
