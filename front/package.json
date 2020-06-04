@@ -14,7 +14,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "apollo:codegen": "rm -rf src/types && apollo codegen:generate --config=apollo.config.js --target=typescript --outputFlat src/types",
-    "prettier": "prettier --write \"**/*.ts?(x)\""
+    "prettier": "prettier --config .prettierrc --write \"**/*.ts?(x)\""
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.8.1",
