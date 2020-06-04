@@ -4,7 +4,7 @@ import { equals } from 'ramda';
 import { gql } from 'apollo-boost';
 import { Switch, Route, match } from 'react-router';
 import { trimPath } from 'utils/helpers';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment, SiteFragment_siteViews } from 'types/SiteFragment';
 import {
   updateView,
   createMutation,
@@ -24,7 +24,7 @@ interface SiteViewRouterProps {
   site: SiteFragment;
   history: History;
   location: Location;
-  siteViews: any;
+  siteViews: SiteFragment_siteViews[];
   refresh: any;
   onSave?: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
   handleSiteViewEdit?: any;
