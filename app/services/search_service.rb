@@ -227,11 +227,7 @@ class SearchService
           },
         )
       if top_key
-        nesting = nested_body(field)
-        # #Needs to be a symbol for the nested value not just wiki_page_edits
-        nesting[:aggs][:"#{top_key}"][:aggs] = body[:aggs][:"wiki_page_edits.email"][:aggs]
-        body[:aggs][:"wiki_page_edits.email"][:aggs] = nesting[:aggs]
-        body[:aggs][:"wiki_page_edits"] = body[:aggs].delete :"wiki_page_edits.email"
+        body = create_nested_agg_body( body, top_key, field)
       end
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type, return_all)
@@ -250,6 +246,17 @@ class SearchService
     else
       aggs
     end
+  end
+
+  def create_nested_agg_body(body,top_key,field)
+    nesting = nested_body(field)
+    #Adds aggregation term from body to nested hash and ordering
+    nesting[:aggs][:"#{top_key}"][:aggs] = body[:aggs][:"#{field}"][:aggs]
+    #Adds nested hash to under original hash created
+    body[:aggs][:"#{field}"][:aggs] = nesting[:aggs]
+    #renames the query aggregation name at the start to be named after nested document and not nested_key
+    body[:aggs][:"#{top_key}"] = body[:aggs].delete :"#{field}"
+    body
   end
 
   def crowd_agg_facets(site:)
