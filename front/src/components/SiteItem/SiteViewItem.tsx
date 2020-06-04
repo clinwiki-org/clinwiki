@@ -78,7 +78,6 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           },
         },
       }).then(() => {
-        // console.log(res);
         this.props.refresh();
       });
     }
@@ -107,7 +106,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     if (siteViewUrl === 'default' || siteViewUrl === 'user') {
       return;
     }
-    console.log(this.props.theme);
+    // console.log(this.props.theme);
     return (
       <UpdateSiteViewMutation>
         {(updateSiteView) => {
