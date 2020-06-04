@@ -122,7 +122,7 @@ def nested_body(key)
 end
 
 def nested_result_aggs(field, aggs)
-  aggs.dig(:"#{field.split(".")[0]}", :"#{field}").select { |key| key == :"#{field}" }
+  aggs.dig(:"#{field.split(".")[0]}").select { |key| key == :"#{field}" }
 end
 
 class SearchService
@@ -229,8 +229,9 @@ class SearchService
       if top_key
         nesting = nested_body(field)
         # #Needs to be a symbol for the nested value not just wiki_page_edits
-        nesting[:aggs][top_key.to_sym][:aggs] = body[:aggs]
-        body[:aggs] = nesting[:aggs]
+        nesting[:aggs][:"#{top_key}"][:aggs] = body[:aggs][:"wiki_page_edits.email"][:aggs]
+        body[:aggs][:"wiki_page_edits.email"][:aggs] = nesting[:aggs]
+        body[:aggs][:"wiki_page_edits"] = body[:aggs].delete :"wiki_page_edits.email"
       end
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type, return_all)
