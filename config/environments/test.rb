@@ -1,5 +1,10 @@
 # rubocop:disable all
 Rails.application.configure do
+
+  # automatically set the database to `clinwiki_test` instead of clinwiki
+  # you can keep this up to date by setting RAILS_ENV="test" before running db:migrate
+  ENV["DATABASE_URL"] = ENV["DATABASE_URL"].gsub(/clinwiki$/, "clinwiki_test")
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # The test environment is used exclusively to run your application's

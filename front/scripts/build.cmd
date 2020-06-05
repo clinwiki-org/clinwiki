@@ -1,10 +1,7 @@
 @echo off
-@setlocal
-set NODE_ENV=production
+setlocal
 cd %~dp0\..
 call yarn build
-set CW_PATH=..\clinwiki-org\public
-del %CW_PATH%\*.js
-copy /y build\* %CW_PATH%
-
-
+cd %~dp0\..
+cd build
+robocopy /mir .  ..\..\public

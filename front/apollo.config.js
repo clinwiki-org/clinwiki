@@ -1,6 +1,6 @@
 module.exports = {
   client: {
-    includes: ['app/**/*.tsx', 'app/**/*.ts'],
+    includes: ['src/**/*.tsx', 'src/**/*.ts'],
     tagName: 'gql',
     service: {
       name: 'clinwiki',

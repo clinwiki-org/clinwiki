@@ -46,7 +46,10 @@ gem "graphql-batch"
 gem "mini_magick"
 #  User creation gem
 gem "devise"
-gem "searchkick", "3.1.0"
+# ** Be careful upgrading searchkick **
+# By default it will update elasticsearch/elasticsearch-api to version 7 which breaks
+# Searchly which we use for elasticsearch on production.
+gem "searchkick", "~> 4.3.0"
 gem "font-awesome-rails"
 gem "font-awesome-sass"
 gem "bootstrap-sass"
@@ -81,7 +84,7 @@ group :development, :test do
 end
 
 gem "activejob-traffic_control", ">= 0.1.3"
-gem "jwt"
+gem "jwt", ">=2.2.0"
 gem "sidekiq"
 gem "sidekiq-cron"
 gem "rack-cors"
@@ -91,15 +94,23 @@ gem "front_matter_parser"
 gem "mailgun-ruby", "~>1.1.6"
 gem "graphql"
 gem "graphiql-rails", "~> 1.4.11"
-gem "faraday"
+gem "faraday", "~> 1"
 
 gem "activerecord-import", "~> 1.0"
 gem "composite_primary_keys"
 
 gem "timeliness", "~> 0.4.4"
 
-gem "webmock", "~> 3.8", :group => :test
+gem "webmock", "~> 3.8", group: :test
 
-gem "rspec-snapshot", "~> 0.1.2", :group => :test
+gem "rspec-snapshot", "~> 0.1.2", group: :test
 
 gem "http_logger", "~> 0.6.0"
+
+gem "factory_bot", "~> 5.1", group: :test
+
+gem "faker", "~> 2.11", group: :test
+
+gem "database_cleaner-active_record", "~> 1.8", group: :test
+
+gem "aws-sdk-s3", "~> 1.63", require: true

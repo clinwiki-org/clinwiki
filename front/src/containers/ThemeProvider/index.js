@@ -1,0 +1,1 @@
+export { default, ProvideTheme } from './ThemeProvider';

@@ -3,11 +3,17 @@ module Mutations
     field :site_view, Types::SiteViewType, null: true
     field :errors, [String], null: true
 
+    argument :name, String, required: false
+    argument :default, Boolean, required: false
+    argument :url, String, required: false
+    argument :type, String, required: false
+    argument :description, String, required: false
     argument :id, Int, required: true
     argument :mutations, [Types::SiteViewMutationInputType], required: true
 
     def resolve(args)
       view = site_view(args[:id])
+      view.attributes = args.slice(:name,:url,:description,:default, :type)
       mutations = args[:mutations].clone.map do |mutation|
         begin
           mutation[:payload] = JSON.parse(mutation[:payload])

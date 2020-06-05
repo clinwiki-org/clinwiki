@@ -82,6 +82,42 @@ To contribute a new feature or bug fix create a new branch off of the current st
 To access the sub-site config and bulk update admin features, add admin role after creating a user
 In rails console, User.find_by(email: "[email of the user]").add_role(:admin)
 
+## Working with Sites
+
+Sites can be accessed locally by navigating to a subdomain against your localhost.
+By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are
+white-listed for CORS requests. This means you can configure a site with the subdomain
+`mysite` and a site with the subdomain `test` without additional CORS configuration.
+
 # Testing
 
-ClinWiki doesn't currently have any automated tests (feel free to contribute some). Instead we have a manual checklist maintained in the Wiki that we will run though after features are merged to staging. [See it here](https://github.com/clinwiki-org/clinwiki/wiki/Testing-Guide)
+ClinWiki is working on increasing unit test coverage.
+
+We have a manual checklist maintained in the Wiki that
+we will run though after features are merged to staging.
+[See it here](https://github.com/clinwiki-org/clinwiki/wiki/Testing-Guide)
+
+## Running Ruby Tests
+
+```bash
+# ensure your test database exists.
+# you should only need to run this once.
+# you'll want to re-migrate the test database
+# when new migrations appear
+RAILS_ENV=test bundle exec rake db:create db:migrate
+
+bundle exec rspec spec
+```
+
+The test database is automatically configured
+in `config/environments/test.rb'
+
+## AWS
+
+We use AWS for storing CSV exports in S3.
+You will need the following in your .env to develop against this locally:
+
+```
+AWS_ACCESS_KEY_ID=(ask for this)
+AWS_SECRET_ACCESS_KEY_ID=(ask for this)
+```

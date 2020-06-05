@@ -1,7 +1,7 @@
 class Site < ApplicationRecord
   resourcify
 
-  has_one :site_view, dependent: :destroy
+  has_many :site_views, dependent: :destroy
 
   after_create :create_site_view
 
@@ -28,7 +28,44 @@ class Site < ApplicationRecord
   private
 
   def create_site_view
-    self.site_view = SiteView.new
+    self.site_views.new(name:"Primary",default:true)
+    self.site_views.new(name:"User History",url:"user", default: false, updates: Site.default_user_updates )
+    self.site_views.new(name:"Intervention",url:"intervention",default:false, updates: Site.default_intervention_updates )
     save!
+  end
+
+  def self.default_user_updates
+    [ {"path"=>["search", "config", "fields", "showFacetBar"],
+         "payload"=>"false",
+         "operation"=>"set"},
+        {"path"=>["search", "config", "fields", "showAutoSuggest"],
+         "payload"=>"false",
+         "operation"=>"set"},
+        {"path"=>["search", "config", "fields", "showBreadCrumbs"],
+         "payload"=>"false",
+         "operation"=>"set"},
+        {"path"=>["search", "config", "fields", "showResults"],
+         "payload"=>"true",
+         "operation"=>"set"},
+     {"path"=>["search", "type"],
+     "payload"=>"user",
+         "operation"=>"set"}
+    ]
+  end
+  def self.default_intervention_updates
+    [
+      {"path"=>["search", "type"], "payload"=>"search", "operation"=>"set"},
+      {"path"=>["search", "config", "fields", "showBreadCrumbs"],
+        "payload"=>"false",
+        "operation"=>"set"},
+      {"path"=>["search", "config", "fields", "showAutoSuggest"],
+        "payload"=>"false",
+        "operation"=>"set"},
+      {"path"=>["search", "config", "fields", "showFacetBar"],
+        "payload"=>"false",
+        "operation"=>"set"},
+      {"path"=>["search", "type"],
+        "payload"=>"intervention",
+        "operation"=>"set"}]
   end
 end

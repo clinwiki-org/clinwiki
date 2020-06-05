@@ -8,6 +8,7 @@ module Types
     field :all_summary_fields, [String], null: false
     field :wiki_sections_filter, SiteSelectType, null: false
     field :suggested_labels_filter, SiteSelectType, null: false
+    field :suggested_labels_config, [WorkflowAggFieldType], null: false
     field :summary_fields_filter, SiteSelectType, null: false
 
     def hide_reviews
@@ -36,6 +37,10 @@ module Types
 
     def suggested_labels_filter
       object[:suggestedLabelsFilter]
+    end
+
+    def suggested_labels_config
+      object[:suggestedLabelsConfig]
     end
 
     def summary_fields_filter

@@ -67,10 +67,10 @@ module FrontMatterHelper
     end
 
     parsed_time = Timeliness.parse(val)
-    return parsed_time unless parsed_time.nil?
+    return parsed_time.utc unless parsed_time.nil?
 
     # default to string, which we split against pipe separator
-    return val.split("|")
+    val.split("|")
   end
 
   def combined_markdown(content, front_matter = {})

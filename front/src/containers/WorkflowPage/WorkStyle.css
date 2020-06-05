@@ -1,0 +1,37 @@
+.buttonstyle{
+    background: #55B88D;
+    color: #fff !important;
+    margin: 20px;
+    border: 0px;
+    font-family: 'Lato','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 6px 12px;
+    
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.highlight{
+    background-color: yellow;
+}
+.termstyle{
+    background: #55B88D;
+    color: #fff !important;
+    margin: 5px;
+    border: 0px;
+    font-family: 'Lato','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 6px 12px;
+    
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}

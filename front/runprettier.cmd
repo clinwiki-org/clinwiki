@@ -1,1 +1,0 @@
-prettier --write "**\*.ts?(x)" 

@@ -4,6 +4,8 @@ search_results/*
 public/studies/*
 public/imported/*
 public/downloaded/*
+public/static/*
+public/asset-manifest.json
 public/*.js
 public/*.png
 public/*.jpeg
@@ -26,8 +28,9 @@ config/database_local.yml
 .byebug_history
 *.dump
 ubuntu-artful-17.10-cloudimg-console.log
-.orig
+*.orig
 public/assets
 node_modules
 entrypoint.lock
 .docker-sync
+tmp

@@ -21,5 +21,11 @@ module Types
     field :createFeed, mutation: Mutations::CreateFeed
     field :bulkQueryUpdate, mutation: Mutations::BulkQueryUpdate
     field :bulkListUpdate, mutation: Mutations::BulkListUpdate
+    field :createSiteView, mutation: Mutations::CreateSiteView
+    field :deleteSiteView, mutation: Mutations::DeleteSiteView
+    field :copySiteView, mutation: Mutations::CopySiteView
+    field :provision_search_hash, mutation: Mutations::SearchHashMutation
+    field :export_to_csv, mutation: Mutations::ExportToCsv
+    field :update_password, mutation: Mutations::UpdatePassword
   end
 end
