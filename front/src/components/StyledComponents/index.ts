@@ -88,7 +88,6 @@ const MainContainer = styled(Col)`
     color: #fff !important;
   }
 
-  span,
   h2 {
     padding-left: 15px;
   }
@@ -213,11 +212,10 @@ export const ScoreBoard = styled.div`
   }
 `;
 export const StyledProfileForm = styled(FormControl)`
-  background: rgba(255, 255, 255, 0.2);
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 1.25em;
   border: none;
-  padding: 0;
+  padding: 10px;
   margin: 0 1em 1em 1em;
   border-bottom: solid white;
   width: auto;
