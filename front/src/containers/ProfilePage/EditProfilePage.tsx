@@ -132,13 +132,12 @@ class EditProfilePage extends React.Component<
     if (this.props.user) {
       return (
         <div>
-          //@ts-ignore
           <ProfilePicture pictureUrl={this.props.user.pictureUrl} />
-          <span
-            style={{ paddingLeft: '15px' }}
+          <a
+            style={{ paddingLeft: '15px', cursor: 'pointer' }}
             onClick={() => this.toggleEditProfile()}>
             X
-          </span>
+          </a>
           <SearchContainer>
             <StyledProfileLabel>First Name:</StyledProfileLabel>
             <StyledProfileForm
@@ -204,12 +203,12 @@ class EditProfilePage extends React.Component<
       return (
         <div>
           <ProfilePicture pictureUrl={pictureUrl} />
-          <span
-            style={{ paddingLeft: '15px' }}
+          <a
+            style={{ paddingLeft: '15px', cursor: 'pointer' }}
             onClick={() => this.toggleEditProfile()}>
             {' '}
             Edit Profile
-          </span>
+          </a>
 
           <SearchContainer>
             <StyledProfileLabel>First Name:</StyledProfileLabel>
