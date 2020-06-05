@@ -412,8 +412,9 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           navButtonClick={this.handleNavButtonClick}
                           history={this.props.history}
                           user={this.props.user}
-                          data={data}
+                          data={data?.study}
                           theme={this.props.theme}
+                          nctId={this.props.match.params.nctId}
                           />
                       </StudyHeader>
 

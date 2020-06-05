@@ -20,16 +20,19 @@ interface CreateReactionProps {
 
 const CREATE_REACTION = gql`
   mutation CreateReaction(
-    $reactionKindId: Int
-    $nctId: String
+    $reactionKindId: Int!
+    $nctId: String!
+
   ) {
     createReaction(
-        input : { reactionKindId: $reactionKindId, nctId: n$ctId }
+        input : { reactionKindId: $reactionKindId, nctId: $nctId }
     ) {
       reaction{
-          reactionKindId
+          reactionKind{
+            id
+          }
       }
-      error
+      errors
     }
   }
 `;

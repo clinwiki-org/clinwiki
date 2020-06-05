@@ -6,7 +6,8 @@ import ThemedButton from 'components/StyledComponents';
 import { getStarColor } from '../../../utils/auth'
 import { GithubSelector, GithubCounter, SlackCounter, SlackSelector } from 'react-reactions';
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
-
+import CreateReactionMutation, {
+} from 'mutations/CreateReactionMutation';
 interface StudyPageHeaderProps {
 
     navButtonClick: any;
@@ -14,10 +15,11 @@ interface StudyPageHeaderProps {
     history: any;
     data: any;
     theme: any;
+    nctId: any;
 }
 interface StudyPageHeaderState {
-    like: boolean;
-    dislike: boolean;
+    likesArray: any[];
+    dislikesArray: any[];
     showReactions: boolean;
     reactions: any;
     counters: any;
@@ -92,8 +94,8 @@ const LikesText = styled.div`
 // A simple counter that displays which study you're on on the study page, in the middle of the prev and next buttons
 class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHeaderState> {
     state: StudyPageHeaderState = {
-        like: false,
-        dislike: false,
+        likesArray: [],
+        dislikesArray: [],
         showReactions: false,
         reactions: [],
         counters: []
@@ -114,55 +116,51 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         );
     };
 
-    thumbsUpClick = () => {
-        if (this.state.like) {
-            this.setState({
-                like: false,
-            });
-        } else {
-            this.setState({
-                like: true,
-                dislike: false,
-            });
-        }
-    };
-
-    thumbsDownClick = () => {
-        if (this.state.dislike) {
-            this.setState({
-                dislike: false,
-            });
-        } else {
-            this.setState({
-                dislike: true,
-                like: false,
-            });
-        }
-    };
-
     componentDidMount = () => {
-        let reactions: any[] = [];
-        reactions = ['👍', '👎', '❤️', '☠️']
+        let reactions = ['👍', '👎', '❤️', '☠️']
 
-        let counters: any[] = [];
+        this.setState({ reactions: reactions })
+    }
+    componentDidUpdate = (prevProps) => {
+        
+        if (this.props.data && prevProps !== this.props) {
 
-        counters = [{
-            emoji: '👍', // String emoji reaction
-            by: 'Brian', // String of persons name
-        },
-        {
-            emoji: '👎', // String emoji reaction
-            by: 'Brian', // String of persons name
-        },
-        {
-            emoji: '❤️', // String emoji reaction
-            by: 'Brian', // String of persons name
-        },
-        {
-            emoji: '☠️', // String emoji reaction
-            by: 'Brian', // String of persons name
-        }]
-        this.setState({ reactions: reactions, counters: counters })
+            let dislikesCount = this.props.data.dislikesCount
+
+            let likesCount = this.props.data.likesCount
+            if (dislikesCount > 0) {
+                let dislikesCounter: any[] = []
+                let dislike = {
+                    emoji: '👎',
+                    by: "user"
+                }
+                for (let i = 0; i < dislikesCount; i++) {
+                    dislikesCounter.push(dislike)
+
+                }
+                this.setState({ dislikesArray: dislikesCounter })
+            }
+            if (likesCount > 0) {
+                let likesCounter: any[] = []
+                let like = {
+                    emoji: '👍',
+                    by: "user"
+                }
+                for (let i = 0; i < likesCount; i++) {
+                    likesCounter.push(like)
+
+                }
+
+                this.setState({ likesArray: likesCounter })
+
+            }
+
+            let dislikeCounter = this.state.dislikesArray
+            let likesCounter = this.state.likesArray
+            let finalArray = likesCounter.concat(dislikeCounter)
+            this.setState({ counters: finalArray })
+
+        }
     }
     renderReviewsSummary = (data: StudyPageQuery | undefined) => {
         const { theme } = this.props;
@@ -207,7 +205,20 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         this.setState({ showReactions: !this.state.showReactions })
 
     }
-    handleSelectorClick = (e) => {
+    reactions = (character) => {
+        switch (character) {
+            case '👎':
+                return 0;
+            case '👍':
+                return 1;
+            // case '❤️':
+            //     return 2;
+            // case '☠️':
+            //     return 3;
+        }
+    }
+
+    handleSelectorClick = (e, createReaction) => {
         console.log("CLICK CLACK", e)
         let newObject = {
             emoji: `${e}`,
@@ -216,9 +227,18 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         console.log("NEW", newObject)
         let oldArray = this.state.counters
         console.log('OLD', oldArray)
-
+        console.log("Props", this.props)
         oldArray.push(newObject)
         this.setState({ counters: oldArray, showReactions: false })
+        let reactionId = this.reactions(e)
+        console.log("ID", reactionId)
+        createReaction({
+            variables: {
+                reactionKindId: reactionId,
+                nctId: this.props.nctId
+
+            }
+        })
     }
     render() {
 
@@ -250,7 +270,13 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
                                 onSelect={this.handleEmojiSelect}
                                 onAdd={this.handleAddReaction}
                             />
-                            {this.state.showReactions == true ? <GithubSelector reactions={this.state.reactions} onSelect={this.handleSelectorClick} /> : null}
+                            {this.state.showReactions == true ?
+                                <CreateReactionMutation>
+                                    {createReaction => (<GithubSelector
+                                        reactions={this.state.reactions}
+                                        onSelect={(e) => this.handleSelectorClick(e, createReaction)} />)}
+                                </CreateReactionMutation>
+                                : null}
                         </ThumbsRow>
                     </LikesRow>
                     {this.renderReviewsSummary(this.props.data)}
