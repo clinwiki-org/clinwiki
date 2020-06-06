@@ -52,7 +52,7 @@ class Cards extends React.Component<CardsProps, CardsState> {
           md={4}
           sm={6}
           xs={12}
-          style={{ padding: '10px', height: '500px' }}
+          style={{ padding: '10px', height: '250px' }}
           onClick={() => this.clicked(d)}>
           <MailMergeView
             style={this.cardStyle}
