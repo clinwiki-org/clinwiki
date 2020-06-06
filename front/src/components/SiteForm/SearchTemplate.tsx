@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { MailMergeEditor } from 'components/MailMerge';
-import { searchSchema } from 'components/MailMerge/StudySchema';
 import styled from 'styled-components';
 import { FormControl } from 'react-bootstrap';
-
-import {
-  PREFETCH_QUERY,
-} from 'containers/StudyPage/StudyPage';
+import { fromPairs } from 'ramda';
+import { PREFETCH_QUERY } from 'containers/StudyPage/StudyPage';
 import { useQuery } from 'react-apollo';
+import { JsonSchema } from 'components/MailMerge/SchemaSelector';
+import { StudyPagePrefetchQuery } from 'types/StudyPagePrefetchQuery';
+import { camelCase } from 'utils/helpers';
 
 interface Props {
   template: string;
   onTemplateChanged: (template: string) => void;
-  fields: { id: string; label: string }[];
+  fields: string[];
 }
 
 const StyledFormControl = styled(FormControl)`
@@ -26,17 +26,25 @@ const Container = styled.div`
 const default_nctid = 'NCT00222898';
 
 function SearchTemplate(props: Props) {
-  const [nctID, setNctId] = useState(default_nctid);
-  const { data } = useQuery(PREFETCH_QUERY, { variables: { nctID } });
+  const [nctId, setNctId] = useState(default_nctid);
+  const { data } = useQuery<StudyPagePrefetchQuery>(PREFETCH_QUERY, {
+    variables: { nctId },
+  });
+  const schema: JsonSchema = {
+    type: 'object',
+    properties: fromPairs(
+      props.fields.map(f => [camelCase(f), { type: 'string' }])
+    ) as Record<string, JsonSchema>,
+  };
   return (
     <Container>
       <StyledFormControl
         placeholder={default_nctid}
-        value={nctID}
+        value={nctId}
         onChange={e => setNctId(e.target.value || default_nctid)}
       />
       <MailMergeEditor
-        schema={searchSchema}
+        schema={schema}
         template={props.template || ''}
         sample={data?.study || {}}
         onTemplateChanged={props.onTemplateChanged}

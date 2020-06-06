@@ -130,8 +130,7 @@ export default class SchemaSelector extends React.Component<Props, State> {
           {schema
             .filter(i => i.toLowerCase().includes(this.state.filter))
             .map(i => (
-              <a key={i} style={linkStyle} onClick={() => this.click(i)}> {i} </a> 
-              // eslint-disable-line
+              <a key={i} style={linkStyle} onClick={() => this.click(i)}> {i} </a> // eslint-disable-line
             ))}
         </div>
       </div>

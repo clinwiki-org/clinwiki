@@ -803,6 +803,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <>
               <h3>Template</h3>
               <SearchTemplate
+                fields={studyFields}
                 onTemplateChanged={t =>
                   this.handleAddMutation(
                     {
