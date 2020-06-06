@@ -1,9 +1,5 @@
 import * as React from 'react';
-import {
-  default as SchemaSelector,
-  SchemaType,
-  JsonSchema,
-} from './SchemaSelector';
+import SchemaSelector, { SchemaType, JsonSchema } from './SchemaSelector';
 import View from './MailMergeView';
 import Editor from './MailMergeEditor';
 

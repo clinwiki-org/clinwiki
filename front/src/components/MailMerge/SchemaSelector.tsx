@@ -41,7 +41,7 @@ export type JsonSchema = JsonSchemaItem | JsonSchemaArray | JsonSchemaObject;
 function jsonSchemaToInternal(x: JsonSchema) {
   function subPath(trunk: string, leaf: string) {
     if (!trunk) return leaf;
-    else if (trunk[trunk.length - 1] == '#') {
+    else if (trunk[trunk.length - 1] === '#') {
       return `${trunk}${leaf}`;
     } else {
       return `${trunk}.${leaf}`;
@@ -72,9 +72,9 @@ function jsonSchemaToInternal(x: JsonSchema) {
   return result.sort();
 }
 
-function graphqlToInternal(x: object) {
-  return [];
-}
+// function graphqlToInternal(x: object) {
+//   return [];
+// }
 function indent(count: number) {
   let result = '';
   for (let x = 0; x < count; ++x) result += ' ';
@@ -130,9 +130,8 @@ export default class SchemaSelector extends React.Component<Props, State> {
           {schema
             .filter(i => i.toLowerCase().includes(this.state.filter))
             .map(i => (
-              <a key={i} style={linkStyle} onClick={() => this.click(i)}>
-                {i}
-              </a>
+              <a key={i} style={linkStyle} onClick={() => this.click(i)}> {i} </a> 
+              // eslint-disable-line
             ))}
         </div>
       </div>

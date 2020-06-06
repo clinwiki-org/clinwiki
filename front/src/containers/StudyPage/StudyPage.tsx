@@ -189,7 +189,7 @@ const BackButtonWrapper = styled.div`
 const QueryComponent = (
   props: QueryComponentOptions<StudyPageQuery, StudyPageQueryVariables>
 ) => Query(props);
-const PrefetchQueryComponent = (
+export const PrefetchQueryComponent = (
   props: QueryComponentOptions<
     StudyPagePrefetchQuery,
     StudyPagePrefetchQueryVariables

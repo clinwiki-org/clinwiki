@@ -368,6 +368,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search_crowdAggs {
 export interface UpdateSiteMutation_updateSite_site_siteView_search {
   __typename: "SiteSearchPage";
   type: string;
+  template: string;
   autoSuggest: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest;
   results: UpdateSiteMutation_updateSite_site_siteView_search_results;
   presearch: UpdateSiteMutation_updateSite_site_siteView_search_presearch;
@@ -731,6 +732,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search_crowdAggs {
 export interface UpdateSiteMutation_updateSite_site_siteViews_search {
   __typename: "SiteSearchPage";
   type: string;
+  template: string;
   autoSuggest: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest;
   results: UpdateSiteMutation_updateSite_site_siteViews_search_results;
   presearch: UpdateSiteMutation_updateSite_site_siteViews_search_presearch;

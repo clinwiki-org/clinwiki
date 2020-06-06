@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as ReactMarkdown from 'react-markdown';
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import Handlebars from 'handlebars';
 import { registerHandlebarsHelpers } from './MailMergeHelpers';
 

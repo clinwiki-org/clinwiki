@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
-import { SiteFragment } from 'types/SiteFragment';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
-import SiteForm from 'components/SiteForm';
+import { SiteFragment_siteView } from 'types/SiteFragment';
 
 interface CardsProps {
   data: SearchPageSearchQuery_search_studies[];
   onPress: Function;
   loading: boolean;
   columns: any;
-  site: SiteFragment;
+  template : string
 }
 
 interface CardsState {
@@ -30,7 +29,7 @@ class Cards extends React.Component<CardsProps, CardsState> {
     }
   }
 
-  cardStyle : React.CSSProperties = {
+  cardStyle: React.CSSProperties = {
     borderWidth: 2,
     borderColor: 'rgb(85, 184, 141)',
     borderStyle: 'solid',
@@ -57,7 +56,7 @@ class Cards extends React.Component<CardsProps, CardsState> {
           onClick={() => this.clicked(d)}>
           <MailMergeView
             style={this.cardStyle}
-            template={this.props.site.siteView.search.template}
+            template={this.props.template}
             context={d}
           />
         </Col>
