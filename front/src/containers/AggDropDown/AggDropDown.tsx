@@ -54,6 +54,12 @@ const Container = styledComponents.div`
   padding: 10px;
   padding-right: 0;
 `;
+const ChartContainer = styledComponents.div`
+  padding-top: 10px;
+  overflow-x: auto;
+  max-height: 200px;
+  min-height: 200px;
+`;
 
 const PanelWrapper = styledComponents.div`
   .flex {
@@ -84,6 +90,12 @@ const PanelWrapper = styledComponents.div`
     width: 100%;
   }
 `;
+const ChartWrapper = styledComponents.div`
+  margin-top: 0;
+  max-height: 200px;
+  min-height: 200px;
+  margin-left: 5px;
+`
 
 interface AggDropDownState {
   hasMore: boolean;
@@ -540,10 +552,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           )}
         </PresearchPanel>
       );
-    }else if (field?.display === FieldDisplay.BAR_CHART) {
+    } else if (field?.display === FieldDisplay.BAR_CHART) {
       return (
-        <PresearchPanel>
-        <PresearchFilter>
+        <ChartWrapper>
           <Filter
             buckets={buckets}
             filter={filter}
@@ -559,8 +570,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
           />
-        </PresearchFilter>
-          <Container>
+          <ChartContainer>
             <BarChartComponent
               isPresearch={true}
               // visibleOptions={visibleOptions}
@@ -571,13 +581,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
               field={field}
               searchParams={this.props.searchParams}
             />
-          </Container>
-          {!loading && (
-            <Container>
-              <AllowMissingCheckbox buckets={buckets} />
-            </Container>
-          )}
-        </PresearchPanel>
+            {!loading && (
+              <Container>
+                <AllowMissingCheckbox buckets={buckets} />
+              </Container>
+            )}
+          </ChartContainer>
+        </ChartWrapper>
       );
     }
     return (
