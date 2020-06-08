@@ -26,6 +26,16 @@ export interface SignUpMutation_signUp_user_likedStudies {
   completionDate: any | null;
 }
 
+export interface SignUpMutation_signUp_user_dislikedStudies {
+  __typename: "Study";
+  nctId: string;
+  averageRating: number;
+  briefTitle: string;
+  overallStatus: string;
+  startDate: any | null;
+  completionDate: any | null;
+}
+
 export interface SignUpMutation_signUp_user {
   __typename: "User";
   /**
@@ -59,6 +69,8 @@ export interface SignUpMutation_signUp_user {
   rank: string | null;
   likeCount: number | null;
   likedStudies: SignUpMutation_signUp_user_likedStudies[] | null;
+  dislikeCount: number | null;
+  dislikedStudies: SignUpMutation_signUp_user_dislikedStudies[] | null;
 }
 
 export interface SignUpMutation_signUp {

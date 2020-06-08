@@ -24,6 +24,16 @@ export interface CurrentUserQuery_me_likedStudies {
   completionDate: any | null;
 }
 
+export interface CurrentUserQuery_me_dislikedStudies {
+  __typename: "Study";
+  nctId: string;
+  averageRating: number;
+  briefTitle: string;
+  overallStatus: string;
+  startDate: any | null;
+  completionDate: any | null;
+}
+
 export interface CurrentUserQuery_me {
   __typename: "User";
   /**
@@ -57,6 +67,8 @@ export interface CurrentUserQuery_me {
   rank: string | null;
   likeCount: number | null;
   likedStudies: CurrentUserQuery_me_likedStudies[] | null;
+  dislikeCount: number | null;
+  dislikedStudies: CurrentUserQuery_me_dislikedStudies[] | null;
 }
 
 export interface CurrentUserQuery {

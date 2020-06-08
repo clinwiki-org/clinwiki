@@ -240,7 +240,12 @@ class EditProfilePage extends React.Component<
   handleDisplayChange = display => {
     this.setState({ currentDisplay: display });
   };
+  handleEmojiSelect=(e)=>{
 
+  }
+  handleAddReaction=()=>{
+
+  }
   renderResults = email => {
     switch (this.state.currentDisplay) {
       case 'contributions':
@@ -268,10 +273,24 @@ class EditProfilePage extends React.Component<
             />
           </div>
         );
-      case 'likes':
+      case 'reactions':
+        // if(this.props.user.likedStudies && this.props.user.dislikedStudies){
+
+        //   let allReactions = this.props.user.likedStudies + this.props.user.dislikedStudies
+
+        // }
+
+        
         return (
           <div>
             <h2>Liked Studies:</h2>
+            {/* <SlackCounter
+              counters={}
+              user={""}
+              onSelect={(e)=>this.handleEmojiSelect(e)}
+              onAdd={this.handleAddReaction}
+            /> */}
+
             <ReviewsTable
             //@ts-ignore
               reviewData={this.props.user?.likedStudies}

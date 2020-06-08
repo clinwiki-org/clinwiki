@@ -4,10 +4,16 @@ import * as FontAwesome from 'react-fontawesome';
 import ReactStars from 'react-stars';
 import ThemedButton from 'components/StyledComponents';
 import { getStarColor } from '../../../utils/auth'
-import { GithubSelector, GithubCounter, SlackCounter, SlackSelector } from 'react-reactions';
+// import { GithubSelector, GithubCounter, SlackCounter, SlackSelector } from 'react-reactions';
+import SlackCounter from '../../../components/SlackCounter/SlackCounter'
+import GithubSelector from '../../../components/GithubSelector/GithubSelector'
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
+import DeleteReactionMutation, {
+} from 'mutations/DeleteReactionMutation';
+import { find, propEq } from 'ramda';
+
 interface StudyPageHeaderProps {
 
     navButtonClick: any;
@@ -122,7 +128,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         this.setState({ reactions: reactions })
     }
     componentDidUpdate = (prevProps) => {
-        
+        console.log("DATA", this.props.data)
         if (this.props.data && prevProps !== this.props) {
 
             let dislikesCount = this.props.data.dislikesCount
@@ -197,8 +203,16 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
             </ReviewsWrapper>
         );
     };
-    handleEmojiSelect = (e) => {
+    handleEmojiSelect = (e, deleteReaction) => {
+
         console.log(e)
+        let reactionId = this.reactions(e)
+        console.log("Typing",typeof(reactionId))
+        deleteReaction({
+            variables: {
+                id: reactionId
+            }
+        })
     }
     handleAddReaction = (e) => {
         console.log("Clicked", e)
@@ -207,38 +221,59 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
     }
     reactions = (character) => {
         switch (character) {
-            case '👎':
-                return 0;
+
             case '👍':
                 return 1;
+            case '👎':
+                return 2;
             // case '❤️':
-            //     return 2;
-            // case '☠️':
             //     return 3;
+            // case '☠️':
+            //     return 4;
         }
     }
+    isReactionUnique =(reaction)=>{
+        switch(reaction){
+            case '👍':
+                return  find(propEq('nctId', this.props.nctId))(this.props.user.likedStudies);
+            case '👎':
+                return  find(propEq('nctId', this.props.nctId))(this.props.user.dislikedStudies);
 
-    handleSelectorClick = (e, createReaction) => {
-        console.log("CLICK CLACK", e)
-        let newObject = {
-            emoji: `${e}`,
-            by: `${this.props.user.email}`
         }
-        console.log("NEW", newObject)
-        let oldArray = this.state.counters
-        console.log('OLD', oldArray)
-        console.log("Props", this.props)
-        oldArray.push(newObject)
-        this.setState({ counters: oldArray, showReactions: false })
-        let reactionId = this.reactions(e)
-        console.log("ID", reactionId)
-        createReaction({
-            variables: {
-                reactionKindId: reactionId,
-                nctId: this.props.nctId
+    }
+    handleSelectorClick = (e, createReaction) => {
+        console.log("CLICK CLACK", e, this.props.user)
 
+        let hasReacted = this.isReactionUnique(e)
+        console.log("Ayo", hasReacted)
+
+        if (hasReacted == undefined) {
+            let newObject = {
+                emoji: `${e}`,
+                by: `${this.props.user.email}`
             }
-        })
+            console.log("NEW", newObject)
+            let oldArray = this.state.counters
+            console.log('OLD', oldArray)
+            console.log("Props", this.props)
+            oldArray.push(newObject)
+            this.setState({ counters: oldArray, showReactions: false })
+            let reactionId = this.reactions(e)
+            console.log("ID", reactionId)
+            console.log(this.props.user.likedStudies)
+            createReaction({
+                variables: {
+                    reactionKindId: reactionId,
+                    nctId: this.props.nctId
+
+                }
+            })
+
+        } else {
+            console.log("Whoops you already reacted that to this study")
+            this.setState({ showReactions: false })
+        }
+
     }
     render() {
 
@@ -264,12 +299,17 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
                 <ReactionsContainer>
                     <LikesRow>
                         <ThumbsRow>
+                        <DeleteReactionMutation>
+                            {deleteReaction=>(
                             <SlackCounter
-                                counters={this.state.counters}
-                                user={"Brian"}
-                                onSelect={this.handleEmojiSelect}
-                                onAdd={this.handleAddReaction}
-                            />
+                            counters={this.state.counters}
+                            user={""}
+                            onSelect={(e)=>this.handleEmojiSelect(e,deleteReaction)}
+                            onAdd={this.handleAddReaction}
+                        />
+                            )}
+                        </DeleteReactionMutation>
+
                             {this.state.showReactions == true ?
                                 <CreateReactionMutation>
                                     {createReaction => (<GithubSelector

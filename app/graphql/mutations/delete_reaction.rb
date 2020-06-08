@@ -1,6 +1,6 @@
 module Mutations
   class DeleteReaction < BaseMutation
-    field :reaction, Types::ReactionType, null: false
+    field :reaction, Types::ReactionType, null: true
     field :errors, [String], null: true
 
     argument :id, Integer,"ID of reaction", required: true

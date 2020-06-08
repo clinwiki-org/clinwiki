@@ -34,6 +34,15 @@ const FRAGMENT = gql`
       startDate
       completionDate
     }
+    dislikeCount
+    dislikedStudies{
+      nctId
+      averageRating
+      briefTitle
+      overallStatus
+      startDate
+      completionDate
+    }
   }
 `;
 

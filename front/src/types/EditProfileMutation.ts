@@ -26,6 +26,16 @@ export interface EditProfileMutation_updateProfile_user_likedStudies {
   completionDate: any | null;
 }
 
+export interface EditProfileMutation_updateProfile_user_dislikedStudies {
+  __typename: "Study";
+  nctId: string;
+  averageRating: number;
+  briefTitle: string;
+  overallStatus: string;
+  startDate: any | null;
+  completionDate: any | null;
+}
+
 export interface EditProfileMutation_updateProfile_user {
   __typename: "User";
   /**
@@ -59,6 +69,8 @@ export interface EditProfileMutation_updateProfile_user {
   rank: string | null;
   likeCount: number | null;
   likedStudies: EditProfileMutation_updateProfile_user_likedStudies[] | null;
+  dislikeCount: number | null;
+  dislikedStudies: EditProfileMutation_updateProfile_user_dislikedStudies[] | null;
 }
 
 export interface EditProfileMutation_updateProfile {

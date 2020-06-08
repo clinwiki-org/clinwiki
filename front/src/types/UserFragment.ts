@@ -24,6 +24,16 @@ export interface UserFragment_likedStudies {
   completionDate: any | null;
 }
 
+export interface UserFragment_dislikedStudies {
+  __typename: "Study";
+  nctId: string;
+  averageRating: number;
+  briefTitle: string;
+  overallStatus: string;
+  startDate: any | null;
+  completionDate: any | null;
+}
+
 export interface UserFragment {
   __typename: "User";
   /**
@@ -57,4 +67,6 @@ export interface UserFragment {
   rank: string | null;
   likeCount: number | null;
   likedStudies: UserFragment_likedStudies[] | null;
+  dislikeCount: number | null;
+  dislikedStudies: UserFragment_dislikedStudies[] | null;
 }
