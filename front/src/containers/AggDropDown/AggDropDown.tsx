@@ -543,6 +543,23 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }else if (field?.display === FieldDisplay.BAR_CHART) {
       return (
         <PresearchPanel>
+        <PresearchFilter>
+          <Filter
+            buckets={buckets}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+        </PresearchFilter>
           <Container>
             <BarChartComponent
               isPresearch={true}
