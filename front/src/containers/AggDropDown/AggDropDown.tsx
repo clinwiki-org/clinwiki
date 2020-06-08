@@ -35,6 +35,7 @@ import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQue
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import TwoLevelPieChart from './TwoLevelPieChart';
+import BarChartComponent from './BarChart'
 import AllowMissingCheckbox from './AllowMissingCheckbox';
 import { ApolloClient } from 'apollo-boost';
 import { capitalize } from 'utils/helpers';
@@ -526,6 +527,28 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
               visibleOptions={visibleOptions}
               buckets={buckets}
               isSelected={this.isSelected}
+              hasMore={hasMore}
+              handleLoadMore={this.handleLoadMore}
+              field={field}
+              searchParams={this.props.searchParams}
+            />
+          </Container>
+          {!loading && (
+            <Container>
+              <AllowMissingCheckbox buckets={buckets} />
+            </Container>
+          )}
+        </PresearchPanel>
+      );
+    }else if (field?.display === FieldDisplay.BAR_CHART) {
+      return (
+        <PresearchPanel>
+          <Container>
+            <BarChartComponent
+              isPresearch={true}
+              // visibleOptions={visibleOptions}
+              buckets={buckets}
+              // isSelected={this.isSelected}
               hasMore={hasMore}
               handleLoadMore={this.handleLoadMore}
               field={field}

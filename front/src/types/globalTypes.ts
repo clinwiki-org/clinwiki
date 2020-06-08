@@ -15,6 +15,7 @@ export enum Diff {
 }
 
 export enum FieldDisplay {
+  BAR_CHART = "BAR_CHART",
   DATE = "DATE",
   DATE_RANGE = "DATE_RANGE",
   GREATER_THAN_RANGE = "GREATER_THAN_RANGE",

@@ -8,5 +8,6 @@ module Types
     value "LESS_THAN_RANGE"
     value "GREATER_THAN_RANGE"
     value "PIE_CHART"
+    value "BAR_CHART"
   end
 end
