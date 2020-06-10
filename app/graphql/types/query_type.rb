@@ -53,6 +53,7 @@ module Types
     end
 
     field :me, UserType, "Current logged in user", null: true
+    field :reaction_kinds, [ReactionKindType], "All reaction Types", null: true
 
     field :search_params, SearchParamsType, "Search params from hash", null: true do
       argument :hash, type: String, required: false
@@ -66,6 +67,7 @@ module Types
     field :search_export, SearchExportType, "Retrieve an export by ID", null: true do
       argument :search_export_id, type: Integer, required: true
     end
+
 
     DISPLAY_NAMES = {
       "browse_condition_mesh_terms" => "Browse Condition Mesh Terms",
@@ -127,6 +129,9 @@ module Types
       Hashie::Mash.new(autocomplete: list)
     end
 
+    def reaction_kinds
+      ReactionKind.all
+    end
 
     def user(user_id: nil)
       user = User.find_by_id(user_id)

@@ -7,6 +7,12 @@
 // GraphQL query operation: GenericStudySectionPageQuery
 // ====================================================
 
+export interface GenericStudySectionPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface GenericStudySectionPageQuery_study {
   __typename: "Study";
   acronym: string | null;
@@ -26,6 +32,7 @@ export interface GenericStudySectionPageQuery_study {
   createdAt: any;
   design: string;
   detailedDescription: string | null;
+  dislikesCount: number;
   dispositionFirstPostedDate: string | null;
   dispositionFirstPostedDateType: string | null;
   dispositionFirstSubmittedDate: string | null;
@@ -58,6 +65,7 @@ export interface GenericStudySectionPageQuery_study {
   lastUpdatePostedDateType: string | null;
   lastUpdateSubmittedDate: string | null;
   lastUpdateSubmittedQcDate: string | null;
+  likesCount: number;
   limitationsAndCaveats: string | null;
   listedLocationCountries: string;
   nctId: string;
@@ -82,6 +90,7 @@ export interface GenericStudySectionPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: GenericStudySectionPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

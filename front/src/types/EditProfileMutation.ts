@@ -16,6 +16,47 @@ export interface EditProfileMutation_updateProfile_user_reviews {
   nctId: string;
 }
 
+export interface EditProfileMutation_updateProfile_user_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
+export interface EditProfileMutation_updateProfile_user_reactions_reactionKind {
+  __typename: "ReactionKind";
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * Name of reaction example is like or dislike
+   */
+  name: string;
+}
+
+export interface EditProfileMutation_updateProfile_user_reactions_study {
+  __typename: "Study";
+  briefTitle: string;
+}
+
+export interface EditProfileMutation_updateProfile_user_reactions {
+  __typename: "Reaction";
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * id of reaction kind
+   */
+  reactionKindId: number;
+  /**
+   * Type of reaction such as downvote
+   */
+  reactionKind: EditProfileMutation_updateProfile_user_reactions_reactionKind;
+  study: EditProfileMutation_updateProfile_user_reactions_study;
+  nctId: string;
+}
+
 export interface EditProfileMutation_updateProfile_user {
   __typename: "User";
   /**
@@ -44,9 +85,11 @@ export interface EditProfileMutation_updateProfile_user {
    */
   reviewCount: number;
   reviews: EditProfileMutation_updateProfile_user_reviews[];
+  reactionsCount: EditProfileMutation_updateProfile_user_reactionsCount[] | null;
   contributions: number;
   pictureUrl: string | null;
   rank: string | null;
+  reactions: EditProfileMutation_updateProfile_user_reactions[] | null;
 }
 
 export interface EditProfileMutation_updateProfile {

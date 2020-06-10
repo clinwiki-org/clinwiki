@@ -7,6 +7,12 @@
 // GraphQL query operation: TagsPageQuery
 // ====================================================
 
+export interface TagsPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface TagsPageQuery_study_wikiPage {
   __typename: "WikiPage";
   nctId: string;
@@ -35,6 +41,7 @@ export interface TagsPageQuery_study {
   createdAt: any;
   design: string;
   detailedDescription: string | null;
+  dislikesCount: number;
   dispositionFirstPostedDate: string | null;
   dispositionFirstPostedDateType: string | null;
   dispositionFirstSubmittedDate: string | null;
@@ -67,6 +74,7 @@ export interface TagsPageQuery_study {
   lastUpdatePostedDateType: string | null;
   lastUpdateSubmittedDate: string | null;
   lastUpdateSubmittedQcDate: string | null;
+  likesCount: number;
   limitationsAndCaveats: string | null;
   listedLocationCountries: string;
   nctId: string;
@@ -91,6 +99,7 @@ export interface TagsPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: TagsPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

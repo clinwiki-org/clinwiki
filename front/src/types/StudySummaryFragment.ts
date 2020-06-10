@@ -7,6 +7,12 @@
 // GraphQL fragment: StudySummaryFragment
 // ====================================================
 
+export interface StudySummaryFragment_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface StudySummaryFragment {
   __typename: "Study";
   acronym: string | null;
@@ -26,6 +32,7 @@ export interface StudySummaryFragment {
   createdAt: any;
   design: string;
   detailedDescription: string | null;
+  dislikesCount: number;
   dispositionFirstPostedDate: string | null;
   dispositionFirstPostedDateType: string | null;
   dispositionFirstSubmittedDate: string | null;
@@ -58,6 +65,7 @@ export interface StudySummaryFragment {
   lastUpdatePostedDateType: string | null;
   lastUpdateSubmittedDate: string | null;
   lastUpdateSubmittedQcDate: string | null;
+  likesCount: number;
   limitationsAndCaveats: string | null;
   listedLocationCountries: string;
   nctId: string;
@@ -82,6 +90,7 @@ export interface StudySummaryFragment {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: StudySummaryFragment_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

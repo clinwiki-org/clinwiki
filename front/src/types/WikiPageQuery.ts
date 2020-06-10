@@ -9,6 +9,12 @@ import { Diff } from "./globalTypes";
 // GraphQL query operation: WikiPageQuery
 // ====================================================
 
+export interface WikiPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface WikiPageQuery_study_wikiPage_edits_user {
   __typename: "User";
   /**
@@ -97,6 +103,7 @@ export interface WikiPageQuery_study {
   createdAt: any;
   design: string;
   detailedDescription: string | null;
+  dislikesCount: number;
   dispositionFirstPostedDate: string | null;
   dispositionFirstPostedDateType: string | null;
   dispositionFirstSubmittedDate: string | null;
@@ -129,6 +136,7 @@ export interface WikiPageQuery_study {
   lastUpdatePostedDateType: string | null;
   lastUpdateSubmittedDate: string | null;
   lastUpdateSubmittedQcDate: string | null;
+  likesCount: number;
   limitationsAndCaveats: string | null;
   listedLocationCountries: string;
   nctId: string;
@@ -153,6 +161,7 @@ export interface WikiPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: WikiPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

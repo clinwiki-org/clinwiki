@@ -27,5 +27,8 @@ module Types
     field :provision_search_hash, mutation: Mutations::SearchHashMutation
     field :export_to_csv, mutation: Mutations::ExportToCsv
     field :update_password, mutation: Mutations::UpdatePassword
+    field :create_reaction, mutation: Mutations::CreateReaction
+    field :update_reaction, mutation: Mutations::UpdateReaction
+    field :delete_reaction, mutation: Mutations::DeleteReaction
   end
 end

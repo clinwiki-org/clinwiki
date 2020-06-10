@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
-import ReactStars from 'react-stars';
 import {
   split,
   pipe,
@@ -23,7 +22,7 @@ import {
   StudyPagePrefetchQueryVariables,
 } from 'types/StudyPagePrefetchQuery';
 import StudyPageSections from './components/StudyPageSections';
-
+import * as FontAwesome from 'react-fontawesome';
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
 import StudySummary from 'components/StudySummary';
@@ -46,6 +45,7 @@ import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
 import { WorkflowsViewFragment_workflows } from 'types/WorkflowsViewFragment';
 import { UserFragment } from 'types/UserFragment';
+import StudyPageHeader from './components/StudyPageHeader'
 import WorkFlowAnimation from './components/StarAnimation';
 import { getStarColor } from '../../utils/auth';
 
@@ -62,6 +62,7 @@ interface StudyPageProps {
   recordsTotal?: number;
   counterIndex?: number;
   theme?: any;
+  userRefetch?:any;
   refetch?: any;
   user?: UserFragment | null;
 }
@@ -69,7 +70,8 @@ interface StudyPageProps {
 interface StudyPageState {
   // trigger prefetch for all study sections
   triggerPrefetch: boolean;
-  flashAnimation: boolean;
+  flashAnimation:boolean;
+  wikiToggleValue: boolean;
 }
 
 const QUERY = gql`
@@ -135,11 +137,7 @@ type Section = {
     | SiteStudyExtendedGenericSectionFragment;
 };
 
-const ReviewsWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 10px;
-`;
+
 
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
@@ -153,6 +151,14 @@ const MainContainer = styled(Col)`
     padding: 15px;
   }
 `;
+
+const StudyHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 90px;
+  justify-content: center;
+`;
+
 
 const ThemedMainContainer = withTheme(MainContainer);
 
@@ -179,12 +185,7 @@ const StudySummaryContainer = styled.div`
 
 const ThemedStudySummaryContainer = withTheme(StudySummaryContainer);
 
-const BackButtonWrapper = styled.div`
-  width: 90%;
-  margin: auto;
-  padding: 5px;
-  padding-bottom: 10px;
-`;
+
 
 const QueryComponent = (
   props: QueryComponentOptions<StudyPageQuery, StudyPageQueryVariables>
@@ -199,7 +200,8 @@ export const PrefetchQueryComponent = (
 class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   state: StudyPageState = {
     triggerPrefetch: false,
-    flashAnimation: false,
+    flashAnimation:false,
+    wikiToggleValue: true,
   };
 
   getCurrentSectionPath = (view: SiteViewFragment) => {
@@ -279,6 +281,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       basicSections: basicSectionsRaw,
       extendedSections: extendedSectionsRaw,
     } = view.study;
+    console.log('STUDY', view.study);
     const basicSections = [
       {
         name: 'workflow',
@@ -344,16 +347,22 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     }
   };
 
+
+
+  handleWikiToggleChange = () => {
+    this.setState({ wikiToggleValue: !this.state.wikiToggleValue });
+  };
+
   handleNavButtonClick = (link: string) => () => {
     this.props.history.push(`${trimPath(link)}`);
   };
   resetHelperFunction = () => {
-    this.setState({ flashAnimation: false });
-    this.props.refetch();
-  };
-  handleShowAnimation = () => {
-    this.setState({ flashAnimation: true });
-  };
+    this.setState({ flashAnimation: false })
+    this.props.userRefetch()
+  }
+  handleShowAnimation=()=>{
+    this.setState({flashAnimation: true})
+  }
   handleResetAnimation = () => {
     setTimeout(this.resetHelperFunction, 6500);
   };
@@ -370,72 +379,13 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     );
   };
 
-  renderBackButton = (name: string, link?: string | null) => {
-    if (link === undefined) return null;
 
-    return (
-      <div style={{ paddingTop: '10px' }}>
-        <ThemedButton
-          style={{ margin: 'auto', float: 'left' }}
-          onClick={this.handleNavButtonClick(link!)}
-          disabled={link === null}>
-          {name}
-        </ThemedButton>
-      </div>
-    );
-  };
 
-  renderReviewsSummary = (data: StudyPageQuery | undefined) => {
-    const { theme } = this.props;
-    if (!data || !data.study) {
-      return (
-        <ReviewsWrapper style={{ float: 'left' }}>
-          <div>
-            <ReactStars
-              count={5}
-              color2={theme.studyPage.reviewStarColor}
-              edit={false}
-              value={0}
-            />
-            <div>{'0 Reviews'}</div>
-          </div>
-        </ReviewsWrapper>
-      );
-    }
-
-    return (
-      <ReviewsWrapper>
-        <div>
-          <ReactStars
-            count={5}
-            color2={theme.studyPage.reviewStarColor}
-            edit={false}
-            value={data.study.averageRating}
-          />
-          <div
-            style={{
-              color: 'rgba(255, 255, 255, 0.5)',
-            }}>{`${data.study.reviewsCount} Reviews`}</div>
-        </div>
-      </ReviewsWrapper>
-    );
-  };
 
   render() {
-    const hash = new URLSearchParams(this.props.history.location.search)
-      .getAll('hash')
-      .toString();
-    const siteViewUrl = new URLSearchParams(this.props.history.location.search)
-      .getAll('sv')
-      .toString();
     const userRank = this.props.user ? this.props.user.rank : 'default';
-    let rankColor = getStarColor(userRank);
-    const backLink = () => {
-      if (hash !== '') {
-        return `/search?hash=${hash}&sv=${siteViewUrl}`;
-      }
-      return undefined;
-    };
+    let rankColor = getStarColor(userRank)
+
     return (
       <SiteProvider>
         {(site, currentSiteView) => (
@@ -451,20 +401,26 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 <QueryComponent
                   query={QUERY}
                   variables={{ nctId: this.props.match.params.nctId }}
-                  fetchPolicy="cache-only">
-                  {({ data }) => (
+                  fetchPolicy="cache-and-network">
+                  {({ data, loading, error, refetch }) => (
                     <div>
-                      <Row
-                        md={12}
+                      <StudyHeader
                         style={{
                           background: this.props.theme.studyPage
                             .studyPageHeader,
                         }}>
-                        <BackButtonWrapper>
-                          {this.renderBackButton('⤺︎ Back', backLink())}
-                          {this.renderReviewsSummary(data)}
-                        </BackButtonWrapper>
-                      </Row>
+                          <StudyPageHeader
+                          navButtonClick={this.handleNavButtonClick}
+                          history={this.props.history}
+                          user={this.props.user}
+                          data={data?.study}
+                          theme={this.props.theme}
+                          nctId={this.props.match.params.nctId}
+                          refetch={refetch}
+                          userRefetch={this.props.userRefetch}
+                          />
+                      </StudyHeader>
+
                       <Row>
                         <ThemedMainContainer md={12}>
                           <div className="container">

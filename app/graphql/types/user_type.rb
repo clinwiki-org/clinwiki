@@ -14,9 +14,54 @@ module Types
     field :contributions, Integer, null: false
     field :picture_url, String, null: true
     field :rank, String, null: true
-    
+    field :liked_studies,[StudyType], null:true
+    field :disliked_studies,[StudyType], null:true
+    field :like_count, Integer, null: true
+    field :dislike_count,Integer, null: true
+    field :reactions, [ReactionType],null: true do
+      argument :nct_id, String, required: false
+      argument :reaction_kind_id, String, required: false
+      argument :limit, Integer, required: false
+      argument :offset, Integer, required: false
+    end
+    field :reactions_count,[ExpressionCountType], null: true
+
+    def reactions(nct_id:nil ,reaction_kind_id: ReactionKind.find_by_name("like").id, limit:25, offset:0)
+      reaction_kind = ActiveRecord::Base.sanitize_sql(reaction_kind)
+      limit = ActiveRecord::Base.sanitize_sql(limit)
+      offset = ActiveRecord::Base.sanitize_sql(offset)
+      nct_id = ActiveRecord::Base.sanitize_sql(nct_id)
+      if nct_id
+        object.reactions.where(nct_id: nct_id).limit(limit).offset(offset)
+      else
+        object.reactions.where(reaction_kind_id:reaction_kind_id).limit(limit).offset(offset)
+      end
+    end
+
     def review_count
       reviews.count
+    end
+
+    def reactions_count
+      object.reaction_kinds.group(:name).count
+    end
+
+    def like_count
+      object.reaction_kinds.where(name:"like").count
+    end
+
+    def dislike_count
+      object.reaction_kinds.where(name:"dislike").count
+    end
+
+    def liked_studies
+      reactions = object.reactions.joins(:reaction_kind).where({reaction_kinds:{name:"like"}})
+      reactions.map{|reaction| reaction.study}
+    end
+
+    def disliked_studies
+      reactions = object.reactions.joins(:reaction_kind).where({reaction_kinds:{name:"dislike"}})
+      reactions.map{|reaction| reaction.study}
     end
 
     def contributions

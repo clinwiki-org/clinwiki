@@ -7,6 +7,8 @@ import {
   ScoreBoard,
   StyledProfileRanking,
 } from '../../../components/StyledComponents';
+import GithubSelector from '../../../components/GithubSelector/GithubSelector'
+
 import { getStarColor } from 'utils/auth';
 
 interface ProfileScoreBoardProps {
@@ -17,9 +19,18 @@ interface ProfileScoreBoardProps {
   totalFavorites: any;
   handleDisplayChange?: any;
   rank?: any;
+  reactions?: number | null;
+  reactedStudies?: any[] | null;
 }
 
-class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
+interface ProfileScoreBoardState{
+    showSelector: boolean;
+}
+
+class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps, ProfileScoreBoardState> {
+    state: ProfileScoreBoardState ={
+      showSelector : false
+    }
   starLogo = () => {
 
     let color = getStarColor(this.props.rank)
@@ -35,7 +46,10 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
           </span>
         );
   };
+  // handleSelectorClick=(e)=>{
+  //   console.log(e)
 
+  // }
   render() {
     return (
       <div>
@@ -61,6 +75,24 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps> {
               {this.props.totalReviews}
             </StyledProfileScoreValue>
             <StyledProfileScoreLabel>Reviews</StyledProfileScoreLabel>
+          </StyledLabelValuePair>
+          <StyledLabelValuePair
+            onClick={() => this.props.handleDisplayChange('reactions')}
+            // onMouseEnter={()=>this.setState({showSelector: true})}
+            // onMouseLeave={()=>this.setState({showSelector: false})}
+            >
+              {/* {
+                this.state.showSelector == true ?
+                <GithubSelector
+                reactions={['👍', '👎', '❤️', '☠️']}
+                onSelect={(e) => this.handleSelectorClick(e)} />
+                :
+                null
+              } */}
+            <StyledProfileScoreValue>
+              {this.props.reactions}
+            </StyledProfileScoreValue>
+            <StyledProfileScoreLabel>Reactions</StyledProfileScoreLabel>
           </StyledLabelValuePair>
           <StyledLabelValuePair>
             <StyledProfileScoreValue>

@@ -7,6 +7,12 @@
 // GraphQL query operation: FacilitiesPageQuery
 // ====================================================
 
+export interface FacilitiesPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface FacilitiesPageQuery_study_facilities_location {
   __typename: "Location";
   latitude: number | null;
@@ -57,6 +63,7 @@ export interface FacilitiesPageQuery_study {
   createdAt: any;
   design: string;
   detailedDescription: string | null;
+  dislikesCount: number;
   dispositionFirstPostedDate: string | null;
   dispositionFirstPostedDateType: string | null;
   dispositionFirstSubmittedDate: string | null;
@@ -89,6 +96,7 @@ export interface FacilitiesPageQuery_study {
   lastUpdatePostedDateType: string | null;
   lastUpdateSubmittedDate: string | null;
   lastUpdateSubmittedQcDate: string | null;
+  likesCount: number;
   limitationsAndCaveats: string | null;
   listedLocationCountries: string;
   nctId: string;
@@ -113,6 +121,7 @@ export interface FacilitiesPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: FacilitiesPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

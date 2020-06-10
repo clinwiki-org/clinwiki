@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_13_182916) do
+ActiveRecord::Schema.define(version: 2020_06_01_160409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,23 @@ ActiveRecord::Schema.define(version: 2020_05_13_182916) do
     t.string "location_type"
     t.string "partial_match"
     t.index ["name"], name: "index_locations_on_name", unique: true
+  end
+
+  create_table "reaction_kinds", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "reactions", force: :cascade do |t|
+    t.string "nct_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "reaction_kind_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reaction_kind_id"], name: "index_reactions_on_reaction_kind_id"
+    t.index ["user_id", "nct_id", "reaction_kind_id"], name: "index_reactions_on_user_id_and_nct_id_and_reaction_kind_id"
+    t.index ["user_id"], name: "index_reactions_on_user_id"
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -188,6 +205,7 @@ ActiveRecord::Schema.define(version: 2020_05_13_182916) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "reactions", "users"
   add_foreign_key "site_views", "sites"
   add_foreign_key "wiki_page_edits", "users"
   add_foreign_key "wiki_page_edits", "wiki_pages"

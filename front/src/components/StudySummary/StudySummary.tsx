@@ -36,6 +36,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       createdAt
       design
       detailedDescription
+      dislikesCount
       dispositionFirstPostedDate
       dispositionFirstPostedDateType
       dispositionFirstSubmittedDate
@@ -68,6 +69,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       lastUpdatePostedDateType
       lastUpdateSubmittedDate
       lastUpdateSubmittedQcDate
+      likesCount
       limitationsAndCaveats
       listedLocationCountries
       nctId
@@ -92,6 +94,10 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       resultsFirstSubmittedDate
       resultsFirstSubmittedQcDate
       reviewsCount
+      reactionsCount{
+        name
+        count
+      }
       secondaryMeasures
       source
       sponsor

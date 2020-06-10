@@ -22,9 +22,25 @@ const FRAGMENT = gql`
       briefTitle
       nctId
     }
+    reactionsCount{
+      name
+      count
+    }
     contributions
     pictureUrl
     rank
+    reactions{
+      id
+      reactionKindId
+      reactionKind{
+        id
+        name
+      }
+      study{
+        briefTitle
+      }
+      nctId
+    }
   }
 `;
 

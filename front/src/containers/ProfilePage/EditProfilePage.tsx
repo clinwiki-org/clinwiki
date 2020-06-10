@@ -239,7 +239,12 @@ class EditProfilePage extends React.Component<
   handleDisplayChange = display => {
     this.setState({ currentDisplay: display });
   };
+  handleEmojiSelect=(e)=>{
 
+  }
+  handleAddReaction=()=>{
+
+  }
   renderResults = email => {
     switch (this.state.currentDisplay) {
       case 'contributions':
@@ -267,12 +272,24 @@ class EditProfilePage extends React.Component<
             />
           </div>
         );
+      case 'reactions': 
+        return (
+          <div>
+            <h2>Liked Studies:</h2>
+            <ReviewsTable
+              reviewData={this.props.user?.reactions}
+              history={this.props.history}
+            />
+          </div>
+        );
     }
   };
   render() {
     let userContributions = this.props.user?.contributions;
     let reviewCount = this.props.user?.reviewCount;
-    if (this.props.user) {
+    if(!this.props.user || !this.props.user.reactions){
+      return
+    }else{
       return (
         <ThemedMainContainer>
           <h2>My profile</h2>
@@ -288,8 +305,9 @@ class EditProfilePage extends React.Component<
               totalTags={'Coming Soon'}
               totalFavorites={0}
               handleDisplayChange={this.handleDisplayChange}
-              //@ts-ignore
               rank={this.props.user.rank}
+              reactions={this.props.user?.reactions.length}
+              reactedStudies={this.props.user.reactions}
             />
           </SearchContainer>
           {this.props.user ? (
