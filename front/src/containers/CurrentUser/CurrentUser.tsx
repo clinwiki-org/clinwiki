@@ -65,7 +65,6 @@ class CurrentUser extends React.PureComponent<CurrentUserProps> {
     return (
       <QueryComponent query={QUERY}>
         {({ data, loading, error, refetch }) => {
-          console.log(data)
           if (loading || error || !data) {
             return this.props.children(null) as JSX.Element | null;
           }

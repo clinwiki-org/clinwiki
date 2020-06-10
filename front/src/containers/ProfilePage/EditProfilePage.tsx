@@ -132,7 +132,6 @@ class EditProfilePage extends React.Component<
     if (this.props.user) {
       return (
         <div>
-          //@ts-ignore
           <ProfilePicture pictureUrl={this.props.user.pictureUrl} />
           <span
             style={{ paddingLeft: '15px' }}
@@ -273,26 +272,11 @@ class EditProfilePage extends React.Component<
             />
           </div>
         );
-      case 'reactions':
-        // if(this.props.user.likedStudies && this.props.user.dislikedStudies){
-
-        //   let allReactions = this.props.user.likedStudies + this.props.user.dislikedStudies
-
-        // }
-
-        
+      case 'reactions': 
         return (
           <div>
             <h2>Liked Studies:</h2>
-            {/* <SlackCounter
-              counters={}
-              user={""}
-              onSelect={(e)=>this.handleEmojiSelect(e)}
-              onAdd={this.handleAddReaction}
-            /> */}
-
             <ReviewsTable
-            //@ts-ignore
               reviewData={this.props.user?.reactions}
               history={this.props.history}
             />
@@ -303,7 +287,9 @@ class EditProfilePage extends React.Component<
   render() {
     let userContributions = this.props.user?.contributions;
     let reviewCount = this.props.user?.reviewCount;
-    if (this.props.user) {
+    if(!this.props.user || !this.props.user.reactions){
+      return
+    }else{
       return (
         <ThemedMainContainer>
           <h2>My profile</h2>
@@ -320,9 +306,7 @@ class EditProfilePage extends React.Component<
               totalFavorites={0}
               handleDisplayChange={this.handleDisplayChange}
               rank={this.props.user.rank}
-              //@ts-ignore
-              reactions={this.props.user.reactions.length}
-              //@ts-ignore
+              reactions={this.props.user?.reactions.length}
               reactedStudies={this.props.user.reactions}
             />
           </SearchContainer>

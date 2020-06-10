@@ -65,9 +65,11 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 const isLike = (reaction)=>{
                     return reaction == 'like'
                 }
-                console.log("User Reactions", this.props.user.reactions)
-                let likeArray = filter(isLike,this.props.user.reactions)
-                 console.log("Likes :",likeArray)
+                // console.log("User Reactions", this.props.user.reactions)
+                // let likeArray = filter(isLike,this.props.user.reactions)
+                //  console.log("Likes :",likeArray)
+
+                 //Need to properly filter reactions instead 
                 return  find(propEq('nctId', this.props.nctId))(this.props.user.reactions);
             case '👎':
                 return  find(propEq('nctId', this.props.nctId))(this.props.user.reactions);
@@ -78,12 +80,11 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
     }
     render() {
-        // console.log("USER", this.props.user)
         return (
             <Counter>
                 
                 {this.props.reactions.map((reaction) => {
-                    // console.log(reaction)
+                
                     let handleEmoji = (name) => {
                         switch (name) {
                             case 'like':
@@ -97,11 +98,8 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                         }
                     }
                     let emoji = handleEmoji(reaction.name)
-                    // console.log("Rection",reaction)
-                    // console.log("has reacted", this.hasReacted(emoji))
-                    // if(this.hasReacted(emoji)){
+
                         return (
-                            //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
                             <div className="group-active">
 
                                 <SlackCounterGroup
