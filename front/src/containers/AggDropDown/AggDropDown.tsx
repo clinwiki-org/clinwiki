@@ -35,6 +35,7 @@ import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQue
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import TwoLevelPieChart from './TwoLevelPieChart';
+import BarChartComponent from './BarChart'
 import AllowMissingCheckbox from './AllowMissingCheckbox';
 import { ApolloClient } from 'apollo-boost';
 import { capitalize } from 'utils/helpers';
@@ -52,6 +53,12 @@ const PAGE_SIZE = 25;
 const Container = styledComponents.div`
   padding: 10px;
   padding-right: 0;
+`;
+const ChartContainer = styledComponents.div`
+  padding-top: 10px;
+  overflow-x: auto;
+  max-height: 200px;
+  min-height: 200px;
 `;
 
 const PanelWrapper = styledComponents.div`
@@ -83,6 +90,12 @@ const PanelWrapper = styledComponents.div`
     width: 100%;
   }
 `;
+const ChartWrapper = styledComponents.div`
+  margin-top: 0;
+  max-height: 200px;
+  min-height: 200px;
+  margin-left: 5px;
+`
 
 interface AggDropDownState {
   hasMore: boolean;
@@ -538,6 +551,43 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             </Container>
           )}
         </PresearchPanel>
+      );
+    } else if (field?.display === FieldDisplay.BAR_CHART) {
+      return (
+        <ChartWrapper>
+          <Filter
+            buckets={buckets}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+          <ChartContainer>
+            <BarChartComponent
+              isPresearch={true}
+              // visibleOptions={visibleOptions}
+              buckets={buckets}
+              // isSelected={this.isSelected}
+              hasMore={hasMore}
+              handleLoadMore={this.handleLoadMore}
+              field={field}
+              searchParams={this.props.searchParams}
+            />
+            {!loading && (
+              <Container>
+                <AllowMissingCheckbox buckets={buckets} />
+              </Container>
+            )}
+          </ChartContainer>
+        </ChartWrapper>
       );
     }
     return (
