@@ -4,7 +4,7 @@ import * as FontAwesome from 'react-fontawesome';
 import ReactStars from 'react-stars';
 import ThemedButton from 'components/StyledComponents';
 import { getStarColor } from '../../../utils/auth'
-// import { GithubSelector, GithubCounter, SlackCounter, SlackSelector } from 'react-reactions';
+import LoginModal from '../../../../src/components/LoginModal'
 import SlackCounter from '../../../components/SlackCounter/SlackCounter'
 import GithubSelector from '../../../components/GithubSelector/GithubSelector'
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
@@ -13,7 +13,7 @@ import CreateReactionMutation, {
 import DeleteReactionMutation, {
 } from 'mutations/DeleteReactionMutation';
 import { find, propEq, findLastIndex } from 'ramda';
-
+import StudyReactions from './StudyReaction'
 interface StudyPageHeaderProps {
 
     navButtonClick: any;
@@ -22,8 +22,8 @@ interface StudyPageHeaderProps {
     data: any;
     theme: any;
     nctId: any;
-    refetch: any;
-    userRefetch:any;
+    studyRefetch: any;
+    userRefetch: any;
 }
 interface StudyPageHeaderState {
     likesArray: any[];
@@ -31,6 +31,7 @@ interface StudyPageHeaderState {
     showReactions: boolean;
     reactions: any;
     counters: any;
+    showLoginModal: boolean;
 }
 const ReviewsWrapper = styled.div`
   display: flex;
@@ -106,7 +107,8 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         dislikesArray: [],
         showReactions: false,
         reactions: [],
-        counters: []
+        counters: [],
+        showLoginModal: false,
 
     }
     renderBackButton = (name: string, link?: string | null) => {
@@ -130,7 +132,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         this.setState({ reactions: reactions })
     }
     componentDidUpdate = (prevProps) => {
-        console.log("DATA", this.props.data)
+        // console.log("DATA", this.props.data)
         if (this.props.data && prevProps !== this.props) {
 
             this.setState({ counters: this.props.data.reactionsCount })
@@ -172,39 +174,30 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
             </ReviewsWrapper>
         );
     };
-    handleEmojiSelect = (e, deleteReaction) => {
+    handleEmojiSelect = (e, deleteReaction, reactions, refetch) => {
 
-        console.log(e, this.props)
-        let reactionId = this.isReactionUnique(e)
+        // console.log(e, this.props)
+        let reactionId = this.isReactionUnique(e, reactions)
         let reactionType = this.reactionsName(e)
-        if(reactionId !== undefined){
-            console.log(this.state)
-            //  let someIndex = find(propEq('nctId', this.props.nctId))(this.props.user.reactions);
-            // console.log(reactionId)
-            // console.log(reactionType)
-            //  console.log(someIndex)
-             if(reactionId.reactionKind.name == reactionType){
-                 console.log("Deleting")
-                deleteReaction({
-                    variables: {
-                        id: reactionId.id
-                    }
-                })
-                this.props.refetch();
-                this.props.userRefetch();
-             }else{
-                 console.log("Looks llike we have a mismatch")
-             }
+        if (reactionId !== undefined) {
 
-        }else{
-            console.log("Whoops, looks like you haven't reacted that yet!")
+            deleteReaction({
+                variables: {
+                    id: reactionId.id
+                }
+            })
+            this.props.studyRefetch();
+            refetch();
+
+
+        } else {
+            console.log("Whoops, looks like something went wrong!")
         }
-        
-        
+
+
 
     }
     handleAddReaction = (e) => {
-        console.log("Clicked", e)
         this.setState({ showReactions: !this.state.showReactions })
 
     }
@@ -234,43 +227,42 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
                 return 'skull_and_cross_bones';
         }
     }
-    isReactionUnique =(reaction)=>{
-                return  find(propEq('nctId', this.props.nctId))(this.props.user.reactions);
+    isReactionUnique = (reaction, reactions) => {
+        switch (reaction) {
+            case '👍':
+                return find(propEq('reactionKindId', 1))(reactions);
+            case '👎':
+                return find(propEq('reactionKindId', 2))(reactions);
+            case '❤️':
+                return find(propEq('reactionKindId', 3))(reactions);
+            case '☠️':
+                return find(propEq('reactionKindId', 4))(reactions);
+
+        }
 
     }
+    setShowLoginModal = showLoginModal => {
+        this.setState({ showLoginModal, showReactions: false });
+    };
     handleSelectorClick = (e, createReaction) => {
-        console.log("CLICK CLACK", e, this.props.user)
 
-        // let hasReacted = this.isReactionUnique(e)
-        // console.log("Ayo", hasReacted)
+        if (this.props.user == null) {
+            this.setShowLoginModal(true);
+            return
 
-        // if (hasReacted == undefined) {
-        //     console.log(this.state.counters)
-        //     let reactionType = this.reactionsName(e)
+        }
 
-        //      let someIndex = findLastIndex(propEq('name', reactionType))(this.state.counters);
-        //      if(someIndex==-1){
-        //         //  this.setState({counters: this.state.counters.push({name: reactionType, count: 1})})
+        this.setState({ showReactions: false })
+        let reactionId = this.reactions(e)
+        console.log(this.props.user.likedStudies)
+        createReaction({
+            variables: {
+                reactionKindId: reactionId,
+                nctId: this.props.nctId
 
-        //     }
-
-            this.setState({ showReactions: false })
-            let reactionId = this.reactions(e)
-            console.log(this.props.user.likedStudies)
-           createReaction({
-                variables: {
-                    reactionKindId: reactionId,
-                    nctId: this.props.nctId
-
-                }
-            })
-            this.props.refetch();
-            this.props.userRefetch();
-
-        // } else {
-        //     console.log("Whoops you already reacted that to this study")
-        //     this.setState({ showReactions: false })
-        // }
+            }
+        })
+        this.props.studyRefetch();
 
     }
     render() {
@@ -290,38 +282,47 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
             return undefined;
         };
         return (
-            <HeaderContentWrapper>
-                <BackButtonContainer>
-                    {this.renderBackButton('⤺︎ Back', backLink())}
-                </BackButtonContainer>
-                <ReactionsContainer>
-                    <LikesRow>
-                        <ThumbsRow>
-                        <DeleteReactionMutation>
-                            {deleteReaction=>(
-                            <SlackCounter
-                            reactions={this.state.counters}
-                            user={this.props.user}
-                            onSelect={(e)=>this.handleEmojiSelect(e,deleteReaction)}
-                            onAdd={this.handleAddReaction}
-                            nctId={this.props.nctId}
-
+            <StudyReactions nctId={this.props.nctId}>
+                {(reactions, refetch) => (
+                    <HeaderContentWrapper>
+                        <LoginModal
+                            show={this.state.showLoginModal}
+                            cancel={() => this.setShowLoginModal(false)}
                         />
-                            )}
-                        </DeleteReactionMutation>
+                        <BackButtonContainer>
+                            {this.renderBackButton('⤺︎ Back', backLink())}
+                        </BackButtonContainer>
+                        <ReactionsContainer>
+                            <LikesRow>
+                                <ThumbsRow>
+                                    <DeleteReactionMutation>
+                                        {deleteReaction => (
+                                            <SlackCounter
+                                                currentUserAndStudy={reactions?.reactions}
+                                                reactions={this.state.counters}
+                                                user={this.props.user}
+                                                onSelect={(e) => this.handleEmojiSelect(e, deleteReaction, reactions?.reactions, refetch)}
+                                                onAdd={this.handleAddReaction}
+                                                nctId={this.props.nctId}
+                                            />
+                                        )}
+                                    </DeleteReactionMutation>
 
-                            {this.state.showReactions == true ?
-                                <CreateReactionMutation>
-                                    {createReaction => (<GithubSelector
-                                        reactions={this.state.reactions}
-                                        onSelect={(e) => this.handleSelectorClick(e, createReaction)} />)}
-                                </CreateReactionMutation>
-                                : null}
-                        </ThumbsRow>
-                    </LikesRow>
-                    {this.renderReviewsSummary(this.props.data)}
-                </ReactionsContainer>
-            </HeaderContentWrapper>
+                                    {this.state.showReactions == true ?
+                                        <CreateReactionMutation>
+                                            {createReaction => (<GithubSelector
+                                                reactions={this.state.reactions}
+                                                onSelect={(e) => this.handleSelectorClick(e, createReaction)} />)}
+                                        </CreateReactionMutation>
+                                        : null}
+                                </ThumbsRow>
+                            </LikesRow>
+                            {this.renderReviewsSummary(this.props.data)}
+                        </ReactionsContainer>
+                    </HeaderContentWrapper>
+
+                )}
+            </StudyReactions>
         );
     }
 }

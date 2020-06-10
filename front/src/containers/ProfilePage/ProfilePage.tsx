@@ -77,7 +77,7 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
     switch (this.state.currentDisplay) {
       case 'reviews':
         return (
-          <ReviewsTable reviewData={reviews} history={this.props.history} />
+          <ReviewsTable reviewData={reviews} history={this.props.history} isReview={true} />
         );
       case 'contributions':
         return (

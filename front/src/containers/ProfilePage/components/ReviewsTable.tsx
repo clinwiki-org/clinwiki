@@ -6,10 +6,11 @@ import ReactTable from 'react-table';
 interface ReviewsTableProps {
   reviewData: any;
   history: History;
+  isReview: boolean;
 }
 
 class ReviewsTable extends React.Component<ReviewsTableProps> {
-  componentDidMount() {}
+  componentDidMount() { }
 
   onRowClick = (nctId: string, siteViewUrl: string) => {
     this.props.history.push(`/study/${nctId}?sv=${siteViewUrl}`);
@@ -27,7 +28,7 @@ class ReviewsTable extends React.Component<ReviewsTableProps> {
   render() {
     const data = this.props.reviewData;
 
-    const columns = [
+    const reviewColumns = [
       {
         Header: 'Nct Id',
         accessor: 'nctId', // String-based value accessors!
@@ -43,13 +44,38 @@ class ReviewsTable extends React.Component<ReviewsTableProps> {
         // Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
       },
     ];
+    const reactionsColumns = [
+      {
+        Header: 'Nct Id',
+        accessor: 'nctId', // String-based value accessors!
+      },
+      {
+        Header: 'Brief Title',
+        accessor: 'study.briefTitle',
+        // Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
+      },
+    ]
 
+
+
+    if (this.props.isReview == true) {
+      return (
+        <SearchContainer>
+          Showing Reviews
+          <ReactTable
+            data={data}
+            columns={reviewColumns}
+            minRows={1}
+            getTdProps={this.rowProps}
+          />
+        </SearchContainer>
+      );
+    }
     return (
       <SearchContainer>
-        Showing Reviews
         <ReactTable
           data={data}
-          columns={columns}
+          columns={reactionsColumns}
           minRows={1}
           getTdProps={this.rowProps}
         />

@@ -26,7 +26,6 @@ const StyledGroup = styled.div`
     -ms-flex-align: center;
     align-items: center;
     position: relative;
-    cursor: pointer;
         
         .emoji{
         font-size: 16px;
@@ -54,18 +53,15 @@ const StyledGroup = styled.div`
         transition: opacity 0.1s ease-in-out;
         }
 `
-export const SlackCounterGroup = ({  onSelect, emoji, count, names, active }) => {
+export const SlackCounterGroup = ({ onSelect, emoji, count, names, active }) => {
 
-const listOfNames=(names)=> {
-    return [names.slice(0, -1).join(', '), names.slice(-1)[0]].join(names.length < 2 ? '' : ' and ')
-  }
-const handleClick = () => {
+  const handleClick = () => {
     onSelect && onSelect(emoji)
   }
 
   return (
-    <StyledGroup onClick={ handleClick }>
-      <span className='emoji'>{ emoji }</span> { count }
+    <StyledGroup onClick={handleClick}>
+      <span className='emoji'>{emoji}</span> {count}
     </StyledGroup>
   )
 }
