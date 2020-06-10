@@ -8,6 +8,7 @@ module Types
     field :presearch ,SitePresearchPageType,null:false
     field :auto_suggest,SiteAutoSuggestSectionType ,null:false
     field :results, SiteResultsSectionType, null:false
+    field :template, String, null: false
 
     def crowd_aggs
       object[:crowdAggs]

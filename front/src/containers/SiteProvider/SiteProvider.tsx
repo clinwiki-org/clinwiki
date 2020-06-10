@@ -62,6 +62,7 @@ const SITE_VIEW_FRAGMENT = gql`
     }
     search {
       type
+      template
       autoSuggest {
         aggs {
           fields {

@@ -67,7 +67,6 @@ export const updateView = <T extends SiteViewFragment | WorkflowsViewFragment>(
   view: T,
   mutations: SiteViewMutationInput[]
 ): T => {
-  console.log('updateView');
   const result = cloneDeep(view);
   mutations.forEach((mutation) => applyOne(result, mutation));
   return result;

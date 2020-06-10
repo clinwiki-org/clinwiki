@@ -255,7 +255,7 @@ class UserProfileHeaderButton extends React.PureComponent<
     document.addEventListener('mousedown', this.handleClick, false);
   }
   componentDidUpdate(prevProps){
-    if(prevProps!=this.props){
+    if(prevProps!==this.props){
       this.setState({flashAnimation:true})
       setTimeout(this.resetHelperFunction, 2500)
     }
@@ -298,7 +298,7 @@ class UserProfileHeaderButton extends React.PureComponent<
                       style={{ color: 'white', marginLeft: 2 }}
                     />
                   </ContributionContainer>
-                {this.state.flashAnimation==true ?
+                {this.state.flashAnimation===true ?
                 <HeaderAnimation>
                 <FontAwesome
                 name="star"

@@ -352,6 +352,7 @@ export interface CreateSiteViewMutation_createSiteView_siteView_search_crowdAggs
 export interface CreateSiteViewMutation_createSiteView_siteView_search {
   __typename: "SiteSearchPage";
   type: string;
+  template: string;
   autoSuggest: CreateSiteViewMutation_createSiteView_siteView_search_autoSuggest;
   results: CreateSiteViewMutation_createSiteView_siteView_search_results;
   presearch: CreateSiteViewMutation_createSiteView_siteView_search_presearch;

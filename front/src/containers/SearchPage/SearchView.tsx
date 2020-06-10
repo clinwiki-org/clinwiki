@@ -2,6 +2,7 @@ import * as React from 'react';
 import { SearchParams, AggKind } from './shared';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
+import ThemedButton from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { PulseLoader } from 'react-spinners';
@@ -664,6 +665,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               data={searchData}
               onPress={this.cardPressed}
               loading={loading}
+              template={currentSiteView.search.template}
             />
           </div>
         </div>
@@ -718,11 +720,11 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
             return (
               <ButtonGroup>
                 {buttonsArray.map((button, index) => (
-                  <Button
+                  <ThemedButton
                     href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
                     key={button.target + index}>
                     {this.renderViewButton(button.icon)}
-                  </Button>
+                  </ThemedButton>
                 ))}
               </ButtonGroup>
             );

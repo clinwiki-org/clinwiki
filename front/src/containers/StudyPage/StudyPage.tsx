@@ -43,11 +43,11 @@ import StudyPageCounter from './components/StudyPageCounter';
 import withTheme from 'containers/ThemeProvider';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
-import {
-  WorkflowsViewFragment_workflows,
-} from 'types/WorkflowsViewFragment';
+import { WorkflowsViewFragment_workflows } from 'types/WorkflowsViewFragment';
 import { UserFragment } from 'types/UserFragment';
 import StudyPageHeader from './components/StudyPageHeader'
+import WorkFlowAnimation from './components/StarAnimation';
+import { getStarColor } from '../../utils/auth';
 
 interface StudyPageProps {
   history: History;
@@ -63,6 +63,7 @@ interface StudyPageProps {
   counterIndex?: number;
   theme?: any;
   userRefetch?:any;
+  refetch?: any;
   user?: UserFragment | null;
 }
 
@@ -71,7 +72,6 @@ interface StudyPageState {
   triggerPrefetch: boolean;
   flashAnimation:boolean;
   wikiToggleValue: boolean;
-
 }
 
 const QUERY = gql`
@@ -86,7 +86,7 @@ const QUERY = gql`
 `;
 
 // Prefetch all sections for study
-const PREFETCH_QUERY = gql`
+export const PREFETCH_QUERY = gql`
   query StudyPagePrefetchQuery($nctId: String!) {
     study(nctId: $nctId) {
       ...StudySummaryFragment
@@ -146,7 +146,7 @@ const MainContainer = styled(Col)`
   padding-bottom: 20px;
 
   .panel-heading {
-    background: ${props => props.theme.studyPage.panelHeading};
+    background: ${(props) => props.theme.studyPage.panelHeading};
     color: #fff;
     padding: 15px;
   }
@@ -162,7 +162,6 @@ const StudyHeader = styled.div`
 
 const ThemedMainContainer = withTheme(MainContainer);
 
-
 const StudySummaryContainer = styled.div`
   .container {
     div {
@@ -177,7 +176,7 @@ const StudySummaryContainer = styled.div`
           background: none;
           color: black;
           border-bottom: 2px solid;
-          border-color: ${props => props.theme.studyPage.sectionBorderColor};
+          border-color: ${(props) => props.theme.studyPage.sectionBorderColor};
         }
       }
     }
@@ -191,7 +190,7 @@ const ThemedStudySummaryContainer = withTheme(StudySummaryContainer);
 const QueryComponent = (
   props: QueryComponentOptions<StudyPageQuery, StudyPageQueryVariables>
 ) => Query(props);
-const PrefetchQueryComponent = (
+export const PrefetchQueryComponent = (
   props: QueryComponentOptions<
     StudyPagePrefetchQuery,
     StudyPagePrefetchQueryVariables
@@ -209,7 +208,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     const pathComponents = pipe(
       split('/'),
       reject(isEmpty),
-      map(x => `/${x}`)
+      map((x) => `/${x}`)
     )(trimPath(this.props.location.pathname)) as string[];
 
     for (const component of pathComponents) {
@@ -302,7 +301,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       //   hidden: !this.props.isWorkflow,
       //   metaData: { hide: !this.props.isWorkflow },
       // },
-      ...basicSectionsRaw.map(section => ({
+      ...basicSectionsRaw.map((section) => ({
         name: section.title.toLowerCase(),
         path:
           section.title.toLowerCase() === 'wiki'
@@ -316,7 +315,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       })),
     ];
 
-    const extendedSections = extendedSectionsRaw.map(section => {
+    const extendedSections = extendedSectionsRaw.map((section) => {
       return {
         name: section.title.toLowerCase(),
         path: `/${section.title.toLowerCase()}`,
@@ -365,8 +364,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     this.setState({flashAnimation: true})
   }
   handleResetAnimation = () => {
-    setTimeout(this.resetHelperFunction, 6500)
-  }
+    setTimeout(this.resetHelperFunction, 6500);
+  };
   renderNavButton = (name: string, link?: string | null) => {
     if (link === undefined) return null;
 
@@ -384,12 +383,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
 
   render() {
+    const userRank = this.props.user ? this.props.user.rank : 'default';
+    let rankColor = getStarColor(userRank)
 
     return (
       <SiteProvider>
         {(site, currentSiteView) => (
           <WorkflowsViewProvider>
-            {workflowsView => {
+            {(workflowsView) => {
               const workflow = pipe(
                 find<WorkflowsViewFragment_workflows>(
                   propEq('name', this.props.workflowName)
@@ -480,6 +481,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                               siteView={currentSiteView}
                               showAnimation={this.handleShowAnimation}
                             />
+                            {this.state.flashAnimation === true ? (
+                              <WorkFlowAnimation
+                                resetAnimation={this.handleResetAnimation}
+                                rankColor={rankColor}
+                              />
+                            ) : null}
                           </div>
 
                           <div className="container">

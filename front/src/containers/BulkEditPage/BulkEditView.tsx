@@ -240,7 +240,7 @@ class BulkEditView extends React.Component<BulkEditProps, BulkEditState> {
           <Container>
             {labels.map(label =>
               !aggBucketsByLabel[label].all.length ? null : (
-                <BulkFacetCard label={label}>
+                <BulkFacetCard label={label} key={label}>
                   {aggBucketsByLabel[label].all.map(value => {
                     const indeterminate = aggBucketsByLabel[
                       label

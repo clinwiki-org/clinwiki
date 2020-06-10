@@ -2,8 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import {
   Query,
-  MutationFunction,
-  MutationComponentOptions,
   QueryComponentOptions,
 } from 'react-apollo';
 import { gql } from 'apollo-boost';
@@ -21,10 +19,6 @@ import {
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables,
 } from 'types/CrowdPageUpsertWikiLabelMutation';
-import {
-  CrowdPageDeleteWikiLabelMutation,
-  CrowdPageDeleteWikiLabelMutationVariables,
-} from 'types/CrowdPageDeleteWikiLabelMutation';
 import { CrowdPageQuery, CrowdPageQueryVariables } from 'types/CrowdPageQuery';
 
 import {

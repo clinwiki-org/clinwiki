@@ -8,7 +8,8 @@ const notes = RichTextEditor.createValueFromString(
 
 ### Version 23
 - Updated front end dependencies
-
+- Improvements to nested facet query
+- Fix bulk import when ClinWiki has > 25 crowd lables
 
 ### Version 22
 - Pwd reset

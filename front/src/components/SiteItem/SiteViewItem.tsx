@@ -1,10 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {
-  Checkbox,
-  MenuItem,
-  DropdownButton,
-} from 'react-bootstrap';
+import { Checkbox, MenuItem, DropdownButton } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { withRouter } from 'react-router-dom';
 import DeleteSiteViewMutation, {
@@ -82,7 +78,6 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           },
         },
       }).then(() => {
-        // console.log(res);
         this.props.refresh();
       });
     }
@@ -107,34 +102,36 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     });
   };
 
-  renderDropDown = siteViewUrl => {
+  renderDropDown = (siteViewUrl) => {
     if (siteViewUrl === 'default' || siteViewUrl === 'user') {
       return;
     }
-    console.log(this.props.theme);
+    // console.log(this.props.theme);
     return (
       <UpdateSiteViewMutation>
-        {updateSiteView => (
+        {(updateSiteView) => {
           //needs to be themed, traditional methods of theming not working
-          <DropdownButton
-            bsStyle="default"
-            title="Change Type"
-            key="default"
-            id="dropdown-basic-default"
-            style={{
-              margin: '1em 1em 1em 0',
-              background: this.props.theme.button,
-            }}>
-            {siteViewTypes.map(type => (
-              <MenuItem
-                key={type}
-                name={`set:search.type`}
-                onClick={() => this.handleChangeType(updateSiteView, type)}>
-                {type}
-              </MenuItem>
-            ))}
-          </DropdownButton>
-        )}
+          return (
+            <DropdownButton
+              bsStyle="default"
+              title="Change Type"
+              key="default"
+              id="dropdown-basic-default"
+              style={{
+                margin: '1em 1em 1em 0',
+                background: this.props.theme.button,
+              }}>
+              {siteViewTypes.map((type) => (
+                <MenuItem
+                  key={type}
+                  name={`set:search.type`}
+                  onClick={() => this.handleChangeType(updateSiteView, type)}>
+                  {type}
+                </MenuItem>
+              ))}
+            </DropdownButton>
+          );
+        }}
       </UpdateSiteViewMutation>
     );
   };
@@ -183,7 +180,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         {type === 'search' && (
           <td>
             <UpdateSiteViewMutation>
-              {updateSiteView => (
+              {(updateSiteView) => (
                 <Checkbox
                   checked={siteView.default}
                   onChange={() => this.handleCheckbox(updateSiteView)}
@@ -201,14 +198,14 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
           <CopySiteViewMutation>
-            {copySiteView => (
+            {(copySiteView) => (
               <StyledButton onClick={() => this.handleCopy(copySiteView)}>
                 Copy
               </StyledButton>
             )}
           </CopySiteViewMutation>
           <DeleteSiteViewMutation>
-            {deleteSiteView => (
+            {(deleteSiteView) => (
               <StyledButton onClick={() => this.handleDelete(deleteSiteView)}>
                 Delete
               </StyledButton>
