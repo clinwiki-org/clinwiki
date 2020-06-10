@@ -304,7 +304,7 @@ class SearchService
           .map { |child_node| "(#{query_ast_to_query_string(child_node)})" }
           .join(" OR ")
       when value.include?(" or ")
-        value&.split(" ")&.join(" OR ")
+        value&.gsub!(" or " ," OR ")
       else
         value&.split(" ")&.join(" AND ")
       end
