@@ -300,18 +300,20 @@ class SearchService
   end
 
   def query_ast_to_query_string(node)
+    value = node[:key]&.downcase
     res =
-      case node[:key]&.downcase
-      when "and"
+      case
+      when  value == "and"
         (node[:children] || [])
           .map { |child_node| "(#{query_ast_to_query_string(child_node)})" }
           .join(" AND ")
-      when "or"
+      when value == "or"
         (node[:children] || [])
           .map { |child_node| "(#{query_ast_to_query_string(child_node)})" }
           .join(" OR ")
+      when value.include?(" or ")
+        value&.gsub!(" or " ," OR ")
       else
-        value = node[:key]&.downcase
         value&.split(" ")&.join(" AND ")
       end
 
