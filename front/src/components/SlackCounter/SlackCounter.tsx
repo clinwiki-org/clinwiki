@@ -4,6 +4,8 @@ import _ from 'lodash'
 import styled from 'styled-components';
 import SlackCounterGroup from './SlackCounterGroup'
 import { find, propEq, findLastIndex, filter } from 'ramda';
+import { Icon, InlineIcon } from '@iconify/react';
+import smilePlus from '@iconify/icons-fe/smile-plus';
 
 
 
@@ -80,6 +82,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
     }
     render() {
+        let addEmoji = <Icon icon={smilePlus} width="1.5em" />
         return (
             <Counter>
                 
@@ -135,7 +138,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 })}
                 <div className="add" onClick={this.props.onAdd}>
                     <SlackCounterGroup
-                        emoji={'+'}
+                        emoji={addEmoji}
                         count={''}
                         names={''}
                         active={''}
