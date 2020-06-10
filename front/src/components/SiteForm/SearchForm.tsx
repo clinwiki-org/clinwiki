@@ -20,7 +20,6 @@ import { FilterKind } from 'types/globalTypes';
 import { Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
 import { match } from 'react-router';
-// import { Button } from 'react-bootstrap';
 import { SiteViewMutationInput } from 'types/globalTypes';
 import UpdateSiteViewMutation, {
   UpdateSiteViewMutationFn,
@@ -36,7 +35,12 @@ import { History, Location } from 'history';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
-import { SiteFragment, SiteFragment_siteViews } from 'types/SiteFragment';
+import {
+  SiteFragment,
+  SiteFragment_siteViews,
+  SiteFragment_siteView,
+} from 'types/SiteFragment';
+import SearchTemplate from './SearchTemplate';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
@@ -765,7 +769,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     );
   };
-  renderResultsConfig = (showResults, view) => {
+  renderResultsConfig = (showResults: boolean, view: SiteFragment_siteView) => {
     return (
       <Panel>
         <Panel.Heading>
@@ -783,15 +787,36 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
-          <h3>Fields</h3>
-          <MultiInput
-            name="set:search.fields"
-            options={SEARCH_FIELDS}
-            placeholder="Add field"
-            draggable
-            value={view.search.fields}
-            onChange={e => this.handleAddMutation(e, view)}
-          />
+          {view.search.results.type === 'table' ? (
+            <>
+              <h3>Fields</h3>
+              <MultiInput
+                name="set:search.fields"
+                options={SEARCH_FIELDS}
+                placeholder="Add field"
+                draggable
+                value={view.search.fields}
+                onChange={e => this.handleAddMutation(e, view)}
+              />
+            </>
+          ) : null}
+          {view.search.results.type === 'card' ? (
+            <>
+              <h3>Template</h3>
+              <SearchTemplate
+                fields={studyFields}
+                onTemplateChanged={t =>
+                  this.handleAddMutation(
+                    {
+                      currentTarget: { name: 'set:search.template', value: t },
+                    },
+                    view
+                  )
+                }
+                template={view.search.template}
+              />
+            </>
+          ) : null}
           <StyledButtonGroup>
             <span className="button-label">Results View:</span>
             <DropdownButton
@@ -872,6 +897,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     const siteviewId = +this.props.match.params.id;
     let view = this.props.siteViews.find(view => siteviewId == view.id);
     if (!view) return null;
+
     console.log([this.props.siteViews, siteviewId, view]);
     view = updateView(view, this.state.mutations);
     const { site } = this.props;
@@ -989,7 +1015,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 fieldsPresearch,
                 crowdFieldsPresearch
               )}
-              {this.renderResultsConfig(showResults, view)}
+              {this.renderResultsConfig(showResults, view!)}
               {this.renderBreadCrumbsConfig(showBreadCrumbs)}
             </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>

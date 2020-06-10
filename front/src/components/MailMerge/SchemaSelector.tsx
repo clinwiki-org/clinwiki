@@ -20,8 +20,8 @@ const menuStyle: React.CSSProperties = {
 const linkStyle: React.CSSProperties = {
   color: 'black',
   display: 'block',
-  // padding: "12px",
-  // textDecoration: "none",
+  padding: '12px',
+  textDecoration: 'none',
 };
 
 interface JsonSchemaItem {
@@ -41,7 +41,7 @@ export type JsonSchema = JsonSchemaItem | JsonSchemaArray | JsonSchemaObject;
 function jsonSchemaToInternal(x: JsonSchema) {
   function subPath(trunk: string, leaf: string) {
     if (!trunk) return leaf;
-    else if (trunk[trunk.length - 1] == '#') {
+    else if (trunk[trunk.length - 1] === '#') {
       return `${trunk}${leaf}`;
     } else {
       return `${trunk}.${leaf}`;
@@ -69,12 +69,12 @@ function jsonSchemaToInternal(x: JsonSchema) {
   }
   let result: string[] = [];
   jsonSchemaToInternalImpl('', x, result);
-  return result;
+  return result.sort();
 }
 
-function graphqlToInternal(x: object) {
-  return [];
-}
+// function graphqlToInternal(x: object) {
+//   return [];
+// }
 function indent(count: number) {
   let result = '';
   for (let x = 0; x < count; ++x) result += ' ';
@@ -119,15 +119,20 @@ export default class SchemaSelector extends React.Component<Props, State> {
   render() {
     const schema = jsonSchemaToInternal(this.props.schema);
     return (
-      <div className="mailmerge-menu" style={menuStyle}>
-        <input className="mailmerge-filter" onChange={this.updateFilter} />
-        {schema
-          .filter(i => i.toLowerCase().includes(this.state.filter))
-          .map(i => (
-            <a key={i} style={linkStyle} onClick={() => this.click(i)}>
-              {i}
-            </a>
-          ))}
+      <div>
+        <input
+          className="mailmerge-filter"
+          style={{ width: '100%' }}
+          onChange={this.updateFilter}
+          placeholder="filter..."
+        />
+        <div className="mailmerge-menu" style={menuStyle}>
+          {schema
+            .filter(i => i.toLowerCase().includes(this.state.filter))
+            .map(i => (
+              <a key={i} style={linkStyle} onClick={() => this.click(i)}> {i} </a> // eslint-disable-line
+            ))}
+        </div>
       </div>
     );
   }

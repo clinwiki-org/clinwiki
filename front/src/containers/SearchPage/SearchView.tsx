@@ -665,6 +665,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
               data={searchData}
               onPress={this.cardPressed}
               loading={loading}
+              template={currentSiteView.search.template}
             />
           </div>
         </div>

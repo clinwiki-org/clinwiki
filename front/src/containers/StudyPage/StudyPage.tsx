@@ -84,7 +84,7 @@ const QUERY = gql`
 `;
 
 // Prefetch all sections for study
-const PREFETCH_QUERY = gql`
+export const PREFETCH_QUERY = gql`
   query StudyPagePrefetchQuery($nctId: String!) {
     study(nctId: $nctId) {
       ...StudySummaryFragment
@@ -189,7 +189,7 @@ const BackButtonWrapper = styled.div`
 const QueryComponent = (
   props: QueryComponentOptions<StudyPageQuery, StudyPageQueryVariables>
 ) => Query(props);
-const PrefetchQueryComponent = (
+export const PrefetchQueryComponent = (
   props: QueryComponentOptions<
     StudyPagePrefetchQuery,
     StudyPagePrefetchQueryVariables
