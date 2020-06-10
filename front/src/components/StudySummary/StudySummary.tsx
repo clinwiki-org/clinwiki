@@ -145,7 +145,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
                 name === 'nctId' ? (
                   // Special case nctID to include a link
                   <tr key={name}>
-                    <th>NCT ID</th>
+                    <th style={{ minWidth: '100px'}}>NCT ID</th>
                     <td>
                       <a
                         href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`}
