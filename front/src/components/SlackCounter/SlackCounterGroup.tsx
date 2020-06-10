@@ -66,9 +66,6 @@ const handleClick = () => {
   return (
     <StyledGroup onClick={ handleClick }>
       <span className='emoji'>{ emoji }</span> { count }
-      { names ? (
-        <div className='tooltip'>{ listOfNames(names) }</div>
-      ) : null }
     </StyledGroup>
   )
 }

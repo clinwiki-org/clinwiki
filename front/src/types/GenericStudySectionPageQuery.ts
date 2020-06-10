@@ -7,6 +7,12 @@
 // GraphQL query operation: GenericStudySectionPageQuery
 // ====================================================
 
+export interface GenericStudySectionPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface GenericStudySectionPageQuery_study {
   __typename: "Study";
   acronym: string | null;
@@ -84,6 +90,7 @@ export interface GenericStudySectionPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: GenericStudySectionPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

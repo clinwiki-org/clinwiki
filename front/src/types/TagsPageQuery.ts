@@ -7,6 +7,12 @@
 // GraphQL query operation: TagsPageQuery
 // ====================================================
 
+export interface TagsPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface TagsPageQuery_study_wikiPage {
   __typename: "WikiPage";
   nctId: string;
@@ -93,6 +99,7 @@ export interface TagsPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: TagsPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

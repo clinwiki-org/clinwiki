@@ -9,6 +9,12 @@ import { Diff } from "./globalTypes";
 // GraphQL query operation: StudyPagePrefetchQuery
 // ====================================================
 
+export interface StudyPagePrefetchQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface StudyPagePrefetchQuery_study_wikiPage_edits_user {
   __typename: "User";
   /**
@@ -238,6 +244,7 @@ export interface StudyPagePrefetchQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: StudyPagePrefetchQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

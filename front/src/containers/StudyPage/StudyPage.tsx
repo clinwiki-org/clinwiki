@@ -62,7 +62,7 @@ interface StudyPageProps {
   recordsTotal?: number;
   counterIndex?: number;
   theme?: any;
-  refetch?:any;
+  userRefetch?:any;
   user?: UserFragment | null;
 }
 
@@ -359,7 +359,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   };
   resetHelperFunction = () => {
     this.setState({ flashAnimation: false })
-    this.props.refetch()
+    this.props.userRefetch()
   }
   handleShowAnimation=()=>{
     this.setState({flashAnimation: true})
@@ -400,8 +400,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                 <QueryComponent
                   query={QUERY}
                   variables={{ nctId: this.props.match.params.nctId }}
-                  fetchPolicy="cache-only">
-                  {({ data, loading, error }) => (
+                  fetchPolicy="cache-and-network">
+                  {({ data, loading, error, refetch }) => (
                     <div>
                       <StudyHeader
                         style={{
@@ -415,6 +415,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                           data={data?.study}
                           theme={this.props.theme}
                           nctId={this.props.match.params.nctId}
+                          refetch={refetch}
+                          userRefetch={this.props.userRefetch}
                           />
                       </StudyHeader>
 

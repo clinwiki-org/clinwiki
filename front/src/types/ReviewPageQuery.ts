@@ -7,6 +7,12 @@
 // GraphQL query operation: ReviewPageQuery
 // ====================================================
 
+export interface ReviewPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface ReviewPageQuery_study_reviews_user {
   __typename: "User";
   /**
@@ -116,6 +122,7 @@ export interface ReviewPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: ReviewPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

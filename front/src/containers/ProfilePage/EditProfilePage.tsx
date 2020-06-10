@@ -293,7 +293,7 @@ class EditProfilePage extends React.Component<
 
             <ReviewsTable
             //@ts-ignore
-              reviewData={this.props.user?.likedStudies}
+              reviewData={this.props.user?.reactions}
               history={this.props.history}
             />
           </div>
@@ -320,8 +320,10 @@ class EditProfilePage extends React.Component<
               totalFavorites={0}
               handleDisplayChange={this.handleDisplayChange}
               rank={this.props.user.rank}
-              likeCount={this.props.user.likeCount}
-              likedStudies={this.props.user.likedStudies}
+              //@ts-ignore
+              reactions={this.props.user.reactions.length}
+              //@ts-ignore
+              reactedStudies={this.props.user.reactions}
             />
           </SearchContainer>
           {this.props.user ? (

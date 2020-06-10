@@ -7,6 +7,12 @@
 // GraphQL query operation: FacilitiesPageQuery
 // ====================================================
 
+export interface FacilitiesPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface FacilitiesPageQuery_study_facilities_location {
   __typename: "Location";
   latitude: number | null;
@@ -115,6 +121,7 @@ export interface FacilitiesPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: FacilitiesPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

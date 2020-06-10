@@ -16,24 +16,45 @@ export interface SignInMutation_signIn_user_reviews {
   nctId: string;
 }
 
-export interface SignInMutation_signIn_user_likedStudies {
-  __typename: "Study";
-  nctId: string;
-  averageRating: number;
-  briefTitle: string;
-  overallStatus: string;
-  startDate: any | null;
-  completionDate: any | null;
+export interface SignInMutation_signIn_user_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
 }
 
-export interface SignInMutation_signIn_user_dislikedStudies {
+export interface SignInMutation_signIn_user_reactions_reactionKind {
+  __typename: "ReactionKind";
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * Name of reaction example is like or dislike
+   */
+  name: string;
+}
+
+export interface SignInMutation_signIn_user_reactions_study {
   __typename: "Study";
-  nctId: string;
-  averageRating: number;
   briefTitle: string;
-  overallStatus: string;
-  startDate: any | null;
-  completionDate: any | null;
+}
+
+export interface SignInMutation_signIn_user_reactions {
+  __typename: "Reaction";
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * id of reaction kind
+   */
+  reactionKindId: number;
+  /**
+   * Type of reaction such as downvote
+   */
+  reactionKind: SignInMutation_signIn_user_reactions_reactionKind;
+  study: SignInMutation_signIn_user_reactions_study;
+  nctId: string;
 }
 
 export interface SignInMutation_signIn_user {
@@ -64,13 +85,11 @@ export interface SignInMutation_signIn_user {
    */
   reviewCount: number;
   reviews: SignInMutation_signIn_user_reviews[];
+  reactionsCount: SignInMutation_signIn_user_reactionsCount[] | null;
   contributions: number;
   pictureUrl: string | null;
   rank: string | null;
-  likeCount: number | null;
-  likedStudies: SignInMutation_signIn_user_likedStudies[] | null;
-  dislikeCount: number | null;
-  dislikedStudies: SignInMutation_signIn_user_dislikedStudies[] | null;
+  reactions: SignInMutation_signIn_user_reactions[] | null;
 }
 
 export interface SignInMutation_signIn {

@@ -19,8 +19,8 @@ interface ProfileScoreBoardProps {
   totalFavorites: any;
   handleDisplayChange?: any;
   rank?: any;
-  likeCount?: number | null;
-  likedStudies?: any[] | null;
+  reactions?: number | null;
+  reactedStudies?: any[] | null;
 }
 
 interface ProfileScoreBoardState{
@@ -90,7 +90,7 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps, ProfileS
                 null
               } */}
             <StyledProfileScoreValue>
-              {this.props.likeCount}
+              {this.props.reactions}
             </StyledProfileScoreValue>
             <StyledProfileScoreLabel>Reactions</StyledProfileScoreLabel>
           </StyledLabelValuePair>

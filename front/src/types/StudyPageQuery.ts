@@ -7,6 +7,12 @@
 // GraphQL query operation: StudyPageQuery
 // ====================================================
 
+export interface StudyPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface StudyPageQuery_study {
   __typename: "Study";
   acronym: string | null;
@@ -84,6 +90,7 @@ export interface StudyPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: StudyPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

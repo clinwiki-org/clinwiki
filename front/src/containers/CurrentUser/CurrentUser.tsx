@@ -22,26 +22,24 @@ const FRAGMENT = gql`
       briefTitle
       nctId
     }
+    reactionsCount{
+      name
+      count
+    }
     contributions
     pictureUrl
     rank
-    likeCount
-    likedStudies{
+    reactions{
+      id
+      reactionKindId
+      reactionKind{
+        id
+        name
+      }
+      study{
+        briefTitle
+      }
       nctId
-      averageRating
-      briefTitle
-      overallStatus
-      startDate
-      completionDate
-    }
-    dislikeCount
-    dislikedStudies{
-      nctId
-      averageRating
-      briefTitle
-      overallStatus
-      startDate
-      completionDate
     }
   }
 `;
@@ -67,6 +65,7 @@ class CurrentUser extends React.PureComponent<CurrentUserProps> {
     return (
       <QueryComponent query={QUERY}>
         {({ data, loading, error, refetch }) => {
+          console.log(data)
           if (loading || error || !data) {
             return this.props.children(null) as JSX.Element | null;
           }

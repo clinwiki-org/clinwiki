@@ -7,6 +7,12 @@
 // GraphQL query operation: InterventionsPageQuery
 // ====================================================
 
+export interface InterventionsPageQuery_study_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
+}
+
 export interface InterventionsPageQuery_study_interventions {
   __typename: "Intervention";
   /**
@@ -104,6 +110,7 @@ export interface InterventionsPageQuery_study {
   resultsFirstSubmittedDate: string | null;
   resultsFirstSubmittedQcDate: string | null;
   reviewsCount: number;
+  reactionsCount: InterventionsPageQuery_study_reactionsCount[] | null;
   secondaryMeasures: string | null;
   source: string;
   sponsor: string;

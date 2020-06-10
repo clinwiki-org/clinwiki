@@ -137,7 +137,7 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               recordsTotal={hash !== '' ? recordsTotal : undefined}
               counterIndex={counterIndex}
               workflowName={workflowName}
-              refetch={this.props.refetch}
+              userRefetch={this.props.refetch}
               user={this.props.user}
             />
           );

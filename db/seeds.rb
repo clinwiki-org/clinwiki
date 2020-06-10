@@ -7,3 +7,5 @@ User.find_by_email("william.hoos@gmail.com") || User.create!( first_name: "Willi
              password: "clinwiki", password_confirmation: "clinwiki")
 ReactionKind.find_or_initialize_by(name:"like").update(name:"like")
 ReactionKind.find_or_initialize_by(name:"dislike").update(name:"dislike")
+ReactionKind.find_or_initialize_by(name:"heart").update(name:"heart")
+ReactionKind.find_or_initialize_by(name:"skull_and_cross_bones").update(name:"skull_and_cross_bones")

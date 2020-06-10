@@ -3,10 +3,20 @@ import React from 'react'
 import _ from 'lodash'
 import styled from 'styled-components';
 import SlackCounterGroup from './SlackCounterGroup'
+import { find, propEq, findLastIndex, filter } from 'ramda';
 
-export const SlackCounter = ({ counters, user, onSelect, onAdd }) => {
 
 
+interface SlackCounterProps {
+    reactions: any;
+    user: any;
+    onSelect: any;
+    onAdd: any;
+    nctId:any;
+}
+interface SlackCounterState {
+    showLabel: boolean;
+}
 const Counter = styled.div`
     display: flex;
 
@@ -43,38 +53,104 @@ const Counter = styled.div`
 
     }
 `
-  const groups = _.groupBy(counters, 'emoji')
+class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState> {
+    state: SlackCounterState = {
+        showLabel: false,
+    }
 
 
-  return (
-    <Counter>
-      { _.map(groups, (c, emoji) => {
-        const names = _.map(c, 'by')
+    hasReacted =(reaction)=>{
+        switch(reaction){
+            case '👍':
+                const isLike = (reaction)=>{
+                    return reaction == 'like'
+                }
+                console.log("User Reactions", this.props.user.reactions)
+                let likeArray = filter(isLike,this.props.user.reactions)
+                 console.log("Likes :",likeArray)
+                return  find(propEq('nctId', this.props.nctId))(this.props.user.reactions);
+            case '👎':
+                return  find(propEq('nctId', this.props.nctId))(this.props.user.reactions);
+
+        }
+    }
+    componentDidMount(){
+
+    }
+    render() {
+        // console.log("USER", this.props.user)
         return (
-        //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
-          <div className="group-active">  
-            <SlackCounterGroup
-              emoji={ emoji }
-              count={ c.length }
-              names={ names }
-              active={ _.includes(names, user) }
-              onSelect={ onSelect }
-            />
-          </div>
-        )
-      }) }
-      <div className="add" onClick={ onAdd }>
-        <SlackCounterGroup 
-        emoji={ '+' }
-        count={ '' }
-        names={ '' }
-        active={ '' }
-        onSelect={ '' }
-        />
+            <Counter>
+                
+                {this.props.reactions.map((reaction) => {
+                    // console.log(reaction)
+                    let handleEmoji = (name) => {
+                        switch (name) {
+                            case 'like':
+                                return '👍'
+                            case 'dislike':
+                                return '👎'
+                            case 'heart':
+                                return '❤️'
+                            case 'skull_and_cross_bones':
+                                return '☠️'
+                        }
+                    }
+                    let emoji = handleEmoji(reaction.name)
+                    // console.log("Rection",reaction)
+                    // console.log("has reacted", this.hasReacted(emoji))
+                    // if(this.hasReacted(emoji)){
+                        return (
+                            //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
+                            <div className="group-active">
 
-      </div>
-    </Counter>
-  )
+                                <SlackCounterGroup
+                                    emoji={emoji}
+                                    count={reaction.count}
+                                    names={' '}
+                                    active={' '}
+                                    onSelect={this.props.onSelect}
+    
+                                />
+                            </div>
+                        )
+                    // }else if(this.hasReacted(emoji)==undefined) {
+                    //     return (
+                    //         //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
+                    //         <div className="group-not-active"
+                    //         >
+
+                    //             <SlackCounterGroup
+                    //                 emoji={emoji}
+                    //                 count={reaction.count}
+                    //                 names={' '}
+                    //                 active={' '}
+                    //                 onSelect={this.props.onSelect}
+    
+                    //             />
+                    //         </div>
+                    //     )
+                    // }else{
+                    //     return
+                    // }
+
+                })}
+                <div className="add" onClick={this.props.onAdd}>
+                    <SlackCounterGroup
+                        emoji={'+'}
+                        count={''}
+                        names={''}
+                        active={''}
+                        onSelect={''}
+
+                    />
+
+                </div>
+            </Counter>
+        )
+    }
+
+
 }
 
 export default SlackCounter

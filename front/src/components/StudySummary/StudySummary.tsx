@@ -94,6 +94,10 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       resultsFirstSubmittedDate
       resultsFirstSubmittedQcDate
       reviewsCount
+      reactionsCount{
+        name
+        count
+      }
       secondaryMeasures
       source
       sponsor

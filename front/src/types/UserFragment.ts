@@ -14,24 +14,45 @@ export interface UserFragment_reviews {
   nctId: string;
 }
 
-export interface UserFragment_likedStudies {
-  __typename: "Study";
-  nctId: string;
-  averageRating: number;
-  briefTitle: string;
-  overallStatus: string;
-  startDate: any | null;
-  completionDate: any | null;
+export interface UserFragment_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
 }
 
-export interface UserFragment_dislikedStudies {
+export interface UserFragment_reactions_reactionKind {
+  __typename: "ReactionKind";
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * Name of reaction example is like or dislike
+   */
+  name: string;
+}
+
+export interface UserFragment_reactions_study {
   __typename: "Study";
-  nctId: string;
-  averageRating: number;
   briefTitle: string;
-  overallStatus: string;
-  startDate: any | null;
-  completionDate: any | null;
+}
+
+export interface UserFragment_reactions {
+  __typename: "Reaction";
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * id of reaction kind
+   */
+  reactionKindId: number;
+  /**
+   * Type of reaction such as downvote
+   */
+  reactionKind: UserFragment_reactions_reactionKind;
+  study: UserFragment_reactions_study;
+  nctId: string;
 }
 
 export interface UserFragment {
@@ -62,11 +83,9 @@ export interface UserFragment {
    */
   reviewCount: number;
   reviews: UserFragment_reviews[];
+  reactionsCount: UserFragment_reactionsCount[] | null;
   contributions: number;
   pictureUrl: string | null;
   rank: string | null;
-  likeCount: number | null;
-  likedStudies: UserFragment_likedStudies[] | null;
-  dislikeCount: number | null;
-  dislikedStudies: UserFragment_dislikedStudies[] | null;
+  reactions: UserFragment_reactions[] | null;
 }

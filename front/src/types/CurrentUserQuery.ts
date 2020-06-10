@@ -14,24 +14,45 @@ export interface CurrentUserQuery_me_reviews {
   nctId: string;
 }
 
-export interface CurrentUserQuery_me_likedStudies {
-  __typename: "Study";
-  nctId: string;
-  averageRating: number;
-  briefTitle: string;
-  overallStatus: string;
-  startDate: any | null;
-  completionDate: any | null;
+export interface CurrentUserQuery_me_reactionsCount {
+  __typename: "ExpressionCount";
+  name: string;
+  count: number;
 }
 
-export interface CurrentUserQuery_me_dislikedStudies {
+export interface CurrentUserQuery_me_reactions_reactionKind {
+  __typename: "ReactionKind";
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * Name of reaction example is like or dislike
+   */
+  name: string;
+}
+
+export interface CurrentUserQuery_me_reactions_study {
   __typename: "Study";
-  nctId: string;
-  averageRating: number;
   briefTitle: string;
-  overallStatus: string;
-  startDate: any | null;
-  completionDate: any | null;
+}
+
+export interface CurrentUserQuery_me_reactions {
+  __typename: "Reaction";
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * id of reaction kind
+   */
+  reactionKindId: number;
+  /**
+   * Type of reaction such as downvote
+   */
+  reactionKind: CurrentUserQuery_me_reactions_reactionKind;
+  study: CurrentUserQuery_me_reactions_study;
+  nctId: string;
 }
 
 export interface CurrentUserQuery_me {
@@ -62,13 +83,11 @@ export interface CurrentUserQuery_me {
    */
   reviewCount: number;
   reviews: CurrentUserQuery_me_reviews[];
+  reactionsCount: CurrentUserQuery_me_reactionsCount[] | null;
   contributions: number;
   pictureUrl: string | null;
   rank: string | null;
-  likeCount: number | null;
-  likedStudies: CurrentUserQuery_me_likedStudies[] | null;
-  dislikeCount: number | null;
-  dislikedStudies: CurrentUserQuery_me_dislikedStudies[] | null;
+  reactions: CurrentUserQuery_me_reactions[] | null;
 }
 
 export interface CurrentUserQuery {
