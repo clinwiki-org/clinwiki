@@ -6,6 +6,7 @@ import SlackCounterGroup from './SlackCounterGroup'
 import { find, propEq, findLastIndex, filter } from 'ramda';
 import { Icon, InlineIcon } from '@iconify/react';
 import smilePlus from '@iconify/icons-fe/smile-plus';
+import { isReactionUnique, reactionCharacterFromName } from 'utils/reactions/reactionKinds';
 
 
 
@@ -64,23 +65,6 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
     }
 
 
-    hasReacted = (reaction) => {
-        if (this.props.currentUserAndStudy) {
-            switch (reaction) {
-                case '👍':
-                    return find(propEq('reactionKindId', 1))(this.props.currentUserAndStudy);
-                case '👎':
-                    return find(propEq('reactionKindId', 2))(this.props.currentUserAndStudy);
-                case '❤️':
-                    return find(propEq('reactionKindId', 3))(this.props.currentUserAndStudy);
-                case '☠️':
-                    return find(propEq('reactionKindId', 4))(this.props.currentUserAndStudy);
-
-            }
-            return
-        }
-
-    }
     componentDidMount() {
 
     }
@@ -91,20 +75,8 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
                 {this.props.reactions.map((reaction, index) => {
 
-                    let handleEmoji = (name) => {
-                        switch (name) {
-                            case 'like':
-                                return '👍'
-                            case 'dislike':
-                                return '👎'
-                            case 'heart':
-                                return '❤️'
-                            case 'skull_and_cross_bones':
-                                return '☠️'
-                        }
-                    }
-                    let emoji = handleEmoji(reaction.name)
-                    let isActive = this.hasReacted(emoji)
+                    let emoji = reactionCharacterFromName(reaction.name) 
+                    let isActive = isReactionUnique(emoji, this.props.currentUserAndStudy)
                     if (isActive) {
                         return (
                             <div className="group-active" key={reaction + index}>
@@ -119,7 +91,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                                 />
                             </div>
                         )
-                    } else if (this.hasReacted(emoji) == undefined) {
+                    } else if (isActive == undefined) {
                         return (
                             //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
                             <div className="group-not-active" key={reaction + index}

@@ -14,6 +14,7 @@ import DeleteReactionMutation, {
 } from 'mutations/DeleteReactionMutation';
 import { find, propEq, findLastIndex } from 'ramda';
 import StudyReactions from './StudyReaction'
+import  { reactionIdFromCharacter, activeReactions, isReactionUnique } from '../../../utils/reactions/reactionKinds'
 interface StudyPageHeaderProps {
 
     navButtonClick: any;
@@ -127,7 +128,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
     };
 
     componentDidMount = () => {
-        let reactions = ['👍', '👎', '❤️', '☠️']
+        let reactions = activeReactions
 
         this.setState({ reactions: reactions })
     }
@@ -177,12 +178,13 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
     handleEmojiSelect = (e, deleteReaction, reactions, refetch) => {
 
         // console.log(e, this.props)
-        let reactionId = this.isReactionUnique(e, reactions)
-        let reactionType = this.reactionsName(e)
+        let reactionId = isReactionUnique(e, reactions)
         if (reactionId !== undefined) {
 
             deleteReaction({
                 variables: {
+                    //Need to define object type fields in isReactionUnique finction inside reactionKinds.ts
+                    //@ts-ignore
                     id: reactionId.id
                 }
             })
@@ -201,130 +203,92 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         this.setState({ showReactions: !this.state.showReactions })
 
     }
-    reactions = (character) => {
-        switch (character) {
 
-            case '👍':
-                return 1;
-            case '👎':
-                return 2;
-            case '❤️':
-                return 3;
-            case '☠️':
-                return 4;
-        }
-    }
-    reactionsName = (character) => {
-        switch (character) {
 
-            case '👍':
-                return 'like';
-            case '👎':
-                return 'dislike';
-            case '❤️':
-                return 'heart';
-            case '☠️':
-                return 'skull_and_cross_bones';
-        }
-    }
-    isReactionUnique = (reaction, reactions) => {
-        switch (reaction) {
-            case '👍':
-                return find(propEq('reactionKindId', 1))(reactions);
-            case '👎':
-                return find(propEq('reactionKindId', 2))(reactions);
-            case '❤️':
-                return find(propEq('reactionKindId', 3))(reactions);
-            case '☠️':
-                return find(propEq('reactionKindId', 4))(reactions);
+ 
+setShowLoginModal = showLoginModal => {
+    this.setState({ showLoginModal, showReactions: false });
+};
+handleSelectorClick = (e, createReaction) => {
 
-        }
+    if (this.props.user == null) {
+        this.setShowLoginModal(true);
+        return
 
     }
-    setShowLoginModal = showLoginModal => {
-        this.setState({ showLoginModal, showReactions: false });
+
+    this.setState({ showReactions: false })
+    let reactionId = reactionIdFromCharacter(e)
+    createReaction({
+        variables: {
+            reactionKindId: reactionId,
+            nctId: this.props.nctId
+
+        }
+    })
+    this.props.studyRefetch();
+
+}
+render() {
+
+    const hash = new URLSearchParams(this.props.history.location.search)
+        .getAll('hash')
+        .toString();
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search)
+        .getAll('sv')
+        .toString();
+    const userRank = this.props.user ? this.props.user.rank : 'default'
+    let rankColor = getStarColor(userRank)
+    const backLink = () => {
+        if (hash !== '') {
+            return `/search?hash=${hash}&sv=${siteViewUrl}`;
+        }
+        return undefined;
     };
-    handleSelectorClick = (e, createReaction) => {
+    return (
+        <StudyReactions nctId={this.props.nctId}>
+            {(reactions, refetch) => (
+                <HeaderContentWrapper>
+                    <LoginModal
+                        show={this.state.showLoginModal}
+                        cancel={() => this.setShowLoginModal(false)}
+                    />
+                    <BackButtonContainer>
+                        {this.renderBackButton('⤺︎ Back', backLink())}
+                    </BackButtonContainer>
+                    <ReactionsContainer>
+                        <LikesRow>
+                            <ThumbsRow>
+                                <DeleteReactionMutation>
+                                    {deleteReaction => (
+                                        <SlackCounter
+                                            currentUserAndStudy={reactions?.reactions}
+                                            reactions={this.state.counters}
+                                            user={this.props.user}
+                                            onSelect={(e) => this.handleEmojiSelect(e, deleteReaction, reactions?.reactions, refetch)}
+                                            onAdd={this.handleAddReaction}
+                                            nctId={this.props.nctId}
+                                        />
+                                    )}
+                                </DeleteReactionMutation>
 
-        if (this.props.user == null) {
-            this.setShowLoginModal(true);
-            return
+                                {this.state.showReactions == true ?
+                                    <CreateReactionMutation>
+                                        {createReaction => (<GithubSelector
+                                            reactions={this.state.reactions}
+                                            onSelect={(e) => this.handleSelectorClick(e, createReaction)} />)}
+                                    </CreateReactionMutation>
+                                    : null}
+                            </ThumbsRow>
+                        </LikesRow>
+                        {this.renderReviewsSummary(this.props.data)}
+                    </ReactionsContainer>
+                </HeaderContentWrapper>
 
-        }
-
-        this.setState({ showReactions: false })
-        let reactionId = this.reactions(e)
-        console.log(this.props.user.likedStudies)
-        createReaction({
-            variables: {
-                reactionKindId: reactionId,
-                nctId: this.props.nctId
-
-            }
-        })
-        this.props.studyRefetch();
-
-    }
-    render() {
-
-        const hash = new URLSearchParams(this.props.history.location.search)
-            .getAll('hash')
-            .toString();
-        const siteViewUrl = new URLSearchParams(this.props.history.location.search)
-            .getAll('sv')
-            .toString();
-        const userRank = this.props.user ? this.props.user.rank : 'default'
-        let rankColor = getStarColor(userRank)
-        const backLink = () => {
-            if (hash !== '') {
-                return `/search?hash=${hash}&sv=${siteViewUrl}`;
-            }
-            return undefined;
-        };
-        return (
-            <StudyReactions nctId={this.props.nctId}>
-                {(reactions, refetch) => (
-                    <HeaderContentWrapper>
-                        <LoginModal
-                            show={this.state.showLoginModal}
-                            cancel={() => this.setShowLoginModal(false)}
-                        />
-                        <BackButtonContainer>
-                            {this.renderBackButton('⤺︎ Back', backLink())}
-                        </BackButtonContainer>
-                        <ReactionsContainer>
-                            <LikesRow>
-                                <ThumbsRow>
-                                    <DeleteReactionMutation>
-                                        {deleteReaction => (
-                                            <SlackCounter
-                                                currentUserAndStudy={reactions?.reactions}
-                                                reactions={this.state.counters}
-                                                user={this.props.user}
-                                                onSelect={(e) => this.handleEmojiSelect(e, deleteReaction, reactions?.reactions, refetch)}
-                                                onAdd={this.handleAddReaction}
-                                                nctId={this.props.nctId}
-                                            />
-                                        )}
-                                    </DeleteReactionMutation>
-
-                                    {this.state.showReactions == true ?
-                                        <CreateReactionMutation>
-                                            {createReaction => (<GithubSelector
-                                                reactions={this.state.reactions}
-                                                onSelect={(e) => this.handleSelectorClick(e, createReaction)} />)}
-                                        </CreateReactionMutation>
-                                        : null}
-                                </ThumbsRow>
-                            </LikesRow>
-                            {this.renderReviewsSummary(this.props.data)}
-                        </ReactionsContainer>
-                    </HeaderContentWrapper>
-
-                )}
-            </StudyReactions>
-        );
-    }
+            )}
+        </StudyReactions>
+    );
+}
 }
 
 export default StudyPageHeader;
