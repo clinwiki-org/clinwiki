@@ -146,6 +146,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
 
             this.setState({ counters: this.props.data.reactionsCount })
 
+
         }
     }
     renderReviewsSummary = (data: StudyPageQuery | undefined) => {
@@ -217,7 +218,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
     setShowLoginModal = showLoginModal => {
         this.setState({ showLoginModal, showReactions: false });
     };
-    handleSelectorClick = (e, createReaction) => {
+    handleSelectorClick = (e, createReaction, refetch) => {
 
         if (this.props.user == null) {
             this.setShowLoginModal(true);
@@ -234,7 +235,13 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
 
             }
         })
+
+
+
         this.props.studyRefetch();
+        
+        setTimeout(()=>refetch(), 500)
+
 
     }
     render() {
@@ -285,7 +292,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
                                             <CreateReactionMutation>
                                                 {createReaction => (<GithubSelector
                                                     reactions={this.state.reactions}
-                                                    onSelect={(e) => this.handleSelectorClick(e, createReaction)} />)}
+                                                    onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch)} />)}
                                             </CreateReactionMutation>
                                         </div>
                                         : null}

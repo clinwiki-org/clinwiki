@@ -20,6 +20,7 @@ interface SlackCounterProps {
 }
 interface SlackCounterState {
     showLabel: boolean;
+    currentUserAndStudy: any[];
 }
 const Counter = styled.div`
     display: flex;
@@ -62,21 +63,28 @@ const Counter = styled.div`
 class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState> {
     state: SlackCounterState = {
         showLabel: false,
+        currentUserAndStudy: []
     }
 
 
     componentDidMount() {
-
+        this.setState({ currentUserAndStudy: this.props.currentUserAndStudy })
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps !== this.props) {
+            this.setState({ currentUserAndStudy: this.props.currentUserAndStudy })
+        }
     }
     render() {
         let addEmoji = <Icon icon={smilePlus} width="1.5em" />
+        let userReactionsCurrent = this.state.currentUserAndStudy;
+        console.log(userReactionsCurrent, this.props)
         return (
             <Counter>
 
                 {this.props.reactions.map((reaction, index) => {
-
-                    let emoji = reactionCharacterFromName(reaction.name) 
-                    let isActive = isReactionUnique(emoji, this.props.currentUserAndStudy)
+                    let emoji = reactionCharacterFromName(reaction.name)
+                    let isActive = isReactionUnique(emoji, userReactionsCurrent)
                     if (isActive) {
                         return (
                             <div className="group-active" key={reaction + index}>

@@ -16,7 +16,6 @@ export const reactionCharacterFromName =(val:string):string | undefined=>{
 
 }
 export const reactionIdFromCharacter = (val: string |undefined): number | undefined=> {
-    console.log("VAL",val)
     switch (val) {
         case '👍':
             return 1;
