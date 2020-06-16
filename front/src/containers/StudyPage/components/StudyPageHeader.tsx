@@ -14,6 +14,7 @@ import DeleteReactionMutation, {
 } from 'mutations/DeleteReactionMutation';
 import { find, propEq, findLastIndex } from 'ramda';
 import StudyReactions from './StudyReaction'
+import { reactionIdFromCharacter, activeReactions, isReactionUnique } from '../../../utils/reactions/reactionKinds'
 interface StudyPageHeaderProps {
 
     navButtonClick: any;
@@ -47,6 +48,14 @@ const HeaderContentWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  .selector{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 5;
+  }
 `;
 
 const LikesRow = styled.div`
@@ -127,7 +136,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
     };
 
     componentDidMount = () => {
-        let reactions = ['👍', '👎', '❤️', '☠️']
+        let reactions = activeReactions
 
         this.setState({ reactions: reactions })
     }
@@ -136,6 +145,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         if (this.props.data && prevProps !== this.props) {
 
             this.setState({ counters: this.props.data.reactionsCount })
+
 
         }
     }
@@ -177,12 +187,13 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
     handleEmojiSelect = (e, deleteReaction, reactions, refetch) => {
 
         // console.log(e, this.props)
-        let reactionId = this.isReactionUnique(e, reactions)
-        let reactionType = this.reactionsName(e)
+        let reactionId = isReactionUnique(e, reactions)
         if (reactionId !== undefined) {
 
             deleteReaction({
                 variables: {
+                    //Need to define object type fields in isReactionUnique finction inside reactionKinds.ts
+                    //@ts-ignore
                     id: reactionId.id
                 }
             })
@@ -201,50 +212,13 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         this.setState({ showReactions: !this.state.showReactions })
 
     }
-    reactions = (character) => {
-        switch (character) {
 
-            case '👍':
-                return 1;
-            case '👎':
-                return 2;
-            case '❤️':
-                return 3;
-            case '☠️':
-                return 4;
-        }
-    }
-    reactionsName = (character) => {
-        switch (character) {
 
-            case '👍':
-                return 'like';
-            case '👎':
-                return 'dislike';
-            case '❤️':
-                return 'heart';
-            case '☠️':
-                return 'skull_and_cross_bones';
-        }
-    }
-    isReactionUnique = (reaction, reactions) => {
-        switch (reaction) {
-            case '👍':
-                return find(propEq('reactionKindId', 1))(reactions);
-            case '👎':
-                return find(propEq('reactionKindId', 2))(reactions);
-            case '❤️':
-                return find(propEq('reactionKindId', 3))(reactions);
-            case '☠️':
-                return find(propEq('reactionKindId', 4))(reactions);
 
-        }
-
-    }
     setShowLoginModal = showLoginModal => {
         this.setState({ showLoginModal, showReactions: false });
     };
-    handleSelectorClick = (e, createReaction) => {
+    handleSelectorClick = (e, createReaction, refetch) => {
 
         if (this.props.user == null) {
             this.setShowLoginModal(true);
@@ -253,8 +227,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         }
 
         this.setState({ showReactions: false })
-        let reactionId = this.reactions(e)
-        console.log(this.props.user.likedStudies)
+        let reactionId = reactionIdFromCharacter(e)
         createReaction({
             variables: {
                 reactionKindId: reactionId,
@@ -262,7 +235,9 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
 
             }
         })
-        this.props.studyRefetch();
+        .then(()=>this.props.studyRefetch())
+        .then(()=>refetch())
+        
 
     }
     render() {
@@ -309,11 +284,13 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
                                     </DeleteReactionMutation>
 
                                     {this.state.showReactions == true ?
-                                        <CreateReactionMutation>
-                                            {createReaction => (<GithubSelector
-                                                reactions={this.state.reactions}
-                                                onSelect={(e) => this.handleSelectorClick(e, createReaction)} />)}
-                                        </CreateReactionMutation>
+                                        <div className="selector" onClick={() => this.setState({ showReactions: false })}>
+                                            <CreateReactionMutation>
+                                                {createReaction => (<GithubSelector
+                                                    reactions={this.state.reactions}
+                                                    onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch)} />)}
+                                            </CreateReactionMutation>
+                                        </div>
                                         : null}
                                 </ThumbsRow>
                             </LikesRow>

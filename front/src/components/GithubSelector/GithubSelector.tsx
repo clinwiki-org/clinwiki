@@ -35,17 +35,18 @@ export const GithubSelector = ({ reactions, onSelect }) => {
 //     },
 //   })
 const Selector = styled.div`
-      padding: 5px;
-      background-color: none;
-      border: 1px solid rgba(0,0,0,0.15);
-      border-radius: 4px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.15);
-      text-align: center;
-      position: absolute;
-      height: 5.55em;
-      z-index: 500000;
-      background: rgba(0,0,0,0.45);
-      right: 1.5%;
+padding: 5px;
+    background-color: none;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 4px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+    text-align: center;
+    position: absolute;
+    height: 5.55em;
+    z-index: 500000000000000000;
+    background: rgba(0,0,0,0.45);
+    right: 1.5%;
+    top: 6em;
         p{
             color: white;
         }
