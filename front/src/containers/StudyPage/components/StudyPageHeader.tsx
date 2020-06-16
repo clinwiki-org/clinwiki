@@ -235,13 +235,9 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
 
             }
         })
-
-
-
-        this.props.studyRefetch();
+        .then(()=>this.props.studyRefetch())
+        .then(()=>refetch())
         
-        setTimeout(()=>refetch(), 500)
-
 
     }
     render() {
