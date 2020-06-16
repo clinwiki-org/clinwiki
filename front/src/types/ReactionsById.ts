@@ -27,10 +27,6 @@ export interface ReactionsById_me_reactions_study {
 export interface ReactionsById_me_reactions {
   __typename: "Reaction";
   /**
-   * Id
-   */
-  id: number;
-  /**
    * id of reaction kind
    */
   reactionKindId: number;
@@ -71,5 +67,5 @@ export interface ReactionsById {
 }
 
 export interface ReactionsByIdVariables {
-  reactionKindId: number;
+  reactionKindId: string;
 }
