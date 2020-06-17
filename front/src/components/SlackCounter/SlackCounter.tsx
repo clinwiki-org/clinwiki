@@ -85,6 +85,8 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 {this.props.reactions.map((reaction, index) => {
                     let emoji = reactionCharacterFromName(reaction.name)
                     let isActive = isReactionUnique(emoji, userReactionsCurrent)
+                    console.log("Reaction", reaction, isActive)
+
                     if (isActive) {
                         return (
                             <div className="group-active" key={reaction + index}>
