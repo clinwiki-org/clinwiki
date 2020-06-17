@@ -102,6 +102,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                             </div>
                         )
                     } else if (isActive == undefined) {
+                        console.log("should be rendering")
                         return (
                             //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
                             <div className="group-not-active" key={reaction + index}
@@ -118,6 +119,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                             </div>
                         )
                     } else {
+                        console.log("hitting else")
                         return
                     }
 
