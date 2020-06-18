@@ -75,55 +75,63 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
             this.setState({ currentUserAndStudy: this.props.currentUserAndStudy })
         }
     }
+    renderReactionButtons = () => {
+        let userReactionsCurrent = this.state.currentUserAndStudy;
+        console.log(userReactionsCurrent, this.props)
+
+        return (
+            this.props.reactions.map((reaction, index) => {
+                let emoji = reactionCharacterFromName(reaction.name)
+                let isActive = isReactionUnique(emoji, userReactionsCurrent)
+                console.log("Reaction", reaction, isActive)
+
+                if (isActive) {
+                    return (
+                        <div className="group-active" key={reaction + index}>
+
+                            <SlackCounterGroup
+                                emoji={emoji}
+                                count={reaction.count}
+                                names={' '}
+                                active={' '}
+                                onSelect={this.props.onSelect}
+
+                            />
+                        </div>
+                    )
+                } else if (isActive == undefined) {
+                    console.log("should be rendering")
+                    return (
+                        //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
+                        <div className="group-not-active" key={reaction + index}
+                        >
+
+                            <SlackCounterGroup
+                                emoji={emoji}
+                                count={reaction.count}
+                                names={' '}
+                                active={' '}
+                                onSelect={this.props.onSelect}
+
+                            />
+                        </div>
+                    )
+                } else {
+                    console.log("hitting else")
+                    return
+                }
+
+            })
+
+        )
+    }
     render() {
         let addEmoji = <Icon icon={smilePlus} width="1.5em" />
         let userReactionsCurrent = this.state.currentUserAndStudy;
-        console.log(userReactionsCurrent, this.props)
         return (
             <Counter>
 
-                {this.props.reactions.map((reaction, index) => {
-                    let emoji = reactionCharacterFromName(reaction.name)
-                    let isActive = isReactionUnique(emoji, userReactionsCurrent)
-                    console.log("Reaction", reaction, isActive)
-
-                    if (isActive) {
-                        return (
-                            <div className="group-active" key={reaction + index}>
-
-                                <SlackCounterGroup
-                                    emoji={emoji}
-                                    count={reaction.count}
-                                    names={' '}
-                                    active={' '}
-                                    onSelect={this.props.onSelect}
-
-                                />
-                            </div>
-                        )
-                    } else if (isActive == undefined) {
-                        console.log("should be rendering")
-                        return (
-                            //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
-                            <div className="group-not-active" key={reaction + index}
-                            >
-
-                                <SlackCounterGroup
-                                    emoji={emoji}
-                                    count={reaction.count}
-                                    names={' '}
-                                    active={' '}
-                                    onSelect={this.props.onSelect}
-
-                                />
-                            </div>
-                        )
-                    } else {
-                        console.log("hitting else")
-                        return
-                    }
-
-                })}
+                {this.renderReactionButtons()}
                 <div className="add" onClick={this.props.onAdd}>
                     <SlackCounterGroup
                         emoji={addEmoji}
