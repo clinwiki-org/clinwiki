@@ -1,18 +1,16 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import * as FontAwesome from 'react-fontawesome';
 import ReactStars from 'react-stars';
 import ThemedButton from 'components/StyledComponents';
 import { getStarColor } from '../../../utils/auth'
 import LoginModal from '../../../../src/components/LoginModal'
 import SlackCounter from '../../../components/SlackCounter/SlackCounter'
 import GithubSelector from '../../../components/GithubSelector/GithubSelector'
-import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
+import { StudyPageQuery } from 'types/StudyPageQuery';
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
 import DeleteReactionMutation, {
 } from 'mutations/DeleteReactionMutation';
-import { find, propEq, findLastIndex } from 'ramda';
 import StudyReactions from './StudyReaction'
 import { reactionIdFromCharacter, activeReactions, isReactionUnique } from '../../../utils/reactions/reactionKinds'
 interface StudyPageHeaderProps {
@@ -90,12 +88,6 @@ const ThumbsRow = styled.div`
     }
 `;
 
-const ThumbIcon = styled.div`
-  margin: 2px;
-  &:hover {
-    cursor: pointer;
-  }
-`;
 const BackButtonContainer = styled.div``;
 
 const ReactionsContainer = styled.div`
@@ -103,11 +95,6 @@ const ReactionsContainer = styled.div`
   flex-direction: row;
 `;
 
-const LikesText = styled.div`
-  font-size: 20px;
-  color: #b8b8b8;
-  margin-left: 4px;
-`;
 
 // A simple counter that displays which study you're on on the study page, in the middle of the prev and next buttons
 class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHeaderState> {
@@ -208,7 +195,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
 
 
     }
-    handleAddReaction = (e) => {
+    handleAddReaction = () => {
         this.setState({ showReactions: !this.state.showReactions })
 
     }
@@ -249,7 +236,6 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
             .getAll('sv')
             .toString();
         const userRank = this.props.user ? this.props.user.rank : 'default'
-        let rankColor = getStarColor(userRank)
         const backLink = () => {
             if (hash !== '') {
                 return `/search?hash=${hash}&sv=${siteViewUrl}`;
