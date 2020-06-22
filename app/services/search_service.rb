@@ -132,6 +132,7 @@ class SearchService
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
+    reactions.kind
   ].freeze
 
   attr_reader :params

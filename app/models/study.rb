@@ -1,21 +1,30 @@
 class Study < AactRecord # rubocop:disable Metrics/ClassLength
   self.primary_key = "nct_id"
 
-  def self.wiki_page_edit_mapping
+  def self.custom_mapping
      {
        study:{
          properties:{
            wiki_page_edits:
            {
-             type: 'nested'}
-           }
+             type: 'nested'
+           },
+          reactions:
+           {
+             type: 'nested'
+           },
+           average_rating:{
+             type:'float'
+           },
+         }
        }
      }
   end
 
+
   attr_reader :excluded_wiki_data
 
-  searchkick merge_mappings: true, callbacks: :queue, batch_size: 25, mappings: Study.wiki_page_edit_mapping
+  searchkick merge_mappings: true, callbacks: :queue, batch_size: 25, mappings: Study.custom_mapping
 
   has_one :wiki_page, foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :wiki_page_edits, through: :wiki_page
@@ -263,6 +272,11 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       wiki_page_edits: {
         email: wiki_page_edits.map(&:user).map(&:email),
         created_at: wiki_page_edits.map(&:created_at).map(&:to_time),
+      },
+      reactions:{
+        email: reactions.map(&:user).map(&:email),
+        kind:  reaction_kinds.map(&:name)
+
       },
     ).merge(
       average_rating_dimensions,
