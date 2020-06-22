@@ -87,7 +87,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
                 if (isActive) {
                     return (
-                        <div className="group-active" key={reaction + index}>
+                        <div className="group-active" key={reaction.name}>
 
                             <SlackCounterGroup
                                 emoji={emoji}
@@ -102,8 +102,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 } else if (isActive == undefined) {
                     console.log("should be rendering")
                     return (
-                        //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
-                        <div className="group-not-active" key={reaction + index}
+                        <div className="group-not-active" key={reaction.name}
                         >
 
                             <SlackCounterGroup

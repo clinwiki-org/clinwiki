@@ -58,7 +58,8 @@ export const SlackCounterGroup = ({ onSelect, emoji, count, names, active }) => 
   const handleClick = () => {
     onSelect && onSelect(emoji)
   }
-
+  console.log("Group EMoji", emoji)
+  
   return (
     <StyledGroup onClick={handleClick}>
       <span className='emoji'>{emoji}</span> {count}
