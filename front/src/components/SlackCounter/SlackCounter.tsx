@@ -77,13 +77,11 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
     }
     renderReactionButtons = () => {
         let userReactionsCurrent = this.state.currentUserAndStudy;
-        console.log(userReactionsCurrent, this.props)
 
         return (
             this.props.reactions.map((reaction, index) => {
                 let emoji = reactionCharacterFromName(reaction.name)
                 let isActive = isReactionUnique(emoji, userReactionsCurrent)
-                console.log("Reaction", reaction, isActive)
 
                 if (isActive) {
                     return (
@@ -100,7 +98,6 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                         </div>
                     )
                 } else if (isActive == undefined) {
-                    console.log("should be rendering")
                     return (
                         <div className="group-not-active" key={reaction.name}
                         >
@@ -116,7 +113,6 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                         </div>
                     )
                 } else {
-                    console.log("hitting else")
                     return
                 }
 
