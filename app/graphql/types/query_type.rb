@@ -100,6 +100,7 @@ module Types
 
     def crowd_agg_facets(search_hash: nil, params: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
+      params[:page_size] = 999999
       search_service = SearchService.new(params)
       Hashie::Mash.new(
         aggs: search_service.crowd_agg_facets(site: context[:current_site]),

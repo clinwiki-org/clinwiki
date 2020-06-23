@@ -91,10 +91,12 @@ const PanelWrapper = styledComponents.div`
   }
 `;
 const ChartWrapper = styledComponents.div`
-  margin-top: 0;
-  max-height: 200px;
-  min-height: 200px;
-  margin-left: 5px;
+    margin-top: 0;
+    max-height: 240px;
+    min-height: 200px;
+    margin-left: 5px;
+    position: relative;
+    overflow: hidden;
 `
 
 interface AggDropDownState {
