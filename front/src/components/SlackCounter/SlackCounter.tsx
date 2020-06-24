@@ -75,51 +75,58 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
             this.setState({ currentUserAndStudy: this.props.currentUserAndStudy })
         }
     }
+    renderReactionButtons = () => {
+        let userReactionsCurrent = this.state.currentUserAndStudy;
+
+        return (
+            this.props.reactions.map((reaction, index) => {
+                let emoji = reactionCharacterFromName(reaction.name)
+                let isActive = isReactionUnique(emoji, userReactionsCurrent)
+
+                if (isActive) {
+                    return (
+                        <div className="group-active" key={reaction.name}>
+
+                            <SlackCounterGroup
+                                emoji={emoji}
+                                count={reaction.count}
+                                names={' '}
+                                active={' '}
+                                onSelect={this.props.onSelect}
+
+                            />
+                        </div>
+                    )
+                } else if (isActive == undefined) {
+                    return (
+                        <div className="group-not-active" key={reaction.name}
+                        >
+
+                            <SlackCounterGroup
+                                emoji={emoji}
+                                count={reaction.count}
+                                names={' '}
+                                active={' '}
+                                onSelect={this.props.onSelect}
+
+                            />
+                        </div>
+                    )
+                } else {
+                    return
+                }
+
+            })
+
+        )
+    }
     render() {
         let addEmoji = <Icon icon={smilePlus} width="1.5em" />
         let userReactionsCurrent = this.state.currentUserAndStudy;
-        console.log(userReactionsCurrent, this.props)
         return (
             <Counter>
 
-                {this.props.reactions.map((reaction, index) => {
-                    let emoji = reactionCharacterFromName(reaction.name)
-                    let isActive = isReactionUnique(emoji, userReactionsCurrent)
-                    if (isActive) {
-                        return (
-                            <div className="group-active" key={reaction + index}>
-
-                                <SlackCounterGroup
-                                    emoji={emoji}
-                                    count={reaction.count}
-                                    names={' '}
-                                    active={' '}
-                                    onSelect={this.props.onSelect}
-
-                                />
-                            </div>
-                        )
-                    } else if (isActive == undefined) {
-                        return (
-                            //   <div className={hasReacted ==true ? "group-active": "group-not-active"} key={ emoji }>
-                            <div className="group-not-active" key={reaction + index}
-                            >
-
-                                <SlackCounterGroup
-                                    emoji={emoji}
-                                    count={reaction.count}
-                                    names={' '}
-                                    active={' '}
-                                    onSelect={this.props.onSelect}
-
-                                />
-                            </div>
-                        )
-                    } else {
-                        return
-                    }
-
-                })}
+                {this.renderReactionButtons()}
                 <div className="add" onClick={this.props.onAdd}>
                     <SlackCounterGroup
                         emoji={addEmoji}
