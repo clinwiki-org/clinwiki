@@ -191,20 +191,15 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
       (x: AggFilterInput) => x.field !== this.agg,
       this.settings[this.grouping]
     );
-    console.log("Hit me")
     if (this.hasNoFilters()) {
-      console.log("1")
       this.updateSettings({
         [this.grouping as string]: allButThisAgg,
       });
     } else if (this.input?.includeMissingFields == false && this.input.values?.length == 0) {
-      console.log("2")
       this.updateSettings({
         [this.grouping as string]: allButThisAgg,
       });
     } else {
-      console.log("3", this.input, this.agg)
-      console.log("Grouping",this.grouping)
       let newInput = {
         field: this.input?.field,
         values: this.input?.values,

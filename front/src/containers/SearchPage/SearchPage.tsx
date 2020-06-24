@@ -209,7 +209,6 @@ const changeFilter = (add: boolean) => (
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  console.log("In add Filter")
   return (params: SearchParams) => {
     keys.forEach((k) => {
       params = addFilter(aggName, k, isCrowd)(params);
@@ -230,7 +229,6 @@ const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 };
 
 const addSearchTerm = (term: string) => (params: SearchParams) => {
-  console.log("In ADD search term")
   // have to check for empty string because if you press return two times it ends up putting it in the terms
   if (!term.replace(/\s/g, '').length) {
     return params;
@@ -417,7 +415,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleResetFilters = (view: SiteViewFragment) => () => {
-    console.log("reset")
     this.setState(
       {
         params: this.getDefaultParams(view, this.props.email),
@@ -447,7 +444,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
-    console.log("In handle Update Params")
     const params = updater(this.state.params!);
     this.previousSearchData = [];
     if (!equals(params.q, this.state.params && this.state.params.q)) {
@@ -455,10 +451,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       // Therefore we close it to refresh later on open
       this.setState({ openedAgg: null });
     }
-    this.setState({ params }
-      //CHECKED
-      , 
-      () => this.updateSearchParams(this.state.params));
+    this.setState({ params }, () => this.updateSearchParams(this.state.params));
   };
 
   isWorkflow = () => {
@@ -505,10 +498,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       !equals(searchAggs, this.state.searchAggs) ||
       !equals(searchCrowdAggs, this.state.searchCrowdAggs)
     ) {
-      console.log("1")
-      this.setState({ searchAggs, searchCrowdAggs }, 
-        () =>
-    
+      this.setState({ searchAggs, searchCrowdAggs }, () =>
         this.updateSearchParams(this.state.params)
       );
     }
@@ -612,7 +602,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         ...this.state.params,
         page: this.state.params!.page + 1,
       };
-      console.log("2")
       this.setState({ params }, () =>
         this.updateSearchParams(this.state.params)
       );
@@ -636,7 +625,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         key: 'AND',
         children: [{ children: [], key: searchTerm.getAll('q').toString() }],
       };
-      console.log("3")
       this.setState(
         {
           params: {
@@ -700,7 +688,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   updateStateFromHash(searchParams, view) {
-    console.log("Updating state from hash")
     const params: SearchParams = this.searchParamsFromQuery(searchParams, view);
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
 
@@ -709,7 +696,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         key: 'AND',
         children: [{ children: [], key: searchTerm.getAll('q').toString() }],
       };
-      console.log("4")
       this.setState(
         {
           params: {
@@ -725,7 +711,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         ...params,
       },
     });
-    console.log("UHHHH", this.state.params)
   }
   findFilter = (variable: string) => {
     let aggFilter = this.state.params?.aggFilters;
@@ -738,19 +723,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return response;
   };
   updateSearchParams = async (params) => {
-    // console.trace()
-    //@ts-ignore
-    console.log("About to Update Search Params")
-    // this.setState({
-    //   ...this.state,
-    //   params: { ...(this.state?.params || {}), ...params },
-    // });
-    console.log("State", this.state.params)
-    console.log("PARAMS", params)
     const variables = { ...this.state.params, ...params };
-    console.log("VARIABLES", variables)
     const { data } = await this.props.mutate({ variables });
-    console.log("DATA",data)
     const searchQueryString = new URLSearchParams(
       this.props.history.location.search
     );
@@ -917,7 +891,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           value={{
             searchParams: this.state.params,
             updateSearchParams: (params) => {
-              console.log("5")
               this.setState({ params: { ...this.state.params, ...params } });
             },
           }}>
@@ -960,7 +933,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
 
     const hash = this.getHashFromLocation();
-    console.log("6")
     return (
       <SearchParamsContext.Provider
         value={{
