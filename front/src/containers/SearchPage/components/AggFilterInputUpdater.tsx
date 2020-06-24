@@ -208,9 +208,9 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
       let newInput = {
         field: this.input?.field,
         values: this.input?.values,
-        gte: null,
-        lte: null,
-        includeMissingFields:null
+        gte: this.input?.gte || null,
+        lte: this.input?.lte || null,
+        includeMissingFields: this.input?.includeMissingFields || null
       }      
       this.updateSettings({
         [this.grouping]: [...allButThisAgg, newInput],
