@@ -723,6 +723,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return response;
   };
   updateSearchParams = async (params) => {
+    this.setState({	
+      ...this.state,	
+      params: { ...(this.state?.params || {}), ...params },	
+    });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
     const searchQueryString = new URLSearchParams(
