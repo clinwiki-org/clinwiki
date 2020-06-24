@@ -105,6 +105,14 @@ abstract class AbstractAggFilterInputUpdater {
       this.onUpdateFilter();
     }
   }
+  removeAllowMissing(): void {
+
+    if (this.input) {
+      this.input.includeMissingFields = false
+
+    }
+    this.onUpdateFilter();
+  }
 
   getRangeSelection(): Array<any> | undefined {
     if (this.input) {
@@ -184,6 +192,10 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
       this.settings[this.grouping]
     );
     if (this.hasNoFilters()) {
+      this.updateSettings({
+        [this.grouping as string]: allButThisAgg,
+      });
+    } else if (this.input?.includeMissingFields == false && this.input.values?.length == 0) {
       this.updateSettings({
         [this.grouping as string]: allButThisAgg,
       });

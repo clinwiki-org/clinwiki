@@ -42,6 +42,9 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         <ValuesCrumb
           values={agg.values}
           onClick={val => updater.removeFilter(val)}
+          //@ts-ignore
+          allowMissingFields={agg.includeMissingFields}
+          removeAllowMissing={() => updater.removeAllowMissing()}
         />
       );
     } else if (agg.lte || agg.gte) {
@@ -56,6 +59,12 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       }
       crumb = (
         <ValueCrumb label={label} onClick={() => updater.removeRange()} />
+      );
+      //@ts-ignore
+    }else if(agg.includeMissingFields){
+       let label= "Allow Missing"
+       crumb = (
+        <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
       );
     }
     const field = findFields(agg.field, thisSiteView, false);
