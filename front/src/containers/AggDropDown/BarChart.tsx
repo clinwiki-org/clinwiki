@@ -44,7 +44,7 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
       let finalDataArray: any[] = [];
       let finalOtherBucketsArray: any[] = [];
       let queryDate = this.props.buckets;
-      let newData = queryDate.map((bucket, index) => {
+      queryDate.map((bucket, index) => {
         let bucketKey = bucket.key;
         let bucketDocCount = bucket.docCount;
 
