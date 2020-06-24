@@ -37,7 +37,6 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
     this.props.handleLoadMore();
   };
   componentDidUpdate = prevProps => {
-
     if (
       prevProps.buckets !== this.props.buckets &&
       this.props.buckets.length > 0
