@@ -1,14 +1,22 @@
-import * as React from 'react';
+import React, { useState, useMemo } from 'react';
+import { IntrospectionType, GraphQLSchema } from 'graphql';
+import { stringify } from 'querystring';
 
-export type SchemaType = 'json' | 'graphql';
+export type SchemaType = JsonSchemaType | GraphqlSchemaType
+
+export interface JsonSchemaType {
+  kind: 'json'
+  schema: JsonSchema
+}
+export interface GraphqlSchemaType {
+  kind: 'graphql'
+  name: string
+  types: readonly IntrospectionType[]
+}
 
 interface Props {
-  schemaType?: SchemaType;
-  schema: JsonSchema;
+  schema: SchemaType;
   onSelectItem?: (v: string) => void;
-}
-interface State {
-  filter: string;
 }
 
 const menuStyle: React.CSSProperties = {
@@ -72,9 +80,25 @@ function jsonSchemaToInternal(x: JsonSchema) {
   return result.sort();
 }
 
-// function graphqlToInternal(x: object) {
-//   return [];
-// }
+function graphqlToInternal(x : GraphqlSchemaType) {
+  function gqlToInternalImpl(path: string, root: IntrospectionType, typeMap : Record<string, IntrospectionType>, result : string[]) {
+    // iterate fields
+  }
+
+  const typeMap : Record<string,IntrospectionType> = {};
+  for (const t of x.types) typeMap[t.name] = t;
+  let result : string[] = [];
+  gqlToInternalImpl('', typeMap[x.name], typeMap, result);
+  return result.sort();
+}
+
+function schemaToInternal(schemaType : SchemaType) {
+  switch(schemaType.kind) {
+    case 'json': return jsonSchemaToInternal(schemaType.schema);
+    case 'graphql': return graphqlToInternal(schemaType);
+  }
+}
+
 function indent(count: number) {
   let result = '';
   for (let x = 0; x < count; ++x) result += ' ';
@@ -106,34 +130,33 @@ function pathToTemplate(path: string): string {
   return result;
 }
 
-export default class SchemaSelector extends React.Component<Props, State> {
-  state = { filter: '' };
-  click = (path: string) => {
-    if (this.props.onSelectItem) {
-      this.props.onSelectItem(pathToTemplate(path));
-    }
-  };
-  updateFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ filter: e.target.value.toLowerCase() });
-  };
-  render() {
-    const schema = jsonSchemaToInternal(this.props.schema);
-    return (
-      <div>
-        <input
-          className="mailmerge-filter"
-          style={{ width: '100%' }}
-          onChange={this.updateFilter}
-          placeholder="filter..."
-        />
-        <div className="mailmerge-menu" style={menuStyle}>
-          {schema
-            .filter(i => i.toLowerCase().includes(this.state.filter))
-            .map(i => (
-              <a key={i} style={linkStyle} onClick={() => this.click(i)}> {i} </a> // eslint-disable-line
-            ))}
-        </div>
+export default function SchemaSelector(props: Props) {
+  const [filter, setFilter] = React.useState('');
+  const schema = useMemo(
+    () => schemaToInternal(props.schema),
+    [props.schema]
+  );
+  return (
+    <div>
+      <input
+        className="mailmerge-filter"
+        style={{ width: '100%' }}
+        onChange={e => setFilter(e.target.value.toLowerCase())}
+        placeholder="filter..."
+      />
+      <div className="mailmerge-menu" style={menuStyle}>
+        {schema
+          .filter(i => i.toLowerCase().includes(filter))
+          .map(i => (
+            <a
+              key={i}
+              style={linkStyle}
+              onClick={_ => props.onSelectItem?.(pathToTemplate(i))}>
+              {' '}
+              {i}{' '}
+            </a> // eslint-disable-line
+          ))}
       </div>
-    );
-  }
+    </div>
+  );
 }

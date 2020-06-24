@@ -7,6 +7,7 @@ interface Props {
   template: string;
   context: object;
   style?: object;
+  onFragmentChanged?: (fragment: string) => void;
 }
 interface State {
   template: string;

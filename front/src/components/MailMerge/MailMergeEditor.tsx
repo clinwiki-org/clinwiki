@@ -11,28 +11,22 @@ const defaultStyle = {
   flexGrow: 1,
 };
 
-export default class Editor extends React.PureComponent<Props> {
-  onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    this.props.onChange(e.target.value);
+function Editor(props: Props) {
+  const onSelect = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    props.onCursorMove?.([e.target.selectionStart, e.target.selectionEnd]);
   };
-  onSelect = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (this.props.onCursorMove) {
-      this.props.onCursorMove([e.target.selectionStart, e.target.selectionEnd]);
-    }
-  };
-  render() {
-    const style = this.props.style
-      ? { ...defaultStyle, ...this.props.style }
-      : defaultStyle;
-    return (
-      <textarea
-        spellCheck={false}
-        className="mailmerge-editor"
-        style={style}
-        value={this.props.markdown}
-        onSelect={this.onSelect}
-        onChange={this.onChange}
-      />
-    );
-  }
+  const style = props.style
+    ? { ...defaultStyle, ...props.style }
+    : defaultStyle;
+  return (
+    <textarea
+      spellCheck={false}
+      className="mailmerge-editor"
+      style={style}
+      value={props.markdown}
+      onSelect={onSelect}
+      onChange={e => props.onChange(e.target.value)}
+    />
+  );
 }
+export default Editor;

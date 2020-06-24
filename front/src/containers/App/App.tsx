@@ -26,6 +26,7 @@ import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
+import MMTest from 'components/MailMerge/MMTestComponent'
 
 interface AppProps {
   history: History;
@@ -80,6 +81,7 @@ class App extends React.PureComponent<AppProps> {
                   <Route path="/sign_up" component={SignUpPage} />
                   <Route path="/not-configured" component={NotConfiguredPage} />
                   <Route path="/update_password" component={UpdatePassword} />
+                  <Route path="/mmtest" component={MMTest} />
                   <Route component={NotFoundPage} />
                 </Switch>
               </div>
