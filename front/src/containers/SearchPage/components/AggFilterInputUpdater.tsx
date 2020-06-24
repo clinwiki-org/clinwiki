@@ -200,8 +200,15 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
         [this.grouping as string]: allButThisAgg,
       });
     } else {
+      let newInput = {
+        field: this.input?.field,
+        values: this.input?.values,
+        gte: this.input?.gte || null,
+        lte: this.input?.lte || null,
+        includeMissingFields: this.input?.includeMissingFields || null
+      }      
       this.updateSettings({
-        [this.grouping]: [...allButThisAgg, this.input],
+        [this.grouping]: [...allButThisAgg, newInput],
       });
     }
   }
