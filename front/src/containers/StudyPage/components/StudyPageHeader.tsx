@@ -10,8 +10,7 @@ import GithubSelector from '../../../components/GithubSelector/GithubSelector'
 import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
-import DeleteReactionMutation, {
-} from 'mutations/DeleteReactionMutation';
+
 import { find, propEq, findLastIndex } from 'ramda';
 import StudyReactions from './StudyReaction'
 import { reactionIdFromCharacter, activeReactions, isReactionUnique } from '../../../utils/reactions/reactionKinds'
@@ -184,30 +183,7 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
             </ReviewsWrapper>
         );
     };
-    handleEmojiSelect = (e, deleteReaction, reactions, refetch) => {
 
-        // console.log(e, this.props)
-        let reactionId = isReactionUnique(e, reactions)
-        if (reactionId !== undefined) {
-
-            deleteReaction({
-                variables: {
-                    //Need to define object type fields in isReactionUnique finction inside reactionKinds.ts
-                    //@ts-ignore
-                    id: reactionId.id
-                }
-            })
-            this.props.studyRefetch();
-            refetch();
-
-
-        } else {
-            console.log("Whoops, looks like something went wrong!")
-        }
-
-
-
-    }
     handleAddReaction = (e) => {
         this.setState({ showReactions: !this.state.showReactions })
 
@@ -270,19 +246,15 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
                         <ReactionsContainer>
                             <LikesRow>
                                 <ThumbsRow>
-                                    <DeleteReactionMutation>
-                                        {deleteReaction => (
                                             <SlackCounter
                                                 currentUserAndStudy={reactions?.reactions}
                                                 reactions={this.state.counters}
                                                 user={this.props.user}
-                                                onSelect={(e) => this.handleEmojiSelect(e, deleteReaction, reactions?.reactions, refetch)}
                                                 onAdd={this.handleAddReaction}
                                                 nctId={this.props.nctId}
+                                                studyRefetch={this.props.studyRefetch}
+                                                refetch={refetch}
                                             />
-                                        )}
-                                    </DeleteReactionMutation>
-
                                     {this.state.showReactions == true ?
                                         <div className="selector" onClick={() => this.setState({ showReactions: false })}>
                                             <CreateReactionMutation>

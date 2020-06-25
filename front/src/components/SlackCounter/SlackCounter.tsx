@@ -6,17 +6,21 @@ import SlackCounterGroup from './SlackCounterGroup'
 import { find, propEq, findLastIndex, filter } from 'ramda';
 import { Icon, InlineIcon } from '@iconify/react';
 import smilePlus from '@iconify/icons-fe/smile-plus';
-import { isReactionUnique, reactionCharacterFromName } from 'utils/reactions/reactionKinds';
-
-
+import { isReactionUnique, reactionCharacterFromName, reactionIdFromCharacter } from 'utils/reactions/reactionKinds';
+import DeleteReactionMutation, {
+} from 'mutations/DeleteReactionMutation';
+import CreateReactionMutation, {
+} from 'mutations/CreateReactionMutation';
 
 interface SlackCounterProps {
     reactions: any;
     user: any;
-    onSelect: any;
+    onSelect?: any;
     onAdd: any;
     nctId: any;
     currentUserAndStudy: any;
+    studyRefetch?: any;
+    refetch?: any;
 }
 interface SlackCounterState {
     showLabel: boolean;
@@ -56,8 +60,7 @@ const Counter = styled.div`
         background: transparent;
         border: 1px solid #5786AD;
         border-radius: 5px;
-        cursor:not-allowed;
-
+        cursor:pointer;
     }
 `
 class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState> {
@@ -75,6 +78,29 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
             this.setState({ currentUserAndStudy: this.props.currentUserAndStudy })
         }
     }
+    deleteReactionHelper = (deleteReaction, reaction) => {
+        deleteReaction({
+            variables: {
+                id: reaction.id
+            }
+        })
+            .then(() => this.props.refetch())
+            .then(() => this.props.studyRefetch())
+    }
+    createReactionHelper = (createReaction, emoji) => {
+        let reactionID = reactionIdFromCharacter(emoji)
+        createReaction({
+            variables: {
+                reactionKindId: reactionID,
+                nctId: this.props.nctId
+            }
+        })
+            .then(() => this.props.refetch())
+            .then(() => this.props.studyRefetch())
+
+
+
+    }
     renderReactionButtons = () => {
         let userReactionsCurrent = this.state.currentUserAndStudy;
 
@@ -82,34 +108,42 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
             this.props.reactions.map((reaction, index) => {
                 let emoji = reactionCharacterFromName(reaction.name)
                 let isActive = isReactionUnique(emoji, userReactionsCurrent)
-
                 if (isActive) {
                     return (
                         <div className="group-active" key={reaction.name}>
+                            <DeleteReactionMutation>
+                                {deleteReaction => (
+                                    <SlackCounterGroup
+                                        emoji={emoji}
+                                        count={reaction.count}
+                                        names={' '}
+                                        active={' '}
+                                        onSelect={() => this.deleteReactionHelper(deleteReaction, isActive)}
 
-                            <SlackCounterGroup
-                                emoji={emoji}
-                                count={reaction.count}
-                                names={' '}
-                                active={' '}
-                                onSelect={this.props.onSelect}
-
-                            />
+                                    />
+                                )}
+                            </DeleteReactionMutation>
                         </div>
                     )
                 } else if (isActive == undefined) {
                     return (
-                        <div className="group-not-active" key={reaction.name}
-                        >
+                        <div className="group-not-active" key={reaction.name}>
+                            <CreateReactionMutation>
+                                {createReaction => (
+                                    <SlackCounterGroup
+                                        emoji={emoji}
+                                        count={reaction.count}
+                                        names={' '}
+                                        active={' '}
+                                        onSelect={() => this.createReactionHelper(createReaction, emoji)}
+                                    />
+                                )
 
-                            <SlackCounterGroup
-                                emoji={emoji}
-                                count={reaction.count}
-                                names={' '}
-                                active={' '}
-                                onSelect={this.props.onSelect}
+                                }
+                            </CreateReactionMutation>
 
-                            />
+
+
                         </div>
                     )
                 } else {
