@@ -238,7 +238,11 @@ class SearchService
         filter_regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
         regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
       end
+      if top_key
+        body[:aggs][top_key.to_sym][:aggs][top_key.to_sym][:aggs][key.to_sym][:terms][:include] = regex if regex.present?
+      else
       body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
+      end
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys

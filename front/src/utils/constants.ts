@@ -11,6 +11,7 @@ export const aggsOrdered = [
   'overall_status',
   'phase',
   'rating_dimensions',
+  'reactions.kind',
   'sponsors',
   'start_date',
   'study_type',
