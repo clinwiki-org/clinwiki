@@ -20,7 +20,7 @@ export default function TestComponent() {
     gql(getIntrospectionQuery({ descriptions: false }))
   );
   const { data: study } = useQuery(getQuery(fragment), {
-    variables: { nctId: 'NCT00001154' },
+    variables: { nctId: 'NCT03847779' },
   });
 
   if (introspection) {
@@ -35,11 +35,10 @@ export default function TestComponent() {
           onFragmentChanged={setFragment}
         />
         <pre>
-          {JSON.stringify(
-            types.filter(t => t.name == 'Study'),
-            null,
-            2
-          )}
+          {JSON.stringify(study?.study, null, 2)}
+        </pre>
+        <pre>
+          {JSON.stringify(fragment, null, 2)}
         </pre>
       </div>
     );

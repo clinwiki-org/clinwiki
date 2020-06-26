@@ -1,17 +1,23 @@
 import React, { useState, useMemo } from 'react';
-import { IntrospectionType, GraphQLSchema } from 'graphql';
+import {
+  IntrospectionType,
+  GraphQLSchema,
+  IntrospectionField,
+  IntrospectionOutputTypeRef,
+} from 'graphql';
 import { stringify } from 'querystring';
+import { fileURLToPath } from 'url';
 
-export type SchemaType = JsonSchemaType | GraphqlSchemaType
+export type SchemaType = JsonSchemaType | GraphqlSchemaType;
 
 export interface JsonSchemaType {
-  kind: 'json'
-  schema: JsonSchema
+  kind: 'json';
+  schema: JsonSchema;
 }
 export interface GraphqlSchemaType {
-  kind: 'graphql'
-  name: string
-  types: readonly IntrospectionType[]
+  kind: 'graphql';
+  name: string;
+  types: readonly IntrospectionType[];
 }
 
 interface Props {
@@ -46,15 +52,16 @@ interface JsonSchemaObject {
 }
 export type JsonSchema = JsonSchemaItem | JsonSchemaArray | JsonSchemaObject;
 
-function jsonSchemaToInternal(x: JsonSchema) {
-  function subPath(trunk: string, leaf: string) {
-    if (!trunk) return leaf;
-    else if (trunk[trunk.length - 1] === '#') {
-      return `${trunk}${leaf}`;
-    } else {
-      return `${trunk}.${leaf}`;
-    }
+function subPath(trunk: string, leaf: string) {
+  if (!trunk) return leaf;
+  else if (trunk[trunk.length - 1] === '#') {
+    return `${trunk}${leaf}`;
+  } else {
+    return `${trunk}.${leaf}`;
   }
+}
+
+function jsonSchemaToInternal(x: JsonSchema) {
   function jsonSchemaToInternalImpl(
     path: string,
     x: JsonSchema,
@@ -80,22 +87,79 @@ function jsonSchemaToInternal(x: JsonSchema) {
   return result.sort();
 }
 
-function graphqlToInternal(x : GraphqlSchemaType) {
-  function gqlToInternalImpl(path: string, root: IntrospectionType, typeMap : Record<string, IntrospectionType>, result : string[]) {
-    // iterate fields
+function graphqlToInternal(x: GraphqlSchemaType) {
+  function gqlFieldToInternal(
+    path: string,
+    root: IntrospectionOutputTypeRef,
+    typeMap: Record<string, IntrospectionType>,
+    result: string[],
+    guard: string[]
+  ) {
+    if (result.length > 500) return;
+    switch (root.kind) {
+      // Skip over non-nulls
+      case 'NON_NULL':
+        gqlFieldToInternal(path, root.ofType, typeMap, result, guard);
+        break;
+      case 'SCALAR':
+        result.push(path);
+        break;
+      case 'LIST':
+        gqlFieldToInternal(`${path}#`, root.ofType, typeMap, result, guard);
+        break;
+      case 'OBJECT':
+        if (!guard.includes(root.name)) {
+          guard.push(root.name);
+          const itype = typeMap[root.name];
+          gqlObjToInternal(path, itype, typeMap, result, guard);
+          guard.pop();
+        }
+        break;
+    }
   }
 
-  const typeMap : Record<string,IntrospectionType> = {};
+  function gqlObjToInternal(
+    path: string,
+    root: IntrospectionType,
+    typeMap: Record<string, IntrospectionType>,
+    result: string[],
+    guard: string[]
+  ) {
+    switch (root.kind) {
+      case 'INTERFACE':
+      case 'OBJECT':
+        for (const field of root.fields) {
+          if (field.isDeprecated || field.args.length > 0) continue;
+          gqlFieldToInternal(
+            subPath(path, field.name),
+            field.type,
+            typeMap,
+            result,
+            guard
+          );
+        }
+        break;
+      default:
+        console.log(root);
+        throw `Expected object type got ${root.kind}`;
+    }
+  }
+
+  const typeMap: Record<string, IntrospectionType> = {};
   for (const t of x.types) typeMap[t.name] = t;
-  let result : string[] = [];
-  gqlToInternalImpl('', typeMap[x.name], typeMap, result);
+  let result: string[] = [];
+  let guard: string[] = [];
+  const rootType = typeMap[x.name];
+  gqlObjToInternal('', rootType, typeMap, result, guard);
   return result.sort();
 }
 
-function schemaToInternal(schemaType : SchemaType) {
-  switch(schemaType.kind) {
-    case 'json': return jsonSchemaToInternal(schemaType.schema);
-    case 'graphql': return graphqlToInternal(schemaType);
+function schemaToInternal(schemaType: SchemaType) {
+  switch (schemaType.kind) {
+    case 'json':
+      return jsonSchemaToInternal(schemaType.schema);
+    case 'graphql':
+      return graphqlToInternal(schemaType);
   }
 }
 
@@ -104,6 +168,7 @@ function indent(count: number) {
   for (let x = 0; x < count; ++x) result += ' ';
   return result;
 }
+
 function pathToTemplate(path: string): string {
   let eachCount = 0;
   let result = '';
@@ -132,10 +197,7 @@ function pathToTemplate(path: string): string {
 
 export default function SchemaSelector(props: Props) {
   const [filter, setFilter] = React.useState('');
-  const schema = useMemo(
-    () => schemaToInternal(props.schema),
-    [props.schema]
-  );
+  const schema = useMemo(() => schemaToInternal(props.schema), [props.schema]);
   return (
     <div>
       <input
