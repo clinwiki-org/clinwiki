@@ -217,9 +217,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
             <StyledFormInput
               componentClass="textarea"
               name="reactionsConfig"
-              //@ts-ignore
               placeholder={this.props.form.reactionsConfig}
-              //@ts-ignore
               value={this.props.form.reactionsConfig}
               onChange={this.handleInputChange}
             />
