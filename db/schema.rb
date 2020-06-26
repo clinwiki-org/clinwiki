@@ -30,23 +30,16 @@ ActiveRecord::Schema.define(version: 2020_06_26_152506) do
     t.integer "user_id"
   end
 
-  create_table "facility_locations", primary_key: ["name", "city", "state", "zip", "country"], force: :cascade do |t|
-    t.string "name", null: false
-    t.string "city", null: false
-    t.string "state", null: false
-    t.string "zip", null: false
-    t.string "country", null: false
+  create_table "facility_locations", force: :cascade do |t|
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "country"
     t.float "latitude"
     t.float "longitude"
     t.string "status"
-  end
-
-  create_table "lists", force: :cascade do |t|
-    t.bigint "user_id"
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_lists_on_user_id"
+    t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
@@ -64,7 +57,6 @@ ActiveRecord::Schema.define(version: 2020_06_26_152506) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "unicode"
   end
 
   create_table "reactions", force: :cascade do |t|
@@ -174,7 +166,6 @@ ActiveRecord::Schema.define(version: 2020_06_26_152506) do
     t.string "last_name"
     t.string "default_query_string"
     t.json "search_result_columns"
-    t.string "provider"
     t.string "picture_url"
     t.string "reset_token_url"
     t.index ["email"], name: "index_users_on_email", unique: true

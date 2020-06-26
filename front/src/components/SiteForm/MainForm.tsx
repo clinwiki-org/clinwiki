@@ -90,7 +90,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
-    if (name === 'themes' || name === 'userRank') {
+    if (name === 'themes' || name === 'userRank' || name === 'reactionsConfig') {
       try {
         let parseResponse = JSON.parse(value);
         if (parseResponse && parseResponse.error)
@@ -211,6 +211,16 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
               placeholder={this.props.form.userRank}
               //@ts-ignore
               value={this.props.form.userRank}
+              onChange={this.handleInputChange}
+            />
+            <h3>Reaction Configuration</h3>
+            <StyledFormInput
+              componentClass="textarea"
+              name="reactionsConfig"
+              //@ts-ignore
+              placeholder={this.props.form.reactionsConfig}
+              //@ts-ignore
+              value={this.props.form.reactionsConfig}
               onChange={this.handleInputChange}
             />
           </Col>

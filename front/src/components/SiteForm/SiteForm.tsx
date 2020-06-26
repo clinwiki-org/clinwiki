@@ -72,6 +72,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       subdomain
       skipLanding
       userRank
+      reactionsConfig
       editors {
         email
       }
@@ -89,6 +90,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       editors,
       themes,
       userRank,
+      reactionsConfig
     } = props.site;
     const editorEmails = editors.map(prop('email')) as string[];
     const form = {
@@ -98,6 +100,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       editorEmails,
       themes,
       userRank,
+      reactionsConfig
     };
     if (form && !equals(form, state.prevForm as any)) {
       return { ...state, form, prevForm: form };
