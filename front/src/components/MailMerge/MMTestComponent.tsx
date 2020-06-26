@@ -8,13 +8,25 @@ const getQuery = frag => gql`
   query SampleStudyQuery($nctId: String!) {
     study(nctId: $nctId) {
       briefTitle
-      ${frag}
+      reviews {
+        content
+        user {
+          email
+        }
+      }
     }
   }
 `;
 
 export default function TestComponent() {
-  const [template, setTemplate] = useState('{{briefTitle}}');
+  const [template, setTemplate] = useState(`
+# title: {{briefTitle}}
+{{#each reviews}}
+Review:
+  {{content}}
+  - {{user.email}}
+{{/each}}
+`);
   const [fragment,setFragment] = useState('');
   const { data: introspection } = useQuery<IntrospectionQuery>(
     gql(getIntrospectionQuery({ descriptions: false }))

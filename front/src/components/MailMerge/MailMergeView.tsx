@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Handlebars from 'handlebars';
 import { registerHandlebarsHelpers } from './MailMergeHelpers';
+import useHandlebars from 'hooks/useHandlebars';
 
 interface Props {
   template: string;
   context: object;
   style?: object;
+  fragmentClass?: string;
   onFragmentChanged?: (fragment: string) => void;
 }
 interface State {
@@ -25,47 +27,48 @@ const defaultStyle: React.CSSProperties = {
   background: '#ffffff',
 };
 
-export default class View extends React.Component<Props, State> {
-  constructor(props: Readonly<Props>) {
-    super(props);
-    registerHandlebarsHelpers();
-    this.state = View.getDerivedStateFromProps(props) as Readonly<State>;
+function compileFragment(template: string) {
+  // extract strings
+  return 'fuck you';
+}
+
+function compileTemplate(template: string) {
+  try {
+    return Handlebars.compile(template);
+  } catch (e) {
+    const errMsg = `Template error: ${e}`;
+    return _ => errMsg;
   }
-  static getDerivedStateFromProps(
-    props: Props,
-    state?: State
-  ): State | undefined {
-    if (props.template === state?.template) {
-      return { ...state, markdown: state.compiled(props.context) };
-    }
-    try {
-      const template = Handlebars.compile(props.template);
-      return {
-        template: props.template,
-        compiled: template,
-        markdown: template(props.context),
-      };
-    } catch (e) {
-      const errMsg = `Template error:\n${e}`;
-      return (
-        state || {
-          template: props.template,
-          compiled: _ => errMsg,
-          markdown: errMsg,
-        }
-      );
-    }
+}
+
+function handleTemplateChanged(props: Props) {
+  const { template, fragmentClass, onFragmentChanged } = props;
+  const compiled = compileTemplate(template);
+  if (onFragmentChanged) {
+    const fragment = compileFragment(template);
+    onFragmentChanged(fragment);
   }
-  render() {
-    const style = { ...defaultStyle, ...this.props.style };
-    return (
-      <div className="mail-merge" style={style}>
-        <ReactMarkdown
-          className="mailmerge-view"
-          source={this.state.markdown}
-          escapeHtml={false}
-        />
-      </div>
-    );
-  }
+  return compiled;
+}
+
+export default function View(props: Props) {
+  useHandlebars();
+  const compiled = useMemo(() => handleTemplateChanged(props), [
+    props.template,
+  ]);
+
+  // Note: We can make this faster by compiling markdown->html before applying the template
+  const style = props.style
+    ? { ...defaultStyle, ...props.style }
+    : defaultStyle;
+  const markdown = compiled(props.context);
+  return (
+    <div className="mail-merge" style={style}>
+      <ReactMarkdown
+        className="mailmerge-view"
+        source={markdown}
+        escapeHtml={false}
+      />
+    </div>
+  );
 }
