@@ -29,19 +29,14 @@ export const reactionIdFromCharacter = (val: string |undefined): number | undefi
             return undefined;
     }
 };
-// export const activeReactions: string[]=['👍', '👎', '❤️', '☠️']
 export const activeReactions =(reactionsConfig)=>{
-    console.log("In active reactions",reactionsConfig)
     let obj = JSON.parse(reactionsConfig)
-    console.log("OBJ",obj)
     let activeArray: any[]=[]
     obj.map((reaction)=>{
        activeArray.push( reactionCharacterFromName(reaction.name))
     })
-    console.log("Active",activeArray)
     return activeArray
 }
-//: string[]=['👍', '👎', '❤️', '☠️']
 
 export const isReactionUnique = (val: string |undefined, valArray: any[]): object | undefined=>{
     let reactionId = reactionIdFromCharacter(val)
