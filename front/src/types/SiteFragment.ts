@@ -761,6 +761,7 @@ export interface SiteFragment {
   skipLanding: boolean | null;
   subdomain: string;
   themes: string;
+  reactionsConfig: string;
   userRank: string;
   owners: SiteFragment_owners[];
   siteView: SiteFragment_siteView;

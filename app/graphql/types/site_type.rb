@@ -8,6 +8,7 @@ module Types
     field :editors, [UserType], null: false
     field :site_views, [SiteViewType], null: false
     field :themes, String, null: false
+    field :reactions_config, String, null: false
     field :site_view, SiteViewType, null: false do
       argument :url, type: String, required: false
     end
