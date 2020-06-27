@@ -4,14 +4,16 @@ import { useQuery } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import MailMerge from './MailMerge';
 
-const getQuery = (name,frag) => gql`
+const getQuery = (name:string,frag:string) => {
+  frag = frag || `fragment ${name} on Study { nct_id }`;
+  return gql`
   query SampleStudyQuery($nctId: String!) {
     study(nctId: $nctId) {
       ...${name}
     }
   }
   ${frag}
-`;
+`};
 
 export default function TestComponent() {
   const [template, setTemplate] = useState(`

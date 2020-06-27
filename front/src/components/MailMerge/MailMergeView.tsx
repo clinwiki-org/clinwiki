@@ -115,6 +115,7 @@ function jsonToFragmentBody(
   json: Record<string, object | Marker>,
   indent = ''
 ) {
+  if (Object.keys(json).length == 0) return '';
   var result = '{\n';
   for (const key in json) {
     const value = json[key];
@@ -134,7 +135,11 @@ function jsonToFragmentBody(
 }
 
 function toFragment(name: string, className: string, body: string) {
-  return `fragment ${name} on ${className} ${body}`;
+  if (body) {
+    return `fragment ${name} on ${className} ${body}`;
+  } else {
+    return '';
+  }
 }
 
 function compileFragment(
@@ -152,7 +157,6 @@ function compileTemplate(template: string) {
   try {
     return Handlebars.compile(template);
   } catch (e) {
-    console.log('catch?');
     const errMsg = `Template error: ${e}`;
     return _ => errMsg;
   }
@@ -168,6 +172,17 @@ function handleTemplateChanged(props: Props) {
   return compiled;
 }
 
+function applyTemplate(
+  template: HandlebarsTemplateDelegate<any>,
+  context: object
+) {
+  try {
+    return template(context);
+  } catch (e) {
+    return `#Template apply error:\n   ${e}`;
+  }
+}
+
 export default function MailMergeView(props: Props) {
   useHandlebars();
   const compiled = useMemo(() => handleTemplateChanged(props), [
@@ -178,7 +193,7 @@ export default function MailMergeView(props: Props) {
   const style = props.style
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
-  const markdown = compiled(props.context);
+  const markdown = applyTemplate(compiled, props.context);
   return (
     <div className="mail-merge" style={style}>
       <ReactMarkdown
