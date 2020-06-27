@@ -39,9 +39,7 @@ Facility contacts:
     gql(getIntrospectionQuery({ descriptions: false }))
   );
   const fragmentName = "demo_fragment";
-  const query = getQuery(fragmentName, fragment);
-  console.log(query);
-  const { data: study } = useQuery(query, {
+  const { data: study } = useQuery(getQuery(fragmentName, fragment), {
     variables: { nctId: 'NCT03847779' },
   });
 
