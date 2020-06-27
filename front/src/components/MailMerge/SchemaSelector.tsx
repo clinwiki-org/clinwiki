@@ -140,7 +140,6 @@ function graphqlToInternal(x: GraphqlSchemaType) {
         }
         break;
       default:
-        console.log(root);
         throw `Expected object type got ${root.kind}`;
     }
   }
@@ -148,9 +147,8 @@ function graphqlToInternal(x: GraphqlSchemaType) {
   const typeMap: Record<string, IntrospectionType> = {};
   for (const t of x.types) typeMap[t.name] = t;
   let result: string[] = [];
-  let guard: string[] = [];
   const rootType = typeMap[x.name];
-  gqlObjToInternal('', rootType, typeMap, result, guard);
+  gqlObjToInternal('', rootType, typeMap, result, [rootType.name]);
   return result.sort();
 }
 

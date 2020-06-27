@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import SchemaSelector, { SchemaType } from './SchemaSelector';
-import View from './MailMergeView';
+import View, { Props as ViewProps } from './MailMergeView';
 import Editor from './MailMergeEditor';
 
-interface Props {
+interface Props extends Omit<ViewProps, 'context'> {
   schema: SchemaType;
   sample: object;
   style?: object;
-  template: string;
   onTemplateChanged?: (template: string) => void;
-  onFragmentChanged?: (fragment: string) => void;
 }
 
 const defaultStyle: React.CSSProperties = {
@@ -40,7 +38,13 @@ export default function MailMerge(props: Props) {
         onChange={setTemplate}
         onCursorMove={setCursorPosition}
       />
-      <View template={template} context={props.sample} onFragmentChanged={props.onFragmentChanged} />
+      <View
+        template={template}
+        context={props.sample}
+        fragmentName={props.fragmentName}
+        fragmentClass={props.fragmentClass}
+        onFragmentChanged={props.onFragmentChanged}
+      />
     </div>
   );
 }

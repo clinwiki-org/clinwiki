@@ -4,34 +4,44 @@ import { useQuery } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import MailMerge from './MailMerge';
 
-const getQuery = frag => gql`
+const getQuery = (name,frag) => gql`
   query SampleStudyQuery($nctId: String!) {
     study(nctId: $nctId) {
-      briefTitle
-      reviews {
-        content
-        user {
-          email
-        }
-      }
+      ...${name}
     }
   }
+  ${frag}
 `;
 
 export default function TestComponent() {
   const [template, setTemplate] = useState(`
 # title: {{briefTitle}}
 {{#each reviews}}
-Review:
-  {{content}}
+- Review: {{content}}
   - {{user.email}}
+
+{{#with user}}
+  - {{email}}
+{{/with}}
+{{/each}}
+
+Facility contacts:  
+{{#each facilities}}
+ {{#each contacts}}
+  {{name}}  
+ {{/each}}
+ {{location.latitude}}
+ {{location.longitude}}
 {{/each}}
 `);
-  const [fragment,setFragment] = useState('');
+  const [fragment, setFragment] = useState('');
   const { data: introspection } = useQuery<IntrospectionQuery>(
     gql(getIntrospectionQuery({ descriptions: false }))
   );
-  const { data: study } = useQuery(getQuery(fragment), {
+  const fragmentName = "demo_fragment";
+  const query = getQuery(fragmentName, fragment);
+  console.log(query);
+  const { data: study } = useQuery(query, {
     variables: { nctId: 'NCT03847779' },
   });
 
@@ -44,14 +54,12 @@ Review:
           sample={study?.study || {}}
           template={template}
           onTemplateChanged={setTemplate}
+          fragmentName={fragmentName}
+          fragmentClass="Study"
           onFragmentChanged={setFragment}
         />
-        <pre>
-          {JSON.stringify(study?.study, null, 2)}
-        </pre>
-        <pre>
-          {JSON.stringify(fragment, null, 2)}
-        </pre>
+        <pre>{fragment}</pre>
+        <pre>{JSON.stringify(study?.study, null, 2)}</pre>
       </div>
     );
   }
