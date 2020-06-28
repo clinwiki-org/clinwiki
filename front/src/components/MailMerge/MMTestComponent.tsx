@@ -50,7 +50,7 @@ Facility contacts:
     return (
       <div>
         <MailMerge
-          schema={{ kind: 'graphql', name: 'Study', types }}
+          schema={{ kind: 'graphql', typeName: 'Study', types }}
           sample={study?.study || {}}
           template={template}
           onTemplateChanged={setTemplate}

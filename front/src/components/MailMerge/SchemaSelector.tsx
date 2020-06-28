@@ -16,7 +16,7 @@ export interface JsonSchemaType {
 }
 export interface GraphqlSchemaType {
   kind: 'graphql';
-  name: string;
+  typeName: string;
   types: readonly IntrospectionType[];
 }
 
@@ -147,7 +147,7 @@ function graphqlToInternal(x: GraphqlSchemaType) {
   const typeMap: Record<string, IntrospectionType> = {};
   for (const t of x.types) typeMap[t.name] = t;
   let result: string[] = [];
-  const rootType = typeMap[x.name];
+  const rootType = typeMap[x.typeName];
   gqlObjToInternal('', rootType, typeMap, result, [rootType.name]);
   return result.sort();
 }
