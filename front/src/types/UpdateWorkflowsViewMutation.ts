@@ -56,6 +56,7 @@ export interface UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_w
   disableAddRating: boolean;
   hideReviews: boolean;
   name: string;
+  summaryTemplate: string;
   suggestedLabelsFilter: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsFilter;
   suggestedLabelsConfig: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_suggestedLabelsConfig[];
   wikiSectionsFilter: UpdateWorkflowsViewMutation_updateWorkflowsView_workflowsView_workflows_wikiSectionsFilter;

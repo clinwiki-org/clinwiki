@@ -72,6 +72,7 @@ class WorkflowsView < ApplicationRecord
         kind: "BLACKLIST",
         values: [],
       },
+      summaryTemplate: "# {{briefTitle}}"
     }
   end
 

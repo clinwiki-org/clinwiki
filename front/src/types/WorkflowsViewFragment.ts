@@ -56,6 +56,7 @@ export interface WorkflowsViewFragment_workflows {
   disableAddRating: boolean;
   hideReviews: boolean;
   name: string;
+  summaryTemplate: string;
   suggestedLabelsFilter: WorkflowsViewFragment_workflows_suggestedLabelsFilter;
   suggestedLabelsConfig: WorkflowsViewFragment_workflows_suggestedLabelsConfig[];
   wikiSectionsFilter: WorkflowsViewFragment_workflows_wikiSectionsFilter;

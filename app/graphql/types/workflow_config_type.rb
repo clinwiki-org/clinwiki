@@ -10,6 +10,7 @@ module Types
     field :suggested_labels_filter, SiteSelectType, null: false
     field :suggested_labels_config, [WorkflowAggFieldType], null: false
     field :summary_fields_filter, SiteSelectType, null: false
+    field :summary_template, String, null: false
 
     def hide_reviews
       object[:hideReviews] == "true"
@@ -45,6 +46,10 @@ module Types
 
     def summary_fields_filter
       object[:summaryFieldsFilter]
+    end
+
+    def summary_template
+      object[:summaryTemplate]
     end
   end
 end
