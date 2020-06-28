@@ -15,6 +15,7 @@ const FRAGMENT = gql`
     disableAddRating
     hideReviews
     name
+    summaryTemplate
     suggestedLabelsFilter {
       kind
       values

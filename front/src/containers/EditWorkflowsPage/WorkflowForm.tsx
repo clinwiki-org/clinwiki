@@ -1,15 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Panel, FormControl, Checkbox } from 'react-bootstrap';
-import {
-  WorkflowConfigFragment,
-} from 'types/WorkflowConfigFragment';
+import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import MultiInput from 'components/MultiInput';
 import AggField, { FieldType } from 'components/SiteForm/AggField';
 import { fromPairs, difference, find } from 'ramda';
 import { withSite2 } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { MutationSource } from 'containers/SearchPage/shared';
+import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -176,7 +175,19 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
           value={this.props.workflow.wikiSectionsFilter.values}
           onChange={onAddMutation}
         />
-        <StyledLabel>Summary fields</StyledLabel>
+        <StyledLabel>Summary</StyledLabel>
+        <MailMergeFormControl
+          template={this.props.workflow.summaryTemplate}
+          onTemplateChanged={t =>
+            onAddMutation({
+              currentTarget: {
+                name: `set:workflows.${this.props.workflow.name}.summaryTemplate`,
+                value: t,
+              },
+            })
+          }
+        />
+        {/*
         <StyledFormControl
           name={`set:workflows.${this.props.workflow.name}.summaryFieldsFilter.kind`}
           componentClass="select"
@@ -194,7 +205,7 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
           placeholder="Add field"
           value={this.props.workflow.summaryFieldsFilter.values}
           onChange={onAddMutation}
-        />
+        /> */}
       </div>
     );
   }
