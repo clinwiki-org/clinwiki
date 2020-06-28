@@ -18,7 +18,7 @@ const defaultStyle: React.CSSProperties = {
   flexGrow: 1,
 
   padding: '4px',
-  overflow: 'scroll',
+  overflow: 'auto',
   background: '#ffffff',
 };
 

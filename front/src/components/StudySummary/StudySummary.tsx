@@ -9,6 +9,7 @@ import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { prop } from 'ramda';
 import { sentanceCaseFromCamelCase } from 'utils/helpers';
+import { MailMergeView } from 'components/MailMerge';
 
 interface StudySummaryProps {
   study: StudySummaryFragment;
@@ -94,7 +95,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       resultsFirstSubmittedDate
       resultsFirstSubmittedQcDate
       reviewsCount
-      reactionsCount{
+      reactionsCount {
         name
         count
       }
@@ -120,23 +121,19 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
   `;
 
   render() {
-    const allowedFields: string[] = this.props.workflow
-      ? displayFields(
-          this.props.workflow.summaryFieldsFilter.kind,
-          this.props.workflow.summaryFieldsFilter.values,
-          this.props.workflow.allSummaryFields.map(name => ({
-            name,
-            rank: null,
-          }))
-        ).map(prop('name'))
-      : [
-          'nctId',
-          'type',
-          'overallStatus',
-          'completionDate',
-          'enrollment',
-          'source',
-        ];
+    const template = this.props.workflow
+      ? this.props.workflow.summaryTemplate
+      : `
+<table class='table table-striped table-bordered table-condensed'>
+  <tbody>
+    <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
+    <tr> <th>type</th> <td>{{type}}</td> </tr>
+    <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
+    <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
+    <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
+    <tr> <th>Source</th> <td>{{source}}</td> </tr>
+  </tbody>
+</table> `;
 
     return (
       <div className="container">
@@ -145,32 +142,10 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
         </Helmet>
 
         <CollapsiblePanel header={this.props.study.briefTitle || ''}>
-          <Table striped bordered condensed>
-            <tbody>
-              {allowedFields.map(name =>
-                name === 'nctId' ? (
-                  // Special case nctID to include a link
-                  <tr key={name}>
-                    <th style={{ minWidth: '100px'}}>NCT ID</th>
-                    <td>
-                      <a
-                        href={`https://clinicaltrials.gov/ct2/show/${this.props.study.nctId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        >
-                        {this.props.study.nctId}
-                      </a>
-                    </td>
-                  </tr>
-                ) : (
-                  <tr key={name}>
-                    <th>{sentanceCaseFromCamelCase(name)}</th>
-                    <td>{this.props.study[name]}</td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </Table>
+          <MailMergeView 
+            template={template}
+            context={this.props.study}
+          />
         </CollapsiblePanel>
       </div>
     );

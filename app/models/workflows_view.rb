@@ -44,6 +44,17 @@ class WorkflowsView < ApplicationRecord
   end
 
   def default_workflow_params(name)
+    template = '
+<table class='table table-striped table-bordered table-condensed'>
+  <tbody>
+    <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
+    <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
+    <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
+    <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
+    <tr> <th>Source</th> <td>{{source}}</td> </tr>
+  </tbody>
+</table>'
+
     {
       name: name,
       hideReviews: false,
@@ -72,7 +83,7 @@ class WorkflowsView < ApplicationRecord
         kind: "BLACKLIST",
         values: [],
       },
-      summaryTemplate: "# {{briefTitle}}"
+      summaryTemplate: template
     }
   end
 
