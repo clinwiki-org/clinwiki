@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { MailMergeEditor } from 'components/MailMerge';
 import styled from 'styled-components';
 import { FormControl } from 'react-bootstrap';
 import { fromPairs } from 'ramda';
 import { PREFETCH_QUERY } from 'containers/StudyPage/StudyPage';
 import { useQuery } from 'react-apollo';
-import { JsonSchema, SchemaType } from 'components/MailMerge/SchemaSelector';
+import { SchemaType } from 'components/MailMerge/SchemaSelector';
 import { StudyPagePrefetchQuery } from 'types/StudyPagePrefetchQuery';
 import { camelCase } from 'utils/helpers';
 
@@ -30,7 +30,7 @@ function SearchTemplate(props: Props) {
   const { data } = useQuery<StudyPagePrefetchQuery>(PREFETCH_QUERY, {
     variables: { nctId },
   });
-  const schema: SchemaType = {
+  const schema: SchemaType = useMemo(()=> ({
     kind: 'json',
     schema: {
       type: 'object',
@@ -38,7 +38,7 @@ function SearchTemplate(props: Props) {
         props.fields.map(f => [camelCase(f), { type: 'string' }])
       )
     },
-  };
+  }), [props.fields]);
   return (
     <Container>
       <StyledFormControl
