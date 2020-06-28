@@ -1,9 +1,7 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Handlebars from 'handlebars';
-import { registerHandlebarsHelpers } from './MailMergeHelpers';
 import useHandlebars from 'hooks/useHandlebars';
-import { KnownFragmentNames } from 'graphql/validation/rules/KnownFragmentNames';
 
 export interface Props {
   template: string;

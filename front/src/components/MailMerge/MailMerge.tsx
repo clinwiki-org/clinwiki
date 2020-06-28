@@ -7,7 +7,7 @@ interface Props extends Omit<ViewProps, 'context'> {
   schema: SchemaType;
   sample: object;
   style?: object;
-  onTemplateChanged?: (template: string) => void;
+  onTemplateChanged: (template: string) => void;
 }
 
 const defaultStyle: React.CSSProperties = {
@@ -17,17 +17,13 @@ const defaultStyle: React.CSSProperties = {
 };
 
 export default function MailMerge(props: Props) {
-  const [template, setTemplate] = useState(props.template);
+  const template = props.template;
   const len = props.template.length;
   const [cursorPosition, setCursorPosition] = useState([len, len]);
-  const updateTemplate = (s: string) => {
-    setTemplate(s);
-    props.onTemplateChanged?.(s);
-  };
   const insertSchemaItem = (templateString: string) => {
     const before = template.slice(0, cursorPosition[0]);
     const after = template.slice(cursorPosition[1]);
-    updateTemplate(before + templateString + after);
+    props.onTemplateChanged(before + templateString + after);
   };
   const style = { ...defaultStyle, ...props.style };
   return (
@@ -35,7 +31,7 @@ export default function MailMerge(props: Props) {
       <SchemaSelector schema={props.schema} onSelectItem={insertSchemaItem} />
       <Editor
         markdown={template}
-        onChange={setTemplate}
+        onChange={props.onTemplateChanged}
         onCursorMove={setCursorPosition}
       />
       <View
