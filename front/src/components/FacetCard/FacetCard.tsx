@@ -166,7 +166,12 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     meta: {},
     upsertLabelMutation: UpsertMutationFn
   ) => {
+    console.log("In submit existing")
+    // console.trace()
     if (this.props.nctId) {
+      console.log("key: ", key)
+      console.log("value",  value)
+      console.log("meta",meta)
       CrowdPage.addLabel(
         key,
         value,
@@ -174,7 +179,8 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
         this.props.nctId,
         upsertLabelMutation
       );
-      if (this.props.refetch) this.props.refetch();
+      console.log("About to refetch")
+      if (this.props.refetch) (this.props.refetch());
     }
   };
 
@@ -211,10 +217,11 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     );
   };
 
-  onSuggestionSelected = (
+  onSuggestionSelected = (e, 
     { suggestionValue },
     upsertLabelMutation
   ) => {
+    // console.log("Onsuggestion selected",e,  suggestionValue)
     this.setState({
       textFieldActive: false,
       existingField: '',
@@ -359,12 +366,12 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                                 apolloClient
                               ),
                           }}
-                          onSuggestionSelected={(
+                          onSuggestionSelected={(e,
                             {
                               suggestionValue,
-                            }
+                            },
                           ) =>
-                            this.onSuggestionSelected(
+                            this.onSuggestionSelected(e,
                               {
                                 suggestionValue,
                               },

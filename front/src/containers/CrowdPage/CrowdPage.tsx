@@ -210,6 +210,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     nctId: string,
     upsertLabelMutation: UpsertMutationFn
   ) => {
+    // console.log("IN add label", key, value, meta, nctId)
     if (!value) return;
     let val = value;
     if (meta[key]) {
