@@ -1,4 +1,5 @@
 class Reaction < ApplicationRecord
+  include TriggersStudyReindex
   belongs_to :user
   include BelongsToStudy
   belongs_to :reaction_kind

@@ -275,7 +275,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       },
       reactions:{
         email: reactions.map(&:user).map(&:email),
-        kind:  reaction_kinds.map(&:name)
+        kind:  reactions.map(&:reaction_name)
 
       },
     ).merge(
