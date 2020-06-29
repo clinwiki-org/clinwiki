@@ -37,8 +37,6 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
     this.props.handleLoadMore();
   };
   componentDidUpdate = prevProps => {
-    console.log("DidUpdate", prevProps)
-    console.log(this.props.buckets)
     if (
       prevProps.buckets !== this.props.buckets &&
       this.props.buckets.length > 0
@@ -46,7 +44,7 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
       let finalDataArray: any[] = [];
       let finalOtherBucketsArray: any[] = [];
       let queryDate = this.props.buckets;
-      let newData = queryDate.map((bucket, index) => {
+      queryDate.map((bucket, index) => {
         let bucketKey = bucket.key;
         let bucketDocCount = bucket.docCount;
 
@@ -93,7 +91,6 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
     }
   }
   render() {
-    console.log("Current Buckets", this.state.currentBuckets)
     return (
       <ComposedChart
         layout="vertical"

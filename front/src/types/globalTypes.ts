@@ -95,6 +95,7 @@ export interface CreateSiteInput {
   subdomain: string;
   skipLanding?: boolean | null;
   themes?: string | null;
+  reactionsConfig?: string | null;
   userRank?: string | null;
   editorEmails?: string[] | null;
   clientMutationId?: string | null;
@@ -242,6 +243,7 @@ export interface UpdateSiteInput {
   id: number;
   name?: string | null;
   themes?: string | null;
+  reactionsConfig?: string | null;
   userRank?: string | null;
   skipLanding?: boolean | null;
   subdomain?: string | null;
