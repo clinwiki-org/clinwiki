@@ -761,6 +761,7 @@ export interface UpdateSiteMutation_updateSite_site {
   skipLanding: boolean | null;
   subdomain: string;
   themes: string;
+  reactionsConfig: string;
   userRank: string;
   owners: UpdateSiteMutation_updateSite_site_owners[];
   siteView: UpdateSiteMutation_updateSite_site_siteView;

@@ -45,7 +45,7 @@ class WorkflowsView < ApplicationRecord
 
   def default_workflow_params(name)
     template = '
-<table class='table table-striped table-bordered table-condensed'>
+<table class="table table-striped table-bordered table-condensed">
   <tbody>
     <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
     <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>

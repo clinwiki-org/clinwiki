@@ -132,6 +132,7 @@ class SearchService
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
+    reactions.kind
   ].freeze
 
   attr_reader :params
@@ -237,7 +238,11 @@ class SearchService
         filter_regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
         regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
       end
+      if top_key
+        body[:aggs][top_key.to_sym][:aggs][top_key.to_sym][:aggs][key.to_sym][:terms][:include] = regex if regex.present?
+      else
       body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
+      end
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys

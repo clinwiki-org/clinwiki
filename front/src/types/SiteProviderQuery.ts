@@ -761,6 +761,7 @@ export interface SiteProviderQuery_site {
   skipLanding: boolean | null;
   subdomain: string;
   themes: string;
+  reactionsConfig: string;
   userRank: string;
   owners: SiteProviderQuery_site_owners[];
   siteView: SiteProviderQuery_site_siteView;

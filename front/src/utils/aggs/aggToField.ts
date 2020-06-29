@@ -25,6 +25,8 @@ const aggToField = (val: string, expectedVal?: string): string => {
       expectedVal === val ? 'wiki user edits' : expectedVal,
     'wiki_page_edits.created_at':
       expectedVal === val ? 'wiki date range' : expectedVal,
+      'reactions.kind':
+      expectedVal === val ? 'reaction kind' : expectedVal,
   });
 };
 
