@@ -274,8 +274,8 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
         created_at: wiki_page_edits.map(&:created_at).map(&:to_time),
       },
       reactions:{
-        email: reactions.map(&:user).map(&:email),
-        kind:  reactions.map(&:reaction_name)
+        email: reactions.order(:id).map(&:user).map(&:email),
+        kind:  reactions.order(:id).map(&:reaction_name)
 
       },
     ).merge(
