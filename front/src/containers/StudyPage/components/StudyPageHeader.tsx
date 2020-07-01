@@ -24,14 +24,10 @@ interface StudyPageHeaderProps {
     studyRefetch: any;
     userRefetch: any;
     site?: any;
+    allReactions:any;
 }
 interface StudyPageHeaderState {
-    likesArray: any[];
-    dislikesArray: any[];
-    showReactions: boolean;
-    reactions: any;
-    counters: any;
-    showLoginModal: boolean;
+
 }
 const ReviewsWrapper = styled.div`
   display: flex;
@@ -97,15 +93,8 @@ const ReactionsContainer = styled.div`
 `;
 
 
-// A simple counter that displays which study you're on on the study page, in the middle of the prev and next buttons
 class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHeaderState> {
     state: StudyPageHeaderState = {
-        likesArray: [],
-        dislikesArray: [],
-        showReactions: false,
-        reactions: [],
-        counters: [],
-        showLoginModal: false,
 
     }
     renderBackButton = (name: string, link?: string | null) => {
@@ -185,16 +174,13 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
                     <LikesRow>
                         <ThumbsRow>
                             <ReactionsBar
-                                site={this.props.site}
-                                userRefetch={this.props.userRefetch}
+                                reactionsConfig={this.props.site.reactionsConfig}
                                 studyRefetch={this.props.studyRefetch}
                                 nctId={this.props.nctId}
                                 theme={this.props.theme}
-                                data={this.props.data}
-                                history={this.props.history}
+                                studyData={this.props.data}
                                 user={this.props.user}
-                                navButtonClick={this.props.navButtonClick}
-
+                                allReactions={this.props.allReactions}
                             />
 
                         </ThumbsRow>

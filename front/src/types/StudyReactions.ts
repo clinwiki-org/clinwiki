@@ -17,6 +17,10 @@ export interface StudyReactions_me_reactions_reactionKind {
    * Name of reaction example is like or dislike
    */
   name: string;
+  /**
+   * Unicode for emoji used in reaction
+   */
+  unicode: string;
 }
 
 export interface StudyReactions_me_reactions_study {
