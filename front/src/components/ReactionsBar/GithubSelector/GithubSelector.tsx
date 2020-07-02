@@ -1,10 +1,22 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import _ from 'lodash'
 import styled from 'styled-components';
 
 import GithubSelectorEmoji from './GithubSelectorEmoji'
 
-export const GithubSelector = ({ reactions, onSelect }) => {
+export const useWindowEvent = (event, callback) => {
+  useEffect(() => {
+    window.addEventListener(event, callback);
+    return () => window.removeEventListener(event, callback);
+  }, [event, callback]);
+};
+
+export const useGlobalMouseUp = (callback) => {
+  return useWindowEvent("mouseup", callback);
+};
+
+
+export const GithubSelector = ({ reactions, onSelect, closeSelector }) => {
 
 const Selector = styled.div`
 padding: 5px;
@@ -34,6 +46,7 @@ padding: 5px;
         }
 
 `
+useGlobalMouseUp(e => closeSelector());
   return (
     <Selector>
       <p>Add your reaction</p>

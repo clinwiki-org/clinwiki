@@ -33,14 +33,6 @@ const HeaderContentWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  .selector{
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 5;
-  }
 `;
 
 const LikesRow = styled.div`
@@ -159,13 +151,13 @@ class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState>
                                 refetch={refetch}
                             />
                             {this.state.showReactions == true ?
-                                <div className="selector" onClick={() => this.setState({ showReactions: false })}>
                                     <CreateReactionMutation>
                                         {createReaction => (<GithubSelector
                                             reactions={this.state.reactions}
-                                            onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch, this.props.allReactions.data.reactionKinds)} />)}
+                                            onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch, this.props.allReactions.data.reactionKinds)} 
+                                            closeSelector={()=>this.setState({ showReactions: false })}
+                                        />)}
                                     </CreateReactionMutation>
-                                </div>
                                 : null}
 
                         </ReactionsContainer>

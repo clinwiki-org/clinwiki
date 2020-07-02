@@ -44,7 +44,7 @@ render(){
         buttonStyle={backgroundColor: 'rgba(255,255,255,0.8)'}
     }
     return (
-        < Wrap onClick={ ()=>this.handleClick() } onMouseEnter={()=>this.toggleHover(true)} onMouseLeave={()=>this.toggleHover(false)} >
+        < Wrap onMouseDown={ ()=>this.handleClick() } onMouseEnter={()=>this.toggleHover(true)} onMouseLeave={()=>this.toggleHover(false)} >
           <div style={buttonStyle} className='emoji-2'>
             { this.props.shortcode }
           </div>
