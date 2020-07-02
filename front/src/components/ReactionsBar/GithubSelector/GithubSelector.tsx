@@ -1,39 +1,23 @@
-import React from 'react'
-// import reactCSS from 'reactcss'
+import React, {useEffect} from 'react'
 import _ from 'lodash'
 import styled from 'styled-components';
 
 import GithubSelectorEmoji from './GithubSelectorEmoji'
 
-export const GithubSelector = ({ reactions, onSelect }) => {
-//   const styles = reactCSS({
-//     'default': {
-//       selector: {
-//         paddingTop: '5px',
-//         backgroundColor: '#fff',
-//         border: '1px solid rgba(0,0,0,0.15)',
-//         borderRadius: '4px',
-//         boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
-//         display: 'inline-block',
-//       },
-//       label: {
-//         fontSize: '14px',
-//         lineHeight: '1.5',
-//         color: '#767676',
-//         margin: '6px 12px',
-//         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica',
-//       },
-//       divider: {
-//         height: '1px',
-//         margin: '8px 1px 0px',
-//         backgroundColor: '#e5e5e5',
-//       },
-//       emoji: {
-//         display: 'flex',
-//         margin: '0 6px',
-//       },
-//     },
-//   })
+export const useWindowEvent = (event, callback) => {
+  useEffect(() => {
+    window.addEventListener(event, callback);
+    return () => window.removeEventListener(event, callback);
+  }, [event, callback]);
+};
+
+export const useGlobalMouseUp = (callback) => {
+  return useWindowEvent("mouseup", callback);
+};
+
+
+export const GithubSelector = ({ reactions, onSelect, closeSelector }) => {
+
 const Selector = styled.div`
 padding: 5px;
     background-color: none;
@@ -45,8 +29,7 @@ padding: 5px;
     height: 5.55em;
     z-index: 500000000000000000;
     background: rgba(0,0,0,0.45);
-    right: 1.5%;
-    top: 6em;
+    margin-left: 13%;
         p{
             color: white;
         }
@@ -62,6 +45,7 @@ padding: 5px;
         }
 
 `
+useGlobalMouseUp(e => closeSelector());
   return (
     <Selector>
       <p>Add your reaction</p>
@@ -71,7 +55,7 @@ padding: 5px;
           return (
             <GithubSelectorEmoji
               key={ i }
-              shortcode={ reaction }
+              shortcode={ reaction.unicode }
               onSelect={ onSelect }
             />
           )
@@ -80,9 +64,4 @@ padding: 5px;
     </Selector>
   )
 }
-
-GithubSelector.defaultProps = {
-  reactions: ['👍', '👎', '😄', '🎉', '😕', '❤️'],
-}
-
 export default GithubSelector
