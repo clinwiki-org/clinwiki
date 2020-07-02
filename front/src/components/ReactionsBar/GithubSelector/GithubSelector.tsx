@@ -40,7 +40,6 @@ padding: 5px;
       <div className="divider"  />
       <div className="emoji">
         { _.map(reactions, (reaction, i) => {
-          console.log("Ope",reaction)
           return (
             <GithubSelectorEmoji
               key={ i }
@@ -53,9 +52,4 @@ padding: 5px;
     </Selector>
   )
 }
-
-GithubSelector.defaultProps = {
-  reactions: ['👍', '👎', '😄', '🎉', '😕', '❤️'],
-}
-
 export default GithubSelector

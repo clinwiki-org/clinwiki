@@ -13,7 +13,6 @@ import CreateReactionMutation, {
 
 interface SlackCounterProps {
     activeReactions: any;
-    reactions:any;
     user: any;
     onSelect?: any;
     onAdd: any;
@@ -103,32 +102,38 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
     }
     currentReactionFilter=(reactionName)=>{
+        //we dont have all the necessary data in activeReactions to interact with the db, 
+        //this is where this function comes into play:
+
+        //we take the reaction name and find it in our array with all our reactions that has all that data
+
         if(this.props.allReactions.data){
-            let array =this.props.allReactions.data.reactionKinds
-             return find(propEq('name', reactionName))(array)
+            let allReactions = this.props.allReactions.data.reactionKinds
+             return find(propEq('name', reactionName))(allReactions)
         }
     }
-    isReactionUnique = (val: any |undefined, valArray: any[]): object | undefined=>{
-        console.log("VAL",val)
-        console.log("ARRAY",valArray)
-         if (val && valArray){
-         return find(propEq('reactionKindId', val.id))(valArray);
+    findUserReaction = (reaction: any |undefined, userReactions: any[]): object | undefined=>{
+        //much like currentReactionFilter() we don't have the necesarry data 
+        //to interact with db  in the case a reaction is one a user has already interacted with before
+        
+
+        //in order to make sure we are passing the adequate data needed to update our db we look for it in our array userReactions where we can find everything we need
+         if (reaction && userReactions){
+         return find(propEq('reactionKindId', reaction.id))(userReactions);
      
      }
      return
      }
     renderReactionButtons = () => {
         let userReactionsCurrent = this.state.currentUserAndStudy;
-        console.log(this.props.allReactions)
         return (
             this.props.activeReactions.map((reaction, index) => {
-                
-                console.log("Ririr",reaction)
-                let currentReaction = this.currentReactionFilter(reaction.name)
-                console.log("Actual RIRIR",currentReaction)
-                let isActive = this.isReactionUnique(currentReaction, userReactionsCurrent)
 
-                if (isActive && currentReaction) {
+                let currentReaction = this.currentReactionFilter(reaction.name)
+
+                let isUserReaction = this.findUserReaction(currentReaction, userReactionsCurrent)
+
+                if (isUserReaction && currentReaction) {
                     return (
                         <div className="group-active" key={reaction.name}>
                             <DeleteReactionMutation>
@@ -138,14 +143,14 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                                         count={reaction.count}
                                         names={' '}
                                         active={' '}
-                                        onSelect={() => this.deleteReactionHelper(deleteReaction, isActive)}
+                                        onSelect={() => this.deleteReactionHelper(deleteReaction, isUserReaction)}
 
                                     />
                                 )}
                             </DeleteReactionMutation>
                         </div>
                     )
-                } else if (isActive == undefined && currentReaction) {
+                } else if (isUserReaction == undefined && currentReaction) {
                     return (
                         <div className="group-not-active" key={reaction.name}>
                             <CreateReactionMutation>

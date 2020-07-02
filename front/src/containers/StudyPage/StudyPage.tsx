@@ -408,11 +408,8 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
 
               return (
                 <Query query={REACTION_KINDS} >
-
                   {allReactions => {
-                    console.log("Argg", allReactions)
                     return (
-
                       <QueryComponent
                         query={QUERY}
                         variables={{ nctId: this.props.match.params.nctId }}

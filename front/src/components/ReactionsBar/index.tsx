@@ -16,7 +16,7 @@ interface ReactionsBarProps {
     nctId: any;
     studyRefetch: any;
     reactionsConfig?: any;
-    allReactions:any;
+    allReactions: any;
 }
 interface ReactionsBarState {
     showReactions: boolean;
@@ -68,23 +68,17 @@ class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState>
     }
 
 
-    componentDidMount = () => {
-        // activeReactions() takes in the reactionsConfig JSON object coming from site 
-        // and returns an array of the active characters based off the config
-        //this state managed array will handle the characters in the reaction selector
-
-    }
     componentDidUpdate = (prevProps) => {
-        if(this.props.allReactions.data && prevProps !== this.props){
+        const { reactionsConfig, studyData, allReactions } = this.props;
 
-            let reactions = this.activeReactions(this.props.reactionsConfig)
-
+        if (allReactions.data && prevProps !== this.props) {
+            let reactions = this.activeReactions(reactionsConfig)
             this.setState({ reactions: reactions })
         }
-        if (this.props.studyData && prevProps !== this.props) {
+        if (studyData && prevProps !== this.props) {
             let activeCount: any[] = []
-            this.props.studyData.reactionsCount.map((reaction) => {
-                let configArray = JSON.parse(this.props.reactionsConfig)
+            studyData.reactionsCount.map((reaction) => {
+                let configArray = JSON.parse(reactionsConfig)
 
                 //through each reaction iteration we check against the config array to figure if the count should display
                 let isActive = find(propEq('name', reaction.name))(configArray)
@@ -99,14 +93,18 @@ class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState>
 
     }
 
-    activeReactions =(reactionsConfig)=>{
+    activeReactions = (reactionsConfig) => {
+        const { allReactions } = this.props;
+
         let obj = JSON.parse(reactionsConfig)
-        let activeArray: any[]=[]
-        if(!this.props.allReactions.data) return
-        obj.map((reaction)=>{
-            let currentReaction = find(propEq('name', reaction.name))(this.props.allReactions.data.reactionKinds)
-            console.log(currentReaction)
-           activeArray.push(currentReaction)
+        let activeArray: any[] = []
+        if (!allReactions.data) return
+        obj.map((reaction) => {
+            //reaction here only has the name property, as it's the only thing we store in the configurations array 
+            //so we have to find it in allReactions which will contain the id, unicode, and name fields
+            //This is what we want to store in state as it is what our selector will use to render configured emojis and be able to interact w/ db 
+            let currentReaction = find(propEq('name', reaction.name))(allReactions.data.reactionKinds)
+            activeArray.push(currentReaction)
         })
         return activeArray
     }
@@ -115,30 +113,21 @@ class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState>
         this.setState({ showReactions: !this.state.showReactions })
 
     }
-
-
-
     setShowLoginModal = showLoginModal => {
         this.setState({ showLoginModal, showReactions: false });
     };
     handleSelectorClick = (e, createReaction, refetch, allReactions) => {
-        console.log(e)
-        console.log("YOOOO", allReactions )
+
         if (this.props.user == null) {
             this.setShowLoginModal(true);
             return
-
         }
-
         this.setState({ showReactions: false })
-        let currentReaction = find(propEq('unicode', e))(allReactions) 
-        console.log("HEHE",currentReaction)
-        let reactionId = currentReaction.id
-
+        let currentReaction = find(propEq('unicode', e))(allReactions)
 
         createReaction({
             variables: {
-                reactionKindId: reactionId,
+                reactionKindId: currentReaction.id,
                 nctId: this.props.nctId
 
             }
@@ -149,53 +138,43 @@ class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState>
 
     }
     render() {
-        console.log("STudy dAta", this.props.studyData)
         return (
-            // <Query query={REACTION_KINDS} >
-
-            // {allReactions=>{
-            //     console.log("Argg",allReactions)
-            //     return(
             <StudyReactions nctId={this.props.nctId}>
-            {(reactions, refetch) => (
-                <HeaderContentWrapper>
-                    <LoginModal
-                        show={this.state.showLoginModal}
-                        cancel={() => this.setShowLoginModal(false)}
-                    />
-                    <ReactionsContainer>
+                {(reactions, refetch) => (
+                    <HeaderContentWrapper>
+                        <LoginModal
+                            show={this.state.showLoginModal}
+                            cancel={() => this.setShowLoginModal(false)}
+                        />
+                        <ReactionsContainer>
 
-                                <SlackCounter
-                                    currentUserAndStudy={reactions?.reactions}
-                                    activeReactions={this.state.counters}
-                                    allReactions={this.props.allReactions}
-                                    reactions={reactions}
-                                    user={this.props.user}
-                                    onAdd={this.handleAddReaction}
-                                    nctId={this.props.nctId}
-                                    studyRefetch={this.props.studyRefetch}
-                                    refetch={refetch}
-                                />
-                                {this.state.showReactions == true ?
-                                    <div className="selector" onClick={() => this.setState({ showReactions: false })}>
-                                        <CreateReactionMutation>
-                                            {createReaction => (<GithubSelector
-                                                reactions={this.state.reactions}
-                                                onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch, this.props.allReactions.data.reactionKinds)} />)}
-                                        </CreateReactionMutation>
-                                    </div>
-                                    : null}
+                            <SlackCounter
+                                currentUserAndStudy={reactions?.reactions}
+                                activeReactions={this.state.counters}
+                                allReactions={this.props.allReactions}
+                                user={this.props.user}
+                                onAdd={this.handleAddReaction}
+                                nctId={this.props.nctId}
+                                studyRefetch={this.props.studyRefetch}
+                                refetch={refetch}
+                            />
+                            {this.state.showReactions == true ?
+                                <div className="selector" onClick={() => this.setState({ showReactions: false })}>
+                                    <CreateReactionMutation>
+                                        {createReaction => (<GithubSelector
+                                            reactions={this.state.reactions}
+                                            onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch, this.props.allReactions.data.reactionKinds)} />)}
+                                    </CreateReactionMutation>
+                                </div>
+                                : null}
 
-                    </ReactionsContainer>
-                </HeaderContentWrapper>
+                        </ReactionsContainer>
+                    </HeaderContentWrapper>
 
-            )}
-        </StudyReactions>
-            )
+                )}
+            </StudyReactions>
+        )
 
-            // }}
-            // </Query>
-        // );
     }
 }
 
