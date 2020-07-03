@@ -7,7 +7,7 @@ import {
   ScoreBoard,
   StyledProfileRanking,
 } from '../../../components/StyledComponents';
-import GithubSelector from '../../../components/GithubSelector/GithubSelector'
+import GithubSelector from '../../../components/ReactionsBar/GithubSelector/GithubSelector'
 
 import { getStarColor } from 'utils/auth';
 

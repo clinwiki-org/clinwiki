@@ -10,19 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_173104) do
-
+ActiveRecord::Schema.define(version: 2020_06_26_152506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "annotation_labels", id: :serial, force: :cascade do |t|
+  create_table "annotation_labels", force: :cascade do |t|
     t.string "label"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "annotations", id: :serial, force: :cascade do |t|
+  create_table "annotations", force: :cascade do |t|
     t.string "nct_id"
     t.string "label"
     t.text "description"
@@ -31,23 +30,16 @@ ActiveRecord::Schema.define(version: 2020_06_22_173104) do
     t.integer "user_id"
   end
 
-  create_table "facility_locations", primary_key: ["name", "city", "state", "zip", "country"], force: :cascade do |t|
-    t.string "name", null: false
-    t.string "city", null: false
-    t.string "state", null: false
-    t.string "zip", null: false
-    t.string "country", null: false
+  create_table "facility_locations", force: :cascade do |t|
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "country"
     t.float "latitude"
     t.float "longitude"
     t.string "status"
-  end
-
-  create_table "lists", force: :cascade do |t|
-    t.bigint "user_id"
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_lists_on_user_id"
+    t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
@@ -79,10 +71,10 @@ ActiveRecord::Schema.define(version: 2020_06_22_173104) do
     t.index ["user_id"], name: "index_reactions_on_user_id"
   end
 
-  create_table "reviews", id: :serial, force: :cascade do |t|
+  create_table "reviews", force: :cascade do |t|
+    t.string "nct_id"
     t.integer "overall_rating"
     t.text "text"
-    t.string "nct_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
@@ -142,7 +134,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_173104) do
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
-  create_table "tags", id: :serial, force: :cascade do |t|
+  create_table "tags", force: :cascade do |t|
     t.string "nct_id"
     t.string "value"
     t.datetime "created_at", null: false
@@ -150,7 +142,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_173104) do
     t.integer "user_id"
   end
 
-  create_table "user_session_studies", id: :serial, force: :cascade do |t|
+  create_table "user_session_studies", force: :cascade do |t|
     t.string "nct_id"
     t.text "serialized_study"
     t.datetime "created_at", null: false
@@ -160,7 +152,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_173104) do
     t.index ["user_id"], name: "user_session_studies_user_id"
   end
 
-  create_table "users", id: :serial, force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -175,7 +167,6 @@ ActiveRecord::Schema.define(version: 2020_06_22_173104) do
     t.string "last_name"
     t.string "default_query_string"
     t.json "search_result_columns"
-    t.string "provider"
     t.string "picture_url"
     t.string "reset_token_url"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -190,9 +181,9 @@ ActiveRecord::Schema.define(version: 2020_06_22_173104) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
-  create_table "wiki_page_edits", id: :serial, force: :cascade do |t|
-    t.integer "wiki_page_id"
-    t.integer "user_id"
+  create_table "wiki_page_edits", force: :cascade do |t|
+    t.bigint "wiki_page_id"
+    t.bigint "user_id"
     t.text "diff"
     t.text "diff_html"
     t.text "comment"
@@ -202,7 +193,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_173104) do
     t.index ["wiki_page_id"], name: "index_wiki_page_edits_on_wiki_page_id"
   end
 
-  create_table "wiki_pages", id: :serial, force: :cascade do |t|
+  create_table "wiki_pages", force: :cascade do |t|
     t.string "nct_id"
     t.text "text"
     t.datetime "created_at", null: false

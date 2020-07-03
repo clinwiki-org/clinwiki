@@ -4,15 +4,15 @@ import ReactStars from 'react-stars';
 import ThemedButton from 'components/StyledComponents';
 import { getStarColor } from '../../../utils/auth'
 import LoginModal from '../../../../src/components/LoginModal'
-import SlackCounter from '../../../components/SlackCounter/SlackCounter'
-import GithubSelector from '../../../components/GithubSelector/GithubSelector'
+import SlackCounter from '../../../components/ReactionsBar/SlackCounter/SlackCounter'
+import GithubSelector from '../../../components/ReactionsBar/GithubSelector/GithubSelector'
+import ReactionsBar from '../../../components/ReactionsBar'
 import { StudyPageQuery } from 'types/StudyPageQuery';
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
 import { find, propEq } from 'ramda';
 
-import StudyReactions from './StudyReaction'
-import { reactionIdFromCharacter, activeReactions, isReactionUnique, reactionCharacterFromName } from '../../../utils/reactions/reactionKinds'
+// import { reactionIdFromCharacter, activeReactions, isReactionUnique, reactionCharacterFromName } from '../../../utils/reactions/reactionKinds'
 interface StudyPageHeaderProps {
 
     navButtonClick: any;
@@ -24,14 +24,10 @@ interface StudyPageHeaderProps {
     studyRefetch: any;
     userRefetch: any;
     site?: any;
+    allReactions:any;
 }
 interface StudyPageHeaderState {
-    likesArray: any[];
-    dislikesArray: any[];
-    showReactions: boolean;
-    reactions: any;
-    counters: any;
-    showLoginModal: boolean;
+
 }
 const ReviewsWrapper = styled.div`
   display: flex;
@@ -97,15 +93,8 @@ const ReactionsContainer = styled.div`
 `;
 
 
-// A simple counter that displays which study you're on on the study page, in the middle of the prev and next buttons
 class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHeaderState> {
     state: StudyPageHeaderState = {
-        likesArray: [],
-        dislikesArray: [],
-        showReactions: false,
-        reactions: [],
-        counters: [],
-        showLoginModal: false,
 
     }
     renderBackButton = (name: string, link?: string | null) => {
@@ -123,27 +112,6 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         );
     };
 
-    componentDidMount = () => {
-        let reactions = activeReactions(this.props.site.reactionsConfig)
-
-        this.setState({ reactions: reactions })
-    }
-    componentDidUpdate = (prevProps) => {
-        // console.log("DATA", this.props.data)
-        if (this.props.data && prevProps !== this.props) {
-            let activeCount: any[] = []
-            this.props.data.reactionsCount.map((reaction) => {
-                let configArray = JSON.parse(this.props.site.reactionsConfig)
-                let isActive = find(propEq('name', reaction.name))(configArray)
-                if (isActive) {
-                    activeCount.push(reaction)
-                }
-            })
-            this.setState({ counters: activeCount })
-
-
-        }
-    }
     renderReviewsSummary = (data: StudyPageQuery | undefined) => {
         const { theme } = this.props;
         if (!data || !data.study) {
@@ -180,38 +148,9 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         );
     };
 
-    handleAddReaction = () => {
-        this.setState({ showReactions: !this.state.showReactions })
-
-    }
 
 
 
-    setShowLoginModal = showLoginModal => {
-        this.setState({ showLoginModal, showReactions: false });
-    };
-    handleSelectorClick = (e, createReaction, refetch) => {
-
-        if (this.props.user == null) {
-            this.setShowLoginModal(true);
-            return
-
-        }
-
-        this.setState({ showReactions: false })
-        let reactionId = reactionIdFromCharacter(e)
-        createReaction({
-            variables: {
-                reactionKindId: reactionId,
-                nctId: this.props.nctId
-
-            }
-        })
-            .then(() => this.props.studyRefetch())
-            .then(() => refetch())
-
-
-    }
     render() {
 
         const hash = new URLSearchParams(this.props.history.location.search)
@@ -220,7 +159,6 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         const siteViewUrl = new URLSearchParams(this.props.history.location.search)
             .getAll('sv')
             .toString();
-        const userRank = this.props.user ? this.props.user.rank : 'default'
         const backLink = () => {
             if (hash !== '') {
                 return `/search?hash=${hash}&sv=${siteViewUrl}`;
@@ -228,45 +166,28 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
             return undefined;
         };
         return (
-            <StudyReactions nctId={this.props.nctId}>
-                {(reactions, refetch) => (
-                    <HeaderContentWrapper>
-                        <LoginModal
-                            show={this.state.showLoginModal}
-                            cancel={() => this.setShowLoginModal(false)}
-                        />
-                        <BackButtonContainer>
-                            {this.renderBackButton('⤺︎ Back', backLink())}
-                        </BackButtonContainer>
-                        <ReactionsContainer>
-                            <LikesRow>
-                                <ThumbsRow>
-                                    <SlackCounter
-                                        currentUserAndStudy={reactions?.reactions}
-                                        reactions={this.state.counters}
-                                        user={this.props.user}
-                                        onAdd={this.handleAddReaction}
-                                        nctId={this.props.nctId}
-                                        studyRefetch={this.props.studyRefetch}
-                                        refetch={refetch}
-                                    />
-                                    {this.state.showReactions == true ?
-                                        <div className="selector" onClick={() => this.setState({ showReactions: false })}>
-                                            <CreateReactionMutation>
-                                                {createReaction => (<GithubSelector
-                                                    reactions={this.state.reactions}
-                                                    onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch)} />)}
-                                            </CreateReactionMutation>
-                                        </div>
-                                        : null}
-                                </ThumbsRow>
-                            </LikesRow>
-                            {this.renderReviewsSummary(this.props.data)}
-                        </ReactionsContainer>
-                    </HeaderContentWrapper>
+            <HeaderContentWrapper>
+                <BackButtonContainer>
+                    {this.renderBackButton('⤺︎ Back', backLink())}
+                </BackButtonContainer>
+                <ReactionsContainer>
+                    <LikesRow>
+                        <ThumbsRow>
+                            <ReactionsBar
+                                reactionsConfig={this.props.site.reactionsConfig}
+                                studyRefetch={this.props.studyRefetch}
+                                nctId={this.props.nctId}
+                                theme={this.props.theme}
+                                studyData={this.props.data}
+                                user={this.props.user}
+                                allReactions={this.props.allReactions}
+                            />
 
-                )}
-            </StudyReactions>
+                        </ThumbsRow>
+                    </LikesRow>
+                    {this.renderReviewsSummary(this.props.data)}
+                </ReactionsContainer>
+            </HeaderContentWrapper>
         );
     }
 }

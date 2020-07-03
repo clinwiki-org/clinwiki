@@ -24,6 +24,7 @@ export const REACTIONS_QUERY = gql`
           reactionKind{
             id
             name
+            unicode
           }
           study{
             briefTitle
