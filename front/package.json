@@ -75,7 +75,16 @@
     "graphql": "14.6.0"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "overrides": [
+      {
+        "files": ["**/*.ts?(x)"],
+        "rules": {
+          "array-callback-return": "off",
+          "eqeqeq": "off"
+        }
+      }
+    ]
   },
   "browserslist": {
     "production": [
