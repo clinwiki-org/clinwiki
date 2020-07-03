@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Table } from 'react-bootstrap';
 import { gql } from 'apollo-boost';
 import { StudySummaryFragment } from 'types/StudySummaryFragment';
 import { Helmet } from 'react-helmet';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
-import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { prop } from 'ramda';
 import { sentanceCaseFromCamelCase } from 'utils/helpers';

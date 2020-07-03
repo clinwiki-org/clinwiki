@@ -24,23 +24,20 @@ const defaultStyle: React.CSSProperties = {
 
 function mustacheTokens(input: string) {
   let tokens: string[] = [];
-  let inside = true;
   const yeet = (t: string) => {
     if (t !== '') tokens.push(t);
   };
   let current = '';
   let last = '';
   for (const ch of input) {
-    if (ch === '{' && last != '{') {
+    if (ch === '{' && last !== '{') {
       // Begin {{
-      inside = true;
       current = ch;
-    } else if (last == '{' && ch !== '{') {
+    } else if (last === '{' && ch !== '{') {
       // Begin inside token
       current = ch;
     } else if (ch === '}' && last !== '}') {
       // Begin }}
-      inside = false;
       yeet(current);
       current = ch;
     } else {

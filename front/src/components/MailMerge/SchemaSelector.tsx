@@ -1,12 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import {
   IntrospectionType,
-  GraphQLSchema,
-  IntrospectionField,
   IntrospectionOutputTypeRef,
 } from 'graphql';
-import { stringify } from 'querystring';
-import { fileURLToPath } from 'url';
 
 export type SchemaType = JsonSchemaType | GraphqlSchemaType;
 
@@ -194,7 +190,7 @@ function pathToTemplate(path: string): string {
 }
 
 export default function SchemaSelector(props: Props) {
-  const [filter, setFilter] = React.useState('');
+  const [filter, setFilter] = useState('');
   const schema = useMemo(() => schemaToInternal(props.schema), [props.schema]);
   return (
     <div>
