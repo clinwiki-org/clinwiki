@@ -187,7 +187,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
             hide: false,
             kind: "extended",
             title: "General",
-            name: "extended",
+            name: "general",
             order: nil,
             template: '# {{briefTitle}}',
           },

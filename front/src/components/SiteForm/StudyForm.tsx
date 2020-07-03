@@ -17,7 +17,6 @@ import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGeneri
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import { isEmpty, findIndex, propEq, sortBy, find } from 'ramda';
 import * as R from 'remeda';
-import MultiInput from 'components/MultiInput';
 import ThemedButton from 'components/StyledComponents/index';
 import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 
@@ -103,7 +102,7 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
         </StyledCheckbox>
         <label>Section name</label>
         <StyledFormControl
-          name={`set:study.${section.name}.title`}
+          name={`set:study.extendedSections.${section.name}.title`}
           placeholder="Add facet"
           value={data.title}
           onChange={this.props.onAddMutation}
