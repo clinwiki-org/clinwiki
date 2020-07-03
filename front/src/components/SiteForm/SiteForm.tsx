@@ -11,6 +11,7 @@ import {
   updateView,
   createMutation,
   getViewValueByPath,
+  serializeMutation,
 } from 'utils/siteViewUpdater';
 import { Switch, Route, match, Redirect } from 'react-router';
 import MainForm from './MainForm';
@@ -18,13 +19,15 @@ import SiteViewsRouter from './SiteViewsRouter';
 import { History, Location } from 'history';
 import StudyForm from './StudyForm';
 import ThemedButton from 'components/StyledComponents/index';
+import { UpdateSiteViewMutationFn } from 'mutations/UpdateSiteViewMutation';
 
 interface SiteFormProps {
   match: match<{}>;
   site: SiteFragment;
   history: History;
   location: Location;
-  onSave: any;
+  onSaveSite: (CreateSiteInput) => void;
+  onSaveSiteView?: UpdateSiteViewMutationFn;
   refresh: any;
 }
 
@@ -66,19 +69,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     inSiteViewEdit: false,
   };
 
-  static fragment = gql`
-    fragment SiteFormFragment on Site {
-      name
-      subdomain
-      skipLanding
-      userRank
-      reactionsConfig
-      editors {
-        email
-      }
-    }
-  `;
-
   static getDerivedStateFromProps = (
     props: SiteFormProps,
     state: SiteFormState
@@ -90,7 +80,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       editors,
       themes,
       userRank,
-      reactionsConfig
+      reactionsConfig,
     } = props.site;
     const editorEmails = editors.map(prop('email')) as string[];
     const form = {
@@ -100,7 +90,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       editorEmails,
       themes,
       userRank,
-      reactionsConfig
+      reactionsConfig,
     };
     if (form && !equals(form, state.prevForm as any)) {
       return { ...state, form, prevForm: form };
@@ -114,15 +104,28 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     this.setState({ inSiteViewEdit: false });
   };
   handleSave = () => {
-    console.log('Handle SAve', this.state.form);
-    this.props.onSave(this.state.form);
+    this.props.onSaveSite(this.state.form);
+    if (this.state.mutations.length > 0) {
+      const view = this.props.site.siteView;
+      this.props.onSaveSiteView?.({
+        variables: {
+          input: {
+            id: view.id,
+            name: view.name,
+            url: view.url,
+            default: view.default,
+            mutations: this.state.mutations.map(serializeMutation),
+          }
+        },
+      });
+    }
   };
 
   handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
     const { name, value } = e.currentTarget;
     console.log(`mutation: ${name}=${value}`);
     const mutation = createMutation(name, value);
-    const view = updateView(this.props.site.siteViews[0], this.state.mutations);
+    const view = updateView(this.props.site.siteView, this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () =>

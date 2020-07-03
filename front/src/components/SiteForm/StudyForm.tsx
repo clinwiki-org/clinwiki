@@ -15,16 +15,11 @@ import { match, Switch, Route, Redirect } from 'react-router';
 import { trimPath } from 'utils/helpers';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
-import {
-  isEmpty,
-  findIndex,
-  propEq,
-  sortBy,
-  find,
-} from 'ramda';
+import { isEmpty, findIndex, propEq, sortBy, find } from 'ramda';
 import * as R from 'remeda';
 import MultiInput from 'components/MultiInput';
 import ThemedButton from 'components/StyledComponents/index';
+import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 
 interface StudyFormProps {
   view: SiteViewFragment;
@@ -98,7 +93,6 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
     section: Section,
     data: SiteStudyExtendedGenericSectionFragment
   ) => {
-    const fields = data.fields || this.props.view.study.allFields;
     return (
       <div>
         <StyledCheckbox
@@ -114,29 +108,16 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
           value={data.title}
           onChange={this.props.onAddMutation}
         />
-        <label>Order</label>
-        <StyledFormControl
-          name={`set:study.${section.name}.order`}
-          placeholder="Order"
-          value={data.order || ''}
-          onChange={this.props.onAddMutation}
-        />
-        <label>Fields filter</label>
-        <StyledFormControl
-          name={`set:study.${section.name}.selected.kind`}
-          componentClass="select"
-          onChange={this.props.onAddMutation}
-          value={data.selected.kind}>
-          <option value="BLACKLIST">All except</option>
-          <option value="WHITELIST">Only</option>
-        </StyledFormControl>
-        <MultiInput
-          name={`set:study.extendedSections.${section.name}.selected.values`}
-          options={fields.map(field => ({ id: field, label: field }))}
-          placeholder="Add field"
-          draggable
-          value={data.selected.values}
-          onChange={this.props.onAddMutation}
+        <MailMergeFormControl
+          template={data.template||''}
+          onTemplateChanged={t => 
+            this.props.onAddMutation({
+              currentTarget: {
+                name: `set:study.extendedSections.${section.name}.template`,
+                value: t
+              }
+            })
+          }
         />
       </div>
     );
