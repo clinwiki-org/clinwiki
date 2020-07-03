@@ -22,7 +22,6 @@ import {
   StudyPagePrefetchQueryVariables,
 } from 'types/StudyPagePrefetchQuery';
 import StudyPageSections from './components/StudyPageSections';
-import * as FontAwesome from 'react-fontawesome';
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
 import StudySummary from 'components/StudySummary';
@@ -292,15 +291,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         hidden: !this.props.isWorkflow,
         metaData: { hide: !this.props.isWorkflow },
       },
-      // {
-      //   name: 'intervention',
-      //   path: '/intervention?sv=intervention',
-      //   displayName: 'Intervention',
-      //   kind: 'basic',
-      //   component: InterventionPage,
-      //   hidden: !this.props.isWorkflow,
-      //   metaData: { hide: !this.props.isWorkflow },
-      // },
       ...basicSectionsRaw.map((section) => ({
         name: section.title.toLowerCase(),
         path:
@@ -313,6 +303,15 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         hidden: section.hide,
         metaData: section,
       })),
+      {
+        name: 'intervention',
+        path: '/intervention',
+        displayName: 'Intervention',
+        kind: 'basic',
+        component: InterventionsPage,
+        hidden: false,
+        metaData: { hide: true },
+      },
     ];
 
     const extendedSections = extendedSectionsRaw.map((section) => {

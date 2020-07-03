@@ -15,13 +15,9 @@ interface SiteProviderProps {
 
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
   fragment SiteStudyExtendedGenericSectionFragment on SiteStudyExtendedGenericSection {
-    fields
+    template
     hide
     order
-    selected {
-      kind
-      values
-    }
     title
     name
   }
