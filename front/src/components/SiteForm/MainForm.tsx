@@ -155,7 +155,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
               name="skipLanding"
               type="checkbox"
               checked={this.props.form.skipLanding}
-              onClick={this.handleCheckboxChange}
+              onChange={this.handleCheckboxChange}
             />
             <div>
               <h3>Editors</h3>
