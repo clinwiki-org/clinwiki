@@ -280,7 +280,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       basicSections: basicSectionsRaw,
       extendedSections: extendedSectionsRaw,
     } = view.study;
-    console.log('STUDY', view.study);
     const basicSections = [
       {
         name: 'workflow',

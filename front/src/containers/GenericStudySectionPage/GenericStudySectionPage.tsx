@@ -45,7 +45,6 @@ const QueryComponent = (
 class GenericStudySectionPage extends React.PureComponent<
   GenericStudySectionPageProps
 > {
-
   render() {
     return (
       <QueryComponent query={QUERY} variables={{ nctId: this.props.nctId }}>
@@ -56,14 +55,10 @@ class GenericStudySectionPage extends React.PureComponent<
 
           this.props.onLoaded && this.props.onLoaded();
           return (
-            <Table striped bordered condensed>
-              <tbody>
-                <MailMergeView
-                  template={this.props.metaData.template||''}
-                  context={data.study}
-                />
-              </tbody>
-            </Table>
+            <MailMergeView
+              template={this.props.metaData.template || ''}
+              context={data.study}
+            />
           );
         }}
       </QueryComponent>
