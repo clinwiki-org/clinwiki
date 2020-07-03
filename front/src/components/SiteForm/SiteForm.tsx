@@ -104,21 +104,25 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     this.setState({ inSiteViewEdit: false });
   };
   handleSave = () => {
-    this.props.onSaveSite(this.state.form);
     if (this.state.mutations.length > 0) {
       const view = this.props.site.siteView;
-      this.props.onSaveSiteView?.({
-        variables: {
-          input: {
-            id: view.id,
-            name: view.name,
-            url: view.url,
-            default: view.default,
-            mutations: this.state.mutations.map(serializeMutation),
-          }
-        },
-      });
+      this.props
+        .onSaveSiteView?.({
+          variables: {
+            input: {
+              id: view.id,
+              name: view.name,
+              url: view.url,
+              default: view.default,
+              mutations: this.state.mutations.map(serializeMutation),
+            },
+          },
+        })
+        .then(() => {
+          this.props.refresh();
+        });
     }
+    this.props.onSaveSite(this.state.form);
   };
 
   handleAddMutation = (e: { currentTarget: { name: string; value: any } }) => {
@@ -134,12 +138,10 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   };
 
   handleFormChange = (form: CreateSiteInput) => {
-    console.log(form);
     this.setState({ form });
   };
 
   handleThemeError = error => {
-    console.log('errr', error);
     this.setState({ disableSubmit: error });
   };
 
