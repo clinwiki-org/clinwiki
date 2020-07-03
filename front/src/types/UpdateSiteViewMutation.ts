@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { UpdateSiteViewInput, FilterKind, SortKind, FieldDisplay } from "./globalTypes";
+import { UpdateSiteViewInput, SortKind, FieldDisplay, FilterKind } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: UpdateSiteViewMutation
@@ -16,18 +16,11 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_study_basicSecti
   name: string;
 }
 
-export interface UpdateSiteViewMutation_updateSiteView_siteView_study_extendedSections_selected {
-  __typename: "SiteSelect";
-  kind: FilterKind;
-  values: string[];
-}
-
 export interface UpdateSiteViewMutation_updateSiteView_siteView_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  fields: string[];
+  template: string;
   hide: boolean;
   order: number | null;
-  selected: UpdateSiteViewMutation_updateSiteView_siteView_study_extendedSections_selected;
   title: string;
   name: string;
 }

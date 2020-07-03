@@ -186,74 +186,10 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           {
             hide: false,
             kind: "extended",
-            title: "Descriptive",
-            name: "descriptive",
+            title: "General",
+            name: "extended",
             order: nil,
-            selected: {
-              kind: "WHITELIST",
-              values: %w[
-                briefSummary briefTitle conditions design detailedDescription
-                officialTitle phase publications studyArms studyType
-              ],
-            },
-          },
-          {
-            hide: false,
-            kind: "extended",
-            title: "Administrative",
-            name: "administrative",
-            order: nil,
-            selected: {
-              kind: "WHITELIST",
-              values: %w[
-                collaborators hasDataMonitoringCommittee investigators isFdaRegulated
-                otherStudyIds planToShareIpd planToShareIpdDescription responsibleParty
-                source sponsor verificationDate
-              ],
-            },
-          },
-          {
-            hide: false,
-            kind: "extended",
-            title: "Recruitment",
-            name: "recruitment",
-            order: nil,
-            selected: {
-              kind: "WHITELIST",
-              values: %w[
-                ages completionDate contacts enrollment listedLocationCountries
-                overallStatus primaryCompletionDate removedLocationCountries
-                eligibilityCriteria eligibilityGender eligibilityHealthyVolunteers
-              ],
-            },
-          },
-          {
-            hide: false,
-            kind: "extended",
-            title: "Interventions",
-            name: "interventions",
-            order: nil,
-            selected: {
-              kind: "BLACKLIST",
-              values: [],
-            },
-            fields:
-              %w[description name type],
-          },
-          {
-            hide: false,
-            kind: "extended",
-            title: "Tracking",
-            name: "tracking",
-            order: nil,
-            selected: {
-              kind: "WHITELIST",
-              values: %w[
-                primaryMeasures secondaryMeasures
-                firstReceivedDate lastChangedDate primaryCompletionDate
-                startDate
-              ],
-            },
+            template: '# {{briefTitle}}',
           },
         ],
       },

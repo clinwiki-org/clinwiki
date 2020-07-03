@@ -3,8 +3,6 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { FilterKind } from "./globalTypes";
-
 // ====================================================
 // GraphQL fragment: SiteStudyPageFragment
 // ====================================================
@@ -16,18 +14,11 @@ export interface SiteStudyPageFragment_basicSections {
   name: string;
 }
 
-export interface SiteStudyPageFragment_extendedSections_selected {
-  __typename: "SiteSelect";
-  kind: FilterKind;
-  values: string[];
-}
-
 export interface SiteStudyPageFragment_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  fields: string[];
+  template: string;
   hide: boolean;
   order: number | null;
-  selected: SiteStudyPageFragment_extendedSections_selected;
   title: string;
   name: string;
 }
