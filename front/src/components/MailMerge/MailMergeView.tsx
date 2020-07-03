@@ -29,14 +29,17 @@ function mustacheTokens(input: string) {
   };
   let current = '';
   let last = '';
+  let inside = false;
   for (const ch of input) {
     if (ch === '{' && last !== '{') {
       // Begin {{
+      inside = true;
       current = ch;
     } else if (last === '{' && ch !== '{') {
       // Begin inside token
       current = ch;
-    } else if (ch === '}' && last !== '}') {
+    } else if (ch === '}' && last !== '}' && inside) {
+      inside = false;
       // Begin }}
       yeet(current);
       current = ch;
@@ -143,6 +146,7 @@ function compileFragment(
   template: string
 ) {
   const tokens = mustacheTokens(template);
+  console.log('tokens', tokens);
   const json = tokensToGraphQLOb(tokens);
   const fragmentBody = jsonToFragmentBody(json);
   return toFragment(fragmentName, className, fragmentBody);
