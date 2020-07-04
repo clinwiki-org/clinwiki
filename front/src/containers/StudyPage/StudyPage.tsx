@@ -44,7 +44,7 @@ import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
 import { WorkflowsViewFragment_workflows } from 'types/WorkflowsViewFragment';
 import { UserFragment } from 'types/UserFragment';
-import StudyPageHeader from './components/StudyPageHeader'
+import StudyPageHeader from './components/StudyPageHeader';
 import WorkFlowAnimation from './components/StarAnimation';
 import { getStarColor } from '../../utils/auth';
 
@@ -124,13 +124,13 @@ export const PREFETCH_QUERY = gql`
 `;
 
 const REACTION_KINDS = gql`
-query ReactionKinds{
-    reactionKinds{
-        id
-        name
-        unicode
+  query ReactionKinds {
+    reactionKinds {
+      id
+      name
+      unicode
     }
-}
+  }
 `;
 type Section = {
   name: string;
@@ -141,11 +141,9 @@ type Section = {
   hidden: boolean;
   component: React.Component;
   metaData:
-  | SiteStudyBasicGenericSectionFragment
-  | SiteStudyExtendedGenericSectionFragment;
+    | SiteStudyBasicGenericSectionFragment
+    | SiteStudyExtendedGenericSectionFragment;
 };
-
-
 
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
@@ -154,7 +152,7 @@ const MainContainer = styled(Col)`
   padding-bottom: 20px;
 
   .panel-heading {
-    background: ${(props) => props.theme.studyPage.panelHeading};
+    background: ${props => props.theme.studyPage.panelHeading};
     color: #fff;
     padding: 15px;
   }
@@ -166,7 +164,6 @@ const StudyHeader = styled.div`
   height: 90px;
   justify-content: center;
 `;
-
 
 const ThemedMainContainer = withTheme(MainContainer);
 
@@ -184,7 +181,7 @@ const StudySummaryContainer = styled.div`
           background: none;
           color: black;
           border-bottom: 2px solid;
-          border-color: ${(props) => props.theme.studyPage.sectionBorderColor};
+          border-color: ${props => props.theme.studyPage.sectionBorderColor};
         }
       }
     }
@@ -192,8 +189,6 @@ const StudySummaryContainer = styled.div`
 `;
 
 const ThemedStudySummaryContainer = withTheme(StudySummaryContainer);
-
-
 
 const QueryComponent = (
   props: QueryComponentOptions<StudyPageQuery, StudyPageQueryVariables>
@@ -211,43 +206,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     flashAnimation: false,
     wikiToggleValue: true,
   };
-
-  getCurrentSectionPath = (view: SiteViewFragment) => {
-    const pathComponents = pipe(
-      split('/'),
-      reject(isEmpty),
-      map((x) => `/${x}`)
-    )(trimPath(this.props.location.pathname)) as string[];
-
-    for (const component of pathComponents) {
-      if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
-        return component;
-      }
-    }
-
-    return '/';
-  };
-  //I believe this may be deprecated now that we are using URLSearchParams
-  // getCurrentSectionFullPath = (view: SiteViewFragment) => {
-  //   const pathComponents = pipe(
-  //     split('/'),
-  //     reject(isEmpty),
-  //     map(x => `/${x}`)
-  //   )(trimPath(this.props.location.pathname)) as string[];
-
-  //   for (const component of pathComponents) {
-  //     if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
-  //       const idx = findIndex(equals(component), pathComponents);
-  //       return pipe(
-  //         drop(idx),
-  //         // @ts-ignore
-  //         join('')
-  //       )(pathComponents);
-  //     }
-  //   }
-
-  //   return '/';
-  // };
 
   getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
     const sections = this.getSections(view);
@@ -299,18 +257,20 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         hidden: !this.props.isWorkflow,
         metaData: { hide: !this.props.isWorkflow },
       },
-      ...basicSectionsRaw.map((section) => ({
-        name: section.title.toLowerCase(),
-        path:
-          section.title.toLowerCase() === 'wiki'
-            ? '/'
-            : `/${section.title.toLowerCase()}`,
-        displayName: section.title,
-        kind: 'basic',
-        component: this.getComponent(section.title.toLowerCase()),
-        hidden: section.hide,
-        metaData: section,
-      })),
+      ...basicSectionsRaw
+        .filter(s => s.title != 'Summary')
+        .map(section => ({
+          name: section.title.toLowerCase(),
+          path:
+            section.title.toLowerCase() === 'wiki'
+              ? '/'
+              : `/${section.title.toLowerCase()}`,
+          displayName: section.title,
+          kind: 'basic',
+          component: this.getComponent(section.title.toLowerCase()),
+          hidden: section.hide,
+          metaData: section,
+        })),
       {
         name: 'intervention',
         path: '/intervention',
@@ -322,7 +282,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       },
     ];
 
-    const extendedSections = extendedSectionsRaw.map((section) => {
+    const extendedSections = extendedSectionsRaw.map(section => {
       return {
         name: section.title.toLowerCase(),
         path: `/${section.title.toLowerCase()}`,
@@ -354,8 +314,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     }
   };
 
-
-
   handleWikiToggleChange = () => {
     this.setState({ wikiToggleValue: !this.state.wikiToggleValue });
   };
@@ -364,12 +322,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     this.props.history.push(`${trimPath(link)}`);
   };
   resetHelperFunction = () => {
-    this.setState({ flashAnimation: false })
-    this.props.userRefetch()
-  }
+    this.setState({ flashAnimation: false });
+    this.props.userRefetch();
+  };
   handleShowAnimation = () => {
-    this.setState({ flashAnimation: true })
-  }
+    this.setState({ flashAnimation: true });
+  };
   handleResetAnimation = () => {
     setTimeout(this.resetHelperFunction, 6500);
   };
@@ -386,18 +344,15 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     );
   };
 
-
-
-
   render() {
     const userRank = this.props.user ? this.props.user.rank : 'default';
-    let rankColor = getStarColor(userRank)
+    let rankColor = getStarColor(userRank);
 
     return (
       <SiteProvider>
         {(site, currentSiteView) => (
           <WorkflowsViewProvider>
-            {(workflowsView) => {
+            {workflowsView => {
               const workflow = pipe(
                 find<WorkflowsViewFragment_workflows>(
                   propEq('name', this.props.workflowName)
@@ -405,7 +360,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
               )(workflowsView.workflows) as WorkflowConfigFragment | null;
 
               return (
-                <Query query={REACTION_KINDS} >
+                <Query query={REACTION_KINDS}>
                   {allReactions => {
                     return (
                       <QueryComponent
@@ -472,6 +427,11 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                                   <ThemedStudySummaryContainer>
                                     <StudySummary
                                       study={data.study}
+                                      template={
+                                        site.siteView.study.extendedSections.filter(
+                                          s => s.title === 'Summary'
+                                        )?.[0]?.template
+                                      }
                                       workflow={workflow}
                                       workflowsView={workflowsView}
                                     />
@@ -538,14 +498,16 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                             {this.state.triggerPrefetch && (
                               <PrefetchQueryComponent
                                 query={PREFETCH_QUERY}
-                                variables={{ nctId: this.props.match.params.nctId }}>
+                                variables={{
+                                  nctId: this.props.match.params.nctId,
+                                }}>
                                 {() => null}
                               </PrefetchQueryComponent>
                             )}
                           </div>
                         )}
                       </QueryComponent>
-                    )
+                    );
                   }}
                 </Query>
               );

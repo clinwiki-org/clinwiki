@@ -11,6 +11,7 @@ import { MailMergeView } from 'components/MailMerge';
 
 interface StudySummaryProps {
   study: StudySummaryFragment;
+  template?: string;
   workflow: WorkflowConfigFragment | null;
   workflowsView: WorkflowsViewFragment;
 }
@@ -121,7 +122,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
   render() {
     const template = this.props.workflow
       ? this.props.workflow.summaryTemplate
-      : `
+      : this.props.template || `
 <table class='table table-striped table-bordered table-condensed'>
   <tbody>
     <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>

@@ -186,6 +186,24 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           {
             hide: false,
             kind: "extended",
+            title: "Summary",
+            name: "summary",
+            order: nil,
+            template: '
+<table class="table table-striped table-bordered table-condensed">
+  <tbody>
+    <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
+    <tr> <th>type</th> <td>{{type}}</td> </tr>
+    <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
+    <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
+    <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
+    <tr> <th>Source</th> <td>{{source}}</td> </tr>
+  </tbody>
+</table>',
+          },
+          {
+            hide: false,
+            kind: "extended",
             title: "General",
             name: "general",
             order: nil,
