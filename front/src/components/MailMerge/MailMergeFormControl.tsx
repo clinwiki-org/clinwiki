@@ -8,13 +8,6 @@ import { Spinner } from 'reactstrap';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
 
-/*
-  Show a Mailmerge control
-  * Include sample nct_id input
-  * Handles data query
-  * Shows 'cheat sheet'
-*/
-
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
 `;

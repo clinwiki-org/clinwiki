@@ -146,7 +146,7 @@ function compileFragment(
   template: string
 ) {
   const tokens = mustacheTokens(template);
-  console.log('tokens', tokens);
+  // console.log('tokens', tokens);
   const json = tokensToGraphQLOb(tokens);
   const fragmentBody = jsonToFragmentBody(json);
   return toFragment(fragmentName, className, fragmentBody);
@@ -185,9 +185,7 @@ function applyTemplate(
 export function microMailMerge(template : string, context?: object|null) {
   if (context && /{{(.*)}}/.test(template)) {
     const compiled = compileTemplate(template);
-    const result = applyTemplate(compiled, context);
-    console.log(result);
-    return result;
+    return applyTemplate(compiled, context);
   }
   return template;
 }

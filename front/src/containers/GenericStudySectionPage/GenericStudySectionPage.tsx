@@ -1,69 +1,55 @@
 import * as React from 'react';
-import { Table } from 'react-bootstrap';
-import { Query, QueryComponentOptions } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
-import {
-  GenericStudySectionPageQuery,
-  GenericStudySectionPageQueryVariables,
-} from 'types/GenericStudySectionPageQuery';
-import StudySummary from 'components/StudySummary';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import { MailMergeView } from 'components/MailMerge';
+import { useState } from 'react';
+import { Spinner } from 'reactstrap';
 
 interface GenericStudySectionPageProps {
   nctId: string;
   history: History;
   match: match<{ nctId: string }>;
-  onLoaded?: () => void;
+  // onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
   metaData: SiteStudyExtendedGenericSectionFragment;
 }
 
-const QUERY = gql`
-  query GenericStudySectionPageQuery($nctId: String!) {
+const getQuery = (name: string, frag: string) => {
+  frag = frag || `fragment ${name} on Study { nct_id }`;
+  return gql`
+  query GenericStudySectionQuery($nctId: String!) {
     study(nctId: $nctId) {
-      ...StudySummaryFragment
-    }
-    me {
-      id
+      ...${name}
     }
   }
-
-  ${StudySummary.fragment}
+  ${frag}
 `;
+};
 
-const QueryComponent = (
-  props: QueryComponentOptions<
-    GenericStudySectionPageQuery,
-    GenericStudySectionPageQueryVariables
-  >
-) => Query(props);
-
-class GenericStudySectionPage extends React.PureComponent<
-  GenericStudySectionPageProps
-> {
-  render() {
-    return (
-      <QueryComponent query={QUERY} variables={{ nctId: this.props.nctId }}>
-        {({ data, loading, error }) => {
-          if (loading || error || !data || !data.study) {
-            return null;
-          }
-
-          this.props.onLoaded && this.props.onLoaded();
-          return (
-            <MailMergeView
-              template={this.props.metaData.template || ''}
-              context={data.study}
-            />
-          );
-        }}
-      </QueryComponent>
-    );
-  }
+function GenericStudySectionPage(props: GenericStudySectionPageProps) {
+  const fragmentName = 'generic_study_section_fragment';
+  const [fragment, setFragment] = useState('');
+  const { data } = useQuery(getQuery(fragmentName, fragment), {
+    variables: { nctId: props.nctId },
+  });
+  const updateFragmentAsync = async (frag) => {
+    await new Promise(r => setTimeout(r));
+    setFragment(frag);
+  };
+  
+  return (
+    <MailMergeView
+      template={props.metaData.template || ''}
+      context={data?.study??{}}
+      fragmentName={fragmentName}
+      fragmentClass="Study"
+      onFragmentChanged={updateFragmentAsync}
+    />
+  );
 }
 
 export default GenericStudySectionPage;
