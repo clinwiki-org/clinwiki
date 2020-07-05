@@ -16,7 +16,11 @@ import {
   reject,
   find,
 } from 'ramda';
-import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
+import {
+  StudyPageQuery,
+  StudyPageQueryVariables,
+  StudyPageQuery_study,
+} from 'types/StudyPageQuery';
 import {
   StudyPagePrefetchQuery,
   StudyPagePrefetchQueryVariables,
@@ -47,6 +51,7 @@ import { UserFragment } from 'types/UserFragment';
 import StudyPageHeader from './components/StudyPageHeader';
 import WorkFlowAnimation from './components/StarAnimation';
 import { getStarColor } from '../../utils/auth';
+import { microMailMerge } from 'components/MailMerge/MailMergeView';
 
 interface StudyPageProps {
   history: History;
@@ -207,22 +212,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     wikiToggleValue: true,
   };
 
-  getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
-    const sections = this.getSections(view);
-    const noWikiSections = reject(propEq('name', 'wiki'), sections);
-    const wiki = find(propEq('name', 'wiki'), sections) as Section;
-
-    const retVar =
-      !wiki || wiki.hidden
-        ? noWikiSections
-        : ([...noWikiSections, wiki] as Section[]);
-
-    console.log('getSectionsForRoutes: ');
-    console.log(retVar);
-
-    return retVar as Section[];
-  };
-
   getComponent = (name: string): any => {
     switch (name) {
       case 'wiki':
@@ -242,7 +231,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     }
   };
 
-  getSections = (view: SiteViewFragment): Section[] => {
+  getSections = (
+    view: SiteViewFragment,
+    study?: StudyPageQuery_study | null
+  ): Section[] => {
     const {
       basicSections: basicSectionsRaw,
       extendedSections: extendedSectionsRaw,
@@ -257,20 +249,18 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         hidden: !this.props.isWorkflow,
         metaData: { hide: !this.props.isWorkflow },
       },
-      ...basicSectionsRaw
-        .filter(s => s.title != 'Summary')
-        .map(section => ({
-          name: section.title.toLowerCase(),
-          path:
-            section.title.toLowerCase() === 'wiki'
-              ? '/'
-              : `/${section.title.toLowerCase()}`,
-          displayName: section.title,
-          kind: 'basic',
-          component: this.getComponent(section.title.toLowerCase()),
-          hidden: section.hide,
-          metaData: section,
-        })),
+      ...basicSectionsRaw.map(section => ({
+        name: section.title.toLowerCase(),
+        path:
+          section.title.toLowerCase() === 'wiki'
+            ? '/'
+            : `/${section.title.toLowerCase()}`,
+        displayName: section.title,
+        kind: 'basic',
+        component: this.getComponent(section.title.toLowerCase()),
+        hidden: section.hide,
+        metaData: section,
+      })),
       {
         name: 'intervention',
         path: '/intervention',
@@ -282,18 +272,20 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       },
     ];
 
-    const extendedSections = extendedSectionsRaw.map(section => {
-      return {
-        name: section.title.toLowerCase(),
-        path: `/${section.title.toLowerCase()}`,
-        displayName: section.title,
-        kind: 'extended',
-        order: section.order,
-        component: this.getComponent(section.title.toLowerCase()),
-        hidden: section.hide,
-        metaData: section,
-      };
-    });
+    const extendedSections = extendedSectionsRaw
+      .filter(s => s.name != 'summary')
+      .map(section => {
+        return {
+          name: section.title.toLowerCase(),
+          path: `/${section.title.toLowerCase()}`,
+          displayName: microMailMerge(section.title, study),
+          kind: 'extended',
+          order: section.order,
+          component: this.getComponent(section.title.toLowerCase()),
+          hidden: section.hide,
+          metaData: section,
+        };
+      });
 
     const processedExtendedSections = sortBy(
       pipe(prop('order'), parseInt),
@@ -443,7 +435,10 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                                     history={this.props.history}
                                     location={this.props.location}
                                     nctId={this.props.match.params.nctId}
-                                    sections={this.getSections(site.siteView)}
+                                    sections={this.getSections(
+                                      site.siteView,
+                                      data?.study
+                                    )}
                                     isWorkflow={this.props.isWorkflow}
                                     nextLink={this.props.nextLink}
                                     workflowName={this.props.workflowName}

@@ -182,6 +182,16 @@ function applyTemplate(
   }
 }
 
+export function microMailMerge(template : string, context?: object|null) {
+  if (context && /{{(.*)}}/.test(template)) {
+    const compiled = compileTemplate(template);
+    const result = applyTemplate(compiled, context);
+    console.log(result);
+    return result;
+  }
+  return template;
+}
+
 export default function MailMergeView(props: Props) {
   useHandlebars();
   const compiled = useMemo(() => handleTemplateChanged(props), [
