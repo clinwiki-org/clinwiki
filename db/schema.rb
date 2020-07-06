@@ -65,7 +65,8 @@ ActiveRecord::Schema.define(version: 2020_07_06_163008) do
     t.string "title"
     t.text "template"
     t.jsonb "updates", default: [], null: false
-    t.string "page_type", default: "study"
+    t.integer "page_type", default: 0
+    t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["site_id"], name: "index_page_views_on_site_id"

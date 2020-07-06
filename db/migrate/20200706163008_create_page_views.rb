@@ -5,7 +5,8 @@ class CreatePageViews < ActiveRecord::Migration[5.2]
       t.string :title
       t.text :template
       t.jsonb :updates, default: [], null: false
-      t.string :page_type, default: "study"
+      t.integer :page_type, default: 0
+      t.string :url
       t.timestamps
     end
   end

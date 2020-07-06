@@ -5,6 +5,8 @@ module Mutations
 
     argument :title, String, required: true
     argument :template, String, required: true
+    argument :page_type, String, required: false
+    argument :url, String, required: true
     # argument :mutations,[Types::SiteViewMutationInputType],required: true
     argument :site_id, Integer, required: true
 
@@ -14,7 +16,7 @@ module Mutations
         return   { site_view: nil, errors: ["Site not found"] }
       end
       page_view = site.page_views.new()
-      page_view.attributes = args.slice(:title,:template)
+      page_view.attributes = args.slice(:title,:template,:url,:page_type)
       # mutations = args[:mutations].clone.map do |mutation|
       #   begin
       #     mutation[:payload] = JSON.parse(mutation[:payload])

@@ -5,12 +5,14 @@ module Mutations
 
     argument :title, String, required: false
     argument :template, String, required: false
+    argument :page_type, String, required: false
+    argument :url, String, required: false
     # argument :mutations,[Types::SiteViewMutationInputType],required: true
     argument :id, Integer, required: true
 
     def resolve(args)
       page_view = page_view(args[:id])
-      page_view.attributes = args.slice(:title,:template)
+      page_view.attributes = args.slice(:title,:template,:url,:page_type)
       # mutations = args[:mutations].clone.map do |mutation|
       #   begin
       #     mutation[:payload] = JSON.parse(mutation[:payload])
