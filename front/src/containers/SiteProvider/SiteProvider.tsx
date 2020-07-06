@@ -1,5 +1,10 @@
 import * as React from 'react';
-import { Query, QueryComponentOptions } from 'react-apollo';
+import {
+  Query,
+  QueryComponentOptions,
+  useApolloClient,
+  useQuery,
+} from 'react-apollo';
 import { gql } from 'apollo-boost';
 import {
   SiteProviderQuery,
@@ -10,7 +15,7 @@ import { SiteFragment } from 'types/SiteFragment';
 interface SiteProviderProps {
   id?: number;
   url?: string;
-  children: (site: SiteFragment, refetch: any) => React.ReactNode;
+  children: (site: SiteFragment, refetch: any) => JSX.Element|null;
 }
 
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
@@ -46,7 +51,7 @@ const SITE_STUDY_PAGE_FRAGMENT = gql`
   ${SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT}
 `;
 
-const SITE_VIEW_FRAGMENT = gql`
+export const SITE_VIEW_FRAGMENT = gql`
   fragment SiteViewFragment on SiteView {
     name
     url
@@ -252,7 +257,7 @@ const SITE_VIEW_FRAGMENT = gql`
   ${SITE_STUDY_PAGE_FRAGMENT}
 `;
 
-const SITE_FRAGMENT = gql`
+export const SITE_FRAGMENT = gql`
   fragment SiteFragment on Site {
     id
     editors {
@@ -310,10 +315,10 @@ export function withSite2<T>(
               ) || site.siteView;
             return (
               <Component
+                {...(this.props as T)}
                 site={site}
                 refetch={refetch}
                 currentSiteView={currentSite}
-                {...(this.props as T)}
               />
             );
           }}
@@ -355,32 +360,33 @@ export const withSite = Component => props => (
   </SiteProvider>
 );
 
-const QueryComponent = (
-  props: QueryComponentOptions<SiteProviderQuery, SiteProviderQueryVariables>
-) => Query(props);
+interface UseSiteProps {
+  id?: number;
+  url?: string;
+}
+export function useSite(props: UseSiteProps) {
+  const urlName = new URLSearchParams(window.location.search)
+    .getAll('sv')
+    .toString()
+    .toLowerCase();
+  const result = useQuery<SiteProviderQuery>(QUERY, {
+    variables: { id: props.id, url: props.url },
+  });
+  if (!result.data) return result;
+  const site = result?.data?.site;
+  const currentSiteView =
+    site?.siteViews.find(
+      siteview => siteview?.url?.toLowerCase() === urlName
+    ) || site?.siteView;
 
-class SiteProvider extends React.PureComponent<SiteProviderProps> {
-  static fragment = SITE_FRAGMENT;
-  static siteViewFragment = SITE_VIEW_FRAGMENT;
+  return { ...result, site, currentSiteView };
+}
 
-  render() {
-    return (
-      <QueryComponent query={QUERY} variables={{ id: this.props.id }}>
-        {({ data, loading, error, refetch }) => {
-          // console.log("ID",this.props.id)
-          // console.log("url",this.props.url)
-          // console.log(this.props)
-          // console.log(data)
-          if (error) console.log(`SiteProvider error: ${error}`);
-          if (loading || error) return null;
-          return this.props.children(
-            data!.site!,
-            refetch
-          ) as JSX.Element | null;
-        }}
-      </QueryComponent>
-    );
-  }
+function SiteProvider(props: SiteProviderProps) {
+  const { data, loading, error, refetch } = useSite(props);
+  if (error) console.log(error);
+  if (loading || error || !data) return null;
+  return props.children(data.site!, refetch);
 }
 
 export default SiteProvider;

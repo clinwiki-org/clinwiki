@@ -10,7 +10,7 @@ import {
   CreateSiteViewMutation as CreateSiteViewMutationType,
   CreateSiteViewMutationVariables,
 } from 'types/CreateSiteViewMutation';
-import SiteProvider from '../containers/SiteProvider';
+import { SITE_VIEW_FRAGMENT } from 'containers/SiteProvider/SiteProvider';
 
 interface CreateSiteViewMutationProps {
   children: (
@@ -30,7 +30,7 @@ const CREATE_SITE_VIEW_MUTATION = gql`
     }
   }
 
-  ${SiteProvider.siteViewFragment}
+  ${SITE_VIEW_FRAGMENT}
 `;
 
 const CreateSiteViewMutationComponent = (
