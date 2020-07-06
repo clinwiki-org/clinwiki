@@ -213,7 +213,6 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     if (!value) return;
     let val = value;
     if (meta[key]) {
-      // console.log(meta[key]);
       const oldVal = meta[key];
       const entries = oldVal.split('|').filter((x) => x !== val);
       entries.push(value);
@@ -357,7 +356,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
           <CurrentUser>
             {(user) =>
               user &&
-              !this.props.workflowView && (
+              // !this.props.workflowView && (
                 <AddCrowdLabel
                   onAddLabel={(key, value) =>
                     this.handleAddLabel(key, value, meta, upsertLabelMutation)
@@ -365,7 +364,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
                   forceAddLabel={this.state.forceAddLabel}
                   showAnimation={this.props.showAnimation}
                 />
-              )
+              // )
             }
           </CurrentUser>
         </tbody>

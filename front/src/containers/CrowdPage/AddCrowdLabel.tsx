@@ -54,7 +54,6 @@ class AddCrowdLabel extends React.Component<
         prevForceAddLabel: props.forceAddLabel,
       };
     }
-
     return { ...state, prevForceAddLabel: props.forceAddLabel };
   };
 

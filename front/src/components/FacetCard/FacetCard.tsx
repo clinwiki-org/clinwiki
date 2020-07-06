@@ -174,7 +174,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
         this.props.nctId,
         upsertLabelMutation
       );
-      if (this.props.refetch) this.props.refetch();
+      if (this.props.refetch) (this.props.refetch());
     }
   };
 
@@ -211,7 +211,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     );
   };
 
-  onSuggestionSelected = (
+  onSuggestionSelected = (e, 
     { suggestionValue },
     upsertLabelMutation
   ) => {
@@ -359,12 +359,12 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                                 apolloClient
                               ),
                           }}
-                          onSuggestionSelected={(
+                          onSuggestionSelected={(e,
                             {
                               suggestionValue,
-                            }
+                            },
                           ) =>
-                            this.onSuggestionSelected(
+                            this.onSuggestionSelected(e,
                               {
                                 suggestionValue,
                               },
