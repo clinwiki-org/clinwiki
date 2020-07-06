@@ -2,6 +2,7 @@ class Site < ApplicationRecord
   resourcify
 
   has_many :site_views, dependent: :destroy
+  has_many :study_views, dependent: :destroy
 
   after_create :create_site_view
 

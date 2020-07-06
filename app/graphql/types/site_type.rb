@@ -12,6 +12,7 @@ module Types
     field :site_view, SiteViewType, null: false do
       argument :url, type: String, required: false
     end
+    field :study_views, [StudyViewType], null:true
     field :user_rank, type:String,null: false
 
     def owners
