@@ -60,6 +60,17 @@ ActiveRecord::Schema.define(version: 2020_07_06_163008) do
     t.index ["name"], name: "index_locations_on_name", unique: true
   end
 
+  create_table "page_views", force: :cascade do |t|
+    t.bigint "site_id"
+    t.string "title"
+    t.text "template"
+    t.jsonb "updates", default: [], null: false
+    t.string "page_type", default: "study"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["site_id"], name: "index_page_views_on_site_id"
+  end
+
   create_table "reaction_kinds", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -141,16 +152,6 @@ ActiveRecord::Schema.define(version: 2020_07_06_163008) do
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
-  create_table "study_views", force: :cascade do |t|
-    t.bigint "site_id"
-    t.string "title"
-    t.text "template"
-    t.jsonb "updates", default: [], null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["site_id"], name: "index_study_views_on_site_id"
-  end
-
   create_table "tags", force: :cascade do |t|
     t.string "nct_id"
     t.string "value"
@@ -225,9 +226,9 @@ ActiveRecord::Schema.define(version: 2020_07_06_163008) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "page_views", "sites"
   add_foreign_key "reactions", "users"
   add_foreign_key "site_views", "sites"
-  add_foreign_key "study_views", "sites"
   add_foreign_key "wiki_page_edits", "users"
   add_foreign_key "wiki_page_edits", "wiki_pages"
 end

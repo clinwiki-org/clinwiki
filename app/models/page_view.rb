@@ -1,4 +1,4 @@
-class StudyView < ApplicationRecord
+class PageView < ApplicationRecord
   belongs_to :site
   validates :site, presence: true
 

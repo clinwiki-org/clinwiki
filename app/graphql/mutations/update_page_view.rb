@@ -1,20 +1,16 @@
 module Mutations
-  class CreateStudyView < BaseMutation
-    field :study_view, Types::StudyViewType, null: true
+  class UpdatePageView < BaseMutation
+    field :page_view, Types::PageViewType, null: true
     field :errors, [String], null: true
 
-    argument :title, String, required: true
-    argument :template, String, required: true
+    argument :title, String, required: false
+    argument :template, String, required: false
     # argument :mutations,[Types::SiteViewMutationInputType],required: true
-    argument :site_id, Integer, required: true
+    argument :id, Integer, required: true
 
     def resolve(args)
-      site = Site.find_by(id: args[:site_id])
-      if site.nil?
-        return   { site_view: nil, errors: ["Site not found"] }
-      end
-      study_view = site.study_views.new()
-      study_view.attributes = args.slice(:title,:template)
+      page_view = page_view(args[:id])
+      page_view.attributes = args.slice(:title,:template)
       # mutations = args[:mutations].clone.map do |mutation|
       #   begin
       #     mutation[:payload] = JSON.parse(mutation[:payload])
@@ -23,16 +19,17 @@ module Mutations
       #   end
       #   mutation.to_h
       # end
-      # study_view.updates = SiteViewUpdaterService.compact(view.mutations + mutations)
-      if study_view.save
-        { study_view: study_view, errors: nil }
+      # page_view.updates = SiteViewUpdaterService.compact(view.mutations + mutations)
+      if page_view.save
+        { page_view: page_view, errors: nil }
       else
-        { study_view: nil, errors: study_view.errors.full_messages }
+        { page_view: nil, errors: page_view.errors.full_messages }
       end
     end
 
     def authorized?(args)
-      site = Site.find_by(id: args[:site_id])
+      page_view = page_view(args[:id])
+      site = page_view&.site
       return false if site.blank?
 
       current_user.present? && (
@@ -40,6 +37,12 @@ module Mutations
         current_user.has_role?(:site_owner, site) ||
         current_user.has_role?(:site_editor, site)
       )
+    end
+
+    private
+
+    def page_view(page_view_id)
+      @page_view ||= PageView.find_by(id: page_view_id)
     end
   end
 end
