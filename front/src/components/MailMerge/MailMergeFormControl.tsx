@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { gql } from 'apollo-boost';
 import { useQuery } from 'react-apollo';
 import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
-import { Spinner } from 'reactstrap';
+import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
 
@@ -45,7 +45,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   });
 
   if (!introspection) {
-    return <Spinner />;
+    return <BeatLoader />;
   }
 
   const schema : GraphqlSchemaType = {

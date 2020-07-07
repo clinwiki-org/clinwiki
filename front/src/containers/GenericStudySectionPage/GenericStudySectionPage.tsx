@@ -6,7 +6,6 @@ import { History } from 'history';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import { MailMergeView } from 'components/MailMerge';
 import { useState } from 'react';
-import { Spinner } from 'reactstrap';
 
 interface GenericStudySectionPageProps {
   nctId: string;
