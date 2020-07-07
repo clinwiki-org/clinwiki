@@ -164,5 +164,12 @@ div.DraftEditor-editorContainer{
 .modal-container .modal, .modal-container .modal-backdrop {
   position: absolute;
 }
-
+.mail-merge pre {
+  background-color: white;
+  border: 0px;
+  padding: 0px;
+}
+.mail-merge pre code {
+  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 13px;
 `;
