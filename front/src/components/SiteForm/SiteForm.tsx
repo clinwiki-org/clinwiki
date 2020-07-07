@@ -3,7 +3,6 @@ import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
 import { equals, prop, last } from 'ramda';
 import { Nav, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
-import { gql } from 'apollo-boost';
 import { trimPath } from 'utils/helpers';
 import { SiteFragment } from 'types/SiteFragment';
 import { StyledContainer } from './Styled';
@@ -20,6 +19,7 @@ import { History, Location } from 'history';
 import StudyForm from './StudyForm';
 import ThemedButton from 'components/StyledComponents/index';
 import { UpdateSiteViewMutationFn } from 'mutations/UpdateSiteViewMutation';
+import PagesForm from './PagesForm';
 
 interface SiteFormProps {
   match: match<{}>;
@@ -153,12 +153,14 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
         { path: '/main', value: 'Main' },
         { path: '/study', value: 'Study' },
       ];
-    } else
+    } else {
       sections = [
         { path: '/main', value: 'Main' },
         { path: '/siteviews', value: 'Views' },
         { path: '/study', value: 'Study' },
+        { path: '/page', value: 'Page' },
       ];
+    }
 
     const locationComponents = this.props.location.pathname.split('/');
     let activeKey = last(locationComponents);
@@ -223,6 +225,16 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 view={view}
                 onAddMutation={this.handleAddMutation}
                 handleForm={this.toggleEditFalse}
+              />
+            )}
+          />
+          <Route
+            path={`${path}/page`}
+            render={routeProps => (
+              <PagesForm
+                {...routeProps}
+                history={routeProps.history}
+                site={this.props.site}
               />
             )}
           />
