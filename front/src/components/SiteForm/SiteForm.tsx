@@ -36,7 +36,6 @@ interface SiteFormState {
   mutations: SiteViewMutationInput[];
   addEditorEmail: string;
   prevForm: CreateSiteInput | null;
-  inSiteViewEdit: boolean;
   disableSubmit: boolean;
 }
 
@@ -66,7 +65,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     mutations: [],
     addEditorEmail: '',
     prevForm: null,
-    inSiteViewEdit: false,
   };
 
   static getDerivedStateFromProps = (
@@ -96,12 +94,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       return { ...state, form, prevForm: form };
     }
     return null;
-  };
-  toggleSiteViewEdit = () => {
-    this.setState({ inSiteViewEdit: true });
-  };
-  toggleEditFalse = () => {
-    this.setState({ inSiteViewEdit: false });
   };
   handleSave = () => {
     if (this.state.mutations.length > 0) {
@@ -183,6 +175,13 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     );
   };
 
+  showSave = () => {
+    // The pages that use this save button are a bit scattered.
+    // I don't think the Views page actually makes use of this button but I'm not 100% sure
+    const path = window.location.pathname;
+    return path.endsWith("/main") || /edit\/study\/[^/]*/.test(path)
+  }
+
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
@@ -200,7 +199,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 handleThemeError={this.handleThemeError}
                 form={this.state.form}
                 onFormChange={this.handleFormChange}
-                handleForm={this.toggleEditFalse}
               />
             )}
           />
@@ -212,8 +210,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 siteViews={this.props.site.siteViews}
                 refresh={this.props.refresh}
                 site={this.props.site}
-                handleSiteViewEdit={this.toggleSiteViewEdit}
-                handleForm={this.toggleEditFalse}
               />
             )}
           />
@@ -224,7 +220,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 {...routeProps}
                 view={view}
                 onAddMutation={this.handleAddMutation}
-                handleForm={this.toggleEditFalse}
               />
             )}
           />
@@ -240,7 +235,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           />
           <Redirect to={`${path}/main`} />
         </Switch>
-        {this.state.inSiteViewEdit ? null : (
+        {this.showSave() ? (
           <StyledContainer>
             <ThemedButton
               disabled={this.state.disableSubmit}
@@ -248,7 +243,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               Save
             </ThemedButton>
           </StyledContainer>
-        )}
+        ):null}
       </Container>
     );
   }
