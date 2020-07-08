@@ -11,7 +11,7 @@ import { MailMergeView } from 'components/MailMerge';
 
 interface StudySummaryProps {
   study: StudySummaryFragment;
-  template?: string;
+  template?: string|null;
   workflow: WorkflowConfigFragment | null;
   workflowsView: WorkflowsViewFragment;
 }

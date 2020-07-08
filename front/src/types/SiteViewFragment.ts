@@ -18,7 +18,7 @@ export interface SiteViewFragment_study_basicSections {
 
 export interface SiteViewFragment_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  template: string;
+  template: string | null;
   hide: boolean;
   order: number | null;
   title: string;

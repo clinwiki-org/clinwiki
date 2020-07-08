@@ -9,7 +9,7 @@
 
 export interface SiteStudyExtendedGenericSectionFragment {
   __typename: "SiteStudyExtendedGenericSection";
-  template: string;
+  template: string | null;
   hide: boolean;
   order: number | null;
   title: string;
