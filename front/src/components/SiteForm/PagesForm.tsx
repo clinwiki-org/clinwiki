@@ -5,20 +5,11 @@ import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
 import ThemedButton from 'components/StyledComponents/index';
-import {
-  PAGE_VIEW_QUERY,
-  CREATE_PAGE_VIEW_MUTATION,
-} from 'queries/PageViewQueries';
+import { PAGE_VIEW_QUERY, useCreatePageView } from 'queries/PageViewQueries';
 import { PageViewsQuery } from 'types/PageViewsQuery';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
-
-interface PageFormProps {
-  history: History;
-  location: Location;
-  // match: match<{}>;
-  site: SiteFragment;
-}
+import PageForm from './PageForm';
 
 const SectionForm = styled.div`
   padding: 15px 0 15px 15px;
@@ -33,33 +24,41 @@ const FormContainer = styled(Panel)`
   min-height: 420px;
 `;
 
-function AddPage(props: { siteId: number }) {
+interface AddPageProps {
+  siteId: number;
+}
+function AddPage(props: AddPageProps) {
   const [pageUrl, setPageUrl] = useState('');
-  const [createPageView] = useMutation(CREATE_PAGE_VIEW_MUTATION);
+  const createPageView = useCreatePageView(props.siteId);
   return (
-    <SectionForm>
+    <SectionForm onSubmit={_ => createPageView(pageUrl)}>
       <StyledFormControl
         placeholder="New Page URL"
         value={pageUrl}
         onChange={e => setPageUrl(e.target.value)}
       />
-      <ThemedButton
-        onClick={_ =>
-          createPageView({ variables: { url: pageUrl, siteId: props.siteId } })
-        }
-        enabled>
+      <ThemedButton onClick={_ => createPageView(pageUrl)} enabled>
         Add
       </ThemedButton>
     </SectionForm>
   );
 }
 
+interface PageFormProps {
+  history: History;
+  location: Location;
+  // match: match<{}>;
+  site: SiteFragment;
+}
 export default function PagesForm(props: PageFormProps) {
-  const [activeKey, setActive] = useState('');
-  const { data, error } = useQuery<PageViewsQuery>(PAGE_VIEW_QUERY, {
+  const [activeKey, setActive] = useState(-1);
+  const { data, error, refetch } = useQuery<PageViewsQuery>(PAGE_VIEW_QUERY, {
     variables: { id: props.site.id },
   });
   if (error) console.log('Error: ', error);
+
+  const pageViews = data?.site?.pageViews || [];
+  const currentPageView = pageViews.filter(pv => pv.id === activeKey)?.[0];
 
   return (
     <div>
@@ -70,14 +69,24 @@ export default function PagesForm(props: PageFormProps) {
             stacked
             activeKey={activeKey}
             onSelect={setActive}>
-            {data?.site?.pageViews?.map(page => (
-              <NavItem key={page.url} eventKey={page.id}> page.url </NavItem>
+            {pageViews?.map(page => (
+              <NavItem id={page.id} key={page.url} eventKey={page.id}>
+                /{page.url}
+              </NavItem>
             ))}
           </Nav>
           <AddPage siteId={props.site.id} />
         </Col>
         <Col md={10}>
-          <FormContainer>wangs</FormContainer>
+          <FormContainer>
+            {currentPageView ? (
+              <PageForm
+                key={currentPageView.id}
+                page={currentPageView}
+                siteId={props.site.id}
+              />
+            ) : null}
+          </FormContainer>
         </Col>
       </Row>
     </div>
