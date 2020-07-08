@@ -136,7 +136,7 @@ function graphqlToInternal(x: GraphqlSchemaType) {
         }
         break;
       default:
-        throw `Expected object type got ${root.kind}`;
+        throw new Error(`Expected object type got ${root.kind}`);
     }
   }
 
