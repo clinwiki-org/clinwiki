@@ -16,7 +16,7 @@ export interface SiteStudyPageFragment_basicSections {
 
 export interface SiteStudyPageFragment_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  template: string;
+  template: string | null;
   hide: boolean;
   order: number | null;
   title: string;

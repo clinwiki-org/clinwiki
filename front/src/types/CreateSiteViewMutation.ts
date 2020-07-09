@@ -18,7 +18,7 @@ export interface CreateSiteViewMutation_createSiteView_siteView_study_basicSecti
 
 export interface CreateSiteViewMutation_createSiteView_siteView_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  template: string;
+  template: string | null;
   hide: boolean;
   order: number | null;
   title: string;

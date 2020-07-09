@@ -34,7 +34,7 @@ export interface SiteProviderQuery_site_siteView_study_basicSections {
 
 export interface SiteProviderQuery_site_siteView_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  template: string;
+  template: string | null;
   hide: boolean;
   order: number | null;
   title: string;
@@ -391,7 +391,7 @@ export interface SiteProviderQuery_site_siteViews_study_basicSections {
 
 export interface SiteProviderQuery_site_siteViews_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  template: string;
+  template: string | null;
   hide: boolean;
   order: number | null;
   title: string;

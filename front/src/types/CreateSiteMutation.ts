@@ -34,7 +34,7 @@ export interface CreateSiteMutation_createSite_site_siteView_study_basicSections
 
 export interface CreateSiteMutation_createSite_site_siteView_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  template: string;
+  template: string | null;
   hide: boolean;
   order: number | null;
   title: string;
@@ -391,7 +391,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_study_basicSection
 
 export interface CreateSiteMutation_createSite_site_siteViews_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  template: string;
+  template: string | null;
   hide: boolean;
   order: number | null;
   title: string;
