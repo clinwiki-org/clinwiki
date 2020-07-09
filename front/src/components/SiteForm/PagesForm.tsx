@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SiteFragment } from 'types/SiteFragment';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
@@ -17,11 +17,6 @@ const SectionForm = styled.div`
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
-`;
-
-const FormContainer = styled(Panel)`
-  padding: 15px;
-  min-height: 420px;
 `;
 
 interface AddPageProps {
@@ -51,13 +46,17 @@ interface PageFormProps {
   site: SiteFragment;
 }
 export default function PagesForm(props: PageFormProps) {
-  const [activeKey, setActive] = useState(-1);
-  const { data, error, refetch } = useQuery<PageViewsQuery>(PAGE_VIEW_QUERY, {
+  let [activeKey, setActive] = useState(-1);
+  const { data, error } = useQuery<PageViewsQuery>(PAGE_VIEW_QUERY, {
     variables: { id: props.site.id },
   });
   if (error) console.log('Error: ', error);
 
-  const pageViews = data?.site?.pageViews || [];
+  const pageViews =
+    data?.site?.pageViews?.sort((a, b) => a.url.localeCompare(b.url)) || [];
+  if (pageViews.length > 0 && activeKey == -1) {
+    activeKey = pageViews[0].id;
+  }
   const currentPageView = pageViews.filter(pv => pv.id === activeKey)?.[0];
 
   return (
@@ -78,7 +77,7 @@ export default function PagesForm(props: PageFormProps) {
           <AddPage siteId={props.site.id} />
         </Col>
         <Col md={10}>
-          <FormContainer>
+          <Panel>
             {currentPageView ? (
               <PageForm
                 key={currentPageView.id}
@@ -86,7 +85,7 @@ export default function PagesForm(props: PageFormProps) {
                 siteId={props.site.id}
               />
             ) : null}
-          </FormContainer>
+          </Panel>
         </Col>
       </Row>
     </div>
