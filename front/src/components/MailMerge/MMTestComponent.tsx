@@ -3,17 +3,7 @@ import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
 import { useQuery } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import MailMerge from './MailMerge';
-
-const getQuery = (name:string,frag:string) => {
-  frag = frag || `fragment ${name} on Study { nct_id }`;
-  return gql`
-  query SampleStudyQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...${name}
-    }
-  }
-  ${frag}
-`};
+import { getStudyQuery } from './MailMergeUtils';
 
 export default function TestComponent() {
   const [template, setTemplate] = useState(`
@@ -41,7 +31,7 @@ Facility contacts:
     gql(getIntrospectionQuery({ descriptions: false }))
   );
   const fragmentName = "demo_fragment";
-  const { data: study } = useQuery(getQuery(fragmentName, fragment), {
+  const { data: study } = useQuery(getStudyQuery(fragmentName, fragment), {
     variables: { nctId: 'NCT03847779' },
   });
 

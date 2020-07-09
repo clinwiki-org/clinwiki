@@ -185,8 +185,8 @@ function applyTemplate(
   }
 }
 
-export function microMailMerge(template : string, context?: object|null) {
-  if (context && /{{(.*)}}/.test(template)) {
+export function microMailMerge(template = '', context?: object | null) {
+  if (context && template.indexOf('{{') >= 0) {
     const compiled = compileTemplate(template);
     return applyTemplate(compiled, context);
   }
