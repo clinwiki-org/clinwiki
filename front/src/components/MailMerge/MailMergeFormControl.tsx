@@ -13,6 +13,7 @@ const StyledFormControl = styled(FormControl)`
 `;
 const Container = styled.div`
   max-width: 1200px;
+  margin-bottom: 20px;
 `;
 
 interface MailMergeFormControlProps {
