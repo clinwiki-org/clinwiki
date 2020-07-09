@@ -364,13 +364,13 @@ interface UseSiteProps {
   id?: number;
   url?: string;
 }
-export function useSite(props: UseSiteProps) {
+export function useSite(props?: UseSiteProps) {
   const urlName = new URLSearchParams(window.location.search)
     .getAll('sv')
     .toString()
     .toLowerCase();
   const result = useQuery<SiteProviderQuery>(QUERY, {
-    variables: { id: props.id, url: props.url },
+    variables: { id: props?.id, url: props?.url },
   });
   if (!result.data) return result;
   const site = result?.data?.site;

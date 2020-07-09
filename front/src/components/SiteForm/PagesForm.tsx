@@ -5,8 +5,11 @@ import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
 import ThemedButton from 'components/StyledComponents/index';
-import { PAGE_VIEW_QUERY, useCreatePageView } from 'queries/PageViewQueries';
-import { PageViewsQuery } from 'types/PageViewsQuery';
+import { useCreatePageView, usePageViews } from 'queries/PageViewQueries';
+import {
+  PageViewsQuery,
+  PageViewsQuery_site_pageViews,
+} from 'types/PageViewsQuery';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import PageForm from './PageForm';
@@ -21,10 +24,12 @@ const StyledFormControl = styled(FormControl)`
 
 interface AddPageProps {
   siteId: number;
+  pageViews: PageViewsQuery_site_pageViews[];
 }
 function AddPage(props: AddPageProps) {
   const [pageUrl, setPageUrl] = useState('');
   const createPageView = useCreatePageView(props.siteId);
+  const isDisabled = () => pageUrl === '' || pageUrl.indexOf('/') != -1;
   return (
     <SectionForm onSubmit={_ => createPageView(pageUrl)}>
       <StyledFormControl
@@ -32,7 +37,9 @@ function AddPage(props: AddPageProps) {
         value={pageUrl}
         onChange={e => setPageUrl(e.target.value)}
       />
-      <ThemedButton onClick={_ => createPageView(pageUrl)} enabled>
+      <ThemedButton
+        onClick={_ => createPageView(pageUrl)}
+        disabled={isDisabled()}>
         Add
       </ThemedButton>
     </SectionForm>
@@ -47,9 +54,7 @@ interface PageFormProps {
 }
 export default function PagesForm(props: PageFormProps) {
   let [activeKey, setActive] = useState(-1);
-  const { data, error } = useQuery<PageViewsQuery>(PAGE_VIEW_QUERY, {
-    variables: { id: props.site.id },
-  });
+  const { data, error } = usePageViews(props.site.id);
   if (error) console.log('Error: ', error);
 
   const pageViews =
@@ -70,11 +75,11 @@ export default function PagesForm(props: PageFormProps) {
             onSelect={setActive}>
             {pageViews?.map(page => (
               <NavItem id={page.id} key={page.url} eventKey={page.id}>
-                /{page.url}
+                /p/{page.url}
               </NavItem>
             ))}
           </Nav>
-          <AddPage siteId={props.site.id} />
+          <AddPage siteId={props.site.id} pageViews={pageViews} />
         </Col>
         <Col md={10}>
           <Panel>

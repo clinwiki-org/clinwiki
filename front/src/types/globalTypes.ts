@@ -224,6 +224,7 @@ export interface UpdatePageViewInput {
   template?: string | null;
   pageType?: string | null;
   url?: string | null;
+  mutations?: SiteViewMutationInput[] | null;
   id: number;
   clientMutationId?: string | null;
 }

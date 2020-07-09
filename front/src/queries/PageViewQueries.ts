@@ -1,5 +1,5 @@
 import { gql, MutationUpdaterFn } from 'apollo-boost';
-import { useMutation } from 'react-apollo';
+import { useMutation, useQuery } from 'react-apollo';
 import { UpdatePageViewInput } from 'types/globalTypes';
 import { DataProxy } from 'apollo-cache';
 import {
@@ -7,6 +7,7 @@ import {
   PageViewsQuery_site_pageViews,
   PageViewsQuery_site,
 } from 'types/PageViewsQuery';
+import { PageViewQuery } from 'types/PageViewQuery';
 
 export const PAGE_VIEW_FRAGMENT = gql`
   fragment PageViewFragment on PageView {
@@ -18,8 +19,8 @@ export const PAGE_VIEW_FRAGMENT = gql`
   }
 `;
 
-export const PAGE_VIEW_QUERY = gql`
-  query PageViewsQuery($id: Int!) {
+export const PAGE_VIEWS_QUERY = gql`
+  query PageViewsQuery($id: Int) {
     site(id: $id) {
       id
       pageViews {
@@ -29,6 +30,29 @@ export const PAGE_VIEW_QUERY = gql`
   }
   ${PAGE_VIEW_FRAGMENT}
 `;
+
+const PAGE_VIEW_QUERY = gql`
+  query PageViewQuery($id: Int, $url: String!) {
+    site(id: $id) {
+      id
+      pageView(url: $url) {
+        ...PageViewFragment
+      }
+    }
+  }
+  ${PAGE_VIEW_FRAGMENT}
+`;
+
+export function usePageViews(siteId?: number) {
+  return useQuery<PageViewsQuery>(PAGE_VIEWS_QUERY, {
+    variables: { id: siteId },
+  });
+}
+export function usePageView(url : string, siteId?: number) {
+  return useQuery<PageViewQuery>(PAGE_VIEW_QUERY, {
+    variables: { id: siteId, url },
+  });
+}
 
 const CREATE_PAGE_VIEW_MUTATION = gql`
   mutation CreatePageViewMutation($url: String!, $siteId: Int!) {
@@ -77,7 +101,7 @@ const CREATE_PAGE_VIEW_MUTATION = gql`
 
 export function useCreatePageView(siteId: number) {
   const [doMutation] = useMutation(CREATE_PAGE_VIEW_MUTATION, {
-    refetchQueries: [{ query: PAGE_VIEW_QUERY, variables: { id : siteId }}],
+    refetchQueries: [{ query: PAGE_VIEWS_QUERY, variables: { id: siteId } }],
   });
   return (url: string) => doMutation({ variables: { url: url, siteId } });
 }
@@ -95,7 +119,7 @@ const DELETE_PAGE_VIEW_MUTATION = gql`
 
 export function useDeletePageView(siteId: number) {
   const [doMutation] = useMutation(DELETE_PAGE_VIEW_MUTATION, {
-    refetchQueries: [{ query: PAGE_VIEW_QUERY, variables: { id : siteId }}],
+    refetchQueries: [{ query: PAGE_VIEWS_QUERY, variables: { id: siteId } }],
   });
   return (id: number) => doMutation({ variables: { id } });
 }
@@ -114,10 +138,8 @@ const UPDATE_PAGE_VIEW_MUTATION = gql`
 
 export function useUpdatePageView(siteId: number) {
   const [updatePageView] = useMutation(UPDATE_PAGE_VIEW_MUTATION, {
-    refetchQueries: [{ query: PAGE_VIEW_QUERY, variables: { id : siteId }}],
+    refetchQueries: [{ query: PAGE_VIEWS_QUERY, variables: { id: siteId } }],
   });
   return (input: UpdatePageViewInput) =>
     updatePageView({ variables: { input } });
 }
-
-

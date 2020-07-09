@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: PageViewsQuery
+// GraphQL query operation: PageViewQuery
 // ====================================================
 
-export interface PageViewsQuery_site_pageViews {
+export interface PageViewQuery_site_pageView {
   __typename: "PageView";
   id: number;
   pageType: string;
@@ -16,19 +16,20 @@ export interface PageViewsQuery_site_pageViews {
   url: string;
 }
 
-export interface PageViewsQuery_site {
+export interface PageViewQuery_site {
   __typename: "Site";
   id: number;
-  pageViews: PageViewsQuery_site_pageViews[] | null;
+  pageView: PageViewQuery_site_pageView | null;
 }
 
-export interface PageViewsQuery {
+export interface PageViewQuery {
   /**
    * If id is missing, returns current site. If id == 0, returns default site
    */
-  site: PageViewsQuery_site | null;
+  site: PageViewQuery_site | null;
 }
 
-export interface PageViewsQueryVariables {
+export interface PageViewQueryVariables {
   id?: number | null;
+  url: string;
 }
