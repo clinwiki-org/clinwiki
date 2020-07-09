@@ -7,6 +7,7 @@ export interface Theme {
   button: string;
   buttonSecondary: string;
   buttonDanger: string;
+  buttonDisabled: string;
   sorterColor: string;
   backgroundColor: string;
   authHeader: {
@@ -122,6 +123,7 @@ function themeFromSite(site): Theme {
     button: colors.primaryColor,
     buttonSecondary: colors.secondaryColor,
     buttonDanger: colors.warningColor,
+    buttonDisabled: colors.grayHeaderFont,
     sorterColor: colors.primaryColor,
     backgroundColor: colors.backgroundColor,
 
