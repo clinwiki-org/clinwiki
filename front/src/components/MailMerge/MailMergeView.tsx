@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
-import ReactMarkdown from 'react-markdown';
+import React, { useMemo, useEffect } from 'react';
 import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
+import marked from 'marked';
 
 export interface Props {
   template: string;
@@ -161,19 +161,6 @@ function compileTemplate(template: string) {
   }
 }
 
-function handleTemplateChanged(props: Props) {
-  const { template, fragmentName, fragmentClass, onFragmentChanged } = props;
-  const compiled = compileTemplate(template);
-  if (onFragmentChanged && fragmentClass && fragmentName) {
-    const fragment = compileFragment(fragmentName, fragmentClass, template);
-    // It might make more sense to use useEffect() and store the compiled
-    // template and fragment on local state moving the computation of the template
-    // out of the render path.
-    setTimeout(() => onFragmentChanged(fragment));
-  }
-  return compiled;
-}
-
 function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,
   context: object
@@ -195,22 +182,24 @@ export function microMailMerge(template = '', context?: object | null) {
 
 export default function MailMergeView(props: Props) {
   useHandlebars();
-  const compiled = useMemo(() => handleTemplateChanged(props), [
+  const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
   ]);
+  const { template, fragmentName, fragmentClass, onFragmentChanged } = props;
+  useEffect(() => {
+    if (onFragmentChanged && fragmentClass && fragmentName) {
+      const fragment = compileFragment(fragmentName, fragmentClass, template);
+      onFragmentChanged(fragment);
+    }
+  }, [template, onFragmentChanged, fragmentClass, fragmentName]);
 
   // Note: We can make this faster by compiling markdown->html before applying the template
   const style = props.style
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
-  const markdown = applyTemplate(compiled, props.context);
+
+  const raw = applyTemplate(compiled, props.context);
   return (
-    <div className="mail-merge" style={style}>
-      <ReactMarkdown
-        className="mailmerge-view"
-        source={markdown}
-        escapeHtml={false}
-      />
-    </div>
+    <div className="mail-merge" style={style} dangerouslySetInnerHTML={{__html: raw}} />
   );
 }
