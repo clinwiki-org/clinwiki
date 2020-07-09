@@ -4,14 +4,14 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: SiteStudyExtendedGenericSectionFragment
+// GraphQL fragment: PageViewFragment
 // ====================================================
 
-export interface SiteStudyExtendedGenericSectionFragment {
-  __typename: "SiteStudyExtendedGenericSection";
-  template: string | null;
-  hide: boolean;
-  order: number | null;
+export interface PageViewFragment {
+  __typename: "PageView";
+  id: number;
+  pageType: string;
+  template: string;
   title: string;
-  name: string;
+  url: string;
 }

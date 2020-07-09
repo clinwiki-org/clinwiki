@@ -6,7 +6,6 @@ import { History } from 'history';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import { MailMergeView } from 'components/MailMerge';
 import { useState } from 'react';
-import { Spinner } from 'reactstrap';
 
 interface GenericStudySectionPageProps {
   nctId: string;
@@ -36,10 +35,6 @@ function GenericStudySectionPage(props: GenericStudySectionPageProps) {
   const { data } = useQuery(getQuery(fragmentName, fragment), {
     variables: { nctId: props.nctId },
   });
-  const updateFragmentAsync = async (frag) => {
-    await new Promise(r => setTimeout(r));
-    setFragment(frag);
-  };
   
   return (
     <MailMergeView
@@ -47,7 +42,7 @@ function GenericStudySectionPage(props: GenericStudySectionPageProps) {
       context={data?.study??{}}
       fragmentName={fragmentName}
       fragmentClass="Study"
-      onFragmentChanged={updateFragmentAsync}
+      onFragmentChanged={setFragment}
     />
   );
 }

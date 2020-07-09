@@ -166,7 +166,10 @@ function handleTemplateChanged(props: Props) {
   const compiled = compileTemplate(template);
   if (onFragmentChanged && fragmentClass && fragmentName) {
     const fragment = compileFragment(fragmentName, fragmentClass, template);
-    onFragmentChanged(fragment);
+    // It might make more sense to use useEffect() and store the compiled
+    // template and fragment on local state moving the computation of the template
+    // out of the render path.
+    setTimeout(() => onFragmentChanged(fragment));
   }
   return compiled;
 }

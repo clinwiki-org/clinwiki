@@ -3,7 +3,6 @@ import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
 import { equals, prop, last } from 'ramda';
 import { Nav, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
-import { gql } from 'apollo-boost';
 import { trimPath } from 'utils/helpers';
 import { SiteFragment } from 'types/SiteFragment';
 import { StyledContainer } from './Styled';
@@ -20,6 +19,7 @@ import { History, Location } from 'history';
 import StudyForm from './StudyForm';
 import ThemedButton from 'components/StyledComponents/index';
 import { UpdateSiteViewMutationFn } from 'mutations/UpdateSiteViewMutation';
+import PagesForm from './PagesForm';
 
 interface SiteFormProps {
   match: match<{}>;
@@ -36,7 +36,6 @@ interface SiteFormState {
   mutations: SiteViewMutationInput[];
   addEditorEmail: string;
   prevForm: CreateSiteInput | null;
-  inSiteViewEdit: boolean;
   disableSubmit: boolean;
 }
 
@@ -66,7 +65,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     mutations: [],
     addEditorEmail: '',
     prevForm: null,
-    inSiteViewEdit: false,
   };
 
   static getDerivedStateFromProps = (
@@ -96,12 +94,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       return { ...state, form, prevForm: form };
     }
     return null;
-  };
-  toggleSiteViewEdit = () => {
-    this.setState({ inSiteViewEdit: true });
-  };
-  toggleEditFalse = () => {
-    this.setState({ inSiteViewEdit: false });
   };
   handleSave = () => {
     if (this.state.mutations.length > 0) {
@@ -153,12 +145,14 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
         { path: '/main', value: 'Main' },
         { path: '/study', value: 'Study' },
       ];
-    } else
+    } else {
       sections = [
         { path: '/main', value: 'Main' },
         { path: '/siteviews', value: 'Views' },
         { path: '/study', value: 'Study' },
+        { path: '/page', value: 'Page' },
       ];
+    }
 
     const locationComponents = this.props.location.pathname.split('/');
     let activeKey = last(locationComponents);
@@ -181,6 +175,13 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     );
   };
 
+  showSave = () => {
+    // The pages that use this save button are a bit scattered.
+    // I don't think the Views page actually makes use of this button but I'm not 100% sure
+    const path = window.location.pathname;
+    return path.endsWith("/main") || /edit\/study\/[^/]*/.test(path)
+  }
+
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
@@ -198,7 +199,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 handleThemeError={this.handleThemeError}
                 form={this.state.form}
                 onFormChange={this.handleFormChange}
-                handleForm={this.toggleEditFalse}
               />
             )}
           />
@@ -210,8 +210,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 siteViews={this.props.site.siteViews}
                 refresh={this.props.refresh}
                 site={this.props.site}
-                handleSiteViewEdit={this.toggleSiteViewEdit}
-                handleForm={this.toggleEditFalse}
               />
             )}
           />
@@ -222,13 +220,22 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
                 {...routeProps}
                 view={view}
                 onAddMutation={this.handleAddMutation}
-                handleForm={this.toggleEditFalse}
+              />
+            )}
+          />
+          <Route
+            path={`${path}/page`}
+            render={routeProps => (
+              <PagesForm
+                {...routeProps}
+                history={routeProps.history}
+                site={this.props.site}
               />
             )}
           />
           <Redirect to={`${path}/main`} />
         </Switch>
-        {this.state.inSiteViewEdit ? null : (
+        {this.showSave() ? (
           <StyledContainer>
             <ThemedButton
               disabled={this.state.disableSubmit}
@@ -236,7 +243,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               Save
             </ThemedButton>
           </StyledContainer>
-        )}
+        ):null}
       </Container>
     );
   }

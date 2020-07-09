@@ -26,7 +26,6 @@ interface StudyFormProps {
   history: History;
   match: match<{}>;
   location: Location;
-  handleForm: any;
 }
 
 interface StudyFormState {
@@ -193,9 +192,6 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
 
     return '/';
   };
-  componentDidMount() {
-    this.props.handleForm();
-  }
   render() {
     return (
       <div>
