@@ -3,6 +3,7 @@ import SchemaSelector, { SchemaType } from './SchemaSelector';
 import View, { Props as ViewProps } from './MailMergeView';
 import Editor from './MailMergeEditor';
 
+// MailMerge props includes all ViewProps except context is renamed to sample
 interface Props extends Omit<ViewProps, 'context'> {
   schema: SchemaType;
   sample: object;
@@ -27,20 +28,23 @@ export default function MailMerge(props: Props) {
   };
   const style = { ...defaultStyle, ...props.style };
   return (
-    <div style={style}>
-      <SchemaSelector schema={props.schema} onSelectItem={insertSchemaItem} />
-      <Editor
-        markdown={template}
-        onChange={props.onTemplateChanged}
-        onCursorMove={setCursorPosition}
-      />
+    <>
+      <div style={style}>
+        <SchemaSelector schema={props.schema} onSelectItem={insertSchemaItem} />
+        <Editor
+          markdown={template}
+          onChange={props.onTemplateChanged}
+          onCursorMove={setCursorPosition}
+        />
+      </div>
       <View
+        style={{border: '2px solid black'}}
         template={template}
         context={props.sample}
         fragmentName={props.fragmentName}
         fragmentClass={props.fragmentClass}
         onFragmentChanged={props.onFragmentChanged}
       />
-    </div>
+    </>
   );
 }
