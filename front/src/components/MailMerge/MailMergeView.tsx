@@ -5,6 +5,8 @@ import marked from 'marked';
 import ReactDOM from 'react-dom';
 import Islands from './Islands';
 
+export type IslandConstructor = (parent:Element, context:any) => JSX.Element;
+
 export interface Props {
   template: string;
   context: object;
@@ -12,7 +14,7 @@ export interface Props {
   fragmentName?: string;
   fragmentClass?: string;
   onFragmentChanged?: (fragment: string) => void;
-  islands?: Record<string, (parent:Element, context:any) => JSX.Element>;
+  islands?: Record<string, IslandConstructor>
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
@@ -191,6 +193,7 @@ export default function MailMergeView(props: Props) {
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
   ]);
+  const raw = useMemo(() => applyTemplate(compiled, props.context), [compiled, props.context]);
 
   const { template, fragmentName, fragmentClass, onFragmentChanged } = props;
   useEffect(() => {
@@ -204,7 +207,6 @@ export default function MailMergeView(props: Props) {
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
 
-  const raw = applyTemplate(compiled, props.context);
   
   return (
     <>
