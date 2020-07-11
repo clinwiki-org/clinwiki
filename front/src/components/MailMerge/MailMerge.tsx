@@ -7,7 +7,6 @@ import Editor from './MailMergeEditor';
 interface Props extends Omit<ViewProps, 'context'> {
   schema: SchemaType;
   sample: object;
-  style?: object;
   onTemplateChanged: (template: string) => void;
 }
 
@@ -44,6 +43,7 @@ export default function MailMerge(props: Props) {
         fragmentName={props.fragmentName}
         fragmentClass={props.fragmentClass}
         onFragmentChanged={props.onFragmentChanged}
+        islands={props.islands}
       />
     </>
   );

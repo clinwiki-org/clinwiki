@@ -1,7 +1,9 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
 import marked from 'marked';
+import ReactDOM from 'react-dom';
+import Islands from './Islands';
 
 export interface Props {
   template: string;
@@ -10,6 +12,7 @@ export interface Props {
   fragmentName?: string;
   fragmentClass?: string;
   onFragmentChanged?: (fragment: string) => void;
+  islands?: Record<string, (parent:Element, context:any) => JSX.Element>;
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
@@ -146,7 +149,6 @@ function compileFragment(
   template: string
 ) {
   const tokens = mustacheTokens(template);
-  // console.log('tokens', tokens);
   const json = tokensToGraphQLOb(tokens);
   const fragmentBody = jsonToFragmentBody(json);
   return toFragment(fragmentName, className, fragmentBody);
@@ -180,11 +182,16 @@ export function microMailMerge(template = '', context?: object | null) {
   return template;
 }
 
+
 export default function MailMergeView(props: Props) {
   useHandlebars();
+
+  const [ref,setRef] = useState<HTMLDivElement|null>(null);
+
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
   ]);
+
   const { template, fragmentName, fragmentClass, onFragmentChanged } = props;
   useEffect(() => {
     if (onFragmentChanged && fragmentClass && fragmentName) {
@@ -193,13 +200,25 @@ export default function MailMergeView(props: Props) {
     }
   }, [template, onFragmentChanged, fragmentClass, fragmentName]);
 
-  // Note: We can make this faster by compiling markdown->html before applying the template
   const style = props.style
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
 
   const raw = applyTemplate(compiled, props.context);
+  
   return (
-    <div className="mail-merge" style={style} dangerouslySetInnerHTML={{__html: raw}} />
+    <>
+      <div
+        className="mail-merge"
+        style={style}
+        dangerouslySetInnerHTML={{ __html: raw }}
+        ref={setRef}
+      />
+      <Islands
+        context={props.context} 
+        islands = {props.islands}
+        root={ref}
+      />
+    </>
   );
 }
