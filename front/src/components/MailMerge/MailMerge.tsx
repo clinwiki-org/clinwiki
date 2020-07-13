@@ -6,7 +6,7 @@ import Editor from './MailMergeEditor';
 // MailMerge props includes all ViewProps except context is renamed to sample
 interface Props extends Omit<ViewProps, 'context'> {
   schema: SchemaType;
-  sample: object;
+  sample?: object;
   onTemplateChanged: (template: string) => void;
 }
 

@@ -43,11 +43,11 @@ export default function TestComponent() {
       console.log(parent);
       return <img src="https://media.giphy.com/media/11vDNL1PrUUo0/source.gif" />;
     },
-    Panel: (parent: Element, context: object) => {
-      return <CollapsiblePanel header={parent.attributes['header']}>
-        <div dangerouslySetInnerHTML={{ __html: parent.innerHTML }} />
-      </CollapsiblePanel>
-    },
+    // Panel: (parent: Element, context: object) => {
+    //   return <CollapsiblePanel header={parent.attributes['header']}>
+    //     <div dangerouslySetInnerHTML={{ __html: parent.innerHTML }} />
+    //   </CollapsiblePanel>
+    // },
   };
 
   if (introspection) {
@@ -61,7 +61,7 @@ export default function TestComponent() {
         />
         <MailMerge
           schema={{ kind: 'graphql', typeName: 'Study', types }}
-          sample={study?.study || {}}
+          sample={study?.study}
           template={template}
           onTemplateChanged={setTemplate}
           fragmentName={fragmentName}
