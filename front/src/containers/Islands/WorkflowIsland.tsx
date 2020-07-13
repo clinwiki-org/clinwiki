@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { displayFields } from 'utils/siteViewHelpers';
 import * as R from 'remeda';
@@ -34,27 +34,14 @@ const StyledPanel = styled(Panel)`
 
 const handleSelect = (
   meta: {},
-  nctId : string,
+  nctId: string,
   upsertLabel: UpsertMutationFn,
   deleteLabel: DeleteMutationFn
 ) => (key: string, value: string, checked: boolean) => {
   if (checked) {
-    CrowdPage.addLabel(
-      key,
-      value,
-      meta,
-      nctId,
-      upsertLabel
-    );
+    CrowdPage.addLabel(key, value, meta, nctId, upsertLabel);
   } else {
-    CrowdPage.deleteLabel(
-      key,
-      value,
-      meta,
-      nctId,
-      upsertLabel,
-      deleteLabel
-    );
+    CrowdPage.deleteLabel(key, value, meta, nctId, upsertLabel, deleteLabel);
   }
 };
 
@@ -82,7 +69,7 @@ export default function WorkflowIsland(props: Props) {
 
   const { hash } = useUrlParams();
 
-  if (!workflow || !nctId) return <BeatLoader />
+  if (!workflow || !nctId) return <BeatLoader />;
 
   const allowedSuggestedLabels = displayFields(
     workflow.suggestedLabelsFilter.kind,
@@ -100,25 +87,25 @@ export default function WorkflowIsland(props: Props) {
   return (
     <div>
       <h3>Crowd Labels</h3>
-      <>
-        <StyledPanel>
-          <SuggestedLabels
-            nctId={nctId}
-            searchHash={hash}
-            siteView={currentSiteView}
-            onSelect={handleSelect(
-              JSON.parse(studyData?.study?.wikiPage?.meta || '{}'),
-              nctId,
-              upsertMutation,
-              deleteMutation
-            )}
-            allowedSuggestedLabels={allowedSuggestedLabels}
-            suggestedLabelsConfig={suggestedLabelsConfig}
-            disabled={!user}
-            showAnimation={true}
-          />
-        </StyledPanel>
-      </>
+      <StyledPanel>
+        <SuggestedLabels
+          nctId={nctId}
+          searchHash={hash}
+          siteView={currentSiteView}
+          onSelect={handleSelect(
+            JSON.parse(studyData?.study?.wikiPage?.meta || '{}'),
+            nctId,
+            upsertMutation,
+            deleteMutation
+          )}
+          allowedSuggestedLabels={allowedSuggestedLabels}
+          suggestedLabelsConfig={suggestedLabelsConfig}
+          disabled={!user}
+          showAnimation={() =>
+            console.log("todo: use animation context here.")
+          }
+        />
+      </StyledPanel>
     </div>
   );
 }

@@ -13,7 +13,6 @@ import CollapsiblePanel from 'components/CollapsiblePanel';
 export default function TestComponent() {
   const [template, setTemplate] = useState(`
 # title: {{briefTitle}}
-<Panel>
 <table class="table table-striped table-bordered table-condensed">
   <tbody>
     <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
@@ -24,7 +23,10 @@ export default function TestComponent() {
     <tr> <th>Source</th> <td>{{source}}</td> </tr>
   </tbody>
 </table>
-</Panel>
+
+<Workflow name=WF_covid1 />
+
+<a href="http://localhost:3001/mmtest?hash=w2u8cgR2">fix workflow</a>
 
 <Groot>
 
