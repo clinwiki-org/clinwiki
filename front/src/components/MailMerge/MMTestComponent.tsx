@@ -24,9 +24,14 @@ export default function TestComponent() {
   </tbody>
 </table>
 
-<Workflow name=WF_covid1 />
+## NOTE:
+If you use a self closing tag &lt;Workflow /> it will 'hide' the rest of the content.
+Instead always supply a separate closing tag: &lt;Werkflow>&lt;/Werkflow>
 
-<a href="http://localhost:3001/mmtest?hash=w2u8cgR2">fix workflow</a>
+<a href="/mmtest?hash=w2u8cgR2">Add search hash </a>
+
+<Workflow name=WF_covid1></Workflow>
+
 
 <Groot>
 

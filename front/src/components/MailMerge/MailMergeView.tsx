@@ -4,7 +4,11 @@ import useHandlebars from 'hooks/useHandlebars';
 import marked from 'marked';
 import HtmlToReact from 'html-to-react';
 
-export type IslandConstructor = (attributes : Record<string,string>, context?: object, parent? : any) => JSX.Element;
+export type IslandConstructor = (
+  attributes: Record<string, string>,
+  context?: object,
+  parent?: any
+) => JSX.Element;
 
 export interface Props {
   template: string;
@@ -206,22 +210,28 @@ export default function MailMergeView(props: Props) {
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
 
-  const parser = new HtmlToReact.Parser();
   const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions(React);
-  const islandKeys = new Set(Object.keys(props.islands||{}));
+  const islandKeys = new Set(Object.keys(props.islands || {}));
   var instructions = [
     {
       shouldProcessNode: node => islandKeys.has(node.name),
       processNode: (node, children) => {
         const create = props.islands?.[node.name];
-        return <div className='mail-merge-island'>{create?.(node.attribs, props.context, node)}</div>;
-      }
+        return (
+          <div
+            className="mail-merge-island"
+            key={node.attribs['key'] || node.name}>
+            {create?.(node.attribs, props.context, node)}
+          </div>
+        );
+      },
     },
     {
       shouldProcessNode: () => true,
       processNode: processNodeDefinitions.processDefaultNode,
     },
   ];
+  const parser = new HtmlToReact.Parser();
   const reactElement = parser.parseWithInstructions(
     raw,
     () => true,
