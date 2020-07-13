@@ -6,6 +6,7 @@ import MailMerge from './MailMerge';
 import { FormControl } from 'react-bootstrap';
 import { getStudyQuery } from './MailMergeUtils';
 import ReactDOMServer from 'react-dom/server'
+import { pageIslands } from 'containers/Islands/CommonIslands'
 
 import CollapsiblePanel from 'components/CollapsiblePanel';
 
@@ -40,17 +41,13 @@ export default function TestComponent() {
   });
 
   const islands = {
+    ... pageIslands,
     groot: (attributes: Record<string,string>) => {
       return <img src="https://media.giphy.com/media/11vDNL1PrUUo0/source.gif" />;
     },
-    // panel: (attributes: Record<string,string>, context?: object, parent?: any) => {
-    //   console.log(parent);
-    //   return <CollapsiblePanel header={attributes['header']}>
-    //     {/* {parent} */}
-    //     {/* <div dangerouslySetInnerHTML={{ __html: parent.innerHTML }} /> */}
-    //   </CollapsiblePanel>
-    // },
   };
+
+
 
   if (introspection) {
     const types = introspection.__schema.types;

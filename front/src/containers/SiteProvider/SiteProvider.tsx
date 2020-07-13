@@ -15,7 +15,7 @@ import { SiteFragment } from 'types/SiteFragment';
 interface SiteProviderProps {
   id?: number;
   url?: string;
-  children: (site: SiteFragment, refetch: any) => JSX.Element|null;
+  children: (site: SiteFragment, refetch: any) => JSX.Element | null;
 }
 
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
@@ -372,7 +372,7 @@ export function useSite(props?: UseSiteProps) {
   const result = useQuery<SiteProviderQuery>(QUERY, {
     variables: { id: props?.id, url: props?.url },
   });
-  if (!result.data) return result;
+  if (!result.data) return { ...result, site: null, currentSiteView: null };
   const site = result?.data?.site;
   const currentSiteView =
     site?.siteViews.find(

@@ -214,7 +214,7 @@ export default function MailMergeView(props: Props) {
       shouldProcessNode: node => islandKeys.has(node.name),
       processNode: (node, children) => {
         const create = props.islands?.[node.name];
-        return <div>{create?.(node.attribs, props.context, node)}</div>;
+        return <div className='mail-merge-island'>{create?.(node.attribs, props.context, node)}</div>;
       }
     },
     {
@@ -233,22 +233,4 @@ export default function MailMergeView(props: Props) {
       {reactElement}
     </div>
   );
-
-  // return (
-  //   <div>
-  //     <div
-  //       className="mail-merge"
-  //       style={defaultStyle}
-  //       dangerouslySetInnerHTML={{ __html: raw }}
-  //       ref={r => console.log('ref',r?.innerHTML)}
-  //     />
-  //     {props.context ? (
-  //       <Islands
-  //         context={props.context}
-  //         islands={props.islands}
-  //         root={ref.current}
-  //       />
-  //     ) : null}
-  //   </div>
-  // );
 }
