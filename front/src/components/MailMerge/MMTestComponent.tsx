@@ -5,6 +5,7 @@ import { gql } from 'apollo-boost';
 import MailMerge from './MailMerge';
 import { FormControl } from 'react-bootstrap';
 import { getStudyQuery } from './MailMergeUtils';
+import ReactDOMServer from 'react-dom/server'
 
 import CollapsiblePanel from 'components/CollapsiblePanel';
 
@@ -39,13 +40,14 @@ export default function TestComponent() {
   });
 
   const islands = {
-    Groot: (parent: Element, context: object) => {
-      console.log(parent);
+    groot: (attributes: Record<string,string>) => {
       return <img src="https://media.giphy.com/media/11vDNL1PrUUo0/source.gif" />;
     },
-    // Panel: (parent: Element, context: object) => {
-    //   return <CollapsiblePanel header={parent.attributes['header']}>
-    //     <div dangerouslySetInnerHTML={{ __html: parent.innerHTML }} />
+    // panel: (attributes: Record<string,string>, context?: object, parent?: any) => {
+    //   console.log(parent);
+    //   return <CollapsiblePanel header={attributes['header']}>
+    //     {/* {parent} */}
+    //     {/* <div dangerouslySetInnerHTML={{ __html: parent.innerHTML }} /> */}
     //   </CollapsiblePanel>
     // },
   };

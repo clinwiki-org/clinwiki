@@ -1,11 +1,10 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
 import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
 import marked from 'marked';
-import ReactDOM from 'react-dom';
-import Islands from './Islands';
+import HtmlToReact from 'html-to-react';
 
-export type IslandConstructor = (parent: Element, context: any) => JSX.Element;
+export type IslandConstructor = (attributes : Record<string,string>, context?: object, parent? : any) => JSX.Element;
 
 export interface Props {
   template: string;
@@ -167,7 +166,7 @@ function compileTemplate(template: string) {
 
 function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,
-  context: object
+  context?: object
 ) {
   try {
     return template(context);
@@ -184,11 +183,8 @@ export function microMailMerge(template = '', context?: object | null) {
   return template;
 }
 
-
 export default function MailMergeView(props: Props) {
   useHandlebars();
-
-  const [ref,setRef] = useState<HTMLDivElement|null>(null);
 
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
@@ -210,20 +206,49 @@ export default function MailMergeView(props: Props) {
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
 
-  
-  return (
-    <>
-      <div
-        className="mail-merge"
-        style={style}
-        dangerouslySetInnerHTML={{ __html: raw }}
-        ref={setRef}
-      />
-      <Islands
-        context={props.context} 
-        islands = {props.islands}
-        root={ref}
-      />
-    </>
+  const parser = new HtmlToReact.Parser();
+  const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions(React);
+  const islandKeys = new Set(Object.keys(props.islands||{}));
+  var instructions = [
+    {
+      shouldProcessNode: node => islandKeys.has(node.name),
+      processNode: (node, children) => {
+        const create = props.islands?.[node.name];
+        return <div>{create?.(node.attribs, props.context, node)}</div>;
+      }
+    },
+    {
+      shouldProcessNode: () => true,
+      processNode: processNodeDefinitions.processDefaultNode,
+    },
+  ];
+  const reactElement = parser.parseWithInstructions(
+    raw,
+    () => true,
+    instructions
   );
+
+  return (
+    <div className="mail-merge" style={style}>
+      {reactElement}
+    </div>
+  );
+
+  // return (
+  //   <div>
+  //     <div
+  //       className="mail-merge"
+  //       style={defaultStyle}
+  //       dangerouslySetInnerHTML={{ __html: raw }}
+  //       ref={r => console.log('ref',r?.innerHTML)}
+  //     />
+  //     {props.context ? (
+  //       <Islands
+  //         context={props.context}
+  //         islands={props.islands}
+  //         root={ref.current}
+  //       />
+  //     ) : null}
+  //   </div>
+  // );
 }
