@@ -67,8 +67,6 @@ export default function WorkflowIsland(props: Props) {
   const { currentSiteView } = useSite();
   const user = useCurrentUser()?.data?.me;
 
-  const { hash } = useUrlParams();
-
   if (!workflow || !nctId) return <BeatLoader />;
 
   const allowedSuggestedLabels = displayFields(
@@ -90,7 +88,6 @@ export default function WorkflowIsland(props: Props) {
       <StyledPanel>
         <SuggestedLabels
           nctId={nctId}
-          searchHash={hash}
           siteView={currentSiteView}
           onSelect={handleSelect(
             JSON.parse(studyData?.study?.wikiPage?.meta || '{}'),
