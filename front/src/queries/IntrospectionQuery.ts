@@ -1,4 +1,3 @@
-import gql from 'graphql-tag';
-import { getIntrospectionQuery } from 'graphql';
+import { getIntrospectionQuery, IntrospectionSchema } from 'graphql';
 
 export default getIntrospectionQuery();

@@ -1,14 +1,24 @@
-import * as React from 'react';
+import React, { useState, useMemo } from 'react';
+import {
+  IntrospectionType,
+  IntrospectionOutputTypeRef,
+} from 'graphql';
 
-export type SchemaType = 'json' | 'graphql';
+export type SchemaType = JsonSchemaType | GraphqlSchemaType;
+
+export interface JsonSchemaType {
+  kind: 'json';
+  schema: JsonSchema;
+}
+export interface GraphqlSchemaType {
+  kind: 'graphql';
+  typeName: string;
+  types: readonly IntrospectionType[];
+}
 
 interface Props {
-  schemaType?: SchemaType;
-  schema: JsonSchema;
+  schema: SchemaType;
   onSelectItem?: (v: string) => void;
-}
-interface State {
-  filter: string;
 }
 
 const menuStyle: React.CSSProperties = {
@@ -38,15 +48,16 @@ interface JsonSchemaObject {
 }
 export type JsonSchema = JsonSchemaItem | JsonSchemaArray | JsonSchemaObject;
 
-function jsonSchemaToInternal(x: JsonSchema) {
-  function subPath(trunk: string, leaf: string) {
-    if (!trunk) return leaf;
-    else if (trunk[trunk.length - 1] === '#') {
-      return `${trunk}${leaf}`;
-    } else {
-      return `${trunk}.${leaf}`;
-    }
+function subPath(trunk: string, leaf: string) {
+  if (!trunk) return leaf;
+  else if (trunk[trunk.length - 1] === '#') {
+    return `${trunk}${leaf}`;
+  } else {
+    return `${trunk}.${leaf}`;
   }
+}
+
+function jsonSchemaToInternal(x: JsonSchema) {
   function jsonSchemaToInternalImpl(
     path: string,
     x: JsonSchema,
@@ -72,14 +83,86 @@ function jsonSchemaToInternal(x: JsonSchema) {
   return result.sort();
 }
 
-// function graphqlToInternal(x: object) {
-//   return [];
-// }
+function graphqlToInternal(x: GraphqlSchemaType) {
+  function gqlFieldToInternal(
+    path: string,
+    root: IntrospectionOutputTypeRef,
+    typeMap: Record<string, IntrospectionType>,
+    result: string[],
+    guard: string[]
+  ) {
+    if (result.length > 700 || guard.length > 5) return;
+    switch (root.kind) {
+      // Skip over non-nulls
+      case 'NON_NULL':
+        gqlFieldToInternal(path, root.ofType, typeMap, result, guard);
+        break;
+      case 'SCALAR':
+        result.push(path);
+        break;
+      case 'LIST':
+        gqlFieldToInternal(`${path}#`, root.ofType, typeMap, result, guard);
+        break;
+      case 'OBJECT':
+        if (!guard.includes(root.name)) {
+          guard.push(root.name);
+          const itype = typeMap[root.name];
+          gqlObjToInternal(path, itype, typeMap, result, guard);
+          guard.pop();
+        }
+        break;
+    }
+  }
+
+  function gqlObjToInternal(
+    path: string,
+    root: IntrospectionType,
+    typeMap: Record<string, IntrospectionType>,
+    result: string[],
+    guard: string[]
+  ) {
+    switch (root.kind) {
+      case 'INTERFACE':
+      case 'OBJECT':
+        for (const field of root.fields) {
+          if (field.isDeprecated || field.args.length > 0) continue;
+          gqlFieldToInternal(
+            subPath(path, field.name),
+            field.type,
+            typeMap,
+            result,
+            guard
+          );
+        }
+        break;
+      default:
+        throw new Error(`Expected object type got ${root.kind}`);
+    }
+  }
+
+  const typeMap: Record<string, IntrospectionType> = {};
+  for (const t of x.types) typeMap[t.name] = t;
+  let result: string[] = [];
+  const rootType = typeMap[x.typeName];
+  gqlObjToInternal('', rootType, typeMap, result, [rootType.name]);
+  return result.sort();
+}
+
+function schemaToInternal(schemaType: SchemaType) {
+  switch (schemaType.kind) {
+    case 'json':
+      return jsonSchemaToInternal(schemaType.schema);
+    case 'graphql':
+      return graphqlToInternal(schemaType);
+  }
+}
+
 function indent(count: number) {
   let result = '';
   for (let x = 0; x < count; ++x) result += ' ';
   return result;
 }
+
 function pathToTemplate(path: string): string {
   let eachCount = 0;
   let result = '';
@@ -106,34 +189,31 @@ function pathToTemplate(path: string): string {
   return result;
 }
 
-export default class SchemaSelector extends React.Component<Props, State> {
-  state = { filter: '' };
-  click = (path: string) => {
-    if (this.props.onSelectItem) {
-      this.props.onSelectItem(pathToTemplate(path));
-    }
-  };
-  updateFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ filter: e.target.value.toLowerCase() });
-  };
-  render() {
-    const schema = jsonSchemaToInternal(this.props.schema);
-    return (
-      <div>
-        <input
-          className="mailmerge-filter"
-          style={{ width: '100%' }}
-          onChange={this.updateFilter}
-          placeholder="filter..."
-        />
-        <div className="mailmerge-menu" style={menuStyle}>
-          {schema
-            .filter(i => i.toLowerCase().includes(this.state.filter))
-            .map(i => (
-              <a key={i} style={linkStyle} onClick={() => this.click(i)}> {i} </a> // eslint-disable-line
-            ))}
-        </div>
+export default function SchemaSelector(props: Props) {
+  const [filter, setFilter] = useState('');
+  const schema = useMemo(() => schemaToInternal(props.schema), [props.schema]);
+  console.log("schema", schema.length);
+  return (
+    <div>
+      <input
+        className="mailmerge-filter"
+        style={{ width: '100%' }}
+        onChange={e => setFilter(e.target.value.toLowerCase())}
+        placeholder="filter..."
+      />
+      <div className="mailmerge-menu" style={menuStyle}>
+        {schema
+          .filter(i => i.toLowerCase().includes(filter))
+          .map(i => (
+            <a
+              key={i}
+              style={linkStyle}
+              onClick={_ => props.onSelectItem?.(pathToTemplate(i))}>
+              {' '}
+              {i}{' '}
+            </a> // eslint-disable-line
+          ))}
       </div>
-    );
-  }
+    </div>
+  );
 }

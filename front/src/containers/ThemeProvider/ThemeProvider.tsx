@@ -1,10 +1,13 @@
 import * as React from 'react';
 import SiteProvider from 'containers/SiteProvider';
+import { useContext } from 'react';
 
 // This type is really long but I don't think we'll have to change it very often
 export interface Theme {
   button: string;
   buttonSecondary: string;
+  buttonDanger: string;
+  buttonDisabled: string;
   sorterColor: string;
   backgroundColor: string;
   authHeader: {
@@ -119,6 +122,8 @@ function themeFromSite(site): Theme {
   return {
     button: colors.primaryColor,
     buttonSecondary: colors.secondaryColor,
+    buttonDanger: colors.warningColor,
+    buttonDisabled: colors.grayHeaderFont,
     sorterColor: colors.primaryColor,
     backgroundColor: colors.backgroundColor,
 
@@ -217,6 +222,11 @@ export function withTheme<T>(
     }
   }
   return ThemeProvider;
+}
+
+export function useTheme() {
+  const theme = useContext(ThemeContext);
+  return theme;
 }
 
 export default withTheme;

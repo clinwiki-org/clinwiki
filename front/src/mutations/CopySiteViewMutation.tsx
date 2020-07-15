@@ -10,7 +10,7 @@ import {
   CopySiteViewMutation as CopySiteViewMutationType,
   CopySiteViewMutationVariables,
 } from 'types/CopySiteViewMutation';
-import SiteProvider from '../containers/SiteProvider';
+import { SITE_VIEW_FRAGMENT } from 'containers/SiteProvider/SiteProvider';
 
 interface CopySiteViewMutationProps {
   children: (
@@ -30,7 +30,7 @@ const COPY_SITE_VIEW_MUTATION = gql`
     }
   }
 
-  ${SiteProvider.siteViewFragment}
+  ${SITE_VIEW_FRAGMENT}
 `;
 
 const CopySiteViewMutationComponent = (

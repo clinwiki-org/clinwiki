@@ -16,13 +16,16 @@ import {
   reject,
   find,
 } from 'ramda';
-import { StudyPageQuery, StudyPageQueryVariables } from 'types/StudyPageQuery';
+import {
+  StudyPageQuery,
+  StudyPageQueryVariables,
+  StudyPageQuery_study,
+} from 'types/StudyPageQuery';
 import {
   StudyPagePrefetchQuery,
   StudyPagePrefetchQueryVariables,
 } from 'types/StudyPagePrefetchQuery';
 import StudyPageSections from './components/StudyPageSections';
-import * as FontAwesome from 'react-fontawesome';
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
 import StudySummary from 'components/StudySummary';
@@ -45,9 +48,10 @@ import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
 import { WorkflowsViewFragment_workflows } from 'types/WorkflowsViewFragment';
 import { UserFragment } from 'types/UserFragment';
-import StudyPageHeader from './components/StudyPageHeader'
+import StudyPageHeader from './components/StudyPageHeader';
 import WorkFlowAnimation from './components/StarAnimation';
 import { getStarColor } from '../../utils/auth';
+import { microMailMerge } from 'components/MailMerge/MailMergeView';
 
 interface StudyPageProps {
   history: History;
@@ -62,7 +66,7 @@ interface StudyPageProps {
   recordsTotal?: number;
   counterIndex?: number;
   theme?: any;
-  userRefetch?:any;
+  userRefetch?: any;
   refetch?: any;
   user?: UserFragment | null;
 }
@@ -70,7 +74,7 @@ interface StudyPageProps {
 interface StudyPageState {
   // trigger prefetch for all study sections
   triggerPrefetch: boolean;
-  flashAnimation:boolean;
+  flashAnimation: boolean;
   wikiToggleValue: boolean;
 }
 
@@ -124,6 +128,15 @@ export const PREFETCH_QUERY = gql`
   ${TagsPage.fragment}
 `;
 
+const REACTION_KINDS = gql`
+  query ReactionKinds {
+    reactionKinds {
+      id
+      name
+      unicode
+    }
+  }
+`;
 type Section = {
   name: string;
   displayName: string;
@@ -137,8 +150,6 @@ type Section = {
     | SiteStudyExtendedGenericSectionFragment;
 };
 
-
-
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
   min-height: 100vh;
@@ -146,7 +157,7 @@ const MainContainer = styled(Col)`
   padding-bottom: 20px;
 
   .panel-heading {
-    background: ${(props) => props.theme.studyPage.panelHeading};
+    background: ${props => props.theme.studyPage.panelHeading};
     color: #fff;
     padding: 15px;
   }
@@ -158,7 +169,6 @@ const StudyHeader = styled.div`
   height: 90px;
   justify-content: center;
 `;
-
 
 const ThemedMainContainer = withTheme(MainContainer);
 
@@ -176,7 +186,7 @@ const StudySummaryContainer = styled.div`
           background: none;
           color: black;
           border-bottom: 2px solid;
-          border-color: ${(props) => props.theme.studyPage.sectionBorderColor};
+          border-color: ${props => props.theme.studyPage.sectionBorderColor};
         }
       }
     }
@@ -184,8 +194,6 @@ const StudySummaryContainer = styled.div`
 `;
 
 const ThemedStudySummaryContainer = withTheme(StudySummaryContainer);
-
-
 
 const QueryComponent = (
   props: QueryComponentOptions<StudyPageQuery, StudyPageQueryVariables>
@@ -200,61 +208,8 @@ export const PrefetchQueryComponent = (
 class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
   state: StudyPageState = {
     triggerPrefetch: false,
-    flashAnimation:false,
+    flashAnimation: false,
     wikiToggleValue: true,
-  };
-
-  getCurrentSectionPath = (view: SiteViewFragment) => {
-    const pathComponents = pipe(
-      split('/'),
-      reject(isEmpty),
-      map((x) => `/${x}`)
-    )(trimPath(this.props.location.pathname)) as string[];
-
-    for (const component of pathComponents) {
-      if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
-        return component;
-      }
-    }
-
-    return '/';
-  };
-  //I believe this may be deprecated now that we are using URLSearchParams
-  // getCurrentSectionFullPath = (view: SiteViewFragment) => {
-  //   const pathComponents = pipe(
-  //     split('/'),
-  //     reject(isEmpty),
-  //     map(x => `/${x}`)
-  //   )(trimPath(this.props.location.pathname)) as string[];
-
-  //   for (const component of pathComponents) {
-  //     if (findIndex(propEq('path', component), this.getSections(view)) >= 0) {
-  //       const idx = findIndex(equals(component), pathComponents);
-  //       return pipe(
-  //         drop(idx),
-  //         // @ts-ignore
-  //         join('')
-  //       )(pathComponents);
-  //     }
-  //   }
-
-  //   return '/';
-  // };
-
-  getSectionsForRoutes = (view: SiteViewFragment): Section[] => {
-    const sections = this.getSections(view);
-    const noWikiSections = reject(propEq('name', 'wiki'), sections);
-    const wiki = find(propEq('name', 'wiki'), sections) as Section;
-
-    const retVar =
-      !wiki || wiki.hidden
-        ? noWikiSections
-        : ([...noWikiSections, wiki] as Section[]);
-
-    console.log('getSectionsForRoutes: ');
-    console.log(retVar);
-
-    return retVar as Section[];
   };
 
   getComponent = (name: string): any => {
@@ -276,12 +231,14 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     }
   };
 
-  getSections = (view: SiteViewFragment): Section[] => {
+  getSections = (
+    view: SiteViewFragment,
+    study?: StudyPageQuery_study | null
+  ): Section[] => {
     const {
       basicSections: basicSectionsRaw,
       extendedSections: extendedSectionsRaw,
     } = view.study;
-    console.log('STUDY', view.study);
     const basicSections = [
       {
         name: 'workflow',
@@ -292,16 +249,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         hidden: !this.props.isWorkflow,
         metaData: { hide: !this.props.isWorkflow },
       },
-      // {
-      //   name: 'intervention',
-      //   path: '/intervention?sv=intervention',
-      //   displayName: 'Intervention',
-      //   kind: 'basic',
-      //   component: InterventionPage,
-      //   hidden: !this.props.isWorkflow,
-      //   metaData: { hide: !this.props.isWorkflow },
-      // },
-      ...basicSectionsRaw.map((section) => ({
+      ...basicSectionsRaw.map(section => ({
         name: section.title.toLowerCase(),
         path:
           section.title.toLowerCase() === 'wiki'
@@ -313,20 +261,31 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
         hidden: section.hide,
         metaData: section,
       })),
+      {
+        name: 'intervention',
+        path: '/intervention',
+        displayName: 'Intervention',
+        kind: 'basic',
+        component: InterventionsPage,
+        hidden: false,
+        metaData: { hide: true },
+      },
     ];
 
-    const extendedSections = extendedSectionsRaw.map((section) => {
-      return {
-        name: section.title.toLowerCase(),
-        path: `/${section.title.toLowerCase()}`,
-        displayName: section.title,
-        kind: 'extended',
-        order: section.order,
-        component: this.getComponent(section.title.toLowerCase()),
-        hidden: section.hide,
-        metaData: section,
-      };
-    });
+    const extendedSections = extendedSectionsRaw
+      .filter(s => s.name != 'summary')
+      .map(section => {
+        return {
+          name: section.title.toLowerCase(),
+          path: `/${section.title.toLowerCase()}`,
+          displayName: microMailMerge(section.title, study),
+          kind: 'extended',
+          order: section.order,
+          component: this.getComponent(section.title.toLowerCase()),
+          hidden: section.hide,
+          metaData: section,
+        };
+      });
 
     const processedExtendedSections = sortBy(
       pipe(prop('order'), parseInt),
@@ -347,8 +306,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     }
   };
 
-
-
   handleWikiToggleChange = () => {
     this.setState({ wikiToggleValue: !this.state.wikiToggleValue });
   };
@@ -357,12 +314,12 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     this.props.history.push(`${trimPath(link)}`);
   };
   resetHelperFunction = () => {
-    this.setState({ flashAnimation: false })
-    this.props.userRefetch()
-  }
-  handleShowAnimation=()=>{
-    this.setState({flashAnimation: true})
-  }
+    this.setState({ flashAnimation: false });
+    this.props.userRefetch();
+  };
+  handleShowAnimation = () => {
+    this.setState({ flashAnimation: true });
+  };
   handleResetAnimation = () => {
     setTimeout(this.resetHelperFunction, 6500);
   };
@@ -379,18 +336,15 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
     );
   };
 
-
-
-
   render() {
     const userRank = this.props.user ? this.props.user.rank : 'default';
-    let rankColor = getStarColor(userRank)
+    let rankColor = getStarColor(userRank);
 
     return (
       <SiteProvider>
         {(site, currentSiteView) => (
           <WorkflowsViewProvider>
-            {(workflowsView) => {
+            {workflowsView => {
               const workflow = pipe(
                 find<WorkflowsViewFragment_workflows>(
                   propEq('name', this.props.workflowName)
@@ -398,142 +352,159 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
               )(workflowsView.workflows) as WorkflowConfigFragment | null;
 
               return (
-                <QueryComponent
-                  query={QUERY}
-                  variables={{ nctId: this.props.match.params.nctId }}
-                  fetchPolicy="cache-and-network">
-                  {({ data, loading, error, refetch }) => (
-                    <div>
-                      <StudyHeader
-                        style={{
-                          background: this.props.theme.studyPage
-                            .studyPageHeader,
-                        }}>
-                          <StudyPageHeader
-                          navButtonClick={this.handleNavButtonClick}
-                          history={this.props.history}
-                          user={this.props.user}
-                          data={data?.study}
-                          theme={this.props.theme}
-                          site={site}
-                          nctId={this.props.match.params.nctId}
-                          studyRefetch={refetch}
-                          userRefetch={this.props.userRefetch}
-                          />
-                      </StudyHeader>
-
-                      <Row>
-                        <ThemedMainContainer md={12}>
-                          <div className="container">
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(
-                                '❮❮ First',
-                                this.props.firstLink
-                              )}
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(
-                                '❮ Previous',
-                                this.props.prevLink
-                              )}
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              <StudyPageCounter
-                                counter={this.props.counterIndex!}
-                                recordsTotal={this.props.recordsTotal!}
+                <Query query={REACTION_KINDS}>
+                  {allReactions => {
+                    return (
+                      <QueryComponent
+                        query={QUERY}
+                        variables={{ nctId: this.props.match.params.nctId }}
+                        fetchPolicy="cache-and-network">
+                        {({ data, loading, error, refetch }) => (
+                          <div>
+                            <StudyHeader
+                              style={{
+                                background: this.props.theme.studyPage
+                                  .studyPageHeader,
+                              }}>
+                              <StudyPageHeader
+                                navButtonClick={this.handleNavButtonClick}
+                                history={this.props.history}
+                                user={this.props.user}
+                                data={data?.study}
+                                theme={this.props.theme}
+                                site={site}
+                                nctId={this.props.match.params.nctId}
+                                studyRefetch={refetch}
+                                userRefetch={this.props.userRefetch}
+                                allReactions={allReactions}
                               />
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(
-                                'Next ❯',
-                                this.props.nextLink
-                              )}
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(
-                                'Last ❯❯',
-                                this.props.lastLink
-                              )}
-                            </div>
+                            </StudyHeader>
+
+                            <Row>
+                              <ThemedMainContainer md={12}>
+                                <div className="container">
+                                  <div id="navbuttonsonstudypage">
+                                    {this.renderNavButton(
+                                      '❮❮ First',
+                                      this.props.firstLink
+                                    )}
+                                  </div>
+                                  <div id="navbuttonsonstudypage">
+                                    {this.renderNavButton(
+                                      '❮ Previous',
+                                      this.props.prevLink
+                                    )}
+                                  </div>
+                                  <div id="navbuttonsonstudypage">
+                                    <StudyPageCounter
+                                      counter={this.props.counterIndex!}
+                                      recordsTotal={this.props.recordsTotal!}
+                                    />
+                                  </div>
+                                  <div id="navbuttonsonstudypage">
+                                    {this.renderNavButton(
+                                      'Next ❯',
+                                      this.props.nextLink
+                                    )}
+                                  </div>
+                                  <div id="navbuttonsonstudypage">
+                                    {this.renderNavButton(
+                                      'Last ❯❯',
+                                      this.props.lastLink
+                                    )}
+                                  </div>
+                                </div>
+
+                                {data && data.study && (
+                                  <ThemedStudySummaryContainer>
+                                    <StudySummary
+                                      study={data.study}
+                                      template={
+                                        site.siteView.study.extendedSections.filter(
+                                          s => s.title === 'Summary'
+                                        )?.[0]?.template
+                                      }
+                                      workflow={workflow}
+                                      workflowsView={workflowsView}
+                                    />
+                                  </ThemedStudySummaryContainer>
+                                )}
+
+                                <div className="container">
+                                  <StudyPageSections
+                                    history={this.props.history}
+                                    location={this.props.location}
+                                    nctId={this.props.match.params.nctId}
+                                    sections={this.getSections(
+                                      site.siteView,
+                                      data?.study
+                                    )}
+                                    isWorkflow={this.props.isWorkflow}
+                                    nextLink={this.props.nextLink}
+                                    workflowName={this.props.workflowName}
+                                    onLoad={this.handleLoaded}
+                                    workflowsView={workflowsView}
+                                    match={this.props.match}
+                                    siteView={currentSiteView}
+                                    showAnimation={this.handleShowAnimation}
+                                  />
+                                  {this.state.flashAnimation === true ? (
+                                    <WorkFlowAnimation
+                                      resetAnimation={this.handleResetAnimation}
+                                      rankColor={rankColor}
+                                    />
+                                  ) : null}
+                                </div>
+
+                                <div className="container">
+                                  <div id="navbuttonsonstudypage">
+                                    {this.renderNavButton(
+                                      '❮❮ First',
+                                      this.props.firstLink
+                                    )}
+                                  </div>
+                                  <div id="navbuttonsonstudypage">
+                                    {this.renderNavButton(
+                                      '❮ Previous',
+                                      this.props.prevLink
+                                    )}
+                                  </div>
+                                  <div id="navbuttonsonstudypage">
+                                    <StudyPageCounter
+                                      counter={this.props.counterIndex!}
+                                      recordsTotal={this.props.recordsTotal!}
+                                    />
+                                  </div>
+                                  <div id="navbuttonsonstudypage">
+                                    {this.renderNavButton(
+                                      'Next ❯',
+                                      this.props.nextLink
+                                    )}
+                                  </div>
+                                  <div id="navbuttonsonstudypage">
+                                    {this.renderNavButton(
+                                      'Last ❯❯',
+                                      this.props.lastLink
+                                    )}
+                                  </div>
+                                </div>
+                              </ThemedMainContainer>
+                            </Row>
+                            {this.state.triggerPrefetch && (
+                              <PrefetchQueryComponent
+                                query={PREFETCH_QUERY}
+                                variables={{
+                                  nctId: this.props.match.params.nctId,
+                                }}>
+                                {() => null}
+                              </PrefetchQueryComponent>
+                            )}
                           </div>
-
-                          {data && data.study && (
-                            <ThemedStudySummaryContainer>
-                              <StudySummary
-                                study={data.study}
-                                workflow={workflow}
-                                workflowsView={workflowsView}
-                              />
-                            </ThemedStudySummaryContainer>
-                          )}
-
-                          <div className="container">
-                            <StudyPageSections
-                              history={this.props.history}
-                              location={this.props.location}
-                              nctId={this.props.match.params.nctId}
-                              sections={this.getSections(site.siteView)}
-                              isWorkflow={this.props.isWorkflow}
-                              nextLink={this.props.nextLink}
-                              workflowName={this.props.workflowName}
-                              onLoad={this.handleLoaded}
-                              workflowsView={workflowsView}
-                              match={this.props.match}
-                              siteView={currentSiteView}
-                              showAnimation={this.handleShowAnimation}
-                            />
-                            {this.state.flashAnimation === true ? (
-                              <WorkFlowAnimation
-                                resetAnimation={this.handleResetAnimation}
-                                rankColor={rankColor}
-                              />
-                            ) : null}
-                          </div>
-
-                          <div className="container">
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(
-                                '❮❮ First',
-                                this.props.firstLink
-                              )}
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(
-                                '❮ Previous',
-                                this.props.prevLink
-                              )}
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              <StudyPageCounter
-                                counter={this.props.counterIndex!}
-                                recordsTotal={this.props.recordsTotal!}
-                              />
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(
-                                'Next ❯',
-                                this.props.nextLink
-                              )}
-                            </div>
-                            <div id="navbuttonsonstudypage">
-                              {this.renderNavButton(
-                                'Last ❯❯',
-                                this.props.lastLink
-                              )}
-                            </div>
-                          </div>
-                        </ThemedMainContainer>
-                      </Row>
-                      {this.state.triggerPrefetch && (
-                        <PrefetchQueryComponent
-                          query={PREFETCH_QUERY}
-                          variables={{ nctId: this.props.match.params.nctId }}>
-                          {() => null}
-                        </PrefetchQueryComponent>
-                      )}
-                    </div>
-                  )}
-                </QueryComponent>
+                        )}
+                      </QueryComponent>
+                    );
+                  }}
+                </Query>
               );
             }}
           </WorkflowsViewProvider>

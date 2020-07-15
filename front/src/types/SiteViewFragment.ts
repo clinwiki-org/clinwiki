@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { FilterKind, SortKind, FieldDisplay } from "./globalTypes";
+import { SortKind, FieldDisplay, FilterKind } from "./globalTypes";
 
 // ====================================================
 // GraphQL fragment: SiteViewFragment
@@ -16,18 +16,11 @@ export interface SiteViewFragment_study_basicSections {
   name: string;
 }
 
-export interface SiteViewFragment_study_extendedSections_selected {
-  __typename: "SiteSelect";
-  kind: FilterKind;
-  values: string[];
-}
-
 export interface SiteViewFragment_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  fields: string[];
+  template: string | null;
   hide: boolean;
   order: number | null;
-  selected: SiteViewFragment_study_extendedSections_selected;
   title: string;
   name: string;
 }

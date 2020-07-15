@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { CopySiteViewInput, FilterKind, SortKind, FieldDisplay } from "./globalTypes";
+import { CopySiteViewInput, SortKind, FieldDisplay, FilterKind } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: CopySiteViewMutation
@@ -16,18 +16,11 @@ export interface CopySiteViewMutation_copySiteView_siteView_study_basicSections 
   name: string;
 }
 
-export interface CopySiteViewMutation_copySiteView_siteView_study_extendedSections_selected {
-  __typename: "SiteSelect";
-  kind: FilterKind;
-  values: string[];
-}
-
 export interface CopySiteViewMutation_copySiteView_siteView_study_extendedSections {
   __typename: "SiteStudyExtendedGenericSection";
-  fields: string[];
+  template: string | null;
   hide: boolean;
   order: number | null;
-  selected: CopySiteViewMutation_copySiteView_siteView_study_extendedSections_selected;
   title: string;
   name: string;
 }

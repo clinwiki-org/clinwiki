@@ -1,23 +1,14 @@
 import * as React from 'react';
 import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
-import { equals } from 'ramda';
-import { gql } from 'apollo-boost';
 import { Switch, Route, match } from 'react-router';
 import { trimPath } from 'utils/helpers';
 import { SiteFragment, SiteFragment_siteViews } from 'types/SiteFragment';
 import {
   updateView,
-  createMutation,
-  getViewValueByPath,
-  serializeMutation,
 } from 'utils/siteViewUpdater';
-import {
-  UpdateSiteViewMutationFn,
-} from 'mutations/UpdateSiteViewMutation';
 import { History, Location } from 'history';
 import SearchForm from './SearchForm';
 import SiteViewsForm from './SiteViewsForm';
-import { SiteViewFragment } from 'types/SiteViewFragment';
 
 interface SiteViewRouterProps {
   match: match<{}>;
@@ -28,7 +19,6 @@ interface SiteViewRouterProps {
   refresh: any;
   onSave?: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
   handleSiteViewEdit?: any;
-  handleForm: any;
 }
 
 interface SiteViewRouterState {
@@ -54,52 +44,6 @@ class SiteViewRouter extends React.Component<
     prevForm: null,
   };
 
-  static fragment = gql`
-    fragment SiteFormFragment on Site {
-      name
-      subdomain
-      skipLanding
-      editors {
-        email
-      }
-    }
-  `;
-
-  handleSave = (updateSiteView: UpdateSiteViewMutationFn) => (
-    mutations: SiteViewMutationInput[],
-    siteView: SiteViewFragment
-  ) => {
-    updateSiteView({
-      variables: {
-        input: {
-          mutations: mutations.map(serializeMutation),
-          id: siteView.id,
-          name: siteView.name,
-          url: siteView.url,
-        },
-      },
-    });
-  };
-
-  handleAddMutation = (
-    e: { currentTarget: { name: string; value: any } },
-    siteView
-  ) => {
-    // console.log(e);
-    const { name, value } = e.currentTarget;
-    const mutation = createMutation(name, value);
-    const view = updateView(siteView, this.state.mutations);
-    const currentValue = getViewValueByPath(mutation.path, view);
-    if (equals(value, currentValue)) return;
-    this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-      console.log('handleadd', mutation, view, currentValue)
-    );
-  };
-
-  handleFormChange = (form: CreateSiteInput) => {
-    this.setState({ form });
-  };
-
   render() {
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
@@ -116,7 +60,6 @@ class SiteViewRouter extends React.Component<
               site={site}
               view={view}
               siteViewId={this.props.location}
-              handleSiteViewEdit={this.props.handleSiteViewEdit}
             />
           )}
         />
@@ -127,7 +70,6 @@ class SiteViewRouter extends React.Component<
               siteViews={this.props.siteViews}
               site={site}
               refresh={this.props.refresh}
-              handleForm={this.props.handleForm}
             />
           )}
         />

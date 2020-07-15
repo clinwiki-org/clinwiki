@@ -22,6 +22,9 @@ const StyledButton = styled.button`
   &:hover {
     background: ${props => props.theme.buttonSecondary};
   }
+  &:disabled {
+    background: ${props => props.theme.buttonDisabled};
+  }
 `;
 
 export const ThemedButton = withTheme(StyledButton);

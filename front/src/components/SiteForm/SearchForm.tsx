@@ -50,8 +50,6 @@ interface SearchFormProps {
   history: History;
   location: Location;
   site: SiteFragment;
-  handleSiteViewEdit?: any;
-  // currentSiteView?: any;
   theme: Theme;
 }
 
@@ -153,7 +151,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   componentDidMount() {
-    this.props.handleSiteViewEdit();
     const siteviewId = +this.props.match.params.id;
     let view = this.props.siteViews.find(view => siteviewId == view.id);
     if (view?.search.presearch.instructions) {

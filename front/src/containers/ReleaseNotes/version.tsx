@@ -6,6 +6,10 @@ const notes = RichTextEditor.createValueFromString(
 
 # ClinWiki Version History
 
+### Version 24
+- Study page uses mailmerge
+- Reactions
+
 ### Version 23
 - Updated front end dependencies
 - Improvements to nested facet query

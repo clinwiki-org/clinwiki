@@ -43,7 +43,7 @@ class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
                 match={this.props.match}
                 site={{ ...site, name: '' }}
                 refresh={null}
-                onSave={this.handleSave(createSite)}
+                onSaveSite={this.handleSave(createSite)}
               />
             )}
           </CreateSiteMutation>

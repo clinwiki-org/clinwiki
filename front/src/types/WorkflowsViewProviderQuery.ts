@@ -56,6 +56,7 @@ export interface WorkflowsViewProviderQuery_workflowsView_workflows {
   disableAddRating: boolean;
   hideReviews: boolean;
   name: string;
+  summaryTemplate: string;
   suggestedLabelsFilter: WorkflowsViewProviderQuery_workflowsView_workflows_suggestedLabelsFilter;
   suggestedLabelsConfig: WorkflowsViewProviderQuery_workflowsView_workflows_suggestedLabelsConfig[];
   wikiSectionsFilter: WorkflowsViewProviderQuery_workflowsView_workflows_wikiSectionsFilter;

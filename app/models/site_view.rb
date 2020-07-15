@@ -9,6 +9,7 @@ DEFAULT_AGG_ORDER = {
 
 class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :site
+  include MutationHelpers
   before_save do
     if default_changed? && default
 
@@ -37,17 +38,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def mutations
-    updates.map do |update|
-      mutation = update.clone.deep_symbolize_keys
-      begin
-        mutation[:payload] = JSON.parse(mutation[:payload], quirks_mode: true)
-      rescue StandardError # rubocop:disable Lint/HandleExceptions
-        # use payload as string if it's not a json
-      end
-      mutation
-    end
-  end
+  
 
   def all_fields # rubocop:disable Metrics/MethodLength
     %w[
@@ -186,74 +177,28 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           {
             hide: false,
             kind: "extended",
-            title: "Descriptive",
-            name: "descriptive",
+            title: "Summary",
+            name: "summary",
             order: nil,
-            selected: {
-              kind: "WHITELIST",
-              values: %w[
-                briefSummary briefTitle conditions design detailedDescription
-                officialTitle phase publications studyArms studyType
-              ],
-            },
+            template: '
+<table class="table table-striped table-bordered table-condensed">
+  <tbody>
+    <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
+    <tr> <th>type</th> <td>{{type}}</td> </tr>
+    <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
+    <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
+    <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
+    <tr> <th>Source</th> <td>{{source}}</td> </tr>
+  </tbody>
+</table>',
           },
           {
             hide: false,
             kind: "extended",
-            title: "Administrative",
-            name: "administrative",
+            title: "General",
+            name: "general",
             order: nil,
-            selected: {
-              kind: "WHITELIST",
-              values: %w[
-                collaborators hasDataMonitoringCommittee investigators isFdaRegulated
-                otherStudyIds planToShareIpd planToShareIpdDescription responsibleParty
-                source sponsor verificationDate
-              ],
-            },
-          },
-          {
-            hide: false,
-            kind: "extended",
-            title: "Recruitment",
-            name: "recruitment",
-            order: nil,
-            selected: {
-              kind: "WHITELIST",
-              values: %w[
-                ages completionDate contacts enrollment listedLocationCountries
-                overallStatus primaryCompletionDate removedLocationCountries
-                eligibilityCriteria eligibilityGender eligibilityHealthyVolunteers
-              ],
-            },
-          },
-          {
-            hide: false,
-            kind: "extended",
-            title: "Interventions",
-            name: "interventions",
-            order: nil,
-            selected: {
-              kind: "BLACKLIST",
-              values: [],
-            },
-            fields:
-              %w[description name type],
-          },
-          {
-            hide: false,
-            kind: "extended",
-            title: "Tracking",
-            name: "tracking",
-            order: nil,
-            selected: {
-              kind: "WHITELIST",
-              values: %w[
-                primaryMeasures secondaryMeasures
-                firstReceivedDate lastChangedDate primaryCompletionDate
-                startDate
-              ],
-            },
+            template: '# {{briefTitle}}',
           },
         ],
       },

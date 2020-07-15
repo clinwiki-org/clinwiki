@@ -1,20 +1,13 @@
-import * as React from 'react';
-import SchemaSelector, { SchemaType, JsonSchema } from './SchemaSelector';
-import View from './MailMergeView';
+import React, { useState } from 'react';
+import SchemaSelector, { SchemaType } from './SchemaSelector';
+import View, { Props as ViewProps } from './MailMergeView';
 import Editor from './MailMergeEditor';
 
-interface Props {
-  schemaType?: SchemaType;
-  schema: JsonSchema;
-  sample: object;
-  style?: object;
-  template: string;
-  onTemplateChanged?: (template: string) => void;
-}
-
-interface State {
-  template: string;
-  cursorPosition: [number, number];
+// MailMerge props includes all ViewProps except context is renamed to sample
+interface Props extends Omit<ViewProps, 'context'> {
+  schema: SchemaType;
+  sample?: object;
+  onTemplateChanged: (template: string) => void;
 }
 
 const defaultStyle: React.CSSProperties = {
@@ -23,42 +16,35 @@ const defaultStyle: React.CSSProperties = {
   background: '#ccc',
 };
 
-export default class MailMerge extends React.Component<Props, State> {
-  constructor(props: Readonly<Props>) {
-    super(props);
-    const len = props.template.length;
-    this.state = { template: props.template, cursorPosition: [len, len] };
-  }
-  setTemplate = (s: string) => {
-    this.setState({ template: s });
-    if (this.props.onTemplateChanged) {
-      this.props.onTemplateChanged(s);
-    }
+export default function MailMerge(props: Props) {
+  const template = props.template;
+  const len = props.template.length;
+  const [cursorPosition, setCursorPosition] = useState([len, len]);
+  const insertSchemaItem = (templateString: string) => {
+    const before = template.slice(0, cursorPosition[0]);
+    const after = template.slice(cursorPosition[1]);
+    props.onTemplateChanged(before + templateString + after);
   };
-  updateCursorPos = (position: [number, number]) =>
-    this.setState({ cursorPosition: position });
-  insertSchemaItem = (templateString: string) => {
-    const template = this.state.template;
-    const before = template.slice(0, this.state.cursorPosition[0]);
-    const after = template.slice(this.state.cursorPosition[1]);
-    this.setTemplate(before + templateString + after);
-  };
-  render() {
-    const style = { ...defaultStyle, ...this.props.style };
-    return (
+  const style = { ...defaultStyle, ...props.style };
+  return (
+    <>
       <div style={style}>
-        <SchemaSelector
-          schemaType={this.props.schemaType}
-          schema={this.props.schema}
-          onSelectItem={this.insertSchemaItem}
-        />
+        <SchemaSelector schema={props.schema} onSelectItem={insertSchemaItem} />
         <Editor
-          markdown={this.state.template}
-          onChange={this.setTemplate}
-          onCursorMove={this.updateCursorPos}
+          markdown={template}
+          onChange={props.onTemplateChanged}
+          onCursorMove={setCursorPosition}
         />
-        <View template={this.state.template} context={this.props.sample} />
       </div>
-    );
-  }
+      <View
+        style={{border: '2px solid black'}}
+        template={template}
+        context={props.sample}
+        fragmentName={props.fragmentName}
+        fragmentClass={props.fragmentClass}
+        onFragmentChanged={props.onFragmentChanged}
+        islands={props.islands}
+      />
+    </>
+  );
 }

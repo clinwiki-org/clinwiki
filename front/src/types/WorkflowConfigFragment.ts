@@ -56,6 +56,7 @@ export interface WorkflowConfigFragment {
   disableAddRating: boolean;
   hideReviews: boolean;
   name: string;
+  summaryTemplate: string;
   suggestedLabelsFilter: WorkflowConfigFragment_suggestedLabelsFilter;
   suggestedLabelsConfig: WorkflowConfigFragment_suggestedLabelsConfig[];
   wikiSectionsFilter: WorkflowConfigFragment_wikiSectionsFilter;

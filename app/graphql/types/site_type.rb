@@ -12,6 +12,10 @@ module Types
     field :site_view, SiteViewType, null: false do
       argument :url, type: String, required: false
     end
+    field :page_views, [PageViewType], null:true
+    field :page_view,PageViewType, null:true do
+      argument :url, type: String, required: false
+    end
     field :user_rank, type:String,null: false
 
     def owners
@@ -32,6 +36,15 @@ module Types
         object.site_views.find_by(default: true)
       else
         object.site_views.find_by(url: url)
+      end
+    end
+
+    def page_view(url:nil)
+      case url
+      when nil
+        object.page_views.first
+      else
+        object.page_views.find_by(url: url)
       end
     end
   end
