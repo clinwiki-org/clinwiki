@@ -818,7 +818,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <span className="button-label">Results View:</span>
             <DropdownButton
               bsStyle="default"
-              title={view.search.results.type}
+              title={view.search.results.type+ " view"}
               key="default"
               id="dropdown-basic-default"
               style={{
@@ -844,6 +844,36 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   )
                 }>
                 Table View
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  this.handleShowFacetBar(
+                    'table2',
+                    view,
+                    'set:search.results.type'
+                  )
+                }>
+                RV Table View
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  this.handleShowFacetBar(
+                    'masonry',
+                    view,
+                    'set:search.results.type'
+                  )
+                }>
+                Card View (Masonry)
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  this.handleShowFacetBar(
+                    'list',
+                    view,
+                    'set:search.results.type'
+                  )
+                }>
+                List View
               </MenuItem>
               <MenuItem divider />
               <MenuItem

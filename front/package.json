@@ -65,6 +65,8 @@
     "react-stars": "^2.2.5",
     "react-table": "6.8.6",
     "react-transition-group": "^4.4.1",
+    "react-virtualized": "^9.21.2",
+    "reactstrap": "^8.4.1",
     "recharts": "^1.8.5",
     "remeda": "^0.0.20",
     "rimraf": "^3.0.2",
