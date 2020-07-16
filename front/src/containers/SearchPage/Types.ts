@@ -4,7 +4,7 @@ import { SortInput, AggFilterInput } from 'types/globalTypes';
 export type Params = {};
 
 export type AggKind = 'aggs' | 'crowdAggs';
-export const defaultPageSize = 25;
+export const defaultPageSize = 100;
 export type AggCallback = (
   aggName: string,
   key: string,
