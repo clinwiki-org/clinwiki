@@ -39,126 +39,127 @@ import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
 import Cards from './components/Cards';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import withTheme from 'containers/ThemeProvider';
+//---Had to comment Query as I was getting error about duplicate Queries SearchView2 has same query ----//
 
-const QUERY = gql`
-  query SearchPageSearchQuery(
-    $q: SearchQueryInput!
-    $page: Int
-    $pageSize: Int
-    $sorts: [SortInput!]
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-  ) {
-    crowdAggs: aggBuckets(
-      params: {
-        q: $q
-        page: 0
-        pageSize: 100000
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        agg: "front_matter_keys"
-      }
-    ) {
-      aggs {
-        buckets {
-          key
-          keyAsString
-          docCount
-        }
-      }
-    }
-    search(
-      params: {
-        q: $q
-        page: $page
-        pageSize: $pageSize
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-      }
-    ) {
-      recordsTotal
-      aggs {
-        name
-        buckets {
-          key
-          docCount
-        }
-      }
-      studies {
-        ...StudyItemFragment
-      }
-    }
-  }
+// const QUERY = gql`
+//   query SearchPageSearchQuery(
+//     $q: SearchQueryInput!
+//     $page: Int
+//     $pageSize: Int
+//     $sorts: [SortInput!]
+//     $aggFilters: [AggFilterInput!]
+//     $crowdAggFilters: [AggFilterInput!]
+//   ) {
+//     crowdAggs: aggBuckets(
+//       params: {
+//         q: $q
+//         page: 0
+//         pageSize: 100000
+//         sorts: $sorts
+//         aggFilters: $aggFilters
+//         crowdAggFilters: $crowdAggFilters
+//         agg: "front_matter_keys"
+//       }
+//     ) {
+//       aggs {
+//         buckets {
+//           key
+//           keyAsString
+//           docCount
+//         }
+//       }
+//     }
+//     search(
+//       params: {
+//         q: $q
+//         page: $page
+//         pageSize: $pageSize
+//         sorts: $sorts
+//         aggFilters: $aggFilters
+//         crowdAggFilters: $crowdAggFilters
+//       }
+//     ) {
+//       recordsTotal
+//       aggs {
+//         name
+//         buckets {
+//           key
+//           docCount
+//         }
+//       }
+//       studies {
+//         ...StudyItemFragment
+//       }
+//     }
+//   }
 
-  fragment StudyItemFragment on Study {
-    averageRating
-    completionDate
-    nctId
-    overallStatus
-    startDate
-    briefTitle
-    reviewsCount
-    nlmDownloadDateDescription
-    studyFirstSubmittedDate
-    resultsFirstSubmittedDate
-    dispositionFirstSubmittedDate
-    lastUpdateSubmittedDate
-    studyFirstSubmittedQcDate
-    studyFirstPostedDate
-    studyFirstPostedDateType
-    resultsFirstSubmittedQcDate
-    resultsFirstPostedDate
-    resultsFirstPostedDateType
-    dispositionFirstSubmittedQcDate
-    dispositionFirstPostedDate
-    dispositionFirstPostedDateType
-    lastUpdateSubmittedQcDate
-    lastUpdatePostedDate
-    lastUpdatePostedDateType
-    startMonthYear
-    startDateType
-    verificationMonthYear
-    verificationDate
-    completionMonthYear
-    completionDateType
-    primaryCompletionMonthYear
-    primaryCompletionDateType
-    primaryCompletionDate
-    targetDuration
-    studyType
-    acronym
-    baselinePopulation
-    officialTitle
-    lastKnownStatus
-    phase
-    enrollment
-    enrollmentType
-    source
-    limitationsAndCaveats
-    numberOfArms
-    numberOfGroups
-    whyStopped
-    hasExpandedAccess
-    expandedAccessTypeIndividual
-    expandedAccessTypeIntermediate
-    expandedAccessTypeTreatment
-    hasDmc
-    isFdaRegulatedDrug
-    isFdaRegulatedDevice
-    isUnapprovedDevice
-    isPpsd
-    isUsExport
-    biospecRetention
-    biospecDescription
-    ipdTimeFrame
-    ipdAccessCriteria
-    ipdUrl
-    planToShareIpd
-    planToShareIpdDescription
-  }
-`;
+//   fragment StudyItemFragment on Study {
+//     averageRating
+//     completionDate
+//     nctId
+//     overallStatus
+//     startDate
+//     briefTitle
+//     reviewsCount
+//     nlmDownloadDateDescription
+//     studyFirstSubmittedDate
+//     resultsFirstSubmittedDate
+//     dispositionFirstSubmittedDate
+//     lastUpdateSubmittedDate
+//     studyFirstSubmittedQcDate
+//     studyFirstPostedDate
+//     studyFirstPostedDateType
+//     resultsFirstSubmittedQcDate
+//     resultsFirstPostedDate
+//     resultsFirstPostedDateType
+//     dispositionFirstSubmittedQcDate
+//     dispositionFirstPostedDate
+//     dispositionFirstPostedDateType
+//     lastUpdateSubmittedQcDate
+//     lastUpdatePostedDate
+//     lastUpdatePostedDateType
+//     startMonthYear
+//     startDateType
+//     verificationMonthYear
+//     verificationDate
+//     completionMonthYear
+//     completionDateType
+//     primaryCompletionMonthYear
+//     primaryCompletionDateType
+//     primaryCompletionDate
+//     targetDuration
+//     studyType
+//     acronym
+//     baselinePopulation
+//     officialTitle
+//     lastKnownStatus
+//     phase
+//     enrollment
+//     enrollmentType
+//     source
+//     limitationsAndCaveats
+//     numberOfArms
+//     numberOfGroups
+//     whyStopped
+//     hasExpandedAccess
+//     expandedAccessTypeIndividual
+//     expandedAccessTypeIntermediate
+//     expandedAccessTypeTreatment
+//     hasDmc
+//     isFdaRegulatedDrug
+//     isFdaRegulatedDevice
+//     isUnapprovedDevice
+//     isPpsd
+//     isUsExport
+//     biospecRetention
+//     biospecDescription
+//     ipdTimeFrame
+//     ipdAccessCriteria
+//     ipdUrl
+//     planToShareIpd
+//     planToShareIpdDescription
+//   }
+// `;
 
 const COLUMNS = studyFields;
 const COLUMN_NAMES = fromPairs(
@@ -765,7 +766,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
         <Col md={12}>
-          <QueryComponent
+          {/* <QueryComponent
             query={QUERY}
             variables={this.props.params}
             onCompleted={this.handleAggsUpdated}>
@@ -780,7 +781,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
                 </SearchContainer>
               );
             }}
-          </QueryComponent>
+          </QueryComponent> */}
         </Col>
       </SearchWrapper>
     );
