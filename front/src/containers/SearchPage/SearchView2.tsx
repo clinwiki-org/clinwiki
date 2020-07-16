@@ -398,6 +398,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     const maxWidth = 400;
     const totalPadding = 17;
     const getColumnWidth = () => {
+      console.log(data.length)
       if (data.length < 1) {
         return calcWidth(headerName.split('')) + totalPadding;
       }
@@ -648,6 +649,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             </div>
           );
         } else {
+          console.log("Columns", columns)
           return (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div
