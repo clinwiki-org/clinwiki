@@ -110,8 +110,8 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
         //we take the reaction name and find it in our array with all our reactions that has all that data
 
-        if (this.props.allReactions.data) {
-            let allReactions = this.props.allReactions.data.reactionKinds
+        if (this.props.allReactions) {
+            let allReactions = this.props.allReactions.reactionKinds
             return find(propEq('name', reactionName))(allReactions)
         }
     }

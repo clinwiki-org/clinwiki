@@ -25,6 +25,8 @@ import {
   StudyPagePrefetchQuery,
   StudyPagePrefetchQueryVariables,
 } from 'types/StudyPagePrefetchQuery';
+import QUERY from 'queries/StudyPageQuery';
+import REACTION_KINDS from 'queries/ReactionKinds';
 import StudyPageSections from './components/StudyPageSections';
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
@@ -78,16 +80,6 @@ interface StudyPageState {
   wikiToggleValue: boolean;
 }
 
-const QUERY = gql`
-  query StudyPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      nctId
-    }
-  }
-
-  ${StudySummary.fragment}
-`;
 
 // Prefetch all sections for study
 export const PREFETCH_QUERY = gql`
@@ -128,15 +120,6 @@ export const PREFETCH_QUERY = gql`
   ${TagsPage.fragment}
 `;
 
-const REACTION_KINDS = gql`
-  query ReactionKinds {
-    reactionKinds {
-      id
-      name
-      unicode
-    }
-  }
-`;
 type Section = {
   name: string;
   displayName: string;
