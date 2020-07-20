@@ -3,6 +3,7 @@ import { IslandConstructor } from 'components/MailMerge/MailMergeView';
 import WorkflowIsland from './WorkflowIsland';
 import FacilityIsland from './FacilityIsland';
 import WikiPageIsland from './WikiPageIsland';
+import BackIsland from './BackIsland';
 import NavigationIsland from './NavigationIsland';
 
 /*
@@ -21,6 +22,9 @@ export const pageIslands: Record<string, IslandConstructor> = {
   ),
   navigation: (attributes: Record<string, string>, context?: any) => (
     <NavigationIsland  nctId={context?.nctId}/>
+  ),
+  back: (attributes: Record<string, string>, context?: any) => (
+    <BackIsland  nctId={context?.nctId}/>
   ),
 
 };
