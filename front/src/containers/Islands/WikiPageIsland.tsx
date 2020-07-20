@@ -361,7 +361,6 @@ export default function WikiPageIsland(props: Props) {
 
   return (
     <div>
-      <h3>WikiPage</h3>
       <StyledPanel>
         <div>
           <Switch>

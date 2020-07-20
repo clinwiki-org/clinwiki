@@ -11,6 +11,11 @@ import {
   WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
+import QUERY from 'queries/WikiPageQuery';
+import {
+  UPDATE_CONTENT_MUTATION,
+  UpdateContentMutationFn,
+} from 'mutations/WikiPageUpdateContentMutation';
 import { Panel, FormControl } from 'react-bootstrap';
 import {
   Query,
@@ -57,36 +62,6 @@ const FRAGMENT = gql`
   }
 
   ${WikiPageEditFragment}
-`;
-
-const QUERY = gql`
-  query WikiPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      wikiPage {
-        ...WikiPageFragment
-      }
-      nctId
-    }
-    me {
-      id
-    }
-  }
-
-  ${StudySummary.fragment}
-  ${FRAGMENT}
-`;
-
-const UPDATE_CONTENT_MUTATION = gql`
-  mutation WikiPageUpdateContentMutation($nctId: String!, $content: String!) {
-    updateWikiContent(input: { nctId: $nctId, content: $content }) {
-      wikiPage {
-        ...WikiPageFragment
-      }
-      errors
-    }
-  }
-  ${FRAGMENT}
 `;
 
 const Toolbar = styled.div`
@@ -275,16 +250,16 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       data.study && data.study.wikiPage && data.study.wikiPage.content;
 
     return (
-      <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
-        {updateWikiContent => (
+      // <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
+      //   {updateWikiContent => (
             <ThemedButton
-              onClick={() => this.handleEditSubmit(updateWikiContent)}
+              onClick={() => console.log("Clicked")}// this.handleEditSubmit(updateWikiContent)}
               disabled={editorTextState === editorTextData}
               style={{ marginLeft: '10px' }}>
               Submit <FontAwesome name="pencil" />
             </ThemedButton>
-        )}
-      </UpdateContentMutation>
+      //   )}
+      // </UpdateContentMutation>
     );
   };
 

@@ -3,6 +3,7 @@ import { IslandConstructor } from 'components/MailMerge/MailMergeView';
 import WorkflowIsland from './WorkflowIsland';
 import FacilityIsland from './FacilityIsland';
 import WikiPageIsland from './WikiPageIsland';
+import NavigationIsland from './NavigationIsland';
 
 /*
   Common island configuration for MailMerge pages
@@ -18,4 +19,8 @@ export const pageIslands: Record<string, IslandConstructor> = {
   wikipage: (attributes: Record<string, string>, context?: any) => (
     <WikiPageIsland  nctId={context?.nctId}/>
   ),
+  navigation: (attributes: Record<string, string>, context?: any) => (
+    <NavigationIsland  nctId={context?.nctId}/>
+  ),
+
 };

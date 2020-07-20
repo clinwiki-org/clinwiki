@@ -3,6 +3,7 @@ import { gql } from 'apollo-boost';
 import { Query, QueryComponentOptions } from 'react-apollo';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
+import QUERY from 'queries/SearchStudyPageQuery';
 import {
   SearchStudyPageQuery,
   SearchStudyPageQueryVariables,
@@ -12,27 +13,6 @@ import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
 import { UserFragment } from 'types/UserFragment';
 
-const QUERY = gql`
-  query SearchStudyPageQuery($hash: String!, $id: String!) {
-    search(searchHash: $hash) {
-      studyEdge(id: $id) {
-        nextId
-        prevId
-        firstId
-        lastId
-        isWorkflow
-        workflowName
-        study {
-          nctId
-        }
-        recordsTotal
-        counterIndex
-        firstId
-        lastId
-      }
-    }
-  }
-`;
 
 interface StudySearchPageProps {
   match: match<{ nctId: string; searchId: string }>;
