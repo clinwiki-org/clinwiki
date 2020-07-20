@@ -1,5 +1,5 @@
 STAR_FIELDS = [:average_rating].freeze
-RANGE_FIELDS = [:start_date,:"wiki_page_edits.created_at", :indexed_at, :last_update_posted_date ].freeze
+RANGE_FIELDS = [:start_date,:"wiki_page_edits.created_at", :indexed_at, :last_update_posted_date, :last_changed_date ].freeze
 
 DEFAULT_AGG_ORDER = {
   average_rating: {
