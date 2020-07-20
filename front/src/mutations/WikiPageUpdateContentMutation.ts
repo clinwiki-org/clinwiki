@@ -6,7 +6,17 @@ import {
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
 import { Mutation, MutationComponentOptions, MutationFunction } from 'react-apollo';
-import FRAGMENT from '../queries/WikiPageQuery'
+const FRAGMENT = gql`
+  fragment WikiPageFragment on WikiPage {
+    content
+    edits {
+      ...WikiPageEditFragment
+    }
+    nctId
+    meta
+  }
+  ${WikiPageEditFragment}
+`;
 
 export const UPDATE_CONTENT_MUTATION = gql`
   mutation WikiPageUpdateContentMutation($nctId: String!, $content: String!) {

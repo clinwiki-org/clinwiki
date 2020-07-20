@@ -250,16 +250,16 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       data.study && data.study.wikiPage && data.study.wikiPage.content;
 
     return (
-      // <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
-      //   {updateWikiContent => (
+      <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
+        {updateWikiContent => (
             <ThemedButton
-              onClick={() => console.log("Clicked")}// this.handleEditSubmit(updateWikiContent)}
+              onClick={() => this.handleEditSubmit(updateWikiContent)}
               disabled={editorTextState === editorTextData}
               style={{ marginLeft: '10px' }}>
               Submit <FontAwesome name="pencil" />
             </ThemedButton>
-      //   )}
-      // </UpdateContentMutation>
+        )}
+      </UpdateContentMutation>
     );
   };
 

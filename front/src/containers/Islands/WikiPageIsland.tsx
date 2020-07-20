@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import RichTextEditor, { EditorValue } from 'react-rte-yt';
 import { partition, toPairs } from 'ramda';
+import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { WikiPageQuery, WikiPageQueryVariables } from 'types/WikiPageQuery';
 import {
   UPDATE_CONTENT_MUTATION,
@@ -66,15 +67,16 @@ export default function WikiPageIsland(props: Props) {
   const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {
     variables: { nctId },
   });
+  const [updateContentMutation] = useMutation(UPDATE_CONTENT_MUTATION, {
+    refetchQueries: [{ query: QUERY, variables: { nctId } }],
+
+  });
   const siteViewUrl = new URLSearchParams(history.location.search)
     .getAll('sv')
     .toString();
   const readOnly = !location.pathname.includes('/wiki/edit');
 
-  // const [updateContentMutation] = useMutation(UPDATE_CONTENT_MUTATION, {
-  //   refetchQueries: [{ query: QUERY, variables: { nctId } }],
 
-  // });
 
   const editPath = () => `${trimPath(match.path)}/wiki/edit`;
 
@@ -200,8 +202,7 @@ export default function WikiPageIsland(props: Props) {
     return (
 
       <ThemedButton
-        // onClick={() => handleEditSubmit(updateContentMutation)}
-        onClick={()=>console.log("Clicked")}
+        onClick={() => handleEditSubmit(updateContentMutation)}
         disabled={editorTextState === editorTextData}
         style={{ marginLeft: '10px' }}>
         Submit <FontAwesome name="pencil" />
