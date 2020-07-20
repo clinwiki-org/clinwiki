@@ -8,6 +8,8 @@ export const aggsOrdered = [
   'facility_names',
   'facility_states',
   'interventions_mesh_terms',
+  'indexed_at',
+  'last_update_posted_date',
   'overall_status',
   'phase',
   'rating_dimensions',

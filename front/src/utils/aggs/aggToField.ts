@@ -13,6 +13,8 @@ const aggToField = (val: string, expectedVal?: string): string => {
     facility_cities: expectedVal === val ? 'cities' : expectedVal,
     facility_countries: expectedVal === val ? 'countries' : expectedVal,
     start_date: expectedVal === val ? 'start date' : expectedVal,
+    indexed_at: expectedVal === val ? 'indexed at' : expectedVal,
+    last_update_posted_date: expectedVal === val ? 'last update posted date' : expectedVal,
     completion_date: expectedVal === val ? 'completion date' : expectedVal,
     phase: expectedVal === val ? 'phase' : expectedVal,
     browse_condition_mesh_terms: expectedVal === val ? 'mesh term' : expectedVal,

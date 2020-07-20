@@ -1,5 +1,5 @@
 STAR_FIELDS = [:average_rating].freeze
-RANGE_FIELDS = [:start_date,:"wiki_page_edits.created_at" ].freeze
+RANGE_FIELDS = [:start_date,:"wiki_page_edits.created_at", :indexed_at, :last_update_posted_date ].freeze
 
 DEFAULT_AGG_ORDER = {
   average_rating: {
@@ -38,7 +38,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
-  
+
 
   def all_fields # rubocop:disable Metrics/MethodLength
     %w[
