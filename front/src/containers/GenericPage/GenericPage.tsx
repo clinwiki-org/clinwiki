@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-apollo';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
+import { pageIslands } from 'containers/Islands/CommonIslands'
 
 interface Props {
   url: string;
@@ -45,6 +46,7 @@ export default function GenericPage(props: Props) {
         fragmentName={fragmentName}
         fragmentClass="Study"
         onFragmentChanged={setFragment}
+        islands={pageIslands}
       />
     </div>
   );

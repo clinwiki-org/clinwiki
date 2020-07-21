@@ -23,7 +23,6 @@ import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConf
 
 interface SuggestedLabelsProps {
   nctId: string;
-  searchHash: string | null;
   onSelect: (key: string, value: string, checked: boolean) => void;
   disabled?: boolean;
   allowedSuggestedLabels: string[];
@@ -148,7 +147,6 @@ class SuggestedLabels extends React.PureComponent<
   };
 
   render() {
-    if (!this.props.searchHash) return null;
     return (
       <QueryComponent
         query={QUERY}

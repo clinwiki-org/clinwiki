@@ -36,7 +36,6 @@ interface WikiPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
-  metaData: SiteStudyBasicGenericSectionFragment;  
   showAnimation:any;
 }
 

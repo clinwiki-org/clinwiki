@@ -7,6 +7,7 @@ import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
+import { IslandConstructor } from './MailMergeView';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
@@ -19,6 +20,7 @@ const Container = styled.div`
 interface MailMergeFormControlProps {
   template: string;
   onTemplateChanged: (t: string) => void;
+  islands?: Record<string, IslandConstructor>;
 }
 
 const default_nctid = 'NCT00222898';
@@ -70,6 +72,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
         fragmentName={fragmentName}
         fragmentClass="Study"
         onFragmentChanged={setFragment}
+        islands={props.islands}
       />
       {/* <CollapsiblePanel></CollapsiblePanel> */}
     </Container>
