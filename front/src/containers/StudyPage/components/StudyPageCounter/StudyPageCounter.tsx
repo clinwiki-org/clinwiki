@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 interface StudyPageCounterProps {
-  counter: number;
+  counter: number | Element;
   recordsTotal: number | Element;
 }
 

@@ -11,6 +11,9 @@ import { StudyPageQuery } from 'types/StudyPageQuery';
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
 import { find, propEq } from 'ramda';
+import { useQuery, useMutation } from 'react-apollo';
+import REACTION_KINDS from 'queries/ReactionKinds';
+import { ReactionKinds } from 'types/ReactionKinds';
 
 // import { reactionIdFromCharacter, activeReactions, isReactionUnique, reactionCharacterFromName } from '../../../utils/reactions/reactionKinds'
 interface StudyPageHeaderProps {
@@ -93,18 +96,15 @@ const ReactionsContainer = styled.div`
 `;
 
 
-class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHeaderState> {
-    state: StudyPageHeaderState = {
-
-    }
-    renderBackButton = (name: string, link?: string | null) => {
+export default function StudyPageHeader(props: StudyPageHeaderProps){
+    const renderBackButton = (name: string, link?: string | null) => {
         if (link === undefined) return null;
 
         return (
             <div style={{ paddingTop: '10px' }}>
                 <ThemedButton
                     style={{ margin: 'auto', float: 'left' }}
-                    onClick={this.props.navButtonClick(link!)}
+                    onClick={props.navButtonClick(link!)}
                     disabled={link === null}>
                     {name}
                 </ThemedButton>
@@ -112,8 +112,8 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         );
     };
 
-    renderReviewsSummary = (data: StudyPageQuery | undefined) => {
-        const { theme } = this.props;
+    const renderReviewsSummary = (data: StudyPageQuery | undefined) => {
+        const { theme } = props;
         if (!data || !data.study) {
             return (
                 <ReviewsWrapper>
@@ -147,16 +147,16 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
             </ReviewsWrapper>
         );
     };
+    const {nctId} = props
 
+    const { data: allReactions } = useQuery<ReactionKinds>(REACTION_KINDS, {
+        variables: { nctId },
+      });
 
-
-
-    render() {
-
-        const hash = new URLSearchParams(this.props.history.location.search)
+        const hash = new URLSearchParams(props.history.location.search)
             .getAll('hash')
             .toString();
-        const siteViewUrl = new URLSearchParams(this.props.history.location.search)
+        const siteViewUrl = new URLSearchParams(props.history.location.search)
             .getAll('sv')
             .toString();
         const backLink = () => {
@@ -168,28 +168,26 @@ class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHea
         return (
             <HeaderContentWrapper>
                 <BackButtonContainer>
-                    {this.renderBackButton('⤺︎ Back', backLink())}
+                    {renderBackButton('⤺︎ Back', backLink())}
                 </BackButtonContainer>
                 <ReactionsContainer>
                     <LikesRow>
                         <ThumbsRow>
                             <ReactionsBar
-                                reactionsConfig={this.props.site.reactionsConfig}
-                                studyRefetch={this.props.studyRefetch}
-                                nctId={this.props.nctId}
-                                theme={this.props.theme}
-                                studyData={this.props.data}
-                                user={this.props.user}
-                                allReactions={this.props.allReactions}
+                                reactionsConfig={props.site.reactionsConfig}
+                                studyRefetch={props.studyRefetch}
+                                nctId={props.nctId}
+                                theme={props.theme}
+                                studyData={props.data}
+                                user={props.user}
+                                allReactions={allReactions}
                             />
 
                         </ThumbsRow>
                     </LikesRow>
-                    {this.renderReviewsSummary(this.props.data)}
+                    {renderReviewsSummary(props.data)}
                 </ReactionsContainer>
             </HeaderContentWrapper>
         );
     }
-}
 
-export default StudyPageHeader;

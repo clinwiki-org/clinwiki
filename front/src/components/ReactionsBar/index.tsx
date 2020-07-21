@@ -14,7 +14,8 @@ interface ReactionsBarProps {
     studyData: any;
     theme: any;
     nctId: any;
-    studyRefetch: any;
+    //made this optional to continue deving. Need to find how to refetch from Island 
+    studyRefetch?: any;
     reactionsConfig?: any;
     allReactions: any;
 }
@@ -49,6 +50,19 @@ const ReactionsContainer = styled.div`
   flex-direction: row;
 `;
 
+const activeReactions = (reactionsConfig, allReactions) => {
+    let obj = JSON.parse(reactionsConfig)
+    let activeArray: any[] = []
+    if (!allReactions) return
+    obj.map((reaction) => {
+        //reaction here only has the name property, as it's the only thing we store in the configurations array 
+        //so we have to find it in allReactions which will contain the id, unicode, and name fields
+        //This is what we want to store in state as it is what our selector will use to render configured emojis and be able to interact w/ db 
+        let currentReaction = find(propEq('name', reaction.name))(allReactions.reactionKinds)
+        activeArray.push(currentReaction)
+    })
+    return activeArray
+}
 
 class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState> {
     state: ReactionsBarState = {
@@ -63,8 +77,8 @@ class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState>
     componentDidUpdate = (prevProps) => {
         const { reactionsConfig, studyData, allReactions } = this.props;
 
-        if (allReactions.data && prevProps !== this.props) {
-            let reactions = this.activeReactions(reactionsConfig)
+        if (allReactions && prevProps !== this.props) {
+            let reactions = activeReactions(reactionsConfig, allReactions)
             this.setState({ reactions: reactions })
         }
         if (studyData && prevProps !== this.props) {
@@ -85,21 +99,7 @@ class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState>
 
     }
 
-    activeReactions = (reactionsConfig) => {
-        const { allReactions } = this.props;
 
-        let obj = JSON.parse(reactionsConfig)
-        let activeArray: any[] = []
-        if (!allReactions.data) return
-        obj.map((reaction) => {
-            //reaction here only has the name property, as it's the only thing we store in the configurations array 
-            //so we have to find it in allReactions which will contain the id, unicode, and name fields
-            //This is what we want to store in state as it is what our selector will use to render configured emojis and be able to interact w/ db 
-            let currentReaction = find(propEq('name', reaction.name))(allReactions.data.reactionKinds)
-            activeArray.push(currentReaction)
-        })
-        return activeArray
-    }
 
     handleAddReaction = () => {
         this.setState({ showReactions: !this.state.showReactions })
@@ -150,17 +150,16 @@ class ReactionsBar extends React.Component<ReactionsBarProps, ReactionsBarState>
                                 studyRefetch={this.props.studyRefetch}
                                 refetch={refetch}
                             />
-                            {this.state.showReactions == true ?
-                                    <CreateReactionMutation>
-                                        {createReaction => (<GithubSelector
-                                            reactions={this.state.reactions}
-                                            onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch, this.props.allReactions.data.reactionKinds)} 
-                                            closeSelector={()=>this.setState({ showReactions: false })}
-                                        />)}
-                                    </CreateReactionMutation>
-                                : null}
-
                         </ReactionsContainer>
+                        {this.state.showReactions == true ?
+                            <CreateReactionMutation>
+                                {createReaction => (<GithubSelector
+                                    reactions={this.state.reactions}
+                                    onSelect={(e) => this.handleSelectorClick(e, createReaction, refetch, this.props.allReactions.reactionKinds)}
+                                    closeSelector={() => this.setState({ showReactions: false })}
+                                />)}
+                            </CreateReactionMutation>
+                            : null}
                     </HeaderContentWrapper>
 
                 )}

@@ -181,7 +181,6 @@ export default function FacilityIsland(props: Props) {
 
     return (
       <div>
-        <h3>Facility Page</h3>
         <StyledPanel>
           <MappingContainer>
             <ScrollCardContainer>
