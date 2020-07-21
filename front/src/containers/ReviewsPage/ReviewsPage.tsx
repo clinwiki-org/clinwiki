@@ -16,9 +16,13 @@ import ThemedButton from 'components/StyledComponents/index';
 import ReviewForm from 'containers/ReviewForm';
 import { trimPath } from 'utils/helpers';
 import {
+  DELETE_REVIEW_MUTATION
+} from 'mutations/ReviewsPageDeleteReviewMutation';
+import {
   ReviewPageQuery,
   ReviewPageQueryVariables,
 } from 'types/ReviewPageQuery';
+import QUERY from 'queries/ReviewPageQuery';
 import {
   ReviewsPageFragment,
   ReviewsPageFragment_user,
@@ -62,23 +66,7 @@ const FRAGMENT = gql`
   }
 `;
 
-const QUERY = gql`
-  query ReviewPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      reviews {
-        ...ReviewsPageFragment
-      }
-      nctId
-    }
-    me {
-      id
-    }
-  }
 
-  ${StudySummary.fragment}
-  ${FRAGMENT}
-`;
 
 const STUDY_FRAGMENT = gql`
   fragment ReviewsPageStudyFragment on Study {
@@ -91,14 +79,6 @@ const STUDY_FRAGMENT = gql`
   ${FRAGMENT}
 `;
 
-const DELETE_REVIEW_MUTATION = gql`
-  mutation ReviewsPageDeleteReviewMutation($id: Int!) {
-    deleteReview(input: { id: $id }) {
-      success
-      errors
-    }
-  }
-`;
 
 const RatingsWrapper = styled.div`
   display: flex;

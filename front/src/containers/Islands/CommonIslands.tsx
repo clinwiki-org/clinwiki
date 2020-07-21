@@ -6,6 +6,7 @@ import WikiPageIsland from './WikiPageIsland';
 import BackIsland from './BackIsland';
 import NavigationIsland from './NavigationIsland';
 import ReactionsIsland from './ReactionsIsland';
+import ReviewsIsland from './ReviewsIsland';
 
 /*
   Common island configuration for MailMerge pages
@@ -29,6 +30,9 @@ export const pageIslands: Record<string, IslandConstructor> = {
   ),
   reactions: (attributes: Record<string, string>, context?: any) => (
     <ReactionsIsland  nctId={context?.nctId}/>
+  ),
+  reviews: (attributes: Record<string, string>, context?: any) => (
+    <ReviewsIsland  nctId={context?.nctId}/>
   ),
 
 };
