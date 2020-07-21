@@ -7,6 +7,7 @@ module Types
     field :content, String, null: false
     field :edits, [WikiPageEditType], null: false
     field :meta1, [MetaType], null: false
+    field :meta2, [MetaType], null: false
 
     def meta
       object.meta.to_json
@@ -15,6 +16,13 @@ module Types
       array =[]
       object.meta.each do |key, value|
         array.push({crowd_key: key,crowd_value: value.split("|")})
+      end
+      array
+    end
+    def meta2
+      array =[]
+      object.meta.each do |key, value|
+        array.push({crowd_key: key,crowd_value:{crowd_value: value.split("|")}})
       end
       array
     end

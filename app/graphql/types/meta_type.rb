@@ -1,7 +1,7 @@
 module Types
   class MetaType < BaseObject
     field :crowd_key, String, null: false
-    field :crowd_value, [String], null: true
+    field :crowd_value, CrowdValueType, null: true
 
 
     def key
