@@ -137,12 +137,12 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
     return user.email;
   };
 
-  handleWriteReview = () => {
-    this.props.history.push(`${trimPath(this.props.match.url)}/new`);
+  handleWriteReview = (hash: string, siteViewUrl: string) => {
+    this.props.history.push(`${trimPath(this.props.match.url)}/new?hash=${hash}&sv=${siteViewUrl} `);
   };
 
-  handleEditReview = (id: number) => {
-    this.props.history.push(`${trimPath(this.props.match.url)}/${id}/edit`);
+  handleEditReview = (id: number, hash: string, siteViewUrl: string ) => {
+    this.props.history.push(`${trimPath(this.props.match.url)}/${id}/edit?hash=${hash}&sv=${siteViewUrl}`);
   };
 
   handleDeleteReview = (
@@ -171,7 +171,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
     );
   };
 
-  renderReview = (user: UserFragment | null) => (
+  renderReview = (user: UserFragment | null, hash: string , siteViewUrl:string) => (
     review: ReviewsPageFragment
   ) => {
     let meta = {};
@@ -208,7 +208,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                 <ButtonsWrapper>
                   <ThemedButton
                     style={{ marginRight: 10 }}
-                    onClick={() => this.handleEditReview(review.id)}>
+                    onClick={() => this.handleEditReview(review.id, hash, siteViewUrl)}>
                     Edit
                   </ThemedButton>
                   <DeleteReviewMutationComponent
@@ -264,19 +264,25 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   };
 
   renderReviews = (reviews: ReviewsPageFragment[]) => {
+    const hash = new URLSearchParams(this.props.history.location.search)
+    .getAll('hash')
+    .toString();
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search)
+    .getAll('sv')
+    .toString();
     return (
       <CurrentUser>
         {user => (
           <>
             {user && (
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <WriteReviewButton onClick={this.handleWriteReview}>
+                <WriteReviewButton onClick={()=>this.handleWriteReview(hash,siteViewUrl)}>
                   Write a review
                 </WriteReviewButton>
               </div>
             )}
             <Table striped bordered>
-              <tbody>{reviews.map(this.renderReview(user))}</tbody>
+              <tbody>{reviews.map(this.renderReview(user, hash, siteViewUrl))}</tbody>
             </Table>
           </>
         )}
