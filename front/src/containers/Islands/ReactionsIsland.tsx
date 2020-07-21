@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents';
-import { StudyPageQuery } from 'types/StudyPageQuery';
+import { ReactionsIslandQuery } from 'types/ReactionsIslandQuery';
 import { ReactionKinds } from 'types/ReactionKinds';
 import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
@@ -28,7 +28,7 @@ export default function ReactionsIsland(props: Props) {
   const theme  = useTheme();
   const user = useCurrentUser()?.data?.me;
   // TODO: This query should be pushed up as a fragment to the Page
-  const { data: studyData } = useQuery<StudyPageQuery>(QUERY, {
+  const { data: studyData } = useQuery<ReactionsIslandQuery>(QUERY, {
     variables: { nctId },
   });
   const { data: allReactions } = useQuery<ReactionKinds>(REACTION_KINDS, {
