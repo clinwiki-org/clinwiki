@@ -14,7 +14,9 @@ module Types
     def meta2
       array =[]
       object.meta.each do |key, value|
-        array.push({crowd_key: key,crowd_value:{crowd_value: value.split("|")}})
+        crowd_value_list = []
+        split =  value.split("|")
+        array.push({crowd_key: key, crowd_value_list: split.map{ |value| {crowd_value:value}}})
       end
       array
     end

@@ -1,14 +1,14 @@
 module Types
   class MetaType < BaseObject
-    field :crowd_key, String, null: false
-    field :crowd_value, CrowdValueType, null: true
+    field :crowd_key, String, null: true
+    field :crowd_value_list, [CrowdValueType], null: true
 
 
-    def key
+    def crowd_key
       object[:crowd_key]
     end
-    def value
-      object[:crowd_value]
+    def crowd_value_list
+      object[:crowd_value_list]
     end
   end
 end
