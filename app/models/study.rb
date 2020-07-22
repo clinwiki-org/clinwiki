@@ -79,15 +79,14 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   scope :find_by_term, ->(term) { where("nct_id in (select nct_id from ids_for_term(?))", "%#{term}%") }
 
   NON_INDEX_FIELDS = %i[
-    nlm_download_date_description first_received_date
-    received_results_disposit_date
+    nlm_download_date_description received_results_disposit_date
     start_month_year start_date_type verification_month_year
     verification_date completion_month_year completion_date_type
     primary_completion_month_year primary_completion_date_type
     primary_completion_date target_duration limitations_and_caveats
     expanded_access_type_individual expanded_access_type_intermediate
     has_dmc is_unapproved_device is_ppsd is_us_export
-    biospec_retention biospec_description 
+    biospec_retention biospec_description
   ].freeze
 
   def reviews_count
