@@ -11,7 +11,8 @@ import DeleteReactionMutation, {
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-
+import REACTIONS_QUERY from '../../ReactionsBar/StudyReaction'
+import QUERY from 'queries/StudyPageQuery';
 interface SlackCounterProps {
     activeReactions: any;
     user: any;
@@ -19,7 +20,6 @@ interface SlackCounterProps {
     onAdd: any;
     nctId: any;
     currentUserAndStudy: any;
-    studyRefetch?: any;
     refetch?: any;
     allReactions: any;
 }
@@ -82,24 +82,30 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
         }
     }
     deleteReactionHelper = (deleteReaction, reaction) => {
+        const { nctId }= this.props
         deleteReaction({
             variables: {
                 id: reaction.id
-            }
+            },
+            awaitRefetchQueries: true,
+            refetchQueries: [{ query: QUERY, variables: { nctId } }]
         })
             .then(() => this.props.refetch())
-            .then(() => this.props.studyRefetch())
     }
     createReactionHelper = (createReaction, reaction) => {
         let reactionID = reaction.id
+        const {nctId}= this.props
+
         createReaction({
             variables: {
                 reactionKindId: reactionID,
                 nctId: this.props.nctId
-            }
+            },
+            awaitRefetchQueries: true,
+             refetchQueries: [{ query: QUERY, variables: { nctId } }
+            ]
         })
             .then(() => this.props.refetch())
-            .then(() => this.props.studyRefetch())
 
 
 

@@ -11,6 +11,7 @@ import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import QUERY from 'queries/ReactionsIslandQuery';
+import StudyPageQuery from 'queries/StudyPageQuery'
 import { useQuery, useMutation } from 'react-apollo';
 import REACTION_KINDS from 'queries/ReactionKinds';
 import ReactionsBar from '../../components/ReactionsBar'
@@ -48,7 +49,6 @@ if(site && allReactions && studyData && theme){
     <div>
       <ReactionsBar
           reactionsConfig={site.reactionsConfig}
-          //studyRefetch={this.props.studyRefetch}
           nctId={nctId}
           theme={theme}
           studyData={studyData.study}

@@ -357,7 +357,6 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
                                 theme={this.props.theme}
                                 site={site}
                                 nctId={this.props.match.params.nctId}
-                                studyRefetch={refetch}
                                 userRefetch={this.props.userRefetch}
                                 allReactions={allReactions}
                               />
