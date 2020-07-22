@@ -8,9 +8,6 @@ MAX_WINDOW_SIZE = 10_000
 # we're duck typing string to number for now
 STRING_MISSING_IDENTIFIER = "-99999999999"
 DATE_MISSING_IDENTIFIER = "1500-01-01"
-BOOLEAN_MISSING_IDENTIFIER = "null"
-
-BOOLEAN_KEYS = [:has_expanded_access]
 
 # aggregations
 DEFAULT_AGG_SORT = {
@@ -46,9 +43,6 @@ DEFAULT_AGG_OPTIONS = {
       missing: DATE_MISSING_IDENTIFIER,
     },
     limit: 10,
-  },
-  has_expanded_access:{
-    missing: nil,
   },
   browse_interventions_mesh_terms: {
     limit: 10,
@@ -140,9 +134,8 @@ class SearchService
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
     reactions.kind indexed_at last_update_posted_date
     last_changed_date first_received_results number_of_arms
-    number_of_groups why_stopped has_expanded_access
-    expanded_access_type_treatment is_fda_regulated_drug
-    is_fda_regulated_device plan_to_share_ipd design_outcome_measures
+    number_of_groups why_stopped
+    plan_to_share_ipd design_outcome_measures
   ].freeze
 
   attr_reader :params
@@ -297,7 +290,6 @@ class SearchService
 
   def missing_identifier_for_key(key)
     return DATE_MISSING_IDENTIFIER if key.to_s =~ /\b?date\b?/
-    return false  if BOOLEAN_KEYS.include?(key)
     STRING_MISSING_IDENTIFIER
   end
 

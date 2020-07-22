@@ -87,7 +87,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     primary_completion_date target_duration limitations_and_caveats
     expanded_access_type_individual expanded_access_type_intermediate
     has_dmc is_unapproved_device is_ppsd is_us_export
-    biospec_retention biospec_description plan_to_share_ipd
+    biospec_retention biospec_description 
   ].freeze
 
   def reviews_count
