@@ -12,6 +12,7 @@ export const aggsOrdered = [
   'first_received_results',
   'interventions_mesh_terms',
   'indexed_at',
+  'results_first_submitted_date',
   'last_changed_date',
   'last_update_posted_date',
   'number_of_arms',

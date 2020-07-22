@@ -133,8 +133,8 @@ class SearchService
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
     reactions.kind indexed_at last_update_posted_date
-    last_changed_date first_received_results number_of_arms
-    number_of_groups why_stopped
+    last_changed_date  number_of_arms
+    number_of_groups why_stopped results_first_submitted_date
     plan_to_share_ipd design_outcome_measures
   ].freeze
 
