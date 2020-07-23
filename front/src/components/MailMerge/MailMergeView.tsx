@@ -1,15 +1,23 @@
-import React, { useMemo } from 'react';
-import ReactMarkdown from 'react-markdown';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
 import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
+import marked from 'marked';
+import HtmlToReact from 'html-to-react';
+
+export type IslandConstructor = (
+  attributes: Record<string, string>,
+  context?: object,
+  parent?: any
+) => JSX.Element;
 
 export interface Props {
   template: string;
-  context: object;
+  context?: object;
   style?: object;
   fragmentName?: string;
   fragmentClass?: string;
   onFragmentChanged?: (fragment: string) => void;
+  islands?: Record<string, IslandConstructor>;
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
@@ -146,7 +154,6 @@ function compileFragment(
   template: string
 ) {
   const tokens = mustacheTokens(template);
-  // console.log('tokens', tokens);
   const json = tokensToGraphQLOb(tokens);
   const fragmentBody = jsonToFragmentBody(json);
   return toFragment(fragmentName, className, fragmentBody);
@@ -161,22 +168,9 @@ function compileTemplate(template: string) {
   }
 }
 
-function handleTemplateChanged(props: Props) {
-  const { template, fragmentName, fragmentClass, onFragmentChanged } = props;
-  const compiled = compileTemplate(template);
-  if (onFragmentChanged && fragmentClass && fragmentName) {
-    const fragment = compileFragment(fragmentName, fragmentClass, template);
-    // It might make more sense to use useEffect() and store the compiled
-    // template and fragment on local state moving the computation of the template
-    // out of the render path.
-    setTimeout(() => onFragmentChanged(fragment));
-  }
-  return compiled;
-}
-
 function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,
-  context: object
+  context?: object
 ) {
   try {
     return template(context);
@@ -195,22 +189,58 @@ export function microMailMerge(template = '', context?: object | null) {
 
 export default function MailMergeView(props: Props) {
   useHandlebars();
-  const compiled = useMemo(() => handleTemplateChanged(props), [
+
+  const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
   ]);
+  const raw = useMemo(() => applyTemplate(compiled, props.context), [
+    compiled,
+    props.context,
+  ]);
 
-  // Note: We can make this faster by compiling markdown->html before applying the template
+  const { template, fragmentName, fragmentClass, onFragmentChanged } = props;
+  useEffect(() => {
+    if (onFragmentChanged && fragmentClass && fragmentName) {
+      const fragment = compileFragment(fragmentName, fragmentClass, template);
+      onFragmentChanged(fragment);
+    }
+  }, [template, onFragmentChanged, fragmentClass, fragmentName]);
+
   const style = props.style
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
-  const markdown = applyTemplate(compiled, props.context);
+
+  const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions(React);
+  const islandKeys = new Set(Object.keys(props.islands || {}));
+  var instructions = [
+    {
+      shouldProcessNode: node => islandKeys.has(node.name),
+      processNode: (node, children) => {
+        const create = props.islands?.[node.name];
+        return (
+          <div
+            className="mail-merge-island"
+            key={node.attribs['key'] || node.name}>
+            {create?.(node.attribs, props.context, node)}
+          </div>
+        );
+      },
+    },
+    {
+      shouldProcessNode: () => true,
+      processNode: processNodeDefinitions.processDefaultNode,
+    },
+  ];
+  const parser = new HtmlToReact.Parser();
+  const reactElement = parser.parseWithInstructions(
+    raw,
+    () => true,
+    instructions
+  );
+
   return (
     <div className="mail-merge" style={style}>
-      <ReactMarkdown
-        className="mailmerge-view"
-        source={markdown}
-        escapeHtml={false}
-      />
+      {reactElement}
     </div>
   );
 }

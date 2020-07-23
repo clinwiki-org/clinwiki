@@ -287,7 +287,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       thisSiteView
     );
   };
-  handleFieldsOrderChange = () => {};
+  handleFieldsOrderChange = () => { };
 
   handleShowFacetBar = (x, view, name) => {
     // this.setState({showFacetBar: x})
@@ -301,7 +301,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     let newItem = { icon: '', target: '', __typename: 'ResultButtonItems' };
     let newItems = [...items, newItem];
 
-    this.setState({resultsButtonsArray : newItems})
+    this.setState({ resultsButtonsArray: newItems })
     this.handleAddMutation(
       { currentTarget: { name: name, value: newItems } },
       view
@@ -797,28 +797,28 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               />
             </>
           ) : null}
-          {view.search.results.type === 'card' ? (
-            <>
-              <h3>Template</h3>
-              <SearchTemplate
-                fields={studyFields}
-                onTemplateChanged={t =>
-                  this.handleAddMutation(
-                    {
-                      currentTarget: { name: 'set:search.template', value: t },
-                    },
-                    view
-                  )
-                }
-                template={view.search.template}
-              />
-            </>
-          ) : null}
+          {view.search.results.type === 'table' ? (
+            null
+          ) : (<>
+            <h3>Template</h3>
+            <SearchTemplate
+              fields={studyFields}
+              onTemplateChanged={t =>
+                this.handleAddMutation(
+                  {
+                    currentTarget: { name: 'set:search.template', value: t },
+                  },
+                  view
+                )
+              }
+              template={view.search.template}
+            />
+          </>)}
           <StyledButtonGroup>
             <span className="button-label">Results View:</span>
             <DropdownButton
               bsStyle="default"
-              title={view.search.results.type}
+              title={view.search.results.type + " view"}
               key="default"
               id="dropdown-basic-default"
               style={{
@@ -844,6 +844,36 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   )
                 }>
                 Table View
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  this.handleShowFacetBar(
+                    'table2',
+                    view,
+                    'set:search.results.type'
+                  )
+                }>
+                RV Table View
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  this.handleShowFacetBar(
+                    'masonry',
+                    view,
+                    'set:search.results.type'
+                  )
+                }>
+                Card View (Masonry)
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  this.handleShowFacetBar(
+                    'list',
+                    view,
+                    'set:search.results.type'
+                  )
+                }>
+                List View
               </MenuItem>
               <MenuItem divider />
               <MenuItem

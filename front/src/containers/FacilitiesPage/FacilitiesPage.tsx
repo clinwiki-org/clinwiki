@@ -16,6 +16,7 @@ import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import MapMarker from './MapMarker';
 import FacilityCard from './FacilityCard';
+import QUERY, {FRAGMENT} from 'queries/FacilitiesPageQuery';
 
 const MappingContainer = styled.div`
   display: flex;
@@ -68,50 +69,6 @@ interface FacilitiesPageState {
   mapCenter: object;
   mapZoom: number;
 }
-
-const FRAGMENT = gql`
-  fragment FacilityFragment on Facility {
-    city
-    country
-    id
-    name
-    nctId
-    state
-    status
-    location {
-      latitude
-      longitude
-      status
-    }
-    zip
-    contacts {
-      contactType
-      email
-      id
-      name
-      nctId
-      phone
-    }
-  }
-`;
-
-const QUERY = gql`
-  query FacilitiesPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      facilities {
-        ...FacilityFragment
-      }
-      nctId
-    }
-    me {
-      id
-    }
-  }
-
-  ${StudySummary.fragment}
-  ${FRAGMENT}
-`;
 
 const MAPOPTIONS = {
   minZoom: 0,

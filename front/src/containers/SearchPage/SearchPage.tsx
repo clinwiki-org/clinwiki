@@ -32,6 +32,7 @@ import {
   find,
 } from 'ramda';
 import SearchView from './SearchView';
+import SearchView2 from './SearchView2';
 import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
@@ -285,7 +286,7 @@ interface SearchPageState {
   searchCrowdAggs: AggBucketMap;
   removeSelectAll: boolean;
   totalRecords: number;
-  siteViewType: string;
+  // siteViewType: string;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -305,7 +306,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchCrowdAggs: {},
     removeSelectAll: false,
     totalRecords: 0,
-    siteViewType: '',
+    // siteViewType: '',
   };
 
   numberOfPages: number = 0;
@@ -555,9 +556,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           }
           const opened = this.state.openedAgg && this.state.openedAgg.name;
           const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
-
           return (
-            <SearchView
+            <SearchView2
               key={`${hash}+${JSON.stringify(params)}`}
               params={params}
               onBulkUpdate={this.handleBulkUpdateClick}
@@ -650,22 +650,22 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       window.removeEventListener('scroll', this.handleScroll);
     }
 
-    // not sure this is being used anymore now that we switched to url params for siteviews.
-    if (this.props.email) {
-      this.setState({
-        siteViewType: 'user',
-      });
-    }
-    // if (this.props.intervention) {
+    // // not sure this is being used anymore now that we switched to url params for siteviews.
+    // if (this.props.email) {
     //   this.setState({
-    //     siteViewType: 'intervention',
+    //     siteViewType: 'user',
     //   });
     // }
-    else {
-      this.setState({
-        siteViewType: 'search',
-      });
-    }
+    // // if (this.props.intervention) {
+    // //   this.setState({
+    // //     siteViewType: 'intervention',
+    // //   });
+    // // }
+    // else {
+    //   this.setState({
+    //     siteViewType: 'search',
+    //   });
+    // }
   }
 
   componentWillUnmount() {

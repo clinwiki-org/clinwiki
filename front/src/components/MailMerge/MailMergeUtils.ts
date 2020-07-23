@@ -5,6 +5,7 @@ export function getStudyQuery(name: string, frag: string) {
   return gql`
   query Study${name}Query($nctId: String!) {
     study(nctId: $nctId) {
+      nctId
       ...${name}
     }
   }
