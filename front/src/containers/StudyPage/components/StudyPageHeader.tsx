@@ -24,7 +24,6 @@ interface StudyPageHeaderProps {
     data: any;
     theme: any;
     nctId: any;
-    studyRefetch: any;
     userRefetch: any;
     site?: any;
     allReactions:any;
@@ -175,7 +174,6 @@ export default function StudyPageHeader(props: StudyPageHeaderProps){
                         <ThumbsRow>
                             <ReactionsBar
                                 reactionsConfig={props.site.reactionsConfig}
-                                studyRefetch={props.studyRefetch}
                                 nctId={props.nctId}
                                 theme={props.theme}
                                 studyData={props.data}

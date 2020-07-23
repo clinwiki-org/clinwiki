@@ -28,6 +28,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
 import ExpansionContext from '../WikiPage/ExpansionContext';
 import Edits, { WikiPageEditFragment } from 'components/Edits';
+import { CurrentUserQuery_me } from 'types/CurrentUserQuery'
 
 interface Props {
   nctId: string;
@@ -58,11 +59,10 @@ export default function WikiPageIsland(props: Props) {
 
   const { currentSiteView } = useSite();
   const user = useCurrentUser()?.data?.me;
+  const params = useUrlParams()
+  const hash = params.hash
+  const siteViewUrl = params.siteViewUrl
 
-  console.log("Props", props)
-  const hash = new URLSearchParams(history.location.search)
-    .getAll('hash')
-    .toString();
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {
     variables: { nctId },
@@ -71,9 +71,7 @@ export default function WikiPageIsland(props: Props) {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
 
   });
-  const siteViewUrl = new URLSearchParams(history.location.search)
-    .getAll('sv')
-    .toString();
+
   const readOnly = !location.pathname.includes('/wiki/edit');
 
 
@@ -146,7 +144,6 @@ export default function WikiPageIsland(props: Props) {
       </ThemedButton>
     );
   };
-  console.log("Cehck 3")
 
   const handleMarkdownToggle = () => {
     const text = getEditorText() || '';
@@ -190,7 +187,6 @@ export default function WikiPageIsland(props: Props) {
       },
     });
   };
-  console.log("Cehck 4")
 
   const renderSubmitButton = (data: WikiPageQuery, isAuthenticated: boolean, readOnly: boolean) => {
     if (!isAuthenticated) return false;
@@ -228,8 +224,7 @@ export default function WikiPageIsland(props: Props) {
   };
   const renderToolbar = (
     data: WikiPageQuery,
-    //Type please
-    user: any,
+    user: CurrentUserQuery_me | null | undefined,
     hash: string,
     siteViewUrl: string,
     readOnly: boolean
@@ -258,45 +253,9 @@ export default function WikiPageIsland(props: Props) {
               </>
             )}
           />
-          {/* <Route
-            path={historyPath()}
-            render={() => (
-              <>
-                {minimized.length > 0 && (
-                  <ThemedButton
-                    type="button"
-                    onClick={expandAllEdits}
-                    style={{ marginLeft: '10px' }}>
-                    Expand History <FontAwesome name="expand" />
-                  </ThemedButton>
-                )}
-                {maximized.length > 0 && (
-                  <ThemedButton
-                    type="button"
-                    onClick={minimizeAllEdits}
-                    style={{ marginLeft: '10px' }}>
-                    Minimize History <FontAwesome name="compress" />
-                  </ThemedButton>
-                )}
-                {renderEditButton(isAuthenticated, hash, siteViewUrl)}{' '}
-                <ThemedButton
-                  type="button"
-                  onClick={() => handleView(hash, siteViewUrl)}
-                  style={{ marginLeft: '10px' }}>
-                  View <FontAwesome name="photo" />
-                </ThemedButton>
-              </>
-            )}
-          /> */}
-
           <Route
             render={() => (
               <>
-                {/* <ThemedButton
-                  type="button"
-                  onClick={() => handleHistory(hash, siteViewUrl)}>
-                  History <FontAwesome name="history" />
-                </ThemedButton> */}
                 {renderEditButton(isAuthenticated, hash, siteViewUrl)}
                 {renderSubmitButton(data, isAuthenticated, readOnly)}
               </>
@@ -309,7 +268,6 @@ export default function WikiPageIsland(props: Props) {
 
 
   const renderEditor = (data: WikiPageQuery) => {
-    console.log("3Oh3", data)
     if (!data || !data.study || !data.study.wikiPage) return null;
     const text = getEditorText() || '';
     if (text !== data.study.wikiPage.content && !text) {
@@ -365,26 +323,6 @@ export default function WikiPageIsland(props: Props) {
       <StyledPanel>
         <div>
           <Switch>
-            {/* <Route
-              path={historyPath()}
-              render={() => (
-                // <ExpansionContext.Provider
-                //   value={{
-                //     historyExpanded,
-                //     toggleEditVisibility: toggleEditVisibility,
-                //   }}>
-                  <Edits
-                    edits={
-                      (studyData &&
-                        studyData.study &&
-                        //@ts-ignore
-                        studyData.study.edits) ||
-                      []
-                    }
-                  />
-                // </ExpansionContext.Provider>
-              )}
-            /> */}
             <Route render={() => renderEditor(studyData)} />
           </Switch>
           {renderToolbar(studyData, user, hash, siteViewUrl, readOnly)}

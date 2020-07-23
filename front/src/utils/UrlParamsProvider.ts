@@ -3,5 +3,8 @@ export default function useUrlParams() {
     hash: new URLSearchParams(window.location.search)
       .getAll('hash')
       ?.toString(),
+    siteViewUrl: new URLSearchParams(window.location.search)
+      .getAll('sv')
+      ?.toString(),
   };
 }

@@ -16,7 +16,6 @@ import MapMarker from '../../containers/FacilitiesPage/MapMarker';
 import FacilityCard from '.../../containers/FacilitiesPage//FacilityCard';
 
 interface Props {
-  // name: string;
   nctId?: string;
 }
 const MappingContainer = styled.div`
@@ -224,12 +223,5 @@ export default function FacilityIsland(props: Props) {
       </div>
     );
   }
-  return (
-    <div>
-      <h3>Facility Page</h3>
-      <StyledPanel>
-        <h3>No Data</h3>
-      </StyledPanel>
-    </div>
-  );
+  return null
 }
