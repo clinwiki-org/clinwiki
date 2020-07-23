@@ -8,15 +8,17 @@ import { useQuery } from 'react-apollo';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { pageIslands } from 'containers/Islands/CommonIslands'
+import useUrlParams from 'utils/UrlParamsProvider';
 
 interface Props {
-  url: string;
+  url?: string;
   arg?: string;
 }
 export default function GenericPage(props: Props) {
   // When we add more page types we need to refactor this a little bit and pull out the query/nctid
   const fragmentName = 'GenericPageStudy';
-  const { data: pageViewData } = usePageView(props.url);
+  const params = useUrlParams()
+  const { data: pageViewData } = usePageView(props.url || params.pageViewUrl || 'test');
   const currentPage = pageViewData?.site?.pageView;
   const [fragment, setFragment] = useState('');
   const { data: studyData, loading } = useQuery(
