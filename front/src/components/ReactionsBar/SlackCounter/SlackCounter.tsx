@@ -11,7 +11,7 @@ import DeleteReactionMutation, {
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-import REACTIONS_QUERY from '../../ReactionsBar/StudyReaction'
+import REACTIONS_QUERY from '../../../queries/StudyReaction'
 import QUERY from 'queries/StudyPageQuery';
 interface SlackCounterProps {
     activeReactions: any;
@@ -20,7 +20,6 @@ interface SlackCounterProps {
     onAdd: any;
     nctId: any;
     currentUserAndStudy: any;
-    refetch?: any;
     allReactions: any;
 }
 interface SlackCounterState {
@@ -88,9 +87,8 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 id: reaction.id
             },
             awaitRefetchQueries: true,
-            refetchQueries: [{ query: QUERY, variables: { nctId } }]
+            refetchQueries: [{ query: QUERY, variables: { nctId } },{ query: REACTIONS_QUERY, variables: { nctId } }]
         })
-            .then(() => this.props.refetch())
     }
     createReactionHelper = (createReaction, reaction) => {
         let reactionID = reaction.id
@@ -102,12 +100,10 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 nctId: this.props.nctId
             },
             awaitRefetchQueries: true,
-             refetchQueries: [{ query: QUERY, variables: { nctId } }
+             refetchQueries: [
+                 { query: QUERY, variables: { nctId } }, { query : REACTIONS_QUERY, variables: { nctId } } 
             ]
         })
-            .then(() => this.props.refetch())
-
-
 
     }
     currentReactionFilter = (reactionName) => {
@@ -141,7 +137,6 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 let currentReaction = this.currentReactionFilter(reaction.name)
 
                 let isUserReaction = this.findUserReaction(currentReaction, userReactionsCurrent)
-
                 if (isUserReaction && currentReaction) {
                     return (
                         <div className="group-active" key={reaction.name}>

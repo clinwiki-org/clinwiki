@@ -2,12 +2,13 @@ import React, { useContext } from 'react';
 import ThemedButton from 'components/StyledComponents';
 import QUERY from 'queries/SearchStudyPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { SearchStudyPageQuery } from 'types/SearchStudyPageQuery';
 import { BeatLoader, PulseLoader } from 'react-spinners';
 import StudyPageCounter from '../StudyPage/components/StudyPageCounter'
 import { path, pathOr } from 'ramda';
 import { trimPath } from 'utils/helpers';
+import useUrlParams from 'utils/UrlParamsProvider';
 
 
 interface Props {
@@ -17,17 +18,15 @@ interface Props {
 export default function NavigationIsland(props: Props) {
   const { nctId } = props;
   let history = useHistory();
+  let match = useRouteMatch();
 
-  const hash = new URLSearchParams(history.location.search)
-    .getAll('hash')
-    .toString();
+  const params = useUrlParams()
+  const hash = params.hash
+  const siteViewUrl = params.siteViewUrl
   const variables = {
     hash: hash,
     id: nctId,
   };
-  const siteViewUrl = new URLSearchParams(history.location.search)
-    .getAll('sv')
-    .toString();
   const { data: data } = useQuery<SearchStudyPageQuery>(QUERY, {
     variables: variables,
   });
@@ -78,31 +77,33 @@ export default function NavigationIsland(props: Props) {
     // counterIndex will remain null if it's >200 or whatever we set the max page size to
     counterIndex = path(['search', 'studyEdge', 'counterIndex'], data);
     recordsTotal =
-      counterIndex &&
+    counterIndex &&
       (pathOr(
         1,
         ['search', 'studyEdge', 'recordsTotal'],
         data
       ) as number);
+      let url = match.url
+      const updatedPath = url.substring(0, url.lastIndexOf('/')); 
     nextLink =
       nextId &&
-      `/study/${nextId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+      `${updatedPath}/${nextId}?hash=${variables.hash}&sv=${siteViewUrl}`;
     prevLink =
       prevId &&
-      `/study/${prevId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+      `${updatedPath}/${prevId}?hash=${variables.hash}&sv=${siteViewUrl}`;
 
     // just so that there isn't a first button if there isn't a prev button
     // likewise for the last button
     if (prevLink != null) {
       firstLink =
         firstId &&
-        `/study/${firstId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+        `${updatedPath}/${firstId}?hash=${variables.hash}&sv=${siteViewUrl}`;
       // firstId && `/search/${variables.hash}/study/${firstId}`;
     }
     if (nextLink != null && counterIndex != null) {
       lastLink =
         lastId &&
-        `/study/${lastId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+        `${updatedPath}/${lastId}?hash=${variables.hash}&sv=${siteViewUrl}`;
     }
   return (
     <div className="container">

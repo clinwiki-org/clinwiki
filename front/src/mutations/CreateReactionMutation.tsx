@@ -18,7 +18,7 @@ interface CreateReactionProps {
   ) => JSX.Element;
 }
 
-const CREATE_REACTION = gql`
+export const CREATE_REACTION = gql`
   mutation CreateReaction(
     $reactionKindId: Int!
     $nctId: String!
