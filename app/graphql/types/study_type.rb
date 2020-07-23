@@ -86,6 +86,7 @@ module Types
     field :brief_summary, String, null: true
     field :detailed_description, String, null: true
     field :conditions, String, null: true
+    field :conditions2, [ConditionType],null: true
 
     field :design, String, null: false
     field :study_arms, String, null: false
@@ -248,6 +249,9 @@ module Types
 
     def conditions
       Loaders::Association.for(Study, :all_condition).load(object).then { |dd| dd&.names }
+    end
+    def conditions2
+      Loaders::Association.for(Study, :conditions).load(object)
     end
 
     def completion_date
