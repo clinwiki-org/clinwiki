@@ -132,7 +132,10 @@ class SearchService
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
-    reactions.kind
+    reactions.kind indexed_at last_update_posted_date
+    last_changed_date  number_of_arms
+    number_of_groups why_stopped results_first_submitted_date
+    plan_to_share_ipd design_outcome_measures
   ].freeze
 
   attr_reader :params
@@ -287,7 +290,6 @@ class SearchService
 
   def missing_identifier_for_key(key)
     return DATE_MISSING_IDENTIFIER if key.to_s =~ /\b?date\b?/
-
     STRING_MISSING_IDENTIFIER
   end
 

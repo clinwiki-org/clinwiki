@@ -16,9 +16,13 @@ import ThemedButton from 'components/StyledComponents/index';
 import ReviewForm from 'containers/ReviewForm';
 import { trimPath } from 'utils/helpers';
 import {
+  DELETE_REVIEW_MUTATION
+} from 'mutations/ReviewsPageDeleteReviewMutation';
+import {
   ReviewPageQuery,
   ReviewPageQueryVariables,
 } from 'types/ReviewPageQuery';
+import QUERY from 'queries/ReviewPageQuery';
 import {
   ReviewsPageFragment,
   ReviewsPageFragment_user,
@@ -62,23 +66,7 @@ const FRAGMENT = gql`
   }
 `;
 
-const QUERY = gql`
-  query ReviewPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      reviews {
-        ...ReviewsPageFragment
-      }
-      nctId
-    }
-    me {
-      id
-    }
-  }
 
-  ${StudySummary.fragment}
-  ${FRAGMENT}
-`;
 
 const STUDY_FRAGMENT = gql`
   fragment ReviewsPageStudyFragment on Study {
@@ -91,14 +79,6 @@ const STUDY_FRAGMENT = gql`
   ${FRAGMENT}
 `;
 
-const DELETE_REVIEW_MUTATION = gql`
-  mutation ReviewsPageDeleteReviewMutation($id: Int!) {
-    deleteReview(input: { id: $id }) {
-      success
-      errors
-    }
-  }
-`;
 
 const RatingsWrapper = styled.div`
   display: flex;
@@ -137,12 +117,12 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
     return user.email;
   };
 
-  handleWriteReview = () => {
-    this.props.history.push(`${trimPath(this.props.match.url)}/new`);
+  handleWriteReview = (hash: string, siteViewUrl: string) => {
+    this.props.history.push(`${trimPath(this.props.match.url)}/new?hash=${hash}&sv=${siteViewUrl} `);
   };
 
-  handleEditReview = (id: number) => {
-    this.props.history.push(`${trimPath(this.props.match.url)}/${id}/edit`);
+  handleEditReview = (id: number, hash: string, siteViewUrl: string ) => {
+    this.props.history.push(`${trimPath(this.props.match.url)}/${id}/edit?hash=${hash}&sv=${siteViewUrl}`);
   };
 
   handleDeleteReview = (
@@ -171,7 +151,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
     );
   };
 
-  renderReview = (user: UserFragment | null) => (
+  renderReview = (user: UserFragment | null, hash: string , siteViewUrl:string) => (
     review: ReviewsPageFragment
   ) => {
     let meta = {};
@@ -208,7 +188,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                 <ButtonsWrapper>
                   <ThemedButton
                     style={{ marginRight: 10 }}
-                    onClick={() => this.handleEditReview(review.id)}>
+                    onClick={() => this.handleEditReview(review.id, hash, siteViewUrl)}>
                     Edit
                   </ThemedButton>
                   <DeleteReviewMutationComponent
@@ -264,19 +244,25 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
   };
 
   renderReviews = (reviews: ReviewsPageFragment[]) => {
+    const hash = new URLSearchParams(this.props.history.location.search)
+    .getAll('hash')
+    .toString();
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search)
+    .getAll('sv')
+    .toString();
     return (
       <CurrentUser>
         {user => (
           <>
             {user && (
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <WriteReviewButton onClick={this.handleWriteReview}>
+                <WriteReviewButton onClick={()=>this.handleWriteReview(hash,siteViewUrl)}>
                   Write a review
                 </WriteReviewButton>
               </div>
             )}
             <Table striped bordered>
-              <tbody>{reviews.map(this.renderReview(user))}</tbody>
+              <tbody>{reviews.map(this.renderReview(user, hash, siteViewUrl))}</tbody>
             </Table>
           </>
         )}

@@ -20,9 +20,9 @@ The easiest way to start ClinWiki on your own system is to use [docker-compose](
 - Install Docker
   - Windows and Mac users install [Docker Desktop](https://www.docker.com/products/docker-desktop)
   - Linux users follow the [official install instructions for Docker for your distribution](https://docs.docker.com/install/#supported-platforms)
-- **Note: if you're using OS X, you will want to run docker-compose commands with `-f docker-compose.yml -f docker-compose-osx.yml`**. Install `docker-sync` via `gem install docker-sync` and then run `docker-sync start --config=docker-sync.yml` in a separate terminal. This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config.
-- `docker-compose build`
-- `docker-compose up` or `docker-compose up -d` to run as daemon in background
+- **Note for OS X / macOS users:** Before running the docker-compose commands, bring up a separate terminal, then install `docker-sync` via `gem install docker-sync` and run `docker-sync start --config=docker-sync.yml`. This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config. Additionally, you will want to run the `docker-compose` commands with additional arguments (included below for each step). 
+- `docker-compose build` (for macOS: `docker-compose -f docker-compose.yml -f docker-compose-osx.yml build`)
+- `docker-compose up` or `docker-compose up -d` to run as daemon in background (for macOS: `docker-compose -f docker-compose.yml -f docker-compose-osx.yml up` or `docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d`)
 - `compose/bin/search_bootstrap`
 - Now you should have the ClinWiki server running on http://localhost:3000
 - Extras
@@ -41,7 +41,7 @@ The easiest way to start ClinWiki on your own system is to use [docker-compose](
 You can use the CW_MODE environment variable to configure how docker-compose starts ClinWiki.
 
 - CW_MODE=PROD - the default, builds the front end and runs rails
-- CW*MODE=FAST - runs rails \_without* building the front end for a quicker startup
+- CW_MODE=FAST - runs rails *without* building the front end for a quicker startup
 - CW_MODE=DEV - starts the 'clinwiki' container without running rails so you can start/restart it manually during development
 - CW_MODE=WORKER - runs the sidekiq process instead of rails
 
