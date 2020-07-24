@@ -202,7 +202,7 @@ const QueryComponent = (
 
 const SearchWrapper = styled.div`
   .rt-tr {
-    cursor: pointer;
+    cursor: default;
   }
   #search-sidebar {
     padding-right: 0;
@@ -507,7 +507,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   data={data}
                   loading={loading}
                   template={template}
-                  onPress={onPress}
                   defaultHeight={defaultHeight}
                   defaultWidth={defaultWidth}
                   containerWidth={width}
@@ -526,7 +525,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 data={data}
                 loading={loading}
                 template={template}
-                onPress={onPress}
                 height={height}
                 width={width}
               />
@@ -541,7 +539,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 data={data}
                 loading={loading}
                 template={template}
-                onPress={onPress}
                 width={width}
               />
             )}

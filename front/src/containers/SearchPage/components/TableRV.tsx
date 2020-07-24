@@ -53,7 +53,6 @@ const MainContainer = styled.div`
 `;
 interface TableRVProps {
   data: SearchPageSearchQuery_search_studies[];
-  onPress: Function;
   loading: boolean;
   template: string;
   width: number;
