@@ -8,6 +8,10 @@ export default function useUrlParams() {
       ?.toString(),
     pageViewUrl: new URLSearchParams(window.location.search)
       .getAll('pv')
+      ?.toString(),  
+    q: new URLSearchParams(window.location.search)
+      .getAll('q')
       ?.toString(),
+
   };
 }
