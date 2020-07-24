@@ -84,7 +84,6 @@ export default function WorkflowIsland(props: Props) {
 
   return (
     <div>
-      <h3>Crowd Labels</h3>
       <StyledPanel>
         <SuggestedLabels
           nctId={nctId}

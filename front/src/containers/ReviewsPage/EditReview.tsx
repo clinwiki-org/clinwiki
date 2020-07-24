@@ -21,6 +21,7 @@ interface EditReviewProps {
   isWorkflow?: boolean;
   nextLink?: string | null;
   theme?: any;
+  nctId:string;
 }
 
 const QUERY = gql`
@@ -58,15 +59,18 @@ class EditReview extends React.PureComponent<EditReviewProps> {
     return (
       <QueryComponent
         query={QUERY}
-        variables={{ nctId: this.props.match.params.nctId }}>
+        variables={{ nctId: this.props.nctId }}>
         {({ data, loading, error }) => {
           if (loading || error || !data || !data.study || !data.study.reviews) {
+            console.log("One")
             return null;
           }
           if (!this.props.match.params.id) {
+            console.log("Two")
             return null;
           }
           const id = parseInt(this.props.match.params.id, 10);
+          console.log(data)
           const review = find(
             propEq('id', id),
             data.study.reviews
@@ -74,11 +78,11 @@ class EditReview extends React.PureComponent<EditReviewProps> {
           if (!review) return null;
 
           this.props.onLoaded && this.props.onLoaded();
-
+            console.log("4", review, this.props)
           return (
             <ReviewForm
               review={review}
-              nctId={this.props.match.params.nctId}
+              nctId={this.props.match.params.nctId||this.props.nctId}
               afterSave={this.handleReviewSave}
               theme={this.props.theme}
             />

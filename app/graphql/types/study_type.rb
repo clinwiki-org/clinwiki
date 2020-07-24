@@ -119,6 +119,8 @@ module Types
     field :contacts, String, null: false
     field :listed_location_countries, String, null: false
     field :removed_location_countries, String, null: false
+    field :central_contacts, [CentralContactType], null:false
+    field :overall_officials, [OverallOfficialType], null:false
 
     # Tracking
     field :first_received_date, DateTimeType, null: true

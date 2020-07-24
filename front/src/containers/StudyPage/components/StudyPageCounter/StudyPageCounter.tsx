@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 interface StudyPageCounterProps {
-  counter: number;
+  counter: number | Element;
   recordsTotal: number | Element;
 }
 
@@ -11,7 +11,6 @@ class StudyPageCounter extends React.PureComponent<StudyPageCounterProps> {
     return (
       <div>
         <div id="navbuttonsonstudypage">
-          {this.props.counter === null ? null : 'record '}
           <b>
             {this.props.counter}
             {typeof this.props.recordsTotal === 'number' ? '/' : null}

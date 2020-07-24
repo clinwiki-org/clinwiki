@@ -3,6 +3,7 @@ import { gql } from 'apollo-boost';
 import { Query, QueryComponentOptions } from 'react-apollo';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
+import QUERY from 'queries/SearchStudyPageQuery';
 import {
   SearchStudyPageQuery,
   SearchStudyPageQueryVariables,
@@ -12,27 +13,6 @@ import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
 import { UserFragment } from 'types/UserFragment';
 
-const QUERY = gql`
-  query SearchStudyPageQuery($hash: String!, $id: String!) {
-    search(searchHash: $hash) {
-      studyEdge(id: $id) {
-        nextId
-        prevId
-        firstId
-        lastId
-        isWorkflow
-        workflowName
-        study {
-          nctId
-        }
-        recordsTotal
-        counterIndex
-        firstId
-        lastId
-      }
-    }
-  }
-`;
 
 interface StudySearchPageProps {
   match: match<{ nctId: string; searchId: string }>;
@@ -96,6 +76,8 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
 
             // counterIndex will remain null if it's >200 or whatever we set the max page size to
             counterIndex = path(['search', 'studyEdge', 'counterIndex'], data);
+            let url = this.props.match.url
+            const updatedPath = url.substring(0, url.lastIndexOf('/')); 
             recordsTotal =
               counterIndex &&
               (pathOr(
@@ -105,23 +87,23 @@ class StudySearchPage extends React.PureComponent<StudySearchPageProps> {
               ) as number);
             nextLink =
               nextId &&
-              `/study/${nextId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+              `${updatedPath}/${nextId}?hash=${variables.hash}&sv=${siteViewUrl}`;
             prevLink =
               prevId &&
-              `/study/${prevId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+              `${updatedPath}/${prevId}?hash=${variables.hash}&sv=${siteViewUrl}`;
 
             // just so that there isn't a first button if there isn't a prev button
             // likewise for the last button
             if (prevLink != null) {
               firstLink =
                 firstId &&
-                `/study/${firstId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+                `${updatedPath}/${firstId}?hash=${variables.hash}&sv=${siteViewUrl}`;
               // firstId && `/search/${variables.hash}/study/${firstId}`;
             }
             if (nextLink != null && counterIndex != null) {
               lastLink =
                 lastId &&
-                `/study/${lastId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+                `${updatedPath}/${lastId}?hash=${variables.hash}&sv=${siteViewUrl}`;
             }
           }
           return (
