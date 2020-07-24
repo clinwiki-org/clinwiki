@@ -253,6 +253,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       brief_summary: brief_summary && brief_summary.description,
       detailed_description: detailed_description && detailed_description.description,
       browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
+      conditions: conditions.map(&:downcase_name),
       browse_interventions_mesh_terms: browse_interventions.map(&:mesh_term),
       interventions_mesh_terms: interventions.map(&:name).reject(&:nil?),
       interventions: interventions.map(&:description).reject(&:nil?),

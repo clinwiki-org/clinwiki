@@ -3,6 +3,7 @@ export const aggsOrdered = [
   // 'tags',
   'browse_condition_mesh_terms',
   'browse_interventions_mesh_terms',
+  'condtions',
   'design_outcome_measures',
   'expanded_access_type_treatment',
   'facility_cities',
