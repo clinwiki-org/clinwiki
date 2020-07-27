@@ -42,7 +42,7 @@ module Types
     def page_view(url:nil)
       case url
       when nil
-        object.page_views.first
+        object.page_views.where(default:true).first
       else
         object.page_views.find_by(url: url)
       end

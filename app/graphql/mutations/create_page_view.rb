@@ -9,6 +9,7 @@ module Mutations
     argument :url, String, required: true
     argument :mutations,[Types::SiteViewMutationInputType],required: false
     argument :site_id, Integer, required: true
+    argument :default, Boolean, required: false
 
     def resolve(args)
       site = Site.find_by(id: args[:site_id])
@@ -16,7 +17,7 @@ module Mutations
         return   { site_view: nil, errors: ["Site not found"] }
       end
       page_view = site.page_views.new()
-      page_view.attributes = args.slice(:title,:template,:url,:page_type)
+      page_view.attributes = args.slice(:title,:template,:url,:page_type, :default)
       if args[:mutations]
         mutations = args[:mutations].clone.map do |mutation|
           begin

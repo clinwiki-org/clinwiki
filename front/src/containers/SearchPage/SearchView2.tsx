@@ -305,11 +305,33 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     let showResults = this.props.currentSiteView.search.config.fields
       .showResults;
     if (!this.props.showCards && showResults) {
+      //Needed for old table view
+      this.setState({
+        tableWidth: document.getElementsByClassName('ReactTable')?.[0]?.clientWidth,
+      });
+      window.addEventListener('resize', this.updateState);
     }
   }
 
   componentDidUpdate() {
     if (!this.props.showCards) {
+            //Needed for old table view
+      if (
+        document.getElementsByClassName('ReactTable')[0] &&
+        this.state.tableWidth !==
+          document.getElementsByClassName('ReactTable')[0].clientWidth
+      ) {
+        window.addEventListener('resize', this.updateState);
+        this.setState({
+          tableWidth: document.getElementsByClassName('ReactTable')[0]
+            .clientWidth,
+        });
+      }
+    } else {
+      if (!this.props.showCards)
+        window.removeEventListener('resize', this.updateState);
+    }
+    if (this.state.totalResults) {
     }
   }
 
@@ -317,9 +339,50 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
 
   // Functions for Old Table and Card view start here and end at line 492
   loadPaginator = (recordsTotal, loading, page, pagesTotal) => {
-    if (this.props.showCards) {
       return (
         <div className="right-align">
+          {page > 0 && !loading ? (
+            <FontAwesome
+              className="arrow-left"
+              name="arrow-left"
+              style={{ cursor: 'pointer', margin: '5px' }}
+              onClick={() =>
+                pipe(changePage, this.props.onUpdateParams)(page - 1)
+              }
+            />
+          ) : (
+            <FontAwesome
+              className="arrow-left"
+              name="arrow-left"
+              style={{ margin: '5px', color: 'gray' }}
+            />
+          )}
+          page{' '}
+          <b>
+            {loading ? (
+              <div id="divsononeline">
+                <PulseLoader color="#cccccc" size={8} />
+              </div>
+            ) : (
+              `${Math.min(page + 1, pagesTotal)}/${pagesTotal}`
+            )}{' '}
+          </b>
+          {page + 1 < pagesTotal && !loading ? (
+            <FontAwesome
+              className="arrow-right"
+              name="arrow-right"
+              style={{ cursor: 'pointer', margin: '5px' }}
+              onClick={() => {
+                pipe(changePage, this.props.onUpdateParams)(page + 1);
+              }}
+            />
+          ) : (
+            <FontAwesome
+              className="arrow-right"
+              name="arrow-right"
+              style={{ margin: '5px', color: 'gray' }}
+            />
+          )}
           <div>{recordsTotal} results</div>
           <div>
             {recordsTotal > MAX_WINDOW_SIZE
@@ -328,6 +391,13 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           </div>
         </div>
       );
+  };
+  updateState = () => {
+    if (!this.props.showCards) {
+      this.setState({
+        tableWidth: document.getElementsByClassName('ReactTable')[0]
+          .clientWidth,
+      });
     }
   };
   renderViewDropdown = () => {
@@ -476,7 +546,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     };
   };
   //End Old functions
-  renderHelper = (data, loading, template, onPress, resultsType) => {
+  renderHelper = (data, loading, template, onPress, resultsType, recordsTotal) => {
     switch (resultsType) {
       case 'masonry':
         return (
@@ -591,24 +661,10 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         const { currentSiteView } = this.props;
         // Block that sets the recordsTotal to state based on data response
         let pagesTotal = 1;
-        let recordsTotal = 0;
-        if (
-          data &&
-          data.search &&
-          data.search.recordsTotal &&
-          this.props.params.pageSize
-        ) {
-          recordsTotal = data.search.recordsTotal;
           pagesTotal = Math.min(
-            Math.ceil(data.search.recordsTotal / this.props.params.pageSize),
+            Math.ceil(recordsTotal / this.props.params.pageSize),
             Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
           );
-        }
-        if (recordsTotal !== this.state.totalResults) {
-          this.setState({
-            totalResults: recordsTotal,
-          });
-        }
 
         const showResults = currentSiteView.search.config.fields.showResults;
 
@@ -631,6 +687,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   flexDirection: 'row',
                   marginLeft: 'auto',
                 }}>
+                {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
                 {this.renderViewDropdown()}
               </div>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -699,7 +756,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     const showResults = currentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
     const resultsType = currentSiteView.search.results.type;
-
+    let recordsTotal = data?.search?.recordsTotal;
     if (error) {
       return <div>{error.message}</div>;
     }
@@ -713,7 +770,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           loading,
           currentSiteView.search.template,
           this.cardPressed,
-          resultsType
+          resultsType,
+          recordsTotal
         )
       : null;
   };

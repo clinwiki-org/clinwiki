@@ -7,12 +7,13 @@ module Mutations
     argument :template, String, required: false
     argument :page_type, String, required: false
     argument :url, String, required: false
+    argument :default, Boolean, required: false
     argument :mutations,[Types::SiteViewMutationInputType],required: false
     argument :id, Integer, required: true
 
     def resolve(args)
       page_view = page_view(args[:id])
-      page_view.attributes = args.slice(:title,:template,:url,:page_type)
+      page_view.attributes = args.slice(:title,:template,:url,:page_type, :default)
       if args[:mutations]
         mutations = args[:mutations].clone.map do |mutation|
           begin
