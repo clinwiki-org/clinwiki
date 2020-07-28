@@ -1,3 +1,3 @@
 class Design < AactRecord
-  include BelongsToStudy
+  include HasOneStudy
 end
