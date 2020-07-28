@@ -67,7 +67,7 @@ class App extends React.PureComponent<AppProps> {
                     component={StudyPage}
                   />
                   <Route path="/study/:nctId"
-                    render={(props) => <SearchStudyPage {...props} user={user} refetch={refetch} />}
+                    render={(props) => <GenericPage arg={props.match.params.nctId} />}
                   />
                   <Route path="/p/:page/:arg?"
                     render={(props) => <GenericPage url={props.match.params.page} arg={props.match.params.arg} />}

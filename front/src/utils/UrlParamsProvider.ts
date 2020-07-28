@@ -6,5 +6,12 @@ export default function useUrlParams() {
     siteViewUrl: new URLSearchParams(window.location.search)
       .getAll('sv')
       ?.toString(),
+    pageViewUrl: new URLSearchParams(window.location.search)
+      .getAll('pv')
+      ?.toString(),  
+    q: new URLSearchParams(window.location.search)
+      .getAll('q')
+      ?.toString(),
+
   };
 }

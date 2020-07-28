@@ -16,6 +16,7 @@ export interface UpdatePageViewMutation_updatePageView_pageView {
   template: string;
   title: string;
   url: string;
+  default: boolean;
 }
 
 export interface UpdatePageViewMutation_updatePageView {

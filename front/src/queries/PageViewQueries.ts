@@ -16,6 +16,7 @@ export const PAGE_VIEW_FRAGMENT = gql`
     template
     title
     url
+    default
   }
 `;
 
@@ -32,7 +33,7 @@ export const PAGE_VIEWS_QUERY = gql`
 `;
 
 const PAGE_VIEW_QUERY = gql`
-  query PageViewQuery($id: Int, $url: String!) {
+  query PageViewQuery($id: Int, $url: String) {
     site(id: $id) {
       id
       pageView(url: $url) {

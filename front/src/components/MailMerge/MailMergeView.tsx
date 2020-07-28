@@ -86,7 +86,10 @@ function tokensToGraphQLOb(tags: string[]) {
       pushScope(scopeName);
       scope[propName] = 'x';
       popScope();
-    } else {
+    }else if(name == "hash" || name == "siteViewUrl" || name == "pageViewUrl" || name == "q"){
+
+      scope[name] ={param: name}
+    }else {
       // single value
       scope[name] = 'x';
     }
@@ -126,10 +129,20 @@ function jsonToFragmentBody(
   for (const key in json) {
     const value = json[key];
     result += indent;
-    result += key;
     if (value === 'x') {
+      result += key;
       result += '\n';
-    } else {
+    } 
+    //@ts-ignore
+    else if(value && value.param) {
+
+       console.log(result)
+      
+      
+    }
+    
+    else {
+      result += key;
       result += jsonToFragmentBody(
         value as Record<string, object | Marker>,
         indent + '  '
@@ -173,6 +186,7 @@ function applyTemplate(
   context?: object
 ) {
   try {
+    context = {...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q'}
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;

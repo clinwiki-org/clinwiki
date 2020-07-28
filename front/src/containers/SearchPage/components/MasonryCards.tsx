@@ -15,7 +15,6 @@ import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface MasonryCardsProps {
   data: SearchPageSearchQuery_search_studies[];
-  onPress: Function;
   loading: boolean;
   template: string;
   defaultHeight: number;
@@ -56,9 +55,6 @@ class MasonryCards extends React.Component<
     height: '100%',
   };
 
-  clicked = (d: any) => {
-    this.props.onPress(d);
-  };
   cache = new CellMeasurerCache({
     defaultHeight: this.props.defaultHeight,
     defaultWidth: this.props.defaultWidth,
@@ -78,7 +74,7 @@ class MasonryCards extends React.Component<
 
     return (
       <CellMeasurer cache={this.cache} index={index} key={key} parent={parent}>
-        <div style={style} onClick={() => this.props.onPress(listItems[index])}>
+        <div style={style} >
           <MailMergeView
             style={this.cardStyle}
             template={this.props.template}
