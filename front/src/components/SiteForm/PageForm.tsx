@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
+import { FormControl, DropdownButton, MenuItem, Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
 import { PageViewsQuery_site_pageViews } from 'types/PageViewsQuery';
@@ -31,12 +31,18 @@ function formControl(
     />
   );
 }
-
+function checkboxHelper(
+  isDefault: boolean,
+  setValue: (b: boolean) => void
+) {
+  setValue(!isDefault)
+}
 export default function PageForm(props: Props) {
   const page = props.page;
   const [url, setUrl] = useState(page.url);
   const [title, setTitle] = useState(page.title);
   const [template, setTemplate] = useState(page.template);
+  const [isDefault, setDefault] = useState(page.default);
   const savePage = useUpdatePageView(props.siteId);
   const deletePage = useDeletePageView(props.siteId);
   const theme = useTheme();
@@ -45,6 +51,11 @@ export default function PageForm(props: Props) {
     <div style={{ padding: '10px' }}>
       <label>Url</label>
       {formControl('Url', url, setUrl)}
+      <label>Default?</label>
+      <Checkbox
+        checked={isDefault}
+        onChange={() => checkboxHelper(isDefault, setDefault)}
+      />
       <label>Page Type</label>
       <div>
         <DropdownButton
@@ -69,7 +80,7 @@ export default function PageForm(props: Props) {
       />
       <hr />
       <ThemedButton
-        onClick={_ => savePage({ id: page.id, title, url, template })}
+        onClick={_ => savePage({ id: page.id, title, url, template, default: isDefault })}
         style={{ margin: '10px' }}>
         Save '{url}'
       </ThemedButton>

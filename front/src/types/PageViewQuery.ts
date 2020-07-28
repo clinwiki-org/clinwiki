@@ -14,6 +14,7 @@ export interface PageViewQuery_site_pageView {
   template: string;
   title: string;
   url: string;
+  default: boolean;
 }
 
 export interface PageViewQuery_site {
@@ -31,5 +32,5 @@ export interface PageViewQuery {
 
 export interface PageViewQueryVariables {
   id?: number | null;
-  url: string;
+  url?: string | null;
 }

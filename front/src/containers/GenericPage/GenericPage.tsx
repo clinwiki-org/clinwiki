@@ -1,24 +1,46 @@
 import React, { useState } from 'react';
-import { usePageView } from 'queries/PageViewQueries';
+import { usePageView, usePageViews } from 'queries/PageViewQueries';
 import MailMergeView, {
   microMailMerge,
 } from 'components/MailMerge/MailMergeView';
+import { useSite } from 'containers/SiteProvider/SiteProvider';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-apollo';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { pageIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
+import { find, propEq } from 'ramda';
 
 interface Props {
   url?: string;
   arg?: string;
 }
 export default function GenericPage(props: Props) {
+  const history = useHistory();
+  const match = useRouteMatch();
+  const defaultPage =()=>{
+    if(props.url){
+      return props.url
+    }
+    if(params.pageViewUrl && pageViewsData){
+      const defaultPageView= find(propEq('url', params.pageViewUrl))(pageViewsData?.site?.pageViews)
+      if (defaultPageView){
+        return defaultPageView.url
+      }
+    }
+    if(pageViewsData){
+     const defaultPageView= find(propEq('default', true))(pageViewsData?.site?.pageViews)
+      return defaultPageView.url
+    }
+  } 
   // When we add more page types we need to refactor this a little bit and pull out the query/nctid
   const fragmentName = 'GenericPageStudy';
   const params = useUrlParams()
-  const { data: pageViewData } = usePageView(props.url || params.pageViewUrl || 'test');
+  const { site } = useSite();
+  const { data: pageViewsData } = usePageViews(site?.id);
+  const { data: pageViewData } = usePageView(defaultPage());
   const currentPage = pageViewData?.site?.pageView;
   const [fragment, setFragment] = useState('');
   const { data: studyData, loading } = useQuery(

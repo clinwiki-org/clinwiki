@@ -14,4 +14,5 @@ export interface PageViewFragment {
   template: string;
   title: string;
   url: string;
+  default: boolean;
 }
