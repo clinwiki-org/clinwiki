@@ -327,10 +327,10 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     self.interventions_raw = nil
   end
 
-  def interventions
-    @interventions || Study.preload_interventions(self)
-    @interventions
-  end
+  # def interventions
+  #   @interventions || Study.preload_interventions(self)
+  #   @interventions
+  # end
 
   def interventions_raw
     @interventions
@@ -398,7 +398,6 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       sleep 0.1
     end
   end
-
   def self.preload_extended_interventions(studies) # rubocop:disable Metrics/MethodLength
     studies = studies.is_a?(Array) ? studies : [studies]
     study_groups = studies.group_by(&:nct_id)
