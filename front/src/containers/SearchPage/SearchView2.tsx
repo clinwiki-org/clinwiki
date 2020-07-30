@@ -6,7 +6,7 @@ import ThemedButton from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { PulseLoader } from 'react-spinners';
-import { Col, ButtonGroup, Button } from 'react-bootstrap';
+import { Col, ButtonGroup, Button, MenuItem, DropdownButton } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput } from 'types/globalTypes';
@@ -51,6 +51,7 @@ import {
   createMasonryCellPositioner,
   Masonry,
 } from 'react-virtualized';
+import aggToField from 'utils/aggs/aggToField';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -792,6 +793,71 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     }
   };
 
+  sortHelper = (sorts, params) => {
+    const idSortedLens = lensProp('id');
+    const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
+    let newParams = { ...params, sorts: snakeSorts, page: 0 };
+    this.props.onUpdateParams(changeSorted(sorts))
+  }
+  reverseSort = () => {
+    let params = this.props.params
+    let desc = this.props.params.sorts[0].desc
+    let newSort: [SortInput] = [{ id: this.props.params.sorts[0].id, desc: !desc }]
+    let newParams = { ...params, sorts: newSort, page: 0 }
+    this.props.onUpdateParams(changeSorted(newSort))
+
+  }
+  renderFilterDropDown = () => {
+    const sortField = () => {
+      if (this.props.params.sorts.length > 0) {
+        return aggToField(this.props.params.sorts[0].id, this.props.params.sorts[0].id)
+
+      }
+      return " "
+    }
+    return (
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <DropdownButton
+          bsStyle="default"
+          title={`Sort by: ${sortField()}`}
+          key="default"
+          id="dropdown-basic-default"
+          style={{
+            margin: '1em 1em 1em 0',
+            background: this.props.theme.button,
+          }}>
+
+          {this.props.currentSiteView.search.fields.map((field, index) => {
+            console.log(this.props)
+            let sorts = [{ id: field, desc: false }]
+            let params = this.props.params
+            console.log(params)
+            return (
+              <MenuItem
+                key={field + index}
+                name={field}
+                onClick={() => this.sortHelper(sorts, params)}>
+                {aggToField(field, field)}
+              </MenuItem>
+            )
+
+          })}
+
+        </DropdownButton>
+        <div onClick={() => this.reverseSort()} style={{ display: 'flex', marginTop: 'auto', marginBottom: 'auto', cursor: 'pointer' }} >
+          <FontAwesome
+            name={'sort'}
+            style={
+
+              { color: '#c0c3c5', fontSize: '26px' }
+            }
+          />
+        </div>
+      </div>
+    )
+
+  }
+
   render() {
     return (
       <SearchWrapper>
@@ -808,10 +874,10 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               // Unfortunately the onCompleted callback is not called if
               // the data is served from cache.  There is some confusion
               // in the documentation but this appears to be by design.
-
               this.handleAggsUpdated(data);
               return (
                 <SearchContainer>
+                  {this.renderFilterDropDown()}
                   {this.renderSearch({ data, loading, error })}
                 </SearchContainer>
               );

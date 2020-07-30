@@ -510,6 +510,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   view={view}
                   configType="facetbar"
                   returnAll={true}
+                  sortables={view.search.fields}
                 />
               ))}
             </Col>
