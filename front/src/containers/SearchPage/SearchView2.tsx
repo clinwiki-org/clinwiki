@@ -604,19 +604,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         ) as number;
         const { page, pageSize, sorts } = this.props.params;
 
-        if (this.state.prevResults !== this.state.totalResults) {
-          this.setState(
-            prev => {
-              return {
-                totalResults: totalRecords,
-                prevResults: prev.totalResults,
-              };
-            },
-            () => {
-              this.props.getTotalResults(this.state.totalResults);
-            }
-          );
-        }
         const totalPages = Math.min(
           Math.ceil(totalRecords / this.props.params.pageSize),
           Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
@@ -743,6 +730,25 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     }
     if (!data) {
       return null;
+    }
+    const totalRecords = pathOr(
+      0,
+      ['search', 'recordsTotal'],
+      data
+    ) as number;
+
+    if (this.state.prevResults !== this.state.totalResults) {
+      this.setState(
+        prev => {
+          return {
+            totalResults: totalRecords,
+            prevResults: prev.totalResults,
+          };
+        },
+        () => {
+          this.props.getTotalResults(this.state.totalResults);
+        }
+      );
     }
 
     return showResults
