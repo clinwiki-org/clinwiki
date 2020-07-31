@@ -4,6 +4,8 @@ const aggToField = (val: string, expectedVal?: string): string => {
   return propOr(val, val, {
     // average_rating: 'average rating',
     average_rating: expectedVal === val ? 'average rating' : expectedVal,
+    nct_id: expectedVal === val ? 'nct id' : expectedVal,
+    brief_title: expectedVal === val ? 'brief title' : expectedVal,
     design_outcome_measures: expectedVal === val ? 'design outcome measures' : expectedVal,
     results_first_submitted_date: expectedVal === val ? 'results first submitted date' : expectedVal,
     last_changed_date: expectedVal === val ? 'last changed date' : expectedVal,
