@@ -8,6 +8,7 @@ import { Column, Table, SortDirection, AutoSizer } from 'react-virtualized';
 import _ from 'lodash';
 import 'react-virtualized/styles.css';
 import styled from 'styled-components';
+import { camelCase, sentanceCase } from 'utils/helpers';
 
 const MainContainer = styled.div`
   .Table {
@@ -56,6 +57,7 @@ interface TableRVProps {
   loading: boolean;
   template: string;
   width: number;
+  columnFields: string[];
   // columns:any;
 }
 
@@ -110,26 +112,15 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
           rowCount={listItems.length}
           rowClassName={this._rowClassName}
           rowGetter={({ index }) => listItems[index]}
-          // sortDirection={SortDirection.ASC}
-          // sortBy={'nctId'}
-          >
-          <Column label="NCTID" dataKey="nctId" width={width * 0.15} />
-          <Column
-            label="Brief Title:"
-            dataKey="briefTitle"
-            width={width * 0.35}
-          />
-
-          <Column
-            label="Overall Status:"
-            dataKey="overallStatus"
-            width={width * 0.25}
-          />
-          <Column
-            label="Completion Date:"
-            dataKey="completionDate"
-            width={width * 0.25}
-          />
+        // sortDirection={SortDirection.ASC}
+        // sortBy={'nctId'}
+        >
+          {this.props.columnFields.map((field) => {
+        //need to find a way to make column width more dynamic
+            return (
+              <Column label={sentanceCase(field)} dataKey={camelCase(field)} width={width / this.props.columnFields.length} />
+            )
+          })}
         </Table>
       );
     }

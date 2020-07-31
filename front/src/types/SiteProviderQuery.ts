@@ -365,6 +365,7 @@ export interface SiteProviderQuery_site_siteView_search {
   autoSuggest: SiteProviderQuery_site_siteView_search_autoSuggest;
   results: SiteProviderQuery_site_siteView_search_results;
   presearch: SiteProviderQuery_site_siteView_search_presearch;
+  sortables: string[];
   fields: string[];
   config: SiteProviderQuery_site_siteView_search_config;
   aggs: SiteProviderQuery_site_siteView_search_aggs;
@@ -722,6 +723,7 @@ export interface SiteProviderQuery_site_siteViews_search {
   autoSuggest: SiteProviderQuery_site_siteViews_search_autoSuggest;
   results: SiteProviderQuery_site_siteViews_search_results;
   presearch: SiteProviderQuery_site_siteViews_search_presearch;
+  sortables: string[];
   fields: string[];
   config: SiteProviderQuery_site_siteViews_search_config;
   aggs: SiteProviderQuery_site_siteViews_search_aggs;

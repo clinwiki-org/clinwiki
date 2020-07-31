@@ -448,7 +448,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
         <>
           <StyledLabel>Sortable</StyledLabel>
           <Checkbox
-            name='set:search.fields'
+            name='set:search.sortables'
             checked={isSortable}
             onChange={this.handleCheckboxToggle(isSortable)}
           ></Checkbox>

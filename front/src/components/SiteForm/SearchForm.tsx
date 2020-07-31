@@ -510,7 +510,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   view={view}
                   configType="facetbar"
                   returnAll={true}
-                  sortables={view.search.fields}
+                  sortables={view.search.sortables}
                 />
               ))}
             </Col>
@@ -785,7 +785,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
-          {view.search.results.type === 'table' ? (
+          {view.search.results.type === 'table' || view.search.results.type === 'table2'  ? (
             <>
               <h3>Fields</h3>
               <MultiInput
@@ -798,7 +798,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               />
             </>
           ) : null}
-          {view.search.results.type === 'table' ? (
+          {view.search.results.type === 'table' || view.search.results.type === 'table2'   ? (
             null
           ) : (<>
             <h3>Template</h3>

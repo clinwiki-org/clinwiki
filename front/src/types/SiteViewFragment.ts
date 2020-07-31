@@ -349,6 +349,7 @@ export interface SiteViewFragment_search {
   autoSuggest: SiteViewFragment_search_autoSuggest;
   results: SiteViewFragment_search_results;
   presearch: SiteViewFragment_search_presearch;
+  sortables: string[];
   fields: string[];
   config: SiteViewFragment_search_config;
   aggs: SiteViewFragment_search_aggs;

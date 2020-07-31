@@ -613,6 +613,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 loading={loading}
                 template={template}
                 width={width}
+                columnFields={this.props.currentSiteView.search.fields}
               />
             )}
           </AutoSizer>
@@ -870,7 +871,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               background: this.props.theme.button,
             }}>
 
-            {this.props.currentSiteView.search.fields.map((field, index) => {
+            {this.props.currentSiteView.search.sortables.map((field, index) => {
               console.log(this.props)
               let sorts = [{ id: field, desc: false }]
               let params = this.props.params
