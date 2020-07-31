@@ -365,6 +365,7 @@ export interface SiteFragment_siteView_search {
   autoSuggest: SiteFragment_siteView_search_autoSuggest;
   results: SiteFragment_siteView_search_results;
   presearch: SiteFragment_siteView_search_presearch;
+  sortables: string[];
   fields: string[];
   config: SiteFragment_siteView_search_config;
   aggs: SiteFragment_siteView_search_aggs;
@@ -722,6 +723,7 @@ export interface SiteFragment_siteViews_search {
   autoSuggest: SiteFragment_siteViews_search_autoSuggest;
   results: SiteFragment_siteViews_search_results;
   presearch: SiteFragment_siteViews_search_presearch;
+  sortables: string[];
   fields: string[];
   config: SiteFragment_siteViews_search_config;
   aggs: SiteFragment_siteViews_search_aggs;

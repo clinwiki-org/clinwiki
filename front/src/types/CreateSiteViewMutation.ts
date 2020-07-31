@@ -349,6 +349,7 @@ export interface CreateSiteViewMutation_createSiteView_siteView_search {
   autoSuggest: CreateSiteViewMutation_createSiteView_siteView_search_autoSuggest;
   results: CreateSiteViewMutation_createSiteView_siteView_search_results;
   presearch: CreateSiteViewMutation_createSiteView_siteView_search_presearch;
+  sortables: string[];
   fields: string[];
   config: CreateSiteViewMutation_createSiteView_siteView_search_config;
   aggs: CreateSiteViewMutation_createSiteView_siteView_search_aggs;

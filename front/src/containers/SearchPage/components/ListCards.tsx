@@ -40,7 +40,6 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
     borderStyle: 'solid',
     borderRadius: '5px',
     background: '#ffffff',
-    cursor: 'pointer',
     height: '100%',
   };
 

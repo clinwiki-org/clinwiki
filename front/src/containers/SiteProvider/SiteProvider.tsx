@@ -185,7 +185,7 @@ export const SITE_VIEW_FRAGMENT = gql`
         }
         instructions
       }
-
+      sortables
       fields
       config {
         fields {

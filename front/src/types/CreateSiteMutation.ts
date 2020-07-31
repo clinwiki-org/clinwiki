@@ -365,6 +365,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search {
   autoSuggest: CreateSiteMutation_createSite_site_siteView_search_autoSuggest;
   results: CreateSiteMutation_createSite_site_siteView_search_results;
   presearch: CreateSiteMutation_createSite_site_siteView_search_presearch;
+  sortables: string[];
   fields: string[];
   config: CreateSiteMutation_createSite_site_siteView_search_config;
   aggs: CreateSiteMutation_createSite_site_siteView_search_aggs;
@@ -722,6 +723,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search {
   autoSuggest: CreateSiteMutation_createSite_site_siteViews_search_autoSuggest;
   results: CreateSiteMutation_createSite_site_siteViews_search_results;
   presearch: CreateSiteMutation_createSite_site_siteViews_search_presearch;
+  sortables: string[];
   fields: string[];
   config: CreateSiteMutation_createSite_site_siteViews_search_config;
   aggs: CreateSiteMutation_createSite_site_siteViews_search_aggs;

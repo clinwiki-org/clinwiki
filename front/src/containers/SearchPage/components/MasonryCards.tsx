@@ -28,7 +28,6 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
   }
 
   componentDidUpdate() {
-    console.log(this.props.theme);
     if (this.state.loading !== this.props.loading) {
       this.setState({ loading: this.props.loading });
     }
@@ -40,7 +39,6 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     borderStyle: 'solid',
     borderRadius: '5px',
     background: '#ffffff',
-    cursor: 'pointer',
     height: '100%',
   };
   someStyle: React.CSSProperties = {

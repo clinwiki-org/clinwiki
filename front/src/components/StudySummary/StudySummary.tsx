@@ -34,7 +34,6 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       conditions
       contacts
       createdAt
-      design
       detailedDescription
       dislikesCount
       dispositionFirstPostedDate

@@ -31,7 +31,6 @@ const CrumbsBarStyleWrappper = styled.div`
   border: solid white 1px;
   background-color: #f2f2f2;
   color: black;
-  margin-bottom: 1em;
   margin-left: 15px;
   margin-right: 15px;
   display: flex;

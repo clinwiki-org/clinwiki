@@ -8,55 +8,14 @@ import { Column, Table, SortDirection, AutoSizer } from 'react-virtualized';
 import _ from 'lodash';
 import 'react-virtualized/styles.css';
 import styled from 'styled-components';
+import { camelCase, sentanceCase } from 'utils/helpers';
 
-const MainContainer = styled.div`
-  .Table {
-    width: 100%;
-    margin-top: 15px;
-  }
-  .headerRow,
-  .evenRow,
-  .oddRow {
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .oddRow {
-    background-color: #fafafa;
-  }
-  .headerColumn {
-    text-transform: none;
-  }
-  .exampleColumn {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .checkboxLabel {
-    margin-left: 0.5rem;
-  }
-  .checkboxLabel:first-of-type {
-    margin-left: 0;
-  }
-
-  .noRows {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1em;
-    color: #bdbdbd;
-  }
-`;
 interface TableRVProps {
   data: SearchPageSearchQuery_search_studies[];
   loading: boolean;
   template: string;
   width: number;
-  // columns:any;
+  columnFields: string[];
 }
 
 interface TableRVState {
@@ -85,26 +44,6 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
     height: '100%',
   };
 
-  //  rowRenderer=({
-  //   key, // Unique key within array of rows
-  //   index, // Index of row within collection
-  //   isScrolling, // The List is currently being scrolled
-  //   isVisible, // This row is visible within the List (eg it is not an overscanned row)
-  //   style, // Style object to be applied to row (to position it)
-  // })=> {
-  //        const listItems = this.props.data
-
-  //   return (
-  //       <div key={key} style={style} onClick={()=>this.props.onPress(listItems[index])}>
-  //         <MailMergeView
-  //           style={this.cardStyle}
-  //           template={this.props.template}
-  //           context={listItems[index]}
-  //           />
-  //       </div>
-
-  //     );
-  // }
 
   _rowClassName({ index }) {
     if (index < 0) {
@@ -120,7 +59,6 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
       let rowHeight = 250;
       let width = this.props.width;
       let height = 500;
-      console.log('WIDTH', width);
 
       return (
         <Table
@@ -131,25 +69,15 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
           rowCount={listItems.length}
           rowClassName={this._rowClassName}
           rowGetter={({ index }) => listItems[index]}
-          sortDirection={SortDirection.ASC}
-          sortBy={'nctId'}>
-          <Column label="NCTID" dataKey="nctId" width={width * 0.15} />
-          <Column
-            label="Brief Title:"
-            dataKey="briefTitle"
-            width={width * 0.35}
-          />
-
-          <Column
-            label="Overall Status:"
-            dataKey="overallStatus"
-            width={width * 0.25}
-          />
-          <Column
-            label="Completion Date:"
-            dataKey="completionDate"
-            width={width * 0.25}
-          />
+        // sortDirection={SortDirection.ASC}
+        // sortBy={'nctId'}
+        >
+          {this.props.columnFields.map((field) => {
+        //need to find a way to make column width more dynamic
+            return (
+              <Column label={sentanceCase(field)} dataKey={camelCase(field)} width={width / this.props.columnFields.length} />
+            )
+          })}
         </Table>
       );
     }
