@@ -200,7 +200,6 @@ const QueryComponent = (
     SearchPageSearchQueryVariables
   >
 ) => Query(props);
-
 const SearchWrapper = styled.div`
   .rt-tr {
     cursor: default;
@@ -227,7 +226,7 @@ padding: 0 30px;
     margin-top: 15px;
   }
   .headerRow{
-    background-color: #6BA5E6;
+    background-color: ${props=>props.theme.button};
     border-bottom: 1px solid #e0e0e0;
     pading: 58px;
     color: white;
@@ -245,7 +244,7 @@ padding: 0 30px;
     text-transform: none;
   }
 `;
-
+const ThemedSearchContainer = withTheme(SearchContainer)
 interface SearchView2Props {
   params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
@@ -825,10 +824,10 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
   }
   iconColor = (descIcon: boolean) => {
     if (descIcon == true && this.sortDesc() == true) {
-      return "#6ba5e6"
+      return this.props.theme.button
     }
     if (descIcon == false && this.sortDesc() == false) {
-      return "#6ba5e6"
+      return this.props.theme.button
     }
     return "#c0c3c5"
   }
@@ -914,10 +913,10 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               // in the documentation but this appears to be by design.
               this.handleAggsUpdated(data);
               return (
-                <SearchContainer>
+                <ThemedSearchContainer>
                   {this.renderFilterDropDown()}
                   {this.renderSearch({ data, loading, error })}
-                </SearchContainer>
+                </ThemedSearchContainer>
               );
             }}
           </QueryComponent>
