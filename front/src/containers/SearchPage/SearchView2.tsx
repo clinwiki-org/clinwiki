@@ -211,7 +211,7 @@ const SearchWrapper = styled.div`
 `;
 
 const SearchContainer = styled.div`
-  padding: 10px 30px;
+padding: 0 30px;
 
   color: black;
   margin-bottom: 1em;
@@ -795,8 +795,27 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       }
       return " "
     }
+    const sortDesc = () => {
+      if (this.props.params.sorts.length > 0) {
+        return this.props.params.sorts[0].desc
+
+      }
+      return " "
+    }
+
+    let color =(descIcon:boolean)=>{
+      if(descIcon == true && sortDesc()==true){
+        return "#6ba5e6"
+      }
+      if(descIcon ==false && sortDesc()==false){
+        return "#6ba5e6"
+      }
+      return "#c0c3c5"
+    }
+
     return (
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', marginRight:'-30px'  }}>
+        <div style={{marginLeft:'auto', display: 'flex'}}>
         <DropdownButton
           bsStyle="default"
           title={`Sort by: ${sortField()}`}
@@ -824,15 +843,18 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           })}
 
         </DropdownButton>
+        {this.props.params.sorts[0].desc}
         <div onClick={() => this.reverseSort()} style={{ display: 'flex', marginTop: 'auto', marginBottom: 'auto', cursor: 'pointer' }} >
           <FontAwesome
-            name={'sort'}
-            style={
-
-              { color: '#c0c3c5', fontSize: '26px' }
-            }
+            name={'sort-amount-asc'}
+            style={{ color: color(false), fontSize: '26px' }}
+          />
+          <FontAwesome
+            name={'sort-amount-desc'}
+            style={{ color: color(true), fontSize: '26px' }}
           />
         </div>
+      </div>
       </div>
     )
 
