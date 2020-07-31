@@ -8,6 +8,8 @@ body {
 }
 body {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #eaedf4;
+
 }
 body.fontLoaded {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
