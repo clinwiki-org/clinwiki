@@ -40,7 +40,6 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     borderStyle: 'solid',
     borderRadius: '5px',
     background: '#ffffff',
-    cursor: 'pointer',
     height: '100%',
   };
   someStyle: React.CSSProperties = {
