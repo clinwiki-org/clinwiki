@@ -217,6 +217,11 @@ const SearchContainer = styled.div`
   margin-bottom: 1em;
   display: block;
   flex-direction: column;
+  .ReactVirtualized__Grid__innerScrollContainer{
+    display: flex;
+    flex-wrap: wrap
+  }
+
 `;
 
 interface SearchView2Props {
@@ -550,44 +555,19 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
   renderHelper = (data, loading, template, onPress, resultsType, recordsTotal) => {
     switch (resultsType) {
       case 'masonry':
-        return (
-          <AutoSizer>
-            {({ height, width }) => {
-              const columnCount = 3;
-              let columnWidth = (width * 0.85) / columnCount;
-              const defaultHeight = 350;
-              let defaultWidth = columnWidth;
-
-              // Default sizes help Masonry decide how many cells to batch-measure
-              const cache = new CellMeasurerCache({
-                defaultHeight,
-                defaultWidth,
-                fixedWidth: true,
-                fixedHeight: true,
-              });
-
-              // Our masonry layout will use 3 columns with a 10px gutter between
-              const cellPositioner = createMasonryCellPositioner({
-                cellMeasurerCache: cache,
-                columnCount,
-                columnWidth,
-                spacer: 25,
-              });
               return (
-                <MasonryCards
-                  data={data}
-                  loading={loading}
-                  template={template}
-                  defaultHeight={defaultHeight}
-                  defaultWidth={defaultWidth}
-                  containerWidth={width}
-                  cellPositioner={cellPositioner}
-                  cache={cache}
-                />
+                <AutoSizer>
+                {({ height, width }) => (
+                  <MasonryCards
+                    data={data}
+                    loading={loading}
+                    template={template}
+                    height={height}
+                    width={width}
+                  />
+                )}
+              </AutoSizer>
               );
-            }}
-          </AutoSizer>
-        );
       case 'list':
         return (
           <AutoSizer>
