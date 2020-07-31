@@ -733,6 +733,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.props.history.location.search
     );
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
+    const pageViewUrl = searchQueryString.getAll('pv').toString() || 'default';
     const userId = searchQueryString.getAll('uid').toString();
 
     if (data?.provisionSearchHash?.searchHash?.short) {
@@ -740,7 +741,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         this.props.history.push(
           `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
       } else if (userId) {
@@ -748,7 +749,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         this.props.history.push(
           `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&uid=${userId}&username=${
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${
             profile && profile.values.toString()
           }`
         );
@@ -758,14 +759,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           //@ts-ignore
           `/intervention/${this.props.match.params.id}?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=intervention`
+          }&sv=intervention&pv=${pageViewUrl}`
         );
         return;
       } else {
         this.props.history.push(
           `/search?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
       }
