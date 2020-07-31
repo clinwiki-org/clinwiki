@@ -85,26 +85,6 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
     height: '100%',
   };
 
-  //  rowRenderer=({
-  //   key, // Unique key within array of rows
-  //   index, // Index of row within collection
-  //   isScrolling, // The List is currently being scrolled
-  //   isVisible, // This row is visible within the List (eg it is not an overscanned row)
-  //   style, // Style object to be applied to row (to position it)
-  // })=> {
-  //        const listItems = this.props.data
-
-  //   return (
-  //       <div key={key} style={style} onClick={()=>this.props.onPress(listItems[index])}>
-  //         <MailMergeView
-  //           style={this.cardStyle}
-  //           template={this.props.template}
-  //           context={listItems[index]}
-  //           />
-  //       </div>
-
-  //     );
-  // }
 
   _rowClassName({ index }) {
     if (index < 0) {
@@ -120,7 +100,6 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
       let rowHeight = 250;
       let width = this.props.width;
       let height = 500;
-      console.log('WIDTH', width);
 
       return (
         <Table
@@ -131,8 +110,9 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
           rowCount={listItems.length}
           rowClassName={this._rowClassName}
           rowGetter={({ index }) => listItems[index]}
-          sortDirection={SortDirection.ASC}
-          sortBy={'nctId'}>
+          // sortDirection={SortDirection.ASC}
+          // sortBy={'nctId'}
+          >
           <Column label="NCTID" dataKey="nctId" width={width * 0.15} />
           <Column
             label="Brief Title:"

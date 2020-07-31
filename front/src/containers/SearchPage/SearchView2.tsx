@@ -222,6 +222,28 @@ padding: 0 30px;
     flex-wrap: wrap
   }
 
+  .Table {
+    width: 100%;
+    margin-top: 15px;
+  }
+  .headerRow{
+    background-color: #6BA5E6;
+    border-bottom: 1px solid #e0e0e0;
+    pading: 58px;
+    color: white;
+    padding: 25px;
+    font-weight: 400;
+  }
+  .evenRow,
+  .oddRow {
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .oddRow {
+    background-color: #fafafa;
+  }
+  .headerColumn {
+    text-transform: none;
+  }
 `;
 
 interface SearchView2Props {
