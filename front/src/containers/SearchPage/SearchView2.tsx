@@ -871,10 +871,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             }}>
 
             {this.props.currentSiteView.search.sortables.map((field, index) => {
-              console.log(this.props)
               let sorts = [{ id: field, desc: false }]
               let params = this.props.params
-              console.log(params)
               return (
                 <MenuItem
                   key={field + index}
