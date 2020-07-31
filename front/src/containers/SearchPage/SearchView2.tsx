@@ -849,7 +849,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           })}
 
         </DropdownButton>
-        {this.props.params.sorts[0].desc}
         <div onClick={() => this.reverseSort()} style={{ display: 'flex', marginTop: 'auto', marginBottom: 'auto', cursor: 'pointer' }} >
           <FontAwesome
             name={'sort-amount-asc'}
