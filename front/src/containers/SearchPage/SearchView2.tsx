@@ -232,10 +232,12 @@ padding: 0 30px;
     color: white;
     padding: 25px;
     font-weight: 400;
+    display: flex;
   }
   .evenRow,
   .oddRow {
     border-bottom: 1px solid #e0e0e0;
+    display: flex;
   }
   .oddRow {
     background-color: #fafafa;
