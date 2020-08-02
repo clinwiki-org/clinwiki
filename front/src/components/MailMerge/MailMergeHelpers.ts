@@ -1,5 +1,5 @@
 import Handlebars from 'handlebars';
-import useUrlParams from 'utils/UrlParamsProvider';
+import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { link } from 'fs';
 
 export function registerHandlebarsHelpers() {
@@ -34,15 +34,7 @@ export function registerHandlebarsHelpers() {
         return linkAttributes.q
       case 'ALL':
         console.log(linkAttributes)
-        let queryString = "?"
-
-        for (const [key, value] of Object.entries(linkAttributes)) {
-          if(value){
-            queryString= queryString.concat(`${key}=${value}&`)
-          }
-        }
-
-        return queryString
+        return queryStringAll(linkAttributes)
       default:
         return value
     }

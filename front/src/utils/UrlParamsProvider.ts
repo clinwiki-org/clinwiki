@@ -15,3 +15,13 @@ export default function useUrlParams() {
 
   };
 }
+
+export const queryStringAll =(params)=>{
+  let queryString="?"
+  for (const [key, value] of Object.entries(params)) {
+    if(value){
+      queryString= queryString.concat(`${key}=${value}&`)
+    }
+  }
+  return queryString
+}
