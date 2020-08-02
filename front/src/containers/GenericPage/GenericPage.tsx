@@ -24,8 +24,8 @@ export default function GenericPage(props: Props) {
     if(props.url){
       return props.url
     }
-    if(params.pageViewUrl && pageViewsData){
-      const defaultPageView= find(propEq('url', params.pageViewUrl))(pageViewsData?.site?.pageViews)
+    if(params.pv && pageViewsData){
+      const defaultPageView= find(propEq('url', params.pv))(pageViewsData?.site?.pageViews)
       if (defaultPageView){
         return defaultPageView.url
       }

@@ -22,7 +22,7 @@ export default function NavigationIsland(props: Props) {
 
   const params = useUrlParams()
   const hash = params.hash
-  const siteViewUrl = params.siteViewUrl
+  const siteViewUrl = params.sv
   const variables = {
     hash: hash,
     id: nctId,
