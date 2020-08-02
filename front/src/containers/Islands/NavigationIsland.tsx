@@ -106,7 +106,7 @@ export default function NavigationIsland(props: Props) {
         `${updatedPath}/${lastId}?hash=${variables.hash}&sv=${siteViewUrl}`;
     }
   return (
-    <div className="container">
+    <div className="navigation-island">
       <div id="navbuttonsonstudypage">
         {renderNavButton(
           '❮❮ First',
