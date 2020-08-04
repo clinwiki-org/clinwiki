@@ -10,7 +10,7 @@ import QUERY from 'queries/ReviewPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
 import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
-import useUrlParams from 'utils/UrlParamsProvider';
+import useUrlParams,{queryStringAll} from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { Switch, Route, match } from 'react-router-dom';
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
@@ -69,7 +69,7 @@ export default function ReviewsIsland(props: Props) {
   const location = useLocation();
   const match = useRouteMatch();
   const theme = useTheme();
-
+  const params = useUrlParams()
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: reviewData } = useQuery<ReviewPageQuery>(QUERY, {
     variables: { nctId },
@@ -86,11 +86,11 @@ export default function ReviewsIsland(props: Props) {
   margin-bottom: 10px;
 `;
 
-  const handleWriteReview = (hash: string, siteViewUrl: string) => {
-    history.push(`${trimPath(match.url)}/new?hash=${hash}&sv=${siteViewUrl} `);
+  const handleWriteReview = () => {
+    history.push(`${trimPath(match.url)}/new${queryStringAll(params)}`);
   };
-  const handleEditReview = (id: number, hash: string, siteViewUrl: string) => {
-    history.push(`${trimPath(match.url)}/${id}/edit?hash=${hash}&sv=${siteViewUrl}`);
+  const handleEditReview = (id: number) => {
+    history.push(`${trimPath(match.url)}/${id}/edit${queryStringAll(params)}`);
   };
   const handleDeleteReview = (
     deleteReview: DeleteMutationFn,
@@ -122,7 +122,7 @@ export default function ReviewsIsland(props: Props) {
     }
 
   };
-  const renderReview = (user: CurrentUserQuery_me | null | undefined, hash: string, siteViewUrl: string) => (
+  const renderReview = () => (
     review: ReviewsPageFragment
   ) => {
     let meta = {};
@@ -159,7 +159,7 @@ export default function ReviewsIsland(props: Props) {
                 <ButtonsWrapper>
                   <ThemedButton
                     style={{ marginRight: 10 }}
-                    onClick={() => handleEditReview(review.id, hash, siteViewUrl)}>
+                    onClick={() => handleEditReview(review.id)}>
                     Edit
                 </ThemedButton>
 
@@ -183,22 +183,16 @@ export default function ReviewsIsland(props: Props) {
   };
 
   const renderReviews = (reviews: ReviewsPageFragment[]) => {
-    const hash = new URLSearchParams(history.location.search)
-      .getAll('hash')
-      .toString();
-    const siteViewUrl = new URLSearchParams(history.location.search)
-      .getAll('sv')
-      .toString();
     return (
 
       <>
         <div style={{ display: 'flex' }}>
-          <WriteReviewButton onClick={() => handleWriteReview(hash, siteViewUrl)}>
+          <WriteReviewButton onClick={() => handleWriteReview()}>
             Write a review
                 </WriteReviewButton>
         </div>
         <Table striped bordered>
-          <tbody>{reviews.map(renderReview(user, hash, siteViewUrl))}</tbody>
+          <tbody>{reviews.map(renderReview())}</tbody>
         </Table>
       </>
 
