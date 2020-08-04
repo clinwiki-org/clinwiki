@@ -263,6 +263,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       facility_cities: facilities.map(&:city),
       facility_countries: facilities.map(&:country),
       average_rating: average_rating,
+      reviews_count: reviews.count,
       reviews: reviews && reviews.map(&:text),
       sponsors: sponsors && sponsors.map(&:name),
       rating_dimensions: rating_dimensions.keys,

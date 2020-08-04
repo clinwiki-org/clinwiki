@@ -158,6 +158,7 @@ class SearchService
       studies: search_result.results,
       aggs: search_result.aggs,
     }
+    
   end
 
   def scroll
@@ -184,6 +185,7 @@ class SearchService
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
+    options[:load] = false
     options
   end
 
