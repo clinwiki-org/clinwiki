@@ -114,8 +114,42 @@ const QUERY = gql`
     briefTitle
     reviewsCount
     studyFirstSubmittedDate
-   
-    
+    resultsFirstSubmittedDate
+    dispositionFirstSubmittedDate
+    lastUpdateSubmittedDate
+    studyFirstSubmittedQcDate
+    studyFirstPostedDate
+    studyFirstPostedDateType
+    resultsFirstSubmittedQcDate
+    resultsFirstPostedDate
+    resultsFirstPostedDateType
+    dispositionFirstSubmittedQcDate
+    dispositionFirstPostedDate
+    dispositionFirstPostedDateType
+    lastUpdateSubmittedQcDate
+    lastUpdatePostedDate
+    lastUpdatePostedDateType
+    studyType
+    acronym
+    baselinePopulation
+    officialTitle
+    lastKnownStatus
+    phase
+    enrollment
+    enrollmentType
+    source
+    numberOfArms
+    numberOfGroups
+    whyStopped
+    hasExpandedAccess
+    expandedAccessTypeTreatment
+    isFdaRegulatedDrug
+    isFdaRegulatedDevice
+    ipdTimeFrame
+    ipdAccessCriteria
+    ipdUrl
+    planToShareIpd
+    planToShareIpdDescription
   }
 `;
 
