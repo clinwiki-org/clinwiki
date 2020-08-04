@@ -166,6 +166,12 @@ div.DraftEditor-editorContainer{
 .modal-container .modal, .modal-container .modal-backdrop {
   position: absolute;
 }
+.mm-single-line{
+  display: flex;
+}
+.mm-single-line .mail-merge-island{
+  padding-right: 1em;
+}
 .mail-merge pre {
   background-color: white;
   border: 0px;
