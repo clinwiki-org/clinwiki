@@ -8,7 +8,7 @@ import { BeatLoader, PulseLoader } from 'react-spinners';
 import StudyPageCounter from '../StudyPage/components/StudyPageCounter'
 import { path, pathOr } from 'ramda';
 import { trimPath } from 'utils/helpers';
-import useUrlParams from 'utils/UrlParamsProvider';
+import useUrlParams, {queryStringAll} from 'utils/UrlParamsProvider';
 
 
 interface Props {
@@ -22,7 +22,7 @@ export default function NavigationIsland(props: Props) {
 
   const params = useUrlParams()
   const hash = params.hash
-  const siteViewUrl = params.siteViewUrl
+  const siteViewUrl = params.sv
   const variables = {
     hash: hash,
     id: nctId,
@@ -87,26 +87,26 @@ export default function NavigationIsland(props: Props) {
       const updatedPath = url.substring(0, url.lastIndexOf('/')); 
     nextLink =
       nextId &&
-      `${updatedPath}/${nextId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+      `${updatedPath}/${nextId}${queryStringAll(params)}`;
     prevLink =
       prevId &&
-      `${updatedPath}/${prevId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+      `${updatedPath}/${prevId}${queryStringAll(params)}`;
 
     // just so that there isn't a first button if there isn't a prev button
     // likewise for the last button
     if (prevLink != null) {
       firstLink =
         firstId &&
-        `${updatedPath}/${firstId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+        `${updatedPath}/${firstId}${queryStringAll(params)}`;
       // firstId && `/search/${variables.hash}/study/${firstId}`;
     }
     if (nextLink != null && counterIndex != null) {
       lastLink =
         lastId &&
-        `${updatedPath}/${lastId}?hash=${variables.hash}&sv=${siteViewUrl}`;
+        `${updatedPath}/${lastId}${queryStringAll(params)}`;
     }
   return (
-    <div className="container">
+    <div className="navigation-island">
       <div id="navbuttonsonstudypage">
         {renderNavButton(
           '❮❮ First',

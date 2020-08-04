@@ -61,7 +61,7 @@ export default function WikiPageIsland(props: Props) {
   const user = useCurrentUser()?.data?.me;
   const params = useUrlParams()
   const hash = params.hash
-  const siteViewUrl = params.siteViewUrl
+  const siteViewUrl = params.sv
 
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {

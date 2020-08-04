@@ -1,5 +1,6 @@
 import Handlebars from 'handlebars';
-import useUrlParams from 'utils/UrlParamsProvider';
+import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
+import { link } from 'fs';
 
 export function registerHandlebarsHelpers() {
   Handlebars.registerHelper('stars', (value: number) => {
@@ -26,11 +27,14 @@ export function registerHandlebarsHelpers() {
       case 'hash':
         return linkAttributes.hash;
       case 'siteViewUrl':
-        return linkAttributes.siteViewUrl;
+        return linkAttributes.sv;
       case 'pageViewUrl':
-        return linkAttributes.pageViewUrl
+        return linkAttributes.pv
       case 'q':
         return linkAttributes.q
+      case 'ALL':
+        console.log(linkAttributes)
+        return queryStringAll(linkAttributes)
       default:
         return value
     }

@@ -4,9 +4,8 @@ import { PulseLoader } from 'react-spinners';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
 import { SiteFragment_siteView } from 'types/SiteFragment';
-import { Column, Table, SortDirection, AutoSizer } from 'react-virtualized';
+import { Column, Table, SortDirection, WindowScroller } from 'react-virtualized';
 import _ from 'lodash';
-import 'react-virtualized/styles.css';
 import styled from 'styled-components';
 import { camelCase, sentanceCase } from 'utils/helpers';
 
@@ -34,16 +33,6 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
     }
   }
 
-  cardStyle: React.CSSProperties = {
-    borderWidth: 2,
-    borderColor: 'rgb(85, 184, 141)',
-    borderStyle: 'solid',
-    borderRadius: '5px',
-    background: '#ffffff',
-    cursor: 'pointer',
-    height: '100%',
-  };
-
 
   _rowClassName({ index }) {
     if (index < 0) {
@@ -56,12 +45,13 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
   render() {
     if (this.props.data) {
       const listItems = this.props.data;
-      let rowHeight = 250;
       let width = this.props.width;
-      let height = 500;
 
       return (
+      <WindowScroller>
+        {({ height, isScrolling, onChildScroll, scrollTop }) => (
         <Table
+          autoHeight
           width={width}
           height={height}
           headerHeight={20}
@@ -69,6 +59,9 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
           rowCount={listItems.length}
           rowClassName={this._rowClassName}
           rowGetter={({ index }) => listItems[index]}
+          isScrolling={isScrolling}
+          onScroll={onChildScroll}
+          scrollTop={scrollTop}
         // sortDirection={SortDirection.ASC}
         // sortBy={'nctId'}
         >
@@ -79,6 +72,8 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
             )
           })}
         </Table>
+    )}
+    </WindowScroller>
       );
     }
   }
