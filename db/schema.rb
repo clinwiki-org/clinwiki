@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_24_182046) do
+ActiveRecord::Schema.define(version: 2020_07_06_163008) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,16 +30,23 @@ ActiveRecord::Schema.define(version: 2020_07_24_182046) do
     t.integer "user_id"
   end
 
-  create_table "facility_locations", force: :cascade do |t|
-    t.string "name"
-    t.string "city"
-    t.string "state"
-    t.string "zip"
-    t.string "country"
+  create_table "facility_locations", primary_key: ["name", "city", "state", "zip", "country"], force: :cascade do |t|
+    t.string "name", null: false
+    t.string "city", null: false
+    t.string "state", null: false
+    t.string "zip", null: false
+    t.string "country", null: false
     t.float "latitude"
     t.float "longitude"
     t.string "status"
-    t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
+  end
+
+  create_table "lists", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_lists_on_user_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -62,7 +69,6 @@ ActiveRecord::Schema.define(version: 2020_07_24_182046) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "default", default: false, null: false
     t.index ["site_id"], name: "index_page_views_on_site_id"
   end
 
@@ -143,7 +149,7 @@ ActiveRecord::Schema.define(version: 2020_07_24_182046) do
     t.boolean "skip_landing"
     t.text "themes", default: "{\"primaryColor\":\"#6BA5D6\",\"secondaryColor\":\"#1b2a38\",\"lightTextColor\":\"#eee\",\"secondaryTextColor\":\"#333\",\"backgroundColor\":\"#4D5863\",\"primaryAltColor\":\"#5786AD\",\"authHeaderColor\":\"#5786AD\",\"sideBarColor\":\"#4d5762\"} "
     t.text "user_rank", default: "[{\"rank\":\"default\",\"gte\":0},{\"rank\":\"bronze\",\"gte\":26},{\"rank\":\"silver\",\"gte\":51},{\"rank\":\"gold\",\"gte\":75},{\"rank\":\"platinum\",\"gte\":101}] "
-    t.text "reactions_config", default: "[]"
+    t.text "reactions_config", default: "[{\"name\":\"like\"},{\"name\":\"dislike\"},{\"name\":\"heart\"}]"
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
@@ -180,6 +186,7 @@ ActiveRecord::Schema.define(version: 2020_07_24_182046) do
     t.string "last_name"
     t.string "default_query_string"
     t.json "search_result_columns"
+    t.string "provider"
     t.string "picture_url"
     t.string "reset_token_url"
     t.index ["email"], name: "index_users_on_email", unique: true
