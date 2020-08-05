@@ -51,7 +51,7 @@ import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
-import RichTextEditor from 'react-rte-yt';
+import RichTextEditor from 'react-rte';
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<

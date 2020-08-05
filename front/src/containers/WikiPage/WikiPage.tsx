@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { partition, toPairs } from 'ramda';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import { gql } from 'apollo-boost';
 import StudySummary from 'components/StudySummary';
 import { match, Switch, Route } from 'react-router';

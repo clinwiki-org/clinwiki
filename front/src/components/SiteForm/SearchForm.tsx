@@ -34,7 +34,7 @@ import { equals } from 'ramda';
 import { History, Location } from 'history';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import {
   SiteFragment,
   SiteFragment_siteViews,
