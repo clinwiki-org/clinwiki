@@ -77,6 +77,7 @@ module Types
     }.freeze
 
     def search(search_hash: nil, params: nil)
+      puts "\n\n\n\n\n\n#{context}"
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       search_service = SearchService.new(context[:search_params])
       search_service.search

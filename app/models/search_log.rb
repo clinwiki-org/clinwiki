@@ -1,0 +1,2 @@
+class SearchLog < ApplicationRecord
+end
