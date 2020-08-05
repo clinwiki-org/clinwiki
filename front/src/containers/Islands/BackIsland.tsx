@@ -17,7 +17,7 @@ export default function BackIsland(props: Props) {
   };
 
   return (
-    <div style={{ paddingTop: '10px' }}>
+    <div>
       <ThemedButton
         style={{ margin: 'auto', float: 'left' }}
         onClick={navButtonClick()}

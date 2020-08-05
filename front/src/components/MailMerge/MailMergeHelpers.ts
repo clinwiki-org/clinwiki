@@ -33,7 +33,6 @@ export function registerHandlebarsHelpers() {
       case 'q':
         return linkAttributes.q
       case 'ALL':
-        console.log(linkAttributes)
         return queryStringAll(linkAttributes)
       default:
         return value
