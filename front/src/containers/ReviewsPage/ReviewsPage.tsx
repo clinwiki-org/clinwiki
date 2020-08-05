@@ -32,7 +32,7 @@ import {
   ReviewsPageDeleteReviewMutationVariables,
 } from 'types/ReviewsPageDeleteReviewMutation';
 import { ReviewsPageStudyFragment } from 'types/ReviewsPageStudyFragment';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import EditReview from './EditReview';
 import { reject, propEq, over, lensPath, keys } from 'ramda';
 import { dataIdFromObject } from 'configureApollo';

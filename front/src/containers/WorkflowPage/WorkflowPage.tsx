@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import { match } from 'react-router';
 import ReviewForm from 'containers/ReviewForm';
 import { History } from 'history';

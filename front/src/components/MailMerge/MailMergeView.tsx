@@ -86,7 +86,7 @@ function tokensToGraphQLOb(tags: string[]) {
       pushScope(scopeName);
       scope[propName] = 'x';
       popScope();
-    }else if(name == "hash" || name == "siteViewUrl" || name == "pageViewUrl" || name == "q"){
+    }else if(name == "hash" || name == "siteViewUrl" || name == "pageViewUrl" || name == "q" || name == 'ALL'){
 
       scope[name] ={param: name}
     }else {
@@ -186,7 +186,7 @@ function applyTemplate(
   context?: object
 ) {
   try {
-    context = {...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q'}
+    context = {...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL'}
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;

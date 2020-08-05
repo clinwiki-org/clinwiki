@@ -212,10 +212,12 @@ padding: 0 30px;
     color: white;
     padding: 25px;
     font-weight: 400;
+    display: flex;
   }
   .evenRow,
   .oddRow {
     border-bottom: 1px solid #e0e0e0;
+    display: flex;
   }
   .oddRow {
     background-color: #fafafa;
@@ -802,26 +804,24 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     }
     return " "
   }
-  iconColor = (descIcon: boolean) => {
-    if (descIcon == true && this.sortDesc() == true) {
-      return this.props.theme.button
-    }
-    if (descIcon == false && this.sortDesc() == false) {
-      return this.props.theme.button
-    }
-    return "#c0c3c5"
-  }
   renderSortIcons = () => {
+    let isDesc = this.props.params.sorts[0].desc
     return (
+
       <div onClick={() => this.reverseSort()} style={{ display: 'flex', marginTop: 'auto', marginBottom: 'auto', cursor: 'pointer' }} >
-        <FontAwesome
-          name={'sort-amount-asc'}
-          style={{ color: this.iconColor(false), fontSize: '26px' }}
-        />
-        <FontAwesome
-          name={'sort-amount-desc'}
-          style={{ color: this.iconColor(true), fontSize: '26px' }}
-        />
+        {isDesc ? (
+          <FontAwesome
+            name={'sort-amount-desc'}
+            style={{ color: this.props.theme.button, fontSize: '26px' }}
+          />) : (
+            <FontAwesome
+              name={'sort-amount-asc'}
+              style={{ color: this.props.theme.button, fontSize: '26px' }}
+            />
+          )
+        }
+
+
       </div>
     )
   }
@@ -833,9 +833,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       }
       return " "
     }
-
-
-
 
     return (
       <div style={{ display: 'flex', flexDirection: 'row', marginRight: '-30px' }}>

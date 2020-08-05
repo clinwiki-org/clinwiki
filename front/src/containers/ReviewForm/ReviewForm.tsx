@@ -14,7 +14,7 @@ import {
 } from 'ramda';
 import ReactStars from 'react-stars';
 import * as FontAwesome from 'react-fontawesome';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import { gql } from 'apollo-boost';
 import ThemedButton from 'components/StyledComponents/index';
 import {

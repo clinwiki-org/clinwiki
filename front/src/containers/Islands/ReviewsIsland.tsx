@@ -10,7 +10,7 @@ import QUERY from 'queries/ReviewPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
 import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
-import useUrlParams from 'utils/UrlParamsProvider';
+import useUrlParams,{queryStringAll} from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { Switch, Route, match } from 'react-router-dom';
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
@@ -37,7 +37,7 @@ import {
   ReviewsPageDeleteReviewMutationVariables,
 } from 'types/ReviewsPageDeleteReviewMutation';
 import { ReviewsPageStudyFragment } from 'types/ReviewsPageStudyFragment';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import { reject, propEq, over, lensPath, keys } from 'ramda';
 import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
@@ -69,7 +69,7 @@ export default function ReviewsIsland(props: Props) {
   const location = useLocation();
   const match = useRouteMatch();
   const theme = useTheme();
-
+  const params = useUrlParams()
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: reviewData } = useQuery<ReviewPageQuery>(QUERY, {
     variables: { nctId },
@@ -78,9 +78,6 @@ export default function ReviewsIsland(props: Props) {
   const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
-  // const [deleteMutation] = useMutation(DELETE_LABEL_MUTATION, {
-  //   refetchQueries: [{ query: QUERY, variables: { nctId } }],
-  // });
 
   const { currentSiteView } = useSite();
   const user = useCurrentUser()?.data?.me;
@@ -89,11 +86,11 @@ export default function ReviewsIsland(props: Props) {
   margin-bottom: 10px;
 `;
 
-  const handleWriteReview = (hash: string, siteViewUrl: string) => {
-    history.push(`${trimPath(match.url)}/new?hash=${hash}&sv=${siteViewUrl} `);
+  const handleWriteReview = () => {
+    history.push(`${trimPath(match.url)}/new${queryStringAll(params)}`);
   };
-  const handleEditReview = (id: number, hash: string, siteViewUrl: string) => {
-    history.push(`${trimPath(match.url)}/${id}/edit?hash=${hash}&sv=${siteViewUrl}`);
+  const handleEditReview = (id: number) => {
+    history.push(`${trimPath(match.url)}/${id}/edit${queryStringAll(params)}`);
   };
   const handleDeleteReview = (
     deleteReview: DeleteMutationFn,
@@ -125,7 +122,7 @@ export default function ReviewsIsland(props: Props) {
     }
 
   };
-  const renderReview = (user: CurrentUserQuery_me | null | undefined, hash: string, siteViewUrl: string) => (
+  const renderReview = () => (
     review: ReviewsPageFragment
   ) => {
     let meta = {};
@@ -162,40 +159,10 @@ export default function ReviewsIsland(props: Props) {
                 <ButtonsWrapper>
                   <ThemedButton
                     style={{ marginRight: 10 }}
-                    onClick={() => handleEditReview(review.id, hash, siteViewUrl)}>
+                    onClick={() => handleEditReview(review.id)}>
                     Edit
                 </ThemedButton>
-                  {/* <DeleteReviewMutationComponent
-                  mutation={DELETE_REVIEW_MUTATION}
-                  update={cache => {
-                    const id = dataIdFromObject({
-                      id: this.props.match.params.nctId,
-                      __typename: 'Study',
-                    });
 
-                    const study = cache.readFragment<
-                      ReviewsPageStudyFragment
-                      // tslint:disable-next-line
-                    >({
-                      id,
-                      fragment: STUDY_FRAGMENT,
-                      fragmentName: 'ReviewsPageStudyFragment',
-                    });
-                    const reviewsLens = lensPath(['reviews']);
-                    const newStudy = over(
-                      reviewsLens,
-                      reject(propEq('id', review.id)),
-                      study
-                    );
-
-                    cache.writeFragment({
-                      id,
-                      fragment: STUDY_FRAGMENT,
-                      fragmentName: 'ReviewsPageStudyFragment',
-                      data: newStudy,
-                    });
-                  }}> */}
-                  {/* {deleteReview => ( */}
                   <ThemedButton
                     onClick={handleDeleteReview(
                       deleteReviewMutation,
@@ -216,22 +183,16 @@ export default function ReviewsIsland(props: Props) {
   };
 
   const renderReviews = (reviews: ReviewsPageFragment[]) => {
-    const hash = new URLSearchParams(history.location.search)
-      .getAll('hash')
-      .toString();
-    const siteViewUrl = new URLSearchParams(history.location.search)
-      .getAll('sv')
-      .toString();
     return (
 
       <>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <WriteReviewButton onClick={() => handleWriteReview(hash, siteViewUrl)}>
+        <div style={{ display: 'flex' }}>
+          <WriteReviewButton onClick={() => handleWriteReview()}>
             Write a review
                 </WriteReviewButton>
         </div>
         <Table striped bordered>
-          <tbody>{reviews.map(renderReview(user, hash, siteViewUrl))}</tbody>
+          <tbody>{reviews.map(renderReview())}</tbody>
         </Table>
       </>
 
@@ -246,7 +207,6 @@ export default function ReviewsIsland(props: Props) {
         <Route
           path={`${match.path}/new`}
           render={() => {
-            // this.props.onLoaded && this.props.onLoaded();
             return (
               <ReviewForm
                 theme={theme}
@@ -259,9 +219,7 @@ export default function ReviewsIsland(props: Props) {
         <Route
           path={`${match.path}/:id/edit`}
           render={props => {
-            console.log("PROPS", props)
             let newProps = { ...props, nctId: nctId }
-            console.log("NEWNEW", newProps)
             return (
               <EditReview {...newProps} onLoaded={() => console.log("Loaded")} />//this.props.onLoaded} />
             );
@@ -270,14 +228,7 @@ export default function ReviewsIsland(props: Props) {
         <Route render={() => renderReviews(reviewData!.study!.reviews)} />
       </Switch>
     );
-    // return (
-    //   <div>
-    //     <h3>Reviews</h3>
-    //     <StyledPanel>
 
-    //     </StyledPanel>
-    //   </div>
-    // );
   }
   return (
     <BeatLoader></BeatLoader>
