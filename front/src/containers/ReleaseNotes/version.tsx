@@ -1,5 +1,5 @@
 import * as React from 'react';
-import RichTextEditor from 'react-rte-yt';
+import RichTextEditor from 'react-rte';
 
 const notes = RichTextEditor.createValueFromString(
   `

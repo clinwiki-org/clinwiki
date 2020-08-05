@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import { partition, toPairs } from 'ramda';
 import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { WikiPageQuery, WikiPageQueryVariables } from 'types/WikiPageQuery';
