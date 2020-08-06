@@ -25,7 +25,7 @@ module Types
       argument :offset, Integer, required: false
     end
     field :reactions_count,[ExpressionCountType], null: true
-
+    field :search_logs,[SearchLogType], null:true
     def reactions(nct_id:nil ,reaction_kind_id: ReactionKind.find_by_name("like").id, limit:25, offset:0)
       reaction_kind = ActiveRecord::Base.sanitize_sql(reaction_kind)
       limit = ActiveRecord::Base.sanitize_sql(limit)
