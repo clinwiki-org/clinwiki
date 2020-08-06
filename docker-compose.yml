@@ -32,20 +32,22 @@ services:
       - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
       - http.cors.allow-credentials=true
       - xpack.security.enabled=true
-      - ELASTIC_PASSWORD=kNG2hke5
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - es-data:/usr/share/elasticsearch/data/
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:6.8.0
-  #   container_name: kibana
-  #   environment:
-  #     - ELASTICSEARCH_HOSTS=http://elastic:kNG2hke5@elastic:9200/
-  #   ports:
-  #     - 5601:5601
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.8.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic:9200/
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    ports:
+      - 5601:5601
   redis:
     image: redis:5.0.5
     container_name: redis
@@ -69,7 +71,7 @@ services:
       - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
       - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
       - REDIS_URL=redis://redis:6379/0
-      - SEARCHBOX_URL=http://elastic:kNG2hke5@elastic:9200/
+      - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
       - CW_MODE=${CW_MODE}
     depends_on:
       - db
@@ -87,7 +89,7 @@ services:
       - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
       - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
       - REDIS_URL=redis://redis:6379/0
-      - SEARCHBOX_URL=http://elastic:kNG2hke5@elastic:9200/
+      - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
       - CW_MODE=WORKER
     depends_on:
       - db
