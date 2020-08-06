@@ -268,6 +268,7 @@ interface SearchView2State {
   totalResults: any;
   firstRender: boolean;
   prevResults: any | null;
+  fragment: any;
 }
 
 class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
@@ -283,6 +284,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       totalResults: 0,
       firstRender: true,
       prevResults: null,
+      fragment:'',
     };
   }
 
@@ -567,6 +569,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 template={template}
                 height={height}
                 width={width}
+                fragmentUpdated={this.handleFragmentUpdated}
               />
             )}
           </AutoSizer>
@@ -773,7 +776,10 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       this.props.currentSiteView.url || 'default'
     );
   };
-
+  handleFragmentUpdated=(fragment)=>{
+    console.log(fragment)
+    // this.setState({fragment})
+  }
   handleAggsUpdated = (data?: SearchPageSearchQuery) => {
     if (data?.search) {
       this.props.onAggsUpdate(

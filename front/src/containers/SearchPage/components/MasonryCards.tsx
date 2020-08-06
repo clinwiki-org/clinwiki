@@ -14,22 +14,28 @@ interface MasonryCardsProps {
   height: number;
   width: number;
   theme: Theme;
+  fragmentUpdated: any;
   // columns:any;
 }
 
 interface MasonryCardsState {
   loading: boolean;
+  fragment: any;
 }
 
 class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState> {
   constructor(props: MasonryCardsProps) {
     super(props);
-    this.state = { loading: this.props.loading };
+    this.state = { loading: this.props.loading, fragment:'' };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevState) {
     if (this.state.loading !== this.props.loading) {
       this.setState({ loading: this.props.loading });
+    }
+    if(this.state.fragment!== prevState.fragment){
+      console.log("Fragment Upfdategd")
+      this.props.fragmentUpdated(this.state.fragment)
     }
   }
 
@@ -45,7 +51,10 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     display: "flex",
     flexWrap: "wrap",
   };
-
+  setFragment=(fragment)=>{
+    console.log('frag',fragment)
+    this.setState({fragment})
+  }
   rowRenderer = ({
     key, // Unique key within array of rows
     index, // Index of row within collection
@@ -71,12 +80,16 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
             style={this.cardStyle}
             template={this.props.template}
             context={listItems[index]}
+            fragmentName={'search_form_fragment'}
+            fragmentClass="ElasticStudy"
+            onFragmentChanged={(e)=>this.setFragment(e)}
           />
         </div>
     );
   };
 
   render() {
+    
     if (this.props.data) {
       const listItems = this.props.data;
       let rowHeight = 150;
