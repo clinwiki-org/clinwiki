@@ -31,6 +31,8 @@ services:
       - http.cors.allow-origin=http://localhost:3030,http://127.0.0.1:3030,http://localhost:1358,http://127.0.0.1:1358,https://opensource.appbase.io
       - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
       - http.cors.allow-credentials=true
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
     ulimits:
       memlock:
         soft: -1
@@ -42,6 +44,8 @@ services:
     container_name: kibana
     environment:
       - ELASTICSEARCH_HOSTS=http://elastic:9200/
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     ports:
       - 5601:5601
   redis:
@@ -67,7 +71,7 @@ services:
       - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
       - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
       - REDIS_URL=redis://redis:6379/0
-      - SEARCHBOX_URL=http://elastic:9200
+      - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
       - CW_MODE=${CW_MODE}
     depends_on:
       - db
@@ -85,7 +89,7 @@ services:
       - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
       - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
       - REDIS_URL=redis://redis:6379/0
-      - SEARCHBOX_URL=http://elastic:9200
+      - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
       - CW_MODE=WORKER
     depends_on:
       - db
