@@ -105,7 +105,7 @@ const QUERY = gql`
     }
   }
 
-  fragment StudyItemFragment on Study {
+  fragment StudyItemFragment on ElasticStudy {
     averageRating
     completionDate
     nctId
@@ -113,7 +113,9 @@ const QUERY = gql`
     startDate
     briefTitle
     reviewsCount
-    nlmDownloadDateDescription
+    interventions 
+    facilityStates
+    interventionsMeshTerms
     studyFirstSubmittedDate
     resultsFirstSubmittedDate
     dispositionFirstSubmittedDate
@@ -130,16 +132,6 @@ const QUERY = gql`
     lastUpdateSubmittedQcDate
     lastUpdatePostedDate
     lastUpdatePostedDateType
-    startMonthYear
-    startDateType
-    verificationMonthYear
-    verificationDate
-    completionMonthYear
-    completionDateType
-    primaryCompletionMonthYear
-    primaryCompletionDateType
-    primaryCompletionDate
-    targetDuration
     studyType
     acronym
     baselinePopulation
@@ -149,22 +141,13 @@ const QUERY = gql`
     enrollment
     enrollmentType
     source
-    limitationsAndCaveats
     numberOfArms
     numberOfGroups
     whyStopped
     hasExpandedAccess
-    expandedAccessTypeIndividual
-    expandedAccessTypeIntermediate
     expandedAccessTypeTreatment
-    hasDmc
     isFdaRegulatedDrug
     isFdaRegulatedDevice
-    isUnapprovedDevice
-    isPpsd
-    isUsExport
-    biospecRetention
-    biospecDescription
     ipdTimeFrame
     ipdAccessCriteria
     ipdUrl
