@@ -77,7 +77,10 @@ module Types
     }.freeze
 
     def search(search_hash: nil, params: nil)
+      
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
+      link = link = ShortLink.from_long( context[:search_params])
+      SearchLog.create(user_id: context[:current_user].id, short_link_id:link.id )
       search_service = SearchService.new(context[:search_params])
       search_service.search
     end
@@ -217,7 +220,7 @@ module Types
       if search_hash
         link = ShortLink.from_short(search_hash)
         return if link.nil?
-
+     
         res = JSON.parse(link.long).deep_symbolize_keys
         res = res.merge(params.to_h) if params.present?
         res

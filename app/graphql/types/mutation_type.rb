@@ -33,5 +33,6 @@ module Types
     field :createPageView, mutation: Mutations::CreatePageView
     field :updatePageView, mutation: Mutations::UpdatePageView
     field :deletePageView, mutation: Mutations::DeletePageView
+    field :deleteSearchLog, mutation: Mutations::DeleteSearchLog
   end
 end
