@@ -76,6 +76,12 @@ module Types
     field :start_date, DateTimeType, null: true
 
 
+    field :interventions, [String], null: false
+    field :interventions_mesh_terms, [String], null: false 
+    field :facility_states,[String], null: false
+
+
+
     def is_fda_regulated
       object.is_fda_regulated_drug | object.is_fda_regulated_device
     end
