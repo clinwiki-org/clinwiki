@@ -40,7 +40,6 @@ export default function TestComponent() {
 <table class="table table-striped table-bordered table-condensed">
   <tbody>
     <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
-    <tr> <th>type</th> <td>{{type}}</td> </tr>
     <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
     <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
     <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
@@ -54,10 +53,8 @@ export default function TestComponent() {
   const [mode, setMode] = useState<Mode>('Study');
   const defaultNctId = 'NCT03847779';
   const defaultSearchHash = 'tqxCyI9M';
-  const [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
-  if (nctOrSearchHash === defaultNctId && mode == 'Search') {
-    setNctOrSearchHash(defaultSearchHash);
-  }
+  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
+
   const { data: introspection } = useQuery<IntrospectionQuery>(
     gql(getIntrospectionQuery({ descriptions: false }))
   );
@@ -69,6 +66,12 @@ export default function TestComponent() {
   );
 
   const { data } = useQuery(query, { variables });
+
+  const updateMode = mode => {
+    setMode(mode);
+    if(mode === 'Study') setNctOrSearchHash(defaultNctId);
+    if(mode === 'Search') setNctOrSearchHash(defaultSearchHash);
+  };
 
   const islands = {
     ...pageIslands,
@@ -90,8 +93,8 @@ export default function TestComponent() {
           title={`Type: ${mode}`}
           key={mode}
           style={{ marginBottom: '10px' }}>
-          <MenuItem onClick={_ => setMode('Study')}>Study</MenuItem>
-          <MenuItem onClick={_ => setMode('Search')}>Search</MenuItem>
+          <MenuItem onClick={_ => updateMode('Study')}>Study</MenuItem>
+          <MenuItem onClick={_ => updateMode('Search')}>Search</MenuItem>
         </DropdownButton>
         <FormControl
           placeholder="Select an nctid"
@@ -109,7 +112,9 @@ export default function TestComponent() {
           islands={islands}
         />
         <pre>{fragment}</pre>
-        <pre>{JSON.stringify(data?.study || data?.search?.studies, null, 2)}</pre>
+        <pre>
+          {JSON.stringify(data?.study || data?.search?.studies, null, 2)}
+        </pre>
       </div>
     );
   }
