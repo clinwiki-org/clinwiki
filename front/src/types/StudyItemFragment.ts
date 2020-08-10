@@ -16,6 +16,9 @@ export interface StudyItemFragment {
   startDate: any | null;
   briefTitle: string;
   reviewsCount: number | null;
+  interventions: string[];
+  facilityStates: string[];
+  interventionsMeshTerms: string[];
   studyFirstSubmittedDate: string | null;
   resultsFirstSubmittedDate: string | null;
   dispositionFirstSubmittedDate: string | null;
