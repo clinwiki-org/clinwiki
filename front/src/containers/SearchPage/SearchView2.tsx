@@ -52,6 +52,7 @@ import {
   Masonry,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
+import StudyFragmentQueryComponent from './components/StudyFragmentQueryComponent'
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -778,7 +779,10 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
   };
   handleFragmentUpdated=(fragment)=>{
     console.log(fragment)
-    // this.setState({fragment})
+    if(this.state.fragment!== fragment){
+      this.setState({fragment})
+
+    }
   }
   handleAggsUpdated = (data?: SearchPageSearchQuery) => {
     if (data?.search) {
@@ -894,10 +898,16 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               // in the documentation but this appears to be by design.
               this.handleAggsUpdated(data);
               return (
+                <StudyFragmentQueryComponent
+                  fragment={this.state.fragment}
+                  params={this.props.params}
+
+                >
                 <ThemedSearchContainer>
                   {this.renderFilterDropDown()}
                   {this.renderSearch({ data, loading, error })}
                 </ThemedSearchContainer>
+                </StudyFragmentQueryComponent>
               );
             }}
           </QueryComponent>
