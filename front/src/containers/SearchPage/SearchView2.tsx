@@ -778,7 +778,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     );
   };
   handleFragmentUpdated=(fragment)=>{
-    console.log(fragment)
     if(this.state.fragment!== fragment){
       this.setState({fragment})
 

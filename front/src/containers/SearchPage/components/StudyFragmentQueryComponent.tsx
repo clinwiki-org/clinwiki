@@ -13,7 +13,6 @@ interface Props {
   
   const getQuery = (name: string, frag: string) => {
     frag = frag || `fragment ${name} on SearchPageSearchQuery { q, page, pageSize, sorts, aggFilters, crowdAggFilters }`;
-    console.log(frag)
     return gql`
     query SearchPageSearchQuery(
       $q: SearchQueryInput!
@@ -78,7 +77,6 @@ export default function StudyFragmentQueryComponent (props:Props) {
     const { data: study } = useQuery(getQuery('search_form_fragment', props.fragment), {
         variables:{...props.params, pageSize:50},
       });
-      console.log(study)
 
         return(
             <>

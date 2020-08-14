@@ -34,7 +34,6 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
       this.setState({ loading: this.props.loading });
     }
     if(this.state.fragment!== prevState.fragment){
-      console.log("Fragment Upfdategd")
       this.props.fragmentUpdated(this.state.fragment)
     }
   }
@@ -52,7 +51,6 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     flexWrap: "wrap",
   };
   setFragment=(fragment)=>{
-    console.log('frag',fragment)
     this.setState({fragment})
   }
   rowRenderer = ({
