@@ -79,7 +79,7 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
   render() {
     if (this.props.data) {
       const listItems = this.props.data;
-      let rowHeight = 150;
+      let rowHeight = listItems.length < 3 ? 400 : 150;
       let height = rowHeight * listItems.length;
       return (
 
