@@ -114,6 +114,9 @@ const QUERY = gql`
     startDate
     briefTitle
     reviewsCount
+    interventions 
+    facilityStates
+    interventionsMeshTerms
     studyFirstSubmittedDate
     resultsFirstSubmittedDate
     dispositionFirstSubmittedDate
