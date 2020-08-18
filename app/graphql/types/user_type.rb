@@ -45,7 +45,7 @@ module Types
     def search_logs( limit:25, offset:0)
       limit = ActiveRecord::Base.sanitize_sql(limit)
       offset = ActiveRecord::Base.sanitize_sql(offset)
-      object.search_logs.limit(limit).offset(offset)
+      object.search_logs.limit(limit).offset(offset).order(created_at: :desc)
     end
 
     def review_count
