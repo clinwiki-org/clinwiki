@@ -72,6 +72,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   has_many :result_contacts,       foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :result_groups,         foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :sponsors,              foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
+  has_many :study_view_logs,              foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
 
   # clinwiki relationships
   has_many :reviews, foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
