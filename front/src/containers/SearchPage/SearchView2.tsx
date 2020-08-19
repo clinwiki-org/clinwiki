@@ -417,7 +417,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     const buttonsArray = currentSiteView.search.results.buttons.items.filter(
       button => button.target.length > 0 && button.icon.length > 0
     );
-    console.log("BUTTONS ARRAY", buttonsArray);
     return (
       <SiteProvider>
         {site => {
@@ -425,11 +424,13 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             return (
               <ButtonGroup>
                 {buttonsArray.map((button, index) => (
-                  <ThemedButton
-                    href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
-                    key={button.target + index}>
-                    {this.renderViewButton(button.icon)}
-                  </ThemedButton>
+                  <a href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
+                     key={button.target + index}
+                  >
+                    <ThemedButton>
+                      {this.renderViewButton(button.icon)}
+                    </ThemedButton>
+                  </a>
                 ))}
               </ButtonGroup>
             );
