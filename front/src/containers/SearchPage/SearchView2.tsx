@@ -422,17 +422,19 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         {site => {
           if (site.siteViews.length > 0 && buttonsArray.length > 0) {
             return (
-              <ButtonGroup>
-                {buttonsArray.map((button, index) => (
-                  <a href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
-                     key={button.target + index}
-                  >
-                    <ThemedButton>
-                      {this.renderViewButton(button.icon)}
-                    </ThemedButton>
-                  </a>
-                ))}
-              </ButtonGroup>
+              <div style={{ marginLeft: "auto", marginBottom: "1rem" }}  >
+                <ButtonGroup>
+                  {buttonsArray.map((button, index) => (
+                    <a href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
+                       key={button.target + index}
+                    >
+                      <ThemedButton>
+                        {this.renderViewButton(button.icon)}
+                      </ThemedButton>
+                    </a>
+                  ))}
+                </ButtonGroup>
+              </div>
             );
           }
           return null;
