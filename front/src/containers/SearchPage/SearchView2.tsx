@@ -422,15 +422,19 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         {site => {
           if (site.siteViews.length > 0 && buttonsArray.length > 0) {
             return (
-              <ButtonGroup>
-                {buttonsArray.map((button, index) => (
-                  <ThemedButton
-                    href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
-                    key={button.target + index}>
-                    {this.renderViewButton(button.icon)}
-                  </ThemedButton>
-                ))}
-              </ButtonGroup>
+              <div style={{ marginLeft: "auto", marginBottom: "1rem" }}  >
+                <ButtonGroup>
+                  {buttonsArray.map((button, index) => (
+                    <a href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
+                       key={button.target + index}
+                    >
+                      <ThemedButton>
+                        {this.renderViewButton(button.icon)}
+                      </ThemedButton>
+                    </a>
+                  ))}
+                </ButtonGroup>
+              </div>
             );
           }
           return null;
@@ -562,6 +566,15 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     switch (resultsType) {
       case 'masonry':
         return (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                  }}>
+                {this.renderViewDropdown()}
+              </div>
           <AutoSizer>
             {({ height, width }) => (
               <MasonryCards
@@ -573,9 +586,19 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               />
             )}
           </AutoSizer>
+            </div>
         );
       case 'list':
         return (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                  }}>
+                {this.renderViewDropdown()}
+              </div>
           <AutoSizer>
             {({ height, width }) => (
               <ListCards
@@ -587,9 +610,19 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               />
             )}
           </AutoSizer>
+            </div>
         );
       case 'table2':
         return (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-emd',
+                  }}>
+                {this.renderViewDropdown()}
+              </div>
           <AutoSizer>
             {({ height, width }) => (
               <TableRV
@@ -601,6 +634,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               />
             )}
           </AutoSizer>
+            </div>
         );
       default:
         //Everything in this default case is to handle the old table view and card view
