@@ -26,6 +26,7 @@ export const aggsOrdered = [
   'sponsors',
   'start_date',
   'study_type',
+  'study_views_count',
   'why_stopped',
   'wiki_page_edits.email',
   'wiki_page_edits.created_at',

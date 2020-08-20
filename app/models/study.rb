@@ -269,6 +269,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       sponsors: sponsors && sponsors.map(&:name),
       rating_dimensions: rating_dimensions.keys,
       indexed_at: Time.now.utc,
+      study_views_count: study_view_logs.count,
       wiki_page_edits: {
         email: wiki_page_edits.map(&:user).map(&:email),
         created_at: wiki_page_edits.map(&:created_at).map(&:to_time),
