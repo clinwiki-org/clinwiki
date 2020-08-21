@@ -52,6 +52,7 @@ import {
   Masonry,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
+import useUrlParams from "../../utils/UrlParamsProvider";
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -417,6 +418,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     const buttonsArray = currentSiteView.search.results.buttons.items.filter(
       button => button.target.length > 0 && button.icon.length > 0
     );
+    const queryString = useUrlParams();
     return (
       <SiteProvider>
         {site => {
@@ -425,7 +427,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               <div style={{ marginLeft: "auto", marginBottom: "1rem" }}  >
                 <ButtonGroup>
                   {buttonsArray.map((button, index) => (
-                    <a href={`/search?hash=${this.props.searchHash}&sv=${button.target}`}
+                    <a href={`/search?hash=${this.props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
                        key={button.target + index}
                     >
                       <ThemedButton>
