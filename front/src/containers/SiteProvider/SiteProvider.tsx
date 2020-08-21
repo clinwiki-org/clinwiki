@@ -257,6 +257,17 @@ export const SITE_VIEW_FRAGMENT = gql`
   ${SITE_STUDY_PAGE_FRAGMENT}
 `;
 
+
+export const PAGE_VIEW_FRAGMENT = gql`
+  fragment PageViewFragment on PageView {
+    id
+    url
+    title
+    default
+    template
+    pageType
+  }
+`;
 export const SITE_FRAGMENT = gql`
   fragment SiteFragment on Site {
     id
@@ -278,9 +289,13 @@ export const SITE_FRAGMENT = gql`
     siteViews {
       ...SiteViewFragment
     }
+    pageView{
+      ...PageViewFragment
+    }
   }
 
   ${SITE_VIEW_FRAGMENT}
+  ${PAGE_VIEW_FRAGMENT}
 `;
 
 const QUERY = gql`
