@@ -196,6 +196,18 @@ This will run a hot-reloading session of the cw-app frontend.
 To make sure reindexing and the like are handled on save,
 make sure to run `./scripts/worker` in a separate session as well.
 
+## Admin & Sites Setup
+
+To access the sub-site config and bulk update admin features, add admin role after creating a user
+In rails console, `User.find_by(email: "[email of the user]").add_role(:admin)`
+
+  > **NOTE**: Run this command from inside the `clinwiki` container if you're using Docker Compose.
+
+Sites can be accessed locally by navigating to a subdomain against your localhost.
+By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are
+white-listed for CORS requests. This means you can configure a site with the subdomain
+`mysite` and a site with the subdomain `test` without additional CORS configuration.
+
 ## Data Access
 
 ### Databases

@@ -10,7 +10,7 @@ Bug reports are welcome. Please try to be as specific as possible so we can repr
 
 - Do not open a bug if study data is wrong. Instead consider _using_ the wiki features to correct or annotate the study.
 
-Ready to fix a bug or add a feature? [This](README.md#setup) section will get a development copy of ClinWiki running on your local Windows/Mac/Linux system in a snap.
+Ready to fix a bug or add a feature? The [README.md](README.md) will get a development copy of ClinWiki running on your local Windows/Mac/Linux system in a snap.
 
 ## Branch Strategy
 
@@ -28,18 +28,6 @@ To contribute a new feature or bug fix create a new branch off of the current st
 
 - If the pull request is only for review but not quite ready yet prepend "WIP" or "work in progress" to the front of the title so it doesn't get accidently merged on merge day.
 - Add a new entry to ReleaseNotes/index.tsx describing your change or bugfix. Don't worry too much about having the "right" version as we will fix it up when it merges to staging.
-
-## Admin
-
-To access the sub-site config and bulk update admin features, add admin role after creating a user
-In rails console, User.find_by(email: "[email of the user]").add_role(:admin)
-
-## Working with Sites
-
-Sites can be accessed locally by navigating to a subdomain against your localhost.
-By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are
-white-listed for CORS requests. This means you can configure a site with the subdomain
-`mysite` and a site with the subdomain `test` without additional CORS configuration.
 
 ## Testing
 
