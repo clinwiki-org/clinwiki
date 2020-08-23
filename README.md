@@ -29,22 +29,29 @@ You can use one of the following options to start ClinWiki on your own system:
   
     > This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config. Additionally, you will want to run the `docker-compose` commands with additional arguments (included below for each step).
 
-1. `docker-compose build`
+1. Build image
+
+    `docker-compose build`
+
     > **macOS:** `docker-compose -f docker-compose.yml -f docker-compose-osx.yml build`
 
-1. `ELASTIC_PASSWORD=CHANGEME docker-compose up` or `ELASTIC_PASSWORD=CHANGEME docker-compose up -d` to run as daemon in background
+1. Run ClinWiki server on <http://localhost:3000>
+
+    `ELASTIC_PASSWORD=CHANGEME docker-compose up` or `ELASTIC_PASSWORD=CHANGEME docker-compose up -d` to run as daemon in background
+
     > **macOS:** `ELASTIC_PASSWORD=CHANGEME docker-compose -f docker-compose.yml -f docker-compose-osx.yml up` or `ELASTIC_PASSWORD=CHANGEME docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d`
 
-1. `compose/bin/search_bootstrap`
+1. Bootstrap search
+
+    `compose/bin/search_bootstrap`
 
 1. Build and serve frontend (on <http://localhost:3001>):
+
     - `cd /front`
     - `yarn install`
     - `yarn start`
 
     > **NOTE:** Changes to local .ts/.tsx files will be automatically applied to the running system
-
-Now you should have the ClinWiki server running on <http://localhost:3000>
 
 - Extras
   - Logs: `docker-compose logs -f clinwiki`
