@@ -1,6 +1,6 @@
 # Contributing to ClinWiki
 
-## Found a bug?
+## Reporting Bugs
 
 Bug reports are welcome. Please try to be as specific as possible so we can reproduce the problem.
 
@@ -16,61 +16,77 @@ Ready to fix a bug or add a feature? This section will get a development copy of
 
 The easiest way to start ClinWiki on your own system is to use [docker-compose](https://docs.docker.com/compose/).
 
-- Clone the clinwiki repository
-- Install Docker
-  - Windows and Mac users install [Docker Desktop](https://www.docker.com/products/docker-desktop)
-  - Linux users follow the [official install instructions for Docker for your distribution](https://docs.docker.com/install/#supported-platforms)
-- **Note for OS X / macOS users:** Before running the docker-compose commands, bring up a separate terminal, then install `docker-sync` via `gem install docker-sync` and run `docker-sync start --config=docker-sync.yml`. This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config. Additionally, you will want to run the `docker-compose` commands with additional arguments (included below for each step). 
-- `docker-compose build` (for macOS: `docker-compose -f docker-compose.yml -f docker-compose-osx.yml build`)
-- `docker-compose up` or `docker-compose up -d` to run as daemon in background (for macOS: `docker-compose -f docker-compose.yml -f docker-compose-osx.yml up` or `docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d`)
-- `compose/bin/search_bootstrap`
-- Now you should have the ClinWiki server running on http://localhost:3000
+1. Clone the ClinWiki repository
+
+1. Install Docker
+
+    - Windows and Mac users install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+    - Linux users follow the [official install instructions for Docker for your distribution](https://docs.docker.com/install/#supported-platforms)
+
+1. **Only for macOS:** Install and start `docker-sync`
+    - Bring up a separate terminal
+    - Install `docker-sync` via `gem install docker-sync`
+    - Run `docker-sync start --config=docker-sync.yml`
+  
+    > **NOTE**: This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config. Additionally, you will want to run the `docker-compose` commands with additional arguments (included below for each step).
+
+1. `docker-compose build`
+    > **macOS:** `docker-compose -f docker-compose.yml -f docker-compose-osx.yml build`
+
+1. `ELASTIC_PASSWORD=CHANGEME docker-compose up` or `ELASTIC_PASSWORD=CHANGEME docker-compose up -d` to run as daemon in background
+    > **macOS:** `ELASTIC_PASSWORD=CHANGEME docker-compose -f docker-compose.yml -f docker-compose-osx.yml up` or `ELASTIC_PASSWORD=CHANGEME docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d`
+
+1. `compose/bin/search_bootstrap`
+
+Now you should have the ClinWiki server running on <http://localhost:3000>
+
 - Extras
   - Logs: `docker-compose logs -f clinwiki`
   - Console: `docker-compose exec clinwiki bundle exec rails c`
   - Run and build: `docker-compose up -d --build`
-    The front end is not built yet so you will only see the rails start page but you can browse to http://localhost:3000/graphiql to send graphql queries.
-- cd /front
-  - yarn install
-  - yarn start
-  - This will build the ClinWiki front end and serve it on http://localhost:3001
-  - Changes to local .ts/.tsx files will be automatically applied to the running system
+    The front end is not built yet so you will only see the rails start page but you can browse to <http://localhost:3000/graphiql> to send graphql queries.
+  - Build and serve frontend (on <http://localhost:3001>):
+    - `cd /front`
+    - `yarn install`
+    - `yarn start`
+    > **NOTE:** Changes to local .ts/.tsx files will be automatically applied to the running system
 
 ### CW_MODE
 
-You can use the CW_MODE environment variable to configure how docker-compose starts ClinWiki.
+You can use the `CW_MODE` environment variable to configure how docker-compose starts ClinWiki.
 
-- CW_MODE=PROD - the default, builds the front end and runs rails
-- CW_MODE=FAST - runs rails *without* building the front end for a quicker startup
-- CW_MODE=DEV - starts the 'clinwiki' container without running rails so you can start/restart it manually during development
-- CW_MODE=WORKER - runs the sidekiq process instead of rails
+- `CW_MODE=PROD` - the default, builds the front end and runs rails
+- `CW_MODE=FAST` - runs rails *without* building the front end for a quicker startup
+- `CW_MODE=DEV` - starts the 'clinwiki' container without running rails so you can start/restart it manually during development
+- `CW_MODE=WORKER` - runs the sidekiq process instead of rails
 
 To specify the variable changes the command line a little bit depending on if you're on Windows or Linux/Mac:
 
 _Linux/Mac:_
 
-```
+```bash
 CW_MODE=FAST docker-compose up -d
 ```
 
 _Windows:_
 
-```
+```bash
 set CW_MODE=FAST
 docker-compose up -d
 ```
 
 ## Branch Strategy
 
-```
+```bash
 master ◀ staging ◀ feature 1
                  ◀ feature 2
                  ◀ feature 3
 ```
 
-The master branch is always in a ready to deploy state and matches what is running on https://www.clinwiki.org.
+The master branch is always in a ready to deploy state and matches what is running on <https://www.clinwiki.org>.
 
-Weekly completed feature branches are merged to the staging branch and then staging is deployed to https://staging.clinwiki.org and manual tests are run to ensure no regressions from the previous version. The only time it makes sense to commit directly to the staging branch is to fix small bugs found during this testing phase. Once testing is complete staging gets pulled to master and deployed.
+Weekly completed feature branches are merged to the staging branch and then staging is deployed to <https://staging.clinwiki.org> and manual tests are run to ensure no regressions from the previous version. The only time it makes sense to commit directly to the staging branch is to fix small bugs found during this testing phase. Once testing is complete staging gets pulled to master and deployed.
 
 To contribute a new feature or bug fix create a new branch off of the current staging (or master) and implement the feature. Then open a pull request to the staging branch.
 
@@ -89,7 +105,7 @@ By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are
 white-listed for CORS requests. This means you can configure a site with the subdomain
 `mysite` and a site with the subdomain `test` without additional CORS configuration.
 
-# Testing
+## Testing
 
 ClinWiki is working on increasing unit test coverage.
 
@@ -117,7 +133,7 @@ in `config/environments/test.rb'
 We use AWS for storing CSV exports in S3.
 You will need the following in your .env to develop against this locally:
 
-```
+```bash
 AWS_ACCESS_KEY_ID=(ask for this)
 AWS_SECRET_ACCESS_KEY_ID=(ask for this)
 ```
