@@ -37,6 +37,13 @@ You can use one of the following options to start ClinWiki on your own system:
 
 1. `compose/bin/search_bootstrap`
 
+1. Build and serve frontend (on <http://localhost:3001>):
+    - `cd /front`
+    - `yarn install`
+    - `yarn start`
+
+    > **NOTE:** Changes to local .ts/.tsx files will be automatically applied to the running system
+
 Now you should have the ClinWiki server running on <http://localhost:3000>
 
 - Extras
@@ -44,11 +51,6 @@ Now you should have the ClinWiki server running on <http://localhost:3000>
   - Console: `docker-compose exec clinwiki bundle exec rails c`
   - Run and build: `docker-compose up -d --build`
     The front end is not built yet so you will only see the rails start page but you can browse to <http://localhost:3000/graphiql> to send graphql queries.
-  - Build and serve frontend (on <http://localhost:3001>):
-    - `cd /front`
-    - `yarn install`
-    - `yarn start`
-    > **NOTE:** Changes to local .ts/.tsx files will be automatically applied to the running system
 
 #### CW_MODE
 
