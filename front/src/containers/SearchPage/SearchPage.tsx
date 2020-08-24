@@ -732,13 +732,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const searchQueryString = new URLSearchParams(
       this.props.history.location.search
     );
-    //console.log("SITE PARAMS", this.props.site);
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
-    // This assumes that the site provider is not the passing a url into the page
+    // This assumes that the site provider is not passing a url into the page
     // view fragment portion of the query otherwise we would need to call the
     //  page view query without passing the url into it to retrieve the default url
-    // @ts-ignored
-    const defaultPageView = this.props.site.pageView.url;
+    const defaultPageView = this.props.site.pageView!.url;
     const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
     const userId = searchQueryString.getAll('uid').toString();
 
