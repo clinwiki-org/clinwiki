@@ -723,9 +723,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return response;
   };
   updateSearchParams = async (params) => {
-    this.setState({	
-      ...this.state,	
-      params: { ...(this.state?.params || {}), ...params },	
+    this.setState({
+      ...this.state,
+      params: { ...(this.state?.params || {}), ...params },
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
@@ -733,7 +733,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.props.history.location.search
     );
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
-    const pageViewUrl = searchQueryString.getAll('pv').toString() || 'default';
+    // This assumes that the site provider is not passing a url into the page
+    // view fragment portion of the query otherwise we would need to call the
+    //  page view query without passing the url into it to retrieve the default url
+    const defaultPageView = this.props.site.pageView!.url;
+    const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
     const userId = searchQueryString.getAll('uid').toString();
 
     if (data?.provisionSearchHash?.searchHash?.short) {
@@ -950,7 +954,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             component={SearchStudyPage}
           />
           <Route
-            path={`/bulk`}	
+            path={`/bulk`}
             component={BulkEditPage}
           /> */}
           <Route

@@ -741,6 +741,16 @@ export interface SiteProviderQuery_site_siteViews {
   search: SiteProviderQuery_site_siteViews_search;
 }
 
+export interface SiteProviderQuery_site_pageView {
+  __typename: "PageView";
+  id: number;
+  pageType: string;
+  template: string;
+  title: string;
+  url: string;
+  default: boolean;
+}
+
 export interface SiteProviderQuery_site {
   __typename: "Site";
   id: number;
@@ -754,6 +764,7 @@ export interface SiteProviderQuery_site {
   owners: SiteProviderQuery_site_owners[];
   siteView: SiteProviderQuery_site_siteView;
   siteViews: SiteProviderQuery_site_siteViews[];
+  pageView: SiteProviderQuery_site_pageView | null;
 }
 
 export interface SiteProviderQuery {
