@@ -383,7 +383,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   renderResultsButtons = view => {
-    let ICONS = ['table', 'card', 'search'];
+    let ICONS = ['table', 'card', 'search', 'list', 'small masonry', 'large masonry'];
     let buttonsArray = view.search.results.buttons.items;
     let siteViews = this.props.siteViews;
     let thisSiteView =

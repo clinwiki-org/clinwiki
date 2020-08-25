@@ -450,6 +450,15 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         return <TableIcon />;
       case 'search':
         return <FontAwesome name="search" />;
+      case 'list':
+        return <FontAwesome name="th-list"
+                            style={{ fontSize: '1.8rem' }} />;
+      case 'small masonry':
+        return <FontAwesome name="th"
+                            style={{ fontSize: '1.8rem' }} />;
+      case 'large masonry':
+        return <FontAwesome name="th-large"
+                            style={{ fontSize: '1.8rem' }} />;
       default:
         return null;
     }
