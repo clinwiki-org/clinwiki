@@ -53,6 +53,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get "/loaderio-8d814a5de952773390cc25ce466a6b68.txt", to: static("loaderio-8d814a5de952773390cc25ce466a6b68.txt")
+  # loader.io domain verifcation for load testing
+  get "/loaderio-f076138abbb7fbc078ad112a429b504f.txt", to: static("loaderio-f076138abbb7fbc078ad112a429b504f.txt")
+
   match "*all", to: static("index.html"), via: [:get]
 end
