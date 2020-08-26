@@ -53,5 +53,6 @@ Rails.application.routes.draw do
     end
   end
 
+  get "/loaderio-8d814a5de952773390cc25ce466a6b68.txt", to: static("loaderio-8d814a5de952773390cc25ce466a6b68.txt")
   match "*all", to: static("index.html"), via: [:get]
 end
