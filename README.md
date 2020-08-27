@@ -56,11 +56,11 @@ You can use one of the following options to start ClinWiki on your own system:
 
 1. To access the sub-site config and bulk update admin features, add admin role after creating a user. In Rails console, execute `User.find_by(email: "[email of the user]").add_role(:admin)`
 
-  > **NOTE**: Run this command from inside the `clinwiki` container.
+    > **NOTE**: Run this command from inside the `clinwiki` container.
 
 1. Create the default site by clicking on `Sites` under the profile dropdown on the top right hand side. Then click create site, fill out the form and click save.
 
-  > Sites can be accessed locally by navigating to a subdomain against your localhost. By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are white-listed for CORS requests. This means you can configure a site with the subdomain `mysite` and a site with the subdomain `test` without additional CORS configuration.
+    > Sites can be accessed locally by navigating to a subdomain against your localhost. By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are white-listed for CORS requests. This means you can configure a site with the subdomain `mysite` and a site with the subdomain `test` without additional CORS configuration.
 
 - Extras
   - Logs: `docker-compose logs -f clinwiki`
