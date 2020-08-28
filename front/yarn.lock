@@ -1273,6 +1273,11 @@
   dependencies:
     prop-types "^15.7.2"
 
+"@fullstory/browser@^1.4.5":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@fullstory/browser/-/browser-1.4.5.tgz#a8f48c65bdd0a0d53cc5b3b678b02c715156fd96"
+  integrity sha512-a1EnuwRMa9p8aNauM8rrjH+lqhX2RCo1bHOG3DGcEHXtzV+r8TDeiO8HB8kU1IjE/EXpzAGtQ2F0JMWZhvoaYg==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
