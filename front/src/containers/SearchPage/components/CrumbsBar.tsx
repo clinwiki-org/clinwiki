@@ -324,62 +324,12 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   getSuggestionValue = suggestion => {
     return suggestion.key;
   };
-  renderLoadingAutoSuggest = (
-    suggestions,
-    searchTerm,
-    apolloClient,
-    showAutoSuggest
-  ) => {
-    if (showAutoSuggest === true) {
-      return (
-        <div style={{ display: 'inline' }}>
-          <FormGroup>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-              }}>
-              <b
-                style={{
-                  marginRight: '8px',
-                  marginTop: '4px',
-                }}>
-                <ControlLabel>Search Within: </ControlLabel>{' '}
-              </b>
-
-              <Autosuggest
-                multiSection={true}
-                suggestions={suggestions}
-                inputProps={{
-                  value: searchTerm,
-                  onChange: (e, searchTerm) =>
-                    this.onChange(e, searchTerm, apolloClient),
-                }}
-                renderSuggestion={this.renderSuggestion}
-                renderSuggestionsContainer={this.renderSuggestionsContainer}
-                renderSectionTitle={this.renderSectionTitle}
-                getSectionSuggestions={this.getSectionSuggestions}
-                onSuggestionSelected={this.onSuggestionSelected}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                getSuggestionValue={this.getSuggestionValue}
-              />
-            </div>
-          </FormGroup>
-          <ThemedButton type="submit">
-            <FontAwesome name="search" />
-          </ThemedButton>
-        </div>
-      );
-    } else if (showAutoSuggest === false) {
-      return null;
-    }
-  };
   renderAutoSuggest = (
     suggestions,
     searchTerm,
     apolloClient,
-    showAutoSuggest
+    showAutoSuggest,
+    loading: boolean
   ) => {
     if (showAutoSuggest === true) {
       return (
@@ -407,6 +357,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                     this.onChange(e, searchTerm, apolloClient),
                 }}
                 renderSuggestion={this.renderSuggestion}
+                renderSuggestionsContainer={
+                  loading ? this.renderSuggestionsContainer : undefined
+                }
                 renderSectionTitle={this.renderSectionTitle}
                 getSectionSuggestions={this.getSectionSuggestions}
                 onSuggestionSelected={this.onSuggestionSelected}
@@ -513,19 +466,13 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                           inline
                           className="searchInput"
                           onSubmit={this.onSubmit}>
-                          {isSuggestionLoading
-                            ? this.renderLoadingAutoSuggest(
-                                suggestions,
-                                searchTerm,
-                                apolloClient,
-                                showAutoSuggest
-                              )
-                            : this.renderAutoSuggest(
-                                suggestions,
-                                searchTerm,
-                                apolloClient,
-                                showAutoSuggest
-                              )}
+                          {this.renderAutoSuggest(
+                            suggestions,
+                            searchTerm,
+                            apolloClient,
+                            showAutoSuggest,
+                            isSuggestionLoading
+                          )}
                           &nbsp;
                           {user && user.roles.includes('admin') ? (
                             <ThemedButton
