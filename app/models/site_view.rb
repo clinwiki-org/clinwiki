@@ -272,7 +272,9 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           },
 
         },
-        breadCrumbs: {},
+        crumbs: {
+          search: true,
+        },
 
         aggs: {
           selected: {

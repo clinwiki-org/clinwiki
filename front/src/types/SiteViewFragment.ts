@@ -138,6 +138,11 @@ export interface SiteViewFragment_search_results {
   buttons: SiteViewFragment_search_results_buttons;
 }
 
+export interface SiteViewFragment_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
+}
+
 export interface SiteViewFragment_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
   sortKind: SortKind;
@@ -348,6 +353,7 @@ export interface SiteViewFragment_search {
   template: string;
   autoSuggest: SiteViewFragment_search_autoSuggest;
   results: SiteViewFragment_search_results;
+  crumbs: SiteViewFragment_search_crumbs;
   presearch: SiteViewFragment_search_presearch;
   fields: string[];
   config: SiteViewFragment_search_config;

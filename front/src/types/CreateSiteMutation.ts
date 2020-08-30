@@ -154,6 +154,11 @@ export interface CreateSiteMutation_createSite_site_siteView_search_results {
   buttons: CreateSiteMutation_createSite_site_siteView_search_results_buttons;
 }
 
+export interface CreateSiteMutation_createSite_site_siteView_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
+}
+
 export interface CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
   sortKind: SortKind;
@@ -364,6 +369,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search {
   template: string;
   autoSuggest: CreateSiteMutation_createSite_site_siteView_search_autoSuggest;
   results: CreateSiteMutation_createSite_site_siteView_search_results;
+  crumbs: CreateSiteMutation_createSite_site_siteView_search_crumbs;
   presearch: CreateSiteMutation_createSite_site_siteView_search_presearch;
   fields: string[];
   config: CreateSiteMutation_createSite_site_siteView_search_config;
@@ -509,6 +515,11 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_results {
   __typename: "SiteResultsSection";
   type: string;
   buttons: CreateSiteMutation_createSite_site_siteViews_search_results_buttons;
+}
+
+export interface CreateSiteMutation_createSite_site_siteViews_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
 }
 
 export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_order {
@@ -721,6 +732,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search {
   template: string;
   autoSuggest: CreateSiteMutation_createSite_site_siteViews_search_autoSuggest;
   results: CreateSiteMutation_createSite_site_siteViews_search_results;
+  crumbs: CreateSiteMutation_createSite_site_siteViews_search_crumbs;
   presearch: CreateSiteMutation_createSite_site_siteViews_search_presearch;
   fields: string[];
   config: CreateSiteMutation_createSite_site_siteViews_search_config;

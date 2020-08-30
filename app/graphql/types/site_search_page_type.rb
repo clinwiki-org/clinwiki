@@ -8,6 +8,7 @@ module Types
     field :presearch ,SitePresearchPageType,null:false
     field :auto_suggest,SiteAutoSuggestSectionType ,null:false
     field :results, SiteResultsSectionType, null:false
+    field :crumbs, CrumbResultSectionType, null:false
     field :template, String, null: false
 
     def crowd_aggs
@@ -18,8 +19,8 @@ module Types
       object[:autoSuggest]
     end
 
-    def bread_crumbs
-      object[:breadCrumbs]
+    def crumbs
+      object[:crumbs]
     end
   end
 end

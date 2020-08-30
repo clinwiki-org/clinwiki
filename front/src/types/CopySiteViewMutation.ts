@@ -138,6 +138,11 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_results {
   buttons: CopySiteViewMutation_copySiteView_siteView_search_results_buttons;
 }
 
+export interface CopySiteViewMutation_copySiteView_siteView_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
+}
+
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
   sortKind: SortKind;
@@ -348,6 +353,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search {
   template: string;
   autoSuggest: CopySiteViewMutation_copySiteView_siteView_search_autoSuggest;
   results: CopySiteViewMutation_copySiteView_siteView_search_results;
+  crumbs: CopySiteViewMutation_copySiteView_siteView_search_crumbs;
   presearch: CopySiteViewMutation_copySiteView_siteView_search_presearch;
   fields: string[];
   config: CopySiteViewMutation_copySiteView_siteView_search_config;
