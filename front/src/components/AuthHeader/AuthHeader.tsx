@@ -80,7 +80,7 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
                 href="https://home.clinwiki.org/make-a-donation/">
                 Donate
               </NavItem>
-              <NavItem eventKey={1} href="https://home.clinwiki.org/">
+              <NavItem eventKey={1} href="https://home.clinwiki.org/" target="_blank">
                 About ClinWiki
               </NavItem>
               <Row>

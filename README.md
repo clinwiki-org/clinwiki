@@ -10,7 +10,6 @@ You can use one of the following options to start ClinWiki on your own system:
 - [Docker Compose](#docker-compose) (easiest method)
 - [Locally in development mode](#run-locally)
 - [Locally in production mode](#run-locally-in-production-mode)
-- [Vagrant](#vagrant)
 
 ### Docker Compose
 
@@ -52,6 +51,16 @@ You can use one of the following options to start ClinWiki on your own system:
     - `yarn start`
 
     > **NOTE:** Changes to local .ts/.tsx files will be automatically applied to the running system
+
+1. Create a new user from the UI or Rails console
+
+1. To access the sub-site config and bulk update admin features, add admin role after creating a user. In Rails console, execute `User.find_by(email: "[email of the user]").add_role(:admin)`
+
+    > **NOTE**: Run this command from inside the `clinwiki` container.
+
+1. Create the default site by clicking on `Sites` under the profile dropdown on the top right hand side. Then click create site, fill out the form and click save.
+
+    > Sites can be accessed locally by navigating to a subdomain against your localhost. By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are white-listed for CORS requests. This means you can configure a site with the subdomain `mysite` and a site with the subdomain `test` without additional CORS configuration.
 
 - Extras
   - Logs: `docker-compose logs -f clinwiki`
@@ -156,66 +165,6 @@ mode.
     ```bash
     export $(cat .env | xargs) && RAILS_ENV=production rails s
     ```
-
-### Vagrant
-
-Make sure you have a copy of `cw-app` located as a sibling of the root project
-directory.
-
-You can once you've installed [vagrant](https://www.vagrantup.com/),
-you can install the vagrant VM by running `vagrant up` from the project
-root directory.
-
-You can access the vagrant instance via `vagrant ssh`.
-
-The following scripts are available
-
-| Script                       | Function                                                      |
-| ---------------------------- | ------------------------------------------------------------- |
-| `./scripts/vagrant/server`   | runs the server through vagrant, serving the API at port 3000 |
-| `./scripts/vagrant/worker`   | runs the worker within the vagrant server                     |
-| `./scripts/vagrant/frontend` | runs a hot-reloading version of the frontend                  |
-
-#### Initializing Data
-
-We have already enqueued several tasks for the worker to run while
-provisioning Vagrant, but you will need to make sure to run the worker
-for those jobs to be handled.
-
-#### Running the Server
-
-In one vagrant SSH session, you will want to run the following:
-
-```bash
-cd /clinwki
-./scripts/server
-```
-
-This will expose `localhost:3000` to API requests.
-
-From another session, run the following:
-
-```bash
-cd /cw-app
-yarn start
-```
-
-This will run a hot-reloading session of the cw-app frontend.
-
-To make sure reindexing and the like are handled on save,
-make sure to run `./scripts/worker` in a separate session as well.
-
-## Admin & Sites Setup
-
-To access the sub-site config and bulk update admin features, add admin role after creating a user
-In rails console, `User.find_by(email: "[email of the user]").add_role(:admin)`
-
-  > **NOTE**: Run this command from inside the `clinwiki` container if you're using Docker Compose.
-
-Sites can be accessed locally by navigating to a subdomain against your localhost.
-By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are
-white-listed for CORS requests. This means you can configure a site with the subdomain
-`mysite` and a site with the subdomain `test` without additional CORS configuration.
 
 ## Data Access
 

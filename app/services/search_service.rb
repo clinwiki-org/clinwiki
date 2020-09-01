@@ -274,6 +274,7 @@ class SearchService
   def crowd_agg_facets(site:)
     params = self.params.deep_dup
     return {} if params.nil?
+  
 
     search_results = Study.search("*", aggs: [:front_matter_keys])
 
@@ -281,6 +282,9 @@ class SearchService
     keys = aggs[:front_matter_keys][:buckets]
       .map { |x| (x[:key]).to_s }
     facets = {}
+    if  self.params.dig(:crowd_buckets_wanted)
+      keys.select!{|key| self.params[:crowd_buckets_wanted]&.include?(key)}
+    end
     keys.each do |key|
       field_agg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
       field_agg.each do |name, agg|
