@@ -33,7 +33,7 @@ import apolloClient from './configureApollo';
 // Import CSS reset and Global Styles
 import GlobalStyle from './global-styles';
 
-const orgId = process.env.REACT_APP_FULLSTORY_ID || '';
+const orgId = process.env.REACT_APP_FULLSTORY_ID || 'Q5CJJ';
 
 FullStory.init({ orgId });
 
