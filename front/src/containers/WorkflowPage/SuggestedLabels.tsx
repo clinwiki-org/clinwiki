@@ -35,8 +35,8 @@ interface SuggestedLabelsProps {
 }
 
 const QUERY = gql`
-  query SuggestedLabelsQuery($nctId: String!) {
-    crowdAggFacets {
+  query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
+    crowdAggFacets(crowdBucketsWanted: $crowdBucketsWanted) { 
       aggs {
         name
         buckets {
@@ -152,6 +152,7 @@ class SuggestedLabels extends React.PureComponent<
         query={QUERY}
         variables={{
           nctId: this.props.nctId,
+          crowdBucketsWanted: this.props.allowedSuggestedLabels
         }}>
         {({ data, loading, error, refetch }) => {
           if (loading || error || !data) return null;
