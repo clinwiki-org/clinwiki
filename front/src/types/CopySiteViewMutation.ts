@@ -349,6 +349,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search {
   autoSuggest: CopySiteViewMutation_copySiteView_siteView_search_autoSuggest;
   results: CopySiteViewMutation_copySiteView_siteView_search_results;
   presearch: CopySiteViewMutation_copySiteView_siteView_search_presearch;
+  sortables: string[];
   fields: string[];
   config: CopySiteViewMutation_copySiteView_siteView_search_config;
   aggs: CopySiteViewMutation_copySiteView_siteView_search_aggs;

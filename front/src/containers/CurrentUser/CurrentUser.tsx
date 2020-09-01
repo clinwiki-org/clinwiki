@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Query, QueryComponentOptions } from 'react-apollo';
+import { Query, QueryComponentOptions, useQuery } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { CurrentUserQuery } from 'types/CurrentUserQuery';
 import { UserFragment } from 'types/UserFragment';
@@ -73,6 +73,10 @@ class CurrentUser extends React.PureComponent<CurrentUserProps> {
       </QueryComponent>
     );
   }
+}
+
+export function useCurrentUser() {
+  return useQuery<CurrentUserQuery>(QUERY);
 }
 
 export default CurrentUser;

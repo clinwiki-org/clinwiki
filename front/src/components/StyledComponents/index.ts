@@ -22,6 +22,9 @@ const StyledButton = styled.button`
   &:hover {
     background: ${props => props.theme.buttonSecondary};
   }
+  &:disabled {
+    background: ${props => props.theme.buttonDisabled};
+  }
 `;
 
 export const ThemedButton = withTheme(StyledButton);
@@ -68,6 +71,7 @@ const MainContainer = styled(Col)`
   padding-top: 20px;
   padding-bottom: 20px;
   flex: 1;
+  overflow:scroll;
   @media (max-width: 768px) {
     flex-direction: column;
   }

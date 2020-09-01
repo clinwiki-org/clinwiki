@@ -11,6 +11,11 @@ import {
   WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
+import QUERY from 'queries/WikiPageQuery';
+import {
+  UPDATE_CONTENT_MUTATION,
+  UpdateContentMutationFn,
+} from 'mutations/WikiPageUpdateContentMutation';
 import { Panel, FormControl } from 'react-bootstrap';
 import {
   Query,
@@ -36,7 +41,6 @@ interface WikiPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
-  metaData: SiteStudyBasicGenericSectionFragment;  
   showAnimation:any;
 }
 
@@ -58,36 +62,6 @@ const FRAGMENT = gql`
   }
 
   ${WikiPageEditFragment}
-`;
-
-const QUERY = gql`
-  query WikiPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      wikiPage {
-        ...WikiPageFragment
-      }
-      nctId
-    }
-    me {
-      id
-    }
-  }
-
-  ${StudySummary.fragment}
-  ${FRAGMENT}
-`;
-
-const UPDATE_CONTENT_MUTATION = gql`
-  mutation WikiPageUpdateContentMutation($nctId: String!, $content: String!) {
-    updateWikiContent(input: { nctId: $nctId, content: $content }) {
-      wikiPage {
-        ...WikiPageFragment
-      }
-      errors
-    }
-  }
-  ${FRAGMENT}
 `;
 
 const Toolbar = styled.div`

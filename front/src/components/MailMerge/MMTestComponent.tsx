@@ -1,65 +1,120 @@
 import React, { useState } from 'react';
-import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
+import {
+  getIntrospectionQuery,
+  IntrospectionQuery,
+  DocumentNode,
+} from 'graphql';
 import { useQuery } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import MailMerge from './MailMerge';
+import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
+import { getStudyQuery, getSearchQuery } from './MailMergeUtils';
+import { pageIslands } from 'containers/Islands/CommonIslands';
 
-const getQuery = (name:string,frag:string) => {
-  frag = frag || `fragment ${name} on Study { nct_id }`;
-  return gql`
-  query SampleStudyQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...${name}
-    }
+type Mode = 'Study' | 'Search';
+
+const fragmentName = 'demo_fragment';
+
+// return a tuple of the elements that differ with the mode
+// query, params, schema
+function getModeData(
+  mode: Mode,
+  arg: string,
+  fragment: string
+): [DocumentNode, object, string] {
+  switch (mode) {
+    case 'Study':
+      return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
+    case 'Search':
+      return [
+        getSearchQuery(fragmentName, fragment),
+        { hash: arg },
+        'ElasticStudy',
+      ];
   }
-  ${frag}
-`};
+}
 
 export default function TestComponent() {
   const [template, setTemplate] = useState(`
 # title: {{briefTitle}}
-{{#each reviews}}
-- Review: {{content}}
-  - {{user.email}}
+<table class="table table-striped table-bordered table-condensed">
+  <tbody>
+    <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
+    <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
+    <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
+    <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
+    <tr> <th>Source</th> <td>{{source}}</td> </tr>
+  </tbody>
+</table>
 
-{{#with user}}
-  - {{email}}
-{{/with}}
-{{/each}}
 
-Facility contacts:  
-{{#each facilities}}
- {{#each contacts}}
-  {{name}}  
- {{/each}}
- {{location.latitude}}
- {{location.longitude}}
-{{/each}}
 `);
   const [fragment, setFragment] = useState('');
+  const [mode, setMode] = useState<Mode>('Study');
+  const defaultNctId = 'NCT03847779';
+  const defaultSearchHash = 'tqxCyI9M';
+  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
+
   const { data: introspection } = useQuery<IntrospectionQuery>(
     gql(getIntrospectionQuery({ descriptions: false }))
   );
-  const fragmentName = "demo_fragment";
-  const { data: study } = useQuery(getQuery(fragmentName, fragment), {
-    variables: { nctId: 'NCT03847779' },
-  });
+
+  const [query, variables, schemaType] = getModeData(
+    mode,
+    nctOrSearchHash,
+    fragment
+  );
+
+  const { data } = useQuery(query, { variables });
+
+  const updateMode = mode => {
+    setMode(mode);
+    if(mode === 'Study') setNctOrSearchHash(defaultNctId);
+    if(mode === 'Search') setNctOrSearchHash(defaultSearchHash);
+  };
+
+  const islands = {
+    ...pageIslands,
+    groot: (attributes: Record<string, string>) => {
+      return (
+        <img src="https://media.giphy.com/media/11vDNL1PrUUo0/source.gif" />
+      );
+    },
+  };
+
+  const sampleData = data?.study || data?.search?.studies?.[0];
 
   if (introspection) {
     const types = introspection.__schema.types;
     return (
       <div>
+        <DropdownButton
+          bsStyle="default"
+          title={`Type: ${mode}`}
+          key={mode}
+          style={{ marginBottom: '10px' }}>
+          <MenuItem onClick={_ => updateMode('Study')}>Study</MenuItem>
+          <MenuItem onClick={_ => updateMode('Search')}>Search</MenuItem>
+        </DropdownButton>
+        <FormControl
+          placeholder="Select an nctid"
+          value={nctOrSearchHash}
+          onChange={e => setNctOrSearchHash(e.target.value || defaultNctId)}
+        />
         <MailMerge
-          schema={{ kind: 'graphql', typeName: 'Study', types }}
-          sample={study?.study || {}}
+          schema={{ kind: 'graphql', typeName: schemaType, types }}
+          sample={data?.study || data?.search?.studies?.[0]}
           template={template}
           onTemplateChanged={setTemplate}
           fragmentName={fragmentName}
-          fragmentClass="Study"
+          fragmentClass={schemaType}
           onFragmentChanged={setFragment}
+          islands={islands}
         />
         <pre>{fragment}</pre>
-        <pre>{JSON.stringify(study?.study, null, 2)}</pre>
+        <pre>
+          {JSON.stringify(data?.study || data?.search?.studies, null, 2)}
+        </pre>
       </div>
     );
   }

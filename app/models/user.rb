@@ -10,6 +10,8 @@ class User < ApplicationRecord
   has_many :wiki_pages, through: :wiki_page_edits
   has_many :reactions
   has_many :reaction_kinds, through: :reactions
+  has_many :search_logs
+  has_many :study_view_logs
   def admin?
     false
   end

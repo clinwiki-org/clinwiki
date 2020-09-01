@@ -30,5 +30,10 @@ module Types
     field :create_reaction, mutation: Mutations::CreateReaction
     field :update_reaction, mutation: Mutations::UpdateReaction
     field :delete_reaction, mutation: Mutations::DeleteReaction
+    field :createPageView, mutation: Mutations::CreatePageView
+    field :updatePageView, mutation: Mutations::UpdatePageView
+    field :deletePageView, mutation: Mutations::DeletePageView
+    field :deleteSearchLog, mutation: Mutations::DeleteSearchLog
+    field :deleteStudyViewLog, mutation: Mutations::DeleteStudyViewLog
   end
 end

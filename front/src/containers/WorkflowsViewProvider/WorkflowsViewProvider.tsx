@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Query, QueryComponentOptions } from 'react-apollo';
+import { Query, QueryComponentOptions, useQuery } from 'react-apollo';
 import { WorkflowsViewProviderQuery } from 'types/WorkflowsViewProviderQuery';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { query } from 'queries/WorkflowsViewProviderquery';
@@ -27,4 +27,9 @@ class WorkflowsViewProvider extends React.PureComponent<
   }
 }
 
+
 export default WorkflowsViewProvider;
+
+export function useWorkflowsView() {
+  return useQuery<WorkflowsViewProviderQuery>(query);
+}

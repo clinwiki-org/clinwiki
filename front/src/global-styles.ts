@@ -1,6 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 /* eslint no-unused-expressions: 0 */
-export default createGlobalStyle`
+
+export default withTheme(createGlobalStyle`
 html,
 body {
   height: 100%;
@@ -8,6 +10,8 @@ body {
 }
 body {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #eaedf4;
+
 }
 body.fontLoaded {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -23,7 +27,7 @@ label {
   border-radius: 4px;
 }
 .btn, .-btn{
-  background: #55B88D;
+  background: ${(props:any) => props.theme.crumbs.crumbBackground};
   color: #fff !important;
 }
 div.crumbs-bar span.label {
@@ -164,6 +168,13 @@ div.DraftEditor-editorContainer{
 .modal-container .modal, .modal-container .modal-backdrop {
   position: absolute;
 }
+.mm-single-line{
+  display: flex;
+}
+.mm-single-line .mail-merge-island{
+  padding-right: 1em;
+}
+
 .mail-merge pre {
   background-color: white;
   border: 0px;
@@ -172,4 +183,4 @@ div.DraftEditor-editorContainer{
 .mail-merge pre code {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 13px;
-`;
+`);

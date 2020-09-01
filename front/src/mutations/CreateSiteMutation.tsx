@@ -13,7 +13,7 @@ import {
 import { SiteItem } from 'components/SiteItem';
 import { lensPath, set } from 'ramda';
 import { CreateSiteOwnSitesQuery } from 'types/CreateSiteOwnSitesQuery';
-import SiteProvider from 'containers/SiteProvider';
+import { SITE_FRAGMENT } from 'containers/SiteProvider/SiteProvider';
 
 interface CreateSiteMutationProps {
   children: (
@@ -33,7 +33,7 @@ const CREATE_SITE_MUTATION = gql`
     }
   }
 
-  ${SiteProvider.fragment}
+  ${SITE_FRAGMENT}
 `;
 
 const CreateSiteMutationComponent = (

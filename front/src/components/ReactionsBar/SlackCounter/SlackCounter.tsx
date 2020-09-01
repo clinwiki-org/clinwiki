@@ -11,7 +11,8 @@ import DeleteReactionMutation, {
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-
+import REACTIONS_QUERY from '../../../queries/StudyReaction'
+import QUERY from 'queries/StudyPageQuery';
 interface SlackCounterProps {
     activeReactions: any;
     user: any;
@@ -19,8 +20,6 @@ interface SlackCounterProps {
     onAdd: any;
     nctId: any;
     currentUserAndStudy: any;
-    studyRefetch?: any;
-    refetch?: any;
     allReactions: any;
 }
 interface SlackCounterState {
@@ -82,26 +81,29 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
         }
     }
     deleteReactionHelper = (deleteReaction, reaction) => {
+        const { nctId }= this.props
         deleteReaction({
             variables: {
                 id: reaction.id
-            }
+            },
+            awaitRefetchQueries: true,
+            refetchQueries: [{ query: QUERY, variables: { nctId } },{ query: REACTIONS_QUERY, variables: { nctId } }]
         })
-            .then(() => this.props.refetch())
-            .then(() => this.props.studyRefetch())
     }
     createReactionHelper = (createReaction, reaction) => {
         let reactionID = reaction.id
+        const {nctId}= this.props
+
         createReaction({
             variables: {
                 reactionKindId: reactionID,
                 nctId: this.props.nctId
-            }
+            },
+            awaitRefetchQueries: true,
+             refetchQueries: [
+                 { query: QUERY, variables: { nctId } }, { query : REACTIONS_QUERY, variables: { nctId } } 
+            ]
         })
-            .then(() => this.props.refetch())
-            .then(() => this.props.studyRefetch())
-
-
 
     }
     currentReactionFilter = (reactionName) => {
@@ -110,8 +112,8 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
         //we take the reaction name and find it in our array with all our reactions that has all that data
 
-        if (this.props.allReactions.data) {
-            let allReactions = this.props.allReactions.data.reactionKinds
+        if (this.props.allReactions) {
+            let allReactions = this.props.allReactions.reactionKinds
             return find(propEq('name', reactionName))(allReactions)
         }
     }
@@ -135,7 +137,6 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 let currentReaction = this.currentReactionFilter(reaction.name)
 
                 let isUserReaction = this.findUserReaction(currentReaction, userReactionsCurrent)
-
                 if (isUserReaction && currentReaction) {
                     return (
                         <div className="group-active" key={reaction.name}>

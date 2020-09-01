@@ -91,7 +91,7 @@ function graphqlToInternal(x: GraphqlSchemaType) {
     result: string[],
     guard: string[]
   ) {
-    if (result.length > 500) return;
+    if (result.length > 700 || guard.length > 5) return;
     switch (root.kind) {
       // Skip over non-nulls
       case 'NON_NULL':
@@ -136,7 +136,7 @@ function graphqlToInternal(x: GraphqlSchemaType) {
         }
         break;
       default:
-        throw `Expected object type got ${root.kind}`;
+        throw new Error(`Expected object type got ${root.kind}`);
     }
   }
 
@@ -192,6 +192,7 @@ function pathToTemplate(path: string): string {
 export default function SchemaSelector(props: Props) {
   const [filter, setFilter] = useState('');
   const schema = useMemo(() => schemaToInternal(props.schema), [props.schema]);
+  console.log("schema", schema.length);
   return (
     <div>
       <input

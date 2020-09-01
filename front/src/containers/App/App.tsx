@@ -27,6 +27,7 @@ import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponent'
+import GenericPage from 'containers/GenericPage/GenericPage';
 
 interface AppProps {
   history: History;
@@ -66,8 +67,11 @@ class App extends React.PureComponent<AppProps> {
                     component={StudyPage}
                   />
                   <Route path="/study/:nctId"
-                    render={(props) => <SearchStudyPage {...props} user={user} refetch={refetch} />}
+                    render={(props) => <GenericPage arg={props.match.params.nctId} />}
                   />
+                  <Route path="/p/:page/:arg?"
+                    render={(props) => <GenericPage url={props.match.params.page} arg={props.match.params.arg} />}
+                    />
                   <Route path="/intervention/:id" component={InterventionPage} />
                   <Route exact path="/profile" component={EditProfilePage} />
                   <Route path="/profile/:id/" component={ProfilePage} />

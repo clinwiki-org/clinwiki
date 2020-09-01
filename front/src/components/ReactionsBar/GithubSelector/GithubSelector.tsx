@@ -29,7 +29,8 @@ padding: 5px;
     height: 5.55em;
     z-index: 500000000000000000;
     background: rgba(0,0,0,0.45);
-    margin-left: 13%;
+    margin-left: 5%;
+    min-width: 9em;
         p{
             color: white;
         }

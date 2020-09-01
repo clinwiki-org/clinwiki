@@ -32,6 +32,7 @@ import {
   find,
 } from 'ramda';
 import SearchView from './SearchView';
+import SearchView2 from './SearchView2';
 import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
@@ -285,7 +286,7 @@ interface SearchPageState {
   searchCrowdAggs: AggBucketMap;
   removeSelectAll: boolean;
   totalRecords: number;
-  siteViewType: string;
+  // siteViewType: string;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -305,7 +306,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchCrowdAggs: {},
     removeSelectAll: false,
     totalRecords: 0,
-    siteViewType: '',
+    // siteViewType: '',
   };
 
   numberOfPages: number = 0;
@@ -555,9 +556,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           }
           const opened = this.state.openedAgg && this.state.openedAgg.name;
           const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
-
           return (
-            <SearchView
+            <SearchView2
               key={`${hash}+${JSON.stringify(params)}`}
               params={params}
               onBulkUpdate={this.handleBulkUpdateClick}
@@ -650,22 +650,22 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       window.removeEventListener('scroll', this.handleScroll);
     }
 
-    // not sure this is being used anymore now that we switched to url params for siteviews.
-    if (this.props.email) {
-      this.setState({
-        siteViewType: 'user',
-      });
-    }
-    // if (this.props.intervention) {
+    // // not sure this is being used anymore now that we switched to url params for siteviews.
+    // if (this.props.email) {
     //   this.setState({
-    //     siteViewType: 'intervention',
+    //     siteViewType: 'user',
     //   });
     // }
-    else {
-      this.setState({
-        siteViewType: 'search',
-      });
-    }
+    // // if (this.props.intervention) {
+    // //   this.setState({
+    // //     siteViewType: 'intervention',
+    // //   });
+    // // }
+    // else {
+    //   this.setState({
+    //     siteViewType: 'search',
+    //   });
+    // }
   }
 
   componentWillUnmount() {
@@ -723,9 +723,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return response;
   };
   updateSearchParams = async (params) => {
-    this.setState({	
-      ...this.state,	
-      params: { ...(this.state?.params || {}), ...params },	
+    this.setState({
+      ...this.state,
+      params: { ...(this.state?.params || {}), ...params },
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
@@ -733,6 +733,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.props.history.location.search
     );
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
+    // This assumes that the site provider is not passing a url into the page
+    // view fragment portion of the query otherwise we would need to call the
+    //  page view query without passing the url into it to retrieve the default url
+    const defaultPageView = this.props.site.pageView!.url;
+    const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
     const userId = searchQueryString.getAll('uid').toString();
 
     if (data?.provisionSearchHash?.searchHash?.short) {
@@ -740,7 +745,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         this.props.history.push(
           `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
       } else if (userId) {
@@ -748,7 +753,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         this.props.history.push(
           `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&uid=${userId}&username=${
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${
             profile && profile.values.toString()
           }`
         );
@@ -758,14 +763,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           //@ts-ignore
           `/intervention/${this.props.match.params.id}?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=intervention`
+          }&sv=intervention&pv=${pageViewUrl}`
         );
         return;
       } else {
         this.props.history.push(
           `/search?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
       }
@@ -949,7 +954,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             component={SearchStudyPage}
           />
           <Route
-            path={`/bulk`}	
+            path={`/bulk`}
             component={BulkEditPage}
           /> */}
           <Route

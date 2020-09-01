@@ -365,6 +365,7 @@ export interface UpdateSiteMutation_updateSite_site_siteView_search {
   autoSuggest: UpdateSiteMutation_updateSite_site_siteView_search_autoSuggest;
   results: UpdateSiteMutation_updateSite_site_siteView_search_results;
   presearch: UpdateSiteMutation_updateSite_site_siteView_search_presearch;
+  sortables: string[];
   fields: string[];
   config: UpdateSiteMutation_updateSite_site_siteView_search_config;
   aggs: UpdateSiteMutation_updateSite_site_siteView_search_aggs;
@@ -722,6 +723,7 @@ export interface UpdateSiteMutation_updateSite_site_siteViews_search {
   autoSuggest: UpdateSiteMutation_updateSite_site_siteViews_search_autoSuggest;
   results: UpdateSiteMutation_updateSite_site_siteViews_search_results;
   presearch: UpdateSiteMutation_updateSite_site_siteViews_search_presearch;
+  sortables: string[];
   fields: string[];
   config: UpdateSiteMutation_updateSite_site_siteViews_search_config;
   aggs: UpdateSiteMutation_updateSite_site_siteViews_search_aggs;
@@ -739,6 +741,16 @@ export interface UpdateSiteMutation_updateSite_site_siteViews {
   search: UpdateSiteMutation_updateSite_site_siteViews_search;
 }
 
+export interface UpdateSiteMutation_updateSite_site_pageView {
+  __typename: "PageView";
+  id: number;
+  pageType: string;
+  template: string;
+  title: string;
+  url: string;
+  default: boolean;
+}
+
 export interface UpdateSiteMutation_updateSite_site {
   __typename: "Site";
   id: number;
@@ -752,6 +764,7 @@ export interface UpdateSiteMutation_updateSite_site {
   owners: UpdateSiteMutation_updateSite_site_owners[];
   siteView: UpdateSiteMutation_updateSite_site_siteView;
   siteViews: UpdateSiteMutation_updateSite_site_siteViews[];
+  pageView: UpdateSiteMutation_updateSite_site_pageView | null;
 }
 
 export interface UpdateSiteMutation_updateSite {

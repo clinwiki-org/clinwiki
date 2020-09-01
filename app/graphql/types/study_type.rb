@@ -86,8 +86,9 @@ module Types
     field :brief_summary, String, null: true
     field :detailed_description, String, null: true
     field :conditions, String, null: true
+    field :conditions2, [ConditionType],null: true
 
-    field :design, String, null: false
+    field :design, DesignType, null: false
     field :study_arms, String, null: false
     field :publications, String, null: false
 
@@ -118,6 +119,8 @@ module Types
     field :contacts, String, null: false
     field :listed_location_countries, String, null: false
     field :removed_location_countries, String, null: false
+    field :central_contacts, [CentralContactType], null:false
+    field :overall_officials, [OverallOfficialType], null:false
 
     # Tracking
     field :first_received_date, DateTimeType, null: true
@@ -129,7 +132,7 @@ module Types
     field :likes_count, Integer,null: false
     field :dislikes_count, Integer, null:false
     field :reactions_count,[ExpressionCountType], null: true
-
+    field :design_groups, [DesignGroupType], null: false 
 
     def reactions_count
       object.reaction_kinds.group(:name).count
@@ -178,8 +181,16 @@ module Types
       wiki_page.then { object.with_wiki_data(:study_type) }
     end
 
+    def design
+      Loaders::Association.for(Study, :design).load(object)
+    end
+
+    def design_groups
+      Loaders::Association.for(Study, :design_groups).load(object)
+    end
+
     def interventions
-      Loaders::CustomAssociation.for(Study, :interventions).load(object)
+      Loaders::Association.for(Study, :interventions).load(object)
     end
 
     def reviews
@@ -202,9 +213,6 @@ module Types
       object.try(:last_changed_date, nil)
     end
 
-    def design
-      "tbd"
-    end
 
     def study_arms
       "tbd"
@@ -248,6 +256,9 @@ module Types
 
     def conditions
       Loaders::Association.for(Study, :all_condition).load(object).then { |dd| dd&.names }
+    end
+    def conditions2
+      Loaders::Association.for(Study, :conditions).load(object)
     end
 
     def completion_date

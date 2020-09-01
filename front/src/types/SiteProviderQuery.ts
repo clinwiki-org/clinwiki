@@ -365,6 +365,7 @@ export interface SiteProviderQuery_site_siteView_search {
   autoSuggest: SiteProviderQuery_site_siteView_search_autoSuggest;
   results: SiteProviderQuery_site_siteView_search_results;
   presearch: SiteProviderQuery_site_siteView_search_presearch;
+  sortables: string[];
   fields: string[];
   config: SiteProviderQuery_site_siteView_search_config;
   aggs: SiteProviderQuery_site_siteView_search_aggs;
@@ -722,6 +723,7 @@ export interface SiteProviderQuery_site_siteViews_search {
   autoSuggest: SiteProviderQuery_site_siteViews_search_autoSuggest;
   results: SiteProviderQuery_site_siteViews_search_results;
   presearch: SiteProviderQuery_site_siteViews_search_presearch;
+  sortables: string[];
   fields: string[];
   config: SiteProviderQuery_site_siteViews_search_config;
   aggs: SiteProviderQuery_site_siteViews_search_aggs;
@@ -739,6 +741,16 @@ export interface SiteProviderQuery_site_siteViews {
   search: SiteProviderQuery_site_siteViews_search;
 }
 
+export interface SiteProviderQuery_site_pageView {
+  __typename: "PageView";
+  id: number;
+  pageType: string;
+  template: string;
+  title: string;
+  url: string;
+  default: boolean;
+}
+
 export interface SiteProviderQuery_site {
   __typename: "Site";
   id: number;
@@ -752,6 +764,7 @@ export interface SiteProviderQuery_site {
   owners: SiteProviderQuery_site_owners[];
   siteView: SiteProviderQuery_site_siteView;
   siteViews: SiteProviderQuery_site_siteViews[];
+  pageView: SiteProviderQuery_site_pageView | null;
 }
 
 export interface SiteProviderQuery {

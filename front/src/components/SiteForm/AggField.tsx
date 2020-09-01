@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
-import { FormControl } from 'react-bootstrap';
+import { FormControl, Checkbox } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
 import { capitalize } from 'utils/helpers';
@@ -13,6 +13,7 @@ import {
 import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
 import withTheme from 'containers/ThemeProvider';
 import { FieldDisplay, FilterKind } from 'types/globalTypes';
+import { contains, without } from 'ramda';
 
 interface SiteSelect {
   kind: FilterKind;
@@ -50,6 +51,7 @@ interface AggFieldProps {
   returnAll?: Boolean;
   workflowName?: string;
   optionsVisibility?: Partial<OptionVisibility>;
+  sortables?: string[];
 }
 
 interface AggFieldState {
@@ -140,9 +142,13 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
-    this.props.onAddMutation({
-      currentTarget: { name: e.currentTarget.name, value: !value },
-    });
+    if (value) {
+      let newSortables = without(this.props.field.name, this.props.sortables)
+      this.props.onAddMutation({
+        currentTarget: { name: e.currentTarget.name, value: newSortables },
+      });
+    }
+
   };
   renderNumberRangeConfig = (configType, display) => {
     if (display === 'NUMBER_RANGE' || display === 'DATE_RANGE') {
@@ -434,7 +440,22 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       </>
     );
   }
+  renderSortCheckbox = () => {
+    if (this.props.sortables) {
+      const isSortable = contains(this.props.field.name, this.props.sortables)
 
+      return (
+        <>
+          <StyledLabel>Sortable</StyledLabel>
+          <Checkbox
+            name='set:search.sortables'
+            checked={isSortable}
+            onChange={this.handleCheckboxToggle(isSortable)}
+          ></Checkbox>
+        </>
+      )
+    }
+  }
   render() {
     const vis = this.getOptionVisibility();
     return (
@@ -451,6 +472,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           {this.renderSortType(vis)}
           {this.renderSortOrder(vis)}
           {this.renderDisplayType(vis)}
+          {this.renderSortCheckbox()}
         </ThemedContainer>
       </>
     );

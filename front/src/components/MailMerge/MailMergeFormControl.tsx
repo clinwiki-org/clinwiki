@@ -4,20 +4,23 @@ import styled from 'styled-components';
 import { gql } from 'apollo-boost';
 import { useQuery } from 'react-apollo';
 import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
-import { Spinner } from 'reactstrap';
+import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
+import { IslandConstructor } from './MailMergeView';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
 `;
 const Container = styled.div`
   max-width: 1200px;
+  margin-bottom: 20px;
 `;
 
 interface MailMergeFormControlProps {
   template: string;
   onTemplateChanged: (t: string) => void;
+  islands?: Record<string, IslandConstructor>;
 }
 
 const default_nctid = 'NCT00222898';
@@ -45,7 +48,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   });
 
   if (!introspection) {
-    return <Spinner />;
+    return <BeatLoader />;
   }
 
   const schema : GraphqlSchemaType = {
@@ -69,6 +72,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
         fragmentName={fragmentName}
         fragmentClass="Study"
         onFragmentChanged={setFragment}
+        islands={props.islands}
       />
       {/* <CollapsiblePanel></CollapsiblePanel> */}
     </Container>
