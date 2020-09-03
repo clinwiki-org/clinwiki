@@ -15,6 +15,8 @@ You can use one of the following options to start ClinWiki on your own system:
 
 1. Clone the ClinWiki repository
 
+1. Create a `.env` file in the project's root directory (use `.example.env` for inspiration)
+
 1. Install Docker
 
     - Windows and Mac users install [Docker Desktop](https://www.docker.com/products/docker-desktop)
@@ -28,7 +30,7 @@ You can use one of the following options to start ClinWiki on your own system:
   
     > This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config. Additionally, you will want to run the `docker-compose` commands with additional arguments (included below for each step).
 
-1. Build image
+1. Build images
 
     `docker-compose build`
 
@@ -36,13 +38,33 @@ You can use one of the following options to start ClinWiki on your own system:
 
 1. Run ClinWiki server on <http://localhost:3000>
 
-    `ELASTIC_PASSWORD=CHANGEME docker-compose up` or `ELASTIC_PASSWORD=CHANGEME docker-compose up -d` to run as daemon in background
+    `docker-compose up` or `docker-compose up -d` to run as daemon in background
 
-    > **macOS:** `ELASTIC_PASSWORD=CHANGEME docker-compose -f docker-compose.yml -f docker-compose-osx.yml up` or `ELASTIC_PASSWORD=CHANGEME docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d`
+    > **macOS:** `docker-compose -f docker-compose.yml -f docker-compose-osx.yml up` or `docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d`
 
 1. Bootstrap search
 
     `compose/bin/search_bootstrap`
+
+1. Open a Rails console inside the `clinwiki` Docker container
+
+    `docker-compose exec clinwiki rails c`
+
+1. Create new user
+
+    `User.create!(first_name: "CHANGEME", last_name: "CHANGEME", email: "CHANGEME", password: "CHANGEME", password_confirmation: "CHANGEME")`
+
+1. To access the sub-site config and bulk update admin features, add admin role after creating a user
+
+    `User.find_by(email: "CHANGEME").add_role(:admin)`
+
+1. Exit Rails console
+
+    `exit`
+
+1. Exit Docker container
+
+    `exit`
 
 1. Build and serve frontend (on <http://localhost:3001>):
 
@@ -52,11 +74,7 @@ You can use one of the following options to start ClinWiki on your own system:
 
     > **NOTE:** Changes to local .ts/.tsx files will be automatically applied to the running system
 
-1. Create a new user from the UI or Rails console
-
-1. To access the sub-site config and bulk update admin features, add admin role after creating a user. In Rails console, execute `User.find_by(email: "[email of the user]").add_role(:admin)`
-
-    > **NOTE**: Run this command from inside the `clinwiki` container.
+1. Go to <http://localhost:3001> and sign in using the user email and password created in the Rails console
 
 1. Create the default site by clicking on `Sites` under the profile dropdown on the top right hand side. Then click create site, fill out the form and click save.
 
