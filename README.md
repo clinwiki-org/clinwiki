@@ -46,9 +46,17 @@ You can use one of the following options to start ClinWiki on your own system:
 
     `compose/bin/search_bootstrap`
 
-1. Open a Rails console inside the `clinwiki` Docker container
+1. Open a bash shell inside the `clinwiki` Docker container
 
-    `docker-compose exec clinwiki rails c`
+    `docker-compose exec clinwiki bash`
+
+1. Seed the database
+
+    `rake db:seed`
+
+1. Start Rails console (still inside Docker container)
+
+    `rails c`
 
 1. Create new user
 
