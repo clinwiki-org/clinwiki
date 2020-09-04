@@ -461,6 +461,12 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       case 'large masonry':
         return <FontAwesome name="th-large"
                             style={{ fontSize: '1.8rem' }} />;
+      case 'object':
+        return <FontAwesome name="object-group"
+                          style={{ fontSize: '1.8rem' }} />;
+      case 'newspaper':
+        return <FontAwesome name="newspaper-o "
+                          style={{ fontSize: '1.8rem' }} />;
       default:
         return null;
     }
@@ -812,7 +818,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         resultsType,
         recordsTotal
       )
-      : null;
+      : this.renderViewDropdown();
   };
   cardPressed = card => {
     this.props.onRowClick(
@@ -892,6 +898,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             id="dropdown-basic-default"
             style={{
               margin: '1em 1em 1em 0',
+              width: "200px",
               background: this.props.theme.button,
             }}>
 

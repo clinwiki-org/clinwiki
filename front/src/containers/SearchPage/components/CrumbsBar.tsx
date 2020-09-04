@@ -345,7 +345,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                   marginRight: '8px',
                   marginTop: '4px',
                 }}>
-                <ControlLabel>Search Within: </ControlLabel>{' '}
+            
               </b>
 
               <Autosuggest
@@ -367,7 +367,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
               />
             </div>
           </FormGroup>
-          <ThemedButton type="submit">
+          <ThemedButton style={{border:"solid white 1px"}} type="submit">
             <FontAwesome name="search" />
           </ThemedButton>
         </div>
@@ -396,7 +396,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                   marginRight: '8px',
                   marginTop: '4px',
                 }}>
-                <ControlLabel>Search Within: </ControlLabel>{' '}
+              
               </b>
 
               <Autosuggest
@@ -417,7 +417,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
               />
             </div>
           </FormGroup>
-          <ThemedButton type="submit">
+          <ThemedButton style={{border:"solid white 1px"}} type="submit">
             <FontAwesome name="search" />
           </ThemedButton>
         </div>
@@ -515,52 +515,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                 <Grid className="crumbs-bar">
                   <Row>
                     <Col xs={8} md={8}>
-                      <Form
-                        inline
-                        className="searchInput"
-                        onSubmit={this.onSubmit}>
-                        {isSuggestionLoading
-                          ? this.renderLoadingAutoSuggest(
-                              suggestions,
-                              searchTerm,
-                              apolloClient,
-                              showAutoSuggest
-                            )
-                          : this.renderAutoSuggest(
-                              suggestions,
-                              searchTerm,
-                              apolloClient,
-                              showAutoSuggest
-                            )}
-                        &nbsp;
-                        {user && user.roles.includes('admin') ? (
-                          <ThemedButton
-                            onClick={() =>
-                              this.props.onBulkUpdate(
-                                this.props.searchHash,
-                                this.props.currentSiteView.url || 'default'
-                              )
-                            }>
-                            Bulk Update <FontAwesome name="truck" />
-                          </ThemedButton>
-                        ) : null}
-                      </Form>
-                    </Col>
-                    <Col xs={4} md={4}>
-                      <Row>
-                        <Col xs={12} md={12} style={{ textAlign: 'right' }}>
-                          <ExportToCsvComponent
-                            siteView={this.props.currentSiteView}
-                            searchHash={this.props.searchHash}
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col xs={12} md={12} style={{ textAlign: 'right' }}>
-                          <b>Total Results:</b> {this.props.totalResults}{' '}
-                          studies
-                        </Col>
-                      </Row>
+                      
                     </Col>
                   </Row>
                   {showCrumbsBar ? (
@@ -584,49 +539,53 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             background: '#fff',
                             width: '100%',
                           }}>
+                            
                           <ListGroupItem
                             style={{
                               minWidth: '100%',
                               background: this.props.theme.button,
                               color: '#fff',
                             }}
-                            onClick={this.toggleShowFilters}>
+                           >
+
+                        <Form
+                          inline
+                          className="searchInput"
+                          onSubmit={this.onSubmit}style={{color:"black" ,display:"inline"} }>
+                          {isSuggestionLoading
+                            ? this.renderLoadingAutoSuggest(
+                                suggestions,
+                                searchTerm,
+                                apolloClient,
+                                showAutoSuggest
+                              )
+                            : this.renderAutoSuggest(
+                                suggestions,
+                                searchTerm,
+                                apolloClient,
+                                showAutoSuggest
+                              )}
+                          &nbsp;
+                          {user && user.roles.includes('admin') ? (
+                            <ThemedButton
+                              onClick={() =>
+                                this.props.onBulkUpdate(
+                                  this.props.searchHash,
+                                  this.props.currentSiteView.url || 'default'
+                                )
+                              }
+                              style={{border:"solid white 1px"}}>
+                              Bulk Update <FontAwesome name="truck" />
+                            </ThemedButton>
+                          ) : null}
+                        </Form> 
                             {' '}
-                            Filters:{' '}
                             {Array.from(
                               this.mkDefaultClearButtons(
                                 this.props.searchParams
                               )
                             )}
-                            {this.state.showFilters ? (
-                              <b>
-                                <FontAwesome
-                                  className="chevron-up"
-                                  name="chevron-up"
-                                  style={{
-                                    cursor: 'pointer',
-                                    color: '#fff',
-                                    margin: '0 0 0 3px',
-                                    float: 'right',
-                                  }}
-                                  // onClick={() => this.toggleShowValue()}
-                                />
-                              </b>
-                            ) : (
-                              <b>
-                                <FontAwesome
-                                  className="chevron-down"
-                                  name="chevron-down"
-                                  style={{
-                                    cursor: 'pointer',
-                                    color: '#fff',
-                                    margin: '0 0 0 3px',
-                                    float: 'right',
-                                  }}
-                                  // onClick={() => this.toggleShowValue()}
-                                />
-                              </b>
-                            )}
+                      
                           </ListGroupItem>
                           {this.state.showFilters
                             ? Array.from(
@@ -639,9 +598,24 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         </ListGroup>
                       </Col>
                     </Row>
-                  ) : //   )}
+                  )
+                 : //   )}
                   // </ThemeProvider>
                   null}
+                  <Col xs={6} md={6}>
+                      <Row>
+                        <Col xs={6} md={6} style={{ textAlign: 'left' ,
+                            }}>
+                            <div style={{marginRight:"10px", display: "inline"}}><b >Total Results:</b> {this.props.totalResults}{' '}  studies</div>
+                            
+                         
+                            <ExportToCsvComponent
+                                siteView={this.props.currentSiteView}
+                                searchHash={this.props.searchHash}
+                              />
+                        </Col>
+                      </Row>
+                    </Col>
                 </Grid>
               )}
             </CurrentUser>
