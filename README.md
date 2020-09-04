@@ -3,6 +3,10 @@
 This application allows you to rate clinical trials.
 You can retrieve trials to rank by searching for NCT ID or MeSH Term
 
+## Architecture
+
+![alt text](https://app.lucidchart.com/publicSegments/view/8e5fb52b-e26b-4ec6-a75a-3448f1da7f8c/image.png? "Architecture Diagram")
+
 ## Setup
 
 You can use one of the following options to start ClinWiki on your own system:
