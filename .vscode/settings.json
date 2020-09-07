@@ -5,5 +5,7 @@
   "eslint.packageManager": "yarn",
   "prettier.configPath": "./front/.prettierrc",
   "prettier.ignorePath": "./front/prettierignore",
-  "prettier.packageManager": "yarn"
+  "prettier.packageManager": "yarn",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true
 }
