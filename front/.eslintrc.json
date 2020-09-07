@@ -1,0 +1,19 @@
+{
+    "extends": ["react-app", "airbnb"],
+    "plugins": ["@typescript-eslint"],
+    "rules": {
+      "import/no-unresolved": 0,
+      "react/jsx-filename-extension": [0, { "extensions": [".jsx", ".tsx"] }]
+    },
+    "overrides": [
+        {
+          "files": [
+            "**/*.ts?(x)"
+          ],
+          "rules": {
+            "array-callback-return": "off",
+            "eqeqeq": "off"
+          }
+        }
+    ]
+}
