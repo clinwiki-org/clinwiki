@@ -2,5 +2,8 @@
   "gitblame.commitUrl": "https://github.com/clinwiki-org/clinwiki/commit/${hash}",
   "ruby.specCommand": "bundle exec rspec",
   "eslint.workingDirectories": ["./front"],
-  "eslint.packageManager": "yarn"
+  "eslint.packageManager": "yarn",
+  "prettier.configPath": "./front/.prettierrc",
+  "prettier.ignorePath": "./front/prettierignore",
+  "prettier.packageManager": "yarn"
 }
