@@ -25,19 +25,23 @@ class InterventionItem extends React.PureComponent<InterventionItemProps> {
   `;
 
   handleClick = () => {
-    this.props.onClick && this.props.onClick(this.props.interventionItem.id);
+    const {
+      onClick,
+      interventionItem: { id },
+    } = this.props;
+
+    if (onClick) onClick(id);
   };
 
   render() {
-    if (!this.props.interventionItem) return null;
-    const Wrapper = this.props.onClick ? TrWithPointer : Tr;
+    const { interventionItem, onClick } = this.props;
+    if (!interventionItem) return null;
+    const Wrapper = onClick ? TrWithPointer : Tr;
     return (
       <Wrapper onClick={this.handleClick}>
-        <td>{this.props.interventionItem.name || 'No name provided'}</td>
-        <td>{this.props.interventionItem.type || 'No type provided'}</td>
-        <td>
-          {this.props.interventionItem.description || 'No description provided'}
-        </td>
+        <td>{interventionItem.name || 'No name provided'}</td>
+        <td>{interventionItem.type || 'No type provided'}</td>
+        <td>{interventionItem.description || 'No description provided'}</td>
       </Wrapper>
     );
   }
