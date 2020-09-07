@@ -44,6 +44,7 @@
     "google-map-react": "^1.1.7",
     "graphql": "^14.6.0",
     "handlebars": "^4.7.6",
+    "history": "^5.0.0",
     "histoslider": "^2.0.16",
     "html-to-react": "^1.4.3",
     "marked": "^1.1.0",
