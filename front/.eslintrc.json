@@ -7,7 +7,8 @@
   "extends": ["react-app", "eslint-config-airbnb", "prettier"],
   "rules": {
     "semi": 2,
-    "arrow-parens": [2, "as-needed"]
+    "arrow-parens": [2, "as-needed"],
+    "import/extensions": [2, "never"]
   },
   "overrides": [
     {
