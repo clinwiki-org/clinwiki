@@ -20,7 +20,7 @@ interface MailMergeFormControlProps {
   onTemplateChanged: (t: string) => void;
 }
 
-const default_nctid = 'NCT00222898';
+const defaultNctId = 'NCT00222898';
 const getQuery = (name: string, frag: string) => {
   frag = frag || `fragment ${name} on Study { nct_id }`;
   return gql`
@@ -34,7 +34,7 @@ const getQuery = (name: string, frag: string) => {
 };
 
 export default function MailMergeFormControl(props: MailMergeFormControlProps) {
-  const [nctId, setNctId] = useState(default_nctid);
+  const [nctId, setNctId] = useState(defaultNctId);
   const [fragment, setFragment] = useState('');
   const { data: introspection } = useQuery<IntrospectionQuery>(
     gql(getIntrospectionQuery({ descriptions: false }))
@@ -57,9 +57,9 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   return (
     <Container>
       <StyledFormControl
-        placeholder={default_nctid}
+        placeholder={defaultNctId}
         value={nctId}
-        onChange={e => setNctId(e.target.value || default_nctid)}
+        onChange={e => setNctId(e.target.value || defaultNctId)}
       />
       <MailMerge
         schema={schema}
