@@ -5,25 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "firefox",
-            "request": "launch",
-            "reAttach": true,
-            "name": "Launch localhost",
-            "url": "http://localhost:3001/",
-            "webRoot": "${workspaceFolder}",
-            "pathMappings": [
-                {
-                    "url": "webpack:///app",
-                    "path": "${workspaceFolder}/front/app"
-                }
-            ]
-        },
-        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:3001",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}/front/src"
         },
         {
             "type": "chrome",
