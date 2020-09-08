@@ -70,7 +70,6 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
         fragmentClass="Study"
         onFragmentChanged={setFragment}
       />
-      {/* <CollapsiblePanel></CollapsiblePanel> */}
     </Container>
   );
 }
