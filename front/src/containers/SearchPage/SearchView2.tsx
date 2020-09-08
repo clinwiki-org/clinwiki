@@ -424,7 +424,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         {site => {
           if (site.siteViews.length > 0 && buttonsArray.length > 0) {
             return (
-              <div style={{ marginLeft: "auto", marginBottom: "1rem" }}  >
+              <div style={{ marginLeft: "auto"}}  >
                 <ButtonGroup>
                   {buttonsArray.map((button, index) => (
                     <a href={`/search?hash=${this.props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
@@ -591,6 +591,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                     justifyContent: 'flex-end',
                   }}>
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
           <AutoSizer>
             {({ height, width }) => (
@@ -615,6 +616,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                     justifyContent: 'flex-end',
                   }}>
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
           <AutoSizer>
             {({ height, width }) => (
@@ -639,6 +641,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                     justifyContent: 'flex-emd',
                   }}>
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
           <AutoSizer>
             {({ height, width }) => (
@@ -711,10 +714,11 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  marginLeft: 'auto',
+                  
                 }}>
                 {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <Cards
@@ -738,6 +742,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 }}>
                 {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
               <ReactTable
                 ref={this.searchTable}
@@ -818,7 +823,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         resultsType,
         recordsTotal
       )
-      : this.renderViewDropdown();
+      :  <div style={{ marginLeft: 'auto', display: 'flex' }}>{this.renderViewDropdown()}</div>;
   };
   cardPressed = card => {
     this.props.onRowClick(
@@ -862,7 +867,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     let isDesc = this.props.params.sorts[0].desc
     return (
 
-      <div onClick={() => this.reverseSort()} style={{ display: 'flex', marginTop: 'auto', marginBottom: 'auto', cursor: 'pointer' }} >
+      <div onClick={() => this.reverseSort()} style={{ display: 'flex', cursor: 'pointer' }} >
         {isDesc ? (
           <FontAwesome
             name={'sort-amount-desc'}
@@ -897,7 +902,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             key="default"
             id="dropdown-basic-default"
             style={{
-              margin: '1em 1em 1em 0',
+              margin: '0em 1em 0em 1em',
               width: "200px",
               background: this.props.theme.button,
             }}>
@@ -944,7 +949,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               this.handleAggsUpdated(data);
               return (
                 <ThemedSearchContainer>
-                  {this.renderFilterDropDown()}
+            
                   {this.renderSearch({ data, loading, error })}
                 </ThemedSearchContainer>
               );
