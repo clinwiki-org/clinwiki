@@ -8,7 +8,9 @@
   "rules": {
     "semi": 2,
     "arrow-parens": [2, "as-needed"],
-    "import/extensions": [2, "never"]
+    "import/extensions": [2, "never"],
+    "react/destructuring-assignment": 0,
+    "no-underscore-dangle": 0
   },
   "overrides": [
     {
