@@ -3,7 +3,7 @@
   "version": "1.2.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/clinwiki-org/cw-app"
+    "url": "https://github.com/clinwiki-org/clinwiki"
   },
   "license": "MIT",
   "scripts": {
