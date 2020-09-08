@@ -4,7 +4,7 @@
       "typescript": {} // this loads <rootdir>/tsconfig.json to eslint
     }
   },
-  "extends": ["react-app", "eslint-config-airbnb"],
+  "extends": ["react-app", "eslint-config-airbnb", "prettier"],
   "rules": {
     "semi": 2,
     "arrow-parens": [2, "as-needed"]
