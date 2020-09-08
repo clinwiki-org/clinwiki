@@ -1,5 +1,5 @@
 {
-  "extends": "tslint-config-airbnb",
+  "extends": "eslint-config-airbnb",
   "rules": {
     "import-name": false,
     "variable-name": [
