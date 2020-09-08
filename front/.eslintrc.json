@@ -1,12 +1,6 @@
 {
   "extends": ["react-app", "eslint-config-airbnb"],
   "rules": {
-    "variable-name": [
-      true,
-      "ban-keywords",
-      "check-format",
-      "allow-pascal-case"
-    ],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
     "ter-arrow-parens": [true, "as-needed"],
     "max-line-length": [true, 120]
