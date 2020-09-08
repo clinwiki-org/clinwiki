@@ -8,6 +8,7 @@
 		"wingrunr21.vscode-ruby",
 		"dbaeumer.vscode-eslint",
 		"esbenp.prettier-vscode",
+		"christian-kohler.npm-intellisense",
 		"mikestead.dotenv",
 		"ms-azuretools.vscode-docker"
 	],
