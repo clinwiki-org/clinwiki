@@ -1,8 +1,13 @@
 {
+  "settings": {
+    "import/resolver": {
+      "typescript": {} // this loads <rootdir>/tsconfig.json to eslint
+    }
+  },
   "extends": ["react-app", "eslint-config-airbnb"],
   "rules": {
     "semi": 2,
-    "ter-arrow-parens": [2, "as-needed"]
+    "arrow-parens": [2, "as-needed"]
   },
   "overrides": [
     {
@@ -11,7 +16,8 @@
       ],
       "rules": {
         "array-callback-return": "off",
-        "eqeqeq": "off"
+        "eqeqeq": "off",
+        "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }]
       }
     }
   ]
