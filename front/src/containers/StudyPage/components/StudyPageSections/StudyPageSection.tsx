@@ -23,7 +23,7 @@ interface StudyPageSectionProps {
   match: match<{ nctId: string; searchId: string }>;
   theme: Theme;
   siteView?: any;
-  showAnimation:any;
+  showAnimation: any;
 }
 
 interface StudyPageSectionsState {

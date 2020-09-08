@@ -167,9 +167,7 @@ class HistoPanel extends React.Component<HistoPanelProps, HistoPanelState> {
           .format('YYYY-MM-DD');
       }
       if (sliderToDate[end]) {
-        endParsed = moment(sliderToDate[end])
-          .utc(false)
-          .format('YYYY-MM-DD');
+        endParsed = moment(sliderToDate[end]).utc(false).format('YYYY-MM-DD');
       }
     }
 

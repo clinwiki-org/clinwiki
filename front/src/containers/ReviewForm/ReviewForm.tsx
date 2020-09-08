@@ -89,7 +89,7 @@ const STUDY_FRAGMENT = gql`
 `;
 
 const defaultState = {
-  meta: { 'Overall Rating': 0},
+  meta: { 'Overall Rating': 0 },
   newRating: '',
   content: RichTextEditor.createValueFromString(
     'Write your review here!',

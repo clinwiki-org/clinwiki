@@ -26,7 +26,7 @@ import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
-import MMTest from 'components/MailMerge/MMTestComponent'
+import MMTest from 'components/MailMerge/MMTestComponent';
 
 interface AppProps {
   history: History;
@@ -45,7 +45,7 @@ class App extends React.PureComponent<AppProps> {
     return (
       <ThemedAppWrapper>
         <CurrentUser>
-          {(user, refetch) =>
+          {(user, refetch) => (
             <span>
               <AuthHeader user={user} history={this.props.history} />
               <div className="main" style={{ paddingTop: '50px' }}>
@@ -54,7 +54,9 @@ class App extends React.PureComponent<AppProps> {
                     exact
                     path="/"
                     component={
-                      this.props.history.location.search ? SearchPage : LandingPage
+                      this.props.history.location.search
+                        ? SearchPage
+                        : LandingPage
                     }
                   />
                   <Route exact path="/about" component={AboutPage} />
@@ -65,10 +67,20 @@ class App extends React.PureComponent<AppProps> {
                     path="/study/:nctId/review/:reviewId/edit"
                     component={StudyPage}
                   />
-                  <Route path="/study/:nctId"
-                    render={(props) => <SearchStudyPage {...props} user={user} refetch={refetch} />}
+                  <Route
+                    path="/study/:nctId"
+                    render={props => (
+                      <SearchStudyPage
+                        {...props}
+                        user={user}
+                        refetch={refetch}
+                      />
+                    )}
                   />
-                  <Route path="/intervention/:id" component={InterventionPage} />
+                  <Route
+                    path="/intervention/:id"
+                    component={InterventionPage}
+                  />
                   <Route exact path="/profile" component={EditProfilePage} />
                   <Route path="/profile/:id/" component={ProfilePage} />
                   <Route path="/workflows" component={EditWorkflowsPage} />
@@ -86,7 +98,7 @@ class App extends React.PureComponent<AppProps> {
                 </Switch>
               </div>
             </span>
-          }
+          )}
         </CurrentUser>
       </ThemedAppWrapper>
     );

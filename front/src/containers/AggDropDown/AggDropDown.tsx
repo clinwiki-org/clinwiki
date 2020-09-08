@@ -35,7 +35,7 @@ import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQue
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
 import RangeSelector from './RangeSelector';
 import TwoLevelPieChart from './TwoLevelPieChart';
-import BarChartComponent from './BarChart'
+import BarChartComponent from './BarChart';
 import AllowMissingCheckbox from './AllowMissingCheckbox';
 import { ApolloClient } from 'apollo-boost';
 import { capitalize } from 'utils/helpers';
@@ -97,7 +97,7 @@ const ChartWrapper = styledComponents.div`
     margin-left: 5px;
     position: relative;
     overflow: hidden;
-`
+`;
 
 interface AggDropDownState {
   hasMore: boolean;

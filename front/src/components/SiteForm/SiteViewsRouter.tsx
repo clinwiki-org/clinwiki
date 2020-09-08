@@ -3,9 +3,7 @@ import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
 import { Switch, Route, match } from 'react-router';
 import { trimPath } from 'utils/helpers';
 import { SiteFragment, SiteFragment_siteViews } from 'types/SiteFragment';
-import {
-  updateView,
-} from 'utils/siteViewUpdater';
+import { updateView } from 'utils/siteViewUpdater';
 import { History, Location } from 'history';
 import SearchForm from './SearchForm';
 import SiteViewsForm from './SiteViewsForm';

@@ -48,7 +48,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
     return <Spinner />;
   }
 
-  const schema : GraphqlSchemaType = {
+  const schema: GraphqlSchemaType = {
     kind: 'graphql',
     typeName: 'Study',
     types: introspection.__schema.types,

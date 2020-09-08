@@ -7,8 +7,6 @@ import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import ThemedButton from 'components/StyledComponents';
 import BulkFacetCard from 'components/FacetCard/BulkFacetCard';
 
-
-
 interface LabelValue {
   name: string;
   value: string;

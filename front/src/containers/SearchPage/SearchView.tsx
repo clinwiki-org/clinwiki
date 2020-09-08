@@ -163,13 +163,7 @@ const QUERY = gql`
 const COLUMNS = studyFields;
 const COLUMN_NAMES = fromPairs(
   // @ts-ignore
-  COLUMNS.map(field => [
-    field,
-    field
-      .split('_')
-      .map(capitalize)
-      .join(' '),
-  ])
+  COLUMNS.map(field => [field, field.split('_').map(capitalize).join(' ')])
 );
 
 const changePage = (pageNumber: number) => (params: SearchParams) => ({
@@ -212,8 +206,6 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
-
 
 interface SearchViewProps {
   params: SearchParams;
@@ -410,7 +402,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       .showResults;
     if (!this.props.showCards && showResults) {
       this.setState({
-        tableWidth: document.getElementsByClassName('ReactTable')?.[0]?.clientWidth,
+        tableWidth: document.getElementsByClassName('ReactTable')?.[0]
+          ?.clientWidth,
       });
       window.addEventListener('resize', this.updateState);
     }

@@ -38,7 +38,7 @@ interface StudySearchPageProps {
   match: match<{ nctId: string; searchId: string }>;
   history: History;
   location: Location;
-  refetch:any;
+  refetch: any;
   user: UserFragment | null;
 }
 

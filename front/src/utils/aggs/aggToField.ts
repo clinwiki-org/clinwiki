@@ -15,7 +15,8 @@ const aggToField = (val: string, expectedVal?: string): string => {
     start_date: expectedVal === val ? 'start date' : expectedVal,
     completion_date: expectedVal === val ? 'completion date' : expectedVal,
     phase: expectedVal === val ? 'phase' : expectedVal,
-    browse_condition_mesh_terms: expectedVal === val ? 'mesh term' : expectedVal,
+    browse_condition_mesh_terms:
+      expectedVal === val ? 'mesh term' : expectedVal,
     browse_interventions_mesh_terms:
       expectedVal === val ? 'browse intervention mesh term' : expectedVal,
     interventions_mesh_terms:
@@ -25,8 +26,7 @@ const aggToField = (val: string, expectedVal?: string): string => {
       expectedVal === val ? 'wiki user edits' : expectedVal,
     'wiki_page_edits.created_at':
       expectedVal === val ? 'wiki date range' : expectedVal,
-      'reactions.kind':
-      expectedVal === val ? 'reaction kind' : expectedVal,
+    'reactions.kind': expectedVal === val ? 'reaction kind' : expectedVal,
   });
 };
 

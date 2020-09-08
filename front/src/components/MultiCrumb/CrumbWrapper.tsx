@@ -4,7 +4,7 @@ import withTheme from '../../containers/ThemeProvider';
 // const crumbKeyframe = keyframes`
 //   0% {
 //     border-color: 4px solid silver;
-//     background-color: #66dda9; 
+//     background-color: #66dda9;
 //   }
 
 //   50% {

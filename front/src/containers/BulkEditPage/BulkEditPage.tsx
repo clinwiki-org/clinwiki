@@ -142,7 +142,7 @@ interface GotAggs {
     | undefined;
 }
 function extractBucketKeys(arg?: GotAggs) {
-  return arg?.aggs?.[0]?.buckets?.map((k) => k.key) || [];
+  return arg?.aggs?.[0]?.buckets?.map(k => k.key) || [];
 }
 
 const groupBucketsByLabel = ({ data, labels }) =>
@@ -164,7 +164,7 @@ interface BulkEditProps {
 interface BulkEditState {
   undoHistory: any[];
 }
-const getParsedSearchParams = (searchParams) => {
+const getParsedSearchParams = searchParams => {
   const { q, aggFilters = [], crowdAggFilters = [] } = searchParams;
   const parsedSearchParams = {
     q: q ? JSON.parse(q) : {},
@@ -185,7 +185,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
       : displayFields(
           workflow.suggestedLabelsFilter.kind,
           workflow.suggestedLabelsFilter.values,
-          workflow.allSuggestedLabels.map((name) => ({ name, rank: null }))
+          workflow.allSuggestedLabels.map(name => ({ name, rank: null }))
         ).map(prop('name'));
 
     const hash = new URLSearchParams(this.props.history.location.search)
@@ -195,7 +195,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
       <SearchPageParamsQueryComponent
         query={SearchPageParamsQuery}
         variables={{ hash }}>
-        {(queryParams) => {
+        {queryParams => {
           const searchParams = queryParams.data?.searchParams;
           if (!searchParams) return null;
           const parsedSearchParams = getParsedSearchParams(searchParams);
@@ -216,9 +216,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                 ]);
                 const labels = allKeys
                   .filter((x: string) => !FILTERED_LABELS.includes(x))
-                  .filter(
-                    (x) => !workflow || allowedSuggestedLabels.includes(x)
-                  );
+                  .filter(x => !workflow || allowedSuggestedLabels.includes(x));
 
                 if (!labels.length) return null;
                 //Band-aid fix to the -99999999 breaking BucketsForLabelQuery, does not like the name field as -9999999999
@@ -231,7 +229,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                   <Query
                     query={bucketsForLabels(labels)}
                     variables={variablesForLabels(labels, parsedSearchParams)}>
-                    {(arg) => {
+                    {arg => {
                       const { data, error } = arg;
                       if (error) {
                         console.log(error);
@@ -244,7 +242,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                       // console.log('BUCKETS', { labels, aggBucketsByLabel });
                       return (
                         <Mutation mutation={BULK_LIST_UPDATE_MUTATION}>
-                          {(bulkListUpdate) => (
+                          {bulkListUpdate => (
                             <Mutation mutation={BULK_QUERY_UPDATE_MUTATION}>
                               {(bulkQueryUpdate, arg) => {
                                 const { loading } = arg;
@@ -259,7 +257,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                                       bulkListUpdate({
                                         variables: {
                                           input: {
-                                            updates: undoActions.map((a) => ({
+                                            updates: undoActions.map(a => ({
                                               ...omit(['__typename'], a),
                                               state: a.state.map(
                                                 omit(['__typename'])
@@ -268,7 +266,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                                           },
                                         },
                                       }).then(() => {
-                                        this.setState((state) => ({
+                                        this.setState(state => ({
                                           undoHistory: state.undoHistory.filter(
                                             (x, i) => idx !== i
                                           ),
@@ -302,7 +300,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
                                           },
                                         },
                                       }).then((result: any) => {
-                                        this.setState((state) => ({
+                                        this.setState(state => ({
                                           undoHistory: [
                                             ...state.undoHistory,
                                             {
@@ -335,9 +333,9 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
   render() {
     return (
       <WorkflowsViewProvider>
-        {(workflowsView) => {
+        {workflowsView => {
           const workflow = workflowsView.workflows.filter(
-            (w) => w.name.toLowerCase() === 'wf_bulk'
+            w => w.name.toLowerCase() === 'wf_bulk'
           )?.[0];
           return this.renderWorkflow(workflow);
         }}

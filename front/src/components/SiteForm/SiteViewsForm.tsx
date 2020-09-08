@@ -7,11 +7,7 @@ import { SiteViewItem } from 'components/SiteItem';
 import CreateSiteViewMutation, {
   CreateSiteViewMutationFn,
 } from 'mutations/CreateSiteViewMutation';
-import {
-  Table,
-  FormControl,
-  Checkbox,
-} from 'react-bootstrap';
+import { Table, FormControl, Checkbox } from 'react-bootstrap';
 import ThemedButton from 'components/StyledComponents/index';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 
@@ -52,7 +48,6 @@ const StyledContainer = styled.div`
     color: white;
   }
 `;
-
 
 class SiteViewsForm extends React.Component<
   SiteViewsFormProps,

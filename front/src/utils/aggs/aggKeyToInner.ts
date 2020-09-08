@@ -1,4 +1,4 @@
-export default function(field, bucketKey) {
+export default function (field, bucketKey) {
   switch (field) {
     case 'average_rating':
       return {

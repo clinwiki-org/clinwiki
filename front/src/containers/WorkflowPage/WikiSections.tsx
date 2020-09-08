@@ -6,21 +6,13 @@ import { FormControl, Panel } from 'react-bootstrap';
 import UpdateWikiSectionsMutation, {
   UpdateWikiSectionsMutationFn,
 } from 'mutations/UpdateWikiSectionsMutation';
-import {
-  map,
-  addIndex,
-  find,
-  propEq,
-  isNil,
-  keys,
-  isEmpty,
-} from 'ramda';
+import { map, addIndex, find, propEq, isNil, keys, isEmpty } from 'ramda';
 
 interface WikiSectionsProps {
   nctId: string;
   sections: WikiSection[];
   disabled: boolean;
-  showAnimation:any;
+  showAnimation: any;
 }
 
 interface WikiSectionsState {
@@ -57,7 +49,7 @@ class WikiSections extends React.Component<
   handleSectionsSave = (
     updateWikiSections: UpdateWikiSectionsMutationFn
   ) => () => {
-    this.props.showAnimation()
+    this.props.showAnimation();
     updateWikiSections({
       variables: {
         input: {

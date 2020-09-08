@@ -164,7 +164,7 @@ export class WorkSearch extends React.Component<Props, State> {
       });
 
       // Finally, we need to reset the form
-      Array.from(form).forEach(function(element) {
+      Array.from(form).forEach(function (element) {
         element.reset();
       });
     }

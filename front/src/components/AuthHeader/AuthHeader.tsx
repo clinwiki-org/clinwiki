@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { History } from 'history';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-import logo from  'images/clinwiki-501.png';
+import logo from 'images/clinwiki-501.png';
 import UserProfileHeaderButton from './UserProfileHeaderButton';
 import { UserFragment } from 'types/UserFragment';
 
@@ -80,7 +80,10 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
                 href="https://home.clinwiki.org/make-a-donation/">
                 Donate
               </NavItem>
-              <NavItem eventKey={1} href="https://home.clinwiki.org/" target="_blank">
+              <NavItem
+                eventKey={1}
+                href="https://home.clinwiki.org/"
+                target="_blank">
                 About ClinWiki
               </NavItem>
               <Row>

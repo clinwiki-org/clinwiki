@@ -106,10 +106,8 @@ abstract class AbstractAggFilterInputUpdater {
     }
   }
   removeAllowMissing(): void {
-
     if (this.input) {
-      this.input.includeMissingFields = false
-
+      this.input.includeMissingFields = false;
     }
     this.onUpdateFilter();
   }
@@ -136,9 +134,7 @@ abstract class AbstractAggFilterInputUpdater {
         switch (thisField.display) {
           case 'DATE_RANGE':
             return this.isDateAgg()
-              ? moment(this.input.gte)
-                  .utc(false)
-                  .format('YYYY-MM-DD')
+              ? moment(this.input.gte).utc(false).format('YYYY-MM-DD')
               : this.input.gte;
           case 'NUMBER_RANGE':
             return this.input.gte;
@@ -159,9 +155,7 @@ abstract class AbstractAggFilterInputUpdater {
       switch (thisField.display) {
         case 'DATE_RANGE':
           return this.isDateAgg()
-            ? moment(this.input.lte)
-                .utc(false)
-                .format('YYYY-MM-DD')
+            ? moment(this.input.lte).utc(false).format('YYYY-MM-DD')
             : this.input.lte;
         case 'NUMBER_RANGE':
           return this.input.lte;
@@ -195,7 +189,10 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
       this.updateSettings({
         [this.grouping as string]: allButThisAgg,
       });
-    } else if (this.input?.includeMissingFields == false && this.input.values?.length == 0) {
+    } else if (
+      this.input?.includeMissingFields == false &&
+      this.input.values?.length == 0
+    ) {
       this.updateSettings({
         [this.grouping as string]: allButThisAgg,
       });
@@ -205,8 +202,8 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
         values: this.input?.values,
         gte: this.input?.gte || null,
         lte: this.input?.lte || null,
-        includeMissingFields: this.input?.includeMissingFields || null
-      }      
+        includeMissingFields: this.input?.includeMissingFields || null,
+      };
       this.updateSettings({
         [this.grouping]: [...allButThisAgg, newInput],
       });

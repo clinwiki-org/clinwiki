@@ -1,13 +1,21 @@
 import * as React from 'react';
 import {
-  ComposedChart, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ComposedChart,
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
 } from 'recharts';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
-import { SearchParams } from '../SearchPage/Types'
+import { SearchParams } from '../SearchPage/Types';
 
 interface BarChartComponentProps {
   isPresearch: boolean;
@@ -24,7 +32,10 @@ interface BarChartComponentState {
   currentBuckets: any[];
   otherBuckets: any[];
 }
-class BarChartComponent extends React.Component<BarChartComponentProps, BarChartComponentState>{
+class BarChartComponent extends React.Component<
+  BarChartComponentProps,
+  BarChartComponentState
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -79,17 +90,17 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
       this.props.handleLoadMore();
     }
   };
-  handleClick = (e) => {
-    console.log(e)
+  handleClick = e => {
+    console.log(e);
     const { currentBuckets } = this.state;
-    if (e.name !== "Other") {
+    if (e.name !== 'Other') {
       this.props.updater.toggleFilter(e.name);
     } else {
       this.state.otherBuckets.map((otherBucket, index) => {
         this.props.updater.toggleFilter(otherBucket.name);
       });
     }
-  }
+  };
   render() {
     return (
       <ComposedChart
@@ -98,15 +109,24 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
         height={220}
         data={this.state.currentBuckets}
         margin={{
-          top: 5, right: 30, bottom: 20, left: 5
+          top: 5,
+          right: 30,
+          bottom: 20,
+          left: 5,
         }}>
-        <CartesianGrid stroke='#f5f5f5' />
+        <CartesianGrid stroke="#f5f5f5" />
         <XAxis type="number" />
         <YAxis dataKey="name" type="category" />
         <Tooltip />
         <Legend />
-        <Bar dataKey='value' barSize={20} fill='#8884d8' onClick={(e) => this.handleClick(e)} />
-      </ComposedChart>)
+        <Bar
+          dataKey="value"
+          barSize={20}
+          fill="#8884d8"
+          onClick={e => this.handleClick(e)}
+        />
+      </ComposedChart>
+    );
   }
 }
 export default withAggContext(BarChartComponent);

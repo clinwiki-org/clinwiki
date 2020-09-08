@@ -163,7 +163,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   };
 
   handleAddTag = (meta: string, addTag: AddTagMutationFn) => () => {
-    this.props.showAnimation()
+    this.props.showAnimation();
     addTag({
       optimisticResponse: {
         upsertWikiTag: {

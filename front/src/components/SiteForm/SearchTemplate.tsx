@@ -30,15 +30,18 @@ function SearchTemplate(props: Props) {
   const { data } = useQuery<StudyPagePrefetchQuery>(PREFETCH_QUERY, {
     variables: { nctId },
   });
-  const schema: SchemaType = useMemo(()=> ({
-    kind: 'json',
-    schema: {
-      type: 'object',
-      properties: fromPairs(
-        props.fields.map(f => [camelCase(f), { type: 'string' }])
-      )
-    },
-  }), [props.fields]);
+  const schema: SchemaType = useMemo(
+    () => ({
+      kind: 'json',
+      schema: {
+        type: 'object',
+        properties: fromPairs(
+          props.fields.map(f => [camelCase(f), { type: 'string' }])
+        ),
+      },
+    }),
+    [props.fields]
+  );
   return (
     <Container>
       <StyledFormControl

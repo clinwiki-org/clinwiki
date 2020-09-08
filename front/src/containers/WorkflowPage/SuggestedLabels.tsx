@@ -8,13 +8,7 @@ import {
   SuggestedLabelsQueryVariables,
   SuggestedLabelsQuery_crowdAggFacets_aggs,
 } from 'types/SuggestedLabelsQuery';
-import {
-  pipe,
-  map,
-  fromPairs,
-  keys,
-  defaultTo,
-} from 'ramda';
+import { pipe, map, fromPairs, keys, defaultTo } from 'ramda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 // import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
 // import { WorkSearch } from './WorkSearch';
@@ -32,7 +26,7 @@ interface SuggestedLabelsProps {
     WorkflowConfigFragment_suggestedLabelsConfig
   >;
   siteView?: any;
-  showAnimation:any;
+  showAnimation: any;
 }
 
 const QUERY = gql`
@@ -80,7 +74,7 @@ class SuggestedLabels extends React.PureComponent<
   handleSelect = (key: string, value: string) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.showAnimation()
+    this.props.showAnimation();
     this.props.onSelect(key, value, e.currentTarget.checked);
   };
 
@@ -127,8 +121,7 @@ class SuggestedLabels extends React.PureComponent<
         onSelect={this.props.onSelect}
         refetch={refetch}
         siteView={this.props.siteView}
-        showAnimation={this.props.showAnimation}
-        >
+        showAnimation={this.props.showAnimation}>
         {items.map(value => {
           if (bucketKeyStringIsMissing(value)) {
             return null;

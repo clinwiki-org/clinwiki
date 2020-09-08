@@ -16,7 +16,7 @@ export function registerHandlebarsHelpers() {
       case 5:
         return '★★★★★';
       default:
-        return value
+        return value;
     }
   });
 }

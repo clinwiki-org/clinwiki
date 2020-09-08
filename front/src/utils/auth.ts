@@ -40,7 +40,7 @@ export const getStarColor = rank => {
     case 'platinum':
       return fourthTier;
     case 'default':
-      return standard
+      return standard;
   }
   return;
 };

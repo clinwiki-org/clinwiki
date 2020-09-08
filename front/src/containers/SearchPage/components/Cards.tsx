@@ -10,7 +10,7 @@ interface CardsProps {
   onPress: Function;
   loading: boolean;
   columns: any;
-  template : string
+  template: string;
 }
 
 interface CardsState {

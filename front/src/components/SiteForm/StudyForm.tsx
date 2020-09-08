@@ -108,13 +108,13 @@ class StudyForm extends React.Component<StudyFormProps, StudyFormState> {
           onChange={this.props.onAddMutation}
         />
         <MailMergeFormControl
-          template={data.template||''}
-          onTemplateChanged={t => 
+          template={data.template || ''}
+          onTemplateChanged={t =>
             this.props.onAddMutation({
               currentTarget: {
                 name: `set:study.extendedSections.${section.name}.template`,
-                value: t
-              }
+                value: t,
+              },
             })
           }
         />

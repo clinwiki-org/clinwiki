@@ -102,14 +102,14 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     });
   };
 
-  renderDropDown = (siteViewUrl) => {
+  renderDropDown = siteViewUrl => {
     if (siteViewUrl === 'default' || siteViewUrl === 'user') {
       return;
     }
     // console.log(this.props.theme);
     return (
       <UpdateSiteViewMutation>
-        {(updateSiteView) => {
+        {updateSiteView => {
           //needs to be themed, traditional methods of theming not working
           return (
             <DropdownButton
@@ -121,7 +121,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
                 margin: '1em 1em 1em 0',
                 background: this.props.theme.button,
               }}>
-              {siteViewTypes.map((type) => (
+              {siteViewTypes.map(type => (
                 <MenuItem
                   key={type}
                   name={`set:search.type`}
@@ -180,7 +180,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         {type === 'search' && (
           <td>
             <UpdateSiteViewMutation>
-              {(updateSiteView) => (
+              {updateSiteView => (
                 <Checkbox
                   checked={siteView.default}
                   onChange={() => this.handleCheckbox(updateSiteView)}
@@ -198,14 +198,14 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
           <CopySiteViewMutation>
-            {(copySiteView) => (
+            {copySiteView => (
               <StyledButton onClick={() => this.handleCopy(copySiteView)}>
                 Copy
               </StyledButton>
             )}
           </CopySiteViewMutation>
           <DeleteSiteViewMutation>
-            {(deleteSiteView) => (
+            {deleteSiteView => (
               <StyledButton onClick={() => this.handleDelete(deleteSiteView)}>
                 Delete
               </StyledButton>

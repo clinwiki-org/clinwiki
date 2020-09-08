@@ -8,7 +8,7 @@ interface ValuesCrumbProps {
   labels?: string[];
   onClick: (s: string) => void;
   allowMissingFields?: boolean;
-  removeAllowMissing?: (boolean)=> void;
+  removeAllowMissing?: (boolean) => void;
 }
 interface ValuesCrumbState {
   showValue: boolean;
@@ -26,7 +26,13 @@ class ValuesCrumb extends React.Component<ValuesCrumbProps, ValuesCrumbState> {
   };
 
   render() {
-    const { category, values = [], labels, onClick, removeAllowMissing } = this.props;
+    const {
+      category,
+      values = [],
+      labels,
+      onClick,
+      removeAllowMissing,
+    } = this.props;
     const { showValue } = this.state;
     const addVals = values ? values.length - 4 : 0;
     return (
@@ -41,12 +47,13 @@ class ValuesCrumb extends React.Component<ValuesCrumbProps, ValuesCrumbState> {
             />
           );
         })}
-        {this.props.allowMissingFields && removeAllowMissing ? 
-        <ValueCrumb 
-          key={"allowmissing"} 
-          onClick={()=> removeAllowMissing(false) }
-          label={"Allow Missing"} 
-          />:null}
+        {this.props.allowMissingFields && removeAllowMissing ? (
+          <ValueCrumb
+            key={'allowmissing'}
+            onClick={() => removeAllowMissing(false)}
+            label={'Allow Missing'}
+          />
+        ) : null}
         <ValuesExpander
           showValue={showValue}
           addVals={addVals}

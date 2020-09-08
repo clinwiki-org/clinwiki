@@ -1,11 +1,14 @@
-
 import { gql } from 'apollo-boost';
 import { WikiPageEditFragment } from 'components/Edits';
 import {
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables,
 } from 'types/CrowdPageUpsertWikiLabelMutation';
-import { Mutation, MutationComponentOptions, MutationFunction } from 'react-apollo';
+import {
+  Mutation,
+  MutationComponentOptions,
+  MutationFunction,
+} from 'react-apollo';
 
 const FRAGMENT = gql`
   fragment CrowdPageFragment on WikiPage {

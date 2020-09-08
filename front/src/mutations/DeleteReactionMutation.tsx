@@ -19,18 +19,13 @@ interface DeleteReactionProps {
 }
 
 const DELETE_REACTION = gql`
-  mutation DeleteReaction(
-    $id: Int!
-
-  ) {
-    deleteReaction(
-        input : { id: $id }
-    ) {
-      reaction{
-        study{
+  mutation DeleteReaction($id: Int!) {
+    deleteReaction(input: { id: $id }) {
+      reaction {
+        study {
           dislikesCount
         }
- }
+      }
 
       errors
     }
@@ -38,19 +33,14 @@ const DELETE_REACTION = gql`
 `;
 
 const DeleteReactionComponent = (
-  props: MutationComponentOptions<
-    DeleteReactionType,
-    DeleteReactionVariables
-  >
+  props: MutationComponentOptions<DeleteReactionType, DeleteReactionVariables>
 ) => Mutation(props);
 export type DeleteReactionFn = MutationFunction<
   DeleteReactionType,
   DeleteReactionVariables
 >;
 
-class DeleteReaction extends React.PureComponent<
-  DeleteReactionProps
-> {
+class DeleteReaction extends React.PureComponent<DeleteReactionProps> {
   render() {
     return (
       <DeleteReactionComponent mutation={DELETE_REACTION}>

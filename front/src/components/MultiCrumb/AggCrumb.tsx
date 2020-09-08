@@ -59,10 +59,13 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       crumb = (
         <ValueCrumb label={label} onClick={() => updater.removeRange()} />
       );
-    }else if(agg.includeMissingFields){
-       let label= "Allow Missing"
-       crumb = (
-        <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
+    } else if (agg.includeMissingFields) {
+      let label = 'Allow Missing';
+      crumb = (
+        <ValueCrumb
+          label={label}
+          onClick={() => updater.removeAllowMissing()}
+        />
       );
     }
     const field = findFields(agg.field, thisSiteView, false);

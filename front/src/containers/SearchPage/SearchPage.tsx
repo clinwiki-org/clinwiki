@@ -73,18 +73,18 @@ const MainContainer = styled(Col)`
   .rt-th {
     text-transform: capitalize;
     padding: 15px !important;
-    background: ${(props) =>
+    background: ${props =>
       props.theme.searchResults.resultsHeaderBackground} !important;
     color: #fff;
   }
 
   .ReactTable .-pagination .-btn {
-    background: ${(props) =>
+    background: ${props =>
       props.theme.searchResults.resultsPaginationButtons} !important;
   }
 
   div.rt-tbody div.rt-tr:hover {
-    background: ${(props) =>
+    background: ${props =>
       props.theme.searchResults.resultsRowHighlight} !important;
     color: #fff !important;
   }
@@ -111,11 +111,11 @@ const SidebarContainer = styled(Col)`
   width: 235px;
   min-width: 235px;
   min-height: 100%;
-  background: ${(props) => props.theme.aggSideBar.sideBarBackground};
+  background: ${props => props.theme.aggSideBar.sideBarBackground};
   .panel-title {
     a:hover {
       text-decoration: none;
-      color: ${(props) => props.theme.aggSideBar.sideBarFontHover};
+      color: ${props => props.theme.aggSideBar.sideBarFontHover};
     }
   }
   .panel-default {
@@ -140,7 +140,7 @@ const SidebarContainer = styled(Col)`
     }
     .panel-title {
       font-size: 16px;
-      color: ${(props) => props.theme.aggSideBar.sideBarFont};
+      color: ${props => props.theme.aggSideBar.sideBarFont};
       padding: 0px 10px;
     }
   }
@@ -192,7 +192,7 @@ const changeFilter = (add: boolean) => (
       }
       const aggLens = lensPath([index, 'values']);
       const updater = (values: string[]) =>
-        add ? [...values, key] : reject((x) => x === key, values);
+        add ? [...values, key] : reject(x => x === key, values);
       let res = over(aggLens, updater, aggs);
       // Drop filter if no values left
       if (isEmpty(view(aggLens, res))) {
@@ -210,7 +210,7 @@ const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
-    keys.forEach((k) => {
+    keys.forEach(k => {
       params = addFilter(aggName, k, isCrowd)(params);
     });
     // changeFilter(true);
@@ -220,7 +220,7 @@ const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 
 const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
-    keys.forEach((k) => {
+    keys.forEach(k => {
       params = removeFilter(aggName, k, isCrowd)(params);
     });
     // changeFilter(true);
@@ -392,7 +392,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       groupBy<AggFilterInput>(prop('field')),
       map(head),
       map(propOr([], 'values')),
-      map((arr) => new Set(arr))
+      map(arr => new Set(arr))
     )(filters) as { [key: string]: Set<string> };
   };
 
@@ -459,7 +459,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       //@ts-ignore
       map(prop('field')),
       //@ts-ignore
-      any((x) => (x as string).toLowerCase().includes('wf_'))
+      any(x => (x as string).toLowerCase().includes('wf_'))
       //@ts-ignore
     )(this.state.params?.crowdAggFilters || []);
   };
@@ -504,7 +504,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
-  renderAggs = (siteView) => {
+  renderAggs = siteView => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
@@ -722,10 +722,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } | null;
     return response;
   };
-  updateSearchParams = async (params) => {
-    this.setState({	
-      ...this.state,	
-      params: { ...(this.state?.params || {}), ...params },	
+  updateSearchParams = async params => {
+    this.setState({
+      ...this.state,
+      params: { ...(this.state?.params || {}), ...params },
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
@@ -772,7 +772,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
-  getTotalResults = (total) => {
+  getTotalResults = total => {
     if (total) {
       this.setState({
         totalRecords: total,
@@ -785,7 +785,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.props.history.push(url);
   };
 
-  renderPresearch = (hash) => {
+  renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     const { currentSiteView } = this.props;
     const preSearchAggs = currentSiteView.search.presearch.aggs.selected.values;
@@ -894,7 +894,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <SearchParamsContext.Provider
           value={{
             searchParams: this.state.params,
-            updateSearchParams: (params) => {
+            updateSearchParams: params => {
               this.setState({ params: { ...this.state.params, ...params } });
             },
           }}>

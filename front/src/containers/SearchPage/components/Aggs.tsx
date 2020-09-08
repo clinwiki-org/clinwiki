@@ -1,13 +1,5 @@
 import * as React from 'react';
-import {
-  isEmpty,
-  isNil,
-  filter,
-  prop,
-  compose,
-  reduce,
-  pathOr,
-} from 'ramda';
+import { isEmpty, isNil, filter, prop, compose, reduce, pathOr } from 'ramda';
 import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,

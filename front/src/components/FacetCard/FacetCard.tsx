@@ -1,8 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {
-  ApolloConsumer,
-} from 'react-apollo';
+import { ApolloConsumer } from 'react-apollo';
 import ThemedAutosuggestButton, {
   ThemedPresearchCard,
   ThemedPresearchHeader,
@@ -16,8 +14,12 @@ import CrowdPage from 'containers/CrowdPage';
 import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
-import { UpsertMutationFn, UpsertMutationComponent, UPSERT_LABEL_MUTATION } from 'mutations/CrowdPageUpsertWikiLabelMutation';
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
+import {
+  UpsertMutationFn,
+  UpsertMutationComponent,
+  UPSERT_LABEL_MUTATION,
+} from 'mutations/CrowdPageUpsertWikiLabelMutation';
 
 const Row = styled.div`
   display: flex;
@@ -25,8 +27,6 @@ const Row = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-
-
 
 interface FacetCardProps {
   nctId: string;
@@ -40,7 +40,7 @@ interface FacetCardProps {
   refetch?: () => void;
   aggNames?: any;
   allValues?: any[];
-  showAnimation:any;
+  showAnimation: any;
 }
 
 interface FacetCardState {
@@ -174,7 +174,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
         this.props.nctId,
         upsertLabelMutation
       );
-      if (this.props.refetch) (this.props.refetch());
+      if (this.props.refetch) this.props.refetch();
     }
   };
 
@@ -189,7 +189,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   handleNewFacetSubmit = (key, value, upsertLabelMutation) => {
-    this.props.showAnimation()
+    this.props.showAnimation();
     this.submitExistingField(key, value, this.props.meta, upsertLabelMutation);
   };
 
@@ -211,10 +211,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     );
   };
 
-  onSuggestionSelected = (e, 
-    { suggestionValue },
-    upsertLabelMutation
-  ) => {
+  onSuggestionSelected = (e, { suggestionValue }, upsertLabelMutation) => {
     this.setState({
       textFieldActive: false,
       existingField: '',
@@ -259,7 +256,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       showLoginModal,
       showAddFacet,
     } = this.state;
-    
+
     if (addLabel) {
       console.log(allValues);
       return (
@@ -359,12 +356,9 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                                 apolloClient
                               ),
                           }}
-                          onSuggestionSelected={(e,
-                            {
-                              suggestionValue,
-                            },
-                          ) =>
-                            this.onSuggestionSelected(e,
+                          onSuggestionSelected={(e, { suggestionValue }) =>
+                            this.onSuggestionSelected(
+                              e,
                               {
                                 suggestionValue,
                               },

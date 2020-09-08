@@ -28,7 +28,7 @@ const flashKeyFrames = keyframes`
 
   }
 
-`
+`;
 
 const coolBoxKeyframes = keyframes`
 0%{
@@ -42,51 +42,43 @@ const coolBoxKeyframes = keyframes`
       right:1%;
   }
 
-`
+`;
 export const AnimationContainer = styled.div`
-width:40px;
-padding-left:10px;
-`
+  width: 40px;
+  padding-left: 10px;
+`;
 export const Animation = styled.div`
+  display: inline-block;
+  position: absolute;
+  background: transparent;
+  width: 30px;
+  opacity: 0;
 
-
-display: inline-block;
-position:absolute;
-background: transparent;
-width: 30px;
-opacity:0;
-
-animation-name: ${coolBoxKeyframes};
-animation-duration: 7s;
-animation-timing-function: ease;
-animation-delay: 2s;
-animation-iteration-count: 1;
-animation-direction: normal;
-animation-fill-mode: forwards;
-animation-play-state: running;
-
-`
+  animation-name: ${coolBoxKeyframes};
+  animation-duration: 7s;
+  animation-timing-function: ease;
+  animation-delay: 2s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+`;
 export const FlashAnimation = styled.div`
+  background: transparent;
+  width: 30px;
+  opacity: 0;
 
-
-
-background: transparent;
-width: 30px;
-opacity:0;
-
-animation-name: ${flashKeyFrames};
-animation-duration: 2.5s;
-animation-timing-function: ease;
-animation-delay: 0s;
-animation-iteration-count: 1;
-animation-direction: normal;
-animation-fill-mode: forwards;
-animation-play-state: running;
-
-`
+  animation-name: ${flashKeyFrames};
+  animation-duration: 2.5s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+`;
 
 class SubmitAnimation extends React.Component<SubmitAnimationProps> {
-
   render() {
     this.props.resetAnimation();
     const color = this.props.rankColor;
@@ -110,9 +102,7 @@ class SubmitAnimation extends React.Component<SubmitAnimationProps> {
             size={25}
           />
         </Animation>
-
       </span>
-
     );
   }
 }

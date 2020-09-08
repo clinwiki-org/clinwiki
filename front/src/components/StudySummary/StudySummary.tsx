@@ -11,7 +11,7 @@ import { MailMergeView } from 'components/MailMerge';
 
 interface StudySummaryProps {
   study: StudySummaryFragment;
-  template?: string|null;
+  template?: string | null;
   workflow: WorkflowConfigFragment | null;
   workflowsView: WorkflowsViewFragment;
 }
@@ -122,7 +122,8 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
   render() {
     const template = this.props.workflow
       ? this.props.workflow.summaryTemplate
-      : this.props.template || `
+      : this.props.template ||
+        `
 <table class='table table-striped table-bordered table-condensed'>
   <tbody>
     <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
@@ -141,10 +142,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
         </Helmet>
 
         <CollapsiblePanel header={this.props.study.briefTitle || ''}>
-          <MailMergeView 
-            template={template}
-            context={this.props.study}
-          />
+          <MailMergeView template={template} context={this.props.study} />
         </CollapsiblePanel>
       </div>
     );

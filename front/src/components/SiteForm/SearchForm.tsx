@@ -872,7 +872,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     );
   };
-  renderBreadCrumbsConfig = (showBreadCrumbs:boolean, view: SiteFragment_siteView) => {
+  renderBreadCrumbsConfig = (
+    showBreadCrumbs: boolean,
+    view: SiteFragment_siteView
+  ) => {
     return (
       <Panel>
         <Panel.Heading>

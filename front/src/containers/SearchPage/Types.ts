@@ -35,7 +35,7 @@ export interface AggFilterListItem {
   values: string[];
   gte?: any;
   lte?: any;
-  includeMissingFields:boolean;
+  includeMissingFields: boolean;
 }
 
 export interface SortItem {

@@ -5,7 +5,7 @@ import { AggBucket } from '../SearchPage/Types';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
-import { SearchParams } from '../SearchPage/Types'
+import { SearchParams } from '../SearchPage/Types';
 interface TwoLevelPieChartProps {
   isPresearch: boolean;
   field: SiteViewFragment_search_aggs_fields | any;
@@ -144,7 +144,6 @@ class TwoLevelPieChart extends React.Component<
     this.setState({ activeIndex: null });
   };
   render() {
-
     if (this.props.buckets) {
       return (
         <PieChart width={250} height={220}>
@@ -162,7 +161,10 @@ class TwoLevelPieChart extends React.Component<
             onMouseLeave={this.handleClear}
             onClick={this.onClickHelper}>
             {this.state.currentBuckets.map((entry, index) => (
-              <Cell fill={this.COLORS[index % this.COLORS.length]} key={entry + index} />
+              <Cell
+                fill={this.COLORS[index % this.COLORS.length]}
+                key={entry + index}
+              />
             ))}
           </Pie>
         </PieChart>

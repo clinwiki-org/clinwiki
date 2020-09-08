@@ -90,7 +90,11 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
-    if (name === 'themes' || name === 'userRank' || name === 'reactionsConfig') {
+    if (
+      name === 'themes' ||
+      name === 'userRank' ||
+      name === 'reactionsConfig'
+    ) {
       try {
         let parseResponse = JSON.parse(value);
         if (parseResponse && parseResponse.error)

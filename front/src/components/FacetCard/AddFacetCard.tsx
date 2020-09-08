@@ -5,7 +5,7 @@ import * as Autosuggest from 'react-autosuggest';
 import AddFieldAuto from 'components/FacetCard/AddFieldAuto';
 import ThemedAutosuggestButton from 'components/StyledComponents';
 import { ApolloConsumer } from 'react-apollo';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 
 const MarginContainer = styled.div`
   margin: 4px;
@@ -150,19 +150,13 @@ class AddFacetCard extends React.PureComponent<
     });
   };
 
-  onFieldSuggestionSelected = (
-    event,
-    { suggestionValue }
-  ) => {
+  onFieldSuggestionSelected = (event, { suggestionValue }) => {
     this.setState({
       title: suggestionValue,
     });
   };
 
-  onSuggestionSelected = (
-    event,
-    { suggestionValue }
-  ) => {
+  onSuggestionSelected = (event, { suggestionValue }) => {
     this.setState({
       description: suggestionValue,
     });
@@ -231,7 +225,7 @@ class AddFacetCard extends React.PureComponent<
                   }}
                   onSuggestionSelected={this.onSuggestionSelected}
                   onSuggestionsFetchRequested={() =>
-                  this.onSuggestionsFetchRequested()
+                    this.onSuggestionsFetchRequested()
                   }
                   onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                   getSuggestionValue={this.getSuggestionValue}

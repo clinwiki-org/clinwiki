@@ -25,8 +25,16 @@ import { displayFields } from 'utils/siteViewHelpers';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import ThemedButton from 'components/StyledComponents';
 import QUERY from 'queries/WorkflowPageQuery';
-import { DELETE_LABEL_MUTATION, DeleteMutationComponent, DeleteMutationFn } from 'mutations/CrowdPageDeleteWikiLabelMutation';
-import { UPSERT_LABEL_MUTATION, UpsertMutationComponent, UpsertMutationFn } from 'mutations/CrowdPageUpsertWikiLabelMutation';
+import {
+  DELETE_LABEL_MUTATION,
+  DeleteMutationComponent,
+  DeleteMutationFn,
+} from 'mutations/CrowdPageDeleteWikiLabelMutation';
+import {
+  UPSERT_LABEL_MUTATION,
+  UpsertMutationComponent,
+  UpsertMutationFn,
+} from 'mutations/CrowdPageUpsertWikiLabelMutation';
 
 const WorkflowPageQueryComponent = (
   props: QueryComponentOptions<WorkflowPageQuery, WorkflowPageQueryVariables>
@@ -44,7 +52,7 @@ interface WorkflowPageProps {
   workflowsView: WorkflowsViewFragment;
   theme?: any;
   siteView?: any;
-  showAnimation:any;
+  showAnimation: any;
 }
 
 interface WorkflowPageState {

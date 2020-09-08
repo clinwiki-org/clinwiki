@@ -12,9 +12,12 @@ export const createMutation = (
   const pathComponents = path.split('.');
   let finalPathComponents: any[] = [];
   pathComponents.map((path, index) => {
-    if (path === 'wiki_page_edits' || path ==='reactions') {
+    if (path === 'wiki_page_edits' || path === 'reactions') {
       finalPathComponents.push(`${path}.${pathComponents[index + 1]}`);
-    } else if (pathComponents[index - 1] === 'wiki_page_edits'|| pathComponents[index - 1] === 'reactions') {
+    } else if (
+      pathComponents[index - 1] === 'wiki_page_edits' ||
+      pathComponents[index - 1] === 'reactions'
+    ) {
       return;
     } else {
       finalPathComponents.push(path);
@@ -68,7 +71,7 @@ export const updateView = <T extends SiteViewFragment | WorkflowsViewFragment>(
   mutations: SiteViewMutationInput[]
 ): T => {
   const result = cloneDeep(view);
-  mutations.forEach((mutation) => applyOne(result, mutation));
+  mutations.forEach(mutation => applyOne(result, mutation));
   return result;
 };
 

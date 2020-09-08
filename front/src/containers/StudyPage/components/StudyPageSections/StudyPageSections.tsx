@@ -16,7 +16,7 @@ interface StudyPageSectionsProps {
   location: Location;
   match: match<{ nctId: string; searchId: string }>;
   siteView: any;
-  showAnimation:any;
+  showAnimation: any;
 }
 
 class StudyPageSections extends React.Component<StudyPageSectionsProps> {

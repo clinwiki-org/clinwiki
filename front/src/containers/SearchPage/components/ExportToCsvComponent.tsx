@@ -3,7 +3,6 @@ import CurrentUser from 'containers/CurrentUser';
 import ExportToCsvButton from './ExportToCsvButton';
 import ExportToCsvDialog from './ExportToCsvDialog';
 
-
 interface ExportToCsvComponentProps {
   siteView: any;
   searchHash: string;

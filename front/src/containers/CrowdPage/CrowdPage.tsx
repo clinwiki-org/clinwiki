@@ -1,9 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {
-  Query,
-  QueryComponentOptions,
-} from 'react-apollo';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
@@ -13,7 +10,12 @@ import { Helmet } from 'react-helmet';
 import LoadingPane from 'components/LoadingPane';
 import Error from 'components/Error';
 import StudySummary from 'components/StudySummary';
-import { DELETE_LABEL_MUTATION, FRAGMENT, DeleteMutationComponent, DeleteMutationFn } from 'mutations/CrowdPageDeleteWikiLabelMutation';
+import {
+  DELETE_LABEL_MUTATION,
+  FRAGMENT,
+  DeleteMutationComponent,
+  DeleteMutationFn,
+} from 'mutations/CrowdPageDeleteWikiLabelMutation';
 
 import {
   CrowdPageUpsertWikiLabelMutation,
@@ -161,7 +163,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     if (!currentValue) return null;
 
     const newValue = uniq(
-      currentValue.split('|').filter((x) => x !== value)
+      currentValue.split('|').filter(x => x !== value)
     ).join('|');
     if (newValue.length === 0) {
       const newMeta = dissoc(key, meta);
@@ -214,7 +216,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     let val = value;
     if (meta[key]) {
       const oldVal = meta[key];
-      const entries = oldVal.split('|').filter((x) => x !== val);
+      const entries = oldVal.split('|').filter(x => x !== val);
       entries.push(value);
       val = uniq(entries).join('|');
     }
@@ -301,8 +303,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
   ) => {
     const labels = pipe(
       keys,
-      map((key) =>
-        (meta[key] as string).split('|').map((value) => ({ key, value }))
+      map(key =>
+        (meta[key] as string).split('|').map(value => ({ key, value }))
       ),
       //@ts-ignore
       flatten
@@ -339,7 +341,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
           </tr>
         </thead>
         <tbody>
-          {labels.map((label) => (
+          {labels.map(label => (
             <CrowdLabel
               key={`${label.key} - ${label.value}`}
               name={label.key}
@@ -354,16 +356,18 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
             />
           ))}
           <CurrentUser>
-            {(user) =>
-              user &&
-              // !this.props.workflowView && (
-                <AddCrowdLabel
-                  onAddLabel={(key, value) =>
-                    this.handleAddLabel(key, value, meta, upsertLabelMutation)
-                  }
-                  forceAddLabel={this.state.forceAddLabel}
-                  showAnimation={this.props.showAnimation}
-                />
+            {
+              user =>
+                user && (
+                  // !this.props.workflowView && (
+                  <AddCrowdLabel
+                    onAddLabel={(key, value) =>
+                      this.handleAddLabel(key, value, meta, upsertLabelMutation)
+                    }
+                    forceAddLabel={this.state.forceAddLabel}
+                    showAnimation={this.props.showAnimation}
+                  />
+                )
               // )
             }
           </CurrentUser>
@@ -392,9 +396,9 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
   render() {
     return (
       <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-        {(upsertLabelMutation) => (
+        {upsertLabelMutation => (
           <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
-            {(deleteLabelMutation) => (
+            {deleteLabelMutation => (
               <QueryComponent
                 query={QUERY}
                 variables={{ nctId: this.props.nctId }}>

@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components';
-  
+
 const Wrap = styled.div`
 
       .emoji-2 {
@@ -16,42 +16,46 @@ const Wrap = styled.div`
         transition: transform 0.15s cubic-bezier(0.2, 0, 0.13, 2);
       }
     }
-`
+`;
 interface GithubSelectorEmojiProps {
-    onSelect:any;
-    shortcode:any;
-  }
-  
-  interface GithubSelectorEmojiState {
-    hover: boolean;
+  onSelect: any;
+  shortcode: any;
+}
 
-  }
-  
-  class GithubSelectorEmoji extends React.Component<GithubSelectorEmojiProps, GithubSelectorEmojiState> {
-      state={
-          hover:false
-      }
+interface GithubSelectorEmojiState {
+  hover: boolean;
+}
+
+class GithubSelectorEmoji extends React.Component<
+  GithubSelectorEmojiProps,
+  GithubSelectorEmojiState
+> {
+  state = {
+    hover: false,
+  };
 
   handleClick = () => {
-    this.props.onSelect(this.props.shortcode)
-  }
-  toggleHover=(showBoolean)=>{
-    this.setState({ hover: showBoolean})
-  }
-render(){
+    this.props.onSelect(this.props.shortcode);
+  };
+  toggleHover = showBoolean => {
+    this.setState({ hover: showBoolean });
+  };
+  render() {
     let buttonStyle;
-    if(this.state.hover==true){
-        buttonStyle={backgroundColor: 'rgba(255,255,255,0.8)'}
+    if (this.state.hover == true) {
+      buttonStyle = { backgroundColor: 'rgba(255,255,255,0.8)' };
     }
     return (
-        < Wrap onMouseDown={ ()=>this.handleClick() } onMouseEnter={()=>this.toggleHover(true)} onMouseLeave={()=>this.toggleHover(false)} >
-          <div style={buttonStyle} className='emoji-2'>
-            { this.props.shortcode }
-          </div>
-        </Wrap>
-      )  
+      <Wrap
+        onMouseDown={() => this.handleClick()}
+        onMouseEnter={() => this.toggleHover(true)}
+        onMouseLeave={() => this.toggleHover(false)}>
+        <div style={buttonStyle} className="emoji-2">
+          {this.props.shortcode}
+        </div>
+      </Wrap>
+    );
+  }
 }
 
-}
-
-export default GithubSelectorEmoji
+export default GithubSelectorEmoji;

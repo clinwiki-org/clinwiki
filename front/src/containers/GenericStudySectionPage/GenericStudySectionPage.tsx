@@ -36,15 +36,15 @@ function GenericStudySectionPage(props: GenericStudySectionPageProps) {
   const { data } = useQuery(getQuery(fragmentName, fragment), {
     variables: { nctId: props.nctId },
   });
-  const updateFragmentAsync = async (frag) => {
+  const updateFragmentAsync = async frag => {
     await new Promise(r => setTimeout(r));
     setFragment(frag);
   };
-  
+
   return (
     <MailMergeView
       template={props.metaData.template || ''}
-      context={data?.study??{}}
+      context={data?.study ?? {}}
       fragmentName={fragmentName}
       fragmentClass="Study"
       onFragmentChanged={updateFragmentAsync}

@@ -10,7 +10,7 @@ interface ReviewsTableProps {
 }
 
 class ReviewsTable extends React.Component<ReviewsTableProps> {
-  componentDidMount() { }
+  componentDidMount() {}
 
   onRowClick = (nctId: string, siteViewUrl: string) => {
     this.props.history.push(`/study/${nctId}?sv=${siteViewUrl}`);
@@ -54,9 +54,7 @@ class ReviewsTable extends React.Component<ReviewsTableProps> {
         accessor: 'study.briefTitle',
         // Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
       },
-    ]
-
-
+    ];
 
     if (this.props.isReview == true) {
       return (

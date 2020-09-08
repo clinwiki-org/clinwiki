@@ -4,12 +4,7 @@ import reject from 'ramda/es/reject';
 import equals from 'ramda/es/equals';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import MultiCrumb from 'components/MultiCrumb';
-import {
-  difference,
-  find,
-  propEq,
-  findIndex,
-} from 'ramda';
+import { difference, find, propEq, findIndex } from 'ramda';
 import withTheme from '../../containers/ThemeProvider';
 
 interface MultiInputProps {

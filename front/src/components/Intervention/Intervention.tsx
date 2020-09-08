@@ -43,7 +43,10 @@ class Intervention extends React.PureComponent<InterventionProps> {
         <div>
           <h4>
             Wikipedia entry for{' '}
-            <a href={wikipediaArticle.url} target="_blank" rel="noopener noreferrer">
+            <a
+              href={wikipediaArticle.url}
+              target="_blank"
+              rel="noopener noreferrer">
               {wikipediaArticle.title}
             </a>
           </h4>
@@ -54,7 +57,10 @@ class Intervention extends React.PureComponent<InterventionProps> {
 
     return (
       <p>
-        <a href={`https://en.wikipedia.org/wiki/${name}`} target="_blank" rel="noopener noreferrer">
+        <a
+          href={`https://en.wikipedia.org/wiki/${name}`}
+          target="_blank"
+          rel="noopener noreferrer">
           View on Wikipedia
         </a>
       </p>

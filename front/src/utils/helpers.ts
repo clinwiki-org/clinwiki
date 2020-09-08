@@ -5,10 +5,7 @@ export const capitalize = (x: string): string =>
 
 // see also aggToField for formatting aggs
 export const sentanceCase = (x: string) =>
-  x
-    .split('_')
-    .map(capitalize)
-    .join(' ');
+  x.split('_').map(capitalize).join(' ');
 
 export const camelCase = (text: string) =>
   text

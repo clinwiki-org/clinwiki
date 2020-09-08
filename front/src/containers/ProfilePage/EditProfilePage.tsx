@@ -75,7 +75,7 @@ type EditProfileMutationFn = MutationFunction<
 class EditProfilePage extends React.Component<
   EditProfilePageProps,
   EditProfilePageState
-  > {
+> {
   state: EditProfilePageState = {
     form: {
       firstName: null,
@@ -252,8 +252,8 @@ class EditProfilePage extends React.Component<
               match={this.props.match}
               email={email}
               getTotalContributions={this.handleTotalContributions}
-            //userId={this.props.match.params.id}
-            //profileParams={this.getUserParams(this.props.match.params.id)}
+              //userId={this.props.match.params.id}
+              //profileParams={this.getUserParams(this.props.match.params.id)}
             />
           </div>
         );
@@ -269,48 +269,45 @@ class EditProfilePage extends React.Component<
           </div>
         );
       case 'reactions':
-        let idArray = ["1", "2", "3", "4"]
+        let idArray = ['1', '2', '3', '4'];
         return (
-          <div >
+          <div>
             {/* <h2>Liked Studies:</h2> */}
 
             {idArray.map(id => {
-              const displaySub = (ID) => {
+              const displaySub = ID => {
                 switch (ID) {
                   case '1':
-                    return 'Liked Studies'
+                    return 'Liked Studies';
                   case '2':
-                    return 'Disliked Studies'
+                    return 'Disliked Studies';
                   case '3':
-                    return 'Heart Studies'
+                    return 'Heart Studies';
                   case '4':
-                    return 'Skull and Cross Studies'
+                    return 'Skull and Cross Studies';
                 }
-              }
+              };
 
               return (
                 <ReactionsById reactionKindId={id} key={id}>
-                  {(reactions) => (
-                    reactions ?
-
-                      (
-                        <span>
-                          <h2>{displaySub(id)} ({reactions.reactions?.length}) </h2>
-                          <ReviewsTable
-                            //@ts-ignore
-                            reviewData={reactions.reactions}
-                            history={this.props.history}
-                            isReview={false}
-                          />
-                        </span>) : (null)
-
-                  )}
+                  {reactions =>
+                    reactions ? (
+                      <span>
+                        <h2>
+                          {displaySub(id)} ({reactions.reactions?.length}){' '}
+                        </h2>
+                        <ReviewsTable
+                          //@ts-ignore
+                          reviewData={reactions.reactions}
+                          history={this.props.history}
+                          isReview={false}
+                        />
+                      </span>
+                    ) : null
+                  }
                 </ReactionsById>
-              )
-
-
+              );
             })}
-
           </div>
         );
     }
@@ -321,12 +318,11 @@ class EditProfilePage extends React.Component<
     if (!this.props.user || !this.props.user.reactions) {
       return <div>No user</div>;
     } else {
-      let totalcount = 0
+      let totalcount = 0;
 
-      this.props.user.reactionsCount?.map((reaction) => {
-        totalcount += reaction.count
-
-      })
+      this.props.user.reactionsCount?.map(reaction => {
+        totalcount += reaction.count;
+      });
       return (
         <ThemedMainContainer>
           <h2>My profile</h2>
@@ -350,8 +346,8 @@ class EditProfilePage extends React.Component<
           {this.props.user ? (
             this.renderResults(this.props.user.email)
           ) : (
-              <div>No User</div>
-            )}
+            <div>No User</div>
+          )}
         </ThemedMainContainer>
       );
     }

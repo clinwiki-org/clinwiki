@@ -1,11 +1,5 @@
 import { FilterKind, AggFilterInput } from 'types/globalTypes';
-import {
-  reject,
-  filter,
-  sortBy,
-  isEmpty,
-  indexOf,
-} from 'ramda';
+import { reject, filter, sortBy, isEmpty, indexOf } from 'ramda';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 
 export const preselectedFilters = (

@@ -9,7 +9,7 @@ interface AddCrowdLabelProps {
   // pass not null to this prop if you want to toggle add mode with this key
   forceAddLabel?: { key: string; value: string } | null;
   name?: string;
-  showAnimation:any;
+  showAnimation: any;
 }
 
 interface AddCrowdLabelState {
@@ -66,7 +66,7 @@ class AddCrowdLabel extends React.Component<
   };
 
   handleSubmit = () => {
-    this.props.showAnimation()
+    this.props.showAnimation();
     this.props.onAddLabel(this.state.key, this.state.value);
     this.setState(defaultState);
   };

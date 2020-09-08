@@ -42,8 +42,7 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
     return x ? parseInt(x, 10) : null;
   };
 
-  setInterventionTerm = name => {
-  };
+  setInterventionTerm = name => {};
 
   render() {
     const id = this.getInterventionsId();

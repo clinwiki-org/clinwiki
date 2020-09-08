@@ -5,7 +5,7 @@ import { CurrentUserQuery } from 'types/CurrentUserQuery';
 import { UserFragment } from 'types/UserFragment';
 
 interface CurrentUserProps {
-  children: (user: UserFragment | null, refetch?:any) => React.ReactNode;
+  children: (user: UserFragment | null, refetch?: any) => React.ReactNode;
 }
 
 const FRAGMENT = gql`
@@ -22,21 +22,21 @@ const FRAGMENT = gql`
       briefTitle
       nctId
     }
-    reactionsCount{
+    reactionsCount {
       name
       count
     }
     contributions
     pictureUrl
     rank
-    reactions{
+    reactions {
       id
       reactionKindId
-      reactionKind{
+      reactionKind {
         id
         name
       }
-      study{
+      study {
         briefTitle
       }
       nctId

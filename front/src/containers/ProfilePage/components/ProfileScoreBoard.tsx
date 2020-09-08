@@ -7,7 +7,7 @@ import {
   ScoreBoard,
   StyledProfileRanking,
 } from '../../../components/StyledComponents';
-import GithubSelector from '../../../components/ReactionsBar/GithubSelector/GithubSelector'
+import GithubSelector from '../../../components/ReactionsBar/GithubSelector/GithubSelector';
 
 import { getStarColor } from 'utils/auth';
 
@@ -23,28 +23,30 @@ interface ProfileScoreBoardProps {
   reactedStudies?: any[] | null;
 }
 
-interface ProfileScoreBoardState{
-    showSelector: boolean;
+interface ProfileScoreBoardState {
+  showSelector: boolean;
 }
 
-class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps, ProfileScoreBoardState> {
-    state: ProfileScoreBoardState ={
-      showSelector : false
-    }
+class ProfileScoreBoard extends React.Component<
+  ProfileScoreBoardProps,
+  ProfileScoreBoardState
+> {
+  state: ProfileScoreBoardState = {
+    showSelector: false,
+  };
   starLogo = () => {
-
-    let color = getStarColor(this.props.rank)
-          return (
-          <span style={{ display: 'flex', margin: 'auto' }}>
-            <ReactStars
-              count={1}
-              color1={color}
-              color2={color}
-              half={false}
-              size={25}
-            />
-          </span>
-        );
+    let color = getStarColor(this.props.rank);
+    return (
+      <span style={{ display: 'flex', margin: 'auto' }}>
+        <ReactStars
+          count={1}
+          color1={color}
+          color2={color}
+          half={false}
+          size={25}
+        />
+      </span>
+    );
   };
   // handleSelectorClick=(e)=>{
   //   console.log(e)
@@ -55,9 +57,7 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps, ProfileS
       <div>
         <ScoreBoard>
           <StyledLabelValuePair>
-            <StyledProfileRanking>
-              {this.starLogo()}
-            </StyledProfileRanking>
+            <StyledProfileRanking>{this.starLogo()}</StyledProfileRanking>
             <StyledProfileScoreLabel>Star Level</StyledProfileScoreLabel>
           </StyledLabelValuePair>
         </ScoreBoard>
@@ -80,8 +80,8 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps, ProfileS
             onClick={() => this.props.handleDisplayChange('reactions')}
             // onMouseEnter={()=>this.setState({showSelector: true})}
             // onMouseLeave={()=>this.setState({showSelector: false})}
-            >
-              {/* {
+          >
+            {/* {
                 this.state.showSelector == true ?
                 <GithubSelector
                 reactions={['👍', '👎', '❤️', '☠️']}

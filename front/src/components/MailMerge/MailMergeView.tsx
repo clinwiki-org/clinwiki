@@ -182,7 +182,7 @@ function applyTemplate(
   }
 }
 
-export function microMailMerge(template : string, context?: object|null) {
+export function microMailMerge(template: string, context?: object | null) {
   if (context && /{{(.*)}}/.test(template)) {
     const compiled = compileTemplate(template);
     return applyTemplate(compiled, context);

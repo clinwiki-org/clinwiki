@@ -19,18 +19,12 @@ interface CreateReactionProps {
 }
 
 const CREATE_REACTION = gql`
-  mutation CreateReaction(
-    $reactionKindId: Int!
-    $nctId: String!
-
-  ) {
-    createReaction(
-        input : { reactionKindId: $reactionKindId, nctId: $nctId }
-    ) {
-      reaction{
-          reactionKind{
-            id
-          }
+  mutation CreateReaction($reactionKindId: Int!, $nctId: String!) {
+    createReaction(input: { reactionKindId: $reactionKindId, nctId: $nctId }) {
+      reaction {
+        reactionKind {
+          id
+        }
       }
       errors
     }
@@ -38,19 +32,14 @@ const CREATE_REACTION = gql`
 `;
 
 const CreateReactionComponent = (
-  props: MutationComponentOptions<
-    CreateReactionType,
-    CreateReactionVariables
-  >
+  props: MutationComponentOptions<CreateReactionType, CreateReactionVariables>
 ) => Mutation(props);
 export type CreateReactionFn = MutationFunction<
   CreateReactionType,
   CreateReactionVariables
 >;
 
-class CreateReaction extends React.PureComponent<
-  CreateReactionProps
-> {
+class CreateReaction extends React.PureComponent<CreateReactionProps> {
   render() {
     return (
       <CreateReactionComponent mutation={CREATE_REACTION}>

@@ -23,15 +23,15 @@ const UserButton = styled.div`
   padding: 5px;
   border-radius: 5px;
   margin-top: 7px;
-  background-color: ${(props) => props.theme.authButton.button};
+  background-color: ${props => props.theme.authButton.button};
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   &:hover {
-    background: ${(props) => props.theme.authButton.buttonHover};
-    border-color: ${(props) => props.theme.authButton.buttonBorderHover};
+    background: ${props => props.theme.authButton.buttonHover};
+    border-color: ${props => props.theme.authButton.buttonBorderHover};
     text-decoration: none;
   }
 `;
@@ -50,14 +50,14 @@ const SignInButton = styled.div`
   padding: 5px 10px;
   border-radius: 7%;
   margin-top: 7px;
-  background-color: ${(props) => props.theme.authButton.button};
+  background-color: ${props => props.theme.authButton.button};
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   &:hover {
-    background: ${(props) => props.theme.authButton.buttonHover};
-    border-color: ${(props) => props.theme.authButton.buttonBorderHover};
+    background: ${props => props.theme.authButton.buttonHover};
+    border-color: ${props => props.theme.authButton.buttonBorderHover};
     text-decoration: none;
   }
 `;
@@ -101,8 +101,8 @@ const DropDownItem = styled.div`
   cursor: pointer;
   text-decoration: none;
   &:hover {
-    background: ${(props) => props.theme.button};
-    border-color: ${(props) => props.theme.authButton.buttonBorderHover};
+    background: ${props => props.theme.button};
+    border-color: ${props => props.theme.authButton.buttonBorderHover};
     color: #fff;
     text-decoration: none;
   }
@@ -130,25 +130,22 @@ const flashKeyFrames = keyframes`
 
   }
 
-`
+`;
 export const HeaderAnimation = styled.div`
+  display: inline-block;
+  background: transparent;
+  width: 25px;
+  opacity: 0;
 
-
-display:inline-block;
-background: transparent;
-width: 25px;
-opacity:0;
-
-animation-name: ${flashKeyFrames};
-animation-duration: 2.5s;
-animation-timing-function: ease;
-animation-delay: 0s;
-animation-iteration-count: 1;
-animation-direction: normal;
-animation-fill-mode: forwards;
-animation-play-state: running;
-
-`
+  animation-name: ${flashKeyFrames};
+  animation-duration: 2.5s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+`;
 
 interface UserProfileHeaderButtonProps {
   user: UserFragment | null;
@@ -157,7 +154,7 @@ interface UserProfileHeaderButtonProps {
 
 interface UserProfileHeaderButtonState {
   showDropdown: boolean;
-  flashAnimation:boolean;
+  flashAnimation: boolean;
 }
 
 class UserProfileHeaderButton extends React.PureComponent<
@@ -211,16 +208,16 @@ class UserProfileHeaderButton extends React.PureComponent<
     logout(this.props.history);
   };
 
-  handleAdminClick = (url) => {
+  handleAdminClick = url => {
     const linkUrl = '/search/' + url;
     this.props.history.push(linkUrl);
   };
 
-  renderAdminMenuItems = (site) => {
+  renderAdminMenuItems = site => {
     const adminViews = site.siteViews.filter(
-      (siteview) => siteview.search.type === 'admin'
+      siteview => siteview.search.type === 'admin'
     );
-    return adminViews.map((view) => {
+    return adminViews.map(view => {
       return (
         <DropDownItem onClick={() => this.handleAdminClick(view.url)}>
           {view.name}
@@ -229,7 +226,7 @@ class UserProfileHeaderButton extends React.PureComponent<
     });
   };
 
-  renderUserImage = (url) => {
+  renderUserImage = url => {
     if (url) {
       return (
         <UserImage
@@ -254,16 +251,16 @@ class UserProfileHeaderButton extends React.PureComponent<
   componentWillUnmount() {
     document.addEventListener('mousedown', this.handleClick, false);
   }
-  componentDidUpdate(prevProps){
-    if(prevProps!==this.props){
-      this.setState({flashAnimation:true})
-      setTimeout(this.resetHelperFunction, 2500)
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.setState({ flashAnimation: true });
+      setTimeout(this.resetHelperFunction, 2500);
     }
   }
   resetHelperFunction = () => {
-    this.setState({ flashAnimation: false })
-  }
-  handleClick = (e) => {
+    this.setState({ flashAnimation: false });
+  };
+  handleClick = e => {
     if (this.dropDown?.contains(e.target)) {
       return;
     }
@@ -283,7 +280,7 @@ class UserProfileHeaderButton extends React.PureComponent<
     if (user) {
       return (
         <SiteProvider>
-          {(site) => {
+          {site => {
             return (
               <div
                 ref={(node: any) => {
@@ -298,25 +295,25 @@ class UserProfileHeaderButton extends React.PureComponent<
                       style={{ color: 'white', marginLeft: 2 }}
                     />
                   </ContributionContainer>
-                {this.state.flashAnimation===true ?
-                <HeaderAnimation>
-                <FontAwesome
-                name="star"
-                style={{
-                  color: getStarColor(user.rank),
-                  fontSize: 18,
-                }}
-              />
-              </HeaderAnimation>
-              :
-              <FontAwesome
-              name="star"
-              style={{
-                color: getStarColor(user.rank),
-                fontSize: 18,
-              }}
-            />
-              }
+                  {this.state.flashAnimation === true ? (
+                    <HeaderAnimation>
+                      <FontAwesome
+                        name="star"
+                        style={{
+                          color: getStarColor(user.rank),
+                          fontSize: 18,
+                        }}
+                      />
+                    </HeaderAnimation>
+                  ) : (
+                    <FontAwesome
+                      name="star"
+                      style={{
+                        color: getStarColor(user.rank),
+                        fontSize: 18,
+                      }}
+                    />
+                  )}
 
                   <FontAwesome
                     name="chevron-down"

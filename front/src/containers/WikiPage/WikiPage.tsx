@@ -36,8 +36,8 @@ interface WikiPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
-  metaData: SiteStudyBasicGenericSectionFragment;  
-  showAnimation:any;
+  metaData: SiteStudyBasicGenericSectionFragment;
+  showAnimation: any;
 }
 
 interface WikiPageState {
@@ -183,7 +183,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       variables: WikiPageUpdateContentMutationVariables;
     }) => void
   ) => {
-    this.props.showAnimation()
+    this.props.showAnimation();
     updateWikiContent({
       variables: {
         nctId: this.props.nctId,
@@ -268,7 +268,11 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     );
   };
 
-  renderSubmitButton = (data: WikiPageQuery, isAuthenticated: boolean, readOnly: boolean) => {
+  renderSubmitButton = (
+    data: WikiPageQuery,
+    isAuthenticated: boolean,
+    readOnly: boolean
+  ) => {
     if (!isAuthenticated) return false;
     if (readOnly) return false;
     const editorTextState = this.getEditorText();
@@ -278,12 +282,12 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     return (
       <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
         {updateWikiContent => (
-            <ThemedButton
-              onClick={() => this.handleEditSubmit(updateWikiContent)}
-              disabled={editorTextState === editorTextData}
-              style={{ marginLeft: '10px' }}>
-              Submit <FontAwesome name="pencil" />
-            </ThemedButton>
+          <ThemedButton
+            onClick={() => this.handleEditSubmit(updateWikiContent)}
+            disabled={editorTextState === editorTextData}
+            style={{ marginLeft: '10px' }}>
+            Submit <FontAwesome name="pencil" />
+          </ThemedButton>
         )}
       </UpdateContentMutation>
     );

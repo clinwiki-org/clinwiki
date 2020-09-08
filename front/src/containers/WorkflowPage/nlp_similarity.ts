@@ -263,7 +263,11 @@ export function findPhrases({
   }
 
   //remove duplicates from the promising indices array
-  promisingIndices = promisingIndices.filter(function(item, index, inputArray) {
+  promisingIndices = promisingIndices.filter(function (
+    item,
+    index,
+    inputArray
+  ) {
     return inputArray.indexOf(item) == index;
   });
   //declare top 5 array

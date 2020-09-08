@@ -1,8 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {
-  IntrospectionType,
-  IntrospectionOutputTypeRef,
-} from 'graphql';
+import { IntrospectionType, IntrospectionOutputTypeRef } from 'graphql';
 
 export type SchemaType = JsonSchemaType | GraphqlSchemaType;
 

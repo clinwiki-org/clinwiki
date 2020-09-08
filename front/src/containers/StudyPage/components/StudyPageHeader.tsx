@@ -2,33 +2,29 @@ import * as React from 'react';
 import styled from 'styled-components';
 import ReactStars from 'react-stars';
 import ThemedButton from 'components/StyledComponents';
-import { getStarColor } from '../../../utils/auth'
-import LoginModal from '../../../../src/components/LoginModal'
-import SlackCounter from '../../../components/ReactionsBar/SlackCounter/SlackCounter'
-import GithubSelector from '../../../components/ReactionsBar/GithubSelector/GithubSelector'
-import ReactionsBar from '../../../components/ReactionsBar'
+import { getStarColor } from '../../../utils/auth';
+import LoginModal from '../../../../src/components/LoginModal';
+import SlackCounter from '../../../components/ReactionsBar/SlackCounter/SlackCounter';
+import GithubSelector from '../../../components/ReactionsBar/GithubSelector/GithubSelector';
+import ReactionsBar from '../../../components/ReactionsBar';
 import { StudyPageQuery } from 'types/StudyPageQuery';
-import CreateReactionMutation, {
-} from 'mutations/CreateReactionMutation';
+import CreateReactionMutation from 'mutations/CreateReactionMutation';
 import { find, propEq } from 'ramda';
 
 // import { reactionIdFromCharacter, activeReactions, isReactionUnique, reactionCharacterFromName } from '../../../utils/reactions/reactionKinds'
 interface StudyPageHeaderProps {
-
-    navButtonClick: any;
-    user: any;
-    history: any;
-    data: any;
-    theme: any;
-    nctId: any;
-    studyRefetch: any;
-    userRefetch: any;
-    site?: any;
-    allReactions:any;
+  navButtonClick: any;
+  user: any;
+  history: any;
+  data: any;
+  theme: any;
+  nctId: any;
+  studyRefetch: any;
+  userRefetch: any;
+  site?: any;
+  allReactions: any;
 }
-interface StudyPageHeaderState {
-
-}
+interface StudyPageHeaderState {}
 const ReviewsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -43,7 +39,7 @@ const HeaderContentWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  .selector{
+  .selector {
     width: 100%;
     height: 100%;
     position: fixed;
@@ -65,24 +61,23 @@ const ThumbsRow = styled.div`
   margin: 3px;
   flex-direction: row;
   display: flex;
-    span > div> div>div{
-            background: none !important;
-            height: 19px;
-            padding-top: 1px;
-            padding-left: 3px;
-            padding-right: 4px;
-            border: 1px solid rgb(187, 225, 255);
-            font-size: 11px;
-            color: rgb(153, 153, 153);
-            font-weight: 500;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            cursor: pointer;
-            border-radius: 5px
-          
-    }
+  span > div > div > div {
+    background: none !important;
+    height: 19px;
+    padding-top: 1px;
+    padding-left: 3px;
+    padding-right: 4px;
+    border: 1px solid rgb(187, 225, 255);
+    font-size: 11px;
+    color: rgb(153, 153, 153);
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    border-radius: 5px;
+  }
 `;
 
 const BackButtonContainer = styled.div``;
@@ -92,104 +87,99 @@ const ReactionsContainer = styled.div`
   flex-direction: row;
 `;
 
+class StudyPageHeader extends React.Component<
+  StudyPageHeaderProps,
+  StudyPageHeaderState
+> {
+  state: StudyPageHeaderState = {};
+  renderBackButton = (name: string, link?: string | null) => {
+    if (link === undefined) return null;
 
-class StudyPageHeader extends React.Component<StudyPageHeaderProps, StudyPageHeaderState> {
-    state: StudyPageHeaderState = {
+    return (
+      <div style={{ paddingTop: '10px' }}>
+        <ThemedButton
+          style={{ margin: 'auto', float: 'left' }}
+          onClick={this.props.navButtonClick(link!)}
+          disabled={link === null}>
+          {name}
+        </ThemedButton>
+      </div>
+    );
+  };
 
+  renderReviewsSummary = (data: StudyPageQuery | undefined) => {
+    const { theme } = this.props;
+    if (!data || !data.study) {
+      return (
+        <ReviewsWrapper>
+          <div>
+            <ReactStars
+              count={5}
+              color2={theme.studyPage.reviewStarColor}
+              edit={false}
+              value={0}
+            />
+            <div>{'0 Reviews'}</div>
+          </div>
+        </ReviewsWrapper>
+      );
     }
-    renderBackButton = (name: string, link?: string | null) => {
-        if (link === undefined) return null;
 
-        return (
-            <div style={{ paddingTop: '10px' }}>
-                <ThemedButton
-                    style={{ margin: 'auto', float: 'left' }}
-                    onClick={this.props.navButtonClick(link!)}
-                    disabled={link === null}>
-                    {name}
-                </ThemedButton>
-            </div>
-        );
+    return (
+      <ReviewsWrapper>
+        <div>
+          <ReactStars
+            count={5}
+            color2={theme.studyPage.reviewStarColor}
+            edit={false}
+            value={data.study.averageRating}
+          />
+          <div
+            style={{
+              color: 'rgba(255, 255, 255, 0.5)',
+            }}>{`${data.study.reviewsCount} Reviews`}</div>
+        </div>
+      </ReviewsWrapper>
+    );
+  };
+
+  render() {
+    const hash = new URLSearchParams(this.props.history.location.search)
+      .getAll('hash')
+      .toString();
+    const siteViewUrl = new URLSearchParams(this.props.history.location.search)
+      .getAll('sv')
+      .toString();
+    const backLink = () => {
+      if (hash !== '') {
+        return `/search?hash=${hash}&sv=${siteViewUrl}`;
+      }
+      return undefined;
     };
-
-    renderReviewsSummary = (data: StudyPageQuery | undefined) => {
-        const { theme } = this.props;
-        if (!data || !data.study) {
-            return (
-                <ReviewsWrapper>
-                    <div>
-                        <ReactStars
-                            count={5}
-                            color2={theme.studyPage.reviewStarColor}
-                            edit={false}
-                            value={0}
-                        />
-                        <div>{'0 Reviews'}</div>
-                    </div>
-                </ReviewsWrapper>
-            );
-        }
-
-        return (
-            <ReviewsWrapper>
-                <div>
-                    <ReactStars
-                        count={5}
-                        color2={theme.studyPage.reviewStarColor}
-                        edit={false}
-                        value={data.study.averageRating}
-                    />
-                    <div
-                        style={{
-                            color: 'rgba(255, 255, 255, 0.5)',
-                        }}>{`${data.study.reviewsCount} Reviews`}</div>
-                </div>
-            </ReviewsWrapper>
-        );
-    };
-
-
-
-
-    render() {
-
-        const hash = new URLSearchParams(this.props.history.location.search)
-            .getAll('hash')
-            .toString();
-        const siteViewUrl = new URLSearchParams(this.props.history.location.search)
-            .getAll('sv')
-            .toString();
-        const backLink = () => {
-            if (hash !== '') {
-                return `/search?hash=${hash}&sv=${siteViewUrl}`;
-            }
-            return undefined;
-        };
-        return (
-            <HeaderContentWrapper>
-                <BackButtonContainer>
-                    {this.renderBackButton('⤺︎ Back', backLink())}
-                </BackButtonContainer>
-                <ReactionsContainer>
-                    <LikesRow>
-                        <ThumbsRow>
-                            <ReactionsBar
-                                reactionsConfig={this.props.site.reactionsConfig}
-                                studyRefetch={this.props.studyRefetch}
-                                nctId={this.props.nctId}
-                                theme={this.props.theme}
-                                studyData={this.props.data}
-                                user={this.props.user}
-                                allReactions={this.props.allReactions}
-                            />
-
-                        </ThumbsRow>
-                    </LikesRow>
-                    {this.renderReviewsSummary(this.props.data)}
-                </ReactionsContainer>
-            </HeaderContentWrapper>
-        );
-    }
+    return (
+      <HeaderContentWrapper>
+        <BackButtonContainer>
+          {this.renderBackButton('⤺︎ Back', backLink())}
+        </BackButtonContainer>
+        <ReactionsContainer>
+          <LikesRow>
+            <ThumbsRow>
+              <ReactionsBar
+                reactionsConfig={this.props.site.reactionsConfig}
+                studyRefetch={this.props.studyRefetch}
+                nctId={this.props.nctId}
+                theme={this.props.theme}
+                studyData={this.props.data}
+                user={this.props.user}
+                allReactions={this.props.allReactions}
+              />
+            </ThumbsRow>
+          </LikesRow>
+          {this.renderReviewsSummary(this.props.data)}
+        </ReactionsContainer>
+      </HeaderContentWrapper>
+    );
+  }
 }
 
 export default StudyPageHeader;

@@ -28,7 +28,7 @@ const flashKeyFrames = keyframes`
 
   }
 
-`
+`;
 
 const coolBoxKeyframes = keyframes`
 0%{
@@ -42,51 +42,43 @@ const coolBoxKeyframes = keyframes`
       top:0;
   }
 
-`
+`;
 
 export const Animation = styled.div`
+  display: inline-block;
+  position: fixed;
+  background: transparent;
+  width: 30px;
+  opacity: 0;
 
-
-display: inline-block;
-position:fixed;
-background: transparent;
-width: 30px;
-opacity:0;
-
-animation-name: ${coolBoxKeyframes};
-animation-duration: 6s;
-animation-timing-function: ease;
-animation-delay: 2s;
-animation-iteration-count: 1;
-animation-direction: normal;
-animation-fill-mode: forwards;
-animation-play-state: running;
-
-`
+  animation-name: ${coolBoxKeyframes};
+  animation-duration: 6s;
+  animation-timing-function: ease;
+  animation-delay: 2s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+`;
 export const FlashAnimation = styled.div`
+  position: fixed;
+  background: transparent;
+  width: 50px;
+  opacity: 0;
+  left: 50%;
+  top: 50%;
 
-
-position:fixed;
-background: transparent;
-width: 50px;
-opacity:0;
-left:50%;
-top:50%;
-
-
-animation-name: ${flashKeyFrames};
-animation-duration: 2.5s;
-animation-timing-function: ease;
-animation-delay: 0s;
-animation-iteration-count: 1;
-animation-direction: normal;
-animation-fill-mode: forwards;
-animation-play-state: running;
-
-`
+  animation-name: ${flashKeyFrames};
+  animation-duration: 2.5s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+`;
 
 class WorkFlowAnimation extends React.Component<WorkFlowAnimationProps> {
-
   render() {
     this.props.resetAnimation();
     const color = this.props.rankColor;
@@ -110,9 +102,7 @@ class WorkFlowAnimation extends React.Component<WorkFlowAnimationProps> {
             size={25}
           />
         </Animation>
-
       </span>
-
     );
   }
 }

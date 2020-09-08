@@ -4,7 +4,7 @@ import { useQuery } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import MailMerge from './MailMerge';
 
-const getQuery = (name:string,frag:string) => {
+const getQuery = (name: string, frag: string) => {
   frag = frag || `fragment ${name} on Study { nct_id }`;
   return gql`
   query SampleStudyQuery($nctId: String!) {
@@ -13,7 +13,8 @@ const getQuery = (name:string,frag:string) => {
     }
   }
   ${frag}
-`};
+`;
+};
 
 export default function TestComponent() {
   const [template, setTemplate] = useState(`
@@ -40,7 +41,7 @@ Facility contacts:
   const { data: introspection } = useQuery<IntrospectionQuery>(
     gql(getIntrospectionQuery({ descriptions: false }))
   );
-  const fragmentName = "demo_fragment";
+  const fragmentName = 'demo_fragment';
   const { data: study } = useQuery(getQuery(fragmentName, fragment), {
     variables: { nctId: 'NCT03847779' },
   });
