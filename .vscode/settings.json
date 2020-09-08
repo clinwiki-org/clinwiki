@@ -3,5 +3,7 @@
   "ruby.specCommand": "bundle exec rspec",
   "eslint.workingDirectories": [
     "./front"
-  ]
+  ],
+  "prettier.configPath": "./front/.prettierrc",
+  "prettier.ignorePath": "./front/.prettierignore"
 }
