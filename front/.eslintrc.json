@@ -1,9 +1,8 @@
 {
   "extends": ["react-app", "eslint-config-airbnb"],
   "rules": {
-    "semicolon": [true, "always", "ignore-bound-class-methods"],
-    "ter-arrow-parens": [true, "as-needed"],
-    "max-line-length": [true, 120]
+    "semi": 2,
+    "ter-arrow-parens": [2, "as-needed"]
   },
   "overrides": [
     {
