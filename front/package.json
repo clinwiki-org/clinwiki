@@ -41,6 +41,7 @@
     "apollo-client": "^2.6.8",
     "apollo-link-http": "^1.5.17",
     "bootstrap": "^4.5.0",
+    "eslint-config-airbnb": "^18.2.0",
     "google-map-react": "^1.1.7",
     "graphql": "^14.6.0",
     "handlebars": "^4.7.6",
@@ -74,20 +75,6 @@
   },
   "resolutions": {
     "graphql": "14.6.0"
-  },
-  "eslintConfig": {
-    "extends": "react-app",
-    "overrides": [
-      {
-        "files": [
-          "**/*.ts?(x)"
-        ],
-        "rules": {
-          "array-callback-return": "off",
-          "eqeqeq": "off"
-        }
-      }
-    ]
   },
   "browserslist": {
     "production": [
