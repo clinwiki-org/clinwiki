@@ -30,6 +30,15 @@ label {
   background: ${(props:any) => props.theme.crumbs.crumbBackground};
   color: #fff !important;
 }
+.crumb-container {
+  border: 2px solid ${props => props.theme.crumbs.crumbBackground};
+  border-radius: 4px;
+  padding: 0 5px 0 5px;
+  margin: 1px;
+  background: ${props => props.theme.crumbs.crumbBackground};
+  color: ${props => props.theme.crumbs.crumbFont} !important;
+  line-height: 1.85em;
+}
 div.crumbs-bar span.label {
   background: #55B88D !important;
   color: #fff !important;
