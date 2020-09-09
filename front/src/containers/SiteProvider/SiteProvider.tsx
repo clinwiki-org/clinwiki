@@ -380,6 +380,9 @@ interface UseSiteProps {
   url?: string;
 }
 export function useSite(props?: UseSiteProps) {
+  console.log("USE SITE PROPS", props);
+        // console.trace();
+
   const urlName = new URLSearchParams(window.location.search)
     .getAll('sv')
     .toString()

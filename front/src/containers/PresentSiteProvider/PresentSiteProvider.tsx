@@ -7,10 +7,11 @@ import {
     PresentSiteProviderQuery,
 } from 'types/PresentSiteProviderQuery';
 import { SiteFragment } from 'types/SiteFragment';
-import useUrlParams from "../../utils/UrlParamsProvider";
+
 
 
 interface PresentSiteProviderProps {
+    //usePresentSite?(id?: number, url?: string): any;
     id?: number;
     url?: string;
     children: (site: SiteFragment, refetch: any) => JSX.Element | null;
@@ -255,7 +256,6 @@ export const SITE_VIEW_FRAGMENT = gql`
     ${SITE_STUDY_PAGE_FRAGMENT}
 `;
 
-
 /*export const PAGE_VIEW_FRAGMENT = gql`
     fragment PageViewFragment on PageView {
         id
@@ -308,10 +308,31 @@ const QUERY = gql`
 `;
 
 
-
-
-
-
+type ToOmit = 'site' | 'refetch' | 'presentSiteView';
+export function withPresentSite2<T>(
+    Component: React.ComponentType<T>
+): React.ComponentClass<Omit<T, ToOmit>> {
+    class WithPresentSiteProvider extends React.Component<Omit<T, ToOmit>> {
+        render() {
+            return (
+                <PresentSiteProvider>
+                    {( site, refetch) => {
+                        const presentSite = site.siteView;
+                        return (
+                            <Component
+                                {...(this.props as T)}
+                                site={site}
+                                refetch={refetch}
+                                presentSiteView={presentSite}
+                            />
+                        );
+                    }}
+                </PresentSiteProvider>
+            );
+        }
+    }
+    return WithPresentSiteProvider;
+}
 
 
 interface UsePresentSiteProps {
@@ -320,12 +341,10 @@ interface UsePresentSiteProps {
 }
 
 export function usePresentSite(props?: UsePresentSiteProps) {
-    console.log("USE Present Site PROPS", props);
-    console.trace();
-  /*  const urlName = new URLSearchParams(window.location.search)
-        .getAll('sv')
-        .toString()
-        .toLowerCase();*/
+
+
+                console.log("USE Present Site PROPS", props);
+    //console.trace();
     const result = useQuery<PresentSiteProviderQuery>(QUERY, {
         variables: { id: props?.id, url: props?.url },
     });
@@ -333,16 +352,21 @@ export function usePresentSite(props?: UsePresentSiteProps) {
     const site = result?.data?.site;
     const presentSiteView = site?.siteView;
 
-      /*      .find(
-            siteview => siteview?.url?.toLowerCase() === urlName
-        ) || site?.siteView;*/
+            console.log("********* Present Site VIEW", presentSiteView);
 
     return { ...result, site, presentSiteView };
 }
 
-
 function PresentSiteProvider(props: PresentSiteProviderProps) {
-    const { data, loading, error, refetch } = usePresentSite(props);
+    const url =
+       // (this.props as any)?.history?.location?.search ||
+        window.location.search;
+    const urlName = new URLSearchParams(url)
+        .getAll('sv')
+        .toString();
+        //.toLowerCase();
+
+    const { data, loading, error, refetch } = usePresentSite({url: urlName});
     if (error) console.log(error);
     if (loading || error || !data) return null;
     return props.children(data.site!, refetch);
