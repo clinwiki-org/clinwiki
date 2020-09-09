@@ -396,7 +396,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               style={{ margin: '5px', color: 'gray' }}
             />
           )}
-        <div>{recordsTotal} results</div>
+      
         <div>
           {recordsTotal > MAX_WINDOW_SIZE
             ? `(showing first ${MAX_WINDOW_SIZE})`
