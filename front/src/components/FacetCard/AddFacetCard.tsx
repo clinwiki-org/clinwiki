@@ -25,7 +25,6 @@ interface AddFacetCardProps {
   showLogin: any;
   apolloClient?: any;
   aggNames?: any;
-  siteView?: any;
   values?: any;
   showAddFacet: boolean;
 }

@@ -30,7 +30,6 @@ interface SuggestedLabelsProps {
     string,
     WorkflowConfigFragment_suggestedLabelsConfig
   >;
-  siteView?: any;
   showAnimation:any;
 }
 
@@ -125,7 +124,6 @@ class SuggestedLabels extends React.PureComponent<
         values={items}
         onSelect={this.props.onSelect}
         refetch={refetch}
-        siteView={this.props.siteView}
         showAnimation={this.props.showAnimation}
         >
         {items.map(value => {
@@ -215,7 +213,6 @@ class SuggestedLabels extends React.PureComponent<
                 nctId={this.props.nctId}
                 refetch={refetch}
                 aggNames={allCrowdAggs}
-                siteView={this.props.siteView}
                 allValues={aggs}
                 showAnimation={this.props.showAnimation}
               />

@@ -15,7 +15,6 @@ import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
 import QUERY from 'queries/WikiPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
-import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, {queryStringAll} from 'utils/UrlParamsProvider';
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
@@ -57,7 +56,6 @@ export default function WikiPageIsland(props: Props) {
   const [plainEditorText, setplainEditorText] = useState('')
   const [richEditorText, setRichEditorText] = useState('')
 
-  const { currentSiteView } = useSite();
   const user = useCurrentUser()?.data?.me;
   const params = useUrlParams()
   // TODO: This query should be pushed up as a fragment to the Page
