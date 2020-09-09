@@ -49,7 +49,7 @@ interface ReviewsPageProps {
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
   theme?: any;
-  }
+}
 
 const FRAGMENT = gql`
   fragment ReviewsPageFragment on Review {

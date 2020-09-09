@@ -43,7 +43,7 @@ import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 interface Props {
-  nctId?: string;
+  nctId: string;
 }
 
 const RatingsWrapper = styled.div`
@@ -213,7 +213,6 @@ export default function ReviewsIsland(props: Props) {
             return (
               <ReviewForm
                 theme={theme}
-                //@ts-ignore
                 nctId={nctId}
                 handleClose={handleCloseReview}
               />
