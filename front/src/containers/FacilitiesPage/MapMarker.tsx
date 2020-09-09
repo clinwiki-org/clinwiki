@@ -27,7 +27,7 @@ const MarkerCircle = styled.div`
   background-color: white;
   text-align: center;
   color: ${props => props.theme.mapSection.markerFontColor};
-  font-size: 21px;
+  font-size: 15px;
   font-weight: bold;
   padding: 0;
   cursor: pointer;
@@ -47,7 +47,7 @@ const WarningCircle = styled.div`
   background-color: white;
   text-align: center;
   color: #f6a202;
-  font-size: 21px;
+  font-size: 15px;
   font-weight: bold;
   padding: 0;
   cursor: pointer;
@@ -65,7 +65,7 @@ const HoverCircle = styled.div`
   background-color: white;
   text-align: center;
   color: ${props => props.theme.mapSection.markerBorderColor};
-  font-size: 21px;
+  font-size: 15px;
   font-weight: bold;
   padding: 0;
   cursor: pointer;
@@ -85,7 +85,7 @@ const WarningHoverCircle = styled.div`
   background-color: white;
   text-align: center;
   color: #ffcc00;
-  font-size: 21px;
+  font-size: 15px;
   font-weight: bold;
   padding: 0;
   cursor: pointer;
