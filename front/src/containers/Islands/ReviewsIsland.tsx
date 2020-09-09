@@ -92,6 +92,9 @@ export default function ReviewsIsland(props: Props) {
   const handleEditReview = (id: number) => {
     history.push(`${trimPath(match.url)}/${id}/edit${queryStringAll(params)}`);
   };
+  const handleCloseReview = () => {
+    history.push(`${trimPath(match.url)}${queryStringAll(params)}`);
+  };
   const handleDeleteReview = (
     deleteReview: DeleteMutationFn,
     id: number
@@ -212,6 +215,7 @@ export default function ReviewsIsland(props: Props) {
                 theme={theme}
                 //@ts-ignore
                 nctId={nctId}
+                handleClose={handleCloseReview}
               />
             );
           }}

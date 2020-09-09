@@ -49,7 +49,7 @@ interface ReviewsPageProps {
   nextLink?: string | null;
   metaData: SiteStudyBasicGenericSectionFragment;
   theme?: any;
-}
+  }
 
 const FRAGMENT = gql`
   fragment ReviewsPageFragment on Review {
@@ -290,6 +290,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                     <ReviewForm
                       theme={this.props.theme}
                       nctId={this.props.nctId}
+                      handleClose={()=>console.log('HI, this Page is No longer in use')}
                     />
                   );
                 }}
