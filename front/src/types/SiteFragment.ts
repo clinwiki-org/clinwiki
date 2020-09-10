@@ -154,6 +154,11 @@ export interface SiteFragment_siteView_search_results {
   buttons: SiteFragment_siteView_search_results_buttons;
 }
 
+export interface SiteFragment_siteView_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
+}
+
 export interface SiteFragment_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
   sortKind: SortKind;
@@ -364,6 +369,7 @@ export interface SiteFragment_siteView_search {
   template: string;
   autoSuggest: SiteFragment_siteView_search_autoSuggest;
   results: SiteFragment_siteView_search_results;
+  crumbs: SiteFragment_siteView_search_crumbs;
   presearch: SiteFragment_siteView_search_presearch;
   sortables: string[];
   fields: string[];
@@ -510,6 +516,11 @@ export interface SiteFragment_siteViews_search_results {
   __typename: "SiteResultsSection";
   type: string;
   buttons: SiteFragment_siteViews_search_results_buttons;
+}
+
+export interface SiteFragment_siteViews_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
 }
 
 export interface SiteFragment_siteViews_search_presearch_aggs_fields_order {
@@ -722,6 +733,7 @@ export interface SiteFragment_siteViews_search {
   template: string;
   autoSuggest: SiteFragment_siteViews_search_autoSuggest;
   results: SiteFragment_siteViews_search_results;
+  crumbs: SiteFragment_siteViews_search_crumbs;
   presearch: SiteFragment_siteViews_search_presearch;
   sortables: string[];
   fields: string[];
