@@ -21,6 +21,9 @@ label {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   line-height: 1.5em;
 }
+.hr {
+  background: ${(props:any) => props.theme.crumbs.crumbBackground};
+}
 .btn, button, .-btn{
   border: 0px;
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
