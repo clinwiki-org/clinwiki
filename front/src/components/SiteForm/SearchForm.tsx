@@ -847,7 +847,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </MenuItem>
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'table2',
                     view,
                     'set:search.results.type'
@@ -857,7 +857,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </MenuItem>
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'masonry',
                     view,
                     'set:search.results.type'
@@ -867,7 +867,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </MenuItem>
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'list',
                     view,
                     'set:search.results.type'
