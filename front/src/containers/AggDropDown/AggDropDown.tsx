@@ -26,7 +26,7 @@ import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
 import './AggDropDownStyle.css';
-import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import SortKind from './SortKind';
 import BucketsPanel from './BucketsPanel';
 import Filter from './Filter';
@@ -134,8 +134,8 @@ interface AggDropDownProps {
   returnAll?: boolean;
   resetSelectAll?: () => void;
   client: ApolloClient<any>;
-  site: SiteFragment;
-  presentSiteView: SiteFragment_siteView;
+  site: PresentSiteFragment;
+  presentSiteView: PresentSiteFragment_siteView;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {

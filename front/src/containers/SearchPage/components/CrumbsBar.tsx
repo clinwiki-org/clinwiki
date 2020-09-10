@@ -20,7 +20,7 @@ import { BeatLoader } from 'react-spinners';
 import CurrentUser from 'containers/CurrentUser';
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
-import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
@@ -124,9 +124,8 @@ interface CrumbsBarProps {
   update: { page: (n: number) => void };
   onReset: () => void;
   onClear: () => void;
-  data: SiteFragment;
   siteViewUrl?: string;
-  currentSiteView: SiteFragment_siteView;
+  presentSiteView: PresentSiteFragment_siteView;
   totalResults: number;
   searchHash: string;
   theme: Theme;
@@ -246,9 +245,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   getCrowdAggAutoSuggest = () => {
     let crowdAggFields = displayFields(
-      this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.kind,
-      this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.values,
-      this.props.currentSiteView.search.autoSuggest.crowdAggs.fields
+      this.props.presentSiteView.search.autoSuggest.crowdAggs.selected.kind,
+      this.props.presentSiteView.search.autoSuggest.crowdAggs.selected.values,
+      this.props.presentSiteView.search.autoSuggest.crowdAggs.fields
     );
     let fieldsToReturn: any[] = [];
     crowdAggFields.map(field => {
@@ -259,9 +258,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   getAutoSuggestFields = () => {
     let aggFields = displayFields(
-      this.props.currentSiteView.search.autoSuggest.aggs.selected.kind,
-      this.props.currentSiteView.search.autoSuggest.aggs.selected.values,
-      this.props.currentSiteView.search.autoSuggest.aggs.fields
+      this.props.presentSiteView.search.autoSuggest.aggs.selected.kind,
+      this.props.presentSiteView.search.autoSuggest.aggs.selected.values,
+      this.props.presentSiteView.search.autoSuggest.aggs.fields
     );
     let fieldsToReturn: any[] = [];
     aggFields.map(field => {
@@ -272,7 +271,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
-    const { searchParams, currentSiteView } = this.props;
+    const { searchParams, presentSiteView } = this.props;
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
@@ -289,7 +288,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       crowdAggFilters: searchParams.crowdAggFilters,
       page: 0,
       pageSize: 5,
-      url: currentSiteView.url,
+      url: presentSiteView.url,
       q: {
         children: newParams,
         key: 'AND',
@@ -500,12 +499,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
-    const { data, siteViewUrl } = this.props;
-    let thisSiteView =
-      data.siteViews.find(siteview => siteview.url === siteViewUrl) ||
-      data.siteView;
-    let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
-    let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
+    const { presentSiteView } = this.props;
+    let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
+    let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;
     return (
       <ThemedCrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -538,7 +534,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             onClick={() =>
                               this.props.onBulkUpdate(
                                 this.props.searchHash,
-                                this.props.currentSiteView.url || 'default'
+                                this.props.presentSiteView.url || 'default'
                               )
                             }>
                             Bulk Update <FontAwesome name="truck" />
@@ -550,7 +546,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                       <Row>
                         <Col xs={12} md={12} style={{ textAlign: 'right' }}>
                           <ExportToCsvComponent
-                            siteView={this.props.currentSiteView}
+                            siteView={this.props.presentSiteView}
                             searchHash={this.props.searchHash}
                           />
                         </Col>
@@ -632,7 +628,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             ? Array.from(
                                 this.mkCrumbs(
                                   this.props.searchParams,
-                                  thisSiteView
+                                  presentSiteView
                                 )
                               )
                             : null}{' '}

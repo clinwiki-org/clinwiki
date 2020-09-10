@@ -5,16 +5,16 @@ import {
 import { gql } from 'apollo-boost';
 import {
     PresentSiteProviderQuery,
+    PresentSiteProviderQueryVariables
 } from 'types/PresentSiteProviderQuery';
-import { SiteFragment } from 'types/SiteFragment';
-
+import { PresentSiteFragment } from 'types/PresentSiteFragment';
 
 
 interface PresentSiteProviderProps {
     //usePresentSite?(id?: number, url?: string): any;
     id?: number;
     url?: string;
-    children: (site: SiteFragment, refetch: any) => JSX.Element | null;
+    children: (site: PresentSiteFragment, refetch: any) => JSX.Element | null;
 }
 
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
@@ -256,7 +256,7 @@ export const SITE_VIEW_FRAGMENT = gql`
     ${SITE_STUDY_PAGE_FRAGMENT}
 `;
 
-/*export const PAGE_VIEW_FRAGMENT = gql`
+export const PAGE_VIEW_FRAGMENT = gql`
     fragment PageViewFragment on PageView {
         id
         url
@@ -265,10 +265,10 @@ export const SITE_VIEW_FRAGMENT = gql`
         template
         pageType
     }
-`;*/
+`;
 
-export const SITE_FRAGMENT = gql`
-    fragment SiteFragment on Site {
+export const PRESENT_SITE_FRAGMENT = gql`
+    fragment PresentSiteFragment on Site {
         id
         editors {
             email
@@ -285,26 +285,23 @@ export const SITE_FRAGMENT = gql`
         siteView(url: $url) {
             ...SiteViewFragment
         }
-#        pageView{
-#            ...PageViewFragment
-#        }
+        pageView{
+           ...PageViewFragment
+        }
     }
 
     ${SITE_VIEW_FRAGMENT}
-
-    
-    
-    
+    ${PAGE_VIEW_FRAGMENT}
 `;
 
 const QUERY = gql`
     query PresentSiteProviderQuery($id: Int, $url: String) {
         site(id: $id) {
-            ...SiteFragment
+            ...PresentSiteFragment
         }
     }
 
-    ${SITE_FRAGMENT}
+    ${PRESENT_SITE_FRAGMENT}
 `;
 
 
@@ -335,13 +332,29 @@ export function withPresentSite2<T>(
 }
 
 
+/*  // Was being used in SearchPage
+export const withPresentSite = Component => props => (
+    <PresentSiteProvider>
+        {(site, refetch) => {
+            const presentSite = site.siteView;
+            return (
+                <Component
+                    {...props}
+                    site={site}
+                    refetch={refetch}
+                    presentSiteView={presentSite}
+                />
+            );
+        }}
+    </PresentSiteProvider>
+);*/
+
 interface UsePresentSiteProps {
     id?: number;
     url?: string;
 }
 
 export function usePresentSite(props?: UsePresentSiteProps) {
-
 
                 console.log("USE Present Site PROPS", props);
     //console.trace();
