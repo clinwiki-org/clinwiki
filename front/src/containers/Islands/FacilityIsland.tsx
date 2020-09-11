@@ -36,14 +36,10 @@ const ScrollCardContainer = styled.div`
   overflow-y: scroll;
   padding-right: 15px;
   margin-bottom: 15px;
-  @media (max-width: 450px){
-    width:100%;
-    height:27vh;
-  }
   @media (max-width: 991px) {
     width: 100%;
     margin: 10px;
-    max-height: 33vh;
+    max-height: 30vh;
   }
 `;
 
@@ -52,13 +48,9 @@ const MapContainer = styled.div`
   width: 55%;
   padding-bottom: 20px;
   margin-left: 3px;
-  @media (max-width: 450px){
-    width:100%;
-    height:27vh;
-  }
   @media (max-width: 991px) {
     width: 100%;
-    max-height: 33vh;
+    max-height: 30vh;
   }
 `;
 const MAPOPTIONS = {
