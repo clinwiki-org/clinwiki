@@ -356,7 +356,7 @@ interface UsePresentSiteProps {
 
 export function usePresentSite(props?: UsePresentSiteProps) {
 
-                console.log("USE Present Site PROPS", props);
+               // console.log("USE Present Site PROPS", props);
     //console.trace();
     const result = useQuery<PresentSiteProviderQuery>(QUERY, {
         variables: { id: props?.id, url: props?.url },
@@ -365,7 +365,7 @@ export function usePresentSite(props?: UsePresentSiteProps) {
     const site = result?.data?.site;
     const presentSiteView = site?.siteView;
 
-            console.log("********* Present Site VIEW", presentSiteView);
+            //console.log("********* Present Site VIEW", presentSiteView);
 
     return { ...result, site, presentSiteView };
 }
