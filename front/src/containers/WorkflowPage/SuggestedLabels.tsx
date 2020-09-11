@@ -21,6 +21,7 @@ import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import FacetCard from 'components/FacetCard/FacetCard';
 import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
 import { BeatLoader } from 'react-spinners';
+import Error from 'components/Error';
 
 interface SuggestedLabelsProps {
   nctId: string;
@@ -157,11 +158,10 @@ class SuggestedLabels extends React.PureComponent<
         }}>
         {({ data, loading, error, refetch }) => {
           
-          if (loading || error || !data){
-            return(
-              <BeatLoader/>
-            )
-          } 
+          if (loading) return <BeatLoader />;
+          if (error) return <Error message={error.message} />;
+          if (!data) return null;
+
           let meta: Record<string, string> = {};
           try {
             meta = JSON.parse(data.study?.wikiPage?.meta || '{}');
