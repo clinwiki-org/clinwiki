@@ -4,17 +4,18 @@ import { PulseLoader } from 'react-spinners';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
 import { SiteFragment_siteView } from 'types/SiteFragment';
-import { List } from 'react-virtualized';
+import { InfiniteLoader, List, WindowScroller } from 'react-virtualized';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface ListCardsProps {
   data: SearchPageSearchQuery_search_studies[];
   loading: boolean;
   template: string;
-  height: number;
+  // height: number;
   width: number;
   theme: Theme;
   // columns:any;
+  handleLoadMore: any;
 }
 
 interface ListCardsState {
@@ -42,7 +43,24 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
     background: '#ffffff',
     height: '100%',
   };
+  isRowLoaded = ({ index }) => {
+    const listItems = this.props.data;
+    //  const listItems = [];
 
+    console.log(index, !!listItems[index])
+    return !!listItems[index];
+  }
+
+  loadMoreRows = ({ startIndex, stopIndex }) => {
+    // console.log("Load more rows now", startIndex, stopIndex)
+    if (stopIndex >= this.props.data.length) {
+      console.log("Fetch NOW")
+      return (
+        this.props.handleLoadMore()
+      )
+    }
+
+  }
   rowRenderer = ({
     key, // Unique key within array of rows
     index, // Index of row within collection
@@ -56,7 +74,7 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
       <div
         key={key}
         style={style}
-       >
+      >
         <MailMergeView
           style={this.cardStyle}
           template={this.props.template}
@@ -70,15 +88,35 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
     if (this.props.data) {
       const listItems = this.props.data;
       let rowHeight = 150;
-      let height = rowHeight * listItems.length;
+      const totalHeight = rowHeight * listItems.length;
       return (
-        <List
-          width={this.props.width}
-          height={height}
-          rowCount={listItems.length}
-          rowHeight={rowHeight}
-          rowRenderer={this.rowRenderer}
-        />
+
+        <InfiniteLoader
+          isRowLoaded={this.isRowLoaded}
+          loadMoreRows={this.loadMoreRows}
+          rowCount={15050}
+        >
+          {({ onRowsRendered, registerChild }) => (
+
+            <WindowScroller>
+              {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                <List
+                  height={height * 0.8}
+                  onRowsRendered={onRowsRendered}
+                  ref={registerChild}
+                  rowCount={150}
+                  rowHeight={rowHeight}
+                  rowRenderer={this.rowRenderer}
+                  width={this.props.width}
+                // onScroll={onChildScroll}
+                // isScrolling={isScrolling}
+                // scrollTop={scrollTop}
+
+                />
+              )}
+            </WindowScroller>
+          )}
+        </InfiniteLoader>
       );
     }
   }

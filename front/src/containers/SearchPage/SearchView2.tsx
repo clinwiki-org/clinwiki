@@ -465,6 +465,17 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         return null;
     }
   };
+  handleLoadMore=()=>{
+    const { page, pageSize, sorts } = this.props.params;
+    // console.log("470", page, pageSize)
+    // pipe(changePage, this.props.onUpdateParams)(page + 1);
+    pipe(changePage, this.paginationHelper)(page + 1);
+
+  }
+  paginationHelper=(params)=>{
+    console.log("In Pagination Helper")
+    console.log(params)
+  }
   mobileAndTabletcheck = () => {
     let check = false;
     ((a: string) => {
@@ -616,8 +627,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 data={data}
                 loading={loading}
                 template={template}
-                height={height}
                 width={width}
+                handleLoadMore={this.handleLoadMore}
               />
             )}
           </AutoSizer>
