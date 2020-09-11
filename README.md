@@ -17,6 +17,8 @@ You can use one of the following options to start ClinWiki on your own system:
 
 1. Create a `.env` file in the project's root directory (use `.example.env` for inspiration)
 
+    > Reach out to @williamhoos for AACT database URL and credentials for other third party services
+
 1. Install Docker
 
     - Windows and Mac users install [Docker Desktop](https://www.docker.com/products/docker-desktop)
@@ -169,16 +171,7 @@ mode.
 
 ### Run Locally in Production Mode
 
-1. Create a .env file in root with the following contents
-
-    ```bash
-    AACT_DATABASE_URL=postgres://$AACT_USER:$AACT_PASS@aact-db.ctti-clinicaltrials.org:5432/aact
-    MAILGUN_API_KEY=""
-    MAILGUN_DOMAIN="localhost:3000"
-    CW_HOST="localhost:3000"
-    CLINWIKI_DOMAIN="localhost:3000"
-    SECRET_KEY_BASE="lkdfjgldgjkdflgjlkdfjgldfkjg"
-    ```
+1. Create a `.env` file in the project's root directory (use `.example.env` for inspiration)
 
 1. Precompile assets
 

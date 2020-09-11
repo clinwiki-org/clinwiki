@@ -68,8 +68,8 @@ services:
       - ./compose/entrypoint.sh:/usr/bin/entrypoint.sh
       - node_modules:/clinwiki/front/node_modules
     environment:
-      - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
-      - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
+      - DATABASE_URL=$DATABASE_URL
+      - AACT_DATABASE_URL=$AACT_DATABASE_URL
       - REDIS_URL=redis://redis:6379/0
       - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
       - CW_MODE=${CW_MODE}
@@ -86,8 +86,8 @@ services:
     volumes:
       - .:/clinwiki
     environment:
-      - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
-      - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
+      - DATABASE_URL=$DATABASE_URL
+      - AACT_DATABASE_URL=$AACT_DATABASE_URL
       - REDIS_URL=redis://redis:6379/0
       - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
       - CW_MODE=WORKER
