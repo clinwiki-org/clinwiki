@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
+import withTheme from 'containers/ThemeProvider/ThemeProvider';
 /* eslint no-unused-expressions: 0 */
 
 export default withTheme(createGlobalStyle`

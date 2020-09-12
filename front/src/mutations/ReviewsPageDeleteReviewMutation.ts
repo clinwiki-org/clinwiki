@@ -1,5 +1,4 @@
 import { gql } from 'apollo-boost';
-import { WikiPageEditFragment } from 'components/Edits';
 import { MutationComponentOptions, Mutation, MutationFunction } from 'react-apollo';
 import { ReviewsPageDeleteReviewMutation, ReviewsPageDeleteReviewMutationVariables } from 'types/ReviewsPageDeleteReviewMutation';
 

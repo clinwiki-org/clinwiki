@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { gql } from 'apollo-boost';
 import { Query, QueryComponentOptions } from 'react-apollo';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';

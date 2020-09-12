@@ -1,12 +1,6 @@
 import * as React from 'react';
-import { Col } from 'react-bootstrap';
-import { PulseLoader } from 'react-spinners';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
-import { MailMergeView } from 'components/MailMerge';
-import { SiteFragment_siteView } from 'types/SiteFragment';
-import { Column, Table, SortDirection, WindowScroller } from 'react-virtualized';
-import _ from 'lodash';
-import styled from 'styled-components';
+import { Column, Table, WindowScroller } from 'react-virtualized';
 import { camelCase, sentanceCase } from 'utils/helpers';
 
 interface TableRVProps {

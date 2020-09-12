@@ -1,29 +1,14 @@
 import * as React from 'react';
 import * as Similarity from './nlp_similarity';
-import * as Distance from './distance';
 import List from './SearchTermList';
 import {
   Button,
-  Input,
-  Checkbox,
-  Col,
-  Row,
-  Container,
-  ReactTable,
-  ListGroup,
   Table,
-  FormControl,
-  Form,
-  FormGroup,
-  ButtonGroup,
-  ControlLabel,
 } from 'react-bootstrap';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import * as Labels from './SuggestedLabels';
 import styled from 'styled-components';
 import './WorkStyle.css';
-import { runInThisContext } from 'vm';
 const SEARCH_QUERY = gql`
   query AllQuery($nctId: String!) {
     study(nctId: $nctId) {

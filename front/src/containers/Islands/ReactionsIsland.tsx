@@ -1,5 +1,5 @@
 
-import React, { useContext } from 'react';
+import React from 'react';
 import { Panel } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ReactionsIslandQuery } from 'types/ReactionsIslandQuery';

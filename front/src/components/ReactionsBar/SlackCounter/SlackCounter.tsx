@@ -1,10 +1,8 @@
 import React from 'react'
-// import reactCSS, { hover } from 'reactcss'
-import _ from 'lodash'
 import styled from 'styled-components';
 import SlackCounterGroup from './SlackCounterGroup'
 import { find, propEq } from 'ramda';
-import { Icon, InlineIcon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 import smilePlus from '@iconify/icons-fe/smile-plus';
 import DeleteReactionMutation, {
 } from 'mutations/DeleteReactionMutation';

@@ -1,18 +1,17 @@
-import React, { useContext } from 'react';
+
 import {
   DELETE_REVIEW_MUTATION,
   DeleteMutationFn,
 } from 'mutations/ReviewsPageDeleteReviewMutation';
 
 import styled from 'styled-components';
-import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/ReviewPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
 import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams,{queryStringAll} from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
-import { Switch, Route, match } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import ReviewForm from 'containers/ReviewForm';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
@@ -24,24 +23,12 @@ import {
 import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents/index';
 import { Row, Col, Table, Label } from 'react-bootstrap';
-import { UserFragment } from 'types/UserFragment';
-import { CurrentUserQuery_me } from 'types/CurrentUserQuery'
 import ReactStars from 'react-stars';
-import StudySummary from 'components/StudySummary';
 import {
   ReviewPageQuery,
-  ReviewPageQueryVariables,
 } from 'types/ReviewPageQuery';
-import {
-  ReviewsPageDeleteReviewMutation,
-  ReviewsPageDeleteReviewMutationVariables,
-} from 'types/ReviewsPageDeleteReviewMutation';
-import { ReviewsPageStudyFragment } from 'types/ReviewsPageStudyFragment';
 import RichTextEditor, { EditorValue } from 'react-rte';
-import { reject, propEq, over, lensPath, keys } from 'ramda';
-import { dataIdFromObject } from 'configureApollo';
-import CurrentUser from 'containers/CurrentUser';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { keys } from 'ramda';
 interface Props {
   nctId: string;
 }

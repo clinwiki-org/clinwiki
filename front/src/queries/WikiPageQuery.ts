@@ -1,5 +1,4 @@
 import gql from 'graphql-tag'
-import Edits, { WikiPageEditFragment } from 'components/Edits';
 
 export const FRAGMENT = gql`
   fragment WikiPageFragment on WikiPage {

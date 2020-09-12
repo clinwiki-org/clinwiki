@@ -1,19 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import LoginModal from '../LoginModal';
 import SlackCounter from './SlackCounter/SlackCounter';
 import GithubSelector from './GithubSelector/GithubSelector';
-import CreateReactionMutation, {
-  CREATE_REACTION,
-} from 'mutations/CreateReactionMutation';
 import { find, propEq } from 'ramda';
 import { useQuery, useMutation } from 'react-apollo';
-import { Query } from 'react-apollo';
-import { gql } from 'apollo-boost';
-import StudyReactions from '../../queries/StudyReaction';
 import QUERY from 'queries/StudyPageQuery';
-import REACTION_KINDS from 'queries/ReactionKinds';
-import { ReactionKinds } from 'types/ReactionKinds';
 import { StudyReactions as StudyReactionsQueryType } from 'types/StudyReactions';
 import REACTIONS_QUERY from '../../queries/StudyReaction';
 

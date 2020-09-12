@@ -1,16 +1,13 @@
 import * as React from 'react';
 import { SiteFragment } from 'types/SiteFragment';
-import { useQuery } from 'react-apollo';
 import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
 import ThemedButton from 'components/StyledComponents/index';
 import { useCreatePageView, usePageViews } from 'queries/PageViewQueries';
 import {
-  PageViewsQuery,
   PageViewsQuery_site_pageViews,
 } from 'types/PageViewsQuery';
-import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import PageForm from './PageForm';
 

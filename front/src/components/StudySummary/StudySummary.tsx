@@ -5,8 +5,6 @@ import { Helmet } from 'react-helmet';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
-import { prop } from 'ramda';
-import { sentanceCaseFromCamelCase } from 'utils/helpers';
 import { MailMergeView } from 'components/MailMerge';
 
 interface StudySummaryProps {

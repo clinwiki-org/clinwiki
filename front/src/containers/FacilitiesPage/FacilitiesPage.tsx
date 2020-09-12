@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Query, QueryComponentOptions } from 'react-apollo';
-import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
 import {
@@ -10,7 +9,6 @@ import {
   FacilitiesPageQuery_study_facilities_contacts,
 } from 'types/FacilitiesPageQuery';
 import { FacilityFragment } from 'types/FacilityFragment';
-import StudySummary from 'components/StudySummary';
 import GoogleMapReact from 'google-map-react';
 import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';

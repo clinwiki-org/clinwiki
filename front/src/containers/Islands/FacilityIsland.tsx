@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/FacilitiesPageQuery';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 
 import {
   FacilitiesPageQuery,
-  FacilitiesPageQueryVariables,
   FacilitiesPageQuery_study_facilities_contacts,
 } from 'types/FacilitiesPageQuery';
 import { FacilityFragment } from 'types/FacilityFragment';

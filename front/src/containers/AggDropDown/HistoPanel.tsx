@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import { head, last, propOr, defaultTo, equals, isEmpty } from 'ramda';
+import { isEmpty } from 'ramda';
 import { orderBy, debounce } from 'lodash';
 import HistoSlider from 'histoslider';
 import styled from 'styled-components';
@@ -9,7 +9,6 @@ import { BeatLoader } from 'react-spinners';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
-import UpdateWorkflowsViewMutation from 'mutations/UpdateWorflowsViewMutation';
 
 interface HistoPanelProps {
   isOpen: boolean;

@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
-import { trimPath } from 'utils/helpers';
+
+import { useHistory } from 'react-router-dom';
 import ThemedButton from 'components/StyledComponents';
 import useUrlParams,{ queryStringAll } from 'utils/UrlParamsProvider';
 

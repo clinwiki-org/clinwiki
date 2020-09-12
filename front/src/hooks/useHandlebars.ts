@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { useMountEffect } from "./useMountEffect";
 import { registerHandlebarsHelpers } from "components/MailMerge/MailMergeHelpers";
-import SiteProvider from 'containers/SiteProvider';
 import { useContext } from 'react';
 
 // export default function useHandlebars() {

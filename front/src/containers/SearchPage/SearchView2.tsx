@@ -6,7 +6,7 @@ import ThemedButton from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { PulseLoader } from 'react-spinners';
-import { Col, ButtonGroup, Button, MenuItem, DropdownButton } from 'react-bootstrap';
+import { Col, ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput } from 'types/globalTypes';
@@ -45,11 +45,6 @@ import withTheme from 'containers/ThemeProvider';
 import TableRV from './components/TableRV';
 import {
   AutoSizer,
-  List,
-  CellMeasurer,
-  CellMeasurerCache,
-  createMasonryCellPositioner,
-  Masonry,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
 import useUrlParams from "../../utils/UrlParamsProvider";

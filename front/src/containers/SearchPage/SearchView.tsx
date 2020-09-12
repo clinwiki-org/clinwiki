@@ -6,7 +6,7 @@ import ThemedButton from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { PulseLoader } from 'react-spinners';
-import { Col, ButtonGroup, Button } from 'react-bootstrap';
+import { Col, ButtonGroup } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput } from 'types/globalTypes';
@@ -23,7 +23,6 @@ import {
   fromPairs,
 } from 'ramda';
 import { camelCase, snakeCase, capitalize } from 'utils/helpers';
-import { gql } from 'apollo-boost';
 import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,

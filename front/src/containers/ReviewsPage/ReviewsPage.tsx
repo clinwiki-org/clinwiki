@@ -11,7 +11,6 @@ import {
   MutationComponentOptions,
 } from 'react-apollo';
 import ReactStars from 'react-stars';
-import StudySummary from 'components/StudySummary';
 import ThemedButton from 'components/StyledComponents/index';
 import ReviewForm from 'containers/ReviewForm';
 import { trimPath } from 'utils/helpers';

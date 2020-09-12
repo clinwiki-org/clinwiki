@@ -2,16 +2,9 @@ import * as React from 'react';
 import styled from 'styled-components';
 import ReactStars from 'react-stars';
 import ThemedButton from 'components/StyledComponents';
-import { getStarColor } from '../../../utils/auth'
-import LoginModal from '../../../../src/components/LoginModal'
-import SlackCounter from '../../../components/ReactionsBar/SlackCounter/SlackCounter'
-import GithubSelector from '../../../components/ReactionsBar/GithubSelector/GithubSelector'
 import ReactionsBar from '../../../components/ReactionsBar'
 import { StudyPageQuery } from 'types/StudyPageQuery';
-import CreateReactionMutation, {
-} from 'mutations/CreateReactionMutation';
-import { find, propEq } from 'ramda';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import REACTION_KINDS from 'queries/ReactionKinds';
 import { ReactionKinds } from 'types/ReactionKinds';
 

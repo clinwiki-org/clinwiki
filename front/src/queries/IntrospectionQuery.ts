@@ -1,3 +1,3 @@
-import { getIntrospectionQuery, IntrospectionSchema } from 'graphql';
+import { getIntrospectionQuery } from 'graphql';
 
 export default getIntrospectionQuery();

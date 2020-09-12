@@ -9,7 +9,6 @@ import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
 import StudyPage from 'containers/StudyPage';
-import SearchStudyPage from 'containers/SearchStudyPage';
 import InterventionPage from 'containers/InterventionPage';
 import {
   SignInPage,

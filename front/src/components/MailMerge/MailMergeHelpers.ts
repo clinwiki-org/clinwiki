@@ -1,6 +1,5 @@
 import Handlebars from 'handlebars';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
-import { link } from 'fs';
 
 export function registerHandlebarsHelpers() {
   Handlebars.registerHelper('stars', (value: number) => {

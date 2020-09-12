@@ -5,14 +5,10 @@ import { Row, Col } from 'react-bootstrap';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import {
-  split,
   pipe,
-  findIndex,
   propEq,
   sortBy,
   prop,
-  map,
-  isEmpty,
   reject,
   find,
 } from 'ramda';
