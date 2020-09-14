@@ -4,6 +4,10 @@ const aggToField = (val: string, expectedVal?: string): string => {
   return propOr(val, val, {
     // average_rating: 'average rating',
     average_rating: expectedVal === val ? 'average rating' : expectedVal,
+
+    study_views_count: expectedVal === val ? 'Study Views' : expectedVal,
+    nct_id: expectedVal === val ? 'nct id' : expectedVal,
+    brief_title: expectedVal === val ? 'brief title' : expectedVal,
     design_outcome_measures: expectedVal === val ? 'design outcome measures' : expectedVal,
     results_first_submitted_date: expectedVal === val ? 'results first submitted date' : expectedVal,
     last_changed_date: expectedVal === val ? 'last changed date' : expectedVal,
@@ -24,6 +28,7 @@ const aggToField = (val: string, expectedVal?: string): string => {
     last_update_posted_date: expectedVal === val ? 'last update posted date' : expectedVal,
     completion_date: expectedVal === val ? 'completion date' : expectedVal,
     phase: expectedVal === val ? 'phase' : expectedVal,
+    conditions: expectedVal === val ? 'condtion' : expectedVal,
     browse_condition_mesh_terms: expectedVal === val ? 'mesh term' : expectedVal,
     browse_interventions_mesh_terms:
       expectedVal === val ? 'browse intervention mesh term' : expectedVal,

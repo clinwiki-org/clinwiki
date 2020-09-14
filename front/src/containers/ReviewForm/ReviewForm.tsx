@@ -14,7 +14,7 @@ import {
 } from 'ramda';
 import ReactStars from 'react-stars';
 import * as FontAwesome from 'react-fontawesome';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import { gql } from 'apollo-boost';
 import ThemedButton from 'components/StyledComponents/index';
 import {
@@ -33,6 +33,7 @@ interface ReviewFormProps {
   review?: ReviewsPageFragment;
   afterSave?: (review: ReviewFragment) => void;
   theme?: any;
+  handleClose: ()=>void;
 }
 
 interface ReviewFormState {
@@ -292,11 +293,18 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                 this.submitReview = this.handleSubmitReview(upsertReview);
                 if (this.props.hideSaveButton) return null;
                 return (
+                <>
                   <ThemedButton
-                    style={{ marginTop: 10 }}
+                    style={{ margin: 10 }}
                     onClick={this.handleSubmitReview(upsertReview)}>
                     Submit
                   </ThemedButton>
+                  <ThemedButton
+                    style={{ margin: 10 }}
+                    onClick={()=>this.props.handleClose()}>
+                    Cancel
+                  </ThemedButton>
+                </>
                 );
               }}
             </ReviewFormMutationComponent>

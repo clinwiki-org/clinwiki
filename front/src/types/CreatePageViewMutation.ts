@@ -14,6 +14,7 @@ export interface CreatePageViewMutation_createPageView_pageView {
   template: string;
   title: string;
   url: string;
+  default: boolean;
 }
 
 export interface CreatePageViewMutation_createPageView {

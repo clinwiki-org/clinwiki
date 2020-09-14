@@ -7,7 +7,7 @@ module Types
       argument :id, String, "When id is null returns first edge in the search results.", required: false
     end
 
-    field :studies, [StudyType], "A set of matching studies", null: false
+    field :studies, [ElasticStudyType], "A set of matching studies", null: false
 
     def study_edge(id:)
       search_params = context[:search_params]

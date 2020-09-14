@@ -71,6 +71,7 @@ const MainContainer = styled(Col)`
   padding-top: 20px;
   padding-bottom: 20px;
   flex: 1;
+  overflow:scroll;
   @media (max-width: 768px) {
     flex-direction: column;
   }

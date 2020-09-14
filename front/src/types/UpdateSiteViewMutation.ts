@@ -138,6 +138,11 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_results {
   buttons: UpdateSiteViewMutation_updateSiteView_siteView_search_results_buttons;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
   sortKind: SortKind;
@@ -348,7 +353,9 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search {
   template: string;
   autoSuggest: UpdateSiteViewMutation_updateSiteView_siteView_search_autoSuggest;
   results: UpdateSiteViewMutation_updateSiteView_siteView_search_results;
+  crumbs: UpdateSiteViewMutation_updateSiteView_siteView_search_crumbs;
   presearch: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch;
+  sortables: string[];
   fields: string[];
   config: UpdateSiteViewMutation_updateSiteView_siteView_search_config;
   aggs: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs;

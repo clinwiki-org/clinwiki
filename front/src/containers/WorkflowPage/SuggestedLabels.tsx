@@ -20,6 +20,8 @@ import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 // import { WorkSearch } from './WorkSearch';
 import FacetCard from 'components/FacetCard/FacetCard';
 import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
+import { BeatLoader } from 'react-spinners';
+import Error from 'components/Error';
 
 interface SuggestedLabelsProps {
   nctId: string;
@@ -35,8 +37,8 @@ interface SuggestedLabelsProps {
 }
 
 const QUERY = gql`
-  query SuggestedLabelsQuery($nctId: String!) {
-    crowdAggFacets {
+  query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
+    crowdAggFacets(crowdBucketsWanted: $crowdBucketsWanted) { 
       aggs {
         name
         buckets {
@@ -152,9 +154,14 @@ class SuggestedLabels extends React.PureComponent<
         query={QUERY}
         variables={{
           nctId: this.props.nctId,
+          crowdBucketsWanted: this.props.allowedSuggestedLabels
         }}>
         {({ data, loading, error, refetch }) => {
-          if (loading || error || !data) return null;
+          
+          if (loading) return <BeatLoader />;
+          if (error) return <Error message={error.message} />;
+          if (!data) return null;
+
           let meta: Record<string, string> = {};
           try {
             meta = JSON.parse(data.study?.wikiPage?.meta || '{}');

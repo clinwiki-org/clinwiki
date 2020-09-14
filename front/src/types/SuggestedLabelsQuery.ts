@@ -47,4 +47,5 @@ export interface SuggestedLabelsQuery {
 
 export interface SuggestedLabelsQueryVariables {
   nctId: string;
+  crowdBucketsWanted?: string[] | null;
 }

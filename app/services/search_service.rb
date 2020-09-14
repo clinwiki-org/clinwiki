@@ -128,12 +128,14 @@ end
 class SearchService
   ENABLED_AGGS = %i[
     average_rating overall_status facility_states
+    conditions
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
     reactions.kind indexed_at last_update_posted_date
     last_changed_date  number_of_arms
+    study_views_count
     number_of_groups why_stopped results_first_submitted_date
     plan_to_share_ipd design_outcome_measures
   ].freeze
@@ -157,6 +159,7 @@ class SearchService
       studies: search_result.results,
       aggs: search_result.aggs,
     }
+    
   end
 
   def scroll
@@ -183,6 +186,7 @@ class SearchService
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
+    options[:load] = false
     options
   end
 
@@ -270,6 +274,7 @@ class SearchService
   def crowd_agg_facets(site:)
     params = self.params.deep_dup
     return {} if params.nil?
+  
 
     search_results = Study.search("*", aggs: [:front_matter_keys])
 
@@ -277,6 +282,9 @@ class SearchService
     keys = aggs[:front_matter_keys][:buckets]
       .map { |x| (x[:key]).to_s }
     facets = {}
+    if  self.params.dig(:crowd_buckets_wanted)
+      keys.select!{|key| self.params[:crowd_buckets_wanted]&.include?(key)}
+    end
     keys.each do |key|
       field_agg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
       field_agg.each do |name, agg|

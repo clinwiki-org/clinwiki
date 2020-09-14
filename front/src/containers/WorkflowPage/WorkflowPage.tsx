@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import { match } from 'react-router';
 import ReviewForm from 'containers/ReviewForm';
 import { History } from 'history';
@@ -129,6 +129,7 @@ class WorkflowPage extends React.Component<
           hideMeta={hideMeta}
           review={this.state.review || undefined}
           afterSave={this.handleReviewAfterSave}
+          handleClose={()=>console.log(`Hi, this page is no longer in use`)}
         />
       );
     }

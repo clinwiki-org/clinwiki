@@ -1,5 +1,6 @@
 STAR_FIELDS = [:average_rating].freeze
 RANGE_FIELDS = [:start_date,:"wiki_page_edits.created_at", :indexed_at, :last_update_posted_date, :last_changed_date,:results_first_submitted_date ].freeze
+NUMBER_RANGE_FIELDS = [:study_views_count].freeze
 
 DEFAULT_AGG_ORDER = {
   average_rating: {
@@ -263,7 +264,9 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           },
 
         },
-        breadCrumbs: {},
+        crumbs: {
+          search: true,
+        },
 
         aggs: {
           selected: {
@@ -281,6 +284,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
           fields: crowd_aggs,
         },
         fields: %w[nct_id average_rating brief_title overall_status start_date completion_date],
+        sortables: %w[nct_id average_rating brief_title overall_status start_date completion_date],
         template:"\# {{briefTitle}}\n**{{nctId}}**  \nStatus: {{overallStatus}}  "
       },
     }
@@ -307,7 +311,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def default_agg_param_display(name)
     return "STAR" if STAR_FIELDS.include?(name.to_sym)
     return "DATE_RANGE" if RANGE_FIELDS.include?(name.to_sym)
-    return "NUMBER_RANGE" if RANGE_FIELDS.include?(name.to_sym)
+    return "NUMBER_RANGE" if NUMBER_RANGE_FIELDS.include?(name.to_sym)
     return "RANGE" if RANGE_FIELDS.include?(name.to_sym)
 
     "STRING"

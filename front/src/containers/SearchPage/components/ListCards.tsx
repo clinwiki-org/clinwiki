@@ -9,7 +9,6 @@ import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface ListCardsProps {
   data: SearchPageSearchQuery_search_studies[];
-  onPress: Function;
   loading: boolean;
   template: string;
   height: number;
@@ -41,7 +40,6 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
     borderStyle: 'solid',
     borderRadius: '5px',
     background: '#ffffff',
-    cursor: 'pointer',
     height: '100%',
   };
 
@@ -58,7 +56,7 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
       <div
         key={key}
         style={style}
-        onClick={() => this.props.onPress(listItems[index])}>
+       >
         <MailMergeView
           style={this.cardStyle}
           template={this.props.template}

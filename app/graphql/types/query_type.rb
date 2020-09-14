@@ -33,7 +33,7 @@ module Types
     end
 
     field :crowd_agg_facets, SearchResultSetType, null: false do
-      # argument :params, type: SearchInputType, required: false
+       argument :crowd_buckets_wanted, [String], required: false
     end
     field :health, HealthType, null: false
     field :site, SiteType, "If id is missing, returns current site. If id == 0, returns default site", null: true do
@@ -77,7 +77,10 @@ module Types
     }.freeze
 
     def search(search_hash: nil, params: nil)
+
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
+      link = link = ShortLink.from_long( context[:search_params])
+      SearchLog.create(user_id: context[:current_user]&.id, short_link_id:link.id )
       search_service = SearchService.new(context[:search_params])
       search_service.search
     end
@@ -98,8 +101,10 @@ module Types
       )
     end
 
-    def crowd_agg_facets(search_hash: nil, params: nil)
+    def crowd_agg_facets(search_hash: nil, params: nil, crowd_buckets_wanted: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
+
+      params[:crowd_buckets_wanted] = crowd_buckets_wanted
       params[:page_size] = 999999
       search_service = SearchService.new(params)
       Hashie::Mash.new(
@@ -177,6 +182,7 @@ module Types
     end
 
     def study(nct_id:)
+      StudyViewLog.create(user_id: context[:current_user]&.id, nct_id: nct_id )
       Study.find_by(nct_id: nct_id)
     end
 

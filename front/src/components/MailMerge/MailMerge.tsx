@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SchemaSelector, { SchemaType } from './SchemaSelector';
 import View, { Props as ViewProps } from './MailMergeView';
 import Editor from './MailMergeEditor';
+import useUrlParams from 'utils/UrlParamsProvider';
 
 // MailMerge props includes all ViewProps except context is renamed to sample
 interface Props extends Omit<ViewProps, 'context'> {
@@ -26,6 +27,9 @@ export default function MailMerge(props: Props) {
     props.onTemplateChanged(before + templateString + after);
   };
   const style = { ...defaultStyle, ...props.style };
+  const urlParams = useUrlParams()
+  const queryStringParams = new Set(Object.keys(urlParams || {}));
+
   return (
     <>
       <div style={style}>

@@ -72,6 +72,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   has_many :result_contacts,       foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :result_groups,         foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :sponsors,              foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
+  has_many :study_view_logs,              foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
 
   # clinwiki relationships
   has_many :reviews, foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
@@ -253,6 +254,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       brief_summary: brief_summary && brief_summary.description,
       detailed_description: detailed_description && detailed_description.description,
       browse_condition_mesh_terms: browse_conditions.map(&:mesh_term),
+      conditions: conditions.map(&:downcase_name),
       browse_interventions_mesh_terms: browse_interventions.map(&:mesh_term),
       interventions_mesh_terms: interventions.map(&:name).reject(&:nil?),
       interventions: interventions.map(&:description).reject(&:nil?),
@@ -262,10 +264,12 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       facility_cities: facilities.map(&:city),
       facility_countries: facilities.map(&:country),
       average_rating: average_rating,
+      reviews_count: reviews.count,
       reviews: reviews && reviews.map(&:text),
       sponsors: sponsors && sponsors.map(&:name),
       rating_dimensions: rating_dimensions.keys,
       indexed_at: Time.now.utc,
+      study_views_count: study_view_logs.count,
       wiki_page_edits: {
         email: wiki_page_edits.map(&:user).map(&:email),
         created_at: wiki_page_edits.map(&:created_at).map(&:to_time),
@@ -326,10 +330,10 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     self.interventions_raw = nil
   end
 
-  def interventions
-    @interventions || Study.preload_interventions(self)
-    @interventions
-  end
+  # def interventions
+  #   @interventions || Study.preload_interventions(self)
+  #   @interventions
+  # end
 
   def interventions_raw
     @interventions
@@ -397,7 +401,6 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       sleep 0.1
     end
   end
-
   def self.preload_extended_interventions(studies) # rubocop:disable Metrics/MethodLength
     studies = studies.is_a?(Array) ? studies : [studies]
     study_groups = studies.group_by(&:nct_id)

@@ -52,7 +52,7 @@ import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
-import RichTextEditor from 'react-rte-yt';
+import RichTextEditor from 'react-rte';
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<
@@ -418,23 +418,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleResetFilters = (view: SiteViewFragment) => () => {
-    this.setState(
-      {
-        params: this.getDefaultParams(view, this.props.email),
-        removeSelectAll: true,
-      },
-      () => this.updateSearchParams(this.state.params)
-    );
+    this.updateSearchParams(this.getDefaultParams(view, this.props.email))
   };
 
   handleClearFilters = () => {
-    this.setState(
-      {
-        params: DEFAULT_PARAMS,
-        removeSelectAll: true,
-      },
-      () => this.updateSearchParams(this.state.params)
-    );
+    this.updateSearchParams(DEFAULT_PARAMS)
   };
 
   resetSelectAll = () => {
@@ -725,9 +713,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return response;
   };
   updateSearchParams = async (params) => {
-    this.setState({	
-      ...this.state,	
-      params: { ...(this.state?.params || {}), ...params },	
+    this.setState({
+      ...this.state,
+      params: { ...(this.state?.params || {}), ...params },
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
@@ -735,6 +723,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.props.history.location.search
     );
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
+    // This assumes that the site provider is not passing a url into the page
+    // view fragment portion of the query otherwise we would need to call the
+    //  page view query without passing the url into it to retrieve the default url
+    const defaultPageView = this.props.site.pageView!.url;
+    const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
     const userId = searchQueryString.getAll('uid').toString();
 
     if (data?.provisionSearchHash?.searchHash?.short) {
@@ -742,7 +735,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         this.props.history.push(
           `/profile?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
       } else if (userId) {
@@ -750,7 +743,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         this.props.history.push(
           `/profile/user?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&uid=${userId}&username=${
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${
             profile && profile.values.toString()
           }`
         );
@@ -760,14 +753,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           //@ts-ignore
           `/intervention/${this.props.match.params.id}?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=intervention`
+          }&sv=intervention&pv=${pageViewUrl}`
         );
         return;
       } else {
         this.props.history.push(
           `/search?hash=${
             data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}`
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
       }
@@ -951,7 +944,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             component={SearchStudyPage}
           />
           <Route
-            path={`/bulk`}	
+            path={`/bulk`}
             component={BulkEditPage}
           /> */}
           <Route

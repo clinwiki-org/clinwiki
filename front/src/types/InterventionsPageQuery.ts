@@ -50,7 +50,6 @@ export interface InterventionsPageQuery_study {
   conditions: string | null;
   contacts: string;
   createdAt: any;
-  design: string;
   detailedDescription: string | null;
   dislikesCount: number;
   dispositionFirstPostedDate: string | null;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import { partition, toPairs } from 'ramda';
 import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { WikiPageQuery, WikiPageQueryVariables } from 'types/WikiPageQuery';
@@ -17,7 +17,7 @@ import QUERY from 'queries/WikiPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
 import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
-import useUrlParams from 'utils/UrlParamsProvider';
+import useUrlParams, {queryStringAll} from 'utils/UrlParamsProvider';
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
@@ -60,9 +60,6 @@ export default function WikiPageIsland(props: Props) {
   const { currentSiteView } = useSite();
   const user = useCurrentUser()?.data?.me;
   const params = useUrlParams()
-  const hash = params.hash
-  const siteViewUrl = params.siteViewUrl
-
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {
     variables: { nctId },
@@ -96,7 +93,7 @@ export default function WikiPageIsland(props: Props) {
     historyExpanded[editId] = value;
     setHistoryExpanded(historyExpanded);
   };
-  const handlePreview = (hash: string, siteViewUrl: string) => {
+  const handlePreview = () => {
     if (editorState === 'plain') {
       const text = getEditorText() || '';
 
@@ -106,7 +103,7 @@ export default function WikiPageIsland(props: Props) {
     }
 
     history.push(
-      `${match.url}?hash=${hash}&sv=${siteViewUrl}`
+      `${match.url}${queryStringAll(params)}`
     );
   };
 
@@ -155,23 +152,23 @@ export default function WikiPageIsland(props: Props) {
     // });
   };
 
-  const handleEdit = (hash: string, siteViewUrl: string) => {
+  const handleEdit = () => {
     history.push(
       `${trimPath(
         match.url
-      )}/wiki/edit?hash=${hash}&sv=${siteViewUrl}`
+      )}/wiki/edit${queryStringAll(params)}`
     );
   };
-  const handleHistory = (hash: string, siteViewUrl: string) => {
+  const handleHistory = () => {
     history.push(
       `${trimPath(
         match.url
-      )}/wiki/history?hash=${hash}&sv=${siteViewUrl}`
+      )}/wiki/history${queryStringAll(params)}`
     );
   };
-  const handleView = (hash: string, siteViewUrl: string) => {
+  const handleView = () => {
     history.push(
-      `${trimPath(match.url)}?hash=${hash}&sv=${siteViewUrl}`
+      `${trimPath(match.url)}${queryStringAll(params)}`
     );
   };
   const handleEditSubmit = (
@@ -208,15 +205,13 @@ export default function WikiPageIsland(props: Props) {
   };
   const renderEditButton = (
     isAuthenticated: boolean,
-    hash: string,
-    siteViewUrl: string
   ) => {
     if (!isAuthenticated) return null;
 
     return (
       <ThemedButton
         type="button"
-        onClick={() => handleEdit(hash, siteViewUrl)}
+        onClick={() => handleEdit()}
         style={{ marginLeft: '10px' }}>
         Edit <FontAwesome name="edit" />
       </ThemedButton>
@@ -225,8 +220,6 @@ export default function WikiPageIsland(props: Props) {
   const renderToolbar = (
     data: WikiPageQuery,
     user: CurrentUserQuery_me | null | undefined,
-    hash: string,
-    siteViewUrl: string,
     readOnly: boolean
   ) => {
     const isAuthenticated = user !== null;
@@ -245,7 +238,7 @@ export default function WikiPageIsland(props: Props) {
                 {renderMarkdownButton()}{' '}
                 <ThemedButton
                   type="button"
-                  onClick={() => handlePreview(hash, siteViewUrl)}
+                  onClick={() => handlePreview()}
                   style={{ marginLeft: '10px' }}>
                   Preview <FontAwesome name="photo" />
                 </ThemedButton>
@@ -256,7 +249,7 @@ export default function WikiPageIsland(props: Props) {
           <Route
             render={() => (
               <>
-                {renderEditButton(isAuthenticated, hash, siteViewUrl)}
+                {renderEditButton(isAuthenticated)}
                 {renderSubmitButton(data, isAuthenticated, readOnly)}
               </>
             )}
@@ -325,7 +318,7 @@ export default function WikiPageIsland(props: Props) {
           <Switch>
             <Route render={() => renderEditor(studyData)} />
           </Switch>
-          {renderToolbar(studyData, user, hash, siteViewUrl, readOnly)}
+          {renderToolbar(studyData, user, readOnly)}
         </div>
       </StyledPanel>
     </div>

@@ -14,6 +14,7 @@ export interface PageViewsQuery_site_pageViews {
   template: string;
   title: string;
   url: string;
+  default: boolean;
 }
 
 export interface PageViewsQuery_site {

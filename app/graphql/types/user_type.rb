@@ -25,6 +25,15 @@ module Types
       argument :offset, Integer, required: false
     end
     field :reactions_count,[ExpressionCountType], null: true
+    field :search_logs,[SearchLogType], null:true do
+      argument :limit, Integer, required: false
+      argument :offset, Integer, required: false
+    end
+
+    field :study_view_logs,[StudyViewLogType], null:true do
+      argument :limit, Integer, required: false
+      argument :offset, Integer, required: false
+    end
 
     def reactions(nct_id:nil ,reaction_kind_id: ReactionKind.find_by_name("like").id, limit:25, offset:0)
       reaction_kind = ActiveRecord::Base.sanitize_sql(reaction_kind)
@@ -36,6 +45,18 @@ module Types
       else
         object.reactions.where(reaction_kind_id:reaction_kind_id).limit(limit).offset(offset)
       end
+    end
+
+    def search_logs( limit:25, offset:0)
+      limit = ActiveRecord::Base.sanitize_sql(limit)
+      offset = ActiveRecord::Base.sanitize_sql(offset)
+      object.search_logs.limit(limit).offset(offset).order(created_at: :desc)
+    end
+
+    def study_view_logs( limit:25, offset:0)
+      limit = ActiveRecord::Base.sanitize_sql(limit)
+      offset = ActiveRecord::Base.sanitize_sql(offset)
+      object.study_view_logs.limit(limit).offset(offset).order(created_at: :desc)
     end
 
     def review_count

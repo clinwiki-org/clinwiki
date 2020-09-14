@@ -34,7 +34,7 @@ import { equals } from 'ramda';
 import { History, Location } from 'history';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
-import RichTextEditor, { EditorValue } from 'react-rte-yt';
+import RichTextEditor, { EditorValue } from 'react-rte';
 import {
   SiteFragment,
   SiteFragment_siteViews,
@@ -287,11 +287,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       thisSiteView
     );
   };
-  handleFieldsOrderChange = () => { };
 
-  handleShowFacetBar = (x, view, name) => {
+  handleAddMutationWithName = (value, view, name) => {
     // this.setState({showFacetBar: x})
-    const e = { currentTarget: { name: name, value: x } };
+    const e = { currentTarget: { name: name, value: value } };
     this.handleAddMutation(e, view);
   };
   handleAddButton = view => {
@@ -301,7 +300,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     let newItem = { icon: '', target: '', __typename: 'ResultButtonItems' };
     let newItems = [...items, newItem];
 
-    this.setState({ resultsButtonsArray: newItems })
+    this.setState({ resultsButtonsArray: newItems });
     this.handleAddMutation(
       { currentTarget: { name: name, value: newItems } },
       view
@@ -383,7 +382,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   renderResultsButtons = view => {
-    let ICONS = ['table', 'card', 'search'];
+    let ICONS = ['table', 'card', 'search', 'list', 'small masonry', 'large masonry'];
     let buttonsArray = view.search.results.buttons.items;
     let siteViews = this.props.siteViews;
     let thisSiteView =
@@ -510,6 +509,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   view={view}
                   configType="facetbar"
                   returnAll={true}
+                  sortables={view.search.sortables}
                 />
               ))}
             </Col>
@@ -784,7 +784,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
-          {view.search.results.type === 'table' ? (
+          {view.search.results.type === 'table' || view.search.results.type === 'table2'  ? (
             <>
               <h3>Fields</h3>
               <MultiInput
@@ -797,7 +797,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               />
             </>
           ) : null}
-          {view.search.results.type === 'table' ? (
+          {view.search.results.type === 'table' || view.search.results.type === 'table2'   ? (
             null
           ) : (<>
             <h3>Template</h3>
@@ -827,7 +827,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               }}>
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'card',
                     view,
                     'set:search.results.type'
@@ -837,7 +837,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </MenuItem>
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'table',
                     view,
                     'set:search.results.type'
@@ -847,7 +847,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </MenuItem>
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'table2',
                     view,
                     'set:search.results.type'
@@ -857,7 +857,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </MenuItem>
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'masonry',
                     view,
                     'set:search.results.type'
@@ -867,7 +867,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               </MenuItem>
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'list',
                     view,
                     'set:search.results.type'
@@ -878,7 +878,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <MenuItem divider />
               <MenuItem
                 onClick={() =>
-                  this.handleShowFacetBar(
+                  this.handleAddMutationWithName(
                     'map',
                     view,
                     'set:search.results.type'
@@ -900,7 +900,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       </Panel>
     );
   };
-  renderBreadCrumbsConfig = showBreadCrumbs => {
+  renderBreadCrumbsConfig = (showBreadCrumbs:boolean, view: SiteFragment_siteView) => {
     return (
       <Panel>
         <Panel.Heading>
@@ -916,7 +916,16 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             </StyledShowContainer>
           </StyledPanelHeading>
         </Panel.Heading>
-        <Panel.Body collapsible></Panel.Body>
+        <Panel.Body collapsible>
+          <StyledButtonGroup>
+            <span className="button-label">Show 'Search Within':</span>
+            <StyledCheckbox
+              name="set:search.crumbs.search"
+              checked={view.search.crumbs.search}
+              onChange={this.handleCheckboxToggle(view.search.crumbs.search)}
+            />
+          </StyledButtonGroup>
+        </Panel.Body>
       </Panel>
     );
   };
@@ -1043,7 +1052,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 crowdFieldsPresearch
               )}
               {this.renderResultsConfig(showResults, view!)}
-              {this.renderBreadCrumbsConfig(showBreadCrumbs)}
+              {this.renderBreadCrumbsConfig(showBreadCrumbs, view!)}
             </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
               Save Site View
