@@ -773,8 +773,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   };
-  handlePresearchButtonClick = (hash, target) => {
-    const url = `/search?hash=${hash}&sv=${target}`;
+  handlePresearchButtonClick = (hash, target,pageViewUrl) => {
+    const url = `/search?hash=${hash}&sv=${target}&pv=${pageViewUrl}`;
     this.props.history.push(url);
   };
 
@@ -786,6 +786,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       currentSiteView.search.presearch.crowdAggs.selected.values;
     const presearchButton = currentSiteView.search.presearch.button;
     const presearchText = currentSiteView.search.presearch.instructions;
+
+    const searchQueryString = new URLSearchParams(
+      this.props.history.location.search
+    );
+    const defaultPageView = this.props.site.pageView!.url;
+    const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
 
     return (
       <SearchContainer>
@@ -824,7 +830,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         {presearchButton.name && (
           <ThemedButton
             onClick={() =>
-              this.handlePresearchButtonClick(hash, presearchButton.target)
+              this.handlePresearchButtonClick(hash, presearchButton.target,pageViewUrl)
             }
             style={{ width: 200, marginLeft: 13 }}>
             {presearchButton.name}
