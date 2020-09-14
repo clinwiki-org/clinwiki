@@ -381,8 +381,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       crowdAggFilters,
       sorts,
       q,
-      page: params.page || 0,
-      pageSize: params.pageSize || defaultPageSize,
+      //page and pageSize no longer exists since it was removed from the shortlink hash
+      //defaulting to page 0 and defaultPageSize(100) to recieve the first 100 results for
+      page: 0,
+      pageSize: defaultPageSize,
     };
   };
 
