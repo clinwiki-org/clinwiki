@@ -331,24 +331,6 @@ export function withPresentSite2<T>(
     return WithPresentSiteProvider;
 }
 
-
-/*  // Was being used in SearchPage
-export const withPresentSite = Component => props => (
-    <PresentSiteProvider>
-        {(site, refetch) => {
-            const presentSite = site.siteView;
-            return (
-                <Component
-                    {...props}
-                    site={site}
-                    refetch={refetch}
-                    presentSiteView={presentSite}
-                />
-            );
-        }}
-    </PresentSiteProvider>
-);*/
-
 interface UsePresentSiteProps {
     id?: number;
     url?: string;
@@ -378,17 +360,13 @@ function PresentSiteProvider(props: PresentSiteProviderProps) {
         .getAll('sv')
         .toString();
         //.toLowerCase();
+    //console.log("URL NAME", urlName);
+    const urlFinal = urlName ? urlName : "default";
 
-    const { data, loading, error, refetch } = usePresentSite({url: urlName});
+    const { data, loading, error, refetch } = usePresentSite({url: urlFinal});
     if (error) console.log(error);
     if (loading || error || !data) return null;
     return props.children(data.site!, refetch);
 }
 
 export default PresentSiteProvider;
-
-
-/*
-const params = useUrlParams();
-const { site } = usePresentSite({ url: params.sv});
-*/
