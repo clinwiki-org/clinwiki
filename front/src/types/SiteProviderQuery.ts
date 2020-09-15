@@ -154,6 +154,11 @@ export interface SiteProviderQuery_site_siteView_search_results {
   buttons: SiteProviderQuery_site_siteView_search_results_buttons;
 }
 
+export interface SiteProviderQuery_site_siteView_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
+}
+
 export interface SiteProviderQuery_site_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
   sortKind: SortKind;
@@ -364,6 +369,7 @@ export interface SiteProviderQuery_site_siteView_search {
   template: string;
   autoSuggest: SiteProviderQuery_site_siteView_search_autoSuggest;
   results: SiteProviderQuery_site_siteView_search_results;
+  crumbs: SiteProviderQuery_site_siteView_search_crumbs;
   presearch: SiteProviderQuery_site_siteView_search_presearch;
   sortables: string[];
   fields: string[];
@@ -510,6 +516,11 @@ export interface SiteProviderQuery_site_siteViews_search_results {
   __typename: "SiteResultsSection";
   type: string;
   buttons: SiteProviderQuery_site_siteViews_search_results_buttons;
+}
+
+export interface SiteProviderQuery_site_siteViews_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_presearch_aggs_fields_order {
@@ -722,6 +733,7 @@ export interface SiteProviderQuery_site_siteViews_search {
   template: string;
   autoSuggest: SiteProviderQuery_site_siteViews_search_autoSuggest;
   results: SiteProviderQuery_site_siteViews_search_results;
+  crumbs: SiteProviderQuery_site_siteViews_search_crumbs;
   presearch: SiteProviderQuery_site_siteViews_search_presearch;
   sortables: string[];
   fields: string[];

@@ -8,6 +8,7 @@ import {
 import { match } from 'react-router-dom';
 import { find, propEq, pipe, split, dropLast, join } from 'ramda';
 import ReviewForm from 'containers/ReviewForm';
+import useUrlParams,{queryStringAll} from 'utils/UrlParamsProvider';
 import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
 import { History } from 'history';
 import StudySummary from 'components/StudySummary';
@@ -54,6 +55,10 @@ class EditReview extends React.PureComponent<EditReviewProps> {
     this.props.history.push(redirectPath);
   };
 
+  handleCloseReview = () => {
+    const params = useUrlParams()
+    this.props.history.push(`${trimPath(this.props.match.url)}${queryStringAll(params)}`);
+  };
   render() {
     console.log('theme in edit', this.props.theme);
     return (
@@ -85,6 +90,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
               nctId={this.props.match.params.nctId||this.props.nctId}
               afterSave={this.handleReviewSave}
               theme={this.props.theme}
+              handleClose={this.handleCloseReview}
             />
           );
         }}

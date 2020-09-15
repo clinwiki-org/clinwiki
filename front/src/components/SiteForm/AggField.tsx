@@ -218,7 +218,10 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             this.props.field.name,
             this.props.field.displayName
           )}
-          value={this.props.field.rank}
+          value={aggToField(
+            this.props.field.name,
+            this.props.field.displayName
+          )}
           onChange={this.props.onAddMutation}
         />
       </span>

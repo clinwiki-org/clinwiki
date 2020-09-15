@@ -25,7 +25,7 @@ import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import ExportToCsvComponent from './ExportToCsvComponent';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 
 const CrumbsBarStyleWrappper = styled.div`
   border: solid white 1px;
@@ -324,62 +324,12 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   getSuggestionValue = suggestion => {
     return suggestion.key;
   };
-  renderLoadingAutoSuggest = (
-    suggestions,
-    searchTerm,
-    apolloClient,
-    showAutoSuggest
-  ) => {
-    if (showAutoSuggest === true) {
-      return (
-        <div style={{ display: 'inline' }}>
-          <FormGroup>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-              }}>
-              <b
-                style={{
-                  marginRight: '8px',
-                  marginTop: '4px',
-                }}>
-                <ControlLabel>Search Within: </ControlLabel>{' '}
-              </b>
-
-              <Autosuggest
-                multiSection={true}
-                suggestions={suggestions}
-                inputProps={{
-                  value: searchTerm,
-                  onChange: (e, searchTerm) =>
-                    this.onChange(e, searchTerm, apolloClient),
-                }}
-                renderSuggestion={this.renderSuggestion}
-                renderSuggestionsContainer={this.renderSuggestionsContainer}
-                renderSectionTitle={this.renderSectionTitle}
-                getSectionSuggestions={this.getSectionSuggestions}
-                onSuggestionSelected={this.onSuggestionSelected}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                getSuggestionValue={this.getSuggestionValue}
-              />
-            </div>
-          </FormGroup>
-          <ThemedButton type="submit">
-            <FontAwesome name="search" />
-          </ThemedButton>
-        </div>
-      );
-    } else if (showAutoSuggest === false) {
-      return null;
-    }
-  };
   renderAutoSuggest = (
     suggestions,
     searchTerm,
     apolloClient,
-    showAutoSuggest
+    showAutoSuggest,
+    loading: boolean
   ) => {
     if (showAutoSuggest === true) {
       return (
@@ -407,6 +357,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                     this.onChange(e, searchTerm, apolloClient),
                 }}
                 renderSuggestion={this.renderSuggestion}
+                renderSuggestionsContainer={
+                  loading ? this.renderSuggestionsContainer : undefined
+                }
                 renderSectionTitle={this.renderSectionTitle}
                 getSectionSuggestions={this.getSectionSuggestions}
                 onSuggestionSelected={this.onSuggestionSelected}
@@ -455,10 +408,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  onSuggestionSelected = (
-    event,
-    { suggestionValue, sectionIndex }
-  ) => {
+  onSuggestionSelected = (event, { suggestionValue, sectionIndex }) => {
     const section = this.state.suggestions[sectionIndex];
     if (section.isCrowd) {
       this.props.addFilter(section.name, suggestionValue, true);
@@ -509,56 +459,52 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
             <CurrentUser>
               {user => (
                 <Grid className="crumbs-bar">
-                  <Row>
-                    <Col xs={8} md={8}>
-                      <Form
-                        inline
-                        className="searchInput"
-                        onSubmit={this.onSubmit}>
-                        {isSuggestionLoading
-                          ? this.renderLoadingAutoSuggest(
-                              suggestions,
-                              searchTerm,
-                              apolloClient,
-                              showAutoSuggest
-                            )
-                          : this.renderAutoSuggest(
-                              suggestions,
-                              searchTerm,
-                              apolloClient,
-                              showAutoSuggest
-                            )}
-                        &nbsp;
-                        {user && user.roles.includes('admin') ? (
-                          <ThemedButton
-                            onClick={() =>
-                              this.props.onBulkUpdate(
-                                this.props.searchHash,
-                                this.props.presentSiteView.url || 'default'
-                              )
-                            }>
-                            Bulk Update <FontAwesome name="truck" />
-                          </ThemedButton>
-                        ) : null}
-                      </Form>
-                    </Col>
-                    <Col xs={4} md={4}>
-                      <Row>
-                        <Col xs={12} md={12} style={{ textAlign: 'right' }}>
-                          <ExportToCsvComponent
-                            siteView={this.props.presentSiteView}
-                            searchHash={this.props.searchHash}
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col xs={12} md={12} style={{ textAlign: 'right' }}>
-                          <b>Total Results:</b> {this.props.totalResults}{' '}
-                          studies
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
+                  {currentSiteView.search.crumbs.search ? (
+                    <Row>
+                      <Col xs={8} md={8}>
+                        <Form
+                          inline
+                          className="searchInput"
+                          onSubmit={this.onSubmit}>
+                          {this.renderAutoSuggest(
+                            suggestions,
+                            searchTerm,
+                            apolloClient,
+                            showAutoSuggest,
+                            isSuggestionLoading
+                          )}
+                          &nbsp;
+                          {user && user.roles.includes('admin') ? (
+                            <ThemedButton
+                              onClick={() =>
+                                this.props.onBulkUpdate(
+                                  this.props.searchHash,
+                                  this.props.currentSiteView.url || 'default'
+                                )
+                              }>
+                              Bulk Update <FontAwesome name="truck" />
+                            </ThemedButton>
+                          ) : null}
+                        </Form>
+                      </Col>
+                      <Col xs={4} md={4}>
+                        <Row>
+                          <Col xs={12} md={12} style={{ textAlign: 'right' }}>
+                            <ExportToCsvComponent
+                              siteView={this.props.currentSiteView}
+                              searchHash={this.props.searchHash}
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col xs={12} md={12} style={{ textAlign: 'right' }}>
+                            <b>Total Results:</b> {this.props.totalResults}{' '}
+                            studies
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  ) : null}
                   {showCrumbsBar ? (
                     // having trouble getting the theme applied to these ListGroups
                     // <ThemeProvider>
@@ -585,8 +531,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                               minWidth: '100%',
                               background: this.props.theme.button,
                               color: '#fff',
-                            }}
-                            onClick={this.toggleShowFilters}>
+                            }}>
                             {' '}
                             Filters:{' '}
                             {Array.from(

@@ -17,6 +17,8 @@ You can use one of the following options to start ClinWiki on your own system:
 
 1. Create a `.env` file in the project's root directory (use `.example.env` for inspiration)
 
+    > Reach out to @williamhoos for AACT database URL and credentials for other third party services
+
 1. Install Docker
 
     - Windows and Mac users install [Docker Desktop](https://www.docker.com/products/docker-desktop)
@@ -169,16 +171,7 @@ mode.
 
 ### Run Locally in Production Mode
 
-1. Create a .env file in root with the following contents
-
-    ```bash
-    AACT_DATABASE_URL=postgres://$AACT_USER:$AACT_PASS@aact-db.ctti-clinicaltrials.org:5432/aact
-    MAILGUN_API_KEY=""
-    MAILGUN_DOMAIN="localhost:3000"
-    CW_HOST="localhost:3000"
-    CLINWIKI_DOMAIN="localhost:3000"
-    SECRET_KEY_BASE="lkdfjgldgjkdflgjlkdfjgldfkjg"
-    ```
+1. Create a `.env` file in the project's root directory (use `.example.env` for inspiration)
 
 1. Precompile assets
 
@@ -302,3 +295,22 @@ the annotation database along with the AACT database.
 ```bash
 heroku run -a clinwiki-prod rake export:front_matter_csv > my-front-matter.csv
 ```
+
+#### **Additional Data Seeding**
+
+When using the standard seeding of AACT data and clinwiki data, we are still working to establish a more complete development seeded database. Some functionality for workflows, crowd values and bulk update will not be available until at least a few studies have crowd keys and values.
+To complete set-up, add at least the following keys and values spread across at least 5 studies. Having any values for crowd key/values seeds this funcitnoality in the application. Having any keys labeled "WF_" ensures workflows function. Having at least one study with WF_bulk key enables configuration of the bulk update functionality. [this fuctionality will be replaced with alternative seed files and functionality]
+
+- tags
+- - Organization 1
+- - Organization 2
+- - Organization 3
+- WF_bulk
+- - Needs Review
+- WF_TestA
+- - TestA Value 1
+- - TestA Value 2
+- WF_TestB
+- - TestB Value 1
+- - TestB Value 2
+- - TestB Value 3

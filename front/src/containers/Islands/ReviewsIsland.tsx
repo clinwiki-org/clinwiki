@@ -42,7 +42,7 @@ import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 interface Props {
-  nctId?: string;
+  nctId: string;
 }
 
 const RatingsWrapper = styled.div`
@@ -89,6 +89,9 @@ export default function ReviewsIsland(props: Props) {
   };
   const handleEditReview = (id: number) => {
     history.push(`${trimPath(match.url)}/${id}/edit${queryStringAll(params)}`);
+  };
+  const handleCloseReview = () => {
+    history.push(`${trimPath(match.url)}${queryStringAll(params)}`);
   };
   const handleDeleteReview = (
     deleteReview: DeleteMutationFn,
@@ -208,8 +211,8 @@ export default function ReviewsIsland(props: Props) {
             return (
               <ReviewForm
                 theme={theme}
-                //@ts-ignore
                 nctId={nctId}
+                handleClose={handleCloseReview}
               />
             );
           }}

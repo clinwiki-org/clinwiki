@@ -129,6 +129,7 @@ class WorkflowPage extends React.Component<
           hideMeta={hideMeta}
           review={this.state.review || undefined}
           afterSave={this.handleReviewAfterSave}
+          handleClose={()=>console.log(`Hi, this page is no longer in use`)}
         />
       );
     }

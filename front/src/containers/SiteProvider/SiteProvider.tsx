@@ -124,6 +124,9 @@ export const SITE_VIEW_FRAGMENT = gql`
           location
         }
       }
+      crumbs {
+        search
+      }
       presearch {
         aggs {
           fields {
