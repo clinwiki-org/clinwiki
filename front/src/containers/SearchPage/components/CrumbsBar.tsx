@@ -345,9 +345,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                   marginRight: '8px',
                   marginTop: '4px',
                 }}>
-            
               </b>
-
               <Autosuggest
                 multiSection={true}
                 suggestions={suggestions}
@@ -396,9 +394,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                   marginRight: '8px',
                   marginTop: '4px',
                 }}>
-              
               </b>
-
               <Autosuggest
                 multiSection={true}
                 suggestions={suggestions}
@@ -539,7 +535,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             background: '#fff',
                             width: '100%',
                           }}>
-                            
                           <ListGroupItem
                             style={{
                               minWidth: '100%',
@@ -547,7 +542,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                               color: '#fff',
                             }}
                            >
-
                         <Form
                           inline
                           className="searchInput"
@@ -598,17 +592,13 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         </ListGroup>
                       </Col>
                     </Row>
-                  )
-                 : //   )}
-                  // </ThemeProvider>
-                  null}
+                  ): null}
                   <Col xs={6} md={6}>
                       <Row>
-                        <Col xs={6} md={6} style={{ textAlign: 'left' ,
-                            }}>
-                            <div style={{marginRight:"10px", display: "inline"}}><b >Total Results:</b> {this.props.totalResults}{' '}  studies</div>
-                            
-                         
+                        <Col xs={6} md={6} style={{ textAlign: 'left' }}>
+                            <div style={{marginRight:"10px", display: "inline"}}>
+                              <b >Total Results:</b> {this.props.totalResults}{' '} studies
+                            </div>
                             <ExportToCsvComponent
                                 siteView={this.props.currentSiteView}
                                 searchHash={this.props.searchHash}

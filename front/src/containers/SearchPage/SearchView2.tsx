@@ -396,7 +396,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               style={{ margin: '5px', color: 'gray' }}
             />
           )}
-      
         <div>
           {recordsTotal > MAX_WINDOW_SIZE
             ? `(showing first ${MAX_WINDOW_SIZE})`
@@ -903,7 +902,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             id="dropdown-basic-default"
             style={{
               margin: '0em 1em 0em 1em',
-              width: "200px",
+              width: '200px',
               background: this.props.theme.button,
             }}>
 
@@ -949,7 +948,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               this.handleAggsUpdated(data);
               return (
                 <ThemedSearchContainer>
-            
                   {this.renderSearch({ data, loading, error })}
                 </ThemedSearchContainer>
               );

@@ -161,8 +161,8 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px;
-  .RichTextEditor__root___2QXK-{
-    background-color: inherit !important;
+  .rich-text{
+    background-color: #f2f2f2;
   }
 `;
 
@@ -171,10 +171,6 @@ const InstructionsContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   padding: 0 20px;
-  
-  
-  
- 
 `;
 const Instructions = styled.div`
   display: flex;
@@ -808,13 +804,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
     return (
       <SearchContainer>
-        <InstructionsContainer  >
+        <InstructionsContainer>
           {presearchText && (
             <Instructions>
               <RichTextEditor
-                className="people"
-                style={{color:"red"}}
                 readOnly
+                editorClassName="rich-text"
                 value={RichTextEditor.createValueFromString(
                   presearchText,
                   'markdown'
