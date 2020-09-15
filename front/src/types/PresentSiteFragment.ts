@@ -154,6 +154,11 @@ export interface PresentSiteFragment_siteView_search_results {
   buttons: PresentSiteFragment_siteView_search_results_buttons;
 }
 
+export interface PresentSiteFragment_siteView_search_crumbs {
+  __typename: "CrumbResultSection";
+  search: boolean;
+}
+
 export interface PresentSiteFragment_siteView_search_presearch_aggs_fields_order {
   __typename: "SiteOrder";
   sortKind: SortKind;
@@ -364,6 +369,7 @@ export interface PresentSiteFragment_siteView_search {
   template: string;
   autoSuggest: PresentSiteFragment_siteView_search_autoSuggest;
   results: PresentSiteFragment_siteView_search_results;
+  crumbs: PresentSiteFragment_siteView_search_crumbs;
   presearch: PresentSiteFragment_siteView_search_presearch;
   sortables: string[];
   fields: string[];

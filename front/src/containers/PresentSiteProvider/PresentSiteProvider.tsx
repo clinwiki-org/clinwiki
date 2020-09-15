@@ -123,6 +123,9 @@ export const SITE_VIEW_FRAGMENT = gql`
                     location
                 }
             }
+            crumbs {
+                search
+            }
             presearch {
                 aggs {
                     fields {
@@ -337,30 +340,24 @@ interface UsePresentSiteProps {
 }
 
 export function usePresentSite(props?: UsePresentSiteProps) {
-
-               // console.log("USE Present Site PROPS", props);
-    //console.trace();
+        // console.log("USE Present Site PROPS", props);
+        //console.trace();
     const result = useQuery<PresentSiteProviderQuery>(QUERY, {
         variables: { id: props?.id, url: props?.url },
     });
     if (!result.data) return { ...result, site: null, presentSiteView: null };
     const site = result?.data?.site;
     const presentSiteView = site?.siteView;
-
-            //console.log("********* Present Site VIEW", presentSiteView);
-
+        //console.log("********* Present Site VIEW", presentSiteView);
     return { ...result, site, presentSiteView };
 }
 
 function PresentSiteProvider(props: PresentSiteProviderProps) {
     const url =
-       // (this.props as any)?.history?.location?.search ||
         window.location.search;
     const urlName = new URLSearchParams(url)
         .getAll('sv')
         .toString();
-        //.toLowerCase();
-    //console.log("URL NAME", urlName);
     const urlFinal = urlName ? urlName : "default";
 
     const { data, loading, error, refetch } = usePresentSite({url: urlFinal});

@@ -301,9 +301,8 @@ interface UseSiteProps {
   url?: string;
 }
 export function useSite(props?: UseSiteProps) {
-  console.log("USE SITE PROPS", props);
-         console.trace();
-
+        // console.log("USE SITE PROPS", props);
+        // console.trace();
   const urlName = new URLSearchParams(window.location.search)
     .getAll('sv')
     .toString()
@@ -317,7 +316,6 @@ export function useSite(props?: UseSiteProps) {
     site?.siteViews.find(
       siteview => siteview?.url?.toLowerCase() === urlName
     ) || site?.siteView;
-
   return { ...result, site, currentSiteView };
 }
 
