@@ -14,6 +14,15 @@ import CollapsiblePanel from 'components/CollapsiblePanel';
 */
 
 export const commonIslands = {
+  expander: (attributes: Record<string, string>, context, children) => {
+    return (
+      <CollapsiblePanel
+        header={attributes['header'] || 'header'}
+        collapsed={attributes['collapsed'] == 'true'}>
+        {children}
+      </CollapsiblePanel>
+    );
+  },
 };
 
 export const studyIslands: Record<string, IslandConstructor> = {

@@ -227,7 +227,7 @@ export default function MailMergeView(props: Props) {
           <div
             className="mail-merge-island"
             key={node.attribs['key'] || node.name}>
-            {create?.(node.attribs, props.context, node)}
+            {create?.(node.attribs, props.context, children)}
           </div>
         );
       },
