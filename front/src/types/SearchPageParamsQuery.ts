@@ -76,8 +76,6 @@ export interface SearchPageParamsQuery_searchParams {
   sorts: SearchPageParamsQuery_searchParams_sorts[] | null;
   aggFilters: SearchPageParamsQuery_searchParams_aggFilters[] | null;
   crowdAggFilters: SearchPageParamsQuery_searchParams_crowdAggFilters[] | null;
-  page: number | null;
-  pageSize: number | null;
 }
 
 export interface SearchPageParamsQuery {
