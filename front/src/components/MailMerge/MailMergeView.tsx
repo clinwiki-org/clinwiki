@@ -133,6 +133,14 @@ function jsonToFragmentBody(
       result += key;
       result += '\n';
     } 
+    //@ts-ignore
+    else if(value && value.param) {
+
+       console.log(result)
+      
+      
+    }
+    
     else {
       result += key;
       result += jsonToFragmentBody(
@@ -227,7 +235,7 @@ export default function MailMergeView(props: Props) {
           <div
             className="mail-merge-island"
             key={node.attribs['key'] || node.name}>
-            {create?.(node.attribs, props.context, children)}
+            {create?.(node.attribs, props.context, node)}
           </div>
         );
       },
