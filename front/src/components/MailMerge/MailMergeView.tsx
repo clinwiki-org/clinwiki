@@ -132,7 +132,10 @@ function jsonToFragmentBody(
     if (value === 'x') {
       result += key;
       result += '\n';
-    } 
+    }
+    else if(value && value.param) {
+      console.log(result)
+    }
     else {
       result += key;
       result += jsonToFragmentBody(
