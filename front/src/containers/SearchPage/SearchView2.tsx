@@ -53,6 +53,7 @@ import {
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
 import useUrlParams from "../../utils/UrlParamsProvider";
+import { defaultPageSize } from './Types';
 
 const QUERY = gql`
   query SearchPageSearchQuery(
@@ -272,6 +273,7 @@ interface SearchView2State {
   totalResults: any;
   firstRender: boolean;
   prevResults: any | null;
+  variables: SearchPageSearchQueryVariables  | undefined;
 }
 
 class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
@@ -287,6 +289,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       totalResults: 0,
       firstRender: true,
       prevResults: null,
+      variables: undefined
     };
   }
 
@@ -315,6 +318,9 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
   };
 
   componentDidMount() {
+    this.setState({
+      variables: this.props.params
+    })
     let showResults = this.props.currentSiteView.search.config.fields
       .showResults;
     if (!this.props.showCards && showResults) {
@@ -467,10 +473,13 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
   };
   handleLoadMore=()=>{
     const { page, pageSize, sorts } = this.props.params;
-    // console.log("470", page, pageSize)
-    // pipe(changePage, this.props.onUpdateParams)(page + 1);
-    pipe(changePage, this.paginationHelper)(page + 1);
 
+    let newParams ={...this.state.variables,
+    //@ts-ignore
+    pageSize: (this.state.variables?.pageSize +defaultPageSize)
+  }
+  //@ts-ignore
+    this.setState({variables: newParams})
   }
   paginationHelper=(params)=>{
     console.log("In Pagination Helper")
@@ -624,6 +633,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           <AutoSizer>
             {({ height, width }) => (
               <ListCards
+                totalRecords={this.state.totalResults}
                 data={data}
                 loading={loading}
                 template={template}
@@ -939,7 +949,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         <Col md={12}>
           <QueryComponent
             query={QUERY}
-            variables={this.props.params}
+            variables={this.state.variables}
             onCompleted={this.handleAggsUpdated}>
             {({ data, loading, error }) => {
               // Unfortunately the onCompleted callback is not called if

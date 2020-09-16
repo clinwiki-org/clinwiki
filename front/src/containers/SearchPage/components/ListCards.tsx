@@ -16,6 +16,7 @@ interface ListCardsProps {
   theme: Theme;
   // columns:any;
   handleLoadMore: any;
+  totalRecords:number;
 }
 
 interface ListCardsState {
@@ -29,7 +30,6 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
   }
 
   componentDidUpdate() {
-    console.log(this.props.theme);
     if (this.state.loading !== this.props.loading) {
       this.setState({ loading: this.props.loading });
     }
@@ -45,20 +45,13 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
   };
   isRowLoaded = ({ index }) => {
     const listItems = this.props.data;
-    //  const listItems = [];
-
-    console.log(index, !!listItems[index])
     return !!listItems[index];
   }
 
   loadMoreRows = ({ startIndex, stopIndex }) => {
-    // console.log("Load more rows now", startIndex, stopIndex)
-    if (stopIndex >= this.props.data.length) {
-      console.log("Fetch NOW")
       return (
         this.props.handleLoadMore()
       )
-    }
 
   }
   rowRenderer = ({
@@ -88,13 +81,12 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
     if (this.props.data) {
       const listItems = this.props.data;
       let rowHeight = 150;
-      const totalHeight = rowHeight * listItems.length;
       return (
 
         <InfiniteLoader
           isRowLoaded={this.isRowLoaded}
           loadMoreRows={this.loadMoreRows}
-          rowCount={15050}
+          rowCount={this.props.totalRecords}
         >
           {({ onRowsRendered, registerChild }) => (
 
@@ -104,7 +96,7 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
                   height={height * 0.8}
                   onRowsRendered={onRowsRendered}
                   ref={registerChild}
-                  rowCount={150}
+                  rowCount={this.props.totalRecords}
                   rowHeight={rowHeight}
                   rowRenderer={this.rowRenderer}
                   width={this.props.width}
