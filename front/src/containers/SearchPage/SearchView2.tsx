@@ -588,6 +588,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'flex-end',
+                     marginBottom:"10px"
                   }}>
                 {this.renderViewDropdown()}
                 {this.renderFilterDropDown()}
@@ -612,7 +613,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   style={{
                     display: 'flex',
                     flexDirection: 'row',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'flex-end', 
+                    marginBottom:"10px"
                   }}>
                 {this.renderViewDropdown()}
                 {this.renderFilterDropDown()}
@@ -638,6 +640,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'flex-emd',
+                    marginBottom:"10px"
                   }}>
                 {this.renderViewDropdown()}
                 {this.renderFilterDropDown()}
@@ -712,7 +715,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               <div
                 style={{
                   display: 'flex',
-                  flexDirection: 'row',
+                  flexDirection: 'row', 
+                  marginBottom:"10px"
                   
                 }}>
                 {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
@@ -738,6 +742,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   display: 'flex',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
+                   marginBottom:"10px"
                 }}>
                 {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
                 {this.renderViewDropdown()}
@@ -893,8 +898,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     }
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'row', marginRight: '-30px' }}>
-        <div style={{ marginLeft: 'auto', display: 'flex' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', marginRight: '-30px', marginLeft: 'auto',}}>
+        <div style={{  display: 'flex' }}>
           <DropdownButton
             bsStyle="default"
             title={`Sort by: ${sortField()}`}
