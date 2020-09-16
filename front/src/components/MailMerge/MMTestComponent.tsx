@@ -9,7 +9,7 @@ import { gql } from 'apollo-boost';
 import MailMerge from './MailMerge';
 import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
 import { getStudyQuery, getSearchQuery } from './MailMergeUtils';
-import { commonIslands } from 'containers/Islands/CommonIslands';
+import { pageIslands } from 'containers/Islands/CommonIslands';
 
 type Mode = 'Study' | 'Search';
 
@@ -37,20 +37,17 @@ function getModeData(
 export default function TestComponent() {
   const [template, setTemplate] = useState(`
 # title: {{briefTitle}}
-<Expander header="outter">
-  <table class="table table-striped table-bordered table-condensed">
-    <tbody>
-      <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
-      <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
-      <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
-      <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
-      <tr> <th>Source</th> <td>{{source}}</td> </tr>
-    </tbody>
-  </table>
-  <Expander header=details collapsed=true>
-    <Groot></Groot>
-  </Expander>
-</Expander>
+<table class="table table-striped table-bordered table-condensed">
+  <tbody>
+    <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
+    <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
+    <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
+    <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
+    <tr> <th>Source</th> <td>{{source}}</td> </tr>
+  </tbody>
+</table>
+
+
 `);
   const [fragment, setFragment] = useState('');
   const [mode, setMode] = useState<Mode>('Study');
@@ -72,12 +69,12 @@ export default function TestComponent() {
 
   const updateMode = mode => {
     setMode(mode);
-    if (mode === 'Study') setNctOrSearchHash(defaultNctId);
-    if (mode === 'Search') setNctOrSearchHash(defaultSearchHash);
+    if(mode === 'Study') setNctOrSearchHash(defaultNctId);
+    if(mode === 'Search') setNctOrSearchHash(defaultSearchHash);
   };
 
   const islands = {
-    ...commonIslands,
+    ...pageIslands,
     groot: (attributes: Record<string, string>) => {
       return (
         <img src="https://media.giphy.com/media/11vDNL1PrUUo0/source.gif" />
