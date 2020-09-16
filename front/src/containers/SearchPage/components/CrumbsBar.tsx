@@ -25,7 +25,7 @@ import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import ExportToCsvComponent from './ExportToCsvComponent';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 
 const CrumbsBarStyleWrappper = styled.div`
   border: solid white 1px;
@@ -125,7 +125,6 @@ interface CrumbsBarProps {
   onReset: () => void;
   onClear: () => void;
   data: SiteFragment;
-  siteViewUrl?: string;
   currentSiteView: SiteFragment_siteView;
   totalResults: number;
   searchHash: string;
@@ -138,7 +137,6 @@ interface CrumbsBarState {
   isSuggestionLoading: boolean;
   showFilters: boolean;
 }
-
 
 class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   constructor(props) {
@@ -325,60 +323,12 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   getSuggestionValue = suggestion => {
     return suggestion.key;
   };
-  renderLoadingAutoSuggest = (
-    suggestions,
-    searchTerm,
-    apolloClient,
-    showAutoSuggest
-  ) => {
-    if (showAutoSuggest === true) {
-      return (
-        <div style={{ display: 'inline' }}>
-          <FormGroup>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-              }}>
-              <b
-                style={{
-                  marginRight: '8px',
-                  marginTop: '4px',
-                }}>
-              </b>
-              <Autosuggest
-                multiSection={true}
-                suggestions={suggestions}
-                inputProps={{
-                  value: searchTerm,
-                  onChange: (e, searchTerm) =>
-                    this.onChange(e, searchTerm, apolloClient),
-                }}
-                renderSuggestion={this.renderSuggestion}
-                renderSuggestionsContainer={this.renderSuggestionsContainer}
-                renderSectionTitle={this.renderSectionTitle}
-                getSectionSuggestions={this.getSectionSuggestions}
-                onSuggestionSelected={this.onSuggestionSelected}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                getSuggestionValue={this.getSuggestionValue}
-              />
-            </div>
-          </FormGroup>
-          <ThemedButton style={{border:"solid white 1px"}} type="submit">
-            <FontAwesome name="search" />
-          </ThemedButton>
-        </div>
-      );
-    } else if (showAutoSuggest === false) {
-      return null;
-    }
-  };
   renderAutoSuggest = (
     suggestions,
     searchTerm,
     apolloClient,
-    showAutoSuggest
+    showAutoSuggest,
+    loading: boolean
   ) => {
     if (showAutoSuggest === true) {
       return (
@@ -404,6 +354,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                     this.onChange(e, searchTerm, apolloClient),
                 }}
                 renderSuggestion={this.renderSuggestion}
+                renderSuggestionsContainer={
+                  loading ? this.renderSuggestionsContainer : undefined
+                }
                 renderSectionTitle={this.renderSectionTitle}
                 getSectionSuggestions={this.getSectionSuggestions}
                 onSuggestionSelected={this.onSuggestionSelected}
@@ -452,10 +405,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  onSuggestionSelected = (
-    event,
-    { suggestionValue, sectionIndex }
-  ) => {
+  onSuggestionSelected = (event, { suggestionValue, sectionIndex }) => {
     const section = this.state.suggestions[sectionIndex];
     if (section.isCrowd) {
       this.props.addFilter(section.name, suggestionValue, true);
@@ -496,12 +446,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
-    const { data, siteViewUrl } = this.props;
-    let thisSiteView =
-      data.siteViews.find(siteview => siteview.url === siteViewUrl) ||
-      data.siteView;
-    let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
-    let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
+    let currentSiteView = this.props.currentSiteView;
+    let showCrumbsBar = currentSiteView.search.config.fields.showBreadCrumbs;
+    let showAutoSuggest = currentSiteView.search.config.fields.showAutoSuggest;
     return (
       <ThemedCrumbsBarStyleWrappper>
         <ApolloConsumer>
@@ -542,22 +489,17 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                               color: '#fff',
                             }}
                            >
+                      {currentSiteView.search.crumbs.search ? (
                         <Form
                           inline
                           className="searchInput"
                           onSubmit={this.onSubmit}style={{color:"black" ,display:"inline"} }>
-                          {isSuggestionLoading
-                            ? this.renderLoadingAutoSuggest(
+                          { this.renderAutoSuggest(
                                 suggestions,
                                 searchTerm,
                                 apolloClient,
-                                showAutoSuggest
-                              )
-                            : this.renderAutoSuggest(
-                                suggestions,
-                                searchTerm,
-                                apolloClient,
-                                showAutoSuggest
+                                showAutoSuggest,
+                                isSuggestionLoading
                               )}
                           &nbsp;
                           {user && user.roles.includes('admin') ? (
@@ -572,7 +514,8 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                               Bulk Update <FontAwesome name="truck" />
                             </ThemedButton>
                           ) : null}
-                        </Form> 
+                        </Form>
+                        ) : null} 
                             {' '}
                             {Array.from(
                               this.mkDefaultClearButtons(
@@ -585,7 +528,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             ? Array.from(
                                 this.mkCrumbs(
                                   this.props.searchParams,
-                                  thisSiteView
+                                  currentSiteView
                                 )
                               )
                             : null}{' '}

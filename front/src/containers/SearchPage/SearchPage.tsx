@@ -419,23 +419,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleResetFilters = (view: SiteViewFragment) => () => {
-    this.setState(
-      {
-        params: this.getDefaultParams(view, this.props.email),
-        removeSelectAll: true,
-      },
-      () => this.updateSearchParams(this.state.params)
-    );
+    this.updateSearchParams(this.getDefaultParams(view, this.props.email))
   };
 
   handleClearFilters = () => {
-    this.setState(
-      {
-        params: DEFAULT_PARAMS,
-        removeSelectAll: true,
-      },
-      () => this.updateSearchParams(this.state.params)
-    );
+    this.updateSearchParams(DEFAULT_PARAMS)
   };
 
   resetSelectAll = () => {

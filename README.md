@@ -10,11 +10,14 @@ You can use one of the following options to start ClinWiki on your own system:
 - [Docker Compose](#docker-compose) (easiest method)
 - [Locally in development mode](#run-locally)
 - [Locally in production mode](#run-locally-in-production-mode)
-- [Vagrant](#vagrant)
 
 ### Docker Compose
 
 1. Clone the ClinWiki repository
+
+1. Create a `.env` file in the project's root directory (use `.example.env` for inspiration)
+
+    > Reach out to @williamhoos for AACT database URL and credentials for other third party services
 
 1. Install Docker
 
@@ -29,7 +32,7 @@ You can use one of the following options to start ClinWiki on your own system:
   
     > This will fix file mounting issues in OS X and Docker that create significant performance problems using the default config. Additionally, you will want to run the `docker-compose` commands with additional arguments (included below for each step).
 
-1. Build image
+1. Build images
 
     `docker-compose build`
 
@@ -37,13 +40,41 @@ You can use one of the following options to start ClinWiki on your own system:
 
 1. Run ClinWiki server on <http://localhost:3000>
 
-    `ELASTIC_PASSWORD=CHANGEME docker-compose up` or `ELASTIC_PASSWORD=CHANGEME docker-compose up -d` to run as daemon in background
+    `docker-compose up` or `docker-compose up -d` to run as daemon in background
 
-    > **macOS:** `ELASTIC_PASSWORD=CHANGEME docker-compose -f docker-compose.yml -f docker-compose-osx.yml up` or `ELASTIC_PASSWORD=CHANGEME docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d`
+    > **macOS:** `docker-compose -f docker-compose.yml -f docker-compose-osx.yml up` or `docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d`
 
 1. Bootstrap search
 
     `compose/bin/search_bootstrap`
+
+1. Open a bash shell inside the `clinwiki` Docker container
+
+    `docker-compose exec clinwiki bash`
+
+1. Seed the database
+
+    `rake db:seed`
+
+1. Start Rails console (still inside Docker container)
+
+    `rails c`
+
+1. Create new user
+
+    `User.create!(first_name: "CHANGEME", last_name: "CHANGEME", email: "CHANGEME", password: "CHANGEME", password_confirmation: "CHANGEME")`
+
+1. To access the sub-site config and bulk update admin features, add admin role after creating a user
+
+    `User.find_by(email: "CHANGEME").add_role(:admin)`
+
+1. Exit Rails console
+
+    `exit`
+
+1. Exit Docker container
+
+    `exit`
 
 1. Build and serve frontend (on <http://localhost:3001>):
 
@@ -52,6 +83,12 @@ You can use one of the following options to start ClinWiki on your own system:
     - `yarn start`
 
     > **NOTE:** Changes to local .ts/.tsx files will be automatically applied to the running system
+
+1. Go to <http://localhost:3001> and sign in using the user email and password created in the Rails console
+
+1. Create the default site by clicking on `Sites` under the profile dropdown on the top right hand side. Then click create site, fill out the form and click save.
+
+    > Sites can be accessed locally by navigating to a subdomain against your localhost. By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are white-listed for CORS requests. This means you can configure a site with the subdomain `mysite` and a site with the subdomain `test` without additional CORS configuration.
 
 - Extras
   - Logs: `docker-compose logs -f clinwiki`
@@ -134,16 +171,7 @@ mode.
 
 ### Run Locally in Production Mode
 
-1. Create a .env file in root with the following contents
-
-    ```bash
-    AACT_DATABASE_URL=postgres://$AACT_USER:$AACT_PASS@aact-db.ctti-clinicaltrials.org:5432/aact
-    MAILGUN_API_KEY=""
-    MAILGUN_DOMAIN="localhost:3000"
-    CW_HOST="localhost:3000"
-    CLINWIKI_DOMAIN="localhost:3000"
-    SECRET_KEY_BASE="lkdfjgldgjkdflgjlkdfjgldfkjg"
-    ```
+1. Create a `.env` file in the project's root directory (use `.example.env` for inspiration)
 
 1. Precompile assets
 
@@ -156,66 +184,6 @@ mode.
     ```bash
     export $(cat .env | xargs) && RAILS_ENV=production rails s
     ```
-
-### Vagrant
-
-Make sure you have a copy of `cw-app` located as a sibling of the root project
-directory.
-
-You can once you've installed [vagrant](https://www.vagrantup.com/),
-you can install the vagrant VM by running `vagrant up` from the project
-root directory.
-
-You can access the vagrant instance via `vagrant ssh`.
-
-The following scripts are available
-
-| Script                       | Function                                                      |
-| ---------------------------- | ------------------------------------------------------------- |
-| `./scripts/vagrant/server`   | runs the server through vagrant, serving the API at port 3000 |
-| `./scripts/vagrant/worker`   | runs the worker within the vagrant server                     |
-| `./scripts/vagrant/frontend` | runs a hot-reloading version of the frontend                  |
-
-#### Initializing Data
-
-We have already enqueued several tasks for the worker to run while
-provisioning Vagrant, but you will need to make sure to run the worker
-for those jobs to be handled.
-
-#### Running the Server
-
-In one vagrant SSH session, you will want to run the following:
-
-```bash
-cd /clinwki
-./scripts/server
-```
-
-This will expose `localhost:3000` to API requests.
-
-From another session, run the following:
-
-```bash
-cd /cw-app
-yarn start
-```
-
-This will run a hot-reloading session of the cw-app frontend.
-
-To make sure reindexing and the like are handled on save,
-make sure to run `./scripts/worker` in a separate session as well.
-
-## Admin & Sites Setup
-
-To access the sub-site config and bulk update admin features, add admin role after creating a user
-In rails console, `User.find_by(email: "[email of the user]").add_role(:admin)`
-
-  > **NOTE**: Run this command from inside the `clinwiki` container if you're using Docker Compose.
-
-Sites can be accessed locally by navigating to a subdomain against your localhost.
-By default, `http://mysite.localhost:3001` and `http://test.localhost:3001` are
-white-listed for CORS requests. This means you can configure a site with the subdomain
-`mysite` and a site with the subdomain `test` without additional CORS configuration.
 
 ## Data Access
 
@@ -327,3 +295,22 @@ the annotation database along with the AACT database.
 ```bash
 heroku run -a clinwiki-prod rake export:front_matter_csv > my-front-matter.csv
 ```
+
+#### **Additional Data Seeding**
+
+When using the standard seeding of AACT data and clinwiki data, we are still working to establish a more complete development seeded database. Some functionality for workflows, crowd values and bulk update will not be available until at least a few studies have crowd keys and values.
+To complete set-up, add at least the following keys and values spread across at least 5 studies. Having any values for crowd key/values seeds this funcitnoality in the application. Having any keys labeled "WF_" ensures workflows function. Having at least one study with WF_bulk key enables configuration of the bulk update functionality. [this fuctionality will be replaced with alternative seed files and functionality]
+
+- tags
+- - Organization 1
+- - Organization 2
+- - Organization 3
+- WF_bulk
+- - Needs Review
+- WF_TestA
+- - TestA Value 1
+- - TestA Value 2
+- WF_TestB
+- - TestB Value 1
+- - TestB Value 2
+- - TestB Value 3
