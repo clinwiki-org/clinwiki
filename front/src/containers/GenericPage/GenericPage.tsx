@@ -9,7 +9,7 @@ import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-apollo';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
-import { pageIslands } from 'containers/Islands/CommonIslands'
+import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
 
@@ -70,7 +70,7 @@ export default function GenericPage(props: Props) {
         fragmentName={fragmentName}
         fragmentClass="Study"
         onFragmentChanged={setFragment}
-        islands={pageIslands}
+        islands={studyIslands}
       />
     </div>
   );
