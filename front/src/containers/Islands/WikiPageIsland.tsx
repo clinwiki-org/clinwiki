@@ -113,14 +113,14 @@ export default function WikiPageIsland(props: Props) {
     Object.keys(historyExpanded).forEach(key => {
       historyExpanded[key] = true;
     });
-    setHistoryExpanded(historyExpanded)
+    setHistoryExpanded(historyExpanded);
   };
 
   const minimizeAllEdits = () => {
     Object.keys(historyExpanded).forEach(key => {
       historyExpanded[key] = false;
     });
-    setHistoryExpanded(historyExpanded)
+    setHistoryExpanded(historyExpanded);
   };
 
   const renderMarkdownButton = () => {
