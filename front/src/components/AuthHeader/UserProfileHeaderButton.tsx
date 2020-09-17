@@ -3,9 +3,17 @@ import styled, { keyframes } from 'styled-components';
 import { logout, getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
-import SiteProvider from 'containers/SiteProvider';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { UserFragment } from 'types/UserFragment';
+import {gql} from "apollo-boost";
+import {
+  Query,
+  QueryComponentOptions,
+} from 'react-apollo';
+import { AdminViewsProviderQuery, AdminViewsProviderQueryVariables } from 'types/AdminViewsProviderQuery';
+import LoadingPane from "../LoadingPane/LoadingPane";
+import Error from "../Error";
+
 
 const UserImage = styled.img`
   width: 25px;
@@ -150,6 +158,35 @@ animation-play-state: running;
 
 `
 
+export const ADMIN_SITE_VIEW_FRAGMENT = gql`
+    fragment AdminSiteViewFragment on SiteView {
+        name
+        url
+        id
+        search {
+            type
+        }
+    }
+`;
+
+const QUERY = gql`
+    query AdminViewsProviderQuery($id: Int) {
+        site(id: $id) {
+            id
+            siteViews {
+                ...AdminSiteViewFragment
+            }
+        }
+    }
+
+    ${ADMIN_SITE_VIEW_FRAGMENT}
+`;
+
+const QueryComponent = (
+    props: QueryComponentOptions<AdminViewsProviderQuery, AdminViewsProviderQueryVariables>
+) => Query(props);
+
+
 interface UserProfileHeaderButtonProps {
   user: UserFragment | null;
   history: History;
@@ -282,8 +319,15 @@ class UserProfileHeaderButton extends React.PureComponent<
     }
     if (user) {
       return (
-        <SiteProvider>
-          {(site) => {
+        <QueryComponent
+          query={QUERY}>
+          {({loading, error, data}) => {
+            if (loading) {
+              return <LoadingPane />;
+            }
+            if (error) {
+              return <Error message={error.message} />;
+            }
             return (
               <div
                 ref={(node: any) => {
@@ -315,7 +359,7 @@ class UserProfileHeaderButton extends React.PureComponent<
                 color: getStarColor(user.rank),
                 fontSize: 18,
               }}
-            />
+              />
               }
 
                   <FontAwesome
@@ -345,7 +389,7 @@ class UserProfileHeaderButton extends React.PureComponent<
                           Workflows
                         </ThemedDropDownItem>
                       )}
-                    {this.renderAdminMenuItems(site)}
+                    {this.renderAdminMenuItems(data?.site)}
                     <ThemedDropDownItem onClick={this.handleSignOutClick}>
                       Log Out
                     </ThemedDropDownItem>
@@ -354,7 +398,7 @@ class UserProfileHeaderButton extends React.PureComponent<
               </div>
             );
           }}
-        </SiteProvider>
+        </QueryComponent>
       );
     }
   }
