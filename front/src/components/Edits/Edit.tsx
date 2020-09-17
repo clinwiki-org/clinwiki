@@ -9,40 +9,38 @@ interface EditProps {
   edit: WikiPageEditFragment;
 }
 
-class Edit extends React.Component<EditProps> {
-  render() {
-    const { edit } = this.props;
+const Edit = (props: EditProps) => {
+  const { edit } = props;
 
-    return (
-      <tr key={edit.id} style={{ padding: '10px' }}>
-        <td>
-          <ExpansionContext.Consumer>
-            {({ historyExpanded, toggleEditVisibility }) => {
-              const expanded = historyExpanded[edit.id];
-              const nodes = [
-                <EditBlurb
-                  edit={edit}
-                  expanded={expanded}
-                  setExpanded={toggleEditVisibility(edit.id)}
-                />,
-              ];
+  return (
+    <tr key={edit.id} style={{ padding: '10px' }}>
+      <td>
+        <ExpansionContext.Consumer>
+          {({ historyExpanded, toggleEditVisibility }) => {
+            const expanded = historyExpanded[edit.id];
+            const nodes = [
+              <EditBlurb
+                edit={edit}
+                expanded={expanded}
+                setExpanded={toggleEditVisibility(edit.id)}
+              />,
+            ];
 
-              if (expanded) {
-                nodes.push(
-                  <Row style={{ padding: '10px', marginBottom: '10px' }}>
-                    <Col md={12}>
-                      <ExpandedEdit edit={edit} />
-                    </Col>
-                  </Row>
-                );
-              }
-              return nodes;
-            }}
-          </ExpansionContext.Consumer>
-        </td>
-      </tr>
-    );
-  }
+            if (expanded) {
+              nodes.push(
+                <Row style={{ padding: '10px', marginBottom: '10px' }}>
+                  <Col md={12}>
+                    <ExpandedEdit edit={edit} />
+                  </Col>
+                </Row>
+              );
+            }
+            return nodes;
+          }}
+        </ExpansionContext.Consumer>
+      </td>
+    </tr>
+  );
 }
 
 export default Edit;

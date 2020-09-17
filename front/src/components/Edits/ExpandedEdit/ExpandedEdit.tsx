@@ -8,9 +8,8 @@ interface EditProps {
   edit: WikiPageEditFragment;
 }
 
-class ExpandedEdit extends React.Component<EditProps> {
-  render() {
-    const { edit } = this.props;
+const ExpandedEdit = (props: EditProps) => {
+    const { edit } = props;
     const {
       changeSet: { bodyChanged, frontMatterChanged },
     } = edit;
@@ -23,7 +22,6 @@ class ExpandedEdit extends React.Component<EditProps> {
     }
 
     return <ExpandedAsRawDiff edit={edit} />;
-  }
 }
 
 export default ExpandedEdit;
