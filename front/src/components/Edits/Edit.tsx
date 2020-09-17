@@ -13,7 +13,7 @@ const Edit = (props: EditProps) => {
   const { edit } = props;
 
   return (
-    <tr key={edit.id} style={{ padding: '10px' }}>
+    <tr style={{ padding: '10px' }}>
       <td>
         <ExpansionContext.Consumer>
           {({ historyExpanded, toggleEditVisibility }) => {
