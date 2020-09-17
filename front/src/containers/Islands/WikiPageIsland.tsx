@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { partition, toPairs } from 'ramda';
-import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { WikiPageQuery, WikiPageQueryVariables } from 'types/WikiPageQuery';
 import {
   UPDATE_CONTENT_MUTATION,
-  UpdateContentMutationFn,
 } from 'mutations/WikiPageUpdateContentMutation';
 import {
-  WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
 import styled from 'styled-components';
@@ -22,12 +19,10 @@ import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
 import  { Switch, Route } from 'react-router';
-import { UserFragment } from 'types/UserFragment';
 import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
-import ExpansionContext from '../WikiPage/ExpansionContext';
-import Edits, { WikiPageEditFragment } from 'components/Edits';
+import Edits from 'components/Edits';
 import { CurrentUserQuery_me } from 'types/CurrentUserQuery'
 
 interface Props {
@@ -82,11 +77,6 @@ export default function WikiPageIsland(props: Props) {
       );
     }
     return plainEditorText;
-  };
-
-  const toggleEditVisibility = (editId: string) => value => {
-    historyExpanded[editId] = value;
-    setHistoryExpanded(historyExpanded);
   };
 
   const handlePreview = () => {
@@ -351,11 +341,6 @@ export default function WikiPageIsland(props: Props) {
           <Route
             path={historyPath}
             render={() => (
-              <ExpansionContext.Provider
-                value={{
-                  historyExpanded,
-                  toggleEditVisibility: toggleEditVisibility,
-                }}>
                 <Edits
                   edits={
                     (studyData &&
@@ -365,7 +350,6 @@ export default function WikiPageIsland(props: Props) {
                     []
                   }
                 />
-              </ExpansionContext.Provider>
             )}
           />
         </div>
