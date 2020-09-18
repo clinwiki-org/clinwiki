@@ -194,12 +194,13 @@ const SearchWrapper = styled.div`
 `;
 
 const SearchContainer = styled.div`
-padding: 0 30px;
-
+  padding: 0 30px;
   color: black;
-  margin-bottom: 1em;
+  margin-top: 30px;
+  margin-bottom: 30px;
   display: block;
   flex-direction: column;
+
   .ReactVirtualized__Grid__innerScrollContainer{
     display: flex;
     flex-wrap: wrap
@@ -209,7 +210,8 @@ padding: 0 30px;
     width: 100%;
     margin-top: 15px;
   }
-  .headerRow{
+
+  .headerRow {
     background-color: ${props=>props.theme.button};
     border-bottom: 1px solid #e0e0e0;
     pading: 58px;
@@ -218,19 +220,22 @@ padding: 0 30px;
     font-weight: 400;
     display: flex;
   }
+
   .evenRow,
   .oddRow {
     border-bottom: 1px solid #e0e0e0;
     display: flex;
   }
+
   .oddRow {
     background-color: #fafafa;
   }
+
   .headerColumn {
     text-transform: none;
   }
 `;
-const ThemedSearchContainer = withTheme(SearchContainer)
+const ThemedSearchContainer = withTheme(SearchContainer);
 interface SearchView2Props {
   params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
@@ -396,7 +401,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               style={{ margin: '5px', color: 'gray' }}
             />
           )}
-        <div>{recordsTotal} results</div>
         <div>
           {recordsTotal > MAX_WINDOW_SIZE
             ? `(showing first ${MAX_WINDOW_SIZE})`
@@ -424,7 +428,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         {site => {
           if (site.siteViews.length > 0 && buttonsArray.length > 0) {
             return (
-              <div style={{ marginLeft: "auto", marginBottom: "1rem" }}  >
+              <div style={{ marginLeft: "auto"}}  >
                 <ButtonGroup>
                   {buttonsArray.map((button, index) => (
                     <a href={`/search?hash=${this.props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
@@ -461,6 +465,12 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       case 'large masonry':
         return <FontAwesome name="th-large"
                             style={{ fontSize: '1.8rem' }} />;
+      case 'object':
+        return <FontAwesome name="object-group"
+                          style={{ fontSize: '1.8rem' }} />;
+      case 'newspaper':
+        return <FontAwesome name="newspaper-o "
+                          style={{ fontSize: '1.8rem' }} />;
       default:
         return null;
     }
@@ -583,8 +593,10 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'flex-end',
+                     marginBottom:"10px"
                   }}>
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
           <AutoSizer>
             {({ height, width }) => (
@@ -606,9 +618,11 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   style={{
                     display: 'flex',
                     flexDirection: 'row',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'flex-end', 
+                    marginBottom:"10px"
                   }}>
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
           <AutoSizer>
             {({ height, width }) => (
@@ -631,8 +645,10 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'flex-emd',
+                    marginBottom:"10px"
                   }}>
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
           <AutoSizer>
             {({ height, width }) => (
@@ -704,11 +720,13 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               <div
                 style={{
                   display: 'flex',
-                  flexDirection: 'row',
-                  marginLeft: 'auto',
+                  flexDirection: 'row', 
+                  marginBottom:"10px"
+                  
                 }}>
                 {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <Cards
@@ -729,9 +747,11 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   display: 'flex',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
+                   marginBottom:"10px"
                 }}>
                 {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
                 {this.renderViewDropdown()}
+                {this.renderFilterDropDown()}
               </div>
               <ReactTable
                 ref={this.searchTable}
@@ -812,7 +832,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         resultsType,
         recordsTotal
       )
-      : null;
+      :  <div style={{ marginLeft: 'auto', display: 'flex' }}>{this.renderViewDropdown()}</div>;
   };
   cardPressed = card => {
     this.props.onRowClick(
@@ -856,7 +876,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     let isDesc = this.props.params.sorts[0].desc
     return (
 
-      <div onClick={() => this.reverseSort()} style={{ display: 'flex', marginTop: 'auto', marginBottom: 'auto', cursor: 'pointer' }} >
+      <div onClick={() => this.reverseSort()} style={{ display: 'flex', cursor: 'pointer' }} >
         {isDesc ? (
           <FontAwesome
             name={'sort-amount-desc'}
@@ -883,15 +903,15 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     }
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'row', marginRight: '-30px' }}>
-        <div style={{ marginLeft: 'auto', display: 'flex' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
+        <div style={{  display: 'flex' }}>
           <DropdownButton
             bsStyle="default"
             title={`Sort by: ${sortField()}`}
             key="default"
             id="dropdown-basic-default"
             style={{
-              margin: '1em 1em 1em 0',
+              width: '200px',
               background: this.props.theme.button,
             }}>
 
@@ -937,7 +957,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               this.handleAggsUpdated(data);
               return (
                 <ThemedSearchContainer>
-                  {this.renderFilterDropDown()}
                   {this.renderSearch({ data, loading, error })}
                 </ThemedSearchContainer>
               );
