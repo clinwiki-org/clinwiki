@@ -7,18 +7,19 @@ interface EditsProps {
   edits: WikiPageEditFragment[];
 }
 
-const Edits = (props: EditsProps) => {
-  const { edits } = props;
-
-  return (
-    <StyleWrapper striped bordered>
-      <tbody>
-        {edits.map((edit, i) => (
-          <Edit key={i} edit={edit} />
-        ))}
-      </tbody>
-    </StyleWrapper>
-  );
+class Edits extends React.Component<EditsProps> {
+  render() {
+    const { edits } = this.props;
+    return (
+      <StyleWrapper striped bordered>
+        <tbody>
+          {edits.map((edit, i) => (
+            <Edit key={i} edit={edit} />
+          ))}
+        </tbody>
+      </StyleWrapper>
+    );
+  }
 }
 
 export default Edits;

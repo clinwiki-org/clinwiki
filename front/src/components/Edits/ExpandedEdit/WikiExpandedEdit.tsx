@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import FontAwesome from 'react-fontawesome';
+import * as React from 'react';
+import * as FontAwesome from 'react-fontawesome';
 import { Row, Col, Button } from 'react-bootstrap';
 
 import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
@@ -13,14 +13,26 @@ interface EditState {
   hoveredLine: number | null;
 }
 
-const WikiExpandedEdit = (props: EditProps) => {
-  const [hoveredLine, setHoveredLine] = useState(null);
+class WikiExpandedEdit extends React.Component<EditProps, EditState> {
+  state = {
+    lineVisible: {},
+    hoveredLine: null,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      lineVisible: this.prepareSpans(),
+      hoveredLine: null,
+    };
+  }
+
   /**
    * Only show a line on either side for context
    * by default for line-by-line change.
    */
-  const [lineVisible, setLineVisible] = useState(() => {
-    const { edit } = props;
+  prepareSpans = () => {
+    const { edit } = this.props;
     let lastWasChange = false;
     const lineVisible = {};
     edit.changeSet.editLines.forEach((line, i) => {
@@ -36,26 +48,29 @@ const WikiExpandedEdit = (props: EditProps) => {
       }
     });
     return lineVisible;
-  });
+  };
 
-  const expandSpans = (start, end) => () => {
+  expandSpans = (start, end) => () => {
     const lineVisibleUpdate = {};
     for (let i = start; i <= end; i++) {
       lineVisibleUpdate[i] = true;
     }
-    setLineVisible(lineVisibleUpdate);
+    this.setState({
+      lineVisible: { ...this.state.lineVisible, ...lineVisibleUpdate },
+    });
   };
 
-  const hoveredOpts = (key, className = '') => ({
+  hoveredOpts = (key, className = '') => ({
     key,
     className: `${className}${
-      hoveredLine === key ? ' hovered' : ''
+      this.state.hoveredLine === key ? ' hovered' : ''
     }`,
-    onMouseEnter: () => setHoveredLine(key),
-    onMouseLeave: () => setHoveredLine(null)
+    onMouseEnter: () => this.setState({ ...this.state, hoveredLine: key }),
+    onMouseLeave: () => this.setState({ ...this.state, hoveredLine: null }),
   });
 
-  const hasInvisibleLines = () => {
+  hasInvisibleLines() {
+    const { lineVisible } = this.state;
     for (let i = 0; i < Object.keys(lineVisible).length; i++) {
       if (!lineVisible[i]) {
         return true;
@@ -64,12 +79,14 @@ const WikiExpandedEdit = (props: EditProps) => {
     return false;
   }
 
+  render() {
     const {
       edit: {
         changeSet: { editLines },
       },
-    } = props;
-    const invisibleLines = hasInvisibleLines();
+    } = this.props;
+    const { lineVisible } = this.state;
+    const invisibleLines = this.hasInvisibleLines();
     const nodes: any[] = [];
     const actions: any[] = [];
     let firstInvisible: number | null = null;
@@ -81,22 +98,22 @@ const WikiExpandedEdit = (props: EditProps) => {
       if (lineVisible[i]) {
         if (firstInvisible !== null && i > firstInvisible) {
           actions.push(
-            <li {...hoveredOpts(i - 1)}>
+            <li {...this.hoveredOpts(i - 1)}>
               <button
                 className="diff-expander"
-                onClick={expandSpans(firstInvisible, i - 1)}>
+                onClick={this.expandSpans(firstInvisible, i - 1)}>
                 <FontAwesome name="arrows" />
               </button>
             </li>
           );
-          nodes.push(<li {...hoveredOpts(i - 1)}>&nbsp;</li>);
+          nodes.push(<li {...this.hoveredOpts(i - 1)}>&nbsp;</li>);
           firstInvisible = null;
         }
         actions.push(
-          <li {...hoveredOpts(i, line.status.toLowerCase())} />
+          <li {...this.hoveredOpts(i, line.status.toLowerCase())} />
         );
         nodes.push(
-          <li {...hoveredOpts(i, line.status.toLowerCase())}>
+          <li {...this.hoveredOpts(i, line.status.toLowerCase())}>
             {line.content}
           </li>
         );
@@ -107,15 +124,15 @@ const WikiExpandedEdit = (props: EditProps) => {
     if (firstInvisible !== null) {
       const key = editLines.length + 1;
       actions.push(
-        <li {...hoveredOpts(key)}>
+        <li {...this.hoveredOpts(key)}>
           <button
             className="diff-expander"
-            onClick={expandSpans(firstInvisible, editLines.length)}>
+            onClick={this.expandSpans(firstInvisible, editLines.length)}>
             <FontAwesome name="arrows" />
           </button>
         </li>
       );
-      nodes.push(<li {...hoveredOpts(key)}> </li>);
+      nodes.push(<li {...this.hoveredOpts(key)}> </li>);
     }
     return (
       <Row>
@@ -133,13 +150,14 @@ const WikiExpandedEdit = (props: EditProps) => {
           {invisibleLines && (
             <Button
               bsSize="xsmall"
-              onClick={expandSpans(0, editLines.length + 1)}>
+              onClick={this.expandSpans(0, editLines.length + 1)}>
               Expand All
             </Button>
           )}
         </Col>
       </Row>
     );
+  }
 }
 
 export default WikiExpandedEdit;

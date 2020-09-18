@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import {
   WikiPageEditFragment,
@@ -12,16 +12,14 @@ interface EditBlurbProps {
   setExpanded: any;
 }
 
-const EditBlurb = (props: EditBlurbProps) => {
-  const getUserIdentity = () => {
+class EditBlurb extends React.Component<EditBlurbProps> {
+  getUserIdentity() {
     const {
       edit: { user },
-    } = props;
-
+    } = this.props;
     if (!user) {
       return 'Anonymous';
     }
-
     if (user.firstName) {
       const userName = `${user.firstName} ${user.lastName && user.lastName[0]}`;
       return (
@@ -31,7 +29,6 @@ const EditBlurb = (props: EditBlurbProps) => {
         </Link>
       );
     }
-
     return (
       <Link
         to={`/profile/${user.email}?sv=user&uid=${user.id}&username=${user.email}`}>
@@ -40,12 +37,12 @@ const EditBlurb = (props: EditBlurbProps) => {
     );
   }
 
-  const getBlurb = () => {
+  getBlurb() {
     const {
       edit: {
         changeSet: { bodyChanged, frontMatterChanged },
       },
-    } = props;
+    } = this.props;
     if (!bodyChanged && !frontMatterChanged) {
       return 'made the first edit.';
     }
@@ -58,31 +55,32 @@ const EditBlurb = (props: EditBlurbProps) => {
     return 'made a change.';
   }
 
-  const { edit, expanded, setExpanded } = props;
-
-  return (
-    <Row style={{ marginBottom: '10px', padding: '10px' }}>
-      <Col md={8}>
-        <span className="diff-actor">{getUserIdentity()}</span>
-        <span>{' ' + getBlurb()}</span>
-      </Col>
-      <Col md={2}>
-        <small>{new Date(edit.createdAt).toLocaleDateString('en-US')}</small>
-      </Col>
-      <Col md={2} className="text-right">
-        {expanded && (
-          <ThemedButton onClick={() => setExpanded(false)}>
-            View Less
-          </ThemedButton>
-        )}
-        {!expanded && (
-          <ThemedButton onClick={() => setExpanded(true)}>
-            View More
-          </ThemedButton>
-        )}
-      </Col>
-    </Row>
-  );
+  render() {
+    const { edit, expanded, setExpanded } = this.props;
+    return (
+      <Row style={{ marginBottom: '10px', padding: '10px' }}>
+        <Col md={8}>
+          <span className="diff-actor">{this.getUserIdentity()}</span>
+          <span>{' ' + this.getBlurb()}</span>
+        </Col>
+        <Col md={2}>
+          <small>{new Date(edit.createdAt).toLocaleDateString('en-US')}</small>
+        </Col>
+        <Col md={2} className="text-right">
+          {expanded && (
+            <ThemedButton onClick={() => setExpanded(false)}>
+              View Less
+            </ThemedButton>
+          )}
+          {!expanded && (
+            <ThemedButton onClick={() => setExpanded(true)}>
+              View More
+            </ThemedButton>
+          )}
+        </Col>
+      </Row>
+    );
+  }
 }
 
 export default EditBlurb;
