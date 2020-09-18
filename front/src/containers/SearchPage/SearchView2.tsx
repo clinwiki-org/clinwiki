@@ -194,12 +194,13 @@ const SearchWrapper = styled.div`
 `;
 
 const SearchContainer = styled.div`
-padding: 0 30px;
-
+  padding: 0 30px;
   color: black;
-  margin-bottom: 1em;
+  margin-top: 30px;
+  margin-bottom: 30px;
   display: block;
   flex-direction: column;
+
   .ReactVirtualized__Grid__innerScrollContainer{
     display: flex;
     flex-wrap: wrap
@@ -209,7 +210,8 @@ padding: 0 30px;
     width: 100%;
     margin-top: 15px;
   }
-  .headerRow{
+
+  .headerRow {
     background-color: ${props=>props.theme.button};
     border-bottom: 1px solid #e0e0e0;
     pading: 58px;
@@ -218,19 +220,22 @@ padding: 0 30px;
     font-weight: 400;
     display: flex;
   }
+
   .evenRow,
   .oddRow {
     border-bottom: 1px solid #e0e0e0;
     display: flex;
   }
+
   .oddRow {
     background-color: #fafafa;
   }
+
   .headerColumn {
     text-transform: none;
   }
 `;
-const ThemedSearchContainer = withTheme(SearchContainer)
+const ThemedSearchContainer = withTheme(SearchContainer);
 interface SearchView2Props {
   params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
@@ -898,7 +903,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     }
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'row', marginRight: '-30px', marginLeft: 'auto',}}>
+      <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
         <div style={{  display: 'flex' }}>
           <DropdownButton
             bsStyle="default"
@@ -906,7 +911,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             key="default"
             id="dropdown-basic-default"
             style={{
-              margin: '0em 1em 0em 1em',
               width: '200px',
               background: this.props.theme.button,
             }}>

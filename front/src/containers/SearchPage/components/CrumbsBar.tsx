@@ -31,8 +31,8 @@ const CrumbsBarStyleWrappper = styled.div`
   border: solid white 1px;
   background-color: #f2f2f2;
   color: black;
-  margin-left: 15px;
-  margin-right: 15px;
+  margin-left: 45px;
+  margin-right: 45px;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -339,12 +339,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                 display: 'flex',
                 flexDirection: 'row',
               }}>
-              <b
-                style={{
-                  marginRight: '8px',
-                  marginTop: '4px',
-                }}>
-              </b>
               <Autosuggest
                 multiSection={true}
                 suggestions={suggestions}
@@ -364,11 +358,11 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                 getSuggestionValue={this.getSuggestionValue}
               />
+              <ThemedButton style={{border:"solid white 1px"}} type="submit">
+                <FontAwesome name="search" />
+              </ThemedButton>
             </div>
           </FormGroup>
-          <ThemedButton style={{border:"solid white 1px"}} type="submit">
-            <FontAwesome name="search" />
-          </ThemedButton>
         </div>
       );
     } else if (showAutoSuggest === false) {
@@ -456,15 +450,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
             <CurrentUser>
               {user => (
                 <Grid className="crumbs-bar">
-                  <Row>
-                    <Col xs={8} md={8}>
-                      
-                    </Col>
-                  </Row>
                   {showCrumbsBar ? (
-                    // having trouble getting the theme applied to these ListGroups
-                    // <ThemeProvider>
-                    //   {theme => (
                     <Row>
                       <Col
                         md={12}
@@ -478,7 +464,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             display: 'flex',
                             flexWrap: 'wrap',
                             border: '1px solid #ddd',
-                            borderRadius: ' 5px',
+                            borderRadius: '5px',
                             background: '#fff',
                             width: '100%',
                           }}>
@@ -494,26 +480,13 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                           inline
                           className="searchInput"
                           onSubmit={this.onSubmit}style={{color:"black" ,display:"inline"} }>
-                          { this.renderAutoSuggest(
-                                suggestions,
-                                searchTerm,
-                                apolloClient,
-                                showAutoSuggest,
-                                isSuggestionLoading
-                              )}
-                          &nbsp;
-                          {user && user.roles.includes('admin') ? (
-                            <ThemedButton
-                              onClick={() =>
-                                this.props.onBulkUpdate(
-                                  this.props.searchHash,
-                                  this.props.currentSiteView.url || 'default'
-                                )
-                              }
-                              style={{border:"solid white 1px"}}>
-                              Bulk Update <FontAwesome name="truck" />
-                            </ThemedButton>
-                          ) : null}
+                          {this.renderAutoSuggest(
+                            suggestions,
+                            searchTerm,
+                            apolloClient,
+                            showAutoSuggest,
+                            isSuggestionLoading
+                          )}
                         </Form>
                         ) : null} 
                             {' '}
@@ -536,19 +509,30 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                       </Col>
                     </Row>
                   ): null}
-                  <Col xs={6} md={6}>
-                      <Row>
-                        <Col xs={6} md={6} style={{ textAlign: 'left' }}>
-                            <div style={{marginRight:"10px", display: "inline"}}>
-                              <b >Total Results:</b> {this.props.totalResults}{' '} studies
-                            </div>
-                            <ExportToCsvComponent
-                                siteView={this.props.currentSiteView}
-                                searchHash={this.props.searchHash}
-                              />
-                        </Col>
-                      </Row>
-                    </Col>
+                    <Row>
+                      <Col xs={12}>
+                          <div style={{ marginRight: '10px', display: 'inline' }}>
+                            <b>Total Results:</b> {`${this.props.totalResults} studies`}
+                          </div>
+                          <ExportToCsvComponent
+                            siteView={this.props.currentSiteView}
+                            searchHash={this.props.searchHash}
+                          />
+                          {user && user.roles.includes('admin') ? (
+                            <ThemedButton 
+                              onClick={() =>
+                                this.props.onBulkUpdate(
+                                  this.props.searchHash,
+                                  this.props.currentSiteView.url || 'default'
+                                )
+                              }
+                              style={{ marginLeft: '10px' }}
+                            >
+                              Bulk Update <FontAwesome name="truck" />
+                            </ThemedButton>
+                          ) : null}
+                      </Col>
+                    </Row>
                 </Grid>
               )}
             </CurrentUser>

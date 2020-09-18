@@ -840,9 +840,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   renderCrumbs = (siteView: SiteViewFragment) => {
     const { totalRecords } = this.state;
-    // if (this.props.userId) {
-    //   this.getDefaultParams(siteView);
-    // }
     const q: string[] =
       this.state.params?.q.key === '*'
         ? []
