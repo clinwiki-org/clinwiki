@@ -17,9 +17,9 @@ const MarkerContainer = styled.div`
 `;
 
 const Circle = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute;
+  left: 0;
+  top: 0;
   width: ${K_CIRCLE_SIZE}px;
   height: ${K_CIRCLE_SIZE}px;
   border-radius: ${K_CIRCLE_SIZE}px;
@@ -27,7 +27,7 @@ const Circle = styled.div`
   text-align: center;
   font-size: 15px;
   font-weight: bold;
-  padding: 0;
+  padding: 2.5px 0 0;
   cursor: pointer;
   box-shadow: 0 0 0 1px white;
 `;
@@ -125,19 +125,19 @@ class MapMarker extends React.PureComponent<Props> {
       return (
         <MarkerContainer onClick={this.markerClicked}>
           {this.props.$hover || this.state.clicked ? (
-            <div>
+            <>
               <ThemedHoverCircle onClick={this.props.onClick}>
                 {this.props.text}
               </ThemedHoverCircle>
               <ThemedHoverStick />
-            </div>
+            </>
           ) : (
-            <div>
+            <>
               <ThemedMarkerCircle onClick={this.props.onClick}>
                 {this.props.text}
               </ThemedMarkerCircle>
               <ThemedMarkerStick />
-            </div>
+            </>
           )}
           {this.state.clicked ? (
             <FacilityInfoCard
