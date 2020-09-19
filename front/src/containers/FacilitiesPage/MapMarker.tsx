@@ -16,80 +16,42 @@ const MarkerContainer = styled.div`
   top: calc((${K_CIRCLE_SIZE}px + ${K_STICK_SIZE}px) * -1);
 `;
 
-const MarkerCircle = styled.div`
+const Circle = styled.div`
   position: absolute;
   left: 0;
   top: 0;
   width: ${K_CIRCLE_SIZE}px;
   height: ${K_CIRCLE_SIZE}px;
+  border-radius: ${K_CIRCLE_SIZE}px;
+  background-color: white;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px white;
+`;
+
+const ThemedCircle = withTheme(Circle);
+
+const MarkerCircle = styled(ThemedCircle)`
   border: 3px solid ${props => props.theme.mapSection.markerBorderColor};
-  border-radius: ${K_CIRCLE_SIZE}px;
-  background-color: white;
-  text-align: center;
   color: ${props => props.theme.mapSection.markerFontColor};
-  font-size: 15px;
-  font-weight: bold;
-  padding: 0;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px white;
 `;
 
-const ThemedMarkerCircle = withTheme(MarkerCircle);
-
-const WarningCircle = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: ${K_CIRCLE_SIZE}px;
-  height: ${K_CIRCLE_SIZE}px;
+const WarningCircle = styled(ThemedCircle)`
   border: 3px solid #ffcc00;
-  border-radius: ${K_CIRCLE_SIZE}px;
-  background-color: white;
-  text-align: center;
   color: #f6a202;
-  font-size: 15px;
-  font-weight: bold;
-  padding: 0;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px white;
 `;
 
-const HoverCircle = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: ${K_CIRCLE_SIZE}px;
-  height: ${K_CIRCLE_SIZE}px;
+const HoverCircle = styled(ThemedCircle)`
   border: 3px solid ${props => props.theme.mapSection.markerFontColor};
-  border-radius: ${K_CIRCLE_SIZE}px;
-  background-color: white;
-  text-align: center;
   color: ${props => props.theme.mapSection.markerBorderColor};
-  font-size: 15px;
-  font-weight: bold;
-  padding: 0;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px white;
 `;
 
-const ThemedHoverCircle = withTheme(HoverCircle);
-
-const WarningHoverCircle = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: ${K_CIRCLE_SIZE}px;
-  height: ${K_CIRCLE_SIZE}px;
+const WarningHoverCircle = styled(HoverCircle)`
   border: 3px solid #f6a202;
-  border-radius: ${K_CIRCLE_SIZE}px;
-  background-color: white;
-  text-align: center;
   color: #ffcc00;
-  font-size: 15px;
-  font-weight: bold;
-  padding: 0;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px white;
 `;
 
 const MarkerStick = styled.div`
@@ -162,16 +124,16 @@ class MapMarker extends React.PureComponent<Props> {
         <MarkerContainer onClick={this.markerClicked}>
           {this.props.$hover || this.state.clicked ? (
             <div>
-              <ThemedHoverCircle onClick={this.props.onClick}>
+              <ThemedCircle onClick={this.props.onClick}>
                 {this.props.text}
-              </ThemedHoverCircle>
+              </ThemedCircle>
               <ThemedHoverStick />
             </div>
           ) : (
             <div>
-              <ThemedMarkerCircle onClick={this.props.onClick}>
+              <MarkerCircle onClick={this.props.onClick}>
                 {this.props.text}
-              </ThemedMarkerCircle>
+              </MarkerCircle>
               <ThemedMarkerStick />
             </div>
           )}
