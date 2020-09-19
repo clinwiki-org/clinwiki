@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { partition, toPairs } from 'ramda';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { gql } from 'apollo-boost';
-import StudySummary from 'components/StudySummary';
 import { match, Switch, Route } from 'react-router';
 import { History, Location } from 'history';
 import { WikiPageQuery, WikiPageQueryVariables } from 'types/WikiPageQuery';
@@ -14,7 +13,6 @@ import {
 import QUERY from 'queries/WikiPageQuery';
 import {
   UPDATE_CONTENT_MUTATION,
-  UpdateContentMutationFn,
 } from 'mutations/WikiPageUpdateContentMutation';
 import { Panel, FormControl } from 'react-bootstrap';
 import {
@@ -31,7 +29,6 @@ import Edits, { WikiPageEditFragment } from 'components/Edits';
 import { trimPath } from 'utils/helpers';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import ExpansionContext from './ExpansionContext';
 interface WikiPageProps {
   nctId: string;
@@ -411,7 +408,6 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
         variables={{ nctId: this.props.nctId }}
         onCompleted={this.handleQueryCompleted}>
         {({ data, loading, error }) => {
-          // console.log('wikidata', data);
           if (loading) {
             return <LoadingPane />;
           }

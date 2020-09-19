@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { partition, toPairs } from 'ramda';
-import { WikiPageQuery, WikiPageQueryVariables } from 'types/WikiPageQuery';
+import { WikiPageQuery } from 'types/WikiPageQuery';
 import {
   UPDATE_CONTENT_MUTATION,
 } from 'mutations/WikiPageUpdateContentMutation';
@@ -16,7 +16,6 @@ import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, {queryStringAll} from 'utils/UrlParamsProvider';
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
 import  { Switch, Route } from 'react-router';
 import { trimPath } from 'utils/helpers';
@@ -27,7 +26,6 @@ import { CurrentUserQuery_me } from 'types/CurrentUserQuery'
 
 interface Props {
   nctId: string;
-
 }
 
 const StyledPanel = styled(Panel)`
@@ -39,8 +37,6 @@ const Toolbar = styled.div`
   justify-content: flex-end;
   padding: 10px;
 `;
-
-
 
 export default function WikiPageIsland(props: Props) {
   const { nctId } = props;
