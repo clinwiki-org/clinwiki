@@ -17,9 +17,9 @@ const MarkerContainer = styled.div`
 `;
 
 const Circle = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: ${K_CIRCLE_SIZE}px;
   height: ${K_CIRCLE_SIZE}px;
   border-radius: ${K_CIRCLE_SIZE}px;
@@ -32,24 +32,26 @@ const Circle = styled.div`
   box-shadow: 0 0 0 1px white;
 `;
 
-const ThemedCircle = withTheme(Circle);
-
-const MarkerCircle = styled(ThemedCircle)`
+const MarkerCircle = styled(Circle)`
   border: 3px solid ${props => props.theme.mapSection.markerBorderColor};
   color: ${props => props.theme.mapSection.markerFontColor};
 `;
 
-const WarningCircle = styled(ThemedCircle)`
+const ThemedMarkerCircle = withTheme(MarkerCircle);
+
+const WarningCircle = styled(Circle)`
   border: 3px solid #ffcc00;
   color: #f6a202;
 `;
 
-const HoverCircle = styled(ThemedCircle)`
+const HoverCircle = styled(MarkerCircle)`
   border: 3px solid ${props => props.theme.mapSection.markerFontColor};
   color: ${props => props.theme.mapSection.markerBorderColor};
 `;
 
-const WarningHoverCircle = styled(HoverCircle)`
+const ThemedHoverCircle = withTheme(HoverCircle);
+
+const WarningHoverCircle = styled(MarkerCircle)`
   border: 3px solid #f6a202;
   color: #ffcc00;
 `;
@@ -124,16 +126,16 @@ class MapMarker extends React.PureComponent<Props> {
         <MarkerContainer onClick={this.markerClicked}>
           {this.props.$hover || this.state.clicked ? (
             <div>
-              <ThemedCircle onClick={this.props.onClick}>
+              <ThemedHoverCircle onClick={this.props.onClick}>
                 {this.props.text}
-              </ThemedCircle>
+              </ThemedHoverCircle>
               <ThemedHoverStick />
             </div>
           ) : (
             <div>
-              <MarkerCircle onClick={this.props.onClick}>
+              <ThemedMarkerCircle onClick={this.props.onClick}>
                 {this.props.text}
-              </MarkerCircle>
+              </ThemedMarkerCircle>
               <ThemedMarkerStick />
             </div>
           )}
