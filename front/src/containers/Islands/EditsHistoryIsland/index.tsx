@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { BeatLoader } from 'react-spinners';
 
+import { StudyEditsHistoryQuery } from 'types/StudyEditsHistoryQuery';
 import QUERY from 'queries/StudyEditsHistoryQuery';
+import EditsExpansionContext from 'components/Edits/EditsExpansionContext';
 import Error from 'components/Error';
 import Edits from 'components/Edits';
-import ExpansionContext from './ExpansionContext';
 import EditsHistoryButtons from './EditsHistoryButtons';
 
 interface EditsIslandProps {
@@ -15,8 +16,10 @@ interface EditsIslandProps {
 const EditsHistoryIsland = (props: EditsIslandProps) => {
   const [historyExpanded, setHistoryExpanded] = useState({});
   const { nctId } = props;
-  const { data, error, loading } = useQuery(QUERY, {
-    variables: nctId,
+  const { data, error, loading } = useQuery<StudyEditsHistoryQuery>(QUERY, {
+    variables: {
+      nctId,
+    },
   });
 
   if (loading) return <BeatLoader />;
@@ -27,14 +30,19 @@ const EditsHistoryIsland = (props: EditsIslandProps) => {
   }
 
   const {
-    study: { wikiPage: edits },
+    study: {
+      wikiPage: { edits },
+    },
   } = data;
 
   return (
-    <ExpansionContext.Provider value={{ historyExpanded, setHistoryExpanded }}>
-      <EditsHistoryButtons />
-      <Edits edits={edits ? edits : []} />
-    </ExpansionContext.Provider>
+    <div>
+      <EditsExpansionContext.Provider
+        value={{ historyExpanded, setHistoryExpanded }}>
+        <EditsHistoryButtons />
+        <Edits edits={edits ? edits : []} />
+      </EditsExpansionContext.Provider>
+    </div>
   );
 };
 

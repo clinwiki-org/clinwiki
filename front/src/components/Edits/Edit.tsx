@@ -1,30 +1,27 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
+import EditsExpansionContext from './EditsExpansionContext';
 import EditBlurb from './EditBlurb';
 import ExpandedEdit from './ExpandedEdit';
-import ExpansionContext from 'containers/Islands/EditsHistoryIsland/ExpansionContext';
 
 interface EditProps {
-  edit: WikiPageEditFragment;
+  edit: StudyEditsHistoryQuery_study_wikiPage_edits;
 }
 
 const Edit = (props: EditProps) => {
   const { edit } = props;
 
   return (
-    <ExpansionContext.Consumer>
+    <EditsExpansionContext.Consumer>
       {({ historyExpanded, setHistoryExpanded }) => (
         <tr style={{ padding: '10px' }}>
           <td>
             <EditBlurb
               edit={edit}
-              expanded={historyExpanded[edit.id]}
-              setExpanded={setHistoryExpanded({
-                ...historyExpanded,
-                [edit.id]: true,
-              })}
+              historyExpanded={historyExpanded}
+              setExpanded={setHistoryExpanded}
             />
             {historyExpanded[edit.id] ? (
               <Row style={{ padding: '10px', marginBottom: '10px' }}>
@@ -36,7 +33,7 @@ const Edit = (props: EditProps) => {
           </td>
         </tr>
       )}
-    </ExpansionContext.Consumer>
+    </EditsExpansionContext.Consumer>
   );
 };
 

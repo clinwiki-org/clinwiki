@@ -11,9 +11,7 @@ import {
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
 import QUERY from 'queries/WikiPageQuery';
-import {
-  UPDATE_CONTENT_MUTATION,
-} from 'mutations/WikiPageUpdateContentMutation';
+import { UPDATE_CONTENT_MUTATION } from 'mutations/WikiPageUpdateContentMutation';
 import { Panel, FormControl } from 'react-bootstrap';
 import {
   Query,
@@ -29,7 +27,7 @@ import Edits, { WikiPageEditFragment } from 'components/Edits';
 import { trimPath } from 'utils/helpers';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'types/UserFragment';
-import ExpansionContext from './ExpansionContext';
+import EditsExpansionContext from './ExpansionContext';
 interface WikiPageProps {
   nctId: string;
   match: match<{ nctId: string }>;
@@ -38,7 +36,7 @@ interface WikiPageProps {
   onLoaded?: () => void;
   isWorkflow?: boolean;
   nextLink?: string | null;
-  showAnimation:any;
+  showAnimation: any;
 }
 
 interface WikiPageState {
@@ -154,7 +152,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
       variables: WikiPageUpdateContentMutationVariables;
     }) => void
   ) => {
-    this.props.showAnimation()
+    this.props.showAnimation();
     updateWikiContent({
       variables: {
         nctId: this.props.nctId,
@@ -239,7 +237,11 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     );
   };
 
-  renderSubmitButton = (data: WikiPageQuery, isAuthenticated: boolean, readOnly: boolean) => {
+  renderSubmitButton = (
+    data: WikiPageQuery,
+    isAuthenticated: boolean,
+    readOnly: boolean
+  ) => {
     if (!isAuthenticated) return false;
     if (readOnly) return false;
     const editorTextState = this.getEditorText();
@@ -249,12 +251,12 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
     return (
       <UpdateContentMutation mutation={UPDATE_CONTENT_MUTATION}>
         {updateWikiContent => (
-            <ThemedButton
-              onClick={() => this.handleEditSubmit(updateWikiContent)}
-              disabled={editorTextState === editorTextData}
-              style={{ marginLeft: '10px' }}>
-              Submit <FontAwesome name="pencil" />
-            </ThemedButton>
+          <ThemedButton
+            onClick={() => this.handleEditSubmit(updateWikiContent)}
+            disabled={editorTextState === editorTextData}
+            style={{ marginLeft: '10px' }}>
+            Submit <FontAwesome name="pencil" />
+          </ThemedButton>
         )}
       </UpdateContentMutation>
     );
@@ -425,7 +427,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                     <Route
                       path={this.historyPath()}
                       render={() => (
-                        <ExpansionContext.Provider
+                        <EditsExpansionContext.Provider
                           value={{
                             historyExpanded,
                             toggleEditVisibility: this.toggleEditVisibility,
@@ -438,7 +440,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
                               []
                             }
                           />
-                        </ExpansionContext.Provider>
+                        </EditsExpansionContext.Provider>
                       )}
                     />
                     <Route render={() => this.renderEditor(data)} />

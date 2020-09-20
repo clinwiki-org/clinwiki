@@ -1,12 +1,12 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
 import { Link } from 'react-router-dom';
 import ThemedButton from 'components/StyledComponents';
 
 interface EditBlurbProps {
-  edit: WikiPageEditFragment;
-  expanded: boolean;
+  edit: StudyEditsHistoryQuery_study_wikiPage_edits;
+  historyExpanded: any;
   setExpanded: any;
 }
 
@@ -54,7 +54,7 @@ const EditBlurb = (props: EditBlurbProps) => {
     return 'made a change.';
   };
 
-  const { edit, expanded, setExpanded } = props;
+  const { edit, historyExpanded, setExpanded } = props;
 
   return (
     <Row style={{ marginBottom: '10px', padding: '10px' }}>
@@ -66,13 +66,19 @@ const EditBlurb = (props: EditBlurbProps) => {
         <small>{new Date(edit.createdAt).toLocaleDateString('en-US')}</small>
       </Col>
       <Col md={2} className="text-right">
-        {expanded && (
-          <ThemedButton onClick={() => setExpanded({ [edit.id]: false })}>
+        {historyExpanded[edit.id] && (
+          <ThemedButton
+            onClick={() =>
+              setExpanded({ ...historyExpanded, [edit.id]: false })
+            }>
             View Less
           </ThemedButton>
         )}
-        {!expanded && (
-          <ThemedButton onClick={() => setExpanded({ [edit.id]: true })}>
+        {!historyExpanded[edit.id] && (
+          <ThemedButton
+            onClick={() =>
+              setExpanded({ ...historyExpanded, [edit.id]: true })
+            }>
             View More
           </ThemedButton>
         )}
