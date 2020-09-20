@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Route } from 'react-router';
+import { Route, useRouteMatch } from 'react-router';
 import { useQuery } from 'react-apollo';
 import { BeatLoader } from 'react-spinners';
 
@@ -16,6 +16,7 @@ interface EditsIslandProps {
 
 const EditsHistoryIsland = (props: EditsIslandProps) => {
   const [historyExpanded, setHistoryExpanded] = useState({});
+  let match = useRouteMatch();
   const { nctId } = props;
   const { data, error, loading } = useQuery<StudyEditsHistoryQuery>(QUERY, {
     variables: {
@@ -42,7 +43,7 @@ const EditsHistoryIsland = (props: EditsIslandProps) => {
         value={{ historyExpanded, setHistoryExpanded }}>
         <EditsHistoryButtons />
         <Route
-          path="/study/:nctId/wiki/history"
+          path={`${match.path}/wiki/history`}
           render={() => <Edits edits={edits ? edits : []} />}
         />
       </EditsExpansionContext.Provider>

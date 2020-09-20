@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouteMatch, useHistory } from 'react-router';
+import { useRouteMatch, useHistory, Route } from 'react-router';
 import * as FontAwesome from 'react-fontawesome';
 import { partition, toPairs, map } from 'ramda';
 
@@ -25,18 +25,12 @@ const ExpandHistoryButtons = () => {
         return (
           <>
             {minimized.length > 0 && (
-              <ThemedButton
-                type="button"
-                onClick={() => toggleAllEdits(true)}
-                style={{ marginLeft: '10px' }}>
+              <ThemedButton type="button" onClick={() => toggleAllEdits(true)}>
                 Expand History <FontAwesome name="expand" />
               </ThemedButton>
             )}
             {maximized.length > 0 && (
-              <ThemedButton
-                type="button"
-                onClick={() => toggleAllEdits(false)}
-                style={{ marginLeft: '10px' }}>
+              <ThemedButton type="button" onClick={() => toggleAllEdits(false)}>
                 Minimize History <FontAwesome name="compress" />
               </ThemedButton>
             )}
@@ -63,25 +57,44 @@ const HistoryToggleButton = () => {
 
   return (
     <>
-      <ThemedButton type="button" onClick={goToEditHistoryUrl}>
-        History <FontAwesome name="history" />
-      </ThemedButton>
-      <ThemedButton
-        type="button"
-        onClick={goToViewUrl}
-        style={{ marginLeft: '10px' }}>
-        View <FontAwesome name="photo" />
-      </ThemedButton>
+      <Route
+        exact
+        path={`${studyPath}/wiki`}
+        render={() => (
+          <ThemedButton type="button" onClick={goToEditHistoryUrl}>
+            History <FontAwesome name="history" />
+          </ThemedButton>
+        )}
+      />
+      <Route
+        exact
+        path={`${studyPath}/wiki/history`}
+        render={() => (
+          <ThemedButton type="button" onClick={goToViewUrl}>
+            View <FontAwesome name="photo" />
+          </ThemedButton>
+        )}
+      />
     </>
   );
 };
 
 const EditsHistoryButtons = () => {
+  let match = useRouteMatch();
+
   return (
-    <>
-      <ExpandHistoryButtons />
+    <div
+      style={{
+        marginBottom: '10px',
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}>
       <HistoryToggleButton />
-    </>
+      <Route
+        path={`${match.path}/wiki/history`}
+        component={ExpandHistoryButtons}
+      />
+    </div>
   );
 };
 
