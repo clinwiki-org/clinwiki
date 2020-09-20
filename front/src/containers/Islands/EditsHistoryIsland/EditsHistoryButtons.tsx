@@ -8,54 +8,56 @@ import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import ExpansionContext from './ExpansionContext';
 
-const ExpandHistoryButtons = ({ history, match }) => (
-  <ExpansionContext.Consumer>
-    {({ historyExpanded, setHistoryExpanded }) => {
-      const params = useUrlParams();
+const ExpandHistoryButtons = ({ history, match }) => {
+  const params = useUrlParams();
 
-      const toggleAllEdits = (value: boolean) => {
-        const toggledHistory = map(() => value, historyExpanded);
-        setHistoryExpanded(toggledHistory);
-      };
+  return (
+    <ExpansionContext.Consumer>
+      {({ historyExpanded, setHistoryExpanded }) => {
+        const toggleAllEdits = (value: boolean) => {
+          const toggledHistory = map(() => value, historyExpanded);
+          setHistoryExpanded(toggledHistory);
+        };
 
-      const handleView = () => {
-        history.push(`${trimPath(match.url)}${queryStringAll(params)}`);
-      };
+        const handleView = () => {
+          history.push(`${trimPath(match.url)}${queryStringAll(params)}`);
+        };
 
-      const [maximized, minimized] = partition(
-        ([_, v]) => v,
-        toPairs(historyExpanded)
-      );
+        const [maximized, minimized] = partition(
+          ([_, v]) => v,
+          toPairs(historyExpanded)
+        );
 
-      return (
-        <div>
-          <ThemedButton
-            type="button"
-            onClick={handleView}
-            style={{ marginLeft: '10px' }}>
-            View <FontAwesome name="photo" />
-          </ThemedButton>
-          {minimized.length > 0 && (
+        return (
+          <div>
             <ThemedButton
               type="button"
-              onClick={() => toggleAllEdits(true)}
+              onClick={handleView}
               style={{ marginLeft: '10px' }}>
-              Expand History <FontAwesome name="expand" />
+              View <FontAwesome name="photo" />
             </ThemedButton>
-          )}
-          {maximized.length > 0 && (
-            <ThemedButton
-              type="button"
-              onClick={() => toggleAllEdits(false)}
-              style={{ marginLeft: '10px' }}>
-              Minimize History <FontAwesome name="compress" />
-            </ThemedButton>
-          )}
-        </div>
-      );
-    }}
-  </ExpansionContext.Consumer>
-);
+            {minimized.length > 0 && (
+              <ThemedButton
+                type="button"
+                onClick={() => toggleAllEdits(true)}
+                style={{ marginLeft: '10px' }}>
+                Expand History <FontAwesome name="expand" />
+              </ThemedButton>
+            )}
+            {maximized.length > 0 && (
+              <ThemedButton
+                type="button"
+                onClick={() => toggleAllEdits(false)}
+                style={{ marginLeft: '10px' }}>
+                Minimize History <FontAwesome name="compress" />
+              </ThemedButton>
+            )}
+          </div>
+        );
+      }}
+    </ExpansionContext.Consumer>
+  );
+};
 
 const EditsHistoryButtons = () => {
   let match = useRouteMatch();
