@@ -51,7 +51,7 @@ const HistoryToggleButton = () => {
   let match = useRouteMatch();
   let history = useHistory();
   const params = useUrlParams();
-  const studyPath = trimPath(match.path);
+  const studyPath = trimPath(match.url);
 
   const goToEditHistoryUrl = () => {
     history.push(`${studyPath}/wiki/history${queryStringAll(params)}`);

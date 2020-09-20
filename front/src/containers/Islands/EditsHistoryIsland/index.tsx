@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Route } from 'react-router';
 import { useQuery } from 'react-apollo';
 import { BeatLoader } from 'react-spinners';
 
@@ -40,7 +41,10 @@ const EditsHistoryIsland = (props: EditsIslandProps) => {
       <EditsExpansionContext.Provider
         value={{ historyExpanded, setHistoryExpanded }}>
         <EditsHistoryButtons />
-        <Edits edits={edits ? edits : []} />
+        <Route
+          path="/study/:nctId/wiki/history"
+          render={() => <Edits edits={edits ? edits : []} />}
+        />
       </EditsExpansionContext.Provider>
     </div>
   );
