@@ -1,27 +1,40 @@
 import React from 'react';
-import { Switch, Route } from 'react-router';
+import { Switch, Route, useRouteMatch, useHistory } from 'react-router';
 import * as FontAwesome from 'react-fontawesome';
 import { partition, toPairs, map } from 'ramda';
 
+import { trimPath } from 'utils/helpers';
+import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import ThemedButton from 'components/StyledComponents/index';
-import HistoryButton from './EditsHistoryButtons';
 import ExpansionContext from './ExpansionContext';
 
-const ExpandHistoryButtons = () => (
+const ExpandHistoryButtons = ({ history, match }) => (
   <ExpansionContext.Consumer>
     {({ historyExpanded, setHistoryExpanded }) => {
-      const [maximized, minimized] = partition(
-        ([_, v]) => v,
-        toPairs(historyExpanded)
-      );
+      const params = useUrlParams();
 
       const toggleAllEdits = (value: boolean) => {
         const toggledHistory = map(() => value, historyExpanded);
         setHistoryExpanded(toggledHistory);
       };
 
+      const handleView = () => {
+        history.push(`${trimPath(match.url)}${queryStringAll(params)}`);
+      };
+
+      const [maximized, minimized] = partition(
+        ([_, v]) => v,
+        toPairs(historyExpanded)
+      );
+
       return (
         <div>
+          <ThemedButton
+            type="button"
+            onClick={handleView}
+            style={{ marginLeft: '10px' }}>
+            View <FontAwesome name="photo" />
+          </ThemedButton>
           {minimized.length > 0 && (
             <ThemedButton
               type="button"
@@ -44,11 +57,29 @@ const ExpandHistoryButtons = () => (
   </ExpansionContext.Consumer>
 );
 
-const EditsHistoryButtons = () => (
-  <Switch>
-    <Route component={HistoryButton} />
-    <Route component={ExpandHistoryButtons} />
-  </Switch>
-);
+const EditsHistoryButtons = () => {
+  let match = useRouteMatch();
+  let history = useHistory();
+  const params = useUrlParams();
+  const historyPath = `${trimPath(match.path)}/wiki/history`;
+  const goToEditHistoryUrl = () => {
+    history.push(`${historyPath}${queryStringAll(params)}`);
+  };
+
+  return (
+    <Switch>
+      <Route path={historyPath} component={ExpandHistoryButtons} />
+      <Route
+        render={() => {
+          return (
+            <ThemedButton type="button" onClick={goToEditHistoryUrl}>
+              History <FontAwesome name="history" />
+            </ThemedButton>
+          );
+        }}
+      />
+    </Switch>
+  );
+};
 
 export default EditsHistoryButtons;
