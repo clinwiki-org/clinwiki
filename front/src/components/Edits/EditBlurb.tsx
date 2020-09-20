@@ -1,8 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import {
-  WikiPageEditFragment,
-} from 'types/WikiPageEditFragment';
+import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
 import { Link } from 'react-router-dom';
 import ThemedButton from 'components/StyledComponents';
 
@@ -18,9 +16,7 @@ const EditBlurb = (props: EditBlurbProps) => {
       edit: { user },
     } = props;
 
-    if (!user) {
-      return 'Anonymous';
-    }
+    if (!user) return 'Anonymous';
 
     if (user.firstName) {
       const userName = `${user.firstName} ${user.lastName && user.lastName[0]}`;
@@ -38,7 +34,7 @@ const EditBlurb = (props: EditBlurbProps) => {
         {user.email}
       </Link>
     );
-  }
+  };
 
   const getBlurb = () => {
     const {
@@ -56,7 +52,7 @@ const EditBlurb = (props: EditBlurbProps) => {
       return 'updated the wiki.';
     }
     return 'made a change.';
-  }
+  };
 
   const { edit, expanded, setExpanded } = props;
 
@@ -71,18 +67,18 @@ const EditBlurb = (props: EditBlurbProps) => {
       </Col>
       <Col md={2} className="text-right">
         {expanded && (
-          <ThemedButton onClick={() => setExpanded(false)}>
+          <ThemedButton onClick={() => setExpanded({ [edit.id]: false })}>
             View Less
           </ThemedButton>
         )}
         {!expanded && (
-          <ThemedButton onClick={() => setExpanded(true)}>
+          <ThemedButton onClick={() => setExpanded({ [edit.id]: true })}>
             View More
           </ThemedButton>
         )}
       </Col>
     </Row>
   );
-}
+};
 
 export default EditBlurb;
