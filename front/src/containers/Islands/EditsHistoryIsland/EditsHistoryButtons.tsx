@@ -23,10 +23,14 @@ const ExpandHistoryButtons = () => {
         );
 
         return (
-          <>
+          <div>
             {minimized.length > 0 && (
-              <ThemedButton type="button" onClick={() => toggleAllEdits(true)}>
-                Expand History <FontAwesome name="expand" />
+              <ThemedButton
+                type="button"
+                style={{ marginRight: '10px' }}
+                onClick={() => toggleAllEdits(true)}>
+                Expand History
+                <FontAwesome name="expand" />
               </ThemedButton>
             )}
             {maximized.length > 0 && (
@@ -34,7 +38,7 @@ const ExpandHistoryButtons = () => {
                 Minimize History <FontAwesome name="compress" />
               </ThemedButton>
             )}
-          </>
+          </div>
         );
       }}
     </EditsExpansionContext.Consumer>

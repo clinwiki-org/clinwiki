@@ -1,22 +1,17 @@
-import React, { useState } from 'react';
-import { Route, useRouteMatch } from 'react-router';
+import React from 'react';
 import { useQuery } from 'react-apollo';
 import { BeatLoader } from 'react-spinners';
 
 import { StudyEditsHistoryQuery } from 'types/StudyEditsHistoryQuery';
 import QUERY from 'queries/StudyEditsHistoryQuery';
-import EditsExpansionContext from 'components/Edits/EditsExpansionContext';
 import Error from 'components/Error';
-import Edits from 'components/Edits';
-import EditsHistoryButtons from './EditsHistoryButtons';
+import EditsHistory from './EditsHistory';
 
 interface EditsIslandProps {
   nctId: string;
 }
 
 const EditsHistoryIsland = (props: EditsIslandProps) => {
-  const [historyExpanded, setHistoryExpanded] = useState({});
-  let match = useRouteMatch();
   const { nctId } = props;
   const { data, error, loading } = useQuery<StudyEditsHistoryQuery>(QUERY, {
     variables: {
@@ -37,18 +32,7 @@ const EditsHistoryIsland = (props: EditsIslandProps) => {
     },
   } = data;
 
-  return (
-    <div>
-      <EditsExpansionContext.Provider
-        value={{ historyExpanded, setHistoryExpanded }}>
-        <EditsHistoryButtons />
-        <Route
-          path={`${match.path}/wiki/history`}
-          render={() => <Edits edits={edits ? edits : []} />}
-        />
-      </EditsExpansionContext.Provider>
-    </div>
-  );
+  return <EditsHistory edits={edits} />;
 };
 
 export default EditsHistoryIsland;
