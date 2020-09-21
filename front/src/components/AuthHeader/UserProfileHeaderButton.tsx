@@ -259,9 +259,9 @@ class UserProfileHeaderButton extends React.PureComponent<
     );
     return adminViews.map((view) => {
       return (
-        <DropDownItem onClick={() => this.handleAdminClick(view.url)}>
+        <ThemedDropDownItem onClick={() => this.handleAdminClick(view.url)}>
           {view.name}
-        </DropDownItem>
+        </ThemedDropDownItem>
       );
     });
   };
