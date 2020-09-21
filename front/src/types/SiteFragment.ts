@@ -753,16 +753,6 @@ export interface SiteFragment_siteViews {
   search: SiteFragment_siteViews_search;
 }
 
-export interface SiteFragment_pageView {
-  __typename: "PageView";
-  id: number;
-  pageType: string;
-  template: string;
-  title: string;
-  url: string;
-  default: boolean;
-}
-
 export interface SiteFragment {
   __typename: "Site";
   id: number;
@@ -776,5 +766,4 @@ export interface SiteFragment {
   owners: SiteFragment_owners[];
   siteView: SiteFragment_siteView;
   siteViews: SiteFragment_siteViews[];
-  pageView: SiteFragment_pageView | null;
 }

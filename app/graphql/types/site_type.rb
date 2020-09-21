@@ -30,14 +30,12 @@ module Types
       Loaders::Association.for(Site, :site_views).load(object)
     end
 
-    def site_view(url: nil)
-      case url
-      when nil
-        object.site_views.find_by(default: true)
-      else
-        object.site_views.find_by(url: url)
-      end
-    end
+  def site_view(url: nil)
+      return object.site_views.find_by(default: true) unless url
+      site_view = object.site_views.find_by(url: url)
+      return object.site_views.find_by(default: true) unless site_view
+      return site_view
+  end
 
     def page_view(url:nil)
       case url

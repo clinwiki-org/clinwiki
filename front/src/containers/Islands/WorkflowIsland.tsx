@@ -17,7 +17,6 @@ import QUERY from 'queries/WorkflowPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
 import { WorkflowPageQuery } from 'types/WorkflowPageQuery';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
-import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams from 'utils/UrlParamsProvider';
 import CrowdPage from 'containers/CrowdPage';
@@ -64,7 +63,7 @@ export default function WorkflowIsland(props: Props) {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
-  const { currentSiteView } = useSite();
+
   const user = useCurrentUser()?.data?.me;
 
   if (!workflow || !nctId) return <BeatLoader />;
@@ -87,7 +86,6 @@ export default function WorkflowIsland(props: Props) {
       <StyledPanel>
         <SuggestedLabels
           nctId={nctId}
-          siteView={currentSiteView}
           onSelect={handleSelect(
             JSON.parse(studyData?.study?.wikiPage?.meta || '{}'),
             nctId,

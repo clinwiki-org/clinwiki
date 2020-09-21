@@ -36,9 +36,12 @@ export default function WikiPageIsland(props: Props) {
   let history = useHistory();
   let location = useLocation();
   let match = useRouteMatch();
+
+  const [historyExpanded, setHistoryExpanded] = useState({});
   const [editorState, setEditorState] = useState('rich');
   const [plainEditorText, setplainEditorText] = useState('');
   const [richEditorText, setRichEditorText] = useState('');
+
   const user = useCurrentUser()?.data?.me;
   const params = useUrlParams();
   // TODO: This query should be pushed up as a fragment to the Page

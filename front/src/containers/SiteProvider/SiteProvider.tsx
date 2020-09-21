@@ -260,17 +260,6 @@ export const SITE_VIEW_FRAGMENT = gql`
   ${SITE_STUDY_PAGE_FRAGMENT}
 `;
 
-
-export const PAGE_VIEW_FRAGMENT = gql`
-  fragment PageViewFragment on PageView {
-    id
-    url
-    title
-    default
-    template
-    pageType
-  }
-`;
 export const SITE_FRAGMENT = gql`
   fragment SiteFragment on Site {
     id
@@ -292,13 +281,9 @@ export const SITE_FRAGMENT = gql`
     siteViews {
       ...SiteViewFragment
     }
-    pageView{
-      ...PageViewFragment
-    }
   }
 
   ${SITE_VIEW_FRAGMENT}
-  ${PAGE_VIEW_FRAGMENT}
 `;
 
 const QUERY = gql`
@@ -311,78 +296,13 @@ const QUERY = gql`
   ${SITE_FRAGMENT}
 `;
 
-type ToOmit = 'site' | 'refetch' | 'currentSiteView';
-export function withSite2<T>(
-  Component: React.ComponentType<T>
-): React.ComponentClass<Omit<T, ToOmit>> {
-  class WithSiteProvider extends React.Component<Omit<T, ToOmit>> {
-    render() {
-      return (
-        <SiteProvider>
-          {(site, refetch) => {
-            const url =
-              (this.props as any)?.history?.location?.search ||
-              window.location.search;
-            const urlName = new URLSearchParams(url)
-              .getAll('sv')
-              .toString()
-              .toLowerCase();
-            const currentSite =
-              site.siteViews.find(
-                siteview => siteview?.url?.toLowerCase() === urlName
-              ) || site.siteView;
-            return (
-              <Component
-                {...(this.props as T)}
-                site={site}
-                refetch={refetch}
-                currentSiteView={currentSite}
-              />
-            );
-          }}
-        </SiteProvider>
-      );
-    }
-  }
-  return WithSiteProvider;
-}
-
-export const withSite = Component => props => (
-  <SiteProvider>
-    {(site, refetch) => {
-      const siteViewUrl = () => {
-        if (props.history) {
-          return new URLSearchParams(props?.history?.location?.search)
-            .getAll('sv')
-            .toString()
-            .toLowerCase();
-        }
-        return props.currentSiteView.url.toLowerCase();
-      };
-      // const siteViewUrl = props?.match?.params?.siteviewUrl?.toLowerCase();
-      // console.log(`withSite: ${siteViewUrl}`);
-      const siteViews = site.siteViews;
-      const currentSite =
-        siteViews.find(
-          siteview => siteview?.url?.toLowerCase() === siteViewUrl()
-        ) || site.siteView;
-      return (
-        <Component
-          {...props}
-          site={site}
-          refetch={refetch}
-          currentSiteView={currentSite}
-        />
-      );
-    }}
-  </SiteProvider>
-);
-
 interface UseSiteProps {
   id?: number;
   url?: string;
 }
 export function useSite(props?: UseSiteProps) {
+        // console.log("USE SITE PROPS", props);
+        // console.trace();
   const urlName = new URLSearchParams(window.location.search)
     .getAll('sv')
     .toString()
@@ -396,7 +316,6 @@ export function useSite(props?: UseSiteProps) {
     site?.siteViews.find(
       siteview => siteview?.url?.toLowerCase() === urlName
     ) || site?.siteView;
-
   return { ...result, site, currentSiteView };
 }
 

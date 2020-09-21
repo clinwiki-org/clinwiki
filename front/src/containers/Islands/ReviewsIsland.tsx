@@ -7,7 +7,6 @@ import {
 import styled from 'styled-components';
 import QUERY from 'queries/ReviewPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
-import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
@@ -64,7 +63,6 @@ export default function ReviewsIsland(props: Props) {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
-  const { currentSiteView } = useSite();
   const user = useCurrentUser()?.data?.me;
 
   const WriteReviewButton = styled(ThemedButton)`

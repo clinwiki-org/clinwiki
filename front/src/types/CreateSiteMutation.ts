@@ -753,16 +753,6 @@ export interface CreateSiteMutation_createSite_site_siteViews {
   search: CreateSiteMutation_createSite_site_siteViews_search;
 }
 
-export interface CreateSiteMutation_createSite_site_pageView {
-  __typename: "PageView";
-  id: number;
-  pageType: string;
-  template: string;
-  title: string;
-  url: string;
-  default: boolean;
-}
-
 export interface CreateSiteMutation_createSite_site {
   __typename: "Site";
   id: number;
@@ -776,7 +766,6 @@ export interface CreateSiteMutation_createSite_site {
   owners: CreateSiteMutation_createSite_site_owners[];
   siteView: CreateSiteMutation_createSite_site_siteView;
   siteViews: CreateSiteMutation_createSite_site_siteViews[];
-  pageView: CreateSiteMutation_createSite_site_pageView | null;
 }
 
 export interface CreateSiteMutation_createSite {

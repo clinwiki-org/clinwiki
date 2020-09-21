@@ -10,7 +10,7 @@ import { Col, ButtonGroup, Button, MenuItem, DropdownButton } from 'react-bootst
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput } from 'types/globalTypes';
-import { SiteFragment_siteView } from 'types/SiteFragment';
+import { PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import {
   map,
   pipe,
@@ -34,7 +34,7 @@ import {
 } from 'types/SearchPageSearchQuery';
 import { Query, QueryComponentOptions } from 'react-apollo';
 import 'react-table/react-table.css';
-import SiteProvider from 'containers/SiteProvider';
+import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
 import Cards from './components/Cards';
 import MasonryCards from './components/MasonryCards';
@@ -262,7 +262,7 @@ interface SearchView2Props {
   opened: any;
   openedKind: any;
   onOpen: any;
-  currentSiteView: SiteFragment_siteView;
+  presentSiteView: PresentSiteFragment_siteView;
   thisSiteView?: SiteViewFragment;
   getTotalResults: Function;
   theme?: any;
@@ -320,7 +320,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
   };
 
   componentDidMount() {
-    let showResults = this.props.currentSiteView.search.config.fields
+    let showResults = this.props.presentSiteView.search.config.fields
       .showResults;
     if (!this.props.showCards && showResults) {
       //Needed for old table view
@@ -418,15 +418,15 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     }
   };
   renderViewDropdown = () => {
-    const { currentSiteView } = this.props;
-    const buttonsArray = currentSiteView.search.results.buttons.items.filter(
+    const { presentSiteView } = this.props;
+    const buttonsArray = presentSiteView.search.results.buttons.items.filter(
       button => button.target.length > 0 && button.icon.length > 0
     );
     const queryString = useUrlParams();
     return (
-      <SiteProvider>
-        {site => {
-          if (site.siteViews.length > 0 && buttonsArray.length > 0) {
+      <PresentSiteProvider>
+        {presentSiteView => {
+          if (presentSiteView && buttonsArray.length > 0) {
             return (
               <div style={{ marginLeft: "auto"}}  >
                 <ButtonGroup>
@@ -445,7 +445,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           }
           return null;
         }}
-      </SiteProvider>
+      </PresentSiteProvider>
     );
   };
   renderViewButton = (icon: string) => {
@@ -576,7 +576,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         this.props.onRowClick(
           rowInfo.row.nctId,
           this.props.searchHash,
-          this.props.currentSiteView.url || 'default'
+          this.props.presentSiteView.url || 'default'
         );
         return handleOriginal();
       },
@@ -657,7 +657,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 loading={loading}
                 template={template}
                 width={width}
-                columnFields={this.props.currentSiteView.search.fields}
+                columnFields={this.props.presentSiteView.search.fields}
               />
             )}
           </AutoSizer>
@@ -694,7 +694,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
 
         const isMobile = this.mobileAndTabletcheck();
 
-        const { currentSiteView } = this.props;
+        const { presentSiteView } = this.props;
         // Block that sets the recordsTotal to state based on data response
         let pagesTotal = 1;
         pagesTotal = Math.min(
@@ -702,11 +702,11 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
         );
 
-        const showResults = currentSiteView.search.config.fields.showResults;
+        const showResults = presentSiteView.search.config.fields.showResults;
 
         const columns = map(
           x => this.renderColumn(x, ''),
-          currentSiteView.search.fields
+          presentSiteView.search.fields
         );
         const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
         const leftover = isMobile
@@ -734,7 +734,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   data={data}
                   onPress={this.cardPressed}
                   loading={loading}
-                  template={currentSiteView.search.template}
+                  template={presentSiteView.search.template}
                 />
               </div>
             </div>
@@ -791,11 +791,11 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     loading: boolean;
     error: any;
   }) => {
-    const { currentSiteView } = this.props;
+    const { presentSiteView } = this.props;
 
-    const showResults = currentSiteView.search.config.fields.showResults;
+    const showResults = presentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
-    const resultsType = currentSiteView.search.results.type;
+    const resultsType = presentSiteView.search.results.type;
     let recordsTotal = data?.search?.recordsTotal;
     if (error) {
       return <div>{error.message}</div>;
@@ -827,7 +827,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       ? this.renderHelper(
         searchData,
         loading,
-        currentSiteView.search.template,
+        presentSiteView.search.template,
         this.cardPressed,
         resultsType,
         recordsTotal
@@ -838,7 +838,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     this.props.onRowClick(
       card.nctId,
       this.props.searchHash,
-      this.props.currentSiteView.url || 'default'
+      this.props.presentSiteView.url || 'default'
     );
   };
 
@@ -915,7 +915,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               background: this.props.theme.button,
             }}>
 
-            {this.props.currentSiteView.search.sortables.map((field, index) => {
+            {this.props.presentSiteView.search.sortables.map((field, index) => {
               let sorts = [{ id: field, desc: false }]
               let params = this.props.params
               return (

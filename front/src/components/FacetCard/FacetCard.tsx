@@ -35,7 +35,6 @@ interface FacetCardProps {
   onSelect?: (key: string, value: string, checked: boolean) => void;
   addLabel?: boolean;
   meta: Record<string, string>;
-  siteView: any;
   values?: any[];
   refetch?: () => void;
   aggNames?: any;
@@ -211,7 +210,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     );
   };
 
-  onSuggestionSelected = (e, 
+  onSuggestionSelected = (e,
     { suggestionValue },
     upsertLabelMutation
   ) => {
@@ -251,7 +250,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel, aggNames, siteView, allValues } = this.props;
+    const { label, addLabel, aggNames, allValues } = this.props;
     const {
       textFieldActive,
       existingField,
@@ -259,7 +258,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
       showLoginModal,
       showAddFacet,
     } = this.state;
-    
+
     if (addLabel) {
       console.log(allValues);
       return (
@@ -302,7 +301,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                           showLogin={this.setShowLoginModal}
                           apolloClient={apolloClient}
                           aggNames={aggNames}
-                          siteView={siteView}
                           values={allValues}
                           showAddFacet={showAddFacet}
                         />

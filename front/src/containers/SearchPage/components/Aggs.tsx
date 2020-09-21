@@ -18,7 +18,7 @@ import {
   AggFilterMap,
 } from '../Types';
 import { BeatLoader } from 'react-spinners';
-import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import styled from 'styled-components';
 import AggFilterInputUpdater from './AggFilterInputUpdater';
@@ -26,7 +26,7 @@ import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
 
-const getVisibleOptionsByName: (SiteFragment) => any = compose(
+const getVisibleOptionsByName: (PresentSiteFragment) => any = compose(
   reduce(
     (byName, { name, visibleOptions }) => ({
       ...byName,
@@ -37,7 +37,7 @@ const getVisibleOptionsByName: (SiteFragment) => any = compose(
 
   pathOr([], ['search', 'crowdAggs', 'fields'])
 );
-const getVisibleOptionsByNamePresearch: (SiteFragment) => any = compose(
+const getVisibleOptionsByNamePresearch: (PresentSiteFragment) => any = compose(
   reduce(
     (byName, { name, visibleOptions }) => ({
       ...byName,
@@ -67,10 +67,10 @@ interface AggsProps {
   resetSelectAll?: () => void;
   updateParams: any;
   presearch?: boolean;
-  currentSiteView: SiteFragment_siteView;
+  presentSiteView: PresentSiteFragment_siteView;
   preSearchAggs?: string[];
   preSearchCrowdAggs?: string[];
-  site: SiteFragment;
+  site: PresentSiteFragment;
   updateSearchParams: any;
 }
 
@@ -96,7 +96,7 @@ const AggSideBarTitle = styled.h4`
 const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 
 class Aggs extends React.PureComponent<AggsProps> {
-  getAggs = (siteView: SiteFragment_siteView): string[] => {
+  getAggs = (siteView: PresentSiteFragment_siteView): string[] => {
     return displayFields(
       siteView.search.aggs.selected.kind,
       siteView.search.aggs.selected.values,
@@ -106,9 +106,9 @@ class Aggs extends React.PureComponent<AggsProps> {
 
   getCrowdAggs = (crowdAggs: string[]): string[] => {
     const displayed = displayFields(
-      this.props.currentSiteView.search.crowdAggs.selected.kind,
-      this.props.currentSiteView.search.crowdAggs.selected.values,
-      this.props.currentSiteView.search.crowdAggs.fields
+      this.props.presentSiteView.search.crowdAggs.selected.kind,
+      this.props.presentSiteView.search.crowdAggs.selected.values,
+      this.props.presentSiteView.search.crowdAggs.fields
     ).map(prop('name'));
     return filter(x => crowdAggs.includes(x), displayed);
   };
@@ -126,7 +126,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       searchParams,
       updateSearchParams,
       presearch,
-      currentSiteView,
+      presentSiteView,
       preSearchAggs,
       preSearchCrowdAggs,
     } = this.props;
@@ -139,7 +139,7 @@ class Aggs extends React.PureComponent<AggsProps> {
 
     if (preSearchCrowdAggs && crowdAggs) {
       const visibleOptionsByName = getVisibleOptionsByNamePresearch(
-        currentSiteView
+        presentSiteView
       );
       crowdAggPresearch = (
         <span>
@@ -174,7 +174,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                   resetSelectAll={this.props.resetSelectAll}
                   removeSelectAll={this.props.removeSelectAll}
                   presearch
-                  currentSiteView={this.props.currentSiteView}
+                  presentSiteView={this.props.presentSiteView}
                   configType="presearch"
                   visibleOptions={visibleOptionsByName[k]}
                 />
@@ -221,7 +221,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                   resetSelectAll={this.props.resetSelectAll}
                   removeSelectAll={this.props.removeSelectAll}
                   presearch
-                  currentSiteView={this.props.currentSiteView}
+                  presentSiteView={this.props.presentSiteView}
                   configType="presearch"
                 />
               </AggContext.Provider>
@@ -239,7 +239,7 @@ class Aggs extends React.PureComponent<AggsProps> {
     }
 
     if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
-      const visibleOptionsByName = getVisibleOptionsByName(currentSiteView);
+      const visibleOptionsByName = getVisibleOptionsByName(presentSiteView);
 
       crowdAggDropdowns = (
         <div>
@@ -274,7 +274,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                 removeFilters={(agg, items) => removeFilters(agg, items, true)}
                 searchParams={searchParams}
                 visibleOptions={visibleOptionsByName[k]}
-                currentSiteView={currentSiteView}
+                presentSiteView={presentSiteView}
                 configType="facetbar"
               />
             </AggContext.Provider>
@@ -286,7 +286,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       return (
         <div>
           <div>
-            {this.getAggs(this.props.currentSiteView).map(k =>
+            {this.getAggs(this.props.presentSiteView).map(k =>
               aggs[k] ? (
                 <AggContext.Provider
                   key={k}
@@ -316,7 +316,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                     searchParams={searchParams}
                     resetSelectAll={this.props.resetSelectAll}
                     removeSelectAll={this.props.removeSelectAll}
-                    currentSiteView={this.props.currentSiteView}
+                    presentSiteView={this.props.presentSiteView}
                     configType="facetbar"
                   />
                 </AggContext.Provider>

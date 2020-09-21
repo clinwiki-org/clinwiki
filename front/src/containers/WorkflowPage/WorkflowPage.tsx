@@ -239,7 +239,7 @@ class WorkflowPage extends React.Component<
                                   <StyledPanel>
                                     <SuggestedLabels
                                       nctId={this.props.match.params.nctId}
-                                      siteView={this.props.siteView}
+                                      //siteView={this.props.siteView}
                                       onSelect={this.handleSelect(
                                         (data &&
                                           data.study &&

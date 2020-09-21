@@ -3,13 +3,13 @@ import { Panel } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ReactionsIslandQuery } from 'types/ReactionsIslandQuery';
 import { ReactionKinds } from 'types/ReactionKinds';
-import { useSite } from 'containers/SiteProvider/SiteProvider';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import QUERY from 'queries/ReactionsIslandQuery';
 import { useQuery } from 'react-apollo';
 import REACTION_KINDS from 'queries/ReactionKinds';
-import ReactionsBar from '../../components/ReactionsBar';
+import ReactionsBar from '../../components/ReactionsBar'
+import { usePresentSite } from "../PresentSiteProvider/PresentSiteProvider";
 
 interface Props {
   nctId?: string;
@@ -19,8 +19,8 @@ const StyledPanel = styled(Panel)`
 `;
 export default function ReactionsIsland(props: Props) {
   const { nctId } = props;
-  const { site } = useSite();
-  const theme = useTheme();
+  const { site } = usePresentSite();
+  const theme  = useTheme();
   const user = useCurrentUser()?.data?.me;
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: studyData } = useQuery<ReactionsIslandQuery>(QUERY, {
