@@ -15,7 +15,7 @@ services:
     ports:
       - 15432:5432
     volumes:
-      - cw-data:/var/lib/postgresq/data
+      - cw-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
