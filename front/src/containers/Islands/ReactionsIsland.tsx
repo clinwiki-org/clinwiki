@@ -1,4 +1,3 @@
-
 import React, { useContext } from 'react';
 import { Panel } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -10,7 +9,7 @@ import QUERY from 'queries/ReactionsIslandQuery';
 import { useQuery } from 'react-apollo';
 import REACTION_KINDS from 'queries/ReactionKinds';
 import ReactionsBar from '../../components/ReactionsBar'
-import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
+import { usePresentSite } from "../PresentSiteProvider/PresentSiteProvider";
 
 interface Props {
   nctId?: string;
@@ -30,17 +29,17 @@ export default function ReactionsIsland(props: Props) {
   const { data: allReactions } = useQuery<ReactionKinds>(REACTION_KINDS, {
     variables: { nctId },
   });
-if(site && allReactions && studyData && theme){
-  return (
+  if (site && allReactions && studyData && theme) {
+    return (
       <ReactionsBar
-          reactionsConfig={site.reactionsConfig}
-          nctId={nctId}
-          theme={theme}
-          studyData={studyData.study}
-          user={user}
-          allReactions={allReactions}
+        reactionsConfig={site.reactionsConfig}
+        nctId={nctId}
+        theme={theme}
+        studyData={studyData.study}
+        user={user}
+        allReactions={allReactions}
       />
-  );
-}
-return null;
+    );
+  }
+  return null;
 }

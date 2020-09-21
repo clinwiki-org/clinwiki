@@ -1,18 +1,17 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   DELETE_REVIEW_MUTATION,
   DeleteMutationFn,
 } from 'mutations/ReviewsPageDeleteReviewMutation';
 
 import styled from 'styled-components';
-import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/ReviewPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
-import useUrlParams,{queryStringAll} from 'utils/UrlParamsProvider';
+import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
-import { Switch, Route, match } from 'react-router-dom';
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { Switch, Route } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import ReviewForm from 'containers/ReviewForm';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import EditReview from '../ReviewsPage/EditReview';
@@ -23,24 +22,10 @@ import {
 import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents/index';
 import { Row, Col, Table, Label } from 'react-bootstrap';
-import { UserFragment } from 'types/UserFragment';
-import { CurrentUserQuery_me } from 'types/CurrentUserQuery'
 import ReactStars from 'react-stars';
-import StudySummary from 'components/StudySummary';
-import {
-  ReviewPageQuery,
-  ReviewPageQueryVariables,
-} from 'types/ReviewPageQuery';
-import {
-  ReviewsPageDeleteReviewMutation,
-  ReviewsPageDeleteReviewMutationVariables,
-} from 'types/ReviewsPageDeleteReviewMutation';
-import { ReviewsPageStudyFragment } from 'types/ReviewsPageStudyFragment';
+import { ReviewPageQuery } from 'types/ReviewPageQuery';
 import RichTextEditor, { EditorValue } from 'react-rte';
-import { reject, propEq, over, lensPath, keys } from 'ramda';
-import { dataIdFromObject } from 'configureApollo';
-import CurrentUser from 'containers/CurrentUser';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { keys } from 'ramda';
 interface Props {
   nctId: string;
 }
@@ -68,12 +53,12 @@ export default function ReviewsIsland(props: Props) {
   const location = useLocation();
   const match = useRouteMatch();
   const theme = useTheme();
-  const params = useUrlParams()
+  const params = useUrlParams();
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: reviewData } = useQuery<ReviewPageQuery>(QUERY, {
     variables: { nctId },
   });
-  console.log(reviewData)
+  console.log(reviewData);
   const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
@@ -81,8 +66,8 @@ export default function ReviewsIsland(props: Props) {
   const user = useCurrentUser()?.data?.me;
 
   const WriteReviewButton = styled(ThemedButton)`
-  margin-bottom: 10px;
-`;
+    margin-bottom: 10px;
+  `;
 
   const handleWriteReview = () => {
     history.push(`${trimPath(match.url)}/new${queryStringAll(params)}`);
@@ -121,11 +106,8 @@ export default function ReviewsIsland(props: Props) {
         </RatingWrapper>
       );
     }
-
   };
-  const renderReview = () => (
-    review: ReviewsPageFragment
-  ) => {
+  const renderReview = () => (review: ReviewsPageFragment) => {
     let meta = {};
     try {
       meta = JSON.parse(review.meta);
@@ -162,7 +144,7 @@ export default function ReviewsIsland(props: Props) {
                     style={{ marginRight: 10 }}
                     onClick={() => handleEditReview(review.id)}>
                     Edit
-                </ThemedButton>
+                  </ThemedButton>
 
                   <ThemedButton
                     onClick={handleDeleteReview(
@@ -170,7 +152,7 @@ export default function ReviewsIsland(props: Props) {
                       review.id
                     )}>
                     Delete
-                    </ThemedButton>
+                  </ThemedButton>
                 </ButtonsWrapper>
               </Col>
             )}
@@ -185,24 +167,20 @@ export default function ReviewsIsland(props: Props) {
 
   const renderReviews = (reviews: ReviewsPageFragment[]) => {
     return (
-
       <>
         <div style={{ display: 'flex' }}>
           <WriteReviewButton onClick={() => handleWriteReview()}>
             Write a review
-                </WriteReviewButton>
+          </WriteReviewButton>
         </div>
         <Table striped bordered>
           <tbody>{reviews.map(renderReview())}</tbody>
         </Table>
       </>
-
     );
   };
 
   if (reviewData) {
-
-
     return (
       <Switch>
         <Route
@@ -220,18 +198,18 @@ export default function ReviewsIsland(props: Props) {
         <Route
           path={`${match.path}/:id/edit`}
           render={props => {
-            let newProps = { ...props, nctId: nctId }
+            let newProps = { ...props, nctId: nctId };
             return (
-              <EditReview {...newProps} onLoaded={() => console.log("Loaded")} />//this.props.onLoaded} />
+              <EditReview
+                {...newProps}
+                onLoaded={() => console.log('Loaded')}
+              />
             );
           }}
         />
         <Route render={() => renderReviews(reviewData!.study!.reviews)} />
       </Switch>
     );
-
   }
-  return (
-    <BeatLoader></BeatLoader>
-  )
+  return <BeatLoader></BeatLoader>;
 }

@@ -161,6 +161,9 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px;
+  .rich-text{
+    background-color: #f2f2f2;
+  }
 `;
 
 const InstructionsContainer = styled.div`
@@ -795,6 +798,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <Instructions>
               <RichTextEditor
                 readOnly
+                editorClassName="rich-text"
                 value={RichTextEditor.createValueFromString(
                   presearchText,
                   'markdown'
@@ -837,9 +841,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   renderCrumbs = (siteView: SiteViewFragment) => {
     const { totalRecords } = this.state;
-    // if (this.props.userId) {
-    //   this.getDefaultParams(siteView);
-    // }
     const q: string[] =
       this.state.params?.q.key === '*'
         ? []
