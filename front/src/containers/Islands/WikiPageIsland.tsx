@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { partition, toPairs } from 'ramda';
-import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { WikiPageQuery, WikiPageQueryVariables } from 'types/WikiPageQuery';
 import {
   UPDATE_CONTENT_MUTATION,
-  UpdateContentMutationFn,
 } from 'mutations/WikiPageUpdateContentMutation';
 import {
-  WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
 import styled from 'styled-components';
@@ -22,12 +19,10 @@ import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
 import  { Switch, Route } from 'react-router';
-import { UserFragment } from 'types/UserFragment';
 import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
-import ExpansionContext from '../WikiPage/ExpansionContext';
-import Edits, { WikiPageEditFragment } from 'components/Edits';
+import Edits from 'components/Edits';
 import { CurrentUserQuery_me } from 'types/CurrentUserQuery'
 
 interface Props {
@@ -70,13 +65,8 @@ export default function WikiPageIsland(props: Props) {
   });
 
   const readOnly = !location.pathname.includes('/wiki/edit');
-
-
-
-  const editPath = () => `${trimPath(match.path)}/wiki/edit`;
-
-  const historyPath = () => `${trimPath(match.path)}/wiki/history`;
-
+  const editPath = `${trimPath(match.path)}/wiki/edit`;
+  const historyPath = `${trimPath(match.path)}/wiki/history`;
 
   const getEditorText = () => {
     if (editorState === 'rich') {
@@ -88,18 +78,12 @@ export default function WikiPageIsland(props: Props) {
     }
     return plainEditorText;
   };
-  const toggleEditVisibility = (editId: string) => value => {
 
-    historyExpanded[editId] = value;
-    setHistoryExpanded(historyExpanded);
-  };
   const handlePreview = () => {
     if (editorState === 'plain') {
       const text = getEditorText() || '';
-
       setEditorState('rich')
       setRichEditorText(RichTextEditor.createValueFromString(text, 'markdown'))
-
     }
 
     history.push(
@@ -107,10 +91,10 @@ export default function WikiPageIsland(props: Props) {
     );
   };
 
-
   const handleRichEditorChange = (richEditorText: EditorValue) => {
     setRichEditorText(richEditorText);
   };
+
   const handlePlainEditorChange = (e: any) => {
     setplainEditorText(e.currentTarget.value);
   };
@@ -119,14 +103,16 @@ export default function WikiPageIsland(props: Props) {
     Object.keys(historyExpanded).forEach(key => {
       historyExpanded[key] = true;
     });
-    setHistoryExpanded(historyExpanded)
+    setHistoryExpanded(historyExpanded);
   };
+
   const minimizeAllEdits = () => {
     Object.keys(historyExpanded).forEach(key => {
       historyExpanded[key] = false;
     });
-    setHistoryExpanded(historyExpanded)
+    setHistoryExpanded(historyExpanded);
   };
+
   const renderMarkdownButton = () => {
     if (editorState === 'plain') {
       return (
@@ -145,11 +131,9 @@ export default function WikiPageIsland(props: Props) {
   const handleMarkdownToggle = () => {
     const text = getEditorText() || '';
     const editorStateTemp = editorState === 'rich' ? 'plain' : 'rich';
-    // this.setState({
     setEditorState(editorStateTemp)
     setplainEditorText(text)
     setRichEditorText(RichTextEditor.createValueFromString(text, 'markdown'))
-    // });
   };
 
   const handleEdit = () => {
@@ -159,6 +143,7 @@ export default function WikiPageIsland(props: Props) {
       )}/wiki/edit${queryStringAll(params)}`
     );
   };
+
   const handleHistory = () => {
     history.push(
       `${trimPath(
@@ -166,17 +151,18 @@ export default function WikiPageIsland(props: Props) {
       )}/wiki/history${queryStringAll(params)}`
     );
   };
+
   const handleView = () => {
     history.push(
       `${trimPath(match.url)}${queryStringAll(params)}`
     );
   };
+
   const handleEditSubmit = (
     updateWikiContent: (vars: {
       variables: WikiPageUpdateContentMutationVariables;
     }) => void
   ) => {
-    // this.props.showAnimation()
     updateWikiContent({
       variables: {
         nctId: nctId,
@@ -193,16 +179,15 @@ export default function WikiPageIsland(props: Props) {
       data.study && data.study.wikiPage && data.study.wikiPage.content;
 
     return (
-
       <ThemedButton
         onClick={() => handleEditSubmit(updateContentMutation)}
         disabled={editorTextState === editorTextData}
         style={{ marginLeft: '10px' }}>
         Submit <FontAwesome name="pencil" />
       </ThemedButton>
-
     );
   };
+
   const renderEditButton = (
     isAuthenticated: boolean,
   ) => {
@@ -217,6 +202,7 @@ export default function WikiPageIsland(props: Props) {
       </ThemedButton>
     );
   };
+
   const renderToolbar = (
     data: WikiPageQuery,
     user: CurrentUserQuery_me | null | undefined,
@@ -232,7 +218,7 @@ export default function WikiPageIsland(props: Props) {
       <Toolbar>
         <Switch>
           <Route
-            path={editPath()}
+            path={editPath}
             render={() => (
               <>
                 {renderMarkdownButton()}{' '}
@@ -247,8 +233,43 @@ export default function WikiPageIsland(props: Props) {
             )}
           />
           <Route
+            path={historyPath}
             render={() => (
               <>
+                {minimized.length > 0 && (
+                  <ThemedButton
+                    type="button"
+                    onClick={expandAllEdits}
+                    style={{ marginLeft: '10px' }}>
+                    Expand History <FontAwesome name="expand" />
+                  </ThemedButton>
+                )}
+                {maximized.length > 0 && (
+                  <ThemedButton
+                    type="button"
+                    onClick={minimizeAllEdits}
+                    style={{ marginLeft: '10px' }}>
+                    Minimize History <FontAwesome name="compress" />
+                  </ThemedButton>
+                )}
+                {renderEditButton(isAuthenticated)}{' '}
+                <ThemedButton
+                  type="button"
+                  onClick={handleView}
+                  style={{ marginLeft: '10px' }}>
+                  View <FontAwesome name="photo" />
+                </ThemedButton>
+              </>
+            )}
+          />
+          <Route
+            render={() => (
+              <>
+                <ThemedButton
+                  type="button"
+                  onClick={handleHistory}>
+                  History <FontAwesome name="history" />
+                </ThemedButton>
                 {renderEditButton(isAuthenticated)}
                 {renderSubmitButton(data, isAuthenticated, readOnly)}
               </>
@@ -315,10 +336,22 @@ export default function WikiPageIsland(props: Props) {
     <div>
       <StyledPanel>
         <div>
-          <Switch>
-            <Route render={() => renderEditor(studyData)} />
-          </Switch>
+          <Route render={() => renderEditor(studyData)} />
           {renderToolbar(studyData, user, readOnly)}
+          <Route
+            path={historyPath}
+            render={() => (
+                <Edits
+                  edits={
+                    (studyData &&
+                      studyData.study &&
+                      studyData.study.wikiPage &&
+                      studyData.study.wikiPage.edits) ||
+                    []
+                  }
+                />
+            )}
+          />
         </div>
       </StyledPanel>
     </div>
