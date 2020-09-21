@@ -1,13 +1,13 @@
 import * as React from 'react';
 
 interface EditsExpansionContextType {
-  historyExpanded?: any;
-  setHistoryExpanded?: any;
+  historyExpanded: Record<number, boolean>;
+  setHistoryExpanded: (state: Record<number, boolean>) => void;
 }
 
 const context: EditsExpansionContextType = {
   historyExpanded: {},
-  setHistoryExpanded: () => {},
+  setHistoryExpanded: ({}) => {},
 };
 
 const EditsExpansionContext = React.createContext(context);

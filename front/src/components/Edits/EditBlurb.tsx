@@ -6,8 +6,8 @@ import ThemedButton from 'components/StyledComponents';
 
 interface EditBlurbProps {
   edit: StudyEditsHistoryQuery_study_wikiPage_edits;
-  historyExpanded: any;
-  setExpanded: any;
+  historyExpanded: Record<number, boolean>;
+  setExpanded: (state: Record<number, boolean>) => void;
 }
 
 const EditBlurb = (props: EditBlurbProps) => {
