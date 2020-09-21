@@ -2,15 +2,10 @@ import React, { useState } from 'react';
 import FontAwesome from 'react-fontawesome';
 import { Row, Col, Button } from 'react-bootstrap';
 
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
 
 interface EditProps {
-  edit: WikiPageEditFragment;
-}
-
-interface EditState {
-  lineVisible: any;
-  hoveredLine: number | null;
+  edit: StudyEditsHistoryQuery_study_wikiPage_edits;
 }
 
 const WikiExpandedEdit = (props: EditProps) => {
@@ -48,11 +43,9 @@ const WikiExpandedEdit = (props: EditProps) => {
 
   const hoveredOpts = (key, className = '') => ({
     key,
-    className: `${className}${
-      hoveredLine === key ? ' hovered' : ''
-    }`,
+    className: `${className}${hoveredLine === key ? ' hovered' : ''}`,
     onMouseEnter: () => setHoveredLine(key),
-    onMouseLeave: () => setHoveredLine(null)
+    onMouseLeave: () => setHoveredLine(null),
   });
 
   const hasInvisibleLines = () => {
@@ -62,84 +55,80 @@ const WikiExpandedEdit = (props: EditProps) => {
       }
     }
     return false;
-  }
+  };
 
-    const {
-      edit: {
-        changeSet: { editLines },
-      },
-    } = props;
-    const invisibleLines = hasInvisibleLines();
-    const nodes: any[] = [];
-    const actions: any[] = [];
-    let firstInvisible: number | null = null;
-    editLines.forEach((line, i) => {
-      if (line.frontMatter || line.content === '---') {
-        // skip front matter
-        return;
-      }
-      if (lineVisible[i]) {
-        if (firstInvisible !== null && i > firstInvisible) {
-          actions.push(
-            <li {...hoveredOpts(i - 1)}>
-              <button
-                className="diff-expander"
-                onClick={expandSpans(firstInvisible, i - 1)}>
-                <FontAwesome name="arrows" />
-              </button>
-            </li>
-          );
-          nodes.push(<li {...hoveredOpts(i - 1)}>&nbsp;</li>);
-          firstInvisible = null;
-        }
+  const {
+    edit: {
+      changeSet: { editLines },
+    },
+  } = props;
+  const invisibleLines = hasInvisibleLines();
+  const nodes: any[] = [];
+  const actions: any[] = [];
+  let firstInvisible: number | null = null;
+  editLines.forEach((line, i) => {
+    if (line.frontMatter || line.content === '---') {
+      // skip front matter
+      return;
+    }
+    if (lineVisible[i]) {
+      if (firstInvisible !== null && i > firstInvisible) {
         actions.push(
-          <li {...hoveredOpts(i, line.status.toLowerCase())} />
-        );
-        nodes.push(
-          <li {...hoveredOpts(i, line.status.toLowerCase())}>
-            {line.content}
+          <li {...hoveredOpts(i - 1)}>
+            <button
+              className="diff-expander"
+              onClick={expandSpans(firstInvisible, i - 1)}>
+              <FontAwesome name="arrows" />
+            </button>
           </li>
         );
-      } else {
-        firstInvisible = firstInvisible || i;
+        nodes.push(<li {...hoveredOpts(i - 1)}>&nbsp;</li>);
+        firstInvisible = null;
       }
-    });
-    if (firstInvisible !== null) {
-      const key = editLines.length + 1;
-      actions.push(
-        <li {...hoveredOpts(key)}>
-          <button
-            className="diff-expander"
-            onClick={expandSpans(firstInvisible, editLines.length)}>
-            <FontAwesome name="arrows" />
-          </button>
-        </li>
+      actions.push(<li {...hoveredOpts(i, line.status.toLowerCase())} />);
+      nodes.push(
+        <li {...hoveredOpts(i, line.status.toLowerCase())}>{line.content}</li>
       );
-      nodes.push(<li {...hoveredOpts(key)}> </li>);
+    } else {
+      firstInvisible = firstInvisible || i;
     }
-    return (
-      <Row>
-        <Col md={1} className="diff-action-column">
-          <div className="diff">
-            <ul>{actions}</ul>
-          </div>
-        </Col>
-        <Col md={10} className="diff-column">
-          <div className="diff">
-            <ul className="diff-lines">{nodes}</ul>
-          </div>
-        </Col>
-        <Col md={1}>
-          {invisibleLines && (
-            <Button
-              bsSize="xsmall"
-              onClick={expandSpans(0, editLines.length + 1)}>
-              Expand All
-            </Button>
-          )}
-        </Col>
-      </Row>
+  });
+  if (firstInvisible !== null) {
+    const key = editLines.length + 1;
+    actions.push(
+      <li {...hoveredOpts(key)}>
+        <button
+          className="diff-expander"
+          onClick={expandSpans(firstInvisible, editLines.length)}>
+          <FontAwesome name="arrows" />
+        </button>
+      </li>
     );
-}
+    nodes.push(<li {...hoveredOpts(key)}> </li>);
+  }
+  return (
+    <Row>
+      <Col md={1} className="diff-action-column">
+        <div className="diff">
+          <ul>{actions}</ul>
+        </div>
+      </Col>
+      <Col md={10} className="diff-column">
+        <div className="diff">
+          <ul className="diff-lines">{nodes}</ul>
+        </div>
+      </Col>
+      <Col md={1}>
+        {invisibleLines && (
+          <Button
+            bsSize="xsmall"
+            onClick={expandSpans(0, editLines.length + 1)}>
+            Expand All
+          </Button>
+        )}
+      </Col>
+    </Row>
+  );
+};
 
 export default WikiExpandedEdit;

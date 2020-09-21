@@ -1,4 +1,8 @@
 {
   "gitblame.commitUrl": "https://github.com/clinwiki-org/clinwiki/commit/${hash}",
-  "ruby.specCommand": "bundle exec rspec"
+  "ruby.specCommand": "bundle exec rspec",
+  "prettier.configPath": "./front/.prettierrc",
+  "prettier.packageManager": "yarn",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true
 }

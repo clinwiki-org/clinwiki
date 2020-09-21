@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import { Row, Col, Table } from 'react-bootstrap';
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
 
 interface EditProps {
-  edit: WikiPageEditFragment;
+  edit: StudyEditsHistoryQuery_study_wikiPage_edits;
 }
 
 const FrontMatterExpandedEdit = (props: EditProps) => {
@@ -57,6 +58,6 @@ const FrontMatterExpandedEdit = (props: EditProps) => {
       </Col>
     </Row>
   );
-}
+};
 
 export default FrontMatterExpandedEdit;

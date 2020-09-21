@@ -7,6 +7,7 @@ import BackIsland from './BackIsland';
 import NavigationIsland from './NavigationIsland';
 import ReactionsIsland from './ReactionsIsland';
 import ReviewsIsland from './ReviewsIsland';
+import EditsHistoryIsland from './EditsHistoryIsland';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 
 /*
@@ -38,6 +39,9 @@ export const studyIslands: Record<string, IslandConstructor> = {
   ),
   navigation: (attributes: Record<string, string>, context?: any) => (
     <NavigationIsland nctId={context?.nctId} />
+  ),
+  editshistory: (attributes: Record<string, string>, context?: any) => (
+    <EditsHistoryIsland nctId={context?.nctId} />
   ),
   back: (attributes: Record<string, string>, context?: any) => (
     <BackIsland nctId={context?.nctId} />

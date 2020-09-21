@@ -1,10 +1,11 @@
-import * as React from 'react';
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import React from 'react';
+
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
 import StyleWrapper from './StyleWrapper';
 import Edit from './Edit';
 
 interface EditsProps {
-  edits: WikiPageEditFragment[];
+  edits: StudyEditsHistoryQuery_study_wikiPage_edits[];
 }
 
 const Edits = (props: EditsProps) => {
@@ -19,6 +20,6 @@ const Edits = (props: EditsProps) => {
       </tbody>
     </StyleWrapper>
   );
-}
+};
 
 export default Edits;
