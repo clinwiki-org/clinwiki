@@ -207,6 +207,10 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
   };
   renderDisplayLabel = (configType: ConfigType) => {
+    let displayValue = this.props.kind === 'crowdAggs' ? (this.props.field.displayName) : (aggToField(
+      this.props.field.name,
+      this.props.field.displayName
+    ))
     return (
       <span>
         <ThemedStyledLabel>
@@ -218,10 +222,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
             this.props.field.name,
             this.props.field.displayName
           )}
-          value={aggToField(
-            this.props.field.name,
-            this.props.field.displayName
-          )}
+          value={
+            displayValue
+          }
           onChange={this.props.onAddMutation}
         />
       </span>
@@ -435,9 +438,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <option value="BAR_CHART">Bar Chart</option>
         </StyledFormControl>
         {this.props.field.display === 'NUMBER_RANGE' ||
-        this.props.field.display === 'LESS_THAN_RANGE' ||
-        this.props.field.display === 'GREATER_THAN_RANGE' ||
-        this.props.field.display === 'DATE_RANGE'
+          this.props.field.display === 'LESS_THAN_RANGE' ||
+          this.props.field.display === 'GREATER_THAN_RANGE' ||
+          this.props.field.display === 'DATE_RANGE'
           ? this.renderNumberRangeConfig(configType, this.props.field.display)
           : null}
       </>
