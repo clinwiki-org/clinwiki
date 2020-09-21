@@ -1,48 +1,40 @@
-import * as React from 'react';
+import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
-import ExpansionContext from 'containers/WikiPage/ExpansionContext';
+
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
+import EditsExpansionContext from './EditsExpansionContext';
 import EditBlurb from './EditBlurb';
 import ExpandedEdit from './ExpandedEdit';
 
 interface EditProps {
-  edit: WikiPageEditFragment;
+  edit: StudyEditsHistoryQuery_study_wikiPage_edits;
 }
 
-class Edit extends React.Component<EditProps> {
-  render() {
-    const { edit } = this.props;
+const Edit = (props: EditProps) => {
+  const { edit } = props;
 
-    return (
-      <tr key={edit.id} style={{ padding: '10px' }}>
-        <td>
-          <ExpansionContext.Consumer>
-            {({ historyExpanded, toggleEditVisibility }) => {
-              const expanded = historyExpanded[edit.id];
-              const nodes = [
-                <EditBlurb
-                  edit={edit}
-                  expanded={expanded}
-                  setExpanded={toggleEditVisibility(edit.id)}
-                />,
-              ];
-
-              if (expanded) {
-                nodes.push(
-                  <Row style={{ padding: '10px', marginBottom: '10px' }}>
-                    <Col md={12}>
-                      <ExpandedEdit edit={edit} />
-                    </Col>
-                  </Row>
-                );
-              }
-              return nodes;
-            }}
-          </ExpansionContext.Consumer>
-        </td>
-      </tr>
-    );
-  }
-}
+  return (
+    <EditsExpansionContext.Consumer>
+      {({ historyExpanded, setHistoryExpanded }) => (
+        <tr style={{ padding: '10px' }}>
+          <td>
+            <EditBlurb
+              edit={edit}
+              historyExpanded={historyExpanded}
+              setExpanded={setHistoryExpanded}
+            />
+            {historyExpanded[edit.id] ? (
+              <Row style={{ padding: '10px', marginBottom: '10px' }}>
+                <Col md={12}>
+                  <ExpandedEdit edit={edit} />
+                </Col>
+              </Row>
+            ) : null}
+          </td>
+        </tr>
+      )}
+    </EditsExpansionContext.Consumer>
+  );
+};
 
 export default Edit;
