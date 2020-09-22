@@ -24,8 +24,6 @@ export default gql`
         lte
         includeMissingFields
       }
-      page
-      pageSize
     }
   }
 `;
