@@ -192,7 +192,6 @@ function pathToTemplate(path: string): string {
 export default function SchemaSelector(props: Props) {
   const [filter, setFilter] = useState('');
   const schema = useMemo(() => schemaToInternal(props.schema), [props.schema]);
-  console.log("schema", schema.length);
   return (
     <div>
       <input

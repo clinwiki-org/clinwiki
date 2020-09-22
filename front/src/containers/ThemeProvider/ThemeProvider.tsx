@@ -1,5 +1,5 @@
 import * as React from 'react';
-import SiteProvider from 'containers/SiteProvider';
+import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { useContext } from 'react';
 
 // This type is really long but I don't think we'll have to change it very often
@@ -98,7 +98,7 @@ function themeFromSite(site): Theme {
   ) {
     thisTheme = JSON.parse(site.themes);
   }
-  // will evnetually fill this colors with colors from SiteProvider/site and potentially use these as default or fallbacks.
+  // will evnetually fill this colors with colors from PresentSiteProvider/site and potentially use these as default or fallbacks.
   const colors = {
     //header font color
     primaryColor: thisTheme.primaryColor || '#6BA5D6',
@@ -194,7 +194,7 @@ let staticTheme: Theme | null = null;
 
 export const ProvideTheme = ({ children }) => {
   return (
-    <SiteProvider>
+    <PresentSiteProvider>
       {site => {
         return (
           <ThemeContext.Provider
@@ -203,7 +203,7 @@ export const ProvideTheme = ({ children }) => {
           </ThemeContext.Provider>
         );
       }}
-    </SiteProvider>
+    </PresentSiteProvider>
   );
 };
 

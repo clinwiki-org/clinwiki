@@ -25,9 +25,8 @@ import {
 import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
-import { withSite2 } from 'containers/SiteProvider/SiteProvider';
 import './AggDropDownStyle.css';
-import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import SortKind from './SortKind';
 import BucketsPanel from './BucketsPanel';
 import Filter from './Filter';
@@ -47,6 +46,7 @@ import {
   PresearchPanel,
   PresearchContent,
 } from 'components/StyledComponents';
+import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 
 const PAGE_SIZE = 25;
 
@@ -134,8 +134,8 @@ interface AggDropDownProps {
   returnAll?: boolean;
   resetSelectAll?: () => void;
   client: ApolloClient<any>;
-  site: SiteFragment;
-  currentSiteView: SiteFragment_siteView;
+  site: PresentSiteFragment;
+  presentSiteView: PresentSiteFragment_siteView;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -295,7 +295,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const {
       agg,
       searchParams,
-      currentSiteView,
+      presentSiteView,
       configType,
       returnAll,
     } = this.props;
@@ -308,7 +308,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     const variables = {
       ...searchParams,
-      url: currentSiteView.url,
+      url: presentSiteView.url,
       configType: configType,
       returnAll: returnAll,
       aggFilters: maskAgg(searchParams.aggFilters, this.props.agg),
@@ -371,7 +371,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       visibleOptions = [],
       removeSelectAll,
       agg,
-      currentSiteView,
+      presentSiteView,
       presearch,
     } = this.props;
     const {
@@ -388,7 +388,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     if (!isOpen) {
       return null;
     }
-    const field = findFields(agg, currentSiteView, presearch);
+    const field = findFields(agg, presentSiteView, presearch);
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -491,7 +491,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       agg,
       removeSelectAll,
       visibleOptions,
-      currentSiteView,
+      presentSiteView,
       presearch,
     } = this.props;
     const {
@@ -505,7 +505,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       isOpen,
       loading,
     } = this.state;
-    const field = findFields(agg, currentSiteView, presearch);
+    const field = findFields(agg, presentSiteView, presearch);
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -627,8 +627,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   };
 
   componentDidMount() {
-    const { agg, currentSiteView, presearch } = this.props;
-    const field = findFields(agg, currentSiteView, presearch);
+    const { agg, presentSiteView, presearch } = this.props;
+    const field = findFields(agg, presentSiteView, presearch);
     if (field?.order && field.order.sortKind === 'key') {
       this.setState({
         sortKind: 0,
@@ -643,9 +643,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }
 
   render() {
-    const { agg, presearch, currentSiteView } = this.props;
+    const { agg, presearch, presentSiteView } = this.props;
     const { isOpen } = this.state;
-    let currentAgg = findFields(agg, currentSiteView, presearch);
+    let currentAgg = findFields(agg, presentSiteView, presearch);
     let configuredLabel = currentAgg?.displayName || '';
     const title = aggToField(agg, configuredLabel);
 
@@ -693,4 +693,4 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 }
 
 // @ts-ignore
-export default withApollo<any>(withSite2(AggDropDown));
+export default withApollo<any>(withPresentSite2(AggDropDown));

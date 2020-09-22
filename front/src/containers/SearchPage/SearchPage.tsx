@@ -43,9 +43,8 @@ import {
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
 import { AggBucketMap, defaultPageSize } from './Types';
-import { withSite } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
-import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
@@ -53,6 +52,7 @@ import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
 import RichTextEditor from 'react-rte';
+import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<
@@ -161,6 +161,9 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px;
+  .rich-text{
+    background-color: #f2f2f2;
+  }
 `;
 
 const InstructionsContainer = styled.div`
@@ -268,8 +271,8 @@ interface SearchPageProps {
   searchParams?: SearchParams;
   userId?: string;
   profileParams?: any;
-  site: SiteFragment;
-  currentSiteView: SiteFragment_siteView;
+  site: PresentSiteFragment;
+  presentSiteView: PresentSiteFragment_siteView;
   mutate: any;
   email?: string;
   intervention?: boolean;
@@ -514,28 +517,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         opened={opened}
         openedKind={openedKind}
         onOpen={this.handleOpenAgg}
-        currentSiteView={siteView}
+        presentSiteView={siteView}
       />
     );
   };
 
   renderSearch = () => {
     const hash = this.getHashFromLocation();
-    const { currentSiteView } = this.props;
+    const { presentSiteView } = this.props;
     return (
       <ParamsQueryComponent
         key={`${hash}+${JSON.stringify(this.state?.params)}`}
         query={SearchPageParamsQuery}
         variables={{ hash }}
         onCompleted={async (data: any) => {
-          this.updateStateFromHash(data.searchParams, currentSiteView);
+          this.updateStateFromHash(data.searchParams, presentSiteView);
         }}>
         {({ data, loading, error }) => {
           if (error || loading) return null;
 
           const params: SearchParams = this.searchParamsFromQuery(
             data!.searchParams,
-            currentSiteView
+            presentSiteView
           );
           // hydrate state params from hash
           if (!this.state.params) {
@@ -569,7 +572,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               opened={opened}
               openedKind={openedKind}
               onOpen={this.handleOpenAgg}
-              currentSiteView={currentSiteView}
+              presentSiteView={presentSiteView}
               getTotalResults={this.getTotalResults}
             />
           );
@@ -603,7 +606,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   showingCards = () =>
-    this.props.currentSiteView.search.results.type === 'card';
+    this.props.presentSiteView.search.results.type === 'card';
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
@@ -723,6 +726,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     // This assumes that the site provider is not passing a url into the page
     // view fragment portion of the query otherwise we would need to call the
     //  page view query without passing the url into it to retrieve the default url
+
     const userId = searchQueryString.getAll('uid').toString();
 
     if (data?.provisionSearchHash?.searchHash?.short) {
@@ -766,7 +770,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const searchQueryString = new URLSearchParams(
       this.props.history.location.search
     );
-    const defaultPageView = this.props.site.pageView!.url;
+
+    const providedPageView = this.props.site.pageView?.url;
+    const defaultPageView = providedPageView ? providedPageView : "default";
     const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
     return {
       searchQueryString: searchQueryString,
@@ -790,12 +796,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   renderPresearch = (hash) => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
-    const { currentSiteView } = this.props;
-    const preSearchAggs = currentSiteView.search.presearch.aggs.selected.values;
+    const { presentSiteView } = this.props;
+    const preSearchAggs = presentSiteView.search.presearch.aggs.selected.values;
     const preSearchCrowdAggs =
-      currentSiteView.search.presearch.crowdAggs.selected.values;
-    const presearchButton = currentSiteView.search.presearch.button;
-    const presearchText = currentSiteView.search.presearch.instructions;
+      presentSiteView.search.presearch.crowdAggs.selected.values;
+    const presearchButton = presentSiteView.search.presearch.button;
+    const presearchText = presentSiteView.search.presearch.instructions;
 
     const {searchQueryString, pageViewUrl} = this.getPageView();
 
@@ -806,6 +812,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             <Instructions>
               <RichTextEditor
                 readOnly
+                editorClassName="rich-text"
                 value={RichTextEditor.createValueFromString(
                   presearchText,
                   'markdown'
@@ -831,7 +838,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           presearch
           preSearchAggs={preSearchAggs}
           preSearchCrowdAggs={preSearchCrowdAggs}
-          currentSiteView={currentSiteView}
+          presentSiteView={presentSiteView}
         />
         {presearchButton.name && (
           <ThemedButton
@@ -848,9 +855,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   renderCrumbs = (siteView: SiteViewFragment) => {
     const { totalRecords } = this.state;
-    // if (this.props.userId) {
-    //   this.getDefaultParams(siteView);
-    // }
     const q: string[] =
       this.state.params?.q.key === '*'
         ? []
@@ -861,7 +865,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       q,
     };
 
-    const { currentSiteView } = this.props;
+    const { presentSiteView } = this.props;
     const hash = this.getHashFromLocation();
     return (
       <CrumbsBar
@@ -873,11 +877,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         update={{
           page: pipe(changePage, this.handleUpdateParams),
         }}
-        data={this.props.site}
         onReset={this.handleResetFilters(siteView)}
         onClear={this.handleClearFilters}
         addFilter={pipe(addFilter, this.handleUpdateParams)}
-        currentSiteView={currentSiteView}
+        presentSiteView={presentSiteView}
         totalResults={totalRecords}
         searchHash={hash || ''}
       />
@@ -893,7 +896,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
-    const { currentSiteView } = this.props;
+    const { presentSiteView } = this.props;
     if (this.props.ignoreUrlHash) {
       return (
         <SearchParamsContext.Provider
@@ -905,7 +908,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           }}>
           <Row>
             <ThemedSidebarContainer md={2}>
-              {this.renderAggs(currentSiteView)}
+              {this.renderAggs(presentSiteView)}
             </ThemedSidebarContainer>
             <ThemedMainContainer md={10}>
               {this.renderPresearch(null)}
@@ -932,7 +935,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 opened={opened}
                 openedKind={openedKind}
                 onOpen={this.handleOpenAgg}
-                currentSiteView={currentSiteView}
+                presentSiteView={presentSiteView}
                 getTotalResults={this.getTotalResults}
               />
             </ThemedMainContainer>
@@ -959,21 +962,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
           /> */}
           <Route
             render={() => {
-              const { currentSiteView } = this.props;
+              const { presentSiteView } = this.props;
               const {
                 showPresearch,
                 showFacetBar,
                 showBreadCrumbs,
-              } = currentSiteView.search.config.fields;
+              } = presentSiteView.search.config.fields;
               return (
                 <SearchPageWrapper>
                   {showFacetBar && (
                     <ThemedSidebarContainer md={2}>
-                      {this.renderAggs(currentSiteView)}
+                      {this.renderAggs(presentSiteView)}
                     </ThemedSidebarContainer>
                   )}
                   <ThemedMainContainer>
-                    {showBreadCrumbs && this.renderCrumbs(currentSiteView)}
+                    {showBreadCrumbs && this.renderCrumbs(presentSiteView)}
                     {showPresearch && this.renderPresearch(hash)}
                     {this.renderSearch()}
                   </ThemedMainContainer>
@@ -988,4 +991,4 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 }
 
 //@ts-ignore getDerivedStateFromProps
-export default withSite(graphql(SearchPageHashMutation)(SearchPage));
+export default withPresentSite2(graphql(SearchPageHashMutation)(SearchPage));

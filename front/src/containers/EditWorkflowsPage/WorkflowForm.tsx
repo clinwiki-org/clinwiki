@@ -5,10 +5,10 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import MultiInput from 'components/MultiInput';
 import AggField, { FieldType } from 'components/SiteForm/AggField';
 import { fromPairs, difference, find } from 'ramda';
-import { withSite2 } from 'containers/SiteProvider/SiteProvider';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { MutationSource } from 'containers/SearchPage/shared';
 import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
+import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -17,7 +17,7 @@ const StyledFormControl = styled(FormControl)`
 interface WorkflowFormProps {
   workflow: WorkflowConfigFragment;
   onAddMutations: (e: MutationSource[]) => void;
-  currentSiteView: SiteViewFragment;
+  presentSiteView: SiteViewFragment;
 }
 
 const StyledLabel = styled.label`
@@ -125,7 +125,7 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
                     this.props.workflow,
                     fieldInfo
                   )}
-                  view={this.props.currentSiteView}
+                  view={this.props.presentSiteView}
                   configType="workflow"
                   returnAll={true}
                   workflowName={this.props.workflow.name}
@@ -211,4 +211,4 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
   }
 }
 
-export default withSite2(WorkflowForm);
+export default withPresentSite2(WorkflowForm);

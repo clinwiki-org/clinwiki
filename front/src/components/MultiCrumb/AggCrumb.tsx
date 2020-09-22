@@ -7,7 +7,7 @@ import { withSearchParams } from 'containers/SearchPage/components/SearchParamsC
 import ValuesCrumb from './ValuesCrumb';
 import ValueCrumb from './ValueCrumb';
 import CrumbWrapper from './CrumbWrapper';
-import { SiteFragment } from 'types/SiteFragment';
+import { PresentSiteFragment } from 'types/PresentSiteFragment';
 import findFields from 'utils/aggs/findFields';
 
 interface AggCrumbProps {
@@ -15,7 +15,7 @@ interface AggCrumbProps {
   agg: AggFilterListItem;
   searchParams: SearchParams | any;
   updateSearchParams: any;
-  thisSiteView: SiteFragment;
+  thisSiteView: PresentSiteFragment;
 }
 
 interface AggCrumbState {}

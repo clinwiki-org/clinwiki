@@ -129,6 +129,7 @@ class WorkflowPage extends React.Component<
           hideMeta={hideMeta}
           review={this.state.review || undefined}
           afterSave={this.handleReviewAfterSave}
+          handleClose={()=>console.log(`Hi, this page is no longer in use`)}
         />
       );
     }
@@ -238,7 +239,7 @@ class WorkflowPage extends React.Component<
                                   <StyledPanel>
                                     <SuggestedLabels
                                       nctId={this.props.match.params.nctId}
-                                      siteView={this.props.siteView}
+                                      //siteView={this.props.siteView}
                                       onSelect={this.handleSelect(
                                         (data &&
                                           data.study &&

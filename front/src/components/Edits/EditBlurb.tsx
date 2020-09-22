@@ -1,25 +1,23 @@
-import * as React from 'react';
+import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import {
-  WikiPageEditFragment,
-} from 'types/WikiPageEditFragment';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
 import { Link } from 'react-router-dom';
 import ThemedButton from 'components/StyledComponents';
 
 interface EditBlurbProps {
-  edit: WikiPageEditFragment;
-  expanded: boolean;
-  setExpanded: any;
+  edit: StudyEditsHistoryQuery_study_wikiPage_edits;
+  historyExpanded: Record<number, boolean>;
+  setExpanded: (state: Record<number, boolean>) => void;
 }
 
-class EditBlurb extends React.Component<EditBlurbProps> {
-  getUserIdentity() {
+const EditBlurb = (props: EditBlurbProps) => {
+  const getUserIdentity = () => {
     const {
       edit: { user },
-    } = this.props;
-    if (!user) {
-      return 'Anonymous';
-    }
+    } = props;
+
+    if (!user) return 'Anonymous';
+
     if (user.firstName) {
       const userName = `${user.firstName} ${user.lastName && user.lastName[0]}`;
       return (
@@ -29,20 +27,21 @@ class EditBlurb extends React.Component<EditBlurbProps> {
         </Link>
       );
     }
+
     return (
       <Link
         to={`/profile/${user.email}?sv=user&uid=${user.id}&username=${user.email}`}>
         {user.email}
       </Link>
     );
-  }
+  };
 
-  getBlurb() {
+  const getBlurb = () => {
     const {
       edit: {
         changeSet: { bodyChanged, frontMatterChanged },
       },
-    } = this.props;
+    } = props;
     if (!bodyChanged && !frontMatterChanged) {
       return 'made the first edit.';
     }
@@ -53,34 +52,39 @@ class EditBlurb extends React.Component<EditBlurbProps> {
       return 'updated the wiki.';
     }
     return 'made a change.';
-  }
+  };
 
-  render() {
-    const { edit, expanded, setExpanded } = this.props;
-    return (
-      <Row style={{ marginBottom: '10px', padding: '10px' }}>
-        <Col md={8}>
-          <span className="diff-actor">{this.getUserIdentity()}</span>
-          <span>{' ' + this.getBlurb()}</span>
-        </Col>
-        <Col md={2}>
-          <small>{new Date(edit.createdAt).toLocaleDateString('en-US')}</small>
-        </Col>
-        <Col md={2} className="text-right">
-          {expanded && (
-            <ThemedButton onClick={() => setExpanded(false)}>
-              View Less
-            </ThemedButton>
-          )}
-          {!expanded && (
-            <ThemedButton onClick={() => setExpanded(true)}>
-              View More
-            </ThemedButton>
-          )}
-        </Col>
-      </Row>
-    );
-  }
-}
+  const { edit, historyExpanded, setExpanded } = props;
+
+  return (
+    <Row style={{ marginBottom: '10px', padding: '10px' }}>
+      <Col md={8}>
+        <span className="diff-actor">{getUserIdentity()}</span>
+        <span>{' ' + getBlurb()}</span>
+      </Col>
+      <Col md={2}>
+        <small>{new Date(edit.createdAt).toLocaleDateString('en-US')}</small>
+      </Col>
+      <Col md={2} className="text-right">
+        {historyExpanded[edit.id] && (
+          <ThemedButton
+            onClick={() =>
+              setExpanded({ ...historyExpanded, [edit.id]: false })
+            }>
+            View Less
+          </ThemedButton>
+        )}
+        {!historyExpanded[edit.id] && (
+          <ThemedButton
+            onClick={() =>
+              setExpanded({ ...historyExpanded, [edit.id]: true })
+            }>
+            View More
+          </ThemedButton>
+        )}
+      </Col>
+    </Row>
+  );
+};
 
 export default EditBlurb;

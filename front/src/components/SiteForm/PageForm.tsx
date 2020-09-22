@@ -7,7 +7,7 @@ import { useUpdatePageView, useDeletePageView } from 'queries/PageViewQueries';
 import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
-import { pageIslands } from 'containers/Islands/CommonIslands'
+import { studyIslands } from 'containers/Islands/CommonIslands'
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -76,7 +76,7 @@ export default function PageForm(props: Props) {
       <MailMergeFormControl
         template={template}
         onTemplateChanged={setTemplate}
-        islands={pageIslands}
+        islands={studyIslands}
       />
       <hr />
       <ThemedButton
