@@ -720,16 +720,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    const searchQueryString = new URLSearchParams(
-      this.props.history.location.search
-    );
+    
+    const {searchQueryString, pageViewUrl} = this.getPageView();
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
     // This assumes that the site provider is not passing a url into the page
     // view fragment portion of the query otherwise we would need to call the
     //  page view query without passing the url into it to retrieve the default url
-    const providedPageView = this.props.site.pageView?.url;
-    const defaultPageView = providedPageView ? providedPageView : "default";
-    const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
+
     const userId = searchQueryString.getAll('uid').toString();
 
     if (data?.provisionSearchHash?.searchHash?.short) {
@@ -769,6 +766,21 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
+  getPageView = () => {
+    const searchQueryString = new URLSearchParams(
+      this.props.history.location.search
+    );
+
+    const providedPageView = this.props.site.pageView?.url;
+    const defaultPageView = providedPageView ? providedPageView : "default";
+    const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
+    return {
+      searchQueryString: searchQueryString,
+      pageViewUrl: pageViewUrl
+
+    }
+  }
+
   getTotalResults = (total) => {
     if (total) {
       this.setState({
@@ -777,8 +789,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   };
-  handlePresearchButtonClick = (hash, target) => {
-    const url = `/search?hash=${hash}&sv=${target}`;
+  handlePresearchButtonClick = (hash, target,pageViewUrl) => {
+    const url = `/search?hash=${hash}&sv=${target}&pv=${pageViewUrl}`;
     this.props.history.push(url);
   };
 
@@ -790,6 +802,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       presentSiteView.search.presearch.crowdAggs.selected.values;
     const presearchButton = presentSiteView.search.presearch.button;
     const presearchText = presentSiteView.search.presearch.instructions;
+
+    const {searchQueryString, pageViewUrl} = this.getPageView();
 
     return (
       <SearchContainer>
@@ -829,7 +843,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         {presearchButton.name && (
           <ThemedButton
             onClick={() =>
-              this.handlePresearchButtonClick(hash, presearchButton.target)
+              this.handlePresearchButtonClick(hash, presearchButton.target,pageViewUrl)
             }
             style={{ width: 200, marginLeft: 13 }}>
             {presearchButton.name}
