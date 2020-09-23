@@ -52,18 +52,18 @@ const HistoryToggleButton = () => {
   const studyPath = trimPath(match.url);
 
   const goToEditHistoryUrl = () => {
-    history.push(`${studyPath}/wiki/history${queryStringAll(params)}`);
+    history.push(`${studyPath}/history${queryStringAll(params)}`);
   };
 
   const goToViewUrl = () => {
-    history.push(`${studyPath}/wiki${queryStringAll(params)}`);
+    history.push(`${studyPath}${queryStringAll(params)}`);
   };
 
   return (
     <>
       <Route
         exact
-        path={`${studyPath}/wiki`}
+        path={`${studyPath}`}
         render={() => (
           <ThemedButton type="button" onClick={goToEditHistoryUrl}>
             History <FontAwesome name="history" />
@@ -72,10 +72,10 @@ const HistoryToggleButton = () => {
       />
       <Route
         exact
-        path={`${studyPath}/wiki/history`}
+        path={`${studyPath}/history`}
         render={() => (
           <ThemedButton type="button" onClick={goToViewUrl}>
-            View <FontAwesome name="photo" />
+            Close <FontAwesome name="times" />
           </ThemedButton>
         )}
       />
@@ -95,7 +95,7 @@ const EditsHistoryButtons = () => {
       }}>
       <HistoryToggleButton />
       <Route
-        path={`${match.path}/wiki/history`}
+        path={`${match.path}/history`}
         component={ExpandHistoryButtons}
       />
     </div>

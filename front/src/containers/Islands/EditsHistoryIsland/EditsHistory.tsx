@@ -35,7 +35,7 @@ const EditsHistory = (props: EditsHistoryProps) => {
       <div>
         <EditsHistoryButtons />
         <Route
-          path={`${match.path}/wiki/history`}
+          path={`${match.path}/history`}
           render={() => <Edits edits={edits ? edits : []} />}
         />
       </div>

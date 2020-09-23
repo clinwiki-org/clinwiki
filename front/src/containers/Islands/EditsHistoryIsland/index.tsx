@@ -19,8 +19,8 @@ const EditsHistoryIsland = (props: EditsIslandProps) => {
     },
   });
 
-  if (loading) return <BeatLoader />;
-  if (error || !data || !data.study || !data.study.wikiPage) {
+  if (loading || !data || !data.study || !data.study.wikiPage) return <BeatLoader />;
+  if (error) {
     return (
       <Error message="Looks like something went wrong. Please refresh the page." />
     );
