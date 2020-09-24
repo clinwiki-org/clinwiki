@@ -7,6 +7,13 @@ import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import logo from 'images/clinwiki-501.png';
 import UserProfileHeaderButton from './UserProfileHeaderButton';
 import { UserFragment } from 'types/UserFragment';
+import { gql } from "apollo-boost";
+import {
+  Query,
+  QueryComponentOptions,
+} from 'react-apollo';
+import Error from "../Error";
+import { AdminViewsProviderQuery, AdminViewsProviderQueryVariables } from 'types/AdminViewsProviderQuery';
 
 const Row = styled.div`
   display: flex;
@@ -14,6 +21,36 @@ const Row = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
+export const ADMIN_SITE_VIEW_FRAGMENT = gql`
+    fragment AdminSiteViewFragment on SiteView {
+        name
+        url
+        id
+        search {
+            type
+        }
+    }
+`;
+
+const QUERY = gql`
+    query AdminViewsProviderQuery($id: Int) {
+        site(id: $id) {
+            id
+            hideDonation
+            siteViews {
+                ...AdminSiteViewFragment
+            }
+        }
+    }
+
+    ${ADMIN_SITE_VIEW_FRAGMENT}
+`;
+
+const QueryComponent = (
+  props: QueryComponentOptions<AdminViewsProviderQuery, AdminViewsProviderQueryVariables>
+) => Query(props);
+
 
 interface AuthHeaderProps {
   user: UserFragment | null;
@@ -57,45 +94,59 @@ const ThemedStyledWrapper = withTheme(StyledWrapper);
 
 export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
   render() {
-    let showDonation = true;
     return (
-      <ThemedStyledWrapper>
-        <Navbar
-          collapseOnSelect
-          fluid
-          className="navbar-fixed-top"
-          style={{ paddingLeft: '15px', paddingRight: '15px' }}>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link id="logo" to="/search?sv=default">
-                <span></span>
-              </Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
-              {showDonation ?
-                <NavItem
-                  target="_blank"
-                  eventKey={2}
-                  href="https://home.clinwiki.org/make-a-donation/">
-                  Donate to ClinWiki
-              </NavItem> : null
-              }
-              <NavItem eventKey={1} href="https://home.clinwiki.org/" target="_blank">
-                About ClinWiki
+      <QueryComponent
+        query={QUERY}>
+        {({ loading, error, data }) => {
+          let hideDonation = false;
+          if (data?.site?.hideDonation) {
+            hideDonation = data.site.hideDonation
+          }
+          if (error) {
+            return <Error message={error.message} />;
+          }
+          return (
+            <ThemedStyledWrapper>
+              <Navbar
+                collapseOnSelect
+                fluid
+                className="navbar-fixed-top"
+                style={{ paddingLeft: '15px', paddingRight: '15px' }}>
+                <Navbar.Header>
+                  <Navbar.Brand>
+                    <Link id="logo" to="/search?sv=default">
+                      <span></span>
+                    </Link>
+                  </Navbar.Brand>
+                  <Navbar.Toggle />
+                </Navbar.Header>
+                <Navbar.Collapse>
+                  <Nav pullRight>
+                    {hideDonation ?
+                      null : <NavItem
+                        target="_blank"
+                        eventKey={2}
+                        href="https://home.clinwiki.org/make-a-donation/">
+                        Donate to ClinWiki
+                        </NavItem>
+                    }
+                    <NavItem eventKey={1} href="https://home.clinwiki.org/" target="_blank">
+                      About ClinWiki
               </NavItem>
-              <Row>
-                <UserProfileHeaderButton
-                  user={this.props.user}
-                  history={this.props.history}
-                />
-              </Row>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-      </ThemedStyledWrapper>
+                    <Row>
+                      <UserProfileHeaderButton
+                        user={this.props.user}
+                        history={this.props.history}
+                        data={data}
+                      />
+                    </Row>
+                  </Nav>
+                </Navbar.Collapse>
+              </Navbar>
+            </ThemedStyledWrapper>
+          );
+        }}
+      </QueryComponent>
     );
   }
 }

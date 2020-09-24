@@ -759,6 +759,7 @@ export interface CreateSiteMutation_createSite_site {
   editors: CreateSiteMutation_createSite_site_editors[];
   name: string;
   skipLanding: boolean | null;
+  hideDonation: boolean | null;
   subdomain: string;
   themes: string;
   reactionsConfig: string;

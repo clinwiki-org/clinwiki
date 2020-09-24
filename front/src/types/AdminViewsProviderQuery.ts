@@ -23,6 +23,7 @@ export interface AdminViewsProviderQuery_site_siteViews {
 export interface AdminViewsProviderQuery_site {
   __typename: "Site";
   id: number;
+  hideDonation: boolean | null;
   siteViews: AdminViewsProviderQuery_site_siteViews[];
 }
 
