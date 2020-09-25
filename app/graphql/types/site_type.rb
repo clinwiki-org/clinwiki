@@ -4,6 +4,7 @@ module Types
     field :name, String, null: false
     field :subdomain, String, null: false
     field :skip_landing, Boolean, null: true
+    field :hide_donation, Boolean, null: true
     field :owners, [UserType], null: false
     field :editors, [UserType], null: false
     field :site_views, [SiteViewType], null: false

@@ -759,6 +759,7 @@ export interface UpdateSiteMutation_updateSite_site {
   editors: UpdateSiteMutation_updateSite_site_editors[];
   name: string;
   skipLanding: boolean | null;
+  hideDonation: boolean | null;
   subdomain: string;
   themes: string;
   reactionsConfig: string;

@@ -268,6 +268,7 @@ export const SITE_FRAGMENT = gql`
     }
     name
     skipLanding
+    hideDonation
     subdomain
     themes
     reactionsConfig
@@ -301,8 +302,8 @@ interface UseSiteProps {
   url?: string;
 }
 export function useSite(props?: UseSiteProps) {
-        // console.log("USE SITE PROPS", props);
-        // console.trace();
+  // console.log("USE SITE PROPS", props);
+  // console.trace();
   const urlName = new URLSearchParams(window.location.search)
     .getAll('sv')
     .toString()

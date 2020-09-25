@@ -153,6 +153,14 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
               checked={this.props.form.skipLanding}
               onChange={this.handleCheckboxChange}
             />
+            <StyledLabel htmlFor="subdomain">Hide Donation</StyledLabel>
+            <Checkbox
+              id="hideDonation"
+              name="hideDonation"
+              type="checkbox"
+              checked={this.props.form.hideDonation}
+              onChange={this.handleCheckboxChange}
+            />
             <div>
               <h3>Editors</h3>
               {noEditors && <h5>No editors</h5>}
