@@ -11,7 +11,7 @@ import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
+import { usePresentSite } from "../PresentSiteProvider/PresentSiteProvider";
 
 
 interface Props {
@@ -21,25 +21,25 @@ interface Props {
 export default function GenericPage(props: Props) {
   const history = useHistory();
   const match = useRouteMatch();
-  const defaultPage =()=>{
-    if(props.url){
+  const defaultPage = () => {
+    if (props.url) {
       return props.url
     }
-    if(params.pv && pageViewsData){
-      const defaultPageView= find(propEq('url', params.pv))(pageViewsData?.site?.pageViews)
-      if (defaultPageView){
+    if (params.pv && pageViewsData) {
+      const pageView = find(propEq('url', params.pv))(pageViewsData?.site?.pageViews)
+      if (pageView) {
+        return pageView.url
+      } else {
+        const defaultPageView = find(propEq('default', true))(pageViewsData?.site?.pageViews)
+        console.log("Looks like that is an invalid pageview, displaying default")
         return defaultPageView.url
       }
-    }
-    if(pageViewsData){
-     const defaultPageView= find(propEq('default', true))(pageViewsData?.site?.pageViews)
-      return defaultPageView.url
     }
   }
   // When we add more page types we need to refactor this a little bit and pull out the query/nctid
   const fragmentName = 'GenericPageStudy';
   const params = useUrlParams();
-  const { site } = usePresentSite({ url: params.sv});
+  const { site } = usePresentSite({ url: params.sv });
   const { data: pageViewsData } = usePageViews(site?.id);
   const { data: pageViewData } = usePageView(defaultPage());
   const currentPage = pageViewData?.site?.pageView;
