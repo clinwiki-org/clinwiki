@@ -54,7 +54,6 @@ import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
 import RichTextEditor from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
-import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<
@@ -495,20 +494,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     )(this.state.params?.crowdAggFilters || []);
   };
 
-  handleRowClick = (nctId: string) => {
-    const queryStringParams = useUrlParams()
-
+  handleRowClick = (nctId: string, hash: string, siteViewUrl: string) => {
     const suffix =
       this.isWorkflow() && !this.props.ignoreUrlHash ? '/workflow' : '';
     this.props.history.push(
-      `/study/${nctId}${suffix}${queryStringAll(queryStringParams)}`
+      `/study/${nctId}${suffix}?hash=${hash}&sv=${siteViewUrl}`
     );
   };
 
-  handleBulkUpdateClick = () => {
-    const queryStringParams = useUrlParams()
-
-    this.props.history.push(`/bulk${queryStringAll(queryStringParams)}`);
+  handleBulkUpdateClick = (hash: string, siteViewUrl: string) => {
+    this.props.history.push(`/bulk?hash=${hash}&sv=${siteViewUrl}`);
   };
 
   handleOpenAgg = (name: string, kind: AggKind) => {
