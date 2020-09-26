@@ -396,10 +396,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     view: SiteViewFragment
   ): SearchParams => {
     const defaultParams = this.getDefaultParams(view, this.props.email);
-    if (this.state.params && this.state.params.q) {
-      let queryParams = { ...defaultParams, q: this.state.params.q }
-      return queryParams
-    }
+
     if (!params) return defaultParams;
 
     const q = params.q
@@ -654,14 +651,19 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         key: 'AND',
         children: [{ children: [], key: searchTerm.getAll('q').toString() }],
       };
-      this.updateSearchParams({
-        q: q,
-        aggFilters: [],
-        crowdAggFilters: [],
-        sorts: [],
-        page: 0,
-        pageSize: defaultPageSize,
-      })
+      this.setState(
+        {
+          params: {
+            q: q,
+            aggFilters: [],
+            crowdAggFilters: [],
+            sorts: [],
+            page: 0,
+            pageSize: defaultPageSize,
+          },
+        },
+        () => this.updateSearchParams(this.state.params)
+      );
     }
     if (this.props.intervention) {
       //@ts-ignore
