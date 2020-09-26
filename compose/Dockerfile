@@ -2,7 +2,7 @@ FROM ruby:2.6.6
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update -qq && \
-   DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs npm postgresql-client htop curl make sudo screen vim && \
+   DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs postgresql-client htop curl make sudo screen vim && \
    apt-get clean
 RUN npm install -g yarn
 
