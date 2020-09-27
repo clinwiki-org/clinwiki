@@ -38,13 +38,15 @@ import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
 import {
   SearchPageSearchQuery_search_aggs,
-  SearchPageSearchQuery_search_aggs_buckets,
   SearchPageSearchQuery_crowdAggs_aggs,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
 import { AggBucketMap, defaultPageSize } from './Types';
 import { SiteViewFragment } from 'types/SiteViewFragment';
-import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import {
+  PresentSiteFragment,
+  PresentSiteFragment_siteView,
+} from 'types/PresentSiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
@@ -52,7 +54,7 @@ import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
 import RichTextEditor from 'react-rte';
-import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
+import { withPresentSite2 } from '../PresentSiteProvider/PresentSiteProvider';
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<
@@ -74,18 +76,18 @@ const MainContainer = styled(Col)`
   .rt-th {
     text-transform: capitalize;
     padding: 15px !important;
-    background: ${(props) =>
+    background: ${props =>
       props.theme.searchResults.resultsHeaderBackground} !important;
     color: #fff;
   }
 
   .ReactTable .-pagination .-btn {
-    background: ${(props) =>
+    background: ${props =>
       props.theme.searchResults.resultsPaginationButtons} !important;
   }
 
   div.rt-tbody div.rt-tr:hover {
-    background: ${(props) =>
+    background: ${props =>
       props.theme.searchResults.resultsRowHighlight} !important;
     color: #fff !important;
   }
@@ -112,11 +114,11 @@ const SidebarContainer = styled(Col)`
   width: 235px;
   min-width: 235px;
   min-height: 100%;
-  background: ${(props) => props.theme.aggSideBar.sideBarBackground};
+  background: ${props => props.theme.aggSideBar.sideBarBackground};
   .panel-title {
     a:hover {
       text-decoration: none;
-      color: ${(props) => props.theme.aggSideBar.sideBarFontHover};
+      color: ${props => props.theme.aggSideBar.sideBarFontHover};
     }
   }
   .panel-default {
@@ -141,7 +143,7 @@ const SidebarContainer = styled(Col)`
     }
     .panel-title {
       font-size: 16px;
-      color: ${(props) => props.theme.aggSideBar.sideBarFont};
+      color: ${props => props.theme.aggSideBar.sideBarFont};
       padding: 0px 10px;
     }
   }
@@ -161,7 +163,7 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px;
-  .rich-text{
+  .rich-text {
     background-color: #f2f2f2;
   }
 `;
@@ -196,7 +198,7 @@ const changeFilter = (add: boolean) => (
       }
       const aggLens = lensPath([index, 'values']);
       const updater = (values: string[]) =>
-        add ? [...values, key] : reject((x) => x === key, values);
+        add ? [...values, key] : reject(x => x === key, values);
       let res = over(aggLens, updater, aggs);
       // Drop filter if no values left
       if (isEmpty(view(aggLens, res))) {
@@ -214,7 +216,7 @@ const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
-    keys.forEach((k) => {
+    keys.forEach(k => {
       params = addFilter(aggName, k, isCrowd)(params);
     });
     // changeFilter(true);
@@ -224,7 +226,7 @@ const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 
 const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
-    keys.forEach((k) => {
+    keys.forEach(k => {
       params = removeFilter(aggName, k, isCrowd)(params);
     });
     // changeFilter(true);
@@ -398,34 +400,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       groupBy<AggFilterInput>(prop('field')),
       map(head),
       map(propOr([], 'values')),
-      map((arr) => new Set(arr))
+      map(arr => new Set(arr))
     )(filters) as { [key: string]: Set<string> };
   };
 
-  transformAggs = (
-    aggs: SearchPageSearchQuery_search_aggs[]
-  ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
-    return pipe(
-      groupBy<SearchPageSearchQuery_search_aggs>(prop('name')),
-      map(head),
-      map(prop('buckets'))
-    )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
-  };
-
-  transformCrowdAggs = (
-    aggs: SearchPageSearchQuery_crowdAggs_aggs[]
-  ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
-    return pipe(prop('buckets'), groupBy(prop('key')))(aggs[0]) as {
-      [key: string]: SearchPageSearchQuery_search_aggs_buckets[];
-    };
-  };
-
   handleResetFilters = (view: SiteViewFragment) => () => {
-    this.updateSearchParams(this.getDefaultParams(view, this.props.email))
+    this.updateSearchParams(this.getDefaultParams(view, this.props.email));
   };
 
   handleClearFilters = () => {
-    this.updateSearchParams(DEFAULT_PARAMS)
+    this.updateSearchParams(DEFAULT_PARAMS);
   };
 
   resetSelectAll = () => {
@@ -453,7 +437,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       //@ts-ignore
       map(prop('field')),
       //@ts-ignore
-      any((x) => (x as string).toLowerCase().includes('wf_'))
+      any(x => (x as string).toLowerCase().includes('wf_'))
       //@ts-ignore
     )(this.state.params?.crowdAggFilters || []);
   };
@@ -498,7 +482,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
   };
 
-  renderAggs = (siteView) => {
+  renderAggs = siteView => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
@@ -715,15 +699,15 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } | null;
     return response;
   };
-  updateSearchParams = async (params) => {
+  updateSearchParams = async params => {
     this.setState({
       ...this.state,
       params: { ...(this.state?.params || {}), ...params },
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    
-    const {searchQueryString, pageViewUrl} = this.getPageView();
+
+    const { searchQueryString, pageViewUrl } = this.getPageView();
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
     // This assumes that the site provider is not passing a url into the page
     // view fragment portion of the query otherwise we would need to call the
@@ -774,16 +758,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
 
     const providedPageView = this.props.site.pageView?.url;
-    const defaultPageView = providedPageView ? providedPageView : "default";
-    const pageViewUrl = searchQueryString.getAll('pv').toString() || defaultPageView;
+    const defaultPageView = providedPageView ? providedPageView : 'default';
+    const pageViewUrl =
+      searchQueryString.getAll('pv').toString() || defaultPageView;
     return {
       searchQueryString: searchQueryString,
-      pageViewUrl: pageViewUrl
+      pageViewUrl: pageViewUrl,
+    };
+  };
 
-    }
-  }
-
-  getTotalResults = (total) => {
+  getTotalResults = total => {
     if (total) {
       this.setState({
         totalRecords: total,
@@ -791,12 +775,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   };
-  handlePresearchButtonClick = (hash, target,pageViewUrl) => {
+  handlePresearchButtonClick = (hash, target, pageViewUrl) => {
     const url = `/search?hash=${hash}&sv=${target}&pv=${pageViewUrl}`;
     this.props.history.push(url);
   };
 
-  renderPresearch = (hash) => {
+  renderPresearch = hash => {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     const { presentSiteView } = this.props;
     const preSearchAggs = presentSiteView.search.presearch.aggs.selected.values;
@@ -805,7 +789,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const presearchButton = presentSiteView.search.presearch.button;
     const presearchText = presentSiteView.search.presearch.instructions;
 
-    const {searchQueryString, pageViewUrl} = this.getPageView();
+    const { searchQueryString, pageViewUrl } = this.getPageView();
 
     return (
       <SearchContainer>
@@ -845,7 +829,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         {presearchButton.name && (
           <ThemedButton
             onClick={() =>
-              this.handlePresearchButtonClick(hash, presearchButton.target,pageViewUrl)
+              this.handlePresearchButtonClick(
+                hash,
+                presearchButton.target,
+                pageViewUrl
+              )
             }
             style={{ width: 200, marginLeft: 13 }}>
             {presearchButton.name}
@@ -904,7 +892,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         <SearchParamsContext.Provider
           value={{
             searchParams: this.state.params,
-            updateSearchParams: (params) => {
+            updateSearchParams: params => {
               this.setState({ params: { ...this.state.params, ...params } });
             },
           }}>
