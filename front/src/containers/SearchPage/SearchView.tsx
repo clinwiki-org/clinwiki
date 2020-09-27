@@ -28,7 +28,6 @@ import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,
   SearchPageSearchQuery_search_aggs,
-  SearchPageSearchQuery_search_aggs_buckets,
   SearchPageSearchQuery_crowdAggs_aggs,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
@@ -164,13 +163,7 @@ import withTheme from 'containers/ThemeProvider';
 const COLUMNS = studyFields;
 const COLUMN_NAMES = fromPairs(
   // @ts-ignore
-  COLUMNS.map(field => [
-    field,
-    field
-      .split('_')
-      .map(capitalize)
-      .join(' '),
-  ])
+  COLUMNS.map(field => [field, field.split('_').map(capitalize).join(' ')])
 );
 
 const changePage = (pageNumber: number) => (params: SearchParams) => ({
@@ -214,16 +207,10 @@ const SearchContainer = styled.div`
   flex-direction: column;
 `;
 
-
-
 interface SearchViewProps {
   params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
-  onAggsUpdate: (
-    aggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] },
-    crowdAggs: { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] }
-  ) => void;
   onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
   onClearFilters: () => void;
   onOpenAgg: (name: string, kind: AggKind) => void;
@@ -373,30 +360,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     };
   };
 
-  transformAggs = (
-    aggs: SearchPageSearchQuery_search_aggs[]
-  ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
-    return pipe(
-      groupBy<SearchPageSearchQuery_search_aggs>(prop('name')),
-      map(head),
-      map(prop('buckets'))
-    )(aggs) as {
-      [key: string]: SearchPageSearchQuery_search_aggs_buckets[];
-    };
-  };
-
-  transformCrowdAggs = (
-    aggs: SearchPageSearchQuery_crowdAggs_aggs[]
-  ): { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] } => {
-    return pipe(
-      head,
-      prop('buckets'),
-      groupBy(prop('key')),
-      map(() => [])
-      // @ts-ignore
-    )(aggs) as { [key: string]: SearchPageSearchQuery_search_aggs_buckets[] };
-  };
-
   updateState = () => {
     if (!this.props.showCards) {
       this.setState({
@@ -411,7 +374,8 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
       .showResults;
     if (!this.props.showCards && showResults) {
       this.setState({
-        tableWidth: document.getElementsByClassName('ReactTable')?.[0]?.clientWidth,
+        tableWidth: document.getElementsByClassName('ReactTable')?.[0]
+          ?.clientWidth,
       });
       window.addEventListener('resize', this.updateState);
     }
@@ -749,15 +713,6 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
     }
   };
 
-  handleAggsUpdated = (data?: SearchPageSearchQuery) => {
-    if (data?.search) {
-      this.props.onAggsUpdate(
-        this.transformAggs(data.search.aggs || []),
-        this.transformCrowdAggs(data.crowdAggs.aggs || [])
-      );
-    }
-  };
-
   render() {
     return (
       <SearchWrapper>
@@ -765,24 +720,7 @@ class SearchView extends React.Component<SearchViewProps, SearchViewState> {
           <title>Search</title>
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
-        <Col md={12}>
-          {/* <QueryComponent
-            query={QUERY}
-            variables={this.props.params}
-            onCompleted={this.handleAggsUpdated}>
-            {({ data, loading, error }) => {
-              // Unfortunately the onCompleted callback is not called if
-              // the data is served from cache.  There is some confusion
-              // in the documentation but this appears to be by design.
-              this.handleAggsUpdated(data);
-              return (
-                <SearchContainer>
-                  {this.renderSearch({ data, loading, error })}
-                </SearchContainer>
-              );
-            }}
-          </QueryComponent> */}
-        </Col>
+        <Col md={12}></Col>
       </SearchWrapper>
     );
   }
