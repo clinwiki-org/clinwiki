@@ -660,8 +660,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
 
         const { presentSiteView } = this.props;
         // Block that sets the recordsTotal to state based on data response
-        let pagesTotal = 1;
-        pagesTotal = Math.min(
+        let pagesTotal = Math.min(
           Math.ceil(recordsTotal / this.props.params.pageSize),
           Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
         );
@@ -676,6 +675,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           ? tableWidth - totalWidth
           : this.state.tableWidth - totalWidth;
         const additionalWidth = leftover / columns.length;
+        console.log("additionalWidth", additionalWidth);
         columns.map(x => (x.width += additionalWidth), columns);
         if (this.props.showCards) {
           return (
@@ -821,12 +821,9 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
   };
 
   sortHelper = (sorts, params) => {
-    const idSortedLens = lensProp('id');
-    const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
     this.props.onUpdateParams(changeSorted(sorts));
   };
   reverseSort = () => {
-    let params = this.props.params;
     let desc = this.props.params.sorts[0].desc;
     let newSort: [SortInput] = [
       { id: this.props.params.sorts[0].id, desc: !desc },

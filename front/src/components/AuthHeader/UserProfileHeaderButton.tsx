@@ -5,10 +5,6 @@ import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { UserFragment } from 'types/UserFragment';
-import {
-  Query,
-  QueryComponentOptions,
-} from 'react-apollo';
 import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
 
 
