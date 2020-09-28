@@ -363,10 +363,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     view: SiteViewFragment
   ): SearchParams => {
     const defaultParams = this.getDefaultParams(view, this.props.email);
-    if (this.state.params && this.state.params.q) {
-      let queryParams = { ...defaultParams, q: this.state.params.q }
-      return queryParams
-    }
     if (!params) return defaultParams;
 
     const q = params.q
@@ -683,25 +679,22 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
 
     if (searchTerm.has('q')) {
+      const defaultParams = this.getDefaultParams(view, this.props.email);
       let q = {
         key: 'AND',
         children: [{ children: [], key: searchTerm.getAll('q').toString() }],
       };
-      this.setState(
-        {
-          params: {
-            ...params,
-            q: q,
-          },
-        },
-        () => this.updateSearchParams(this.state.params)
-      );
+      let queryParams = { ...defaultParams, q: q }
+      this.updateSearchParams(queryParams);
     }
-    this.setState({
-      params: {
-        ...params,
-      },
-    });
+    //Originally thought this should be an updateSearchParams call but seems to error out
+    //Commented out the application seems to still function as inteded. All the aggs update appropriately with no hash, with a hash. So far has passed all my current tests.
+    // Will leave it in and commented out for now as a reminder to come back and look into it.  
+    // this.setState({
+    //   params: {
+    //     ...params,
+    //   },
+    // });
   }
   findFilter = (variable: string) => {
     let aggFilter = this.state.params?.aggFilters;
