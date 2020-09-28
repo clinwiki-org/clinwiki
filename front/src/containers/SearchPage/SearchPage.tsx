@@ -52,7 +52,7 @@ import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
 import RichTextEditor from 'react-rte';
-import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
+import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<
@@ -75,18 +75,18 @@ const MainContainer = styled(Col)`
     text-transform: capitalize;
     padding: 15px !important;
     background: ${(props) =>
-      props.theme.searchResults.resultsHeaderBackground} !important;
+    props.theme.searchResults.resultsHeaderBackground} !important;
     color: #fff;
   }
 
   .ReactTable .-pagination .-btn {
     background: ${(props) =>
-      props.theme.searchResults.resultsPaginationButtons} !important;
+    props.theme.searchResults.resultsPaginationButtons} !important;
   }
 
   div.rt-tbody div.rt-tr:hover {
     background: ${(props) =>
-      props.theme.searchResults.resultsRowHighlight} !important;
+    props.theme.searchResults.resultsRowHighlight} !important;
     color: #fff !important;
   }
 
@@ -720,8 +720,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-    
-    const {searchQueryString, pageViewUrl} = this.getPageView();
+
+    const { searchQueryString, pageViewUrl } = this.getPageView();
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
     // This assumes that the site provider is not passing a url into the page
     // view fragment portion of the query otherwise we would need to call the
@@ -732,33 +732,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     if (data?.provisionSearchHash?.searchHash?.short) {
       if (this.props.match.path === '/profile') {
         this.props.history.push(
-          `/profile?hash=${
-            data!.provisionSearchHash!.searchHash!.short
+          `/profile?hash=${data!.provisionSearchHash!.searchHash!.short
           }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
       } else if (userId) {
         let profile = this.findFilter('wiki_page_edits.email');
         this.props.history.push(
-          `/profile/user?hash=${
-            data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${
-            profile && profile.values.toString()
+          `/profile/user?hash=${data!.provisionSearchHash!.searchHash!.short
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${profile && profile.values.toString()
           }`
         );
         return;
       } else if (this.props.match.path === '/intervention/:id') {
         this.props.history.push(
           //@ts-ignore
-          `/intervention/${this.props.match.params.id}?hash=${
-            data!.provisionSearchHash!.searchHash!.short
+          `/intervention/${this.props.match.params.id}?hash=${data!.provisionSearchHash!.searchHash!.short
           }&sv=intervention&pv=${pageViewUrl}`
         );
         return;
       } else {
         this.props.history.push(
-          `/search?hash=${
-            data!.provisionSearchHash!.searchHash!.short
+          `/search?hash=${data!.provisionSearchHash!.searchHash!.short
           }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
@@ -789,7 +784,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     return null;
   };
-  handlePresearchButtonClick = (hash, target,pageViewUrl) => {
+  handlePresearchButtonClick = (hash, target, pageViewUrl) => {
     const url = `/search?hash=${hash}&sv=${target}&pv=${pageViewUrl}`;
     this.props.history.push(url);
   };
@@ -803,7 +798,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const presearchButton = presentSiteView.search.presearch.button;
     const presearchText = presentSiteView.search.presearch.instructions;
 
-    const {searchQueryString, pageViewUrl} = this.getPageView();
+    const { searchQueryString, pageViewUrl } = this.getPageView();
 
     return (
       <SearchContainer>
@@ -843,7 +838,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         {presearchButton.name && (
           <ThemedButton
             onClick={() =>
-              this.handlePresearchButtonClick(hash, presearchButton.target,pageViewUrl)
+              this.handlePresearchButtonClick(hash, presearchButton.target, pageViewUrl)
             }
             style={{ width: 200, marginLeft: 13 }}>
             {presearchButton.name}
