@@ -75,6 +75,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       name,
       subdomain,
       skipLanding,
+      hideDonation,
       editors,
       themes,
       userRank,
@@ -85,6 +86,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
       name,
       subdomain,
       skipLanding,
+      hideDonation,
       editorEmails,
       themes,
       userRank,
@@ -243,7 +245,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               Save
             </ThemedButton>
           </StyledContainer>
-        ):null}
+        ) : null}
       </Container>
     );
   }

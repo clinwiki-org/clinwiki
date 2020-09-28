@@ -6,6 +6,7 @@ module Mutations
     argument :name, String, required: true
     argument :subdomain, String, required: true
     argument :skip_landing, Boolean, required: false
+    argument :hide_donation, Boolean, required: false
     argument :themes, String, required: false
     argument :reactions_config, String, required: false
     argument :user_rank, String, required: false

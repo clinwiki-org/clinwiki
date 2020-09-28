@@ -759,6 +759,7 @@ export interface SiteFragment {
   editors: SiteFragment_editors[];
   name: string;
   skipLanding: boolean | null;
+  hideDonation: boolean | null;
   subdomain: string;
   themes: string;
   reactionsConfig: string;

@@ -759,6 +759,7 @@ export interface SiteProviderQuery_site {
   editors: SiteProviderQuery_site_editors[];
   name: string;
   skipLanding: boolean | null;
+  hideDonation: boolean | null;
   subdomain: string;
   themes: string;
   reactionsConfig: string;
