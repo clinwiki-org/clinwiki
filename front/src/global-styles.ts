@@ -191,8 +191,10 @@ div.DraftEditor-editorContainer{
   background-color: white;
   border: 0px;
   padding: 0px;
+  font-family:inherit;
 }
 .mail-merge pre code {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 13px;
+}
 `);
