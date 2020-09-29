@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
@@ -66,6 +67,7 @@ const MainContainer = styled(Col)`
   padding-top: 20px;
   padding-bottom: 20px;
   flex: 1;
+  overflow:auto;
   @media (max-width: 768px) {
     flex-direction: column;
     min-width:100vw;
@@ -119,8 +121,28 @@ const SideBarCollapse = styled.div`
   top: 0;
   min-width:7vh;
   z-index:1029;
-`
 
+  .collapse-icon-container{
+    background: ${(props) => props.theme.aggSideBar.sideBarBackground};
+    position: absolute;
+    margin-top: 10vh;
+    margin-left: -15px;
+    min-width: 27;
+    max-height: 24px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 28px grey;
+  }
+  .collapse-icon{
+    color: #eaedf4;
+    margin-left: 3px;
+    margin-top: -3px;
+    font-size: 30px;
+    &:hover {
+      color: ${(props) => props.theme.button};
+    }
+  }
+`
+const ThemedSideBarCollapse = withTheme(SideBarCollapse)
 const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
@@ -304,7 +326,7 @@ interface SearchPageState {
   searchCrowdAggs: AggBucketMap;
   removeSelectAll: boolean;
   totalRecords: number;
-  // siteViewType: string;
+  collapseFacetBar: boolean;
 }
 
 const DEFAULT_PARAMS: SearchParams = {
@@ -324,8 +346,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     searchCrowdAggs: {},
     removeSelectAll: false,
     totalRecords: 0,
-    // siteViewType: '',
-  };
+    collapseFacetBar:false
+    };
 
   numberOfPages: number = 0;
   returnNumberOfPages = (numberOfPg: number) => {
@@ -822,7 +844,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       </SearchContainer>
     );
   };
-
   renderCrumbs = (siteView: SiteViewFragment) => {
     const { totalRecords } = this.state;
     const q: string[] =
@@ -858,7 +879,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   render() {
-    const { totalRecords } = this.state;
+    const { totalRecords, collapseFacetBar } = this.state;
     if (this.props.email && !this.props.match.params.id) {
       this.props.getTotalContributions(totalRecords);
     }
@@ -882,11 +903,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               return (
                 <ThemedSearchPageWrapper>
                   {showFacetBar && (
-                    <ThemedSidebarContainer md={2}>
+                    <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
                       {this.renderAggs(presentSiteView)}
                     </ThemedSidebarContainer>
                   )}
-                  <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} >
+                  <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
                     <span className="collapse-icon-container">
                       <FontAwesome
                         name={collapseFacetBar ? "chevron-circle-right" : "chevron-circle-left"}
