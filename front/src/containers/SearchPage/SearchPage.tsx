@@ -51,7 +51,7 @@ import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import SearchParamsContext from './components/SearchParamsContext';
 import RichTextEditor from 'react-rte';
-import { withPresentSite2 } from '../PresentSiteProvider/PresentSiteProvider';
+import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<
@@ -73,19 +73,19 @@ const MainContainer = styled(Col)`
   .rt-th {
     text-transform: capitalize;
     padding: 15px !important;
-    background: ${props =>
-      props.theme.searchResults.resultsHeaderBackground} !important;
+    background: ${(props) =>
+    props.theme.searchResults.resultsHeaderBackground} !important;
     color: #fff;
   }
 
   .ReactTable .-pagination .-btn {
-    background: ${props =>
-      props.theme.searchResults.resultsPaginationButtons} !important;
+    background: ${(props) =>
+    props.theme.searchResults.resultsPaginationButtons} !important;
   }
 
   div.rt-tbody div.rt-tr:hover {
-    background: ${props =>
-      props.theme.searchResults.resultsRowHighlight} !important;
+    background: ${(props) =>
+    props.theme.searchResults.resultsRowHighlight} !important;
     color: #fff !important;
   }
 
@@ -343,7 +343,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     view: SiteViewFragment
   ): SearchParams => {
     const defaultParams = this.getDefaultParams(view, this.props.email);
-
     if (!params) return defaultParams;
 
     const q = params.q
@@ -630,25 +629,22 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
 
     if (searchTerm.has('q')) {
+      const defaultParams = this.getDefaultParams(view, this.props.email);
       let q = {
         key: 'AND',
         children: [{ children: [], key: searchTerm.getAll('q').toString() }],
       };
-      this.setState(
-        {
-          params: {
-            ...params,
-            q: q,
-          },
-        },
-        () => this.updateSearchParams(this.state.params)
-      );
+      let queryParams = { ...defaultParams, q: q }
+      this.updateSearchParams(queryParams);
     }
-    this.setState({
-      params: {
-        ...params,
-      },
-    });
+    //Originally thought this should be an updateSearchParams call but seems to error out
+    //Commented out the application seems to still function as inteded. All the aggs update appropriately with no hash, with a hash. So far has passed all my current tests.
+    // Will leave it in and commented out for now as a reminder to come back and look into it.  
+    // this.setState({
+    //   params: {
+    //     ...params,
+    //   },
+    // });
   }
   findFilter = (variable: string) => {
     let aggFilter = this.state.params?.aggFilters;
@@ -679,33 +675,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     if (data?.provisionSearchHash?.searchHash?.short) {
       if (this.props.match.path === '/profile') {
         this.props.history.push(
-          `/profile?hash=${
-            data!.provisionSearchHash!.searchHash!.short
+          `/profile?hash=${data!.provisionSearchHash!.searchHash!.short
           }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
       } else if (userId) {
         let profile = this.findFilter('wiki_page_edits.email');
         this.props.history.push(
-          `/profile/user?hash=${
-            data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${
-            profile && profile.values.toString()
+          `/profile/user?hash=${data!.provisionSearchHash!.searchHash!.short
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${profile && profile.values.toString()
           }`
         );
         return;
       } else if (this.props.match.path === '/intervention/:id') {
         this.props.history.push(
           //@ts-ignore
-          `/intervention/${this.props.match.params.id}?hash=${
-            data!.provisionSearchHash!.searchHash!.short
+          `/intervention/${this.props.match.params.id}?hash=${data!.provisionSearchHash!.searchHash!.short
           }&sv=intervention&pv=${pageViewUrl}`
         );
         return;
       } else {
         this.props.history.push(
-          `/search?hash=${
-            data!.provisionSearchHash!.searchHash!.short
+          `/search?hash=${data!.provisionSearchHash!.searchHash!.short
           }&sv=${siteViewUrl}&pv=${pageViewUrl}`
         );
         return;
