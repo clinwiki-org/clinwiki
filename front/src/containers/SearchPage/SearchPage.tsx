@@ -71,6 +71,7 @@ const MainContainer = styled(Col)`
   overflow:auto;
   @media (max-width: 768px) {
     flex-direction: column;
+    min-width:100vw;
   }
 
   .rt-th {
@@ -106,19 +107,20 @@ const SearchPageWrapper = styled.div`
   }
   .collapsed{
     margin-left: 0;
+    border-left 15px solid ${(props) => props.theme.aggSideBar.sideBarBackground};
   }
   .expanded{
     margin-left: 235px;
-  
   }
 `;
-
+const ThemedSearchPageWrapper = withTheme(SearchPageWrapper)
 const ThemedMainContainer = withTheme(MainContainer);
 const SideBarCollapse = styled.div`
   min-height: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   min-width:7vh;
+  z-index:1029;
 
 .collapse-icon-container{
   background: ${(props) => props.theme.aggSideBar.sideBarBackground};
@@ -645,7 +647,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
-
+    if (window.innerWidth < 768) {
+      this.setState({ collapseFacetBar: true })
+    }
     if (searchTerm.has('q')) {
       let q = {
         key: 'AND',
@@ -1003,7 +1007,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 showBreadCrumbs,
               } = presentSiteView.search.config.fields;
               return (
-                <SearchPageWrapper>
+                <ThemedSearchPageWrapper>
                   {showFacetBar && (
                     <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
                       {this.renderAggs(presentSiteView)}
@@ -1015,7 +1019,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       <FontAwesome
                         name={collapseFacetBar ? "chevron-circle-right" : "chevron-circle-left"}
                         className="collapse-icon"
-                        style={{ display: isHovering ? 'inherit' : 'none' }}
                         onClick={() => {
                           this.setState({ collapseFacetBar: !collapseFacetBar })
                         }}
@@ -1027,7 +1030,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                     {showPresearch && this.renderPresearch(hash)}
                     {this.renderSearch()}
                   </ThemedMainContainer>
-                </SearchPageWrapper>
+                </ThemedSearchPageWrapper>
               );
             }}
           />
