@@ -161,8 +161,6 @@ GEM
       promise.rb (~> 0.7.2)
     hashdiff (1.0.0)
     hashie (4.1.0)
-    heroku-deflater (0.6.3)
-      rack (>= 1.4.5)
     htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -446,7 +444,6 @@ DEPENDENCIES
   graphiql-rails (~> 1.4.11)
   graphql
   graphql-batch
-  heroku-deflater
   http_logger (~> 0.6.0)
   httparty
   jbuilder (~> 2.7)
