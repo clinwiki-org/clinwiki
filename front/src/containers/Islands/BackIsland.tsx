@@ -13,7 +13,7 @@ export default function BackIsland(props: Props) {
   const queryString = useUrlParams();
   const backQuery = queryStringAll(queryString);
   const history = useHistory();
-  const name = '⤺︎ Back';
+  const name = '⤺︎ Search Results';
 
   const navButtonClick = () => () => {
     history.push(`/search${backQuery}`);
@@ -22,7 +22,7 @@ export default function BackIsland(props: Props) {
   return (
     <div>
       <ThemedButton
-        style={{ margin: 'auto', float: 'left' }}
+        style={{ marginRight: '10px', float: 'left' }}
         onClick={navButtonClick()}
         disabled={false}>
         {name}
