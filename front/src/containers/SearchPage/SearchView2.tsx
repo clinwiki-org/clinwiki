@@ -140,6 +140,56 @@ const QUERY = gql`
     planToShareIpdDescription
   }
 `;
+const QUERY_NO_RESULTS = gql`
+  query SearchPageSearchQuery(
+    $q: SearchQueryInput!
+    $page: Int
+    $pageSize: Int
+    $sorts: [SortInput!]
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+  ) {
+    crowdAggs: aggBuckets(
+      params: {
+        q: $q
+        page: 0
+        pageSize: 100000
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        agg: "front_matter_keys"
+      }
+    ) {
+      aggs {
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+    search(
+      params: {
+        q: $q
+        page: $page
+        pageSize: $pageSize
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+      }
+    ) {
+      recordsTotal
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+  }
+`;
+
 
 const COLUMNS = studyFields;
 const COLUMN_NAMES = fromPairs(
@@ -868,8 +918,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     };
 
     return (
-      <div
-        style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
         <div style={{ display: 'flex' }}>
           <DropdownButton
             bsStyle="default"
@@ -900,6 +949,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
   };
 
   render() {
+    const { presentSiteView }= this.props
     return (
       <SearchWrapper>
         <Helmet>
@@ -908,7 +958,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         </Helmet>
         <Col md={12}>
           <QueryComponent
-            query={QUERY}
+            query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
             variables={this.props.params}
             onCompleted={this.handleAggsUpdated}>
             {({ data, loading, error }) => {
