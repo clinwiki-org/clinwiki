@@ -59,8 +59,9 @@ class ExportToCsvButton extends React.Component<
           cancel={() => setShowLoginModal(false)}
         />
         <ThemedButton onClick={onClick}>
-          Export  &nbsp;
-          <FontAwesome name="file-text" />
+            &nbsp;
+            <FontAwesome name="download" />
+            &nbsp;
         </ThemedButton>
       </>
     );

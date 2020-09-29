@@ -102,7 +102,7 @@ export default function StudyPageHeader(props: StudyPageHeaderProps){
         return (
             <div style={{ paddingTop: '10px' }}>
                 <ThemedButton
-                    style={{ margin: 'auto', float: 'left' }}
+                    style={{ marginRight: '10px', float: 'left' }}
                     onClick={props.navButtonClick(link!)}
                     disabled={link === null}>
                     {name}
@@ -167,7 +167,7 @@ export default function StudyPageHeader(props: StudyPageHeaderProps){
         return (
             <HeaderContentWrapper>
                 <BackButtonContainer>
-                    {renderBackButton('⤺︎ Back', backLink())}
+                    {renderBackButton('⤺︎ Search Results', backLink())}
                 </BackButtonContainer>
                 <ReactionsContainer>
                     <LikesRow>

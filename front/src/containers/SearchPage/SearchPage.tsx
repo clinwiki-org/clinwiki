@@ -800,6 +800,19 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             </Instructions>
           )}
         </InstructionsContainer>
+        {presearchButton.name && (
+            <ThemedButton
+                onClick={() =>
+                    this.handlePresearchButtonClick(
+                        hash,
+                        presearchButton.target,
+                        pageViewUrl
+                    )
+                }
+                style={{ width: 200, marginLeft: 13, marginTop: 13}}>
+              {presearchButton.name}
+            </ThemedButton>
+        )}
         <Aggs
           aggs={this.state.searchAggs}
           crowdAggs={this.state.searchCrowdAggs}

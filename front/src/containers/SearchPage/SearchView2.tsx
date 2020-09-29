@@ -725,7 +725,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           ? tableWidth - totalWidth
           : this.state.tableWidth - totalWidth;
         const additionalWidth = leftover / columns.length;
-        console.log("additionalWidth", additionalWidth);
+        //console.log("additionalWidth", additionalWidth);
         columns.map(x => (x.width += additionalWidth), columns);
         if (this.props.showCards) {
           return (

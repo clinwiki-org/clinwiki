@@ -20,6 +20,8 @@ const StyledButton = styled.button`
   transition: 0.5s;
   color: #fff;
   &:hover {
+    transform: scale(1.05);
+    transition-duration: 0.1s;
     background: ${props => props.theme.buttonSecondary};
   }
   &:disabled {
