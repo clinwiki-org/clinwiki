@@ -903,10 +903,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               return (
                 <ThemedSearchPageWrapper>
                   {showFacetBar && (
+                    <>
                     <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
                       {this.renderAggs(presentSiteView)}
                     </ThemedSidebarContainer>
-                  )}
                   <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
                     <span className="collapse-icon-container">
                       <FontAwesome
@@ -918,6 +918,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       />
                     </span>
                   </ThemedSideBarCollapse>
+                  </>
+                  )}
 
                   <ThemedMainContainer>
                     {showBreadCrumbs && this.renderCrumbs(presentSiteView)}
