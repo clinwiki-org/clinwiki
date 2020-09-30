@@ -439,6 +439,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
+    //console.log("Search Page handle update params", params)
     this.previousSearchData = [];
     if (!equals(params.q, this.state.params && this.state.params.q)) {
       // For now search doesn't work well with args list
@@ -529,6 +530,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const { presentSiteView } = this.props;
     return (
       <ParamsQueryComponent
+        fetchPolicy={"network-only"}
         key={`${hash}+${JSON.stringify(this.state?.params)}`}
         query={SearchPageParamsQuery}
         variables={{ hash }}
@@ -680,13 +682,14 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
     //Originally thought this should be an updateSearchParams call but seems to error out
     //Commented out the application seems to still function as inteded. All the aggs update appropriately with no hash, with a hash. So far has passed all my current tests.
-    // Will leave it in and commented out for now as a reminder to come back and look into it.  
-    // this.setState({
-    //   params: {
-    //     ...params,
-    //   },
-    // });
+    // Will leave it in and commented out for now as a reminder to come back and look into it.
+     this.setState({
+      params: {
+        ...params,
+       },
+     });
   }
+
   findFilter = (variable: string) => {
     let aggFilter = this.state.params?.aggFilters;
     let response = find(propEq('field', variable), aggFilter || []) as {
@@ -907,10 +910,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               return (
                 <ThemedSearchPageWrapper>
                   {showFacetBar && (
+                    <>
                     <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
                       {this.renderAggs(presentSiteView)}
                     </ThemedSidebarContainer>
-                  )}
                   <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
                     <span className="collapse-icon-container">
                       <FontAwesome
@@ -922,6 +925,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                       />
                     </span>
                   </ThemedSideBarCollapse>
+                  </>
+                  )}
 
                   <ThemedMainContainer>
                     {showBreadCrumbs && this.renderCrumbs(presentSiteView)}
