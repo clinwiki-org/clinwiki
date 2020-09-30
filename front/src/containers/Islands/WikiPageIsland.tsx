@@ -16,6 +16,7 @@ import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
 import { CurrentUserQuery_me } from 'types/CurrentUserQuery';
+import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
 
 interface Props {
   nctId: string;
@@ -41,7 +42,6 @@ export default function WikiPageIsland(props: Props) {
   const [editorState, setEditorState] = useState('rich');
   const [plainEditorText, setplainEditorText] = useState('');
   const [richEditorText, setRichEditorText] = useState('');
-
   const user = useCurrentUser()?.data?.me;
   const params = useUrlParams();
   // TODO: This query should be pushed up as a fragment to the Page
@@ -52,7 +52,7 @@ export default function WikiPageIsland(props: Props) {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
-  const readOnly = !location.pathname.includes('/wiki/edit');
+   const readOnly = !location.pathname.includes('/wiki/edit');
   const editPath = `${trimPath(match.path)}/wiki/edit`;
 
   const getEditorText = () => {
@@ -84,33 +84,14 @@ export default function WikiPageIsland(props: Props) {
     setplainEditorText(e.currentTarget.value);
   };
 
-  const renderMarkdownButton = () => {
-    if (editorState === 'plain') {
-      return (
-        <ThemedButton type="button" onClick={() => handleMarkdownToggle()}>
-          Editor <FontAwesome name="newspaper-o" />
-        </ThemedButton>
-      );
-    }
-    return (
-      <ThemedButton type="button" onClick={() => handleMarkdownToggle()}>
-        Markdown <FontAwesome name="code" />
-      </ThemedButton>
-    );
-  };
-
-  const handleMarkdownToggle = () => {
-    const text = getEditorText() || '';
-    const editorStateTemp = editorState === 'rich' ? 'plain' : 'rich';
-    setEditorState(editorStateTemp);
-    setplainEditorText(text);
-    setRichEditorText(RichTextEditor.createValueFromString(text, 'markdown'));
-  };
 
   const handleEdit = () => {
     history.push(`${trimPath(match.url)}/wiki/edit${queryStringAll(params)}`);
   };
+  const handleUpdateText =(text)=>{
+    setRichEditorText(text)
 
+  }
   const handleEditSubmit = (
     updateWikiContent: (vars: {
       variables: WikiPageUpdateContentMutationVariables;
@@ -122,6 +103,7 @@ export default function WikiPageIsland(props: Props) {
         content: getEditorText() || '',
       },
     });
+    history.push(`${match.url}${queryStringAll(params)}`);
   };
 
   const renderSubmitButton = (
@@ -140,7 +122,7 @@ export default function WikiPageIsland(props: Props) {
         onClick={() => handleEditSubmit(updateContentMutation)}
         disabled={editorTextState === editorTextData}
         style={{ marginLeft: '10px' }}>
-        Submit <FontAwesome name="pencil" />
+        Save <FontAwesome name="pencil" />
       </ThemedButton>
     );
   };
@@ -172,13 +154,6 @@ export default function WikiPageIsland(props: Props) {
             path={editPath}
             render={() => (
               <>
-                {renderMarkdownButton()}{' '}
-                <ThemedButton
-                  type="button"
-                  onClick={() => handlePreview()}
-                  style={{ marginLeft: '10px' }}>
-                  Preview <FontAwesome name="photo" />
-                </ThemedButton>
                 {renderSubmitButton(data, isAuthenticated, readOnly)}
               </>
             )}
@@ -240,7 +215,8 @@ export default function WikiPageIsland(props: Props) {
     <div>
       <StyledPanel>
         <div>
-          <Route render={() => renderEditor(studyData)} />
+        <Route exact path = {editPath} render={props=><WikiPageEditor updateText={handleUpdateText} data={studyData}/>}/>
+        {readOnly? <Route render={ () => renderEditor(studyData)} />: null} 
           {renderToolbar(studyData, user, readOnly)}
         </div>
       </StyledPanel>
