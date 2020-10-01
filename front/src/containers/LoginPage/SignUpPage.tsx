@@ -72,8 +72,6 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
   };
 
   handleSignUp = (signUp: SignUpMutationFn) => () => {
-    console.log("password: " ,this.state.form.password,"confirmation: ", this.state.form.passwordConfirmation)
-    console.log(this.state.form.password === this.state.form.passwordConfirmation)
     if (this.state.form.password === this.state.form.passwordConfirmation) {
       const input = omit(
         ['passwordConfirmation', 'oAuthToken'],
