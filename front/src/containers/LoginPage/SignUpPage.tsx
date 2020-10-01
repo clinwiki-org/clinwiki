@@ -78,8 +78,9 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
         this.state.form
       );
       signUp({ variables: { input } });
+    }else{
+      this.setState({ errors: ["Password confirmation doesn't match"] });
     }
-    this.setState({ errors: ["Password confirmation doesn't match"] });
   };
 
   handleSignUpCompleted = (data: SignUpMutation) => {
