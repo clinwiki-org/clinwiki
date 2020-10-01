@@ -42,6 +42,19 @@ label {
   color: ${props => props.theme.crumbs.crumbFont} !important;
   line-height: 1.85em;
 }
+.crumb-wrapper{
+  display: flex;
+  flex-wrap:wrap;
+}
+.list-group-item {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
 div.crumbs-bar span.label {
   background: #55B88D !important;
   color: #fff !important;
