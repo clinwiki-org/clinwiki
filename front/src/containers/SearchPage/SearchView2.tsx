@@ -141,7 +141,7 @@ const QUERY = gql`
   }
 `;
 const QUERY_NO_RESULTS = gql`
-  query SearchPageSearchQueryNoResults(
+  query SearchPageSearchQuery(
     $q: SearchQueryInput!
     $page: Int
     $pageSize: Int
