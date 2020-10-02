@@ -19,6 +19,7 @@ import { CurrentUserQuery_me } from 'types/CurrentUserQuery';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
 import { CurrentUserQuery } from 'types/CurrentUserQuery';
+import { getStarColor } from '../../utils/auth';
 
 interface Props {
   nctId: string;
@@ -223,14 +224,15 @@ export default function WikiPageIsland(props: Props) {
   };
 
   if (!studyData || !nctId || !user) return <BeatLoader />;
+  const userRank = user ? user.me?.rank : 'default';
 
+  let rankColor = getStarColor(userRank);
   return (
     <>
       {flashAnimation == true? 
       <WorkFlowAnimation
         resetAnimation={handleResetAnimation}
-        //Must get rank color 
-        rankColor={"#000000"}
+        rankColor={rankColor}
       /> :null}
     <div>
       <StyledPanel>
