@@ -24,12 +24,12 @@ class Wikipedia
         return nil
       end
 
-      page_info_url =
-        "https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids=#{result.id}&inprop=url&format=json"
-
-      wiki_page_info = get_json_response(page_info_url)
-
       begin
+        page_info_url =
+          "https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids=#{result.id}&inprop=url&format=json"
+
+        wiki_page_info = get_json_response(page_info_url)
+
         result.url = wiki_page_info&.dig("query", "pages", result.id.to_s, "fullurl")
       rescue StandardError
         logger.error("Wiki: Unexpected response structure for url #{page_info_url}")
