@@ -8,7 +8,11 @@ class Wikipedia
       query_url = "https://en.wikipedia.org/w/api.php"\
                   "?format=json&action=query&prop=extracts&exintro"\
                   "&explaintext&redirects=1&titles=#{search_text}"
-      wiki_data = get_json_response(query_url)
+      begin
+        wiki_data = get_json_response(query_url)
+      rescue StandardError
+        return nil
+      end
 
       begin
         page = wiki_data&.dig("query", "pages")&.values&.first
