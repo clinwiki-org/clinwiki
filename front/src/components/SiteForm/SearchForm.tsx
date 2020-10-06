@@ -829,12 +829,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
               <MenuItem
                 onClick={() =>
                   this.handleAddMutationWithName(
-                    'table2',
+                    'table',
                     view,
                     'set:search.results.type'
                   )
                 }>
-                RV Table View
+                Table View
               </MenuItem>
               <MenuItem
                 onClick={() =>
@@ -844,7 +844,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                     'set:search.results.type'
                   )
                 }>
-                Card View (Masonry)
+                Masonry View
               </MenuItem>
               <MenuItem
                 onClick={() =>
