@@ -825,26 +825,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 margin: '1em 1em 1em 0',
                 background: this.props.theme.button,
               }}>
-              <MenuItem
-                onClick={() =>
-                  this.handleAddMutationWithName(
-                    'card',
-                    view,
-                    'set:search.results.type'
-                  )
-                }>
-                Card View
-              </MenuItem>
-              <MenuItem
-                onClick={() =>
-                  this.handleAddMutationWithName(
-                    'table',
-                    view,
-                    'set:search.results.type'
-                  )
-                }>
-                Table View
-              </MenuItem>
+
               <MenuItem
                 onClick={() =>
                   this.handleAddMutationWithName(
