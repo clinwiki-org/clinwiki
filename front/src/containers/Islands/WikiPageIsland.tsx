@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
 import QUERY from 'queries/WikiPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
-import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
+import CurrentUser, { useCurrentUser, QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
@@ -17,6 +17,9 @@ import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
 import { CurrentUserQuery_me } from 'types/CurrentUserQuery';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
+import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
+import { CurrentUserQuery } from 'types/CurrentUserQuery';
+import { getStarColor } from '../../utils/auth';
 
 interface Props {
   nctId: string;
@@ -42,13 +45,16 @@ export default function WikiPageIsland(props: Props) {
   const [editorState, setEditorState] = useState('rich');
   const [plainEditorText, setplainEditorText] = useState('');
   const [richEditorText, setRichEditorText] = useState('');
-  const user = useCurrentUser()?.data?.me;
+  const [flashAnimation, setFlashAnimation] = useState(false);
+  // const user = useCurrentUser()?.data?.me;
+  const {data:user, refetch }= useQuery<CurrentUserQuery>(UserQuery)
   const params = useUrlParams();
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {
     variables: { nctId },
   });
   const [updateContentMutation] = useMutation(UPDATE_CONTENT_MUTATION, {
+    awaitRefetchQueries: true,
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
@@ -104,6 +110,7 @@ export default function WikiPageIsland(props: Props) {
       },
     });
     history.push(`${match.url}${queryStringAll(params)}`);
+    setFlashAnimation(true)
   };
 
   const renderSubmitButton = (
@@ -142,7 +149,7 @@ export default function WikiPageIsland(props: Props) {
 
   const renderToolbar = (
     data: WikiPageQuery,
-    user: CurrentUserQuery_me | null | undefined,
+    user: CurrentUserQuery | null | undefined,
     readOnly: boolean
   ) => {
     const isAuthenticated = user !== null;
@@ -163,7 +170,14 @@ export default function WikiPageIsland(props: Props) {
       </Toolbar>
     );
   };
+  const resetHelper = ()=>{
+    setFlashAnimation(false)
+    refetch()
+  }
+  const handleResetAnimation=()=>{
+    setTimeout(  resetHelper, 6500);
 
+  }
   const renderEditor = (data: WikiPageQuery) => {
     if (!data || !data.study || !data.study.wikiPage) return null;
     const text = getEditorText() || '';
@@ -209,9 +223,17 @@ export default function WikiPageIsland(props: Props) {
     );
   };
 
-  if (!studyData || !nctId) return <BeatLoader />;
+  if (!studyData || !nctId || !user) return <BeatLoader />;
+  const userRank = user ? user.me?.rank : 'default';
 
+  let rankColor = getStarColor(userRank);
   return (
+    <>
+      {flashAnimation == true? 
+      <WorkFlowAnimation
+        resetAnimation={handleResetAnimation}
+        rankColor={rankColor}
+      /> :null}
     <div>
       <StyledPanel>
         <div>
@@ -221,5 +243,6 @@ export default function WikiPageIsland(props: Props) {
         </div>
       </StyledPanel>
     </div>
+    </>
   );
 }

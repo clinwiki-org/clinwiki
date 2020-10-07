@@ -73,6 +73,12 @@ opacity:0;
 left:50%;
 top:50%;
 
+.force-visible{
+  overflow: visible !important;
+}
+.force-visible span{
+  overflow: visible !important;
+}
 
 animation-name: ${flashKeyFrames};
 animation-duration: 2.5s;
@@ -99,6 +105,7 @@ class WorkFlowAnimation extends React.Component<WorkFlowAnimationProps> {
             color2={color}
             half={false}
             size={40}
+            className={'force-visible'}
           />
         </FlashAnimation>
         <Animation>

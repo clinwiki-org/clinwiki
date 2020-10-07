@@ -44,7 +44,7 @@ const FRAGMENT = gql`
   }
 `;
 
-const QUERY = gql`
+export const QUERY = gql`
   query CurrentUserQuery {
     me {
       ...UserFragment

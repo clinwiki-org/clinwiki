@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { displayFields } from 'utils/siteViewHelpers';
 import * as R from 'remeda';
@@ -17,10 +17,13 @@ import QUERY from 'queries/WorkflowPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
 import { WorkflowPageQuery } from 'types/WorkflowPageQuery';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
-import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
+import {  QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams from 'utils/UrlParamsProvider';
 import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
+import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
+import { CurrentUserQuery } from 'types/CurrentUserQuery';
+import { getStarColor } from '../../utils/auth';
 
 interface Props {
   name: string;
@@ -56,6 +59,7 @@ export default function WorkflowIsland(props: Props) {
   const { data: studyData } = useQuery<WorkflowPageQuery>(QUERY, {
     variables: { nctId },
   });
+  const {data:user, refetch }= useQuery<CurrentUserQuery>(UserQuery)
   const [upsertMutation] = useMutation(UPSERT_LABEL_MUTATION, {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
@@ -63,8 +67,8 @@ export default function WorkflowIsland(props: Props) {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
+  const [flashAnimation, setFlashAnimation] = useState(false);
 
-  const user = useCurrentUser()?.data?.me;
 
   if (!workflow || !nctId) return <BeatLoader />;
 
@@ -80,8 +84,25 @@ export default function WorkflowIsland(props: Props) {
   const suggestedLabelsConfig = fromPairs(
     workflow.suggestedLabelsConfig.map(c => [c.name, c])
   );
+  const resetHelper = ()=>{
+    setFlashAnimation(false)
+    refetch()
+  }
+  const handleResetAnimation=()=>{
+    setTimeout(  resetHelper, 6500);
+
+  }
+   const userRank = user ? user.me?.rank : 'default';
+
+   let rankColor = getStarColor(userRank);
 
   return (
+  <>
+    {flashAnimation == true? 
+    <WorkFlowAnimation
+      resetAnimation={handleResetAnimation}
+      rankColor={rankColor}
+    /> :null}
     <div>
       <StyledPanel>
         <SuggestedLabels
@@ -96,10 +117,11 @@ export default function WorkflowIsland(props: Props) {
           suggestedLabelsConfig={suggestedLabelsConfig}
           disabled={!user}
           showAnimation={() =>
-            console.log("todo: use animation context here.")
+            setFlashAnimation(true)
           }
         />
       </StyledPanel>
     </div>
+  </>
   );
 }
