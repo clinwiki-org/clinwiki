@@ -183,9 +183,6 @@ const SidebarContainer = styled(Col)`
       padding: 0px 10px;
     }
   }
-  @media only screen and (max-width: 1132px) {
-    width: 100%;
-  }
 `;
 const ThemedSidebarContainer = withTheme(SidebarContainer);
 
@@ -349,17 +346,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     collapseFacetBar:false
     };
 
-  numberOfPages: number = 0;
-  returnNumberOfPages = (numberOfPg: number) => {
-    this.numberOfPages = numberOfPg;
-  };
 
-  previousSearchData: Array<SearchPageSearchQuery_search_studies> = [];
-  returnPreviousSearchData = (
-    previousSearchData: Array<SearchPageSearchQuery_search_studies>
-  ) => {
-    this.previousSearchData = previousSearchData;
-  };
 
   getDefaultParams = (view: SiteViewFragment, email: string | undefined) => {
     if (email) {
@@ -440,7 +427,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     const params = updater(this.state.params!);
     //console.log("Search Page handle update params", params)
-    this.previousSearchData = [];
     if (!equals(params.q, this.state.params && this.state.params.q)) {
       // For now search doesn't work well with args list
       // Therefore we close it to refresh later on open
@@ -549,33 +535,17 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             this.setState({ params });
             return null;
           }
-          const opened = this.state.openedAgg?.name;
-          const openedKind = this.state.openedAgg?.kind;
           return (
             <SearchView2
               key={`${hash}+${JSON.stringify(params)}`}
               params={params}
               onBulkUpdate={this.handleBulkUpdateClick}
-              openedAgg={this.state.openedAgg}
               onUpdateParams={this.handleUpdateParams}
               onRowClick={this.handleRowClick}
-              onOpenAgg={this.handleOpenAgg}
               onAggsUpdate={this.handleAggsUpdate}
-              onClearFilters={this.handleClearFilters}
-              previousSearchData={this.previousSearchData}
-              returnPreviousSearchData={this.returnPreviousSearchData}
               searchHash={hash || ''}
-              showCards={this.showingCards()}
-              returnNumberOfPages={this.returnNumberOfPages}
-              searchAggs={this.state.searchAggs}
               crowdAggs={this.state.searchCrowdAggs}
-              transformFilters={this.transformFilters}
-              removeSelectAll={this.state.removeSelectAll}
-              resetSelectAll={this.resetSelectAll}
               searchParams={this.state.params}
-              opened={opened}
-              openedKind={openedKind}
-              onOpen={this.handleOpenAgg}
               presentSiteView={presentSiteView}
               getTotalResults={this.getTotalResults}
             />
@@ -585,32 +555,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  handleScroll = () => {
-    if (
-      window.innerHeight + window.scrollY >= document.body.scrollHeight - 100 &&
-      this.state.params!.page < this.numberOfPages - 1 &&
-      this.showingCards()
-    ) {
-      window.removeEventListener('scroll', this.handleScroll);
-
-      const params: any = {
-        ...this.state.params,
-        page: this.state.params!.page + 1,
-      };
-      this.setState({ params }, () =>
-        this.updateSearchParams(this.state.params)
-      );
-
-      setTimeout(() => {
-        window.addEventListener('scroll', this.handleScroll);
-      }, 1000);
-
-      return null;
-    }
-  };
-
-  showingCards = () =>
-    this.props.presentSiteView.search.results.type === 'card';
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
@@ -641,24 +585,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       this.setState({ params: this.props.searchParams });
     }
 
-    if (this.showingCards()) {
-      window.addEventListener('scroll', this.handleScroll);
-    } else {
-      window.removeEventListener('scroll', this.handleScroll);
-    }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.showingCards()) {
-      window.addEventListener('scroll', this.handleScroll);
-    } else {
-      window.removeEventListener('scroll', this.handleScroll);
-    }
-  }
 
   getHashFromLocation(): string | null {
     let hash = new URLSearchParams(this.props.history.location.search).getAll(
