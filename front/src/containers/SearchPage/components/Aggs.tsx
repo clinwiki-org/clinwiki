@@ -8,6 +8,8 @@ import {
   reduce,
   pathOr,
 } from 'ramda';
+import { Query, QueryComponentOptions } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,
@@ -17,6 +19,10 @@ import {
   AggKind,
   AggFilterMap,
 } from '../Types';
+import {
+  SearchPageAggsQuery,
+  SearchPageAggsQueryVariables,
+} from 'types/SearchPageAggsQuery';
 import { BeatLoader } from 'react-spinners';
 import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
@@ -26,6 +32,55 @@ import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
 
+const QUERY = gql`
+  query SearchPageAggsQuery(
+    $q: SearchQueryInput!
+    $page: Int
+    $pageSize: Int
+    $sorts: [SortInput!]
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+  ) {
+    crowdAggs: aggBuckets(
+      params: {
+        q: $q
+        page: 0
+        pageSize: 100000
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        agg: "front_matter_keys"
+      }
+    ) {
+      aggs {
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+    search(
+      params: {
+        q: $q
+        page: $page
+        pageSize: $pageSize
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+      }
+    ) {
+      recordsTotal
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+  }
+`;
 const getVisibleOptionsByName: (PresentSiteFragment) => any = compose(
   reduce(
     (byName, { name, visibleOptions }) => ({
@@ -50,8 +105,6 @@ const getVisibleOptionsByNamePresearch: (PresentSiteFragment) => any = compose(
 );
 interface AggsProps {
   key?: any;
-  aggs: AggBucketMap;
-  crowdAggs: AggBucketMap;
   // selected
   filters: AggFilterMap;
   crowdFilters: AggFilterMap;
@@ -95,6 +148,13 @@ const AggSideBarTitle = styled.h4`
 `;
 const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 
+const QueryComponent = (
+  props: QueryComponentOptions<
+    SearchPageAggsQuery,
+    SearchPageAggsQueryVariables
+  >
+) => Query(props);
+
 class Aggs extends React.PureComponent<AggsProps> {
   getAggs = (siteView: PresentSiteFragment_siteView): string[] => {
     return displayFields(
@@ -115,8 +175,6 @@ class Aggs extends React.PureComponent<AggsProps> {
 
   render() {
     const {
-      aggs,
-      crowdAggs,
       filters,
       crowdFilters,
       addFilter,
@@ -133,6 +191,25 @@ class Aggs extends React.PureComponent<AggsProps> {
     //commented out because not sure how to pass two parameters when using compose
     // const sortByNameCi = sortBy(compose(toLower, aggToField);
 
+
+    if (searchParams) {
+      return (
+        <QueryComponent
+          query={QUERY}
+          //@ts-ignore
+          variables={searchParams}
+        >
+          {({ data, loading, error }) => {
+
+            if (data && data.crowdAggs && data.search?.aggs) {
+              const aggs: AggBucketMap = {};
+              for (const a of data.search?.aggs || []) {
+                aggs[a.name] = [];
+              }
+              const crowdAggs: AggBucketMap = {};
+              for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
+                crowdAggs[bucket.key] = [];
+              }
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     let crowdAggPresearch: React.ReactElement<any> | null = null;
     const emptySet = new Set();
@@ -327,7 +404,14 @@ class Aggs extends React.PureComponent<AggsProps> {
         </div>
       );
     }
-    return null;
+  }
+
+  return null;
+          }}
+        </QueryComponent>
+      )
+    }
+    return <span>Loading...</span>
   }
 }
 
