@@ -53,23 +53,6 @@ const QUERY = gql`
     $aggFilters: [AggFilterInput!]
     $crowdAggFilters: [AggFilterInput!]
   ) {
-    crowdAggs: aggBuckets(
-      params: {
-        q: $q
-        page: 0
-        pageSize: 100000
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        agg: "front_matter_keys"
-      }
-    ) {
-      aggs {
-        buckets {
-          key
-        }
-      }
-    }
     search(
       params: {
         q: $q
@@ -81,9 +64,6 @@ const QUERY = gql`
       }
     ) {
       recordsTotal
-      aggs {
-        name
-      }
       studies {
         ...StudyItemFragment
       }
@@ -149,25 +129,6 @@ const QUERY_NO_RESULTS = gql`
     $aggFilters: [AggFilterInput!]
     $crowdAggFilters: [AggFilterInput!]
   ) {
-    crowdAggs: aggBuckets(
-      params: {
-        q: $q
-        page: 0
-        pageSize: 100000
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        agg: "front_matter_keys"
-      }
-    ) {
-      aggs {
-        buckets {
-          key
-          keyAsString
-          docCount
-        }
-      }
-    }
     search(
       params: {
         q: $q
@@ -179,13 +140,6 @@ const QUERY_NO_RESULTS = gql`
       }
     ) {
       recordsTotal
-      aggs {
-        name
-        buckets {
-          key
-          docCount
-        }
-      }
     }
   }
 `;
@@ -274,11 +228,9 @@ interface SearchView2Props {
   params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
-  onAggsUpdate: (aggs: AggBucketMap, crowdAggs: AggBucketMap) => void;
   onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
   searchHash: string;
   searchParams: any;
-  crowdAggs: any;
   presentSiteView: PresentSiteFragment_siteView;
   getTotalResults: Function;
   theme: any;
@@ -538,21 +490,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     );
   };
 
-  handleAggsUpdated = (data: SearchPageSearchQuery) => {
-    // convert aggs to AggBucketMap
-    const aggs: AggBucketMap = {};
-    for (const a of data.search?.aggs || []) {
-      aggs[a.name] = [];
-    }
-    const crowdAggs: AggBucketMap = {};
-    for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
-      crowdAggs[bucket.key] = [];
-    }
-
-    if (data?.search) {
-      this.props.onAggsUpdate(aggs, crowdAggs);
-    }
-  };
 
   sortHelper = (sorts, params) => {
     this.props.onUpdateParams(changeSorted(sorts));
@@ -644,12 +581,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           <QueryComponent
             query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
             variables={this.props.params}
-            onCompleted={this.handleAggsUpdated}>
+            >
             {({ data, loading, error }) => {
-              // Unfortunately the onCompleted callback is not called if
-              // the data is served from cache.  There is some confusion
-              // in the documentation but this appears to be by design.
-              if (data) this.handleAggsUpdated(data);
               return (
                 <ThemedSearchContainer>
                   {this.renderSearch({ data, loading, error })}
