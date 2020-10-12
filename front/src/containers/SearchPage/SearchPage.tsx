@@ -319,8 +319,6 @@ interface SearchPageState {
     name: string;
     kind: AggKind;
   } | null;
-  searchAggs: AggBucketMap;
-  searchCrowdAggs: AggBucketMap;
   removeSelectAll: boolean;
   totalRecords: number;
   collapseFacetBar: boolean;
@@ -339,8 +337,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   state: SearchPageState = {
     params: null,
     openedAgg: null,
-    searchAggs: {},
-    searchCrowdAggs: {},
     removeSelectAll: false,
     totalRecords: 0,
     collapseFacetBar:false
@@ -471,19 +467,19 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     this.setState({ openedAgg: { name, kind } });
   };
 
-  handleAggsUpdate = (
-    searchAggs: AggBucketMap,
-    searchCrowdAggs: AggBucketMap
-  ) => {
-    if (
-      !equals(searchAggs, this.state.searchAggs) ||
-      !equals(searchCrowdAggs, this.state.searchCrowdAggs)
-    ) {
-      this.setState({ searchAggs, searchCrowdAggs }, () =>
-        this.updateSearchParams(this.state.params)
-      );
-    }
-  };
+  // handleAggsUpdate = (
+  //   searchAggs: AggBucketMap,
+  //   searchCrowdAggs: AggBucketMap
+  // ) => {
+  //   if (
+  //     !equals(searchAggs, this.state.searchAggs) ||
+  //     !equals(searchCrowdAggs, this.state.searchCrowdAggs)
+  //   ) {
+  //     this.setState({ searchAggs, searchCrowdAggs }, () =>
+  //       this.updateSearchParams(this.state.params)
+  //     );
+  //   }
+  // };
 
   renderAggs = siteView => {
     const opened = this.state.openedAgg && this.state.openedAgg.name;
@@ -491,8 +487,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
     return (
       <Aggs
-        aggs={this.state.searchAggs}
-        crowdAggs={this.state.searchCrowdAggs}
+        // aggs={this.state.searchAggs}
+        // crowdAggs={this.state.searchCrowdAggs}
         filters={this.transformFilters(aggFilters)}
         crowdFilters={this.transformFilters(crowdAggFilters)}
         addFilter={pipe(addFilter, this.handleUpdateParams)}
@@ -542,9 +538,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
               onBulkUpdate={this.handleBulkUpdateClick}
               onUpdateParams={this.handleUpdateParams}
               onRowClick={this.handleRowClick}
-              onAggsUpdate={this.handleAggsUpdate}
+              // onAggsUpdate={this.handleAggsUpdate}
               searchHash={hash || ''}
-              crowdAggs={this.state.searchCrowdAggs}
+              // crowdAggs={this.state.searchCrowdAggs}
               searchParams={this.state.params}
               presentSiteView={presentSiteView}
               getTotalResults={this.getTotalResults}
@@ -748,8 +744,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             </ThemedButton>
         )}
         <Aggs
-          aggs={this.state.searchAggs}
-          crowdAggs={this.state.searchCrowdAggs}
+          // aggs={this.state.searchAggs}
+          // crowdAggs={this.state.searchCrowdAggs}
           filters={this.transformFilters(aggFilters)}
           crowdFilters={this.transformFilters(crowdAggFilters)}
           addFilter={pipe(addFilter, this.handleUpdateParams)}
