@@ -1,5 +1,6 @@
 import { filter } from 'ramda';
 import { SortInput, AggFilterInput } from 'types/globalTypes';
+import { SearchQueryInput } from 'types/globalTypes'
 
 export type Params = {};
 
@@ -45,6 +46,15 @@ export interface SortItem {
 
 export interface SearchParams {
   readonly q: string[];
+  readonly page: number;
+  readonly pageSize: number;
+  readonly aggFilters: AggFilterInput[];
+  readonly crowdAggFilters: AggFilterInput[];
+  readonly sorts: SortInput[];
+}
+
+export interface SearchParamsAsInput {
+  readonly q: SearchQueryInput;
   readonly page: number;
   readonly pageSize: number;
   readonly aggFilters: AggFilterInput[];

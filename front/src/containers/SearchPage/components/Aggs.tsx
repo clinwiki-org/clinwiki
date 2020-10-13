@@ -15,7 +15,7 @@ import {
   AggBucketMap,
   AggCallback,
   AggregateAggCallback,
-  SearchParams,
+  SearchParamsAsInput,
   AggKind,
   AggFilterMap,
 } from '../Types';
@@ -112,7 +112,7 @@ interface AggsProps {
   addFilters: AggregateAggCallback;
   removeFilter: AggCallback;
   removeFilters: AggregateAggCallback;
-  searchParams: SearchParams;
+  searchParams: SearchParamsAsInput;
   opened: string | null;
   openedKind: AggKind | null;
   onOpen: (agg: string, kind: AggKind) => void;
@@ -196,7 +196,6 @@ class Aggs extends React.PureComponent<AggsProps> {
       return (
         <QueryComponent
           query={QUERY}
-          //@ts-ignore
           variables={searchParams}
         >
           {({ data, loading, error }) => {
