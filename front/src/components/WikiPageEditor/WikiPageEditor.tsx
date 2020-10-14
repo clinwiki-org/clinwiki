@@ -59,10 +59,10 @@ export default function WikiPageEditor(props: Props) {
   };
 
   const { data, } = props;
-  console.log("DATA", data)
+  //console.log("DATA", data)
   if (!data || !data.study || !data.study.wikiPage) return null;
   const text = getEditorText() || '';
-  console.log("TEXT", text)
+  //console.log("TEXT", text)
   if (text !== data.study.wikiPage.content && !text) {
     handlePreview()
 
@@ -71,10 +71,10 @@ export default function WikiPageEditor(props: Props) {
         data.study.wikiPage.content || '',
         'markdown'
       );
-      console.log("RICH", richEditorText)
+      //console.log("RICH", richEditorText)
       setRichEditorText(richEditorText);
     } else {
-      console.log("PLAIN", text)
+      //console.log("PLAIN", text)
       setplainEditorText(text);
     }
   }
@@ -83,7 +83,7 @@ export default function WikiPageEditor(props: Props) {
   if (!data) return <BeatLoader />;
 
   if (editorState === 'rich') {
-    console.log("RICH", richEditorText)
+   // console.log("RICH", richEditorText)
     return (
       <Panel>
         <Panel.Body>
