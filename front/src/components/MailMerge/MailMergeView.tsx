@@ -247,6 +247,7 @@ export default function MailMergeView(props: Props) {
     () => true,
     instructions
   );
+  console.log('MAIL MERGIN')
 
   return (
     <div className="mail-merge" style={style}>

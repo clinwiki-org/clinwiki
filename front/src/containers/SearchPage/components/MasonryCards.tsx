@@ -48,25 +48,29 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     flexWrap: "wrap",
   };
 
-  rowRenderer = ({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
-    isScrolling, // The List is currently being scrolled
-    isVisible, // This row is visible within the List (eg it is not an overscanned row)
-    style, // Style object to be applied to row (to position it)
-  }) => {
+  cardRenderer = (
+  //   {
+  //   key, // Unique key within array of rows
+  //   index, // Index of row within collection
+  //   isScrolling, // The List is currently being scrolled
+  //   isVisible, // This row is visible within the List (eg it is not an overscanned row)
+  //   style, // Style object to be applied to row (to position it)
+  // }
+  cardData, index
+  
+  ) => {
     const listItems = this.props.data;
     const newStyle = {
       width: "350px",
-      height: "350px",
+      minHeight: "350px",
       margin: "15px",
     }
 
-
+    console.log('YOOOO', index, cardData)
     return (
 
         <div
-          key={key}
+          key={index}
           style={newStyle}
         >
           <MailMergeView
@@ -80,24 +84,15 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
 
   render() {
     if (this.props.data) {
+      const cards =  this.props.data.map((cardData, index) => this.cardRenderer(cardData, index))
+    
       const listItems = this.props.data;
       let rowHeight = listItems.length < 3 ? 400 : 150;
       // let height = rowHeight * listItems.length;
       return (
-        // <div style={{ flex: '1 1 auto', height: '100%' }}>
-        <AutoSizer>
-        {({ height, width }) => (
-        <List
-          // className={"faux-masonry"}
-          width={width}
-          height={height}
-          rowCount={listItems.length}
-          rowHeight={rowHeight}
-          rowRenderer={this.rowRenderer}
-        />
-        )}
-        </AutoSizer>
-        // </div>
+        <div style={{display: 'flex', flexWrap: 'wrap'}}>
+         {cards}
+        </div>
         );
     }
   }
