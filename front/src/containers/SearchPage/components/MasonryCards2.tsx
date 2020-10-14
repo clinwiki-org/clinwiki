@@ -3,13 +3,10 @@ import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
-import { List } from 'react-virtualized';
+import { List, Grid } from 'react-virtualized';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
-import {
-  AutoSizer,
-} from 'react-virtualized';
 
-interface MasonryCardsProps {
+interface MasonryCards2Props {
   data: SearchPageSearchQuery_search_studies[];
   loading: boolean;
   template: string;
@@ -19,12 +16,12 @@ interface MasonryCardsProps {
   // columns:any;
 }
 
-interface MasonryCardsState {
+interface MasonryCards2State {
   loading: boolean;
 }
 
-class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState> {
-  constructor(props: MasonryCardsProps) {
+class MasonryCards2 extends React.Component<MasonryCards2Props, MasonryCards2State> {
+  constructor(props: MasonryCards2Props) {
     super(props);
     this.state = { loading: this.props.loading };
   }
@@ -48,13 +45,18 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     flexWrap: "wrap",
   };
 
-  rowRenderer = ({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
-    isScrolling, // The List is currently being scrolled
-    isVisible, // This row is visible within the List (eg it is not an overscanned row)
-    style, // Style object to be applied to row (to position it)
-  }) => {
+  rowRenderer = (
+  //   {
+  //   // key, // Unique key within array of rows
+  //   index,
+  //   card, // Index of row within collection
+  //   isScrolling, // The List is currently being scrolled
+  //   isVisible, // This row is visible within the List (eg it is not an overscanned row)
+  //   style, // Style object to be applied to row (to position it)
+  // }
+  card, index
+  
+  ) => {
     const listItems = this.props.data;
     const newStyle = {
       width: "350px",
@@ -63,17 +65,18 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     }
 
 
+
     return (
 
         <div
-          key={key}
+          key={index}
           style={newStyle}
         >
           <MailMergeView
             style={this.cardStyle}
             template={this.props.template}
             context={listItems[index]}
-          />
+          /> 
         </div>
     );
   };
@@ -82,25 +85,23 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     if (this.props.data) {
       const listItems = this.props.data;
       let rowHeight = listItems.length < 3 ? 400 : 150;
-      // let height = rowHeight * listItems.length;
+      let height = rowHeight * listItems.length;
       return (
-        // <div style={{ flex: '1 1 auto', height: '100%' }}>
-        <AutoSizer>
-        {({ height, width }) => (
-        <List
-          // className={"faux-masonry"}
-          width={width}
-          height={height}
-          rowCount={listItems.length}
-          rowHeight={rowHeight}
-          rowRenderer={this.rowRenderer}
-        />
-        )}
-        </AutoSizer>
-        // </div>
-        );
+        this.props.data.map((card, index) => {
+          this.rowRenderer(card, index)
+        })
+        // <List
+        //   className={"faux-masonry"}
+        //   width={1050}
+        //   height={height}
+        //   rowCount={listItems.length}
+        //   rowHeight={rowHeight}
+        //   rowRenderer={this.rowRenderer}
+        // />
+
+      );
     }
   }
 }
 
-export default withTheme(MasonryCards);
+export default withTheme(MasonryCards2);

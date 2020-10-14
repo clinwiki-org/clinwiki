@@ -179,6 +179,7 @@ const SearchWrapper = styled.div`
   #search-sidebar {
     padding-right: 0;
   }
+  height: 100%;
 `;
 
 const SearchContainer = styled.div`
@@ -188,6 +189,7 @@ const SearchContainer = styled.div`
   margin-bottom: 30px;
   display: block;
   flex-direction: column;
+  height: 100%;
 
   .ReactVirtualized__Grid__innerScrollContainer {
     display: flex;
@@ -320,7 +322,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     switch (resultsType) {
       case 'masonry':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div
               style={{
                 display: 'flex',
@@ -331,17 +333,15 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               {this.renderViewDropdown()}
               {this.renderFilterDropDown()}
             </div>
-            <AutoSizer>
-              {({ height, width }) => (
+          
                 <MasonryCards
                   data={data}
                   loading={loading}
                   template={template}
-                  height={height}
-                  width={width}
+                  // height={height}
+                  // width={width}
                 />
-              )}
-            </AutoSizer>
+     
           </div>
         );
       case 'list':
@@ -416,17 +416,17 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             {this.renderViewDropdown()}
             {this.renderFilterDropDown()}
           </div>
-          <AutoSizer>
-            {({ height, width }) => (
+          {/* <AutoSizer>
+            {({ height, width }) => ( */}
               <MasonryCards
                 data={data}
                 loading={loading}
                 template={template}
-                height={height}
-                width={width}
+                // height={height}
+                // width={width}
               />
-            )}
-          </AutoSizer>
+            {/* )}
+          </AutoSizer> */}
         </div>
         );
     }
@@ -478,7 +478,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         recordsTotal
       )
     ) : (
-      <div style={{ marginLeft: 'auto', display: 'flex' }}>
+      <div style={{ marginLeft: 'auto', display: 'flex', height: '100%' }}>
         {this.renderViewDropdown()}
       </div>
     );
@@ -578,7 +578,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           <title>Search</title>
           <meta name="description" content="Description of SearchPage" />
         </Helmet>
-        <Col md={12}>
+        {/* <Col md={12}> */}
+        <div style={{height: '100%'}}>
           <QueryComponent
             query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
             variables={this.props.params}
@@ -591,7 +592,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
               );
             }}
           </QueryComponent>
-        </Col>
+          </div>
+        {/* </Col> */}
       </SearchWrapper>
     );
   }
