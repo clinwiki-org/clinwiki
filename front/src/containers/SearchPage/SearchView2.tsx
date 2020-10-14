@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SearchParams, AggKind } from './shared';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
-import ThemedButton from 'components/StyledComponents';
+import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { PulseLoader } from 'react-spinners';
@@ -182,50 +182,7 @@ const SearchWrapper = styled.div`
   height: 100%;
 `;
 
-const SearchContainer = styled.div`
-  padding: 0 30px;
-  color: black;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: block;
-  flex-direction: column;
-  height: 100%;
 
-  .ReactVirtualized__Grid__innerScrollContainer {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .Table {
-    width: 100%;
-    margin-top: 15px;
-  }
-
-  .headerRow {
-    background-color: ${props => props.theme.button};
-    border-bottom: 1px solid #e0e0e0;
-    pading: 58px;
-    color: white;
-    padding: 25px;
-    font-weight: 400;
-    display: flex;
-  }
-
-  .evenRow,
-  .oddRow {
-    border-bottom: 1px solid #e0e0e0;
-    display: flex;
-  }
-
-  .oddRow {
-    background-color: #fafafa;
-  }
-
-  .headerColumn {
-    text-transform: none;
-  }
-`;
-const ThemedSearchContainer = withTheme(SearchContainer);
 interface SearchView2Props {
   params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;

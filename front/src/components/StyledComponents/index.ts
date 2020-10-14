@@ -137,6 +137,127 @@ export const PresearchTitle = styled.div`
   margin-left: 5px;
 `;
 
+const SearchContainer = styled.div`
+  border: solid white 1px;
+  background-color: #f2f2f2;
+  color: black;
+  margin-bottom: 1em;
+  margin-left: 45px;
+  margin-right: 45px;
+  margin-bottom: 45px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  .rich-text {
+    background-color: #f2f2f2;
+  }
+  .container {
+    border: 0px;
+    width: 100% !important;
+    margin-top: 5px;
+    color: #394149;
+  }
+  .crumbs-bar {
+    background: ${props => props.theme.crumbsBar.containerBackground};
+    color: ${props => props.theme.crumbsBar.containerFont};
+
+    i {
+      font-style: normal;
+      margin-right: 3px;
+      text-transform: capitalize;
+    }
+
+    span.label.label-default {
+      padding: 7px !important;
+      border-radius: 4px !important;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    input.form-control {
+      border: 0px;
+      box-shadow: none;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+
+    span.label {
+      background: #55b88d;
+      padding: 5px;
+      font-size: 12px;
+      border-radius: 4px;
+      margin-right: 5px;
+      text-transform: capitalize;
+
+      span.fa-remove {
+        color: #fff !important;
+        opacity: 0.5;
+        margin-left: 5px !important;
+      }
+
+      span.fa-remove:hover {
+        opacity: 1;
+      }
+
+      b {
+        padding: 5px 1px 5px 1px;
+      }
+
+      b:last-of-type {
+        padding-right: 0px;
+      }
+    }
+  }
+  .right-align {
+    text-align: right;
+  }
+
+  div.row > div {
+    padding-left: 0px;
+  }
+
+  .searchInput {
+    padding-bottom: 10px;
+  }
+
+  // RESULTS ADDITIONS
+  .ReactVirtualized__Grid__innerScrollContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .Table {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .headerRow {
+    background-color: ${props => props.theme.button};
+    border-bottom: 1px solid #e0e0e0;
+    pading: 58px;
+    color: white;
+    padding: 25px;
+    font-weight: 400;
+    display: flex;
+  }
+
+  .evenRow,
+  .oddRow {
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+  }
+
+  .oddRow {
+    background-color: #fafafa;
+  }
+
+  .headerColumn {
+    text-transform: none;
+  }
+`;
+
+export const ThemedSearchContainer = withTheme(SearchContainer);
+
 export const TextFieldToggle = styled.div`
   color: white;
   font-size: 28px;
@@ -169,17 +290,6 @@ export const PresearchContent = styled.div`
 
 export default ThemedButton;
 
-export const SearchContainer = styled.div`
-  border: solid white 1px;
-  background-color: #f2f2f2;
-  color: black;
-  margin-bottom: 1em;
-  margin-left: 15px;
-  margin-right: 15px;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-`;
 
 export const StyledProfileLabel = styled.div`
   font-size: 1em;

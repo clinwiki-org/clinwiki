@@ -23,9 +23,10 @@ import { isEmpty } from 'ramda';
 import { PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
-import ThemedButton from 'components/StyledComponents/index';
+import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents/index';
 import ExportToCsvComponent from './ExportToCsvComponent';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
+
 
 const CrumbsBarStyleWrappper = styled.div`
   border: solid white 1px;
@@ -452,7 +453,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;
     return (
-      <ThemedCrumbsBarStyleWrappper>
+      <ThemedSearchContainer>
         <ApolloConsumer>
           {apolloClient => (
             <CurrentUser>
@@ -544,7 +545,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
             </CurrentUser>
           )}
         </ApolloConsumer>
-      </ThemedCrumbsBarStyleWrappper>
+      </ThemedSearchContainer>
     );
   }
 }
