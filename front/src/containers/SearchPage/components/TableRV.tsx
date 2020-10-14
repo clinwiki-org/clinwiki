@@ -14,6 +14,7 @@ interface TableRVProps {
   template: string;
   width: number;
   columnFields: string[];
+ onRowClick : any;
 }
 
 interface TableRVState {
@@ -40,7 +41,9 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
       return index % 2 === 0 ? 'evenRow' : 'oddRow';
     }
   }
-
+  handleRowClick =({ event, index, rowData }): void=>{
+    this.props.onRowClick(rowData.nctId)
+  }
   render() {
     if (this.props.data) {
       const listItems = this.props.data;
@@ -61,6 +64,7 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
           isScrolling={isScrolling}
           onScroll={onChildScroll}
           scrollTop={scrollTop}
+          onRowClick={this.handleRowClick}
         // sortDirection={SortDirection.ASC}
         // sortBy={'nctId'}
         >

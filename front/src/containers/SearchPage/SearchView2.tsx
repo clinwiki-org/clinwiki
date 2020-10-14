@@ -391,6 +391,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   template={template}
                   width={width}
                   columnFields={this.props.presentSiteView.search.fields}
+                  onRowClick={this.props.onRowClick}
                 />
               )}
             </AutoSizer>
