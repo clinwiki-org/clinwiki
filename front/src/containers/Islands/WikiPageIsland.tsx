@@ -15,11 +15,10 @@ import { Switch, Route } from 'react-router';
 import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
-import { CurrentUserQuery_me } from 'types/CurrentUserQuery';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
 import { CurrentUserQuery } from 'types/CurrentUserQuery';
-import { getStarColor } from '../../utils/auth';
+import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface Props {
   nctId: string;
@@ -40,8 +39,8 @@ export default function WikiPageIsland(props: Props) {
   let history = useHistory();
   let location = useLocation();
   let match = useRouteMatch();
+  const theme = useTheme();
 
-  const [historyExpanded, setHistoryExpanded] = useState({});
   const [editorState, setEditorState] = useState('rich');
   const [plainEditorText, setplainEditorText] = useState('');
   const [richEditorText, setRichEditorText] = useState('');
@@ -224,15 +223,13 @@ export default function WikiPageIsland(props: Props) {
   };
 
   if (!studyData || !nctId || !user) return <BeatLoader />;
-  const userRank = user ? user.me?.rank : 'default';
 
-  let rankColor = getStarColor(userRank);
   return (
     <>
       {flashAnimation == true? 
       <WorkFlowAnimation
         resetAnimation={handleResetAnimation}
-        rankColor={rankColor}
+        rankColor={theme? theme.button: 'default'}
       /> :null}
     <div>
       <StyledPanel>
