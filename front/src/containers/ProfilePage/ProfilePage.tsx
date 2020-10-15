@@ -3,7 +3,7 @@ import SearchPage from 'containers/SearchPage';
 import { History, Location } from 'history';
 import {
   ThemedMainContainer,
-  SearchContainer,
+  ThemedSearchContainer,
 } from 'components/StyledComponents';
 import ThemedLoaderWrapper from '../../components/LoadingPane/LoadingPane';
 import ProfileScoreBoard from './components/ProfileScoreBoard';
@@ -129,7 +129,7 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
                   {userData.user.firstName || this.state.username}'s
                   Contributions
                 </h2>
-                <SearchContainer>
+                <ThemedSearchContainer>
                   <ProfileScoreBoard
                     totalPoints={0}
                     totalContributions={userData.user.contributions}
@@ -139,7 +139,7 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
                     handleDisplayChange={this.handleDisplayChange}
                     rank={userData.user.rank}
                   />
-                </SearchContainer>
+                </ThemedSearchContainer>
                 {this.renderHeader(userData.user)}
                 {this.renderResults(userData.user.reviews)}
               </ThemedMainContainer>

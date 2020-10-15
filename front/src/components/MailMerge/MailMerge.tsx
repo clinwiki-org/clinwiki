@@ -29,7 +29,6 @@ export default function MailMerge(props: Props) {
   const style = { ...defaultStyle, ...props.style };
   const urlParams = useUrlParams()
   const queryStringParams = new Set(Object.keys(urlParams || {}));
-
   return (
     <>
       <div style={style}>

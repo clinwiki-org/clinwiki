@@ -50,7 +50,6 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
     style, // Style object to be applied to row (to position it)
   }) => {
     const listItems = this.props.data;
-
     return (
       <div
         key={key}

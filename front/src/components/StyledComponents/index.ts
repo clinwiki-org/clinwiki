@@ -104,10 +104,11 @@ export const ThemedMainContainer = withTheme(MainContainer);
 const PresearchCard = styled.div`
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: ${props => props.theme.buttonSecondary};
+  border-radius: 4px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  // border-width: 1px;
+  // border-style: solid;
+  // border-color: ${props => props.theme.buttonSecondary};
   margin: 10px;
   flex: 1;
   min-width: 320px;
@@ -120,8 +121,8 @@ export const ThemedPresearchCard = withTheme(PresearchCard);
 const PresearchHeader = styled.div`
   background-color: ${props => props.theme.presearch.presearchHeaders};
   padding: 5px;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  // border-top-left-radius: 12px;
+  // border-top-right-radius: 12px;
   height: 50px;
   display: flex;
   flex-direction: row;
@@ -136,6 +137,170 @@ export const PresearchTitle = styled.div`
   font-weight: 400;
   margin-left: 5px;
 `;
+
+const SearchCard = styled.div`
+width: 350px;
+min-height: 350px;
+margin: 15px;
+box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+border-radius: 4px;
+background: #ffffff;
+padding: 5px;
+ a {
+  ${props => props.theme.button};
+ }
+
+ .mail-merge {
+   position: relative;
+ }
+
+
+`;
+
+export const ThemedSearchCard = withTheme(SearchCard)
+
+const SearchContainer = styled.div`
+  border: solid white 1px;
+  background-color: #f2f2f2;
+  color: black;
+  margin-bottom: 1em;
+  margin-left: 45px;
+  margin-right: 45px;
+  margin-bottom: 45px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  .rich-text {
+    background-color: #f2f2f2;
+  }
+  .container {
+    border: 0px;
+    width: 100% !important;
+    margin-top: 5px;
+    color: #394149;
+  }
+
+  #brieftitle {
+    font-size: 1.3em;
+  }
+
+  .bottom-right-icon {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    height: 30px;
+    width: 30px;
+    transition: .5s;
+    opacity: 1;
+    img {
+      height: 100%;
+      width: auto;
+    }
+   }
+
+   .cw-icon-link:hover {
+    opacity: .8;
+  }
+  .crumbs-bar {
+    background: ${props => props.theme.crumbsBar.containerBackground};
+    color: ${props => props.theme.crumbsBar.containerFont};
+
+    i {
+      font-style: normal;
+      margin-right: 3px;
+      text-transform: capitalize;
+    }
+
+    span.label.label-default {
+      padding: 7px !important;
+      border-radius: 4px !important;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    input.form-control {
+      border: 0px;
+      box-shadow: none;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+
+    span.label {
+      background: #55b88d;
+      padding: 5px;
+      font-size: 12px;
+      border-radius: 4px;
+      margin-right: 5px;
+      text-transform: capitalize;
+
+      span.fa-remove {
+        color: #fff !important;
+        opacity: 0.5;
+        margin-left: 5px !important;
+      }
+
+      span.fa-remove:hover {
+        opacity: 1;
+      }
+
+      b {
+        padding: 5px 1px 5px 1px;
+      }
+
+      b:last-of-type {
+        padding-right: 0px;
+      }
+    }
+  }
+  .right-align {
+    text-align: right;
+  }
+
+  div.row > div {
+    padding-left: 0px;
+  }
+
+  .searchInput {
+    padding-bottom: 10px;
+  }
+
+  // RESULTS ADDITIONS
+  .ReactVirtualized__Grid__innerScrollContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .Table {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .headerRow {
+    background-color: ${props => props.theme.button};
+    border-bottom: 1px solid #e0e0e0;
+    pading: 58px;
+    color: white;
+    padding: 25px;
+    font-weight: 400;
+    display: flex;
+  }
+
+  .evenRow,
+  .oddRow {
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+  }
+
+  .oddRow {
+    background-color: #fafafa;
+  }
+
+  .headerColumn {
+    text-transform: none;
+  }
+`;
+
+export const ThemedSearchContainer = withTheme(SearchContainer);
 
 export const TextFieldToggle = styled.div`
   color: white;
@@ -160,8 +325,8 @@ export const PresearchPanel = styled.div`
 export const PresearchContent = styled.div`
   padding-left: 5px;
   padding-right: 5px;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  // border-bottom-left-radius: 12px;
+  // border-bottom-right-radius: 12px;
   background-color: white;
   max-height: 260px;
   margin-bottom: 7px;
@@ -169,17 +334,6 @@ export const PresearchContent = styled.div`
 
 export default ThemedButton;
 
-export const SearchContainer = styled.div`
-  border: solid white 1px;
-  background-color: #f2f2f2;
-  color: black;
-  margin-bottom: 1em;
-  margin-left: 15px;
-  margin-right: 15px;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-`;
 
 export const StyledProfileLabel = styled.div`
   font-size: 1em;

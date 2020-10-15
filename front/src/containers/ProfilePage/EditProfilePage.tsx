@@ -18,7 +18,7 @@ import { UserFragment } from 'types/UserFragment';
 import { equals, pick } from 'ramda';
 import {
   ThemedMainContainer,
-  SearchContainer,
+  ThemedSearchContainer,
   StyledProfileLabel,
   StyledProfileValue,
   StyledProfileForm,
@@ -139,7 +139,7 @@ class EditProfilePage extends React.Component<
             onClick={() => this.toggleEditProfile()}>
             X
           </a>
-          <SearchContainer>
+          <ThemedSearchContainer>
             <StyledProfileLabel>First Name:</StyledProfileLabel>
             <StyledProfileForm
               name="firstName"
@@ -192,7 +192,7 @@ class EditProfilePage extends React.Component<
               )}
             </EditProfileMutationComponent>
             {this.renderErrors()}
-          </SearchContainer>
+          </ThemedSearchContainer>
         </div>
       );
     }
@@ -211,7 +211,7 @@ class EditProfilePage extends React.Component<
             Edit Profile
           </a>
 
-          <SearchContainer>
+          <ThemedSearchContainer>
             <StyledProfileLabel>First Name:</StyledProfileLabel>
             <StyledProfileValue>
               {' '}
@@ -225,7 +225,7 @@ class EditProfilePage extends React.Component<
             <StyledProfileValue>
               {this.props.user.defaultQueryString || 'N/A'}
             </StyledProfileValue>
-          </SearchContainer>
+          </ThemedSearchContainer>
         </div>
       );
     }
@@ -334,7 +334,7 @@ class EditProfilePage extends React.Component<
             ? this.renderEditForm()
             : this.renderProfileInfo()}
           <h2>My Contributions</h2>
-          <SearchContainer>
+          <ThemedSearchContainer>
             <ProfileScoreBoard
               totalPoints={0}
               totalContributions={userContributions}
@@ -346,7 +346,7 @@ class EditProfilePage extends React.Component<
               reactions={totalcount}
               reactedStudies={this.props.user.reactions}
             />
-          </SearchContainer>
+          </ThemedSearchContainer>
           {this.props.user ? (
             this.renderResults(this.props.user.email)
           ) : (

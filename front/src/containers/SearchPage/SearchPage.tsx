@@ -11,7 +11,7 @@ import {
 import { MAX_WINDOW_SIZE } from 'utils/constants';
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import { Query, graphql, QueryComponentOptions } from 'react-apollo';
-import { ThemedButton } from '../../components/StyledComponents';
+import { ThemedButton, ThemedSearchContainer } from '../../components/StyledComponents';
 import {
   map,
   dissoc,
@@ -187,20 +187,7 @@ const SidebarContainer = styled(Col)`
 `;
 const ThemedSidebarContainer = withTheme(SidebarContainer);
 
-const SearchContainer = styled.div`
-  border: solid white 1px;
-  background-color: #f2f2f2;
-  color: black;
-  margin-bottom: 1em;
-  margin-left: 15px;
-  margin-right: 15px;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  .rich-text {
-    background-color: #f2f2f2;
-  }
-`;
+
 
 const InstructionsContainer = styled.div`
   display: flex;
@@ -700,7 +687,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     const { pageViewUrl } = this.getPageView();
 
     return (
-      <SearchContainer>
+      <ThemedSearchContainer>
         <InstructionsContainer>
           {presearchText && (
             <Instructions>
@@ -758,7 +745,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
             {presearchButton.name}
           </ThemedButton>
         )}
-      </SearchContainer>
+      </ThemedSearchContainer>
     );
   };
   renderCrumbs = (siteView: SiteViewFragment) => {
