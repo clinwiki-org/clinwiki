@@ -9,7 +9,7 @@ import QUERY from 'queries/WikiPageQuery';
 import { useQuery, useMutation } from 'react-apollo';
 import CurrentUser, { useCurrentUser, QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch, Prompt } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
 import { Switch, Route } from 'react-router';
 import { trimPath } from 'utils/helpers';
@@ -123,13 +123,21 @@ export default function WikiPageIsland(props: Props) {
     const editorTextData =
       data.study && data.study.wikiPage && data.study.wikiPage.content;
 
+    let editMessage = `Changes not saved. Are you sure you want to leave while editing?` ;
+
     return (
+    <div>
+      <Prompt
+      when={!readOnly}
+      message={location => editMessage}
+      />
       <ThemedButton
-        onClick={() => handleEditSubmit(updateContentMutation)}
+        onClick={() => {editMessage = "Save changes?";  handleEditSubmit(updateContentMutation);}}
         disabled={editorTextState === editorTextData}
         style={{ marginLeft: '10px' }}>
         Save <FontAwesome name="pencil" />
       </ThemedButton>
+    </div>
     );
   };
 
