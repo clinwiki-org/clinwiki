@@ -18,12 +18,11 @@ import { useQuery, useMutation } from 'react-apollo';
 import { WorkflowPageQuery } from 'types/WorkflowPageQuery';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
 import {  QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
-import useUrlParams from 'utils/UrlParamsProvider';
+import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
 import { CurrentUserQuery } from 'types/CurrentUserQuery';
-import { getStarColor } from '../../utils/auth';
 
 interface Props {
   name: string;
@@ -49,7 +48,7 @@ const handleSelect = (
 
 export default function WorkflowIsland(props: Props) {
   const { name, nctId } = props;
-
+  const theme = useTheme();
   const { data: allWorkflows } = useWorkflowsView();
   const workflow = allWorkflows?.workflowsView.workflows.filter(
     wf => wf.name === name
@@ -92,16 +91,13 @@ export default function WorkflowIsland(props: Props) {
     setTimeout(  resetHelper, 6500);
 
   }
-   const userRank = user ? user.me?.rank : 'default';
-
-   let rankColor = getStarColor(userRank);
 
   return (
   <>
     {flashAnimation == true? 
     <WorkFlowAnimation
       resetAnimation={handleResetAnimation}
-      rankColor={rankColor}
+      rankColor={theme? theme.button: 'default'}
     /> :null}
     <div>
       <StyledPanel>

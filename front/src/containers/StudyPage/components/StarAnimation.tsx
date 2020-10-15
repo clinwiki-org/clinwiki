@@ -53,6 +53,12 @@ background: transparent;
 width: 30px;
 opacity:0;
 
+.force-visible{
+  overflow: visible !important;
+}
+.force-visible span{
+  overflow: visible !important;
+}
 animation-name: ${coolBoxKeyframes};
 animation-duration: 6s;
 animation-timing-function: ease;
@@ -104,7 +110,7 @@ class WorkFlowAnimation extends React.Component<WorkFlowAnimationProps> {
             color1={color}
             color2={color}
             half={false}
-            size={40}
+            size={60}
             className={'force-visible'}
           />
         </FlashAnimation>
@@ -114,7 +120,9 @@ class WorkFlowAnimation extends React.Component<WorkFlowAnimationProps> {
             color1={color}
             color2={color}
             half={false}
-            size={25}
+            size={40}
+            className={'force-visible'}
+
           />
         </Animation>
 

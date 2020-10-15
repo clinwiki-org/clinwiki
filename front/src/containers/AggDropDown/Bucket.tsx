@@ -11,6 +11,7 @@ class Bucket extends React.Component<BucketProps> {
   render() {
     let text = '';
     const { value, display, docCount } = this.props;
+    let intValue = Math.floor(Number(value))
     switch (display) {
       case FieldDisplay.STAR:
         text = {
@@ -20,7 +21,7 @@ class Bucket extends React.Component<BucketProps> {
           3: '★★★☆☆',
           4: '★★★★☆',
           5: '★★★★★',
-        }[value];
+        }[intValue];
         break;
       case FieldDisplay.DATE:
         text = new Date(parseInt(value.toString(), 10))
