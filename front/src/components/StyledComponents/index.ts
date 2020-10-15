@@ -104,10 +104,11 @@ export const ThemedMainContainer = withTheme(MainContainer);
 const PresearchCard = styled.div`
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: ${props => props.theme.buttonSecondary};
+  border-radius: 4px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  // border-width: 1px;
+  // border-style: solid;
+  // border-color: ${props => props.theme.buttonSecondary};
   margin: 10px;
   flex: 1;
   min-width: 320px;
@@ -120,8 +121,8 @@ export const ThemedPresearchCard = withTheme(PresearchCard);
 const PresearchHeader = styled.div`
   background-color: ${props => props.theme.presearch.presearchHeaders};
   padding: 5px;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  // border-top-left-radius: 12px;
+  // border-top-right-radius: 12px;
   height: 50px;
   display: flex;
   flex-direction: row;
@@ -136,6 +137,42 @@ export const PresearchTitle = styled.div`
   font-weight: 400;
   margin-left: 5px;
 `;
+
+const SearchCard = styled.div`
+width: 350px;
+min-height: 350px;
+margin: 15px;
+box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+border-radius: 4px;
+background: #ffffff;
+padding: 5px;
+ a {
+  ${props => props.theme.button};
+ }
+
+ .mail-merge {
+   position: relative;
+ }
+
+ .cw-icon-link {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  height: 30px;
+  width: 30px;
+  transition: .5s;
+  opacity: 1;
+  img {
+    height: 100%;
+    width: auto;
+  }
+ }
+ .cw-icon-link:hover {
+  opacity: .8;
+}
+`;
+
+export const ThemedSearchCard = withTheme(SearchCard)
 
 const SearchContainer = styled.div`
   border: solid white 1px;
@@ -281,8 +318,8 @@ export const PresearchPanel = styled.div`
 export const PresearchContent = styled.div`
   padding-left: 5px;
   padding-right: 5px;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  // border-bottom-left-radius: 12px;
+  // border-bottom-right-radius: 12px;
   background-color: white;
   max-height: 260px;
   margin-bottom: 7px;

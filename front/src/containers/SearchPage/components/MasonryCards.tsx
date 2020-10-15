@@ -5,6 +5,7 @@ import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuer
 import { MailMergeView } from 'components/MailMerge';
 import { List } from 'react-virtualized';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
+import {ThemedSearchCard} from 'components/StyledComponents';
 import {
   AutoSizer,
 } from 'react-virtualized';
@@ -37,9 +38,9 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
 
   cardStyle: React.CSSProperties = {
     borderWidth: 2,
-    borderColor: this.props.theme.button,
-    borderStyle: 'solid',
-    borderRadius: '5px',
+    // borderColor: this.props.theme.button,
+    // borderStyle: 'solid',
+    // borderRadius: '4px',
     background: '#ffffff',
     height: '100%',
   };
@@ -61,24 +62,26 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
   ) => {
     const listItems = this.props.data;
     const newStyle = {
-      width: "350px",
-      minHeight: "350px",
-      margin: "15px",
+      // width: "350px",
+      // minHeight: "350px",
+      // margin: "15px",
+      // boxShadow: '0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12)',
+      // borderRadius: '4px',
+      // background: '#ffffff',
     }
 
     console.log('YOOOO', index, cardData)
     return (
 
-        <div
+        <ThemedSearchCard
           key={index}
-          style={newStyle}
         >
           <MailMergeView
             style={this.cardStyle}
             template={this.props.template}
             context={listItems[index]}
           />
-        </div>
+        </ThemedSearchCard>
     );
   };
 
