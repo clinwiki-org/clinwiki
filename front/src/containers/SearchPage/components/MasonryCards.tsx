@@ -70,7 +70,6 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
       // background: '#ffffff',
     }
 
-    console.log('YOOOO', index, cardData)
     return (
 
         <ThemedSearchCard

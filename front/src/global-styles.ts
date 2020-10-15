@@ -211,7 +211,4 @@ div.DraftEditor-editorContainer{
   font-size: 13px;
 }
 
-#brieftitle {
-  font-size:1.3em;
-}
 `);

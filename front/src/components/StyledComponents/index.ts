@@ -154,22 +154,7 @@ padding: 5px;
    position: relative;
  }
 
- .cw-icon-link {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  height: 30px;
-  width: 30px;
-  transition: .5s;
-  opacity: 1;
-  img {
-    height: 100%;
-    width: auto;
-  }
- }
- .cw-icon-link:hover {
-  opacity: .8;
-}
+
 `;
 
 export const ThemedSearchCard = withTheme(SearchCard)
@@ -193,6 +178,28 @@ const SearchContainer = styled.div`
     width: 100% !important;
     margin-top: 5px;
     color: #394149;
+  }
+
+  #brieftitle {
+    font-size: 1.3em;
+  }
+
+  .bottom-right-icon {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    height: 30px;
+    width: 30px;
+    transition: .5s;
+    opacity: 1;
+    img {
+      height: 100%;
+      width: auto;
+    }
+   }
+
+   .cw-icon-link:hover {
+    opacity: .8;
   }
   .crumbs-bar {
     background: ${props => props.theme.crumbsBar.containerBackground};
