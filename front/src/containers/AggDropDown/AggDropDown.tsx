@@ -365,7 +365,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const hasMore = length(buckets) !== length(newBuckets);
     this.setState({ buckets: newBuckets, hasMore });
   };
-
+// !  Is  renderPanel for facet bar and the renderPresearchFilter on lines 490s for Presearch? need to mirror changes in both?
   renderPanel = (isPresearch: boolean) => {
     const {
       visibleOptions = [],
@@ -389,6 +389,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = findFields(agg, presentSiteView, presearch);
+    console.log("FIELD", field)
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -408,7 +409,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 aggType={field?.display}
                 field={field}
               />
-            </Container>
+            </Container> 
             {!loading && (
               <Container>
                 <AllowMissingCheckbox buckets={buckets} />
@@ -418,6 +419,45 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         </Panel.Collapse>
       );
     }
+    else if ( // ! Add conditional for new DropDown, need work
+      field?.display === FieldDisplay.DROP_DOWN
+    ){
+      return (
+      <Panel.Collapse className="bm-panel-collapse">
+        <Panel.Body>
+          <Filter
+            buckets={buckets}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+        </Panel.Body>
+        <Panel.Body>
+          <BucketsPanel
+            isPresearch={isPresearch}
+            visibleOptions={visibleOptions}
+            buckets={buckets}
+            isSelected={this.isSelected}
+            hasMore={hasMore}
+            handleLoadMore={this.handleLoadMore}
+            field={field}
+          />
+          <AllowMissingCheckbox buckets={buckets} />
+        </Panel.Body>
+      </Panel.Collapse>
+    );
+    }
+
+
     return (
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
