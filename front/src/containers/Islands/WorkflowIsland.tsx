@@ -27,6 +27,7 @@ import { CurrentUserQuery } from 'types/CurrentUserQuery';
 interface Props {
   name: string;
   nctId?: string;
+  onChange:any;
 }
 
 const StyledPanel = styled(Panel)`
@@ -99,6 +100,9 @@ export default function WorkflowIsland(props: Props) {
       resetAnimation={handleResetAnimation}
       rankColor={theme? theme.button: 'default'}
     /> :null}
+    <div onClick={props.onChange}>
+      Click me
+    </div>
     <div>
       <StyledPanel>
         <SuggestedLabels

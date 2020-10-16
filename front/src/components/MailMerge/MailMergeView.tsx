@@ -226,6 +226,7 @@ export default function MailMergeView(props: Props) {
     {
       shouldProcessNode: node => islandKeys.has(node.name),
       processNode: (node, children) => {
+         node.attribs.onChange =()=>console.log("On CHange ");
         const create = props.islands?.[node.name];
         return (
           <div
