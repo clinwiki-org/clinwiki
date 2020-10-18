@@ -156,19 +156,23 @@ const QueryComponent = (
 ) => Query(props);
 
 class Aggs extends React.PureComponent<AggsProps> {
-  getAggs = (siteView: PresentSiteFragment_siteView): string[] => {
+  getAggs = (siteView: PresentSiteFragment_siteView, presearch): string[] => {
+    console.log(siteView)
+    // to save having to write multiple displayFIelds functions we are splitting the path based on wheter it's presearch or aggs here
+    const path = presearch ? siteView.search.presearch.aggs : siteView.search.aggs
     return displayFields(
-      siteView.search.aggs.selected.kind,
-      siteView.search.aggs.selected.values,
-      siteView.search.aggs.fields
+      path.selected.kind,
+      path.selected.values,
+      path.fields
     ).map(prop('name'));
   };
 
-  getCrowdAggs = (crowdAggs: string[]): string[] => {
+  getCrowdAggs = (crowdAggs: string[], presearch): string[] => {
+    const path = presearch ? this.props.presentSiteView.search.presearch.crowdAggs : this.props.presentSiteView.search.crowdAggs
     const displayed = displayFields(
-      this.props.presentSiteView.search.crowdAggs.selected.kind,
-      this.props.presentSiteView.search.crowdAggs.selected.values,
-      this.props.presentSiteView.search.crowdAggs.fields
+      path.selected.kind,
+      path.selected.values,
+      path.fields
     ).map(prop('name'));
     return filter(x => crowdAggs.includes(x), displayed);
   };
@@ -219,7 +223,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       );
       crowdAggPresearch = (
         <span>
-          {preSearchCrowdAggs.map(k =>
+          {this.getCrowdAggs(Object.keys(crowdAggs), true).map(k =>
             crowdAggs[k] ? (
               <AggContext.Provider
                 key={k}
@@ -270,7 +274,7 @@ class Aggs extends React.PureComponent<AggsProps> {
     if (presearch && preSearchAggs) {
       return (
         <PresearchContainer>
-          {preSearchAggs.map(k =>
+          {this.getAggs(this.props.presentSiteView, true).map(k =>
             aggs[k] ? (
               <AggContext.Provider
                 key={k}
@@ -320,7 +324,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       crowdAggDropdowns = (
         <div>
           <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
-          {this.getCrowdAggs(Object.keys(crowdAggs)).map(k => (
+          {this.getCrowdAggs(Object.keys(crowdAggs), false).map(k => (
             <AggContext.Provider
               key={k}
               value={{
@@ -362,41 +366,44 @@ class Aggs extends React.PureComponent<AggsProps> {
       return (
         <div>
           <div>
-            {this.getAggs(this.props.presentSiteView).map(k =>
-              aggs[k] ? (
-                <AggContext.Provider
-                  key={k}
-                  value={{
-                    updater: new AggFilterInputUpdater(
-                      k,
-                      searchParams,
-                      updateSearchParams,
-                      'aggFilters'
-                    ),
-                  }}>
-                  <AggDropDown
+            {this.getAggs(this.props.presentSiteView, false).map(k => {
+               return (
+                aggs[k] ? (
+                  <AggContext.Provider
                     key={k}
-                    agg={k}
-                    selectedKeys={filters[k] || emptySet}
-                    buckets={aggs[k]}
-                    isOpen={
-                      this.props.opened === k &&
-                      this.props.openedKind === 'aggs'
-                    }
-                    onOpen={this.props.onOpen}
-                    aggKind="aggs"
-                    addFilter={addFilter}
-                    addFilters={addFilters}
-                    removeFilter={removeFilter}
-                    removeFilters={removeFilters}
-                    searchParams={searchParams}
-                    resetSelectAll={this.props.resetSelectAll}
-                    removeSelectAll={this.props.removeSelectAll}
-                    presentSiteView={this.props.presentSiteView}
-                    configType="facetbar"
-                  />
-                </AggContext.Provider>
-              ) : null
+                    value={{
+                      updater: new AggFilterInputUpdater(
+                        k,
+                        searchParams,
+                        updateSearchParams,
+                        'aggFilters'
+                      ),
+                    }}>
+                    <AggDropDown
+                      key={k}
+                      agg={k}
+                      selectedKeys={filters[k] || emptySet}
+                      buckets={aggs[k]}
+                      isOpen={
+                        this.props.opened === k &&
+                        this.props.openedKind === 'aggs'
+                      }
+                      onOpen={this.props.onOpen}
+                      aggKind="aggs"
+                      addFilter={addFilter}
+                      addFilters={addFilters}
+                      removeFilter={removeFilter}
+                      removeFilters={removeFilters}
+                      searchParams={searchParams}
+                      resetSelectAll={this.props.resetSelectAll}
+                      removeSelectAll={this.props.removeSelectAll}
+                      presentSiteView={this.props.presentSiteView}
+                      configType="facetbar"
+                    />
+                  </AggContext.Provider>
+                ) : null
+               )
+            }
             )}
           </div>
           {crowdAggDropdowns}
