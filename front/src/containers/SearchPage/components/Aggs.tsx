@@ -157,7 +157,6 @@ const QueryComponent = (
 
 class Aggs extends React.PureComponent<AggsProps> {
   getAggs = (siteView: PresentSiteFragment_siteView, presearch): string[] => {
-    console.log(siteView)
     // to save having to write multiple displayFIelds functions we are splitting the path based on wheter it's presearch or aggs here
     const path = presearch ? siteView.search.presearch.aggs : siteView.search.aggs
     return displayFields(
