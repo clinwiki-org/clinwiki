@@ -47,6 +47,7 @@ import {
   PresearchContent,
 } from 'components/StyledComponents';
 import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
+import BucketsDropDown from './BucketsDropDown';
 
 const PAGE_SIZE = 25;
 
@@ -212,7 +213,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return null;
   }
 
-  isSelected = (key: string): boolean =>
+  isSelected = (key: string): boolean =>    
     this.props.selectedKeys && this.props.selectedKeys.has(key);
 
   selectAll = (agg: string): void => {
@@ -365,7 +366,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const hasMore = length(buckets) !== length(newBuckets);
     this.setState({ buckets: newBuckets, hasMore });
   };
-// !  Is  renderPanel for facet bar and the renderPresearchFilter on lines 490s for Presearch? need to mirror changes in both?
+// !  renderPanel for facet bar and the renderPresearchFilter on lines 490s for Presearch? need to mirror changes in both?
   renderPanel = (isPresearch: boolean) => {
     const {
       visibleOptions = [],
@@ -419,7 +420,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         </Panel.Collapse>
       );
     }
-    else if ( // ! Add conditional for new DropDown, need work
+    else if (
       field?.display === FieldDisplay.DROP_DOWN
     ){
       return (
@@ -442,7 +443,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           />
         </Panel.Body>
         <Panel.Body>
-          <BucketsPanel
+          <BucketsDropDown
             isPresearch={isPresearch}
             visibleOptions={visibleOptions}
             buckets={buckets}

@@ -7,9 +7,7 @@ import { BeatLoader } from 'react-spinners';
 import { FieldDisplay } from 'types/globalTypes';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 import { AggBucket } from '../SearchPage/Types';
-import Buckets from './Buckets';
-import { FormControl } from 'react-bootstrap';
-import styled from 'styled-components';
+import BucketsDropDownOptions from './BucketsDropDownOptions';
 
 interface BucketsDropDownProps {
   isPresearch: boolean;
@@ -20,13 +18,6 @@ interface BucketsDropDownProps {
   hasMore: boolean;
   handleLoadMore: any;
 }
-
-
-const StyledFormControl = styled(FormControl)`
-  margin-bottom: 20px;
-  border-radius: 2px;
-  border-color: "red";
-`;
 
 class BucketsDropDown extends React.Component<BucketsDropDownProps> {
   render() {
@@ -50,12 +41,13 @@ class BucketsDropDown extends React.Component<BucketsDropDownProps> {
             <BeatLoader key="loader" color={isPresearch ? '#000' : '#fff'} />
           </div>
         }>
-        <Buckets
-          display={(field && field.display) || FieldDisplay.STRING}
-          visibleOptions={visibleOptions}
-          buckets={buckets}
-          isSelected={isSelected}
-        />
+          <BucketsDropDownOptions
+            display={(field && field.display) || FieldDisplay.STRING}
+            visibleOptions={visibleOptions}
+            buckets={buckets}
+            isSelected={isSelected}
+            field={field}
+          />
       </InfiniteScroll>
     );
   }
