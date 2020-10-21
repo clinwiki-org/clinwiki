@@ -499,14 +499,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         }}>
         {({ data, loading, error }) => {
           if (error || loading) return null;
-          if(!hash && !loading){
+          // if(!hash && !loading){
 
-            console.log("DEFAULT", FILTERED_PARAMS)
-            this.updateSearchParams(DEFAULT_PARAMS)          
-
-            //Breaks when passing FILTERED_PARAMS
-            // this.updateSearchParams(FILTERED_PARAMS)          
-    }
+          //   this.updateSearchParams(DEFAULT_PARAMS)          
+          //   //Breaks when passing FILTERED_PARAMS
+          //   // this.updateSearchParams(FILTERED_PARAMS)          
+          // }
 
           const params: SearchParams = this.searchParamsFromQuery(
             data!.searchParams,
@@ -565,12 +563,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         () => this.updateSearchParams(this.state.params)
       );
 
-    }if(!searchTerm.has('hash')){
-      console.log(2)
-      
-      //Breaks when passing FILTERED_PARAMS
-      // this.updateSearchParams(FILTERED_PARAMS)
-      this.updateSearchParams(DEFAULT_PARAMS)
+    }   
+    if(!searchTerm.has('hash') ){
+      this.updateSearchParams(FILTERED_PARAMS)
 
     }
     if (this.props.intervention) {
