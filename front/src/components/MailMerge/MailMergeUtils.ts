@@ -2,6 +2,7 @@ import { gql } from 'apollo-boost';
 
 export function getStudyQuery(name: string, frag: string) {
   frag = frag || `fragment ${name} on Study { nctId }`;
+  console.log("FRAG from getStudyQuery",frag)
   return gql`
   query Study${name}Query($nctId: String!) {
     study(nctId: $nctId) {

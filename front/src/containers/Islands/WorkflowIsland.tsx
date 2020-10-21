@@ -87,10 +87,10 @@ export default function WorkflowIsland(props: Props) {
   const resetHelper = ()=>{
     setFlashAnimation(false)
     refetch()
+    props.onChange()
   }
   const handleResetAnimation=()=>{
     setTimeout(  resetHelper, 6500);
-
   }
 
   return (
@@ -100,9 +100,6 @@ export default function WorkflowIsland(props: Props) {
       resetAnimation={handleResetAnimation}
       rankColor={theme? theme.button: 'default'}
     /> :null}
-    <div onClick={props.onChange}>
-      Click me
-    </div>
     <div>
       <StyledPanel>
         <SuggestedLabels

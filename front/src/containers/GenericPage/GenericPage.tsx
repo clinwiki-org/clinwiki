@@ -44,7 +44,7 @@ export default function GenericPage(props: Props) {
   const { data: pageViewData } = usePageView(defaultPage());
   const currentPage = pageViewData?.site?.pageView;
   const [fragment, setFragment] = useState('');
-  const { data: studyData, loading } = useQuery(
+  const { data: studyData, loading, refetch } = useQuery(
     getStudyQuery(fragmentName, fragment),
     {
       skip: fragment == '' || !props.arg,
@@ -72,6 +72,7 @@ export default function GenericPage(props: Props) {
         fragmentClass="Study"
         onFragmentChanged={setFragment}
         islands={studyIslands}
+        refetchQuery={refetch}
       />
     </div>
   );

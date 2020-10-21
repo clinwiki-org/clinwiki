@@ -18,6 +18,7 @@ export interface Props {
   fragmentClass?: string;
   onFragmentChanged?: (fragment: string) => void;
   islands?: Record<string, IslandConstructor>;
+  refetchQuery?:any;
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
@@ -165,6 +166,7 @@ function compileFragment(
   const tokens = mustacheTokens(template);
   const json = tokensToGraphQLOb(tokens);
   const fragmentBody = jsonToFragmentBody(json);
+
   return toFragment(fragmentName, className, fragmentBody);
 }
 
@@ -226,7 +228,10 @@ export default function MailMergeView(props: Props) {
     {
       shouldProcessNode: node => islandKeys.has(node.name),
       processNode: (node, children) => {
-         node.attribs.onChange =()=>console.log("On CHange ");
+
+         node.attribs.onChange =()=>{
+            props.refetchQuery()
+    }
         const create = props.islands?.[node.name];
         return (
           <div
