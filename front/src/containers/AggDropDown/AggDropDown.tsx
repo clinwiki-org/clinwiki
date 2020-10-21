@@ -254,7 +254,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       });
       this.props.removeFilters(this.props.agg, newParams, false);
     }
-  };
+        };
 
   isAllSelected = (): boolean => {
     const { buckets } = this.state;
@@ -374,6 +374,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       agg,
       presentSiteView,
       presearch,
+      removeFilters
     } = this.props;
     const {
       buckets = [],
@@ -390,7 +391,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = findFields(agg, presentSiteView, presearch);
-    console.log("FIELD", field)
+    //console.log("FIELD", field)
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -444,6 +445,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         </Panel.Body>
         <Panel.Body>
           <BucketsDropDown
+            agg={agg}
+            removeFilters={removeFilters}
             isPresearch={isPresearch}
             visibleOptions={visibleOptions}
             buckets={buckets}

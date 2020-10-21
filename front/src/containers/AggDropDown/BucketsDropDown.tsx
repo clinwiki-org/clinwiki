@@ -17,6 +17,8 @@ interface BucketsDropDownProps {
   isSelected: any;
   hasMore: boolean;
   handleLoadMore: any;
+  removeFilters: any;
+  agg: string;
 }
 
 class BucketsDropDown extends React.Component<BucketsDropDownProps> {
@@ -29,6 +31,8 @@ class BucketsDropDown extends React.Component<BucketsDropDownProps> {
       isSelected,
       hasMore,
       handleLoadMore,
+      removeFilters,
+      agg
     } = this.props;
     return (
       <InfiniteScroll
@@ -42,11 +46,13 @@ class BucketsDropDown extends React.Component<BucketsDropDownProps> {
           </div>
         }>
           <BucketsDropDownOptions
+            removeFilters={removeFilters}
             display={(field && field.display) || FieldDisplay.STRING}
             visibleOptions={visibleOptions}
             buckets={buckets}
             isSelected={isSelected}
             field={field}
+            agg={agg}
           />
       </InfiniteScroll>
     );

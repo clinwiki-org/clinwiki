@@ -220,6 +220,13 @@ const changeFilter = (add: boolean) => (
   key: string,
   isCrowd?: boolean
 ) => (params: SearchParams) => {
+  console.log("REMOVe  Filter")
+
+  console.log("AggName", aggName)
+  console.log("key", key)
+  console.log("isCrowd", isCrowd)
+  console.log("params",params)
+
   const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
   const lens = lensPath([propName]);
   return (over(
@@ -231,8 +238,9 @@ const changeFilter = (add: boolean) => (
         return [...aggs, { field: aggName, values: [key] }];
       }
       const aggLens = lensPath([index, 'values']);
-      const updater = (values: string[]) =>
-        add ? [...values, key] : reject(x => x === key, values);
+      const updater = (values: string[]) => (
+        console.log("*********VALUES",values),
+        add ? [...values, key] : reject(x => x === key, values))
       let res = over(aggLens, updater, aggs);
       // Drop filter if no values left
       if (isEmpty(view(aggLens, res))) {
@@ -259,11 +267,21 @@ const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 };
 
 const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
+
+  console.log("REMOVING Filters")
+
+  console.log("AggName", aggName)
+  console.log("keys", keys)
+  console.log("isCrowd", isCrowd)
+
   return (params: SearchParams) => {
     keys.forEach(k => {
+      console.log("PARAMS  1",params)
       params = removeFilter(aggName, k, isCrowd)(params);
+      console.log("PARAMS  2" ,params)
     });
     // changeFilter(true);
+    console.log("PARAMS  3",params)
     return params;
   };
 };
