@@ -86,9 +86,6 @@ function tokensToGraphQLOb(tags: string[]) {
       pushScope(scopeName);
       scope[propName] = 'x';
       popScope();
-    }else if(name == "hash" || name == "siteViewUrl" || name == "pageViewUrl" || name == "q" || name == 'ALL'){
-
-      scope[name] ={param: name}
     }else {
       // single value
       scope[name] = 'x';
@@ -110,8 +107,13 @@ function tokensToGraphQLOb(tags: string[]) {
     else if (t.indexOf(' ') > 0) {
       const parts = t.split(/\s/).filter(id => id);
       if (parts.length > 1) {
-        const name = parts[1];
+        const name = parts[parts.length -1];
+    //Hardcoded for now, to be kept in list like commonIslands
+        if (name=='FindAndReplace' || 'querystring'){
+          break
+        }else{
         setProperty(name);
+        }
       }
     } else {
       setProperty(t);
@@ -132,10 +134,6 @@ function jsonToFragmentBody(
     if (value === 'x') {
       result += key;
       result += '\n';
-    }
-    // @ts-ignore
-    else if(value && value.param) {
-      console.log(result)
     }
     else {
       result += key;

@@ -58,10 +58,11 @@ export function registerHandlebarsHelpers() {
     console.log("NEW:", newVal)
     return newVal
 });
-  Handlebars.registerHelper('FindAndReplace', (value:string, valueToFind: string, valueToReplace: string ) => {
-    console.log("VALUE", value)
-    console.log("Find", valueToFind)
-  console.log("Replace", valueToReplace ) 
+  Handlebars.registerHelper('$FindAndReplace', ( valueToFind: string, value:string, valueToReplace: string ) => {
+
+    if(valueToReplace.toLowerCase() == valueToFind.toLowerCase()){
+      return new Handlebars.SafeString(value);
+    }
   return valueToReplace
   });
 
