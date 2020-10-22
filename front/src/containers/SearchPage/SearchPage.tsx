@@ -484,6 +484,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderSearch = () => {
     const hash = this.getHashFromLocation();
     const { presentSiteView } = this.props;
+    const FILTERED_PARAMS = {
+      ...DEFAULT_PARAMS,
+      ...preselectedFilters(presentSiteView),
+    };
     return (
       <ParamsQueryComponent
         fetchPolicy={"network-only"}
@@ -495,6 +499,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         }}>
         {({ data, loading, error }) => {
           if (error || loading) return null;
+          // if(!hash && !loading){
+
+          //   this.updateSearchParams(DEFAULT_PARAMS)          
+          //   //Breaks when passing FILTERED_PARAMS
+          //   // this.updateSearchParams(FILTERED_PARAMS)          
+          // }
 
           const params: SearchParams = this.searchParamsFromQuery(
             data!.searchParams,
@@ -526,6 +536,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
+    const FILTERED_PARAMS = {
+      ...DEFAULT_PARAMS,
+      ...preselectedFilters(this.props.presentSiteView),
+    };
+                                                                                
     if (window.innerWidth < 768) {
       this.setState({ collapseFacetBar: true })
     }
@@ -547,6 +562,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         },
         () => this.updateSearchParams(this.state.params)
       );
+
+    }   
+    if(!searchTerm.has('hash') ){
+      this.updateSearchParams(FILTERED_PARAMS)
+
     }
     if (this.props.intervention) {
       //@ts-ignore
