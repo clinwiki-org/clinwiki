@@ -317,9 +317,13 @@ export const PresearchFilter = styled.div`
 export const PresearchPanel = styled.div`
   overflow-x: auto;
   max-height: 200px;
-  min-height: 200px;
+ /*  min-height: 200px; */
   margin-left: 5px;
   margin-top: 30px;
+  position: relative;
+    .dropDownFacet{
+      position: relative;
+    }
 `;
 
 export const PresearchContent = styled.div`
