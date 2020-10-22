@@ -213,7 +213,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return null;
   }
 
-  isSelected = (key: string): boolean =>    
+  isSelected = (key: string): boolean =>     
     this.props.selectedKeys && this.props.selectedKeys.has(key);
 
   selectAll = (agg: string): void => {
@@ -537,6 +537,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       visibleOptions,
       presentSiteView,
       presearch,
+      removeFilters,
+
     } = this.props;
     const {
       buckets = [],
@@ -636,6 +638,46 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         </ChartWrapper>
       );
     }
+    else if (
+      field?.display === FieldDisplay.DROP_DOWN
+    ){
+      return (
+      <Panel.Collapse className="bm-panel-collapse">
+        <Panel.Body>
+          <Filter
+            buckets={buckets}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+        </Panel.Body>
+        <Panel.Body>
+          <BucketsDropDown
+            agg={agg}
+            removeFilters={removeFilters}
+            isPresearch={true}
+            visibleOptions={visibleOptions}
+            buckets={buckets}
+            isSelected={this.isSelected}
+            hasMore={hasMore}
+            handleLoadMore={this.handleLoadMore}
+            field={field}
+          />
+          <AllowMissingCheckbox buckets={buckets} />
+        </Panel.Body>
+      </Panel.Collapse>
+    );
+    }
+
     return (
       <PresearchContent>
         <PresearchFilter>

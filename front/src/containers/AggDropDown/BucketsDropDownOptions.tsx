@@ -7,7 +7,6 @@ import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdate
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import { withSearchParams } from 'containers/SearchPage/components/SearchParamsContext';
 
 
 interface BucketsProps {
@@ -17,8 +16,6 @@ buckets: Array<AggBucket>;
 isSelected: any;
 updater: AggFilterInputUpdater;
 field: any;
-searchParams: any;
-removeFilters: any;
 agg: string;
 }
 
@@ -28,8 +25,6 @@ border-radius: 2px;
 border-color: "red";
 `;
 
-let prevOption = "";
-
 class BucketsDropDownOptions extends React.Component<BucketsProps> {
     render() {
     const { 
@@ -38,41 +33,50 @@ class BucketsDropDownOptions extends React.Component<BucketsProps> {
         visibleOptions = [], 
         updater, 
         field, 
-        searchParams, 
-        removeFilters,
         agg 
     } = this.props;
 
-    console.log("SearchParams",searchParams)
-    
+    let activeOptions: string[] = [];
 
     const changeDropDownOption = async (e) => {
-        let newParams: string[] = [];
-
-        buckets.map(({ key }) => {
-          newParams.push(key);
-        });
-
-        //if (prevOption !== "") {updater.removeFilter(prevOption)}
-        //prevOption = e.target.value;
-
-        console.log("AGG", agg)
-        console.log("newParams", newParams)
-        removeFilters(agg, newParams);
-
+        activeOptions.forEach(o => {
+            updater.removeFilter(o);
+            } 
+        )
         updater.toggleFilter(e.target.value)
     }
 
-    //console.log("BUCKETS", buckets)
+    const checkOption = (bucket) => {
+    if (updater.isSelected(bucket.key)){
+        activeOptions.push(bucket.key)
+    };
+       //console.log("active", activeOptions)
+        return (
+        <option
+        value={bucket.key}>
+            {defaultTo(bucket.key)(bucket.keyAsString)} ({bucket.docCount})
+        </option>
+        )
+    }
 
+     console.log("Active Opt", (activeOptions.length !== 0))
+    console.log("Active Opt", activeOptions)
+    /* const defaultOption = (activeOptions === undefined || activeOptions.length === 0)   <option>{defaultOption}</option>
+    ?
+    "Select Option" : activeOptions; 
+ */
     return (
+        <>
         <StyledFormControl
-        name={"Name"}
-        componentClass="select"
+        //multiple
+       // name={activeOptions[0]}
+        componentClass={"select"}
+        defaultValue={"Option"}
+        value={"Select Value"}
+        placeholder={"Options"}
         onChange={ (e) => changeDropDownOption(e)}
-// TODO Need to unselect/toggle previous options to have only one dropdown option at a time
-        defaultValue={field.display}
         >
+          // first default option
         {buckets
         .filter(
             bucket =>
@@ -80,15 +84,14 @@ class BucketsDropDownOptions extends React.Component<BucketsProps> {
                 (visibleOptions.length ? visibleOptions.includes(bucket.key) : true)
         )
         .map(bucket => (
-                <option value={bucket.key}>
-                    {defaultTo(bucket.key)(bucket.keyAsString)} ({bucket.docCount})
-                </option>
+                checkOption(bucket)
         )
         )
         }
         </StyledFormControl>
+        </>
             )
     }
 }
-  
-export default withSearchParams(withAggContext(BucketsDropDownOptions));
+
+export default withAggContext(BucketsDropDownOptions);

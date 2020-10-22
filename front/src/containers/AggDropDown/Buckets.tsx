@@ -12,7 +12,7 @@ interface BucketsProps {
   display: FieldDisplay;
   visibleOptions: any;
   buckets: Array<AggBucket>;
-  isSelected: any;
+ // isSelected: any;
   updater: AggFilterInputUpdater;
 }
 

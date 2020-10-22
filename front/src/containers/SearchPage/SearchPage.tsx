@@ -233,13 +233,15 @@ const changeFilter = (add: boolean) => (
     lens,
     //@ts-ignore
     (aggs: AggFilterInput[]) => {
+     //console.log("AGGGGS", aggs)
       const index = findIndex(propEq('field', aggName), aggs);
       if (index === -1 && add) {
+        //console.log("HIT IF!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ")
         return [...aggs, { field: aggName, values: [key] }];
       }
       const aggLens = lensPath([index, 'values']);
       const updater = (values: string[]) => (
-        console.log("*********VALUES",values),
+        //console.log("VALUES",values), Values coming from AGGS above
         add ? [...values, key] : reject(x => x === key, values))
       let res = over(aggLens, updater, aggs);
       // Drop filter if no values left
@@ -267,21 +269,12 @@ const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 };
 
 const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-
-  console.log("REMOVING Filters")
-
-  console.log("AggName", aggName)
-  console.log("keys", keys)
-  console.log("isCrowd", isCrowd)
-
   return (params: SearchParams) => {
     keys.forEach(k => {
-      console.log("PARAMS  1",params)
+      //console.log("PARAMS  1",params)
       params = removeFilter(aggName, k, isCrowd)(params);
-      console.log("PARAMS  2" ,params)
     });
     // changeFilter(true);
-    console.log("PARAMS  3",params)
     return params;
   };
 };
