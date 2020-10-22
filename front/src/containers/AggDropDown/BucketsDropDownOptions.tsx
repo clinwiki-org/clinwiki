@@ -61,22 +61,24 @@ class BucketsDropDownOptions extends React.Component<BucketsProps> {
 
      console.log("Active Opt", (activeOptions.length !== 0))
     console.log("Active Opt", activeOptions)
-    /* const defaultOption = (activeOptions === undefined || activeOptions.length === 0)   <option>{defaultOption}</option>
+     const selectedOption = (activeOptions === undefined || activeOptions.length === 0)
     ?
     "Select Option" : activeOptions; 
- */
+
+    console.log("!!!!!!!!!!", selectedOption)
+  
     return (
-        <>
+        <div className="dropDownFacet">
         <StyledFormControl
         //multiple
        // name={activeOptions[0]}
         componentClass={"select"}
-        defaultValue={"Option"}
-        value={"Select Value"}
-        placeholder={"Options"}
+        //defaultValue={"Option"}
+        value={-1}
+        //placeholder={"Options"}
         onChange={ (e) => changeDropDownOption(e)}
         >
-          // first default option
+          <option value={-1} key={-1}>{activeOptions}</option>
         {buckets
         .filter(
             bucket =>
@@ -89,7 +91,7 @@ class BucketsDropDownOptions extends React.Component<BucketsProps> {
         )
         }
         </StyledFormControl>
-        </>
+        </div>
             )
     }
 }

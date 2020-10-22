@@ -642,8 +642,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       field?.display === FieldDisplay.DROP_DOWN
     ){
       return (
-      <Panel.Collapse className="bm-panel-collapse">
-        <Panel.Body>
+      <PresearchContent>
+        <PresearchPanel>
           <Filter
             buckets={buckets}
             filter={filter}
@@ -659,8 +659,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
           />
-        </Panel.Body>
-        <Panel.Body>
+        </PresearchPanel>
+        <PresearchPanel>
           <BucketsDropDown
             agg={agg}
             removeFilters={removeFilters}
@@ -669,12 +669,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             buckets={buckets}
             isSelected={this.isSelected}
             hasMore={hasMore}
-            handleLoadMore={this.handleLoadMore}
+            handleLoadMore={this.handleLoadMore} 
             field={field}
           />
-          <AllowMissingCheckbox buckets={buckets} />
-        </Panel.Body>
-      </Panel.Collapse>
+        </PresearchPanel>
+      </PresearchContent>
     );
     }
 
