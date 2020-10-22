@@ -108,9 +108,11 @@ function tokensToGraphQLOb(tags: string[]) {
       const parts = t.split(/\s/).filter(id => id);
       if (parts.length > 1) {
         const name = parts[parts.length -1];
-    //Hardcoded for now, to be kept in list like commonIslands
-        if (name=='FindAndReplace' || 'querystring'){
-          break
+
+        //Hardcoded for now, to be kept in list like commonIslands
+        //Will handle cases of handlers who should  not be part of the fragment 
+        if(parts[0] =='querystring'){
+            break          
         }else{
         setProperty(name);
         }
