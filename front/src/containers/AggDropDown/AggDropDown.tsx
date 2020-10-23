@@ -642,7 +642,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       field?.display === FieldDisplay.DROP_DOWN
     ){
       return (
-      <PresearchContent>
+      <>
         <PresearchPanel>
           <Filter
             buckets={buckets}
@@ -673,12 +673,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             field={field}
           />
         </PresearchPanel>
-      </PresearchContent>
+      </>
     );
     }
 
     return (
-      <PresearchContent>
+      <>
         <PresearchFilter>
           <Filter
             buckets={buckets}
@@ -707,7 +707,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             field={field}
           />
         </PresearchPanel>
-      </PresearchContent>
+      </>
     );
   };
 
