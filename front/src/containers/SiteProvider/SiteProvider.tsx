@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  Query,
-  QueryComponentOptions,
-  useApolloClient,
-  useQuery,
-} from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { gql, useQuery }  from '@apollo/client';
 import {
   SiteProviderQuery,
   SiteProviderQueryVariables,

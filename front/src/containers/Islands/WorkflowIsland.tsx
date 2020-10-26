@@ -14,7 +14,7 @@ import {
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/WorkflowPageQuery';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import { WorkflowPageQuery } from 'types/WorkflowPageQuery';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
 import {  QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
@@ -107,6 +107,7 @@ export default function WorkflowIsland(props: Props) {
           onSelect={handleSelect(
             JSON.parse(studyData?.study?.wikiPage?.meta || '{}'),
             nctId,
+            //@ts-ignore
             upsertMutation,
             deleteMutation
           )}

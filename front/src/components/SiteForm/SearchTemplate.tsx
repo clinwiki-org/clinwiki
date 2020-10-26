@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { FormControl } from 'react-bootstrap';
 import { fromPairs } from 'ramda';
 import { PREFETCH_QUERY } from 'containers/StudyPage/StudyPage';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 import { SchemaType } from 'components/MailMerge/SchemaSelector';
 import { StudyPagePrefetchQuery } from 'types/StudyPagePrefetchQuery';
 import { camelCase } from 'utils/helpers';

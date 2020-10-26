@@ -8,8 +8,8 @@ import {
   reduce,
   pathOr,
 } from 'ramda';
-import { Query, QueryComponentOptions } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { gql }  from '@apollo/client';
 import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,

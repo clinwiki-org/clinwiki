@@ -6,7 +6,7 @@ import { WikiPageUpdateContentMutationVariables } from 'types/WikiPageUpdateCont
 import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
 import QUERY from 'queries/WikiPageQuery';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import CurrentUser, { useCurrentUser, QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { useHistory, useLocation, useRouteMatch, Prompt } from 'react-router-dom';

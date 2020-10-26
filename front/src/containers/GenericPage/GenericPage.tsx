@@ -5,7 +5,7 @@ import MailMergeView, {
 } from 'components/MailMerge/MailMergeView';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'

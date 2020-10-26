@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import { gql } from 'apollo-boost';
-import { useQuery } from 'react-apollo';
+import { gql, useQuery }  from '@apollo/client';
 import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
