@@ -114,6 +114,8 @@ const PresearchCard = styled.div`
   min-width: 320px;
   max-width: 320px;
   background: white;
+  //working on preserach fix
+  min-height: 320px;
 `;
 
 export const ThemedPresearchCard = withTheme(PresearchCard);
@@ -121,8 +123,8 @@ export const ThemedPresearchCard = withTheme(PresearchCard);
 const PresearchHeader = styled.div`
   background-color: ${props => props.theme.presearch.presearchHeaders};
   padding: 5px;
-  // border-top-left-radius: 12px;
-  // border-top-right-radius: 12px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
   height: 50px;
   display: flex;
   flex-direction: row;
@@ -311,15 +313,20 @@ export const TextFieldToggle = styled.div`
 
 export const PresearchFilter = styled.div`
   margin-left: 5px;
-  max-height: 30px;
+  //presearch-style fix
+  // max-height: 30px;
 `;
 
 export const PresearchPanel = styled.div`
   overflow-x: auto;
   max-height: 200px;
-  min-height: 200px;
+ /*  min-height: 200px; */
   margin-left: 5px;
-  margin-top: 30px;
+  // margin-top: 30px;
+  position: relative;
+    .dropDownFacet{
+      position: relative;
+    }
 `;
 
 export const PresearchContent = styled.div`

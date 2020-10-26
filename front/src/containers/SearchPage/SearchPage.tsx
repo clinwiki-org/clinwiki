@@ -208,19 +208,29 @@ const changeFilter = (add: boolean) => (
   key: string,
   isCrowd?: boolean
 ) => (params: SearchParams) => {
+  console.log("REMOVe  Filter")
+
+  console.log("AggName", aggName)
+  console.log("key", key)
+  console.log("isCrowd", isCrowd)
+  console.log("params",params)
+
   const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
   const lens = lensPath([propName]);
   return (over(
     lens,
     //@ts-ignore
     (aggs: AggFilterInput[]) => {
+     //console.log("AGGGGS", aggs)
       const index = findIndex(propEq('field', aggName), aggs);
       if (index === -1 && add) {
+        //console.log("HIT IF!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ")
         return [...aggs, { field: aggName, values: [key] }];
       }
       const aggLens = lensPath([index, 'values']);
-      const updater = (values: string[]) =>
-        add ? [...values, key] : reject(x => x === key, values);
+      const updater = (values: string[]) => (
+        //console.log("VALUES",values), Values coming from AGGS above
+        add ? [...values, key] : reject(x => x === key, values))
       let res = over(aggLens, updater, aggs);
       // Drop filter if no values left
       if (isEmpty(view(aggLens, res))) {
@@ -249,6 +259,7 @@ const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
   return (params: SearchParams) => {
     keys.forEach(k => {
+      //console.log("PARAMS  1",params)
       params = removeFilter(aggName, k, isCrowd)(params);
     });
     // changeFilter(true);
@@ -485,6 +496,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   renderSearch = () => {
     const hash = this.getHashFromLocation();
     const { presentSiteView } = this.props;
+    const FILTERED_PARAMS = {
+      ...DEFAULT_PARAMS,
+      ...preselectedFilters(presentSiteView),
+    };
     return (
       <ParamsQueryComponent
         // fetchPolicy={"network-only"}
@@ -497,6 +512,12 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         }}>
         {({ data, loading, error }) => {
           if (error || loading) return null;
+          // if(!hash && !loading){
+
+          //   this.updateSearchParams(DEFAULT_PARAMS)          
+          //   //Breaks when passing FILTERED_PARAMS
+          //   // this.updateSearchParams(FILTERED_PARAMS)          
+          // }
 
           const params: SearchParams = this.searchParamsFromQuery(
             data!.searchParams,
@@ -528,6 +549,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   componentDidMount() {
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
+    const FILTERED_PARAMS = {
+      ...DEFAULT_PARAMS,
+      ...preselectedFilters(this.props.presentSiteView),
+    };
+                                                                                
     if (window.innerWidth < 768) {
       this.setState({ collapseFacetBar: true })
     }
@@ -549,6 +575,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         },
         () => this.updateSearchParams(this.state.params)
       );
+
+    }   
+    if(!searchTerm.has('hash') ){
+      this.updateSearchParams(FILTERED_PARAMS)
+
     }
     if (this.props.intervention) {
       //@ts-ignore
