@@ -15,7 +15,6 @@ interface BucketsDropDownOptionsProps {
   isSelected: any;
   updater: AggFilterInputUpdater;
   field: any;
-  agg: string;
 }
 
 interface BucketsDropDownOptionsState {
@@ -23,6 +22,7 @@ interface BucketsDropDownOptionsState {
   end?: any;
   startText?: any;
   endText?: any;
+  activeOption: string;
 }
 
 const StyledFormControl = styled(FormControl)`
@@ -42,7 +42,18 @@ class BucketsDropDownOptions extends React.Component<
       end: null,
       startText: this.props.updater.input?.gte,
       endText: this.props.updater.input?.lte,
+      activeOption: 'Select Option',
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.setState({
+        activeOption: 'Select Option',
+        startText: this.props.updater.input?.gte,
+        endText: this.props.updater.input?.lte,
+      });
+    }
   }
 
   onChange = () =>
@@ -58,17 +69,24 @@ class BucketsDropDownOptions extends React.Component<
       visibleOptions = [],
       updater,
       field,
-      agg,
     } = this.props;
+
+    const { activeOption } = this.state;
 
     let activeOptions: string[] = [];
 
     const changeDropDownRange = e => {
       //e.preventDefault();
       if (display === 'LESS_THAN_DROP_DOWN') {
-        this.setState({ ...this.state, endText:e.target.value, end: e.target.value }, this.onChange);
+        this.setState(
+          { ...this.state, endText: e.target.value, end: e.target.value },
+          this.onChange
+        );
       } else {
-        this.setState({ ...this.state, startText:e.target.value, start: e.target.value }, this.onChange);
+        this.setState(
+          { ...this.state, startText: e.target.value, start: e.target.value },
+          this.onChange
+        );
       }
     };
 
@@ -83,8 +101,13 @@ class BucketsDropDownOptions extends React.Component<
     const checkOption = bucket => {
       if (updater.isSelected(bucket.key)) {
         activeOptions.push(bucket.key);
+        if (this.state.activeOption !== activeOptions[0]) {
+          this.setState({
+            activeOption: activeOptions[0],
+          });
+        }
       }
-      //console.log("active", activeOptions)
+      //console.log("active", this.state.activeOption)
       return (
         <option value={bucket.key}>
           {defaultTo(bucket.key)(bucket.keyAsString)}{' '}
@@ -92,17 +115,6 @@ class BucketsDropDownOptions extends React.Component<
         </option>
       );
     };
-
-    // console.log("Active Opt", (activeOptions.length !== 0))
-    //console.log('Active Opt', activeOptions);
-    const selectedOption =
-      activeOptions === undefined || activeOptions.length === 0
-        ? 'Select Option'
-        : activeOptions;
-    // console.log("!!!!!!!!!!", selectedOption)
-
-    //TODO Needs default value text when no option is selected on drop down yet, could use state
-    // ! when filter is removed from top with "x". Dropdown default value doesn't reflect change.
 
     if (field?.display === FieldDisplay.DROP_DOWN) {
       return (
@@ -115,7 +127,7 @@ class BucketsDropDownOptions extends React.Component<
             //placeholder={"Options"}
             onChange={e => changeDropDownOption(e)}>
             <option disabled value={-1} key={-1}>
-              {activeOptions}
+              {activeOption}
             </option>
             {buckets
               .filter(
@@ -134,7 +146,10 @@ class BucketsDropDownOptions extends React.Component<
       field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN
     ) {
       const { startText, endText } = this.state;
-      const rangeValue = display === 'LESS_THAN_DROP_DOWN' ? endText : startText;
+      //console.log("END and Start TEXTs", endText, startText)
+      const rangeValue =
+        display === 'LESS_THAN_DROP_DOWN' ? endText : startText;
+      const rangeActiveValue = rangeValue ? rangeValue : 'Select Value';
       const dropDownLabel =
         display === 'LESS_THAN_DROP_DOWN' ? 'Less Than' : 'Greater Than';
       return (
@@ -146,7 +161,7 @@ class BucketsDropDownOptions extends React.Component<
             //defaultValue={"Option"}
             onChange={e => changeDropDownRange(e)}>
             <option disabled value={-1} key={-1}>
-              {rangeValue}
+              {rangeActiveValue}
             </option>
             {buckets
               .filter(
