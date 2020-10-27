@@ -1,3 +1,0 @@
-{:q=>{:key=>"AND", :children=>[]}, :page=>0, :page_size=>100000, :sorts=>[], :agg_filters=>nil, :crowd_agg_filters=>[], :agg=>"front_matter_keys"}
-{:q=>{:key=>"AND", :children=>[]}, :page=>0, :page_size=>100, :sorts=>[], :agg_filters=>nil, :crowd_agg_filters=>[]}
-{:q=>{:key=>"AND", :children=>[]}, :page=>0, :page_size=>100, :sorts=>[], :agg_filters=>nil, :crowd_agg_filters=>[]}
