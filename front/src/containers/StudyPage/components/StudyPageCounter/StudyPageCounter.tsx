@@ -1,0 +1,25 @@
+import * as React from 'react';
+
+interface StudyPageCounterProps {
+  counter: number | Element;
+  recordsTotal: number | Element;
+}
+
+// A simple counter that displays which study you're on on the study page, in the middle of the prev and next buttons
+class StudyPageCounter extends React.PureComponent<StudyPageCounterProps> {
+  render() {
+    return (
+      <div>
+        <div id="navbuttonsonstudypage">
+          <b>
+            {this.props.counter}
+            {typeof this.props.recordsTotal === 'number' ? '/' : null}
+            {this.props.recordsTotal} &nbsp;
+          </b>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default StudyPageCounter;

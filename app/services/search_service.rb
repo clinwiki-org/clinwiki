@@ -122,16 +122,22 @@ def nested_body(key)
 end
 
 def nested_result_aggs(field, aggs)
-  aggs.dig(:"#{field.split(".")[0]}", :"#{field}").select { |key| key == :"#{field}" }
+  aggs.dig(:"#{field.split(".")[0]}").select { |key| key == :"#{field}" }
 end
 
 class SearchService
   ENABLED_AGGS = %i[
     average_rating overall_status facility_states
+    conditions
     facility_cities facility_names facility_countries study_type sponsors
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
+    reactions.kind indexed_at last_update_posted_date
+    last_changed_date  number_of_arms
+    study_views_count
+    number_of_groups why_stopped results_first_submitted_date
+    plan_to_share_ipd design_outcome_measures
   ].freeze
 
   attr_reader :params
@@ -146,12 +152,29 @@ class SearchService
   # Search results from params
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false, includes: [])
+    #byebug
     options = search_options(search_after: search_after, reverse: reverse, includes: includes)
     search_result = Study.search("*", options) { |body| enrich_body(body) }
     {
       recordsTotal: search_result.total_entries,
       studies: search_result.results,
       aggs: search_result.aggs,
+    }
+  end
+
+  def search_without_aggs(search_after: nil, reverse: false, includes: [])
+    options = search_options_without_aggs(search_after: search_after, reverse: reverse, includes: includes)
+    search_result = Study.search("*", options) do |body|
+      enrich_body(body)
+    end
+    out_file = File.new("out.txt", "a")
+    out_file.puts( "without_aggs:", search_result.took)
+    out_file.close
+    {
+      recordsTotal: search_result.total_entries,
+      studies: search_result.results,
+      aggs: search_result.aggs,
+      took: search_result.took
     }
   end
 
@@ -172,6 +195,7 @@ class SearchService
   end
 
   def search_options(search_after: nil, reverse: false, includes: [])
+    #byebug
     crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
       &.dig(:front_matter_keys, :buckets)
       &.map { |bucket| "fm_#{bucket[:key]}" } || []
@@ -179,11 +203,39 @@ class SearchService
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
+    options[:load] = false
+    options
+  end
+
+  def search_options_without_aggs(search_after: nil, reverse: false, includes: [])
+    crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
+      &.dig(:front_matter_keys, :buckets)
+      &.map { |bucket| "fm_#{bucket[:key]}" } || []
+    # aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
+
+    options = search_kick_query_options(aggs: nil, search_after: search_after, reverse: reverse)
+    options[:includes] = includes
+    options[:load] = false
     options
   end
 
   def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url: nil, config_type: nil, return_all: false)
     params = self.params.deep_dup
+
+#    params[:agg_filters].each do |filter|
+#
+#      out_file = File.new("out.txt", "a")
+#      out_file.puts( filter[:field] )
+#      out_file.close
+#    
+#    end
+
+    params[:agg_filters] = nil
+    
+    out_file = File.new("out.txt", "a")
+    out_file.puts( params )
+    out_file.close
+    
     return {} if params.nil?
 
     key_prefix = is_crowd_agg ? "fm_" : ""
@@ -227,10 +279,7 @@ class SearchService
           },
         )
       if top_key
-        nesting = nested_body(field)
-        # #Needs to be a symbol for the nested value not just wiki_page_edits
-        nesting[:aggs][top_key.to_sym][:aggs] = body[:aggs]
-        body[:aggs] = nesting[:aggs]
+        body = create_nested_agg_body( body, top_key, field)
       end
 
       visibile_options = find_visibile_options(key, is_crowd_agg, current_site, url, config_type, return_all)
@@ -240,7 +289,11 @@ class SearchService
         filter_regex = case_insensitive_regex_emulation(".*#{params[:agg_options_filter]}.*")
         regex = visible_options_regex.blank? ? filter_regex : "(#{filter_regex})&(#{visible_options_regex})"
       end
+      if top_key
+        body[:aggs][top_key.to_sym][:aggs][top_key.to_sym][:aggs][key.to_sym][:terms][:include] = regex if regex.present?
+      else
       body[:aggs][key][:aggs][key][:terms][:include] = regex if regex.present?
+      end
     end
 
     aggs = search_results.aggs.to_h.deep_symbolize_keys
@@ -251,9 +304,21 @@ class SearchService
     end
   end
 
+  def create_nested_agg_body(body,top_key,field)
+    nesting = nested_body(field)
+    #Adds aggregation term from body to nested hash and ordering
+    nesting[:aggs][:"#{top_key}"][:aggs] = body[:aggs][:"#{field}"][:aggs]
+    #Adds nested hash to under original hash created
+    body[:aggs][:"#{field}"][:aggs] = nesting[:aggs]
+    #renames the query aggregation name at the start to be named after nested document and not nested_key
+    body[:aggs][:"#{top_key}"] = body[:aggs].delete :"#{field}"
+    body
+  end
+
   def crowd_agg_facets(site:)
     params = self.params.deep_dup
     return {} if params.nil?
+  
 
     search_results = Study.search("*", aggs: [:front_matter_keys])
 
@@ -261,6 +326,9 @@ class SearchService
     keys = aggs[:front_matter_keys][:buckets]
       .map { |x| (x[:key]).to_s }
     facets = {}
+    if  self.params.dig(:crowd_buckets_wanted)
+      keys.select!{|key| self.params[:crowd_buckets_wanted]&.include?(key)}
+    end
     keys.each do |key|
       field_agg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
       field_agg.each do |name, agg|
@@ -274,7 +342,6 @@ class SearchService
 
   def missing_identifier_for_key(key)
     return DATE_MISSING_IDENTIFIER if key.to_s =~ /\b?date\b?/
-
     STRING_MISSING_IDENTIFIER
   end
 
@@ -292,18 +359,20 @@ class SearchService
   end
 
   def query_ast_to_query_string(node)
+    value = node[:key]&.downcase
     res =
-      case node[:key]&.downcase
-      when "and"
+      case
+      when  value == "and"
         (node[:children] || [])
           .map { |child_node| "(#{query_ast_to_query_string(child_node)})" }
           .join(" AND ")
-      when "or"
+      when value == "or"
         (node[:children] || [])
           .map { |child_node| "(#{query_ast_to_query_string(child_node)})" }
           .join(" OR ")
+      when value.include?(" or ")
+        value&.gsub!(" or " ," OR ")
       else
-        value = node[:key]&.downcase
         value&.split(" ")&.join(" AND ")
       end
 
@@ -324,13 +393,16 @@ class SearchService
   end
 
   def search_kick_order_options(reverse: false)
+    #byebug
     res = params.fetch(:sorts, []).map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
     res.push(nct_id: reverse ? "desc" : "asc") unless res.any? { |x| x.keys.first.to_sym == :nct_id }
     res
   end
 
   def search_kick_where_options(skip_filters: [])
+    #byebug
     agg_filters = params.fetch(:agg_filters, [])
+    agg_filters = []
     crowd_agg_filters = params.fetch(:crowd_agg_filters, [])
     search_kick_agg_filters = search_kick_where_from_filters(filters: agg_filters, skip_filters: skip_filters)
     search_kick_crowd_agg_filters =
@@ -436,13 +508,13 @@ class SearchService
 
   def find_visibile_options(agg_name, is_crowd_agg, current_site, url, config_type, return_all)
     return [] if current_site.blank? || return_all
+    site_view = current_site.site_views.find_by(url: url)
+    if site_view.nil?
+      view = current_site.site_views.find_by(default: true).view
+    else
+      view = site_view.view
+    end
 
-    view = if url.blank?
-             current_site.site_views.find_by(default: true).view
-           else
-
-             current_site.site_views.find_by(url: url).view
-           end
     case config_type ? config_type.downcase : config_type
     when nil, "facetbar"
       fields = view.dig(:search, is_crowd_agg ? :crowdAggs : :aggs, :fields)

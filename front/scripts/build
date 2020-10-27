@@ -9,4 +9,5 @@ yarn build:clean && \
 time NODE_ENV=production yarn build && \
 rm -f $CW_PATH/public/*.chunk.js && \
 rm -f $CW_PATH/public/main*.js && \
-cp build/* $CW_PATH/public/.
+cp -r build/* $CW_PATH/public/.
+

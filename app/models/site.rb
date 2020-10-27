@@ -2,6 +2,7 @@ class Site < ApplicationRecord
   resourcify
 
   has_many :site_views, dependent: :destroy
+  has_many :page_views, dependent: :destroy
 
   after_create :create_site_view
 
@@ -29,8 +30,8 @@ class Site < ApplicationRecord
 
   def create_site_view
     self.site_views.new(name:"Primary",default:true)
-    self.site_views.new(name:"User History",url:"user", default: false, updates: default_user_updates )
-    self.site_views.new(name:"Intervention",url:"intervention",default:false, updates: default_intervention_updates )
+    self.site_views.new(name:"User History",url:"user", default: false, updates: Site.default_user_updates )
+    self.site_views.new(name:"Intervention",url:"intervention",default:false, updates: Site.default_intervention_updates )
     save!
   end
 

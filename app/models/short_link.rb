@@ -1,4 +1,5 @@
 class ShortLink < ApplicationRecord
+  has_many :search_logs
   class << self
     MAX_HASH_RETRIES = 5
 

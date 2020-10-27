@@ -46,10 +46,12 @@ class StudyEdgeService
 
   def first_study_id
     @search_service.search&.dig(:studies)&.first&.id
+#    @search_service.search_without_aggs&.dig(:studies)&.first&.id
   end
 
   def last_study_id(recordsTotal)
     return @search_service.search&.dig(:studies)&.last&.id unless recordsTotal > MAX_PAGE_SIZE
+#    return @search_service.search_without_aggs&.dig(:studies)&.last&.id unless recordsTotal > MAX_PAGE_SIZE
 
     nil
   end
@@ -58,6 +60,7 @@ class StudyEdgeService
     return nil if study.blank?
 
     sort_values_variants(study, reverse).each do |sort_values|
+#      return @search_service.search_without_aggs(
       return @search_service.search(
         search_after: sort_values,
         reverse: reverse,
@@ -85,6 +88,7 @@ class StudyEdgeService
 
     sort_values_variants(study, reverse).each do |sort_values|
       id = @search_service.search(
+#      id = @search_service.search_without_aggs(
         search_after: sort_values,
         reverse: reverse,
       )&.dig(:studies)&.first&.id
@@ -137,6 +141,7 @@ class StudyEdgeService
 
   # def records_total
   #   total = @search_service.search&.dig(:recordsTotal)
+  #   total = @search_service.search_without_aggs&.dig(:recordsTotal)
   #   return total unless total.nil?
   #   1
   # end
@@ -147,6 +152,7 @@ class StudyEdgeService
     return nil if records_total > MAX_PAGE_SIZE
 
     search_results = @search_service.search
+#    search_results = @search_service.search_without_aggs
     index = search_results&.dig(:studies)&.index { |x| x.id == study[:nct_id] }
     return index + 1 unless index.nil?
 
