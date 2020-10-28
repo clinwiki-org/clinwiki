@@ -185,7 +185,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
         nctId: this.props.nctId,
       },
     });
-    this.setState(defaultState);
+    this.setState(defaultState, ()=>this.props.handleClose());
   };
 
   renderMeta = () => {
