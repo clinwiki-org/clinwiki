@@ -58,12 +58,16 @@ export function registerHandlebarsHelpers() {
     console.log("NEW:", newVal)
     return newVal
 });
-  Handlebars.registerHelper('$FindAndReplace', ( valueToFind: string, value:string, valueToReplace: string ) => {
-
-    if(valueToReplace.toLowerCase() == valueToFind.toLowerCase()){
-      return new Handlebars.SafeString(value);
+  Handlebars.registerHelper('$FindAndReplace', ( arrayOfValuesToFind: string, arrayOfValues:string, valueToReplace: string ) => {
+    let valuesToFind: string[] = arrayOfValuesToFind.toLowerCase().replace(/\s/g, "").split('|');
+    let values: string[] = arrayOfValues.replace(/\s/g, "").split('|');
+    
+    let indexFound= valuesToFind.indexOf(valueToReplace.toLocaleLowerCase())
+    if ( indexFound== -1){
+      return new Handlebars.SafeString(valueToReplace)
+    }else{
+      return new Handlebars.SafeString(values[indexFound])
     }
-  return valueToReplace
   });
 
 }
