@@ -47,6 +47,7 @@ export function registerHandlebarsHelpers() {
     return newVal
 });
   Handlebars.registerHelper('$TRUNCATE', (value: string, characters: number) => {
+    if(value.length<characters) return value
     let ellipses = '...'
     let newVal = value.slice(0,characters) 
     let cutValues = value.slice(characters, value.length)
