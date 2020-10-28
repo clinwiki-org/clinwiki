@@ -60,9 +60,8 @@ export function registerHandlebarsHelpers() {
 });
   Handlebars.registerHelper('$FindAndReplace', ( arrayOfValuesToFind: string, arrayOfValues:string, valueToReplace: string ) => {
     let valuesToFind: string[] = arrayOfValuesToFind.toLowerCase().replace(/\s/g, "").split('|');
-    let values: string[] = arrayOfValues.replace(/\s/g, "").split('|');
-    
-    let indexFound= valuesToFind.indexOf(valueToReplace.toLocaleLowerCase())
+    let values: string[] = arrayOfValues.split('|');
+    let indexFound= valuesToFind.indexOf(valueToReplace.toLocaleLowerCase().replace(/\s/g, ""))
     if ( indexFound== -1){
       return new Handlebars.SafeString(valueToReplace)
     }else{
