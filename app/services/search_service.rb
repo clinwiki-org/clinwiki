@@ -152,7 +152,6 @@ class SearchService
   # Search results from params
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false, includes: [])
-    #byebug
     options = search_options(search_after: search_after, reverse: reverse, includes: includes)
     search_result = Study.search("*", options) { |body| enrich_body(body) }
     {
@@ -167,9 +166,6 @@ class SearchService
     search_result = Study.search("*", options) do |body|
       enrich_body(body)
     end
-    out_file = File.new("out.txt", "a")
-    out_file.puts( "without_aggs:", search_result.took)
-    out_file.close
     {
       recordsTotal: search_result.total_entries,
       studies: search_result.results,
@@ -195,7 +191,6 @@ class SearchService
   end
 
   def search_options(search_after: nil, reverse: false, includes: [])
-    #byebug
     crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
       &.dig(:front_matter_keys, :buckets)
       &.map { |bucket| "fm_#{bucket[:key]}" } || []
@@ -221,21 +216,6 @@ class SearchService
 
   def agg_buckets_for_field(field:, current_site: nil, is_crowd_agg: false, url: nil, config_type: nil, return_all: false)
     params = self.params.deep_dup
-
-#    params[:agg_filters].each do |filter|
-#
-#      out_file = File.new("out.txt", "a")
-#      out_file.puts( filter[:field] )
-#      out_file.close
-#    
-#    end
-
-    params[:agg_filters] = nil
-    
-    out_file = File.new("out.txt", "a")
-    out_file.puts( params )
-    out_file.close
-    
     return {} if params.nil?
 
     key_prefix = is_crowd_agg ? "fm_" : ""
@@ -393,16 +373,13 @@ class SearchService
   end
 
   def search_kick_order_options(reverse: false)
-    #byebug
     res = params.fetch(:sorts, []).map { |x| { x[:id].to_sym => (x[:desc] ^ reverse ? "desc" : "asc") } }
     res.push(nct_id: reverse ? "desc" : "asc") unless res.any? { |x| x.keys.first.to_sym == :nct_id }
     res
   end
 
   def search_kick_where_options(skip_filters: [])
-    #byebug
     agg_filters = params.fetch(:agg_filters, [])
-    agg_filters = []
     crowd_agg_filters = params.fetch(:crowd_agg_filters, [])
     search_kick_agg_filters = search_kick_where_from_filters(filters: agg_filters, skip_filters: skip_filters)
     search_kick_crowd_agg_filters =
