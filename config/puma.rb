@@ -17,7 +17,7 @@
 workers Integer(ENV.fetch("WEB_CONCURRENCY", 2))
 threads_count = Integer(ENV.fetch("MAX_THREADS", 2))
 threads(threads_count, threads_count)
-worker_timeout (24*60*60) if ENV['RAILS_ENV']=='development'
+#worker_timeout (24*60*60) if ENV['RAILS_ENV']=='development'
 
 preload_app!
 
