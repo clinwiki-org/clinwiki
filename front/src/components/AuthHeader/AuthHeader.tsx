@@ -77,12 +77,13 @@ const StyledWrapper = styled.div`
     color: #333;
   }
 
-  a#logo {
+  div#logo {
     background: url(${logo}) center left no-repeat;
     background-size: 100px 30px;
     padding-left: 30px;
     color: ${props => props.theme.authHeader.logoFont};
     min-width: 110px;
+    cursor: pointer;
   }
   span#small {
     font-size: 14px;
@@ -93,6 +94,13 @@ const StyledWrapper = styled.div`
 const ThemedStyledWrapper = withTheme(StyledWrapper);
 
 export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
+
+  pushToDefault = () => {
+    // this is a temp fix to handle default hash not getting updated on logo click
+      this.props.history.push('/search?sv=default')
+      window.location.reload()
+  }
+
   render() {
     return (
       <QueryComponent
@@ -114,9 +122,9 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
                 style={{ paddingLeft: '15px', paddingRight: '15px' }}>
                 <Navbar.Header>
                   <Navbar.Brand>
-                    <Link id="logo" to="/search?sv=default">
+                    <div id="logo" onClick={this.pushToDefault}>
                       <span></span>
-                    </Link>
+                    </div>
                   </Navbar.Brand>
                   <Navbar.Toggle />
                 </Navbar.Header>

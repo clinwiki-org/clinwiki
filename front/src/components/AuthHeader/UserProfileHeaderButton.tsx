@@ -238,7 +238,7 @@ class UserProfileHeaderButton extends React.PureComponent<
       return (
         <UserImage
           style={{ backgroundImage: `url(${url})` }}
-          // alt="profile image"
+        // alt="profile_img"
         />
       );
     }

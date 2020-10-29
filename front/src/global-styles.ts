@@ -210,5 +210,14 @@ div.DraftEditor-editorContainer{
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 13px;
 }
-
+#ellipses:hover ~ .ellipsed-text{
+  display:inline-block;
+}
+#ellipses:hover{
+  color:white;
+  font-size: 16px;
+}
+.ellipsed-text {
+  display:none;
+}
 `);
