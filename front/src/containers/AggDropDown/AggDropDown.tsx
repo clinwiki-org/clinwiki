@@ -137,7 +137,7 @@ interface AggDropDownProps {
   client: ApolloClient<any>;
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
-  fromAggField: boolean;
+  fromAggField?: boolean;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
