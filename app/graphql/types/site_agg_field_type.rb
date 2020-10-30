@@ -10,6 +10,7 @@ module Types
     field :order, SiteOrderType, null:true
     field :range_start_label, String, null: true
     field :range_end_label, String, null: true
+    field :bucket_key_value_pairs, String, null: true
 
     def display
       object[:display]
@@ -30,6 +31,9 @@ module Types
     end
     def range_end_label
       object[:rangeEndLabel]
+    end
+    def buckets_key_value_pairs
+      object[:bucketKeyValuePairs]
     end
   end
 end
