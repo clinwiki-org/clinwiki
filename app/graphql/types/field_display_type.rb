@@ -9,5 +9,8 @@ module Types
     value "GREATER_THAN_RANGE"
     value "PIE_CHART"
     value "BAR_CHART"
+    value "DROP_DOWN"
+    value "LESS_THAN_DROP_DOWN"
+    value "GREATER_THAN_DROP_DOWN"
   end
 end
