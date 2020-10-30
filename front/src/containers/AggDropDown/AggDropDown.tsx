@@ -137,6 +137,7 @@ interface AggDropDownProps {
   client: ApolloClient<any>;
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
+  fromAggField: boolean;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -422,9 +423,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       );
     }
     else if (
-      field?.display === FieldDisplay.DROP_DOWN ||
+      (field?.display === FieldDisplay.DROP_DOWN ||
       field?.display === FieldDisplay.LESS_THAN_DROP_DOWN ||
-      field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN
+      field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN)
+      && !this.props.fromAggField
     ){
       return (
       <Panel.Collapse className="bm-panel-collapse">
