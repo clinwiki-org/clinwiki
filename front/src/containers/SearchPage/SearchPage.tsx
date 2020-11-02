@@ -421,7 +421,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
+    console.log('HUP')
     const params = updater(this.state.params!);
+    console.log('handle update params', params)
     //console.log("Search Page handle update params", params)
     if (!equals(params.q, this.state.params && this.state.params.q)) {
       // For now search doesn't work well with args list
@@ -469,10 +471,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
 
-  renderAggs = siteView => {
+  renderAggs = (siteView, params) => {
+    console.log('redner aggs', params)
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
-    const { aggFilters = [], crowdAggFilters = [] } = this.state.params || {};
+    const { aggFilters = [], crowdAggFilters = [] } = params || {};
     return (
       <Aggs
         filters={this.transformFilters(aggFilters)}
@@ -489,6 +492,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         openedKind={openedKind}
         onOpen={this.handleOpenAgg}
         presentSiteView={siteView}
+        searchParams={params}
+        updateSearchParams={this.updateSearchParams}
       />
     );
   };
@@ -501,48 +506,42 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       ...preselectedFilters(presentSiteView),
     };
     return (
-      <ParamsQueryComponent
-        // fetchPolicy={"network-only"}
-        fetchPolicy={"cache-and-network"}
-        key={`${hash}+${JSON.stringify(this.state?.params)}`}
-        query={SearchPageParamsQuery}
-        variables={{ hash }}
-        onCompleted={async (data: any) => {
-          this.updateStateFromHash(data.searchParams, presentSiteView);
-        }}>
-        {({ data, loading, error }) => {
-          if (error || loading) return null;
-          // if(!hash && !loading){
-
-          //   this.updateSearchParams(DEFAULT_PARAMS)          
-          //   //Breaks when passing FILTERED_PARAMS
-          //   // this.updateSearchParams(FILTERED_PARAMS)          
-          // }
-
-          const params: SearchParams = this.searchParamsFromQuery(
-            data!.searchParams,
-            presentSiteView
-          );
-          // hydrate state params from hash
-          if (!this.state.params) {
-            this.setState({ params });
-            return null;
-          }
-          return (
-            <SearchView2
-              key={`${hash}+${JSON.stringify(params)}`}
-              params={params}
-              onBulkUpdate={this.handleBulkUpdateClick}
-              onUpdateParams={this.handleUpdateParams}
-              onRowClick={this.handleRowClick}
-              searchHash={hash || ''}
-              searchParams={this.state.params}
-              presentSiteView={presentSiteView}
-              getTotalResults={this.getTotalResults}
-            />
-          );
-        }}
-      </ParamsQueryComponent>
+      <div>Testing</div>
+      // <ParamsQueryComponent
+      //   fetchPolicy={"network-only"}
+      //   key={`${hash}+${JSON.stringify(this.state?.params)}`}
+      //   query={SearchPageParamsQuery}
+      //   variables={{ hash }}
+      //   onCompleted={async (data: any) => {
+      //     this.updateStateFromHash(data.searchParams, presentSiteView);
+      //   }}>
+      //   {({ data, loading, error }) => {
+      //     if (error || loading) return null;
+  
+      //     const params: SearchParams = this.searchParamsFromQuery(
+      //       data!.searchParams,
+      //       presentSiteView
+      //     );
+      //     // hydrate state params from hash
+      //     if (!this.state.params) {
+      //       this.setState({ params });
+      //       return null;
+      //     }
+      //     return (
+      //       <SearchView2
+      //         key={`${hash}+${JSON.stringify(params)}`}
+      //         params={params}
+      //         onBulkUpdate={this.handleBulkUpdateClick}
+      //         onUpdateParams={this.handleUpdateParams}
+      //         onRowClick={this.handleRowClick}
+      //         searchHash={hash || ''}
+      //         searchParams={this.state.params}
+      //         presentSiteView={presentSiteView}
+      //         getTotalResults={this.getTotalResults}
+      //       />
+      //     );
+      //   }}
+      // </ParamsQueryComponent>
     );
   };
 
@@ -632,7 +631,10 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     } | null;
     return response;
   };
+
+  
   updateSearchParams = async params => {
+    console.log('updating params', params)
     this.setState({
       ...this.state,
       params: { ...(this.state?.params || {}), ...params },
@@ -822,12 +824,38 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     }
 
     const hash = this.getHashFromLocation();
+    const { presentSiteView } = this.props;
+    const FILTERED_PARAMS = {
+      ...DEFAULT_PARAMS,
+      ...preselectedFilters(presentSiteView),
+    };
     return (
-      <SearchParamsContext.Provider
-        value={{
-          searchParams: this.state.params,
-          updateSearchParams: this.updateSearchParams,
+      // <SearchParamsContext.Provider
+      //   value={{
+      //     searchParams: this.state.params,
+      //     updateSearchParams: this.updateSearchParams,
+      //   }}>
+      <ParamsQueryComponent
+        // fetchPolicy={"network-only"}
+        key={`${hash}+${JSON.stringify(this.state?.params)}`}
+        query={SearchPageParamsQuery}
+        variables={{ hash }}
+        onCompleted={async (data: any) => {
+          this.updateStateFromHash(data.searchParams, presentSiteView);
         }}>
+        {({ data, loading, error }) => {
+          if (error || loading) return null;
+          console.log('data from query component', data)
+          const params: SearchParams = this.searchParamsFromQuery(
+            data!.searchParams,
+            presentSiteView
+          );
+          // hydrate state params from hash
+          // if (!this.state.params) {
+          //   this.setState({ params });
+          //   return null;
+          // }
+        return (
         <Switch>
           <Route
             render={() => {
@@ -842,7 +870,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   {showFacetBar && (
                     <>
                     <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
-                      {this.renderAggs(presentSiteView)}
+                      {this.renderAggs(presentSiteView, params )}
                     </ThemedSidebarContainer>
                   <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
                     <span className="collapse-icon-container">
@@ -866,9 +894,11 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                 </ThemedSearchPageWrapper>
               );
             }}
-          />
+            />
         </Switch>
-      </SearchParamsContext.Provider>
+        )
+        }}
+      </ParamsQueryComponent>
     );
   }
 }

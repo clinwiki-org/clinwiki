@@ -9,17 +9,27 @@ import MailMerge from './MailMerge';
 import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
 import { getStudyQuery, getSearchQuery } from './MailMergeUtils';
 import { commonIslands } from 'containers/Islands/CommonIslands';
+import { useFragment } from './MailMergeFragment';
 
 type Mode = 'Study' | 'Search';
 
-const fragmentName = 'demo_fragment';
-
 // return a tuple of the elements that differ with the mode
 // query, params, schema
+
+function getClassForMode(mode: Mode) {
+  switch (mode) {
+    case 'Study':
+      return 'Study';
+    case 'Search':
+      return 'ElasticStudy';
+  }
+}
+
 function getModeData(
   mode: Mode,
   arg: string,
-  fragment: string
+  fragment: string,
+  fragmentName: string
 ): [DocumentNode, object, string] {
   switch (mode) {
     case 'Study':
@@ -51,7 +61,6 @@ export default function TestComponent() {
   </Expander>
 </Expander>
 `);
-  const [fragment, setFragment] = useState('');
   const [mode, setMode] = useState<Mode>('Study');
   const defaultNctId = 'NCT03847779';
   const defaultSearchHash = 'tqxCyI9M';
@@ -61,12 +70,9 @@ export default function TestComponent() {
     gql(getIntrospectionQuery({ descriptions: false }))
   );
 
-  const [query, variables, schemaType] = getModeData(
-    mode,
-    nctOrSearchHash,
-    fragment
-  );
-
+  const schemaType = getClassForMode(mode);
+  const [fragmentName, fragment] = useFragment(schemaType, template);
+  const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
   const { data } = useQuery(query, { variables });
 
   const updateMode = mode => {
@@ -108,9 +114,6 @@ export default function TestComponent() {
           sample={data?.study || data?.search?.studies?.[0]}
           template={template}
           onTemplateChanged={setTemplate}
-          fragmentName={fragmentName}
-          fragmentClass={schemaType}
-          onFragmentChanged={setFragment}
           islands={islands}
         />
         <pre>{fragment}</pre>

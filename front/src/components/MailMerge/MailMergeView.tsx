@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState, useRef } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
 import marked from 'marked';
@@ -14,9 +14,6 @@ export interface Props {
   template: string;
   context?: object;
   style?: object;
-  fragmentName?: string;
-  fragmentClass?: string;
-  onFragmentChanged?: (fragment: string) => void;
   islands?: Record<string, IslandConstructor>;
   refetchQuery?:any;
 }
@@ -208,14 +205,6 @@ export default function MailMergeView(props: Props) {
     compiled,
     props.context,
   ]);
-
-  const { template, fragmentName, fragmentClass, onFragmentChanged } = props;
-  useEffect(() => {
-    if (onFragmentChanged && fragmentClass && fragmentName) {
-      const fragment = compileFragment(fragmentName, fragmentClass, template);
-      onFragmentChanged(fragment);
-    }
-  }, [template, onFragmentChanged, fragmentClass, fragmentName]);
 
   const style = props.style
     ? { ...defaultStyle, ...props.style }

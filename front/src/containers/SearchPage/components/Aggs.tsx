@@ -112,7 +112,7 @@ interface AggsProps {
   addFilters: AggregateAggCallback;
   removeFilter: AggCallback;
   removeFilters: AggregateAggCallback;
-  searchParams: SearchParamsAsInput;
+  // searchParams: SearchParamsAsInput;
   opened: string | null;
   openedKind: AggKind | null;
   onOpen: (agg: string, kind: AggKind) => void;
@@ -125,6 +125,7 @@ interface AggsProps {
   preSearchCrowdAggs?: string[];
   site: PresentSiteFragment;
   updateSearchParams: any;
+  searchParams: any;
 }
 
 const PresearchContainer = styled.div`
@@ -196,13 +197,15 @@ class Aggs extends React.PureComponent<AggsProps> {
 
 
     if (searchParams) {
+      console.log('pre aggs query', searchParams)
       return (
         <QueryComponent
           query={QUERY}
           variables={searchParams}
+          fetchPolicy={"network-only"}
         >
           {({ data, loading, error }) => {
-
+            console.log('data from aggs', data)
             if (data && data.crowdAggs && data.search?.aggs) {
               const aggs: AggBucketMap = {};
               for (const a of data.search?.aggs || []) {
@@ -362,6 +365,7 @@ class Aggs extends React.PureComponent<AggsProps> {
       );
     }
     if (!isEmpty(aggs) && !isNil(aggs)) {
+      console.log('plain old facet bar')
       return (
         <div>
           <div>

@@ -300,6 +300,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 updater: preselectedUpdater,
               }}>
               <AggDropDown
+                fromAggField={true}
                 agg={this.props.field.name}
                 aggKind={this.props.kind}
                 searchParams={searchParams}
@@ -341,6 +342,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 updater: visibleOptionsUpdater,
               }}>
               <AggDropDown
+                fromAggField={true}
                 agg={this.props.field.name}
                 aggKind={this.props.kind}
                 searchParams={{

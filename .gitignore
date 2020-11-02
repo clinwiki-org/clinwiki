@@ -19,6 +19,7 @@ tmp/*
 config/database.yml
 config/database_local.yml
 .byebug_history
+out.txt
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

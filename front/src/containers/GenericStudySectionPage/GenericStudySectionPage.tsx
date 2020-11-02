@@ -6,6 +6,7 @@ import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtended
 import { MailMergeView } from 'components/MailMerge';
 import { useState } from 'react';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
 
 interface GenericStudySectionPageProps {
   nctId: string;
@@ -18,8 +19,7 @@ interface GenericStudySectionPageProps {
 }
 
 function GenericStudySectionPage(props: GenericStudySectionPageProps) {
-  const fragmentName = 'generic_study_section_fragment';
-  const [fragment, setFragment] = useState('');
+  const [fragmentName, fragment] = useFragment('Study', props.metaData.template ?? '');
   const { data } = useQuery(getStudyQuery(fragmentName, fragment), {
     variables: { nctId: props.nctId },
   });
@@ -28,9 +28,6 @@ function GenericStudySectionPage(props: GenericStudySectionPageProps) {
     <MailMergeView
       template={props.metaData.template || ''}
       context={data?.study??{}}
-      fragmentName={fragmentName}
-      fragmentClass="Study"
-      onFragmentChanged={setFragment}
     />
   );
 }
