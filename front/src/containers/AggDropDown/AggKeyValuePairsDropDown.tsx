@@ -138,7 +138,7 @@ interface AggKeyValuePairsDropDownProps {
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
   fromAggField?: boolean;
-  handleKeyValueMutations: any;
+  handleKeyValueMutations: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownProps, AggKeyValuePairsDropDownState> {
@@ -421,6 +421,7 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
             isSelected={this.isSelected}
             hasMore={hasMore}
             handleLoadMore={this.handleLoadMore}
+            handleKeyValueMutations={this.props.handleKeyValueMutations}
             field={field}
           />
           <AllowMissingCheckbox buckets={buckets} />

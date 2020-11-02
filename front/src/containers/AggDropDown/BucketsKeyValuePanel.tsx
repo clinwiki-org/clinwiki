@@ -14,6 +14,7 @@ interface KeyValueBucketsPanelProps {
   isSelected: any;
   hasMore: boolean;
   handleLoadMore: any;
+  handleKeyValueMutations: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 class KeyValueBucketsPanel extends React.Component<KeyValueBucketsPanelProps> {
@@ -44,6 +45,7 @@ class KeyValueBucketsPanel extends React.Component<KeyValueBucketsPanelProps> {
           visibleOptions={visibleOptions}
           buckets={buckets}
           isSelected={isSelected}
+          handleKeyValueMutations={this.props.handleKeyValueMutations}
         />
       </InfiniteScroll>
     );

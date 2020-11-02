@@ -17,6 +17,7 @@ import {
   FormControl,
   InputGroup
 } from 'react-bootstrap';
+import { find, propEq } from 'ramda';
 interface KeyValueBucketsProps {
   field: any;
   display: FieldDisplay;
@@ -24,31 +25,58 @@ interface KeyValueBucketsProps {
   buckets: Array<AggBucket>;
   // isSelected: any;
   updater: AggFilterInputUpdater;
+  handleKeyValueMutations: (e: { currentTarget: { name: string; value: any } }) => void;
 }
 
 class KeyValueBuckets extends React.Component<KeyValueBucketsProps> {
   // Need to add logic to parse through our bucketKeyValuePairs
   render() {
-    console.log("Field",this.props.field)
-    const { display, buckets, visibleOptions = [], updater } = this.props;
+
+    const { display, buckets, visibleOptions = [], updater, field } = this.props;
+       console.log("Field", field.bucketKeyValuePairs)
+      let parsedKeyValuePairs = JSON.parse(field.bucketKeyValuePairs) || [];
+      let tempObjetc = [{key:'green', label: 'this is green'}, {key:'test', label: 'in beta testing'}]
     return buckets
       .filter(
         bucket =>
           !bucketKeyIsMissing(bucket) &&
           (visibleOptions.length ? visibleOptions.includes(bucket.key) : true)
       )
-      .map(bucket => (
+      .map(bucket => {
+        console.log("Bucket", bucket)
+        let bucketName = bucket.key;
+        let bucketKeyValuePair= find(propEq('key',bucketName), parsedKeyValuePairs)
+        console.log(bucketKeyValuePair)
+        let label = bucketKeyValuePair? bucketKeyValuePair.label: ''
+        return(
         <InputGroup>
 
           <InputGroup.Addon>{defaultTo(bucket.key)(bucket.keyAsString)}</InputGroup.Addon>
           <FormControl 
             type="text" 
-            name={`set:search.crowd.aggs.fields.${this.props.field.name}.bucketKeyValuePairs`}
-            value={this.props.field.bucketKeyValuePairs}
-            onChange={(e)=> console.log("Green", e, e.value)}
+            name={`set:search.crowdAggs.fields.${this.props.field.name}.bucketKeyValuePairs`}
+            value={label}
+             onChange=
+            {(e: {
+              currentTarget: { name: string; value: any };
+            }) => {
+          if(bucketKeyValuePair==undefined){
+            console.log(parsedKeyValuePairs)
+            let syntheticE = {currentTarget:{name:e.currentTarget.name, value:  `[{key: ${bucket.key}, label:${e.currentTarget.value}}]`}} 
+            console.log("Synthetic ",syntheticE.currentTarget.name, syntheticE.currentTarget.value)
+            this.props.handleKeyValueMutations(syntheticE)
 
+          }else{
+            console.log("In else")
+            // this.props.handleKeyValueMutations(e)
+
+          }
+            // console.log("EEEE",e, e.currentTarget.name, e.currentTarget.value)
+            }
+          }
           />
         </InputGroup>
+        )
         // <Checkbox
         //   key={bucket.key}
         //   checked={updater.isSelected(bucket.key)}
@@ -59,7 +87,7 @@ class KeyValueBuckets extends React.Component<KeyValueBucketsProps> {
         //   docCount={bucket.docCount}
         // />
         // </Checkbox>
-      ));
+  })
   }
 }
 
