@@ -4,6 +4,7 @@ import aggToField from 'utils/aggs/aggToField';
 import { FormControl, Checkbox } from 'react-bootstrap';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
+import AggKeyValuePairsDropDown from 'containers/AggDropDown/AggKeyValuePairsDropDown';
 import { capitalize } from 'utils/helpers';
 import MultiCrumb from 'components/MultiCrumb';
 import {
@@ -57,6 +58,7 @@ interface AggFieldProps {
 interface AggFieldState {
   isValuesOpen: boolean;
   isVisibleOptionsOpen: boolean;
+  isKeyValuesOpen: boolean;
   isChecked: boolean;
 }
 
@@ -121,6 +123,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   state: AggFieldState = {
     isValuesOpen: false,
     isVisibleOptionsOpen: false,
+    isKeyValuesOpen:false,
     isChecked: false,
   };
 
@@ -139,6 +142,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   handleDefaultSortMutation = e => {
     this.props.onAddMutation(e);
   };
+  handleKeyValueMutations = e =>{
+    this.props.onAddMutation(e)
+  }
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
@@ -199,11 +205,13 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       );
     }
   };
-  handleOpen = (kind: 'preselected' | 'visibleOptions') => () => {
+  handleOpen = (kind: 'preselected' | 'visibleOptions' | 'keyValuePair') => () => {
     if (kind === 'preselected') {
       this.setState({ isValuesOpen: !this.state.isValuesOpen });
-    } else {
+    } else if(kind=='visibleOptions') {
       this.setState({ isVisibleOptionsOpen: !this.state.isVisibleOptionsOpen });
+    }else{
+      this.setState({isKeyValuesOpen: !this.state.isKeyValuesOpen })
     }
   };
   renderDisplayLabel = (configType: ConfigType) => {
@@ -370,6 +378,58 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       </>
     );
   }
+  renderBucketKeyValuePairs(opVis: OptionVisibility) {
+    if (opVis.hideVisibleOptions) return null;
+    const visibleOptions = new Set(this.props.field.visibleOptions.values);
+    const visibleOptionsUpdater = this.getVisibleOptionsUpdater();
+    return (
+      <>
+        <ThemedStyledLabel>Values and Helper Text</ThemedStyledLabel>
+        <ThemedCrumbsContainer>
+          {Array.from(visibleOptions).map(value => (
+            <MultiCrumb
+              key={value}
+              values={[value]}
+              onClick={value => visibleOptionsUpdater.removeFilter(value)}
+            />
+          ))}
+        </ThemedCrumbsContainer>
+        <FiltersContainer>
+          <FilterContainer>
+            <AggFilterInputUpdateContext.Provider
+              value={{
+                updater: visibleOptionsUpdater,
+              }}>
+              <AggKeyValuePairsDropDown
+                fromAggField={true}
+                agg={this.props.field.name}
+                aggKind={this.props.kind}
+                searchParams={{
+                  q: ({
+                    key: 'AND',
+                    children: [],
+                  } as unknown) as string[],
+                  page: 0,
+                  pageSize: 25,
+                  aggFilters: [],
+                  crowdAggFilters: [],
+                  sorts: [],
+                }}
+                display={this.props.field.display}
+                isOpen={this.state.isKeyValuesOpen}
+                selectedKeys={visibleOptions}
+                onOpen={this.handleOpen('keyValuePair')}
+                currentSiteView={this.props.view}
+                configType={this.props.configType}
+                returnAll={this.props.returnAll}
+                handleKeyValueMutations={this.handleKeyValueMutations}
+              />
+            </AggFilterInputUpdateContext.Provider>
+          </FilterContainer>
+        </FiltersContainer>
+      </>
+    );
+  }
 
   renderSortType(opVis: OptionVisibility) {
     if (opVis.hideSortType) return null;
@@ -480,6 +540,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
         <ThemedContainer>
           {this.renderPreselected(vis)}
           {this.renderVisibleOptions(vis)}
+          {this.renderBucketKeyValuePairs(vis)}
           {this.renderSortType(vis)}
           {this.renderSortOrder(vis)}
           {this.renderDisplayType(vis)}

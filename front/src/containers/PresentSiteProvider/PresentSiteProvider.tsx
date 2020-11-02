@@ -148,6 +148,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                         rank
                         rangeStartLabel
                         rangeEndLabel
+                        bucketKeyValuePairs
                     }
                     selected {
                         kind
@@ -175,6 +176,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                         autoSuggest
                         rangeStartLabel
                         rangeEndLabel
+                        bucketKeyValuePairs
                     }
                     selected {
                         kind
@@ -220,6 +222,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                     rank
                     rangeStartLabel
                     rangeEndLabel
+                    bucketKeyValuePairs
                 }
                 selected {
                     kind
@@ -247,6 +250,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                     autoSuggest
                     rangeStartLabel
                     rangeEndLabel
+                    bucketKeyValuePairs
                 }
                 selected {
                     kind
