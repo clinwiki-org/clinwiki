@@ -540,6 +540,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           <QueryComponent
             query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
             variables={this.props.params}
+            fetchPolicy={'no-cache'}
             >
             {({ data, loading, error }) => {
               return (
