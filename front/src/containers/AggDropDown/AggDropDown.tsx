@@ -137,6 +137,7 @@ interface AggDropDownProps {
   client: ApolloClient<any>;
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
+  fromAggField?: boolean;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -366,7 +367,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const hasMore = length(buckets) !== length(newBuckets);
     this.setState({ buckets: newBuckets, hasMore });
   };
-// !  renderPanel for facet bar and the renderPresearchFilter on lines 490s for Presearch? need to mirror changes in both?
+
   renderPanel = (isPresearch: boolean) => {
     const {
       visibleOptions = [],
@@ -422,7 +423,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       );
     }
     else if (
-      field?.display === FieldDisplay.DROP_DOWN
+      (field?.display === FieldDisplay.DROP_DOWN ||
+      field?.display === FieldDisplay.LESS_THAN_DROP_DOWN ||
+      field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN)
+      && !this.props.fromAggField
     ){
       return (
       <Panel.Collapse className="bm-panel-collapse">
@@ -639,7 +643,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       );
     }
     else if (
-      field?.display === FieldDisplay.DROP_DOWN
+      field?.display === FieldDisplay.DROP_DOWN ||
+      field?.display === FieldDisplay.LESS_THAN_DROP_DOWN ||
+      field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN
     ){
       return (
       <>

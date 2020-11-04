@@ -25,9 +25,13 @@ interface Props {
 }
 
 const StyledPanel = styled(Panel)`
-  padding: 16px;
+  /* padding: 16px;
+  border: none !important */
 `;
 
+const StyledRTE = styled(RichTextEditor)`
+  border: none !important;
+`
 const Toolbar = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -204,9 +208,9 @@ export default function WikiPageIsland(props: Props) {
 
     if (editorState === 'rich') {
       return (
-        <Panel>
-          <Panel.Body>
-            <RichTextEditor
+        <Panel style={{border:"none", padding:"0px"}}>
+          <Panel.Body >
+            <StyledRTE
               readOnly={readOnly}
               onChange={handleRichEditorChange}
               value={richEditorText || RichTextEditor.createEmptyValue()}
