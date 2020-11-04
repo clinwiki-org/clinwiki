@@ -26,6 +26,7 @@ import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents/index';
 import ExportToCsvComponent from './ExportToCsvComponent';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
+import SaveSearch from './SaveSearch';
 
 
 const CrumbsBarStyleWrappper = styled.div`
@@ -526,6 +527,12 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         siteView={this.props.presentSiteView}
                         searchHash={this.props.searchHash}
                       />
+                      {user ? (
+                        <SaveSearch
+                          siteView={this.props.presentSiteView}
+                          searchHash={this.props.searchHash}
+                        />
+                      ) : null}
                       {user && user.roles.includes('admin') ? (
                         <ThemedButton
                           onClick={() =>
