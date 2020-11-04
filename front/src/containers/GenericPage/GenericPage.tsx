@@ -69,7 +69,7 @@ export default function GenericPage(props: Props) {
         template={currentPage?.template || ''}
         context={studyData?.study}
         islands={studyIslands}
-        refetchQuery={refetch}
+        // refetchQuery={refetch}
       />
     </div>
   );
