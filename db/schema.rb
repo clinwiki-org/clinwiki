@@ -119,8 +119,8 @@ ActiveRecord::Schema.define(version: 2020_10_30_190803) do
     t.bigint "short_link_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_saved?"
-    t.boolean "is_subscribed?"
+    t.boolean "is_saved", default: false, null: false
+    t.boolean "is_subscribed", default: false, null: false
     t.string "name_default"
     t.string "name_label"
     t.index ["short_link_id"], name: "index_search_logs_on_short_link_id"
