@@ -79,7 +79,7 @@ module Types
     def search(search_hash: nil, params: nil)
       byebug
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
-      link = link = ShortLink.from_long( context[:search_params])
+      link = ShortLink.from_long( context[:search_params])
 #      saved = is_saved? from params if present (or if name_label present?)
 #      subscribed = is_subscribed? from params if present
 #      name_label = name_label from params if present
@@ -87,7 +87,9 @@ module Types
       name_default = build_name_default context[:search_params]
       name_default.delete_suffix!('|')
       byebug
-      SearchLog.create(user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default )
+      hash = { user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default }
+#      SearchLog.create(user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default )
+      SearchLog.find_or_create_by hash
       search_service = SearchService.new(context[:search_params])
       search_service.search
     end
