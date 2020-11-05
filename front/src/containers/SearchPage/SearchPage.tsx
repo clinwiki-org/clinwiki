@@ -10,7 +10,8 @@ import {
 } from 'types/SearchPageParamsQuery';
 import { MAX_WINDOW_SIZE } from 'utils/constants';
 import { SearchParams, AggKind, SearchQuery } from './shared';
-import { Query, graphql, QueryComponentOptions } from 'react-apollo';
+import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { graphql } from '@apollo/client/react/hoc';
 import { ThemedButton, ThemedSearchContainer } from '../../components/StyledComponents';
 import {
   map,
@@ -501,7 +502,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     };
     return (
       <ParamsQueryComponent
-        fetchPolicy={"network-only"}
+        // fetchPolicy={"network-only"}
+        fetchPolicy={"cache-and-network"}
         key={`${hash}+${JSON.stringify(this.state?.params)}`}
         query={SearchPageParamsQuery}
         variables={{ hash }}
