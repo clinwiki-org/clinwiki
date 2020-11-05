@@ -146,7 +146,7 @@ export default function WikiPageIsland(props: Props) {
   };
 
   const renderEditButton = (isAuthenticated: boolean) => {
-    if (!isAuthenticated) return null;
+    // if (!isAuthenticated) return null;
 
     return (
       <ThemedButton
