@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_24_190849) do
+ActiveRecord::Schema.define(version: 2020_10_30_190803) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,10 @@ ActiveRecord::Schema.define(version: 2020_09_24_190849) do
     t.bigint "short_link_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_saved?"
+    t.boolean "is_subscribed?"
+    t.string "name_default"
+    t.string "name_label"
     t.index ["short_link_id"], name: "index_search_logs_on_short_link_id"
     t.index ["user_id"], name: "index_search_logs_on_user_id"
   end
