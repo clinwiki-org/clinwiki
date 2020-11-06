@@ -32,7 +32,7 @@ module Types
     def range_end_label
       object[:rangeEndLabel]
     end
-    def buckets_key_value_pairs
+    def bucket_key_value_pairs
       object[:bucketKeyValuePairs]
     end
   end
