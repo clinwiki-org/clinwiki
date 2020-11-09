@@ -68,6 +68,10 @@ module Types
       argument :search_export_id, type: Integer, required: true
     end
 
+    field :search_log, [SearchLogType], "Single search log", null: true do
+      argument :user_id, type: Integer, required: false
+    end
+
 
     DISPLAY_NAMES = {
       "browse_condition_mesh_terms" => "Browse Condition Mesh Terms",
@@ -244,6 +248,12 @@ module Types
       return nil if current_user.nil?
 
       SearchExport.where(user: current_user, id: search_export_id).first
+    end
+  
+    def search_log(user_id: nil)
+      user = user_id ? User.find(user_id) : current_user
+      return nil if user.nil?
+      user.search_logs
     end
 
     private

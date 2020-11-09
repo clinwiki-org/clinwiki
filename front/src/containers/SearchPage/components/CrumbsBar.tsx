@@ -527,12 +527,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         siteView={this.props.presentSiteView}
                         searchHash={this.props.searchHash}
                       />
-                      {user ? (
-                        <SaveSearch
-                          siteView={this.props.presentSiteView}
-                          searchHash={this.props.searchHash}
-                        />
-                      ) : null}
                       {user && user.roles.includes('admin') ? (
                         <ThemedButton
                           onClick={() =>
@@ -545,6 +539,11 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                           Bulk Update <FontAwesome name="truck" />
                         </ThemedButton>
                       ) : null}
+                      <SaveSearch
+                        user={user}
+                        siteView={this.props.presentSiteView}
+                        searchHash={this.props.searchHash}
+                      />
                     </Col>
                   </Row>
                 </Grid>

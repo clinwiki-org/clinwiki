@@ -19,7 +19,7 @@ import LoginModal from 'components/LoginModal';
 interface SaveSearchProps {
   siteView: any;
   searchHash: string;
-  mutate: any;
+  //mutate: any;
   user?: any;
 }
 
@@ -27,15 +27,17 @@ interface SaveSearchState {
   showLoginModal: boolean;
 }
 
-class SaveSearch extends React.Component<
-SaveSearchProps,
-SaveSearchState
-> {
+class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
   state = {
     showLoginModal: false,
   };
   render() {
-    const { mutate, siteView, searchHash, user } = this.props;
+    const { 
+      //mutate,
+      siteView, 
+      searchHash, 
+      user 
+    } = this.props;
     const { showLoginModal } = this.state;
 
     const setShowLoginModal = showLoginModal => {
@@ -43,10 +45,13 @@ SaveSearchState
     };
 
     async function onClick() {
+      console.log("USER",user)
       if (user) {
-        const { data } = await mutate({
+        console.log("SAVING SEarch")
+        window.alert("SAVING")
+      /*   const { data } = await mutate({
           variables: { siteViewId: siteView.id, searchHash },
-        });
+        }); */
         //TODO SAVE USER SEARCH HERE
       } else {
         setShowLoginModal(true);
@@ -58,10 +63,12 @@ SaveSearchState
           show={showLoginModal}
           cancel={() => setShowLoginModal(false)}
         />
-        <ThemedButton onClick={onClick}>
-            &nbsp;
-            <FontAwesome name="save" />
-            &nbsp;
+        <ThemedButton 
+        style={{float:"right"}}
+        onClick={onClick}>
+          &nbsp;
+          <FontAwesome name="heart" />
+          &nbsp;
         </ThemedButton>
       </>
     );
@@ -69,6 +76,7 @@ SaveSearchState
 }
 
 // it's a little annoying that the HOC expects so many types
-export default graphql<any, any, any, any>(SAVE_USER_SEARCH_MUTATION)(
+/* export default graphql<any, any, any, any>(SAVE_USER_SEARCH_MUTATION)(
     SaveSearch
-);
+); */
+export default SaveSearch;
