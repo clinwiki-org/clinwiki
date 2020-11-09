@@ -305,12 +305,33 @@ const QUERY = gql`
     ${PRESENT_SITE_FRAGMENT}
 `;
 
+// interface ToOmit {
+//     site: any;
+//     refetch: any;
+//     presentSiteView: any;
+//     prevParams: any
+//   }
 
-type ToOmit = 'site' | 'refetch' | 'presentSiteView';
+type ToOmit = 'site' | 'refetch' | 'presentSiteView' | 'prevParams';
 export function withPresentSite2<T>(
     Component: React.ComponentType<T>
 ): React.ComponentClass<Omit<T, ToOmit>> {
     class WithPresentSiteProvider extends React.Component<Omit<T, ToOmit>> {
+        constructor(props) {
+            super(props);
+            this.state = {
+                prevData: {}
+            };
+            }
+        
+        // storeData = (data) => {
+        //     if (data !== undefined) {
+        //     //@ts-ignore
+        //     console.log('data from HOC', data)
+        //     this.setState({prevData: data})
+        //     }
+        // }
+
         render() {
             return (
                 <PresentSiteProvider>
@@ -322,6 +343,9 @@ export function withPresentSite2<T>(
                                 site={site}
                                 refetch={refetch}
                                 presentSiteView={presentSite}
+                                // storeData={this.storeData}
+                                // //@ts-ignore
+                                // prevData={this.state.prevData}
                             />
                         );
                     }}

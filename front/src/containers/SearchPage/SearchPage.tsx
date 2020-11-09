@@ -55,6 +55,7 @@ import SearchParamsContext from './components/SearchParamsContext';
 import RichTextEditor from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
+import { BeatLoader } from 'react-spinners';
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<
@@ -311,6 +312,9 @@ interface SearchPageProps {
   email?: string;
   intervention?: boolean;
   getTotalContributions?: any;
+  storeData: any;
+  prevData: any;
+
 }
 
 interface SearchPageState {
@@ -472,7 +476,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
 
   renderAggs = (siteView, params) => {
-    console.log('redner aggs', params)
+    // console.log('redner aggs', params)
     const opened = this.state.openedAgg && this.state.openedAgg.name;
     const openedKind = this.state.openedAgg && this.state.openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = params || {};
@@ -498,15 +502,16 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     );
   };
 
-  renderSearch = () => {
+  renderSearch = (params) => {
     const hash = this.getHashFromLocation();
     const { presentSiteView } = this.props;
-    const FILTERED_PARAMS = {
-      ...DEFAULT_PARAMS,
-      ...preselectedFilters(presentSiteView),
-    };
+    console.log('SEARCH PAGE')
+    // const FILTERED_PARAMS = {
+    //   ...DEFAULT_PARAMS,
+    //   ...preselectedFilters(presentSiteView),
+    // };
     return (
-      <div>Testing</div>
+      // <div>Testing</div>
       // <ParamsQueryComponent
       //   fetchPolicy={"network-only"}
       //   key={`${hash}+${JSON.stringify(this.state?.params)}`}
@@ -518,30 +523,28 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       //   {({ data, loading, error }) => {
       //     if (error || loading) return null;
   
-      //     const params: SearchParams = this.searchParamsFromQuery(
-      //       data!.searchParams,
-      //       presentSiteView
-      //     );
+      //     // const params: SearchParams = this.searchParamsFromQuery(
+      //     //   data!.searchParams,
+      //     //   presentSiteView
+      //     // );
       //     // hydrate state params from hash
       //     if (!this.state.params) {
       //       this.setState({ params });
       //       return null;
       //     }
-      //     return (
-      //       <SearchView2
-      //         key={`${hash}+${JSON.stringify(params)}`}
-      //         params={params}
-      //         onBulkUpdate={this.handleBulkUpdateClick}
-      //         onUpdateParams={this.handleUpdateParams}
-      //         onRowClick={this.handleRowClick}
-      //         searchHash={hash || ''}
-      //         searchParams={this.state.params}
-      //         presentSiteView={presentSiteView}
-      //         getTotalResults={this.getTotalResults}
-      //       />
-      //     );
-      //   }}
-      // </ParamsQueryComponent>
+          
+            <SearchView2
+              key={`${hash}+${JSON.stringify(params)}`}
+              params={params}
+              onBulkUpdate={this.handleBulkUpdateClick}
+              onUpdateParams={this.handleUpdateParams}
+              onRowClick={this.handleRowClick}
+              searchHash={hash || ''}
+              searchParams={params}
+              presentSiteView={presentSiteView}
+              getTotalResults={this.getTotalResults}
+            />
+  
     );
   };
 
@@ -587,9 +590,6 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
 
   }
 
-  componentWillUnmount() {
-  }
-
 
   getHashFromLocation(): string | null {
     let hash = new URLSearchParams(this.props.history.location.search).getAll(
@@ -599,10 +599,13 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   }
 
   updateStateFromHash(searchParams, view) {
+
+
     const params: SearchParams = this.searchParamsFromQuery(searchParams, view);
     let searchTerm = new URLSearchParams(this.props.location?.search || '');
 
     if (searchTerm.has('q')) {
+      console.log('HYOUYOYO')
       const defaultParams = this.getDefaultParams(view, this.props.email);
       let q = {
         key: 'AND',
@@ -611,14 +614,22 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       let queryParams = { ...defaultParams, q: q }
       this.updateSearchParams(queryParams);
     }
+
+    console.log('UPDATE STATE FROM HASH 1')
     //Originally thought this should be an updateSearchParams call but seems to error out
     //Commented out the application seems to still function as inteded. All the aggs update appropriately with no hash, with a hash. So far has passed all my current tests.
     // Will leave it in and commented out for now as a reminder to come back and look into it.
-     this.setState({
-      params: {
-        ...params,
-       },
-     });
+    // setTimeout(this.setState({
+    //   params: {
+    //     ...params,
+    //    },
+    //  }), 1000) 
+    // this.setState({
+    //   params: {
+    //     ...params,
+    //    },
+    //  })
+ 
   }
 
   findFilter = (variable: string) => {
@@ -632,7 +643,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     return response;
   };
 
-  
+
   updateSearchParams = async params => {
     console.log('updating params', params)
     this.setState({
@@ -641,7 +652,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
     });
     const variables = { ...this.state.params, ...params };
     const { data } = await this.props.mutate({ variables });
-
+     console.log('data', data)
     const { searchQueryString, pageViewUrl } = this.getPageView();
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
     // This assumes that the site provider is not passing a url into the page
@@ -698,6 +709,7 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
   };
 
   getTotalResults = total => {
+    console.log('TOTAL RESULTS', total)
     if (total) {
       this.setState({
         totalRecords: total,
@@ -783,47 +795,52 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       </ThemedSearchContainer>
     );
   };
-  renderCrumbs = (siteView: SiteViewFragment) => {
+  renderCrumbs = (siteView: SiteViewFragment, params) => {
     const { totalRecords } = this.state;
     const q: string[] =
-      this.state.params?.q.key === '*'
+      params?.q.key === '*'
         ? []
-        : (this.state.params?.q.children || []).map(prop('key'));
+        : (params?.q.children || []).map(prop('key'));
 
     const searchParams = {
-      ...this.state.params!,
+      ...params!,
       q,
     };
 
     const { presentSiteView } = this.props;
     const hash = this.getHashFromLocation();
     return (
-      <CrumbsBar
-        searchParams={searchParams}
-        onBulkUpdate={this.handleBulkUpdateClick}
-        removeFilter={pipe(removeFilter, this.handleUpdateParams)}
-        addSearchTerm={pipe(addSearchTerm, this.handleUpdateParams)}
-        removeSearchTerm={pipe(removeSearchTerm, this.handleUpdateParams)}
-        update={{
-          page: pipe(changePage, this.handleUpdateParams),
-        }}
-        onReset={this.handleResetFilters(siteView)}
-        onClear={this.handleClearFilters}
-        addFilter={pipe(addFilter, this.handleUpdateParams)}
-        presentSiteView={presentSiteView}
-        totalResults={totalRecords}
-        searchHash={hash || ''}
-      />
+      <div>Testing</div>
+      // <CrumbsBar
+      //   searchParams={searchParams}
+      //   onBulkUpdate={this.handleBulkUpdateClick}
+      //   removeFilter={pipe(removeFilter, this.handleUpdateParams)}
+      //   addSearchTerm={pipe(addSearchTerm, this.handleUpdateParams)}
+      //   removeSearchTerm={pipe(removeSearchTerm, this.handleUpdateParams)}
+      //   update={{
+      //     page: pipe(changePage, this.handleUpdateParams),
+      //   }}
+      //   onReset={this.handleResetFilters(siteView)}
+      //   onClear={this.handleClearFilters}
+      //   addFilter={pipe(addFilter, this.handleUpdateParams)}
+      //   presentSiteView={presentSiteView}
+      //   totalResults={totalRecords}
+      //   searchHash={hash || ''}
+      //   // updateSearchParams={this.updateSearchParams}
+      // />
     );
   };
 
   render() {
+
+    /// DON"T FORGET TO ADD FULL STORY BACK IN
     const { totalRecords, collapseFacetBar } = this.state;
     if (this.props.email && !this.props.match.params.id) {
       this.props.getTotalContributions(totalRecords);
     }
-
+    console.log('RENDER FUNCTION', this.state.params)
     const hash = this.getHashFromLocation();
+    console.log('hash', hash)
     const { presentSiteView } = this.props;
     const FILTERED_PARAMS = {
       ...DEFAULT_PARAMS,
@@ -835,17 +852,26 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
       //     searchParams: this.state.params,
       //     updateSearchParams: this.updateSearchParams,
       //   }}>
+       /* // <SearchParamsHook */
+      /* // hash={hash}
+      // > */
       <ParamsQueryComponent
-        // fetchPolicy={"network-only"}
+        // fetchPolicy={"no-cache"}
         key={`${hash}+${JSON.stringify(this.state?.params)}`}
         query={SearchPageParamsQuery}
         variables={{ hash }}
-        onCompleted={async (data: any) => {
+        onCompleted={(data: any) => {
           this.updateStateFromHash(data.searchParams, presentSiteView);
         }}>
         {({ data, loading, error }) => {
-          if (error || loading) return null;
-          console.log('data from query component', data)
+
+          // when this data comes back undefined (which is when the data is not cached the entire component refreshes)
+          console.log('RETURN FROM PARAMS QUERY', loading, data)
+          // if (data) {
+          //   this.props.storeData(data)
+          // }
+          if (error || loading) return <BeatLoader />;
+          console.log('data from query component', loading, data)
           const params: SearchParams = this.searchParamsFromQuery(
             data!.searchParams,
             presentSiteView
@@ -887,9 +913,9 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
                   )}
 
                   <ThemedMainContainer>
-                    {showBreadCrumbs && this.renderCrumbs(presentSiteView)}
+                    {showBreadCrumbs && this.renderCrumbs(presentSiteView, params)}
                     {showPresearch && this.renderPresearch(hash)}
-                    {this.renderSearch()}
+                    {this.renderSearch(params)}
                   </ThemedMainContainer>
                 </ThemedSearchPageWrapper>
               );
@@ -898,7 +924,8 @@ class SearchPage extends React.Component<SearchPageProps, SearchPageState> {
         </Switch>
         )
         }}
-      </ParamsQueryComponent>
+      </ParamsQueryComponent> 
+      // </SearchParamsHook>
     );
   }
 }

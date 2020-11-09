@@ -130,6 +130,7 @@ interface CrumbsBarProps {
   totalResults: number;
   searchHash: string;
   theme: Theme;
+  // updateSearchParams: any;
 }
 
 interface CrumbsBarState {

@@ -5,7 +5,7 @@ import ReactStars from 'react-stars';
 import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
-import { PulseLoader } from 'react-spinners';
+import { BeatLoader, PulseLoader } from 'react-spinners';
 import { Col, ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
@@ -207,7 +207,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
 
     this.state = {
       totalResults: 0,
-      prevResults: null,
+      prevResults: 0,
     };
   }
 
@@ -398,7 +398,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     error: any;
   }) => {
     const { presentSiteView } = this.props;
-
+    console.log('FROM SEARCH PAGE QUERY', data)
     const showResults = presentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
     const resultsType = presentSiteView.search.results.type;
@@ -407,11 +407,13 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       return <div>{error.message}</div>;
     }
     if (!data) {
-      return null;
+      console.log('NO DATA FOOL')
+      return <BeatLoader />
     }
     const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
 
     if (this.state.prevResults !== this.state.totalResults) {
+      console.log('PREV RESULTS CONDITIONAL')
       this.setState(
         prev => {
           return {

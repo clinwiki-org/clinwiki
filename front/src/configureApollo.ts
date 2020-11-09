@@ -12,7 +12,13 @@ export const dataIdFromObject = object => {
 };
 
 const cache = new InMemoryCache({
-  dataIdFromObject,
+  typePolicies: {
+    SearchParams: {
+      // Singleton types that have no identifying field can use an empty
+      // array for their keyFields.
+      keyFields: ["aggFilters", "crowdAggFilters"],
+    },
+  }
 });
 
 // persistCache({
@@ -68,7 +74,7 @@ const client = new ApolloClient({
 });
 
 const data = {
-  searchParams: null,
+  // searchParams: null,
   // searchQuery: [],
 };
 
