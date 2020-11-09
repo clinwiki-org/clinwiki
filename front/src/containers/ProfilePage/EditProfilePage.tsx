@@ -22,12 +22,15 @@ import {
   StyledProfileLabel,
   StyledProfileValue,
   StyledProfileForm,
+  StyledProfileLogValue,
 } from 'components/StyledComponents';
 import { ThemedButton } from '../LoginPage/StyledButton';
 import ProfileScoreBoard from './components/ProfileScoreBoard';
 import ProfilePicture from './components/ProfilePicture';
 import ReviewsTable from './components/ReviewsTable';
 import ReactionsById from 'containers/StudyPage/components/ReactionsById';
+import * as FontAwesome from 'react-fontawesome';
+import UserSearchLogs from './components/UserSearchLogs';
 
 interface EditProfilePageProps {
   user: UserFragment | null;
@@ -75,7 +78,7 @@ type EditProfileMutationFn = MutationFunction<
 class EditProfilePage extends React.Component<
   EditProfilePageProps,
   EditProfilePageState
-  > {
+> {
   state: EditProfilePageState = {
     form: {
       firstName: null,
@@ -252,8 +255,8 @@ class EditProfilePage extends React.Component<
               match={this.props.match}
               email={email}
               getTotalContributions={this.handleTotalContributions}
-            //userId={this.props.match.params.id}
-            //profileParams={this.getUserParams(this.props.match.params.id)}
+              //userId={this.props.match.params.id}
+              //profileParams={this.getUserParams(this.props.match.params.id)}
             />
           </div>
         );
@@ -269,48 +272,45 @@ class EditProfilePage extends React.Component<
           </div>
         );
       case 'reactions':
-        let idArray = ["1", "2", "3", "4"]
+        let idArray = ['1', '2', '3', '4'];
         return (
-          <div >
+          <div>
             {/* <h2>Liked Studies:</h2> */}
 
             {idArray.map(id => {
-              const displaySub = (ID) => {
+              const displaySub = ID => {
                 switch (ID) {
                   case '1':
-                    return 'Liked Studies'
+                    return 'Liked Studies';
                   case '2':
-                    return 'Disliked Studies'
+                    return 'Disliked Studies';
                   case '3':
-                    return 'Heart Studies'
+                    return 'Heart Studies';
                   case '4':
-                    return 'Skull and Cross Studies'
+                    return 'Skull and Cross Studies';
                 }
-              }
+              };
 
               return (
                 <ReactionsById reactionKindId={id} key={id}>
-                  {(reactions) => (
-                    reactions ?
-
-                      (
-                        <span>
-                          <h2>{displaySub(id)} ({reactions.reactions?.length}) </h2>
-                          <ReviewsTable
-                            //@ts-ignore
-                            reviewData={reactions.reactions}
-                            history={this.props.history}
-                            isReview={false}
-                          />
-                        </span>) : (null)
-
-                  )}
+                  {reactions =>
+                    reactions ? (
+                      <span>
+                        <h2>
+                          {displaySub(id)} ({reactions.reactions?.length}){' '}
+                        </h2>
+                        <ReviewsTable
+                          //@ts-ignore
+                          reviewData={reactions.reactions}
+                          history={this.props.history}
+                          isReview={false}
+                        />
+                      </span>
+                    ) : null
+                  }
                 </ReactionsById>
-              )
-
-
+              );
             })}
-
           </div>
         );
     }
@@ -321,18 +321,42 @@ class EditProfilePage extends React.Component<
     if (!this.props.user || !this.props.user.reactions) {
       return <div>No user</div>;
     } else {
-      let totalcount = 0
+      let totalcount = 0;
 
-      this.props.user.reactionsCount?.map((reaction) => {
-        totalcount += reaction.count
-
-      })
+      this.props.user.reactionsCount?.map(reaction => {
+        totalcount += reaction.count;
+      });
       return (
         <ThemedMainContainer>
           <h2>My profile</h2>
           {this.state.isEditing === true
             ? this.renderEditForm()
             : this.renderProfileInfo()}
+
+          <h2>My Searches</h2>
+          <ThemedSearchContainer>
+            <h4>Favorite Searches:</h4>
+            <StyledProfileLogValue>
+              {
+                'Here Map StyledProfile LOG value with the favorite user saved searches'
+              }
+              <ThemedButton
+                style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
+                onClick={() => console.log('Click FAVORITE ')}>
+                <FontAwesome name="heart" />
+              </ThemedButton>
+              <ThemedButton
+                style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
+                onClick={() => console.log('Click DELETE ')}>
+                <FontAwesome name="trash" />
+              </ThemedButton>
+            </StyledProfileLogValue>
+            
+            <UserSearchLogs
+              user={this.props.user}
+            />
+          </ThemedSearchContainer>
+
           <h2>My Contributions</h2>
           <ThemedSearchContainer>
             <ProfileScoreBoard
@@ -350,8 +374,8 @@ class EditProfilePage extends React.Component<
           {this.props.user ? (
             this.renderResults(this.props.user.email)
           ) : (
-              <div>No User</div>
-            )}
+            <div>No User</div>
+          )}
         </ThemedMainContainer>
       );
     }
