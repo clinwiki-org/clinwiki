@@ -72,6 +72,10 @@ module Types
       argument :user_id, type: Integer, required: false
     end
 
+    field :saved_search, [SavedSearchType], "Single saved search", null: true do
+      argument :user_id, type: Integer, required: false
+    end
+
 
     DISPLAY_NAMES = {
       "browse_condition_mesh_terms" => "Browse Condition Mesh Terms",
@@ -254,6 +258,12 @@ module Types
       user = user_id ? User.find(user_id) : current_user
       return nil if user.nil?
       user.search_logs
+    end 
+    
+    def saved_search(user_id: nil)
+      user = user_id ? User.find(user_id) : current_user
+      return nil if user.nil?
+      user.saved_searches
     end
 
     private

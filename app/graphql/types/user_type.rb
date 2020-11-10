@@ -18,7 +18,7 @@ module Types
     field :disliked_studies,[StudyType], null:true
     field :like_count, Integer, null: true
     field :dislike_count,Integer, null: true
-    field :saved_searches, [SearchLogType], null:true
+    field :saved_searches, [SavedSearchType], null:true
     field :reactions, [ReactionType],null: true do
       argument :nct_id, String, required: false
       argument :reaction_kind_id, String, required: false
@@ -61,8 +61,7 @@ module Types
     end
 
    def saved_searches
-      saved = object.search_logs.where(is_saved: true)
-      return saved
+      object.saved_searches
     end
 
     def review_count
