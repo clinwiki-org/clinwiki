@@ -1,4 +1,4 @@
-class SearchLog < ApplicationRecord
+class SavedSearch < ApplicationRecord
   belongs_to :user
   belongs_to :short_link
 
