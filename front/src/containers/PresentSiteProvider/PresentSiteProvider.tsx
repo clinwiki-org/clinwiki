@@ -367,6 +367,8 @@ export function usePresentSite(props?: UsePresentSiteProps) {
     const result = useQuery<PresentSiteProviderQuery>(QUERY, {
         variables: { id: props?.id, url: props?.url },
     });
+
+    console.log('RESULT from hook', result)
     if (!result.data) return { ...result, site: null, presentSiteView: null };
     const site = result?.data?.site;
     const presentSiteView = site?.siteView;
