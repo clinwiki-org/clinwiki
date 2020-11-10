@@ -7,18 +7,10 @@
 // GraphQL query operation: UserSearchLogsQuery
 // ====================================================
 
-export interface UserSearchLogsQuery_searchLog_shortLink {
-  __typename: "ShortLink";
-  long: string | null;
-  short: string | null;
-}
-
 export interface UserSearchLogsQuery_searchLog {
   __typename: "SearchLog";
-  userId: number;
   createdAt: any;
   nameDefault: string | null;
-  shortLink: UserSearchLogsQuery_searchLog_shortLink;
 }
 
 export interface UserSearchLogsQuery {

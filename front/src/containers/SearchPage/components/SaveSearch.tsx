@@ -6,15 +6,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
 
 //TODO define Mutation
-/* const SAVE_USER_SEARCH_MUTATION = gql`
-  mutation SaveUserSearchMutation($searchHash: String!, $siteViewId: Int!) {
-    exportToCsv(input: { searchHash: $searchHash, siteViewId: $siteViewId }) {
-      searchExport {
-        id
-      }
-    }
-  }
-`; */
+
 
 interface SaveSearchProps {
   siteView: any;
@@ -67,7 +59,7 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
         style={{float:"right"}}
         onClick={onClick}>
           &nbsp;
-          <FontAwesome name="heart" />
+          <FontAwesome name="save" />
           &nbsp;
         </ThemedButton>
       </>

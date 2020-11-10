@@ -24,7 +24,6 @@ interface UserSearchLogsProps {
   user: UserFragment | null;
 }
 interface UserSearchLogsState {
-  isEditing: boolean;
 }
 
 
@@ -32,26 +31,18 @@ interface UserSearchLogsState {
 export default function UserSearchLogs(props: UserSearchLogsProps) {
    const userId =  props.user?.id;
 
-
     const { data: searchLogs } = useQuery<UserSearchLogsQuery>(QUERY, {
         variables: { userId },
       });
 
- 
       return (
         <>
             <h4>Search History:</h4>
-            
             <StyledProfileLogValue>
               
               {//props.user ||
-                'Here map Profile LOG Value with Search Logs and add a Delete option icon at right float. W mutation to del search  '}
+                'Delete Search History?'}
         
-              <ThemedButton
-                style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
-                onClick={() => console.log('Click FAVORITE ')}>
-                <FontAwesome name="heart" />
-              </ThemedButton>
               <ThemedButton
                 style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
                 onClick={() => console.log('Click DELETE ')}>

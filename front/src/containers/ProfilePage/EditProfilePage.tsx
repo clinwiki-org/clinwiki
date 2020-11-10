@@ -31,6 +31,7 @@ import ReviewsTable from './components/ReviewsTable';
 import ReactionsById from 'containers/StudyPage/components/ReactionsById';
 import * as FontAwesome from 'react-fontawesome';
 import UserSearchLogs from './components/UserSearchLogs';
+import UserSavedSearches from './components/UserSavedSearches';
 
 interface EditProfilePageProps {
   user: UserFragment | null;
@@ -335,22 +336,10 @@ class EditProfilePage extends React.Component<
 
           <h2>My Searches</h2>
           <ThemedSearchContainer>
-            <h4>Favorite Searches:</h4>
-            <StyledProfileLogValue>
-              {
-                'Here Map StyledProfile LOG value with the favorite user saved searches'
-              }
-              <ThemedButton
-                style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
-                onClick={() => console.log('Click FAVORITE ')}>
-                <FontAwesome name="heart" />
-              </ThemedButton>
-              <ThemedButton
-                style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
-                onClick={() => console.log('Click DELETE ')}>
-                <FontAwesome name="trash" />
-              </ThemedButton>
-            </StyledProfileLogValue>
+          <h4>Saved Searches:</h4>
+            <UserSavedSearches
+              user={this.props.user}
+            />
             
             <UserSearchLogs
               user={this.props.user}
