@@ -6,12 +6,30 @@ import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
 
 //TODO define Mutation
+const CREATE_SAVED_SEARCH_MUTATION = gql`
+  mutation CreateSavedSearchMutation($searchHash: String!){
+  createSavedSearch(input: {
+    shortHash: $searchHash
+  }) {
+    savedSearch {
+      shortLink
+      {
+        long
+      	short
+      }
+      userId
+      createdAt
+      nameLabel
+    }
+    }
+  }
+`;
 
 
 interface SaveSearchProps {
   siteView: any;
   searchHash: string;
-  //mutate: any;
+  mutate: any;
   user?: any;
 }
 
@@ -25,26 +43,24 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
   };
   render() {
     const { 
-      //mutate,
-      siteView, 
+      mutate,
       searchHash, 
       user 
     } = this.props;
+    
     const { showLoginModal } = this.state;
-
     const setShowLoginModal = showLoginModal => {
       this.setState({ showLoginModal });
     };
 
     async function onClick() {
-      console.log("USER",user)
       if (user) {
-        console.log("SAVING SEarch")
-        window.alert("SAVING")
-      /*   const { data } = await mutate({
-          variables: { siteViewId: siteView.id, searchHash },
-        }); */
-        //TODO SAVE USER SEARCH HERE
+        console.log("SAVING Search to User ID: ", user.id)
+          const { data } = await mutate({
+          variables: { shortHash: searchHash },
+        });
+        //TODO Give user notification / snackbar.
+        alert("Saved search: \n" + data?.createSavedSearch.savedSearch.nameLabel) 
       } else {
         setShowLoginModal(true);
       }
@@ -67,8 +83,6 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
   }
 }
 
-// it's a little annoying that the HOC expects so many types
-/* export default graphql<any, any, any, any>(SAVE_USER_SEARCH_MUTATION)(
+export default graphql<any, any, any, any>(CREATE_SAVED_SEARCH_MUTATION)(
     SaveSearch
-); */
-export default SaveSearch;
+); 

@@ -46,16 +46,18 @@ export default function UserSavedSearches(props: UserSavedSearchesProps) {
             {
               search.nameLabel
             }
+         
             <ThemedButton
               style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
               onClick={() => console.log('Click FAVORITE ')}>
-              <FontAwesome name="save" />
+              <FontAwesome name="pencil" />
             </ThemedButton>
             <ThemedButton
               style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
               onClick={() => console.log('Click DELETE ')}>
               <FontAwesome name="trash" />
             </ThemedButton>
+          
           </StyledProfileLogValue>        
           ))
         } 
@@ -69,7 +71,7 @@ export default function UserSavedSearches(props: UserSavedSearchesProps) {
 }
 
 
-//! return statement with the Buttons setup for delete and Edit name of saved search. 
+//! return statement with the Buttons setup for delete and Edit name of saved search. BUTTONS NOT WIRED
 /* 
   return (
           (savedSearches) ?  
