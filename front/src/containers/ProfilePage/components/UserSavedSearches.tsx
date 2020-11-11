@@ -30,19 +30,36 @@ interface UserSavedSearchesState {
 
 
 export default function UserSavedSearches(props: UserSavedSearchesProps) {
-   const userId =  props.user?.id;
+  const userId =  props.user?.id;
 
 
     const { data: savedSearch } = useQuery<UserSavedSearchesQuery>(QUERY, {
         variables: { userId },
       });
-    console.log("UserSavedSearches -> savedSearches", savedSearch);
+      const savedSearches= savedSearch?.savedSearch
 
-    const savedSearches= savedSearch?.savedSearch
       return (
           (savedSearches) ?  
-          <div>{"savedSearches"}</div>
-             
+          <>{
+          savedSearches.map( (search)=>(
+          <StyledProfileLogValue>
+            {
+              search.nameLabel
+            }
+            <ThemedButton
+              style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
+              onClick={() => console.log('Click FAVORITE ')}>
+              <FontAwesome name="save" />
+            </ThemedButton>
+            <ThemedButton
+              style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
+              onClick={() => console.log('Click DELETE ')}>
+              <FontAwesome name="trash" />
+            </ThemedButton>
+          </StyledProfileLogValue>        
+          ))
+        } 
+        </>
             :
             <StyledProfileLabel>
                 No Saved Searches for user {props.user?.email}
@@ -52,24 +69,33 @@ export default function UserSavedSearches(props: UserSavedSearchesProps) {
 }
 
 
+//! return statement with the Buttons setup for delete and Edit name of saved search. 
 /* 
-  //! Map for user saved searches
-  savedSearches.map( (search)=>(
-    <>
-  <StyledProfileLogValue>
-    {
-      
-    }
-    <ThemedButton
-      style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
-      onClick={() => console.log('Click FAVORITE ')}>
-      <FontAwesome name="save" />
-    </ThemedButton>
-    <ThemedButton
-      style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
-      onClick={() => console.log('Click DELETE ')}>
-      <FontAwesome name="trash" />
-    </ThemedButton>
-  </StyledProfileLogValue>
- </>
-  )) */
+  return (
+          (savedSearches) ?  
+          <>{
+          savedSearches.map( (search)=>(
+          <StyledProfileLogValue>
+            {
+              search.nameLabel
+            }
+            <ThemedButton
+              style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
+              onClick={() => console.log('Click FAVORITE ')}>
+              <FontAwesome name="save" />
+            </ThemedButton>
+            <ThemedButton
+              style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
+              onClick={() => console.log('Click DELETE ')}>
+              <FontAwesome name="trash" />
+            </ThemedButton>
+          </StyledProfileLogValue>        
+          ))
+        } 
+        </>
+            :
+            <StyledProfileLabel>
+                No Saved Searches for user {props.user?.email}
+            </StyledProfileLabel>
+  
+      ); */
