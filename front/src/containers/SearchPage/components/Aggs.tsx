@@ -177,14 +177,14 @@ class Aggs extends React.Component<AggsProps> {
     return filter(x => crowdAggs.includes(x), displayed);
   };
 
-  shouldComponentUpdate(nextProps) {
-    console.log('SCU', this.props.searchParams)
-    if (this.props.searchParams === nextProps.searchParams) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   console.log('SCU', this.props.searchParams)
+  //   if (this.props.searchParams === nextProps.searchParams) {
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // }
 
   render() {
     const {
@@ -204,7 +204,7 @@ class Aggs extends React.Component<AggsProps> {
     //commented out because not sure how to pass two parameters when using compose
     // const sortByNameCi = sortBy(compose(toLower, aggToField);
 
-
+     console.log('searchParams from AGGS', searchParams)
     // if (searchParams) {
       return (
         <QueryComponent
@@ -213,26 +213,15 @@ class Aggs extends React.Component<AggsProps> {
           // fetchPolicy={"no-cache"}
         >
           {({ data, loading, error }) => {
-            let prevData = {};
-            let aggsData = data
-            if (data !== undefined) {
-              prevData = data
-            } 
-
-            // console.log('prevData', prevData)   
-            if (aggsData == undefined && prevData !== {} ) {
-                 //@ts-ignore
-                  aggsData = prevData
-                  loading = false;
-            }
-            console.log('data from aggs', aggsData)
-            if (aggsData && aggsData.crowdAggs && aggsData.search?.aggs) {
+       
+            console.log('data from aggs', data)
+            if (data && data.crowdAggs && data.search?.aggs) {
               const aggs: AggBucketMap = {};
-              for (const a of aggsData.search?.aggs || []) {
+              for (const a of data.search?.aggs || []) {
                 aggs[a.name] = [];
               }
               const crowdAggs: AggBucketMap = {};
-              for (const bucket of aggsData.crowdAggs?.aggs?.[0]?.buckets || []) {
+              for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
                 crowdAggs[bucket.key] = [];
               }
             let crowdAggDropdowns: React.ReactElement<any> | null = null;

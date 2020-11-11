@@ -33,6 +33,7 @@ import {
   equals,
   find,
 } from 'ramda';
+import { useQuery } from '@apollo/client';
 import SearchView2 from './SearchView2';
 import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
@@ -56,6 +57,7 @@ import RichTextEditor from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
+import { debug } from 'console';
 
 const ParamsQueryComponent = (
   props: QueryComponentOptions<
@@ -248,6 +250,7 @@ const changeFilter = (add: boolean) => (
 const addFilter = changeFilter(true);
 const removeFilter = changeFilter(false);
 const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
+  console.log('add filters')
   return (params: SearchParams) => {
     keys.forEach(k => {
       params = addFilter(aggName, k, isCrowd)(params);
@@ -350,7 +353,16 @@ function SearchPage (props: SearchPageProps) {
 
   /// STATE INITIAL VALUES
 
-  const [params, setParams] = useState(null)
+  const [params, setParams] = useState({  
+    q: { key: 'AND', children: [] },
+    aggFilters: [],
+    crowdAggFilters: [],
+    sorts: [],
+    page: 0,
+    pageSize: defaultPageSize
+  })
+
+  console.log('params first', params)
   const [openedAgg, setOpenedAgg] = useState({name: null, kind: null})
   const [removeSelectAll, setRemoveSelectAll] = useState(false)
   const [totalRecords, setTotalRecords] = useState(0)
@@ -433,22 +445,6 @@ function SearchPage (props: SearchPageProps) {
 
   };
 
-  const handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
-    console.log('HUP', params)
-   updater(params!);
-    console.log('handle update params', params)
-    //console.log("Search Page handle update params", params)
-    //@ts-ignore
-    if (!equals(params.q, params && params.q)) {
-      // For now search doesn't work well with args list
-      // Therefore we close it to refresh later on open
-      setOpenedAgg({name: null, kind: null});
-    }
-    setParams(params)
-      // WE MAY NEED TO USE  use effect here as the update searchParams used to be in a setState callback. 
-    updateSearchParams(params);
-  };
-
   const isWorkflow = () => {
     return pipe(
       //@ts-ignore
@@ -456,7 +452,7 @@ function SearchPage (props: SearchPageProps) {
       //@ts-ignore
       any(x => (x as string).toLowerCase().includes('wf_'))
       //@ts-ignore
-    )(state.params?.crowdAggFilters || []);
+    )(params?.crowdAggFilters || []);
   };
 
   const handleRowClick = (nctId: string) => {
@@ -562,45 +558,7 @@ function SearchPage (props: SearchPageProps) {
     );
   };
 
-/// need to use USE EFFECT 
-  // componentDidMount() {
-  //   let searchTerm = new URLSearchParams(props.location?.search || '');
-  //   const FILTERED_PARAMS = {
-  //     ...DEFAULT_PARAMS,
-  //     ...preselectedFilters(props.presentSiteView),
-  //   };
-                                                                                
-  //   if (window.innerWidth < 768) {
-  //     setState({ collapseFacetBar: true })
-  //   }
-  //   if (searchTerm.has('q')) {
-  //     let q = {
-  //       key: 'AND',
-  //       children: [{ children: [], key: searchTerm.getAll('q').toString() }],
-  //     };
-  //     setState(
-  //       {
-  //         params: {
-  //           q: q,
-  //           aggFilters: [],
-  //           crowdAggFilters: [],
-  //           sorts: [],
-  //           page: 0,
-  //           pageSize: defaultPageSize,
-  //         },
-  //       },
-  //       () => updateSearchParams(state.params)
-  //     );
-  //   }   
-  //   if(!searchTerm.has('hash') ){
-  //     updateSearchParams(FILTERED_PARAMS)
 
-  //   }
-  //   if (props.intervention) {
-  //     //@ts-ignore
-  //     setState({ params: props.searchParams });
-  //   }
-  // }
 
 
   const getHashFromLocation = (): string | null  => {
@@ -611,8 +569,6 @@ function SearchPage (props: SearchPageProps) {
   }
 
   const updateStateFromHash = (searchParams, view) => {
-
-
     const params: SearchParams = searchParamsFromQuery(searchParams, view);
     let searchTerm = new URLSearchParams(props.location?.search || '');
 
@@ -627,17 +583,18 @@ function SearchPage (props: SearchPageProps) {
       updateSearchParams(queryParams);
     }
 
-    console.log('UPDATE STATE FROM HASH 1')
+    // console.log('UPDATE STATE FROM HASH 1')
     //Originally thought this should be an updateSearchParams call but seems to error out
     //Commented out the application seems to still function as inteded. All the aggs update appropriately with no hash, with a hash. So far has passed all my current tests.
     // Will leave it in and commented out for now as a reminder to come back and look into it.
     // setTimeout(setState({
 
     //// REACT HOOKS CHANGE
-    //@ts-ignore
-    setParams({
-        ...params
-      })
+
+    // setParams({
+    //     ...params
+    //   })
+    updateSearchParams(params)
   }
 
   const findFilter = (variable: string) => {
@@ -653,59 +610,6 @@ function SearchPage (props: SearchPageProps) {
     return response;
   };
 
-
-  const updateSearchParams = async params => {
-    console.log('updating params', params)
-    setParams({...params})
-    // setState({
-    //   ...state,
-    //   params: { ...(state?.params || {}), ...params },
-    // });
-    // const variables = { ...state.params, ...params };
-  
-    //SEE LINE ABOVE THIS COULD BE INTERESTING AND OR REQUIRE A USEEFFECT HOOK
-    const variables = { params };
-    const { data } = await props.mutate({ variables });
-     console.log('data', data)
-    const { searchQueryString, pageViewUrl } = getPageView();
-    const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
-    // This assumes that the site provider is not passing a url into the page
-    // view fragment portion of the query otherwise we would need to call the
-    //  page view query without passing the url into it to retrieve the default url
-
-    const userId = searchQueryString.getAll('uid').toString();
-
-    if (data?.provisionSearchHash?.searchHash?.short) {
-      if (props.match.path === '/profile') {
-        props.history.push(
-          `/profile?hash=${data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
-        );
-        return;
-      } else if (userId) {
-        let profile = findFilter('wiki_page_edits.email');
-        props.history.push(
-          `/profile/user?hash=${data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${profile && profile.values.toString()
-          }`
-        );
-        return;
-      } else if (props.match.path === '/intervention/:id') {
-        props.history.push(
-          //@ts-ignore
-          `/intervention/${props.match.params.id}?hash=${data!.provisionSearchHash!.searchHash!.short
-          }&sv=intervention&pv=${pageViewUrl}`
-        );
-        return;
-      } else {
-        props.history.push(
-          `/search?hash=${data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
-        );
-        return;
-      }
-    }
-  };
 
   const getPageView = () => {
     const searchQueryString = new URLSearchParams(
@@ -825,124 +729,222 @@ function SearchPage (props: SearchPageProps) {
     const { presentSiteView } = props;
     const hash = getHashFromLocation();
     return (
-      <div>Testing</div>
-      // <CrumbsBar
-      //   searchParams={searchParams}
-      //   onBulkUpdate={handleBulkUpdateClick}
-      //   removeFilter={pipe(removeFilter, handleUpdateParams)}
-      //   addSearchTerm={pipe(addSearchTerm, handleUpdateParams)}
-      //   removeSearchTerm={pipe(removeSearchTerm, handleUpdateParams)}
-      //   update={{
-      //     page: pipe(changePage, handleUpdateParams),
-      //   }}
-      //   onReset={handleResetFilters(siteView)}
-      //   onClear={handleClearFilters}
-      //   addFilter={pipe(addFilter, handleUpdateParams)}
-      //   presentSiteView={presentSiteView}
-      //   totalResults={totalRecords}
-      //   searchHash={hash || ''}
-      //   // updateSearchParams={updateSearchParams}
-      // />
+      <CrumbsBar
+        searchParams={searchParams}
+        onBulkUpdate={handleBulkUpdateClick}
+        removeFilter={pipe(removeFilter, handleUpdateParams)}
+        addSearchTerm={pipe(addSearchTerm, handleUpdateParams)}
+        removeSearchTerm={pipe(removeSearchTerm, handleUpdateParams)}
+        update={{
+          page: pipe(changePage, handleUpdateParams),
+        }}
+        onReset={handleResetFilters(siteView)}
+        onClear={handleClearFilters}
+        addFilter={pipe(addFilter, handleUpdateParams)}
+        presentSiteView={presentSiteView}
+        totalResults={totalRecords}
+        searchHash={hash || ''}
+        // updateSearchParams={updateSearchParams}
+      />
     );
   };
-
-  // render() {
-
-    /// DON"T FORGET TO ADD FULL STORY BACK IN
-    // const { totalRecords, collapseFacetBar } = state;
-    if (props.email && !props.match.params.id) {
-      props.getTotalContributions(totalRecords);
+  
+  const handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
+    console.log('HUP', params)
+   updater(params!);
+    console.log('handle update params', params)
+    //console.log("Search Page handle update params", params)
+    //@ts-ignore
+    if (!equals(params.q, params && params.q)) {
+      // For now search doesn't work well with args list
+      // Therefore we close it to refresh later on open
+      setOpenedAgg({name: null, kind: null});
     }
-    console.log('RENDER FUNCTION', params)
-    const hash = getHashFromLocation();
-    console.log('hash', hash)
-    const { presentSiteView } = props;
+
+    /// with hooks we now have a param var but we are also passing new params in using the same name, most of our setParams calls now need to be merging this data so we need to make some naming chnages inorder ot use spread correclty.
+    setParams({...params})
+      // WE MAY NEED TO USE  use effect here as the update searchParams used to be in a setState callback. 
+    updateSearchParams(params);
+  };
+
+  const afterSearchParamsUpdate = async () => {
+    const variables = params ;
+    console.log('variables', variables)
+    const { data } = await props.mutate({ variables });
+     console.log('data', data)
+    const { searchQueryString, pageViewUrl } = getPageView();
+    const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
+    // This assumes that the site provider is not passing a url into the page
+    // view fragment portion of the query otherwise we would need to call the
+    //  page view query without passing the url into it to retrieve the default url
+
+    const userId = searchQueryString.getAll('uid').toString();
+
+    if (data?.provisionSearchHash?.searchHash?.short) {
+      if (props.match.path === '/profile') {
+        props.history.push(
+          `/profile?hash=${data!.provisionSearchHash!.searchHash!.short
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
+        );
+        return;
+      } else if (userId) {
+        let profile = findFilter('wiki_page_edits.email');
+        props.history.push(
+          `/profile/user?hash=${data!.provisionSearchHash!.searchHash!.short
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}&uid=${userId}&username=${profile && profile.values.toString()
+          }`
+        );
+        return;
+      } else if (props.match.path === '/intervention/:id') {
+        props.history.push(
+          //@ts-ignore
+          `/intervention/${props.match.params.id}?hash=${data!.provisionSearchHash!.searchHash!.short
+          }&sv=intervention&pv=${pageViewUrl}`
+        );
+        return;
+      } else {
+        props.history.push(
+          `/search?hash=${data!.provisionSearchHash!.searchHash!.short
+          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
+        );
+        return;
+      }
+    }
+  }
+
+  const updateSearchParams = newParams => {
+    console.log('1 updating params', newParams)
+    console.log('1 updating params', params)
+    setParams({...params, ...newParams})
+    console.log('2 updating params', params)
+
+    // setState({
+    //   ...state,
+    //   params: { ...(state?.params || {}), ...params },
+    // });
+    // const variables = { ...state.params, ...params };
+  
+    //SEE LINE ABOVE THIS COULD BE INTERESTING AND OR REQUIRE A USEEFFECT HOOK
+  };
+
+  useEffect(() => {
+    console.log('params in effect', params)
+    afterSearchParamsUpdate()
+  }, [params])
+
+  /// this is everyting that used to be in componentDidMount
+  useEffect(() => {
+    let searchTerm = new URLSearchParams(props.location?.search || '');
     const FILTERED_PARAMS = {
       ...DEFAULT_PARAMS,
-      ...preselectedFilters(presentSiteView),
+      ...preselectedFilters(props.presentSiteView),
     };
-    return (
-      // <SearchParamsContext.Provider
-      //   value={{
-      //     searchParams: state.params,
-      //     updateSearchParams: updateSearchParams,
-      //   }}>
-       /* // <SearchParamsHook */
-      /* // hash={hash}
-      // > */
-      <ParamsQueryComponent
-        // fetchPolicy={"no-cache"}
-        key={`${hash}+${JSON.stringify(params)}`}
-        query={SearchPageParamsQuery}
-        variables={{ hash }}
-        onCompleted={(data: any) => {
-          updateStateFromHash(data.searchParams, presentSiteView);
-        }}>
-        {({ data, loading, error, previousData }) => {
-          // if (data == undefined && )
-          // when this data comes back undefined (which is when the data is not cached the entire component refreshes)
-          console.log('RETURN FROM PARAMS QUERY', loading, previousData)
-          // if (data) {
-          //   props.storeData(data)
-          // }
-          if (error || loading) return <BeatLoader />;
-          console.log('data from query component', loading, data)
-          const params: SearchParams = searchParamsFromQuery(
-            data!.searchParams,
-            presentSiteView
-          );
-          // hydrate state params from hash
-          // if (!state.params) {
-          //   setState({ params });
-          //   return null;
-          // }
-        return (
-        <Switch>
-          <Route
-            render={() => {
-              const { presentSiteView } = props;
-              const {
-                showPresearch,
-                showFacetBar,
-                showBreadCrumbs,
-              } = presentSiteView.search.config.fields;
-              return (
-                <ThemedSearchPageWrapper>
-                  {showFacetBar && (
-                    <>
-                    <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
-                      {renderAggs(presentSiteView, params )}
-                    </ThemedSidebarContainer>
-                  <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
-                    <span className="collapse-icon-container">
-                      <FontAwesome
-                        name={collapseFacetBar ? "chevron-circle-right" : "chevron-circle-left"}
-                        className="collapse-icon"
-                        onClick={() => {
-                          setCollapseFacetBar(!collapseFacetBar)
-                        }}
-                      />
-                    </span>
-                  </ThemedSideBarCollapse>
-                  </>
-                  )}
+                                                                                
+    if (window.innerWidth < 768) {
+      setCollapseFacetBar(true)
+    }
+    if (searchTerm.has('q')) {
+      let q = {
+        key: 'AND',
+        children: [{ children: [], key: searchTerm.getAll('q').toString() }],
+      };
+      //@ts-ignore
+      setParams(
+        {
+          /// Q below is messed up and needs to get q from above. 
+            q: {key: 'AND', children: []},
+            aggFilters: [],
+            crowdAggFilters: [],
+            sorts: [],
+            page: 0,
+            pageSize: defaultPageSize,
+          }
+      );
+    }   
+    if(!searchTerm.has('hash') ){
+      updateSearchParams(FILTERED_PARAMS)
 
-                  <ThemedMainContainer>
-                    {showBreadCrumbs && renderCrumbs(presentSiteView, params)}
-                    {showPresearch && renderPresearch(hash)}
-                    {renderSearch(params)}
-                  </ThemedMainContainer>
-                </ThemedSearchPageWrapper>
-              );
-            }}
-            />
-        </Switch>
-        )
-        }}
-      </ParamsQueryComponent> 
-      // </SearchParamsHook>
+    }
+    if (props.intervention) {
+      //@ts-ignore
+      setParams(props.searchParams);
+    }
+    updateSearchParams(FILTERED_PARAMS)
+  }, [])
+
+
+  if (props.email && !props.match.params.id) {
+    props.getTotalContributions(totalRecords);
+  }
+
+  const hash = getHashFromLocation();
+
+  const { presentSiteView } = props;
+  const FILTERED_PARAMS = {
+    ...DEFAULT_PARAMS,
+    ...preselectedFilters(presentSiteView),
+  };
+
+  /// SEARCH PAGE PARAMS QUERY
+  const result = useQuery(SearchPageParamsQuery, {
+      variables: { hash }, 
+      onCompleted: () => updateStateFromHash(data.searchParams, presentSiteView)
+  });
+ 
+  let data = result.data
+  if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
+  if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
+
+      
+    console.log('data from query component', result)
+    // debugger
+    
+    const dataParams = searchParamsFromQuery(
+      data!.searchParams,
+      presentSiteView
     );
-  // }
+  return (
+  <Switch>
+    <Route
+      render={() => {
+        const { presentSiteView } = props;
+        const {
+          showPresearch,
+          showFacetBar,
+          showBreadCrumbs,
+        } = presentSiteView.search.config.fields;
+        return (
+          <ThemedSearchPageWrapper>
+            {showFacetBar && (
+              <>
+              <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
+                {renderAggs(presentSiteView, dataParams )}
+              </ThemedSidebarContainer>
+            <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
+              <span className="collapse-icon-container">
+                <FontAwesome
+                  name={collapseFacetBar ? "chevron-circle-right" : "chevron-circle-left"}
+                  className="collapse-icon"
+                  onClick={() => {
+                    setCollapseFacetBar(!collapseFacetBar)
+                  }}
+                />
+              </span>
+            </ThemedSideBarCollapse>
+            </>
+            )}
+
+            <ThemedMainContainer>
+              {showBreadCrumbs && renderCrumbs(presentSiteView, dataParams)}
+              {showPresearch && renderPresearch(hash)}
+              {renderSearch(dataParams)}
+            </ThemedMainContainer>
+          </ThemedSearchPageWrapper>
+        );
+      }}
+      />
+  </Switch>
+  )
 }
 
 // @ts-ignore too many decorators

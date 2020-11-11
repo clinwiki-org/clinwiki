@@ -305,13 +305,6 @@ const QUERY = gql`
     ${PRESENT_SITE_FRAGMENT}
 `;
 
-// interface ToOmit {
-//     site: any;
-//     refetch: any;
-//     presentSiteView: any;
-//     prevParams: any
-//   }
-
 type ToOmit = 'site' | 'refetch' | 'presentSiteView' | 'prevParams';
 export function withPresentSite2<T>(
     Component: React.ComponentType<T>
@@ -368,11 +361,10 @@ export function usePresentSite(props?: UsePresentSiteProps) {
         variables: { id: props?.id, url: props?.url },
     });
 
-    console.log('RESULT from hook', result)
+    console.log('RESULT from Present Site Provider')
     if (!result.data) return { ...result, site: null, presentSiteView: null };
     const site = result?.data?.site;
     const presentSiteView = site?.siteView;
-        //console.log("********* Present Site VIEW", presentSiteView);
     return { ...result, site, presentSiteView };
 }
 
@@ -385,6 +377,7 @@ function PresentSiteProvider(props: PresentSiteProviderProps) {
     const urlFinal = urlName ? urlName : "default";
 
     const { data, loading, error, refetch } = usePresentSite({url: urlFinal});
+   
     if (error) console.log(error);
     if (loading || error || !data) return null;
     return props.children(data.site!, refetch);
