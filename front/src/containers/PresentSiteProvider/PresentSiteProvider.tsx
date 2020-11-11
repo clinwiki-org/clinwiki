@@ -146,6 +146,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         rank
                         rangeStartLabel
                         rangeEndLabel
+                        showAllowMissing
+                        showFilterToolbar
                     }
                     selected {
                         kind
@@ -173,6 +175,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         autoSuggest
                         rangeStartLabel
                         rangeEndLabel
+                        showAllowMissing
+                        showFilterToolbar
                     }
                     selected {
                         kind
@@ -218,6 +222,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                     rank
                     rangeStartLabel
                     rangeEndLabel
+                    showAllowMissing
+                    showFilterToolbar
                 }
                 selected {
                     kind
@@ -245,6 +251,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                     autoSuggest
                     rangeStartLabel
                     rangeEndLabel
+                    showAllowMissing
+                    showFilterToolbar
                 }
                 selected {
                     kind
