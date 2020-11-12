@@ -485,7 +485,7 @@ function SearchPage (props: SearchPageProps) {
   };
 
 
-  const renderAggs = (siteView, params) => {
+  const renderAggs = (siteView, searchParams) => {
     // console.log('redner aggs', params)
     const opened = openedAgg && openedAgg.name;
     const openedKind = openedAgg && openedAgg.kind;
@@ -512,45 +512,19 @@ function SearchPage (props: SearchPageProps) {
     );
   };
 
-  const renderSearch = (params) => {
+  const renderSearch = (searchParams) => {
     const hash = getHashFromLocation();
     const { presentSiteView } = props;
-    console.log('SEARCH PAGE')
-    // const FILTERED_PARAMS = {
-    //   ...DEFAULT_PARAMS,
-    //   ...preselectedFilters(presentSiteView),
-    // };
+    console.log('SEARCH VIEW FROM SP', searchParams)
     return (
-      // <div>Testing</div>
-      // <ParamsQueryComponent
-      //   fetchPolicy={"network-only"}
-      //   key={`${hash}+${JSON.stringify(state?.params)}`}
-      //   query={SearchPageParamsQuery}
-      //   variables={{ hash }}
-      //   onCompleted={async (data: any) => {
-      //     updateStateFromHash(data.searchParams, presentSiteView);
-      //   }}>
-      //   {({ data, loading, error }) => {
-      //     if (error || loading) return null;
-  
-      //     // const params: SearchParams = searchParamsFromQuery(
-      //     //   data!.searchParams,
-      //     //   presentSiteView
-      //     // );
-      //     // hydrate state params from hash
-      //     if (!state.params) {
-      //       setState({ params });
-      //       return null;
-      //     }
-          
             <SearchView2
-              key={`${hash}+${JSON.stringify(params)}`}
-              params={params}
+              key={`${hash}+${JSON.stringify(searchParams)}`}
+              params={searchParams}
               onBulkUpdate={handleBulkUpdateClick}
               onUpdateParams={handleUpdateParams}
               onRowClick={handleRowClick}
               searchHash={hash || ''}
-              searchParams={params}
+              searchParams={searchParams}
               presentSiteView={presentSiteView}
               getTotalResults={getTotalResults}
             />
@@ -639,9 +613,9 @@ function SearchPage (props: SearchPageProps) {
     props.history.push(url);
   };
 
-  const renderPresearch = hash => {
+  const renderPresearch = (hash, searchParams) => {
     //@ts-ignore
-    const { aggFilters = [], crowdAggFilters = [] } = params || {};
+    const { aggFilters = [], crowdAggFilters = [] } = searchParams || {};
     const { presentSiteView } = props;
     const preSearchAggs = presentSiteView.search.presearch.aggs.selected.values;
     const preSearchCrowdAggs =
@@ -691,7 +665,7 @@ function SearchPage (props: SearchPageProps) {
           removeSelectAll={removeSelectAll}
           resetSelectAll={resetSelectAll}
           // @ts-ignore
-          searchParams={params}
+          searchParams={searchParams}
           presearch
           preSearchAggs={preSearchAggs}
           preSearchCrowdAggs={preSearchCrowdAggs}
@@ -812,10 +786,10 @@ function SearchPage (props: SearchPageProps) {
     }
   }
 
-  const updateSearchParams = newParams => {
-    console.log('1 updating params', newParams)
+  const updateSearchParams = searchParams => {
+    console.log('1 updating params', searchParams)
     console.log('1 updating params', params)
-    setParams({...params, ...newParams})
+    setParams({...params, ...searchParams})
     console.log('2 updating params', params)
 
     // setState({
@@ -936,8 +910,8 @@ function SearchPage (props: SearchPageProps) {
 
             <ThemedMainContainer>
               {showBreadCrumbs && renderCrumbs(presentSiteView, dataParams)}
-              {showPresearch && renderPresearch(hash)}
-              {renderSearch(dataParams)}
+              {showPresearch && dataParams ? renderPresearch(hash, dataParams) : null}
+              { dataParams ? renderSearch(dataParams) : null}
             </ThemedMainContainer>
           </ThemedSearchPageWrapper>
         );
