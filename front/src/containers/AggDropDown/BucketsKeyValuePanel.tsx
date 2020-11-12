@@ -15,6 +15,8 @@ interface KeyValueBucketsPanelProps {
   hasMore: boolean;
   handleLoadMore: any;
   handleKeyValueMutations: (e: { currentTarget: { name: string; value: any } }) => void;
+  getPath: ()=>void;
+  configType?: 'presearch' | 'autosuggest' | 'facetbar';
 }
 
 class KeyValueBucketsPanel extends React.Component<KeyValueBucketsPanelProps> {
@@ -46,6 +48,8 @@ class KeyValueBucketsPanel extends React.Component<KeyValueBucketsPanelProps> {
           buckets={buckets}
           isSelected={isSelected}
           handleKeyValueMutations={this.props.handleKeyValueMutations}
+          getPath={this.props.getPath}
+          configType={this.props.configType}
         />
       </InfiniteScroll>
     );

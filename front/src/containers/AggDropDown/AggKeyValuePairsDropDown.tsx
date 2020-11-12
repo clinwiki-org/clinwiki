@@ -139,6 +139,7 @@ interface AggKeyValuePairsDropDownProps {
   presentSiteView: PresentSiteFragment_siteView;
   fromAggField?: boolean;
   handleKeyValueMutations: (e: { currentTarget: { name: string; value: any } }) => void;
+  getPath: ()=>void;
 }
 
 class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownProps, AggKeyValuePairsDropDownState> {
@@ -397,7 +398,7 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
     return (
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
-          <Filter
+          {/* <Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -411,7 +412,7 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
             toggleAlphaSort={this.toggleAlphaSort}
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
-          />
+          /> */}
         </Panel.Body>
         <Panel.Body>
           <BucketsKeyValuePanel
@@ -422,9 +423,10 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
             hasMore={hasMore}
             handleLoadMore={this.handleLoadMore}
             handleKeyValueMutations={this.props.handleKeyValueMutations}
+            configType={this.props.configType}
+            getPath={this.props.getPath}
             field={field}
           />
-          <AllowMissingCheckbox buckets={buckets} />
         </Panel.Body>
       </Panel.Collapse>
     );

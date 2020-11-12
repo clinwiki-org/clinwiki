@@ -385,7 +385,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     return (
       <>
         <ThemedStyledLabel>Values and Helper Text</ThemedStyledLabel>
-        <ThemedCrumbsContainer>
+        {/* <ThemedCrumbsContainer>
           {Array.from(visibleOptions).map(value => (
             <MultiCrumb
               key={value}
@@ -393,7 +393,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
               onClick={value => visibleOptionsUpdater.removeFilter(value)}
             />
           ))}
-        </ThemedCrumbsContainer>
+        </ThemedCrumbsContainer> */}
         <FiltersContainer>
           <FilterContainer>
             <AggFilterInputUpdateContext.Provider
@@ -423,6 +423,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 configType={this.props.configType}
                 returnAll={this.props.returnAll}
                 handleKeyValueMutations={this.handleKeyValueMutations}
+                getPath={this.getPath}
               />
             </AggFilterInputUpdateContext.Provider>
           </FilterContainer>

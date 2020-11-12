@@ -121,7 +121,7 @@ class BucketsDropDownOptions extends React.Component<
       } else {
         return (
           <option value={bucket.key}>
-            {bucketKeyValuePair.label}
+          {`${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}`}
           </option>
         );
       }
