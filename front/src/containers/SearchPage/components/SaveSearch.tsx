@@ -4,6 +4,7 @@ import { graphql } from 'react-apollo';
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
+import Snackbar from 'components/Snackbar';
 
 //TODO define Mutation
 const CREATE_SAVED_SEARCH_MUTATION = gql`
@@ -38,9 +39,13 @@ interface SaveSearchState {
 }
 
 class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
+  
   state = {
     showLoginModal: false,
   };
+  
+
+
   render() {
     const { 
       mutate,
@@ -53,13 +58,22 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
       this.setState({ showLoginModal });
     };
 
+    const snackbarRef = React.createRef();
+    const  _showSnackbarHandler = () => {
+      //@ts-ignore
+      this.snackbarRef.current.openSnackBar('Button Pressed...');
+    }
+
     async function onClick() {
       if (user) {
         console.log("SAVING Search to User ID: ", user.id)
           const { data } = await mutate({
           variables: { shortHash: searchHash },
         });
-        //TODO Give user notification / snackbar.
+        //TODO Give user notification / snackbar. FIX TS Errors
+        //_showSnackbarHandler();
+       //@ts-ignore
+        //<Snackbar ref={snackbarRef}/>
         alert("Saved search: \n" + data?.createSavedSearch.savedSearch.nameLabel) 
       } else {
         setShowLoginModal(true);
