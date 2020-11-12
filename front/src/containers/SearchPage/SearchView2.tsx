@@ -20,13 +20,13 @@ import {
   fromPairs,
 } from 'ramda';
 import { camelCase, snakeCase, capitalize } from 'utils/helpers';
-import { gql } from 'apollo-boost';
+import { gql }  from '@apollo/client';
 import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { Query, QueryComponentOptions } from 'react-apollo';
+import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import 'react-table/react-table.css';
 import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
@@ -540,6 +540,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           <QueryComponent
             query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
             variables={this.props.params}
+            fetchPolicy={'no-cache'}
             >
             {({ data, loading, error }) => {
               return (

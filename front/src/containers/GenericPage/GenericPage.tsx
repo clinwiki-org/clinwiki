@@ -5,7 +5,7 @@ import MailMergeView, {
 } from 'components/MailMerge/MailMergeView';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
@@ -44,7 +44,7 @@ export default function GenericPage(props: Props) {
   const { data: pageViewData } = usePageView(defaultPage());
   const currentPage = pageViewData?.site?.pageView;
   const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
-  const { data: studyData, loading } = useQuery(
+  const { data: studyData, loading, refetch } = useQuery(
     getStudyQuery(fragmentName, fragment),
     {
       skip: fragment == '' || !props.arg,
@@ -69,6 +69,7 @@ export default function GenericPage(props: Props) {
         template={currentPage?.template || ''}
         context={studyData?.study}
         islands={studyIslands}
+        // refetchQuery={refetch}
       />
     </div>
   );

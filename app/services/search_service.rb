@@ -162,6 +162,19 @@ class SearchService
     
   end
 
+  def search_without_aggs(search_after: nil, reverse: false, includes: [])
+    options = search_options_without_aggs(search_after: search_after, reverse: reverse, includes: includes)
+    search_result = Study.search("*", options) do |body|
+      enrich_body(body)
+    end
+    {
+      recordsTotal: search_result.total_entries,
+      studies: search_result.results,
+      aggs: search_result.aggs,
+      took: search_result.took
+    }
+  end
+
   def scroll
     scroll_options = search_options.except(
       :page, :per_page, :aggs
@@ -185,6 +198,18 @@ class SearchService
 
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
+    options[:includes] = includes
+    options[:load] = false
+    options
+  end
+
+  def search_options_without_aggs(search_after: nil, reverse: false, includes: [])
+    crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
+      &.dig(:front_matter_keys, :buckets)
+      &.map { |bucket| "fm_#{bucket[:key]}" } || []
+    # aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
+
+    options = search_kick_query_options(aggs: nil, search_after: search_after, reverse: reverse)
     options[:includes] = includes
     options[:load] = false
     options

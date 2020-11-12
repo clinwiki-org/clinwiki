@@ -86,7 +86,7 @@ function tokensToGraphQLOb(tags: string[]) {
           parts[0] == '$RIGHT' ||
           parts[0] == '$TRUNCATE'
         ) {
-          console.log('');
+
         } else {
           setProperty(name);
         }

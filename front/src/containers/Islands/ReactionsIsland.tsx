@@ -6,7 +6,7 @@ import { ReactionKinds } from 'types/ReactionKinds';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import QUERY from 'queries/ReactionsIslandQuery';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 import REACTION_KINDS from 'queries/ReactionKinds';
 import ReactionsBar from '../../components/ReactionsBar'
 import { usePresentSite } from "../PresentSiteProvider/PresentSiteProvider";
