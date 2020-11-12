@@ -11,7 +11,8 @@ import {
   find,
   reverse,
 } from 'ramda';
-import { withApollo } from 'react-apollo';
+import { withApollo } from '@apollo/client/react/hoc';
+import { ApolloClient } from '@apollo/client/';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import {
@@ -36,7 +37,6 @@ import RangeSelector from './RangeSelector';
 import TwoLevelPieChart from './TwoLevelPieChart';
 import BarChartComponent from './BarChart'
 import AllowMissingCheckbox from './AllowMissingCheckbox';
-import { ApolloClient } from 'apollo-boost';
 import { capitalize } from 'utils/helpers';
 import {
   ThemedPresearchCard,

@@ -57,7 +57,7 @@ class KeyValueBuckets extends React.Component<KeyValueBucketsProps, KeyValueBuck
       )
 
     } else {
-      let newValueHolder: bucketKeyValuePairType[] = this.state.bucketKeyValuePairs;
+      let newValueHolder: bucketKeyValuePairType[] = this.state.bucketKeyValuePairs.slice();
       newValueHolder[pairIndex] = { ...bucketKeyValuePair, label: e.currentTarget.value }
       let syntheticE = { currentTarget: { name: e.currentTarget.name, value: newValueHolder } }
       this.setState({ bucketKeyValuePairs: newValueHolder },
