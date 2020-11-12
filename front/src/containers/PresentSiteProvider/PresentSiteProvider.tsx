@@ -1,8 +1,6 @@
 import * as React from 'react';
-import {
-    useQuery,
-} from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { useQuery } from '@apollo/client';
+import { gql }  from '@apollo/client';
 import {
     PresentSiteProviderQuery,
     PresentSiteProviderQueryVariables
@@ -148,6 +146,12 @@ export const SITE_VIEW_FRAGMENT = gql`
                         rank
                         rangeStartLabel
                         rangeEndLabel
+                        bucketKeyValuePairs{
+                            key
+                            label
+                        }
+                        showAllowMissing
+                        showFilterToolbar
                     }
                     selected {
                         kind
@@ -175,6 +179,12 @@ export const SITE_VIEW_FRAGMENT = gql`
                         autoSuggest
                         rangeStartLabel
                         rangeEndLabel
+                        bucketKeyValuePairs{
+                            key
+                            label
+                        }
+                        showAllowMissing
+                        showFilterToolbar
                     }
                     selected {
                         kind
@@ -220,6 +230,13 @@ export const SITE_VIEW_FRAGMENT = gql`
                     rank
                     rangeStartLabel
                     rangeEndLabel
+
+                    bucketKeyValuePairs{
+                        key
+                        label
+                    }
+                    showAllowMissing
+                    showFilterToolbar
                 }
                 selected {
                     kind
@@ -247,6 +264,12 @@ export const SITE_VIEW_FRAGMENT = gql`
                     autoSuggest
                     rangeStartLabel
                     rangeEndLabel
+                    bucketKeyValuePairs{
+                        key
+                        label
+                    }
+                    showAllowMissing
+                    showFilterToolbar
                 }
                 selected {
                     kind

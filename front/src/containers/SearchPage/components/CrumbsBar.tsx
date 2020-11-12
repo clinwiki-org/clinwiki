@@ -10,7 +10,7 @@ import {
   ListGroupItem,
 } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-import { ApolloConsumer } from 'react-apollo';
+import { ApolloConsumer } from '@apollo/client';
 import * as Autosuggest from 'react-autosuggest';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
