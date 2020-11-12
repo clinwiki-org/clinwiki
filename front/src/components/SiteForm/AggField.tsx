@@ -146,23 +146,22 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
-      this.props.onAddMutation({
-        currentTarget: { name: e.currentTarget.name, value: value },
-      });
+    this.props.onAddMutation({
+      currentTarget: { name: e.currentTarget.name, value: value },
+    });
   };
   handleCheckboxToggleSortable = value => (e: {
-    currentTarget: { name: string; value: any };
+    currentTarget: { name: string; value: string[] };
   }) => {
-  //This needed additional logic. Was not adding any sortables to the array on check.
-    if (value== true) {
-    //first block handles the case the checkbox is checked and being unchecked. Meaning we should be removing it from our sortables array
+    if (value == true) {
+      //first block handles the case the checkbox is checked and being unchecked. Meaning we should be removing it from our sortables array
       let newSortables = without(this.props.field.name, this.props.sortables)
       this.props.onAddMutation({
         currentTarget: { name: e.currentTarget.name, value: newSortables },
       });
-    }else{
-  
-      let newSortables: any = [this.props.field.name];
+    } else {
+
+      let newSortables: any[] = [this.props.field.name];
       newSortables.concat(this.props.sortables)
       this.props.onAddMutation({
         currentTarget: { name: e.currentTarget.name, value: newSortables },
@@ -471,14 +470,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       </>
     );
   }
-  shouldShowAllowMissing =()=>{
-    if(!this.props.field.showAllowMissing) return false
-    
+  shouldShowAllowMissing = () => {
+    if (!this.props.field.showAllowMissing) return false
+
     return this.props.field.showAllowMissing
   }
-  shouldShowFilterToolbar =()=>{
-    if(!this.props.field.showFilterToolbar) return false
-    
+  shouldShowFilterToolbar = () => {
+    if (!this.props.field.showFilterToolbar) return false
+
     return this.props.field.showFilterToolbar
   }
   renderSortCheckbox = () => {
@@ -498,22 +497,22 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
   }
   renderCheckboxes = () => {
-      return (
-        <>
-          <StyledLabel>Show Allow Missing</StyledLabel>
-          <Checkbox
-            name= {`set:${this.getPath(this.props.configType)}.showAllowMissing`}
-            checked={this.shouldShowAllowMissing()}
-            onChange={this.handleCheckboxToggle(!this.props.field.showAllowMissing)}
-          ></Checkbox>
-          <StyledLabel>Show Filter Toolbar </StyledLabel>
-          <Checkbox
-            name={`set:${this.getPath(this.props.configType)}.showFilterToolbar`}
-            checked={this.shouldShowFilterToolbar()}
-            onChange={this.handleCheckboxToggle(!this.props.field.showFilterToolbar)}
-          ></Checkbox>
-        </>
-      )
+    return (
+      <>
+        <StyledLabel>Show Allow Missing</StyledLabel>
+        <Checkbox
+          name={`set:${this.getPath(this.props.configType)}.showAllowMissing`}
+          checked={this.shouldShowAllowMissing()}
+          onChange={this.handleCheckboxToggle(!this.props.field.showAllowMissing)}
+        ></Checkbox>
+        <StyledLabel>Show Filter Toolbar </StyledLabel>
+        <Checkbox
+          name={`set:${this.getPath(this.props.configType)}.showFilterToolbar`}
+          checked={this.shouldShowFilterToolbar()}
+          onChange={this.handleCheckboxToggle(!this.props.field.showFilterToolbar)}
+        ></Checkbox>
+      </>
+    )
   }
   render() {
     const vis = this.getOptionVisibility();
@@ -532,7 +531,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           {this.renderSortOrder(vis)}
           {this.renderDisplayType(vis)}
           {this.renderSortCheckbox()}
-          {this.renderCheckboxes()}   
+          {this.renderCheckboxes()}
         </ThemedContainer>
       </>
     );
