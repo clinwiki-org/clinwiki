@@ -143,6 +143,10 @@ export const SITE_VIEW_FRAGMENT = gql`
             rank
             rangeStartLabel
             rangeEndLabel
+            bucketKeyValuePairs{
+              key
+              label
+            }
             showAllowMissing
             showFilterToolbar
           }
@@ -172,6 +176,10 @@ export const SITE_VIEW_FRAGMENT = gql`
             autoSuggest
             rangeStartLabel
             rangeEndLabel
+            bucketKeyValuePairs{
+              key
+              label
+            }
             showAllowMissing
             showFilterToolbar
           }
@@ -219,6 +227,10 @@ export const SITE_VIEW_FRAGMENT = gql`
           rank
           rangeStartLabel
           rangeEndLabel
+          bucketKeyValuePairs{
+            key
+            label
+          }
           showAllowMissing
           showFilterToolbar
         }
@@ -248,6 +260,10 @@ export const SITE_VIEW_FRAGMENT = gql`
           autoSuggest
           rangeStartLabel
           rangeEndLabel
+          bucketKeyValuePairs{
+            key
+            label
+          }
           showAllowMissing
           showFilterToolbar
         }

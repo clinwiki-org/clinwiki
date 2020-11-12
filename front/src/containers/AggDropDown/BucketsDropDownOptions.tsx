@@ -7,6 +7,7 @@ import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdate
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 import { FormControl, ControlLabel } from 'react-bootstrap';
 import styled from 'styled-components';
+import { find, propEq } from 'ramda';
 
 interface BucketsDropDownOptionsProps {
   display: FieldDisplay;
@@ -34,7 +35,7 @@ const StyledFormControl = styled(FormControl)`
 class BucketsDropDownOptions extends React.Component<
   BucketsDropDownOptionsProps,
   BucketsDropDownOptionsState
-> {
+  > {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,7 +99,7 @@ class BucketsDropDownOptions extends React.Component<
       updater.toggleFilter(e.target.value);
     };
 
-    const checkOption = bucket => {
+    const checkOption = (bucket, field) => {
       if (updater.isSelected(bucket.key)) {
         activeOptions.push(bucket.key);
         if (this.state.activeOption !== activeOptions[0]) {
@@ -107,13 +108,22 @@ class BucketsDropDownOptions extends React.Component<
           });
         }
       }
-      //console.log("active", this.state.activeOption)
-      return (
-        <option value={bucket.key}>
-          {defaultTo(bucket.key)(bucket.keyAsString)}{' '}
-          {display === 'DROP_DOWN' ? bucket.docCount : null}
-        </option>
-      );
+
+      const bucketKeyValuePair = find(propEq('key', bucket.key))(field.bucketKeyValuePairs)
+      if (!bucketKeyValuePair) {
+        return (
+          <option value={bucket.key}>
+            {defaultTo(bucket.key)(bucket.keyAsString)}{' '}
+            {display === 'DROP_DOWN' ? bucket.docCount : null}
+          </option>
+        );
+      } else {
+        return (
+          <option value={bucket.key}>
+            {`${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}`}
+          </option>
+        );
+      }
     };
 
     if (field?.display === FieldDisplay.DROP_DOWN) {
@@ -137,7 +147,7 @@ class BucketsDropDownOptions extends React.Component<
                     ? visibleOptions.includes(bucket.key)
                     : true)
               )
-              .map(bucket => checkOption(bucket))}
+              .map(bucket => checkOption(bucket, field))}
           </StyledFormControl>
         </div>
       );
@@ -171,7 +181,7 @@ class BucketsDropDownOptions extends React.Component<
                     ? visibleOptions.includes(bucket.key)
                     : true)
               )
-              .map(bucket => checkOption(bucket))}
+              .map(bucket => checkOption(bucket, field))}
           </StyledFormControl>
         </div>
       );
