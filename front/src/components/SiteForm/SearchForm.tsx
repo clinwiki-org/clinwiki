@@ -41,7 +41,6 @@ import {
   SiteFragment_siteView,
 } from 'types/SiteFragment';
 import SearchTemplate from './SearchTemplate';
-import { cpuUsage } from 'process';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
@@ -225,15 +224,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     siteView
   ) => {
     const { name, value } = e.currentTarget;
-    console.log("NAME", name)
-    console.log("Value", value)
     const mutation = createMutation(name, value);
-    console.log("mut",mutation)
     const view = updateView(siteView, this.state.mutations);
-    console.log("Views",view)
-    //erroring  out here on new values
     const currentValue = getViewValueByPath(mutation.path, view);
-    // console.log("CV", currentValue)
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
       console.log('MUTATIONS', this.state.mutations);

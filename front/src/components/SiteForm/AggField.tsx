@@ -206,12 +206,16 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     }
   };
   handleOpen = (kind: 'preselected' | 'visibleOptions' | 'keyValuePair') => () => {
-    if (kind === 'preselected') {
-      this.setState({ isValuesOpen: !this.state.isValuesOpen });
-    } else if(kind=='visibleOptions') {
-      this.setState({ isVisibleOptionsOpen: !this.state.isVisibleOptionsOpen });
-    }else{
-      this.setState({isKeyValuesOpen: !this.state.isKeyValuesOpen })
+    switch(kind){
+      case 'preselected':
+          this.setState({ isValuesOpen: !this.state.isValuesOpen });
+        return;
+      case 'visibleOptions':
+          this.setState({ isVisibleOptionsOpen: !this.state.isVisibleOptionsOpen });
+        return;
+      case 'keyValuePair':
+          this.setState({isKeyValuesOpen: !this.state.isKeyValuesOpen });
+        return;
     }
   };
   renderDisplayLabel = (configType: ConfigType) => {
@@ -385,15 +389,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     return (
       <>
         <ThemedStyledLabel>Values and Helper Text</ThemedStyledLabel>
-        {/* <ThemedCrumbsContainer>
-          {Array.from(visibleOptions).map(value => (
-            <MultiCrumb
-              key={value}
-              values={[value]}
-              onClick={value => visibleOptionsUpdater.removeFilter(value)}
-            />
-          ))}
-        </ThemedCrumbsContainer> */}
         <FiltersContainer>
           <FilterContainer>
             <AggFilterInputUpdateContext.Provider

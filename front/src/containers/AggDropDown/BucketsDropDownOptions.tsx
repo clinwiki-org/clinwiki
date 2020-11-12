@@ -108,9 +108,8 @@ class BucketsDropDownOptions extends React.Component<
           });
         }
       }
-      console.log("active", field.bucketKeyValuePairs)
 
-      let bucketKeyValuePair = find(propEq('key', bucket.key))(field.bucketKeyValuePairs)
+      const bucketKeyValuePair = find(propEq('key', bucket.key))(field.bucketKeyValuePairs)
       if (!bucketKeyValuePair) {
         return (
           <option value={bucket.key}>
@@ -121,15 +120,13 @@ class BucketsDropDownOptions extends React.Component<
       } else {
         return (
           <option value={bucket.key}>
-          {`${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}`}
+            {`${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}`}
           </option>
         );
       }
     };
 
     if (field?.display === FieldDisplay.DROP_DOWN) {
-      console.log("Jimmy", buckets)
-      console.log("Corn", field)
       return (
         <div className="dropDownFacet">
           <StyledFormControl
