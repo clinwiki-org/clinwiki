@@ -150,6 +150,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                             key
                             label
                         }
+                        showAllowMissing
+                        showFilterToolbar
                     }
                     selected {
                         kind
@@ -181,6 +183,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                             key
                             label
                         }
+                        showAllowMissing
+                        showFilterToolbar
                     }
                     selected {
                         kind
@@ -226,10 +230,13 @@ export const SITE_VIEW_FRAGMENT = gql`
                     rank
                     rangeStartLabel
                     rangeEndLabel
+
                     bucketKeyValuePairs{
                         key
                         label
                     }
+                    showAllowMissing
+                    showFilterToolbar
                 }
                 selected {
                     kind
@@ -261,6 +268,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         key
                         label
                     }
+                    showAllowMissing
+                    showFilterToolbar
                 }
                 selected {
                     kind

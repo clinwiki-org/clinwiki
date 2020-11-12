@@ -11,6 +11,9 @@ module Types
     field :range_start_label, String, null: true
     field :range_end_label, String, null: true
     field :bucket_key_value_pairs, [BucketKeyValuePairsType], null: true
+    field :show_allow_missing,  Boolean, null: true
+    field :show_filter_toolbar,  Boolean, null: true
+
 
     def display
       object[:display]
@@ -32,8 +35,15 @@ module Types
     def range_end_label
       object[:rangeEndLabel]
     end
+
     def bucket_key_value_pairs
       object[:bucketKeyValuePairs]
+
+    def show_allow_missing
+      object[:showAllowMissing]
+    end
+    def show_filter_toolbar
+      object[:showFilterToolbar]
     end
   end
 end

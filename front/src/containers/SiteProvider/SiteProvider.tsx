@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { gql, useQuery }  from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import {
   SiteProviderQuery,
   SiteProviderQueryVariables,
@@ -147,6 +147,8 @@ export const SITE_VIEW_FRAGMENT = gql`
               key
               label
             }
+            showAllowMissing
+            showFilterToolbar
           }
           selected {
             kind
@@ -178,6 +180,8 @@ export const SITE_VIEW_FRAGMENT = gql`
               key
               label
             }
+            showAllowMissing
+            showFilterToolbar
           }
           selected {
             kind
@@ -227,6 +231,8 @@ export const SITE_VIEW_FRAGMENT = gql`
             key
             label
           }
+          showAllowMissing
+          showFilterToolbar
         }
         selected {
           kind
@@ -258,6 +264,8 @@ export const SITE_VIEW_FRAGMENT = gql`
             key
             label
           }
+          showAllowMissing
+          showFilterToolbar
         }
         selected {
           kind
