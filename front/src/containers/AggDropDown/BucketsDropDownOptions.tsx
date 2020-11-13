@@ -109,7 +109,7 @@ class BucketsDropDownOptions extends React.Component<
         }
       }
 
-      const bucketKeyValuePair = find(propEq('key', bucket.key))(field.bucketKeyValuePairs)
+      const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', bucket.key))(field.bucketKeyValuePairs) : false;
       if (!bucketKeyValuePair) {
         return (
           <option value={bucket.key}>
