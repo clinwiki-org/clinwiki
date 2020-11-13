@@ -38,7 +38,8 @@ module Types
 
     def bucket_key_value_pairs
       object[:bucketKeyValuePairs]
-
+    end
+    
     def show_allow_missing
       object[:showAllowMissing]
     end

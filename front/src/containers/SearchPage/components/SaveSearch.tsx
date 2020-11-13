@@ -1,6 +1,6 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
+import { graphql }  from '@apollo/client/react/hoc' ;
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
@@ -10,7 +10,7 @@ import Snackbar from 'components/Snackbar';
 const CREATE_SAVED_SEARCH_MUTATION = gql`
   mutation CreateSavedSearchMutation($searchHash: String!){
   createSavedSearch(input: {
-    shortHash: $searchHash
+    searchHash: $searchHash
   }) {
     savedSearch {
       shortLink
@@ -57,6 +57,9 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
     const setShowLoginModal = showLoginModal => {
       this.setState({ showLoginModal });
     };
+    
+    console.log("SaveSearch -> render -> searchHash", searchHash);
+    console.log(typeof searchHash)
 
     const snackbarRef = React.createRef();
     const  _showSnackbarHandler = () => {
@@ -68,7 +71,7 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
       if (user) {
         console.log("SAVING Search to User ID: ", user.id)
           const { data } = await mutate({
-          variables: { shortHash: searchHash },
+          variables: { searchHash: searchHash },
         });
         //TODO Give user notification / snackbar. FIX TS Errors
         //_showSnackbarHandler();

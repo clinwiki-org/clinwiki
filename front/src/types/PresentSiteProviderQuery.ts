@@ -177,6 +177,12 @@ export interface PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fi
   values: string[];
 }
 
+export interface PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fields {
   __typename: "SiteAggField";
   order: PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fields_order | null;
@@ -189,6 +195,9 @@ export interface PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fi
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface PresentSiteProviderQuery_site_siteView_search_presearch_aggs_selected {
@@ -221,6 +230,12 @@ export interface PresentSiteProviderQuery_site_siteView_search_presearch_crowdAg
   values: string[];
 }
 
+export interface PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields {
   __typename: "SiteAggField";
   order: PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_order | null;
@@ -233,6 +248,9 @@ export interface PresentSiteProviderQuery_site_siteView_search_presearch_crowdAg
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs_selected {
@@ -293,6 +311,12 @@ export interface PresentSiteProviderQuery_site_siteView_search_aggs_fields_visib
   values: string[];
 }
 
+export interface PresentSiteProviderQuery_site_siteView_search_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface PresentSiteProviderQuery_site_siteView_search_aggs_fields {
   __typename: "SiteAggField";
   order: PresentSiteProviderQuery_site_siteView_search_aggs_fields_order | null;
@@ -305,6 +329,9 @@ export interface PresentSiteProviderQuery_site_siteView_search_aggs_fields {
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: PresentSiteProviderQuery_site_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface PresentSiteProviderQuery_site_siteView_search_aggs_selected {
@@ -337,6 +364,12 @@ export interface PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields_
   values: string[];
 }
 
+export interface PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields {
   __typename: "SiteAggField";
   order: PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields_order | null;
@@ -349,6 +382,9 @@ export interface PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields 
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface PresentSiteProviderQuery_site_siteView_search_crowdAggs_selected {

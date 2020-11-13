@@ -2,10 +2,10 @@ import * as FontAwesome from 'react-fontawesome';
 import * as React from 'react';
 import {
   Mutation,
-  MutationComponentOptions,
-  MutationFunction,
-  useQuery,
-} from 'react-apollo';
+  MutationComponentOptions
+} from '@apollo/client/react/components';
+
+import {useQuery} from '@apollo/client';
 import {
   StyledProfileForm,
   StyledProfileLabel,
