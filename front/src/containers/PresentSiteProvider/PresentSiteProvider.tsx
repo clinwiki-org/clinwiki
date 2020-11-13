@@ -336,9 +336,6 @@ export function withPresentSite2<T>(
                                 site={site}
                                 refetch={refetch}
                                 presentSiteView={presentSite}
-                                // storeData={this.storeData}
-                                // //@ts-ignore
-                                // prevData={this.state.prevData}
                             />
                         );
                     }}
@@ -355,12 +352,9 @@ interface UsePresentSiteProps {
 }
 
 export function usePresentSite(props?: UsePresentSiteProps) {
-        // console.log("USE Present Site PROPS", props);
-        //console.trace();
     const result = useQuery<PresentSiteProviderQuery>(QUERY, {
         variables: { id: props?.id, url: props?.url },
     });
-
     console.log('RESULT from Present Site Provider')
     if (!result.data) return { ...result, site: null, presentSiteView: null };
     const site = result?.data?.site;

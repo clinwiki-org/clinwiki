@@ -210,7 +210,6 @@ class Aggs extends React.Component<AggsProps> {
         <QueryComponent
           query={QUERY}
           variables={searchParams}
-          // fetchPolicy={"no-cache"}
         >
           {({ data, loading, error }) => {
        
@@ -283,6 +282,7 @@ class Aggs extends React.Component<AggsProps> {
             }
 
             if (presearch && preSearchAggs) {
+              console.log('PRESEARCH AGGS')
               return (
                 <PresearchContainer>
                   {this.getAggs(this.props.presentSiteView, true).map(k =>
@@ -374,7 +374,7 @@ class Aggs extends React.Component<AggsProps> {
               );
             }
             if (!isEmpty(aggs) && !isNil(aggs)) {
-              console.log('plain old facet bar')
+              // console.log('plain old facet bar')
               return (
                 <div>
                   <div>

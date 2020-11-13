@@ -211,20 +211,14 @@ const changeFilter = (add: boolean) => (
   key: string,
   isCrowd?: boolean
 ) => (params: SearchParams) => {
-  console.log("REMOVe  Filter")
-
-  console.log("AggName", aggName)
-  console.log("key", key)
-  console.log("isCrowd", isCrowd)
-  console.log("params",params)
-
+  console.log("REMOVe  Filter", aggName)
   const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
   const lens = lensPath([propName]);
   return (over(
     lens,
     //@ts-ignore
     (aggs: AggFilterInput[]) => {
-     //console.log("AGGGGS", aggs)
+     console.log("AGGGGS", aggs)
       const index = findIndex(propEq('field', aggName), aggs);
       if (index === -1 && add) {
         //console.log("HIT IF!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ")
@@ -286,6 +280,7 @@ const addSearchTerm = (term: string) => (params: SearchParams) => {
 };
 
 const removeSearchTerm = (term: string) => (params: SearchParams) => {
+  console.log('REMOVING CRUMBß')
   const children = reject(
     propEq('key', term),
     params.q.children || []
@@ -297,10 +292,15 @@ const removeSearchTerm = (term: string) => (params: SearchParams) => {
   };
 };
 
-const changePage = (pageNumber: number) => (params: SearchParams) => ({
-  ...params,
-  page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / params.pageSize) - 1),
-});
+const changePage = (pageNumber: number) => (searchParams: SearchParams) => (
+  () => {
+    console.log('CHANGING PAGE')
+    return {
+      ...searchParams,
+      page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / searchParams.pageSize) - 1),
+    }
+  }
+  );
 
 const paramsUrl = useUrlParams()
 
@@ -489,7 +489,7 @@ function SearchPage (props: SearchPageProps) {
     // console.log('redner aggs', params)
     const opened = openedAgg && openedAgg.name;
     const openedKind = openedAgg && openedAgg.kind;
-    const { aggFilters = [], crowdAggFilters = [] } = params || {};
+    const { aggFilters = [], crowdAggFilters = [] } = searchParams || {};
     return (
       <Aggs
         filters={transformFilters(aggFilters)}
@@ -670,6 +670,7 @@ function SearchPage (props: SearchPageProps) {
           preSearchAggs={preSearchAggs}
           preSearchCrowdAggs={preSearchCrowdAggs}
           presentSiteView={presentSiteView}
+          updateSearchParams={updateSearchParams}
         />
         {presearchButton.name && (
           <ThemedButton
@@ -688,23 +689,25 @@ function SearchPage (props: SearchPageProps) {
     );
   };
   
-  const renderCrumbs = (siteView: SiteViewFragment, params) => {
+  const renderCrumbs = (siteView: SiteViewFragment, searchParams) => {
     // const { totalRecords } = state;
     const q: string[] =
-      params?.q.key === '*'
+      searchParams?.q.key === '*'
         ? []
-        : (params?.q.children || []).map(prop('key'));
+        : (searchParams?.q.children || []).map(prop('key'));
 
-    const searchParams = {
-      ...params!,
+    const handledParams = {
+      ...searchParams!,
       q,
     };
+
+    console.log('crumbs params post q transform', handledParams)
 
     const { presentSiteView } = props;
     const hash = getHashFromLocation();
     return (
       <CrumbsBar
-        searchParams={searchParams}
+        searchParams={handledParams}
         onBulkUpdate={handleBulkUpdateClick}
         removeFilter={pipe(removeFilter, handleUpdateParams)}
         addSearchTerm={pipe(addSearchTerm, handleUpdateParams)}
@@ -734,14 +737,15 @@ function SearchPage (props: SearchPageProps) {
       // Therefore we close it to refresh later on open
       setOpenedAgg({name: null, kind: null});
     }
-
-    /// with hooks we now have a param var but we are also passing new params in using the same name, most of our setParams calls now need to be merging this data so we need to make some naming chnages inorder ot use spread correclty.
-    setParams({...params})
+    // with hooks we now have a param var but we are also passing new params in using the same name, most of our setParams calls now need to be merging this data so we need to make some naming chnages inorder ot use spread correclty.
+    // setParams({...params})
       // WE MAY NEED TO USE  use effect here as the update searchParams used to be in a setState callback. 
     updateSearchParams(params);
   };
 
   const afterSearchParamsUpdate = async () => {
+    // handles the query to get the hash and update the url. 
+
     const variables = params ;
     console.log('variables', variables)
     const { data } = await props.mutate({ variables });
@@ -791,20 +795,15 @@ function SearchPage (props: SearchPageProps) {
     console.log('1 updating params', params)
     setParams({...params, ...searchParams})
     console.log('2 updating params', params)
-
-    // setState({
-    //   ...state,
-    //   params: { ...(state?.params || {}), ...params },
-    // });
-    // const variables = { ...state.params, ...params };
-  
-    //SEE LINE ABOVE THIS COULD BE INTERESTING AND OR REQUIRE A USEEFFECT HOOK
   };
 
+  //Only run mutation query if params
   useEffect(() => {
     console.log('params in effect', params)
     afterSearchParamsUpdate()
   }, [params])
+
+
 
   /// this is everyting that used to be in componentDidMount
   useEffect(() => {
@@ -826,7 +825,8 @@ function SearchPage (props: SearchPageProps) {
       setParams(
         {
           /// Q below is messed up and needs to get q from above. 
-            q: {key: 'AND', children: []},
+          //@ts-ignore
+            q: q,
             aggFilters: [],
             crowdAggFilters: [],
             sorts: [],
