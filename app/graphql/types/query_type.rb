@@ -85,7 +85,6 @@ module Types
     }.freeze
 
     def search(search_hash: nil, params: nil)
-      byebug
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       link = ShortLink.from_long( context[:search_params])
 #      saved = is_saved? from params if present (or if name_label present?)
@@ -94,7 +93,6 @@ module Types
 #      name_default = context[:search_params][:agg_filters][0][:values].join('|')
       name_default = build_name_default context[:search_params]
       name_default.delete_suffix!('|')
-      byebug
       hash = { user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default }
 #      SearchLog.create(user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default )
       SearchLog.find_or_create_by hash
@@ -103,7 +101,6 @@ module Types
     end
 
     def build_name_default(search_info)
-#      byebug
       entries = 0
       result = ""
       if search_info[:q][:children].present?
@@ -113,7 +110,6 @@ module Types
       if search_info[:agg_filters].present?
         search_info[:agg_filters].each do |filter|
           filter[:values].each do |value|
-#            byebug
             result = result + "#{value}|" if entries <= 4 
             entries = entries + 1
           end
