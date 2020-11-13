@@ -177,6 +177,12 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch_ag
   values: string[];
 }
 
+export interface CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields {
   __typename: "SiteAggField";
   order: CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_order | null;
@@ -189,6 +195,9 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch_ag
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_selected {
@@ -221,6 +230,12 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch_cr
   values: string[];
 }
 
+export interface CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields {
   __typename: "SiteAggField";
   order: CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields_order | null;
@@ -233,6 +248,9 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch_cr
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_selected {
@@ -293,6 +311,12 @@ export interface CreateSiteMutation_createSite_site_siteView_search_aggs_fields_
   values: string[];
 }
 
+export interface CreateSiteMutation_createSite_site_siteView_search_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CreateSiteMutation_createSite_site_siteView_search_aggs_fields {
   __typename: "SiteAggField";
   order: CreateSiteMutation_createSite_site_siteView_search_aggs_fields_order | null;
@@ -305,6 +329,9 @@ export interface CreateSiteMutation_createSite_site_siteView_search_aggs_fields 
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface CreateSiteMutation_createSite_site_siteView_search_aggs_selected {
@@ -337,6 +364,12 @@ export interface CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fi
   values: string[];
 }
 
+export interface CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields {
   __typename: "SiteAggField";
   order: CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields_order | null;
@@ -349,6 +382,9 @@ export interface CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fi
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface CreateSiteMutation_createSite_site_siteView_search_crowdAggs_selected {
@@ -541,6 +577,12 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_a
   values: string[];
 }
 
+export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields {
   __typename: "SiteAggField";
   order: CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_order | null;
@@ -553,6 +595,9 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_a
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_selected {
@@ -585,6 +630,12 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_c
   values: string[];
 }
 
+export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields {
   __typename: "SiteAggField";
   order: CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields_order | null;
@@ -597,6 +648,9 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_c
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_selected {
@@ -657,6 +711,12 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_aggs_fields
   values: string[];
 }
 
+export interface CreateSiteMutation_createSite_site_siteViews_search_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CreateSiteMutation_createSite_site_siteViews_search_aggs_fields {
   __typename: "SiteAggField";
   order: CreateSiteMutation_createSite_site_siteViews_search_aggs_fields_order | null;
@@ -669,6 +729,9 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_aggs_fields
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteViews_search_aggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface CreateSiteMutation_createSite_site_siteViews_search_aggs_selected {
@@ -701,6 +764,12 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_f
   values: string[];
 }
 
+export interface CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields {
   __typename: "SiteAggField";
   order: CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields_order | null;
@@ -713,6 +782,9 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_f
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
+  bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
+  showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
 }
 
 export interface CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_selected {

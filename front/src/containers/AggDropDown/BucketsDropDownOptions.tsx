@@ -112,14 +112,14 @@ class BucketsDropDownOptions extends React.Component<
       const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', bucket.key))(field.bucketKeyValuePairs) : false;
       if (!bucketKeyValuePair) {
         return (
-          <option value={bucket.key}>
+          <option key={bucket.key + bucket.count} value={bucket.key}>
             {defaultTo(bucket.key)(bucket.keyAsString)}{' '}
             {display === 'DROP_DOWN' ? bucket.docCount : null}
           </option>
         );
       } else {
         return (
-          <option value={bucket.key}>
+          <option key={bucket.key + bucket.count} value={bucket.key}>
             {`${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}`}
           </option>
         );
