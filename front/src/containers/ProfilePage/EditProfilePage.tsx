@@ -339,11 +339,15 @@ class EditProfilePage extends React.Component<
             <UserSavedSearches
               user={this.props.user}
             />
-            
+          </ThemedSearchContainer>
+
+         {/* 
+          //TODO Commented out Search Logs, Need to add Delete User Search Log History Mutation.
+         <ThemedSearchContainer>
             <UserSearchLogs
               user={this.props.user}
             />
-          </ThemedSearchContainer>
+          </ThemedSearchContainer> */}
 
           <h2>My Contributions</h2>
           <ThemedSearchContainer>

@@ -58,9 +58,6 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
       this.setState({ showLoginModal });
     };
     
-    console.log("SaveSearch -> render -> searchHash", searchHash);
-    console.log(typeof searchHash)
-
     const snackbarRef = React.createRef();
     const  _showSnackbarHandler = () => {
       //@ts-ignore
@@ -69,7 +66,6 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
 
     async function onClick() {
       if (user) {
-        console.log("SAVING Search to User ID: ", user.id)
           const { data } = await mutate({
           variables: { searchHash: searchHash },
         });
