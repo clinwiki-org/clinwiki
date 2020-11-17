@@ -490,6 +490,7 @@ function SearchPage (props: SearchPageProps) {
     const opened = openedAgg && openedAgg.name;
     const openedKind = openedAgg && openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = searchParams || {};
+    console.log('PROPS SITE', props.site)
     return (
       <Aggs
         filters={transformFilters(aggFilters)}
@@ -508,6 +509,7 @@ function SearchPage (props: SearchPageProps) {
         presentSiteView={siteView}
         searchParams={params}
         updateSearchParams={updateSearchParams}
+        site={props.site}
       />
     );
   };
@@ -622,6 +624,8 @@ function SearchPage (props: SearchPageProps) {
       presentSiteView.search.presearch.crowdAggs.selected.values;
     const presearchButton = presentSiteView.search.presearch.button;
     const presearchText = presentSiteView.search.presearch.instructions;
+    const opened = openedAgg && openedAgg.name;
+    const openedKind = openedAgg && openedAgg.kind;
 
     const { pageViewUrl } = getPageView();
 
@@ -671,6 +675,10 @@ function SearchPage (props: SearchPageProps) {
           preSearchCrowdAggs={preSearchCrowdAggs}
           presentSiteView={presentSiteView}
           updateSearchParams={updateSearchParams}
+          site={props.site}
+          opened={opened}
+          openedKind={openedKind}
+          onOpen={handleOpenAgg}
         />
         {presearchButton.name && (
           <ThemedButton

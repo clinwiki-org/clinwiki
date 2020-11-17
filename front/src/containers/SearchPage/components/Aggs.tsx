@@ -431,4 +431,4 @@ class Aggs extends React.Component<AggsProps> {
   }
 }
 
-export default withSearchParams(Aggs);
+export default Aggs;
