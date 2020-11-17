@@ -394,6 +394,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const field = findFields(agg, presentSiteView, presearch);
     const showAllowMissing = field?.showAllowMissing
     const showFilterToolbar = field?.showFilterToolbar
+
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -432,7 +433,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return (
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
-          {showFilterToolbar && (<Filter
+          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -472,7 +473,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return (
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
-          {showFilterToolbar && (<Filter
+          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -615,7 +616,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     } else if (field?.display === FieldDisplay.BAR_CHART) {
       return (
         <ChartWrapper>
-          {showFilterToolbar && (<Filter
+          {(showFilterToolbar == true || showFilterToolbar == null)  && (<Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -658,7 +659,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return (
       <>
         <PresearchPanel>
-          {showFilterToolbar && (<Filter
+          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -700,7 +701,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return (
       <>
         <PresearchFilter>
-          {showFilterToolbar && (<Filter
+          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
