@@ -9,7 +9,7 @@ import MailMerge from '../MailMerge/MailMerge';
 import { GraphqlSchemaType } from '../MailMerge/SchemaSelector';
 import { fromPairs } from 'ramda';
 import { PREFETCH_QUERY } from 'containers/StudyPage/StudyPage';
-import { useQuery } from '@apollo/client';
+import { useQuery, gql} from '@apollo/client';
 import { SchemaType } from 'components/MailMerge/SchemaSelector';
 import { StudyPagePrefetchQuery } from 'types/StudyPagePrefetchQuery';
 import { camelCase } from 'utils/helpers';
@@ -32,7 +32,7 @@ const default_nctid = 'NCT00222898';
 
 const getQuery = (name: string, frag: string) => {
   frag = frag || `fragment ${name} on SearchPageSearchQuery { q, page, pageSize, sorts, aggFilters, crowdAggFilters }`;
-  console.log(frag)
+  console.log("YO",frag)
   return gql`
   query SearchPageSearchQuery(
     $q: SearchQueryInput!
@@ -130,8 +130,9 @@ function SearchTemplate(props: Props) {
         sample={study?.study || {}}
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
-        fragmentName={fragmentName}
-        fragmentClass="ElasticStudy"
+        //fragmentName={fragmentName}
+        fragmentName={"TEST_FRAG"}
+        fragmentClass={"ElasticStudy"}
         onFragmentChanged={setFragment}
       />
     </Container>

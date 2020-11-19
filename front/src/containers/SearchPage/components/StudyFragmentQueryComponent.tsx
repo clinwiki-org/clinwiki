@@ -1,6 +1,5 @@
 import React, { useState }from 'react';
-import { useQuery } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { gql, useQuery }  from '@apollo/client';
 import styled from 'styled-components';
 import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 

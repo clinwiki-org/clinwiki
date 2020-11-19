@@ -459,14 +459,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
 
     }
   }
-  handleAggsUpdated = (data?: SearchPageSearchQuery) => {
-    if (data?.search) {
-      this.props.onAggsUpdate(
-        this.transformAggs(data.search.aggs || []),
-        this.transformCrowdAggs(data.crowdAggs.aggs || [])
-      );
-    }
-  };
 
   sortHelper = (sorts, params) => {
     this.props.onUpdateParams(changeSorted(sorts));

@@ -8,6 +8,9 @@ interface Props extends Omit<ViewProps, 'context'> {
   schema: SchemaType;
   sample?: object;
   onTemplateChanged: (template: string) => void;
+  fragmentName?: string;
+  fragmentClass?: string;
+  onFragmentChanged?: any;
 }
 
 const defaultStyle: React.CSSProperties = {
