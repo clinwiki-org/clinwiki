@@ -17,27 +17,22 @@ interface MasonryCardsProps {
   // height: number;
   // width: number;
   theme: Theme;
-  fragmentUpdated: any;
   // columns:any;
 }
 
 interface MasonryCardsState {
   loading: boolean;
-  fragment: any;
 }
 
 class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState> {
   constructor(props: MasonryCardsProps) {
     super(props);
-    this.state = { loading: this.props.loading, fragment:'' };
+    this.state = { loading: this.props.loading };
   }
 
   componentDidUpdate(prevState) {
     if (this.state.loading !== this.props.loading) {
       this.setState({ loading: this.props.loading });
-    }
-    if(this.state.fragment!== prevState.fragment){
-      this.props.fragmentUpdated(this.state.fragment)
     }
   }
 
@@ -53,9 +48,6 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     display: "flex",
     flexWrap: "wrap",
   };
-  setFragment=(fragment)=>{
-    this.setState({fragment})
-  }
 
   cardRenderer = (
   //   {
@@ -87,16 +79,12 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
             style={this.cardStyle}
             template={this.props.template}
             context={listItems[index]}
-            fragmentName={'search_form_fragment'}
-            fragmentClass="ElasticStudy"
-            onFragmentChanged={(e)=>this.setFragment(e)}
           />
         </ThemedSearchCard>
     );
   };
 
   render() {
-    
     if (this.props.data) {
       const cards =  this.props.data.map((cardData, index) => this.cardRenderer(cardData, index))
     

@@ -199,7 +199,6 @@ interface SearchView2Props {
 interface SearchView2State {
   totalResults: any;
   prevResults: any | null;
-  fragment: any;
 }
 
 class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
@@ -210,7 +209,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     this.state = {
       totalResults: 0,
       prevResults: null,
-      fragment:'',
     };
   }
 
@@ -300,7 +298,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   template={template}
                   // height={height}
                   // width={width}
-                  fragmentUpdated={this.handleFragmentUpdated}
                 />
      
           </div>
@@ -385,7 +382,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 template={template}
                 // height={height}
                 // width={width}
-                fragmentUpdated={this.handleFragmentUpdated}
 
               />
             {/* )}
@@ -453,12 +449,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       this.props.presentSiteView.url || 'default'
     );
   };
-  handleFragmentUpdated=(fragment)=>{
-    if(this.state.fragment!== fragment){
-      this.setState({fragment})
-
-    }
-  }
 
   sortHelper = (sorts, params) => {
     this.props.onUpdateParams(changeSorted(sorts));
@@ -555,15 +545,9 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             >
             {({ data, loading, error }) => {
               return (
-                <StudyFragmentQueryComponent
-                  fragment={this.state.fragment}
-                  params={this.props.params}
-
-                >
                 <ThemedSearchContainer>
                   {this.renderSearch({ data, loading, error })}
                 </ThemedSearchContainer>
-                </StudyFragmentQueryComponent>
               );
             }}
           </QueryComponent>

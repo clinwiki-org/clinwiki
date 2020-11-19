@@ -16,11 +16,6 @@ export interface Props {
   style?: object;
   islands?: Record<string, IslandConstructor>;
   refetchQuery?:any;
-  fragmentName?:string;
-  fragmentClass?:string;
-  onFragmentChanged?:any;
-
-
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',

@@ -60,9 +60,6 @@ function SearchTemplate(props: Props) {
         sample={study?.study || {}}
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
-        fragmentName={fragmentName}
-        fragmentClass={"ElasticStudy"}
-        //onFragmentChanged={setFragment}
       />
     </Container>
   );
