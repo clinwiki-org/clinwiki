@@ -1,12 +1,18 @@
 import React, { useState }from 'react';
 import { FormControl } from 'react-bootstrap';
-import { useQuery } from 'react-apollo';
-import { gql } from 'apollo-boost';
+// import { useQuery } from 'react-apollo';
+// import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { BeatLoader } from 'react-spinners';
 import MailMerge from '../MailMerge/MailMerge';
 import { GraphqlSchemaType } from '../MailMerge/SchemaSelector';
+import { fromPairs } from 'ramda';
+import { PREFETCH_QUERY } from 'containers/StudyPage/StudyPage';
+import { useQuery } from '@apollo/client';
+import { SchemaType } from 'components/MailMerge/SchemaSelector';
+import { StudyPagePrefetchQuery } from 'types/StudyPagePrefetchQuery';
+import { camelCase } from 'utils/helpers';
 
 interface Props {
   template: string;

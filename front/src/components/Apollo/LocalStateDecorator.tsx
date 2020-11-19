@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Query } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { Query } from '@apollo/client/react/components';
+import { gql }  from '@apollo/client';
 
 const LOCAL_QUERY = gql`
   query LocalQuery {

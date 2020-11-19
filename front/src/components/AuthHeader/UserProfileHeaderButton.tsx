@@ -3,9 +3,10 @@ import styled, { keyframes } from 'styled-components';
 import { logout, getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
-import SiteProvider from 'containers/SiteProvider';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { UserFragment } from 'types/UserFragment';
+import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
+
 
 const UserImage = styled.img`
   width: 25px;
@@ -150,20 +151,23 @@ animation-play-state: running;
 
 `
 
+
+
 interface UserProfileHeaderButtonProps {
   user: UserFragment | null;
   history: History;
+  data: AdminViewsProviderQuery | undefined;
 }
 
 interface UserProfileHeaderButtonState {
   showDropdown: boolean;
-  flashAnimation:boolean;
+  flashAnimation: boolean;
 }
 
 class UserProfileHeaderButton extends React.PureComponent<
   UserProfileHeaderButtonProps,
   UserProfileHeaderButtonState
-> {
+  > {
   private dropDown?: HTMLDivElement;
   constructor(props) {
     super(props);
@@ -222,9 +226,9 @@ class UserProfileHeaderButton extends React.PureComponent<
     );
     return adminViews.map((view) => {
       return (
-        <DropDownItem onClick={() => this.handleAdminClick(view.url)}>
+        <ThemedDropDownItem onClick={() => this.handleAdminClick(view.url)}>
           {view.name}
-        </DropDownItem>
+        </ThemedDropDownItem>
       );
     });
   };
@@ -234,7 +238,7 @@ class UserProfileHeaderButton extends React.PureComponent<
       return (
         <UserImage
           style={{ backgroundImage: `url(${url})` }}
-          // alt="profile_img"
+        // alt="profile_img"
         />
       );
     }
@@ -254,9 +258,9 @@ class UserProfileHeaderButton extends React.PureComponent<
   componentWillUnmount() {
     document.addEventListener('mousedown', this.handleClick, false);
   }
-  componentDidUpdate(prevProps){
-    if(prevProps!==this.props){
-      this.setState({flashAnimation:true})
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.setState({ flashAnimation: true })
       setTimeout(this.resetHelperFunction, 2500)
     }
   }
@@ -282,50 +286,47 @@ class UserProfileHeaderButton extends React.PureComponent<
     }
     if (user) {
       return (
-        <SiteProvider>
-          {(site) => {
-            return (
-              <div
-                ref={(node: any) => {
-                  this.dropDown = node;
-                }}>
-                <ThemedUserButton onClick={this.toggleMenuDropdown}>
-                  {this.renderUserImage(user.pictureUrl)}
-                  <ContributionContainer>
-                    <ContributionCount>{user.contributions}</ContributionCount>
-                    <FontAwesome
-                      name="pencil"
-                      style={{ color: 'white', marginLeft: 2 }}
-                    />
-                  </ContributionContainer>
-                {this.state.flashAnimation===true ?
-                <HeaderAnimation>
+        <div
+          ref={(node: any) => {
+            this.dropDown = node;
+          }}>
+          <ThemedUserButton onClick={this.toggleMenuDropdown}>
+            {this.renderUserImage(user.pictureUrl)}
+            <ContributionContainer>
+              <ContributionCount>{user.contributions}</ContributionCount>
+              <FontAwesome
+                name="pencil"
+                style={{ color: 'white', marginLeft: 2 }}
+              />
+            </ContributionContainer>
+            {this.state.flashAnimation === true ?
+              <HeaderAnimation>
                 <FontAwesome
+                  name="star"
+                  style={{
+                    color: getStarColor(user.rank),
+                    fontSize: 18,
+                  }}
+                />
+              </HeaderAnimation>
+              :
+              <FontAwesome
                 name="star"
                 style={{
                   color: getStarColor(user.rank),
                   fontSize: 18,
                 }}
               />
-              </HeaderAnimation>
-              :
-              <FontAwesome
-              name="star"
-              style={{
-                color: getStarColor(user.rank),
-                fontSize: 18,
-              }}
-            />
-              }
+            }
 
-                  <FontAwesome
-                    name="chevron-down"
-                    style={{ color: 'white', fontSize: 10 }}
-                  />
-                </ThemedUserButton>
-                {showDropdown && (
-                  <DropDownMenu>
-                    {/* <DropDownEmail>
+            <FontAwesome
+              name="chevron-down"
+              style={{ color: 'white', fontSize: 10 }}
+            />
+          </ThemedUserButton>
+          {showDropdown && (
+            <DropDownMenu>
+              {/* <DropDownEmail>
                     {this.props.user?.email && `Signed in as:`}
                   </DropDownEmail>
                   <DropDownEmail>
@@ -333,28 +334,25 @@ class UserProfileHeaderButton extends React.PureComponent<
                       {this.props.user?.email && `${this.props.user.email}`}
                     </b>
                   </DropDownEmail> */}
-                    <ThemedDropDownItem onClick={this.handleSitesClick}>
-                      Sites
+              <ThemedDropDownItem onClick={this.handleSitesClick}>
+                Sites
                     </ThemedDropDownItem>
-                    <ThemedDropDownItem onClick={this.handleProfileClick}>
-                      Profile
+              <ThemedDropDownItem onClick={this.handleProfileClick}>
+                Profile
                     </ThemedDropDownItem>
-                    {this.props.user &&
-                      this.props.user.roles.includes('admin') && (
-                        <ThemedDropDownItem onClick={this.handleWorkflowsClick}>
-                          Workflows
-                        </ThemedDropDownItem>
-                      )}
-                    {this.renderAdminMenuItems(site)}
-                    <ThemedDropDownItem onClick={this.handleSignOutClick}>
-                      Log Out
-                    </ThemedDropDownItem>
-                  </DropDownMenu>
+              {this.props.user &&
+                this.props.user.roles.includes('admin') && (
+                  <ThemedDropDownItem onClick={this.handleWorkflowsClick}>
+                    Workflows
+                  </ThemedDropDownItem>
                 )}
-              </div>
-            );
-          }}
-        </SiteProvider>
+              {this.renderAdminMenuItems(this.props.data?.site)}
+              <ThemedDropDownItem onClick={this.handleSignOutClick}>
+                Log Out
+                    </ThemedDropDownItem>
+            </DropDownMenu>
+          )}
+        </div>
       );
     }
   }

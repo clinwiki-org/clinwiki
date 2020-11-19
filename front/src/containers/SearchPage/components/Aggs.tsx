@@ -8,17 +8,23 @@ import {
   reduce,
   pathOr,
 } from 'ramda';
+import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { gql }  from '@apollo/client';
 import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,
   AggCallback,
   AggregateAggCallback,
-  SearchParams,
+  SearchParamsAsInput,
   AggKind,
   AggFilterMap,
 } from '../Types';
+import {
+  SearchPageAggsQuery,
+  SearchPageAggsQueryVariables,
+} from 'types/SearchPageAggsQuery';
 import { BeatLoader } from 'react-spinners';
-import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import styled from 'styled-components';
 import AggFilterInputUpdater from './AggFilterInputUpdater';
@@ -26,7 +32,56 @@ import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
 
-const getVisibleOptionsByName: (SiteFragment) => any = compose(
+const QUERY = gql`
+  query SearchPageAggsQuery(
+    $q: SearchQueryInput!
+    $page: Int
+    $pageSize: Int
+    $sorts: [SortInput!]
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+  ) {
+    crowdAggs: aggBuckets(
+      params: {
+        q: $q
+        page: 0
+        pageSize: 100000
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        agg: "front_matter_keys"
+      }
+    ) {
+      aggs {
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+    search(
+      params: {
+        q: $q
+        page: $page
+        pageSize: $pageSize
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+      }
+    ) {
+      recordsTotal
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+  }
+`;
+const getVisibleOptionsByName: (PresentSiteFragment) => any = compose(
   reduce(
     (byName, { name, visibleOptions }) => ({
       ...byName,
@@ -37,7 +92,7 @@ const getVisibleOptionsByName: (SiteFragment) => any = compose(
 
   pathOr([], ['search', 'crowdAggs', 'fields'])
 );
-const getVisibleOptionsByNamePresearch: (SiteFragment) => any = compose(
+const getVisibleOptionsByNamePresearch: (PresentSiteFragment) => any = compose(
   reduce(
     (byName, { name, visibleOptions }) => ({
       ...byName,
@@ -50,8 +105,6 @@ const getVisibleOptionsByNamePresearch: (SiteFragment) => any = compose(
 );
 interface AggsProps {
   key?: any;
-  aggs: AggBucketMap;
-  crowdAggs: AggBucketMap;
   // selected
   filters: AggFilterMap;
   crowdFilters: AggFilterMap;
@@ -59,7 +112,7 @@ interface AggsProps {
   addFilters: AggregateAggCallback;
   removeFilter: AggCallback;
   removeFilters: AggregateAggCallback;
-  searchParams: SearchParams;
+  searchParams: SearchParamsAsInput;
   opened: string | null;
   openedKind: AggKind | null;
   onOpen: (agg: string, kind: AggKind) => void;
@@ -67,10 +120,10 @@ interface AggsProps {
   resetSelectAll?: () => void;
   updateParams: any;
   presearch?: boolean;
-  currentSiteView: SiteFragment_siteView;
+  presentSiteView: PresentSiteFragment_siteView;
   preSearchAggs?: string[];
   preSearchCrowdAggs?: string[];
-  site: SiteFragment;
+  site: PresentSiteFragment;
   updateSearchParams: any;
 }
 
@@ -95,28 +148,36 @@ const AggSideBarTitle = styled.h4`
 `;
 const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 
+const QueryComponent = (
+  props: QueryComponentOptions<
+    SearchPageAggsQuery,
+    SearchPageAggsQueryVariables
+  >
+) => Query(props);
+
 class Aggs extends React.PureComponent<AggsProps> {
-  getAggs = (siteView: SiteFragment_siteView): string[] => {
+  getAggs = (siteView: PresentSiteFragment_siteView, presearch): string[] => {
+    // to save having to write multiple displayFIelds functions we are splitting the path based on wheter it's presearch or aggs here
+    const path = presearch ? siteView.search.presearch.aggs : siteView.search.aggs
     return displayFields(
-      siteView.search.aggs.selected.kind,
-      siteView.search.aggs.selected.values,
-      siteView.search.aggs.fields
+      path.selected.kind,
+      path.selected.values,
+      path.fields
     ).map(prop('name'));
   };
 
-  getCrowdAggs = (crowdAggs: string[]): string[] => {
+  getCrowdAggs = (crowdAggs: string[], presearch): string[] => {
+    const path = presearch ? this.props.presentSiteView.search.presearch.crowdAggs : this.props.presentSiteView.search.crowdAggs
     const displayed = displayFields(
-      this.props.currentSiteView.search.crowdAggs.selected.kind,
-      this.props.currentSiteView.search.crowdAggs.selected.values,
-      this.props.currentSiteView.search.crowdAggs.fields
+      path.selected.kind,
+      path.selected.values,
+      path.fields
     ).map(prop('name'));
     return filter(x => crowdAggs.includes(x), displayed);
   };
 
   render() {
     const {
-      aggs,
-      crowdAggs,
       filters,
       crowdFilters,
       addFilter,
@@ -126,24 +187,43 @@ class Aggs extends React.PureComponent<AggsProps> {
       searchParams,
       updateSearchParams,
       presearch,
-      currentSiteView,
+      presentSiteView,
       preSearchAggs,
       preSearchCrowdAggs,
     } = this.props;
     //commented out because not sure how to pass two parameters when using compose
     // const sortByNameCi = sortBy(compose(toLower, aggToField);
 
+
+    if (searchParams) {
+      return (
+        <QueryComponent
+          query={QUERY}
+          variables={searchParams}
+          fetchPolicy={'no-cache'}
+        >
+          {({ data, loading, error }) => {
+
+            if (data && data.crowdAggs && data.search?.aggs) {
+              const aggs: AggBucketMap = {};
+              for (const a of data.search?.aggs || []) {
+                aggs[a.name] = [];
+              }
+              const crowdAggs: AggBucketMap = {};
+              for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
+                crowdAggs[bucket.key] = [];
+              }
     let crowdAggDropdowns: React.ReactElement<any> | null = null;
     let crowdAggPresearch: React.ReactElement<any> | null = null;
     const emptySet = new Set();
 
     if (preSearchCrowdAggs && crowdAggs) {
       const visibleOptionsByName = getVisibleOptionsByNamePresearch(
-        currentSiteView
+        presentSiteView
       );
       crowdAggPresearch = (
         <span>
-          {preSearchCrowdAggs.map(k =>
+          {this.getCrowdAggs(Object.keys(crowdAggs), true).map(k =>
             crowdAggs[k] ? (
               <AggContext.Provider
                 key={k}
@@ -174,7 +254,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                   resetSelectAll={this.props.resetSelectAll}
                   removeSelectAll={this.props.removeSelectAll}
                   presearch
-                  currentSiteView={this.props.currentSiteView}
+                  presentSiteView={this.props.presentSiteView}
                   configType="presearch"
                   visibleOptions={visibleOptionsByName[k]}
                 />
@@ -194,7 +274,7 @@ class Aggs extends React.PureComponent<AggsProps> {
     if (presearch && preSearchAggs) {
       return (
         <PresearchContainer>
-          {preSearchAggs.map(k =>
+          {this.getAggs(this.props.presentSiteView, true).map(k =>
             aggs[k] ? (
               <AggContext.Provider
                 key={k}
@@ -221,7 +301,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                   resetSelectAll={this.props.resetSelectAll}
                   removeSelectAll={this.props.removeSelectAll}
                   presearch
-                  currentSiteView={this.props.currentSiteView}
+                  presentSiteView={this.props.presentSiteView}
                   configType="presearch"
                 />
               </AggContext.Provider>
@@ -239,12 +319,12 @@ class Aggs extends React.PureComponent<AggsProps> {
     }
 
     if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
-      const visibleOptionsByName = getVisibleOptionsByName(currentSiteView);
+      const visibleOptionsByName = getVisibleOptionsByName(presentSiteView);
 
       crowdAggDropdowns = (
         <div>
           <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
-          {this.getCrowdAggs(Object.keys(crowdAggs)).map(k => (
+          {this.getCrowdAggs(Object.keys(crowdAggs), false).map(k => (
             <AggContext.Provider
               key={k}
               value={{
@@ -274,7 +354,7 @@ class Aggs extends React.PureComponent<AggsProps> {
                 removeFilters={(agg, items) => removeFilters(agg, items, true)}
                 searchParams={searchParams}
                 visibleOptions={visibleOptionsByName[k]}
-                currentSiteView={currentSiteView}
+                presentSiteView={presentSiteView}
                 configType="facetbar"
               />
             </AggContext.Provider>
@@ -286,48 +366,58 @@ class Aggs extends React.PureComponent<AggsProps> {
       return (
         <div>
           <div>
-            {this.getAggs(this.props.currentSiteView).map(k =>
-              aggs[k] ? (
-                <AggContext.Provider
-                  key={k}
-                  value={{
-                    updater: new AggFilterInputUpdater(
-                      k,
-                      searchParams,
-                      updateSearchParams,
-                      'aggFilters'
-                    ),
-                  }}>
-                  <AggDropDown
+            {this.getAggs(this.props.presentSiteView, false).map(k => {
+               return (
+                aggs[k] ? (
+                  <AggContext.Provider
                     key={k}
-                    agg={k}
-                    selectedKeys={filters[k] || emptySet}
-                    buckets={aggs[k]}
-                    isOpen={
-                      this.props.opened === k &&
-                      this.props.openedKind === 'aggs'
-                    }
-                    onOpen={this.props.onOpen}
-                    aggKind="aggs"
-                    addFilter={addFilter}
-                    addFilters={addFilters}
-                    removeFilter={removeFilter}
-                    removeFilters={removeFilters}
-                    searchParams={searchParams}
-                    resetSelectAll={this.props.resetSelectAll}
-                    removeSelectAll={this.props.removeSelectAll}
-                    currentSiteView={this.props.currentSiteView}
-                    configType="facetbar"
-                  />
-                </AggContext.Provider>
-              ) : null
+                    value={{
+                      updater: new AggFilterInputUpdater(
+                        k,
+                        searchParams,
+                        updateSearchParams,
+                        'aggFilters'
+                      ),
+                    }}>
+                    <AggDropDown
+                      key={k}
+                      agg={k}
+                      selectedKeys={filters[k] || emptySet}
+                      buckets={aggs[k]}
+                      isOpen={
+                        this.props.opened === k &&
+                        this.props.openedKind === 'aggs'
+                      }
+                      onOpen={this.props.onOpen}
+                      aggKind="aggs"
+                      addFilter={addFilter}
+                      addFilters={addFilters}
+                      removeFilter={removeFilter}
+                      removeFilters={removeFilters}
+                      searchParams={searchParams}
+                      resetSelectAll={this.props.resetSelectAll}
+                      removeSelectAll={this.props.removeSelectAll}
+                      presentSiteView={this.props.presentSiteView}
+                      configType="facetbar"
+                    />
+                  </AggContext.Provider>
+                ) : null
+               )
+            }
             )}
           </div>
           {crowdAggDropdowns}
         </div>
       );
     }
-    return null;
+  }
+
+  return null;
+          }}
+        </QueryComponent>
+      )
+    }
+    return <span>Loading...</span>
   }
 }
 

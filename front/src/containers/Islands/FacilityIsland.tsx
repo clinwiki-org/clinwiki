@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/FacilitiesPageQuery';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 
 import {
   FacilitiesPageQuery,
@@ -22,7 +22,7 @@ const MappingContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  height: 700px;
+  height: 60vh;
   @media (max-width: 991px) {
     flex-direction: column-reverse;
     max-height: 1400px;
@@ -37,20 +37,20 @@ const ScrollCardContainer = styled.div`
   padding-right: 15px;
   margin-bottom: 15px;
   @media (max-width: 991px) {
-    min-height: 250px;
     width: 100%;
     margin: 10px;
-    max-height: 700px;
+    max-height: 30vh;
   }
 `;
 
 const MapContainer = styled.div`
-  height: 700px;
+  height: 60vh;
   width: 55%;
   padding-bottom: 20px;
   margin-left: 3px;
   @media (max-width: 991px) {
     width: 100%;
+    max-height: 30vh;
   }
 `;
 const MAPOPTIONS = {

@@ -72,6 +72,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   has_many :result_contacts,       foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :result_groups,         foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
   has_many :sponsors,              foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
+  has_many :study_view_logs,              foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
 
   # clinwiki relationships
   has_many :reviews, foreign_key: "nct_id", inverse_of: :study, dependent: :restrict_with_exception
@@ -268,6 +269,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       sponsors: sponsors && sponsors.map(&:name),
       rating_dimensions: rating_dimensions.keys,
       indexed_at: Time.now.utc,
+      study_views_count: study_view_logs.count,
       wiki_page_edits: {
         email: wiki_page_edits.map(&:user).map(&:email),
         created_at: wiki_page_edits.map(&:created_at).map(&:to_time),

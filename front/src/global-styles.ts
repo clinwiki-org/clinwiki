@@ -1,6 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
+import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 /* eslint no-unused-expressions: 0 */
-export default createGlobalStyle`
+
+export default withTheme(createGlobalStyle`
 html,
 body {
   height: 100%;
@@ -19,14 +21,39 @@ label {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   line-height: 1.5em;
 }
+.hr {
+  background: ${(props:any) => props.theme.crumbs.crumbBackground};
+}
 .btn, button, .-btn{
   border: 0px;
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   border-radius: 4px;
 }
 .btn, .-btn{
-  background: #55B88D;
+  background: ${(props:any) => props.theme.crumbs.crumbBackground};
   color: #fff !important;
+}
+.crumb-container {
+  border: 2px solid ${props => props.theme.crumbs.crumbBackground};
+  border-radius: 4px;
+  padding: 0 5px 0 5px;
+  margin: 1px;
+  background: ${props => props.theme.crumbs.crumbBackground};
+  color: ${props => props.theme.crumbs.crumbFont} !important;
+  line-height: 1.85em;
+}
+.crumb-wrapper{
+  display: flex;
+  flex-wrap:wrap;
+}
+.list-group-item {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 div.crumbs-bar span.label {
   background: #55B88D !important;
@@ -172,12 +199,25 @@ div.DraftEditor-editorContainer{
 .mm-single-line .mail-merge-island{
   padding-right: 1em;
 }
+
 .mail-merge pre {
   background-color: white;
   border: 0px;
   padding: 0px;
+  font-family:inherit;
 }
 .mail-merge pre code {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 13px;
-`;
+}
+#ellipses:hover ~ .ellipsed-text{
+  display:inline-block;
+}
+#ellipses:hover{
+  color:white;
+  font-size: 16px;
+}
+.ellipsed-text {
+  display:none;
+}
+`);

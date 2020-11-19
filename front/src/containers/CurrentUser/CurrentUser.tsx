@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Query, QueryComponentOptions, useQuery } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { gql, useQuery }  from '@apollo/client';
 import { CurrentUserQuery } from 'types/CurrentUserQuery';
 import { UserFragment } from 'types/UserFragment';
 
@@ -44,7 +44,7 @@ const FRAGMENT = gql`
   }
 `;
 
-const QUERY = gql`
+export const QUERY = gql`
   query CurrentUserQuery {
     me {
       ...UserFragment

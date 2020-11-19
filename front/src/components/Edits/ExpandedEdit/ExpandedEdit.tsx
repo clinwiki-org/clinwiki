@@ -1,29 +1,27 @@
-import * as React from 'react';
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import React from 'react';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
 import ExpandedAsRawDiff from './ExpandedAsRawDiff';
 import FrontMatterExpandedEdit from './FrontMatterExpandedEdit';
 import WikiExpandedEdit from './WikiExpandedEdit';
 
 interface EditProps {
-  edit: WikiPageEditFragment;
+  edit: StudyEditsHistoryQuery_study_wikiPage_edits;
 }
 
-class ExpandedEdit extends React.Component<EditProps> {
-  render() {
-    const { edit } = this.props;
-    const {
-      changeSet: { bodyChanged, frontMatterChanged },
-    } = edit;
+const ExpandedEdit = (props: EditProps) => {
+  const { edit } = props;
+  const {
+    changeSet: { bodyChanged, frontMatterChanged },
+  } = edit;
 
-    if (frontMatterChanged) {
-      return <FrontMatterExpandedEdit edit={edit} />;
-    }
-    if (bodyChanged && !frontMatterChanged) {
-      return <WikiExpandedEdit edit={edit} />;
-    }
-
-    return <ExpandedAsRawDiff edit={edit} />;
+  if (frontMatterChanged) {
+    return <FrontMatterExpandedEdit edit={edit} />;
   }
-}
+  if (bodyChanged && !frontMatterChanged) {
+    return <WikiExpandedEdit edit={edit} />;
+  }
+
+  return <ExpandedAsRawDiff edit={edit} />;
+};
 
 export default ExpandedEdit;

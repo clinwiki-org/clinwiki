@@ -18,7 +18,10 @@ export enum FieldDisplay {
   BAR_CHART = "BAR_CHART",
   DATE = "DATE",
   DATE_RANGE = "DATE_RANGE",
+  DROP_DOWN = "DROP_DOWN",
+  GREATER_THAN_DROP_DOWN = "GREATER_THAN_DROP_DOWN",
   GREATER_THAN_RANGE = "GREATER_THAN_RANGE",
+  LESS_THAN_DROP_DOWN = "LESS_THAN_DROP_DOWN",
   LESS_THAN_RANGE = "LESS_THAN_RANGE",
   NUMBER_RANGE = "NUMBER_RANGE",
   PIE_CHART = "PIE_CHART",
@@ -94,6 +97,7 @@ export interface CreateSiteInput {
   name: string;
   subdomain: string;
   skipLanding?: boolean | null;
+  hideDonation?: boolean | null;
   themes?: string | null;
   reactionsConfig?: string | null;
   userRank?: string | null;
@@ -260,6 +264,7 @@ export interface UpdateSiteInput {
   reactionsConfig?: string | null;
   userRank?: string | null;
   skipLanding?: boolean | null;
+  hideDonation?: boolean | null;
   subdomain?: string | null;
   editorEmails?: string[] | null;
   clientMutationId?: string | null;

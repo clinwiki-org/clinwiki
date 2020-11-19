@@ -9,35 +9,6 @@ import { SearchQueryInput, SortInput, AggFilterInput } from "./globalTypes";
 // GraphQL query operation: SearchPageSearchQuery
 // ====================================================
 
-export interface SearchPageSearchQuery_crowdAggs_aggs_buckets {
-  __typename: "AggBucket";
-  key: string;
-  keyAsString: string | null;
-  docCount: number;
-}
-
-export interface SearchPageSearchQuery_crowdAggs_aggs {
-  __typename: "Agg";
-  buckets: SearchPageSearchQuery_crowdAggs_aggs_buckets[];
-}
-
-export interface SearchPageSearchQuery_crowdAggs {
-  __typename: "SearchResultSet";
-  aggs: SearchPageSearchQuery_crowdAggs_aggs[] | null;
-}
-
-export interface SearchPageSearchQuery_search_aggs_buckets {
-  __typename: "AggBucket";
-  key: string;
-  docCount: number;
-}
-
-export interface SearchPageSearchQuery_search_aggs {
-  __typename: "Agg";
-  name: string;
-  buckets: SearchPageSearchQuery_search_aggs_buckets[];
-}
-
 export interface SearchPageSearchQuery_search_studies {
   __typename: "ElasticStudy";
   averageRating: number;
@@ -95,7 +66,6 @@ export interface SearchPageSearchQuery_search {
    * Total results
    */
   recordsTotal: number | null;
-  aggs: SearchPageSearchQuery_search_aggs[] | null;
   /**
    * A set of matching studies
    */
@@ -103,7 +73,6 @@ export interface SearchPageSearchQuery_search {
 }
 
 export interface SearchPageSearchQuery {
-  crowdAggs: SearchPageSearchQuery_crowdAggs;
   /**
    * Searches params by searchHash on server and `params` argument into it
    */

@@ -33,7 +33,7 @@ module Types
     end
 
     field :crowd_agg_facets, SearchResultSetType, null: false do
-      # argument :params, type: SearchInputType, required: false
+       argument :crowd_buckets_wanted, [String], required: false
     end
     field :health, HealthType, null: false
     field :site, SiteType, "If id is missing, returns current site. If id == 0, returns default site", null: true do
@@ -68,6 +68,14 @@ module Types
       argument :search_export_id, type: Integer, required: true
     end
 
+    field :search_log, [SearchLogType], "Single search log", null: true do
+      argument :user_id, type: Integer, required: false
+    end
+
+    field :saved_search, [SavedSearchType], "Single saved search", null: true do
+      argument :user_id, type: Integer, required: false
+    end
+
 
     DISPLAY_NAMES = {
       "browse_condition_mesh_terms" => "Browse Condition Mesh Terms",
@@ -77,12 +85,37 @@ module Types
     }.freeze
 
     def search(search_hash: nil, params: nil)
-      
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
-      link = link = ShortLink.from_long( context[:search_params])
-      SearchLog.create(user_id: context[:current_user]&.id, short_link_id:link.id )
+      link = ShortLink.from_long( context[:search_params])
+#      saved = is_saved? from params if present (or if name_label present?)
+#      subscribed = is_subscribed? from params if present
+#      name_label = name_label from params if present
+#      name_default = context[:search_params][:agg_filters][0][:values].join('|')
+      name_default = build_name_default context[:search_params]
+      name_default.delete_suffix!('|')
+      hash = { user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default }
+#      SearchLog.create(user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default )
+      SearchLog.find_or_create_by hash
       search_service = SearchService.new(context[:search_params])
       search_service.search
+    end
+
+    def build_name_default(search_info)
+      entries = 0
+      result = ""
+      if search_info[:q][:children].present?
+        result = result + "#{search_info[:q][:children][0][:key]}|"
+        entries = entries + 1
+      end
+      if search_info[:agg_filters].present?
+        search_info[:agg_filters].each do |filter|
+          filter[:values].each do |value|
+            result = result + "#{value}|" if entries <= 4 
+            entries = entries + 1
+          end
+        end
+      end
+      result
     end
 
     def agg_buckets(search_hash: nil, params: nil, url: nil, config_type: nil, return_all: nil)
@@ -101,8 +134,10 @@ module Types
       )
     end
 
-    def crowd_agg_facets(search_hash: nil, params: nil)
+    def crowd_agg_facets(search_hash: nil, params: nil, crowd_buckets_wanted: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
+
+      params[:crowd_buckets_wanted] = crowd_buckets_wanted
       params[:page_size] = 999999
       search_service = SearchService.new(params)
       Hashie::Mash.new(
@@ -180,6 +215,7 @@ module Types
     end
 
     def study(nct_id:)
+      StudyViewLog.create(user_id: context[:current_user]&.id, nct_id: nct_id )
       Study.find_by(nct_id: nct_id)
     end
 
@@ -213,6 +249,18 @@ module Types
 
       SearchExport.where(user: current_user, id: search_export_id).first
     end
+  
+    def search_log(user_id: nil)
+      user = user_id ? User.find(user_id) : current_user
+      return nil if user.nil?
+      user.search_logs
+    end 
+    
+    def saved_search(user_id: nil)
+      user = user_id ? User.find(user_id) : current_user
+      return nil if user.nil?
+      user.saved_searches
+    end
 
     private
 
@@ -220,7 +268,7 @@ module Types
       if search_hash
         link = ShortLink.from_short(search_hash)
         return if link.nil?
-     
+
         res = JSON.parse(link.long).deep_symbolize_keys
         res = res.merge(params.to_h) if params.present?
         res

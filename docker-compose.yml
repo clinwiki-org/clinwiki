@@ -14,11 +14,11 @@ services:
     container_name: clinwiki-db
     ports:
       - 15432:5432
-    environment:
-      - POSTGRES_USER=clinwiki
-      - POSTGRES_PASSWORD=ZetIFOnXd78H
     volumes:
-      - cw-data:/var/lib/postgresq/data
+      - cw-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   elastic:
     image: elasticsearch:6.8.8
     container_name: elastic
@@ -51,8 +51,6 @@ services:
   redis:
     image: redis:5.0.5
     container_name: redis
-    #ports:
-    #   - 6379:6379
     volumes:
       - redis-data:/data
   clinwiki:
@@ -67,12 +65,12 @@ services:
       - .:/clinwiki
       - ./compose/entrypoint.sh:/usr/bin/entrypoint.sh
       - node_modules:/clinwiki/front/node_modules
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
-      - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
+      - DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
       - REDIS_URL=redis://redis:6379/0
       - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
-      - CW_MODE=${CW_MODE}
     depends_on:
       - db
       - elastic
@@ -85,12 +83,12 @@ services:
     container_name: sidekiq
     volumes:
       - .:/clinwiki
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki
-      - AACT_DATABASE_URL=postgres://clinwiki:JQIhi3AGyBwl@aact.clinwiki.org:5432/aact
+      - DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
       - REDIS_URL=redis://redis:6379/0
       - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
-      - CW_MODE=WORKER
     depends_on:
       - db
       - elastic

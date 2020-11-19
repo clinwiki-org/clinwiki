@@ -10,7 +10,7 @@ import {
   ListGroupItem,
 } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-import { ApolloConsumer } from 'react-apollo';
+import { ApolloConsumer } from '@apollo/client';
 import * as Autosuggest from 'react-autosuggest';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
@@ -20,19 +20,21 @@ import { BeatLoader } from 'react-spinners';
 import CurrentUser from 'containers/CurrentUser';
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
-import { SiteFragment, SiteFragment_siteView } from 'types/SiteFragment';
+import { PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
-import ThemedButton from 'components/StyledComponents/index';
+import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents/index';
 import ExportToCsvComponent from './ExportToCsvComponent';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
+import SaveSearch from './SaveSearch';
+
 
 const CrumbsBarStyleWrappper = styled.div`
   border: solid white 1px;
   background-color: #f2f2f2;
   color: black;
-  margin-left: 15px;
-  margin-right: 15px;
+  margin-left: 45px;
+  margin-right: 45px;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -124,9 +126,8 @@ interface CrumbsBarProps {
   update: { page: (n: number) => void };
   onReset: () => void;
   onClear: () => void;
-  data: SiteFragment;
   siteViewUrl?: string;
-  currentSiteView: SiteFragment_siteView;
+  presentSiteView: PresentSiteFragment_siteView;
   totalResults: number;
   searchHash: string;
   theme: Theme;
@@ -138,7 +139,6 @@ interface CrumbsBarState {
   isSuggestionLoading: boolean;
   showFilters: boolean;
 }
-
 
 class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   constructor(props) {
@@ -246,9 +246,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   getCrowdAggAutoSuggest = () => {
     let crowdAggFields = displayFields(
-      this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.kind,
-      this.props.currentSiteView.search.autoSuggest.crowdAggs.selected.values,
-      this.props.currentSiteView.search.autoSuggest.crowdAggs.fields
+      this.props.presentSiteView.search.autoSuggest.crowdAggs.selected.kind,
+      this.props.presentSiteView.search.autoSuggest.crowdAggs.selected.values,
+      this.props.presentSiteView.search.autoSuggest.crowdAggs.fields
     );
     let fieldsToReturn: any[] = [];
     crowdAggFields.map(field => {
@@ -259,9 +259,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   getAutoSuggestFields = () => {
     let aggFields = displayFields(
-      this.props.currentSiteView.search.autoSuggest.aggs.selected.kind,
-      this.props.currentSiteView.search.autoSuggest.aggs.selected.values,
-      this.props.currentSiteView.search.autoSuggest.aggs.fields
+      this.props.presentSiteView.search.autoSuggest.aggs.selected.kind,
+      this.props.presentSiteView.search.autoSuggest.aggs.selected.values,
+      this.props.presentSiteView.search.autoSuggest.aggs.fields
     );
     let fieldsToReturn: any[] = [];
     aggFields.map(field => {
@@ -272,7 +272,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
 
   queryAutoSuggest = async apolloClient => {
     const { searchTerm } = this.state;
-    const { searchParams, currentSiteView } = this.props;
+    const { searchParams, presentSiteView } = this.props;
     const newParams = searchParams.q.map(i => {
       return { children: [], key: i };
     });
@@ -289,7 +289,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       crowdAggFilters: searchParams.crowdAggFilters,
       page: 0,
       pageSize: 5,
-      url: currentSiteView.url,
+      url: presentSiteView.url,
       q: {
         children: newParams,
         key: 'AND',
@@ -325,62 +325,12 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   getSuggestionValue = suggestion => {
     return suggestion.key;
   };
-  renderLoadingAutoSuggest = (
-    suggestions,
-    searchTerm,
-    apolloClient,
-    showAutoSuggest
-  ) => {
-    if (showAutoSuggest === true) {
-      return (
-        <div style={{ display: 'inline' }}>
-          <FormGroup>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-              }}>
-              <b
-                style={{
-                  marginRight: '8px',
-                  marginTop: '4px',
-                }}>
-                <ControlLabel>Search Within: </ControlLabel>{' '}
-              </b>
-
-              <Autosuggest
-                multiSection={true}
-                suggestions={suggestions}
-                inputProps={{
-                  value: searchTerm,
-                  onChange: (e, searchTerm) =>
-                    this.onChange(e, searchTerm, apolloClient),
-                }}
-                renderSuggestion={this.renderSuggestion}
-                renderSuggestionsContainer={this.renderSuggestionsContainer}
-                renderSectionTitle={this.renderSectionTitle}
-                getSectionSuggestions={this.getSectionSuggestions}
-                onSuggestionSelected={this.onSuggestionSelected}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                getSuggestionValue={this.getSuggestionValue}
-              />
-            </div>
-          </FormGroup>
-          <ThemedButton type="submit">
-            <FontAwesome name="search" />
-          </ThemedButton>
-        </div>
-      );
-    } else if (showAutoSuggest === false) {
-      return null;
-    }
-  };
   renderAutoSuggest = (
     suggestions,
     searchTerm,
     apolloClient,
-    showAutoSuggest
+    showAutoSuggest,
+    loading: boolean
   ) => {
     if (showAutoSuggest === true) {
       return (
@@ -408,6 +358,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                     this.onChange(e, searchTerm, apolloClient),
                 }}
                 renderSuggestion={this.renderSuggestion}
+                renderSuggestionsContainer={
+                  loading ? this.renderSuggestionsContainer : undefined
+                }
                 renderSectionTitle={this.renderSectionTitle}
                 getSectionSuggestions={this.getSectionSuggestions}
                 onSuggestionSelected={this.onSuggestionSelected}
@@ -456,10 +409,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  onSuggestionSelected = (
-    event,
-    { suggestionValue, sectionIndex }
-  ) => {
+  onSuggestionSelected = (event, { suggestionValue, sectionIndex }) => {
     const section = this.state.suggestions[sectionIndex];
     if (section.isCrowd) {
       this.props.addFilter(section.name, suggestionValue, true);
@@ -498,75 +448,46 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     this.setState({ showFilters: !this.state.showFilters });
   };
 
+  showSaveSearchButton = (user) => {
+    const {searchParams } = this.props;
+    if (
+      searchParams.q &&
+      searchParams.aggFilters &&
+      searchParams.crowdAggFilters
+    ){
+      if (
+        searchParams.q.length != 0 ||
+        searchParams.aggFilters.length != 0 ||
+        searchParams.crowdAggFilters.length != 0
+      ) {
+        return (
+          <SaveSearch
+            user={user}
+            siteView={this.props.presentSiteView}
+            searchHash={this.props.searchHash}
+          />
+        );
+      } 
+     return null
+    }
+    return null
+  }
+
+
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
-    const { data, siteViewUrl } = this.props;
-    let thisSiteView =
-      data.siteViews.find(siteview => siteview.url === siteViewUrl) ||
-      data.siteView;
-    let showCrumbsBar = thisSiteView.search.config.fields.showBreadCrumbs;
-    let showAutoSuggest = thisSiteView.search.config.fields.showAutoSuggest;
+    const { presentSiteView, searchParams } = this.props;
+    
+    let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
+    let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;
     return (
-      <ThemedCrumbsBarStyleWrappper>
+      <ThemedSearchContainer>
         <ApolloConsumer>
           {apolloClient => (
             <CurrentUser>
               {user => (
                 <Grid className="crumbs-bar">
-                  <Row>
-                    <Col xs={8} md={8}>
-                      <Form
-                        inline
-                        className="searchInput"
-                        onSubmit={this.onSubmit}>
-                        {isSuggestionLoading
-                          ? this.renderLoadingAutoSuggest(
-                              suggestions,
-                              searchTerm,
-                              apolloClient,
-                              showAutoSuggest
-                            )
-                          : this.renderAutoSuggest(
-                              suggestions,
-                              searchTerm,
-                              apolloClient,
-                              showAutoSuggest
-                            )}
-                        &nbsp;
-                        {user && user.roles.includes('admin') ? (
-                          <ThemedButton
-                            onClick={() =>
-                              this.props.onBulkUpdate(
-                                this.props.searchHash,
-                                this.props.currentSiteView.url || 'default'
-                              )
-                            }>
-                            Bulk Update <FontAwesome name="truck" />
-                          </ThemedButton>
-                        ) : null}
-                      </Form>
-                    </Col>
-                    <Col xs={4} md={4}>
-                      <Row>
-                        <Col xs={12} md={12} style={{ textAlign: 'right' }}>
-                          <ExportToCsvComponent
-                            siteView={this.props.currentSiteView}
-                            searchHash={this.props.searchHash}
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col xs={12} md={12} style={{ textAlign: 'right' }}>
-                          <b>Total Results:</b> {this.props.totalResults}{' '}
-                          studies
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
                   {showCrumbsBar ? (
-                    // having trouble getting the theme applied to these ListGroups
-                    // <ThemeProvider>
-                    //   {theme => (
                     <Row>
                       <Col
                         md={12}
@@ -580,7 +501,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                             display: 'flex',
                             flexWrap: 'wrap',
                             border: '1px solid #ddd',
-                            borderRadius: ' 5px',
+                            borderRadius: '5px',
                             background: '#fff',
                             width: '100%',
                           }}>
@@ -589,65 +510,73 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                               minWidth: '100%',
                               background: this.props.theme.button,
                               color: '#fff',
-                            }}
-                            onClick={this.toggleShowFilters}>
-                            {' '}
-                            Filters:{' '}
+                            }}>
+                            {presentSiteView.search.crumbs.search ? (
+                              <Form
+                                inline
+                                className="searchInput"
+                                onSubmit={this.onSubmit}
+                                style={{ color: 'black', display: 'inline' }}>
+                                {this.renderAutoSuggest(
+                                  suggestions,
+                                  searchTerm,
+                                  apolloClient,
+                                  showAutoSuggest,
+                                  isSuggestionLoading
+                                )}
+                              </Form>
+                            ) : null}{' '}
                             {Array.from(
                               this.mkDefaultClearButtons(
                                 this.props.searchParams
                               )
-                            )}
-                            {this.state.showFilters ? (
-                              <b>
-                                <FontAwesome
-                                  className="chevron-up"
-                                  name="chevron-up"
-                                  style={{
-                                    cursor: 'pointer',
-                                    color: '#fff',
-                                    margin: '0 0 0 3px',
-                                    float: 'right',
-                                  }}
-                                  // onClick={() => this.toggleShowValue()}
-                                />
-                              </b>
-                            ) : (
-                              <b>
-                                <FontAwesome
-                                  className="chevron-down"
-                                  name="chevron-down"
-                                  style={{
-                                    cursor: 'pointer',
-                                    color: '#fff',
-                                    margin: '0 0 0 3px',
-                                    float: 'right',
-                                  }}
-                                  // onClick={() => this.toggleShowValue()}
-                                />
-                              </b>
                             )}
                           </ListGroupItem>
                           {this.state.showFilters
                             ? Array.from(
                                 this.mkCrumbs(
                                   this.props.searchParams,
-                                  thisSiteView
+                                  presentSiteView
                                 )
                               )
                             : null}{' '}
                         </ListGroup>
                       </Col>
                     </Row>
-                  ) : //   )}
-                  // </ThemeProvider>
-                  null}
+                  ) : null}
+                  <Row>
+                    <Col xs={12}>
+                      <div style={{ marginRight: '10px', display: 'inline' }}>
+                        <b>Total Results:</b>{' '}
+                        {`${this.props.totalResults} studies`}
+                      </div>
+                      <ExportToCsvComponent
+                        siteView={this.props.presentSiteView}
+                        searchHash={this.props.searchHash}
+                      />
+                      {user && user.roles.includes('admin') ? (
+                        <ThemedButton
+                          onClick={() =>
+                            this.props.onBulkUpdate(
+                              this.props.searchHash,
+                              this.props.presentSiteView.url || 'default'
+                            )
+                          }
+                          style={{ marginLeft: '10px' }}>
+                          Bulk Update <FontAwesome name="truck" />
+                        </ThemedButton>
+                      ) : null}
+                      {
+                        this.showSaveSearchButton(user)
+                      }
+                    </Col>
+                  </Row>
                 </Grid>
               )}
             </CurrentUser>
           )}
         </ApolloConsumer>
-      </ThemedCrumbsBarStyleWrappper>
+      </ThemedSearchContainer>
     );
   }
 }

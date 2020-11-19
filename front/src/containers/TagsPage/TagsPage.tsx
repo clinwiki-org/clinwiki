@@ -4,11 +4,10 @@ import { Table, Row, Col, FormControl } from 'react-bootstrap';
 import {
   Query,
   Mutation,
-  MutationFunction,
   MutationComponentOptions,
   QueryComponentOptions,
-} from 'react-apollo';
-import { gql } from 'apollo-boost';
+} from '@apollo/client/react/components';
+import { gql, MutationFunction }  from '@apollo/client';
 import { match } from 'react-router-dom';
 import { History } from 'history';
 import { TagsPageQuery, TagsPageQueryVariables } from 'types/TagsPageQuery';

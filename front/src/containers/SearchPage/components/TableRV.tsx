@@ -3,7 +3,6 @@ import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
-import { SiteFragment_siteView } from 'types/SiteFragment';
 import { Column, Table, SortDirection, WindowScroller } from 'react-virtualized';
 import _ from 'lodash';
 import styled from 'styled-components';
@@ -15,6 +14,7 @@ interface TableRVProps {
   template: string;
   width: number;
   columnFields: string[];
+ onRowClick : any;
 }
 
 interface TableRVState {
@@ -41,7 +41,9 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
       return index % 2 === 0 ? 'evenRow' : 'oddRow';
     }
   }
-
+  handleRowClick =({ event, index, rowData }): void=>{
+    this.props.onRowClick(rowData.nctId)
+  }
   render() {
     if (this.props.data) {
       const listItems = this.props.data;
@@ -62,6 +64,7 @@ class TableRV extends React.Component<TableRVProps, TableRVState> {
           isScrolling={isScrolling}
           onScroll={onChildScroll}
           scrollTop={scrollTop}
+          onRowClick={this.handleRowClick}
         // sortDirection={SortDirection.ASC}
         // sortBy={'nctId'}
         >

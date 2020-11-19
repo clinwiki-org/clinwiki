@@ -59,6 +59,7 @@ abstract class AbstractAggFilterInputUpdater {
   }
 
   removeFilter(value: string) {
+    //console.log("VALUE Removing:", value)
     if (this.input) {
       this.input.values = this.input.values
         ? filter(x => x !== value, this.input.values)
@@ -79,7 +80,7 @@ abstract class AbstractAggFilterInputUpdater {
     }
     return true;
   }
-
+   
   isSelected(key: string): boolean {
     if (this.input?.values === undefined) {
       return false;

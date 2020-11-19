@@ -135,6 +135,7 @@ class SearchService
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
     reactions.kind indexed_at last_update_posted_date
     last_changed_date  number_of_arms
+    study_views_count
     number_of_groups why_stopped results_first_submitted_date
     plan_to_share_ipd design_outcome_measures
   ].freeze
@@ -161,6 +162,19 @@ class SearchService
     
   end
 
+  def search_without_aggs(search_after: nil, reverse: false, includes: [])
+    options = search_options_without_aggs(search_after: search_after, reverse: reverse, includes: includes)
+    search_result = Study.search("*", options) do |body|
+      enrich_body(body)
+    end
+    {
+      recordsTotal: search_result.total_entries,
+      studies: search_result.results,
+      aggs: search_result.aggs,
+      took: search_result.took
+    }
+  end
+
   def scroll
     scroll_options = search_options.except(
       :page, :per_page, :aggs
@@ -184,6 +198,18 @@ class SearchService
 
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
+    options[:includes] = includes
+    options[:load] = false
+    options
+  end
+
+  def search_options_without_aggs(search_after: nil, reverse: false, includes: [])
+    crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
+      &.dig(:front_matter_keys, :buckets)
+      &.map { |bucket| "fm_#{bucket[:key]}" } || []
+    # aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
+
+    options = search_kick_query_options(aggs: nil, search_after: search_after, reverse: reverse)
     options[:includes] = includes
     options[:load] = false
     options
@@ -273,6 +299,7 @@ class SearchService
   def crowd_agg_facets(site:)
     params = self.params.deep_dup
     return {} if params.nil?
+  
 
     search_results = Study.search("*", aggs: [:front_matter_keys])
 
@@ -280,6 +307,9 @@ class SearchService
     keys = aggs[:front_matter_keys][:buckets]
       .map { |x| (x[:key]).to_s }
     facets = {}
+    if  self.params.dig(:crowd_buckets_wanted)
+      keys.select!{|key| self.params[:crowd_buckets_wanted]&.include?(key)}
+    end
     keys.each do |key|
       field_agg = agg_buckets_for_field(field: key, current_site: site, is_crowd_agg: true)
       field_agg.each do |name, agg|

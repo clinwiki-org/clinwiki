@@ -3,7 +3,6 @@ import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
-import { SiteFragment_siteView } from 'types/SiteFragment';
 import { List } from 'react-virtualized';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
@@ -28,7 +27,7 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
   }
 
   componentDidUpdate() {
-    console.log(this.props.theme);
+    //console.log(this.props.theme);
     if (this.state.loading !== this.props.loading) {
       this.setState({ loading: this.props.loading });
     }
@@ -51,7 +50,6 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
     style, // Style object to be applied to row (to position it)
   }) => {
     const listItems = this.props.data;
-
     return (
       <div
         key={key}

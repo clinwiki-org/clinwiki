@@ -7,7 +7,8 @@ module Mutations
     field :search_hash, Types::ShortLinkType, null: true
 
     def resolve(params:)
-      { search_hash: ShortLink.from_long(params.to_h.deep_symbolize_keys) }
+      remove_paging = params.to_h.except(:page,:page_size)
+      { search_hash: ShortLink.from_long(remove_paging.deep_symbolize_keys) }
     end
   end
 end

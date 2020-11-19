@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { useQuery } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { gql, useQuery}  from '@apollo/client';
 import { match } from 'react-router-dom';
 import { History } from 'history';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
 import { MailMergeView } from 'components/MailMerge';
 import { useState } from 'react';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
 
 interface GenericStudySectionPageProps {
   nctId: string;
@@ -19,8 +19,7 @@ interface GenericStudySectionPageProps {
 }
 
 function GenericStudySectionPage(props: GenericStudySectionPageProps) {
-  const fragmentName = 'generic_study_section_fragment';
-  const [fragment, setFragment] = useState('');
+  const [fragmentName, fragment] = useFragment('Study', props.metaData.template ?? '');
   const { data } = useQuery(getStudyQuery(fragmentName, fragment), {
     variables: { nctId: props.nctId },
   });
@@ -29,9 +28,6 @@ function GenericStudySectionPage(props: GenericStudySectionPageProps) {
     <MailMergeView
       template={props.metaData.template || ''}
       context={data?.study??{}}
-      fragmentName={fragmentName}
-      fragmentClass="Study"
-      onFragmentChanged={setFragment}
     />
   );
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Query, QueryComponentOptions } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { gql }  from '@apollo/client';
 import { Checkbox } from 'react-bootstrap';
 import {
   SuggestedLabelsQuery,
@@ -20,6 +20,8 @@ import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 // import { WorkSearch } from './WorkSearch';
 import FacetCard from 'components/FacetCard/FacetCard';
 import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
+import { BeatLoader } from 'react-spinners';
+import Error from 'components/Error';
 
 interface SuggestedLabelsProps {
   nctId: string;
@@ -30,13 +32,12 @@ interface SuggestedLabelsProps {
     string,
     WorkflowConfigFragment_suggestedLabelsConfig
   >;
-  siteView?: any;
   showAnimation:any;
 }
 
 const QUERY = gql`
-  query SuggestedLabelsQuery($nctId: String!) {
-    crowdAggFacets {
+  query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
+    crowdAggFacets(crowdBucketsWanted: $crowdBucketsWanted) { 
       aggs {
         name
         buckets {
@@ -125,7 +126,6 @@ class SuggestedLabels extends React.PureComponent<
         values={items}
         onSelect={this.props.onSelect}
         refetch={refetch}
-        siteView={this.props.siteView}
         showAnimation={this.props.showAnimation}
         >
         {items.map(value => {
@@ -152,9 +152,14 @@ class SuggestedLabels extends React.PureComponent<
         query={QUERY}
         variables={{
           nctId: this.props.nctId,
+          crowdBucketsWanted: this.props.allowedSuggestedLabels
         }}>
         {({ data, loading, error, refetch }) => {
-          if (loading || error || !data) return null;
+          
+          if (loading) return <BeatLoader />;
+          if (error) return <Error message={error.message} />;
+          if (!data) return null;
+
           let meta: Record<string, string> = {};
           try {
             meta = JSON.parse(data.study?.wikiPage?.meta || '{}');
@@ -214,7 +219,6 @@ class SuggestedLabels extends React.PureComponent<
                 nctId={this.props.nctId}
                 refetch={refetch}
                 aggNames={allCrowdAggs}
-                siteView={this.props.siteView}
                 allValues={aggs}
                 showAnimation={this.props.showAnimation}
               />

@@ -2,10 +2,9 @@ import * as React from 'react';
 import { Col } from 'react-bootstrap';
 import {
   Mutation,
-  MutationFunction,
   MutationComponentOptions,
-} from 'react-apollo';
-import { gql } from 'apollo-boost';
+} from '@apollo/client/react/components';
+import { gql, MutationFunction }  from '@apollo/client';
 import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
@@ -78,8 +77,9 @@ class SignUpPage extends React.Component<SignUpPageProps, SignUpPageState> {
         this.state.form
       );
       signUp({ variables: { input } });
+    }else{
+      this.setState({ errors: ["Password confirmation doesn't match"] });
     }
-    this.setState({ errors: ["Password confirmation doesn't match"] });
   };
 
   handleSignUpCompleted = (data: SignUpMutation) => {

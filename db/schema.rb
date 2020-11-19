@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_05_170010) do
+ActiveRecord::Schema.define(version: 2020_11_10_015820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,17 @@ ActiveRecord::Schema.define(version: 2020_08_05_170010) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
   end
 
+  create_table "saved_searches", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "short_link_id"
+    t.string "name_label"
+    t.boolean "is_subscribed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["short_link_id"], name: "index_saved_searches_on_short_link_id"
+    t.index ["user_id"], name: "index_saved_searches_on_user_id"
+  end
+
   create_table "search_exports", force: :cascade do |t|
     t.integer "short_link_id", null: false
     t.integer "user_id"
@@ -119,6 +130,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_170010) do
     t.bigint "short_link_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name_default"
     t.index ["short_link_id"], name: "index_search_logs_on_short_link_id"
     t.index ["user_id"], name: "index_search_logs_on_user_id"
   end
@@ -152,8 +164,17 @@ ActiveRecord::Schema.define(version: 2020_08_05_170010) do
     t.boolean "skip_landing"
     t.text "themes", default: "{\"primaryColor\":\"#6BA5D6\",\"secondaryColor\":\"#1b2a38\",\"lightTextColor\":\"#eee\",\"secondaryTextColor\":\"#333\",\"backgroundColor\":\"#4D5863\",\"primaryAltColor\":\"#5786AD\",\"authHeaderColor\":\"#5786AD\",\"sideBarColor\":\"#4d5762\"} "
     t.text "user_rank", default: "[{\"rank\":\"default\",\"gte\":0},{\"rank\":\"bronze\",\"gte\":26},{\"rank\":\"silver\",\"gte\":51},{\"rank\":\"gold\",\"gte\":75},{\"rank\":\"platinum\",\"gte\":101}] "
-    t.text "reactions_config", default: "[{\"name\":\"like\"},{\"name\":\"dislike\"},{\"name\":\"heart\"},{\"name\":\"skull_and_cross_bones\"}]"
+    t.text "reactions_config", default: "[]"
+    t.boolean "hide_donation"
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
+  end
+
+  create_table "study_view_logs", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "nct_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_study_view_logs_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|

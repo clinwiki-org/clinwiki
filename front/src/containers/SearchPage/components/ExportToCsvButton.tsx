@@ -1,6 +1,6 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
+import { graphql } from '@apollo/client/react/hoc';
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
@@ -59,8 +59,9 @@ class ExportToCsvButton extends React.Component<
           cancel={() => setShowLoginModal(false)}
         />
         <ThemedButton onClick={onClick}>
-          Export to CSV &nbsp;
-          <FontAwesome name="file-text" />
+            &nbsp;
+            <FontAwesome name="download" />
+            &nbsp;
         </ThemedButton>
       </>
     );

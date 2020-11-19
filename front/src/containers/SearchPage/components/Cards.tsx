@@ -3,7 +3,6 @@ import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
 import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
-import { SiteFragment_siteView } from 'types/SiteFragment';
 
 interface CardsProps {
   data: SearchPageSearchQuery_search_studies[];

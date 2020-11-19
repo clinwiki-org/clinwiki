@@ -1,22 +1,20 @@
-import * as React from 'react';
+import React from 'react';
 
-import { WikiPageEditFragment } from 'types/WikiPageEditFragment';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
 
 interface EditProps {
-  edit: WikiPageEditFragment;
+  edit: StudyEditsHistoryQuery_study_wikiPage_edits;
 }
 
-class ExpandedAsRawDiff extends React.Component<EditProps> {
-  render() {
-    const { edit } = this.props;
-    return (
-      <div
-        dangerouslySetInnerHTML={{
-          __html: edit.diffHtml || '<p></p>',
-        }}
-      />
-    );
-  }
-}
+const ExpandedAsRawDiff = (props: EditProps) => {
+  const { edit } = props;
+  return (
+    <div
+      dangerouslySetInnerHTML={{
+        __html: edit.diffHtml || '<p></p>',
+      }}
+    />
+  );
+};
 
 export default ExpandedAsRawDiff;
