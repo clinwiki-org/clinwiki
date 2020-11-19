@@ -30,7 +30,7 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
     this.state = { loading: this.props.loading };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevState) {
     if (this.state.loading !== this.props.loading) {
       this.setState({ loading: this.props.loading });
     }

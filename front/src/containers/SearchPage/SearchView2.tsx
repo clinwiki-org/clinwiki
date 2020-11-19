@@ -41,6 +41,7 @@ import {
   AutoSizer,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
+import StudyFragmentQueryComponent from './components/StudyFragmentQueryComponent'
 import useUrlParams from '../../utils/UrlParamsProvider';
 import { AggBucketMap } from './Types';
 
@@ -381,6 +382,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 template={template}
                 // height={height}
                 // width={width}
+
               />
             {/* )}
           </AutoSizer> */}
@@ -447,7 +449,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       this.props.presentSiteView.url || 'default'
     );
   };
-
 
   sortHelper = (sorts, params) => {
     this.props.onUpdateParams(changeSorted(sorts));
