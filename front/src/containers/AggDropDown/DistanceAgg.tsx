@@ -69,7 +69,7 @@ class DistanceAgg extends React.Component<DistanceAggProps> {
           
 
           <ThemedButton 
-        style={{float:"left", padding: 3, opacity: 0.5 }}
+        style={{float:"left", padding: 3, }}
         onClick={() => console.log("Clicked Current Location")}>
           &nbsp;
           <FontAwesome         
@@ -84,7 +84,7 @@ class DistanceAgg extends React.Component<DistanceAggProps> {
           placeholder="Enter Zip Code"
          // value={"zipCode"}
           onChange={() => console.log("Need a handleSearchByZipCode")}
-          style={{ flex: 4, marginTop: '4px' }}
+          style={{ flex: 4, margin: '4px' }}
         />
       </div>
 
