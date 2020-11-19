@@ -1,4 +1,5 @@
 import React, { useState }from 'react';
+import { MailMergeEditor } from 'components/MailMerge';	
 import { FormControl } from 'react-bootstrap';
 // import { useQuery } from 'react-apollo';
 // import { gql } from 'apollo-boost';
@@ -55,7 +56,7 @@ function SearchTemplate(props: Props) {
         value={nctId}
         onChange={e => setNctId(e.target.value || default_nctid)}
       />
-      <MailMerge
+      <MailMergeEditor
         schema={{ kind: 'graphql', typeName: 'Study', types }}
         sample={study?.study || {}}
         template={props.template}
