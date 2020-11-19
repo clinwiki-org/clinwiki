@@ -266,6 +266,8 @@ const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 };
 
 const addSearchTerm = (term: string) => (params: SearchParams) => {
+  // console.log('term', term)
+  // console.log('params', params)
   // have to check for empty string because if you press return two times it ends up putting it in the terms
   if (!term.replace(/\s/g, '').length) {
     return params;
@@ -280,7 +282,7 @@ const addSearchTerm = (term: string) => (params: SearchParams) => {
 };
 
 const removeSearchTerm = (term: string) => (params: SearchParams) => {
-  console.log('REMOVING CRUMBß')
+  console.log('REMOVING CRUMBß', params)
   const children = reject(
     propEq('key', term),
     params.q.children || []
@@ -343,15 +345,6 @@ const DEFAULT_PARAMS: SearchParams = {
 };
 
 function SearchPage (props: SearchPageProps) {
-  // state: SearchPageState = {
-  //   params: null,
-  //   openedAgg: null,
-  //   removeSelectAll: false,
-  //   totalRecords: 0,
-  //   collapseFacetBar:false
-  //   };
-
-  /// STATE INITIAL VALUES
 
   const [params, setParams] = useState({  
     q: { key: 'AND', children: [] },
@@ -507,7 +500,7 @@ function SearchPage (props: SearchPageProps) {
         openedKind={openedKind}
         onOpen={handleOpenAgg}
         presentSiteView={siteView}
-        searchParams={params}
+        searchParams={searchParams}
         updateSearchParams={updateSearchParams}
         site={props.site}
       />
@@ -534,9 +527,6 @@ function SearchPage (props: SearchPageProps) {
     );
   };
 
-
-
-
   const getHashFromLocation = (): string | null  => {
     let hash = new URLSearchParams(props.history.location.search).getAll(
       'hash'
@@ -545,7 +535,7 @@ function SearchPage (props: SearchPageProps) {
   }
 
   const updateStateFromHash = (searchParams, view) => {
-    const params: SearchParams = searchParamsFromQuery(searchParams, view);
+    const newParams: SearchParams = searchParamsFromQuery(searchParams, view);
     let searchTerm = new URLSearchParams(props.location?.search || '');
 
     if (searchTerm.has('q')) {
@@ -558,19 +548,12 @@ function SearchPage (props: SearchPageProps) {
       let queryParams = { ...defaultParams, q: q }
       updateSearchParams(queryParams);
     }
+    updateSearchParams(newParams)
 
     // console.log('UPDATE STATE FROM HASH 1')
     //Originally thought this should be an updateSearchParams call but seems to error out
     //Commented out the application seems to still function as inteded. All the aggs update appropriately with no hash, with a hash. So far has passed all my current tests.
-    // Will leave it in and commented out for now as a reminder to come back and look into it.
-    // setTimeout(setState({
 
-    //// REACT HOOKS CHANGE
-
-    // setParams({
-    //     ...params
-    //   })
-    updateSearchParams(params)
   }
 
   const findFilter = (variable: string) => {
@@ -718,7 +701,8 @@ function SearchPage (props: SearchPageProps) {
         searchParams={handledParams}
         onBulkUpdate={handleBulkUpdateClick}
         removeFilter={pipe(removeFilter, handleUpdateParams)}
-        addSearchTerm={pipe(addSearchTerm, handleUpdateParams)}
+        // addSearchTerm={pipe(addSearchTerm, handleUpdateParams)}
+        addSearchTerm={newAddSearchTerm}
         removeSearchTerm={pipe(removeSearchTerm, handleUpdateParams)}
         update={{
           page: pipe(changePage, handleUpdateParams),
@@ -729,14 +713,14 @@ function SearchPage (props: SearchPageProps) {
         presentSiteView={presentSiteView}
         totalResults={totalRecords}
         searchHash={hash || ''}
-        // updateSearchParams={updateSearchParams}
+        updateSearchParams={updateSearchParams}
       />
     );
   };
   
   const handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     console.log('HUP', params)
-   updater(params!);
+    updater(params!);
     console.log('handle update params', params)
     //console.log("Search Page handle update params", params)
     //@ts-ignore
@@ -755,9 +739,9 @@ function SearchPage (props: SearchPageProps) {
     // handles the query to get the hash and update the url. 
 
     const variables = params ;
-    console.log('variables', variables)
+    console.log('GETTING NEW HASH VARS', variables)
     const { data } = await props.mutate({ variables });
-     console.log('data', data)
+     console.log('after mutation', data.provisionSearchHash!.searchHash!)
     const { searchQueryString, pageViewUrl } = getPageView();
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
     // This assumes that the site provider is not passing a url into the page
@@ -799,24 +783,42 @@ function SearchPage (props: SearchPageProps) {
   }
 
   const updateSearchParams = searchParams => {
-    console.log('1 updating params', searchParams)
-    console.log('1 updating params', params)
+    console.log('1 updating searchParams passed', searchParams)
+    console.log('2 updating - Params in state', params)
     setParams({...params, ...searchParams})
-    console.log('2 updating params', params)
   };
 
-  //Only run mutation query if params
+  //Only run mutation query if params state changes
   useEffect(() => {
-    console.log('params in effect', params)
+    console.log('params in effect - there has been a change', params)
     afterSearchParamsUpdate()
+    
   }, [params])
 
-
+  const newAddSearchTerm = (term) => {
+    if (!term.replace(/\s/g, '').length) {
+      return 
+    }
+    // recycled code for removing repeated terms. might be a better way but I'm not sure.
+    const children:any[] = reject(propEq('key', term), params.q.children || []);
+    setParams({
+      ...params,
+      //@ts-ignore
+      q:  { ...params.q, children: [...(children || []), { key: term }] },
+    })
+    // return {
+    //   ...params,
+    //   q: { ...params.q, children: [...(children || []), { key: term }] },
+    //   page: 0,
+    // };
+  }
 
   /// this is everyting that used to be in componentDidMount
   useEffect(() => {
     let searchTerm = new URLSearchParams(props.location?.search || '');
-    const FILTERED_PARAMS = {
+    
+    
+    let initialLoadParams = {
       ...DEFAULT_PARAMS,
       ...preselectedFilters(props.presentSiteView),
     };
@@ -829,29 +831,41 @@ function SearchPage (props: SearchPageProps) {
         key: 'AND',
         children: [{ children: [], key: searchTerm.getAll('q').toString() }],
       };
+
+      console.log('QQQQ', initialLoadParams)
       //@ts-ignore
-      setParams(
-        {
-          /// Q below is messed up and needs to get q from above. 
-          //@ts-ignore
-            q: q,
-            aggFilters: [],
-            crowdAggFilters: [],
-            sorts: [],
-            page: 0,
-            pageSize: defaultPageSize,
-          }
-      );
-    }   
+      // setParams(
+      //   {
+      //     /// Q below is messed up and needs to get q from above. 
+      //     //@ts-ignore
+      //       q: {...q},
+      //       aggFilters: [],
+      //       crowdAggFilters: [],
+      //       sorts: [],
+      //       page: 0,
+      //       pageSize: defaultPageSize,
+      //     }
+      // );
+    initialLoadParams = {
+      ...initialLoadParams,
+      q
+    }
+
+    console.log('FILTERED PARAMS AFTER Q', initialLoadParams)
+    } 
+
+    //// PROBABLY STILL NEEDS TO BE FIXED
     if(!searchTerm.has('hash') ){
-      updateSearchParams(FILTERED_PARAMS)
+      updateSearchParams(initialLoadParams)
 
     }
+    //// PROBABLY STILL NEEDS TO BE FIXED
     if (props.intervention) {
       //@ts-ignore
       setParams(props.searchParams);
     }
-    updateSearchParams(FILTERED_PARAMS)
+
+    updateSearchParams(initialLoadParams)
   }, [])
 
 
@@ -862,10 +876,10 @@ function SearchPage (props: SearchPageProps) {
   const hash = getHashFromLocation();
 
   const { presentSiteView } = props;
-  const FILTERED_PARAMS = {
-    ...DEFAULT_PARAMS,
-    ...preselectedFilters(presentSiteView),
-  };
+  // const FILTERED_PARAMS = {
+  //   ...DEFAULT_PARAMS,
+  //   ...preselectedFilters(presentSiteView),
+  // };
 
   /// SEARCH PAGE PARAMS QUERY
   const result = useQuery(SearchPageParamsQuery, {
@@ -900,7 +914,7 @@ function SearchPage (props: SearchPageProps) {
             {showFacetBar && (
               <>
               <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
-                {renderAggs(presentSiteView, dataParams )}
+                {dataParams && renderAggs(presentSiteView, dataParams )}
               </ThemedSidebarContainer>
             <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
               <span className="collapse-icon-container">

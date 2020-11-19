@@ -31,6 +31,7 @@ import AggFilterInputUpdater from './AggFilterInputUpdater';
 import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
+import { useQuery } from '@apollo/client';
 
 const QUERY = gql`
   query SearchPageAggsQuery(
@@ -156,8 +157,8 @@ const QueryComponent = (
   >
 ) => Query(props);
 
-class Aggs extends React.Component<AggsProps> {
-  getAggs = (siteView: PresentSiteFragment_siteView, presearch): string[] => {
+const Aggs = (props: AggsProps) => {
+  const getAggs = (siteView: PresentSiteFragment_siteView, presearch): string[] => {
     // to save having to write multiple displayFIelds functions we are splitting the path based on wheter it's presearch or aggs here
     const path = presearch ? siteView.search.presearch.aggs : siteView.search.aggs
     return displayFields(
@@ -167,8 +168,8 @@ class Aggs extends React.Component<AggsProps> {
     ).map(prop('name'));
   };
 
-  getCrowdAggs = (crowdAggs: string[], presearch): string[] => {
-    const path = presearch ? this.props.presentSiteView.search.presearch.crowdAggs : this.props.presentSiteView.search.crowdAggs
+  const getCrowdAggs = (crowdAggs: string[], presearch): string[] => {
+    const path = presearch ? props.presentSiteView.search.presearch.crowdAggs : props.presentSiteView.search.crowdAggs
     const displayed = displayFields(
       path.selected.kind,
       path.selected.values,
@@ -178,15 +179,15 @@ class Aggs extends React.Component<AggsProps> {
   };
 
   // shouldComponentUpdate(nextProps) {
-  //   console.log('SCU', this.props.searchParams)
-  //   if (this.props.searchParams === nextProps.searchParams) {
+  //   console.log('SCU', props.searchParams)
+  //   if (props.searchParams === nextProps.searchParams) {
   //     return false;
   //   } else {
   //     return true;
   //   }
   // }
 
-  render() {
+  
     const {
       filters,
       crowdFilters,
@@ -200,18 +201,27 @@ class Aggs extends React.Component<AggsProps> {
       presentSiteView,
       preSearchAggs,
       preSearchCrowdAggs,
-    } = this.props;
+    } = props;
     //commented out because not sure how to pass two parameters when using compose
     // const sortByNameCi = sortBy(compose(toLower, aggToField);
 
-     console.log('searchParams from AGGS', searchParams)
+     
     // if (searchParams) {
-      return (
-        <QueryComponent
-          query={QUERY}
-          variables={searchParams}
-        >
-          {({ data, loading, error }) => {
+      // return (
+      //   <QueryComponent
+      //     query={QUERY}
+      //     variables={searchParams}
+      //   >
+      //     {({ data, loading, error }) => {
+        console.log('searchParams from AGGS', searchParams)
+      const result = useQuery(QUERY, {
+        variables: { ...searchParams }, 
+        // onCompleted: () => updateStateFromHash(data.searchParams, presentSiteView)
+      });
+        let data = result.data
+        console.log('results from aggs', result.data)
+        if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
+        if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
        
             console.log('data from aggs', data)
             if (data && data.crowdAggs && data.search?.aggs) {
@@ -233,7 +243,7 @@ class Aggs extends React.Component<AggsProps> {
               );
               crowdAggPresearch = (
                 <span>
-                  {this.getCrowdAggs(Object.keys(crowdAggs), true).map(k =>
+                  {getCrowdAggs(Object.keys(crowdAggs), true).map(k =>
                     crowdAggs[k] ? (
                       <AggContext.Provider
                         key={k}
@@ -261,10 +271,10 @@ class Aggs extends React.Component<AggsProps> {
                             removeFilters(agg, items, true)
                           }
                           searchParams={searchParams}
-                          resetSelectAll={this.props.resetSelectAll}
-                          removeSelectAll={this.props.removeSelectAll}
+                          resetSelectAll={props.resetSelectAll}
+                          removeSelectAll={props.removeSelectAll}
                           presearch
-                          presentSiteView={this.props.presentSiteView}
+                          presentSiteView={props.presentSiteView}
                           configType="presearch"
                           visibleOptions={visibleOptionsByName[k]}
                         />
@@ -285,7 +295,7 @@ class Aggs extends React.Component<AggsProps> {
               console.log('PRESEARCH AGGS')
               return (
                 <PresearchContainer>
-                  {this.getAggs(this.props.presentSiteView, true).map(k =>
+                  {getAggs(props.presentSiteView, true).map(k =>
                     aggs[k] ? (
                       <AggContext.Provider
                         key={k}
@@ -309,10 +319,10 @@ class Aggs extends React.Component<AggsProps> {
                           removeFilter={removeFilter}
                           removeFilters={removeFilters}
                           searchParams={searchParams}
-                          resetSelectAll={this.props.resetSelectAll}
-                          removeSelectAll={this.props.removeSelectAll}
+                          resetSelectAll={props.resetSelectAll}
+                          removeSelectAll={props.removeSelectAll}
                           presearch
-                          presentSiteView={this.props.presentSiteView}
+                          presentSiteView={props.presentSiteView}
                           configType="presearch"
                         />
                       </AggContext.Provider>
@@ -335,7 +345,7 @@ class Aggs extends React.Component<AggsProps> {
               crowdAggDropdowns = (
                 <div>
                   <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
-                  {this.getCrowdAggs(Object.keys(crowdAggs), false).map(k => (
+                  {getCrowdAggs(Object.keys(crowdAggs), false).map(k => (
                     <AggContext.Provider
                       key={k}
                       value={{
@@ -348,14 +358,14 @@ class Aggs extends React.Component<AggsProps> {
                       }}>
                       <AggDropDown
                         agg={k}
-                        removeSelectAll={this.props.removeSelectAll}
+                        removeSelectAll={props.removeSelectAll}
                         selectedKeys={crowdFilters[k] || emptySet}
                         buckets={crowdAggs[k]}
                         isOpen={
-                          this.props.opened === k &&
-                          this.props.openedKind === 'crowdAggs'
+                          props.opened === k &&
+                          props.openedKind === 'crowdAggs'
                         }
-                        onOpen={this.props.onOpen}
+                        onOpen={props.onOpen}
                         aggKind="crowdAggs"
                         addFilter={(agg, item) => addFilter(agg, item, true)}
                         addFilters={(agg, items) => addFilters(agg, items, true)}
@@ -378,7 +388,7 @@ class Aggs extends React.Component<AggsProps> {
               return (
                 <div>
                   <div>
-                    {this.getAggs(this.props.presentSiteView, false).map(k => {
+                    {getAggs(props.presentSiteView, false).map(k => {
                       return (
                         aggs[k] ? (
                           <AggContext.Provider
@@ -397,19 +407,19 @@ class Aggs extends React.Component<AggsProps> {
                               selectedKeys={filters[k] || emptySet}
                               buckets={aggs[k]}
                               isOpen={
-                                this.props.opened === k &&
-                                this.props.openedKind === 'aggs'
+                                props.opened === k &&
+                                props.openedKind === 'aggs'
                               }
-                              onOpen={this.props.onOpen}
+                              onOpen={props.onOpen}
                               aggKind="aggs"
                               addFilter={addFilter}
                               addFilters={addFilters}
                               removeFilter={removeFilter}
                               removeFilters={removeFilters}
                               searchParams={searchParams}
-                              resetSelectAll={this.props.resetSelectAll}
-                              removeSelectAll={this.props.removeSelectAll}
-                              presentSiteView={this.props.presentSiteView}
+                              resetSelectAll={props.resetSelectAll}
+                              removeSelectAll={props.removeSelectAll}
+                              presentSiteView={props.presentSiteView}
                               configType="facetbar"
                             />
                           </AggContext.Provider>
@@ -424,11 +434,8 @@ class Aggs extends React.Component<AggsProps> {
             }
           }
           return null
-        }}
-      </QueryComponent>
-      )
-    return <span>Loading...</span>
+
   }
-}
+
 
 export default Aggs;

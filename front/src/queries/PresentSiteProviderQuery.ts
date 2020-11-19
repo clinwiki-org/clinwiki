@@ -1,19 +1,4 @@
-import * as React from 'react';
-import { useQuery } from '@apollo/client';
-import { gql }  from '@apollo/client';
-import {
-    PresentSiteProviderQuery,
-    PresentSiteProviderQueryVariables
-} from 'types/PresentSiteProviderQuery';
-import { PresentSiteFragment } from 'types/PresentSiteFragment';
-
-
-interface PresentSiteProviderProps {
-    //usePresentSite?(id?: number, url?: string): any;
-    id?: number;
-    url?: string;
-    children: (site: PresentSiteFragment, refetch: any) => JSX.Element | null;
-}
+import { gql, MutationUpdaterFn, useMutation, useQuery  }  from '@apollo/client';
 
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
     fragment SiteStudyExtendedGenericSectionFragment on SiteStudyExtendedGenericSection {
@@ -295,7 +280,7 @@ export const PRESENT_SITE_FRAGMENT = gql`
     ${PAGE_VIEW_FRAGMENT}
 `;
 
-const QUERY = gql`
+export const PRESENT_SITE_QUERY = gql`
     query PresentSiteProviderQuery($id: Int, $url: String) {
         site(id: $id) {
             ...PresentSiteFragment
@@ -304,63 +289,3 @@ const QUERY = gql`
 
     ${PRESENT_SITE_FRAGMENT}
 `;
-
-type ToOmit = 'site' | 'refetch' | 'presentSiteView' | 'prevParams';
-export function withPresentSite2<T>(
-    Component: React.ComponentType<T>
-): React.ComponentClass<Omit<T, ToOmit>> {
-    class WithPresentSiteProvider extends React.Component<Omit<T, ToOmit>> {
-    
-        render() {
-            return (
-                <PresentSiteProvider>
-                    {( site, refetch) => {
-                        const presentSite = site.siteView;
-                        return (
-                            <Component
-                                {...(this.props as T)}
-                                site={site}
-                                refetch={refetch}
-                                presentSiteView={presentSite}
-                            />
-                        );
-                    }}
-                </PresentSiteProvider>
-            );
-        }
-    }
-    return WithPresentSiteProvider;
-}
-
-interface UsePresentSiteProps {
-    id?: number;
-    url?: string;
-}
-
-export function usePresentSite(props?: UsePresentSiteProps) {
-    const result = useQuery<PresentSiteProviderQuery>(QUERY, {
-        variables: { id: props?.id, url: props?.url },
-    });
-    console.log('RESULT from Present Site Provider')
-    if (!result.data) return { ...result, site: null, presentSiteView: null };
-    const site = result?.data?.site;
-    const presentSiteView = site?.siteView;
-    return { ...result, site, presentSiteView };
-}
-
-function PresentSiteProvider(props: PresentSiteProviderProps) {
-    const url =
-        window.location.search;
-    const urlName = new URLSearchParams(url)
-        .getAll('sv')
-        .toString();
-    const urlFinal = urlName ? urlName : "default";
-
-    const { data, loading, error, refetch } = usePresentSite({url: urlFinal});
-   
-    if (error) console.log(error);
-    if (loading || error || !data) return null;
-    return props.children(data.site!, refetch);
-}
-
-export default PresentSiteProvider;
