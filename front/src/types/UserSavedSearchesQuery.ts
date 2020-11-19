@@ -15,6 +15,7 @@ export interface UserSavedSearchesQuery_savedSearch_shortLink {
 
 export interface UserSavedSearchesQuery_savedSearch {
   __typename: "SavedSearch";
+  id: number;
   userId: number;
   nameLabel: string | null;
   createdAt: any;

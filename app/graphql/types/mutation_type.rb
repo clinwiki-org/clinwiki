@@ -37,6 +37,6 @@ module Types
     field :deleteStudyViewLog, mutation: Mutations::DeleteStudyViewLog
     field :createSavedSearch, mutation: Mutations::CreateSavedSearch
     #field :updateSavedSearch, mutation: Mutations::UpdateSavedSearch
-    #field :deleteSavedSearch, mutation: Mutations::DeleteSavedSearch
+    field :deleteSavedSearch, mutation: Mutations::DeleteSavedSearch
   end
 end
