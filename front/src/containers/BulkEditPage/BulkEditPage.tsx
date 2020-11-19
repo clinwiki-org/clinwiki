@@ -111,7 +111,7 @@ const bucketsForLabels = (labels: string[]) => {
         }
       }
       ${el(l)}All: crowdAggBuckets(
-        params: { agg: "${l}", q: { key: "*" }, page: 0, pageSize: 25 }
+        params: { agg: "${l}", q: { key: "*" }, page: 0, pageSize: 1000 }
       ) {
         aggs {
           name
