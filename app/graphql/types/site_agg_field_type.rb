@@ -5,6 +5,7 @@ module Types
     field :auto_suggest, Boolean, null: false
     field :display, FieldDisplayType, null: false
     field :display_name, String,null: false
+    field :agg_sublabel, String, null: true
     field :preselected, SiteSelectType, null: false
     field :visible_options, SiteSelectType, null: false
     field :order, SiteOrderType, null:true
@@ -20,6 +21,10 @@ module Types
     end
     def display_name
       object[:displayName]
+    end
+
+    def agg_sublabel
+      object[:aggSublabel]
     end
 
     def auto_suggest

@@ -325,6 +325,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
       autoSuggest: false,
       display: default_agg_param_display(name),
       displayName: name,
+      aggSublabel: nil,
       order: default_agg_param_order(name),
       range_start_label: nil,
       range_end_label:nil,

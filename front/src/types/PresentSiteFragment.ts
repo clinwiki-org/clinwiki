@@ -189,6 +189,7 @@ export interface PresentSiteFragment_siteView_search_presearch_aggs_fields {
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: PresentSiteFragment_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -242,6 +243,7 @@ export interface PresentSiteFragment_siteView_search_presearch_crowdAggs_fields 
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -323,6 +325,7 @@ export interface PresentSiteFragment_siteView_search_aggs_fields {
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: PresentSiteFragment_siteView_search_aggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -376,6 +379,7 @@ export interface PresentSiteFragment_siteView_search_crowdAggs_fields {
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: PresentSiteFragment_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;

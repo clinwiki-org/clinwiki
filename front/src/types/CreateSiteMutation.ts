@@ -189,6 +189,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch_ag
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -242,6 +243,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch_cr
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -323,6 +325,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_aggs_fields 
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: CreateSiteMutation_createSite_site_siteView_search_aggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -376,6 +379,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fi
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -589,6 +593,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_a
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -642,6 +647,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_c
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
@@ -723,6 +729,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_aggs_fields
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: CreateSiteMutation_createSite_site_siteViews_search_aggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteViews_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
@@ -776,6 +783,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_f
   name: string;
   display: FieldDisplay;
   displayName: string;
+  aggSublabel: string | null;
   preselected: CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
