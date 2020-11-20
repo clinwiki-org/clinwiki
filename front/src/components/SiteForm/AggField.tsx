@@ -30,6 +30,7 @@ export interface FieldType {
   autoSuggest?: boolean;
   rank: number | null;
   displayName?: string;
+  aggSublabel?: string;
   rangeStartLabel?: string;
   rangeEndLabel?: string;
   showAllowMissing?: Boolean;
@@ -262,6 +263,28 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     );
   };
 
+  renderAggSublabel = (configType: ConfigType) => {
+    let displayValue = (this.props.field.aggSublabel); 
+    return (
+      <span>
+        <ThemedStyledLabel>
+          {this.props.kind === 'crowdAggs' ? 'Crowd ' : null}Agg Sublabel:
+        </ThemedStyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.aggSublabel`}
+          placeholder={//aggToField(
+            this.props.field.name
+            //this.props.field.aggSublabel)   
+          }
+          value={
+            displayValue
+          }
+          onChange={this.props.onAddMutation}
+        />
+      </span>
+    );
+  };
+ 
   getPreselectUpdater() {
     return new AggFilterSiteConfigUpdater(
       this.props.field.name,
@@ -314,6 +337,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     return (
       <>
         {this.renderDisplayLabel(configType)}
+        {this.renderAggSublabel(configType)}
         <ThemedStyledLabel>Preselected values</ThemedStyledLabel>
         <ThemedCrumbsContainer>
           {Array.from(selected).map(value => (

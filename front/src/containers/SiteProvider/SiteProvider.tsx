@@ -131,6 +131,7 @@ export const SITE_VIEW_FRAGMENT = gql`
             name
             display
             displayName
+            aggSublabel
             preselected {
               kind
               values
@@ -164,6 +165,7 @@ export const SITE_VIEW_FRAGMENT = gql`
             name
             display
             displayName
+            aggSublabel
             preselected {
               kind
               values
@@ -215,6 +217,7 @@ export const SITE_VIEW_FRAGMENT = gql`
           name
           display
           displayName
+          aggSublabel
           preselected {
             kind
             values
@@ -248,6 +251,7 @@ export const SITE_VIEW_FRAGMENT = gql`
           name
           display
           displayName
+          aggSublabel
           preselected {
             kind
             values
