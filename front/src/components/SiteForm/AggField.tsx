@@ -35,6 +35,7 @@ export interface FieldType {
   rangeEndLabel?: string;
   showAllowMissing?: Boolean;
   showFilterToolbar?: Boolean;
+  defaultToOpen?: Boolean;
 }
 
 export interface OptionVisibility {
@@ -58,6 +59,7 @@ interface AggFieldProps {
   sortables?: string[];
   showAllowMissing?: Boolean;
   showFilterToolbar?: Boolean;
+  defaultToOpen?: Boolean;
 }
 
 interface AggFieldState {
@@ -560,6 +562,14 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
 
     return this.props.field.showFilterToolbar
   }
+
+  shouldDefaultToOpen = () => {
+    if (!this.props.field.defaultToOpen) return false
+
+    return this.props.field.defaultToOpen
+  }
+
+
   renderSortCheckbox = () => {
     if (this.props.sortables) {
       const isSortable = contains(this.props.field.name, this.props.sortables)
@@ -590,6 +600,12 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           name={`set:${this.getPath(this.props.configType)}.showFilterToolbar`}
           checked={this.shouldShowFilterToolbar()}
           onChange={this.handleCheckboxToggle(!this.props.field.showFilterToolbar)}
+        ></Checkbox>
+        <StyledLabel>Default To Open </StyledLabel>
+        <Checkbox
+          name={`set:${this.getPath(this.props.configType)}.defaultToOpen`}
+          checked={this.shouldDefaultToOpen()}
+          onChange={this.handleCheckboxToggle(!this.props.field.defaultToOpen)}
         ></Checkbox>
       </>
     )

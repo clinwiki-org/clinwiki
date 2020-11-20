@@ -14,6 +14,7 @@ module Types
     field :bucket_key_value_pairs, [BucketKeyValuePairsType], null: true
     field :show_allow_missing,  Boolean, null: true
     field :show_filter_toolbar,  Boolean, null: true
+    field :default_to_open, Boolean, null: true
 
 
     def display
@@ -50,6 +51,10 @@ module Types
     end
     def show_filter_toolbar
       object[:showFilterToolbar]
+    end
+
+    def default_to_open
+      object[:defaultToOpen]
     end
   end
 end
