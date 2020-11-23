@@ -550,6 +550,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         <b>Total Results:</b>{' '}
                         {`${this.props.totalResults} studies`}
                       </div>
+                      {
+                        this.showSaveSearchButton(user)
+                      }
                       <ExportToCsvComponent
                         siteView={this.props.presentSiteView}
                         searchHash={this.props.searchHash}
@@ -566,9 +569,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                           Bulk Update <FontAwesome name="truck" />
                         </ThemedButton>
                       ) : null}
-                      {
-                        this.showSaveSearchButton(user)
-                      }
                     </Col>
                   </Row>
                 </Grid>

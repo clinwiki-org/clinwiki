@@ -85,10 +85,10 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
           cancel={() => setShowLoginModal(false)}
         />
         <ThemedButton 
-        style={{float:"right"}}
+        style={{ margin: '1px 10px' }}
         onClick={onClick}>
           &nbsp;
-          <FontAwesome name="save" />
+          <FontAwesome name="bookmark" />
           &nbsp;
         </ThemedButton>
       </>
