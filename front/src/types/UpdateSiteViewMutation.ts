@@ -183,6 +183,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_selected {
@@ -237,6 +238,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_selected {
@@ -319,6 +321,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fiel
   bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_selected {
@@ -373,6 +376,7 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
   bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_selected {

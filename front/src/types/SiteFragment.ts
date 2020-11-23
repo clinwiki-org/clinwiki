@@ -199,6 +199,7 @@ export interface SiteFragment_siteView_search_presearch_aggs_fields {
   bucketKeyValuePairs: SiteFragment_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface SiteFragment_siteView_search_presearch_aggs_selected {
@@ -253,6 +254,7 @@ export interface SiteFragment_siteView_search_presearch_crowdAggs_fields {
   bucketKeyValuePairs: SiteFragment_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface SiteFragment_siteView_search_presearch_crowdAggs_selected {
@@ -335,6 +337,7 @@ export interface SiteFragment_siteView_search_aggs_fields {
   bucketKeyValuePairs: SiteFragment_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface SiteFragment_siteView_search_aggs_selected {
@@ -389,6 +392,7 @@ export interface SiteFragment_siteView_search_crowdAggs_fields {
   bucketKeyValuePairs: SiteFragment_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface SiteFragment_siteView_search_crowdAggs_selected {
@@ -603,6 +607,7 @@ export interface SiteFragment_siteViews_search_presearch_aggs_fields {
   bucketKeyValuePairs: SiteFragment_siteViews_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface SiteFragment_siteViews_search_presearch_aggs_selected {
@@ -657,6 +662,7 @@ export interface SiteFragment_siteViews_search_presearch_crowdAggs_fields {
   bucketKeyValuePairs: SiteFragment_siteViews_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface SiteFragment_siteViews_search_presearch_crowdAggs_selected {
@@ -739,6 +745,7 @@ export interface SiteFragment_siteViews_search_aggs_fields {
   bucketKeyValuePairs: SiteFragment_siteViews_search_aggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface SiteFragment_siteViews_search_aggs_selected {
@@ -793,6 +800,7 @@ export interface SiteFragment_siteViews_search_crowdAggs_fields {
   bucketKeyValuePairs: SiteFragment_siteViews_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface SiteFragment_siteViews_search_crowdAggs_selected {

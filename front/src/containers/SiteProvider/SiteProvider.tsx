@@ -150,6 +150,7 @@ export const SITE_VIEW_FRAGMENT = gql`
             }
             showAllowMissing
             showFilterToolbar
+            defaultToOpen
           }
           selected {
             kind
@@ -184,6 +185,7 @@ export const SITE_VIEW_FRAGMENT = gql`
             }
             showAllowMissing
             showFilterToolbar
+            defaultToOpen
           }
           selected {
             kind
@@ -236,6 +238,7 @@ export const SITE_VIEW_FRAGMENT = gql`
           }
           showAllowMissing
           showFilterToolbar
+          defaultToOpen
         }
         selected {
           kind
@@ -270,6 +273,7 @@ export const SITE_VIEW_FRAGMENT = gql`
           }
           showAllowMissing
           showFilterToolbar
+          defaultToOpen
         }
         selected {
           kind

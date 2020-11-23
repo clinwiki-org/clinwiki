@@ -332,6 +332,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
       bucketKeyValuePairs:nil,
       show_allow_missing:true,
       show_filter_toolbar:true,
+      default_to_open: true,
       preselected: {
         kind: "WHITELIST",
         values: [],
