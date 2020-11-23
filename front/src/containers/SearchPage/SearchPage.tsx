@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import * as FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
@@ -266,8 +266,8 @@ const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 };
 
 const addSearchTerm = (term: string) => (params: SearchParams) => {
-  // console.log('term', term)
-  // console.log('params', params)
+  console.log('term', term)
+  console.log('params', params)
   // have to check for empty string because if you press return two times it ends up putting it in the terms
   if (!term.replace(/\s/g, '').length) {
     return params;
@@ -346,13 +346,22 @@ const DEFAULT_PARAMS: SearchParams = {
 
 function SearchPage (props: SearchPageProps) {
 
-  const [params, setParams] = useState({  
+  // const [params, setParams] = useState({  
+  //   q: { key: 'AND', children: [] },
+  //   aggFilters: [],
+  //   crowdAggFilters: [],
+  //   sorts: [],
+  //   page: 0,
+  //   pageSize: defaultPageSize
+  // })
+  const params = useRef({
     q: { key: 'AND', children: [] },
     aggFilters: [],
     crowdAggFilters: [],
     sorts: [],
     page: 0,
     pageSize: defaultPageSize
+
   })
 
   console.log('params first', params)
@@ -720,6 +729,7 @@ function SearchPage (props: SearchPageProps) {
   
   const handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     console.log('HUP', params)
+    //@ts-ignore
     updater(params!);
     console.log('handle update params', params)
     //console.log("Search Page handle update params", params)
@@ -732,13 +742,13 @@ function SearchPage (props: SearchPageProps) {
     // with hooks we now have a param var but we are also passing new params in using the same name, most of our setParams calls now need to be merging this data so we need to make some naming chnages inorder ot use spread correclty.
     // setParams({...params})
       // WE MAY NEED TO USE  use effect here as the update searchParams used to be in a setState callback. 
-    updateSearchParams(params);
+    updateSearchParams(params.current);
   };
 
   const afterSearchParamsUpdate = async () => {
     // handles the query to get the hash and update the url. 
 
-    const variables = params ;
+    const variables = params.current ;
     console.log('GETTING NEW HASH VARS', variables)
     const { data } = await props.mutate({ variables });
      console.log('after mutation', data.provisionSearchHash!.searchHash!)
@@ -784,28 +794,40 @@ function SearchPage (props: SearchPageProps) {
 
   const updateSearchParams = searchParams => {
     console.log('1 updating searchParams passed', searchParams)
-    console.log('2 updating - Params in state', params)
-    setParams({...params, ...searchParams})
+    console.log('2 updating - Params in state', params.current)
+    // setParams({...params, ...searchParams})
+
+    params.current={...params.current,...searchParams}
+    console.log('3 params.current', params.current)
+    //now that we are using ref not sure the useEffect was best placement for our updating. Instead called it at the end of this update. 
+    afterSearchParamsUpdate()
+
   };
 
   //Only run mutation query if params state changes
-  useEffect(() => {
-    console.log('params in effect - there has been a change', params)
-    afterSearchParamsUpdate()
+  // useEffect(() => {
+  //   console.log('params in effect - there has been a change', params.current)
+  //   afterSearchParamsUpdate()
     
-  }, [params])
+  // }, [params.current])
 
   const newAddSearchTerm = (term) => {
     if (!term.replace(/\s/g, '').length) {
       return 
     }
     // recycled code for removing repeated terms. might be a better way but I'm not sure.
-    const children:any[] = reject(propEq('key', term), params.q.children || []);
-    setParams({
-      ...params,
+    const children:any[] = reject(propEq('key', term), params.current.q.children || []);
+    // setParams({
+    //   ...params,
+    //   //@ts-ignore
+    //   q:  { ...params.q, children: [...(children || []), { key: term }] },
+    // })
+
+    params.current={
+      ...params.current,
       //@ts-ignore
-      q:  { ...params.q, children: [...(children || []), { key: term }] },
-    })
+      q:  { ...params.current.q, children: [...(children || []), { key: term }] }
+    }
     // return {
     //   ...params,
     //   q: { ...params.q, children: [...(children || []), { key: term }] },
