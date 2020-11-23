@@ -31,6 +31,15 @@ module Mutations
               result = result + "#{search_term}|"
               entries = entries + 1 
             end 
+            if search_info["crowd_agg_filters"].present?
+              search_info["crowd_agg_filters"].each do |filter|
+                filter["values"].each do |value|
+                  crowd_agg = value.humanize
+                  result = result + "#{crowd_agg}|" if entries <= 4 
+                  entries = entries + 1 
+                end 
+              end 
+            end 
             if search_info["agg_filters"].present?
               search_info["agg_filters"].each do |filter|
                 filter["values"].each do |value|
