@@ -27,6 +27,8 @@ import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents/i
 import ExportToCsvComponent from './ExportToCsvComponent';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import SaveSearch from './SaveSearch';
+import LabeledButton from 'components/LabeledButton';
+
 
 
 const CrumbsBarStyleWrappper = styled.div`
@@ -370,9 +372,11 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
               />
             </div>
           </FormGroup>
-          <ThemedButton type="submit">
-            <FontAwesome name="search" />
-          </ThemedButton>
+          <LabeledButton
+          theType={"Submit"}
+          helperText={"Search Term"}
+          iconName={"search"}
+       />
         </div>
       );
     } else if (showAutoSuggest === false) {
