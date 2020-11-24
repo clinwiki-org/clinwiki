@@ -268,15 +268,17 @@ const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
 const addSearchTerm = (term: string) => (params: SearchParams) => {
   console.log('term', term)
   console.log('params', params)
+  //@ts-ignore
+  let currentParams =params
   // have to check for empty string because if you press return two times it ends up putting it in the terms
   if (!term.replace(/\s/g, '').length) {
-    return params;
+    return currentParams;
   }
   // recycled code for removing repeated terms. might be a better way but I'm not sure.
-  const children = reject(propEq('key', term), params.q.children || []);
+  const children = reject(propEq('key', term), currentParams.q.children || []);
   return {
-    ...params,
-    q: { ...params.q, children: [...(children || []), { key: term }] },
+    ...currentParams,
+    q: { ...currentParams.q, children: [...(children || []), { key: term }] },
     page: 0,
   };
 };
@@ -711,8 +713,9 @@ function SearchPage (props: SearchPageProps) {
         onBulkUpdate={handleBulkUpdateClick}
         removeFilter={pipe(removeFilter, handleUpdateParams)}
         // addSearchTerm={pipe(addSearchTerm, handleUpdateParams)}
+        // removeSearchTerm={pipe(removeSearchTerm, handleUpdateParams)}
         addSearchTerm={newAddSearchTerm}
-        removeSearchTerm={pipe(removeSearchTerm, handleUpdateParams)}
+        removeSearchTerm={newRemoveSearchTerm}
         update={{
           page: pipe(changePage, handleUpdateParams),
         }}
@@ -730,11 +733,11 @@ function SearchPage (props: SearchPageProps) {
   const handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     console.log('HUP', params)
     //@ts-ignore
-    updater(params!);
+    updater(params.current!);
     console.log('handle update params', params)
     //console.log("Search Page handle update params", params)
     //@ts-ignore
-    if (!equals(params.q, params && params.q)) {
+    if (!equals(params.current.q, params.current && params.current.q)) {
       // For now search doesn't work well with args list
       // Therefore we close it to refresh later on open
       setOpenedAgg({name: null, kind: null});
@@ -811,7 +814,7 @@ function SearchPage (props: SearchPageProps) {
     
   // }, [params.current])
 
-  const newAddSearchTerm = (term) => {
+  const newAddSearchTerm = (term: string) => {
     if (!term.replace(/\s/g, '').length) {
       return 
     }
@@ -828,12 +831,39 @@ function SearchPage (props: SearchPageProps) {
       //@ts-ignore
       q:  { ...params.current.q, children: [...(children || []), { key: term }] }
     }
+         afterSearchParamsUpdate()
     // return {
     //   ...params,
     //   q: { ...params.q, children: [...(children || []), { key: term }] },
     //   page: 0,
     // };
   }
+
+  const newRemoveSearchTerm = (term: string) => {
+    console.log('REMOVING CRUMBß', params.current)
+    let currentParams = params.current;
+    const children = reject(
+      propEq('key', term),
+      params.current.q.children || []
+    ) as SearchQuery[];
+    // return {
+    //   ...params,
+    //   q: { ...params.q, children },
+    //   page: 0,
+    // };
+    params.current={
+      ...params.current,
+      //@ts-ignore
+      q: {...params.current.q, children}
+    }
+    if(currentParams !== params.current){
+      console.log('We aint the same');
+      // afterSearchParamsUpdate()
+    }
+console.log("New Params post remove", params.current)
+    //  afterSearchParamsUpdate()
+
+  };
 
   /// this is everyting that used to be in componentDidMount
   useEffect(() => {
