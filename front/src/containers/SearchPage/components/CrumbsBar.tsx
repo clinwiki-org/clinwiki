@@ -374,7 +374,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
           </FormGroup>
           <LabeledButton
           theType={"Submit"}
-          helperText={"Search Term"}
+          helperText={"Search"}
           iconName={"search"}
        />
         </div>
