@@ -5,8 +5,8 @@ import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
 import Snackbar from 'components/Snackbar';
+import LabeledButton from 'components/LabeledButton';
 
-//TODO define Mutation
 const CREATE_SAVED_SEARCH_MUTATION = gql`
   mutation CreateSavedSearchMutation($searchHash: String!){
   createSavedSearch(input: {
@@ -84,13 +84,13 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
           show={showLoginModal}
           cancel={() => setShowLoginModal(false)}
         />
-        <ThemedButton 
-        style={{ margin: '1px 10px' }}
-        onClick={onClick}>
-          &nbsp;
-          <FontAwesome name="bookmark" />
-          &nbsp;
-        </ThemedButton>
+      
+       <LabeledButton
+          helperText={"Save Search"}
+          theClick={onClick}
+          iconName={"bookmark"}
+       />
+       
       </>
     );
   }

@@ -17,6 +17,8 @@ import { UserSavedSearchesQuery } from 'types/UserSavedSearchesQuery';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useHistory } from 'react-router-dom';
 import { DeleteSavedSearchMutation } from 'types/DeleteSavedSearchMutation';
+import LabeledButton from 'components/LabeledButton';
+
 
 
 const DELETE_SAVED_SEARCH_MUTATION = gql`
@@ -75,7 +77,6 @@ const handleDeleteSavedSearch = (
 };
 
 
-
     const { data: savedSearch } = useQuery<UserSavedSearchesQuery>(QUERY, {
         variables: { userId },
       });
@@ -90,17 +91,18 @@ const handleDeleteSavedSearch = (
               search.nameLabel
             }
          
-            <ThemedButton
-              style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
-              onClick={() => buildLink(search.shortLink.short)}>
-              <FontAwesome name="link" />
-            </ThemedButton>
-            <ThemedButton
-              style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
-              onClick={handleDeleteSavedSearch(deleteSavedSearch, search.id)}>
-              <FontAwesome name="trash" />
-            </ThemedButton>
-
+         <div style={{ float: 'right' , margin: "1px 2px" }} >
+          <LabeledButton
+            helperText={"Delete Search"}
+            theClick={handleDeleteSavedSearch(deleteSavedSearch, search.id)}
+            iconName={"trash"}
+          />
+          <LabeledButton
+            helperText={"Navigate to Link"}
+            theClick={() => buildLink(search.shortLink.short)}
+            iconName={"link"}
+          />
+          </div>
           </StyledProfileLogValue>        
           ))
         } 
@@ -114,30 +116,17 @@ const handleDeleteSavedSearch = (
 }
 
 
-//! return statement with the Buttons setup for delete and Edit name of saved search. BUTTONS NOT WIRED
+//! return statement with the Buttons setup No helper label
 /* 
-      return (
-          (savedSearches && savedSearches?.length !==0) ?  
-          <>{
-          savedSearches.map( (search)=>(
-          <StyledProfileLogValue key={search.shortLink + search.createdAt}>
-            {
-              search.nameLabel
-            }
-         
-            <ThemedButton
+       <ThemedButton
               style={{ fontSize: '12px', padding: '6px 8px', float: 'right' , margin: "1px 2px" }}
-              onClick={() => console.log('Click FAVORITE ')}>
-              <FontAwesome name="pencil" />
+              onClick={() => buildLink(search.shortLink.short)}>
+              <FontAwesome name="link" />
             </ThemedButton>
-          
-          </StyledProfileLogValue>        
-          ))
-        } 
-        </>
-            :
-            <StyledProfileLabel>
-                No Saved Searches for user {props.user?.email}
-            </StyledProfileLabel>
-  
-      ); */
+            <ThemedButton
+              style={{ fontSize: '13px', padding: '5px 9px', float: 'right' , margin: "1px 2px" }}
+              onClick={handleDeleteSavedSearch(deleteSavedSearch, search.id)}>
+              <FontAwesome name="trash" />
+            </ThemedButton>
+
+      */
