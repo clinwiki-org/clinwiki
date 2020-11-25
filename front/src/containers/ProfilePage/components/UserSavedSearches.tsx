@@ -87,10 +87,7 @@ const handleDeleteSavedSearch = (
           <>{
           savedSearches.map( (search)=>(
           <StyledProfileLogValue key={search.shortLink + search.createdAt}>
-            {
-              search.nameLabel
-            }
-         
+             <a href={`/search?hash=${search.shortLink.short}&sv=default&pv=${pv}`}> { search.nameLabel } </a>
          <div style={{ float: 'right' , margin: "1px 2px" }} >
           <LabeledButton
             helperText={"Delete Search"}
