@@ -109,6 +109,7 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       studyFirstSubmittedDate
       studyFirstSubmittedQcDate
       studyType
+      studyViewCount
       targetDuration
       type
       updatedAt
