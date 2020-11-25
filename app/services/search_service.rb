@@ -130,6 +130,7 @@ class SearchService
     average_rating overall_status facility_states
     conditions
     facility_cities facility_names facility_countries study_type sponsors
+    facility_latitudes, facility_longitudes
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
@@ -152,6 +153,7 @@ class SearchService
   # Search results from params
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false, includes: [])
+    byebug
     options = search_options(search_after: search_after, reverse: reverse, includes: includes)
     search_result = Study.search("*", options) { |body| enrich_body(body) }
     {

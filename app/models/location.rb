@@ -1,4 +1,11 @@
 class Location < ApplicationRecord
+  reverse_geocoded_by 'latitude', 'longitude'
+
+  searchkick locations: [:location]
+
+  def search_data
+    attributes.merge(location: {lat: latitude, lon: longitude})
+  end
 
   def geocode
     begin

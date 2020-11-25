@@ -263,6 +263,11 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       facility_states: facilities.map(&:state),
       facility_cities: facilities.map(&:city),
       facility_countries: facilities.map(&:country),
+      facility_latitudes: (Location.where name: facilities.map(&:location_name)).map(&:latitude),
+      facility_longitudes: (Location.where name: facilities.map(&:location_name)).map(&:longitude),
+      facility_latitude: first_facility_coords[0],
+      facility_longitude: first_facility_coords[1],
+      location: {lat: facility_coords[0], lon: first_facility_coords[1]},
       average_rating: average_rating,
       reviews_count: reviews.count,
       reviews: reviews && reviews.map(&:text),
@@ -287,6 +292,17 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       # https://github.com/clinwiki-org/clinwiki/issues/111
       *NON_INDEX_FIELDS, *NON_INDEX_FIELDS.map(&:to_s)
     )
+  end
+
+  #this method returns the first facility that has coords
+  def first_facility_coords
+    coords = [nil, nil]
+      facilities.each do |facility|
+        coords[0] = facility.facility_location&.latitude if facility.facility_location&.latitude.present?
+        coords[1] = facility.facility_location&.longitude if facility.facility_location&.longitude.present?
+        return coords if coords[0].present? && coords[1].present?
+      end
+    coords
   end
 
   # manually publish to reindex queue
