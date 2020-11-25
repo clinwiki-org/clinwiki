@@ -119,6 +119,7 @@ const QUERY = gql`
     ipdUrl
     planToShareIpd
     planToShareIpdDescription
+    studyViewCount
   }
 `;
 const QUERY_NO_RESULTS = gql`
