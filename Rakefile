@@ -47,21 +47,13 @@ namespace :import do
         params = { study_id: row["nct_id"] }
         tally = -> {}
         begin
-          if row["Type"] == "Tag"
-            tags = row["Value"].split("|")
-            if row["Action"] == "Add"
-              params[:add_tag] = tags
-              tally = -> { added_tags += tags.length }
-            elsif row["Action"] == "Remove"
-              params[:remove_tag] = tags
-              tally = -> { removed_tags += tags.length }
-            else
-              raise "Action #{row['Action']} unsupported"
-            end
-          elsif row["Action"] == "Remove"
-            params[:delete_meta] = { key: row["Type"] }
+          if row["Action"] == "Remove"
+            params[:delete_meta] = { 
+              key: row["Type"],
+              value: row["Value"],
+            }
             tally = -> { removed_crowd += 1 }
-          else
+          elsif row['Action'] == 'Add'
             params[:add_meta] = {
               key: row["Type"],
               value: row["Value"],
@@ -94,11 +86,8 @@ namespace :export do
       next if f.blank?
 
       f.keys.each do |k|
-        if k == "tags"
-          puts "#{w.nct_id},Tags,#{f[k].join('|')}"
-        elsif s.respond_to?(k.to_sym)
+        s.respond_to?(k.to_sym)
           puts "#{w.nct_id},#{k},#{f[k]}"
-        end
       end
     end
   end
