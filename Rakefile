@@ -35,6 +35,7 @@ namespace :import do
       )
     end
     errors = []
+    to_index = []
     added_tags = 0
     removed_tags = 0
     added_crowd = 0
@@ -45,6 +46,7 @@ namespace :import do
       csv.each do |row|
         service = CSVProcessorService.new
         params = { study_id: row["nct_id"] }
+        to_index.push(row["nct_id"])
         tally = -> {}
         begin
           if row["Action"] == "Remove"
@@ -67,6 +69,7 @@ namespace :import do
         end
       end
     end
+    Study.enqueue_reindex_ids(to_index.uniq)
     p "#{added_tags} added tags"
     p "#{removed_tags} removed tags"
     p "#{added_crowd} added crowd entries"
