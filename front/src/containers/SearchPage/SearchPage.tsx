@@ -33,7 +33,7 @@ import {
   equals,
   find,
 } from 'ramda';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import SearchView2 from './SearchView2';
 import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
@@ -366,12 +366,15 @@ function SearchPage (props: SearchPageProps) {
 
   })
 
-  console.log('params first', params)
+  console.log('params first', params.current.aggFilters.slice())
   const [openedAgg, setOpenedAgg] = useState({name: null, kind: null})
   const [removeSelectAll, setRemoveSelectAll] = useState(false)
   const [totalRecords, setTotalRecords] = useState(0)
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
+  const [updateSearchPageHashMutation] = useMutation( SearchPageHashMutation , {
+    variables: params.current
 
+  })
 
 
 
@@ -748,13 +751,11 @@ function SearchPage (props: SearchPageProps) {
     updateSearchParams(params.current);
   };
 
-  const afterSearchParamsUpdate = async () => {
+  const afterSearchParamsUpdate =  (data) => {
     // handles the query to get the hash and update the url. 
 
     const variables = params.current ;
     console.log('GETTING NEW HASH VARS', variables)
-    const { data } = await props.mutate({ variables });
-     console.log('after mutation', data.provisionSearchHash!.searchHash!)
     const { searchQueryString, pageViewUrl } = getPageView();
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
     // This assumes that the site provider is not passing a url into the page
@@ -795,16 +796,20 @@ function SearchPage (props: SearchPageProps) {
     }
   }
 
-  const updateSearchParams = searchParams => {
+  const updateSearchParams = async (searchParams) => {
     console.log('1 updating searchParams passed', searchParams)
-    console.log('2 updating - Params in state', params.current)
+    console.log('2 updating - Params in state', params)
     // setParams({...params, ...searchParams})
 
-    params.current={...params.current,...searchParams}
-    console.log('3 params.current', params.current)
-    //now that we are using ref not sure the useEffect was best placement for our updating. Instead called it at the end of this update. 
-    afterSearchParamsUpdate()
+    params.current= await {...params.current,...searchParams}
 
+    console.log('3 params.current', params.current)
+
+    //now that we are using ref not sure the useEffect was best placement for our updating. Instead called it at the end of this update. 
+    const {data}= await  updateSearchPageHashMutation()
+    console.log("Data: ",data)
+
+   await afterSearchParamsUpdate(data)
   };
 
   //Only run mutation query if params state changes
@@ -831,7 +836,7 @@ function SearchPage (props: SearchPageProps) {
       //@ts-ignore
       q:  { ...params.current.q, children: [...(children || []), { key: term }] }
     }
-         afterSearchParamsUpdate()
+    updateSearchParams(params.current)
     // return {
     //   ...params,
     //   q: { ...params.q, children: [...(children || []), { key: term }] },
@@ -851,24 +856,18 @@ function SearchPage (props: SearchPageProps) {
     //   q: { ...params.q, children },
     //   page: 0,
     // };
-    params.current={
+    currentParams={
       ...params.current,
       //@ts-ignore
       q: {...params.current.q, children}
     }
-    if(currentParams !== params.current){
-      console.log('We aint the same');
-      // afterSearchParamsUpdate()
-    }
-console.log("New Params post remove", params.current)
-    //  afterSearchParamsUpdate()
+    updateSearchParams(currentParams)
 
   };
 
   /// this is everyting that used to be in componentDidMount
   useEffect(() => {
     let searchTerm = new URLSearchParams(props.location?.search || '');
-    
     
     let initialLoadParams = {
       ...DEFAULT_PARAMS,
@@ -898,17 +897,19 @@ console.log("New Params post remove", params.current)
       //       pageSize: defaultPageSize,
       //     }
       // );
-    initialLoadParams = {
+    let initialLoadParamsQ = {
       ...initialLoadParams,
       q
     }
 
-    console.log('FILTERED PARAMS AFTER Q', initialLoadParams)
+    console.log('FILTERED PARAMS AFTER Q', initialLoadParamsQ)
+    updateSearchParams(initialLoadParamsQ)
     } 
 
     //// PROBABLY STILL NEEDS TO BE FIXED
     if(!searchTerm.has('hash') ){
-      updateSearchParams(initialLoadParams)
+      console.log("We don't have a hash, updating with intialLoad Params")
+       updateSearchParams(initialLoadParams)
 
     }
     //// PROBABLY STILL NEEDS TO BE FIXED
@@ -917,15 +918,15 @@ console.log("New Params post remove", params.current)
       setParams(props.searchParams);
     }
 
-    updateSearchParams(initialLoadParams)
+ return
   }, [])
 
 
   if (props.email && !props.match.params.id) {
     props.getTotalContributions(totalRecords);
   }
-
   const hash = getHashFromLocation();
+
 
   const { presentSiteView } = props;
   // const FILTERED_PARAMS = {
@@ -996,4 +997,4 @@ console.log("New Params post remove", params.current)
 }
 
 // @ts-ignore too many decorators
-export default withPresentSite2(graphql(SearchPageHashMutation)(SearchPage));
+export default withPresentSite2((SearchPage));
