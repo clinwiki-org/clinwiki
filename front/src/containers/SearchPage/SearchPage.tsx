@@ -527,22 +527,22 @@ function SearchPage(props: SearchPageProps) {
     const { presentSiteView } = props;
     console.log('SEARCH VIEW FROM SP', searchParams)
     return (
-            <SearchView2
-              key={`${hash}+${JSON.stringify(searchParams)}`}
-              params={searchParams}
-              onBulkUpdate={handleBulkUpdateClick}
-              onUpdateParams={handleUpdateParams}
-              onRowClick={handleRowClick}
-              searchHash={hash || ''}
-              searchParams={searchParams}
-              presentSiteView={presentSiteView}
-              getTotalResults={getTotalResults}
-            />
-  
+      <SearchView2
+        key={`${hash}+${JSON.stringify(searchParams)}`}
+        params={searchParams}
+        onBulkUpdate={handleBulkUpdateClick}
+        onUpdateParams={handleUpdateParams}
+        onRowClick={handleRowClick}
+        searchHash={hash || ''}
+        searchParams={searchParams}
+        presentSiteView={presentSiteView}
+        getTotalResults={getTotalResults}
+      />
+
     );
   };
 
-  const getHashFromLocation = (): string | null  => {
+  const getHashFromLocation = (): string | null => {
     let hash = new URLSearchParams(props.history.location.search).getAll(
       'hash'
     );
@@ -607,7 +607,7 @@ function SearchPage(props: SearchPageProps) {
     }
     return null;
   };
-  
+
   const handlePresearchButtonClick = (hash, target, pageViewUrl) => {
     const url = `/search?hash=${hash}&sv=${target}&pv=${pageViewUrl}`;
     props.history.push(url);
@@ -733,7 +733,7 @@ function SearchPage(props: SearchPageProps) {
       />
     );
   };
-  
+
   const handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
     console.log('HUP', params)
     //@ts-ignore
@@ -1019,46 +1019,46 @@ function SearchPage(props: SearchPageProps) {
     presentSiteView
   );
   return (
-  <Switch>
-    <Route
-      render={() => {
-        const { presentSiteView } = props;
-        const {
-          showPresearch,
-          showFacetBar,
-          showBreadCrumbs,
-        } = presentSiteView.search.config.fields;
-        return (
-          <ThemedSearchPageWrapper>
-            {showFacetBar && (
-              <>
-              <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
-                {dataParams && renderAggs(presentSiteView, dataParams)}
-              </ThemedSidebarContainer>
-            <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
-              <span className="collapse-icon-container">
-                <FontAwesome
-                  name={collapseFacetBar ? "chevron-circle-right" : "chevron-circle-left"}
-                  className="collapse-icon"
-                  onClick={() => {
-                    setCollapseFacetBar(!collapseFacetBar)
-                  }}
-                />
-              </span>
-            </ThemedSideBarCollapse>
-            </>
-            )}
+    <Switch>
+      <Route
+        render={() => {
+          const { presentSiteView } = props;
+          const {
+            showPresearch,
+            showFacetBar,
+            showBreadCrumbs,
+          } = presentSiteView.search.config.fields;
+          return (
+            <ThemedSearchPageWrapper>
+              {showFacetBar && (
+                <>
+                  <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
+                    {dataParams && renderAggs(presentSiteView, dataParams)}
+                  </ThemedSidebarContainer>
+                  <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
+                    <span className="collapse-icon-container">
+                      <FontAwesome
+                        name={collapseFacetBar ? "chevron-circle-right" : "chevron-circle-left"}
+                        className="collapse-icon"
+                        onClick={() => {
+                          setCollapseFacetBar(!collapseFacetBar)
+                        }}
+                      />
+                    </span>
+                  </ThemedSideBarCollapse>
+                </>
+              )}
 
-            <ThemedMainContainer>
-              {showBreadCrumbs && renderCrumbs(presentSiteView, dataParams)}
-              {showPresearch && dataParams ? renderPresearch(hash, dataParams) : null}
-              { dataParams ? renderSearch(dataParams) : null}
-            </ThemedMainContainer>
-          </ThemedSearchPageWrapper>
-        );
-      }}
+              <ThemedMainContainer>
+                {showBreadCrumbs && renderCrumbs(presentSiteView, dataParams)}
+                {showPresearch && dataParams ? renderPresearch(hash, dataParams) : null}
+                {dataParams ? renderSearch(dataParams) : null}
+              </ThemedMainContainer>
+            </ThemedSearchPageWrapper>
+          );
+        }}
       />
-  </Switch>
+    </Switch>
   )
 }
 
