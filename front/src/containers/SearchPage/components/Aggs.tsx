@@ -127,6 +127,7 @@ interface AggsProps {
   site: PresentSiteFragment;
   updateSearchParams: any;
   searchParams: any;
+  getTotalResults: Function;
 }
 
 const PresearchContainer = styled.div`
@@ -225,6 +226,8 @@ const Aggs = (props: AggsProps) => {
        
             console.log('data from aggs', data)
             if (data && data.crowdAggs && data.search?.aggs) {
+              let recordsTotal = data.search?.recordsTotal;
+              props.getTotalResults(recordsTotal);
               const aggs: AggBucketMap = {};
               for (const a of data.search?.aggs || []) {
                 aggs[a.name] = [];

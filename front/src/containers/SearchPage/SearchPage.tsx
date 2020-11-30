@@ -518,6 +518,7 @@ function SearchPage(props: SearchPageProps) {
         searchParams={searchParams}
         updateSearchParams={updateSearchParams}
         site={props.site}
+        getTotalResults={setTotalRecords}
       />
     );
   };
@@ -536,7 +537,6 @@ function SearchPage(props: SearchPageProps) {
         searchHash={hash || ''}
         searchParams={searchParams}
         presentSiteView={presentSiteView}
-        getTotalResults={getTotalResults}
       />
 
     );
@@ -598,14 +598,6 @@ function SearchPage(props: SearchPageProps) {
       searchQueryString: searchQueryString,
       pageViewUrl: pageViewUrl,
     };
-  };
-
-  const getTotalResults = total => {
-    console.log('TOTAL RESULTS', total)
-    if (total) {
-      setTotalRecords(total);
-    }
-    return null;
   };
 
   const handlePresearchButtonClick = (hash, target, pageViewUrl) => {
@@ -677,6 +669,7 @@ function SearchPage(props: SearchPageProps) {
           opened={opened}
           openedKind={openedKind}
           onOpen={handleOpenAgg}
+          getTotalResults={setTotalRecords}
         />
         {presearchButton.name && (
           <ThemedButton

@@ -191,24 +191,15 @@ interface SearchView2Props {
   searchHash: string;
   searchParams: any;
   presentSiteView: PresentSiteFragment_siteView;
-  getTotalResults: Function;
   theme: any;
 }
 
-interface SearchView2State {
-  totalResults: any;
-  prevResults: any | null;
-}
 
-class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
+class SearchView2 extends React.Component<SearchView2Props> {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      totalResults: 0,
-      prevResults: 0,
-    };
   }
 
   renderViewDropdown = () => {
@@ -274,7 +265,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     template,
     onPress,
     resultsType,
-    recordsTotal
   ) => {
     switch (resultsType) {
       case 'masonry':
@@ -402,7 +392,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     const showResults = presentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
     const resultsType = presentSiteView.search.results.type;
-    let recordsTotal = data?.search?.recordsTotal;
     if (error) {
       return <div>{error.message}</div>;
     }
@@ -410,23 +399,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       console.log('NO DATA FOOL')
       return <BeatLoader />
     }
-    const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
-
-    if (this.state.prevResults !== this.state.totalResults) {
-      console.log('PREV RESULTS CONDITIONAL')
-      this.setState(
-        prev => {
-          return {
-            totalResults: totalRecords,
-            prevResults: prev.totalResults,
-          };
-        },
-        () => {
-          this.props.getTotalResults(this.state.totalResults);
-        }
-      );
-    }
-
     return showResults ? (
       this.renderHelper(
         searchData,
@@ -434,7 +406,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         presentSiteView.search.template,
         this.cardPressed,
         resultsType,
-        recordsTotal
       )
     ) : (
       <div style={{ marginLeft: 'auto', display: 'flex', height: '100%' }}>
