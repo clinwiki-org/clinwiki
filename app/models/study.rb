@@ -2,23 +2,28 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   self.primary_key = "nct_id"
 
   def self.custom_mapping
-     {
-       study:{
-         properties:{
-           wiki_page_edits:
-           {
-             type: 'nested'
-           },
-          reactions:
-           {
-             type: 'nested'
-           },
-           average_rating:{
-             type:'float'
-           },
-         }
-       }
-     }
+    {
+      study:{
+        properties:{
+          wiki_page_edits:
+          {
+            type: 'nested'
+          },
+         reactions:
+          {
+            type: 'nested'
+          },
+          average_rating:
+          {
+            type: 'float'
+          },
+          locations:
+          {
+            type: 'geo_point'
+          }
+        }
+      }
+    }
   end
 
 
@@ -263,11 +268,12 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       facility_states: facilities.map(&:state),
       facility_cities: facilities.map(&:city),
       facility_countries: facilities.map(&:country),
-      facility_latitudes: (Location.where name: facilities.map(&:location_name)).map(&:latitude),
-      facility_longitudes: (Location.where name: facilities.map(&:location_name)).map(&:longitude),
-      facility_latitude: first_facility_coords[0],
-      facility_longitude: first_facility_coords[1],
-      location: {lat: facility_coords[0], lon: first_facility_coords[1]},
+#      facility_latitudes: (Location.where name: facilities.map(&:location_name)).map(&:latitude),
+#      facility_longitudes: (Location.where name: facilities.map(&:location_name)).map(&:longitude),
+#      facility_latitude: first_facility_coords[0],
+#      facility_longitude: first_facility_coords[1],
+#      location: {lat: first_facility_coords[0], lon: first_facility_coords[1]},
+      locations: facility_coords_hash,
       average_rating: average_rating,
       reviews_count: reviews.count,
       reviews: reviews && reviews.map(&:text),
@@ -294,15 +300,34 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     )
   end
 
-  #this method returns the first facility that has coords
+  # this method returns the first facility that has coords
   def first_facility_coords
-    coords = [nil, nil]
+    coords = []
       facilities.each do |facility|
-        coords[0] = facility.facility_location&.latitude if facility.facility_location&.latitude.present?
-        coords[1] = facility.facility_location&.longitude if facility.facility_location&.longitude.present?
-        return coords if coords[0].present? && coords[1].present?
+        if facility.facility_location&.latitude.present? && facility.facility_location&.longitude.present?
+          coords[0] = facility.facility_location&.latitude
+          coords[1] = facility.facility_location&.longitude
+          return coords if coords[0].present? && coords[1].present?
+        end
       end
-    coords
+#    coords.empty? ? [-1, -1] : coords
+    coords.compact
+  end
+
+  # (Location.where name: s.facilities.map(&:location_name)).map(&:latitude).zip (Location.where name: s.facilities.map(&:location_name)).map(&:longitude)
+  # works to create an array of coordinates but we need an array of hashes [{lat: 123, lon: 456}, ...]
+  # also the above zip will cause errors if all lat/lon values are not present
+  def facility_coords_hash
+    locations = []
+    geocode
+    facilities.each do |facility|
+      if facility.facility_location&.latitude.present? && facility.facility_location&.longitude.present?
+        coord_hash = { lat: facility.facility_location&.latitude, lon: facility.facility_location&.longitude}
+        locations << coord_hash
+      end
+    end
+#    locations.empty? ? [{lat: -1,lon: -1}] : locations
+    locations
   end
 
   # manually publish to reindex queue
