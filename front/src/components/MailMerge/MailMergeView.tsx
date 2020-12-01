@@ -15,6 +15,7 @@ export interface Props {
   context?: object;
   style?: object;
   islands?: Record<string, IslandConstructor>;
+  refetchQuery?:any;
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
@@ -77,6 +78,11 @@ export default function MailMergeView(props: Props) {
     {
       shouldProcessNode: node => islandKeys.has(node.name),
       processNode: (node, children) => {
+
+    //      node.attribs.onChange =()=>{
+    //         // props.refetchQuery()
+    //         console.log("OnChange")
+    // }
         const create = props.islands?.[node.name];
         return (
           <div

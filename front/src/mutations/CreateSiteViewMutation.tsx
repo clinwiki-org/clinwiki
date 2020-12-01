@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { gql } from 'apollo-boost';
+import { gql, MutationFunction, MutationResult }  from '@apollo/client';
 import {
   Mutation,
   MutationComponentOptions,
-  MutationFunction,
-  MutationResult,
-} from 'react-apollo';
+} from '@apollo/client/react/components';
 import {
   CreateSiteViewMutation as CreateSiteViewMutationType,
   CreateSiteViewMutationVariables,

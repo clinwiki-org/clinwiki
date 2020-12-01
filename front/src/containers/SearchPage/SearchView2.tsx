@@ -20,13 +20,13 @@ import {
   fromPairs,
 } from 'ramda';
 import { camelCase, snakeCase, capitalize } from 'utils/helpers';
-import { gql } from 'apollo-boost';
+import { gql }  from '@apollo/client';
 import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { Query, QueryComponentOptions } from 'react-apollo';
+import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import 'react-table/react-table.css';
 import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
@@ -41,6 +41,7 @@ import {
   AutoSizer,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
+import StudyFragmentQueryComponent from './components/StudyFragmentQueryComponent'
 import useUrlParams from '../../utils/UrlParamsProvider';
 import { AggBucketMap } from './Types';
 
@@ -118,6 +119,7 @@ const QUERY = gql`
     ipdUrl
     planToShareIpd
     planToShareIpdDescription
+    studyViewCount
   }
 `;
 const QUERY_NO_RESULTS = gql`
@@ -381,6 +383,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 template={template}
                 // height={height}
                 // width={width}
+
               />
             {/* )}
           </AutoSizer> */}
@@ -447,7 +450,6 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
       this.props.presentSiteView.url || 'default'
     );
   };
-
 
   sortHelper = (sorts, params) => {
     this.props.onUpdateParams(changeSorted(sorts));
@@ -540,6 +542,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
           <QueryComponent
             query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
             variables={this.props.params}
+            fetchPolicy={'no-cache'}
             >
             {({ data, loading, error }) => {
               return (

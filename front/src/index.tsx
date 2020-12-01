@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import 'sanitize.css/sanitize.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/client';
 import * as FullStory from '@fullstory/browser';
 
 // Import root app

@@ -3,9 +3,8 @@ import { Col } from 'react-bootstrap';
 import {
   Mutation,
   MutationComponentOptions,
-  MutationFunction,
-} from 'react-apollo';
-import { gql } from 'apollo-boost';
+} from '@apollo/client/react/components';
+import { gql, MutationFunction }  from '@apollo/client';
 import { SignInMutation, SignInMutationVariables } from 'types/SignInMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
