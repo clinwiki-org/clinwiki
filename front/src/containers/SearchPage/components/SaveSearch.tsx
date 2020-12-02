@@ -8,9 +8,10 @@ import Snackbar from 'components/Snackbar';
 import LabeledButton from 'components/LabeledButton';
 
 const CREATE_SAVED_SEARCH_MUTATION = gql`
-  mutation CreateSavedSearchMutation($searchHash: String!){
+  mutation CreateSavedSearchMutation($searchHash: String!, $url: String!){
   createSavedSearch(input: {
-    searchHash: $searchHash
+    searchHash: $searchHash,
+    url: $url
   }) {
     savedSearch {
       shortLink
@@ -65,9 +66,15 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
     }
 
     async function onClick() {
+      console.log('window.location.href', window.location.href)
+  
       if (user) {
+          const url = window.location.href
           const { data } = await mutate({
-          variables: { searchHash: searchHash },
+          variables: { 
+            searchHash: searchHash,
+            url: url
+          },
         });
         //TODO Give user notification / snackbar. FIX TS Errors
         //_showSnackbarHandler();

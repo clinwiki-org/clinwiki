@@ -81,25 +81,25 @@ const handleDeleteSavedSearch = (
         variables: { userId },
       });
       const savedSearches= savedSearch?.savedSearch
-
+      console.log('saved seraches', savedSearches)
       return (
           (savedSearches && savedSearches?.length !==0) ?  
           <>{
           savedSearches.map( (search)=>(
           <StyledProfileLogValue key={search.shortLink + search.createdAt}>
-             <a href={`/search?hash=${search.shortLink.short}&sv=default&pv=${pv}`}> { search.nameLabel } </a>
-         <div style={{ float: 'right' , margin: "1px 2px" }} >
-          <LabeledButton
-            helperText={"Delete Search"}
-            theClick={handleDeleteSavedSearch(deleteSavedSearch, search.id)}
-            iconName={"trash"}
-          />
-          <LabeledButton
-            helperText={"Navigate to Link"}
-            theClick={() => buildLink(search.shortLink.short)}
-            iconName={"link"}
-          />
-          </div>
+            <a href={search.url}> { search.nameLabel } </a> 
+            <div style={{ float: 'right' , margin: "1px 2px" }} >
+              <LabeledButton
+                helperText={"Delete Search"}
+                theClick={handleDeleteSavedSearch(deleteSavedSearch, search.id)}
+                iconName={"trash"}
+              />
+              <LabeledButton
+                helperText={"Navigate to Link"}
+                theClick={() => buildLink(search.shortLink.short)}
+                iconName={"link"}
+              />
+            </div>
           </StyledProfileLogValue>        
           ))
         } 

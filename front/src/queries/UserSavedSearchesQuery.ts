@@ -9,6 +9,7 @@ query UserSavedSearchesQuery($userId: Int!){
         createdAt
         updatedAt
         isSubscribed
+        url
         shortLink {
             long
             short
