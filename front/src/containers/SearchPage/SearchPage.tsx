@@ -324,6 +324,38 @@ function SearchPage(props: SearchPageProps) {
     };
   };
 
+  const createPageName = () => {
+    let searchParams = params.current;
+    console.log('CREATE PAGE NAME', searchParams)
+    let entries = 0 
+    let result = ""
+    if (searchParams!["q"]["children"][0]) {
+      let search_term = searchParams["q"]["children"][0]["key"]
+      result = result + `${search_term} | `
+      entries = entries + 1 
+    }
+    if (searchParams!["crowd_agg_filters"]) {
+
+      searchParams!["crowdAggFilters"].map((value) => {
+        //@ts-ignore
+        value!.values.map((subValue) => {
+          result = result + `${subValue} | `
+          entries = entries + 1 
+        })
+      })
+    }
+    if (searchParams!["aggFilters"]) {
+      searchParams!["aggFilters"].map((value) => {
+        //@ts-ignore
+        value!.values.map((subValue) => {
+          result = result + `${subValue} | `
+          entries = entries + 1 
+        })
+      })
+    }
+    document.title = result.substring(0, result.length -2)
+  }
+
   const searchParamsFromQuery = (
     params: SearchPageParamsQuery_searchParams | null | undefined,
     view: SiteViewFragment
@@ -651,7 +683,7 @@ function SearchPage(props: SearchPageProps) {
 
   const afterSearchParamsUpdate = (data) => {
     // handles the query to get the hash and update the url. 
-
+    createPageName()
     const variables = params.current;
     console.log('GETTING NEW HASH VARS', variables)
     const { searchQueryString, pageViewUrl } = getPageView();
