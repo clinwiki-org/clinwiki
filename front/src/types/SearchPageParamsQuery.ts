@@ -41,6 +41,18 @@ export interface SearchPageParamsQuery_searchParams_aggFilters {
    * Whether to include missing fields
    */
   includeMissingFields: boolean | null;
+  /**
+   * Radius used for distance search
+   */
+  radius: number | null;
+  /**
+   * Location lat
+   */
+  lat: number | null;
+  /**
+   * Location Long
+   */
+  long: number | null;
 }
 
 export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
@@ -65,6 +77,18 @@ export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
    * Whether to include missing fields
    */
   includeMissingFields: boolean | null;
+  /**
+   * Radius used for distance search
+   */
+  radius: number | null;
+  /**
+   * Location lat
+   */
+  lat: number | null;
+  /**
+   * Location Long
+   */
+  long: number | null;
 }
 
 export interface SearchPageParamsQuery_searchParams {
