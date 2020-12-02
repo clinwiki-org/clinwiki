@@ -502,7 +502,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           buckets={buckets}
           isSelected={this.isSelected}
           hasMore={hasMore}
-          handleLoadMore={this.handleLoadMore}
           field={field}
         />
 
@@ -772,7 +771,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           buckets={buckets}
           isSelected={this.isSelected}
           hasMore={hasMore}
-          handleLoadMore={this.handleLoadMore}
           field={field}
         />
                       {showAllowMissing && (

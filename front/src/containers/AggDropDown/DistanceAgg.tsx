@@ -21,7 +21,6 @@ interface DistanceAggProps {
   buckets: Array<AggBucket>;
   isSelected: any;
   hasMore: boolean;
-  handleLoadMore: any;
   removeFilters: any;
   agg: string;
 }
@@ -32,26 +31,14 @@ class DistanceAgg extends React.Component<DistanceAggProps> {
       isPresearch,
       field,
       visibleOptions,
-      buckets,
       isSelected,
       hasMore,
-      handleLoadMore,
       removeFilters,
       agg
     } = this.props;
+    const buckets: string[] = ["5","10","25","50", "100", "250", "500", "1000"]
     return (
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={handleLoadMore}
-        hasMore={hasMore}
-        useWindow={false}
-        loader={
-          <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-            <BeatLoader key="loader" color={isPresearch ? '#000' : '#fff'} />
-          </div>
-        }>
-
-
+    <>
       <div
         style={{
           display: 'flex',
@@ -68,7 +55,7 @@ class DistanceAgg extends React.Component<DistanceAggProps> {
           }}>
           
 
-          <ThemedButton 
+          {/* <ThemedButton 
         style={{float:"left", padding: 3, }}
         onClick={() => console.log("Clicked Current Location")}>
           &nbsp;
@@ -76,16 +63,16 @@ class DistanceAgg extends React.Component<DistanceAggProps> {
             //style={{ opacity: 1 + '!important'}}
             name="compass" />
           &nbsp;
-        </ThemedButton>
+        </ThemedButton> */}
 
         </div>
-        <FormControl
+        {/* <FormControl
           type="text"
           placeholder="Enter Zip Code"
          // value={"zipCode"}
           onChange={() => console.log("Need a handleSearchByZipCode")}
           style={{ flex: 4, margin: '4px' }}
-        />
+        /> */}
       </div>
 
 
@@ -99,8 +86,7 @@ class DistanceAgg extends React.Component<DistanceAggProps> {
              agg={agg}
           />
 
-      
-      </InfiniteScroll>
+    </>
     );
   }
 }

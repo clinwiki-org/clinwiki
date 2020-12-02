@@ -24,6 +24,8 @@ interface DistanceDropDownOptionsState {
   startText?: any;
   endText?: any;
   activeOption: string;
+  lat: number | null;
+  long: number| null;
 }
 
 const StyledFormControl = styled(FormControl)`
@@ -44,6 +46,8 @@ class DistanceDropDownOptions extends React.Component<
       startText: this.props.updater.input?.gte,
       endText: this.props.updater.input?.lte,
       activeOption: 'Select Option',
+      lat: null,
+      long: null,
     };
   }
 
@@ -57,11 +61,12 @@ class DistanceDropDownOptions extends React.Component<
     }
   }
 
-  onChange = () =>
-    this.props.updater.changeRange([
-      this.state.start || this.props.updater.input?.gte,
-      this.state.end || this.props.updater.input?.lte,
-    ]);
+  // onChange = () =>
+  //   this.props.updater.changeDistance([
+  //     this.state.activeOption || this.props.updater.input?.radius,
+  //     this.state.lat || this.props.updater.input?.lat,
+  //     this.state.long || this.props.updater.input?.long,
+  //   ]);
 
   render() {
     const {
@@ -75,42 +80,62 @@ class DistanceDropDownOptions extends React.Component<
     const { activeOption } = this.state;
 
     let activeOptions: string[] = [];
+    const showLocation = (position) =>{
+      console.log("Position",position)
+      this.setState({lat: position.coords.latitude, long: position.coords.longitude}, 
+        ()=>       updater.changeDistance([
+          5 || this.props.updater.input?.radius,
+          this.state.lat || this.props.updater.input?.lat,
+          this.state.long || this.props.updater.input?.long,
+        ]))
 
-
+    }
     const changeDropDownOption = async e => {
       e.preventDefault();
+
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(showLocation)
+
       activeOptions.forEach(o => {
         updater.removeFilter(o);
       });
-      updater.toggleFilter(e.target.value);
+      
+    }
+     
     };
 
     const checkOption = (bucket, field) => {
-      if (updater.isSelected(bucket.key)) {
-        activeOptions.push(bucket.key);
+      if (updater.isSelected(bucket)) {
+        activeOptions.push(bucket);
         if (this.state.activeOption !== activeOptions[0]) {
           this.setState({
             activeOption: activeOptions[0],
           });
         }
-      }
 
-      const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', bucket.key))(field.bucketKeyValuePairs) : false;
-      if (!bucketKeyValuePair) {
-        return (
-          <option key={bucket.key + bucket.count} value={bucket.key}>
-            {defaultTo(bucket.key)(bucket.keyAsString)}{' '}
-            {display === 'DROP_DOWN' ? bucket.docCount : null}
-          </option>
-        );
-      } else {
-        return (
-          <option key={bucket.key + bucket.count} value={bucket.key}>
-            {`${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}`}
-          </option>
-        );
       }
+      return (
+        <option key={bucket} value={bucket}>
+          {`${bucket} miles`}
+        </option>
+      );
+      // const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', bucket.key))(field.bucketKeyValuePairs) : false;
+      // if (!bucketKeyValuePair) {
+      //   return (
+      //     <option key={bucket.key + bucket.count} value={bucket.key}>
+      //       {defaultTo(bucket.key)(bucket.keyAsString)}{' '}
+      //       {display === 'DROP_DOWN' ? bucket.docCount : null}
+      //     </option>
+      //   );
+      // } else {
+      //   return (
+      //     <option key={bucket.key + bucket.count} value={bucket.key}>
+      //       {`${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}`}
+      //     </option>
+      //   );
+      // }
     };
+    console.log("Buckets", buckets)
       return (
         <div className="dropDownFacet">
           <StyledFormControl
@@ -123,15 +148,7 @@ class DistanceDropDownOptions extends React.Component<
             <option disabled value={-1} key={-1}>
               {activeOption}
             </option>
-            {buckets
-              .filter(
-                bucket =>
-                  !bucketKeyIsMissing(bucket) &&
-                  (visibleOptions.length
-                    ? visibleOptions.includes(bucket.key)
-                    : true)
-              )
-              .map(bucket => checkOption(bucket, field))}
+            {buckets.map(bucket => checkOption(bucket, field))}
           </StyledFormControl>
         </div>
       );

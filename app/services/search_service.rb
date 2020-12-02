@@ -106,6 +106,9 @@ DEFAULT_AGG_OPTIONS = {
     },
     limit: 10,
   },
+  "distance": {
+    limit: 10,
+  },
 }.freeze
 
 def nested_body(key)
@@ -138,6 +141,7 @@ class SearchService
     study_views_count
     number_of_groups why_stopped results_first_submitted_date
     plan_to_share_ipd design_outcome_measures
+    distance
   ].freeze
 
   attr_reader :params
