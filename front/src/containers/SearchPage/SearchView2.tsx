@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SearchParams, AggKind } from './shared';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
-import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents';
+import { ThemedButton, ThemedSearchContainer } from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
 import { BeatLoader, PulseLoader } from 'react-spinners';
@@ -20,7 +20,7 @@ import {
   fromPairs,
 } from 'ramda';
 import { camelCase, snakeCase, capitalize } from 'utils/helpers';
-import { gql }  from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,
@@ -160,11 +160,6 @@ const changePageSize = (pageSize: number) => (params: SearchParams) => ({
   pageSize,
   page: 0,
 });
-const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
-  const idSortedLens = lensProp('id');
-  const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
-  return { ...params, sorts: snakeSorts, page: 0 };
-};
 
 const QueryComponent = (
   props: QueryComponentOptions<
@@ -184,56 +179,52 @@ const SearchWrapper = styled.div`
 
 
 interface SearchView2Props {
-  params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
   onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
   searchHash: string;
-  searchParams: any;
+  searchParams: SearchParams;
   presentSiteView: PresentSiteFragment_siteView;
   theme: any;
 }
 
 
-class SearchView2 extends React.Component<SearchView2Props> {
+const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Props) {
 
-  constructor(props) {
-    super(props);
-
-  }
-
-  renderViewDropdown = () => {
-    const { presentSiteView } = this.props;
+  const changeSorted = (sorts: [SortInput], params: any) => {
+    const idSortedLens = lensProp('id');
+    const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
+    const afterParams = { ...params, sorts: snakeSorts, page: 0 }
+    return afterParams;
+  };
+  const queryString = useUrlParams();
+  const params = props.searchParams;
+  const renderViewDropdown = () => {
+    const { presentSiteView } = props;
     const buttonsArray = presentSiteView.search.results.buttons.items.filter(
       button => button.target.length > 0 && button.icon.length > 0
     );
-    const queryString = useUrlParams();
-    return (
-      <PresentSiteProvider>
-        {presentSiteView => {
-          if (presentSiteView && buttonsArray.length > 0) {
-            return (
-              <div style={{ marginLeft: 'auto' }}>
-                <ButtonGroup>
-                  {buttonsArray.map((button, index) => (
-                    <a
-                      href={`/search?hash=${this.props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
-                      key={button.target + index}>
-                      <ThemedButton>
-                        {this.renderViewButton(button.icon)}
-                      </ThemedButton>
-                    </a>
-                  ))}
-                </ButtonGroup>
-              </div>
-            );
-          }
-          return null;
-        }}
-      </PresentSiteProvider>
-    );
+    if (presentSiteView && buttonsArray.length > 0) {
+      return (
+        <div style={{ marginLeft: 'auto' }}>
+          <ButtonGroup>
+            {buttonsArray.map((button, index) => (
+              <a
+                href={`/search?hash=${props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
+                key={button.target + index}>
+                <ThemedButton>
+                  {renderViewButton(button.icon)}
+                </ThemedButton>
+              </a>
+            ))}
+          </ButtonGroup>
+        </div>
+      );
+    }
+    return null;
   };
-  renderViewButton = (icon: string) => {
+
+  const renderViewButton = (icon: string) => {
     switch (icon) {
       case 'card':
         return <CardIcon />;
@@ -259,7 +250,7 @@ class SearchView2 extends React.Component<SearchView2Props> {
         return null;
     }
   };
-  renderHelper = (
+  const renderHelper = (
     data,
     loading,
     template,
@@ -277,18 +268,18 @@ class SearchView2 extends React.Component<SearchView2Props> {
                 justifyContent: 'flex-end',
                 marginBottom: '10px',
               }}>
-              {this.renderViewDropdown()}
-              {this.renderFilterDropDown()}
+              {renderViewDropdown()}
+              {renderFilterDropDown()}
             </div>
-          
-                <MasonryCards
-                  data={data}
-                  loading={loading}
-                  template={template}
-                  // height={height}
-                  // width={width}
-                />
-     
+
+            <MasonryCards
+              data={data}
+              loading={loading}
+              template={template}
+            // height={height}
+            // width={width}
+            />
+
           </div>
         );
       case 'list':
@@ -301,8 +292,8 @@ class SearchView2 extends React.Component<SearchView2Props> {
                 justifyContent: 'flex-end',
                 marginBottom: '10px',
               }}>
-              {this.renderViewDropdown()}
-              {this.renderFilterDropDown()}
+              {renderViewDropdown()}
+              {renderFilterDropDown()}
             </div>
             <AutoSizer>
               {({ height, width }) => (
@@ -327,8 +318,8 @@ class SearchView2 extends React.Component<SearchView2Props> {
                 justifyContent: 'flex-emd',
                 marginBottom: '10px',
               }}>
-              {this.renderViewDropdown()}
-              {this.renderFilterDropDown()}
+              {renderViewDropdown()}
+              {renderFilterDropDown()}
             </div>
             <AutoSizer>
               {({ width }) => (
@@ -337,48 +328,48 @@ class SearchView2 extends React.Component<SearchView2Props> {
                   loading={loading}
                   template={template}
                   width={width}
-                  columnFields={this.props.presentSiteView.search.fields}
-                  onRowClick={this.props.onRowClick}
+                  columnFields={props.presentSiteView.search.fields}
+                  onRowClick={props.onRowClick}
                 />
               )}
             </AutoSizer>
           </div>
         );
       default:
-        return(
+        return (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <p>  Looks like you have an outdated view style configured. 
-            Please contact your site administrator. 
+            <p>  Looks like you have an outdated view style configured.
+            Please contact your site administrator.
             </p>
             <p>
-             Defaulting to Card View:
+              Defaulting to Card View:
              </p>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              marginBottom: '10px',
-            }}>
-            {this.renderViewDropdown()}
-            {this.renderFilterDropDown()}
-          </div>
-          {/* <AutoSizer>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                marginBottom: '10px',
+              }}>
+              {renderViewDropdown()}
+              {renderFilterDropDown()}
+            </div>
+            {/* <AutoSizer>
             {({ height, width }) => ( */}
-              <MasonryCards
-                data={data}
-                loading={loading}
-                template={template}
-                // height={height}
-                // width={width}
-              />
+            <MasonryCards
+              data={data}
+              loading={loading}
+              template={template}
+            // height={height}
+            // width={width}
+            />
             {/* )}
           </AutoSizer> */}
-        </div>
+          </div>
         );
     }
   };
-  renderSearch = ({
+  const renderSearch = ({
     data,
     loading,
     error,
@@ -387,7 +378,7 @@ class SearchView2 extends React.Component<SearchView2Props> {
     loading: boolean;
     error: any;
   }) => {
-    const { presentSiteView } = this.props;
+    const { presentSiteView } = props;
     console.log('FROM SEARCH PAGE QUERY', data)
     const showResults = presentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
@@ -400,70 +391,68 @@ class SearchView2 extends React.Component<SearchView2Props> {
       return <BeatLoader />
     }
     return showResults ? (
-      this.renderHelper(
+      renderHelper(
         searchData,
         loading,
         presentSiteView.search.template,
-        this.cardPressed,
+        cardPressed,
         resultsType,
       )
     ) : (
-      <div style={{ marginLeft: 'auto', display: 'flex', height: '100%' }}>
-        {this.renderViewDropdown()}
-      </div>
-    );
+        <div style={{ marginLeft: 'auto', display: 'flex', height: '100%' }}>
+          {renderViewDropdown()}
+        </div>
+      );
   };
-  cardPressed = card => {
-    this.props.onRowClick(
+  const cardPressed = card => {
+    props.onRowClick(
       card.nctId,
-      this.props.searchHash,
-      this.props.presentSiteView.url || 'default'
+      props.searchHash,
+      props.presentSiteView.url || 'default'
     );
   };
 
 
-  sortHelper = (sorts, params) => {
-    this.props.onUpdateParams(changeSorted(sorts));
+  const sortHelper = (sorts) => {
+    const newParams = () => changeSorted(sorts, params)
+    console.log("NOP", newParams())
+    props.onUpdateParams(newParams());
   };
-  reverseSort = () => {
-    let desc = this.props.params.sorts[0].desc;
+  const reverseSort = () => {
+    let desc = params.sorts[0].desc;
     let newSort: [SortInput] = [
-      { id: this.props.params.sorts[0].id, desc: !desc },
+      { id: params.sorts[0].id, desc: !desc },
     ];
-    this.props.onUpdateParams(changeSorted(newSort));
+    const newParams = () => changeSorted(newSort, params)
+    console.log("Reverse", newParams())
+    props.onUpdateParams(newParams());
   };
-  sortDesc = () => {
-    if (this.props.params.sorts.length > 0) {
-      return this.props.params.sorts[0].desc;
-    }
-    return ' ';
-  };
-  renderSortIcons = () => {
-    let isDesc = this.props.params.sorts[0].desc;
+  const renderSortIcons = () => {
+    let isDesc = params.sorts[0].desc;
     return (
       <div
-        onClick={() => this.reverseSort()}
+        onClick={() => reverseSort()}
         style={{ display: 'flex', cursor: 'pointer' }}>
         {isDesc ? (
           <FontAwesome
             name={'sort-amount-desc'}
-            style={{ color: this.props.theme.button, fontSize: '26px' }}
+            style={{ color: props.theme.button, fontSize: '26px' }}
           />
         ) : (
-          <FontAwesome
-            name={'sort-amount-asc'}
-            style={{ color: this.props.theme.button, fontSize: '26px' }}
-          />
-        )}
+            <FontAwesome
+              name={'sort-amount-asc'}
+              style={{ color: props.theme.button, fontSize: '26px' }}
+            />
+          )}
       </div>
     );
   };
-  renderFilterDropDown = () => {
+  const renderFilterDropDown = () => {
     const sortField = () => {
-      if (this.props.params.sorts.length > 0) {
+      if (params.sorts.length > 0) {
         return aggToField(
-          this.props.params.sorts[0].id,
-          this.props.params.sorts[0].id
+          params.sorts[0].id,
+          params.sorts[0].id
         );
       }
       return ' ';
@@ -479,54 +468,49 @@ class SearchView2 extends React.Component<SearchView2Props> {
             id="dropdown-basic-default"
             style={{
               width: '200px',
-              background: this.props.theme.button,
+              background: props.theme.button,
             }}>
-            {this.props.presentSiteView.search.sortables.map((field, index) => {
+            {props.presentSiteView.search.sortables.map((field, index) => {
               let sorts = [{ id: field, desc: false }];
-              let params = this.props.params;
               return (
                 <MenuItem
                   key={field + index}
                   name={field}
-                  onClick={() => this.sortHelper(sorts, params)}>
+                  onClick={() => sortHelper(sorts)}>
                   {aggToField(field, field)}
                 </MenuItem>
               );
             })}
           </DropdownButton>
-          {sortField() !== ' ' ? this.renderSortIcons() : null}
+          {sortField() !== ' ' ? renderSortIcons() : null}
         </div>
       </div>
     );
   };
 
-  render() {
-    const { presentSiteView }= this.props
-    return (
-      <SearchWrapper>
-        <Helmet>
-          <title>Search</title>
-          <meta name="description" content="Description of SearchPage" />
-        </Helmet>
-        {/* <Col md={12}> */}
-        <div style={{height: '100%'}}>
-          <QueryComponent
-            query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
-            variables={this.props.params}
-            >
-            {({ data, loading, error }) => {
-              return (
-                <ThemedSearchContainer>
-                  {this.renderSearch({ data, loading, error })}
-                </ThemedSearchContainer>
-              );
-            }}
-          </QueryComponent>
-          </div>
-        {/* </Col> */}
-      </SearchWrapper>
-    );
+  const { presentSiteView } = props;
+  console.log("MemoizedView Params", params)
+  const result = useQuery(presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS, {
+    variables: params,
   }
-}
+  )
+  const { data, loading, error } = result;
 
-export default withTheme(SearchView2);
+  return (
+    <SearchWrapper>
+      <Helmet>
+        <title>Search</title>
+        <meta name="description" content="Description of SearchPage" />
+      </Helmet>
+      {/* <Col md={12}> */}
+      <div style={{ height: '100%' }}>
+        <ThemedSearchContainer>
+          {renderSearch({ data, loading, error })}
+        </ThemedSearchContainer>
+      </div>
+      {/* </Col> */}
+    </SearchWrapper>
+  );
+})
+
+export default withTheme(MemoizedSearchView);

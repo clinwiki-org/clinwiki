@@ -33,7 +33,7 @@ import {
   find,
 } from 'ramda';
 import { useQuery, useMutation } from '@apollo/client';
-import SearchView2 from './SearchView2';
+import MemoizedSearchView from './SearchView2';
 import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
@@ -296,7 +296,7 @@ function SearchPage(props: SearchPageProps) {
 
   })
 
-  console.log('params first', params.current.aggFilters.slice())
+  console.log('params first', params.current)
   const [openedAgg, setOpenedAgg] = useState({ name: null, kind: null })
   const [removeSelectAll, setRemoveSelectAll] = useState(false)
   const [totalRecords, setTotalRecords] = useState(0)
@@ -456,9 +456,8 @@ function SearchPage(props: SearchPageProps) {
     const { presentSiteView } = props;
     console.log('SEARCH VIEW FROM SP', searchParams)
     return (
-      <SearchView2
+      <MemoizedSearchView
         key={`${hash}+${JSON.stringify(searchParams)}`}
-        params={searchParams}
         onBulkUpdate={handleBulkUpdateClick}
         onUpdateParams={updateSearchParams}
         onRowClick={handleRowClick}
