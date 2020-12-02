@@ -11,7 +11,6 @@ import {
 import { MAX_WINDOW_SIZE } from 'utils/constants';
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { graphql } from '@apollo/client/react/hoc';
 import { ThemedButton, ThemedSearchContainer } from '../../components/StyledComponents';
 import {
   map,
@@ -242,70 +241,9 @@ const changeFilter = (add: boolean) => (
     }
   ) as unknown) as SearchParams;
 };
-const addFilter = changeFilter(true);
-const removeFilter = changeFilter(false);
-const addFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  console.log('add filters')
-  return (params: SearchParams) => {
-    keys.forEach(k => {
-      params = addFilter(aggName, k, isCrowd)(params);
-    });
-    // changeFilter(true);
-    return params;
-  };
-};
 
-const removeFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-  return (params: SearchParams) => {
-    keys.forEach(k => {
-      //console.log("PARAMS  1",params)
-      params = removeFilter(aggName, k, isCrowd)(params);
-    });
-    // changeFilter(true);
-    return params;
-  };
-};
 
-const addSearchTerm = (term: string) => (params: SearchParams) => {
-  console.log('term', term)
-  console.log('params', params)
-  //@ts-ignore
-  let currentParams = params
-  // have to check for empty string because if you press return two times it ends up putting it in the terms
-  if (!term.replace(/\s/g, '').length) {
-    return currentParams;
-  }
-  // recycled code for removing repeated terms. might be a better way but I'm not sure.
-  const children = reject(propEq('key', term), currentParams.q.children || []);
-  return {
-    ...currentParams,
-    q: { ...currentParams.q, children: [...(children || []), { key: term }] },
-    page: 0,
-  };
-};
 
-const removeSearchTerm = (term: string) => (params: SearchParams) => {
-  console.log('REMOVING CRUMBß', params)
-  const children = reject(
-    propEq('key', term),
-    params.q.children || []
-  ) as SearchQuery[];
-  return {
-    ...params,
-    q: { ...params.q, children },
-    page: 0,
-  };
-};
-
-const changePage = (pageNumber: number) => (searchParams: SearchParams) => (
-  () => {
-    console.log('CHANGING PAGE')
-    return {
-      ...searchParams,
-      page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / searchParams.pageSize) - 1),
-    }
-  }
-);
 
 const paramsUrl = useUrlParams()
 
@@ -348,15 +286,6 @@ const DEFAULT_PARAMS: SearchParams = {
 };
 
 function SearchPage(props: SearchPageProps) {
-
-  // const [params, setParams] = useState({  
-  //   q: { key: 'AND', children: [] },
-  //   aggFilters: [],
-  //   crowdAggFilters: [],
-  //   sorts: [],
-  //   page: 0,
-  //   pageSize: defaultPageSize
-  // })
   const params = useRef({
     q: { key: 'AND', children: [] },
     aggFilters: [],
@@ -507,7 +436,6 @@ function SearchPage(props: SearchPageProps) {
         addFilters={newAddFilters}
         removeFilter={newRemoveFilter}
         removeFilters={newRemoveFilters}
-        updateParams={handleUpdateParams}
         removeSelectAll={removeSelectAll}
         resetSelectAll={resetSelectAll}
         // @ts-ignore
@@ -532,7 +460,7 @@ function SearchPage(props: SearchPageProps) {
         key={`${hash}+${JSON.stringify(searchParams)}`}
         params={searchParams}
         onBulkUpdate={handleBulkUpdateClick}
-        onUpdateParams={handleUpdateParams}
+        onUpdateParams={updateSearchParams}
         onRowClick={handleRowClick}
         searchHash={hash || ''}
         searchParams={searchParams}
@@ -655,7 +583,6 @@ function SearchPage(props: SearchPageProps) {
           addFilters={newAddFilters}
           removeFilter={newRemoveFilter}
           removeFilters={newRemoveFilters}
-          updateParams={handleUpdateParams}
           removeSelectAll={removeSelectAll}
           resetSelectAll={resetSelectAll}
           // @ts-ignore
@@ -708,17 +635,12 @@ function SearchPage(props: SearchPageProps) {
       <CrumbsBar
         searchParams={handledParams}
         onBulkUpdate={handleBulkUpdateClick}
-        removeFilter={pipe(removeFilter, handleUpdateParams)}
-        // addSearchTerm={pipe(addSearchTerm, handleUpdateParams)}
-        // removeSearchTerm={pipe(removeSearchTerm, handleUpdateParams)}
+        removeFilter={newRemoveFilter}
         addSearchTerm={newAddSearchTerm}
         removeSearchTerm={newRemoveSearchTerm}
-        update={{
-          page: pipe(changePage, handleUpdateParams),
-        }}
         onReset={handleResetFilters(siteView)}
         onClear={handleClearFilters}
-        addFilter={pipe(addFilter, handleUpdateParams)}
+        addFilter={newAddFilter}
         presentSiteView={presentSiteView}
         totalResults={totalRecords}
         searchHash={hash || ''}
@@ -727,23 +649,6 @@ function SearchPage(props: SearchPageProps) {
     );
   };
 
-  const handleUpdateParams = (updater: (params: SearchParams) => SearchParams) => {
-    console.log('HUP', params)
-    //@ts-ignore
-    updater(params.current!);
-    console.log('handle update params', params)
-    //console.log("Search Page handle update params", params)
-    //@ts-ignore
-    if (!equals(params.current.q, params.current && params.current.q)) {
-      // For now search doesn't work well with args list
-      // Therefore we close it to refresh later on open
-      setOpenedAgg({ name: null, kind: null });
-    }
-    // with hooks we now have a param var but we are also passing new params in using the same name, most of our setParams calls now need to be merging this data so we need to make some naming chnages inorder ot use spread correclty.
-    // setParams({...params})
-    // WE MAY NEED TO USE  use effect here as the update searchParams used to be in a setState callback. 
-    updateSearchParams(params.current);
-  };
 
   const afterSearchParamsUpdate = (data) => {
     // handles the query to get the hash and update the url. 
@@ -796,11 +701,10 @@ function SearchPage(props: SearchPageProps) {
     // setParams({...params, ...searchParams})
 
     params.current = await { ...params.current, ...searchParams }
-
     console.log('3 params.current', params.current)
 
     //now that we are using ref not sure the useEffect was best placement for our updating. Instead called it at the end of this update. 
-    const { data } = await updateSearchPageHashMutation()
+    const { data } = await updateSearchPageHashMutation();
     console.log("Data: ", data)
 
     await afterSearchParamsUpdate(data)

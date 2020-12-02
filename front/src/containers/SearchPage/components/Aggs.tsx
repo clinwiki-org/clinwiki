@@ -119,7 +119,6 @@ interface AggsProps {
   onOpen: (agg: string, kind: AggKind) => void;
   removeSelectAll?: boolean;
   resetSelectAll?: () => void;
-  updateParams: any;
   presearch?: boolean;
   presentSiteView: PresentSiteFragment_siteView;
   preSearchAggs?: string[];

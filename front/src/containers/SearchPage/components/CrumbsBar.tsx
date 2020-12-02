@@ -122,7 +122,6 @@ interface CrumbsBarProps {
   addFilter: AggCallback;
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
-  update: { page: (n: number) => void };
   onReset: () => void;
   onClear: () => void;
   siteViewUrl?: string;
