@@ -32,4 +32,5 @@ export interface CreateSavedSearchMutation {
 
 export interface CreateSavedSearchMutationVariables {
   searchHash: string;
+  url: string;
 }

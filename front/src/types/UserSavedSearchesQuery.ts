@@ -21,6 +21,7 @@ export interface UserSavedSearchesQuery_savedSearch {
   createdAt: any;
   updatedAt: any;
   isSubscribed: boolean;
+  url: string;
   shortLink: UserSavedSearchesQuery_savedSearch_shortLink;
 }
 
