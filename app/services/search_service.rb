@@ -391,9 +391,16 @@ class SearchService
         skip_filters: skip_filters,
         is_crowd_agg: true,
       )
-    {
+    result = {
       _and: search_kick_agg_filters + search_kick_crowd_agg_filters,
     }
+
+#    location = params.fetch(:location)
+#    if location
+#      result[:locations] = { near: { lat: location[:lat], lon: location[:lon]}, within: location[:radius]}
+#    end
+    byebug
+    result
   end
 
   def key_for(filter:, is_crowd_agg: false)
