@@ -36,7 +36,7 @@ class DistanceAgg extends React.Component<DistanceAggProps> {
       removeFilters,
       agg
     } = this.props;
-    const buckets: string[] = ["5","10","25","50", "100", "250", "500", "1000"]
+    const buckets: number[] = [5,10,25,50,100,250,500,1000]
     return (
     <>
       <div

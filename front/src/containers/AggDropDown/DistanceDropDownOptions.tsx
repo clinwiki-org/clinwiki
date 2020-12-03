@@ -23,7 +23,7 @@ interface DistanceDropDownOptionsState {
   end?: any;
   startText?: any;
   endText?: any;
-  activeOption: string;
+  activeOption: any;
   lat: number | null;
   long: number | null;
 }
