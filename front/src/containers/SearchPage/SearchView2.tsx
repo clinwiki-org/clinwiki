@@ -41,6 +41,7 @@ import {
   AutoSizer,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
+import StudyFragmentQueryComponent from './components/StudyFragmentQueryComponent'
 import useUrlParams from '../../utils/UrlParamsProvider';
 import { AggBucketMap } from './Types';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { gql, useQuery }  from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import {
   SiteProviderQuery,
   SiteProviderQueryVariables,
@@ -131,6 +131,7 @@ export const SITE_VIEW_FRAGMENT = gql`
             name
             display
             displayName
+            aggSublabel
             preselected {
               kind
               values
@@ -143,6 +144,13 @@ export const SITE_VIEW_FRAGMENT = gql`
             rank
             rangeStartLabel
             rangeEndLabel
+            bucketKeyValuePairs{
+              key
+              label
+            }
+            showAllowMissing
+            showFilterToolbar
+            defaultToOpen
           }
           selected {
             kind
@@ -158,6 +166,7 @@ export const SITE_VIEW_FRAGMENT = gql`
             name
             display
             displayName
+            aggSublabel
             preselected {
               kind
               values
@@ -170,6 +179,13 @@ export const SITE_VIEW_FRAGMENT = gql`
             autoSuggest
             rangeStartLabel
             rangeEndLabel
+            bucketKeyValuePairs{
+              key
+              label
+            }
+            showAllowMissing
+            showFilterToolbar
+            defaultToOpen
           }
           selected {
             kind
@@ -203,6 +219,7 @@ export const SITE_VIEW_FRAGMENT = gql`
           name
           display
           displayName
+          aggSublabel
           preselected {
             kind
             values
@@ -215,6 +232,13 @@ export const SITE_VIEW_FRAGMENT = gql`
           rank
           rangeStartLabel
           rangeEndLabel
+          bucketKeyValuePairs{
+            key
+            label
+          }
+          showAllowMissing
+          showFilterToolbar
+          defaultToOpen
         }
         selected {
           kind
@@ -230,6 +254,7 @@ export const SITE_VIEW_FRAGMENT = gql`
           name
           display
           displayName
+          aggSublabel
           preselected {
             kind
             values
@@ -242,6 +267,13 @@ export const SITE_VIEW_FRAGMENT = gql`
           autoSuggest
           rangeStartLabel
           rangeEndLabel
+          bucketKeyValuePairs{
+            key
+            label
+          }
+          showAllowMissing
+          showFilterToolbar
+          defaultToOpen
         }
         selected {
           kind

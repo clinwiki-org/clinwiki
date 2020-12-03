@@ -122,6 +122,7 @@ export interface InterventionsPageQuery_study {
   studyFirstSubmittedDate: string | null;
   studyFirstSubmittedQcDate: string | null;
   studyType: string;
+  studyViewCount: number;
   targetDuration: string | null;
   type: string;
   updatedAt: any;

@@ -26,6 +26,9 @@ import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents/index';
 import ExportToCsvComponent from './ExportToCsvComponent';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
+import SaveSearch from './SaveSearch';
+import LabeledButton from 'components/LabeledButton';
+
 
 
 const CrumbsBarStyleWrappper = styled.div`
@@ -372,9 +375,11 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
               />
             </div>
           </FormGroup>
-          <ThemedButton type="submit">
-            <FontAwesome name="search" />
-          </ThemedButton>
+          <LabeledButton
+          theType={"Submit"}
+          helperText={"Search"}
+          iconName={"search"}
+       />
         </div>
       );
     } else if (showAutoSuggest === false) {
@@ -451,9 +456,36 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     this.setState({ showFilters: !this.state.showFilters });
   };
 
+  showSaveSearchButton = (user) => {
+    const {searchParams } = this.props;
+    if (
+      searchParams.q &&
+      searchParams.aggFilters &&
+      searchParams.crowdAggFilters
+    ){
+      if (
+        searchParams.q.length != 0 ||
+        searchParams.aggFilters.length != 0 ||
+        searchParams.crowdAggFilters.length != 0
+      ) {
+        return (
+          <SaveSearch
+            user={user}
+            siteView={this.props.presentSiteView}
+            searchHash={this.props.searchHash}
+          />
+        );
+      } 
+     return null
+    }
+    return null
+  }
+
+
   render() {
     const { searchTerm, suggestions, isSuggestionLoading } = this.state;
-    const { presentSiteView } = this.props;
+    const { presentSiteView, searchParams } = this.props;
+    
     let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;
     return (
@@ -526,6 +558,9 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                         <b>Total Results:</b>{' '}
                         {`${this.props.totalResults} studies`}
                       </div>
+                      {
+                        this.showSaveSearchButton(user)
+                      }
                       <ExportToCsvComponent
                         siteView={this.props.presentSiteView}
                         searchHash={this.props.searchHash}

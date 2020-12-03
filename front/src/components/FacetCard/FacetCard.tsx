@@ -260,7 +260,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     } = this.state;
 
     if (addLabel) {
-      console.log(allValues);
       return (
         <CurrentUser>
           {user => (

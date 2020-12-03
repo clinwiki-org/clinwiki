@@ -87,7 +87,7 @@ export default function WorkflowIsland(props: Props) {
   const resetHelper = ()=>{
     setFlashAnimation(false)
     refetch()
-    props.onChange()
+    // props.onChange()
   }
   const handleResetAnimation=()=>{
     setTimeout(  resetHelper, 6500);
