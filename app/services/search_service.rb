@@ -479,7 +479,7 @@ class SearchService
 
     return nil if (filter[:radius].blank? || filter[:lat].blank? || filter [:long].blank?)
 
-    {locations: { near: { lat: filter[:lat], lon: filter[:long]}, within: "#{filter[:radius]}000mi"}}
+    {locations: { near: { lat: filter[:lat], lon: filter[:long]}, within: "#{filter[:radius]}mi"}}
   end
 
   # Returns an array of
