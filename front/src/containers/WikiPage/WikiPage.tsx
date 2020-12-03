@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { partition, toPairs } from 'ramda';
 import RichTextEditor, { EditorValue } from 'react-rte';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import { match, Switch, Route } from 'react-router';
 import { History, Location } from 'history';
 import { WikiPageQuery, WikiPageQueryVariables } from 'types/WikiPageQuery';
@@ -18,7 +18,7 @@ import {
   Mutation,
   QueryComponentOptions,
   MutationComponentOptions,
-} from '@apollo/client/react/components';
+} from 'react-apollo';
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoadingPane from 'components/LoadingPane';

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
 import { InterventionFragment } from 'types/InterventionFragment';

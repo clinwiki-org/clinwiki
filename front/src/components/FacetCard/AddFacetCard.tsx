@@ -4,7 +4,7 @@ import ThemedButton, { PresearchContent } from 'components/StyledComponents';
 import * as Autosuggest from 'react-autosuggest';
 import AddFieldAuto from 'components/FacetCard/AddFieldAuto';
 import ThemedAutosuggestButton from 'components/StyledComponents';
-import { ApolloConsumer } from '@apollo/client';
+import { ApolloConsumer } from 'react-apollo';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
 
 const MarginContainer = styled.div`

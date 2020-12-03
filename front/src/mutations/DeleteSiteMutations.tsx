@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { gql, ApolloError }  from '@apollo/client';
+import { gql, ApolloError } from 'apollo-boost';
 import {
   Mutation,
+  MutationFunction,
   MutationComponentOptions,
-} from '@apollo/client/react/components';
-import { MutationFunction, MutationResult } from '@apollo/client';
+  MutationResult,
+} from 'react-apollo';
 import {
   DeleteSiteMutation as DeleteSiteMutationType,
   DeleteSiteMutationVariables,

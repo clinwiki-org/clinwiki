@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { gql, ApolloError }  from '@apollo/client';
-
+import { gql, ApolloError } from 'apollo-boost';
 import {
   Mutation,
   MutationComponentOptions,
-} from '@apollo/client/react/components';
-import { MutationFunction, MutationResult } from '@apollo/client';
+  MutationFunction,
+  MutationResult,
+} from 'react-apollo';
 import {
   UpdateWikiSectionsMutation as UpdateWikiSectionsMutationType,
   UpdateWikiSectionsMutationVariables,

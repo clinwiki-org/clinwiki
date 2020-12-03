@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Query } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
 
 export interface ListProps {
   items: string[];

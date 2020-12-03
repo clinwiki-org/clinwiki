@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/FacilitiesPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from 'react-apollo';
 
 import {
   FacilitiesPageQuery,

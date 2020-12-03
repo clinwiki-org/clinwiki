@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Row, Col, FormControl, Panel } from 'react-bootstrap';
-import { Mutation, MutationComponentOptions } from '@apollo/client/react/components';
+import { Mutation, MutationComponentOptions } from 'react-apollo';
 import styled from 'styled-components';
 import {
   keys,
@@ -15,7 +15,7 @@ import {
 import ReactStars from 'react-stars';
 import * as FontAwesome from 'react-fontawesome';
 import RichTextEditor, { EditorValue } from 'react-rte';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import ThemedButton from 'components/StyledComponents/index';
 import {
   ReviewFormMutation,

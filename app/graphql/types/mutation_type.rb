@@ -35,8 +35,5 @@ module Types
     field :deletePageView, mutation: Mutations::DeletePageView
     field :deleteSearchLog, mutation: Mutations::DeleteSearchLog
     field :deleteStudyViewLog, mutation: Mutations::DeleteStudyViewLog
-    field :createSavedSearch, mutation: Mutations::CreateSavedSearch
-    #field :updateSavedSearch, mutation: Mutations::UpdateSavedSearch
-    field :deleteSavedSearch, mutation: Mutations::DeleteSavedSearch
   end
 end

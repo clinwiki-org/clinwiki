@@ -4,8 +4,9 @@ import { Col } from 'react-bootstrap';
 import {
   Mutation,
   MutationComponentOptions,
-  } from '@apollo/client/react/components';
-import { gql, MutationFunction }  from '@apollo/client';
+  MutationFunction,
+} from 'react-apollo';
+import { gql } from 'apollo-boost';
 import {
   ResetPasswordMutation,
   ResetPasswordMutationVariables,

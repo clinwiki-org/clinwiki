@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
+import { Query, QueryComponentOptions } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import { Checkbox } from 'react-bootstrap';
 import {
   SuggestedLabelsQuery,

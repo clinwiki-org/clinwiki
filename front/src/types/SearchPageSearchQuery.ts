@@ -58,7 +58,6 @@ export interface SearchPageSearchQuery_search_studies {
   ipdUrl: string | null;
   planToShareIpd: string | null;
   planToShareIpdDescription: string | null;
-  studyViewCount: number;
 }
 
 export interface SearchPageSearchQuery_search {

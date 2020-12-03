@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import ThemedButton from 'components/StyledComponents';
 import QUERY from 'queries/SearchStudyPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from 'react-apollo';
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { SearchStudyPageQuery } from 'types/SearchStudyPageQuery';
 import { BeatLoader, PulseLoader } from 'react-spinners';

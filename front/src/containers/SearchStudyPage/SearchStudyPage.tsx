@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { gql }  from '@apollo/client';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { gql } from 'apollo-boost';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import QUERY from 'queries/SearchStudyPageQuery';

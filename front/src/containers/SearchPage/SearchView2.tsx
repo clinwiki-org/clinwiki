@@ -2,10 +2,10 @@ import * as React from 'react';
 import { SearchParams, AggKind } from './shared';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
-import { ThemedButton, ThemedSearchContainer } from 'components/StyledComponents';
+import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
-import { BeatLoader, PulseLoader } from 'react-spinners';
+import { PulseLoader } from 'react-spinners';
 import { Col, ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
@@ -20,13 +20,13 @@ import {
   fromPairs,
 } from 'ramda';
 import { camelCase, snakeCase, capitalize } from 'utils/helpers';
-import { gql, useQuery } from '@apollo/client';
+import { gql } from 'apollo-boost';
 import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import 'react-table/react-table.css';
 import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
@@ -41,12 +41,109 @@ import {
   AutoSizer,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
-import StudyFragmentQueryComponent from './components/StudyFragmentQueryComponent'
 import useUrlParams from '../../utils/UrlParamsProvider';
 import { AggBucketMap } from './Types';
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
-import  SEARCH_PAGE_SEARCH_QUERY from 'queries/SearchPageSearchQuery';
-import SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS  from 'queries/SearchPageSearchQueryNoResults';
+
+const QUERY = gql`
+  query SearchPageSearchQuery(
+    $q: SearchQueryInput!
+    $page: Int
+    $pageSize: Int
+    $sorts: [SortInput!]
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+  ) {
+    search(
+      params: {
+        q: $q
+        page: $page
+        pageSize: $pageSize
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+      }
+    ) {
+      recordsTotal
+      studies {
+        ...StudyItemFragment
+      }
+    }
+  }
+
+  fragment StudyItemFragment on ElasticStudy {
+    averageRating
+    completionDate
+    nctId
+    overallStatus
+    startDate
+    briefTitle
+    reviewsCount
+    interventions
+    facilityStates
+    interventionsMeshTerms
+    studyFirstSubmittedDate
+    resultsFirstSubmittedDate
+    dispositionFirstSubmittedDate
+    lastUpdateSubmittedDate
+    studyFirstSubmittedQcDate
+    studyFirstPostedDate
+    studyFirstPostedDateType
+    resultsFirstSubmittedQcDate
+    resultsFirstPostedDate
+    resultsFirstPostedDateType
+    dispositionFirstSubmittedQcDate
+    dispositionFirstPostedDate
+    dispositionFirstPostedDateType
+    lastUpdateSubmittedQcDate
+    lastUpdatePostedDate
+    lastUpdatePostedDateType
+    studyType
+    acronym
+    baselinePopulation
+    officialTitle
+    lastKnownStatus
+    phase
+    enrollment
+    enrollmentType
+    source
+    numberOfArms
+    numberOfGroups
+    whyStopped
+    hasExpandedAccess
+    expandedAccessTypeTreatment
+    isFdaRegulatedDrug
+    isFdaRegulatedDevice
+    ipdTimeFrame
+    ipdAccessCriteria
+    ipdUrl
+    planToShareIpd
+    planToShareIpdDescription
+  }
+`;
+const QUERY_NO_RESULTS = gql`
+  query SearchPageSearchQueryNoResults(
+    $q: SearchQueryInput!
+    $page: Int
+    $pageSize: Int
+    $sorts: [SortInput!]
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+  ) {
+    search(
+      params: {
+        q: $q
+        page: $page
+        pageSize: $pageSize
+        sorts: $sorts
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+      }
+    ) {
+      recordsTotal
+    }
+  }
+`;
+
 
 const COLUMNS = studyFields;
 const COLUMN_NAMES = fromPairs(
@@ -63,6 +160,11 @@ const changePageSize = (pageSize: number) => (params: SearchParams) => ({
   pageSize,
   page: 0,
 });
+const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
+  const idSortedLens = lensProp('id');
+  const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
+  return { ...params, sorts: snakeSorts, page: 0 };
+};
 
 const QueryComponent = (
   props: QueryComponentOptions<
@@ -82,52 +184,65 @@ const SearchWrapper = styled.div`
 
 
 interface SearchView2Props {
+  params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
   onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
   searchHash: string;
-  searchParams: SearchParams;
+  searchParams: any;
   presentSiteView: PresentSiteFragment_siteView;
+  getTotalResults: Function;
   theme: any;
 }
 
+interface SearchView2State {
+  totalResults: any;
+  prevResults: any | null;
+}
 
-const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Props) {
+class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
 
-  const changeSorted = (sorts: [SortInput], params: any) => {
-    const idSortedLens = lensProp('id');
-    const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
-    const afterParams = { ...params, sorts: snakeSorts, page: 0 }
-    return afterParams;
-  };
-  const queryString = useUrlParams();
-  const params = props.searchParams;
-  const renderViewDropdown = () => {
-    const { presentSiteView } = props;
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      totalResults: 0,
+      prevResults: null,
+    };
+  }
+
+  renderViewDropdown = () => {
+    const { presentSiteView } = this.props;
     const buttonsArray = presentSiteView.search.results.buttons.items.filter(
       button => button.target.length > 0 && button.icon.length > 0
     );
-    if (presentSiteView && buttonsArray.length > 0) {
-      return (
-        <div style={{ marginLeft: 'auto' }}>
-          <ButtonGroup>
-            {buttonsArray.map((button, index) => (
-              <a
-                href={`/search?hash=${props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
-                key={button.target + index}>
-                <ThemedButton>
-                  {renderViewButton(button.icon)}
-                </ThemedButton>
-              </a>
-            ))}
-          </ButtonGroup>
-        </div>
-      );
-    }
-    return null;
+    const queryString = useUrlParams();
+    return (
+      <PresentSiteProvider>
+        {presentSiteView => {
+          if (presentSiteView && buttonsArray.length > 0) {
+            return (
+              <div style={{ marginLeft: 'auto' }}>
+                <ButtonGroup>
+                  {buttonsArray.map((button, index) => (
+                    <a
+                      href={`/search?hash=${this.props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
+                      key={button.target + index}>
+                      <ThemedButton>
+                        {this.renderViewButton(button.icon)}
+                      </ThemedButton>
+                    </a>
+                  ))}
+                </ButtonGroup>
+              </div>
+            );
+          }
+          return null;
+        }}
+      </PresentSiteProvider>
+    );
   };
-
-  const renderViewButton = (icon: string) => {
+  renderViewButton = (icon: string) => {
     switch (icon) {
       case 'card':
         return <CardIcon />;
@@ -153,12 +268,13 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
         return null;
     }
   };
-  const renderHelper = (
+  renderHelper = (
     data,
     loading,
     template,
     onPress,
     resultsType,
+    recordsTotal
   ) => {
     switch (resultsType) {
       case 'masonry':
@@ -171,18 +287,18 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
                 justifyContent: 'flex-end',
                 marginBottom: '10px',
               }}>
-              {renderViewDropdown()}
-              {renderFilterDropDown()}
+              {this.renderViewDropdown()}
+              {this.renderFilterDropDown()}
             </div>
-
-            <MasonryCards
-              data={data}
-              loading={loading}
-              template={template}
-            // height={height}
-            // width={width}
-            />
-
+          
+                <MasonryCards
+                  data={data}
+                  loading={loading}
+                  template={template}
+                  // height={height}
+                  // width={width}
+                />
+     
           </div>
         );
       case 'list':
@@ -195,8 +311,8 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
                 justifyContent: 'flex-end',
                 marginBottom: '10px',
               }}>
-              {renderViewDropdown()}
-              {renderFilterDropDown()}
+              {this.renderViewDropdown()}
+              {this.renderFilterDropDown()}
             </div>
             <AutoSizer>
               {({ height, width }) => (
@@ -221,8 +337,8 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
                 justifyContent: 'flex-emd',
                 marginBottom: '10px',
               }}>
-              {renderViewDropdown()}
-              {renderFilterDropDown()}
+              {this.renderViewDropdown()}
+              {this.renderFilterDropDown()}
             </div>
             <AutoSizer>
               {({ width }) => (
@@ -231,48 +347,48 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
                   loading={loading}
                   template={template}
                   width={width}
-                  columnFields={props.presentSiteView.search.fields}
-                  onRowClick={props.onRowClick}
+                  columnFields={this.props.presentSiteView.search.fields}
+                  onRowClick={this.props.onRowClick}
                 />
               )}
             </AutoSizer>
           </div>
         );
       default:
-        return (
+        return(
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <p>  Looks like you have an outdated view style configured.
-            Please contact your site administrator.
+          <p>  Looks like you have an outdated view style configured. 
+            Please contact your site administrator. 
             </p>
             <p>
-              Defaulting to Card View:
+             Defaulting to Card View:
              </p>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                marginBottom: '10px',
-              }}>
-              {renderViewDropdown()}
-              {renderFilterDropDown()}
-            </div>
-            {/* <AutoSizer>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              marginBottom: '10px',
+            }}>
+            {this.renderViewDropdown()}
+            {this.renderFilterDropDown()}
+          </div>
+          {/* <AutoSizer>
             {({ height, width }) => ( */}
-            <MasonryCards
-              data={data}
-              loading={loading}
-              template={template}
-            // height={height}
-            // width={width}
-            />
+              <MasonryCards
+                data={data}
+                loading={loading}
+                template={template}
+                // height={height}
+                // width={width}
+              />
             {/* )}
           </AutoSizer> */}
-          </div>
+        </div>
         );
     }
   };
-  const renderSearch = ({
+  renderSearch = ({
     data,
     loading,
     error,
@@ -281,81 +397,100 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
     loading: boolean;
     error: any;
   }) => {
-    const { presentSiteView } = props;
-    console.log('FROM SEARCH PAGE QUERY', data)
+    const { presentSiteView } = this.props;
+
     const showResults = presentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
     const resultsType = presentSiteView.search.results.type;
+    let recordsTotal = data?.search?.recordsTotal;
     if (error) {
       return <div>{error.message}</div>;
     }
     if (!data) {
-      console.log('NO DATA FOOL')
-      return <BeatLoader />
+      return null;
     }
+    const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
+
+    if (this.state.prevResults !== this.state.totalResults) {
+      this.setState(
+        prev => {
+          return {
+            totalResults: totalRecords,
+            prevResults: prev.totalResults,
+          };
+        },
+        () => {
+          this.props.getTotalResults(this.state.totalResults);
+        }
+      );
+    }
+
     return showResults ? (
-      renderHelper(
+      this.renderHelper(
         searchData,
         loading,
         presentSiteView.search.template,
-        cardPressed,
+        this.cardPressed,
         resultsType,
+        recordsTotal
       )
     ) : (
-        <div style={{ marginLeft: 'auto', display: 'flex', height: '100%' }}>
-          {renderViewDropdown()}
-        </div>
-      );
+      <div style={{ marginLeft: 'auto', display: 'flex', height: '100%' }}>
+        {this.renderViewDropdown()}
+      </div>
+    );
   };
-  const cardPressed = card => {
-    props.onRowClick(
+  cardPressed = card => {
+    this.props.onRowClick(
       card.nctId,
-      props.searchHash,
-      props.presentSiteView.url || 'default'
+      this.props.searchHash,
+      this.props.presentSiteView.url || 'default'
     );
   };
 
 
-  const sortHelper = (sorts) => {
-    const newParams = () => changeSorted(sorts, params)
-    console.log("NOP", newParams())
-    props.onUpdateParams(newParams());
+  sortHelper = (sorts, params) => {
+    this.props.onUpdateParams(changeSorted(sorts));
   };
-  const reverseSort = () => {
-    let desc = params.sorts[0].desc;
+  reverseSort = () => {
+    let desc = this.props.params.sorts[0].desc;
     let newSort: [SortInput] = [
-      { id: params.sorts[0].id, desc: !desc },
+      { id: this.props.params.sorts[0].id, desc: !desc },
     ];
-    const newParams = () => changeSorted(newSort, params)
-    console.log("Reverse", newParams())
-    props.onUpdateParams(newParams());
+    this.props.onUpdateParams(changeSorted(newSort));
   };
-  const renderSortIcons = () => {
-    let isDesc = params.sorts[0].desc;
+  sortDesc = () => {
+    if (this.props.params.sorts.length > 0) {
+      return this.props.params.sorts[0].desc;
+    }
+    return ' ';
+  };
+  renderSortIcons = () => {
+    let isDesc = this.props.params.sorts[0].desc;
     return (
       <div
-        onClick={() => reverseSort()}
+        onClick={() => this.reverseSort()}
         style={{ display: 'flex', cursor: 'pointer' }}>
         {isDesc ? (
           <FontAwesome
             name={'sort-amount-desc'}
-            style={{ color: props.theme.button, fontSize: '26px' }}
+            style={{ color: this.props.theme.button, fontSize: '26px' }}
           />
         ) : (
-            <FontAwesome
-              name={'sort-amount-asc'}
-              style={{ color: props.theme.button, fontSize: '26px' }}
-            />
-          )}
+          <FontAwesome
+            name={'sort-amount-asc'}
+            style={{ color: this.props.theme.button, fontSize: '26px' }}
+          />
+        )}
       </div>
     );
   };
-  const renderFilterDropDown = () => {
+  renderFilterDropDown = () => {
     const sortField = () => {
-      if (params.sorts.length > 0) {
+      if (this.props.params.sorts.length > 0) {
         return aggToField(
-          params.sorts[0].id,
-          params.sorts[0].id
+          this.props.params.sorts[0].id,
+          this.props.params.sorts[0].id
         );
       }
       return ' ';
@@ -371,49 +506,54 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
             id="dropdown-basic-default"
             style={{
               width: '200px',
-              background: props.theme.button,
+              background: this.props.theme.button,
             }}>
-            {props.presentSiteView.search.sortables.map((field, index) => {
+            {this.props.presentSiteView.search.sortables.map((field, index) => {
               let sorts = [{ id: field, desc: false }];
+              let params = this.props.params;
               return (
                 <MenuItem
                   key={field + index}
                   name={field}
-                  onClick={() => sortHelper(sorts)}>
+                  onClick={() => this.sortHelper(sorts, params)}>
                   {aggToField(field, field)}
                 </MenuItem>
               );
             })}
           </DropdownButton>
-          {sortField() !== ' ' ? renderSortIcons() : null}
+          {sortField() !== ' ' ? this.renderSortIcons() : null}
         </div>
       </div>
     );
   };
 
-  const { presentSiteView } = props;
-  console.log("MemoizedView Params", params)
-  const result = useQuery(presentSiteView.search.config.fields.showResults ? SEARCH_PAGE_SEARCH_QUERY : SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS, {
-    variables: params,
+  render() {
+    const { presentSiteView }= this.props
+    return (
+      <SearchWrapper>
+        <Helmet>
+          <title>Search</title>
+          <meta name="description" content="Description of SearchPage" />
+        </Helmet>
+        {/* <Col md={12}> */}
+        <div style={{height: '100%'}}>
+          <QueryComponent
+            query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
+            variables={this.props.params}
+            >
+            {({ data, loading, error }) => {
+              return (
+                <ThemedSearchContainer>
+                  {this.renderSearch({ data, loading, error })}
+                </ThemedSearchContainer>
+              );
+            }}
+          </QueryComponent>
+          </div>
+        {/* </Col> */}
+      </SearchWrapper>
+    );
   }
-  )
-  const { data, loading, error } = result;
+}
 
-  return (
-    <SearchWrapper>
-      <Helmet>
-        <title>Search</title>
-        <meta name="description" content="Description of SearchPage" />
-      </Helmet>
-      {/* <Col md={12}> */}
-      <div style={{ height: '100%' }}>
-        <ThemedSearchContainer>
-          {renderSearch({ data, loading, error })}
-        </ThemedSearchContainer>
-      </div>
-      {/* </Col> */}
-    </SearchWrapper>
-  );
-})
-
-export default withTheme(MemoizedSearchView);
+export default withTheme(SearchView2);

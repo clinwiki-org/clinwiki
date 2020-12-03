@@ -79,11 +79,8 @@ module Types
     field :interventions, [String], null: false
     field :interventions_mesh_terms, [String], null: false 
     field :facility_states,[String], null: false
-    field :study_view_count, Int, null: false
+    
 
-    def study_view_count
-      StudyViewLog.where(nct_id: object.nct_id).count
-    end
 
     def is_fda_regulated
       object.is_fda_regulated_drug | object.is_fda_regulated_device

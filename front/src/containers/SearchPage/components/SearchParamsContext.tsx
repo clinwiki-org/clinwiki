@@ -12,7 +12,7 @@ const SearchParamsContext = React.createContext<Partial<ContextProps>>({
 
 export const withSearchParams = Component => props => (
   <SearchParamsContext.Consumer>
-    {({ searchParams, updateSearchParams }) =>  (
+    {({ searchParams, updateSearchParams }) => (
       <Component
         searchParams={searchParams}
         updateSearchParams={updateSearchParams}

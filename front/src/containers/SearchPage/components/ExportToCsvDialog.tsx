@@ -1,6 +1,6 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { graphql } from '@apollo/client/react/hoc';
+import { graphql } from 'react-apollo';
 import { Modal } from 'react-bootstrap';
 import ThemedButton from 'components/StyledComponents/index';
 

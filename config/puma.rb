@@ -13,10 +13,8 @@
 # performance for most applications, even under load, while maintaining a low
 # risk of overusing memory.
 workers Integer(ENV.fetch("WEB_CONCURRENCY", 2))
-#workers Integer(ENV.fetch("WEB_CONCURRENCY", 0))
 threads_count = Integer(ENV.fetch("MAX_THREADS", 2))
 threads(threads_count, threads_count)
-#worker_timeout(24*60*60)
 
 preload_app!
 

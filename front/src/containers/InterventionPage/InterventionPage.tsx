@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
+import { Query, QueryComponentOptions } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import Intervention from 'components/Intervention';
 import SearchPage from 'containers/SearchPage/index';

@@ -1,4 +1,4 @@
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 
 export function getStudyQuery(name: string, frag: string) {
   frag = frag || `fragment ${name} on Study { nctId }`;

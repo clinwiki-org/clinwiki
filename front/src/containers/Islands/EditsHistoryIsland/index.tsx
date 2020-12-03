@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery } from 'react-apollo';
 import { BeatLoader } from 'react-spinners';
 
 import { StudyEditsHistoryQuery } from 'types/StudyEditsHistoryQuery';

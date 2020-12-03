@@ -10,11 +10,11 @@
 export interface PageViewQuery_site_pageView {
   __typename: "PageView";
   id: number;
-  url: string;
-  title: string;
-  default: boolean;
-  template: string;
   pageType: string;
+  template: string;
+  title: string;
+  url: string;
+  default: boolean;
 }
 
 export interface PageViewQuery_site {

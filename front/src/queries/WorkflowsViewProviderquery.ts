@@ -1,4 +1,4 @@
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 
 const FRAGMENT = gql`
   fragment WorkflowsViewFragment on WorkflowsView {

@@ -18,8 +18,8 @@ import {
   ButtonGroup,
   ControlLabel,
 } from 'react-bootstrap';
-import { Query } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import * as Labels from './SuggestedLabels';
 import styled from 'styled-components';
 import './WorkStyle.css';

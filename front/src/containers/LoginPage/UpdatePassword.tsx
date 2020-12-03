@@ -1,9 +1,10 @@
 import * as React from 'react';
 import {
   Mutation,
+  MutationFunction,
   MutationComponentOptions,
-} from '@apollo/client/react/components';
-import { gql, MutationFunction }  from '@apollo/client';
+} from 'react-apollo';
+import { gql } from 'apollo-boost';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import {

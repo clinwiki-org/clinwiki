@@ -6,7 +6,7 @@ import { WikiPageUpdateContentMutationVariables } from 'types/WikiPageUpdateCont
 import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
 import QUERY from 'queries/WikiPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from 'react-apollo';
 import CurrentUser, { useCurrentUser, QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { useHistory, useLocation, useRouteMatch, Prompt } from 'react-router-dom';
@@ -17,9 +17,8 @@ import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
-import { CurrentUserQuery, CurrentUserQuery_me } from 'types/CurrentUserQuery';
+import { CurrentUserQuery } from 'types/CurrentUserQuery';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
-import LoginModal from '../../components/LoginModal';
 
 interface Props {
   nctId: string;
@@ -50,11 +49,9 @@ export default function WikiPageIsland(props: Props) {
   const [plainEditorText, setplainEditorText] = useState('');
   const [richEditorText, setRichEditorText] = useState('');
   const [flashAnimation, setFlashAnimation] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   // const user = useCurrentUser()?.data?.me;
-  const { data: userData, refetch } = useQuery<CurrentUserQuery>(UserQuery)
+  const {data:user, refetch }= useQuery<CurrentUserQuery>(UserQuery)
   const params = useUrlParams();
-  const user = userData ? userData.me : null;
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {
     variables: { nctId },
@@ -64,7 +61,7 @@ export default function WikiPageIsland(props: Props) {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
-  const readOnly = !location.pathname.includes('/wiki/edit');
+   const readOnly = !location.pathname.includes('/wiki/edit');
   const editPath = `${trimPath(match.path)}/wiki/edit`;
 
   const getEditorText = () => {
@@ -100,7 +97,7 @@ export default function WikiPageIsland(props: Props) {
   const handleEdit = () => {
     history.push(`${trimPath(match.url)}/wiki/edit${queryStringAll(params)}`);
   };
-  const handleUpdateText = (text) => {
+  const handleUpdateText =(text)=>{
     setRichEditorText(text)
 
   }
@@ -130,7 +127,7 @@ export default function WikiPageIsland(props: Props) {
     const editorTextData =
       data.study && data.study.wikiPage && data.study.wikiPage.content;
 
-    let editMessage = `Changes not saved. Are you sure you want to leave while editing?`;
+    let editMessage = `Changes not saved. Are you sure you want to leave while editing?` ;
 
     return (
     <div>
@@ -149,10 +146,12 @@ export default function WikiPageIsland(props: Props) {
   };
 
   const renderEditButton = (isAuthenticated: boolean) => {
+    if (!isAuthenticated) return null;
+
     return (
       <ThemedButton
         type="button"
-        onClick={isAuthenticated ? () => handleEdit() : () => setShowLoginModal(true)}
+        onClick={() => handleEdit()}
         style={{ marginLeft: '10px' }}>
         Edit <FontAwesome name="edit" />
       </ThemedButton>
@@ -161,7 +160,7 @@ export default function WikiPageIsland(props: Props) {
 
   const renderToolbar = (
     data: WikiPageQuery,
-    user: CurrentUserQuery_me | null | undefined,
+    user: CurrentUserQuery | null | undefined,
     readOnly: boolean
   ) => {
     const isAuthenticated = user !== null;
@@ -235,14 +234,11 @@ export default function WikiPageIsland(props: Props) {
     );
   };
 
-  if (!studyData || !nctId) return <BeatLoader />;
-  if (showLoginModal) return <LoginModal
-    show={showLoginModal}
-    cancel={() => setShowLoginModal(false)}
-  />
+  if (!studyData || !nctId || !user) return <BeatLoader />;
+
   return (
     <>
-      {flashAnimation == true?
+      {flashAnimation == true? 
       <WorkFlowAnimation
         resetAnimation={handleResetAnimation}
         rankColor={theme? theme.button: 'default'}

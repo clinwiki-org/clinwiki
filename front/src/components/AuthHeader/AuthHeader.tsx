@@ -7,8 +7,11 @@ import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import logo from 'images/clinwiki-501.png';
 import UserProfileHeaderButton from './UserProfileHeaderButton';
 import { UserFragment } from 'types/UserFragment';
-import { gql }  from '@apollo/client';
-import  {Query,QueryComponentOptions, } from '@apollo/client/react/components';
+import { gql } from "apollo-boost";
+import {
+  Query,
+  QueryComponentOptions,
+} from 'react-apollo';
 import Error from "../Error";
 import { AdminViewsProviderQuery, AdminViewsProviderQueryVariables } from 'types/AdminViewsProviderQuery';
 

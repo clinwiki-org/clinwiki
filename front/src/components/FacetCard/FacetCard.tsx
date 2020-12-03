@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import {
   ApolloConsumer,
-} from '@apollo/client';
+} from 'react-apollo';
 import ThemedAutosuggestButton, {
   ThemedPresearchCard,
   ThemedPresearchHeader,
@@ -260,6 +260,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     } = this.state;
 
     if (addLabel) {
+      console.log(allValues);
       return (
         <CurrentUser>
           {user => (

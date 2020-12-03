@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { gql, useQuery}  from '@apollo/client';
+import { useQuery } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
 import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';

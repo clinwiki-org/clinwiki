@@ -3,8 +3,8 @@ import { match } from 'react-router';
 import { History } from 'history';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { displayFields } from 'utils/siteViewHelpers';
-import { gql }  from '@apollo/client';
-import { Query, Mutation } from '@apollo/client/react/components';
+import { gql } from 'apollo-boost';
+import { Query, Mutation } from 'react-apollo';
 import { omit, prop } from 'ramda';
 import * as R from 'remeda';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
@@ -111,7 +111,7 @@ const bucketsForLabels = (labels: string[]) => {
         }
       }
       ${el(l)}All: crowdAggBuckets(
-        params: { agg: "${l}", q: { key: "*" }, page: 0, pageSize: 1000 }
+        params: { agg: "${l}", q: { key: "*" }, page: 0, pageSize: 25 }
       ) {
         aggs {
           name

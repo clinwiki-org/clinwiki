@@ -1,7 +1,7 @@
-// import { gql, MutationUpdaterFn } from 'apollo-boost';
-import { gql, MutationUpdaterFn, useMutation, useQuery  }  from '@apollo/client';
+import { gql, MutationUpdaterFn } from 'apollo-boost';
+import { useMutation, useQuery } from 'react-apollo';
 import { UpdatePageViewInput } from 'types/globalTypes';
-// import { DataProxy } from 'apollo-cache';
+import { DataProxy } from 'apollo-cache';
 import {
   PageViewsQuery,
   PageViewsQuery_site_pageViews,

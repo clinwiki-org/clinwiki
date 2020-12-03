@@ -357,13 +357,7 @@ export const StyledProfileValue = styled.div`
   font-size: 1.25em;
   border-bottom: solid white;
   margin: 0 1em 1em 1em;
-
-`;export const StyledProfileLogValue = styled.div`
-  font-size: 1em;
-  border-bottom: solid white;
-  margin: 0 1em 1em 1em;
 `;
-
 export const StyledProfileRanking = styled.div`
   display: flex;
 `;

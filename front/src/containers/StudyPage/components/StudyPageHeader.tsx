@@ -11,7 +11,7 @@ import { StudyPageQuery } from 'types/StudyPageQuery';
 import CreateReactionMutation, {
 } from 'mutations/CreateReactionMutation';
 import { find, propEq } from 'ramda';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from 'react-apollo';
 import REACTION_KINDS from 'queries/ReactionKinds';
 import { ReactionKinds } from 'types/ReactionKinds';
 

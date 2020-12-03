@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { useQuery } from '@apollo/client'
+import { Query, QueryComponentOptions, useQuery } from 'react-apollo';
 import { WorkflowsViewProviderQuery } from 'types/WorkflowsViewProviderQuery';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
 import { query } from 'queries/WorkflowsViewProviderquery';

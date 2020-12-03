@@ -1,11 +1,9 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
-import { graphql } from '@apollo/client/react/hoc';
+import { graphql } from 'react-apollo';
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
-import LabeledButton from 'components/LabeledButton';
-
 
 const EXPORT_TO_CSV_MUTATION = gql`
   mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {
@@ -60,11 +58,11 @@ class ExportToCsvButton extends React.Component<
           show={showLoginModal}
           cancel={() => setShowLoginModal(false)}
         />
-         <LabeledButton
-          helperText={"Download CSV"}
-          theClick={onClick}
-          iconName={"download"}
-       />
+        <ThemedButton onClick={onClick}>
+            &nbsp;
+            <FontAwesome name="download" />
+            &nbsp;
+        </ThemedButton>
       </>
     );
   }

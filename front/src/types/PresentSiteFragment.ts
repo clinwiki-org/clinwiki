@@ -177,29 +177,18 @@ export interface PresentSiteFragment_siteView_search_presearch_aggs_fields_visib
   values: string[];
 }
 
-export interface PresentSiteFragment_siteView_search_presearch_aggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface PresentSiteFragment_siteView_search_presearch_aggs_fields {
   __typename: "SiteAggField";
   order: PresentSiteFragment_siteView_search_presearch_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   displayName: string;
-  aggSublabel: string | null;
   preselected: PresentSiteFragment_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  bucketKeyValuePairs: PresentSiteFragment_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
-  showAllowMissing: boolean | null;
-  showFilterToolbar: boolean | null;
-  defaultToOpen: boolean | null;
 }
 
 export interface PresentSiteFragment_siteView_search_presearch_aggs_selected {
@@ -232,29 +221,18 @@ export interface PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_
   values: string[];
 }
 
-export interface PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface PresentSiteFragment_siteView_search_presearch_crowdAggs_fields {
   __typename: "SiteAggField";
   order: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   displayName: string;
-  aggSublabel: string | null;
   preselected: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  bucketKeyValuePairs: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
-  showAllowMissing: boolean | null;
-  showFilterToolbar: boolean | null;
-  defaultToOpen: boolean | null;
 }
 
 export interface PresentSiteFragment_siteView_search_presearch_crowdAggs_selected {
@@ -315,29 +293,18 @@ export interface PresentSiteFragment_siteView_search_aggs_fields_visibleOptions 
   values: string[];
 }
 
-export interface PresentSiteFragment_siteView_search_aggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface PresentSiteFragment_siteView_search_aggs_fields {
   __typename: "SiteAggField";
   order: PresentSiteFragment_siteView_search_aggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   displayName: string;
-  aggSublabel: string | null;
   preselected: PresentSiteFragment_siteView_search_aggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  bucketKeyValuePairs: PresentSiteFragment_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
-  showAllowMissing: boolean | null;
-  showFilterToolbar: boolean | null;
-  defaultToOpen: boolean | null;
 }
 
 export interface PresentSiteFragment_siteView_search_aggs_selected {
@@ -370,29 +337,18 @@ export interface PresentSiteFragment_siteView_search_crowdAggs_fields_visibleOpt
   values: string[];
 }
 
-export interface PresentSiteFragment_siteView_search_crowdAggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface PresentSiteFragment_siteView_search_crowdAggs_fields {
   __typename: "SiteAggField";
   order: PresentSiteFragment_siteView_search_crowdAggs_fields_order | null;
   name: string;
   display: FieldDisplay;
   displayName: string;
-  aggSublabel: string | null;
   preselected: PresentSiteFragment_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  bucketKeyValuePairs: PresentSiteFragment_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
-  showAllowMissing: boolean | null;
-  showFilterToolbar: boolean | null;
-  defaultToOpen: boolean | null;
 }
 
 export interface PresentSiteFragment_siteView_search_crowdAggs_selected {
@@ -436,11 +392,11 @@ export interface PresentSiteFragment_siteView {
 export interface PresentSiteFragment_pageView {
   __typename: "PageView";
   id: number;
-  url: string;
-  title: string;
-  default: boolean;
-  template: string;
   pageType: string;
+  template: string;
+  title: string;
+  url: string;
+  default: boolean;
 }
 
 export interface PresentSiteFragment {

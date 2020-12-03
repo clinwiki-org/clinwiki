@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
 import { match } from 'react-router-dom';
@@ -31,7 +31,7 @@ import StudyPageSections from './components/StudyPageSections';
 import WikiPage from 'containers/WikiPage';
 import CrowdPage from 'containers/CrowdPage';
 import StudySummary from 'components/StudySummary';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { trimPath } from 'utils/helpers';
 import ReviewsPage from 'containers/ReviewsPage';
 import InterventionsPage from 'containers/InterventionsPage';

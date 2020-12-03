@@ -18,7 +18,6 @@ module Types
     field :disliked_studies,[StudyType], null:true
     field :like_count, Integer, null: true
     field :dislike_count,Integer, null: true
-    field :saved_searches, [SavedSearchType], null:true
     field :reactions, [ReactionType],null: true do
       argument :nct_id, String, required: false
       argument :reaction_kind_id, String, required: false
@@ -58,10 +57,6 @@ module Types
       limit = ActiveRecord::Base.sanitize_sql(limit)
       offset = ActiveRecord::Base.sanitize_sql(offset)
       object.study_view_logs.limit(limit).offset(offset).order(created_at: :desc)
-    end
-
-   def saved_searches
-      object.saved_searches
     end
 
     def review_count

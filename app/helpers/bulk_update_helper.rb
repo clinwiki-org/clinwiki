@@ -5,7 +5,7 @@ module BulkUpdateHelper
     wiki_pages = []
     bulk_params.each do |params|
       study = params[:study]
-      wiki_page = WikiPage.find_by(nct_id: params[:study][:nct_id]) || WikiPage.new(nct_id: study.nct_id)
+      wiki_page = study.wiki_page || WikiPage.new(nct_id: study.nct_id)
       wiki_text = wiki_page.text
       wiki_page.front_matter = update_front_matter(wiki_page.front_matter, params)
       wiki_page.updater = user

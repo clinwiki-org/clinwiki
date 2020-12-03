@@ -1,4 +1,4 @@
-// import gql from 'graphql-tag'
+import gql from 'graphql-tag'
 // import { useQuery } from 'react-apollo'
 // import { M
 

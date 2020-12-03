@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import { StudySummaryFragment } from 'types/StudySummaryFragment';
 import { Helmet } from 'react-helmet';
 import CollapsiblePanel from 'components/CollapsiblePanel';
@@ -109,7 +109,6 @@ class StudySummary extends React.PureComponent<StudySummaryProps> {
       studyFirstSubmittedDate
       studyFirstSubmittedQcDate
       studyType
-      studyViewCount
       targetDuration
       type
       updatedAt

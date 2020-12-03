@@ -56,5 +56,4 @@ export interface StudyItemFragment {
   ipdUrl: string | null;
   planToShareIpd: string | null;
   planToShareIpdDescription: string | null;
-  studyViewCount: number;
 }

@@ -83,7 +83,6 @@ function tokensToGraphQLOb(tags: string[]) {
         if (
           parts[0] == 'querystring' ||
           parts[0] == '$LEFT' ||
-          parts[0] == '$RIGHT' ||
           parts[0] == '$TRUNCATE'
         ) {
           console.log('');

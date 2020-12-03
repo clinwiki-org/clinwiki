@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import 'sanitize.css/sanitize.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from 'react-apollo';
 import * as FullStory from '@fullstory/browser';
 
 // Import root app
@@ -35,7 +35,7 @@ import GlobalStyle from './global-styles';
 
 const orgId = process.env.REACT_APP_FULLSTORY_ID || 'Q5CJJ';
 
-// FullStory.init({ orgId });
+FullStory.init({ orgId });
 
 const MOUNT_NODE = document.getElementById('app');
 

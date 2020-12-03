@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import { Table } from 'react-bootstrap';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import {
   InterventionsPageQuery,
   InterventionsPageQueryVariables,

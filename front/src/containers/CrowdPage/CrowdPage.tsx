@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import {
   Query,
   QueryComponentOptions,
-} from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
+} from 'react-apollo';
+import { gql } from 'apollo-boost';
 import { match } from 'react-router-dom';
 import { History } from 'history';
 import { Table } from 'react-bootstrap';

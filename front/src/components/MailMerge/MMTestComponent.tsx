@@ -4,7 +4,8 @@ import {
   IntrospectionQuery,
   DocumentNode,
 } from 'graphql';
-import { gql, useQuery }  from '@apollo/client';
+import { useQuery } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import MailMerge from './MailMerge';
 import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
 import { getStudyQuery, getSearchQuery } from './MailMergeUtils';

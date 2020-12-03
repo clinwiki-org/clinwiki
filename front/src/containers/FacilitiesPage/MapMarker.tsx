@@ -51,7 +51,7 @@ const HoverCircle = styled(MarkerCircle)`
 
 const ThemedHoverCircle = withTheme(HoverCircle);
 
-const WarningHoverCircle = styled(ThemedMarkerCircle)`
+const WarningHoverCircle = styled(MarkerCircle)`
   border: 3px solid #f6a202;
   color: #ffcc00;
 `;

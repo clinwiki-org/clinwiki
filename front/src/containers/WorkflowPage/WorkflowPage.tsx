@@ -8,7 +8,7 @@ import { History } from 'history';
 import CrowdPage from 'containers/CrowdPage';
 import SuggestedLabels from './SuggestedLabels';
 import { ReviewFragment } from 'types/ReviewFragment';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
+import { Query, QueryComponentOptions } from 'react-apollo';
 import {
   WorkflowPageQuery,
   WorkflowPageQueryVariables,

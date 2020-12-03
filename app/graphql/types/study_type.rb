@@ -76,7 +76,6 @@ module Types
     field :facilities, [FacilityType], null: false
     field :average_rating, Float, null: false
     field :reviews_count, Int, null: false
-    field :study_view_count, Int, null: false
 
     # Descriptive
     field :brief_title, String, null: false
@@ -301,9 +300,7 @@ module Types
     def eligibility_healthy_volunteers
       eligibility.then(&:healthy_volunteers)
     end
-    def study_view_count
-      StudyViewLog.where(nct_id: object.nct_id).count
-    end
+
     private
 
     def eligibility

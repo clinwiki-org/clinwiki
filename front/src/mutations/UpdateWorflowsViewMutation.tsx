@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { ApolloError }  from '@apollo/client';
-
+import { ApolloError } from 'apollo-boost';
 import {
   Mutation,
-  MutationComponentOptions
-} from '@apollo/client/react/components';
-import { MutationFunction, MutationResult } from '@apollo/client'
+  MutationComponentOptions,
+  MutationFunction,
+  MutationResult,
+} from 'react-apollo';
 import {
   UpdateWorkflowsViewMutation as UpdateWorkflowsViewMutationType,
   UpdateWorkflowsViewMutationVariables,

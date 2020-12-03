@@ -11,7 +11,7 @@ import {
   find,
   reverse,
 } from 'ramda';
-import { withApollo } from '@apollo/client/react/hoc';
+import { withApollo } from 'react-apollo';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import {
@@ -36,7 +36,7 @@ import RangeSelector from './RangeSelector';
 import TwoLevelPieChart from './TwoLevelPieChart';
 import BarChartComponent from './BarChart'
 import AllowMissingCheckbox from './AllowMissingCheckbox';
-import { ApolloClient }  from '@apollo/client';
+import { ApolloClient } from 'apollo-boost';
 import { capitalize } from 'utils/helpers';
 import {
   ThemedPresearchCard,
@@ -137,7 +137,6 @@ interface AggDropDownProps {
   client: ApolloClient<any>;
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
-  fromAggField?: boolean;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -392,11 +391,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = findFields(agg, presentSiteView, presearch);
-    //@ts-ignore
-    const showAllowMissing = field?.showAllowMissing
-    //@ts-ignore
-    const showFilterToolbar = field?.showFilterToolbar
-
+    //console.log("FIELD", field)
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -417,7 +412,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
                 field={field}
               />
             </Container> 
-            {showAllowMissing && (
+            {!loading && (
               <Container>
                 <AllowMissingCheckbox buckets={buckets} />
               </Container>
@@ -427,15 +422,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       );
     }
     else if (
-      (field?.display === FieldDisplay.DROP_DOWN ||
+      field?.display === FieldDisplay.DROP_DOWN ||
       field?.display === FieldDisplay.LESS_THAN_DROP_DOWN ||
-      field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN)
-      && !this.props.fromAggField
+      field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN
     ){
       return (
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
+          <Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -450,7 +444,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
           />
-          )}
         </Panel.Body>
         <Panel.Body>
           <BucketsDropDown
@@ -464,18 +457,17 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             handleLoadMore={this.handleLoadMore}
             field={field}
           />
-          {showAllowMissing &&(
-                      <AllowMissingCheckbox buckets={buckets} />
-          )}
+          <AllowMissingCheckbox buckets={buckets} />
         </Panel.Body>
       </Panel.Collapse>
     );
     }
 
+
     return (
       <Panel.Collapse className="bm-panel-collapse">
         <Panel.Body>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
+          <Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -490,7 +482,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
           />
-          )}
         </Panel.Body>
         <Panel.Body>
           <BucketsPanel
@@ -502,9 +493,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             handleLoadMore={this.handleLoadMore}
             field={field}
           />
-          { showAllowMissing && (
-          <AllowMissingCheckbox buckets={buckets} />)
-  }
+          <AllowMissingCheckbox buckets={buckets} />
         </Panel.Body>
       </Panel.Collapse>
     );
@@ -565,10 +554,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       loading,
     } = this.state;
     const field = findFields(agg, presentSiteView, presearch);
-    //@ts-ignore
-    const showAllowMissing = field?.showAllowMissing
-    //@ts-ignore
-    const showFilterToolbar= field?.showFilterToolbar
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -588,7 +573,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
               field={field}
             />
           </Container>
-          {showAllowMissing && (
+          {!loading && (
             <Container>
               <AllowMissingCheckbox buckets={buckets} />
             </Container>
@@ -610,7 +595,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
               searchParams={this.props.searchParams}
             />
           </Container>
-          {showAllowMissing && (
+          {!loading && (
             <Container>
               <AllowMissingCheckbox buckets={buckets} />
             </Container>
@@ -620,7 +605,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     } else if (field?.display === FieldDisplay.BAR_CHART) {
       return (
         <ChartWrapper>
-          {(showFilterToolbar == true || showFilterToolbar == null)  && (<Filter
+          <Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -634,7 +619,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggleAlphaSort={this.toggleAlphaSort}
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
-          />)}
+          />
           <ChartContainer>
             <BarChartComponent
               isPresearch={true}
@@ -646,7 +631,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
               field={field}
               searchParams={this.props.searchParams}
             />
-            {showAllowMissing && (
+            {!loading && (
               <Container>
                 <AllowMissingCheckbox buckets={buckets} />
               </Container>
@@ -663,7 +648,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return (
       <>
         <PresearchPanel>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
+          <Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -678,7 +663,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
           />
-          )}
         </PresearchPanel>
         <PresearchPanel>
           <BucketsDropDown
@@ -692,11 +676,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             handleLoadMore={this.handleLoadMore} 
             field={field}
           />
-                      {showAllowMissing && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
         </PresearchPanel>
       </>
     );
@@ -705,7 +684,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     return (
       <>
         <PresearchFilter>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
+          <Filter
             buckets={buckets}
             filter={filter}
             desc={desc}
@@ -720,7 +699,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
           />
-          )}
         </PresearchFilter>
         <PresearchPanel>
           <BucketsPanel
@@ -732,11 +710,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             handleLoadMore={this.handleLoadMore}
             field={field}
           />
-                      {showAllowMissing && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
         </PresearchPanel>
       </>
     );

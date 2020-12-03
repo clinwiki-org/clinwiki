@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SiteFragment } from 'types/SiteFragment';
-import { useQuery } from '@apollo/client';
+import { useQuery } from 'react-apollo';
 import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
@@ -13,7 +13,6 @@ import {
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import PageForm from './PageForm';
-import { BeatLoader } from 'react-spinners';
 
 const SectionForm = styled.div`
   padding: 15px 0 15px 15px;
@@ -59,7 +58,7 @@ export default function PagesForm(props: PageFormProps) {
   if (error) console.log('Error: ', error);
 
   const pageViews =
-    data?.site?.pageViews?.slice().sort((a, b) => a.url.localeCompare(b.url)) || [];
+    data?.site?.pageViews?.sort((a, b) => a.url.localeCompare(b.url)) || [];
   if (pageViews.length > 0 && activeKey == -1) {
     activeKey = pageViews[0].id;
   }

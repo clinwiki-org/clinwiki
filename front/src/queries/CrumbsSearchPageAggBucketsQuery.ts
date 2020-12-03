@@ -1,4 +1,4 @@
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 const AUTOSUGGEST_QUERY = gql`
   query CrumbsSearchPageAggBucketsQuery(
     $agg: String!

@@ -3,13 +3,13 @@ import { Switch, Route, match } from 'react-router-dom';
 import { Row, Col, Table, Label } from 'react-bootstrap';
 import { History } from 'history';
 import styled from 'styled-components';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import {
   Query,
   Mutation,
   QueryComponentOptions,
   MutationComponentOptions,
-} from '@apollo/client/react/components';
+} from 'react-apollo';
 import ReactStars from 'react-stars';
 import StudySummary from 'components/StudySummary';
 import ThemedButton from 'components/StyledComponents/index';

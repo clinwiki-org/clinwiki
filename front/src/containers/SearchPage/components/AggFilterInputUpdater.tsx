@@ -208,7 +208,6 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
         lte: this.input?.lte || null,
         includeMissingFields: this.input?.includeMissingFields || null
       }      
-      console.log('newInput', newInput)
       this.updateSettings({
         [this.grouping]: [...allButThisAgg, newInput],
       });
@@ -256,7 +255,6 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
 
   onUpdateFilter(allowsMissingChanged: boolean = false): void {
     const name = this.getPath();
-    console.log('YO ON UPDATE FILTER')
     if (allowsMissingChanged) {
       this.updateSettings({
         currentTarget: {

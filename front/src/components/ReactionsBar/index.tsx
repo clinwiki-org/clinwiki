@@ -7,7 +7,9 @@ import CreateReactionMutation, {
   CREATE_REACTION,
 } from 'mutations/CreateReactionMutation';
 import { find, propEq } from 'ramda';
-import { gql, useQuery, useMutation  }  from '@apollo/client';
+import { useQuery, useMutation } from 'react-apollo';
+import { Query } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import StudyReactions from '../../queries/StudyReaction';
 import QUERY from 'queries/StudyPageQuery';
 import REACTION_KINDS from 'queries/ReactionKinds';

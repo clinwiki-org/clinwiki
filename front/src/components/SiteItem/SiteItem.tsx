@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import { SiteItemFragment } from 'types/SiteItemFragment';
 import ThemedButton from 'components/StyledComponents/index';
 

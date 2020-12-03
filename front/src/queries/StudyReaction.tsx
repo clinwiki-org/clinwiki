@@ -1,4 +1,4 @@
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 export default  gql`
   query StudyReactions($nctId: String!) {
     me {

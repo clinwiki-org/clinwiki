@@ -14,7 +14,7 @@ import {
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/WorkflowPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from 'react-apollo';
 import { WorkflowPageQuery } from 'types/WorkflowPageQuery';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
 import {  QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
@@ -27,7 +27,6 @@ import { CurrentUserQuery } from 'types/CurrentUserQuery';
 interface Props {
   name: string;
   nctId?: string;
-  onChange:any;
 }
 
 const StyledPanel = styled(Panel)`
@@ -87,10 +86,10 @@ export default function WorkflowIsland(props: Props) {
   const resetHelper = ()=>{
     setFlashAnimation(false)
     refetch()
-    // props.onChange()
   }
   const handleResetAnimation=()=>{
     setTimeout(  resetHelper, 6500);
+
   }
 
   return (
@@ -107,7 +106,6 @@ export default function WorkflowIsland(props: Props) {
           onSelect={handleSelect(
             JSON.parse(studyData?.study?.wikiPage?.meta || '{}'),
             nctId,
-            //@ts-ignore
             upsertMutation,
             deleteMutation
           )}

@@ -29,7 +29,7 @@ export const commonIslands = {
 export const studyIslands: Record<string, IslandConstructor> = {
   ...commonIslands,
   workflow: (attributes: Record<string, string>, context?: any) => (
-    <WorkflowIsland name={attributes['name']} onChange={attributes['onChange']} nctId={context?.nctId} />
+    <WorkflowIsland name={attributes['name']} nctId={context?.nctId} />
   ),
   facility: (attributes: Record<string, string>, context?: any) => (
     <FacilityIsland nctId={context?.nctId} />

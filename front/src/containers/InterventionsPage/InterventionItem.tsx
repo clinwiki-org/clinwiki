@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import styled from 'styled-components';
 import { InterventionItemFragment } from 'types/InterventionItemFragment';
 

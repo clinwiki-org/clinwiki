@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { QueryComponentOptions, Query } from '@apollo/client/react/components';
+import { QueryComponentOptions, Query } from 'react-apollo';
 import { SearchPageParamsQuery, SearchPageParamsQueryVariables } from 'types/SearchPageParamsQuery';
 
 export default gql`

@@ -1,7 +1,6 @@
-import { gql }  from '@apollo/client';
+import { gql } from 'apollo-boost';
 import { WikiPageEditFragment } from 'components/Edits';
-import { MutationComponentOptions, Mutation } from '@apollo/client/react/components';
-import { MutationFunction } from '@apollo/client';
+import { MutationComponentOptions, Mutation, MutationFunction } from 'react-apollo';
 import { ReviewsPageDeleteReviewMutation, ReviewsPageDeleteReviewMutationVariables } from 'types/ReviewsPageDeleteReviewMutation';
 
 
