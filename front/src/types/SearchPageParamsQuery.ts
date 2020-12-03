@@ -44,7 +44,7 @@ export interface SearchPageParamsQuery_searchParams_aggFilters {
   /**
    * Radius used for distance search
    */
-  radius: number | null;
+  radius: string | null;
   /**
    * Location lat
    */
@@ -80,7 +80,7 @@ export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
   /**
    * Radius used for distance search
    */
-  radius: number | null;
+  radius: string | null;
   /**
    * Location lat
    */

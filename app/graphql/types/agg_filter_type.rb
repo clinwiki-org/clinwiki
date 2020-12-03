@@ -5,7 +5,7 @@ module Types
     field :gte, String, description: "The start value (inclusive) for a range query", null: true
     field :lte, String, description: "The end value (inclusive) for a range query", null: true
     field :include_missing_fields, Boolean, description: "Whether to include missing fields", null: true
-    field :radius, Int, description: "Radius used for distance search", null: true
+    field :radius, String, description: "Radius used for distance search", null: true
     field :lat, Float, description: "Location lat", null: true
     field :long, Float, description: "Location Long", null: true
   end
