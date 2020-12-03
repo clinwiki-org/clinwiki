@@ -64,6 +64,11 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
        crumb = (
         <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
       );
+    }else if(agg.radius){
+      let label = `Within ${agg.radius} miles of current location`;
+      crumb = (
+      <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
+      )
     }
     const field = findFields(agg.field, thisSiteView, false);
     const title = field?.displayName;
