@@ -25,7 +25,7 @@ interface DistanceDropDownOptionsState {
   endText?: any;
   activeOption: string;
   lat: number | null;
-  long: number| null;
+  long: number | null;
 }
 
 const StyledFormControl = styled(FormControl)`
@@ -80,11 +80,10 @@ class DistanceDropDownOptions extends React.Component<
     const { activeOption } = this.state;
 
     let activeOptions: string[] = [];
-    const showLocation = (position) =>{
-      console.log("Position",position)
-      this.setState({lat: position.coords.latitude, long: position.coords.longitude}, 
-        ()=>       updater.changeDistance([
-          5 || this.props.updater.input?.radius,
+    const showLocation = (position) => {
+      this.setState({ lat: position.coords.latitude, long: position.coords.longitude },
+        () => updater.changeDistance([
+          this.state.activeOption || this.props.updater.input?.radius,
           this.state.lat || this.props.updater.input?.lat,
           this.state.long || this.props.updater.input?.long,
         ]))
@@ -92,16 +91,17 @@ class DistanceDropDownOptions extends React.Component<
     }
     const changeDropDownOption = async e => {
       e.preventDefault();
+      this.setState({ activeOption: e.target.value }
+      )
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showLocation)
 
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(showLocation)
+        activeOptions.forEach(o => {
+          updater.removeFilter(o);
+        });
 
-      activeOptions.forEach(o => {
-        updater.removeFilter(o);
-      });
-      
-    }
-     
+      }
+
     };
 
     const checkOption = (bucket, field) => {
@@ -136,22 +136,22 @@ class DistanceDropDownOptions extends React.Component<
       // }
     };
     console.log("Buckets", buckets)
-      return (
-        <div className="dropDownFacet">
-          <StyledFormControl
-            //multiple
-            componentClass={'select'}
-            value={-1}
-            //defaultValue={"Option"}
-            //placeholder={"Options"}
-            onChange={e => changeDropDownOption(e)}>
-            <option disabled value={-1} key={-1}>
-              {activeOption}
-            </option>
-            {buckets.map(bucket => checkOption(bucket, field))}
-          </StyledFormControl>
-        </div>
-      );
+    return (
+      <div className="dropDownFacet">
+        <StyledFormControl
+          //multiple
+          componentClass={'select'}
+          value={-1}
+          //defaultValue={"Option"}
+          //placeholder={"Options"}
+          onChange={e => changeDropDownOption(e)}>
+          <option disabled value={-1} key={-1}>
+            {activeOption}
+          </option>
+          {buckets.map(bucket => checkOption(bucket, field))}
+        </StyledFormControl>
+      </div>
+    );
   }
 }
 
