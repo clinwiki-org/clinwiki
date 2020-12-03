@@ -4,17 +4,18 @@ module Mutations
         argument :user_id, Int, required: false
        # argument :name_label, Int, required: false    #* NOTE: could make this conditional if we assign the name on save search cretion in future
         argument :search_hash, String, required: true
+        argument :url, String, required: true
         
         field :saved_search, Types::SavedSearchType, null: false
         field :errors, [String], null: false
           
-          def resolve(search_hash:, user_id: nil)
+          def resolve(search_hash:,  user_id: nil, url:)
             link = ShortLink.find_by short: search_hash
             #* NOTE: This can be useful on UpdateSavedSearchMutation. is_subscribed = params[:is_subscribed].present? ? params[:is_subscribed] : false
             #* NOTE: for future if we add name when creating/saving search. name_label = params[:name_label].present ? params[:name_label].present : build_name_label(link.long)
             name_label = build_name_label(JSON.parse link.long.gsub('=>', ':'))
             user = user_id ? user_id : current_user.id
-            hash = { user_id: user, short_link_id: link.id, name_label: name_label }
+            hash = { user_id: user, short_link_id: link.id, name_label: name_label, url: url }
             saved_search = SavedSearch.new(hash)
             if saved_search.save
               { saved_search: saved_search, errors: nil }
