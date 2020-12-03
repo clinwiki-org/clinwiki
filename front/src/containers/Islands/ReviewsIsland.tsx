@@ -6,7 +6,7 @@ import {
 
 import styled from 'styled-components';
 import QUERY from 'queries/ReviewPageQuery';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
@@ -58,7 +58,6 @@ export default function ReviewsIsland(props: Props) {
   const { data: reviewData } = useQuery<ReviewPageQuery>(QUERY, {
     variables: { nctId },
   });
-  console.log(reviewData);
   const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
@@ -148,6 +147,7 @@ export default function ReviewsIsland(props: Props) {
 
                   <ThemedButton
                     onClick={handleDeleteReview(
+                      //@ts-ignore
                       deleteReviewMutation,
                       review.id
                     )}>

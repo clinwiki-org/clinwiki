@@ -21,6 +21,9 @@ interface AggCrumbProps {
 interface AggCrumbState {}
 
 class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
+
+
+
   render() {
     const {
       agg,
@@ -36,12 +39,20 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       grouping
     );
 
+    const removeFilterTest = (val) => {
+      console.log('agg', agg.field)
+      console.log('searchParams', searchParams)
+      console.log('USP', updateSearchParams)
+      console.log('grouping', grouping)
+      updater.removeFilter(val)
+    }
+
     let crumb = <div></div>;
     if (agg.values && agg.values.length > 0) {
       crumb = (
         <ValuesCrumb
           values={agg.values}
-          onClick={val => updater.removeFilter(val)}
+          onClick={val => removeFilterTest(val)}
           allowMissingFields={agg.includeMissingFields}
           removeAllowMissing={() => updater.removeAllowMissing()}
         />
