@@ -56,14 +56,7 @@ import RichTextEditor from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
-import { debug } from 'console';
 
-const ParamsQueryComponent = (
-  props: QueryComponentOptions<
-    SearchPageParamsQueryType,
-    SearchPageParamsQueryVariables
-  >
-) => Query(props);
 
 const MainContainer = styled(Col)`
   background-color: #eaedf4;
@@ -302,8 +295,8 @@ function SearchPage(props: SearchPageProps) {
   const [totalRecords, setTotalRecords] = useState(0)
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
   const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
-    variables: params.current
-
+    variables: params.current,
+    onCompleted: (data)=> afterSearchParamsUpdate(data)
   })
 
 
@@ -508,27 +501,6 @@ function SearchPage(props: SearchPageProps) {
     return hash.toString();
   }
 
-  const updateStateFromHash = (searchParams, view) => {
-    const newParams: SearchParams = searchParamsFromQuery(searchParams, view);
-    let searchTerm = new URLSearchParams(props.location?.search || '');
-
-    if (searchTerm.has('q')) {
-      console.log('HYOUYOYO')
-      const defaultParams = getDefaultParams(view, props.email);
-      let q = {
-        key: 'AND',
-        children: [{ children: [], key: searchTerm.getAll('q').toString() }],
-      };
-      let queryParams = { ...defaultParams, q: q }
-      updateSearchParams(queryParams);
-    }
-    updateSearchParams(newParams)
-
-    // console.log('UPDATE STATE FROM HASH 1')
-    //Originally thought this should be an updateSearchParams call but seems to error out
-    //Commented out the application seems to still function as inteded. All the aggs update appropriately with no hash, with a hash. So far has passed all my current tests.
-
-  }
 
   const findFilter = (variable: string) => {
 
@@ -685,7 +657,7 @@ function SearchPage(props: SearchPageProps) {
     // handles the query to get the hash and update the url. 
     createPageName()
     const variables = params.current;
-    console.log('GETTING NEW HASH VARS', variables)
+    console.log('4 GETTING NEW HASH VARS', variables)
     const { searchQueryString, pageViewUrl } = getPageView();
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
     // This assumes that the site provider is not passing a url into the page
@@ -736,9 +708,6 @@ function SearchPage(props: SearchPageProps) {
 
     //now that we are using ref not sure the useEffect was best placement for our updating. Instead called it at the end of this update. 
     const { data } = await updateSearchPageHashMutation();
-    console.log("Data: ", data)
-
-    await afterSearchParamsUpdate(data)
   };
 
   //Only run mutation query if params state changes
@@ -931,7 +900,9 @@ function SearchPage(props: SearchPageProps) {
   /// SEARCH PAGE PARAMS QUERY
   const result = useQuery(SearchPageParamsQuery, {
     variables: { hash },
-    onCompleted: () => updateStateFromHash(data.searchParams, presentSiteView)
+    //Looks like this was our fix to our sort again
+    fetchPolicy: "no-cache",
+
   });
 
   let data = result.data
@@ -939,7 +910,6 @@ function SearchPage(props: SearchPageProps) {
   if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
 
 
-  console.log('data from query component', result)
   // debugger
 
   const dataParams = searchParamsFromQuery(

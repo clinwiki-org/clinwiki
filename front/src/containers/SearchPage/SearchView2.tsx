@@ -43,107 +43,9 @@ import {
 import aggToField from 'utils/aggs/aggToField';
 import useUrlParams from '../../utils/UrlParamsProvider';
 import { AggBucketMap } from './Types';
-
-const QUERY = gql`
-  query SearchPageSearchQuery(
-    $q: SearchQueryInput!
-    $page: Int
-    $pageSize: Int
-    $sorts: [SortInput!]
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-  ) {
-    search(
-      params: {
-        q: $q
-        page: $page
-        pageSize: $pageSize
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-      }
-    ) {
-      recordsTotal
-      studies {
-        ...StudyItemFragment
-      }
-    }
-  }
-
-  fragment StudyItemFragment on ElasticStudy {
-    averageRating
-    completionDate
-    nctId
-    overallStatus
-    startDate
-    briefTitle
-    reviewsCount
-    interventions
-    facilityStates
-    interventionsMeshTerms
-    studyFirstSubmittedDate
-    resultsFirstSubmittedDate
-    dispositionFirstSubmittedDate
-    lastUpdateSubmittedDate
-    studyFirstSubmittedQcDate
-    studyFirstPostedDate
-    studyFirstPostedDateType
-    resultsFirstSubmittedQcDate
-    resultsFirstPostedDate
-    resultsFirstPostedDateType
-    dispositionFirstSubmittedQcDate
-    dispositionFirstPostedDate
-    dispositionFirstPostedDateType
-    lastUpdateSubmittedQcDate
-    lastUpdatePostedDate
-    lastUpdatePostedDateType
-    studyType
-    acronym
-    baselinePopulation
-    officialTitle
-    lastKnownStatus
-    phase
-    enrollment
-    enrollmentType
-    source
-    numberOfArms
-    numberOfGroups
-    whyStopped
-    hasExpandedAccess
-    expandedAccessTypeTreatment
-    isFdaRegulatedDrug
-    isFdaRegulatedDevice
-    ipdTimeFrame
-    ipdAccessCriteria
-    ipdUrl
-    planToShareIpd
-    planToShareIpdDescription
-  }
-`;
-const QUERY_NO_RESULTS = gql`
-  query SearchPageSearchQueryNoResults(
-    $q: SearchQueryInput!
-    $page: Int
-    $pageSize: Int
-    $sorts: [SortInput!]
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-  ) {
-    search(
-      params: {
-        q: $q
-        page: $page
-        pageSize: $pageSize
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-      }
-    ) {
-      recordsTotal
-    }
-  }
-`;
-
+import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import  SEARCH_PAGE_SEARCH_QUERY from 'queries/SearchPageSearchQuery';
+import SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS  from 'queries/SearchPageSearchQueryNoResults';
 
 const COLUMNS = studyFields;
 const COLUMN_NAMES = fromPairs(
@@ -490,7 +392,7 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
 
   const { presentSiteView } = props;
   console.log("MemoizedView Params", params)
-  const result = useQuery(presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS, {
+  const result = useQuery(presentSiteView.search.config.fields.showResults ? SEARCH_PAGE_SEARCH_QUERY : SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS, {
     variables: params,
   }
   )

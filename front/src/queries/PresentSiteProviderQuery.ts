@@ -289,3 +289,4 @@ export const PRESENT_SITE_QUERY = gql`
 
     ${PRESENT_SITE_FRAGMENT}
 `;
+export default PRESENT_SITE_QUERY
