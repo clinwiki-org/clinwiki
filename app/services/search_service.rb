@@ -157,7 +157,6 @@ class SearchService
   # Search results from params
   # @return [Hash] the JSON response
   def search(search_after: nil, reverse: false, includes: [])
-    byebug
     options = search_options(search_after: search_after, reverse: reverse, includes: includes)
     search_result = Study.search("*", options) { |body| enrich_body(body) }
     {
@@ -399,11 +398,6 @@ class SearchService
       _and: search_kick_agg_filters + search_kick_crowd_agg_filters,
     }
 
-#    location = params.fetch(:location)
-#    if location
-#      result[:locations] = { near: { lat: location[:lat], lon: location[:lon]}, within: location[:radius]}
-#    end
-    byebug
     result
   end
 
@@ -480,6 +474,14 @@ class SearchService
     select_for_range
   end
 
+  def distance_filter(key, filter)
+    return nil if key.to_s.include? "."
+
+    return nil if (filter[:radius].blank? || filter[:lat].blank? || filter [:long].blank?)
+
+    {locations: { near: { lat: filter[:lat], lon: filter[:long]}, within: "#{filter[:radius]}000mi"}}
+  end
+
   # Returns an array of
   # [
   #   { or: [{"tag": "123"}, {"tag": "345"}]},
@@ -493,6 +495,7 @@ class SearchService
       [
         scalars_filter(key, filter),
         range_filter(key, filter),
+        distance_filter(key, filter),
       ]
     end.compact.flatten
   end
