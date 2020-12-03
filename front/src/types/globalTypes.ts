@@ -18,6 +18,7 @@ export enum FieldDisplay {
   BAR_CHART = "BAR_CHART",
   DATE = "DATE",
   DATE_RANGE = "DATE_RANGE",
+  DISTANCE = "DISTANCE",
   DROP_DOWN = "DROP_DOWN",
   GREATER_THAN_DROP_DOWN = "GREATER_THAN_DROP_DOWN",
   GREATER_THAN_RANGE = "GREATER_THAN_RANGE",
@@ -57,6 +58,9 @@ export interface AggFilterInput {
   gte?: string | null;
   lte?: string | null;
   includeMissingFields?: boolean | null;
+  radius?: string | null;
+  lat?: number | null;
+  long?: number | null;
 }
 
 /**

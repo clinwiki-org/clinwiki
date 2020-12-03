@@ -134,7 +134,8 @@ module Types
     field :dislikes_count, Integer, null:false
     field :reactions_count,[ExpressionCountType], null: true
     field :design_groups, [DesignGroupType], null: false 
-
+    # add field for study_view_logs_type_count thats an int - also find out how these are updated
+    
     def reactions_count
       object.reaction_kinds.group(:name).count
     end
@@ -301,6 +302,7 @@ module Types
     def eligibility_healthy_volunteers
       eligibility.then(&:healthy_volunteers)
     end
+    
     def study_view_count
       StudyViewLog.where(nct_id: object.nct_id).count
     end

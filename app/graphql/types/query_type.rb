@@ -84,6 +84,10 @@ module Types
 
     }.freeze
 
+    def location_search
+      puts "location search called"
+    end
+
     def search(search_hash: nil, params: nil)
       context[:search_params] = fetch_and_merge_search_params(search_hash: search_hash, params: params)
       link = ShortLink.from_long( context[:search_params])
@@ -215,6 +219,7 @@ module Types
     end
 
     def study(nct_id:)
+#      byebug
       StudyViewLog.create(user_id: context[:current_user]&.id, nct_id: nct_id )
       Study.find_by(nct_id: nct_id)
     end

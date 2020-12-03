@@ -48,6 +48,7 @@ import {
 } from 'components/StyledComponents';
 import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 import BucketsDropDown from './BucketsDropDown';
+import DistanceAgg from './DistanceAgg';
 
 const PAGE_SIZE = 25;
 
@@ -468,6 +469,48 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         </Panel.Body>
       </Panel.Collapse>
     );
+    } else if (
+      (field?.display === FieldDisplay.DISTANCE )
+      && !this.props.fromAggField
+    ){
+      return (
+      <Panel.Collapse className="bm-panel-collapse">
+        <Panel.Body>
+          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
+            buckets={buckets}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+          )}
+        </Panel.Body>
+        <Panel.Body>
+        <DistanceAgg
+          agg={agg}
+          removeFilters={removeFilters}
+          isPresearch={isPresearch}
+          visibleOptions={visibleOptions}
+          buckets={buckets}
+          isSelected={this.isSelected}
+          hasMore={hasMore}
+          field={field}
+        />
+
+          {showAllowMissing &&(
+                      <AllowMissingCheckbox buckets={buckets} />
+          )}
+        </Panel.Body>
+      </Panel.Collapse>
+    );
     }
 
     return (
@@ -696,7 +739,51 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         </PresearchPanel>
       </>
     );
+    } else if (
+      field?.display === FieldDisplay.DISTANCE
+    ){ 
+      return (
+      <>
+        <PresearchPanel>
+          {(showFilterToolbar == true  || showFilterToolbar == null) && (<Filter
+            buckets={buckets}
+            filter={filter}
+            desc={desc}
+            sortKind={sortKind}
+            selectAll={this.selectAll}
+            checkSelect={this.checkSelect}
+            checkboxValue={checkboxValue}
+            removeSelectAll={removeSelectAll}
+            showLabel={showLabel}
+            handleFilterChange={this.handleFilterChange}
+            toggleAlphaSort={this.toggleAlphaSort}
+            toggleNumericSort={this.toggleNumericSort}
+            setShowLabel={showLabel => this.setState({ showLabel })}
+          />
+          )}
+        </PresearchPanel> 
+        <PresearchPanel>
+        <DistanceAgg
+          agg={agg}
+          removeFilters={removeFilters}
+          isPresearch={true}
+          visibleOptions={visibleOptions}
+          buckets={buckets}
+          isSelected={this.isSelected}
+          hasMore={hasMore}
+          field={field}
+        />
+                      {showAllowMissing && (
+              <Container>
+                <AllowMissingCheckbox buckets={buckets} />
+              </Container>
+            )}
+        </PresearchPanel>
+      </>
+    );
     }
+
+    
 
     return (
       <>

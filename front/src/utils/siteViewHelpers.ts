@@ -17,6 +17,9 @@ export const preselectedFilters = (
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
+    radius: null, 
+    lat: null,
+    long: null,
   }));
   const presearchAggFilters = reject(
     field => isEmpty(field.preselected.values),
@@ -24,6 +27,9 @@ export const preselectedFilters = (
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
+    radius: null, 
+    lat: null,
+    long: null,
   }));
   // console.log("Prepre Aggs", presearchAggFilters)
   let crowdAggFilters = reject(
@@ -32,6 +38,9 @@ export const preselectedFilters = (
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
+    radius: null, 
+    lat: null,
+    long: null,
   }));
 
   const presearchCrowdAggFilters = reject(
@@ -40,6 +49,9 @@ export const preselectedFilters = (
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
+    radius: null, 
+    lat: null,
+    long: null,
   }));
   aggFilters = aggFilters.concat(presearchAggFilters);
   crowdAggFilters = crowdAggFilters.concat(presearchCrowdAggFilters);

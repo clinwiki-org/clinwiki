@@ -5,6 +5,7 @@ export const aggsOrdered = [
   'browse_interventions_mesh_terms',
   'condtions',
   'design_outcome_measures',
+  'distance',
   'expanded_access_type_treatment',
   'facility_cities',
   'facility_countries',
