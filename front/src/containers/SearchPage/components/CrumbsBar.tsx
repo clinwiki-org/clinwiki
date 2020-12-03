@@ -573,9 +573,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
                           Bulk Update <FontAwesome name="truck" />
                         </ThemedButton>
                       ) : null}
-                      {
-                        this.showSaveSearchButton(user)
-                      }
                     </Col>
                   </Row>
                 </Grid>
