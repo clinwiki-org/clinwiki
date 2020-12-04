@@ -330,6 +330,8 @@ function SearchPage(props: SearchPageProps) {
     if (searchParams!["crowd_agg_filters"]) {
 
       searchParams!["crowdAggFilters"].map((value) => {
+        if(!value) return
+
         //@ts-ignore
         value!.values.map((subValue) => {
           result = result + `${subValue} | `
@@ -339,7 +341,13 @@ function SearchPage(props: SearchPageProps) {
     }
     if (searchParams!["aggFilters"]) {
       searchParams!["aggFilters"].map((value) => {
+        //need to fix for location, 
+        console.log("ValueCIty",value)
         //@ts-ignore
+        if(value.values==undefined) return
+
+        //@ts-ignore
+
         value!.values.map((subValue) => {
           result = result + `${subValue} | `
           entries = entries + 1 
