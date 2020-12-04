@@ -23,7 +23,8 @@ interface DistanceDropDownOptionsState {
   end?: any;
   startText?: any;
   endText?: any;
-  activeOption: any;
+  zipcode: any;
+  radius: any;
   lat: number | null;
   long: number | null;
 }
@@ -45,28 +46,28 @@ class DistanceDropDownOptions extends React.Component<
       end: null,
       startText: this.props.updater.input?.gte,
       endText: this.props.updater.input?.lte,
-      activeOption: 'Select Option',
+      zipcode: this.props.updater.input?.zipcode,
+      radius: this.props.updater.input?.radius,
       lat: null,
       long: null,
     };
   }
 
+  componentDidMount() {
+    if (!this.state.radius) {
+      this.props.updater.changeRadius(['50'])
+    }
+  }
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       this.setState({
-        activeOption: 'Select Option',
+        radius: this.props.updater.input?.radius,
         startText: this.props.updater.input?.gte,
         endText: this.props.updater.input?.lte,
       });
     }
   }
 
-  // onChange = () =>
-  //   this.props.updater.changeDistance([
-  //     this.state.activeOption || this.props.updater.input?.radius,
-  //     this.state.lat || this.props.updater.input?.lat,
-  //     this.state.long || this.props.updater.input?.long,
-  //   ]);
 
   render() {
     const {
@@ -77,39 +78,36 @@ class DistanceDropDownOptions extends React.Component<
       field,
     } = this.props;
 
-    const { activeOption } = this.state;
+    const { radius } = this.state;
 
     let activeOptions: string[] = [];
     const showLocation = (position) => {
       this.setState({ lat: position.coords.latitude, long: position.coords.longitude },
-        () => updater.changeDistance([
-          this.state.activeOption || this.props.updater.input?.radius,
-          this.state.lat || this.props.updater.input?.lat,
-          this.state.long || this.props.updater.input?.long,
-        ]))
+
+      )
 
     }
     const changeDropDownOption = async e => {
       e.preventDefault();
-      this.setState({ activeOption: e.target.value }
+      this.setState({ radius: e.target.value },
+        () => updater.changeRadius([
+          this.state.radius || this.props.updater.input?.radius,
+        ])
       )
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showLocation)
 
-        activeOptions.forEach(o => {
-          updater.removeFilter(o);
-        });
+      activeOptions.forEach(o => {
+        updater.removeFilter(o);
+      });
 
-      }
 
     };
 
     const checkOption = (bucket, field) => {
       if (updater.isSelected(bucket)) {
         activeOptions.push(bucket);
-        if (this.state.activeOption !== activeOptions[0]) {
+        if (this.state.radius !== activeOptions[0]) {
           this.setState({
-            activeOption: activeOptions[0],
+            radius: activeOptions[0],
           });
         }
 
@@ -135,7 +133,6 @@ class DistanceDropDownOptions extends React.Component<
       //   );
       // }
     };
-    console.log("Buckets", buckets)
     return (
       <div className="dropDownFacet">
         <StyledFormControl
@@ -146,7 +143,7 @@ class DistanceDropDownOptions extends React.Component<
           //placeholder={"Options"}
           onChange={e => changeDropDownOption(e)}>
           <option disabled value={-1} key={-1}>
-            {activeOption}
+            {radius}
           </option>
           {buckets.map(bucket => checkOption(bucket, field))}
         </StyledFormControl>
