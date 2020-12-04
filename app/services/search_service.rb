@@ -475,8 +475,10 @@ class SearchService
     return nil if key.to_s.include? "."
 
     zip = filter[:zipcode].present? ? filter[:zipcode] : ""
-    lat = zip.present? ? Geocoder.search(zip)[0].geometry["location"]["lat"] : filter[:lat]
-    long = zip.present? ? Geocoder.search(zip)[0].geometry["location"]["lng"] : filter[:long]
+    coords = Geocoder.search(zip)[0].geometry["location"] if zip.present?
+
+    lat = coords.present? ? coords["lat"] : filter[:lat]
+    long = coords.present? ? coords["lng"] : filter[:long]
 
     return nil if (filter[:radius].blank? || lat.blank? || long.blank?)
 
