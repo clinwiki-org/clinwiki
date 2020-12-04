@@ -133,7 +133,6 @@ class SearchService
     average_rating overall_status facility_states
     conditions
     facility_cities facility_names facility_countries study_type sponsors
-    facility_latitudes, facility_longitudes
     browse_condition_mesh_terms phase rating_dimensions
     browse_interventions_mesh_terms interventions_mesh_terms
     front_matter_keys start_date wiki_page_edits.email wiki_page_edits.created_at
@@ -394,11 +393,9 @@ class SearchService
         skip_filters: skip_filters,
         is_crowd_agg: true,
       )
-    result = {
+    {
       _and: search_kick_agg_filters + search_kick_crowd_agg_filters,
     }
-
-    result
   end
 
   def key_for(filter:, is_crowd_agg: false)
@@ -477,9 +474,13 @@ class SearchService
   def distance_filter(key, filter)
     return nil if key.to_s.include? "."
 
-    return nil if (filter[:radius].blank? || filter[:lat].blank? || filter [:long].blank?)
+    zip = filter[:zipcode].present? ? filter[:zipcode] : ""
+    lat = zip.present? ? Geocoder.search(zip)[0].geometry["location"]["lat"] : filter[:lat]
+    long = zip.present? ? Geocoder.search(zip)[0].geometry["location"]["lng"] : filter[:long]
 
-    {locations: { near: { lat: filter[:lat], lon: filter[:long]}, within: "#{filter[:radius]}mi"}}
+    return nil if (filter[:radius].blank? || lat.blank? || long.blank?)
+
+    {locations: { near: { lat: lat, lon: long}, within: "#{filter[:radius]}mi"}}
   end
 
   # Returns an array of

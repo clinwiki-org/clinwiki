@@ -42,11 +42,11 @@ export interface SearchPageParamsQuery_searchParams_aggFilters {
    */
   includeMissingFields: boolean | null;
   /**
-   * Radius used for distance search
+   * Zipcode used for location search
    */
   zipcode: string | null;
   /**
-   * Radius used for distance search
+   * Radius used for location search
    */
   radius: string | null;
   /**
@@ -82,11 +82,11 @@ export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
    */
   includeMissingFields: boolean | null;
   /**
-   * Radius used for distance search
+   * Zipcode used for location search
    */
   zipcode: string | null;
   /**
-   * Radius used for distance search
+   * Radius used for location search
    */
   radius: string | null;
   /**
