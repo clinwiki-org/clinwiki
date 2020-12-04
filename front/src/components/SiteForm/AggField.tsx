@@ -542,7 +542,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <option value="DROP_DOWN">Drop Down</option>
           <option value="LESS_THAN_DROP_DOWN">Less Than Drop Down</option>
           <option value="GREATER_THAN_DROP_DOWN">Greater Than Drop Down</option>
-          <option value="DISTANCE">Distance</option>
+          <option value="LOCATION">Location</option>
         </StyledFormControl>
         {this.props.field.display === 'NUMBER_RANGE' ||
           this.props.field.display === 'LESS_THAN_RANGE' ||

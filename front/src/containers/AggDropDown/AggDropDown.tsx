@@ -470,7 +470,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       </Panel.Collapse>
     );
     } else if (
-      (field?.display === FieldDisplay.DISTANCE )
+      (field?.display === FieldDisplay.LOCATION )
       && !this.props.fromAggField
     ){
       return (
@@ -740,7 +740,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       </>
     );
     } else if (
-      field?.display === FieldDisplay.DISTANCE
+      field?.display === FieldDisplay.LOCATION
     ){ 
       return (
       <>

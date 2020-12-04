@@ -106,7 +106,7 @@ DEFAULT_AGG_OPTIONS = {
     },
     limit: 10,
   },
-  "distance": {
+  "location": {
     limit: 10,
   },
 }.freeze
@@ -142,7 +142,7 @@ class SearchService
     study_views_count
     number_of_groups why_stopped results_first_submitted_date
     plan_to_share_ipd design_outcome_measures
-    distance
+    location
   ].freeze
 
   attr_reader :params

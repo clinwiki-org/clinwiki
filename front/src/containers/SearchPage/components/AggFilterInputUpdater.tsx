@@ -119,7 +119,7 @@ console.log("Trying to change distance")
   }
   removeDistance(): void {
     if (this.input) {
-      this.input = omit(['radius', 'location'], this.input);
+      this.input = omit(['radius', 'lat', 'long'], this.input);
       this.onUpdateFilter();
     }
   }
