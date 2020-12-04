@@ -44,6 +44,10 @@ export interface SearchPageParamsQuery_searchParams_aggFilters {
   /**
    * Radius used for distance search
    */
+  zipcode: string | null;
+  /**
+   * Radius used for distance search
+   */
   radius: string | null;
   /**
    * Location lat
@@ -77,6 +81,10 @@ export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
    * Whether to include missing fields
    */
   includeMissingFields: boolean | null;
+  /**
+   * Radius used for distance search
+   */
+  zipcode: string | null;
   /**
    * Radius used for distance search
    */

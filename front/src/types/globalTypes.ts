@@ -58,6 +58,7 @@ export interface AggFilterInput {
   gte?: string | null;
   lte?: string | null;
   includeMissingFields?: boolean | null;
+  zipcode?: string | null;
   radius?: string | null;
   lat?: number | null;
   long?: number | null;

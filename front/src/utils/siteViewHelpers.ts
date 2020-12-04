@@ -17,6 +17,7 @@ export const preselectedFilters = (
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
+    zipcode: null, 
     radius: null, 
     lat: null,
     long: null,
@@ -27,6 +28,7 @@ export const preselectedFilters = (
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
+    zipcode: null, 
     radius: null, 
     lat: null,
     long: null,
@@ -38,6 +40,7 @@ export const preselectedFilters = (
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
+    zipcode: null, 
     radius: null, 
     lat: null,
     long: null,
@@ -49,6 +52,7 @@ export const preselectedFilters = (
   ).map(field => ({
     field: field.name,
     values: field.preselected.values,
+    zipcode: null, 
     radius: null, 
     lat: null,
     long: null,

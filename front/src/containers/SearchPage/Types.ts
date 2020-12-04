@@ -37,6 +37,7 @@ export interface AggFilterListItem {
   gte?: any;
   lte?: any;
   includeMissingFields:boolean;
+  zipcode?: string,
   radius?: string;
   lat?: number;
   long?: number;
