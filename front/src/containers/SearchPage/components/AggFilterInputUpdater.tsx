@@ -16,7 +16,7 @@ abstract class AbstractAggFilterInputUpdater {
   updateSettings: any;
   agg: string;
 
-  ACCEPTED_FIELDS = ['values', 'gte', 'lte', 'includeMissingFields'];
+  ACCEPTED_FIELDS = ['values', 'gte', 'lte', 'includeMissingFields', 'zipcode','radius', 'lat', 'long'];
 
   constructor(
     agg: string,
@@ -99,10 +99,30 @@ abstract class AbstractAggFilterInputUpdater {
       this.onUpdateFilter();
     }
   }
+  changeRadius([radius]):void{
+    if(this.input){
+      this.input.radius = radius;
+      this.onUpdateFilter();
+    }
+  }
+  changeDistance([zipcode, lat, long, radius]): void{
+    if(this.input){    
+      this.input.zipcode = zipcode;
+      this.input.lat = lat;
+      this.input.long = long;
+      this.input.radius = radius
+      this.onUpdateFilter();}
+    }
 
   removeRange(): void {
     if (this.input) {
       this.input = omit(['gte', 'lte'], this.input);
+      this.onUpdateFilter();
+    }
+  }
+  removeDistance(): void {
+    if (this.input) {
+      this.input = omit(['zipcode','radius', 'lat', 'long'], this.input);
       this.onUpdateFilter();
     }
   }
@@ -206,7 +226,11 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
         values: this.input?.values,
         gte: this.input?.gte || null,
         lte: this.input?.lte || null,
-        includeMissingFields: this.input?.includeMissingFields || null
+        includeMissingFields: this.input?.includeMissingFields || null,
+        zipcode: this.input?.zipcode || null,
+        radius: this.input?.radius || null,
+        lat: this.input?.lat || null,
+        long: this.input?.long || null
       }      
       console.log('newInput', newInput)
       this.updateSettings({

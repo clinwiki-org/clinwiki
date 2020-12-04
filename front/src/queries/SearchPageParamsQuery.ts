@@ -16,6 +16,10 @@ export default gql`
         gte
         lte
         includeMissingFields
+        zipcode
+        radius
+        lat
+        long
       }
       crowdAggFilters {
         field
@@ -23,6 +27,10 @@ export default gql`
         gte
         lte
         includeMissingFields
+        zipcode
+        radius
+        lat
+        long
       }
     }
   }

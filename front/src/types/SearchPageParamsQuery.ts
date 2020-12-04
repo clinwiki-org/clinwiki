@@ -41,6 +41,22 @@ export interface SearchPageParamsQuery_searchParams_aggFilters {
    * Whether to include missing fields
    */
   includeMissingFields: boolean | null;
+  /**
+   * Zipcode used for location search
+   */
+  zipcode: string | null;
+  /**
+   * Radius used for location search
+   */
+  radius: string | null;
+  /**
+   * Location lat
+   */
+  lat: number | null;
+  /**
+   * Location Long
+   */
+  long: number | null;
 }
 
 export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
@@ -65,6 +81,22 @@ export interface SearchPageParamsQuery_searchParams_crowdAggFilters {
    * Whether to include missing fields
    */
   includeMissingFields: boolean | null;
+  /**
+   * Zipcode used for location search
+   */
+  zipcode: string | null;
+  /**
+   * Radius used for location search
+   */
+  radius: string | null;
+  /**
+   * Location lat
+   */
+  lat: number | null;
+  /**
+   * Location Long
+   */
+  long: number | null;
 }
 
 export interface SearchPageParamsQuery_searchParams {

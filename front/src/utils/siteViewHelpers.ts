@@ -20,6 +20,10 @@ export const preselectedFilters = (
     gte: null,
     includeMissingFields: null,
     lte: null,
+    zipcode: null, 
+    radius: null, 
+    lat: null,
+    long: null,
   }));
   const presearchAggFilters = reject(
     field => isEmpty(field.preselected.values),
@@ -30,6 +34,10 @@ export const preselectedFilters = (
     gte: null,
     includeMissingFields: null,
     lte: null,
+    zipcode: null, 
+    radius: null, 
+    lat: null,
+    long: null,
   }));
   // console.log("Prepre Aggs", presearchAggFilters)
   let crowdAggFilters = reject(
@@ -41,6 +49,10 @@ export const preselectedFilters = (
     gte: null,
     includeMissingFields: null,
     lte: null,
+    zipcode: null, 
+    radius: null, 
+    lat: null,
+    long: null,
   }));
 
   const presearchCrowdAggFilters = reject(
@@ -52,6 +64,10 @@ export const preselectedFilters = (
     gte: null,
     includeMissingFields: null,
     lte: null,
+    zipcode: null, 
+    radius: null, 
+    lat: null,
+    long: null,
   }));
   aggFilters = aggFilters.concat(presearchAggFilters);
   crowdAggFilters = crowdAggFilters.concat(presearchCrowdAggFilters);

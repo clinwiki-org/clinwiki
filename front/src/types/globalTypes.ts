@@ -23,6 +23,7 @@ export enum FieldDisplay {
   GREATER_THAN_RANGE = "GREATER_THAN_RANGE",
   LESS_THAN_DROP_DOWN = "LESS_THAN_DROP_DOWN",
   LESS_THAN_RANGE = "LESS_THAN_RANGE",
+  LOCATION = "LOCATION",
   NUMBER_RANGE = "NUMBER_RANGE",
   PIE_CHART = "PIE_CHART",
   STAR = "STAR",
@@ -57,6 +58,10 @@ export interface AggFilterInput {
   gte?: string | null;
   lte?: string | null;
   includeMissingFields?: boolean | null;
+  zipcode?: string | null;
+  radius?: string | null;
+  lat?: number | null;
+  long?: number | null;
 }
 
 /**

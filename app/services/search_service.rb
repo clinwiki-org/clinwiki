@@ -106,6 +106,9 @@ DEFAULT_AGG_OPTIONS = {
     },
     limit: 10,
   },
+  "location": {
+    limit: 10,
+  },
 }.freeze
 
 def nested_body(key)
@@ -138,6 +141,7 @@ class SearchService
     study_views_count
     number_of_groups why_stopped results_first_submitted_date
     plan_to_share_ipd design_outcome_measures
+    location
   ].freeze
 
   attr_reader :params
@@ -467,6 +471,20 @@ class SearchService
     select_for_range
   end
 
+  def distance_filter(key, filter)
+    return nil if key.to_s.include? "."
+
+    zip = filter[:zipcode].present? ? filter[:zipcode] : ""
+    coords = Geocoder.search(zip)[0].geometry["location"] if zip.present?
+
+    lat = coords.present? ? coords["lat"] : filter[:lat]
+    long = coords.present? ? coords["lng"] : filter[:long]
+
+    return nil if (filter[:radius].blank? || lat.blank? || long.blank?)
+
+    {locations: { near: { lat: lat, lon: long}, within: "#{filter[:radius]}mi"}}
+  end
+
   # Returns an array of
   # [
   #   { or: [{"tag": "123"}, {"tag": "345"}]},
@@ -480,6 +498,7 @@ class SearchService
       [
         scalars_filter(key, filter),
         range_filter(key, filter),
+        distance_filter(key, filter),
       ]
     end.compact.flatten
   end

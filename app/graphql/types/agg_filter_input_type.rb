@@ -7,5 +7,9 @@ module Types
     argument :gte, String, description: "The start value (inclusive) for a range query", required: false
     argument :lte, String, description: "The end value (inclusive) for a range query", required: false
     argument :include_missing_fields, Boolean, description: "Whether to include missing fields in the query", required: false
+    argument :zipcode, String, description: "Zipcode used for location search", required: false
+    argument :radius, String, description: "Radius used for location search", required: false
+    argument :lat, Float, description: "Location lattituted", required: false
+    argument :long, Float, description: "Location longitude", required: false
   end
 end
