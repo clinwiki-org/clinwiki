@@ -1,30 +1,23 @@
 import * as React from 'react';
-import { defaultTo } from 'ramda';
-import { FieldDisplay } from 'types/globalTypes';
 import { AggBucket } from '../SearchPage/Types';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
-import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
-import { FormControl, ControlLabel } from 'react-bootstrap';
+import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import { find, propEq } from 'ramda';
+import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 
 interface DistanceDropDownOptionsProps {
-  display: FieldDisplay;
-  visibleOptions: any;
   buckets: Array<AggBucket>;
-  isSelected: any;
+  isSelected: ()=> boolean;
   updater: AggFilterInputUpdater;
-  field: any;
+  field: SiteViewFragment_search_aggs_fields;
+  useDefaultRadius: ()=> void;
+  zipcode: string;
 }
 
 interface DistanceDropDownOptionsState {
-  start?: any;
-  end?: any;
-  startText?: any;
-  endText?: any;
-  zipcode: any;
-  radius: any;
+  zipcode?: string | null;
+  radius?: string | null;
   lat: number | null;
   long: number | null;
 }
@@ -42,38 +35,18 @@ class DistanceDropDownOptions extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      start: null,
-      end: null,
-      startText: this.props.updater.input?.gte,
-      endText: this.props.updater.input?.lte,
       zipcode: this.props.updater.input?.zipcode,
-      radius: this.props.updater.input?.radius,
+      radius: this.props.zipcode,
       lat: null,
       long: null,
     };
   }
 
-  componentDidMount() {
-    if (!this.state.radius) {
-      this.props.updater.changeRadius(['50'])
-    }
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState({
-        radius: this.props.updater.input?.radius,
-        startText: this.props.updater.input?.gte,
-        endText: this.props.updater.input?.lte,
-      });
-    }
-  }
 
 
   render() {
     const {
-      display,
       buckets,
-      visibleOptions = [],
       updater,
       field,
     } = this.props;
@@ -81,12 +54,7 @@ class DistanceDropDownOptions extends React.Component<
     const { radius } = this.state;
 
     let activeOptions: string[] = [];
-    const showLocation = (position) => {
-      this.setState({ lat: position.coords.latitude, long: position.coords.longitude },
 
-      )
-
-    }
     const changeDropDownOption = async e => {
       e.preventDefault();
       this.setState({ radius: e.target.value },
@@ -117,33 +85,15 @@ class DistanceDropDownOptions extends React.Component<
           {`${bucket} miles`}
         </option>
       );
-      // const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', bucket.key))(field.bucketKeyValuePairs) : false;
-      // if (!bucketKeyValuePair) {
-      //   return (
-      //     <option key={bucket.key + bucket.count} value={bucket.key}>
-      //       {defaultTo(bucket.key)(bucket.keyAsString)}{' '}
-      //       {display === 'DROP_DOWN' ? bucket.docCount : null}
-      //     </option>
-      //   );
-      // } else {
-      //   return (
-      //     <option key={bucket.key + bucket.count} value={bucket.key}>
-      //       {`${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}`}
-      //     </option>
-      //   );
-      // }
     };
     return (
       <div className="dropDownFacet">
         <StyledFormControl
-          //multiple
           componentClass={'select'}
           value={-1}
-          //defaultValue={"Option"}
-          //placeholder={"Options"}
           onChange={e => changeDropDownOption(e)}>
           <option disabled value={-1} key={-1}>
-            {radius}
+            {`${radius} miles`}
           </option>
           {buckets.map(bucket => checkOption(bucket, field))}
         </StyledFormControl>

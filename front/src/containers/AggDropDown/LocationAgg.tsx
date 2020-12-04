@@ -1,40 +1,31 @@
-// TODO  Component based in checkbox BucketsPanel
-// Need to setup as dropdown
-
 import * as React from 'react';
-import * as InfiniteScroll from 'react-infinite-scroller';
-import { BeatLoader } from 'react-spinners';
 import { FieldDisplay } from 'types/globalTypes';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
-import { AggBucket } from '../SearchPage/Types';
+import { AggBucket, AggregateAggCallback } from '../SearchPage/Types';
 import { FormControl, FormGroup } from 'react-bootstrap';
-import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import DistanceDropDownOptions from './DistanceDropDownOptions';
 import LabeledButton from 'components/LabeledButton';
 import AggFilterInputUpdater from '../SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from '../SearchPage/components/AggFilterUpdateContext';
 
-
-interface DistanceAggProps {
+interface LocationAggProps {
   isPresearch: boolean;
   updater: AggFilterInputUpdater;
   field: SiteViewFragment_search_aggs_fields | any;
-  visibleOptions: any;
   buckets: Array<AggBucket>;
-  isSelected: any;
-  hasMore: boolean;
-  removeFilters: any;
+  isSelected: ()=> boolean;
+  removeFilters:  AggregateAggCallback | undefined;
   agg: string;
 }
-interface DistanceAggState {
-  zipcode?: any;
-  radius: any,
+interface LocationAggState {
+  zipcode?:  string | null,
+  radius?: string | null,
   lat: number | null,
   long: number | null,
 }
 
-class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
+class LocationAgg extends React.Component<LocationAggProps, LocationAggState> {
 
   constructor(props) {
     super(props);
@@ -46,11 +37,12 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
     };
   }
   showLocation = (position) => {
-    this.setState({ lat: position.coords.latitude, long: position.coords.longitude, zipcode: null },
+    this.setState({ lat: position.coords.latitude, long: position.coords.longitude, zipcode: null, radius: this.state.radius },
       () => this.props.updater.changeDistance([
         this.state.zipcode,
         this.state.lat || this.props.updater.input?.lat,
         this.state.long || this.props.updater.input?.long,
+        this.state.radius|| this.props.updater.input?.radius || '50',
       ])
     )
 
@@ -61,11 +53,12 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
     }
   }
   handleZipcode = () => {
-    this.setState({ zipcode: this.state.zipcode, lat: null, long: null },
+    this.setState({ zipcode: this.state.zipcode, lat: null, long: null, radius: this.state.radius},
       () => this.props.updater.changeDistance([
         this.state.zipcode || this.props.updater.input?.zipcode,
         this.state.lat,
-        this.state.long
+        this.state.long,
+        this.state.radius|| this.props.updater.input?.radius|| '50',
       ])
 
     )
@@ -74,9 +67,7 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
     const {
       isPresearch,
       field,
-      visibleOptions,
       isSelected,
-      hasMore,
       removeFilters,
       agg
     } = this.props;
@@ -107,7 +98,7 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
             <FormControl
               type="text"
               placeholder="Enter Zip Code"
-              // value={"zipCode"}
+              // value={this.state.zipcode}
               onChange={e =>
                 this.setState({
                   zipcode: e.target.value,
@@ -122,11 +113,11 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
           <DistanceDropDownOptions
             removeFilters={removeFilters}
             display={(field && field.display) || FieldDisplay.STRING}
-            visibleOptions={visibleOptions}
             buckets={buckets}
             isSelected={isSelected}
             field={field}
             agg={agg}
+            zipcode={this.state.zipcode || '50'}
           />
         </FormGroup>
         <FormGroup>
@@ -138,4 +129,4 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
   }
 }
 
-export default withAggContext(DistanceAgg);
+export default withAggContext(LocationAgg);

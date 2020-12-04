@@ -100,21 +100,19 @@ abstract class AbstractAggFilterInputUpdater {
     }
   }
   changeRadius([radius]):void{
-//@ts-ignore
-    this.input.radius = radius;
-    this.onUpdateFilter();
-
+    if(this.input){
+      this.input.radius = radius;
+      this.onUpdateFilter();
+    }
   }
-  changeDistance([zipcode, lat, long]): void{
-  //@ts-ignore
-    this.input.zipcode = zipcode;
-    //@ts-ignore
-    this.input.lat = lat;
-    //@ts-ignore
-    this.input.long = long;
-    this.onUpdateFilter();
-
-  }
+  changeDistance([zipcode, lat, long, radius]): void{
+    if(this.input){    
+      this.input.zipcode = zipcode;
+      this.input.lat = lat;
+      this.input.long = long;
+      this.input.radius = radius
+      this.onUpdateFilter();}
+    }
 
   removeRange(): void {
     if (this.input) {
