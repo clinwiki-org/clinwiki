@@ -1,32 +1,23 @@
 import * as React from 'react';
-import { defaultTo } from 'ramda';
-import { FieldDisplay } from 'types/globalTypes';
 import { AggBucket } from '../SearchPage/Types';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
-import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
-import { FormControl, ControlLabel } from 'react-bootstrap';
+import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import { find, propEq } from 'ramda';
+import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 
 interface DistanceDropDownOptionsProps {
-  display: FieldDisplay;
-  visibleOptions: any;
   buckets: Array<AggBucket>;
-  isSelected: any;
+  isSelected: ()=> boolean;
   updater: AggFilterInputUpdater;
-  field: any;
+  field: SiteViewFragment_search_aggs_fields;
   useDefaultRadius: ()=> void;
-  zipcode: any;
+  zipcode: string;
 }
 
 interface DistanceDropDownOptionsState {
-  start?: any;
-  end?: any;
-  startText?: any;
-  endText?: any;
-  zipcode: any;
-  radius: any;
+  zipcode?: string | null;
+  radius?: string | null;
   lat: number | null;
   long: number | null;
 }
@@ -44,10 +35,6 @@ class DistanceDropDownOptions extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      start: null,
-      end: null,
-      startText: this.props.updater.input?.gte,
-      endText: this.props.updater.input?.lte,
       zipcode: this.props.updater.input?.zipcode,
       radius: this.props.zipcode,
       lat: null,
@@ -59,9 +46,7 @@ class DistanceDropDownOptions extends React.Component<
 
   render() {
     const {
-      display,
       buckets,
-      visibleOptions = [],
       updater,
       field,
     } = this.props;

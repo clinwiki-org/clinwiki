@@ -1,40 +1,31 @@
-// TODO  Component based in checkbox BucketsPanel
-// Need to setup as dropdown
-
 import * as React from 'react';
-import * as InfiniteScroll from 'react-infinite-scroller';
-import { BeatLoader } from 'react-spinners';
 import { FieldDisplay } from 'types/globalTypes';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
-import { AggBucket } from '../SearchPage/Types';
+import { AggBucket, AggregateAggCallback } from '../SearchPage/Types';
 import { FormControl, FormGroup } from 'react-bootstrap';
-import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import DistanceDropDownOptions from './DistanceDropDownOptions';
 import LabeledButton from 'components/LabeledButton';
 import AggFilterInputUpdater from '../SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from '../SearchPage/components/AggFilterUpdateContext';
 
-
-interface DistanceAggProps {
+interface LocationAggProps {
   isPresearch: boolean;
   updater: AggFilterInputUpdater;
   field: SiteViewFragment_search_aggs_fields | any;
-  visibleOptions: any;
   buckets: Array<AggBucket>;
-  isSelected: any;
-  hasMore: boolean;
-  removeFilters: any;
+  isSelected: ()=> boolean;
+  removeFilters:  AggregateAggCallback | undefined;
   agg: string;
 }
-interface DistanceAggState {
-  zipcode?: any;
-  radius: any,
+interface LocationAggState {
+  zipcode?:  string | null,
+  radius?: string | null,
   lat: number | null,
   long: number | null,
 }
 
-class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
+class LocationAgg extends React.Component<LocationAggProps, LocationAggState> {
 
   constructor(props) {
     super(props);
@@ -76,9 +67,7 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
     const {
       isPresearch,
       field,
-      visibleOptions,
       isSelected,
-      hasMore,
       removeFilters,
       agg
     } = this.props;
@@ -124,7 +113,6 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
           <DistanceDropDownOptions
             removeFilters={removeFilters}
             display={(field && field.display) || FieldDisplay.STRING}
-            visibleOptions={visibleOptions}
             buckets={buckets}
             isSelected={isSelected}
             field={field}
@@ -141,4 +129,4 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
   }
 }
 
-export default withAggContext(DistanceAgg);
+export default withAggContext(LocationAgg);

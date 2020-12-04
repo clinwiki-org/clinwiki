@@ -48,7 +48,7 @@ import {
 } from 'components/StyledComponents';
 import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 import BucketsDropDown from './BucketsDropDown';
-import DistanceAgg from './DistanceAgg';
+import LocationAgg from './LocationAgg';
 
 const PAGE_SIZE = 25;
 
@@ -494,11 +494,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           )}
         </Panel.Body>
         <Panel.Body>
-        <DistanceAgg
+        <LocationAgg
           agg={agg}
           removeFilters={removeFilters}
           isPresearch={isPresearch}
-          visibleOptions={visibleOptions}
           buckets={buckets}
           isSelected={this.isSelected}
           hasMore={hasMore}
@@ -763,11 +762,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           )}
         </PresearchPanel> 
         <PresearchPanel>
-        <DistanceAgg
+        <LocationAgg
           agg={agg}
           removeFilters={removeFilters}
           isPresearch={true}
-          visibleOptions={visibleOptions}
           buckets={buckets}
           isSelected={this.isSelected}
           hasMore={hasMore}
