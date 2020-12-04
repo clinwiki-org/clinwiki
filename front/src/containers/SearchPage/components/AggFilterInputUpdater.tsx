@@ -105,13 +105,15 @@ abstract class AbstractAggFilterInputUpdater {
     this.onUpdateFilter();
 
   }
-  changeDistance([zipcode, lat, long]): void{
+  changeDistance([zipcode, lat, long, radius]): void{
   //@ts-ignore
     this.input.zipcode = zipcode;
     //@ts-ignore
     this.input.lat = lat;
     //@ts-ignore
     this.input.long = long;
+    //@ts-ignore
+    this.input.radius = radius
     this.onUpdateFilter();
 
   }

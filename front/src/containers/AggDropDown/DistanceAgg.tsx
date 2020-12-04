@@ -46,11 +46,12 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
     };
   }
   showLocation = (position) => {
-    this.setState({ lat: position.coords.latitude, long: position.coords.longitude, zipcode: null },
+    this.setState({ lat: position.coords.latitude, long: position.coords.longitude, zipcode: null, radius: this.state.radius },
       () => this.props.updater.changeDistance([
         this.state.zipcode,
         this.state.lat || this.props.updater.input?.lat,
         this.state.long || this.props.updater.input?.long,
+        this.state.radius|| this.props.updater.input?.radius || '50',
       ])
     )
 
@@ -61,11 +62,12 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
     }
   }
   handleZipcode = () => {
-    this.setState({ zipcode: this.state.zipcode, lat: null, long: null },
+    this.setState({ zipcode: this.state.zipcode, lat: null, long: null, radius: this.state.radius},
       () => this.props.updater.changeDistance([
         this.state.zipcode || this.props.updater.input?.zipcode,
         this.state.lat,
-        this.state.long
+        this.state.long,
+        this.state.radius|| this.props.updater.input?.radius|| '50',
       ])
 
     )
@@ -107,7 +109,7 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
             <FormControl
               type="text"
               placeholder="Enter Zip Code"
-              // value={"zipCode"}
+              // value={this.state.zipcode}
               onChange={e =>
                 this.setState({
                   zipcode: e.target.value,
@@ -127,6 +129,7 @@ class DistanceAgg extends React.Component<DistanceAggProps, DistanceAggState> {
             isSelected={isSelected}
             field={field}
             agg={agg}
+            zipcode={this.state.zipcode || '50'}
           />
         </FormGroup>
         <FormGroup>
