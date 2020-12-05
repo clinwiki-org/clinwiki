@@ -44,7 +44,8 @@ module Clinwiki
                 'http://mysite.localhost:3001',
                 'http://test.localhost:3001',
                 'http://clinwiki-prod.herokuapp.com',
-                'http://clinwiki-dev.herokuapp.com'
+                'http://clinwiki-dev.herokuapp.com',
+                'https://www.mapscout.io/'
         resource '*',
           :headers => :any,
           :methods => [:get, :post, :options, :delete, :put, :patch],
