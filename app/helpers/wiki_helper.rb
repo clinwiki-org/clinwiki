@@ -36,7 +36,6 @@ module WikiHelper
     front_matter
   end
 
-  # TODO: refactor and simplify
   def create_or_update_wiki_page_for_study(params: {}, user: nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/LineLength
     study = get_study!(params: params)
     @wiki_page = study.wiki_page || WikiPage.new(nct_id: study.nct_id)
@@ -57,20 +56,11 @@ module WikiHelper
     @previous_front_matter = front_matter
 
      if params.key?(:delete_meta)
-      front_matter = remove_value(front_matter,params[:delete_meta][:key])
+      front_matter = remove_value(front_matter, params[:delete_meta][:key], params[:delete_meta][:value])
      end
      if params.key?(:add_meta)
       front_matter = add_value(front_matter, params[:add_meta][:key], params[:add_meta][:value])
      end
-   
-    tags = front_matter["tags"]&.split("|") || []
-    tags = (tags + [params[:add_tag]]).flatten.uniq if params.key?(:add_tag)
-
-    if params.key?(:remove_tag)
-      tags = tags.reject { |x| [params[:remove_tag]].flatten.include?(x) }
-    end
-
-    front_matter["tags"] = tags.join("|")
 
     # @edit = generate_edit(wiki_text, user)
     @wiki_page.updater = user
