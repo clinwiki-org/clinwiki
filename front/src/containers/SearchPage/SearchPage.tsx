@@ -888,6 +888,7 @@ function SearchPage(props: SearchPageProps) {
       //@ts-ignore
       setParams(props.searchParams);
     }
+    updateSearchParams(initialLoadParams)
 
     return
   }, [])
