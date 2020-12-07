@@ -827,9 +827,9 @@ function SearchPage(props: SearchPageProps) {
     keys.forEach(k => {
       //console.log("PARAMS  1",params)
       //@ts-ignore
-      params.current = removeFilter(aggName, k, isCrowd)(params);
+      params.current = newRemoveFilter(aggName, k, isCrowd)(params);
     });
-    newChangeFilter(true);
+    newChangeFilter(false);
     console.log("RemoveFilters Params", params)
     updateSearchParams(params.current)
 

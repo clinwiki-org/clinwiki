@@ -191,6 +191,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
           key={`crowdAggFilters${aggFilterCounter++}`}
           thisSiteView={thisSiteView}
           searchParams={this.props.searchParams}
+          updateSearchParams={this.props.updateSearchParams}
         />
       );
     }
