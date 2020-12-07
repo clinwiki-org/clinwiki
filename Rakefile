@@ -24,16 +24,9 @@ task :token, [:email] => :environment do |_t, args|
 end
 
 namespace :import do
+  #requires 4 columns per row in csv, nct_id, Type, Value, user_email (to assign edit to, must be a valid user)
   task :csv, [:csv_file] => :environment do |_t, args|
     require File.expand_path("app/services/csv_processor", __dir__)
-    user = User.find_by(email: "no-reply@clinwiki.org")
-    if user.nil?
-      user = User.create(
-        email: "no-reply@clinwiki.org",
-        first_name: "Clinwiki",
-        last_name: "Bot",
-      )
-    end
     errors = []
     to_index = []
     added_tags = 0
@@ -49,6 +42,7 @@ namespace :import do
         to_index.push(row["nct_id"])
         tally = -> {}
         begin
+          user = User.find_by(email: row["user_email"])
           if row["Action"] == "Remove"
             params[:delete_meta] = { 
               key: row["Type"],
