@@ -887,6 +887,8 @@ function SearchPage(props: SearchPageProps) {
     if (props.intervention) {
       //@ts-ignore
       setParams(props.searchParams);
+    }if(searchTerm.has('hash')){
+      return
     }
     updateSearchParams(initialLoadParams)
 
