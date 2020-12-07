@@ -300,8 +300,9 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   # also the above zip will cause errors if all lat/lon values are not present
   def facility_coords_hash
     locations = []
-    geocode
     facilities.each do |facility|
+      should_geocode = facility.facility_location.present? && (facility.facility_location&.latitude.blank? || facility.facility_location&.longitude.blank?)
+      facility.geocode if should_geocode
       if facility.facility_location&.latitude.present? && facility.facility_location&.longitude.present?
         coord_hash = { lat: facility.facility_location&.latitude, lon: facility.facility_location&.longitude}
         locations << coord_hash
@@ -309,6 +310,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
     end
     locations
   end
+
 
   # manually publish to reindex queue
   def enqueue_reindex_job
