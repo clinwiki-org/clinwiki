@@ -119,6 +119,12 @@ export const SITE_VIEW_FRAGMENT = gql`
                         name
                         display
                         displayName
+                        aggSublabel
+                        defaultToOpen
+                        bucketKeyValuePairs {
+                            key
+                            label
+                          }
                         preselected {
                             kind
                             values
@@ -131,6 +137,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         rank
                         rangeStartLabel
                         rangeEndLabel
+                        showFilterToolbar
+                        showAllowMissing
                     }
                     selected {
                         kind
@@ -146,6 +154,12 @@ export const SITE_VIEW_FRAGMENT = gql`
                         name
                         display
                         displayName
+                        aggSublabel
+                        defaultToOpen
+                        bucketKeyValuePairs {
+                            key
+                            label
+                          }
                         preselected {
                             kind
                             values
@@ -158,6 +172,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         autoSuggest
                         rangeStartLabel
                         rangeEndLabel
+                        showFilterToolbar
+                        showAllowMissing
                     }
                     selected {
                         kind
@@ -191,6 +207,12 @@ export const SITE_VIEW_FRAGMENT = gql`
                     name
                     display
                     displayName
+                    aggSublabel
+                    defaultToOpen
+                    bucketKeyValuePairs {
+                        key
+                        label
+                      }
                     preselected {
                         kind
                         values
@@ -203,6 +225,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                     rank
                     rangeStartLabel
                     rangeEndLabel
+                    showFilterToolbar
+                    showAllowMissing
                 }
                 selected {
                     kind
@@ -218,6 +242,12 @@ export const SITE_VIEW_FRAGMENT = gql`
                     name
                     display
                     displayName
+                    aggSublabel
+                    defaultToOpen
+                    bucketKeyValuePairs {
+                        key
+                        label
+                      }
                     preselected {
                         kind
                         values
@@ -230,6 +260,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                     autoSuggest
                     rangeStartLabel
                     rangeEndLabel
+                    showFilterToolbar
+                    showAllowMissing
                 }
                 selected {
                     kind

@@ -43,6 +43,7 @@ const SEARCH_PAGE_SEARCH_QUERY = gql`
     studyFirstSubmittedQcDate
     studyFirstPostedDate
     studyFirstPostedDateType
+    studyViewCount
     resultsFirstSubmittedQcDate
     resultsFirstPostedDate
     resultsFirstPostedDateType
