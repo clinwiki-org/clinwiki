@@ -391,20 +391,17 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
     );
   };
 
-  const { presentSiteView } = props;
-  console.log("MemoizedView Params", params)
-  const result = useQuery(presentSiteView.search.config.fields.showResults ? SEARCH_PAGE_SEARCH_QUERY : SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS, {
+  const result =  useQuery(SEARCH_PAGE_SEARCH_QUERY, {
     variables: params,
-  }
-  )
+  });
   const { data, loading, error } = result;
 
   return (
     <SearchWrapper>
-      <Helmet>
+      {/* <Helmet>
         <title>Search</title>
         <meta name="description" content="Description of SearchPage" />
-      </Helmet>
+      </Helmet> */}
       {/* <Col md={12}> */}
       <div style={{ height: '100%' }}>
         <ThemedSearchContainer>

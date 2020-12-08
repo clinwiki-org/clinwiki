@@ -488,7 +488,7 @@ function SearchPage(props: SearchPageProps) {
     const hash = getHashFromLocation();
     const { presentSiteView } = props;
     console.log('SEARCH VIEW FROM SP', searchParams)
-    return (
+    return  presentSiteView.search.config.fields.showResults ? (
       <MemoizedSearchView
         key={`${hash}+${JSON.stringify(searchParams)}`}
         onBulkUpdate={handleBulkUpdateClick}
@@ -499,7 +499,7 @@ function SearchPage(props: SearchPageProps) {
         presentSiteView={presentSiteView}
       />
 
-    );
+    ) : null;
   };
 
   const getHashFromLocation = (): string | null => {
