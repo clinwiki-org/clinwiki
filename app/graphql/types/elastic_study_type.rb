@@ -82,7 +82,7 @@ module Types
     field :study_view_count, Int, null: false
 
     def study_view_count
-      StudyViewLog.where(nct_id: object.nct_id).count
+      object.study_views_count
     end
 
     def is_fda_regulated
