@@ -16,6 +16,7 @@ export default gql`
         gte
         lte
         includeMissingFields
+        zipcode
         radius
         lat
         long
@@ -26,6 +27,7 @@ export default gql`
         gte
         lte
         includeMissingFields
+        zipcode
         radius
         lat
         long

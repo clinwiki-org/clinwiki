@@ -18,7 +18,8 @@ const cache = new InMemoryCache({
       // array for their keyFields.
       keyFields: ["aggFilters", "crowdAggFilters"],
     },
-  }});
+  }
+});
 
 // persistCache({
 //   cache,
@@ -73,7 +74,7 @@ const client = new ApolloClient({
 });
 
 const data = {
-  searchParams: null,
+  // searchParams: null,
   // searchQuery: [],
 };
 

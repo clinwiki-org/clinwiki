@@ -35,7 +35,7 @@ import GlobalStyle from './global-styles';
 
 const orgId = process.env.REACT_APP_FULLSTORY_ID || 'Q5CJJ';
 
-FullStory.init({ orgId });
+// FullStory.init({ orgId });
 
 const MOUNT_NODE = document.getElementById('app');
 

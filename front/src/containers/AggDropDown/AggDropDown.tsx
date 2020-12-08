@@ -48,7 +48,7 @@ import {
 } from 'components/StyledComponents';
 import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 import BucketsDropDown from './BucketsDropDown';
-import DistanceAgg from './DistanceAgg';
+import LocationAgg from './LocationAgg';
 
 const PAGE_SIZE = 25;
 
@@ -393,7 +393,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = findFields(agg, presentSiteView, presearch);
+    //@ts-ignore
     const showAllowMissing = field?.showAllowMissing
+    //@ts-ignore
     const showFilterToolbar = field?.showFilterToolbar
 
     if (
@@ -470,7 +472,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       </Panel.Collapse>
     );
     } else if (
-      (field?.display === FieldDisplay.DISTANCE )
+      (field?.display === FieldDisplay.LOCATION )
       && !this.props.fromAggField
     ){
       return (
@@ -494,11 +496,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           )}
         </Panel.Body>
         <Panel.Body>
-        <DistanceAgg
+        <LocationAgg
           agg={agg}
           removeFilters={removeFilters}
           isPresearch={isPresearch}
-          visibleOptions={visibleOptions}
           buckets={buckets}
           isSelected={this.isSelected}
           hasMore={hasMore}
@@ -606,7 +607,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       loading,
     } = this.state;
     const field = findFields(agg, presentSiteView, presearch);
+    //@ts-ignore
     const showAllowMissing = field?.showAllowMissing
+    //@ts-ignore
     const showFilterToolbar= field?.showFilterToolbar
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
@@ -740,7 +743,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       </>
     );
     } else if (
-      field?.display === FieldDisplay.DISTANCE
+      field?.display === FieldDisplay.LOCATION
     ){ 
       return (
       <>
@@ -763,11 +766,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
           )}
         </PresearchPanel> 
         <PresearchPanel>
-        <DistanceAgg
+        <LocationAgg
           agg={agg}
           removeFilters={removeFilters}
           isPresearch={true}
-          visibleOptions={visibleOptions}
           buckets={buckets}
           isSelected={this.isSelected}
           hasMore={hasMore}

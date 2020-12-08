@@ -10,9 +10,9 @@
 export interface PageViewFragment {
   __typename: "PageView";
   id: number;
-  pageType: string;
-  template: string;
-  title: string;
   url: string;
+  title: string;
   default: boolean;
+  template: string;
+  pageType: string;
 }

@@ -436,11 +436,11 @@ export interface PresentSiteFragment_siteView {
 export interface PresentSiteFragment_pageView {
   __typename: "PageView";
   id: number;
-  pageType: string;
-  template: string;
-  title: string;
   url: string;
+  title: string;
   default: boolean;
+  template: string;
+  pageType: string;
 }
 
 export interface PresentSiteFragment {

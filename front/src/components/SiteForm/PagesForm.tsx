@@ -13,6 +13,7 @@ import {
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import PageForm from './PageForm';
+import { BeatLoader } from 'react-spinners';
 
 const SectionForm = styled.div`
   padding: 15px 0 15px 15px;

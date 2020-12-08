@@ -113,7 +113,7 @@ export default function WorkflowIsland(props: Props) {
           )}
           allowedSuggestedLabels={allowedSuggestedLabels}
           suggestedLabelsConfig={suggestedLabelsConfig}
-          disabled={!user}
+          disabled={!user?.me}
           showAnimation={() =>
             setFlashAnimation(true)
           }

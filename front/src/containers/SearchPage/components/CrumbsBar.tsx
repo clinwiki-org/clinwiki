@@ -125,7 +125,6 @@ interface CrumbsBarProps {
   addFilter: AggCallback;
   addSearchTerm: (term: string) => void;
   removeSearchTerm: (term: string, bool?) => void;
-  update: { page: (n: number) => void };
   onReset: () => void;
   onClear: () => void;
   siteViewUrl?: string;
@@ -133,6 +132,7 @@ interface CrumbsBarProps {
   totalResults: number;
   searchHash: string;
   theme: Theme;
+  updateSearchParams: any;
 }
 
 interface CrumbsBarState {
@@ -145,7 +145,6 @@ interface CrumbsBarState {
 class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   constructor(props) {
     super(props);
-
     this.state = {
       searchTerm: '',
       suggestions: [],
@@ -153,6 +152,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
       showFilters: true,
     };
   }
+
 
   *mkCrumbs(searchParams: SearchParams, thisSiteView) {
     if (!isEmpty(searchParams.q)) {
@@ -174,6 +174,8 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
           agg={agg}
           key={`aggFilters${aggFilterCounter++}`}
           thisSiteView={thisSiteView}
+          searchParams={this.props.searchParams}
+          updateSearchParams={this.props.updateSearchParams}
         />
       );
     }
@@ -188,6 +190,8 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
           agg={agg}
           key={`crowdAggFilters${aggFilterCounter++}`}
           thisSiteView={thisSiteView}
+          searchParams={this.props.searchParams}
+          updateSearchParams={this.props.updateSearchParams}
         />
       );
     }
@@ -444,6 +448,7 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   };
   onSubmit = e => {
     e.preventDefault();
+    console.log('adding term from crumbbar', this.state.searchTerm)
     this.props.addSearchTerm(this.state.searchTerm);
     this.setState({ searchTerm: '' });
   };
