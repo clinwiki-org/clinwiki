@@ -106,6 +106,9 @@ DEFAULT_AGG_OPTIONS = {
     },
     limit: 10,
   },
+  "location": {
+    limit: 10,
+  },
 }.freeze
 
 def nested_body(key)
@@ -138,6 +141,7 @@ class SearchService
     study_views_count
     number_of_groups why_stopped results_first_submitted_date
     plan_to_share_ipd design_outcome_measures
+    location
   ].freeze
 
   attr_reader :params
@@ -160,6 +164,19 @@ class SearchService
       aggs: search_result.aggs,
     }
     
+  end
+
+  def search_without_aggs(search_after: nil, reverse: false, includes: [])
+    options = search_options_without_aggs(search_after: search_after, reverse: reverse, includes: includes)
+    search_result = Study.search("*", options) do |body|
+      enrich_body(body)
+    end
+    {
+      recordsTotal: search_result.total_entries,
+      studies: search_result.results,
+      aggs: search_result.aggs,
+      took: search_result.took
+    }
   end
 
   def scroll
@@ -185,6 +202,18 @@ class SearchService
 
     aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
+    options[:includes] = includes
+    options[:load] = false
+    options
+  end
+
+  def search_options_without_aggs(search_after: nil, reverse: false, includes: [])
+    crowd_aggs = agg_buckets_for_field(field: "front_matter_keys")
+      &.dig(:front_matter_keys, :buckets)
+      &.map { |bucket| "fm_#{bucket[:key]}" } || []
+    # aggs = (crowd_aggs + ENABLED_AGGS).map { |agg| [agg, { limit: 10 }] }.to_h
+
+    options = search_kick_query_options(aggs: nil, search_after: search_after, reverse: reverse)
     options[:includes] = includes
     options[:load] = false
     options
@@ -442,6 +471,20 @@ class SearchService
     select_for_range
   end
 
+  def distance_filter(key, filter)
+    return nil if key.to_s.include? "."
+
+    zip = filter[:zipcode].present? ? filter[:zipcode] : ""
+    coords = Geocoder.search(zip)[0].geometry["location"] if zip.present?
+
+    lat = coords.present? ? coords["lat"] : filter[:lat]
+    long = coords.present? ? coords["lng"] : filter[:long]
+
+    return nil if (filter[:radius].blank? || lat.blank? || long.blank?)
+
+    {locations: { near: { lat: lat, lon: long}, within: "#{filter[:radius]}mi"}}
+  end
+
   # Returns an array of
   # [
   #   { or: [{"tag": "123"}, {"tag": "345"}]},
@@ -455,6 +498,7 @@ class SearchService
       [
         scalars_filter(key, filter),
         range_filter(key, filter),
+        distance_filter(key, filter),
       ]
     end.compact.flatten
   end

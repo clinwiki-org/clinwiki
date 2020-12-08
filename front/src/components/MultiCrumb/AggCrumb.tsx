@@ -21,6 +21,9 @@ interface AggCrumbProps {
 interface AggCrumbState {}
 
 class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
+
+
+
   render() {
     const {
       agg,
@@ -36,12 +39,13 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       grouping
     );
 
+
     let crumb = <div></div>;
     if (agg.values && agg.values.length > 0) {
       crumb = (
         <ValuesCrumb
           values={agg.values}
-          onClick={val => updater.removeFilter(val)}
+          onClick={(val) => updater.removeFilter(val)}
           allowMissingFields={agg.includeMissingFields}
           removeAllowMissing={() => updater.removeAllowMissing()}
         />
@@ -59,11 +63,21 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       crumb = (
         <ValueCrumb label={label} onClick={() => updater.removeRange()} />
       );
-    }else if(agg.includeMissingFields){
-       let label= "Allow Missing"
-       crumb = (
+    } else if (agg.includeMissingFields) {
+      let label = "Allow Missing"
+      crumb = (
         <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
       );
+    } else if (agg.radius && agg.lat) {
+      let label = `Within ${agg.radius} miles of current location`;
+      crumb = (
+        <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
+      )
+    } else if (agg.radius && agg.zipcode) {
+      let label = `Within ${agg.radius} miles of ${agg.zipcode}`;
+      crumb = (
+        <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
+      )
     }
     const field = findFields(agg.field, thisSiteView, false);
     const title = field?.displayName;

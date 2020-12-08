@@ -2,23 +2,28 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
   self.primary_key = "nct_id"
 
   def self.custom_mapping
-     {
-       study:{
-         properties:{
-           wiki_page_edits:
-           {
-             type: 'nested'
-           },
-          reactions:
-           {
-             type: 'nested'
-           },
-           average_rating:{
-             type:'float'
-           },
-         }
-       }
-     }
+    {
+      study:{
+        properties:{
+          wiki_page_edits:
+          {
+            type: 'nested'
+          },
+         reactions:
+          {
+            type: 'nested'
+          },
+          average_rating:
+          {
+            type: 'float'
+          },
+          locations:
+          {
+            type: 'geo_point'
+          }
+        }
+      }
+    }
   end
 
 
@@ -263,6 +268,7 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       facility_states: facilities.map(&:state),
       facility_cities: facilities.map(&:city),
       facility_countries: facilities.map(&:country),
+      locations: facility_coords_hash,
       average_rating: average_rating,
       reviews_count: reviews.count,
       reviews: reviews && reviews.map(&:text),
@@ -288,6 +294,23 @@ class Study < AactRecord # rubocop:disable Metrics/ClassLength
       *NON_INDEX_FIELDS, *NON_INDEX_FIELDS.map(&:to_s)
     )
   end
+
+  # (Location.where name: s.facilities.map(&:location_name)).map(&:latitude).zip (Location.where name: s.facilities.map(&:location_name)).map(&:longitude)
+  # works to create an array of coordinates but we need an array of hashes [{lat: 123, lon: 456}, ...]
+  # also the above zip will cause errors if all lat/lon values are not present
+  def facility_coords_hash
+    locations = []
+    facilities.each do |facility|
+      should_geocode = facility.facility_location.present? && (facility.facility_location&.latitude.blank? || facility.facility_location&.longitude.blank?)
+      facility.geocode if should_geocode
+      if facility.facility_location&.latitude.present? && facility.facility_location&.longitude.present?
+        coord_hash = { lat: facility.facility_location&.latitude, lon: facility.facility_location&.longitude}
+        locations << coord_hash
+      end
+    end
+    locations
+  end
+
 
   # manually publish to reindex queue
   def enqueue_reindex_job

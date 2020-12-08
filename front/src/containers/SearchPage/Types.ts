@@ -1,5 +1,6 @@
 import { filter } from 'ramda';
 import { SortInput, AggFilterInput } from 'types/globalTypes';
+import { SearchQueryInput } from 'types/globalTypes'
 
 export type Params = {};
 
@@ -36,6 +37,10 @@ export interface AggFilterListItem {
   gte?: any;
   lte?: any;
   includeMissingFields:boolean;
+  zipcode?: string,
+  radius?: string;
+  lat?: number;
+  long?: number;
 }
 
 export interface SortItem {
@@ -45,6 +50,15 @@ export interface SortItem {
 
 export interface SearchParams {
   readonly q: string[];
+  readonly page: number;
+  readonly pageSize: number;
+  readonly aggFilters: AggFilterInput[];
+  readonly crowdAggFilters: AggFilterInput[];
+  readonly sorts: SortInput[];
+}
+
+export interface SearchParamsAsInput {
+  readonly q: SearchQueryInput;
   readonly page: number;
   readonly pageSize: number;
   readonly aggFilters: AggFilterInput[];

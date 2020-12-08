@@ -251,7 +251,7 @@ class UserProfileHeaderButton extends React.PureComponent<
     );
   };
 
-  componentWillMount() {
+  componentDidMount() {
     document.addEventListener('mousedown', this.handleClick, false);
   }
 

@@ -6,26 +6,33 @@ import { WikiPageUpdateContentMutationVariables } from 'types/WikiPageUpdateCont
 import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
 import QUERY from 'queries/WikiPageQuery';
-import { useQuery, useMutation } from 'react-apollo';
-import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
+import { useQuery, useMutation } from '@apollo/client';
+import CurrentUser, { useCurrentUser, QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch, Prompt } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
 import { Switch, Route } from 'react-router';
 import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
-import { CurrentUserQuery_me } from 'types/CurrentUserQuery';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
+import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
+import { CurrentUserQuery, CurrentUserQuery_me } from 'types/CurrentUserQuery';
+import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
+import LoginModal from '../../components/LoginModal';
 
 interface Props {
   nctId: string;
 }
 
 const StyledPanel = styled(Panel)`
-  padding: 16px;
+  /* padding: 16px;
+  border: none !important */
 `;
 
+const StyledRTE = styled(RichTextEditor)`
+  border: none !important;
+`
 const Toolbar = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -37,22 +44,27 @@ export default function WikiPageIsland(props: Props) {
   let history = useHistory();
   let location = useLocation();
   let match = useRouteMatch();
+  const theme = useTheme();
 
-  const [historyExpanded, setHistoryExpanded] = useState({});
   const [editorState, setEditorState] = useState('rich');
   const [plainEditorText, setplainEditorText] = useState('');
   const [richEditorText, setRichEditorText] = useState('');
-  const user = useCurrentUser()?.data?.me;
+  const [flashAnimation, setFlashAnimation] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  // const user = useCurrentUser()?.data?.me;
+  const { data: userData, refetch } = useQuery<CurrentUserQuery>(UserQuery)
   const params = useUrlParams();
+  const user = userData ? userData.me : null;
   // TODO: This query should be pushed up as a fragment to the Page
   const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {
     variables: { nctId },
   });
   const [updateContentMutation] = useMutation(UPDATE_CONTENT_MUTATION, {
+    awaitRefetchQueries: true,
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
-   const readOnly = !location.pathname.includes('/wiki/edit');
+  const readOnly = !location.pathname.includes('/wiki/edit');
   const editPath = `${trimPath(match.path)}/wiki/edit`;
 
   const getEditorText = () => {
@@ -88,7 +100,7 @@ export default function WikiPageIsland(props: Props) {
   const handleEdit = () => {
     history.push(`${trimPath(match.url)}/wiki/edit${queryStringAll(params)}`);
   };
-  const handleUpdateText =(text)=>{
+  const handleUpdateText = (text) => {
     setRichEditorText(text)
 
   }
@@ -104,6 +116,7 @@ export default function WikiPageIsland(props: Props) {
       },
     });
     history.push(`${match.url}${queryStringAll(params)}`);
+    setFlashAnimation(true)
   };
 
   const renderSubmitButton = (
@@ -117,23 +130,29 @@ export default function WikiPageIsland(props: Props) {
     const editorTextData =
       data.study && data.study.wikiPage && data.study.wikiPage.content;
 
+    let editMessage = `Changes not saved. Are you sure you want to leave while editing?`;
+
     return (
+    <div>
+      <Prompt
+      when={!readOnly}
+      message={location => editMessage}
+      />
       <ThemedButton
-        onClick={() => handleEditSubmit(updateContentMutation)}
+        onClick={() => {editMessage = "Save changes?";  handleEditSubmit(updateContentMutation);}}
         disabled={editorTextState === editorTextData}
         style={{ marginLeft: '10px' }}>
         Save <FontAwesome name="pencil" />
       </ThemedButton>
+    </div>
     );
   };
 
   const renderEditButton = (isAuthenticated: boolean) => {
-    if (!isAuthenticated) return null;
-
     return (
       <ThemedButton
         type="button"
-        onClick={() => handleEdit()}
+        onClick={isAuthenticated ? () => handleEdit() : () => setShowLoginModal(true)}
         style={{ marginLeft: '10px' }}>
         Edit <FontAwesome name="edit" />
       </ThemedButton>
@@ -163,7 +182,14 @@ export default function WikiPageIsland(props: Props) {
       </Toolbar>
     );
   };
+  const resetHelper = ()=>{
+    setFlashAnimation(false)
+    refetch()
+  }
+  const handleResetAnimation=()=>{
+    setTimeout(  resetHelper, 6500);
 
+  }
   const renderEditor = (data: WikiPageQuery) => {
     if (!data || !data.study || !data.study.wikiPage) return null;
     const text = getEditorText() || '';
@@ -183,9 +209,9 @@ export default function WikiPageIsland(props: Props) {
 
     if (editorState === 'rich') {
       return (
-        <Panel>
-          <Panel.Body>
-            <RichTextEditor
+        <Panel style={{border:"none", padding:"0px"}}>
+          <Panel.Body >
+            <StyledRTE
               readOnly={readOnly}
               onChange={handleRichEditorChange}
               value={richEditorText || RichTextEditor.createEmptyValue()}
@@ -210,8 +236,17 @@ export default function WikiPageIsland(props: Props) {
   };
 
   if (!studyData || !nctId) return <BeatLoader />;
-
+  if (showLoginModal) return <LoginModal
+    show={showLoginModal}
+    cancel={() => setShowLoginModal(false)}
+  />
   return (
+    <>
+      {flashAnimation == true?
+      <WorkFlowAnimation
+        resetAnimation={handleResetAnimation}
+        rankColor={theme? theme.button: 'default'}
+      /> :null}
     <div>
       <StyledPanel>
         <div>
@@ -221,5 +256,6 @@ export default function WikiPageIsland(props: Props) {
         </div>
       </StyledPanel>
     </div>
+    </>
   );
 }

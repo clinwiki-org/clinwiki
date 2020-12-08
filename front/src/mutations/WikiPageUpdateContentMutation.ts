@@ -1,11 +1,12 @@
 
-import { gql } from 'apollo-boost';
+import { gql }  from '@apollo/client';
 import { WikiPageEditFragment } from 'components/Edits';
 import {
   WikiPageUpdateContentMutation,
   WikiPageUpdateContentMutationVariables,
 } from 'types/WikiPageUpdateContentMutation';
-import { Mutation, MutationComponentOptions, MutationFunction } from 'react-apollo';
+import { Mutation, MutationComponentOptions } from '@apollo/client/react/components';
+import { MutationFunction } from '@apollo/client'
 const FRAGMENT = gql`
   fragment WikiPageFragment on WikiPage {
     content

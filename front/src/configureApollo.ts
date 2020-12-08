@@ -1,10 +1,8 @@
-import { gql } from 'apollo-boost';
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { setContext } from 'apollo-link-context';
+import { ApolloClient, InMemoryCache, createHttpLink, gql } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context';
 import { getLocalJwt } from 'utils/localStorage';
-import { createHttpLink } from 'apollo-link-http';
 // import { persistCache } from 'apollo-cache-persist';
+import  SearchPageParamsQuery  from 'queries/SearchPageParamsQuery';
 
 export const dataIdFromObject = object => {
   const id = object['id'] || object['_id'] || object['nctId'] || null;
@@ -14,7 +12,13 @@ export const dataIdFromObject = object => {
 };
 
 const cache = new InMemoryCache({
-  dataIdFromObject,
+  typePolicies: {
+    SearchParams: {
+      // Singleton types that have no identifying field can use an empty
+      // array for their keyFields.
+      keyFields: ["aggFilters", "crowdAggFilters"],
+    },
+  }
 });
 
 // persistCache({
@@ -70,12 +74,15 @@ const client = new ApolloClient({
 });
 
 const data = {
-  searchParams: null,
-  searchQuery: [],
+  // searchParams: null,
+  // searchQuery: [],
 };
 
-cache.writeData({ data });
+cache.writeQuery({
+    query: SearchPageParamsQuery,
+  data });
 
-client.onResetStore(() => Promise.resolve(cache.writeData({ data })));
+client.onResetStore(() => Promise.resolve(cache.writeQuery({     query: SearchPageParamsQuery,
+  data })));
 
 export default client;

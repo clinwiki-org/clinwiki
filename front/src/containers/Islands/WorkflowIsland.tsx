@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { displayFields } from 'utils/siteViewHelpers';
 import * as R from 'remeda';
@@ -14,17 +14,20 @@ import {
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/WorkflowPageQuery';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import { WorkflowPageQuery } from 'types/WorkflowPageQuery';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
-import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
-import useUrlParams from 'utils/UrlParamsProvider';
+import {  QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
+import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
+import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
+import { CurrentUserQuery } from 'types/CurrentUserQuery';
 
 interface Props {
   name: string;
   nctId?: string;
+  onChange:any;
 }
 
 const StyledPanel = styled(Panel)`
@@ -46,7 +49,7 @@ const handleSelect = (
 
 export default function WorkflowIsland(props: Props) {
   const { name, nctId } = props;
-
+  const theme = useTheme();
   const { data: allWorkflows } = useWorkflowsView();
   const workflow = allWorkflows?.workflowsView.workflows.filter(
     wf => wf.name === name
@@ -56,6 +59,7 @@ export default function WorkflowIsland(props: Props) {
   const { data: studyData } = useQuery<WorkflowPageQuery>(QUERY, {
     variables: { nctId },
   });
+  const {data:user, refetch }= useQuery<CurrentUserQuery>(UserQuery)
   const [upsertMutation] = useMutation(UPSERT_LABEL_MUTATION, {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
@@ -63,8 +67,8 @@ export default function WorkflowIsland(props: Props) {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
+  const [flashAnimation, setFlashAnimation] = useState(false);
 
-  const user = useCurrentUser()?.data?.me;
 
   if (!workflow || !nctId) return <BeatLoader />;
 
@@ -80,8 +84,22 @@ export default function WorkflowIsland(props: Props) {
   const suggestedLabelsConfig = fromPairs(
     workflow.suggestedLabelsConfig.map(c => [c.name, c])
   );
+  const resetHelper = ()=>{
+    setFlashAnimation(false)
+    refetch()
+    // props.onChange()
+  }
+  const handleResetAnimation=()=>{
+    setTimeout(  resetHelper, 6500);
+  }
 
   return (
+  <>
+    {flashAnimation == true? 
+    <WorkFlowAnimation
+      resetAnimation={handleResetAnimation}
+      rankColor={theme? theme.button: 'default'}
+    /> :null}
     <div>
       <StyledPanel>
         <SuggestedLabels
@@ -89,17 +107,19 @@ export default function WorkflowIsland(props: Props) {
           onSelect={handleSelect(
             JSON.parse(studyData?.study?.wikiPage?.meta || '{}'),
             nctId,
+            //@ts-ignore
             upsertMutation,
             deleteMutation
           )}
           allowedSuggestedLabels={allowedSuggestedLabels}
           suggestedLabelsConfig={suggestedLabelsConfig}
-          disabled={!user}
+          disabled={!user?.me}
           showAnimation={() =>
-            console.log("todo: use animation context here.")
+            setFlashAnimation(true)
           }
         />
       </StyledPanel>
     </div>
+  </>
   );
 }

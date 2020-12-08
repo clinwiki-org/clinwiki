@@ -2,10 +2,10 @@ import * as React from 'react';
 import { SearchParams, AggKind } from './shared';
 import ReactTable from 'react-table';
 import ReactStars from 'react-stars';
-import ThemedButton from 'components/StyledComponents';
+import { ThemedButton, ThemedSearchContainer } from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
-import { PulseLoader } from 'react-spinners';
+import { BeatLoader, PulseLoader } from 'react-spinners';
 import { Col, ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
@@ -20,13 +20,13 @@ import {
   fromPairs,
 } from 'ramda';
 import { camelCase, snakeCase, capitalize } from 'utils/helpers';
-import { gql } from 'apollo-boost';
+import { gql, useQuery } from '@apollo/client';
 import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,
   SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { Query, QueryComponentOptions } from 'react-apollo';
+import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import 'react-table/react-table.css';
 import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
@@ -41,155 +41,12 @@ import {
   AutoSizer,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
+import StudyFragmentQueryComponent from './components/StudyFragmentQueryComponent'
 import useUrlParams from '../../utils/UrlParamsProvider';
 import { AggBucketMap } from './Types';
-
-const QUERY = gql`
-  query SearchPageSearchQuery(
-    $q: SearchQueryInput!
-    $page: Int
-    $pageSize: Int
-    $sorts: [SortInput!]
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-  ) {
-    crowdAggs: aggBuckets(
-      params: {
-        q: $q
-        page: 0
-        pageSize: 100000
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        agg: "front_matter_keys"
-      }
-    ) {
-      aggs {
-        buckets {
-          key
-        }
-      }
-    }
-    search(
-      params: {
-        q: $q
-        page: $page
-        pageSize: $pageSize
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-      }
-    ) {
-      recordsTotal
-      aggs {
-        name
-      }
-      studies {
-        ...StudyItemFragment
-      }
-    }
-  }
-
-  fragment StudyItemFragment on ElasticStudy {
-    averageRating
-    completionDate
-    nctId
-    overallStatus
-    startDate
-    briefTitle
-    reviewsCount
-    interventions
-    facilityStates
-    interventionsMeshTerms
-    studyFirstSubmittedDate
-    resultsFirstSubmittedDate
-    dispositionFirstSubmittedDate
-    lastUpdateSubmittedDate
-    studyFirstSubmittedQcDate
-    studyFirstPostedDate
-    studyFirstPostedDateType
-    resultsFirstSubmittedQcDate
-    resultsFirstPostedDate
-    resultsFirstPostedDateType
-    dispositionFirstSubmittedQcDate
-    dispositionFirstPostedDate
-    dispositionFirstPostedDateType
-    lastUpdateSubmittedQcDate
-    lastUpdatePostedDate
-    lastUpdatePostedDateType
-    studyType
-    acronym
-    baselinePopulation
-    officialTitle
-    lastKnownStatus
-    phase
-    enrollment
-    enrollmentType
-    source
-    numberOfArms
-    numberOfGroups
-    whyStopped
-    hasExpandedAccess
-    expandedAccessTypeTreatment
-    isFdaRegulatedDrug
-    isFdaRegulatedDevice
-    ipdTimeFrame
-    ipdAccessCriteria
-    ipdUrl
-    planToShareIpd
-    planToShareIpdDescription
-  }
-`;
-const QUERY_NO_RESULTS = gql`
-  query SearchPageSearchQuery(
-    $q: SearchQueryInput!
-    $page: Int
-    $pageSize: Int
-    $sorts: [SortInput!]
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-  ) {
-    crowdAggs: aggBuckets(
-      params: {
-        q: $q
-        page: 0
-        pageSize: 100000
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        agg: "front_matter_keys"
-      }
-    ) {
-      aggs {
-        buckets {
-          key
-          keyAsString
-          docCount
-        }
-      }
-    }
-    search(
-      params: {
-        q: $q
-        page: $page
-        pageSize: $pageSize
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-      }
-    ) {
-      recordsTotal
-      aggs {
-        name
-        buckets {
-          key
-          docCount
-        }
-      }
-    }
-  }
-`;
-
+import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import  SEARCH_PAGE_SEARCH_QUERY from 'queries/SearchPageSearchQuery';
+import SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS  from 'queries/SearchPageSearchQueryNoResults';
 
 const COLUMNS = studyFields;
 const COLUMN_NAMES = fromPairs(
@@ -206,11 +63,6 @@ const changePageSize = (pageSize: number) => (params: SearchParams) => ({
   pageSize,
   page: 0,
 });
-const changeSorted = (sorts: [SortInput]) => (params: SearchParams) => {
-  const idSortedLens = lensProp('id');
-  const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
-  return { ...params, sorts: snakeSorts, page: 0 };
-};
 
 const QueryComponent = (
   props: QueryComponentOptions<
@@ -225,238 +77,57 @@ const SearchWrapper = styled.div`
   #search-sidebar {
     padding-right: 0;
   }
+  height: 100%;
 `;
 
-const SearchContainer = styled.div`
-  padding: 0 30px;
-  color: black;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: block;
-  flex-direction: column;
 
-  .ReactVirtualized__Grid__innerScrollContainer {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .Table {
-    width: 100%;
-    margin-top: 15px;
-  }
-
-  .headerRow {
-    background-color: ${props => props.theme.button};
-    border-bottom: 1px solid #e0e0e0;
-    pading: 58px;
-    color: white;
-    padding: 25px;
-    font-weight: 400;
-    display: flex;
-  }
-
-  .evenRow,
-  .oddRow {
-    border-bottom: 1px solid #e0e0e0;
-    display: flex;
-  }
-
-  .oddRow {
-    background-color: #fafafa;
-  }
-
-  .headerColumn {
-    text-transform: none;
-  }
-`;
-const ThemedSearchContainer = withTheme(SearchContainer);
 interface SearchView2Props {
-  params: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
-  onAggsUpdate: (aggs: AggBucketMap, crowdAggs: AggBucketMap) => void;
   onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
-  onClearFilters: () => void;
-  onOpenAgg: (name: string, kind: AggKind) => void;
-  openedAgg: { name: string; kind: AggKind } | null;
-  previousSearchData: Array<SearchPageSearchQuery_search_studies>;
-  returnPreviousSearchData: Function;
   searchHash: string;
-  showCards: Boolean;
-  returnNumberOfPages: Function;
-  searchParams: any;
-  searchAggs: any;
-  crowdAggs: any;
-  transformFilters: any;
-  removeSelectAll: any;
-  resetSelectAll: any;
-  opened: any;
-  openedKind: any;
-  onOpen: any;
+  searchParams: SearchParams;
   presentSiteView: PresentSiteFragment_siteView;
-  thisSiteView?: SiteViewFragment;
-  getTotalResults: Function;
-  theme?: any;
+  theme: any;
 }
 
-interface SearchView2State {
-  tableWidth: number;
-  openedAgg: {
-    name: string;
-    kind: AggKind;
-  } | null;
-  totalResults: any;
-  firstRender: boolean;
-  prevResults: any | null;
-}
 
-class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
-  searchTable: any = 0;
+const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Props) {
 
-  constructor(props) {
-    super(props);
-
-    this.searchTable = React.createRef();
-    this.state = {
-      tableWidth: 0,
-      openedAgg: null,
-      totalResults: 0,
-      firstRender: true,
-      prevResults: null,
-    };
-  }
-
-  componentDidMount() {
-    let showResults = this.props.presentSiteView.search.config.fields
-      .showResults;
-    if (!this.props.showCards && showResults) {
-      //Needed for old table view
-      this.setState({
-        tableWidth: document.getElementsByClassName('ReactTable')?.[0]
-          ?.clientWidth,
-      });
-      window.addEventListener('resize', this.updateState);
-    }
-  }
-
-  componentDidUpdate() {
-    if (!this.props.showCards) {
-      //Needed for old table view
-      if (
-        document.getElementsByClassName('ReactTable')[0] &&
-        this.state.tableWidth !==
-          document.getElementsByClassName('ReactTable')[0].clientWidth
-      ) {
-        window.addEventListener('resize', this.updateState);
-        this.setState({
-          tableWidth: document.getElementsByClassName('ReactTable')[0]
-            .clientWidth,
-        });
-      }
-    } else {
-      if (!this.props.showCards)
-        window.removeEventListener('resize', this.updateState);
-    }
-    if (this.state.totalResults) {
-    }
-  }
-
-  componentWillUnmount() {}
-
-  // Functions for Old Table and Card view start here and end at line 492
-  loadPaginator = (recordsTotal, loading, page, pagesTotal) => {
-    return (
-      <div className="right-align">
-        {page > 0 && !loading ? (
-          <FontAwesome
-            className="arrow-left"
-            name="arrow-left"
-            style={{ cursor: 'pointer', margin: '5px' }}
-            onClick={() =>
-              pipe(changePage, this.props.onUpdateParams)(page - 1)
-            }
-          />
-        ) : (
-          <FontAwesome
-            className="arrow-left"
-            name="arrow-left"
-            style={{ margin: '5px', color: 'gray' }}
-          />
-        )}
-        page{' '}
-        <b>
-          {loading ? (
-            <div id="divsononeline">
-              <PulseLoader color="#cccccc" size={8} />
-            </div>
-          ) : (
-            `${Math.min(page + 1, pagesTotal)}/${pagesTotal}`
-          )}{' '}
-        </b>
-        {page + 1 < pagesTotal && !loading ? (
-          <FontAwesome
-            className="arrow-right"
-            name="arrow-right"
-            style={{ cursor: 'pointer', margin: '5px' }}
-            onClick={() => {
-              pipe(changePage, this.props.onUpdateParams)(page + 1);
-            }}
-          />
-        ) : (
-          <FontAwesome
-            className="arrow-right"
-            name="arrow-right"
-            style={{ margin: '5px', color: 'gray' }}
-          />
-        )}
-        <div>
-          {recordsTotal > MAX_WINDOW_SIZE
-            ? `(showing first ${MAX_WINDOW_SIZE})`
-            : null}
-        </div>
-      </div>
-    );
+  const changeSorted = (sorts: [SortInput], params: any) => {
+    const idSortedLens = lensProp('id');
+    const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
+    const afterParams = { ...params, sorts: snakeSorts, page: 0 }
+    return afterParams;
   };
-  updateState = () => {
-    if (!this.props.showCards) {
-      this.setState({
-        tableWidth: document.getElementsByClassName('ReactTable')[0]
-          .clientWidth,
-      });
-    }
-  };
-  renderViewDropdown = () => {
-    const { presentSiteView } = this.props;
+  const queryString = useUrlParams();
+  const params = props.searchParams;
+  const renderViewDropdown = () => {
+    const { presentSiteView } = props;
     const buttonsArray = presentSiteView.search.results.buttons.items.filter(
       button => button.target.length > 0 && button.icon.length > 0
     );
-    const queryString = useUrlParams();
-    return (
-      <PresentSiteProvider>
-        {presentSiteView => {
-          if (presentSiteView && buttonsArray.length > 0) {
-            return (
-              <div style={{ marginLeft: 'auto' }}>
-                <ButtonGroup>
-                  {buttonsArray.map((button, index) => (
-                    <a
-                      href={`/search?hash=${this.props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
-                      key={button.target + index}>
-                      <ThemedButton>
-                        {this.renderViewButton(button.icon)}
-                      </ThemedButton>
-                    </a>
-                  ))}
-                </ButtonGroup>
-              </div>
-            );
-          }
-          return null;
-        }}
-      </PresentSiteProvider>
-    );
+    if (presentSiteView && buttonsArray.length > 0) {
+      return (
+        <div style={{ marginLeft: 'auto' }}>
+          <ButtonGroup>
+            {buttonsArray.map((button, index) => (
+              <a
+                href={`/search?hash=${props.searchHash}&sv=${button.target}&pv=${queryString.pv}`}
+                key={button.target + index}>
+                <ThemedButton>
+                  {renderViewButton(button.icon)}
+                </ThemedButton>
+              </a>
+            ))}
+          </ButtonGroup>
+        </div>
+      );
+    }
+    return null;
   };
-  renderViewButton = (icon: string) => {
+
+  const renderViewButton = (icon: string) => {
     switch (icon) {
       case 'card':
         return <CardIcon />;
@@ -482,126 +153,17 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
         return null;
     }
   };
-  mobileAndTabletcheck = () => {
-    let check = false;
-    ((a: string) => {
-      // tslint:disable-next-line: max-line-length
-      if (
-        /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(
-          a
-        ) ||
-        /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw-(n|u)|c55\/|capi|ccwa|cdm-|cell|chtm|cldc|cmd-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc-s|devi|dica|dmob|do(c|p)o|ds(12|-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(-|_)|g1 u|g560|gene|gf-5|g-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd-(m|p|t)|hei-|hi(pt|ta)|hp( i|ip)|hs-c|ht(c(-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i-(20|go|ma)|i230|iac( |-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|-[a-w])|libw|lynx|m1-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|-([1-8]|c))|phil|pire|pl(ay|uc)|pn-2|po(ck|rt|se)|prox|psio|pt-g|qa-a|qc(07|12|21|32|60|-[2-7]|i-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h-|oo|p-)|sdk\/|se(c(-|0|1)|47|mc|nd|ri)|sgh-|shar|sie(-|m)|sk-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h-|v-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl-|tdg-|tel(i|m)|tim-|t-mo|to(pl|sh)|ts(70|m-|m3|m5)|tx-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas-|your|zeto|zte-/i.test(
-          a.substr(0, 4)
-        )
-      ) {
-        check = true;
-      }
-    })(navigator.userAgent || navigator.vendor);
-    return check;
-  };
-  renderColumn = (name: string, data) => {
-    // INPUT: col name
-    // OUTPUT render a react-table column with given header, accessor, style,
-    // and value determined by studyfragment of that column.
-    // also renders stars
-
-    const themedStarColor = this.props.theme.studyPage.reviewStarColor;
-    const camelCaseName = camelCase(name);
-    const lowerCaseSpacing = 8;
-    const upperCaseSpacing = 10;
-    const maxWidth = 400;
-    const totalPadding = 17;
-    const getColumnWidth = () => {
-      if (data.length < 1) {
-        return calcWidth(headerName.split('')) + totalPadding;
-      }
-      let max = headerName;
-      for (let i = 0; i < data.length; i += 1) {
-        const elem = data[i][camelCaseName];
-        if (data[i] !== undefined && elem !== null) {
-          const str = elem.toString();
-          if (str.length > max.length) {
-            max = str;
-          }
-        }
-      }
-      const maxArray = max.split('');
-      const maxSize = Math.max(
-        calcWidth(maxArray),
-        calcWidth(headerName.split('')) + totalPadding
-      );
-      return Math.min(maxWidth, maxSize);
-    };
-
-    const calcWidth = array => {
-      return array.reduce(
-        (acc, letter) =>
-          letter === letter.toUpperCase() && letter !== ' '
-            ? acc + upperCaseSpacing
-            : acc + lowerCaseSpacing,
-        0
-      );
-    };
-
-    const headerName = COLUMN_NAMES[name];
-    return {
-      Header: headerName,
-      accessor: camelCaseName,
-      style: {
-        overflowWrap: 'break-word',
-        overflow: 'hidden',
-        whiteSpace: 'normal',
-        textAlign: this.isStarColumn(name) ? 'center' : null,
-      },
-      Cell: !this.isStarColumn(name)
-        ? null
-        : // the stars and the number of reviews. css in global-styles.ts makes it so they're on one line
-          props => (
-            <div>
-              <div id="divsononeline">
-                <ReactStars
-                  count={5}
-                  color2={themedStarColor}
-                  edit={false}
-                  value={Number(props.original.averageRating)}
-                />
-              </div>
-              <div id="divsononeline">
-                &nbsp;({props.original.reviewsCount})
-              </div>
-            </div>
-          ),
-      width: getColumnWidth(),
-    };
-  };
-  isStarColumn = (name: string): boolean => {
-    return name === 'average_rating';
-  };
-  rowProps = (_, rowInfo) => {
-    return {
-      onClick: (_, handleOriginal) => {
-        this.props.onRowClick(
-          rowInfo.row.nctId,
-          this.props.searchHash,
-          this.props.presentSiteView.url || 'default'
-        );
-        return handleOriginal();
-      },
-    };
-  };
-  //End Old functions
-  renderHelper = (
+  const renderHelper = (
     data,
     loading,
     template,
     onPress,
     resultsType,
-    recordsTotal
   ) => {
     switch (resultsType) {
       case 'masonry':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div
               style={{
                 display: 'flex',
@@ -609,20 +171,18 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 justifyContent: 'flex-end',
                 marginBottom: '10px',
               }}>
-              {this.renderViewDropdown()}
-              {this.renderFilterDropDown()}
+              {renderViewDropdown()}
+              {renderFilterDropDown()}
             </div>
-            <AutoSizer>
-              {({ height, width }) => (
-                <MasonryCards
-                  data={data}
-                  loading={loading}
-                  template={template}
-                  height={height}
-                  width={width}
-                />
-              )}
-            </AutoSizer>
+
+            <MasonryCards
+              data={data}
+              loading={loading}
+              template={template}
+            // height={height}
+            // width={width}
+            />
+
           </div>
         );
       case 'list':
@@ -635,8 +195,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 justifyContent: 'flex-end',
                 marginBottom: '10px',
               }}>
-              {this.renderViewDropdown()}
-              {this.renderFilterDropDown()}
+              {renderViewDropdown()}
+              {renderFilterDropDown()}
             </div>
             <AutoSizer>
               {({ height, width }) => (
@@ -651,7 +211,7 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             </AutoSizer>
           </div>
         );
-      case 'table2':
+      case 'table':
         return (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div
@@ -661,8 +221,8 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                 justifyContent: 'flex-emd',
                 marginBottom: '10px',
               }}>
-              {this.renderViewDropdown()}
-              {this.renderFilterDropDown()}
+              {renderViewDropdown()}
+              {renderFilterDropDown()}
             </div>
             <AutoSizer>
               {({ width }) => (
@@ -671,130 +231,48 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
                   loading={loading}
                   template={template}
                   width={width}
-                  columnFields={this.props.presentSiteView.search.fields}
+                  columnFields={props.presentSiteView.search.fields}
+                  onRowClick={props.onRowClick}
                 />
               )}
             </AutoSizer>
           </div>
         );
       default:
-        //Everything in this default case is to handle the old table view and card view
-        const totalRecords = pathOr(
-          0,
-          ['search', 'recordsTotal'],
-          data
-        ) as number;
-        const { page, pageSize, sorts } = this.props.params;
-
-        const totalPages = Math.min(
-          Math.ceil(totalRecords / this.props.params.pageSize),
-          Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
-        );
-
-        this.props.returnNumberOfPages(totalPages);
-
-        const idSortedLens = lensProp('id');
-        const camelizedSorts = map(over(idSortedLens, camelCase), sorts);
-        // let searchData = data?.search?.studies || [];
-        const tableWidth = 1175;
-
-        // Eliminates undefined items from the searchData array
-        data = data.filter(el => {
-          return el != null;
-        });
-
-        // Returns the new data to the SearchPage component
-        this.props.returnPreviousSearchData(data);
-
-        const isMobile = this.mobileAndTabletcheck();
-
-        const { presentSiteView } = this.props;
-        // Block that sets the recordsTotal to state based on data response
-        let pagesTotal = Math.min(
-          Math.ceil(recordsTotal / this.props.params.pageSize),
-          Math.ceil(MAX_WINDOW_SIZE / this.props.params.pageSize)
-        );
-
-
-        const columns = map(
-          x => this.renderColumn(x, ''),
-          presentSiteView.search.fields
-        );
-        const totalWidth = columns.reduce((acc, col) => acc + col.width, 0);
-        const leftover = isMobile
-          ? tableWidth - totalWidth
-          : this.state.tableWidth - totalWidth;
-        const additionalWidth = leftover / columns.length;
-        //console.log("additionalWidth", additionalWidth);
-        columns.map(x => (x.width += additionalWidth), columns);
-        if (this.props.showCards) {
-          return (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  marginBottom: '10px',
-                }}>
-                {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
-                {this.renderViewDropdown()}
-                {this.renderFilterDropDown()}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <Cards
-                  columns={columns}
-                  data={data}
-                  onPress={this.cardPressed}
-                  loading={loading}
-                  template={presentSiteView.search.template}
-                />
-              </div>
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <p>  Looks like you have an outdated view style configured.
+            Please contact your site administrator.
+            </p>
+            <p>
+              Defaulting to Card View:
+             </p>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                marginBottom: '10px',
+              }}>
+              {renderViewDropdown()}
+              {renderFilterDropDown()}
             </div>
-          );
-        } else {
-          return (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginBottom: '10px',
-                }}>
-                {this.loadPaginator(recordsTotal, loading, page, pagesTotal)}
-                {this.renderViewDropdown()}
-                {this.renderFilterDropDown()}
-              </div>
-              <ReactTable
-                ref={this.searchTable}
-                className="-striped -highlight"
-                columns={columns}
-                manual
-                minRows={3}
-                page={page}
-                pageSize={pageSize}
-                defaultSorted={camelizedSorts}
-                onPageChange={pipe(changePage, this.props.onUpdateParams)}
-                onPageSizeChange={pipe(
-                  changePageSize,
-                  this.props.onUpdateParams
-                )}
-                //@ts-ignore
-                onSortedChange={pipe(changeSorted, this.props.onUpdateParams)}
-                data={data}
-                pages={totalPages}
-                loading={loading}
-                defaultPageSize={pageSize}
-                getTdProps={this.rowProps}
-                defaultSortDesc
-                noDataText={'No studies found'}
-              />
-            </div>
-          );
-        }
+            {/* <AutoSizer>
+            {({ height, width }) => ( */}
+            <MasonryCards
+              data={data}
+              loading={loading}
+              template={template}
+            // height={height}
+            // width={width}
+            />
+            {/* )}
+          </AutoSizer> */}
+          </div>
+        );
     }
   };
-  renderSearch = ({
+  const renderSearch = ({
     data,
     loading,
     error,
@@ -803,115 +281,81 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
     loading: boolean;
     error: any;
   }) => {
-    const { presentSiteView } = this.props;
-
+    const { presentSiteView } = props;
+    console.log('FROM SEARCH PAGE QUERY', data)
     const showResults = presentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
     const resultsType = presentSiteView.search.results.type;
-    let recordsTotal = data?.search?.recordsTotal;
     if (error) {
       return <div>{error.message}</div>;
     }
     if (!data) {
-      return null;
+      console.log('NO DATA FOOL')
+      return <BeatLoader />
     }
-    const totalRecords = pathOr(0, ['search', 'recordsTotal'], data) as number;
-
-    if (this.state.prevResults !== this.state.totalResults) {
-      this.setState(
-        prev => {
-          return {
-            totalResults: totalRecords,
-            prevResults: prev.totalResults,
-          };
-        },
-        () => {
-          this.props.getTotalResults(this.state.totalResults);
-        }
-      );
-    }
-
     return showResults ? (
-      this.renderHelper(
+      renderHelper(
         searchData,
         loading,
         presentSiteView.search.template,
-        this.cardPressed,
+        cardPressed,
         resultsType,
-        recordsTotal
       )
     ) : (
-      <div style={{ marginLeft: 'auto', display: 'flex' }}>
-        {this.renderViewDropdown()}
-      </div>
-    );
+        <div style={{ marginLeft: 'auto', display: 'flex', height: '100%' }}>
+          {renderViewDropdown()}
+        </div>
+      );
   };
-  cardPressed = card => {
-    this.props.onRowClick(
+  const cardPressed = card => {
+    props.onRowClick(
       card.nctId,
-      this.props.searchHash,
-      this.props.presentSiteView.url || 'default'
+      props.searchHash,
+      props.presentSiteView.url || 'default'
     );
   };
 
-  handleAggsUpdated = (data: SearchPageSearchQuery) => {
-    // convert aggs to AggBucketMap
-    const aggs: AggBucketMap = {};
-    for (const a of data.search?.aggs || []) {
-      aggs[a.name] = [];
-    }
-    const crowdAggs: AggBucketMap = {};
-    for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
-      crowdAggs[bucket.key] = [];
-    }
 
-    if (data?.search) {
-      this.props.onAggsUpdate(aggs, crowdAggs);
-    }
+  const sortHelper = (sorts) => {
+    const newParams = () => changeSorted(sorts, params)
+    console.log("NOP", newParams())
+    props.onUpdateParams(newParams());
   };
-
-  sortHelper = (sorts, params) => {
-    this.props.onUpdateParams(changeSorted(sorts));
-  };
-  reverseSort = () => {
-    let desc = this.props.params.sorts[0].desc;
+  const reverseSort = () => {
+    let desc = params.sorts[0].desc;
     let newSort: [SortInput] = [
-      { id: this.props.params.sorts[0].id, desc: !desc },
+      { id: params.sorts[0].id, desc: !desc },
     ];
-    this.props.onUpdateParams(changeSorted(newSort));
+    const newParams = () => changeSorted(newSort, params)
+    console.log("Reverse", newParams())
+    props.onUpdateParams(newParams());
   };
-  sortDesc = () => {
-    if (this.props.params.sorts.length > 0) {
-      return this.props.params.sorts[0].desc;
-    }
-    return ' ';
-  };
-  renderSortIcons = () => {
-    let isDesc = this.props.params.sorts[0].desc;
+  const renderSortIcons = () => {
+    let isDesc = params.sorts[0].desc;
     return (
       <div
-        onClick={() => this.reverseSort()}
+        onClick={() => reverseSort()}
         style={{ display: 'flex', cursor: 'pointer' }}>
         {isDesc ? (
           <FontAwesome
             name={'sort-amount-desc'}
-            style={{ color: this.props.theme.button, fontSize: '26px' }}
+            style={{ color: props.theme.button, fontSize: '26px' }}
           />
         ) : (
-          <FontAwesome
-            name={'sort-amount-asc'}
-            style={{ color: this.props.theme.button, fontSize: '26px' }}
-          />
-        )}
+            <FontAwesome
+              name={'sort-amount-asc'}
+              style={{ color: props.theme.button, fontSize: '26px' }}
+            />
+          )}
       </div>
     );
   };
-  renderFilterDropDown = () => {
+  const renderFilterDropDown = () => {
     const sortField = () => {
-      if (this.props.params.sorts.length > 0) {
+      if (params.sorts.length > 0) {
         return aggToField(
-          this.props.params.sorts[0].id,
-          this.props.params.sorts[0].id
+          params.sorts[0].id,
+          params.sorts[0].id
         );
       }
       return ' ';
@@ -927,56 +371,49 @@ class SearchView2 extends React.Component<SearchView2Props, SearchView2State> {
             id="dropdown-basic-default"
             style={{
               width: '200px',
-              background: this.props.theme.button,
+              background: props.theme.button,
             }}>
-            {this.props.presentSiteView.search.sortables.map((field, index) => {
+            {props.presentSiteView.search.sortables.map((field, index) => {
               let sorts = [{ id: field, desc: false }];
-              let params = this.props.params;
               return (
                 <MenuItem
                   key={field + index}
                   name={field}
-                  onClick={() => this.sortHelper(sorts, params)}>
+                  onClick={() => sortHelper(sorts)}>
                   {aggToField(field, field)}
                 </MenuItem>
               );
             })}
           </DropdownButton>
-          {sortField() !== ' ' ? this.renderSortIcons() : null}
+          {sortField() !== ' ' ? renderSortIcons() : null}
         </div>
       </div>
     );
   };
 
-  render() {
-    const { presentSiteView }= this.props
-    return (
-      <SearchWrapper>
-        <Helmet>
-          <title>Search</title>
-          <meta name="description" content="Description of SearchPage" />
-        </Helmet>
-        <Col md={12}>
-          <QueryComponent
-            query={presentSiteView.search.config.fields.showResults ? QUERY : QUERY_NO_RESULTS}
-            variables={this.props.params}
-            onCompleted={this.handleAggsUpdated}>
-            {({ data, loading, error }) => {
-              // Unfortunately the onCompleted callback is not called if
-              // the data is served from cache.  There is some confusion
-              // in the documentation but this appears to be by design.
-              if (data) this.handleAggsUpdated(data);
-              return (
-                <ThemedSearchContainer>
-                  {this.renderSearch({ data, loading, error })}
-                </ThemedSearchContainer>
-              );
-            }}
-          </QueryComponent>
-        </Col>
-      </SearchWrapper>
-    );
+  const { presentSiteView } = props;
+  console.log("MemoizedView Params", params)
+  const result = useQuery(presentSiteView.search.config.fields.showResults ? SEARCH_PAGE_SEARCH_QUERY : SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS, {
+    variables: params,
   }
-}
+  )
+  const { data, loading, error } = result;
 
-export default withTheme(SearchView2);
+  return (
+    <SearchWrapper>
+      <Helmet>
+        <title>Search</title>
+        <meta name="description" content="Description of SearchPage" />
+      </Helmet>
+      {/* <Col md={12}> */}
+      <div style={{ height: '100%' }}>
+        <ThemedSearchContainer>
+          {renderSearch({ data, loading, error })}
+        </ThemedSearchContainer>
+      </div>
+      {/* </Col> */}
+    </SearchWrapper>
+  );
+})
+
+export default withTheme(MemoizedSearchView);

@@ -1,6 +1,7 @@
-import { gql } from 'apollo-boost';
+import { gql }  from '@apollo/client';
 import { WikiPageEditFragment } from 'components/Edits';
-import { MutationComponentOptions, Mutation, MutationFunction } from 'react-apollo';
+import { MutationComponentOptions, Mutation } from '@apollo/client/react/components';
+import { MutationFunction } from '@apollo/client';
 import { CrowdPageDeleteWikiLabelMutation, CrowdPageDeleteWikiLabelMutationVariables } from 'types/CrowdPageDeleteWikiLabelMutation';
 
 export const FRAGMENT = gql`

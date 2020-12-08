@@ -16,6 +16,7 @@ export const aggsOrdered = [
   'results_first_submitted_date',
   'last_changed_date',
   'last_update_posted_date',
+  'location',
   'number_of_arms',
   'number_of_groups',
   'overall_status',

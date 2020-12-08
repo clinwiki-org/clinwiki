@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import { gql } from 'apollo-boost';
-import { useQuery } from 'react-apollo';
+import { gql, useQuery }  from '@apollo/client';
 import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
 import { IslandConstructor } from './MailMergeView';
+import { useFragment } from './MailMergeFragment';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
@@ -38,11 +38,10 @@ const getQuery = (name: string, frag: string) => {
 
 export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const [nctId, setNctId] = useState(default_nctid);
-  const [fragment, setFragment] = useState('');
   const { data: introspection } = useQuery<IntrospectionQuery>(
     gql(getIntrospectionQuery({ descriptions: false }))
   );
-  const fragmentName = 'form_fragment';
+  const [fragmentName, fragment] = useFragment('Study', props.template);
   const { data: study } = useQuery(getQuery(fragmentName, fragment), {
     variables: { nctId: nctId },
   });
@@ -69,9 +68,6 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
         sample={study?.study || {}}
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
-        fragmentName={fragmentName}
-        fragmentClass="Study"
-        onFragmentChanged={setFragment}
         islands={props.islands}
       />
       {/* <CollapsiblePanel></CollapsiblePanel> */}

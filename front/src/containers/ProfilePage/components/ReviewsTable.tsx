@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { History } from 'history';
-import { SearchContainer } from 'components/StyledComponents';
+import { ThemedSearchContainer } from 'components/StyledComponents';
 import ReactTable from 'react-table';
 
 interface ReviewsTableProps {
@@ -60,7 +60,7 @@ class ReviewsTable extends React.Component<ReviewsTableProps> {
 
     if (this.props.isReview == true) {
       return (
-        <SearchContainer>
+        <ThemedSearchContainer>
           Showing Reviews
           <ReactTable
             data={data}
@@ -68,18 +68,18 @@ class ReviewsTable extends React.Component<ReviewsTableProps> {
             minRows={1}
             getTdProps={this.rowProps}
           />
-        </SearchContainer>
+        </ThemedSearchContainer>
       );
     }
     return (
-      <SearchContainer>
+      <ThemedSearchContainer>
         <ReactTable
           data={data}
           columns={reactionsColumns}
           minRows={1}
           getTdProps={this.rowProps}
         />
-      </SearchContainer>
+      </ThemedSearchContainer>
     );
   }
 }

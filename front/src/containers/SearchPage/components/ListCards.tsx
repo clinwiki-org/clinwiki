@@ -27,7 +27,7 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
   }
 
   componentDidUpdate() {
-    console.log(this.props.theme);
+    //console.log(this.props.theme);
     if (this.state.loading !== this.props.loading) {
       this.setState({ loading: this.props.loading });
     }
@@ -50,7 +50,6 @@ class ListCards extends React.Component<ListCardsProps, ListCardsState> {
     style, // Style object to be applied to row (to position it)
   }) => {
     const listItems = this.props.data;
-
     return (
       <div
         key={key}
