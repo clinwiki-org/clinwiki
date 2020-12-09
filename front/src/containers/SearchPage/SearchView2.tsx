@@ -1,75 +1,40 @@
 import * as React from 'react';
-import { SearchParams, AggKind } from './shared';
-import ReactTable from 'react-table';
-import ReactStars from 'react-stars';
+import { SearchParams } from './shared';
 import { ThemedButton, ThemedSearchContainer } from 'components/StyledComponents';
 import styled from 'styled-components';
 import * as FontAwesome from 'react-fontawesome';
-import { BeatLoader, PulseLoader } from 'react-spinners';
-import { Col, ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
+import { BeatLoader } from 'react-spinners';
+import { ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput } from 'types/globalTypes';
 import { PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
 import {
   map,
-  pipe,
-  pathOr,
   over,
   lensProp,
   fromPairs,
 } from 'ramda';
-import { camelCase, snakeCase, capitalize } from 'utils/helpers';
-import { gql, useQuery } from '@apollo/client';
+import { snakeCase } from 'utils/helpers';
+import { useQuery } from '@apollo/client';
 import {
   SearchPageSearchQuery,
   SearchPageSearchQueryVariables,
-  SearchPageSearchQuery_search_studies,
 } from 'types/SearchPageSearchQuery';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import 'react-table/react-table.css';
-import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
-import Cards from './components/Cards';
 import MasonryCards from './components/MasonryCards';
-//@ts-ignore
 import ListCards from './components/ListCards';
-import { SiteViewFragment } from 'types/SiteViewFragment';
 import withTheme from 'containers/ThemeProvider';
 import TableRV from './components/TableRV';
 import {
   AutoSizer,
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
-import StudyFragmentQueryComponent from './components/StudyFragmentQueryComponent'
 import useUrlParams from '../../utils/UrlParamsProvider';
-import { AggBucketMap } from './Types';
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import  SEARCH_PAGE_SEARCH_QUERY from 'queries/SearchPageSearchQuery';
 import SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS  from 'queries/SearchPageSearchQueryNoResults';
 
-const COLUMNS = studyFields;
-const COLUMN_NAMES = fromPairs(
-  // @ts-ignore
-  COLUMNS.map(field => [field, field.split('_').map(capitalize).join(' ')])
-) as Record<string, string>;
-
-const changePage = (pageNumber: number) => (params: SearchParams) => ({
-  ...params,
-  page: Math.min(pageNumber, Math.ceil(MAX_WINDOW_SIZE / params.pageSize) - 1),
-});
-const changePageSize = (pageSize: number) => (params: SearchParams) => ({
-  ...params,
-  pageSize,
-  page: 0,
-});
-
-const QueryComponent = (
-  props: QueryComponentOptions<
-    SearchPageSearchQuery,
-    SearchPageSearchQueryVariables
-  >
-) => Query(props);
 const SearchWrapper = styled.div`
   .rt-tr {
     cursor: default;
@@ -83,7 +48,7 @@ const SearchWrapper = styled.div`
 
 interface SearchView2Props {
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
-  onUpdateParams: (updater: (params: SearchParams) => SearchParams) => void;
+  onUpdateParams: (params: SearchParams) => SearchParams;
   onRowClick: (nctId: string, hash: string, siteViewUrl: string) => void;
   searchHash: string;
   searchParams: SearchParams;
@@ -94,7 +59,7 @@ interface SearchView2Props {
 
 const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Props) {
 
-  const changeSorted = (sorts: [SortInput], params: any) => {
+  const changeSorted = (sorts: [SortInput], params: SearchParams) => {
     const idSortedLens = lensProp('id');
     const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
     const afterParams = { ...params, sorts: snakeSorts, page: 0 }
@@ -179,8 +144,6 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
               data={data}
               loading={loading}
               template={template}
-            // height={height}
-            // width={width}
             />
 
           </div>
@@ -257,17 +220,11 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
               {renderViewDropdown()}
               {renderFilterDropDown()}
             </div>
-            {/* <AutoSizer>
-            {({ height, width }) => ( */}
             <MasonryCards
               data={data}
               loading={loading}
               template={template}
-            // height={height}
-            // width={width}
             />
-            {/* )}
-          </AutoSizer> */}
           </div>
         );
     }
@@ -282,7 +239,6 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
     error: any;
   }) => {
     const { presentSiteView } = props;
-    console.log('FROM SEARCH PAGE QUERY', data)
     const showResults = presentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
     const resultsType = presentSiteView.search.results.type;
@@ -290,7 +246,6 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
       return <div>{error.message}</div>;
     }
     if (!data) {
-      console.log('NO DATA FOOL')
       return <BeatLoader />
     }
     return showResults ? (
@@ -318,7 +273,6 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
 
   const sortHelper = (sorts) => {
     const newParams = () => changeSorted(sorts, params)
-    console.log("NOP", newParams())
     props.onUpdateParams(newParams());
   };
   const reverseSort = () => {
@@ -327,7 +281,6 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
       { id: params.sorts[0].id, desc: !desc },
     ];
     const newParams = () => changeSorted(newSort, params)
-    console.log("Reverse", newParams())
     props.onUpdateParams(newParams());
   };
   const renderSortIcons = () => {
@@ -392,7 +345,6 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
   };
 
   const { presentSiteView } = props;
-  console.log("MemoizedView Params", params)
   const result = useQuery(presentSiteView.search.config.fields.showResults ? SEARCH_PAGE_SEARCH_QUERY : SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS, {
     variables: params,
   }

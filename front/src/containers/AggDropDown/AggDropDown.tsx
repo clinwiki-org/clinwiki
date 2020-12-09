@@ -122,11 +122,11 @@ interface AggDropDownProps {
   aggKind: AggKind;
   selectedKeys: Set<string>;
   addFilter: AggCallback;
-  addFilters?: AggregateAggCallback | undefined;
-  addAllFilters?: any;
-  removeAllFilters?: any;
-  removeFilters?: AggregateAggCallback | undefined;
-  removeFilter: AggCallback | null;
+  addFilters: AggregateAggCallback;
+  addAllFilters: (agg: string, aggValues: string[], isCrowd: boolean)=>void;
+  removeAllFilters: (agg: string, aggValues: string[], isCrowd: boolean)=>void;
+  removeFilters: AggregateAggCallback;
+  removeFilter: AggCallback;
   display?: FieldDisplay;
   visibleOptions?: String[];
   onOpen?: (agg: string, aggKind: AggKind) => void;
@@ -393,9 +393,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       return null;
     }
     const field = findFields(agg, presentSiteView, presearch);
-    //@ts-ignore
     const showAllowMissing = field?.showAllowMissing
-    //@ts-ignore
     const showFilterToolbar = field?.showFilterToolbar
 
     if (
@@ -607,9 +605,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       loading,
     } = this.state;
     const field = findFields(agg, presentSiteView, presearch);
-    //@ts-ignore
     const showAllowMissing = field?.showAllowMissing
-    //@ts-ignore
     const showFilterToolbar= field?.showFilterToolbar
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
