@@ -24,34 +24,78 @@ module Mutations
             end
           end
 
+
           def build_name_label(search_info)
-            entries = 0 
+            #puts("THE INFO***********************" + search_info.to_s)
+            #entries = 0 
             result = ""
+            rDescription = ""
+            lDescription = ""  #always radius    "xxx miles from" if no zipcode then "current location" else " this _zipcode_"
             if search_info["q"]["children"].present?
               search_term = search_info["q"]["children"][0]["key"].humanize
-              result = result + "#{search_term}|"
-              entries = entries + 1 
-            end 
+              result = result + "#{search_term} |"
+              # entries = entries + 1 
+            end
             if search_info["crowd_agg_filters"].present?
               search_info["crowd_agg_filters"].each do |filter|
+
+                if filter["gte"].present? && filter["lte"].present?
+                  rDescription =( "#{filter['field']} #{filter['gte']} - #{filter['lte']} |")
+                  result = (result + rDescription)
+                end
+                if filter["gte"].present? && filter["lte"].blank?
+                  rDescription = "#{filter['field']} ≥ #{filter['gte']} |"
+                  result = (result + rDescription)
+                end
+                if filter["lte"].present? && filter["gte"].blank?
+                  rDescription = "#{filter['field']} ≤ #{filter['lte']} |"
+                  result = (result + rDescription)
+                end
+
+                if filter["radius"].present?
+                  lDescription = "#{filter['radius']} miles from "
+                  lDescription = filter["zipcode"].present? ?  (lDescription + "#{filter['zipcode']} |") : (lDescription + "current location |")
+                  result = (result + lDescription)
+                end
                 filter["values"].each do |value|
                   crowd_agg = value.humanize
-                  result = result + "#{crowd_agg}|" if entries <= 4 
-                  entries = entries + 1 
-                end 
-              end 
-            end 
+                  result = result + "#{crowd_agg} |" # if entries <= 4 
+                  # entries = entries + 1 
+                end
+              end
+            end
             if search_info["agg_filters"].present?
               search_info["agg_filters"].each do |filter|
+
+                if filter["gte"].present? && filter["lte"].present?
+                  rDescription =( "#{filter['field']} #{filter['gte']} - #{filter['lte']} |")
+                  result = (result + rDescription)
+                end
+                if filter["gte"].present? && filter["lte"].blank?
+                  rDescription = "#{filter['field']} ≥ #{filter['gte']} |"
+                  result = (result + rDescription)
+                end
+                if filter["lte"].present? && filter["gte"].blank?
+                  rDescription = "#{filter['field']} ≤ #{filter['lte']} |"
+                  result = (result + rDescription)
+                end
+
+                if filter["radius"].present?
+                  lDescription = "#{filter['radius']} miles from "
+                  lDescription = filter["zipcode"].present? ?  (lDescription + "#{filter['zipcode']} |") : (lDescription + "current location |")
+                  result = (result + lDescription)
+                end
                 filter["values"].each do |value|
                   agg = value.humanize
-                  result = result + "#{agg}|" if entries <= 4 
-                  entries = entries + 1 
-                end 
-              end 
-            end 
-            result.delete_suffix!('|')
+                  result = result + "#{agg} |" # if entries <= 4 
+                  # entries = entries + 1 
+                end
+              end
+              result.delete_suffix!('|')
+            end
+            result
           end
+
         end 
       end
 
