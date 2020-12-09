@@ -260,12 +260,11 @@ the annotation database along with the AACT database.
 
     CSVs expect a header with the following format:
 
-    `nct_id,Type,Value,Action`
+    `nct_id,Type,Value,Action,user_email
 
-    We support `Tag` as a type, with `Add` or `Remove` as an action.
     For crowd values, there are two types of crowd values and both can use the 'Add' and 'Remove' options.
-    For native fields that are crowd overwriteable, `Add` will add or overwrite a crowd
-    definition for that field, and `Remove` will remove the crowd definition.
+    For native fields that are crowd overwriteable, `Add` will add or overwrite a crowd 
+    definition for that field, and `Remove` will remove the crowd definition.(not sure if still supported)
     For crowd values that produce custom facets, the "Type" in the csv ("label" value in the UI) will be the name of the facet. The "Value" in the csv ("description" in the UI) is the value(s) in the facet. For multiple values of the crowd facet, enter as multiple lines or separated on a single line by '|' (example Type = "Karnofsky Score Allowed", Value = "100|90|80|70")
 
 1. Commit your CSV to the appropriate subfolder
@@ -288,6 +287,7 @@ the annotation database along with the AACT database.
     ```bash
     # if your file is in imports/foo.csv, $MY_FILE should be foo.csv
     heroku run -a clinwiki-prod rake import:csv["$MY_FILE"]
+    (in heroku web, rake import:csv["$MY_FILE"])
     ```
 
 #### **Running Exports**

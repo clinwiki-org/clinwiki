@@ -24,7 +24,7 @@ task :token, [:email] => :environment do |_t, args|
 end
 
 namespace :import do
-  #requires 4 columns per row in csv, nct_id, Type, Value, user_email (to assign edit to, must be a valid user)
+  #requires 5 columns per row in csv: nct_id, Type, Value, Action, user_email (to assign edit to, must be a valid user)
   task :csv, [:csv_file] => :environment do |_t, args|
     require File.expand_path("app/services/csv_processor", __dir__)
     errors = []

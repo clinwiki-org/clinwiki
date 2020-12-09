@@ -55,11 +55,7 @@ const QUERY = gql`
       }
     ) {
       aggs {
-        buckets {
-          key
-          keyAsString
-          docCount
-        }
+        name
       }
     }
     search(
@@ -75,10 +71,6 @@ const QUERY = gql`
       recordsTotal
       aggs {
         name
-        buckets {
-          key
-          docCount
-        }
       }
     }
   }

@@ -103,24 +103,77 @@ module Types
       search_service = SearchService.new(context[:search_params])
       search_service.search
     end
+ 
 
     def build_name_default(search_info)
-      entries = 0
       result = ""
+      rDescription = ""
+      lDescription = ""  #always radius    "xxx miles from" if no zipcode then "current location" else " this _zipcode_"
       if search_info[:q][:children].present?
-        result = result + "#{search_info[:q][:children][0][:key]}|"
-        entries = entries + 1
+        search_term = search_info[:q][:children][0][:key].humanize
+        result = result + "#{search_term} |"
       end
-      if search_info[:agg_filters].present?
-        search_info[:agg_filters].each do |filter|
+      if search_info[:crowd_agg_filters].present?
+        search_info[:crowd_agg_filters].each do |filter|
+
+          if filter[:gte].present? && filter[:lte].present?
+            rDescription =( "#{filter[:field]} #{filter[:gte]} - #{filter[:lte]} |")
+            result = (result + rDescription)
+          end
+          if filter[:gte].present? && filter[:lte].blank?
+            rDescription = "#{filter[:field]} ≥ #{filter[:gte]} |"
+            result = (result + rDescription)
+          end
+          if filter[:lte].present? && filter[:gte].blank?
+            rDescription = "#{filter[:field]} ≤ #{filter[:lte]} |"
+            result = (result + rDescription)
+          end
+
+          if filter[:radius].present?
+            lDescription = "#{filter[:radius]} miles from "
+            lDescription = filter[:zipcode].present? ?  (lDescription + "#{filter[:zipcode]} |") : (lDescription + "current location |")
+            result = (result + lDescription)
+          end
           filter[:values].each do |value|
-            result = result + "#{value}|" if entries <= 4 
-            entries = entries + 1
+            crowd_agg = value.humanize
+            result = result + "#{crowd_agg} |"
           end
         end
       end
+      if search_info[:agg_filters].present?
+        search_info[:agg_filters].each do |filter|
+
+          if filter[:gte].present? && filter[:lte].present?
+            rDescription =( "#{filter[:field]} #{filter[:gte]} - #{filter[:lte]} |")
+            result = (result + rDescription)
+          end
+          if filter[:gte].present? && filter[:lte].blank?
+            rDescription = "#{filter[:field]} ≥ #{filter[:gte]} |"
+            result = (result + rDescription)
+          end
+          if filter[:lte].present? && filter[:gte].blank?
+            rDescription = "#{filter[:field]} ≤ #{filter[:lte]} |"
+            result = (result + rDescription)
+          end
+
+          if filter[:radius].present?
+            lDescription = "#{filter[:radius]} miles from "
+            lDescription = filter[:zipcode].present? ?  (lDescription + "#{filter[:zipcode]} |") : (lDescription + "current location |")
+            result = (result + lDescription)
+          end
+          filter[:values].each do |value|
+            agg = value.humanize
+            result = result + "#{agg} |" 
+          end
+        end
+        result.delete_suffix!('|')
+      end
       result
     end
+
+
+
+    
 
     def agg_buckets(search_hash: nil, params: nil, url: nil, config_type: nil, return_all: nil)
       params = fetch_and_merge_search_params(search_hash: search_hash, params: params)
@@ -219,8 +272,6 @@ module Types
     end
 
     def study(nct_id:)
-#      byebug
-      StudyViewLog.create(user_id: context[:current_user]&.id, nct_id: nct_id )
       Study.find_by(nct_id: nct_id)
     end
 
