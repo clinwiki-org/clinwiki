@@ -27,7 +27,7 @@ import { CurrentUserQuery } from 'types/CurrentUserQuery';
 interface Props {
   name: string;
   nctId?: string;
-  onChange:any;
+  onChange:string;
 }
 
 const StyledPanel = styled(Panel)`

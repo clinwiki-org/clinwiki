@@ -28,6 +28,7 @@ import ExportToCsvComponent from './ExportToCsvComponent';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import SaveSearch from './SaveSearch';
 import LabeledButton from 'components/LabeledButton';
+import {  SearchParams  as SearchParamsType }  from '../../../containers/SearchPage/shared';
 
 
 
@@ -132,7 +133,7 @@ interface CrumbsBarProps {
   totalResults: number;
   searchHash: string;
   theme: Theme;
-  updateSearchParams: any;
+  updateSearchParams: (params: SearchParamsType) => Promise<void>;
 }
 
 interface CrumbsBarState {
@@ -448,7 +449,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
   };
   onSubmit = e => {
     e.preventDefault();
-    console.log('adding term from crumbbar', this.state.searchTerm)
     this.props.addSearchTerm(this.state.searchTerm);
     this.setState({ searchTerm: '' });
   };

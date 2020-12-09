@@ -1,19 +1,13 @@
 import * as React from 'react';
 import { SiteFragment } from 'types/SiteFragment';
-import { useQuery } from '@apollo/client';
 import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
 import ThemedButton from 'components/StyledComponents/index';
 import { useCreatePageView, usePageViews } from 'queries/PageViewQueries';
-import {
-  PageViewsQuery,
-  PageViewsQuery_site_pageViews,
-} from 'types/PageViewsQuery';
-import { match } from 'react-router-dom';
+import { PageViewsQuery_site_pageViews } from 'types/PageViewsQuery';
 import { History, Location } from 'history';
 import PageForm from './PageForm';
-import { BeatLoader } from 'react-spinners';
 
 const SectionForm = styled.div`
   padding: 15px 0 15px 15px;
@@ -50,7 +44,6 @@ function AddPage(props: AddPageProps) {
 interface PageFormProps {
   history: History;
   location: Location;
-  // match: match<{}>;
   site: SiteFragment;
 }
 export default function PagesForm(props: PageFormProps) {
