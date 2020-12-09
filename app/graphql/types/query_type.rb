@@ -106,15 +106,12 @@ module Types
  
 
     def build_name_default(search_info)
-      #puts("THE INFO***********************" + search_info.to_s)
-      #entries = 0 
       result = ""
       rDescription = ""
       lDescription = ""  #always radius    "xxx miles from" if no zipcode then "current location" else " this _zipcode_"
       if search_info[:q][:children].present?
         search_term = search_info[:q][:children][0][:key].humanize
         result = result + "#{search_term} |"
-        # entries = entries + 1 
       end
       if search_info[:crowd_agg_filters].present?
         search_info[:crowd_agg_filters].each do |filter|
@@ -139,8 +136,7 @@ module Types
           end
           filter[:values].each do |value|
             crowd_agg = value.humanize
-            result = result + "#{crowd_agg} |" # if entries <= 4 
-            # entries = entries + 1 
+            result = result + "#{crowd_agg} |"
           end
         end
       end
@@ -167,8 +163,7 @@ module Types
           end
           filter[:values].each do |value|
             agg = value.humanize
-            result = result + "#{agg} |" # if entries <= 4 
-            # entries = entries + 1 
+            result = result + "#{agg} |" 
           end
         end
         result.delete_suffix!('|')
