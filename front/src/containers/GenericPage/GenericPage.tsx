@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePageView, usePageViews } from 'queries/PageViewQueries';
 import MailMergeView, {
   microMailMerge,
 } from 'components/MailMerge/MailMergeView';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation} from '@apollo/client';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
@@ -13,6 +13,7 @@ import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
 import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
+import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
 
 
 interface Props {
@@ -51,7 +52,14 @@ export default function GenericPage(props: Props) {
       variables: { nctId: props.arg ?? '' },
     }
   );
+  const [updateStudiViewLogCount] = useMutation(StudyViewLogMutaion, {
+    variables: {nctId: props.arg},
+  })
+  
+  useEffect(()=>{
+    updateStudiViewLogCount();
 
+  },[])
   if (!props.arg) {
     return <h1>Missing NCTID in URL</h1>;
   }

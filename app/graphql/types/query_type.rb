@@ -272,8 +272,6 @@ module Types
     end
 
     def study(nct_id:)
-#      byebug
-      StudyViewLog.create(user_id: context[:current_user]&.id, nct_id: nct_id )
       Study.find_by(nct_id: nct_id)
     end
 
