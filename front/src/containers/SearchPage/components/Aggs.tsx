@@ -55,7 +55,9 @@ const QUERY = gql`
       }
     ) {
       aggs {
-        name
+        buckets{
+          key
+        }
       }
     }
     search(
