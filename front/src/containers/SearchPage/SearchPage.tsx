@@ -635,7 +635,6 @@ function SearchPage(props: SearchPageProps) {
     }
     // recycled code for removing repeated terms. might be a better way but I'm not sure.
     const children: SearchQuery[]  = reject(propEq('key', term), params.current.q.children || []);
-
     params.current = {
       ...params.current,
       q: { ...params.current.q, children: [...(children || []), { key: term }] as SearchQuery[] }
@@ -759,7 +758,13 @@ function SearchPage(props: SearchPageProps) {
   }
   const hash = getHashFromLocation();
 
-
+const searchParamsQueryHelper =(data)=>{
+  const dataParams = searchParamsFromQuery(
+    data!.searchParams,
+    presentSiteView
+  );
+  params.current= dataParams
+}
   const { presentSiteView } = props;
 
   /// SEARCH PAGE PARAMS QUERY
@@ -767,6 +772,7 @@ function SearchPage(props: SearchPageProps) {
     variables: { hash },
     //Looks like this was our fix to our sort again
     fetchPolicy: "no-cache",
+    onCompleted: (result)=>searchParamsQueryHelper(result)
 
   });
 
@@ -776,10 +782,6 @@ function SearchPage(props: SearchPageProps) {
 
 
 
-  const dataParams = searchParamsFromQuery(
-    data!.searchParams,
-    presentSiteView
-  );
   return (
     <Switch>
       <Route
@@ -795,7 +797,7 @@ function SearchPage(props: SearchPageProps) {
               {showFacetBar && (
                 <>
                   <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
-                    {dataParams && renderAggs(presentSiteView, dataParams)}
+                    {params.current && renderAggs(presentSiteView, params.current)}
                   </ThemedSidebarContainer>
                   <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
                     <span className="collapse-icon-container">
@@ -812,9 +814,9 @@ function SearchPage(props: SearchPageProps) {
               )}
 
               <ThemedMainContainer>
-                {showBreadCrumbs && renderCrumbs(presentSiteView, dataParams)}
-                {showPresearch && dataParams ? renderPresearch(hash, dataParams) : null}
-                {dataParams ? renderSearch(dataParams) : null}
+                {showBreadCrumbs && renderCrumbs(presentSiteView, params.current)}
+                {showPresearch && params.current ? renderPresearch(hash, params.current) : null}
+                {params.current ? renderSearch(params.current) : null}
               </ThemedMainContainer>
             </ThemedSearchPageWrapper>
           );
