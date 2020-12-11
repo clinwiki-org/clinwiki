@@ -235,6 +235,7 @@ function SearchPage(props: SearchPageProps) {
 
   const [openedAgg, setOpenedAgg] = useState<OpenedAgg>({ name: null, kind: null })
   const [removeSelectAll, setRemoveSelectAll] = useState(false)
+  const [shouldRender, setShouldRender] = useState(true)
   const [totalRecords, setTotalRecords] = useState(0)
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
   const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
@@ -290,6 +291,51 @@ function SearchPage(props: SearchPageProps) {
     }
     document.title = result.substring(0, result.length -2)
   }
+
+  useEffect(() => {
+    let searchTerm = new URLSearchParams(props.location?.search || '');
+
+    let initialLoadParams = {
+      ...DEFAULT_PARAMS,
+      ...preselectedFilters(props.presentSiteView),
+    };
+
+    if (window.innerWidth < 768) {
+      setCollapseFacetBar(true)
+    }
+    if (searchTerm.has('q')) {
+      const children = [] as SearchQuery[];
+      let q = {
+        key: 'AND',
+        children: [{ children: children, key: searchTerm.getAll('q').toString() }],
+      };
+
+      let initialLoadParamsQ = {
+        ...initialLoadParams,
+        q
+      }
+
+      updateSearchParams(initialLoadParamsQ)
+    }
+
+    //// PROBABLY STILL NEEDS TO BE FIXED
+    if (!searchTerm.has('hash')) {
+      setShouldRender(true)
+
+      updateSearchParams(initialLoadParams)
+
+    }
+    //// PROBABLY STILL NEEDS TO BE FIXED
+    if (props.intervention) {
+      updateSearchParams(props.searchParams || initialLoadParams)
+    }if(searchTerm.has('hash')){
+      setShouldRender(false)
+      return
+    }
+    updateSearchParams(initialLoadParams)
+
+    return
+  }, [])
 
   const searchParamsFromQuery = (
     params: SearchPageParamsQuery_searchParams | null | undefined,
@@ -415,12 +461,12 @@ function SearchPage(props: SearchPageProps) {
     const { presentSiteView } = props;
     return  presentSiteView.search.config.fields.showResults ? (
       <MemoizedSearchView
-        key={`${hash}+${JSON.stringify(searchParams)}`}
+        key={`${hash}+${JSON.stringify(params.current)}`}
         onBulkUpdate={handleBulkUpdateClick}
         onUpdateParams={updateSearchParams}
         onRowClick={handleRowClick}
         searchHash={hash || ''}
-        searchParams={searchParams}
+        searchParams={params.current}
         presentSiteView={presentSiteView}
       />
     ) : null;
@@ -710,47 +756,6 @@ function SearchPage(props: SearchPageProps) {
     return params;
   };
   /// this is everyting that used to be in componentDidMount
-  useEffect(() => {
-    let searchTerm = new URLSearchParams(props.location?.search || '');
-
-    let initialLoadParams = {
-      ...DEFAULT_PARAMS,
-      ...preselectedFilters(props.presentSiteView),
-    };
-
-    if (window.innerWidth < 768) {
-      setCollapseFacetBar(true)
-    }
-    if (searchTerm.has('q')) {
-      const children = [] as SearchQuery[];
-      let q = {
-        key: 'AND',
-        children: [{ children: children, key: searchTerm.getAll('q').toString() }],
-      };
-
-      let initialLoadParamsQ = {
-        ...initialLoadParams,
-        q
-      }
-
-      updateSearchParams(initialLoadParamsQ)
-    }
-
-    //// PROBABLY STILL NEEDS TO BE FIXED
-    if (!searchTerm.has('hash')) {
-      updateSearchParams(initialLoadParams)
-
-    }
-    //// PROBABLY STILL NEEDS TO BE FIXED
-    if (props.intervention) {
-      updateSearchParams(props.searchParams || initialLoadParams)
-    }if(searchTerm.has('hash')){
-      return
-    }
-    updateSearchParams(initialLoadParams)
-
-    return
-  }, [])
 
 
   if (props.email && !props.match.params.id) {
@@ -764,21 +769,20 @@ const searchParamsQueryHelper =(data)=>{
     presentSiteView
   );
   params.current= dataParams
+  setShouldRender(true)
 }
-  const { presentSiteView } = props;
+const { presentSiteView } = props;
+/// SEARCH PAGE PARAMS QUERY
+const result = useQuery(SearchPageParamsQuery, {
+ variables: { hash },
+ //Looks like this was our fix to our sort again
+ fetchPolicy: "no-cache",
+ onCompleted: (result)=>searchParamsQueryHelper(result)
 
-  /// SEARCH PAGE PARAMS QUERY
-  const result = useQuery(SearchPageParamsQuery, {
-    variables: { hash },
-    //Looks like this was our fix to our sort again
-    fetchPolicy: "no-cache",
-    onCompleted: (result)=>searchParamsQueryHelper(result)
-
-  });
-
-  let data = result.data
-  if (data == undefined && result.previousData !== undefined) { data = result.previousData }
-  if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
+});
+let data = result.data
+if (data == undefined && result.previousData !== undefined) { data = result.previousData }
+if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
 
 
 
@@ -792,7 +796,7 @@ const searchParamsQueryHelper =(data)=>{
             showFacetBar,
             showBreadCrumbs,
           } = presentSiteView.search.config.fields;
-          return (
+        return(  shouldRender ? (
             <ThemedSearchPageWrapper>
               {showFacetBar && (
                 <>
@@ -816,10 +820,11 @@ const searchParamsQueryHelper =(data)=>{
               <ThemedMainContainer>
                 {showBreadCrumbs && renderCrumbs(presentSiteView, params.current)}
                 {showPresearch && params.current ? renderPresearch(hash, params.current) : null}
-                {params.current ? renderSearch(params.current) : null}
+                {renderSearch (params.current)}
               </ThemedMainContainer>
             </ThemedSearchPageWrapper>
-          );
+          )
+          : null);
         }}
       />
     </Switch>
