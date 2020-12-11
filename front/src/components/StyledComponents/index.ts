@@ -114,8 +114,8 @@ const PresearchCard = styled.div`
   min-width: 320px;
   max-width: 320px;
   background: white;
-  //working on preserach fix
-  min-height: 320px;
+  // min-height: 320px;
+  padding-bottom: .5em;
 `;
 
 export const ThemedPresearchCard = withTheme(PresearchCard);
@@ -125,17 +125,18 @@ const PresearchHeader = styled.div`
   padding: 5px;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
-  height: 50px;
+  // height: 50px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  border-bottom: 1px solid #ddd;
 `;
 
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
 
 export const PresearchTitle = styled.div`
-  color: white;
-  font-size: 25px;
+  color: #333;
+  font-size: 18px;
   font-weight: 400;
   margin-left: 5px;
 `;
@@ -317,18 +318,6 @@ export const PresearchFilter = styled.div`
   // max-height: 30px;
 `;
 
-export const PresearchPanel = styled.div`
-  overflow-x: auto;
-  max-height: 200px;
- /*  min-height: 200px; */
-  margin-left: 5px;
-  // margin-top: 30px;
-  position: relative;
-    .dropDownFacet{
-      position: relative;
-    }
-`;
-
 export const PresearchContent = styled.div`
   padding-left: 5px;
   padding-right: 5px;
@@ -337,7 +326,21 @@ export const PresearchContent = styled.div`
   background-color: white;
   max-height: 260px;
   margin-bottom: 7px;
+  overflow-Y: scroll;
+  display: flex;
+  flex-direction: column;
 `;
+
+export const PresearchPanel = styled.div`
+  overflow-x: auto;
+  margin-left: 5px;
+  // margin-top: 30px;
+  position: relative;
+    .dropDownFacet{
+      position: relative;
+    }
+`;
+
 
 export default ThemedButton;
 
