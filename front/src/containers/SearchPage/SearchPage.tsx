@@ -190,7 +190,6 @@ const Instructions = styled.div`
   align-items: center;
 `;
 
-const paramsUrl = useUrlParams()
 
 interface SearchPageProps {
   match: match<{ siteviewUrl: string, id: string }>;
@@ -241,6 +240,7 @@ function SearchPage(props: SearchPageProps) {
     variables: params.current,
     onCompleted: (data)=> afterSearchParamsUpdate(data)
   })
+  const paramsUrl = useUrlParams()
 
 
 
