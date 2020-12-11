@@ -1,18 +1,15 @@
 import * as React from 'react';
 import { useQuery } from '@apollo/client';
-import { gql }  from '@apollo/client';
 import {
     PresentSiteProviderQuery,
-    PresentSiteProviderQueryVariables
 } from 'types/PresentSiteProviderQuery';
 import { PresentSiteFragment } from 'types/PresentSiteFragment';
 import PRESENT_SITE_QUERY from 'queries/PresentSiteProviderQuery'
 
 interface PresentSiteProviderProps {
-    //usePresentSite?(id?: number, url?: string): any;
     id?: number;
     url?: string;
-    children: (site: PresentSiteFragment, refetch: any) => JSX.Element | null;
+    children: (site: PresentSiteFragment, refetch: ()=>void) => JSX.Element | null;
 }
 
 
@@ -53,7 +50,6 @@ export function usePresentSite(props?: UsePresentSiteProps) {
     const result = useQuery<PresentSiteProviderQuery>(PRESENT_SITE_QUERY, {
         variables: { id: props?.id, url: props?.url },
     });
-    console.log('RESULT from Present Site Provider')
     if (!result.data) return { ...result, site: null, presentSiteView: null };
     const site = result?.data?.site;
     const presentSiteView = site?.siteView;

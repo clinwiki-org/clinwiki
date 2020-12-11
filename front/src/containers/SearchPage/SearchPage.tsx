@@ -4,13 +4,9 @@ import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import {
-  SearchPageParamsQuery as SearchPageParamsQueryType,
-  SearchPageParamsQueryVariables,
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
-import { MAX_WINDOW_SIZE } from 'utils/constants';
 import { SearchParams, AggKind, SearchQuery } from './shared';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import { ThemedButton, ThemedSearchContainer } from '../../components/StyledComponents';
 import {
   map,
@@ -37,10 +33,7 @@ import MemoizedSearchView from './SearchView2';
 import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
-import {
-  SearchPageSearchQuery_search_studies,
-} from 'types/SearchPageSearchQuery';
-import { AggBucketMap, defaultPageSize } from './Types';
+import { defaultPageSize } from './Types';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import {
   PresentSiteFragment,
@@ -51,7 +44,6 @@ import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
-import SearchParamsContext from './components/SearchParamsContext';
 import RichTextEditor from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
@@ -198,46 +190,6 @@ const Instructions = styled.div`
   align-items: center;
 `;
 
-const changeFilter = (add: boolean) => (
-  aggName: string,
-  key: string,
-  isCrowd?: boolean
-) => (params: SearchParams) => {
-  console.log("CHANGE  Filter", aggName)
-  const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
-  const lens = lensPath([propName]);
-  return (over(
-    lens,
-    //@ts-ignore
-    (aggs: AggFilterInput[]) => {
-      console.log("AGGGGS", aggs)
-      const index = findIndex(propEq('field', aggName), aggs);
-      if (index === -1 && add) {
-        //console.log("HIT IF!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ")
-        return [...aggs, { field: aggName, values: [key] }];
-      }
-      const aggLens = lensPath([index, 'values']);
-      const updater = (values: string[]) => (
-        //console.log("VALUES",values), Values coming from AGGS above
-        add ? [...values, key] : reject(x => x === key, values))
-      let res = over(aggLens, updater, aggs);
-      // Drop filter if no values left
-      if (isEmpty(view(aggLens, res))) {
-        res = remove(index, 1, res as any);
-      }
-      return res;
-    },
-    {
-      //@ts-ignore
-      ...params.current,
-      page: 0,
-    }
-  ) as unknown) as SearchParams;
-};
-
-
-
-
 const paramsUrl = useUrlParams()
 
 interface SearchPageProps {
@@ -258,17 +210,6 @@ interface SearchPageProps {
 
 }
 
-interface SearchPageState {
-  params: SearchParams | null;
-  openedAgg: {
-    name: string;
-    kind: AggKind;
-  } | null;
-  removeSelectAll: boolean;
-  totalRecords: number;
-  collapseFacetBar: boolean;
-}
-
 const DEFAULT_PARAMS: SearchParams = {
   q: { children: [], key: 'AND' },
   aggFilters: [],
@@ -277,20 +218,22 @@ const DEFAULT_PARAMS: SearchParams = {
   page: 0,
   pageSize: defaultPageSize,
 };
-
+interface OpenedAgg{
+  name: string | null;
+  kind: AggKind | null;
+}
 function SearchPage(props: SearchPageProps) {
   const params = useRef({
-    q: { key: 'AND', children: [] },
-    aggFilters: [],
-    crowdAggFilters: [],
-    sorts: [],
+    q: { key: 'AND', children: [] as SearchQuery[] },
+    aggFilters: [] as AggFilterInput[],
+    crowdAggFilters: [] as AggFilterInput[],
+    sorts: [] as SortInput[],
     page: 0,
     pageSize: defaultPageSize
 
   })
 
-  console.log('params first', params.current)
-  const [openedAgg, setOpenedAgg] = useState({ name: null, kind: null })
+  const [openedAgg, setOpenedAgg] = useState<OpenedAgg>({ name: null, kind: null })
   const [removeSelectAll, setRemoveSelectAll] = useState(false)
   const [totalRecords, setTotalRecords] = useState(0)
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
@@ -319,7 +262,6 @@ function SearchPage(props: SearchPageProps) {
 
   const createPageName = () => {
     let searchParams = params.current;
-    console.log('CREATE PAGE NAME', searchParams)
     let entries = 0 
     let result = ""
     if (searchParams!["q"]["children"][0]) {
@@ -331,9 +273,7 @@ function SearchPage(props: SearchPageProps) {
 
       searchParams!["crowdAggFilters"].map((value) => {
         if(!value) return
-
-        //@ts-ignore
-        value!.values.map((subValue) => {
+        value!.values?.map((subValue) => {
           result = result + `${subValue} | `
           entries = entries + 1 
         })
@@ -341,14 +281,8 @@ function SearchPage(props: SearchPageProps) {
     }
     if (searchParams!["aggFilters"]) {
       searchParams!["aggFilters"].map((value) => {
-        //need to fix for location, 
-        console.log("ValueCIty",value)
-        //@ts-ignore
         if(value.values==undefined) return
-
-        //@ts-ignore
-
-        value!.values.map((subValue) => {
+        value!.values?.map((subValue) => {
           result = result + `${subValue} | `
           entries = entries + 1 
         })
@@ -411,18 +345,15 @@ function SearchPage(props: SearchPageProps) {
   const resetSelectAll = () => {
     setRemoveSelectAll(false)
     // WE MAY NEED TO USE  use effect here as the update searchParams used to be in a setState callback. 
-    updateSearchParams(params)
+    updateSearchParams(params.current)
 
   };
 
   const isWorkflow = () => {
     return pipe(
-      //@ts-ignore
       map(prop('field')),
-      //@ts-ignore
       any(x => (x as string).toLowerCase().includes('wf_'))
-      //@ts-ignore
-    )(params?.crowdAggFilters || []);
+    )(params?.current.crowdAggFilters || []);
   };
 
   const handleRowClick = (nctId: string) => {
@@ -439,9 +370,8 @@ function SearchPage(props: SearchPageProps) {
     props.history.push(`/bulk?hash=${hash}&sv=${siteViewUrl}`);
   };
 
-  const handleOpenAgg = (name: string, kind: AggKind) => {
+  const handleOpenAgg = (name, kind) => {
     if (!openedAgg) {
-      //@ts-ignore
       setOpenedAgg({ name: name, kind: kind });
       return;
     }
@@ -450,17 +380,14 @@ function SearchPage(props: SearchPageProps) {
       setOpenedAgg({ name: null, kind: null });
       return;
     }
-    //@ts-ignore 
     setOpenedAgg({ name: name, kind: kind });
   };
 
 
   const renderAggs = (siteView, searchParams) => {
-    // console.log('redner aggs', params)
     const opened = openedAgg && openedAgg.name;
     const openedKind = openedAgg && openedAgg.kind;
     const { aggFilters = [], crowdAggFilters = [] } = searchParams || {};
-    console.log('PROPS SITE', props.site)
     return (
       <Aggs
         filters={transformFilters(aggFilters)}
@@ -471,7 +398,6 @@ function SearchPage(props: SearchPageProps) {
         removeFilters={newRemoveFilters}
         removeSelectAll={removeSelectAll}
         resetSelectAll={resetSelectAll}
-        // @ts-ignore
         opened={opened}
         openedKind={openedKind}
         onOpen={handleOpenAgg}
@@ -487,7 +413,6 @@ function SearchPage(props: SearchPageProps) {
   const renderSearch = (searchParams) => {
     const hash = getHashFromLocation();
     const { presentSiteView } = props;
-    console.log('SEARCH VIEW FROM SP', searchParams)
     return  presentSiteView.search.config.fields.showResults ? (
       <MemoizedSearchView
         key={`${hash}+${JSON.stringify(searchParams)}`}
@@ -498,7 +423,6 @@ function SearchPage(props: SearchPageProps) {
         searchParams={searchParams}
         presentSiteView={presentSiteView}
       />
-
     ) : null;
   };
 
@@ -511,9 +435,7 @@ function SearchPage(props: SearchPageProps) {
 
 
   const findFilter = (variable: string) => {
-
-    //@ts-ignore
-    let aggFilter = params?.aggFilters;
+    let aggFilter = params?.current.aggFilters;
     let response = find(propEq('field', variable), aggFilter || []) as {
       field: string;
       gte: string;
@@ -545,7 +467,6 @@ function SearchPage(props: SearchPageProps) {
   };
 
   const renderPresearch = (hash, searchParams) => {
-    //@ts-ignore
     const { aggFilters = [], crowdAggFilters = [] } = searchParams || {};
     const { presentSiteView } = props;
     const preSearchAggs = presentSiteView.search.presearch.aggs.selected.values;
@@ -596,7 +517,6 @@ function SearchPage(props: SearchPageProps) {
           removeFilters={newRemoveFilters}
           removeSelectAll={removeSelectAll}
           resetSelectAll={resetSelectAll}
-          // @ts-ignore
           searchParams={searchParams}
           presearch
           preSearchAggs={preSearchAggs}
@@ -638,7 +558,6 @@ function SearchPage(props: SearchPageProps) {
       q,
     };
 
-    console.log('crumbs params post q transform', handledParams)
 
     const { presentSiteView } = props;
     const hash = getHashFromLocation();
@@ -665,7 +584,6 @@ function SearchPage(props: SearchPageProps) {
     // handles the query to get the hash and update the url. 
     createPageName()
     const variables = params.current;
-    console.log('4 GETTING NEW HASH VARS', variables)
     const { searchQueryString, pageViewUrl } = getPageView();
     const siteViewUrl = searchQueryString.getAll('sv').toString() || 'default';
     // This assumes that the site provider is not passing a url into the page
@@ -691,7 +609,6 @@ function SearchPage(props: SearchPageProps) {
         return;
       } else if (props.match.path === '/intervention/:id') {
         props.history.push(
-          //@ts-ignore
           `/intervention/${props.match.params.id}?hash=${data!.provisionSearchHash!.searchHash!.short
           }&sv=intervention&pv=${pageViewUrl}`
         );
@@ -706,65 +623,33 @@ function SearchPage(props: SearchPageProps) {
     }
   }
 
-  const updateSearchParams = async (searchParams) => {
-    console.log('1 updating searchParams passed', searchParams)
-    console.log('2 updating - Params in state', params)
-    // setParams({...params, ...searchParams})
-
+  const updateSearchParams = async (searchParams: SearchParams) => {
     params.current = await { ...params.current, ...searchParams }
-    console.log('3 params.current', params.current)
-
-    //now that we are using ref not sure the useEffect was best placement for our updating. Instead called it at the end of this update. 
     const { data } = await updateSearchPageHashMutation();
+    
   };
-
-  //Only run mutation query if params state changes
-  // useEffect(() => {
-  //   console.log('params in effect - there has been a change', params.current)
-  //   afterSearchParamsUpdate()
-
-  // }, [params.current])
 
   const newAddSearchTerm = (term: string) => {
     if (!term.replace(/\s/g, '').length) {
       return
     }
     // recycled code for removing repeated terms. might be a better way but I'm not sure.
-    const children: any[] = reject(propEq('key', term), params.current.q.children || []);
-    // setParams({
-    //   ...params,
-    //   //@ts-ignore
-    //   q:  { ...params.q, children: [...(children || []), { key: term }] },
-    // })
-
+    const children: SearchQuery[]  = reject(propEq('key', term), params.current.q.children || []);
     params.current = {
       ...params.current,
-      //@ts-ignore
-      q: { ...params.current.q, children: [...(children || []), { key: term }] }
+      q: { ...params.current.q, children: [...(children || []), { key: term }] as SearchQuery[] }
     }
     updateSearchParams(params.current)
-    // return {
-    //   ...params,
-    //   q: { ...params.q, children: [...(children || []), { key: term }] },
-    //   page: 0,
-    // };
   }
 
   const newRemoveSearchTerm = (term: string) => {
-    console.log('REMOVING CRUMBß', params.current)
-    let currentParams = params.current;
+    let currentParams:SearchParams = params.current;
     const children = reject(
       propEq('key', term),
       params.current.q.children || []
     ) as SearchQuery[];
-    // return {
-    //   ...params,
-    //   q: { ...params.q, children },
-    //   page: 0,
-    // };
     currentParams = {
       ...params.current,
-      //@ts-ignore
       q: { ...params.current.q, children }
     }
     updateSearchParams(currentParams)
@@ -776,22 +661,17 @@ function SearchPage(props: SearchPageProps) {
     key: string,
     isCrowd?: boolean
   ) => (params: SearchParams) => {
-    console.log("CHANGE  Filter", aggName)
     const propName = isCrowd ? 'crowdAggFilters' : 'aggFilters';
     const lens = lensPath([propName]);
     return (over(
       lens,
-      //@ts-ignore
       (aggs: AggFilterInput[]) => {
-        console.log("AGGGGS", aggs)
         const index = findIndex(propEq('field', aggName), aggs);
         if (index === -1 && add) {
-          //console.log("HIT IF!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ")
           return [...aggs, { field: aggName, values: [key] }];
         }
         const aggLens = lensPath([index, 'values']);
         const updater = (values: string[]) => (
-          //console.log("VALUES",values), Values coming from AGGS above
           add ? [...values, key] : reject(x => x === key, values))
         let res = over(aggLens, updater, aggs);
         // Drop filter if no values left
@@ -801,8 +681,7 @@ function SearchPage(props: SearchPageProps) {
         return res;
       },
       {
-        //@ts-ignore
-        ...params.current,
+        ...params,
         page: 0,
       }
     ) as unknown) as SearchParams;
@@ -811,26 +690,20 @@ function SearchPage(props: SearchPageProps) {
   const newRemoveFilter = newChangeFilter(false);
 
   const newAddFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
-    console.log('add filters')
 
     keys.forEach(k => {
-      //@ts-ignore
-      params.current = newAddFilter(aggName, k, isCrowd)(params);
+      params.current = newAddFilter(aggName, k, isCrowd)(params.current);
     });
     newChangeFilter(true);
-    console.log("AddFilters Params", params)
     updateSearchParams(params.current)
-    return params;
+    return params.current;
   };
 
   const newRemoveFilters = (aggName: string, keys: string[], isCrowd?: boolean) => {
     keys.forEach(k => {
-      //console.log("PARAMS  1",params)
-      //@ts-ignore
-      params.current = newRemoveFilter(aggName, k, isCrowd)(params);
+      params.current = newRemoveFilter(aggName, k, isCrowd)(params.current);
     });
     newChangeFilter(false);
-    console.log("RemoveFilters Params", params)
     updateSearchParams(params.current)
 
     // changeFilter(true);
@@ -849,44 +722,28 @@ function SearchPage(props: SearchPageProps) {
       setCollapseFacetBar(true)
     }
     if (searchTerm.has('q')) {
+      const children = [] as SearchQuery[];
       let q = {
         key: 'AND',
-        children: [{ children: [], key: searchTerm.getAll('q').toString() }],
+        children: [{ children: children, key: searchTerm.getAll('q').toString() }],
       };
 
-      console.log('QQQQ', initialLoadParams)
-      //@ts-ignore
-      // setParams(
-      //   {
-      //     /// Q below is messed up and needs to get q from above. 
-      //     //@ts-ignore
-      //       q: {...q},
-      //       aggFilters: [],
-      //       crowdAggFilters: [],
-      //       sorts: [],
-      //       page: 0,
-      //       pageSize: defaultPageSize,
-      //     }
-      // );
       let initialLoadParamsQ = {
         ...initialLoadParams,
         q
       }
 
-      console.log('FILTERED PARAMS AFTER Q', initialLoadParamsQ)
       updateSearchParams(initialLoadParamsQ)
     }
 
     //// PROBABLY STILL NEEDS TO BE FIXED
     if (!searchTerm.has('hash')) {
-      console.log("We don't have a hash, updating with intialLoad Params")
       updateSearchParams(initialLoadParams)
 
     }
     //// PROBABLY STILL NEEDS TO BE FIXED
     if (props.intervention) {
-      //@ts-ignore
-      setParams(props.searchParams);
+      updateSearchParams(props.searchParams || initialLoadParams)
     }if(searchTerm.has('hash')){
       return
     }
@@ -901,18 +758,21 @@ function SearchPage(props: SearchPageProps) {
   }
   const hash = getHashFromLocation();
 
-
+const searchParamsQueryHelper =(data)=>{
+  const dataParams = searchParamsFromQuery(
+    data!.searchParams,
+    presentSiteView
+  );
+  params.current= dataParams
+}
   const { presentSiteView } = props;
-  // const FILTERED_PARAMS = {
-  //   ...DEFAULT_PARAMS,
-  //   ...preselectedFilters(presentSiteView),
-  // };
 
   /// SEARCH PAGE PARAMS QUERY
   const result = useQuery(SearchPageParamsQuery, {
     variables: { hash },
     //Looks like this was our fix to our sort again
     fetchPolicy: "no-cache",
+    onCompleted: (result)=>searchParamsQueryHelper(result)
 
   });
 
@@ -921,12 +781,7 @@ function SearchPage(props: SearchPageProps) {
   if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
 
 
-  // debugger
 
-  const dataParams = searchParamsFromQuery(
-    data!.searchParams,
-    presentSiteView
-  );
   return (
     <Switch>
       <Route
@@ -942,7 +797,7 @@ function SearchPage(props: SearchPageProps) {
               {showFacetBar && (
                 <>
                   <ThemedSidebarContainer md={2} className={collapseFacetBar ? "side-bar-conatiner" : null}>
-                    {dataParams && renderAggs(presentSiteView, dataParams)}
+                    {params.current && renderAggs(presentSiteView, params.current)}
                   </ThemedSidebarContainer>
                   <ThemedSideBarCollapse className={collapseFacetBar ? "collapsed" : "expanded"} >
                     <span className="collapse-icon-container">
@@ -959,9 +814,9 @@ function SearchPage(props: SearchPageProps) {
               )}
 
               <ThemedMainContainer>
-                {showBreadCrumbs && renderCrumbs(presentSiteView, dataParams)}
-                {showPresearch && dataParams ? renderPresearch(hash, dataParams) : null}
-                {dataParams ? renderSearch(dataParams) : null}
+                {showBreadCrumbs && renderCrumbs(presentSiteView, params.current)}
+                {showPresearch && params.current ? renderPresearch(hash, params.current) : null}
+                {params.current ? renderSearch(params.current) : null}
               </ThemedMainContainer>
             </ThemedSearchPageWrapper>
           );
@@ -971,5 +826,4 @@ function SearchPage(props: SearchPageProps) {
   )
 }
 
-// @ts-ignore too many decorators
 export default withPresentSite2((SearchPage));

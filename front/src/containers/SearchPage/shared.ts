@@ -22,7 +22,7 @@ export interface AggBucketMap {
 
 export interface SearchQuery {
   key: string;
-  children?: SearchQuery[];
+  children: SearchQuery[];
 }
 
 export interface MutationSource {

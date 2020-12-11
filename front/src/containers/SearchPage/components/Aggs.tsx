@@ -19,6 +19,7 @@ import {
   AggKind,
   AggFilterMap,
 } from '../Types';
+import { SearchParams } from '../../../containers/SearchPage/shared';
 import {
   SearchPageAggsQuery,
   SearchPageAggsQueryVariables,
@@ -54,10 +55,8 @@ const QUERY = gql`
       }
     ) {
       aggs {
-        buckets {
+        buckets{
           key
-          keyAsString
-          docCount
         }
       }
     }
@@ -74,10 +73,6 @@ const QUERY = gql`
       recordsTotal
       aggs {
         name
-        buckets {
-          key
-          docCount
-        }
       }
     }
   }
@@ -124,8 +119,8 @@ interface AggsProps {
   preSearchAggs?: string[];
   preSearchCrowdAggs?: string[];
   site: PresentSiteFragment;
-  updateSearchParams: any;
-  searchParams: any;
+  updateSearchParams: (params: SearchParams) => Promise<void>;
+  searchParams: SearchParams;
   getTotalResults: Function;
 }
 
@@ -178,16 +173,6 @@ const Aggs = (props: AggsProps) => {
     return filter(x => crowdAggs.includes(x), displayed);
   };
 
-  // shouldComponentUpdate(nextProps) {
-  //   console.log('SCU', props.searchParams)
-  //   if (props.searchParams === nextProps.searchParams) {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // }
-
-  
     const {
       filters,
       crowdFilters,
@@ -205,25 +190,13 @@ const Aggs = (props: AggsProps) => {
     //commented out because not sure how to pass two parameters when using compose
     // const sortByNameCi = sortBy(compose(toLower, aggToField);
 
-     
-    // if (searchParams) {
-      // return (
-      //   <QueryComponent
-      //     query={QUERY}
-      //     variables={searchParams}
-      //   >
-      //     {({ data, loading, error }) => {
-        console.log('searchParams from AGGS', searchParams)
       const result = useQuery(QUERY, {
         variables: { ...searchParams }, 
-        // onCompleted: () => updateStateFromHash(data.searchParams, presentSiteView)
       });
         let data = result.data
-        console.log('results from aggs', result.data)
         if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
         if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
        
-            console.log('data from aggs', data)
             if (data && data.crowdAggs && data.search?.aggs) {
               let recordsTotal = data.search?.recordsTotal;
               props.getTotalResults(recordsTotal);
@@ -294,7 +267,6 @@ const Aggs = (props: AggsProps) => {
             }
 
             if (presearch && preSearchAggs) {
-              console.log('PRESEARCH AGGS')
               return (
                 <PresearchContainer>
                   {getAggs(props.presentSiteView, true).map(k =>
@@ -386,7 +358,6 @@ const Aggs = (props: AggsProps) => {
               );
             }
             if (!isEmpty(aggs) && !isNil(aggs)) {
-              // console.log('plain old facet bar')
               return (
                 <div>
                   <div>

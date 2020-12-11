@@ -8,11 +8,12 @@ import {
   InterventionPageQuery,
   InterventionPageQueryVariables,
 } from 'types/InterventionPageQuery';
-import { SearchParams } from '../SearchPage/shared';
+import { SearchParams, SearchQuery } from '../SearchPage/shared';
 import {
   ThemedMainContainer,
   StyledInterventionHeading,
 } from 'components/StyledComponents';
+import { AggFilterInput, SortInput } from 'types/globalTypes';
 
 const QUERY = gql`
   query InterventionPageQuery($id: Int!) {
@@ -55,15 +56,15 @@ class InterventionPage extends React.PureComponent<InterventionPageProps> {
           if (loading || error || !data || !data.intervention) return null;
 
           const searchParams: SearchParams = {
-            q: { key: '*' },
+            q: { key: '*' , children: [] as SearchQuery[] },
             sorts: [],
             aggFilters: [
               {
                 field: 'interventions_mesh_terms',
                 values: [data.intervention.name as string],
               },
-            ],
-            crowdAggFilters: [],
+            ] as  AggFilterInput[],
+            crowdAggFilters: [] as  AggFilterInput[],
             page: 0,
             pageSize: 25,
           };

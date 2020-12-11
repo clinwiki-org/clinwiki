@@ -9,21 +9,19 @@ import ValueCrumb from './ValueCrumb';
 import CrumbWrapper from './CrumbWrapper';
 import { PresentSiteFragment } from 'types/PresentSiteFragment';
 import findFields from 'utils/aggs/findFields';
+import {  SearchParams  as SearchParamsType }  from '../../containers/SearchPage/shared';
 
 interface AggCrumbProps {
   grouping: string;
   agg: AggFilterListItem;
-  searchParams: SearchParams | any;
-  updateSearchParams: any;
+  searchParams: SearchParams;
+  updateSearchParams: (params: SearchParamsType) => Promise<void>;
   thisSiteView: PresentSiteFragment;
 }
 
 interface AggCrumbState {}
 
 class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
-
-
-
   render() {
     const {
       agg,
@@ -38,7 +36,6 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       updateSearchParams,
       grouping
     );
-
 
     let crumb = <div></div>;
     if (agg.values && agg.values.length > 0) {
