@@ -18,7 +18,6 @@ const SEARCH_PAGE_SEARCH_QUERY = gql`
         crowdAggFilters: $crowdAggFilters
       }
     ) {
-      recordsTotal
       studies {
         ...StudyItemFragment
       }
