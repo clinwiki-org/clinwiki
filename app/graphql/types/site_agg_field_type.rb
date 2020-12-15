@@ -15,7 +15,7 @@ module Types
     field :show_allow_missing,  Boolean, null: true
     field :show_filter_toolbar,  Boolean, null: true
     field :default_to_open, Boolean, null: true
-
+    field :dropdown_open, Boolean, null: true
 
     def display
       object[:display]
@@ -55,6 +55,10 @@ module Types
 
     def default_to_open
       object[:defaultToOpen]
+    end
+
+    def dropdown_open
+      object[:dropdown_open]
     end
   end
 end
