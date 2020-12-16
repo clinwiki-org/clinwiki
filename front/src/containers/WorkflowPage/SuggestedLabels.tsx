@@ -80,7 +80,7 @@ class SuggestedLabels extends React.PureComponent<
   handleSelect = (key: string, value: string) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.showAnimation()
+    // this.props.showAnimation()
     this.props.onSelect(key, value, e.currentTarget.checked);
   };
 
