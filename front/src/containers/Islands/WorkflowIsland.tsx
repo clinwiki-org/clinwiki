@@ -61,8 +61,10 @@ export default function WorkflowIsland(props: Props) {
   });
   const {data:user, refetch }= useQuery<CurrentUserQuery>(UserQuery)
   const [upsertMutation] = useMutation(UPSERT_LABEL_MUTATION, {
+    refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
   const [deleteMutation] = useMutation(DELETE_LABEL_MUTATION, {
+    refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
   const [flashAnimation, setFlashAnimation] = useState(false);
@@ -90,6 +92,7 @@ export default function WorkflowIsland(props: Props) {
   const handleResetAnimation=()=>{
     setTimeout(  resetHelper, 6500);
   }
+
   return (
   <>
     {flashAnimation == true? 

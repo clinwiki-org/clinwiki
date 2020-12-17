@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePageView, usePageViews } from 'queries/PageViewQueries';
 import MailMergeView, {
   microMailMerge,
@@ -14,7 +14,6 @@ import { find, propEq } from 'ramda';
 import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
-import Error from 'components/Error';
 
 
 interface Props {
@@ -46,7 +45,7 @@ export default function GenericPage(props: Props) {
   const { data: pageViewData } = usePageView(defaultPage());
   const currentPage = pageViewData?.site?.pageView;
   const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
-  const result = useQuery(
+  const { data: studyData, loading, refetch } = useQuery(
     getStudyQuery(fragmentName, fragment),
     {
       skip: fragment == '' || !props.arg,
@@ -61,15 +60,10 @@ export default function GenericPage(props: Props) {
     updateStudiViewLogCount();
 
   },[])
-  let studyData = result.data
-  if (studyData == undefined && result.previousData !== undefined) { studyData = result.previousData }
-  if (result.error) return <Error message={result.error.message} />;
-  if ((result.loading && studyData == undefined)) return <BeatLoader />;
-
   if (!props.arg) {
     return <h1>Missing NCTID in URL</h1>;
   }
-  if (!pageViewData) {
+  if (loading || !pageViewData) {
     return <BeatLoader />;
   }
 
