@@ -26,6 +26,7 @@ export interface StudyItemFragment {
   studyFirstSubmittedQcDate: string | null;
   studyFirstPostedDate: string | null;
   studyFirstPostedDateType: string | null;
+  studyViewCount: number;
   resultsFirstSubmittedQcDate: string | null;
   resultsFirstPostedDate: string | null;
   resultsFirstPostedDateType: string | null;
@@ -56,5 +57,4 @@ export interface StudyItemFragment {
   ipdUrl: string | null;
   planToShareIpd: string | null;
   planToShareIpdDescription: string | null;
-  studyViewCount: number;
 }

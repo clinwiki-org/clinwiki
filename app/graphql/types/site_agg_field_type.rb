@@ -16,6 +16,8 @@ module Types
     field :show_filter_toolbar,  Boolean, null: true
     field :default_to_open, Boolean, null: true
     field :dropdown_open, Boolean, null: true
+    field :layout, String, null: true
+
 
     def display
       object[:display]
@@ -61,5 +63,9 @@ module Types
       object[:dropdownOpen]
     end
 
+    def layout
+      object[:layout]
+    end
+    
   end
 end

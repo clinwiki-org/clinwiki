@@ -37,6 +37,7 @@ export interface FieldType {
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
   dropdownOpen?: Boolean;
+  layout?: string;
 }
 
 export interface OptionVisibility {
@@ -46,6 +47,7 @@ export interface OptionVisibility {
   hideRank: boolean;
   hideDisplayType: boolean;
   hidePreSelected: boolean;
+  hideLayout: boolean;
 }
 
 interface AggFieldProps {
@@ -62,6 +64,7 @@ interface AggFieldProps {
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
   dropdownOpen?: Boolean;
+  layout?: string;
 }
 
 interface AggFieldState {
@@ -150,6 +153,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
   };
 
   handleDefaultSortMutation = e => {
+    this.props.onAddMutation(e);
+  };
+  handleLayoutMutation = e => {
     this.props.onAddMutation(e);
   };
   handleKeyValueMutations = e =>{
@@ -322,6 +328,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       hideRank: false,
       hideDisplayType: false,
       hidePreSelected: false,
+      hideLayout: false,
     };
     return { ...defaultVisibility, ...current };
   }
@@ -556,6 +563,27 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       </>
     );
   }
+
+  
+  renderLayout(opVis: OptionVisibility) {
+    if (opVis.hideLayout) return null;
+    const configType = this.props.configType;
+    return (
+      <>
+        <ThemedStyledLabel>Pre-search Layout</ThemedStyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.layout`}
+          componentClass="select"
+          onChange={e => this.handleLayoutMutation(e)}
+          defaultValue={this.props.field.layout}>
+          <option value="horizontal">Horizontal</option>
+          <option value="vertical">Vertical</option>
+        </StyledFormControl>
+      </>
+    );
+  }
+
+
   shouldShowAllowMissing = () => {
     if (!this.props.field.showAllowMissing) return false
 
@@ -642,6 +670,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           {this.renderSortType(vis)}
           {this.renderSortOrder(vis)}
           {this.renderDisplayType(vis)}
+          {this.renderLayout(vis)}
           {this.renderSortCheckbox()}
           {this.renderCheckboxes()}
         </ThemedContainer>

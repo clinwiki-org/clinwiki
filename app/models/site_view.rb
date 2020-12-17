@@ -334,6 +334,8 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
       show_filter_toolbar:true,
       default_to_open: true,
       dropdown_open: false,
+      layout: "horizontal",
+
       preselected: {
         kind: "WHITELIST",
         values: [],

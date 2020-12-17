@@ -122,6 +122,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                         aggSublabel
                         defaultToOpen
                         dropdownOpen
+                        layout
                         bucketKeyValuePairs {
                             key
                             label
@@ -158,6 +159,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                         aggSublabel
                         defaultToOpen
                         dropdownOpen
+                        layout
                         bucketKeyValuePairs {
                             key
                             label
@@ -212,6 +214,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                     aggSublabel
                     defaultToOpen
                     dropdownOpen
+                    layout
                     bucketKeyValuePairs {
                         key
                         label
@@ -248,10 +251,11 @@ export const SITE_VIEW_FRAGMENT = gql`
                     aggSublabel
                     defaultToOpen
                     dropdownOpen
+                    layout
                     bucketKeyValuePairs {
                         key
                         label
-                      }
+                    }
                     preselected {
                         kind
                         values
