@@ -1,9 +1,13 @@
 import * as React from 'react';
+import {useEffect} from 'react';
+import {useDispatch,useSelector} from 'react-redux';
 import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import { gql, useQuery }  from '@apollo/client';
 import { CurrentUserQuery } from 'types/CurrentUserQuery';
 import { UserFragment } from 'types/UserFragment';
+import { fetchUser } from 'services/user/actions';
 
+/*
 interface CurrentUserProps {
   children: (user: UserFragment | null, refetch?:any) => React.ReactNode;
 }
@@ -56,7 +60,8 @@ export const QUERY = gql`
 
 const QueryComponent = (props: QueryComponentOptions<CurrentUserQuery>) =>
   Query(props);
-
+*/
+/*
 class CurrentUser extends React.PureComponent<CurrentUserProps> {
   static fragment = FRAGMENT;
   static query = QUERY;
@@ -78,5 +83,18 @@ class CurrentUser extends React.PureComponent<CurrentUserProps> {
 export function useCurrentUser() {
   return useQuery<CurrentUserQuery>(QUERY);
 }
+*/
+
+const CurrentUser = (props) => {
+  const dispatch = useDispatch();
+  useEffect( () => {
+    dispatch(fetchUser());
+  },[dispatch]);
+  return (
+    <div>
+      {props.children}
+    </div>
+  );
+};
 
 export default CurrentUser;

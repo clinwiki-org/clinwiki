@@ -1,6 +1,8 @@
-import * as React from 'react';
+import React,{useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {logout} from 'services/user/actions';
 import styled, { keyframes } from 'styled-components';
-import { logout, getStarColor } from 'utils/auth';
+import { getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
@@ -158,13 +160,13 @@ interface UserProfileHeaderButtonProps {
   history: History;
   data: AdminViewsProviderQuery | undefined;
 }
-
+/*
 interface UserProfileHeaderButtonState {
   showDropdown: boolean;
   flashAnimation: boolean;
 }
 
-class UserProfileHeaderButton extends React.PureComponent<
+class UserProfileHeaderButtonOld extends React.PureComponent<
   UserProfileHeaderButtonProps,
   UserProfileHeaderButtonState
   > {
@@ -210,17 +212,13 @@ class UserProfileHeaderButton extends React.PureComponent<
     this.props.history.push('/sign_in');
   };
 
-  handleSignOutClick = () => {
-    this.closeMenuDropdown();
-    logout(this.props.history);
-  };
-
   handleAdminClick = (url) => {
     const linkUrl = '/search/' + url;
     this.props.history.push(linkUrl);
   };
 
   renderAdminMenuItems = (site) => {
+    if(!site) return null;
     const adminViews = site.siteViews.filter(
       (siteview) => siteview.search.type === 'admin'
     );
@@ -275,8 +273,18 @@ class UserProfileHeaderButton extends React.PureComponent<
   };
 
   render() {
+    const dispatch = useDispatch();
     const { showDropdown } = this.state;
     const { user } = this.props;
+
+    
+    useEffect( () => {
+      document.addEventListener('mousedown', handleClick, false);
+      return () => {
+        document.addEventListener('mousedown', handleClick, false);
+      };
+    },[]);
+
     if (!user) {
       return (
         <ThemedSignInButton onClick={this.handleSignInClick}>
@@ -333,7 +341,7 @@ class UserProfileHeaderButton extends React.PureComponent<
                     <b>
                       {this.props.user?.email && `${this.props.user.email}`}
                     </b>
-                  </DropDownEmail> */}
+              </DropDownEmail> */ /*}
               <ThemedDropDownItem onClick={this.handleSitesClick}>
                 Sites
                     </ThemedDropDownItem>
@@ -347,7 +355,10 @@ class UserProfileHeaderButton extends React.PureComponent<
                   </ThemedDropDownItem>
                 )}
               {this.renderAdminMenuItems(this.props.data?.site)}
-              <ThemedDropDownItem onClick={this.handleSignOutClick}>
+              <ThemedDropDownItem onClick={() => {
+                this.closeMenuDropdown();
+                dispatch(logout());
+                }}>
                 Log Out
                     </ThemedDropDownItem>
             </DropDownMenu>
@@ -356,6 +367,156 @@ class UserProfileHeaderButton extends React.PureComponent<
       );
     }
   }
+}
+*/
+const UserProfileHeaderButton = ({ user, history, data} : UserProfileHeaderButtonProps ) => {
+
+  const dispatch = useDispatch();
+  const [showDropdown,setShowDropdown] = useState(false);
+  const [flashAnimation,setFlashAnimation] = useState(false);
+  const [dropDown,setDropdown] = useState(undefined);
+
+  const toggleMenuDropdown = () => setShowDropdown(!showDropdown);
+
+  const closeMenuDropdown = () => setShowDropdown(false);
+
+  const handleSitesClick = () => {
+    closeMenuDropdown();
+    history.push('/sites');
+  };
+
+  const handleProfileClick = () => {
+    closeMenuDropdown();
+    history.push('/profile?sv=user');
+  };
+
+  const handleWorkflowsClick = () => {
+    closeMenuDropdown();
+    history.push('/workflows');
+  };
+
+  const handleSignInClick = () => {
+    closeMenuDropdown();
+    history.push('/sign_in');
+  };
+
+  const handleAdminClick = (url) => {
+    const linkUrl = '/search/' + url;
+    history.push(linkUrl);
+  };
+
+  const renderAdminMenuItems = (site) => {
+    if(!site) return null;
+    const adminViews = site.siteViews.filter(
+      (siteview) => siteview.search.type === 'admin'
+    );
+    return adminViews.map((view) => {
+      return (
+        <ThemedDropDownItem onClick={() => handleAdminClick(view.url)}>
+          {view.name}
+        </ThemedDropDownItem>
+      );
+    });
+  };
+
+  const renderUserImage = (url) => {
+    if (url) {
+      return (
+        <UserImage
+          style={{ backgroundImage: `url(${url})` }}
+        // alt="profile_img"
+        />
+      );
+    }
+    return (
+      <FontAwesome
+        className="fa-user"
+        name=" fa-user"
+        style={{ marginLeft: 6, marginRight: 2, fontSize: 23 }}
+      />
+    );
+  };
+
+  if (!user) {
+    return (
+      <ThemedSignInButton onClick={handleSignInClick}>
+        <SignIn>Sign In</SignIn>
+      </ThemedSignInButton>
+    );
+  }
+    return (
+      <div
+        ref={(node: any) => {
+          setDropdown(node);
+        }}>
+        <ThemedUserButton onClick={toggleMenuDropdown}>
+          {renderUserImage(user.pictureUrl)}
+          <ContributionContainer>
+            <ContributionCount>{user.contributions}</ContributionCount>
+            <FontAwesome
+              name="pencil"
+              style={{ color: 'white', marginLeft: 2 }}
+            />
+          </ContributionContainer>
+          {flashAnimation === true ?
+            <HeaderAnimation>
+              <FontAwesome
+                name="star"
+                style={{
+                  color: getStarColor(user.rank),
+                  fontSize: 18,
+                }}
+              />
+            </HeaderAnimation>
+            :
+            <FontAwesome
+              name="star"
+              style={{
+                color: getStarColor(user.rank),
+                fontSize: 18,
+              }}
+            />
+          }
+
+          <FontAwesome
+            name="chevron-down"
+            style={{ color: 'white', fontSize: 10 }}
+          />
+        </ThemedUserButton>
+        {showDropdown && (
+          <DropDownMenu>
+            {/* <DropDownEmail>
+                  {this.props.user?.email && `Signed in as:`}
+                </DropDownEmail>
+                <DropDownEmail>
+                  <b>
+                    {this.props.user?.email && `${this.props.user.email}`}
+                  </b>
+                </DropDownEmail> */}
+            <ThemedDropDownItem onClick={handleSitesClick}>
+              Sites
+                  </ThemedDropDownItem>
+            <ThemedDropDownItem onClick={handleProfileClick}>
+              Profile
+                  </ThemedDropDownItem>
+            {user &&
+              user.roles.includes('admin') && (
+                <ThemedDropDownItem onClick={handleWorkflowsClick}>
+                  Workflows
+                </ThemedDropDownItem>
+              )}
+            {renderAdminMenuItems(data?.site)}
+            <ThemedDropDownItem onClick={() => {
+              closeMenuDropdown();
+              dispatch(logout());
+              }}>
+              Log Out
+                  </ThemedDropDownItem>
+          </DropDownMenu>
+        )}
+      </div>
+    );
+
 }
 
 export default UserProfileHeaderButton;

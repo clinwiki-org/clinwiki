@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import {useSelector} from 'react-redux';
+import { RootState } from 'reducers';
 import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import { displayFields } from 'utils/siteViewHelpers';
 import * as R from 'remeda';
@@ -17,12 +19,11 @@ import QUERY from 'queries/WorkflowPageQuery';
 import { useQuery, useMutation } from '@apollo/client';
 import { WorkflowPageQuery } from 'types/WorkflowPageQuery';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
-import {  QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
-import { CurrentUserQuery } from 'types/CurrentUserQuery';
+
 
 interface Props {
   name: string;
@@ -59,7 +60,7 @@ export default function WorkflowIsland(props: Props) {
   const { data: studyData } = useQuery<WorkflowPageQuery>(QUERY, {
     variables: { nctId },
   });
-  const {data:user, refetch }= useQuery<CurrentUserQuery>(UserQuery)
+  const user = useSelector( (state: RootState) => state.user.current);
   const [upsertMutation] = useMutation(UPSERT_LABEL_MUTATION, {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
@@ -86,7 +87,7 @@ export default function WorkflowIsland(props: Props) {
   );
   const resetHelper = ()=>{
     setFlashAnimation(false)
-    refetch()
+    //refetch()
     // props.onChange()
   }
   const handleResetAnimation=()=>{
@@ -113,7 +114,7 @@ export default function WorkflowIsland(props: Props) {
           )}
           allowedSuggestedLabels={allowedSuggestedLabels}
           suggestedLabelsConfig={suggestedLabelsConfig}
-          disabled={!user?.me}
+          disabled={!user}
           showAnimation={() =>
             setFlashAnimation(true)
           }

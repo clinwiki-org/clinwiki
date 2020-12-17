@@ -1,4 +1,7 @@
-import * as React from 'react';
+import React,{useEffect} from 'react';
+import {useDispatch,useSelector} from 'react-redux';
+import {RootState} from 'reducers';
+import {fetchAdminUserSite} from 'services/site/actions';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
@@ -19,6 +22,7 @@ const Row = styled.div`
   align-items: center;
 `;
 
+/*
 export const ADMIN_SITE_VIEW_FRAGMENT = gql`
     fragment AdminSiteViewFragment on SiteView {
         name
@@ -50,10 +54,9 @@ const QueryComponent = (
 
 
 interface AuthHeaderProps {
-  user: UserFragment | null;
   history: History;
 }
-
+*/
 const StyledWrapper = styled.div`
   nav.navbar {
     background: ${props => props.theme.authHeader.headerBackground};
@@ -90,7 +93,8 @@ const StyledWrapper = styled.div`
 
 const ThemedStyledWrapper = withTheme(StyledWrapper);
 
-export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
+/*
+export class AuthHeaderOld extends React.PureComponent<AuthHeaderProps> {
 
   pushToDefault = () => {
     // this is a temp fix to handle default hash not getting updated on logo click
@@ -154,6 +158,65 @@ export class AuthHeader extends React.PureComponent<AuthHeaderProps> {
       </QueryComponent>
     );
   }
+}
+*/
+
+const AuthHeader = (props) => {
+  const dispatch = useDispatch();
+  const user = useSelector( (state : RootState)  => state.user.current);
+  const adminSiteView = useSelector( (state: RootState) => state.site.adminSiteView);
+  const hideDonation = adminSiteView?.site?.hideDonation;
+
+  useEffect( () => {
+    dispatch(fetchAdminUserSite());
+  },[dispatch,user]);
+
+  const pushToDefault = () => {
+    // this is a temp fix to handle default hash not getting updated on logo click
+      props.history.push('/search?sv=default')
+      window.location.reload()
+  }
+
+  return (
+        <ThemedStyledWrapper>
+          <Navbar
+            collapseOnSelect
+            fluid
+            className="navbar-fixed-top"
+            style={{ paddingLeft: '15px', paddingRight: '15px' }}>
+            <Navbar.Header>
+              <Navbar.Brand>
+                <div id="logo" onClick={pushToDefault}>
+                  <span></span>
+                </div>
+              </Navbar.Brand>
+              <Navbar.Toggle />
+            </Navbar.Header>
+            <Navbar.Collapse>
+              <Nav pullRight>
+                {hideDonation ?
+                  null : <NavItem
+                    target="_blank"
+                    eventKey={2}
+                    href="https://home.clinwiki.org/make-a-donation/">
+                    Donate to ClinWiki
+                    </NavItem>
+                }
+                <NavItem eventKey={1} href="https://home.clinwiki.org/" target="_blank">
+                  About ClinWiki
+          </NavItem>
+                <Row>
+                  <UserProfileHeaderButton
+                    user={user}
+                    history={props.history}
+                    data={adminSiteView}
+                  />
+                </Row>
+              </Nav>
+            </Navbar.Collapse>
+          </Navbar>
+        </ThemedStyledWrapper>
+  );
 }
 
 export default AuthHeader;

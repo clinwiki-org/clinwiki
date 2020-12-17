@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React,{useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {updatePassword} from 'services/user/actions';
 import {
   Mutation,
   MutationComponentOptions,
@@ -17,6 +19,7 @@ import { setLocalJwt } from 'utils/localStorage';
 import StyledError from './StyledError';
 import CurrentUser from 'containers/CurrentUser';
 
+/*
 const UPDATE_PASSWORD_MUTATION = gql`
   mutation UpdatePasswordMutation($input: UpdatePasswordInput!) {
     updatePassword(input: $input) {
@@ -57,7 +60,7 @@ type UpdatePasswordMutationFn = MutationFunction<
   UpdatePasswordMutationVariables
 >;
 
-class UpdatePassword extends React.Component<
+class UpdatePasswordOld extends React.Component<
   UpdatePasswordProps,
   UpdatePasswordState
 > {
@@ -175,6 +178,56 @@ class UpdatePassword extends React.Component<
       </StyledWrapper>
     );
   }
+}
+*/
+const UpdatePassword = (props) => {
+  const dispatch = useDispatch();
+  const [password,setPassword] = useState('');
+  const [passwordConfirmation,setPasswordConfirmation] = useState('');
+  const [error,setError] = useState('');
+
+  const  handleResetSubmit = () => {
+
+    if (password !== passwordConfirmation) {
+      alert('passwords do not match');
+    }
+    if (passwordConfirmation.length < 8) {
+      alert('password needs to be 8 characters');
+    } 
+    else {
+      let token = new URLSearchParams(props.history.location.search).getAll(
+        'reset_password_token'
+      );
+      const resetPasswordToken = token.toString();
+      dispatch(updatePassword( resetPasswordToken, password, passwordConfirmation))
+    }
+  };
+
+
+  return (
+    <StyledWrapper>
+    <StyledContainer>
+      <StyledFormControl
+        name="password"
+        type="password"
+        placeholder="New Password"
+        value={password}
+        onChange={(ev) => setPassword(ev.target.value)}
+      />
+      <StyledFormControl
+        name="passwordConfirmation"
+        type="password"
+        placeholder="Confirm New Password"
+        value={passwordConfirmation}
+        onChange={(ev) => setPasswordConfirmation(ev.target.value)}
+      />
+      <ThemedButton
+        onClick={handleResetSubmit}>
+        Submit
+      </ThemedButton>
+    </StyledContainer>
+  </StyledWrapper>
+  );
 }
 
 export default UpdatePassword;
