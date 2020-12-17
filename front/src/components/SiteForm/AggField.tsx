@@ -46,7 +46,6 @@ export interface OptionVisibility {
   hideRank: boolean;
   hideDisplayType: boolean;
   hidePreSelected: boolean;
-  hideDropdownOpen: boolean;
 }
 
 interface AggFieldProps {
@@ -149,9 +148,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
         return `workflows.${this.props.workflowName}.suggestedLabelsConfig.${this.props.field.name}`;
     }
   };
-  handleDropdownOpenMutation = e => {
-    this.props.onAddMutation(e);
-  };
+
   handleDefaultSortMutation = e => {
     this.props.onAddMutation(e);
   };
@@ -325,7 +322,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       hideRank: false,
       hideDisplayType: false,
       hidePreSelected: false,
-      hideDropdownOpen: false,
     };
     return { ...defaultVisibility, ...current };
   }
@@ -577,6 +573,11 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     return this.props.field.defaultToOpen
   }
 
+  shouldDropdownDefaultToOpen = () => {
+    if (!this.props.field.dropdownOpen) return false
+
+    return this.props.field.dropdownOpen
+  }
 
   renderSortCheckbox = () => {
     if (this.props.sortables) {
@@ -614,6 +615,12 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           name={`set:${this.getPath(this.props.configType)}.defaultToOpen`}
           checked={this.shouldDefaultToOpen()}
           onChange={this.handleCheckboxToggle(!this.props.field.defaultToOpen)}
+        ></Checkbox>
+        <StyledLabel>Dropdown Start Open </StyledLabel>
+        <Checkbox
+          name={`set:${this.getPath(this.props.configType)}.dropdownOpen`}
+          checked={this.shouldDropdownDefaultToOpen()}
+          onChange={this.handleCheckboxToggle(!this.props.field.dropdownOpen)}
         ></Checkbox>
       </>
     )

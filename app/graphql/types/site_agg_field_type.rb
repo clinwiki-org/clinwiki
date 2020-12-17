@@ -55,10 +55,11 @@ module Types
 
     def default_to_open
       object[:defaultToOpen]
+    end 
+    
+    def dropdown_open
+      object[:dropdownOpen]
     end
 
-    def dropdown_open
-      object[:dropdown_open]
-    end
   end
 end
