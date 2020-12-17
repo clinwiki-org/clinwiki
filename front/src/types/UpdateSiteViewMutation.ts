@@ -149,6 +149,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   desc: boolean;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -161,12 +167,6 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   values: string[];
 }
 
-export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields {
   __typename: "SiteAggField";
   order: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_order | null;
@@ -174,16 +174,16 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   display: FieldDisplay;
   displayName: string;
   aggSublabel: string | null;
+  defaultToOpen: boolean | null;
+  bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
-  showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
-  defaultToOpen: boolean | null;
+  showAllowMissing: boolean | null;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_selected {
@@ -204,6 +204,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   desc: boolean;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -216,12 +222,6 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   values: string[];
 }
 
-export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields {
   __typename: "SiteAggField";
   order: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_order | null;
@@ -229,16 +229,16 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   display: FieldDisplay;
   displayName: string;
   aggSublabel: string | null;
+  defaultToOpen: boolean | null;
+  bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
-  showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
-  defaultToOpen: boolean | null;
+  showAllowMissing: boolean | null;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_selected {
@@ -287,6 +287,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fiel
   desc: boolean;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -299,12 +305,6 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fiel
   values: string[];
 }
 
-export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields {
   __typename: "SiteAggField";
   order: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_order | null;
@@ -312,16 +312,16 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fiel
   display: FieldDisplay;
   displayName: string;
   aggSublabel: string | null;
+  defaultToOpen: boolean | null;
+  bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_preselected;
   visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
-  showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
-  defaultToOpen: boolean | null;
+  showAllowMissing: boolean | null;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_selected {
@@ -342,6 +342,12 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
   desc: boolean;
 }
 
+export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -354,12 +360,6 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
   values: string[];
 }
 
-export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields {
   __typename: "SiteAggField";
   order: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_order | null;
@@ -367,16 +367,16 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
   display: FieldDisplay;
   displayName: string;
   aggSublabel: string | null;
+  defaultToOpen: boolean | null;
+  bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
-  showAllowMissing: boolean | null;
   showFilterToolbar: boolean | null;
-  defaultToOpen: boolean | null;
+  showAllowMissing: boolean | null;
 }
 
 export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_selected {

@@ -168,10 +168,11 @@ const SearchContainer = styled.div`
   margin-bottom: 1em;
   margin-left: 45px;
   margin-right: 45px;
-  margin-bottom: 45px;
+  margin-bottom: 18px;
   display: flex;
   flex-direction: column;
   padding: 10px;
+  position: relative;
   .rich-text {
     background-color: #f2f2f2;
   }
@@ -299,6 +300,20 @@ const SearchContainer = styled.div`
 
   .headerColumn {
     text-transform: none;
+  }
+
+  .collapse-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .collapser {
+    cursor: pointer;
+  }
+
+  .collapse-title {
+    font-weight: 700;
   }
 `;
 

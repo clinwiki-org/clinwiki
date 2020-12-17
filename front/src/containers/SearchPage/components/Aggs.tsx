@@ -217,7 +217,7 @@ const Aggs = (props: AggsProps) => {
                 presentSiteView
               );
               crowdAggPresearch = (
-                <span>
+                <PresearchContainer>
                   {getCrowdAggs(Object.keys(crowdAggs), true).map(k =>
                     crowdAggs[k] ? (
                       <AggContext.Provider
@@ -262,7 +262,7 @@ const Aggs = (props: AggsProps) => {
                       </div>
                     )
                   )}
-                </span>
+                </PresearchContainer>
               );
             }
 

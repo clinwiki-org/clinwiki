@@ -490,7 +490,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;
     return (
-      <ThemedSearchContainer>
         <ApolloConsumer>
           {apolloClient => (
             <CurrentUser>
@@ -585,7 +584,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
             </CurrentUser>
           )}
         </ApolloConsumer>
-      </ThemedSearchContainer>
     );
   }
 }

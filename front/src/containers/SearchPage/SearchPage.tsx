@@ -8,6 +8,7 @@ import {
 } from 'types/SearchPageParamsQuery';
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import { ThemedButton, ThemedSearchContainer } from '../../components/StyledComponents';
+import Collapser from '../../components/Collapser'
 import {
   map,
   dissoc,
@@ -48,6 +49,7 @@ import RichTextEditor from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
+import { assertNullableType } from 'graphql';
 
 
 const MainContainer = styled(Col)`
@@ -237,6 +239,8 @@ function SearchPage(props: SearchPageProps) {
   const [shouldRender, setShouldRender] = useState(true)
   const [totalRecords, setTotalRecords] = useState(0)
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
+  const [collapsePresearch, setCollapsePresearch] = useState(false)
+  const [collapseCrumbs, setCollapseCrumbs] = useState(false)
   const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
     variables: params.current,
     onCompleted: (data)=> afterSearchParamsUpdate(data)
@@ -524,9 +528,13 @@ function SearchPage(props: SearchPageProps) {
     const openedKind = openedAgg && openedAgg.kind;
 
     const { pageViewUrl } = getPageView();
-
+    
     return (
       <ThemedSearchContainer>
+        {/* <div className="collapse-container"><div>{collapsePresearch ? "Presearch" : ""}</div><div className="collapser" onClick={() => setCollapsePresearch(!collapsePresearch)}>{collapsePresearch ? <FontAwesome name={"chevron-up"} /> : <FontAwesome name={"chevron-down"} />}</div></div> */}
+        <Collapser title="Presearch" collapse={()=> setCollapsePresearch(!collapsePresearch)} state={collapsePresearch}/>
+        {!collapsePresearch ? 
+        <div>
         <InstructionsContainer>
           {presearchText && (
             <Instructions>
@@ -588,6 +596,7 @@ function SearchPage(props: SearchPageProps) {
             {presearchButton.name}
           </ThemedButton>
         )}
+        </div> : null}
       </ThemedSearchContainer>
     );
   };
@@ -608,6 +617,9 @@ function SearchPage(props: SearchPageProps) {
     const { presentSiteView } = props;
     const hash = getHashFromLocation();
     return (
+      <ThemedSearchContainer>
+       <Collapser title="Filter Bar" collapse={()=> setCollapseCrumbs(!collapseCrumbs)} state={collapseCrumbs}/>
+        {!collapseCrumbs ? 
       <CrumbsBar
         searchParams={handledParams}
         onBulkUpdate={handleBulkUpdateClick}
@@ -621,7 +633,8 @@ function SearchPage(props: SearchPageProps) {
         totalResults={totalRecords}
         searchHash={hash || ''}
         updateSearchParams={updateSearchParams}
-      />
+      /> : null}
+      </ThemedSearchContainer>
     );
   };
 
