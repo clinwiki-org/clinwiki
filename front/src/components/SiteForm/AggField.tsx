@@ -36,6 +36,7 @@ export interface FieldType {
   showAllowMissing?: Boolean;
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
+  dropdownOpen?: Boolean;
 }
 
 export interface OptionVisibility {
@@ -45,6 +46,7 @@ export interface OptionVisibility {
   hideRank: boolean;
   hideDisplayType: boolean;
   hidePreSelected: boolean;
+  hideDropdownOpen: boolean;
 }
 
 interface AggFieldProps {
@@ -60,6 +62,7 @@ interface AggFieldProps {
   showAllowMissing?: Boolean;
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
+  dropdownOpen?: Boolean;
 }
 
 interface AggFieldState {
@@ -145,6 +148,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       case 'workflow':
         return `workflows.${this.props.workflowName}.suggestedLabelsConfig.${this.props.field.name}`;
     }
+  };
+  handleDropdownOpenMutation = e => {
+    this.props.onAddMutation(e);
   };
   handleDefaultSortMutation = e => {
     this.props.onAddMutation(e);
@@ -319,6 +325,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       hideRank: false,
       hideDisplayType: false,
       hidePreSelected: false,
+      hideDropdownOpen: false,
     };
     return { ...defaultVisibility, ...current };
   }
