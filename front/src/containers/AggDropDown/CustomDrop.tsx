@@ -23,6 +23,8 @@ import { capitalize } from 'utils/helpers';
 import {
   propEq,
 } from 'ramda';
+import withTheme from 'containers/ThemeProvider';
+
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
   buckets: AggBucket[],
@@ -79,8 +81,7 @@ const SelectBoxBox = styled.div`
   width: 100%;
   margin: 0;
   position: relative;
-  color: rgb(186, 197, 208);
-  background: rgb(51,51,51);
+  color: ${props => props.theme.aggSideBar.sideBarFont};
  }
   * {
     box-sizing: border-box;
@@ -106,7 +107,7 @@ const SelectBoxBox = styled.div`
     background: #ffffff;
     box-shadow: inset 0px 0px 1px 1px #969696;
     box-sizing: border-box;
-    color:black;
+    color:${props => props.theme.aggSideBar.sideBarFont};
   }
 
   .item-content {
@@ -203,6 +204,7 @@ const SelectBoxBox = styled.div`
   cursor: pointer;
 }
 `
+const ThemedSelectBox= withTheme(SelectBoxBox)
 class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDownState> {
   //@ts-ignore
   state = {
@@ -285,11 +287,12 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   };
   renderPreValue = (item) => {
-    // if (this.props.field.display == "checkbox" || this.props.field.dispaly =="STRING") {
+     if (this.props.field.display =="STRING") {
     return <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}>{
       this.isSelected(item) ? <FontAwesome name='check' style={{ display: 'flex' }} /> : null
     }</div>;
-    // }
+    }
+    return null 
   };
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
@@ -305,7 +308,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     if (this.props.isPresearch) {
       //Calling this our standard presearch for now
       return (
-        <SelectBoxBox>
+        <ThemedSelectBox>
           <ThemedPresearchCard>
             <ThemedPresearchHeader>
 
@@ -372,12 +375,12 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
               </InfiniteScroll>
             </div>
           </ThemedPresearchCard>
-        </SelectBoxBox>
+        </ThemedSelectBox>
       );
     } else {
 
       return (
-        <SelectBoxBox>
+        <ThemedSelectBox>
           <div className="select-box--container-facet">
             <div className={"select-box--title-facet"}>
               {capitalize(title)}
@@ -442,7 +445,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
             </div>
           </div>
-        </SelectBoxBox>
+        </ThemedSelectBox>
       );
     }
   }

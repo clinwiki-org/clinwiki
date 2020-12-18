@@ -120,7 +120,7 @@ const PresearchCard = styled.div`
   background: white;
   // min-height: 320px;
   .select-box--sublabel{
-    padding-left: '5px';
+    padding-left: 5px;
     // background: ${props => props.theme.primaryColor};
     color: ${props => props.theme.presearch.presearchLabelTextColor};
   }
@@ -133,7 +133,7 @@ const PresearchHeader = styled.div`
   padding: 5px;
   // border-top-left-radius: 4px;
   // border-top-right-radius: 4px;
-  // height: 50px;
+  height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
