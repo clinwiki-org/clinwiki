@@ -260,6 +260,7 @@ const Aggs = (props: AggsProps) => {
         );
         const crowdAggHFields = getCrowdAggs(Object.keys(crowdAggs), true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "horizontal" || findFields(k, props.presentSiteView, presearch)?.layout == null)
         const crowdAggVFields = getCrowdAggs(Object.keys(crowdAggs), true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "vertical")
+        
         crowdAggPresearchHorizontal = crowdAggHFields.map(k => { return (
           renderCrowdAggDropDownWContext(k, preSearchCrowdAggs, visibleOptionsByName)
           ) 
@@ -332,7 +333,7 @@ const Aggs = (props: AggsProps) => {
             <div className="horizontal-pre">
               {aggPresearchHorizontal}
               {crowdAggPresearchHorizontal}
-              {props.presearchButtonOptions ? 
+              {(aggPresearchHorizontal.length > 0 || crowdAggPresearchHorizontal.length > 0) ? 
               <div className="horizontal-pre-button">
                 <ThemedButton 
                   style={{ width: 200, marginLeft: 13 }}
@@ -350,9 +351,23 @@ const Aggs = (props: AggsProps) => {
             </div>
             
             <div className="vertical-pre">
-            These aggs have all been selected to be vertical
               {crowdAggPresearchVertical}
               {aggPresearchVertical}
+              {(aggPresearchVertical.length > 0 || crowdAggPresearchVertical.length > 0) ? 
+              <div className="vertical-pre-button">
+                <ThemedButton 
+                  style={{ width: 200, marginLeft: 13 }}
+                  onClick={() =>
+                    //@ts-ignore
+                    props.handlePresearchButtonClick (
+                      props.presearchButtonOptions.hash,
+                      props.presearchButtonOptions.presearchButton.target,
+                      props.presearchButtonOptions.pageViewUrl
+                    )
+                  }
+                >{props.presearchButtonOptions.presearchButton.name}
+                </ThemedButton>
+              </div>: null }
             </div>
           </PresearchContainer>
         );

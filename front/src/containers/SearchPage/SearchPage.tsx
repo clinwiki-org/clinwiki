@@ -595,19 +595,7 @@ function SearchPage(props: SearchPageProps) {
           handlePresearchButtonClick={handlePresearchButtonClick}
           presearchButtonOptions={presearchButtonOptions}
         />
-        {presearchButton.name && (
-          <ThemedButton
-            onClick={() =>
-              handlePresearchButtonClick(
-                hash,
-                presearchButton.target,
-                pageViewUrl
-              )
-            }
-            style={{ width: 200, marginLeft: 13 }}>
-            {presearchButton.name}
-          </ThemedButton>
-        )}
+  
         </div> : null}
       </ThemedSearchContainer>
     );

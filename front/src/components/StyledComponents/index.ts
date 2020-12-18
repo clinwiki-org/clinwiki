@@ -110,18 +110,26 @@ const PresearchCard = styled.div`
   // border-width: 1px;
   // border-style: solid;
   // border-color: ${props => props.theme.buttonSecondary};
-  margin: 10px 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: ${props => props.theme.presearch.presearchCardMargin};
+  margin-right: ${props => props.theme.presearch.presearchCardMargin};
   flex: 1;
   min-width: 320px;
   max-width: 320px;
   background: white;
   // min-height: 320px;
+  .select-box--sublabel{
+    padding-left: '5px';
+    // background: ${props => props.theme.primaryColor};
+    color: ${props => props.theme.presearch.presearchLabelTextColor};
+  }
 `;
 
 export const ThemedPresearchCard = withTheme(PresearchCard);
 
 const PresearchHeader = styled.div`
-  background-color: ${props => props.theme.presearch.presearchHeaders};
+  background-color: ${props => props.theme.presearch.presearchLabelColor};
   padding: 5px;
   // border-top-left-radius: 4px;
   // border-top-right-radius: 4px;
@@ -135,7 +143,7 @@ const PresearchHeader = styled.div`
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
 
 export const PresearchTitle = styled.div`
-  color: #333;
+  color: ${props => props.theme.presearchLabelTextColor}; 
   font-size: 18px;
   font-weight: 400;
   margin-left: 5px;

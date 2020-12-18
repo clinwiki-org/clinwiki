@@ -44,6 +44,9 @@ export interface Theme {
   };
   presearch: {
     presearchHeaders: string;
+    presearchLabelColor: string;
+    presearchLabelTextColor: string;
+    presearchCardMargin: string;
   };
   searchResults: {
     resultsHeaderBackground: string;
@@ -83,6 +86,9 @@ function themeFromSite(site): Theme {
     primaryAltColor: '#4889BF',
     sideBarColor: '#4d5762',
     authHeaderColor: '#5786AD',
+    presearchLabelColor: "#6BA5D6",
+    presearchLabelTextColor: "#fff",
+    presearchCardMargin: '10px'
   };
   // if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object.
   if (
@@ -109,6 +115,9 @@ function themeFromSite(site): Theme {
     primaryAltColor: thisTheme.primaryAltColor || '#4889BF',
     sideBarColor: thisTheme.sideBarColor || '#4d5762',
     authHeaderColor: thisTheme.authHeaderColor || '#5786AD',
+    presearchLabelColor: thisTheme.presearchLabelColor || '#6BA5D6',
+    presearchLabelTextColor: thisTheme.presearchLabelTextColor || 'white',
+    presearchCardMargin: thisTheme.presearchCardMargin || '10px',
     grayHeaderFont: '#777777',
     buttonHover: '#e6e6e6',
     buttonBorderHover: '#adadad',
@@ -161,6 +170,9 @@ function themeFromSite(site): Theme {
     },
     presearch: {
       presearchHeaders: colors.primaryColor,
+      presearchLabelTextColor: colors.presearchLabelTextColor,
+      presearchLabelColor:  colors.presearchLabelColor,
+      presearchCardMargin: colors.presearchCardMargin
     },
     searchResults: {
       resultsHeaderBackground: colors.primaryColor,
