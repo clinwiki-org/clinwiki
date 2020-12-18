@@ -8,6 +8,7 @@ import {
   reduce,
   pathOr,
 } from 'ramda';
+import findFields from 'utils/aggs/findFields';
 import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import { gql }  from '@apollo/client';
 import AggDropDown from 'containers/AggDropDown';
@@ -33,6 +34,7 @@ import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
 import { useQuery } from '@apollo/client';
+import {PresearchContainer, ThemedButton} from '../../../components/StyledComponents';
 
 const QUERY = gql`
   query SearchPageAggsQuery(
@@ -122,21 +124,11 @@ interface AggsProps {
   updateSearchParams: (params: SearchParams) => Promise<void>;
   searchParams: SearchParams;
   getTotalResults: Function;
+  handlePresearchButtonClick?: Function;
+  presearchButtonOptions?: any
 }
 
-const PresearchContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  @media (max-width: 768px) {
-    display: flex;
-    flex-direction: column;
-    max-height: 1500px;
-  }
-  span {
-    display: contents;
-  }
-`;
+
 
 const AggSideBarTitle = styled.h4`
   color: ${props => props.theme.aggSideBar.sideBarTitleFont};
@@ -173,153 +165,321 @@ const Aggs = (props: AggsProps) => {
     return filter(x => crowdAggs.includes(x), displayed);
   };
 
-    const {
-      filters,
-      crowdFilters,
-      addFilter,
-      addFilters,
-      removeFilter,
-      removeFilters,
-      searchParams,
-      updateSearchParams,
-      presearch,
-      presentSiteView,
-      preSearchAggs,
-      preSearchCrowdAggs,
-    } = props;
-    //commented out because not sure how to pass two parameters when using compose
-    // const sortByNameCi = sortBy(compose(toLower, aggToField);
+  const {
+    filters,
+    crowdFilters,
+    addFilter,
+    addFilters,
+    removeFilter,
+    removeFilters,
+    searchParams,
+    updateSearchParams,
+    presearch,
+    presentSiteView,
+    preSearchAggs,
+    preSearchCrowdAggs,
+  } = props;
+  //commented out because not sure how to pass two parameters when using compose
+  // const sortByNameCi = sortBy(compose(toLower, aggToField);
+  const result = useQuery(QUERY, {
+    variables: { ...searchParams }, 
+  });
+  let data = result.data
+  if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
+  if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
+  
+  if (data && data.crowdAggs && data.search?.aggs) {
+      let recordsTotal = data.search?.recordsTotal;
+      props.getTotalResults(recordsTotal);
+      const aggs: AggBucketMap = {};
+      for (const a of data.search?.aggs || []) {
+        aggs[a.name] = [];
+      }
+      const crowdAggs: AggBucketMap = {};
+      for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
+        crowdAggs[bucket.key] = [];
+      }
+      let crowdAggDropdowns: React.ReactElement<any> | null = null;
+      let crowdAggPresearch: React.ReactElement<any> | null = null;
+      let crowdAggPresearchHorizontal: any;
+      let crowdAggPresearchVertical: any;
+      let aggPresearchHorizontal: any;
+      let aggPresearchVertical: any;
+      const emptySet = new Set();
 
-      const result = useQuery(QUERY, {
-        variables: { ...searchParams }, 
-      });
-        let data = result.data
-        if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
-        if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
-       
-            if (data && data.crowdAggs && data.search?.aggs) {
-              let recordsTotal = data.search?.recordsTotal;
-              props.getTotalResults(recordsTotal);
-              const aggs: AggBucketMap = {};
-              for (const a of data.search?.aggs || []) {
-                aggs[a.name] = [];
+      if (preSearchCrowdAggs && crowdAggs) {
+        const visibleOptionsByName = getVisibleOptionsByNamePresearch(
+          presentSiteView
+        );
+        const crowdAggHFields = getCrowdAggs(Object.keys(crowdAggs), true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "horizontal" || findFields(k, props.presentSiteView, presearch)?.layout == null)
+        const crowdAggVFields = getCrowdAggs(Object.keys(crowdAggs), true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "vertical")
+      
+       crowdAggPresearchHorizontal = crowdAggHFields.map(k => { return (
+          crowdAggs[k] ? (
+            <AggContext.Provider
+              key={k}
+              value={{
+                updater: new AggFilterInputUpdater(
+                  k,
+                  searchParams,
+                  updateSearchParams,
+                  'crowdAggFilters'
+                ),
+              }}>
+              <AggDropDown
+                key={k}
+                agg={k}
+                selectedKeys={crowdFilters[k] || emptySet}
+                buckets={preSearchCrowdAggs[k]}
+                isOpen={true}
+                aggKind="crowdAggs"
+                addFilter={(agg, item) => addFilter(agg, item, true)}
+                addFilters={(agg, items) => addFilters(agg, items, true)}
+                removeFilter={(agg, item) =>
+                  removeFilter && removeFilter(agg, item, true)
+                }
+                removeFilters={(agg, items) =>
+                  removeFilters(agg, items, true)
+                }
+                searchParams={searchParams}
+                resetSelectAll={props.resetSelectAll}
+                removeSelectAll={props.removeSelectAll}
+                presearch
+                presentSiteView={props.presentSiteView}
+                configType="presearch"
+                visibleOptions={visibleOptionsByName[k]}
+              />
+            </AggContext.Provider>
+          ) : (
+            <div
+              key={k}
+              style={{ display: 'flex', justifyContent: 'center' }}>
+              <BeatLoader key="loader" color="#fff" />
+            </div>
+          )
+        ) 
+      }) 
+
+      crowdAggPresearchVertical = crowdAggVFields.map(k => { return (
+        crowdAggs[k] ? (
+          <AggContext.Provider
+            key={k}
+            value={{
+              updater: new AggFilterInputUpdater(
+                k,
+                searchParams,
+                updateSearchParams,
+                'crowdAggFilters'
+              ),
+            }}>
+            <AggDropDown
+              key={k}
+              agg={k}
+              selectedKeys={crowdFilters[k] || emptySet}
+              buckets={preSearchCrowdAggs[k]}
+              isOpen={true}
+              aggKind="crowdAggs"
+              addFilter={(agg, item) => addFilter(agg, item, true)}
+              addFilters={(agg, items) => addFilters(agg, items, true)}
+              removeFilter={(agg, item) =>
+                removeFilter && removeFilter(agg, item, true)
               }
-              const crowdAggs: AggBucketMap = {};
-              for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
-                crowdAggs[bucket.key] = [];
+              removeFilters={(agg, items) =>
+                removeFilters(agg, items, true)
               }
-            let crowdAggDropdowns: React.ReactElement<any> | null = null;
-            let crowdAggPresearch: React.ReactElement<any> | null = null;
-            const emptySet = new Set();
+              searchParams={searchParams}
+              resetSelectAll={props.resetSelectAll}
+              removeSelectAll={props.removeSelectAll}
+              presearch
+              presentSiteView={props.presentSiteView}
+              configType="presearch"
+              visibleOptions={visibleOptionsByName[k]}
+            />
+          </AggContext.Provider>
+        ) : (
+          <div
+            key={k}
+            style={{ display: 'flex', justifyContent: 'center' }}>
+            <BeatLoader key="loader" color="#fff" />
+          </div>
+        )
+      ) 
+    }) 
 
-            if (preSearchCrowdAggs && crowdAggs) {
-              const visibleOptionsByName = getVisibleOptionsByNamePresearch(
-                presentSiteView
-              );
-              crowdAggPresearch = (
-                <PresearchContainer>
-                  {getCrowdAggs(Object.keys(crowdAggs), true).map(k =>
-                    crowdAggs[k] ? (
-                      <AggContext.Provider
-                        key={k}
-                        value={{
-                          updater: new AggFilterInputUpdater(
-                            k,
-                            searchParams,
-                            updateSearchParams,
-                            'crowdAggFilters'
-                          ),
-                        }}>
-                        <AggDropDown
-                          key={k}
-                          agg={k}
-                          selectedKeys={crowdFilters[k] || emptySet}
-                          buckets={preSearchCrowdAggs[k]}
-                          isOpen={true}
-                          aggKind="crowdAggs"
-                          addFilter={(agg, item) => addFilter(agg, item, true)}
-                          addFilters={(agg, items) => addFilters(agg, items, true)}
-                          removeFilter={(agg, item) =>
-                            removeFilter && removeFilter(agg, item, true)
-                          }
-                          removeFilters={(agg, items) =>
-                            removeFilters(agg, items, true)
-                          }
-                          searchParams={searchParams}
-                          resetSelectAll={props.resetSelectAll}
-                          removeSelectAll={props.removeSelectAll}
-                          presearch
-                          presentSiteView={props.presentSiteView}
-                          configType="presearch"
-                          visibleOptions={visibleOptionsByName[k]}
-                        />
-                      </AggContext.Provider>
-                    ) : (
-                      <div
-                        key={k}
-                        style={{ display: 'flex', justifyContent: 'center' }}>
-                        <BeatLoader key="loader" color="#fff" />
-                      </div>
+ 
+      
+      
+
+      }
+    
+      if (presearch && preSearchAggs) {
+        console.log('presearch options', props.presearchButtonOptions)
+        const aggHFields = getAggs(props.presentSiteView, true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "horizontal" || findFields(k, props.presentSiteView, presearch)?.layout == null)
+        const aggVFields = getAggs(props.presentSiteView, true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "vertical")
+        {aggPresearchVertical = aggVFields.map(k => { return (
+          aggs[k] ? (
+            <AggContext.Provider
+              key={k}
+              value={{
+                updater: new AggFilterInputUpdater(
+                  k,
+                  searchParams,
+                  updateSearchParams,
+                  'aggFilters'
+                ),
+              }}>
+              <AggDropDown
+                key={k}
+                agg={k}
+                selectedKeys={filters[k] || emptySet}
+                buckets={aggs[k]}
+                isOpen={true}
+                aggKind="aggs"
+                addFilter={addFilter}
+                addFilters={addFilters}
+                removeFilter={removeFilter}
+                removeFilters={removeFilters}
+                searchParams={searchParams}
+                resetSelectAll={props.resetSelectAll}
+                removeSelectAll={props.removeSelectAll}
+                presearch
+                presentSiteView={props.presentSiteView}
+                configType="presearch"
+              />
+            </AggContext.Provider>
+            ) : (
+            <div
+              key={k}
+              style={{ display: 'flex', justifyContent: 'center' }}>
+              <BeatLoader key="loader" color="#fff" />
+            </div>
+          )
+        )}
+      )}
+    
+    {aggPresearchHorizontal = aggHFields.map(k => { return (
+              aggs[k] ? (
+                <AggContext.Provider
+                  key={k}
+                  value={{
+                    updater: new AggFilterInputUpdater(
+                      k,
+                      searchParams,
+                      updateSearchParams,
+                      'aggFilters'
+                    ),
+                  }}>
+                  <AggDropDown
+                    key={k}
+                    agg={k}
+                    selectedKeys={filters[k] || emptySet}
+                    buckets={aggs[k]}
+                    isOpen={true}
+                    aggKind="aggs"
+                    addFilter={addFilter}
+                    addFilters={addFilters}
+                    removeFilter={removeFilter}
+                    removeFilters={removeFilters}
+                    searchParams={searchParams}
+                    resetSelectAll={props.resetSelectAll}
+                    removeSelectAll={props.removeSelectAll}
+                    presearch
+                    presentSiteView={props.presentSiteView}
+                    configType="presearch"
+                  />
+                </AggContext.Provider>
+              ) : (
+                <div
+                  key={k}
+                  style={{ display: 'flex', justifyContent: 'center' }}>
+                  <BeatLoader key="loader" color="#fff" />
+                </div>
+              )
+            )
+          }
+        )}
+        return (
+          <PresearchContainer>
+            <div className="horizontal-pre">
+              {aggPresearchHorizontal}
+              {crowdAggPresearchHorizontal}
+              {props.presearchButtonOptions ? 
+              <div className="horizontal-pre-button">
+                <ThemedButton 
+                  style={{ width: 200, marginLeft: 13 }}
+                  onClick={() =>
+                    //@ts-ignore
+                    props.handlePresearchButtonClick (
+                      props.presearchButtonOptions.hash,
+                      props.presearchButtonOptions.presearchButton.target,
+                      props.presearchButtonOptions.pageViewUrl
                     )
-                  )}
-                </PresearchContainer>
-              );
-            }
+                  }
+                >{props.presearchButtonOptions.presearchButton.name}
+                </ThemedButton>
+              </div>: null }
+            </div>
+            
+            <div className="vertical-pre">
+            These aggs have all been selected to be vertical
+              {crowdAggPresearchVertical}
+              {aggPresearchVertical}
+            </div>
+          </PresearchContainer>
+        );
+      }
 
-            if (presearch && preSearchAggs) {
-              return (
-                <PresearchContainer>
-                  {getAggs(props.presentSiteView, true).map(k =>
-                    aggs[k] ? (
-                      <AggContext.Provider
-                        key={k}
-                        value={{
-                          updater: new AggFilterInputUpdater(
-                            k,
-                            searchParams,
-                            updateSearchParams,
-                            'aggFilters'
-                          ),
-                        }}>
-                        <AggDropDown
-                          key={k}
-                          agg={k}
-                          selectedKeys={filters[k] || emptySet}
-                          buckets={aggs[k]}
-                          isOpen={true}
-                          aggKind="aggs"
-                          addFilter={addFilter}
-                          addFilters={addFilters}
-                          removeFilter={removeFilter}
-                          removeFilters={removeFilters}
-                          searchParams={searchParams}
-                          resetSelectAll={props.resetSelectAll}
-                          removeSelectAll={props.removeSelectAll}
-                          presearch
-                          presentSiteView={props.presentSiteView}
-                          configType="presearch"
-                        />
-                      </AggContext.Provider>
-                    ) : (
-                      <div
-                        key={k}
-                        style={{ display: 'flex', justifyContent: 'center' }}>
-                        <BeatLoader key="loader" color="#fff" />
-                      </div>
-                    )
-                  )}
-                  {crowdAggPresearch}
-                </PresearchContainer>
-              );
-            }
+      if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
+        const visibleOptionsByName = getVisibleOptionsByName(presentSiteView);
 
-            if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
-              const visibleOptionsByName = getVisibleOptionsByName(presentSiteView);
-
-              crowdAggDropdowns = (
-                <div>
-                  <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
-                  {getCrowdAggs(Object.keys(crowdAggs), false).map(k => (
+        crowdAggDropdowns = (
+          <div>
+            <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
+            {getCrowdAggs(Object.keys(crowdAggs), false).map(k => (
+              <AggContext.Provider
+                key={k}
+                value={{
+                  updater: new AggFilterInputUpdater(
+                    k,
+                    searchParams,
+                    updateSearchParams,
+                    'crowdAggFilters'
+                  ),
+                }}>
+                <AggDropDown
+                  agg={k}
+                  removeSelectAll={props.removeSelectAll}
+                  selectedKeys={crowdFilters[k] || emptySet}
+                  buckets={crowdAggs[k]}
+                  isOpen={
+                    props.opened === k &&
+                    props.openedKind === 'crowdAggs'
+                  }
+                  onOpen={props.onOpen}
+                  aggKind="crowdAggs"
+                  addFilter={(agg, item) => addFilter(agg, item, true)}
+                  addFilters={(agg, items) => addFilters(agg, items, true)}
+                  removeFilter={(agg, item) =>
+                    removeFilter && removeFilter(agg, item, true)
+                  }
+                  removeFilters={(agg, items) => removeFilters(agg, items, true)}
+                  searchParams={searchParams}
+                  visibleOptions={visibleOptionsByName[k]}
+                  presentSiteView={presentSiteView}
+                  configType="facetbar"
+                />
+              </AggContext.Provider>
+            ))}
+          </div>
+        );
+      }
+      if (!isEmpty(aggs) && !isNil(aggs)) {
+        return (
+          <div>
+            <div>
+              {getAggs(props.presentSiteView, false).map(k => {
+                return (
+                  aggs[k] ? (
                     <AggContext.Provider
                       key={k}
                       value={{
@@ -327,88 +487,48 @@ const Aggs = (props: AggsProps) => {
                           k,
                           searchParams,
                           updateSearchParams,
-                          'crowdAggFilters'
+                          'aggFilters'
                         ),
                       }}>
                       <AggDropDown
+                        key={k}
                         agg={k}
-                        removeSelectAll={props.removeSelectAll}
-                        selectedKeys={crowdFilters[k] || emptySet}
-                        buckets={crowdAggs[k]}
+                        selectedKeys={filters[k] || emptySet}
+                        buckets={aggs[k]}
                         isOpen={
                           props.opened === k &&
-                          props.openedKind === 'crowdAggs'
+                          props.openedKind === 'aggs'
                         }
                         onOpen={props.onOpen}
-                        aggKind="crowdAggs"
-                        addFilter={(agg, item) => addFilter(agg, item, true)}
-                        addFilters={(agg, items) => addFilters(agg, items, true)}
-                        removeFilter={(agg, item) =>
-                          removeFilter && removeFilter(agg, item, true)
-                        }
-                        removeFilters={(agg, items) => removeFilters(agg, items, true)}
+                        aggKind="aggs"
+                        addFilter={addFilter}
+                        addFilters={addFilters}
+                        removeFilter={removeFilter}
+                        removeFilters={removeFilters}
                         searchParams={searchParams}
-                        visibleOptions={visibleOptionsByName[k]}
-                        presentSiteView={presentSiteView}
+                        resetSelectAll={props.resetSelectAll}
+                        removeSelectAll={props.removeSelectAll}
+                        presentSiteView={props.presentSiteView}
                         configType="facetbar"
                       />
                     </AggContext.Provider>
-                  ))}
-                </div>
-              );
-            }
-            if (!isEmpty(aggs) && !isNil(aggs)) {
-              return (
-                <div>
-                  <div>
-                    {getAggs(props.presentSiteView, false).map(k => {
-                      return (
-                        aggs[k] ? (
-                          <AggContext.Provider
-                            key={k}
-                            value={{
-                              updater: new AggFilterInputUpdater(
-                                k,
-                                searchParams,
-                                updateSearchParams,
-                                'aggFilters'
-                              ),
-                            }}>
-                            <AggDropDown
-                              key={k}
-                              agg={k}
-                              selectedKeys={filters[k] || emptySet}
-                              buckets={aggs[k]}
-                              isOpen={
-                                props.opened === k &&
-                                props.openedKind === 'aggs'
-                              }
-                              onOpen={props.onOpen}
-                              aggKind="aggs"
-                              addFilter={addFilter}
-                              addFilters={addFilters}
-                              removeFilter={removeFilter}
-                              removeFilters={removeFilters}
-                              searchParams={searchParams}
-                              resetSelectAll={props.resetSelectAll}
-                              removeSelectAll={props.removeSelectAll}
-                              presentSiteView={props.presentSiteView}
-                              configType="facetbar"
-                            />
-                          </AggContext.Provider>
-                        ) : null
-                      )
-                    }
-                    )}
-                  </div>
-                  {crowdAggDropdowns}
-                </div>
-              );
-            }
-          }
-          return null
+                  ) : null
+                )
+              }
+              )}
+            </div>
+            {crowdAggDropdowns}
+          </div>
+        );
+      }
+    }
+    return null
 
   }
 
 
 export default Aggs;
+
+
+
+

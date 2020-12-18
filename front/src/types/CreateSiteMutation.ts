@@ -191,6 +191,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch_ag
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  layout: string | null;
   bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteView_search_presearch_aggs_fields_visibleOptions;
@@ -246,6 +247,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_presearch_cr
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  layout: string | null;
   bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteView_search_presearch_crowdAggs_fields_visibleOptions;
@@ -329,6 +331,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_aggs_fields 
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  layout: string | null;
   bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CreateSiteMutation_createSite_site_siteView_search_aggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteView_search_aggs_fields_visibleOptions;
@@ -384,6 +387,7 @@ export interface CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fi
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  layout: string | null;
   bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteView_search_crowdAggs_fields_visibleOptions;
@@ -599,6 +603,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_a
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  layout: string | null;
   bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteViews_search_presearch_aggs_fields_visibleOptions;
@@ -654,6 +659,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_presearch_c
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  layout: string | null;
   bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteViews_search_presearch_crowdAggs_fields_visibleOptions;
@@ -737,6 +743,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_aggs_fields
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  layout: string | null;
   bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteViews_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CreateSiteMutation_createSite_site_siteViews_search_aggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteViews_search_aggs_fields_visibleOptions;
@@ -792,6 +799,7 @@ export interface CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_f
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  layout: string | null;
   bucketKeyValuePairs: CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields_preselected;
   visibleOptions: CreateSiteMutation_createSite_site_siteViews_search_crowdAggs_fields_visibleOptions;

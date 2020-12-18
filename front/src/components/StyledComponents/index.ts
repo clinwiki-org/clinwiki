@@ -19,6 +19,7 @@ const StyledButton = styled.button`
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
+  height: 38px;
   &:hover {
     transform: scale(1.05);
     transition-duration: 0.1s;
@@ -104,18 +105,17 @@ export const ThemedMainContainer = withTheme(MainContainer);
 const PresearchCard = styled.div`
   display: flex;
   flex-direction: column;
-  border-radius: 4px;
+  // border-radius: 4px;
   box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
   // border-width: 1px;
   // border-style: solid;
   // border-color: ${props => props.theme.buttonSecondary};
-  margin: 10px;
+  margin: 10px 0;
   flex: 1;
   min-width: 320px;
   max-width: 320px;
   background: white;
   // min-height: 320px;
-  padding-bottom: .5em;
 `;
 
 export const ThemedPresearchCard = withTheme(PresearchCard);
@@ -123,8 +123,8 @@ export const ThemedPresearchCard = withTheme(PresearchCard);
 const PresearchHeader = styled.div`
   background-color: ${props => props.theme.presearch.presearchHeaders};
   padding: 5px;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  // border-top-left-radius: 4px;
+  // border-top-right-radius: 4px;
   // height: 50px;
   display: flex;
   flex-direction: row;
@@ -174,6 +174,7 @@ const SearchContainer = styled.div`
   flex-direction: column;
   padding: 10px;
   position: relative;
+
   .rich-text {
     background-color: #f2f2f2;
   }
@@ -331,6 +332,34 @@ export const PresearchFilter = styled.div`
   margin-left: 5px;
   //presearch-style fix
   // max-height: 30px;
+`;
+
+export const PresearchContainer = styled.div`
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: flex-start;
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    max-height: 1500px;
+  }
+  span {
+    display: contents;
+  }
+  .horizontal-pre {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .vertical-pre {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .horizontal-pre-button {
+    margin-top: 10px;
+    width: 200px;
+  }
 `;
 
 export const PresearchContent = styled.div`

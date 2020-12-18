@@ -184,12 +184,19 @@ const InstructionsContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   padding: 0 20px;
+  width: 100%;
 `;
 const Instructions = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  width: 100%;
+  padding: 2em 0;
+  .RichTextEditor__root___2QXK- {
+    width: 100%;
+    border: none;
+  }
 `;
 
 
@@ -528,6 +535,9 @@ function SearchPage(props: SearchPageProps) {
     const openedKind = openedAgg && openedAgg.kind;
 
     const { pageViewUrl } = getPageView();
+    const presearchButtonOptions = {
+      hash, presearchButton, pageViewUrl
+    }
     
     return (
       <ThemedSearchContainer>
@@ -549,7 +559,7 @@ function SearchPage(props: SearchPageProps) {
             </Instructions>
           )}
         </InstructionsContainer>
-        {presearchButton.name && (
+        {/* {presearchButton.name && (
           <ThemedButton
             onClick={() =>
               handlePresearchButtonClick(
@@ -561,7 +571,7 @@ function SearchPage(props: SearchPageProps) {
             style={{ width: 200, marginLeft: 13, marginTop: 13 }}>
             {presearchButton.name}
           </ThemedButton>
-        )}
+        )} */}
         <Aggs
           filters={transformFilters(aggFilters)}
           crowdFilters={transformFilters(crowdAggFilters)}
@@ -582,6 +592,8 @@ function SearchPage(props: SearchPageProps) {
           openedKind={openedKind}
           onOpen={handleOpenAgg}
           getTotalResults={setTotalRecords}
+          handlePresearchButtonClick={handlePresearchButtonClick}
+          presearchButtonOptions={presearchButtonOptions}
         />
         {presearchButton.name && (
           <ThemedButton
