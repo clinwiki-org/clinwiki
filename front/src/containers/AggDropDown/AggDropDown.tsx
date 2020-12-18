@@ -49,6 +49,9 @@ import {
 import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 import BucketsDropDown from './BucketsDropDown';
 import LocationAgg from './LocationAgg';
+import CustomDropDown from './CustomDrop';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 
 const PAGE_SIZE = 25;
 
@@ -117,7 +120,7 @@ interface AggDropDownState {
 interface AggDropDownProps {
   agg: string;
   isOpen: boolean;
-  buckets?: AggBucket[];
+  buckets: AggBucket[];
   searchParams: SearchParams;
   aggKind: AggKind;
   selectedKeys: Set<string>;
@@ -139,6 +142,7 @@ interface AggDropDownProps {
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
   fromAggField?: boolean;
+  updater: AggFilterInputUpdater | null;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -838,7 +842,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       });
     }
   }
-
+  handleCheckboxToggle=(bucketKey)=>{
+    this.props.updater && this.props.updater.toggleFilter(bucketKey)
+  }
   render() {
     const { agg, presearch, presentSiteView } = this.props;
     const { isOpen } = this.state;
@@ -849,45 +855,69 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
-        <ThemedPresearchCard>
-          <ThemedPresearchHeader>
-            <PresearchTitle>
-              {this.props.aggKind === 'crowdAggs'
-                ? capitalize(configuredLabel) || title
-                : capitalize(title)}
-            </PresearchTitle>
-          </ThemedPresearchHeader>
-          <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
-        </ThemedPresearchCard>
+        <CustomDropDown
+        buckets={this.state.buckets}
+        isPresearch={true}
+        selectedKeys={this.props.selectedKeys}
+        field={currentAgg}
+        onContainerToggle={this.handleToggle}
+        handleLoadMore={this.handleLoadMore}
+        hasMore={this.state.hasMore}
+        onCheckBoxToggle={this.handleCheckboxToggle}
+        handleSelectAll={this.selectAll}
+
+        />
+        // <ThemedPresearchCard>
+        //   <ThemedPresearchHeader>
+        //     <PresearchTitle>
+        //       {this.props.aggKind === 'crowdAggs'
+        //         ? capitalize(configuredLabel) || title
+        //         : capitalize(title)}
+        //     </PresearchTitle>
+        //   </ThemedPresearchHeader>
+        //   <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
+        // </ThemedPresearchCard>
       );
     } else {
+      console.log("KOBE",this.props.selectedKeys)
       return (
-        <PanelWrapper>
-          <Panel
-            onToggle={this.handleToggle}
-            expanded={isOpen}
-            className="bm-panel-default">
-            <Panel.Heading className="bm-panel-heading">
-              <Panel.Title className="bm-panel-title" toggle>
-                <div className="flex">
-                  <span>
-                    {this.props.aggKind === 'crowdAggs'
-                      ? configuredLabel
-                      : title}
-                  </span>
-                  <span>
-                    <FontAwesome name={icon} />{' '}
-                  </span>
-                </div>
-              </Panel.Title>
-            </Panel.Heading>
-            {this.renderPanel(false)}
-          </Panel>
-        </PanelWrapper>
+        <CustomDropDown
+        buckets={this.state.buckets}
+        isPresearch={false}
+        selectedKeys={this.props.selectedKeys}
+        field={currentAgg}
+        onContainerToggle={this.handleToggle}
+        handleLoadMore={this.handleLoadMore}
+        hasMore={this.state.hasMore}
+        onCheckBoxToggle={this.handleCheckboxToggle}
+        handleSelectAll={this.selectAll}
+        />
+        // <PanelWrapper>
+        //   <Panel
+        //     onToggle={this.handleToggle}
+        //     expanded={isOpen}
+        //     className="bm-panel-default">
+        //     <Panel.Heading className="bm-panel-heading">
+        //       <Panel.Title className="bm-panel-title" toggle>
+        //         <div className="flex">
+        //           <span>
+        //             {this.props.aggKind === 'crowdAggs'
+        //               ? configuredLabel
+        //               : title}
+        //           </span>
+        //           <span>
+        //             <FontAwesome name={icon} />{' '}
+        //           </span>
+        //         </div>
+        //       </Panel.Title>
+        //     </Panel.Heading>
+        //     {this.renderPanel(false)}
+        //   </Panel>
+        // </PanelWrapper>
       );
     }
   }
 }
 
 // @ts-ignore
-export default withApollo<any>(withPresentSite2(AggDropDown));
+export default withApollo<any>(withPresentSite2(withAggContext(AggDropDown)));

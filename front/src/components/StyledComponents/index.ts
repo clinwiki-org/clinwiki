@@ -115,7 +115,7 @@ const PresearchCard = styled.div`
   max-width: 320px;
   background: white;
   //working on preserach fix
-  min-height: 320px;
+ // min-height: 320px;
 `;
 
 export const ThemedPresearchCard = withTheme(PresearchCard);
@@ -125,9 +125,9 @@ const PresearchHeader = styled.div`
   padding: 5px;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
-  height: 50px;
+  height: 60px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
 `;
 
