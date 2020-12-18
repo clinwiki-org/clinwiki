@@ -719,26 +719,24 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
             toggleAlphaSort={this.toggleAlphaSort}
             toggleNumericSort={this.toggleNumericSort}
             setShowLabel={showLabel => this.setState({ showLabel })}
-          />
-          )}
-        </PresearchPanel>
-        <PresearchPanel>
-          <BucketsDropDown
-            agg={agg}
-            removeFilters={removeFilters}
-            isPresearch={true}
-            visibleOptions={visibleOptions}
-            buckets={buckets}
-            isSelected={this.isSelected}
-            hasMore={hasMore}
-            handleLoadMore={this.handleLoadMore} 
-            field={field}
-          />
-                      {showAllowMissing && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
+            />
             )}
+            <BucketsDropDown
+              agg={agg}
+              removeFilters={removeFilters}
+              isPresearch={true}
+              visibleOptions={visibleOptions}
+              buckets={buckets}
+              isSelected={this.isSelected}
+              hasMore={hasMore}
+              handleLoadMore={this.handleLoadMore} 
+              field={field}
+            />
+                        {showAllowMissing && (
+                <Container>
+                  <AllowMissingCheckbox buckets={buckets} />
+                </Container>
+              )}
         </PresearchPanel>
       </>
     );
