@@ -175,6 +175,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_agg
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  dropdownOpen: boolean | null;
   layout: string | null;
   bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_preselected;
@@ -231,6 +232,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_cro
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  dropdownOpen: boolean | null;
   layout: string | null;
   bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_preselected;
@@ -315,6 +317,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields {
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  dropdownOpen: boolean | null;
   layout: string | null;
   bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_preselected;
@@ -371,6 +374,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fie
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
+  dropdownOpen: boolean | null;
   layout: string | null;
   bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_preselected;

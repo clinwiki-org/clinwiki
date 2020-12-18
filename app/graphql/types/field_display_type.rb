@@ -13,5 +13,6 @@ module Types
     value "LESS_THAN_DROP_DOWN"
     value "GREATER_THAN_DROP_DOWN"
     value "LOCATION"
+    value "MULTISELECT_DROP_DOWN"
   end
 end
