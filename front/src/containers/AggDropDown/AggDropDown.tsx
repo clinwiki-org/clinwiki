@@ -846,8 +846,18 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     this.props.updater && this.props.updater.toggleFilter(bucketKey)
   }
   render() {
-    const { agg, presearch, presentSiteView } = this.props;
-    const { isOpen } = this.state;
+    const { agg, presearch, presentSiteView, removeSelectAll} = this.props;
+    const {
+      buckets = [],
+      filter,
+      desc,
+      sortKind,
+      isOpen,
+      hasMore,
+      checkboxValue,
+      showLabel,
+      loading,
+    } = this.state;
     let currentAgg = findFields(agg, presentSiteView, presearch);
     let configuredLabel = currentAgg?.displayName || '';
     const title = aggToField(agg, configuredLabel);
@@ -856,7 +866,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     if (presearch) {
       return (
         <CustomDropDown
-        buckets={this.state.buckets}
+        buckets={buckets}
         isPresearch={true}
         selectedKeys={this.props.selectedKeys}
         field={currentAgg}
@@ -865,6 +875,18 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         hasMore={this.state.hasMore}
         onCheckBoxToggle={this.handleCheckboxToggle}
         handleSelectAll={this.selectAll}
+        filter={filter}
+        desc={desc}
+        sortKind={sortKind}
+        selectAll={this.selectAll}
+        checkSelect={this.checkSelect}
+        checkboxValue={checkboxValue}
+        removeSelectAll={removeSelectAll}
+        showLabel={showLabel}
+        handleFilterChange={this.handleFilterChange}
+        toggleAlphaSort={this.toggleAlphaSort}
+        toggleNumericSort={this.toggleNumericSort}
+        setShowLabel={showLabel => this.setState({ showLabel })}
 
         />
         // <ThemedPresearchCard>
@@ -891,6 +913,18 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         hasMore={this.state.hasMore}
         onCheckBoxToggle={this.handleCheckboxToggle}
         handleSelectAll={this.selectAll}
+        filter={filter}
+        desc={desc}
+        sortKind={sortKind}
+        selectAll={this.selectAll}
+        checkSelect={this.checkSelect}
+        checkboxValue={checkboxValue}
+        removeSelectAll={removeSelectAll}
+        showLabel={showLabel}
+        handleFilterChange={this.handleFilterChange}
+        toggleAlphaSort={this.toggleAlphaSort}
+        toggleNumericSort={this.toggleNumericSort}
+        setShowLabel={showLabel => this.setState({ showLabel })}
         />
         // <PanelWrapper>
         //   <Panel

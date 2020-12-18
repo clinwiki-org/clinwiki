@@ -33,17 +33,19 @@ interface CustomDropDownProps {
   hasMore: boolean;
   onCheckBoxToggle: (string) => void;
   handleSelectAll: (string) => void;
-
-  // selectAll?: any;
-  // checkSelect?: any;
-  // checkboxValue?: any;
-  // removeSelectAll?: any;
-  // setShowLabel?: any;
-  // toggleAlphaSort?: any;
-  // toggleNumericSort?: any;
-  // handleFilterChange?: any;
-  // showLabel?: boolean;
-  // checkSelectAll?: any
+//Filter Functions
+  filter: string;
+  desc: boolean;
+  sortKind: SortKind;
+  selectAll: any;
+  checkSelect: any;
+  checkboxValue: any;
+  removeSelectAll: any;
+  setShowLabel: any;
+  toggleAlphaSort: any;
+  toggleNumericSort: any;
+  handleFilterChange: any;
+  showLabel: boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -270,13 +272,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   };
   renderSubLabel = () => {
     return (
-      <div style={{
-
-
-        paddingLeft: '5px',
-        background: 'rgb(107,165,214)',
-        color: 'white',
-      }}>{this.props.field.aggSublabel}</div>)
+      <div className={"select-box--sublabel"}>{this.props.field.aggSublabel}</div>)
 
   }
   componentDidMount = () => {
@@ -400,19 +396,19 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
               className={"select-box--buckets-facet"}
             >
               {this.props.field.showFilterToolbar ? (<Filter
-                buckets={this.props.buckets}
-                filter={this.state.filter}
-                desc={this.state.desc}
-                sortKind={this.state.sortKind}
-                selectAll={() => console.log("select all")}
-                checkSelect={() => console.log("")}
-                checkboxValue={this.state.checkboxValue}
-                removeSelectAll={() => console.log("remove")}
-                showLabel={this.state.showLabel}
-                handleFilterChange={() => console.log("")}
-                toggleAlphaSort={() => console.log("")}
-                toggleNumericSort={() => console.log("")}
-                setShowLabel={showLabel => this.setState({ showLabel })}
+            buckets={this.props.buckets}
+            filter={this.props.filter}
+            desc={this.props.desc}
+            sortKind={this.props.sortKind}
+            selectAll={this.props.selectAll}
+            checkSelect={this.props.checkSelect}
+            checkboxValue={this.props.checkboxValue}
+            removeSelectAll={this.props.removeSelectAll}
+            showLabel={this.props.showLabel}
+            handleFilterChange={this.props.handleFilterChange}
+            toggleAlphaSort={this.props.toggleAlphaSort}
+            toggleNumericSort={this.props.toggleNumericSort}
+            setShowLabel={this.props.showLabel}
               />) : (null)}
               <InfiniteScroll
                 pageStart={0}
