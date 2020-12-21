@@ -83,7 +83,8 @@ const SelectBoxBox = styled.div`
   }
 
   .check-outer {
-    width: 13px;
+    min-width: 13px;
+    max-width: 13px;
     height: 13px;
     border: 1px solid black;
     position: relative;
@@ -93,7 +94,8 @@ const SelectBoxBox = styled.div`
 
   }
   .check-outer-facet {
-    width: 13px;
+    min-width: 13px;
+    max-width: 13px;
     height: 13px;
     position: relative;
     margin-right: 7px;
