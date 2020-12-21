@@ -288,18 +288,18 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             >
               {this.props.field.showFilterToolbar ? (<Filter
                 buckets={this.props.buckets}
-                filter={this.state.filter}
-                desc={this.state.desc}
-                sortKind={this.state.sortKind}
+                filter={this.props.filter}
+                desc={this.props.desc}
+                sortKind={this.props.sortKind}
                 selectAll={this.props.handleSelectAll}
-                checkSelect={console.log("this.props.checkSelectAll")}
-                checkboxValue={console.log("this.props.checkboxValue")}
-                removeSelectAll={console.log("this.props.removeSelectAll")}
+                checkSelect={this.props.checkSelect}
+                checkboxValue={this.props.checkboxValue}
+                removeSelectAll={this.props.removeSelectAll}
                 showLabel={false}
-                handleFilterChange={console.log("this.props.this.handleFilterChange")}
-                toggleAlphaSort={console.log("this.props.toggleAlphaSort")}
-                toggleNumericSort={console.log("this.props.toggleNumericSort")}
-                setShowLabel={() => console.log("this.props.setShowLabel")}
+                handleFilterChange={this.props.handleFilterChange}
+                toggleAlphaSort={this.props.toggleAlphaSort}
+                toggleNumericSort={this.props.toggleNumericSort}
+                setShowLabel={() => this.props.setShowLabel}
               />) : (null)}
             </div>
             <div
