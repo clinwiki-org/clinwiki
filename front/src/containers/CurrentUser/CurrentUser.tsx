@@ -85,14 +85,14 @@ export function useCurrentUser() {
 }
 */
 
-const CurrentUser = (props) => {
+const CurrentUser = ({children}) => {
   const dispatch = useDispatch();
   useEffect( () => {
     dispatch(fetchUser());
   },[dispatch]);
   return (
     <div>
-      {props.children}
+      {children}
     </div>
   );
 };
