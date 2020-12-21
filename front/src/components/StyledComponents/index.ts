@@ -464,3 +464,46 @@ export const StyledInterventionHeading = styled.div`
   margin: 1em;
   border-bottom: solid white;
 `;
+const FacetAgg = styled.div`
+  min-height: 50px;
+  border-bottom: 1px solid #3d3d3d;
+  width: 100%;
+  margin: 0;
+  position: relative;
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+ 
+`
+export const ThemedFacetAgg= withTheme(FacetAgg)
+const FacetTitle = styled.div`
+  font-size: 16px;
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+  padding: 0px 10px;
+  
+`;
+export const ThemedFacetTitle = withTheme(FacetTitle)
+const FacetHeader = styled.div`
+
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+  padding: 0px 10px;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  padding: 4px 12px;
+  vertical-align: middle;
+  font-size: 16px;
+  margin-top:10px;
+
+
+  .select-box--arrow{
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 15px 3px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+`;
+
+export const ThemedFacetHeader = withTheme(FacetHeader);

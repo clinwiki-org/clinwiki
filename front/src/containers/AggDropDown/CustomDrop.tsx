@@ -10,7 +10,9 @@ import {
   ThemedPresearchCard,
   ThemedPresearchHeader,
   PresearchTitle,
-  PresearchContent,
+  ThemedFacetHeader,
+  ThemedFacetAgg,
+  ThemedFacetTitle,
 } from 'components/StyledComponents';
 import Filter from './Filter';
 import SortKind from './SortKind';
@@ -76,14 +78,6 @@ const SelectBoxBox = styled.div`
     padding: 0;
     position: relative;
   }
- .select-box--container-facet{
-  min-height: 50px;
-  border-bottom: 1px solid #3d3d3d;
-  width: 100%;
-  margin: 0;
-  position: relative;
-  color: ${props => props.theme.aggSideBar.sideBarFont};
- }
   * {
     box-sizing: border-box;
   }
@@ -128,15 +122,6 @@ const SelectBoxBox = styled.div`
     font-size: 1.15em;
     font-weight: bolder;
   }
-  .select-box--title-facet{
-    display: inline-block;
-    height: 100%;
-    width: 100%;
-    padding: 4px 12px;
-    vertical-align: middle;
-    font-size: 1.15em;
-    margin-top:10px;
-  }
   .select-box--selected-item {
     display: inline-block;
     height: 100%;
@@ -152,39 +137,6 @@ const SelectBoxBox = styled.div`
     padding: 6px;
     /* padding-left: 20px; */
   }
-
-  .select-box--arrow {
-    width: 30px;
-    height: 30px;
-    margin: 0;
-    padding: 15px 3px;
-    display: inline-block;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-
-  .select-box--arrow-down {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 10px solid black;
-  }
-
-  .select-box--arrow-up {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 10px solid black;
-}
 .select-box--buckets-facet{
   max-height:300px;
   overflow: scroll;
@@ -306,28 +258,30 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
   render() {
+    const ThemedContainer = this.props.isPresearch?ThemedPresearchCard : ThemedFacetAgg
+    const ThemedHeader = this.props.isPresearch?ThemedPresearchHeader : ThemedFacetHeader
+    //Find why this is not themedPresearchTitle 
+    const ThemedTitle = this.props.isPresearch?PresearchTitle : ThemedFacetTitle
     let configuredLabel = this.props.field?.displayName || '';
     const title = aggToField(this.props.field.name, configuredLabel);
     if (this.props.buckets == undefined) {
       return <BeatLoader />
     }
     const icon = `chevron${this.state.showItems ? '-up' : '-down'}`;
-    if (this.props.isPresearch) {
-      //Calling this our standard presearch for now
       return (
         <ThemedSelectBox>
-          <ThemedPresearchCard>
-            <ThemedPresearchHeader>
+          <ThemedContainer>
+            <ThemedHeader onClick={this.dropDown}>
 
-              < PresearchTitle style={{ flexDirection: 'row', display: 'flex' }}>
+              < ThemedTitle style={{ flexDirection: 'row', display: 'flex' }}>
                 {/* {this.props.aggKind === 'crowdAggs'
                        ? configuredLabel
                        : title}         */}
                 {capitalize(title)}
-                <FontAwesome name={icon} onClick={this.dropDown} style={{ display: 'flex', marginLeft: 'auto' }} />{' '}
-              </PresearchTitle>
+                <FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />{' '}
+              </ThemedTitle>
               {this.state.selectedItems.length > 0 ? this.renderSelectedItems() : this.renderSubLabel()}
-            </ThemedPresearchHeader>
+            </ThemedHeader>
             <div
               style={{ padding: '0 10px', display: this.state.showItems ? "block" : "none" }}
 
@@ -351,7 +305,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             <div
               style={{ display: this.state.showItems ? "block" : "none" }}
 
-              className={"select-box--buckets-presearch"}
+              className={this.props.isPresearch ? "select-box--buckets-presearch" : "select-box--buckets-facet"}
             >
               <InfiniteScroll
                 pageStart={0}
@@ -389,87 +343,9 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
                 ))}
               </InfiniteScroll>
             </div>
-          </ThemedPresearchCard>
+          </ThemedContainer>
         </ThemedSelectBox>
       );
-    } else {
-
-      return (
-        <ThemedSelectBox>
-          <div className="select-box--container-facet">
-            <div className={"select-box--title-facet"}>
-              {capitalize(title)}
-            </div>
-            {/* <div className="select-box--selected-item">
-              {this.state.selectedItems && this.renderSelectedItems()}
-            </div> */}
-            <div className="select-box--arrow" onClick={this.dropDown}>
-              <span>
-                <FontAwesome name={icon} />{' '}
-              </span>
-            </div>
-
-            <div
-              style={{ display: this.state.showItems ? "block" : "none" }}
-              className={"select-box--buckets-facet"}
-            >
-              {this.props.field.showFilterToolbar ? (<Filter
-            buckets={this.props.buckets}
-            filter={this.props.filter}
-            desc={this.props.desc}
-            sortKind={this.props.sortKind}
-            selectAll={this.props.selectAll}
-            checkSelect={this.props.checkSelect}
-            checkboxValue={this.props.checkboxValue}
-            removeSelectAll={this.props.removeSelectAll}
-            showLabel={this.props.showLabel}
-            handleFilterChange={this.props.handleFilterChange}
-            toggleAlphaSort={this.props.toggleAlphaSort}
-            toggleNumericSort={this.props.toggleNumericSort}
-            setShowLabel={this.props.showLabel}
-              />) : (null)}
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={this.props.handleLoadMore}
-                hasMore={this.props.hasMore}
-                useWindow={false}
-                loader={
-                  <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
-                  </div>
-                }>
-                {this.props.buckets
-                  .filter(
-                    bucket =>
-                      !bucketKeyIsMissing(bucket) &&
-                      (this.props.field.visibleOptions.length
-                        ? this.props.field.visibleOptions.includes(bucket.key)
-                        : true)
-                  )
-                .map((item) => (
-                  <div
-                    key={item.key}
-                    onClick={() => this.selectItem(item)}
-                    className={
-                      this.state.selectedItem === item
-                        ? "selected select-item"
-                        : "select-item"
-                    }
-                  >
-                    <div className="item-content">
-                      {this.renderPreValue(item.key)}
-                      <span>{item.key} ({item.docCount})</span>
-                    </div>
-                  </div>
-
-                ))}
-              </InfiniteScroll>
-
-            </div>
-          </div>
-        </ThemedSelectBox>
-      );
-    }
   }
 }
 
