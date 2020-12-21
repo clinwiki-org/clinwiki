@@ -106,7 +106,7 @@ const PresearchCard = styled.div`
   display: flex;
   flex-direction: column;
   // border-radius: 4px;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  // box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
   // border-width: 1px;
   // border-style: solid;
   // border-color: ${props => props.theme.buttonSecondary};
@@ -123,6 +123,7 @@ const PresearchCard = styled.div`
     padding-left: 5px;
     // background: ${props => props.theme.primaryColor};
     color: ${props => props.theme.presearch.presearchLabelTextColor};
+
   }
 `;
 
@@ -130,23 +131,28 @@ export const ThemedPresearchCard = withTheme(PresearchCard);
 
 const PresearchHeader = styled.div`
   background-color: ${props => props.theme.presearch.presearchLabelColor};
-  padding: 5px;
   // border-top-left-radius: 4px;
   // border-top-right-radius: 4px;
   height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid;
+  border-left: 1px solid;
+  border-bottom: 1px solid;
+  border-color: ${props => props.theme.presearch.presearchBorderColor};
+  padding: 1em;
 `;
 
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
 
 export const PresearchTitle = styled.div`
   color: ${props => props.theme.presearchLabelTextColor}; 
-  font-size: 18px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 700;
   margin-left: 5px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
 `;
 
 const SearchCard = styled.div`

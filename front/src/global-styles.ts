@@ -3,7 +3,7 @@ import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 /* eslint no-unused-expressions: 0 */
 
 export default withTheme(createGlobalStyle`
-html,
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,700;1,400&display=swap');
 body {
   height: 100%;
   width: 100%;
