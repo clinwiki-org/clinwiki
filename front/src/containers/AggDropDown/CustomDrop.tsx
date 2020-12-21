@@ -261,13 +261,11 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   renderSelectedItems = () => {
     if (this.state.selectedItems.length > 0) {
-      console.log(1)
       return this.state.selectedItems.map((item) => {
-        console.log(2)
         //@ts-ignore
         if (this.isSelected(item.key)) {
           //@ts-ignore
-          return <div> {item.key} ({item.docCount})</div>
+          return <div> {item.key} </div>
 
         }
         return
@@ -286,6 +284,13 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       this.setState({ showItems: true });
       this.props.handleLoadMore()
 
+    }
+    if(this.props.selectedKeys){
+      let selectedKeysPlaceHolders: any[] = [];
+      this.props.selectedKeys.forEach(o=>(
+        selectedKeysPlaceHolders.push({key: o, docCount: null})
+      ))
+      this.setState({selectedItems : selectedKeysPlaceHolders})
     }
 
 
@@ -307,7 +312,6 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       return <BeatLoader />
     }
     const icon = `chevron${this.state.showItems ? '-up' : '-down'}`;
-
     if (this.props.isPresearch) {
       //Calling this our standard presearch for now
       return (
