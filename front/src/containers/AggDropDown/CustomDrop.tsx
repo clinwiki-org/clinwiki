@@ -234,22 +234,23 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   selectItem = (item) => {
     this.props.onCheckBoxToggle(item.key, this.state.selectedItems);
+
+    //important to note conditionals are handling our selected items behavior within the component
+    //Actual data manipulation should happen from the toggleFunction 
+    if (!this.props.isPresearch) return;
+
+    //handles our single select which is same behavior our old dropdown had
+    if (this.props.field.display == "SINGLE" || this.props.field.display == "DROP_DOWN") {
       this.setState({
         selectedItem: item,
         selectedItems: [item],
         showItems: false
       });
+    }
 
-  };
-  selectItemMulti = (item) => {
-    this.props.onCheckBoxToggle(item.key, this.state.selectedItems);
-    if (this.isSelected(item.key)) {
-      const isOdd = (n) => n % 2 === 1;
-      let newItems: string[] = this.state.selectedItems;
-      // console.log(newItems.find(propEq('key',item.key), newItems))
-      this.setState({ selectedItems: newItems.filter(propEq('key', item.key), newItems) })
-    } else {
-
+    //handles our mutliselect happens to be same behavior as old TEXT/STRING type 
+    if (this.props.field.display == "MULTI" || this.props.field.display == "STRING") {
+      //need to filter to prevent dups
       this.setState({
         selectedItem: item,
         selectedItems: [...this.state.selectedItems, item]
