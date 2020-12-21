@@ -142,6 +142,7 @@ const PresearchHeader = styled.div`
   border-bottom: 1px solid;
   border-color: ${props => props.theme.presearch.presearchBorderColor};
   padding: 1em;
+  cursor:pointer;
 `;
 
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
@@ -492,6 +493,7 @@ const FacetHeader = styled.div`
   vertical-align: middle;
   font-size: 16px;
   margin-top:10px;
+  cursor:pointer;
 
 
   .select-box--arrow{
