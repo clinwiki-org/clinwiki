@@ -24,6 +24,7 @@ import {
   propEq,
 } from 'ramda';
 import withTheme from 'containers/ThemeProvider';
+import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -33,7 +34,7 @@ interface CustomDropDownProps {
   onContainerToggle?: () => void;
   handleLoadMore: () => any;
   hasMore: boolean;
-  onCheckBoxToggle: (string) => void;
+  onCheckBoxToggle: (string, []) => void;
   handleSelectAll: (string) => void;
 //Filter Functions
   filter: string;
@@ -232,14 +233,16 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   };
 
   selectItem = (item) => {
-    this.props.onCheckBoxToggle(item.key);
-    // if (this.props.field.dropDownDefaultOpen === false) {
-    //   this.setState({
-    //     selectedItem: item,
-    //     showItems: false,
-    //     selectedItems: [...this.state.selectedItems, item]
-    //   });
-    // } else {
+    this.props.onCheckBoxToggle(item.key, this.state.selectedItems);
+      this.setState({
+        selectedItem: item,
+        selectedItems: [item],
+        showItems: false
+      });
+
+  };
+  selectItemMulti = (item) => {
+    this.props.onCheckBoxToggle(item.key, this.state.selectedItems);
     if (this.isSelected(item.key)) {
       const isOdd = (n) => n % 2 === 1;
       let newItems: string[] = this.state.selectedItems;
@@ -296,7 +299,6 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   };
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
-
   render() {
     let configuredLabel = this.props.field?.displayName || '';
     const title = aggToField(this.props.field.name, configuredLabel);
@@ -356,7 +358,15 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
                     <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
                   </div>
                 }>
-                {this.props.buckets.map((item) => (
+                {this.props.buckets
+                .filter(
+                  bucket =>
+                    !bucketKeyIsMissing(bucket) &&
+                    (this.props.field.visibleOptions.length
+                      ? this.props.field.visibleOptions.includes(bucket.key)
+                      : true)
+                )
+                .map((item) => (
                   <div
                     key={item.key}
                     onClick={() => this.selectItem(item)}
@@ -423,8 +433,15 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
                     <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
                   </div>
                 }>
-                {this.props.buckets.map((item) => (
-
+                {this.props.buckets
+                  .filter(
+                    bucket =>
+                      !bucketKeyIsMissing(bucket) &&
+                      (this.props.field.visibleOptions.length
+                        ? this.props.field.visibleOptions.includes(bucket.key)
+                        : true)
+                  )
+                .map((item) => (
                   <div
                     key={item.key}
                     onClick={() => this.selectItem(item)}

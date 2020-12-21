@@ -840,8 +840,20 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       });
     }
   }
-  handleCheckboxToggle=(bucketKey)=>{
-    this.props.updater && this.props.updater.toggleFilter(bucketKey)
+  handleCheckboxToggle=(bucketKey, activeOptions)=>{
+    const { agg, presentSiteView, presearch } = this.props;
+    const field = findFields(agg, presentSiteView, presearch);
+    //@ts-ignore
+    //need to handle the single select functionality
+    if(field.display == "DROP_DOWN" || field.display == "DROP_DOWN"){
+      activeOptions.forEach(o => {
+        this.props.updater &&     this.props.updater.removeFilter(o.key);
+      })
+    }
+    //Need to handle mutliselect functionality 
+    this.props.updater &&  this.props.updater.toggleFilter(bucketKey);
+
+
   }
   render() {
     const { agg, presearch, presentSiteView, removeSelectAll} = this.props;
@@ -899,7 +911,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         // </ThemedPresearchCard>
       );
     } else {
-      console.log("KOBE",this.props.selectedKeys)
       return (
         <CustomDropDown
         buckets={this.state.buckets}
