@@ -12,8 +12,6 @@ import { SearchQueryInput, SortInput, AggFilterInput } from "./globalTypes";
 export interface SearchPageAggsQuery_crowdAggs_aggs_buckets {
   __typename: "AggBucket";
   key: string;
-  keyAsString: string | null;
-  docCount: number;
 }
 
 export interface SearchPageAggsQuery_crowdAggs_aggs {
@@ -26,16 +24,9 @@ export interface SearchPageAggsQuery_crowdAggs {
   aggs: SearchPageAggsQuery_crowdAggs_aggs[] | null;
 }
 
-export interface SearchPageAggsQuery_search_aggs_buckets {
-  __typename: "AggBucket";
-  key: string;
-  docCount: number;
-}
-
 export interface SearchPageAggsQuery_search_aggs {
   __typename: "Agg";
   name: string;
-  buckets: SearchPageAggsQuery_search_aggs_buckets[];
 }
 
 export interface SearchPageAggsQuery_search {
