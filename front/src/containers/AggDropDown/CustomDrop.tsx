@@ -27,6 +27,10 @@ import {
 } from 'ramda';
 import withTheme from 'containers/ThemeProvider';
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
+import LocationAgg from './LocationAgg';
+import RangeSelector from './RangeSelector';
+import TwoLevelPieChart from './TwoLevelPieChart';
+import BarChartComponent from './BarChart'
 
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -257,6 +261,108 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
     return null 
   };
+  renderPanel = () => {
+    const { hasMore, buckets, handleLoadMore, field } = this.props
+    const { showItems, loading } = this.state
+    const isOpen = showItems
+    if (
+      field?.display === FieldDisplay.DATE_RANGE ||
+      field?.display === FieldDisplay.NUMBER_RANGE ||
+      field?.display === FieldDisplay.LESS_THAN_RANGE ||
+      field?.display === FieldDisplay.GREATER_THAN_RANGE
+    ) {
+
+      return (
+        <RangeSelector
+          isOpen={isOpen}
+          hasMore={hasMore}
+          loading={loading}
+          buckets={buckets}
+          handleLoadMore={this.props.handleLoadMore}
+          aggType={field?.display}
+          field={field}
+        />
+      )
+    } else if (field?.display === FieldDisplay.PIE_CHART) {
+      return (
+        <TwoLevelPieChart
+          isPresearch={this.props.isPresearch}
+          visibleOptions={field.display.visibleOptions}
+          buckets={buckets}
+          isSelected={this.isSelected}
+          hasMore={hasMore}
+          handleLoadMore={this.props.handleLoadMore}
+          field={field}
+          searchParams={{}}
+        />
+      )
+    } else if (field?.display === FieldDisplay.BAR_CHART) {
+      return (
+        <BarChartComponent
+          isPresearch={this.props.isPresearch}
+          // visibleOptions={visibleOptions}
+          buckets={buckets}
+          // isSelected={this.isSelected}
+          hasMore={hasMore}
+          handleLoadMore={this.props.handleLoadMore}
+          field={field}
+          searchParams={{}}
+        />
+      )
+    }
+    else if (field.display == FieldDisplay.LOCATION) {
+      return (
+        <LocationAgg
+          agg={field.name}
+          removeFilters={this.props.onCheckBoxToggle}
+          buckets={buckets}
+          isSelected={this.isSelected}
+          hasMore={hasMore}
+          field={field}
+        />
+      )
+    }
+    else {
+
+      return (
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={this.props.handleLoadMore}
+          hasMore={this.props.hasMore}
+          useWindow={false}
+          loader={
+            <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
+              <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
+            </div>
+          }>
+          {this.props.buckets
+            .filter(
+              bucket =>
+                !bucketKeyIsMissing(bucket) &&
+                (this.props.field.visibleOptions.length
+                  ? this.props.field.visibleOptions.includes(bucket.key)
+                  : true)
+            )
+            .map((item) => (
+              <div
+                key={item.key}
+                onClick={() => this.selectItem(item)}
+                className={
+                  this.state.selectedItem === item
+                    ? "selected select-item"
+                    : "select-item"
+                }
+              >
+                <div className="item-content">
+                  {this.renderPreValue(item.key)}
+                  <span>{item.key} ({item.docCount})</span>
+                </div>
+              </div>
+            ))}
+        </InfiniteScroll>
+      )
+    }
+  }
   isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
   render() {
@@ -288,7 +394,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
               style={{ padding: '0 10px', display: this.state.showItems ? "block" : "none" }}
 
             >
-              {this.props.field.showFilterToolbar ? (<Filter
+              {this.props.field.showFilterToolbar ? (<Filter 
                 buckets={this.props.buckets}
                 filter={this.props.filter}
                 desc={this.props.desc}
@@ -309,41 +415,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
               className={this.props.isPresearch ? "select-box--buckets-presearch" : "select-box--buckets-facet"}
             >
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={this.props.handleLoadMore}
-                hasMore={this.props.hasMore}
-                useWindow={false}
-                loader={
-                  <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
-                  </div>
-                }>
-                {this.props.buckets
-                .filter(
-                  bucket =>
-                    !bucketKeyIsMissing(bucket) &&
-                    (this.props.field.visibleOptions.length
-                      ? this.props.field.visibleOptions.includes(bucket.key)
-                      : true)
-                )
-                .map((item) => (
-                  <div
-                    key={item.key}
-                    onClick={() => this.selectItem(item)}
-                    className={
-                      this.state.selectedItem === item
-                        ? "selected select-item"
-                        : "select-item"
-                    }
-                  >
-                    <div className="item-content">
-                      {this.renderPreValue(item.key)}
-                      <span>{item.key} ({item.docCount})</span>
-                    </div>
-                  </div>
-                ))}
-              </InfiniteScroll>
+              {this.renderPanel()}
             </div>
           </ThemedContainer>
         </ThemedSelectBox>
