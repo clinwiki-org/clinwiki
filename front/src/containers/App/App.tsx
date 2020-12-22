@@ -46,9 +46,8 @@ class App extends React.PureComponent<AppProps> {
     return (
       <ThemedAppWrapper>
         <CurrentUser>
-          {(user, refetch) =>
             <span>
-              <AuthHeader user={user} history={this.props.history} />
+              <AuthHeader history={this.props.history} />
               <div className="main" style={{ paddingTop: '50px' }}>
                 <Switch>
                   <Route
@@ -90,7 +89,6 @@ class App extends React.PureComponent<AppProps> {
                 </Switch>
               </div>
             </span>
-          }
         </CurrentUser>
       </ThemedAppWrapper>
     );

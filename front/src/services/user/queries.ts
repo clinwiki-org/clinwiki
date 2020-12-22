@@ -1,0 +1,87 @@
+export const FETCH_USER_QUERY = '';
+
+const CURRENT_USER_FRAGMENT = `fragment UserFragment on User { 
+    id
+    email
+    firstName
+    lastName
+    defaultQueryString
+    roles
+    reviewCount
+    reviews {
+      content
+      briefTitle
+      nctId
+    }
+    reactionsCount{
+      name
+      count
+    }
+    contributions
+    pictureUrl
+    rank
+    reactions{
+      id
+      reactionKindId
+      reactionKind{
+        id
+        name
+      }
+      study{
+        briefTitle
+      }
+      nctId
+    }    
+} `;
+
+export const FETCH_CURRENT_USER_QUERY = ` query CurrentUserQuery {
+    me { ...UserFragment  }
+  }
+
+  ${CURRENT_USER_FRAGMENT}`;
+
+  export const SIGN_IN_MUTATION = `mutation SignInMutation($input: SignInInput!) {
+    signIn(input: $input) {
+      jwt
+      user {
+        ...UserFragment
+      }
+    }
+  }
+  ${CURRENT_USER_FRAGMENT}`;
+
+  export const SIGN_UP_MUTATION = `
+  mutation SignUpMutation($input: SignUpInput!) {
+    signUp(input: $input) {
+      jwt
+      errors
+      user {
+        ...UserFragment
+      }
+    }
+  }
+  ${CURRENT_USER_FRAGMENT}`;
+
+  export const UPDATE_PASSWORD_MUTATION = `
+  mutation UpdatePasswordMutation($input: UpdatePasswordInput!) {
+    updatePassword(input: $input) {
+      jwt
+      errors
+      user {
+        ...UserFragment
+      }
+    }
+  }
+  ${CURRENT_USER_FRAGMENT}`;
+
+  export const EDIT_PROFILE_MUTATION = `
+  mutation EditProfileMutation($input: UpdateProfileInput!) {
+    updateProfile(input: $input) {
+      errors
+      user {
+        ...UserFragment
+      }
+    }
+  }
+  ${CURRENT_USER_FRAGMENT}`;
+
