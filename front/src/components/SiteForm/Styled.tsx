@@ -6,7 +6,7 @@ export const StyledContainer = styled.div`
   h3,
   h4,
   h5 {
-    color: white;
+    color: #333;
   }
 
   .panel-group .panel {
@@ -20,5 +20,5 @@ export const StyledFormControl = styled(FormControl)`
 `;
 
 export const StyledLabel = styled.label`
-  color: white;
-`;
+  color: #333;
+  `

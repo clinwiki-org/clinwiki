@@ -16,7 +16,7 @@ const StyledButton = styled.button`
   white-space: nowrap;
   vertical-align: middle;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 1px;
   transition: 0.5s;
   color: #fff;
   height: 38px;
@@ -69,7 +69,7 @@ const LinkContainer = styled.div`
 export const ThemedLinkContainer = withTheme(LinkContainer);
 
 const MainContainer = styled(Col)`
-  background-color: #eaedf4;
+  background-color: ${props => props.theme.backgroundColor}; 
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -160,7 +160,7 @@ width: 350px;
 min-height: 350px;
 margin: 15px;
 box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-border-radius: 4px;
+// border-radius: 4px;
 background: #ffffff;
 padding: 5px;
  a {
@@ -177,8 +177,8 @@ padding: 5px;
 export const ThemedSearchCard = withTheme(SearchCard)
 
 const SearchContainer = styled.div`
-  border: solid white 1px;
-  background-color: #f2f2f2;
+  border: solid 1px;
+  background-color: ${props => props.theme.search.searchContainerBg};
   color: black;
   margin-bottom: 1em;
   margin-left: 45px;
@@ -188,9 +188,10 @@ const SearchContainer = styled.div`
   flex-direction: column;
   padding: 10px;
   position: relative;
+  border-color: #e7e7e7;
 
   .rich-text {
-    background-color: #f2f2f2;
+    background-color: ${props => props.theme.search.searchContainerBg};
   }
   .container {
     border: 0px;

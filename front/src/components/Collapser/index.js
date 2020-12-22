@@ -7,8 +7,8 @@ const Collapser = ({title, collapse, state}) => {
       <div className="collapse-title">{state ? title : ""}</div>
       <div className="collapser" onClick={collapse}>
         {state ? 
-          <FontAwesome name={"chevron-up"} /> : 
-          <FontAwesome name={"chevron-down"} />}
+          <FontAwesome name={"chevron-down"} /> : 
+          <FontAwesome name={"chevron-up"} />}
       </div>
     </div> 
   )

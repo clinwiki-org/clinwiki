@@ -7,7 +7,7 @@ import {
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
 import { SearchParams, AggKind, SearchQuery } from './shared';
-import { ThemedButton, ThemedSearchContainer } from '../../components/StyledComponents';
+import { ThemedButton, ThemedSearchContainer, ThemedMainContainer } from '../../components/StyledComponents';
 import Collapser from '../../components/Collapser'
 import {
   map,
@@ -52,40 +52,6 @@ import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
 
 
-const MainContainer = styled(Col)`
-  background-color: #eaedf4;
-  min-height: 100vh;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  flex: 1;
-  overflow:auto;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    min-width:100vw;
-  }
-
-  .rt-th {
-    text-transform: capitalize;
-    padding: 15px !important;
-    background: ${(props) =>
-    props.theme.searchResults.resultsHeaderBackground} !important;
-    color: #fff;
-  }
-
-  .ReactTable .-pagination .-btn {
-    background: ${(props) =>
-    props.theme.searchResults.resultsPaginationButtons} !important;
-  }
-
-  div.rt-tbody div.rt-tr:hover {
-    background: ${(props) =>
-    props.theme.searchResults.resultsRowHighlight} !important;
-    color: #fff !important;
-  }
-
-  .rt-table {
-  }
-`;
 
 const SearchPageWrapper = styled.div`
   display: flex;
@@ -105,7 +71,7 @@ const SearchPageWrapper = styled.div`
   }
 `;
 const ThemedSearchPageWrapper = withTheme(SearchPageWrapper)
-const ThemedMainContainer = withTheme(MainContainer);
+
 const SideBarCollapse = styled.div`
   min-height: 100%;
   position: fixed;
