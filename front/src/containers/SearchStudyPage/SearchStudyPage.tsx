@@ -11,7 +11,7 @@ import {
 import { path, pathOr } from 'ramda';
 import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
-import { UserFragment } from 'types/UserFragment';
+// import { UserFragment } from 'types/UserFragment';
 
 
 interface StudySearchPageProps {
@@ -19,6 +19,7 @@ interface StudySearchPageProps {
   history: History;
   location: Location;
   refetch:any;
+  //@ts-ignore
   user: UserFragment | null;
 }
 

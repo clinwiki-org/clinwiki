@@ -12,7 +12,7 @@ import {
 } from 'components/StyledComponents';
 import QUERY from 'queries/UserSavedSearchesQuery';
 import { ThemedButton } from '../../LoginPage/StyledButton';
-import { UserFragment } from 'types/UserFragment';
+// import { UserFragment } from 'types/UserFragment';
 import { UserSavedSearchesQuery } from 'types/UserSavedSearchesQuery';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useHistory } from 'react-router-dom';
@@ -42,6 +42,7 @@ const DELETE_SAVED_SEARCH_MUTATION = gql`
 `;
 
 interface UserSavedSearchesProps {
+  //@ts-ignore
   user: UserFragment | null;
   //id?: any;
 }

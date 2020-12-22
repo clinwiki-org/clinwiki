@@ -7,16 +7,16 @@ import {
   MutationComponentOptions,
 } from '@apollo/client/react/components';
 import { gql, MutationFunction }  from '@apollo/client';
-import {
-  EditProfileMutation,
-  EditProfileMutationVariables,
-} from 'types/EditProfileMutation';
+// import {
+//   EditProfileMutation,
+//   EditProfileMutationVariables,
+// } from 'types/EditProfileMutation';
 import SearchPage from 'containers/SearchPage';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
 import StyledError from '../LoginPage/StyledError';
 import CurrentUser from 'containers/CurrentUser';
-import { UserFragment } from 'types/UserFragment';
+// import { UserFragment } from 'types/UserFragment';
 import { equals, pick } from 'ramda';
 import {
   ThemedMainContainer,
@@ -35,6 +35,7 @@ import UserSearchLogs from './components/UserSearchLogs';
 import UserSavedSearches from './components/UserSavedSearches';
 
 interface EditProfilePageProps {
+  //@ts-ignore
   user: UserFragment | null;
   history: History;
   location: Location;

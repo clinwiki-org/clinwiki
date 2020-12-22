@@ -1,3 +1,5 @@
+
+//@ts-ignore
 import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';

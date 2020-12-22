@@ -37,7 +37,7 @@ import EditReview from './EditReview';
 import { reject, propEq, over, lensPath, keys } from 'ramda';
 import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
-import { UserFragment } from 'types/UserFragment';
+// import { UserFragment } from 'types/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 
 interface ReviewsPageProps {
@@ -150,7 +150,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
       </RatingWrapper>
     );
   };
-
+//@ts-ignore
   renderReview = (user: UserFragment | null, hash: string , siteViewUrl:string) => (
     review: ReviewsPageFragment
   ) => {

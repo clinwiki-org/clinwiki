@@ -1,4 +1,5 @@
 import * as types from './types';
+//@ts-ignore
 import { UserFragment } from 'types/UserFragment';
 
 export const fetchUser = () : types.UserActionTypes => ({

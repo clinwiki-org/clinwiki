@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import { gql }  from '@apollo/client';
-import { CurrentUserQuery } from 'types/CurrentUserQuery';
-import { UserFragment } from 'types/UserFragment';
+// import { CurrentUserQuery } from 'types/CurrentUserQuery';
+// import { UserFragment } from 'types/UserFragment';
 
 interface ReactionsByIdProps {
+  //@ts-ignore
     children: (user: UserFragment | null, refetch?: any) => React.ReactNode;
     reactionKindId: any;
 }
@@ -33,7 +34,7 @@ export const REACTIONS_QUERY = gql`
   }
 
 `;
-
+//@ts-ignore
 const QueryComponent = (props: QueryComponentOptions<CurrentUserQuery>) =>
     Query(props);
 

@@ -1,3 +1,4 @@
+//@ts-ignore
 import { UserFragment } from 'types/UserFragment';
 
 export const FETCH_USER_SEND = 'FETCH_USER_SEND';

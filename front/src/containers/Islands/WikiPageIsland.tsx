@@ -19,7 +19,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
-import { CurrentUserQuery, CurrentUserQuery_me } from 'types/CurrentUserQuery';
+// import { CurrentUserQuery, CurrentUserQuery_me } from 'types/CurrentUserQuery';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import LoginModal from '../../components/LoginModal';
 
@@ -164,6 +164,7 @@ export default function WikiPageIsland(props: Props) {
 
   const renderToolbar = (
     data: WikiPageQuery,
+    //@ts-ignore
     user: CurrentUserQuery_me | null | undefined,
     readOnly: boolean
   ) => {

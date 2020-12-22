@@ -1,4 +1,6 @@
 import * as types from './types';
+
+//@ts-ignore
 import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({

@@ -6,8 +6,8 @@ import { getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-import { UserFragment } from 'types/UserFragment';
-import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
+// import { UserFragment } from 'types/UserFragment';
+// import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
 
 
 const UserImage = styled.img`
@@ -156,8 +156,11 @@ animation-play-state: running;
 
 
 interface UserProfileHeaderButtonProps {
+  //@ts-ignore
   user: UserFragment | null;
   history: History;
+    //@ts-ignore
+
   data: AdminViewsProviderQuery | undefined;
 }
 const UserProfileHeaderButton = ({ user, history, data} : UserProfileHeaderButtonProps ) => {

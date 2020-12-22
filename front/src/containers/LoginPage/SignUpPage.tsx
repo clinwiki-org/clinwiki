@@ -7,7 +7,7 @@ import {
   MutationComponentOptions,
 } from '@apollo/client/react/components';
 import { gql, MutationFunction }  from '@apollo/client';
-import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
+// import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import { ThemedButton } from './StyledButton';
