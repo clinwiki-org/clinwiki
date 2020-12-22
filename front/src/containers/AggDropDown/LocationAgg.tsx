@@ -10,7 +10,6 @@ import AggFilterInputUpdater from '../SearchPage/components/AggFilterInputUpdate
 import { withAggContext } from '../SearchPage/components/AggFilterUpdateContext';
 
 interface LocationAggProps {
-  isPresearch: boolean;
   updater: AggFilterInputUpdater;
   field: SiteViewFragment_search_aggs_fields | any;
   buckets: Array<AggBucket>;
@@ -65,7 +64,6 @@ class LocationAgg extends React.Component<LocationAggProps, LocationAggState> {
   }
   render() {
     const {
-      isPresearch,
       field,
       isSelected,
       removeFilters,

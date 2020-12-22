@@ -174,19 +174,12 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   }
   
   handleContentChange = (value: EditorValue) => {
-    //console.log("RTE CONTENT ", this.state.presearchIntructions )
     //console.log("RTE VALUE ",value )
     this.setState({ presearchIntructions: value });
-    let instructs =  this.state.presearchIntructions.toString("html")//,  {blockStyleFn: getTextAlignStyles} )
-        //(instructionsValue?.toString("html",  {blockStyleFn: getTextAlignStyles} ) || RichTextEditor.createEmptyValue())
-
-    
-   // console.log("INSTRUCTIONS ", instructs);
   };
 
   handleSubmitInstructions = siteView => {
-    console.log("SUBMIT insturctions", this.state.presearchIntructions.toString("html",  {blockStyleFn: getTextAlignStyles} ))
-
+    //console.log("SUBMIT insturctions", this.state.presearchIntructions.toString("html",  {blockStyleFn: getTextAlignStyles} ))
     this.handleAddMutation(
       {
         currentTarget: {
@@ -214,7 +207,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   handleInput = (e, inputType) => {
-    console.log('igethere');
     switch (inputType) {
       case 'url':
         this.setState({ siteUrl: e.value });
@@ -642,10 +634,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     );
   };
   renderPreSearchConfig = (showPresearch, view, fields, crowdFields) => {
-    let instructionsValue = (this.state.presearchIntructions === null || undefined) ? "<p><br></p>" : this.state.presearchIntructions;
-    console.log("PRESEARCH INS", (instructionsValue));
-    //(instructionsValue?.toString("html",  {blockStyleFn: getTextAlignStyles} ) || RichTextEditor.createEmptyValue())
-
     return (
       <Panel>
         <Panel.Heading>

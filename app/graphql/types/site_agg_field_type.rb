@@ -19,6 +19,7 @@ module Types
     field :layout, String, null: true
 
 
+
     def display
       object[:display]
     end
@@ -66,6 +67,6 @@ module Types
     def layout
       object[:layout]
     end
-    
+
   end
 end
