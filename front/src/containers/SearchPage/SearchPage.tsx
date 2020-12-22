@@ -44,7 +44,7 @@ import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
-import RichTextEditor from 'react-rte';
+import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
@@ -525,17 +525,20 @@ function SearchPage(props: SearchPageProps) {
 
     const { pageViewUrl } = getPageView();
 
+    console.log("PRESEARCH INST TEXT",presearchText)
+
     return (
       <ThemedSearchContainer>
         <InstructionsContainer>
           {presearchText && (
             <Instructions>
               <RichTextEditor
+                blockStyleFn={getTextAlignClassName}
                 readOnly
                 editorClassName="rich-text"
                 value={RichTextEditor.createValueFromString(
                   presearchText,
-                  'markdown'
+                  'html'
                 )}
               />
             </Instructions>

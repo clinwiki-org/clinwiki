@@ -34,7 +34,7 @@ import { equals } from 'ramda';
 import { History, Location } from 'history';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
-import RichTextEditor, { EditorValue } from 'react-rte';
+import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
 import {
   SiteFragment,
   SiteFragment_siteViews,
@@ -160,7 +160,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         siteViewName: view.name || '',
         presearchIntructions: RichTextEditor.createValueFromString(
           view.search.presearch.instructions,
-          'markdown'
+          'html'
         ),
       });
     } else {
@@ -172,17 +172,26 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       });
     }
   }
-
+  
   handleContentChange = (value: EditorValue) => {
+    //console.log("RTE CONTENT ", this.state.presearchIntructions )
+    //console.log("RTE VALUE ",value )
     this.setState({ presearchIntructions: value });
+    let instructs =  this.state.presearchIntructions.toString("html")//,  {blockStyleFn: getTextAlignStyles} )
+        //(instructionsValue?.toString("html",  {blockStyleFn: getTextAlignStyles} ) || RichTextEditor.createEmptyValue())
+
+    
+   // console.log("INSTRUCTIONS ", instructs);
   };
 
   handleSubmitInstructions = siteView => {
+    console.log("SUBMIT insturctions", this.state.presearchIntructions.toString("html",  {blockStyleFn: getTextAlignStyles} ))
+
     this.handleAddMutation(
       {
         currentTarget: {
           name: 'set:search.presearch.instructions',
-          value: this.state.presearchIntructions.toString('markdown'),
+          value: this.state.presearchIntructions.toString("html",  {blockStyleFn: getTextAlignStyles} ),
         },
       },
       siteView
@@ -633,6 +642,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     );
   };
   renderPreSearchConfig = (showPresearch, view, fields, crowdFields) => {
+    let instructionsValue = (this.state.presearchIntructions === null || undefined) ? "<p><br></p>" : this.state.presearchIntructions;
+    console.log("PRESEARCH INS", (instructionsValue));
+    //(instructionsValue?.toString("html",  {blockStyleFn: getTextAlignStyles} ) || RichTextEditor.createEmptyValue())
+
     return (
       <Panel>
         <Panel.Heading>
@@ -708,6 +721,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <Panel.Body collapsible>
               <h3>Instructions:</h3>
               <RichTextEditor
+                blockStyleFn={getTextAlignClassName}
                 onChange={this.handleContentChange}
                 value={
                   this.state.presearchIntructions ||
