@@ -1,5 +1,5 @@
 import * as query from './queries';
-import { getLocalJwt } from 'utils/localStorage';
+import { callGraphql } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
@@ -7,76 +7,23 @@ import { getLocalJwt } from 'utils/localStorage';
 const ENDPOINT = 'http://localhost:3000/graphql'
 
 export const fetchCurrentUser = () => {
-    return fetch(ENDPOINT,{
-        method: 'POST',
-        headers: {
-            'Content-Type' : 'application/json',
-            'Accept' : 'application/json',
-            'Authorization': getLocalJwt() ? `Bearer ${getLocalJwt()}` : ''
-        },
-        body: JSON.stringify({
-            query : query.FETCH_CURRENT_USER_QUERY,
-            variables: { }
-        })
-    }).then(r => r.json());
+    return callGraphql(ENDPOINT,query.FETCH_CURRENT_USER_QUERY, {});
 };
 
 export const signIn = (email,password,oAuthToken) => {
-    return fetch(ENDPOINT,{
-        method: 'POST',
-        headers: {
-            'Content-Type' : 'application/json',
-            'Accept' : 'application/json',
-            'Authorization': getLocalJwt() ? `Bearer ${getLocalJwt()}` : ''
-        },
-        body: JSON.stringify({
-            query : query.SIGN_IN_MUTATION,
-            variables: { input: { email, password, oAuthToken} }
-        })
-    }).then(r => r.json());
+    return callGraphql(ENDPOINT,query.SIGN_IN_MUTATION, { input: { email, password, oAuthToken} });
 };
 
 export const signUp = (email,password,oAuthToken) => {
-    return fetch(ENDPOINT,{
-        method: 'POST',
-        headers: {
-            'Content-Type' : 'application/json',
-            'Accept' : 'application/json',
-            'Authorization': getLocalJwt() ? `Bearer ${getLocalJwt()}` : ''
-        },
-        body: JSON.stringify({
-            query : query.SIGN_UP_MUTATION,
-            variables: { input: { email, password, oAuthToken} }
-        })
-    }).then(r => r.json());
+    return callGraphql(ENDPOINT,query.SIGN_UP_MUTATION, { input: { email, password, oAuthToken} });
 };
 
 export const updatePassword = (resetPasswordToken,password,passwordConfirmation) => {
-    return fetch(ENDPOINT,{
-        method: 'POST',
-        headers: {
-            'Content-Type' : 'application/json',
-            'Accept' : 'application/json',
-            'Authorization': getLocalJwt() ? `Bearer ${getLocalJwt()}` : ''
-        },
-        body: JSON.stringify({
-            query : query.UPDATE_PASSWORD_MUTATION,
-            variables: { input: { resetPasswordToken, password, passwordConfirmation} }
-        })
-    }).then(r => r.json());
+    return callGraphql(ENDPOINT,query.UPDATE_PASSWORD_MUTATION, 
+        { input: { resetPasswordToken, password, passwordConfirmation} });
 };
 
 export const editProfile = (firstName, lastName, defaultQueryString) => {
-    return fetch(ENDPOINT,{
-        method: 'POST',
-        headers: {
-            'Content-Type' : 'application/json',
-            'Accept' : 'application/json',
-            'Authorization': getLocalJwt() ? `Bearer ${getLocalJwt()}` : ''
-        },
-        body: JSON.stringify({
-            query : query.EDIT_PROFILE_MUTATION,
-            variables: { input: { firstName, lastName, defaultQueryString } }
-        })
-    }).then(r => r.json());
+    return callGraphql(ENDPOINT,query.EDIT_PROFILE_MUTATION, 
+        { input: { firstName, lastName, defaultQueryString } });
 };
