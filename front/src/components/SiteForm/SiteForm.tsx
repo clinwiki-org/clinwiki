@@ -41,10 +41,10 @@ interface SiteFormState {
 
 const Container = styled.div`
   ul > li > a {
-    color: white;
+    color: #333;
 
     &:hover {
-      color: #333;
+      color: #white;
     }
   }
 `;
@@ -189,7 +189,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const path = trimPath(this.props.match.path);
     return (
       <Container>
-        <h3 style={{ color: 'white', marginLeft: 15 }}>
+        <h3 style={{ color: '#333', marginLeft: 15 }}>
           {this.props.site.name}
         </h3>
         {this.renderTabs()}

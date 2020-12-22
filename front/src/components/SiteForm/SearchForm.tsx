@@ -34,7 +34,7 @@ import { equals } from 'ramda';
 import { History, Location } from 'history';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
-import RichTextEditor, { EditorValue } from 'react-rte';
+import RichTextEditor, { EditorValue, getTextAlignClassName} from 'react-rte';
 import {
   SiteFragment,
   SiteFragment_siteViews,
@@ -160,7 +160,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         siteViewName: view.name || '',
         presearchIntructions: RichTextEditor.createValueFromString(
           view.search.presearch.instructions,
-          'markdown'
+          'html'
         ),
       });
     } else {
@@ -174,6 +174,9 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   }
 
   handleContentChange = (value: EditorValue) => {
+    console.log(
+      'value', value
+    )
     this.setState({ presearchIntructions: value });
   };
 
@@ -182,7 +185,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       {
         currentTarget: {
           name: 'set:search.presearch.instructions',
-          value: this.state.presearchIntructions.toString('markdown'),
+          value: this.state.presearchIntructions.toString('html'),
         },
       },
       siteView
@@ -713,6 +716,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                   this.state.presearchIntructions ||
                   RichTextEditor.createEmptyValue()
                 }
+                blockStyleFn={getTextAlignClassName}
               />
               <ThemedButton
                 style={{ marginTop: 10 }}

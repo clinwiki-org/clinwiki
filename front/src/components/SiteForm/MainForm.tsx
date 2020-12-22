@@ -45,7 +45,7 @@ const StyledFormInput = styled(FormControl)`
   margin: 15px 0 15px 0;
   min-height: 10em;
   box-shadow: none !important;
-  color: white;
+  color: #333;
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.6);
