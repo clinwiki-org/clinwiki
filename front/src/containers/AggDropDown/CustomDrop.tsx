@@ -231,10 +231,65 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
 
   };
+  renderRangeLabel=()=>{
+    let range = this.state.selectedItems[0]
+    if(!this.state.selectedItems) return
+    //@ts-ignore
+    if (!range.start) return `≤ ${range.end}`
+    //@ts-ignore
+    if(!range.end)return `≥ ${range.start}`
+        //@ts-ignore
+    return `${range.start} - ${range.end}`
+
+  }
+  renderLocationLabel=()=>{
+    let location = this.state.selectedItems[0]
+        //@ts-ignore
+    if(!location.zipcode && !location.radius) return 
+        //@ts-ignore
+    if(!location.zipcode) return `Within ${location.radius} of current location`
+        //@ts-ignore
+    if(!location.lat && !location.long) return `Within ${location.radius} of ${location.zipcode}`
+
+  }
 
   renderSelectedItems = () => {
+    const { field } = this.props
     if (this.state.selectedItems.length > 0) {
       return this.state.selectedItems.map((item: AggBucket) => {
+
+        if(      
+          field?.display === FieldDisplay.DATE_RANGE ||
+          field?.display === FieldDisplay.NUMBER_RANGE ||
+          field?.display === FieldDisplay.LESS_THAN_RANGE ||
+          field?.display === FieldDisplay.GREATER_THAN_RANGE){
+            return (
+              <div className='select-box--crumb-container'>
+              {this.renderRangeLabel()}
+                      <FontAwesome
+                className="remove crumb-icon"
+                name="remove"
+                onClick={() => console.log("need a remove function")}
+              />
+              {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
+            </div>
+            )    
+    
+        }    else if (field.display == FieldDisplay.LOCATION) {
+          return (
+            <div className='select-box--crumb-container'>
+              {this.renderLocationLabel()}
+                    <FontAwesome
+              className="remove crumb-icon"
+              name="remove"
+              onClick={() => console.log("need a remove function")}
+            />
+            {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
+          </div>
+          )   
+        } else if (field?.display === FieldDisplay.BAR_CHART || field?.display === FieldDisplay.PIE_CHART) {
+        }
+
         //@ts-ignore
         if (this.isSelected(item.key)) {
           //@ts-ignore
@@ -286,6 +341,12 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
     return null
   };
+  handleRange=(rangeArray)=>{
+    this.setState({selectedItems: rangeArray})
+  }
+  handleLocation=(location)=>{
+    this.setState({selectedItems: location})
+  }
   renderPanel = () => {
     const { hasMore, buckets, handleLoadMore, field } = this.props
     const { showItems, loading } = this.state
@@ -306,6 +367,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           handleLoadMore={this.props.handleLoadMore}
           aggType={field?.display}
           field={field}
+          handleRange={this.handleRange}
         />
       )
     } else if (field?.display === FieldDisplay.PIE_CHART) {
@@ -344,6 +406,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           isSelected={this.isSelected}
           hasMore={hasMore}
           field={field}
+          handleLocation={this.handleLocation}
         />
       )
     }
