@@ -9,11 +9,11 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import logo from 'images/clinwiki-501.png';
 import UserProfileHeaderButton from './UserProfileHeaderButton';
-import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 import { gql }  from '@apollo/client';
 import  {Query,QueryComponentOptions, } from '@apollo/client/react/components';
 import Error from "../Error";
-import { AdminViewsProviderQuery, AdminViewsProviderQueryVariables } from 'types/AdminViewsProviderQuery';
+import { AdminViewsProviderQuery, AdminViewsProviderQueryVariables } from 'services/site/model/AdminViewsProviderQuery';
 
 const Row = styled.div`
   display: flex;

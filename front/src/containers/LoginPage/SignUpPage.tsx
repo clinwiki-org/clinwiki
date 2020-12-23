@@ -7,14 +7,10 @@ import {
   MutationComponentOptions,
 } from '@apollo/client/react/components';
 import { gql, MutationFunction }  from '@apollo/client';
-import { SignUpMutation, SignUpMutationVariables } from 'types/SignUpMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import { ThemedButton } from './StyledButton';
 import { Link } from 'react-router-dom';
-import { History } from 'history';
-import { setLocalJwt } from 'utils/localStorage';
-import CurrentUser from 'containers/CurrentUser';
 import StyledError from './StyledError';
 import { omit } from 'ramda';
 import StyledWrapper from './StyledWrapper';

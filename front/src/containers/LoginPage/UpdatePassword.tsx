@@ -8,16 +8,9 @@ import {
 import { gql, MutationFunction }  from '@apollo/client';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
-import {
-  UpdatePasswordMutation,
-  UpdatePasswordMutationVariables,
-} from 'types/UpdatePasswordMutation';
 import ThemedButton from '../../components/StyledComponents';
-import { History } from 'history';
 import StyledWrapper from './StyledWrapper';
-import { setLocalJwt } from 'utils/localStorage';
 import StyledError from './StyledError';
-import CurrentUser from 'containers/CurrentUser';
 
 const UpdatePassword = (props) => {
   const dispatch = useDispatch();

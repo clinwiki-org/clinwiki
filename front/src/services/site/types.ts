@@ -1,4 +1,4 @@
-import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
+import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
 export const FETCH_ADMIN_SITE_VIEW_SUCCESS = 'FETCH_ADMIN_SITE_VIEW_SUCCESS';

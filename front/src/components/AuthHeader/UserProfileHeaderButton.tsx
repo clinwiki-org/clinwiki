@@ -6,8 +6,8 @@ import { getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-import { UserFragment } from 'types/UserFragment';
-import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
+import { UserFragment } from 'services/user/model/UserFragment';
+import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 
 const UserImage = styled.img`

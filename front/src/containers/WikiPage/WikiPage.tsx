@@ -26,7 +26,7 @@ import Error from 'components/Error';
 import Edits, { WikiPageEditFragment } from 'components/Edits';
 import { trimPath } from 'utils/helpers';
 import CurrentUser from 'containers/CurrentUser';
-import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 import EditsExpansionContext from './ExpansionContext';
 interface WikiPageProps {
   nctId: string;

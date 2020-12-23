@@ -1,5 +1,5 @@
 import * as types from './types';
-import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
+import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({
     type: types.FETCH_ADMIN_SITE_VIEW_SEND

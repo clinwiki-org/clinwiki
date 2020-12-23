@@ -11,7 +11,7 @@ import {
 import { path, pathOr } from 'ramda';
 import StudyPage from 'containers/StudyPage';
 import { PulseLoader } from 'react-spinners';
-import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 
 
 interface StudySearchPageProps {

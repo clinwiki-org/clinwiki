@@ -1,4 +1,4 @@
-import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 
 export const FETCH_USER_SEND = 'FETCH_USER_SEND';
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';

@@ -1,5 +1,5 @@
 import * as types from './types';
-import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 
 export const fetchUser = () : types.UserActionTypes => ({
     type: types.FETCH_USER_SEND
