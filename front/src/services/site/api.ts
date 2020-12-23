@@ -7,5 +7,9 @@ import { callGraphql } from 'utils/graphqlUtil';
 const ENDPOINT = 'http://localhost:3000/graphql'
 
 export const fetchAdminSiteView = () => {
-    return callGraphql(ENDPOINT,query.ADMIN_SITE_VIEW_QUERY, {});
+    return callGraphql(ENDPOINT, query.ADMIN_SITE_VIEW_QUERY, {});
 };
+
+export const fetchSitesPage = () => {
+    return callGraphql(ENDPOINT, query.SITES_PAGE_QUERY, {});
+}

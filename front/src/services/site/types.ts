@@ -1,14 +1,22 @@
 
 //@ts-ignore
 import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
+import { SitesPageQuery } from 'types/SitesPageQuery';
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
 export const FETCH_ADMIN_SITE_VIEW_SUCCESS = 'FETCH_ADMIN_SITE_VIEW_SUCCESS';
 export const FETCH_ADMIN_SITE_VIEW_ERROR = 'FETCH_ADMIN_SITE_VIEW_ERROR';
 
+export const FETCH_SITES_PAGE_SEND = 'FETCH_SITES_PAGE_SEND';
+export const FETCH_SITES_PAGE_SUCCESS = 'FETCH_SITES_PAGE_SUCCESS';
+export const FETCH_SITES_PAGE_ERROR = 'FETCH_SITES_PAGE_ERROR';
+
+
 export interface SiteState {
     isFetchingAdminSiteView: boolean,
     adminSiteView: AdminViewsProviderQuery | undefined;
+    isFetchingSitesPage: boolean,
+    sitesPage: SitesPageQuery | undefined;
 }
 
 export interface SiteDataError {
@@ -29,4 +37,22 @@ export interface FetchAdminSiteViewErrorAction {
     payload: SiteDataError
 };
 
-export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction;
+export interface FetchSitesPageSendAction {
+    type: typeof FETCH_SITES_PAGE_SEND
+};
+
+export interface FetchSitesPageSuccessAction {
+    type: typeof FETCH_SITES_PAGE_SUCCESS,
+    payload: SitesPageQuery
+};
+
+export interface FetchSitesPageErrorAction {
+    type: typeof FETCH_SITES_PAGE_ERROR,
+    payload: SiteDataError
+};
+
+
+
+
+export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
+    FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction; 

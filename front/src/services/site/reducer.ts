@@ -2,7 +2,10 @@ import * as types from './types';
 
 const initialState: types.SiteState = {
     isFetchingAdminSiteView: false,
-    adminSiteView: undefined
+    adminSiteView: undefined,
+    isFetchingSitesPage: false,
+    sitesPage: undefined
+
 };
 
 const siteReducer = ( state = initialState, action: types.SiteActionTypes) : types.SiteState => {
@@ -22,6 +25,25 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isFetchingAdminSiteView: false
             };
+
+
+            case types.FETCH_SITES_PAGE_SEND:
+            return {
+                ...state,
+                isFetchingSitesPage: true
+            };
+        case types.FETCH_SITES_PAGE_SUCCESS:
+            return {
+                ...state,
+                isFetchingSitesPage: false
+            };
+        case types.FETCH_SITES_PAGE_ERROR:
+            return {
+                ...state,
+                isFetchingSitesPage: false
+            };
+
+
         default:
             return {...state};
     }
