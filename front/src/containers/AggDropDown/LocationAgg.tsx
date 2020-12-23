@@ -68,7 +68,7 @@ this.props.handleLocation([
 
     )
     this.props.handleLocation([
-      {  \zipcode: this.state.zipcode,
+      { zipcode: this.state.zipcode,
         lat: this.state.lat || this.props.updater.input?.lat,
         long: this.state.long || this.props.updater.input?.long,
         radius: this.state.radius|| this.props.updater.input?.radius || '50',}
