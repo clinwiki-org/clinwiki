@@ -155,11 +155,13 @@ const SelectBoxBox = styled.div`
 .select-box--buckets-presearch{
   height:200px;
   overflow-y: scroll;
-  padding-left: 10px;
+  // padding-left: 10px;
   color: black;
+  border: 1px solid #e7e7e7;
 }
 .select-box--crumbs{
   display:flex;
+  flex-wrap: wrap;
 }
 .select-box--crumb-container{
   border: 2px solid #e8e8e8;
@@ -172,10 +174,14 @@ const SelectBoxBox = styled.div`
 }
 .select-item{
   min-height: 20px;
-  padding-left: 10px;
-  margin: 10px 0;
+  padding: 1em;
+  // margin: 10px 0;
   font-weight: 400;
   cursor: pointer;
+  border-bottom: 1px solid #e7e7e7;
+}
+.select-item:nth-child(even){
+ background-color: #ececec;
 }
 `
 const ThemedSelectBox = withTheme(SelectBoxBox)

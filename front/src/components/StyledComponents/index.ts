@@ -133,16 +133,19 @@ const PresearchHeader = styled.div`
   background-color: ${props => props.theme.presearch.presearchLabelColor};
   // border-top-left-radius: 4px;
   // border-top-right-radius: 4px;
-  height: 60px;
+  // height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-top: 1px solid;
-  border-left: 1px solid;
+  border-right: 1px solid;
   border-bottom: 1px solid;
+  border-left: 1px solid;
   border-color: ${props => props.theme.presearch.presearchBorderColor};
   padding: 1em;
   cursor:pointer;
+    
+  }
 `;
 
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
