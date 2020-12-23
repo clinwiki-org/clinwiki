@@ -15,6 +15,8 @@ const StyledButton = styled(ThemedButton)`
 `;
 
 class SiteItem extends React.PureComponent<SiteItemProps> {
+
+  //TODO Moving fragment to redux queries when other Apollo queries don't need it anymore
   static fragment = gql`
     fragment SiteItemFragment on Site {
       id

@@ -1,4 +1,3 @@
-import { SiteItem } from 'components/SiteItem';
 
 export const ADMIN_SITE_VIEW_FRAGMENT = `
     fragment AdminSiteViewFragment on SiteView {
@@ -25,6 +24,15 @@ export const ADMIN_SITE_VIEW_QUERY = `
     ${ADMIN_SITE_VIEW_FRAGMENT}
 `;
 
+
+export const SITE_ITEM_FRAGMENT = `
+fragment SiteItemFragment on Site {
+  id
+  name
+  subdomain
+}
+`;
+
 export const SITES_PAGE_QUERY = `
   query SitesPageQuery {
     me {
@@ -38,5 +46,8 @@ export const SITES_PAGE_QUERY = `
     }
   }
 
-  ${SiteItem.fragment}
+  ${SITE_ITEM_FRAGMENT}
 `;
+
+
+

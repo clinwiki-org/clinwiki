@@ -21,11 +21,10 @@ function* getAdminSiteView(action) {
 
 
 function* getSitesPage(action) {
-    console.log('SAGA getSitesPage')
     try {
         let response = yield call(() => api.fetchSitesPage());
         if(response) {
-            yield put(actions.fetchSitesPageSuccess(response));
+            yield put(actions.fetchSitesPageSuccess(response.data));
         }
         else {
             yield put(actions.fetchSitesPageError(response.message));
@@ -40,5 +39,5 @@ function* getSitesPage(action) {
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_ADMIN_SITE_VIEW_SEND, getAdminSiteView);
-    yield takeLatest(types.FETCH_SITES_PAGE_SEND, getSitesPage)
+    yield takeLatest(types.FETCH_SITES_PAGE_SEND, getSitesPage);
 }

@@ -35,7 +35,8 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
         case types.FETCH_SITES_PAGE_SUCCESS:
             return {
                 ...state,
-                isFetchingSitesPage: false
+                isFetchingSitesPage: false,
+                sitesPage: action.payload
             };
         case types.FETCH_SITES_PAGE_ERROR:
             return {
