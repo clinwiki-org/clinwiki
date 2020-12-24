@@ -366,7 +366,8 @@ export const PresearchContainer = styled.div`
     display: contents;
   }
   .horizontal-pre {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 200px;
   }
 
   .horizontal-aggs {
@@ -381,12 +382,13 @@ export const PresearchContainer = styled.div`
 
   .horizontal-pre-button {
     margin-top: 10px;
-    margin-left: 13px;
+    // margin-left: 13px;
     // width: 200px;
   }
-  @media (max-width: 660px) {
+  @media (max-width: 951px) {
     .horizontal-pre {
-      flex-direction: column;
+      // flex-direction: column;
+      grid-template-columns: 1fr;
     }
 
     .horizontal-pre-button {

@@ -179,9 +179,16 @@ const SelectBoxBox = styled.div`
   font-weight: 400;
   cursor: pointer;
   border-bottom: 1px solid #e7e7e7;
+  transition: .2s;
 }
 .select-item:nth-child(even){
  background-color: #ececec;
+}
+
+.select-item:hover {
+  background-color: ${props => props.theme.button};
+  color: white;
+
 }
 `
 const ThemedSelectBox = withTheme(SelectBoxBox)
