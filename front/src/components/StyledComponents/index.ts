@@ -367,6 +367,10 @@ export const PresearchContainer = styled.div`
   }
   .horizontal-pre {
     display: flex;
+  }
+
+  .horizontal-aggs {
+    display: flex;
     flex-wrap: wrap;
   }
 
@@ -377,7 +381,18 @@ export const PresearchContainer = styled.div`
 
   .horizontal-pre-button {
     margin-top: 10px;
-    width: 200px;
+    margin-left: 13px;
+    // width: 200px;
+  }
+  @media (max-width: 660px) {
+    .horizontal-pre {
+      flex-direction: column;
+    }
+
+    .horizontal-pre-button {
+      margin-top: 10px;
+      margin-left: 0;
+    }
   }
 `;
 

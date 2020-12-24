@@ -331,12 +331,14 @@ const Aggs = (props: AggsProps) => {
         return (
           <PresearchContainer>
             <div className="horizontal-pre">
-              {aggPresearchHorizontal}
-              {crowdAggPresearchHorizontal}
+              <div className="horizontal-aggs">
+               {aggPresearchHorizontal}
+               {crowdAggPresearchHorizontal}
+              </div>
               {(aggPresearchHorizontal.length > 0 || crowdAggPresearchHorizontal.length > 0) ? 
               <div className="horizontal-pre-button">
                 <ThemedButton 
-                  style={{ width: 200, marginLeft: 13 }}
+                  style={{ width: 200 }}
                   onClick={() =>
                     //@ts-ignore
                     props.handlePresearchButtonClick (
