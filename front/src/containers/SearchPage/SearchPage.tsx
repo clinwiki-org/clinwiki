@@ -105,6 +105,7 @@ const ThemedSideBarCollapse = withTheme(SideBarCollapse)
 const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
+  padding-left: 0px !important;
   box-sizing: border-box;
   width: 235px;
   min-width: 235px;

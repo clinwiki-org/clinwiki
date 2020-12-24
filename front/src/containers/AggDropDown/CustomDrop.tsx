@@ -149,9 +149,13 @@ const SelectBoxBox = styled.div`
 .select-box--buckets-facet{
   max-height:300px;
   overflow: scroll;
-  padding-left: 10px;
+  // padding-left: 10px;
   color: rgb(255, 255, 255);
 }
+
+.select-box--buckets-presearch .select-item:nth-child(even){
+  background-color: #ececec;
+ }
 .select-box--buckets-presearch{
   height:200px;
   overflow-y: scroll;
@@ -181,9 +185,7 @@ const SelectBoxBox = styled.div`
   border-bottom: 1px solid #e7e7e7;
   transition: .2s;
 }
-.select-item:nth-child(even){
- background-color: #ececec;
-}
+
 
 .select-item:hover {
   background-color: ${props => props.theme.button};
