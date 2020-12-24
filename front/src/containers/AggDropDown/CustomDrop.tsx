@@ -157,7 +157,7 @@ const SelectBoxBox = styled.div`
   background-color: #ececec;
  }
 .select-box--buckets-presearch{
-  height:200px;
+  max-height:200px;
   overflow-y: scroll;
   // padding-left: 10px;
   color: black;
