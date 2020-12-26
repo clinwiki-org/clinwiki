@@ -152,6 +152,10 @@ const SelectBoxBox = styled.div`
   // padding-left: 10px;
   color: rgb(255, 255, 255);
 }
+
+.select-box--buckets-facet .form-group{
+ padding: 0 .5em;
+}
 .select-box--buckets-facet .select-item {
   background-color: ${props => props.theme.authHeader.headerBackground};
 
