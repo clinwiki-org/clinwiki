@@ -133,7 +133,13 @@ interface AggsProps {
 const AggSideBarTitle = styled.h4`
   color: ${props => props.theme.aggSideBar.sideBarTitleFont};
   position: relative;
-  left: 20px;
+  left: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 1.2em 0;
 `;
 const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 

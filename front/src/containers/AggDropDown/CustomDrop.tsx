@@ -152,10 +152,20 @@ const SelectBoxBox = styled.div`
   // padding-left: 10px;
   color: rgb(255, 255, 255);
 }
+.select-box--buckets-facet .select-item {
+  background-color: ${props => props.theme.authHeader.headerBackground};
+
+}
 
 .select-box--buckets-presearch .select-item:nth-child(even){
   background-color: #ececec;
  }
+
+ .select-box--buckets-presearch .select-item:hover{
+  background-color: ${props => props.theme.button};
+ }
+
+
 .select-box--buckets-presearch{
   max-height:200px;
   overflow-y: scroll;

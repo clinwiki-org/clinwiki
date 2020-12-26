@@ -142,7 +142,7 @@ const PresearchHeader = styled.div`
   border-bottom: 1px solid;
   border-left: 1px solid;
   border-color: ${props => props.theme.presearch.presearchBorderColor};
-  padding: 1em;
+  padding: 20px 12px;
   cursor:pointer;
     
   }
@@ -154,9 +154,10 @@ export const PresearchTitle = styled.div`
   color: ${props => props.theme.presearchLabelTextColor}; 
   font-size: 14px;
   font-weight: 700;
-  margin-left: 5px;
   text-transform: uppercase;
   letter-spacing: .1em;
+  position: relative;
+  top: -9px;
 `;
 
 const SearchCard = styled.div`
@@ -488,7 +489,7 @@ export const StyledInterventionHeading = styled.div`
 `;
 const FacetAgg = styled.div`
   min-height: 50px;
-  border-bottom: 1px solid #3d3d3d;
+  border-bottom: 1px solid ${props => props.theme.aggSideBar.sideBarFont};
   width: 100%;
   margin: 0;
   position: relative;
@@ -497,24 +498,24 @@ const FacetAgg = styled.div`
 `
 export const ThemedFacetAgg= withTheme(FacetAgg)
 const FacetTitle = styled.div`
-  font-size: 16px;
+  font-size: 14px;
   color: ${props => props.theme.aggSideBar.sideBarFont};
-  padding: 0px 10px;
+  position: relative;
+  top: -9px;
+
   
 `;
 export const ThemedFacetTitle = withTheme(FacetTitle)
 const FacetHeader = styled.div`
 
   color: ${props => props.theme.aggSideBar.sideBarFont};
-  padding: 0px 10px;
   display: inline-block;
   height: 100%;
   width: 100%;
-  padding: 4px 12px;
+  padding: 20px 12px;
   vertical-align: middle;
-  font-size: 16px;
-  margin-top:10px;
   cursor:pointer;
+  text-transform: uppercase;
 
 
   .select-box--arrow{
