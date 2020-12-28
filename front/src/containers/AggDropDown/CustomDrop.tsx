@@ -58,6 +58,7 @@ interface CustomDropDownProps {
   handleFilterChange: any;
   showLabel: boolean;
   maxBreadCrumbs: number;
+  isOpen:boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -232,7 +233,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   dropDown = () => {
     this.setState((prevState) => ({
       showItems: !prevState.showItems
-    }), () => this.props.handleLoadMore()
+    })
     );
     this.props.onContainerToggle && this.props.onContainerToggle()
     this.setState({showAdditionalCrumbs:!this.state.showAdditionalCrumbs})
@@ -408,7 +409,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   renderPanel = () => {
     const { hasMore, buckets, handleLoadMore, field } = this.props
     const { showItems, loading } = this.state
-    const isOpen = showItems
+    if(!this.props.isOpen) return 
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -418,7 +419,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
       return (
         <RangeSelector
-          isOpen={isOpen}
+          isOpen={this.props.isOpen}
           hasMore={hasMore}
           loading={loading}
           buckets={buckets}
@@ -517,7 +518,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     const ThemedTitle = this.props.isPresearch ? PresearchTitle : ThemedFacetTitle
     let configuredLabel = this.props.field?.displayName || '';
     const title = aggToField(this.props.field.name, configuredLabel);
-    if (this.props.buckets == undefined) {
+    if (this.props.buckets == undefined && this.props.isOpen) {
       return <BeatLoader />
     }
     const icon = `chevron${this.state.showItems ? '-up' : '-down'}`;

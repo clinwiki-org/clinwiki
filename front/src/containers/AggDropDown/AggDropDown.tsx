@@ -478,6 +478,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         toggleNumericSort={this.toggleNumericSort}
         setShowLabel={showLabel => this.setState({ showLabel })}
         maxBreadCrumbs={5}
+        isOpen={this.props.isOpen}
 
         />
       );
@@ -506,6 +507,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         toggleNumericSort={this.toggleNumericSort}
         setShowLabel={showLabel => this.setState({ showLabel })}
         maxBreadCrumbs={0}
+        isOpen={this.props.isOpen}
         />
       );
     }
