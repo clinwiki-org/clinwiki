@@ -342,11 +342,15 @@ const SearchContainer = styled.div`
 export const ThemedSearchContainer = withTheme(SearchContainer);
 
 export const TextFieldToggle = styled.div`
-  color: white;
+  color:  ${props => props.theme.presearchLabelTextColor};
   font-size: 28px;
   font-weight: 400;
   margin-right: 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
 `;
+export const ThemedTextFieldToggle = withTheme(TextFieldToggle)
 
 export const PresearchFilter = styled.div`
   margin-left: 5px;
@@ -405,11 +409,13 @@ export const PresearchContent = styled.div`
   // border-bottom-left-radius: 12px;
   // border-bottom-right-radius: 12px;
   background-color: white;
+  height: 260px;
   max-height: 260px;
   margin-bottom: 7px;
   overflow-Y: scroll;
   display: flex;
   flex-direction: column;
+  border: 1px solid #e7e7e7;
 `;
 
 export const PresearchPanel = styled.div`
