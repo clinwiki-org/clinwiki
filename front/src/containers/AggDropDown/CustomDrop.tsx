@@ -255,7 +255,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
 
     //handles our mutliselect happens to be same behavior as old TEXT/STRING type 
-    if (this.props.field.display == "MULTI" || this.props.field.display == "STRING") {
+    if (this.props.field.display == "MULTI" || this.props.field.display == "STRING" || this.props.field.display == "PIE_CHART"|| this.props.field.display == "BAR_CHART" ) {
       //need to filter to prevent dups
       this.setState({
         selectedItem: item,
@@ -312,7 +312,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
         } else if (field.display == FieldDisplay.LOCATION) {
           return (
-            <div className='select-box--crumb-container'>
+            <div key="location-crumb" className='select-box--crumb-container' >
               {this.renderLocationLabel()}
               <FontAwesome
                 className="remove crumb-icon"
@@ -432,26 +432,24 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       return (
         <TwoLevelPieChart
           isPresearch={this.props.isPresearch}
-          visibleOptions={field.display.visibleOptions}
           buckets={buckets}
-          isSelected={this.isSelected}
           hasMore={hasMore}
           handleLoadMore={this.props.handleLoadMore}
           field={field}
-          searchParams={{}}
+          onClickHandler={this.selectItem}
         />
       )
     } else if (field?.display === FieldDisplay.BAR_CHART) {
       return (
         <BarChartComponent
           isPresearch={this.props.isPresearch}
+          onClickHandler={this.selectItem}
           // visibleOptions={visibleOptions}
           buckets={buckets}
           // isSelected={this.isSelected}
           hasMore={hasMore}
           handleLoadMore={this.props.handleLoadMore}
           field={field}
-          searchParams={{}}
         />
       )
     }
