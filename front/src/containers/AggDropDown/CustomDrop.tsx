@@ -57,6 +57,7 @@ interface CustomDropDownProps {
   toggleNumericSort: any;
   handleFilterChange: any;
   showLabel: boolean;
+  maxBreadCrumbs: number;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -72,6 +73,7 @@ interface CustomDropDownState {
   desc: boolean,
   checkboxValue: boolean,
   showLabel: boolean,
+  showAdditionalCrumbs: boolean;
 }
 
 
@@ -224,6 +226,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     desc: true,
     checkboxValue: false,
     showLabel: false,
+    showAdditionalCrumbs: false
   };
 
   dropDown = () => {
@@ -232,6 +235,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }), () => this.props.handleLoadMore()
     );
     this.props.onContainerToggle && this.props.onContainerToggle()
+    this.setState({showAdditionalCrumbs:!this.state.showAdditionalCrumbs})
   };
 
   selectItem = (item) => {
@@ -267,55 +271,57 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     if (!range.start) return `≤ ${range.end}`
     //@ts-ignore
     if(!range.end)return `≥ ${range.start}`
-        //@ts-ignore
+    //@ts-ignore
     return `${range.start} - ${range.end}`
 
   }
-  renderLocationLabel=()=>{
+  renderLocationLabel = () => {
     let location = this.state.selectedItems[0]
-        //@ts-ignore
-    if(!location.zipcode && !location.radius) return 
-        //@ts-ignore
-    if(!location.zipcode) return `Within ${location.radius} of current location`
-        //@ts-ignore
-    if(!location.lat && !location.long) return `Within ${location.radius} of ${location.zipcode}`
+    //@ts-ignore
+    if (!location.zipcode && !location.radius) return
+    //@ts-ignore
+    if (!location.zipcode) return `Within ${location.radius} of current location`
+    //@ts-ignore
+    if (!location.lat && !location.long) return `Within ${location.radius} of ${location.zipcode}`
 
   }
 
   renderSelectedItems = () => {
     const { field } = this.props
     if (this.state.selectedItems.length > 0) {
-      return this.state.selectedItems.map((item: AggBucket) => {
-
-        if(      
+      let displayedCrumbs: any[] = this.state.selectedItems.slice(0, this.props.maxBreadCrumbs)
+      let otherValues = { key: `... ${this.state.selectedItems.length - displayedCrumbs.length} others` }
+      displayedCrumbs.push(otherValues)
+      return displayedCrumbs.map((item: AggBucket, index) => {
+        if (
           field?.display === FieldDisplay.DATE_RANGE ||
           field?.display === FieldDisplay.NUMBER_RANGE ||
           field?.display === FieldDisplay.LESS_THAN_RANGE ||
-          field?.display === FieldDisplay.GREATER_THAN_RANGE){
-            return (
-              <div className='select-box--crumb-container'>
+          field?.display === FieldDisplay.GREATER_THAN_RANGE) {
+          return (
+            <div className='select-box--crumb-container'>
               {this.renderRangeLabel()}
-                      <FontAwesome
+              <FontAwesome
                 className="remove crumb-icon"
                 name="remove"
                 onClick={() => console.log("need a remove function")}
               />
               {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
             </div>
-            )    
-    
-        }    else if (field.display == FieldDisplay.LOCATION) {
+          )
+
+        } else if (field.display == FieldDisplay.LOCATION) {
           return (
             <div className='select-box--crumb-container'>
               {this.renderLocationLabel()}
-                    <FontAwesome
-              className="remove crumb-icon"
-              name="remove"
-              onClick={() => console.log("need a remove function")}
-            />
-            {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
-          </div>
-          )   
+              <FontAwesome
+                className="remove crumb-icon"
+                name="remove"
+                onClick={() => console.log("need a remove function")}
+              />
+              {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
+            </div>
+          )
         } else if (field?.display === FieldDisplay.BAR_CHART || field?.display === FieldDisplay.PIE_CHART) {
         }
 
@@ -331,7 +337,30 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
           </div>
         }
-        return
+        if (this.state.selectedItems.length > this.props.maxBreadCrumbs) {
+          let chevronDirection = this.state.showAdditionalCrumbs ? 'left' : 'right';
+          if (this.state.showAdditionalCrumbs) {
+            let otherCrumbs: any[]= this.state.selectedItems.slice(this.props.maxBreadCrumbs, this.state.selectedItems.length)
+            return otherCrumbs.map(item => {
+              return (<div className='select-box--crumb-container' >
+                {item.key}          <FontAwesome
+                  className={`remove crumb-icon`}
+                  name={`remove`}
+                  onClick={() => this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })}
+                />
+              </div>)
+            })
+          }
+          return (
+            <div className='select-box--crumb-container'>
+              {item.key}          <FontAwesome
+                className={`chevron-${chevronDirection} crumb-icon`}
+                name={`chevron-${chevronDirection}`}
+                onClick={() => this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })}
+              />
+            </div>
+          )
+        }
       });
     } else {
       console.log(3)
@@ -370,11 +399,11 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
     return null
   };
-  handleRange=(rangeArray)=>{
-    this.setState({selectedItems: rangeArray})
+  handleRange = (rangeArray) => {
+    this.setState({ selectedItems: rangeArray })
   }
-  handleLocation=(location)=>{
-    this.setState({selectedItems: location})
+  handleLocation = (location) => {
+    this.setState({ selectedItems: location })
   }
   renderPanel = () => {
     const { hasMore, buckets, handleLoadMore, field } = this.props
