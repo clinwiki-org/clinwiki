@@ -24,7 +24,7 @@ import {
 import { contains, reject, equals } from 'ramda';
 import { WikiPageEditFragment } from 'components/Edits';
 import CurrentUser from 'containers/CurrentUser';
-// import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
 import ThemedButton from 'components/StyledComponents/index';
 

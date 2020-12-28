@@ -16,7 +16,7 @@ import {
 } from 'components/StyledComponents';
 import QUERY from 'queries/UserSearchLogsQuery';
 import { ThemedButton } from '../../LoginPage/StyledButton';
-// import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 import { UserSearchLogsQuery } from 'types/UserSearchLogsQuery';
 
 

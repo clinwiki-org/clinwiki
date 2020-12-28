@@ -1,9 +1,7 @@
 import * as types from './types';
 
-//@ts-ignore
-import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
 import { SitesPageQuery } from 'types/SitesPageQuery';
-
+import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({
     type: types.FETCH_ADMIN_SITE_VIEW_SEND

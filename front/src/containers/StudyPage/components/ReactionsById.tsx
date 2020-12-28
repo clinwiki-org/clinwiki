@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Query, QueryComponentOptions } from '@apollo/client/react/components';
 import { gql }  from '@apollo/client';
-// import { CurrentUserQuery } from 'types/CurrentUserQuery';
-// import { UserFragment } from 'types/UserFragment';
+import { CurrentUserQuery } from 'services/user/model/CurrentUserQuery';
+import { UserFragment } from 'services/user/model/UserFragment';
 
 interface ReactionsByIdProps {
   //@ts-ignore

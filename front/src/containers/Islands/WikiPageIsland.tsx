@@ -19,7 +19,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
-// import { CurrentUserQuery, CurrentUserQuery_me } from 'types/CurrentUserQuery';
+import { CurrentUserQuery, CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import LoginModal from '../../components/LoginModal';
 
