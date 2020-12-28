@@ -4,7 +4,9 @@ const initialState: types.SiteState = {
     isFetchingAdminSiteView: false,
     adminSiteView: undefined,
     isFetchingSitesPage: false,
-    sitesPage: undefined
+    sitesPage: undefined,
+    isDeletingSite: false,
+    siteData: undefined,
 
 };
 
@@ -42,6 +44,24 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isFetchingSitesPage: false
+            };
+
+
+        case types.DELETE_SITE_SEND:
+            return {
+                ...state,
+                isDeletingSite: true
+            };
+        case types.DELETE_SITE_SUCCESS:
+            return {
+                ...state,
+                isDeletingSite: false,
+                siteData: action.payload
+            };
+        case types.DELETE_SITE_ERROR:
+            return {
+                ...state,
+                isDeletingSite: false
             };
 
 

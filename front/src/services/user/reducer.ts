@@ -75,17 +75,17 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
         case types.EDIT_PROFILE_SEND:
             return {
                 ...state,
-                isUpdatingPassword: true
+                isEditingProfile: true
             };
         case types.EDIT_PROFILE_SUCCESS:
             return {
                 ...state,
-                isUpdatingPassword: false
+                isEditingProfile: false
             };
         case types.EDIT_PROFILE_ERROR:
             return {
                 ...state,
-                isUpdatingPassword: false
+                isEditingProfile: false
             };
         case types.LOGOUT_SEND:
             return {

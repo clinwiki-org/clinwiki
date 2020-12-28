@@ -1,6 +1,7 @@
 import * as types from './types';
 
-import { SitesPageQuery } from 'types/SitesPageQuery';
+import { DeleteSiteMutationsSitesQuery} from 'services/site/model/DeleteSiteMutationsSitesQuery'
+import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({
@@ -29,5 +30,21 @@ export const fetchSitesPageSuccess = (payload: SitesPageQuery) : types.SiteActio
 
 export const fetchSitesPageError = (message: string) : types.SiteActionTypes => ({
     type: types.FETCH_SITES_PAGE_ERROR,
+    payload: { message }
+});
+
+
+export const deleteSite = (id: number) : types.SiteActionTypes => ({
+    type: types.DELETE_SITE_SEND,
+    id
+});
+
+export const deleteSiteSuccess = (payload: DeleteSiteMutationsSitesQuery) : types.SiteActionTypes => ({
+    type: types.DELETE_SITE_SUCCESS,
+    payload
+});
+
+export const deleteSiteError = (message: string) : types.SiteActionTypes => ({
+    type: types.DELETE_SITE_ERROR,
     payload: { message }
 });

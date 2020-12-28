@@ -1,4 +1,5 @@
 import * as query from './queries';
+import * as mutate from './mutations'
 import { callGraphql } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
@@ -12,4 +13,13 @@ export const fetchAdminSiteView = () => {
 
 export const fetchSitesPage = () => {
     return callGraphql(ENDPOINT, query.SITES_PAGE_QUERY, {});
+}
+
+export const deleteSite = ( id ) => {
+    return callGraphql(ENDPOINT, mutate.DELETE_SITE_MUTATION, 
+        { input: { id} });
+};
+
+export const fetchSitesData = ( ) => {
+    return callGraphql(ENDPOINT, query.SITES_QUERY, {});
 }

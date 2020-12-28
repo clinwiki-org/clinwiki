@@ -8,9 +8,14 @@ import { MutationFunction, MutationResult } from '@apollo/client';
 import {
   DeleteSiteMutation as DeleteSiteMutationType,
   DeleteSiteMutationVariables,
-} from 'types/DeleteSiteMutation';
+} from 'services/site/model/DeleteSiteMutation';
 import { pathOr, reject, propEq } from 'ramda';
-import { DeleteSiteMutationsSitesQuery } from 'types/DeleteSiteMutationsSitesQuery';
+import { DeleteSiteMutationsSitesQuery } from 'services/site/model/DeleteSiteMutationsSitesQuery';
+
+import {deleteSite} from 'services/site/actions'
+import {useDispatch,useSelector} from 'react-redux';
+import {RootState} from 'reducers';
+
 
 interface DeleteSiteMutationProps {
   children: (
@@ -21,31 +26,7 @@ interface DeleteSiteMutationProps {
   onError?: (e: ApolloError) => void;
 }
 
-const DELETE_SITE_MUTATION = gql`
-  mutation DeleteSiteMutation($input: DeleteSiteInput!) {
-    deleteSite(input: $input) {
-      site {
-        id
-      }
-    }
-  }
-`;
-
-const SITES_QUERY = gql`
-  query DeleteSiteMutationsSitesQuery {
-    me {
-      id
-      ownSites {
-        id
-      }
-      editorSites {
-        id
-      }
-    }
-  }
-`;
-
-const DeleteSiteMutationComponent = (
+ const DeleteSiteMutationComponent = (
   props: MutationComponentOptions<
     DeleteSiteMutationType,
     DeleteSiteMutationVariables
@@ -54,7 +35,8 @@ const DeleteSiteMutationComponent = (
 export type DeleteSiteMutationFn = MutationFunction<
   DeleteSiteMutationType,
   DeleteSiteMutationVariables
->;
+>; 
+
 
 class DeleteSiteMutation extends React.PureComponent<DeleteSiteMutationProps> {
   render() {
