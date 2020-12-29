@@ -13,5 +13,8 @@ module Types
     value "LESS_THAN_DROP_DOWN"
     value "GREATER_THAN_DROP_DOWN"
     value "LOCATION"
+    value "MULTISELECT"
+    value "CHECKBOX"
+    value "CRUMBS_ONLY"
   end
 end

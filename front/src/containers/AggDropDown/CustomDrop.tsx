@@ -59,7 +59,7 @@ interface CustomDropDownProps {
   handleFilterChange: any;
   showLabel: boolean;
   maxBreadCrumbs: number;
-  isOpen:boolean;
+  isOpen: boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -232,12 +232,13 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   };
 
   dropDown = () => {
+    if (this.props.field.display == "CRUMBS_ONLY") return
     this.setState((prevState) => ({
       showItems: !prevState.showItems
     })
     );
     this.props.onContainerToggle && this.props.onContainerToggle()
-    this.setState({showAdditionalCrumbs:!this.state.showAdditionalCrumbs})
+    this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })
   };
 
   selectItem = (item) => {
@@ -257,8 +258,8 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
 
     //handles our mutliselect happens to be same behavior as old TEXT/STRING type 
-    if (this.props.field.display == "MULTI" || this.props.field.display == "STRING" || this.props.field.display == "PIE_CHART"|| this.props.field.display == "BAR_CHART" ) {
-    //following lines filters but placement is back to its original spot. 
+    if (this.props.field.display == "MULTISELECT" || this.props.field.display == "STRING" || this.props.field.display == "PIE_CHART" || this.props.field.display == "BAR_CHART" || this.props.field.display == "CHECKBOX") {
+      //following lines filters but placement is back to its original spot. 
       let index = findIndex(propEq('key', item.key))(this.state.selectedItems)
       if (index !== -1) return
       this.setState({
@@ -268,13 +269,13 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
 
   };
-  renderRangeLabel=()=>{
+  renderRangeLabel = () => {
     let range = this.state.selectedItems[0]
-    if(!this.state.selectedItems) return
+    if (!this.state.selectedItems) return
     //@ts-ignore
     if (!range.start) return `≤ ${range.end}`
     //@ts-ignore
-    if(!range.end)return `≥ ${range.start}`
+    if (!range.end) return `≥ ${range.start}`
     //@ts-ignore
     return `${range.start} - ${range.end}`
 
@@ -296,6 +297,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       let displayedCrumbs: any[] = this.state.selectedItems.slice(0, this.props.maxBreadCrumbs)
       let otherValues = { key: `... ${this.state.selectedItems.length - displayedCrumbs.length} others` }
       displayedCrumbs.push(otherValues)
+      if (this.props.maxBreadCrumbs == 0) return
       return displayedCrumbs.map((item: AggBucket, index) => {
         if (
           field?.display === FieldDisplay.DATE_RANGE ||
@@ -344,7 +346,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
         if (this.state.selectedItems.length > this.props.maxBreadCrumbs) {
           let chevronDirection = this.state.showAdditionalCrumbs ? 'left' : 'right';
           if (this.state.showAdditionalCrumbs) {
-            let otherCrumbs: any[]= this.state.selectedItems.slice(this.props.maxBreadCrumbs, this.state.selectedItems.length)
+            let otherCrumbs: any[] = this.state.selectedItems.slice(this.props.maxBreadCrumbs, this.state.selectedItems.length)
             return otherCrumbs.map(item => {
               return (<div className='select-box--crumb-container' >
                 {item.key}          <FontAwesome
@@ -392,14 +394,10 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   };
   renderPreValue = (item) => {
-    if (this.props.field.display == "STRING") {
-      //---------Checkbox code below ----------------//
-      // return <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}>{
-      //   this.isSelected(item) ? <FontAwesome name='check' style={{ display: 'flex' }} /> : null
-      // }</div>;
-
-      //New SemanticStyle 
-      return this.isSelected(item.key) ? null : (<span>{item.key} ({item.docCount})</span>)
+    if (this.props.field.display == "CHECKBOX") {
+      return <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}>{
+        this.isSelected(item) ? <FontAwesome name='check' style={{ display: 'flex' }} /> : null
+      }</div>;
     }
     return null
   };
@@ -412,7 +410,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   renderPanel = () => {
     const { hasMore, buckets, handleLoadMore, field } = this.props
     const { showItems, loading } = this.state
-    if(!this.props.isOpen) return 
+    if (!this.props.isOpen) return
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
       field?.display === FieldDisplay.NUMBER_RANGE ||
@@ -468,6 +466,49 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           field={field}
           handleLocation={this.handleLocation}
         />
+      )
+    }
+    else if (field.display == "CRUMBS_ONLY") {
+      return null
+    }
+    else if (this.props.field.display == "CHECKBOX") {
+
+      return (
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={this.props.handleLoadMore}
+          hasMore={this.props.hasMore}
+          useWindow={false}
+          loader={
+            <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
+              <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
+            </div>
+          }>
+          {this.props.buckets
+            .filter(
+              bucket =>
+                !bucketKeyIsMissing(bucket) &&
+                (this.props.field.visibleOptions.length
+                  ? this.props.field.visibleOptions.includes(bucket.key)
+                  : true)
+            )
+            .map((item) => (
+              <div
+                key={item.key}
+                onClick={() => this.selectItem(item)}
+                className={
+                  this.state.selectedItem === item
+                    ? "selected select-item"
+                    : "select-item"
+                }
+              >
+                <div className="item-content">
+                  {this.renderPreValue(item.key)}
+                  <span>{item.key} ({item.docCount})</span>
+                </div>
+              </div>
+            ))}
+        </InfiniteScroll>
       )
     }
     else {
@@ -535,8 +576,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
                        ? configuredLabel
                        : title}         */}
               {capitalize(title)}
-              <FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />{' '}
-            </ThemedTitle>
+              {this.props.field.display == "CRUMBS_ONLY" ? (null) : (<FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />)}            </ThemedTitle>
             {this.props.isPresearch ? (
               <div className='select-box--crumbs'>
                 {this.state.selectedItems.length > 0 ? this.renderSelectedItems() : this.renderSubLabel()}
