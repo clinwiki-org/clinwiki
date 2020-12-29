@@ -1,7 +1,7 @@
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 import { DeleteSiteMutationsSitesQuery} from 'services/site/model/DeleteSiteMutationsSitesQuery'
-import { DeleteSiteMutation} from 'services/site/model/DeleteSiteMutation' //!  need mutation import?
+//import { DeleteSiteMutation} from 'services/site/model/DeleteSiteMutation' //!  need mutation import?
 
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';

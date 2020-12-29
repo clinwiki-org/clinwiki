@@ -35,14 +35,14 @@ function* getSitesPage(action) {
     }
 }
 
-async function* deleteSite(action) {  //! Need to do both delete desired site and fetch sites data.
+async function* deleteSite(action) {  //! NO need to do both delete desired site and fetch sites data. Only delete and remove site from redux store
     try {
 
-        yield await call(() => api.deleteSite(action.id));
+       let response = yield await call(() => api.deleteSite(action.id));
         
-        let response = yield call(() => api.fetchSitesData());
+       // let response = yield call(() => api.fetchSitesData()); //TODO wont need this
         if(response) {
-            yield put(actions.deleteSiteSuccess(response.data));
+            yield put(actions.deleteSiteSuccess(response.data)); //! verify response and proper action payload.
         }
         else {
             yield put(actions.deleteSiteError(response.message));

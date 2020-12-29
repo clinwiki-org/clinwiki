@@ -20,6 +20,6 @@ export const deleteSite = ( id ) => {
         { input: { id} });
 };
 
-export const fetchSitesData = ( ) => {
+/* export const fetchSitesData = ( ) => {
     return callGraphql(ENDPOINT, query.SITES_QUERY, {});
-}
+} */

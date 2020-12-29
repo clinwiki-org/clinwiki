@@ -49,7 +49,7 @@ export const SITES_PAGE_QUERY = `
   ${SITE_ITEM_FRAGMENT}
 `;
 
-
+/* 
 export const SITES_QUERY = `
   query DeleteSiteMutationsSitesQuery {
     me {
@@ -64,4 +64,4 @@ export const SITES_QUERY = `
   }
 `;
 
-
+ */

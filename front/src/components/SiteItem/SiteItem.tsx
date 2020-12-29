@@ -6,8 +6,8 @@ import ThemedButton from 'components/StyledComponents/index';
 
 interface SiteItemProps {
   site: SiteItemFragment;
-  onEdit: (id: number) => void;
-  onDelete?: (id: number) => void;
+  onEdit: any; // (id: number) => void;
+  onDelete?: any; // (id: number) => void;
 }
 
 const StyledButton = styled(ThemedButton)`

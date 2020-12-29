@@ -1,3 +1,5 @@
+//! WONT BE USING THIS WRAPPER COMPONENT ANYMORE. After deleting site we will remove from redux store instead of re-querying for the sites data.
+/* 
 import * as React from 'react';
 import { gql, ApolloError }  from '@apollo/client';
 import {
@@ -73,3 +75,4 @@ class DeleteSiteMutation extends React.PureComponent<DeleteSiteMutationProps> {
 }
 
 export default DeleteSiteMutation;
+ */

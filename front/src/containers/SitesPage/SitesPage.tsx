@@ -4,12 +4,12 @@ import { Table } from 'react-bootstrap';
 import { SiteItem } from 'components/SiteItem';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { History } from 'history';
-import DeleteSiteMutation, {
+/* import DeleteSiteMutation, {
   DeleteSiteMutationFn,
-} from 'mutations/DeleteSiteMutations';
+} from 'mutations/DeleteSiteMutations'; */
 import ThemedButton from 'components/StyledComponents/index';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSitesPage } from 'services/site/actions'
+import { deleteSite, fetchSitesPage } from 'services/site/actions'
 import { useEffect } from 'react';
 import {RootState} from 'reducers';
 import { BeatLoader } from 'react-spinners';
@@ -39,8 +39,8 @@ const SitesPage = ({history} : SitesPageProps) => {
   const handleSiteEdit = (id: number) => {
     history.push(`/sites/${id}/edit`);
   };
-  const handleSiteDelete = (deleteSite: DeleteSiteMutationFn) => (id: number) => {  //! We moved queries into the redux dir, what about mutations?
-    deleteSite({ variables: { input: { id } } });
+  const handleSiteDelete = (id: number) => {  //! We moved queries into the redux dir, what about mutations?
+    dispatch(deleteSite(id));
   };
 
   useEffect(() => {
@@ -63,21 +63,18 @@ if (data === undefined || isLoading) {
                 <th />
               </tr>
             </thead>
-            <tbody>
-              <DeleteSiteMutation>
-                {deleteSite => (
+            <tbody>            
                   <>
-                    {data!.me!.ownSites.map(site => (
+                    {data!.me!.ownSites.map(site => (  //!Sites Data.   USe selector to get the current sites. 
                       <SiteItem
                         site={site}
                         key={site.subdomain}
                         onEdit={handleSiteEdit}
-                        onDelete={handleSiteDelete(deleteSite)}
+                        onDelete={handleSiteDelete(site.id)} //! onDelete dispatch the delete site action
                       />
                     ))}
                   </>
-                )}
-              </DeleteSiteMutation>
+               
             </tbody>
           </Table>
         )}

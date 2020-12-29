@@ -56,7 +56,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isDeletingSite: false,
-                siteData: action.payload
+                siteData: action.payload  //TODO Remove deleted site from redux store instead of re-query. Immutable store state filter for new array
             };
         case types.DELETE_SITE_ERROR:
             return {
