@@ -24,6 +24,7 @@ import aggToField from 'utils/aggs/aggToField';
 import { capitalize } from 'utils/helpers';
 import {
   propEq,
+  findIndex
 } from 'ramda';
 import withTheme from 'containers/ThemeProvider';
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
@@ -257,7 +258,9 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
     //handles our mutliselect happens to be same behavior as old TEXT/STRING type 
     if (this.props.field.display == "MULTI" || this.props.field.display == "STRING" || this.props.field.display == "PIE_CHART"|| this.props.field.display == "BAR_CHART" ) {
-      //need to filter to prevent dups
+    //following lines filters but placement is back to its original spot. 
+      let index = findIndex(propEq('key', item.key))(this.state.selectedItems)
+      if (index !== -1) return
       this.setState({
         selectedItem: item,
         selectedItems: [...this.state.selectedItems, item]
@@ -333,7 +336,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             {item.key}          <FontAwesome
               className="remove crumb-icon"
               name="remove"
-              onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)}
+              onClick={() => this.selectItem(item)}
             />
             {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
           </div>
