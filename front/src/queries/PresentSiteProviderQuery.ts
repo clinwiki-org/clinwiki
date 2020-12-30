@@ -121,8 +121,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         displayName
                         aggSublabel
                         defaultToOpen
-                        dropdownOpen
                         layout
+                        maxCrumbs
                         bucketKeyValuePairs {
                             key
                             label
@@ -158,8 +158,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         displayName
                         aggSublabel
                         defaultToOpen
-                        dropdownOpen
                         layout
+                        maxCrumbs
                         bucketKeyValuePairs {
                             key
                             label
@@ -213,8 +213,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                     displayName
                     aggSublabel
                     defaultToOpen
-                    dropdownOpen
                     layout
+                    maxCrumbs
                     bucketKeyValuePairs {
                         key
                         label
@@ -250,8 +250,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                     displayName
                     aggSublabel
                     defaultToOpen
-                    dropdownOpen
                     layout
+                    maxCrumbs
                     bucketKeyValuePairs {
                         key
                         label

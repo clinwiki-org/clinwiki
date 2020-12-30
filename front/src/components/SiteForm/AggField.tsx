@@ -36,8 +36,8 @@ export interface FieldType {
   showAllowMissing?: Boolean;
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
-  dropdownOpen?: Boolean;
   layout?: string;
+  maxCrumbs?: number;
 }
 
 export interface OptionVisibility {
@@ -63,8 +63,8 @@ interface AggFieldProps {
   showAllowMissing?: Boolean;
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
-  dropdownOpen?: Boolean;
   layout?: string;
+  maxCrumbs?: number;
 }
 
 interface AggFieldState {
@@ -585,6 +585,21 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       </>
     );
   }
+  
+  renderMaxCrumb() {
+    const configType = this.props.configType;
+    return (
+      <>
+        <ThemedStyledLabel>Max Crumbs</ThemedStyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.maxCrumbs`}
+          placeholder="Max Number of Crumbs"
+          value={this.props.field.maxCrumbs}
+          onChange={this.props.onAddMutation}
+        />
+      </>
+    );
+  }
 
 
   shouldShowAllowMissing = () => {
@@ -602,12 +617,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
     if (!this.props.field.defaultToOpen) return false
 
     return this.props.field.defaultToOpen
-  }
-
-  shouldDropdownDefaultToOpen = () => {
-    if (!this.props.field.dropdownOpen) return false
-
-    return this.props.field.dropdownOpen
   }
 
   renderSortCheckbox = () => {
@@ -647,12 +656,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           checked={this.shouldDefaultToOpen()}
           onChange={this.handleCheckboxToggle(!this.props.field.defaultToOpen)}
         ></Checkbox>
-        <StyledLabel>Dropdown Start Open </StyledLabel>
-        <Checkbox
-          name={`set:${this.getPath(this.props.configType)}.dropdownOpen`}
-          checked={this.shouldDropdownDefaultToOpen()}
-          onChange={this.handleCheckboxToggle(!this.props.field.dropdownOpen)}
-        ></Checkbox>
       </>
     )
   }
@@ -676,6 +679,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           {this.renderLayout(vis)}
           {this.renderSortCheckbox()}
           {this.renderCheckboxes()}
+          {this.renderMaxCrumb()}
         </ThemedContainer>
       </>
     );

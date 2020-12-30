@@ -15,8 +15,8 @@ module Types
     field :show_allow_missing,  Boolean, null: true
     field :show_filter_toolbar,  Boolean, null: true
     field :default_to_open, Boolean, null: true
-    field :dropdown_open, Boolean, null: true
     field :layout, String, null: true
+    field :max_crumbs, Integer, null: true
 
 
 
@@ -59,13 +59,12 @@ module Types
     def default_to_open
       object[:defaultToOpen]
     end 
-    
-    def dropdown_open
-      object[:dropdownOpen]
-    end
 
     def layout
       object[:layout]
+    end
+    def max_crumbs
+      object[:maxCrumbs]
     end
 
   end

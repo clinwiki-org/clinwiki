@@ -58,7 +58,6 @@ interface CustomDropDownProps {
   toggleNumericSort: any;
   handleFilterChange: any;
   showLabel: boolean;
-  maxBreadCrumbs: number;
   isOpen: boolean;
 }
 interface CustomDropDownState {
@@ -294,10 +293,10 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   renderSelectedItems = () => {
     const { field } = this.props
     if (this.state.selectedItems.length > 0) {
-      let displayedCrumbs: any[] = this.state.selectedItems.slice(0, this.props.maxBreadCrumbs)
+      let displayedCrumbs: any[] = this.state.selectedItems.slice(0, field.maxCrumbs)
       let otherValues = { key: `... ${this.state.selectedItems.length - displayedCrumbs.length} others` }
       displayedCrumbs.push(otherValues)
-      if (this.props.maxBreadCrumbs == 0) return
+      if (field.maxCrumbs == 0) return
       return displayedCrumbs.map((item: AggBucket, index) => {
         if (
           field?.display === FieldDisplay.DATE_RANGE ||
@@ -343,10 +342,10 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
           </div>
         }
-        if (this.state.selectedItems.length > this.props.maxBreadCrumbs) {
+        if (this.state.selectedItems.length > field.maxCrumbs) {
           let chevronDirection = this.state.showAdditionalCrumbs ? 'left' : 'right';
           if (this.state.showAdditionalCrumbs) {
-            let otherCrumbs: any[] = this.state.selectedItems.slice(this.props.maxBreadCrumbs, this.state.selectedItems.length)
+            let otherCrumbs: any[] = this.state.selectedItems.slice(field.maxCrumbs, this.state.selectedItems.length)
             return otherCrumbs.map(item => {
               return (<div className='select-box--crumb-container' >
                 {item.key}          <FontAwesome
