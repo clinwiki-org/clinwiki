@@ -258,13 +258,23 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
     //handles our mutliselect happens to be same behavior as old TEXT/STRING type 
     if (this.props.field.display == "MULTISELECT" || this.props.field.display == "STRING" || this.props.field.display == "PIE_CHART" || this.props.field.display == "BAR_CHART" || this.props.field.display == "CHECKBOX") {
-      //following lines filters but placement is back to its original spot. 
       let index = findIndex(propEq('key', item.key))(this.state.selectedItems)
-      if (index !== -1) return
-      this.setState({
-        selectedItem: item,
-        selectedItems: [...this.state.selectedItems, item]
-      });
+      let selectedItemsArray = this.state.selectedItems.slice()
+
+      if (index !== -1) {
+        selectedItemsArray.splice(index, 1)
+        console.log(selectedItemsArray)
+        this.setState({
+          selectedItem: [],
+          selectedItems: selectedItemsArray
+        });
+      }
+      else {
+        this.setState({
+          selectedItem: item,
+          selectedItems: [...this.state.selectedItems, item]
+        });
+      }
     }
 
   };
@@ -378,7 +388,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   }
   componentDidMount = () => {
     if (this.props.field.defaultToOpen === true) {
-      this.setState({ showItems: true });
+      this.setState({ showItems: true, showAdditionalCrumbs: true });
       this.props.handleLoadMore()
 
     }
