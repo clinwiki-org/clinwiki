@@ -1,6 +1,5 @@
 import * as types from './types';
 
-import { DeleteSiteMutationsSitesQuery} from 'services/site/model/DeleteSiteMutationsSitesQuery'
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
@@ -39,7 +38,7 @@ export const deleteSite = (id: number) : types.SiteActionTypes => ({
     id
 });
 
-export const deleteSiteSuccess = (payload: DeleteSiteMutationsSitesQuery) : types.SiteActionTypes => ({
+export const deleteSiteSuccess = (payload: any) : types.SiteActionTypes => ({
     type: types.DELETE_SITE_SUCCESS,
     payload
 });

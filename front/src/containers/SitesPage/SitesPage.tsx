@@ -4,9 +4,6 @@ import { Table } from 'react-bootstrap';
 import { SiteItem } from 'components/SiteItem';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { History } from 'history';
-/* import DeleteSiteMutation, {
-  DeleteSiteMutationFn,
-} from 'mutations/DeleteSiteMutations'; */
 import ThemedButton from 'components/StyledComponents/index';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteSite, fetchSitesPage } from 'services/site/actions'
@@ -39,7 +36,7 @@ const SitesPage = ({history} : SitesPageProps) => {
   const handleSiteEdit = (id: number) => {
     history.push(`/sites/${id}/edit`);
   };
-  const handleSiteDelete = (id: number) => {  //! We moved queries into the redux dir, what about mutations?
+  const handleSiteDelete = (id: number) => {
     dispatch(deleteSite(id));
   };
 
@@ -65,16 +62,15 @@ if (data === undefined || isLoading) {
             </thead>
             <tbody>            
                   <>
-                    {data!.me!.ownSites.map(site => (  //!Sites Data.   USe selector to get the current sites. 
+                    {data!.me!.ownSites.map(site => (
                       <SiteItem
                         site={site}
                         key={site.subdomain}
                         onEdit={handleSiteEdit}
-                        onDelete={handleSiteDelete(site.id)} //! onDelete dispatch the delete site action
+                        onDelete={handleSiteDelete}
                       />
                     ))}
                   </>
-               
             </tbody>
           </Table>
         )}

@@ -1,7 +1,10 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
+
+
+const getCurrentSites = (state) => state.site.sitesPage.me;
 
 function* getAdminSiteView(action) {
     try {
@@ -35,14 +38,22 @@ function* getSitesPage(action) {
     }
 }
 
-async function* deleteSite(action) {  //! NO need to do both delete desired site and fetch sites data. Only delete and remove site from redux store
+function* deleteSite(action) { 
+    const currentSites = yield select(getCurrentSites)
     try {
-
-       let response = yield await call(() => api.deleteSite(action.id));
-        
-       // let response = yield call(() => api.fetchSitesData()); //TODO wont need this
-        if(response) {
-            yield put(actions.deleteSiteSuccess(response.data)); //! verify response and proper action payload.
+        //console.log("SAGA Current SITES", currentSites);
+        let response = yield call(() => api.deleteSite(action.id));
+        const { id } = response.data.deleteSite.site
+        if(id === action.id) {
+            let newEditorSites = currentSites.editorSites.filter(site => site.id !== id)
+            let newOwnSites = currentSites.ownSites.filter(site => site.id !== id)
+            let newSites = {
+                id: currentSites.id,
+                ownSites: newOwnSites,
+                editorSites: newEditorSites
+            }
+            //console.log("🚀 ~  NEW SITES", newSites);
+            yield put(actions.deleteSiteSuccess(newSites));
         }
         else {
             yield put(actions.deleteSiteError(response.message));

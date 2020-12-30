@@ -13,6 +13,8 @@ import { SiteItem } from 'components/SiteItem';
 import { lensPath, set } from 'ramda';
 import { CreateSiteOwnSitesQuery } from 'types/CreateSiteOwnSitesQuery';
 import { SITE_FRAGMENT } from 'containers/SiteProvider/SiteProvider';
+import { SITE_ITEM_FRAGMENT } from 'services/site/queries';
+
 
 interface CreateSiteMutationProps {
   children: (
@@ -56,7 +58,7 @@ const OWN_SITES_QUERY = gql`
     }
   }
 
-  ${SiteItem.fragment}
+  ${SITE_ITEM_FRAGMENT}
 `;
 
 class CreateSiteMutation extends React.PureComponent<CreateSiteMutationProps> {

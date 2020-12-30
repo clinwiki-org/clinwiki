@@ -1,3 +1,4 @@
+import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import * as types from './types';
 
 const initialState: types.SiteState = {
@@ -6,8 +7,6 @@ const initialState: types.SiteState = {
     isFetchingSitesPage: false,
     sitesPage: undefined,
     isDeletingSite: false,
-    siteData: undefined,
-
 };
 
 const siteReducer = ( state = initialState, action: types.SiteActionTypes) : types.SiteState => {
@@ -52,11 +51,11 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isDeletingSite: true
             };
-        case types.DELETE_SITE_SUCCESS:
+        case types.DELETE_SITE_SUCCESS:            
             return {
                 ...state,
                 isDeletingSite: false,
-                siteData: action.payload  //TODO Remove deleted site from redux store instead of re-query. Immutable store state filter for new array
+                sitesPage: { me: action.payload }
             };
         case types.DELETE_SITE_ERROR:
             return {
