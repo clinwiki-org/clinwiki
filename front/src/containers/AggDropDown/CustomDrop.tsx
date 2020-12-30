@@ -33,6 +33,7 @@ import RangeSelector from './RangeSelector';
 import TwoLevelPieChart from './TwoLevelPieChart';
 import BarChartComponent from './BarChart'
 import ValueCrumb from '../../components/MultiCrumb/ValueCrumb';
+import { isLeafType } from 'graphql';
 // import ValuesCrumb from '../../components/MultiCrumb/ValueCrumbs';
 
 interface CustomDropDownProps {
@@ -399,9 +400,16 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       ))
       this.setState({ selectedItems: selectedKeysPlaceHolders })
     }
-
-
   };
+  componentDidUpdate(prevProps){
+    if(this.props.selectedKeys !== prevProps.selectedKeys){
+      let selectedKeysPlaceHolders: any[] = [];
+      this.props.selectedKeys.forEach(o => (
+        selectedKeysPlaceHolders.push({ key: o, docCount: null })
+      ))
+      this.setState({ selectedItems: selectedKeysPlaceHolders })
+    }
+  }
   renderPreValue = (item) => {
     if (this.props.field.display == "CHECKBOX") {
       return <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}>{
