@@ -7,6 +7,7 @@ const initialState: types.SiteState = {
     isFetchingSitesPage: false,
     sitesData: undefined,
     isDeletingSite: false,
+    isCreatingSite: false,
 };
 
 const siteReducer = ( state = initialState, action: types.SiteActionTypes) : types.SiteState => {
@@ -61,6 +62,22 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isDeletingSite: false
+            };
+        case types.CREATE_SITE_SEND:
+            return {
+                ...state,
+                isCreatingSite: true
+            };
+        case types.CREATE_SITE_SUCCESS:            
+            return {
+                ...state,
+                isCreatingSite: false,
+                sitesData: action.payload
+            };
+        case types.CREATE_SITE_ERROR:
+            return {
+                ...state,
+                isCreatingSite: false
             };
 
 

@@ -29,8 +29,7 @@ class SiteItem extends React.PureComponent<SiteItemProps> {
   };
 
   render() {
-
-    console.log("SITE", this.props.site)
+    //console.log("SITE", this.props.site)
     return (
       <tr>
         <td>{this.props.site.name}</td>

@@ -23,7 +23,7 @@ import PagesForm from './PagesForm';
 
 interface SiteFormProps {
   match: match<{}>;
-  site: SiteFragment;
+  site: SiteFragment;  //TODO  Move SiteFragment when we redux SiteProvider and PresentSiteProvider.
   history: History;
   location: Location;
   onSaveSite: (CreateSiteInput) => void;

@@ -1,7 +1,9 @@
+import { last } from 'ramda';
 import * as types from './types';
 
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
+import { CreateSiteInput } from 'types/globalTypes';
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({
     type: types.FETCH_ADMIN_SITE_VIEW_SEND
@@ -45,5 +47,22 @@ export const deleteSiteSuccess = (payload: any) : types.SiteActionTypes => ({
 
 export const deleteSiteError = (message: string) : types.SiteActionTypes => ({
     type: types.DELETE_SITE_ERROR,
+    payload: { message }
+});
+
+
+export const createSite = (input: CreateSiteInput, url?: string) : types.SiteActionTypes => ({
+    type: types.CREATE_SITE_SEND,
+    input,
+    url
+});
+
+export const createSiteSuccess = (payload: any) : types.SiteActionTypes => ({
+    type: types.CREATE_SITE_SUCCESS,
+    payload
+});
+
+export const createSiteError = (message: string) : types.SiteActionTypes => ({
+    type: types.CREATE_SITE_ERROR,
     payload: { message }
 });

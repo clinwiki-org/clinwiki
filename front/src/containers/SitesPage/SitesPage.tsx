@@ -29,6 +29,7 @@ const SitesPage = ({history} : SitesPageProps) => {
   const dispatch = useDispatch();
   const data = useSelector((state : RootState ) => state.site.sitesData)
   const isLoading = useSelector((state : RootState ) => state.site.isFetchingSitesPage)
+  const isDeleting = useSelector((state : RootState ) => state.site.isDeletingSite)
 
   const handleCreateSite = () => {
     history.push('/sites/new');
@@ -44,7 +45,7 @@ const SitesPage = ({history} : SitesPageProps) => {
     dispatch(fetchSitesPage());
   },[ dispatch ]); 
   
-if (data === undefined || isLoading) {
+if (data === undefined || isLoading || isDeleting) {
   return <BeatLoader color="#cccccc" />
 }
   return (

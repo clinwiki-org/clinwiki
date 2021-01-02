@@ -19,3 +19,7 @@ export const deleteSite = ( id ) => {
     return callGraphql(ENDPOINT, mutate.DELETE_SITE_MUTATION, 
         { input: { id} });
 };
+export const createSite = (input, url?) => {
+    return callGraphql(ENDPOINT, mutate.CREATE_SITE_MUTATION, 
+        { input: input, url });
+};

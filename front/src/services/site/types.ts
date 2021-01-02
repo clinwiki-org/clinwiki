@@ -24,6 +24,7 @@ export interface SiteState {
     isFetchingSitesPage: boolean,
     sitesData: any | SitesPageQuery | undefined,
     isDeletingSite: boolean,
+    isCreatingSite: boolean,
 }
 
 export interface SiteDataError {
@@ -76,7 +77,7 @@ export interface DeleteSiteErrorAction {
 export interface CreateSiteSendAction {
     type: typeof CREATE_SITE_SEND,
     input: CreateSiteInput,
-    url: string
+    url?: string
 }
 
 export interface CreateSiteSuccessAction {
