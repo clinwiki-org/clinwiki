@@ -4,7 +4,7 @@ import * as actions from './actions';
 import * as api from './api';
 
 
-const getCurrentSites = (state) => state.site.sitesPage.me;
+const getCurrentSites = (state) => state.site.sitesData.me;
 
 function* getAdminSiteView(action) {
     try {

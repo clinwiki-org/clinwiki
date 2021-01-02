@@ -1,3 +1,4 @@
+import { CreateSiteInput } from 'types/globalTypes';
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
@@ -13,12 +14,15 @@ export const DELETE_SITE_SEND = 'DELETE_SITE_SEND';
 export const DELETE_SITE_SUCCESS = 'DELETE_SITE_SUCCESS';
 export const DELETE_SITE_ERROR = 'DELETE_SITE_ERROR';
 
+export const CREATE_SITE_SEND = 'CREATE_SITE_SEND';
+export const CREATE_SITE_SUCCESS = 'CREATE_SITE_SUCCESS';
+export const CREATE_SITE_ERROR = 'CREATE_SITE_ERROR';
 
 export interface SiteState {
     isFetchingAdminSiteView: boolean,
     adminSiteView: AdminViewsProviderQuery | undefined;
     isFetchingSitesPage: boolean,
-    sitesPage: any | SitesPageQuery | undefined,
+    sitesData: any | SitesPageQuery | undefined,
     isDeletingSite: boolean,
 }
 
@@ -69,7 +73,24 @@ export interface DeleteSiteErrorAction {
     payload: SiteDataError
 };
 
+export interface CreateSiteSendAction {
+    type: typeof CREATE_SITE_SEND,
+    input: CreateSiteInput,
+    url: string
+}
+
+export interface CreateSiteSuccessAction {
+    type: typeof CREATE_SITE_SUCCESS,
+    payload: SitesPageQuery
+};
+
+export interface CreateSiteErrorAction {
+    type: typeof CREATE_SITE_ERROR,
+    payload: SiteDataError
+};
+
 
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
-    DeleteSiteErrorAction;
+    DeleteSiteErrorAction | CreateSiteSendAction | CreateSiteSuccessAction |
+    CreateSiteErrorAction;

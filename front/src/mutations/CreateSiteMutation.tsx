@@ -13,7 +13,7 @@ import { SiteItem } from 'components/SiteItem';
 import { lensPath, set } from 'ramda';
 import { CreateSiteOwnSitesQuery } from 'types/CreateSiteOwnSitesQuery';
 import { SITE_FRAGMENT } from 'containers/SiteProvider/SiteProvider';
-import { SITE_ITEM_FRAGMENT } from 'services/site/queries';
+import { SITE_ITEM_FRAGMENT as SiteItemFragment } from 'services/site/queries';
 
 
 interface CreateSiteMutationProps {
@@ -48,18 +48,21 @@ export type CreateSiteMutationFn = MutationFunction<
   CreateSiteMutationVariables
 >;
 
-const OWN_SITES_QUERY = gql`
+const OWN_SITES_QUERY = gql`  
   query CreateSiteOwnSitesQuery {
     me {
       id
       ownSites {
-        ...SiteItemFragment
+        id
+        name
+        subdomain
       }
     }
   }
 
-  ${SITE_ITEM_FRAGMENT}
+  ${SiteItemFragment}
 `;
+//TODO ^ Need to correctly import Site Item Fragment for use inside ownSites, fix when moving this query to new redux dir
 
 class CreateSiteMutation extends React.PureComponent<CreateSiteMutationProps> {
   render() {
