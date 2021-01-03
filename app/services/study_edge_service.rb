@@ -1,6 +1,6 @@
 LLONG_MIN = -9223372036854775808 # rubocop:disable Style/NumericLiterals
 LLONG_MAX = 9223372036854775807 # rubocop:disable Style/NumericLiterals
-MAX_PAGE_SIZE = 400000
+MAX_PAGE_SIZE = 200
 
 class StudyEdgeService
   # @param params - hash representing SearchInputType with symbols as keys.
