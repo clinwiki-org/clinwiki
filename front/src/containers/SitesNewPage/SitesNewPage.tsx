@@ -21,14 +21,10 @@ const SitesNewPage = ({match, history, location} : SitesNewPageProps) => {
   const isCreating = useSelector((state : RootState ) => state.site.isCreatingSite)
 
   const handleSave = (input: CreateSiteInput) => {
-  console.log("🚀 ~handleSave ~ input", input);
-
       dispatch(createSite(input));
       if (!isCreating) {
         history.push('/sites')}
   };
-
-
     return (
       <SiteProvider id={0}>
         {site => (

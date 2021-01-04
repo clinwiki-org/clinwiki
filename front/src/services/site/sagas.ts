@@ -25,9 +25,9 @@ function* getAdminSiteView(action) {
 function* getSitesPage(action) {
     try {
         let response = yield call(() => api.fetchSitesPage());
-        console.log("GetSitesPage",response)
         if(response) {
             yield put(actions.fetchSitesPageSuccess(response.data));
+            return response;
         }
         else {
             yield put(actions.fetchSitesPageError(response.message));
@@ -53,7 +53,6 @@ function* deleteSite(action) {
                 ownSites: newOwnSites,
                 editorSites: newEditorSites
             }
-            //console.log("🚀 ~  NEW SITES", newSites);
             yield put(actions.deleteSiteSuccess(newSites));
         }
         else {
@@ -69,17 +68,14 @@ function* deleteSite(action) {
 
 function* createSite(action) { 
     try {
-        console.log("SAGA CREATING SITE", action);
-        let response = yield call(() => api.createSite(action.input));  //! ERROR on response message: "Parse error on "[" (LBRACKET) at [11, 3]"
-
-        console.log("🚀 *createSite ~ response", response);
-
-        if (response.data.createSite.errors === null){  //! createSite undefined since response errors.
-            yield getSitesPage(action);
+        //console.log("SAGA CREATING SITE", action);
+        let createResponse = yield call(() => api.createSite(action.input)); 
+        if (createResponse.data.createSite.errors === null){ 
+            let response = yield getSitesPage(action);
             yield put(actions.createSiteSuccess(response.data));
         }
         else {
-            yield put(actions.createSiteError(response.message));
+            yield put(actions.createSiteError(createResponse.message));
         }
     }
     catch(err) {
