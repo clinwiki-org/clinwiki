@@ -1,3 +1,4 @@
+
 export const ADMIN_SITE_VIEW_FRAGMENT = `
     fragment AdminSiteViewFragment on SiteView {
         name
@@ -21,4 +22,29 @@ export const ADMIN_SITE_VIEW_QUERY = `
     }
 
     ${ADMIN_SITE_VIEW_FRAGMENT}
+`;
+
+
+export const SITE_ITEM_FRAGMENT = `
+fragment SiteItemFragment on Site {
+  id
+  name
+  subdomain
+}
+`;
+
+export const SITES_PAGE_QUERY = `
+  query SitesPageQuery {
+    me {
+      id
+      ownSites {
+        ...SiteItemFragment
+      }
+      editorSites {
+        ...SiteItemFragment
+      }
+    }
+  }
+
+  ${SITE_ITEM_FRAGMENT}
 `;

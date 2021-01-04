@@ -1,3 +1,5 @@
- .dropdown-menu  li > a {
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,700;1,400&display=swap');
+.dropdown-menu  li > a {
   color: #333 !important;
 }
+

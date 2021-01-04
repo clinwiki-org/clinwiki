@@ -16,9 +16,10 @@ const StyledButton = styled.button`
   white-space: nowrap;
   vertical-align: middle;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 1px;
   transition: 0.5s;
   color: #fff;
+  height: 38px;
   &:hover {
     transform: scale(1.05);
     transition-duration: 0.1s;
@@ -68,7 +69,7 @@ const LinkContainer = styled.div`
 export const ThemedLinkContainer = withTheme(LinkContainer);
 
 const MainContainer = styled(Col)`
-  background-color: #eaedf4;
+  background-color: ${props => props.theme.backgroundColor}; 
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -104,40 +105,55 @@ export const ThemedMainContainer = withTheme(MainContainer);
 const PresearchCard = styled.div`
   display: flex;
   flex-direction: column;
-  border-radius: 4px;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  // border-radius: 4px;
+  // box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
   // border-width: 1px;
   // border-style: solid;
   // border-color: ${props => props.theme.buttonSecondary};
-  margin: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: ${props => props.theme.presearch.presearchCardMargin};
+  margin-right: ${props => props.theme.presearch.presearchCardMargin};
   flex: 1;
   min-width: 320px;
   max-width: 320px;
   background: white;
-  //working on preserach fix
-  min-height: 320px;
+  // min-height: 320px;
+  .select-box--sublabel{
+    padding-left: 5px;
+    // background: ${props => props.theme.primaryColor};
+    color: ${props => props.theme.presearch.presearchLabelTextColor};
+
+  }
 `;
 
 export const ThemedPresearchCard = withTheme(PresearchCard);
 
 const PresearchHeader = styled.div`
-  background-color: ${props => props.theme.presearch.presearchHeaders};
-  padding: 5px;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  height: 50px;
+  background-color: ${props => props.theme.presearch.presearchLabelColor};
+  // border-top-left-radius: 4px;
+  // border-top-right-radius: 4px;
+  height: 60px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
+  border-top: 1px solid;
+  border-left: 1px solid;
+  border-bottom: 1px solid;
+  border-color: ${props => props.theme.presearch.presearchBorderColor};
+  padding: 1em;
+  cursor:pointer;
 `;
 
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
 
 export const PresearchTitle = styled.div`
-  color: white;
-  font-size: 25px;
-  font-weight: 400;
+  color: ${props => props.theme.presearchLabelTextColor}; 
+  font-size: 14px;
+  font-weight: 700;
   margin-left: 5px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
 `;
 
 const SearchCard = styled.div`
@@ -145,7 +161,7 @@ width: 350px;
 min-height: 350px;
 margin: 15px;
 box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-border-radius: 4px;
+// border-radius: 4px;
 background: #ffffff;
 padding: 5px;
  a {
@@ -162,18 +178,21 @@ padding: 5px;
 export const ThemedSearchCard = withTheme(SearchCard)
 
 const SearchContainer = styled.div`
-  border: solid white 1px;
-  background-color: #f2f2f2;
+  border: solid 1px;
+  background-color: ${props => props.theme.search.searchContainerBg};
   color: black;
   margin-bottom: 1em;
   margin-left: 45px;
   margin-right: 45px;
-  margin-bottom: 45px;
+  margin-bottom: 18px;
   display: flex;
   flex-direction: column;
   padding: 10px;
+  position: relative;
+  border-color: #e7e7e7;
+
   .rich-text {
-    background-color: #f2f2f2;
+    background-color: ${props => props.theme.search.searchContainerBg};
   }
   .container {
     border: 0px;
@@ -300,6 +319,20 @@ const SearchContainer = styled.div`
   .headerColumn {
     text-transform: none;
   }
+
+  .collapse-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .collapser {
+    cursor: pointer;
+  }
+
+  .collapse-title {
+    font-weight: 700;
+  }
 `;
 
 export const ThemedSearchContainer = withTheme(SearchContainer);
@@ -317,16 +350,32 @@ export const PresearchFilter = styled.div`
   // max-height: 30px;
 `;
 
-export const PresearchPanel = styled.div`
-  overflow-x: auto;
-  max-height: 200px;
- /*  min-height: 200px; */
-  margin-left: 5px;
-  // margin-top: 30px;
-  position: relative;
-    .dropDownFacet{
-      position: relative;
-    }
+export const PresearchContainer = styled.div`
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: flex-start;
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    max-height: 1500px;
+  }
+  span {
+    display: contents;
+  }
+  .horizontal-pre {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .vertical-pre {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .horizontal-pre-button {
+    margin-top: 10px;
+    width: 200px;
+  }
 `;
 
 export const PresearchContent = styled.div`
@@ -337,7 +386,21 @@ export const PresearchContent = styled.div`
   background-color: white;
   max-height: 260px;
   margin-bottom: 7px;
+  overflow-Y: scroll;
+  display: flex;
+  flex-direction: column;
 `;
+
+export const PresearchPanel = styled.div`
+  overflow-x: auto;
+  margin-left: 5px;
+  // margin-top: 30px;
+  position: relative;
+    .dropDownFacet{
+      position: relative;
+    }
+`;
+
 
 export default ThemedButton;
 
@@ -403,3 +466,47 @@ export const StyledInterventionHeading = styled.div`
   margin: 1em;
   border-bottom: solid white;
 `;
+const FacetAgg = styled.div`
+  min-height: 50px;
+  border-bottom: 1px solid #3d3d3d;
+  width: 100%;
+  margin: 0;
+  position: relative;
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+ 
+`
+export const ThemedFacetAgg= withTheme(FacetAgg)
+const FacetTitle = styled.div`
+  font-size: 16px;
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+  padding: 0px 10px;
+  
+`;
+export const ThemedFacetTitle = withTheme(FacetTitle)
+const FacetHeader = styled.div`
+
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+  padding: 0px 10px;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  padding: 4px 12px;
+  vertical-align: middle;
+  font-size: 16px;
+  margin-top:10px;
+  cursor:pointer;
+
+
+  .select-box--arrow{
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 15px 3px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+`;
+
+export const ThemedFacetHeader = withTheme(FacetHeader);

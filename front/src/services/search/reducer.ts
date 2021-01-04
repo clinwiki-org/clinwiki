@@ -7,7 +7,7 @@ const initialState: types.SearchState = {
     searchResults: undefined
 };
 
-const siteReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
+const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
     switch(action.type) {
         case types.FETCH_SEARCH_PAGE_AGGS_SEND:
             return {
@@ -48,4 +48,4 @@ const siteReducer = ( state = initialState, action: types.SearchActionTypes) : t
     }
 }
 
-export default siteReducer;
+export default searchReducer;

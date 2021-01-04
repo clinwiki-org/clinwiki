@@ -49,7 +49,7 @@ const orgId = process.env.REACT_APP_FULLSTORY_ID || 'Q5CJJ';
 const MOUNT_NODE = document.getElementById('app');
 
 const sagaMiddleware = createSagaMiddleware();
-const store = createStore(rootReducer(history), composeWithDevTools( applyMiddleware(sagaMiddleware,routerMiddleware(history)) ));
+export const store = createStore(rootReducer(history), composeWithDevTools( applyMiddleware(sagaMiddleware,routerMiddleware(history)) ));
 sagaMiddleware.run(sagas);
 
 const render = () => {

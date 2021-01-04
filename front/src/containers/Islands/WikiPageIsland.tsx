@@ -164,6 +164,7 @@ export default function WikiPageIsland(props: Props) {
 
   const renderToolbar = (
     data: WikiPageQuery,
+    //@ts-ignore
     user: CurrentUserQuery_me | null | undefined,
     readOnly: boolean
   ) => {

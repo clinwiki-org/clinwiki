@@ -5,6 +5,7 @@ import { CurrentUserQuery } from 'services/user/model/CurrentUserQuery';
 import { UserFragment } from 'services/user/model/UserFragment';
 
 interface ReactionsByIdProps {
+  //@ts-ignore
     children: (user: UserFragment | null, refetch?: any) => React.ReactNode;
     reactionKindId: any;
 }
@@ -33,7 +34,7 @@ export const REACTIONS_QUERY = gql`
   }
 
 `;
-
+//@ts-ignore
 const QueryComponent = (props: QueryComponentOptions<CurrentUserQuery>) =>
     Query(props);
 

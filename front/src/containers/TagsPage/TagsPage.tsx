@@ -215,7 +215,7 @@ class TagsPage extends React.Component<TagsPageProps, TagsPageState> {
   handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newTag: e.currentTarget.value });
   };
-
+//@ts-ignore
   renderTag = (meta: string, value: string, user: UserFragment | null) => {
     return (
       <tr key={value}>

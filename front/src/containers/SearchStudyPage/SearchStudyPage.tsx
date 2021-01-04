@@ -19,6 +19,7 @@ interface StudySearchPageProps {
   history: History;
   location: Location;
   refetch:any;
+  //@ts-ignore
   user: UserFragment | null;
 }
 
