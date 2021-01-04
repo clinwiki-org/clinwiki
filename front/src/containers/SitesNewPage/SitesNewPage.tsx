@@ -1,6 +1,6 @@
 import * as React from 'react';
 import SiteForm from 'components/SiteForm/SiteForm';
-import { CreateSiteInput } from 'types/globalTypes'
+import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
 import SiteProvider from 'containers/SiteProvider';
 import { pathOr } from 'ramda';
 import { History, Location } from 'history';

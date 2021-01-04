@@ -25,6 +25,7 @@ function* getAdminSiteView(action) {
 function* getSitesPage(action) {
     try {
         let response = yield call(() => api.fetchSitesPage());
+        console.log("GetSitesPage",response)
         if(response) {
             yield put(actions.fetchSitesPageSuccess(response.data));
         }

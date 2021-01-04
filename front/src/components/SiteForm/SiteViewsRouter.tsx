@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
+import { SiteViewMutationInput } from 'types/globalTypes';
+import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
 import { Switch, Route, match } from 'react-router';
 import { trimPath } from 'utils/helpers';
 import { SiteFragment, SiteFragment_siteViews } from 'types/SiteFragment';

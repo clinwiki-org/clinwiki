@@ -48,6 +48,7 @@ const SitesPage = ({history} : SitesPageProps) => {
 if (data === undefined || isLoading || isDeleting) {
   return <BeatLoader color="#cccccc" />
 }
+console.log("DATA", data)
   return (
     <Container>
       <CollapsiblePanel header="My Sites">

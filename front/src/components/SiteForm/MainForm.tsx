@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { StyledContainer, StyledLabel } from './Styled';
-import { CreateSiteInput } from 'types/globalTypes';
+import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
 import { Checkbox, Row, Col, Table, FormControl } from 'react-bootstrap';
 import StyledFormControl from 'containers/LoginPage/StyledFormControl';
 import { set, lensPath, over, reject, equals } from 'ramda';
@@ -20,7 +20,6 @@ interface MainFormState {
 
 export const AddEditorContainer = styled.div`
   display: flex;
-
   button {
     margin: 15px 0 15px 10px;
   }

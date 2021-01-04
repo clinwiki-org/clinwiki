@@ -1,5 +1,6 @@
 
-import { SITE_FRAGMENT } from 'containers/SiteProvider/SiteProvider'; //TODO Move site fragment from SiteProvider.tsx when we do redux there.
+//  import { SITE_FRAGMENT } from 'containers/SiteProvider/SiteProvider'; //TODO Move site fragment from SiteProvider.tsx when we do redux there.
+import { SITE_FRAGMENT } from 'services/site/model/SiteFragment'; //TODO Move site fragment from SiteProvider.tsx when we do redux there.
 
 
 export const DELETE_SITE_MUTATION = `

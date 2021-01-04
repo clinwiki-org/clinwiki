@@ -3,7 +3,7 @@ import * as types from './types';
 
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
-import { CreateSiteInput } from 'types/globalTypes';
+import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({
     type: types.FETCH_ADMIN_SITE_VIEW_SEND
