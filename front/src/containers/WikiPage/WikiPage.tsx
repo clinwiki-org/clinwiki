@@ -264,6 +264,7 @@ class WikiPage extends React.Component<WikiPageProps, WikiPageState> {
 
   renderToolbar = (
     data: WikiPageQuery,
+    //@ts-ignore
     user: UserFragment | null,
     hash: string,
     siteViewUrl: string,

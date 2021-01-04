@@ -3,7 +3,7 @@ import SiteForm from 'components/SiteForm/SiteForm';
 import UpdateSiteMutation, {
   UpdateSiteMutationFn,
 } from 'mutations/UpdateSiteMutation';
-import { CreateSiteInput } from 'types/globalTypes';
+import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
 import { match } from 'react-router';
 import SiteProvider from 'containers/SiteProvider';
 import { History, Location } from 'history';

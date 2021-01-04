@@ -30,6 +30,7 @@ import UserSearchLogs from './components/UserSearchLogs';
 import UserSavedSearches from './components/UserSavedSearches';
 
 interface EditProfilePageProps {
+  //@ts-ignore
   user: UserFragment | null;
   history: History;
   location: Location;

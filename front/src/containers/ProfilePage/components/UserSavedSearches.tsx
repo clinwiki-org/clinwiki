@@ -42,6 +42,7 @@ const DELETE_SAVED_SEARCH_MUTATION = gql`
 `;
 
 interface UserSavedSearchesProps {
+  //@ts-ignore
   user: UserFragment | null;
   //id?: any;
 }

@@ -150,7 +150,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
       </RatingWrapper>
     );
   };
-
+//@ts-ignore
   renderReview = (user: UserFragment | null, hash: string , siteViewUrl:string) => (
     review: ReviewsPageFragment
   ) => {

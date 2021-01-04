@@ -21,6 +21,7 @@ import { UserSearchLogsQuery } from 'types/UserSearchLogsQuery';
 
 
 interface UserSearchLogsProps {
+  //@ts-ignore
   user: UserFragment | null;
 }
 interface UserSearchLogsState {

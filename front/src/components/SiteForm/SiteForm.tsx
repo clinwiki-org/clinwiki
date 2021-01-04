@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
+import {  SiteViewMutationInput } from 'types/globalTypes';
+import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
 import { equals, prop, last } from 'ramda';
 import { Nav, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -23,7 +24,7 @@ import PagesForm from './PagesForm';
 
 interface SiteFormProps {
   match: match<{}>;
-  site: SiteFragment;
+  site: SiteFragment;  //TODO  Move SiteFragment when we redux SiteProvider and PresentSiteProvider.
   history: History;
   location: Location;
   onSaveSite: (CreateSiteInput) => void;

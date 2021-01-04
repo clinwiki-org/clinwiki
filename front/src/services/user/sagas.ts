@@ -85,7 +85,7 @@ function* updatePassword(action) {
 
 function* editProfile(action) {
     try {
-        let response = yield call(() => api.editProfile(action.resetPasswordToken,action.password,action.passwordConfirmation));
+        let response = yield call(() => api.editProfile(action.firstName,action.lastName,action.defaultQueryString));
         if(response) {
             yield put(actions.editProfileSuccess(response));
         }

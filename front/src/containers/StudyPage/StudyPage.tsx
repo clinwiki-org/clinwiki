@@ -70,6 +70,7 @@ interface StudyPageProps {
   theme?: any;
   userRefetch?: any;
   refetch?: any;
+//@ts-ignore
   user?: UserFragment | null;
 }
 
