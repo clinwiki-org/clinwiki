@@ -1,4 +1,6 @@
 import React from 'react';
+import {useSelector} from 'react-redux';
+import { RootState } from 'reducers';
 import {
   DELETE_REVIEW_MUTATION,
   DeleteMutationFn,
@@ -7,7 +9,7 @@ import {
 import styled from 'styled-components';
 import QUERY from 'queries/ReviewPageQuery';
 import { useQuery, useMutation } from '@apollo/client';
-import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
+//import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { Switch, Route } from 'react-router-dom';
@@ -62,7 +64,8 @@ export default function ReviewsIsland(props: Props) {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
 
-  const user = useCurrentUser()?.data?.me;
+  //const user = useCurrentUser()?.data?.me;
+  const user = useSelector( (state: RootState) => state.user.current);
 
   const WriteReviewButton = styled(ThemedButton)`
     margin-bottom: 10px;

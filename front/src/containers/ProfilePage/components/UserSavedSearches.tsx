@@ -12,7 +12,7 @@ import {
 } from 'components/StyledComponents';
 import QUERY from 'queries/UserSavedSearchesQuery';
 import { ThemedButton } from '../../LoginPage/StyledButton';
-import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 import { UserSavedSearchesQuery } from 'types/UserSavedSearchesQuery';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useHistory } from 'react-router-dom';

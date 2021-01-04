@@ -49,7 +49,7 @@ import withTheme from 'containers/ThemeProvider';
 import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
 import { WorkflowsViewFragment_workflows } from 'types/WorkflowsViewFragment';
-import { UserFragment } from 'types/UserFragment';
+import { UserFragment } from 'services/user/model/UserFragment';
 import StudyPageHeader from './components/StudyPageHeader';
 import WorkFlowAnimation from './components/StarAnimation';
 import { getStarColor } from '../../utils/auth';
