@@ -175,8 +175,8 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_aggs_fields_visibleOptions;
@@ -232,8 +232,8 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_presearch
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_presearch_crowdAggs_fields_visibleOptions;
@@ -317,8 +317,8 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fiel
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_preselected;
   visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_aggs_fields_visibleOptions;
@@ -374,8 +374,8 @@ export interface UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: UpdateSiteViewMutation_updateSiteView_siteView_search_crowdAggs_fields_visibleOptions;

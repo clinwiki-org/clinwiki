@@ -191,8 +191,8 @@ export interface PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fi
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: PresentSiteProviderQuery_site_siteView_search_presearch_aggs_fields_visibleOptions;
@@ -248,8 +248,8 @@ export interface PresentSiteProviderQuery_site_siteView_search_presearch_crowdAg
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs_fields_visibleOptions;
@@ -333,8 +333,8 @@ export interface PresentSiteProviderQuery_site_siteView_search_aggs_fields {
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteProviderQuery_site_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteProviderQuery_site_siteView_search_aggs_fields_preselected;
   visibleOptions: PresentSiteProviderQuery_site_siteView_search_aggs_fields_visibleOptions;
@@ -390,8 +390,8 @@ export interface PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields 
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteProviderQuery_site_siteView_search_crowdAggs_fields_visibleOptions;
