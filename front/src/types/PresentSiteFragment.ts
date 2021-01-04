@@ -192,6 +192,7 @@ export interface PresentSiteFragment_siteView_search_presearch_aggs_fields {
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteFragment_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteFragment_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_presearch_aggs_fields_visibleOptions;
@@ -248,6 +249,7 @@ export interface PresentSiteFragment_siteView_search_presearch_crowdAggs_fields 
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_visibleOptions;
@@ -332,6 +334,7 @@ export interface PresentSiteFragment_siteView_search_aggs_fields {
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteFragment_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteFragment_siteView_search_aggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_aggs_fields_visibleOptions;
@@ -388,6 +391,7 @@ export interface PresentSiteFragment_siteView_search_crowdAggs_fields {
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteFragment_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteFragment_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_crowdAggs_fields_visibleOptions;

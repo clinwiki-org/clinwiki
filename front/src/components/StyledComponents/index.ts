@@ -133,16 +133,19 @@ const PresearchHeader = styled.div`
   background-color: ${props => props.theme.presearch.presearchLabelColor};
   // border-top-left-radius: 4px;
   // border-top-right-radius: 4px;
-  height: 60px;
+  // height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-top: 1px solid;
-  border-left: 1px solid;
+  border-right: 1px solid;
   border-bottom: 1px solid;
+  border-left: 1px solid;
   border-color: ${props => props.theme.presearch.presearchBorderColor};
-  padding: 1em;
+  padding: 20px 12px;
   cursor:pointer;
+    
+  }
 `;
 
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
@@ -151,9 +154,10 @@ export const PresearchTitle = styled.div`
   color: ${props => props.theme.presearchLabelTextColor}; 
   font-size: 14px;
   font-weight: 700;
-  margin-left: 5px;
   text-transform: uppercase;
   letter-spacing: .1em;
+  position: relative;
+  top: -9px;
 `;
 
 const SearchCard = styled.div`
@@ -338,11 +342,15 @@ const SearchContainer = styled.div`
 export const ThemedSearchContainer = withTheme(SearchContainer);
 
 export const TextFieldToggle = styled.div`
-  color: white;
+  color:  ${props => props.theme.presearchLabelTextColor};
   font-size: 28px;
   font-weight: 400;
   margin-right: 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
 `;
+export const ThemedTextFieldToggle = withTheme(TextFieldToggle)
 
 export const PresearchFilter = styled.div`
   margin-left: 5px;
@@ -363,6 +371,11 @@ export const PresearchContainer = styled.div`
     display: contents;
   }
   .horizontal-pre {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+  }
+
+  .horizontal-aggs {
     display: flex;
     flex-wrap: wrap;
   }
@@ -374,7 +387,19 @@ export const PresearchContainer = styled.div`
 
   .horizontal-pre-button {
     margin-top: 10px;
-    width: 200px;
+    // margin-left: 13px;
+    // width: 200px;
+  }
+  @media (max-width: 951px) {
+    .horizontal-pre {
+      // flex-direction: column;
+      grid-template-columns: 1fr;
+    }
+
+    .horizontal-pre-button {
+      margin-top: 10px;
+      margin-left: 0;
+    }
   }
 `;
 
@@ -384,11 +409,13 @@ export const PresearchContent = styled.div`
   // border-bottom-left-radius: 12px;
   // border-bottom-right-radius: 12px;
   background-color: white;
+  height: 260px;
   max-height: 260px;
   margin-bottom: 7px;
   overflow-Y: scroll;
   display: flex;
   flex-direction: column;
+  border: 1px solid #e7e7e7;
 `;
 
 export const PresearchPanel = styled.div`
@@ -468,7 +495,7 @@ export const StyledInterventionHeading = styled.div`
 `;
 const FacetAgg = styled.div`
   min-height: 50px;
-  border-bottom: 1px solid #3d3d3d;
+  border-bottom: 1px solid ${props => props.theme.aggSideBar.sideBarFont};
   width: 100%;
   margin: 0;
   position: relative;
@@ -477,24 +504,24 @@ const FacetAgg = styled.div`
 `
 export const ThemedFacetAgg= withTheme(FacetAgg)
 const FacetTitle = styled.div`
-  font-size: 16px;
+  font-size: 14px;
   color: ${props => props.theme.aggSideBar.sideBarFont};
-  padding: 0px 10px;
+  position: relative;
+  top: -9px;
+
   
 `;
 export const ThemedFacetTitle = withTheme(FacetTitle)
 const FacetHeader = styled.div`
 
   color: ${props => props.theme.aggSideBar.sideBarFont};
-  padding: 0px 10px;
   display: inline-block;
   height: 100%;
   width: 100%;
-  padding: 4px 12px;
+  padding: 20px 12px;
   vertical-align: middle;
-  font-size: 16px;
-  margin-top:10px;
   cursor:pointer;
+  text-transform: uppercase;
 
 
   .select-box--arrow{

@@ -152,6 +152,7 @@ export const SITE_VIEW_FRAGMENT = gql`
             showFilterToolbar
             defaultToOpen
             layout
+            maxCrumbs
           }
           selected {
             kind
@@ -188,6 +189,7 @@ export const SITE_VIEW_FRAGMENT = gql`
             showFilterToolbar
             defaultToOpen
             layout
+            maxCrumbs
           }
           selected {
             kind
@@ -242,6 +244,7 @@ export const SITE_VIEW_FRAGMENT = gql`
           showFilterToolbar
           defaultToOpen
           layout
+          maxCrumbs
         }
         selected {
           kind
@@ -278,6 +281,7 @@ export const SITE_VIEW_FRAGMENT = gql`
           showFilterToolbar
           defaultToOpen
           layout
+          maxCrumbs
         }
         selected {
           kind

@@ -45,11 +45,13 @@ import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
-import RichTextEditor from 'react-rte';
+import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
+import HtmlToReact from 'html-to-react';
+
 
 
 
@@ -103,6 +105,7 @@ const ThemedSideBarCollapse = withTheme(SideBarCollapse)
 const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
+  padding-left: 0px !important;
   box-sizing: border-box;
   width: 235px;
   min-width: 235px;
@@ -499,12 +502,14 @@ function SearchPage(props: SearchPageProps) {
     const presearchText = presentSiteView.search.presearch.instructions;
     const opened = openedAgg && openedAgg.name;
     const openedKind = openedAgg && openedAgg.kind;
-
     const { pageViewUrl } = getPageView();
     const presearchButtonOptions = {
       hash, presearchButton, pageViewUrl
     }
-    
+    //console.log("PRESEARCH INST TEXT", presearchText)
+    const parser = new HtmlToReact.Parser();
+    const instructionsDiv = parser.parse(presearchText);
+
     return (
       <ThemedSearchContainer>
         {/* <div className="collapse-container"><div>{collapsePresearch ? "Presearch" : ""}</div><div className="collapser" onClick={() => setCollapsePresearch(!collapsePresearch)}>{collapsePresearch ? <FontAwesome name={"chevron-up"} /> : <FontAwesome name={"chevron-down"} />}</div></div> */}
@@ -514,14 +519,11 @@ function SearchPage(props: SearchPageProps) {
         <InstructionsContainer>
           {presearchText && (
             <Instructions>
-              <RichTextEditor
-                readOnly
-                editorClassName="rich-text"
-                value={RichTextEditor.createValueFromString(
-                  presearchText,
-                  'markdown'
-                )}
-              />
+             <div  style={{
+                    width: "100%"
+                  }} >
+               {instructionsDiv}
+             </div>
             </Instructions>
           )}
         </InstructionsContainer>

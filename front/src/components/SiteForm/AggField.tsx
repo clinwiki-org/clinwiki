@@ -37,6 +37,7 @@ export interface FieldType {
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
   layout?: string;
+  maxCrumbs?: number;
 }
 
 export interface OptionVisibility {
@@ -63,6 +64,7 @@ interface AggFieldProps {
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
   layout?: string;
+  maxCrumbs?: number;
 }
 
 interface AggFieldState {
@@ -149,6 +151,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
         return `workflows.${this.props.workflowName}.suggestedLabelsConfig.${this.props.field.name}`;
     }
   };
+
   handleDefaultSortMutation = e => {
     this.props.onAddMutation(e);
   };
@@ -550,6 +553,9 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <option value="LESS_THAN_DROP_DOWN">Less Than Drop Down</option>
           <option value="GREATER_THAN_DROP_DOWN">Greater Than Drop Down</option>
           <option value="LOCATION">Location</option>
+          <option value="MULTISELECT">Multi-select</option>
+          <option value="CHECKBOX">Checkbox</option>
+          <option value="CRUMBS_ONLY">Crumbs Only</option>
         </StyledFormControl>
         {this.props.field.display === 'NUMBER_RANGE' ||
           this.props.field.display === 'LESS_THAN_RANGE' ||
@@ -579,6 +585,21 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       </>
     );
   }
+  
+  renderMaxCrumb() {
+    const configType = this.props.configType;
+    return (
+      <>
+        <ThemedStyledLabel>Max Crumbs</ThemedStyledLabel>
+        <StyledFormControl
+          name={`set:${this.getPath(configType)}.maxCrumbs`}
+          placeholder="Max Number of Crumbs"
+          value={this.props.field.maxCrumbs}
+          onChange={this.props.onAddMutation}
+        />
+      </>
+    );
+  }
 
 
   shouldShowAllowMissing = () => {
@@ -597,7 +618,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
 
     return this.props.field.defaultToOpen
   }
-
 
   renderSortCheckbox = () => {
     if (this.props.sortables) {
@@ -659,6 +679,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           {this.renderLayout(vis)}
           {this.renderSortCheckbox()}
           {this.renderCheckboxes()}
+          {this.renderMaxCrumb()}
         </ThemedContainer>
       </>
     );

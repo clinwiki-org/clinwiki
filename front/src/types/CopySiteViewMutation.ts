@@ -176,6 +176,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_agg
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_visibleOptions;
@@ -232,6 +233,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_cro
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_visibleOptions;
@@ -316,6 +318,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields {
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_visibleOptions;
@@ -372,6 +375,7 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fie
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_visibleOptions;
