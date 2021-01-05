@@ -84,7 +84,7 @@ this.props.handleLocation([
     const buckets: number[] = [5, 10, 25, 50, 100, 250, 500, 1000]
     return (
       <>
-        <FormGroup>
+        <FormGroup style={{marginTop:'1.5em'}}>
           <div
             style={{
               display: 'flex',

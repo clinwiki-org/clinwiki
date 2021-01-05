@@ -367,9 +367,6 @@ export const PresearchContainer = styled.div`
     flex-direction: column;
     max-height: 1500px;
   }
-  span {
-    display: contents;
-  }
   .horizontal-pre {
     display: grid;
     grid-template-columns: 1fr 200px;
