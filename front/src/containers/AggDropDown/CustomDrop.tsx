@@ -198,7 +198,6 @@ const SelectBoxBox = styled.div`
   .crumb-icon:hover {
     cursor: pointer;
     -webkit-text-stroke: 0.5px #333;
-    margin: 0 0 0 3px;
   }
 
 }
