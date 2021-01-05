@@ -184,6 +184,13 @@ const SelectBoxBox = styled.div`
 .select-box--crumbs{
   display:flex;
   flex-wrap: wrap;
+
+  .crumb-icon:hover {
+    cursor: pointer;
+    -webkit-text-stroke: 0.5px #333;
+    margin: 0 0 0 3px;
+  }
+
 }
 .select-box--crumb-container{
   border: 2px solid #e8e8e8;
@@ -586,14 +593,15 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     return (
       <ThemedSelectBox>
         <ThemedContainer>
-          <ThemedHeader onClick={this.dropDown}>
+          <ThemedHeader>
 
-            < ThemedTitle style={{ flexDirection: 'row', display: 'flex' }}>
+            < ThemedTitle style={{ flexDirection: 'row', display: 'flex' }} onClick={this.dropDown}>
               {/* {this.props.aggKind === 'crowdAggs'
                        ? configuredLabel
                        : title}         */}
               {capitalize(title)}
-              {this.props.field.display == "CRUMBS_ONLY" ? (null) : (<FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />)}            </ThemedTitle>
+              {this.props.field.display == "CRUMBS_ONLY" ? (null) : (<FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />)}            
+            </ThemedTitle>
             {this.props.isPresearch ? (
               <div className='select-box--crumbs'>
                 {this.state.selectedItems.length > 0 ? this.renderSelectedItems() : this.renderSubLabel()}
