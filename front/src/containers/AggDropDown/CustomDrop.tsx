@@ -428,7 +428,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
   }
   renderPreValue = (item) => {
-    if (this.props.field.display == "CHECKBOX") {
+    if (this.props.field.display == "CHECKBOX" ||this.props.field.display == "STRING" ) {
       return this.isSelected(item) ? <FontAwesome name='far fa-check-square check' style={{ display: 'flex' }} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>
     }
     return null
@@ -503,7 +503,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     else if (field.display == "CRUMBS_ONLY") {
       return null
     }
-    else if (this.props.field.display == "CHECKBOX") {
+    else if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
 
       return (
         <InfiniteScroll
