@@ -108,7 +108,7 @@ this.props.handleLocation([
             <FormControl
               type="text"
               placeholder="Enter Zip Code"
-              // value={this.state.zipcode}
+              value={this.state.zipcode}
               onChange={e =>
                 this.setState({
                   zipcode: e.target.value,
