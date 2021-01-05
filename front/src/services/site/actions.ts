@@ -3,7 +3,7 @@ import * as types from './types';
 
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
-import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
+import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({
     type: types.FETCH_ADMIN_SITE_VIEW_SEND
@@ -64,5 +64,22 @@ export const createSiteSuccess = (payload: any) : types.SiteActionTypes => ({
 
 export const createSiteError = (message: string) : types.SiteActionTypes => ({
     type: types.CREATE_SITE_ERROR,
+    payload: { message }
+});
+
+
+export const updateSite = (input: UpdateSiteInput, url?: string) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_SEND,
+    input,
+    url
+});
+
+export const updateSiteSuccess = (payload: any) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_SUCCESS,
+    payload
+});
+
+export const updateSiteError = (message: string) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_ERROR,
     payload: { message }
 });
