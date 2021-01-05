@@ -1,4 +1,4 @@
-import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
+import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
@@ -18,6 +18,10 @@ export const CREATE_SITE_SEND = 'CREATE_SITE_SEND';
 export const CREATE_SITE_SUCCESS = 'CREATE_SITE_SUCCESS';
 export const CREATE_SITE_ERROR = 'CREATE_SITE_ERROR';
 
+export const UPDATE_SITE_SEND = 'UPDATE_SITE_SEND';
+export const UPDATE_SITE_SUCCESS = 'UPDATE_SITE_SUCCESS';
+export const UPDATE_SITE_ERROR = 'UPDATE_SITE_ERROR';
+
 export interface SiteState {
     isFetchingAdminSiteView: boolean,
     adminSiteView: AdminViewsProviderQuery | undefined;
@@ -25,6 +29,7 @@ export interface SiteState {
     sitesData: any | SitesPageQuery | undefined,
     isDeletingSite: boolean,
     isCreatingSite: boolean,
+    isUpdatingSite: boolean,
 }
 
 export interface SiteDataError {
@@ -90,8 +95,23 @@ export interface CreateSiteErrorAction {
     payload: SiteDataError
 };
 
+export interface UpdateSiteSendAction {
+    type: typeof UPDATE_SITE_SEND,
+    input: UpdateSiteInput,
+    url?: string
+}
+
+export interface UpdateSiteSuccessAction {
+    type: typeof UPDATE_SITE_SUCCESS,
+    payload: SitesPageQuery
+};
+
+export interface UpdateSiteErrorAction {
+    type: typeof UPDATE_SITE_ERROR,
+    payload: SiteDataError
+};
+
 
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
-    DeleteSiteErrorAction | CreateSiteSendAction | CreateSiteSuccessAction |
-    CreateSiteErrorAction;
+    DeleteSiteErrorAction  | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction  | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction  ;

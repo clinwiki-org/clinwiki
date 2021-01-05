@@ -23,3 +23,7 @@ export const createSite = (input, url?) => {
     return callGraphql(ENDPOINT, mutate.CREATE_SITE_MUTATION, 
         { input: input, url });
 };
+export const updateSite = (input, url?) => {
+    return callGraphql(ENDPOINT, mutate.UPDATE_SITE_MUTATION, 
+        { input: input, url });
+};

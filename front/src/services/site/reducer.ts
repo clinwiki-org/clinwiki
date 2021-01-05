@@ -8,6 +8,7 @@ const initialState: types.SiteState = {
     sitesData: undefined,
     isDeletingSite: false,
     isCreatingSite: false,
+    isUpdatingSite: false,
 };
 
 const siteReducer = ( state = initialState, action: types.SiteActionTypes) : types.SiteState => {
@@ -28,7 +29,6 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 isFetchingAdminSiteView: false
             };
 
-
             case types.FETCH_SITES_PAGE_SEND:
             return {
                 ...state,
@@ -45,7 +45,6 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isFetchingSitesPage: false
             };
-
 
         case types.DELETE_SITE_SEND:
             return {
@@ -79,7 +78,22 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isCreatingSite: false
             };
-
+        case types.UPDATE_SITE_SEND:
+            return {
+                ...state,
+                isUpdatingSite: true
+            };
+        case types.UPDATE_SITE_SUCCESS:            
+            return {
+                ...state,
+                isUpdatingSite: false,
+                sitesData: action.payload
+            };
+        case types.UPDATE_SITE_ERROR:
+            return {
+                ...state,
+                isUpdatingSite: false
+            };
 
         default:
             return {...state};
