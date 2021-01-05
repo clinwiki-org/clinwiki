@@ -117,6 +117,16 @@ const SelectBoxBox = styled.div`
     box-sizing: border-box;
     color:${props => props.theme.aggSideBar.sideBarFont};
   }
+  .check{
+    min-width: 13px;
+    max-width: 13px;
+    height: 13px;
+    position: relative;
+    margin-right: 7px;
+    top: 3px;
+    border-radius: 2px;
+    font-size: 1.1em;
+  }
 
   .item-content {
     display: flex;
@@ -419,9 +429,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   }
   renderPreValue = (item) => {
     if (this.props.field.display == "CHECKBOX") {
-      return <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}>{
-        this.isSelected(item) ? <FontAwesome name='check' style={{ display: 'flex' }} /> : null
-      }</div>;
+      return this.isSelected(item) ? <FontAwesome name='far fa-check-square check' style={{ display: 'flex' }} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>
     }
     return null
   };
