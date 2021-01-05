@@ -331,7 +331,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           field?.display === FieldDisplay.LESS_THAN_RANGE ||
           field?.display === FieldDisplay.GREATER_THAN_RANGE) {
           return (
-            <div className='select-box--crumb-container'>
+            <div className='select-box--crumb-container' key={item.key+"crumb-container"}>
               {this.renderRangeLabel()}
               <FontAwesome
                 className="remove crumb-icon"
@@ -360,7 +360,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
         //@ts-ignore
         if (this.isSelected(item.key)) {
           //@ts-ignore
-          return <div className='select-box--crumb-container'>
+          return <div className='select-box--crumb-container' key={item.key+'isSelected'}>
             {item.key}          <FontAwesome
               className="remove crumb-icon"
               name="remove"
@@ -374,7 +374,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           if (this.state.showAdditionalCrumbs) {
             let otherCrumbs: any[] = this.state.selectedItems.slice(field.maxCrumbs, this.state.selectedItems.length)
             return otherCrumbs.map(item => {
-              return (<div className='select-box--crumb-container' >
+              return (<div className='select-box--crumb-container' key={item.key}>
                 {item.key}          <FontAwesome
                   className={`remove crumb-icon`}
                   name={`remove`}
@@ -525,7 +525,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             )
             .map((item) => (
               <div
-                key={item.key}
+                key={item.key+'buckets'}
                 onClick={() => this.selectItem(item)}
                 className={
                   this.state.selectedItem === item
@@ -566,7 +566,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             .map((item) => (
               this.isSelected(item.key) ? null :
                 <div
-                  key={item.key}
+                  key={item.key+'buckets'}
                   onClick={() => this.selectItem(item)}
                   className={
                     this.state.selectedItem === item
