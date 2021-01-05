@@ -651,6 +651,14 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
+        <StyledShowContainer>
+              <span>Show Results</span>
+              <StyledCheckbox
+                name="set:search.presearch.showResults"
+                checked={view.search.presearch.showResults}
+                onChange={this.handleCheckboxToggle(view.search.presearch.showResults)}
+              />
+            </StyledShowContainer>
           <Row>
             <Col md={6}>
               <AggsHeaderContainer>

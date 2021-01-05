@@ -333,9 +333,13 @@ const Aggs = (props: AggsProps) => {
               )
             }
           )}  
-
+        let showPresearchResults=props.presentSiteView.search.presearch.showResults
         return (
           <PresearchContainer>
+            {showPresearchResults ? (
+            <div className="presearch-total-results">
+                <b>Total Results:</b> {recordsTotal} studies
+            </div>):null}
             <div className="horizontal-pre">
               <div className="horizontal-aggs">
                {aggPresearchHorizontal}

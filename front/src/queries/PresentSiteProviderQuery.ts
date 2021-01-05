@@ -189,6 +189,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                     target
                 }
                 instructions
+                showResults
             }
             sortables
             fields

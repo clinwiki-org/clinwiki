@@ -367,11 +367,13 @@ export const PresearchContainer = styled.div`
     flex-direction: column;
     max-height: 1500px;
   }
+  .presearch-total-results{
+    margin: 10px;
+  }
   .horizontal-pre {
     display: grid;
     grid-template-columns: 1fr 200px;
   }
-
   .horizontal-aggs {
     display: flex;
     flex-wrap: wrap;
