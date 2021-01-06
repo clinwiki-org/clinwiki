@@ -32,6 +32,7 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 isSearching: true
             };
         case types.FETCH_SEARCH_STUDIES_SUCCESS:
+            console.log("Reducer", action.payload)
             return {
                 ...state,
                 isSearching: false,
