@@ -24,6 +24,7 @@ function* getSearchStudies(action) {
     try {
         let response = yield call(() => api.fetchSearchStudies(action.hash));
         if(response) {
+            console.log(response)
             yield put(actions.fetchSearchStudiesSuccess(response));
         }
         else {

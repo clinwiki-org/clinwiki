@@ -1,5 +1,5 @@
 import * as query from './queries';
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import SearchPageParamsQuery from 'services/search/queries/SearchPageParamsQuery';
 import { callGraphql } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS

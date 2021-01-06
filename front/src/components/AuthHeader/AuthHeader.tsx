@@ -27,7 +27,7 @@ const StyledWrapper = styled.div`
     background: ${props => props.theme.authHeader.headerBackground};
     margin-bottom: 0px;
     border: 0px;
-    border-radius: 0px;P
+    border-radius: 0px;
   }
 
   nav.navbar a.logo,

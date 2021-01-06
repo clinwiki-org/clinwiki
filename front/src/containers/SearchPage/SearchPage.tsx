@@ -43,15 +43,16 @@ import {
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import SearchPageParamsQuery from 'services/search/queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import RichTextEditor from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSearchStudies } from 'services/search/actions'
+import {RootState} from 'reducers';
 
 const SearchPageWrapper = styled.div`
   display: flex;
@@ -209,7 +210,7 @@ function SearchPage(props: SearchPageProps) {
 
   const [openedAgg, setOpenedAgg] = useState<OpenedAgg>({ name: null, kind: null })
   const [removeSelectAll, setRemoveSelectAll] = useState(false)
-  const [shouldRender, setShouldRender] = useState(true)
+  // const [shouldRender, setShouldRender] = useState(true)
   const [totalRecords, setTotalRecords] = useState(0)
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
   const [collapsePresearch, setCollapsePresearch] = useState(false)
@@ -218,7 +219,8 @@ function SearchPage(props: SearchPageProps) {
     variables: params.current,
     onCompleted: (data)=> afterSearchParamsUpdate(data)
   })
-  const paramsUrl = useUrlParams()
+  const paramsUrl = useUrlParams();
+  const dispatch = useDispatch();
 
 
 
@@ -297,7 +299,7 @@ function SearchPage(props: SearchPageProps) {
 
     //// PROBABLY STILL NEEDS TO BE FIXED
     if (!searchTerm.has('hash')) {
-      setShouldRender(true)
+      // setShouldRender(true)
 
       updateSearchParams(initialLoadParams)
 
@@ -306,7 +308,7 @@ function SearchPage(props: SearchPageProps) {
     if (props.intervention) {
       updateSearchParams(props.searchParams || initialLoadParams)
     }if(searchTerm.has('hash')){
-      setShouldRender(false)
+      // setShouldRender(false)
       return
     }
     updateSearchParams(initialLoadParams)
@@ -744,27 +746,41 @@ function SearchPage(props: SearchPageProps) {
 
 const searchParamsQueryHelper =(data)=>{
   const dataParams = searchParamsFromQuery(
-    data!.searchParams,
+    data.data!.searchParams,
     presentSiteView
   );
   params.current= dataParams
-  setShouldRender(true)
+  // setShouldRender(true)
 }
 const { presentSiteView } = props;
+
 /// SEARCH PAGE PARAMS QUERY
-const result = useQuery(SearchPageParamsQuery, {
- variables: { hash },
- //Looks like this was our fix to our sort again
- fetchPolicy: "no-cache",
- onCompleted: (result)=>searchParamsQueryHelper(result)
+useEffect(()=>{
+  dispatch(fetchSearchStudies(hash));
+},[dispatch]);
 
-});
-let data = result.data
-if (data == undefined && result.previousData !== undefined) { data = result.previousData }
-if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
+// const result = useQuery(SearchPageParamsQuery, {
+//  variables: { hash },
+//  //Looks like this was our fix to our sort again
+//  fetchPolicy: "no-cache",
+//  onCompleted: (result)=>searchParamsQueryHelper(result)
 
+// });
 
+const data = useSelector((state : RootState ) => state.search.searchResults);
+const isLoading = useSelector((state : RootState ) => state.search.isSearching);
+const isDeleting = useSelector((state : RootState ) => state.site.isDeletingSite);
 
+// if (data == undefined && result.previousData !== undefined) { data = result.previousData }
+// if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
+console.log("DATA",data)
+if(data == undefined || isLoading) return <BeatLoader/>
+// searchParamsQueryHelper(data);
+const dataParams = searchParamsFromQuery(
+  data.data!.searchParams,
+  presentSiteView
+);
+params.current= dataParams
   return (
     <Switch>
       <Route
@@ -775,7 +791,8 @@ if (result.error || (result.loading && data == undefined)) return <BeatLoader />
             showFacetBar,
             showBreadCrumbs,
           } = presentSiteView.search.config.fields;
-        return(  shouldRender ? (
+        return(  
+          // shouldRender ? (
             <ThemedSearchPageWrapper>
               {showFacetBar && (
                 <>
@@ -803,11 +820,13 @@ if (result.error || (result.loading && data == undefined)) return <BeatLoader />
               </ThemedMainContainer>
             </ThemedSearchPageWrapper>
           )
-          : null);
-        }}
+          // : null);
+        }
+      }
       />
     </Switch>
   )
-}
 
+}
+//@ts-ignore
 export default withPresentSite2((SearchPage));
