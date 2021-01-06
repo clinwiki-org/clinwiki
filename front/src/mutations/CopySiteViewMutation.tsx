@@ -9,7 +9,7 @@ import {
   CopySiteViewMutation as CopySiteViewMutationType,
   CopySiteViewMutationVariables,
 } from 'types/CopySiteViewMutation';
-import { SITE_VIEW_FRAGMENT } from 'containers/SiteProvider/SiteProvider';
+import { SITE_VIEW_FRAGMENT } from '../services/site/SiteFragments'
 
 interface CopySiteViewMutationProps {
   children: (

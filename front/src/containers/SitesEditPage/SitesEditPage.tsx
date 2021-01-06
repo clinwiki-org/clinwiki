@@ -28,14 +28,13 @@ const SitesEditPage = ({match, history, location} : SitesEditPageProps) => {
 
     return (
       <SiteProvider id={parseInt(match.params.id, 10)}>
-        {(site, refetch) => (
+        {(site) => (
           <UpdateSiteViewMutation>
             {updateSiteView => (
                   <SiteForm
                     match={match}
                     history={history}
                     location={location}
-                    refresh={refetch}
                     site={site}
                     onSaveSite={input => handleSave(input)}
                     onSaveSiteView={updateSiteView}

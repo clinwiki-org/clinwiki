@@ -5,7 +5,7 @@ import { equals, prop, last } from 'ramda';
 import { Nav, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { trimPath } from 'utils/helpers';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment } from 'services/site/model/SiteFragment';
 import { StyledContainer } from './Styled';
 import {
   updateView,
@@ -21,6 +21,8 @@ import StudyForm from './StudyForm';
 import ThemedButton from 'components/StyledComponents/index';
 import { UpdateSiteViewMutationFn } from 'mutations/UpdateSiteViewMutation';
 import PagesForm from './PagesForm';
+import { connect } from 'react-redux';
+import { fetchSiteProvider } from 'services/site/actions';
 
 interface SiteFormProps {
   match: match<{}>;
@@ -29,7 +31,8 @@ interface SiteFormProps {
   location: Location;
   onSaveSite: (CreateSiteInput) => void;
   onSaveSiteView?: UpdateSiteViewMutationFn;
-  refresh: any;
+  //refresh: any;
+  fetchSiteProvider?: any;
 }
 
 interface SiteFormState {
@@ -114,7 +117,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           },
         })
         .then(() => {
-          this.props.refresh();
+            this.props.fetchSiteProvider(view.id, view.url)   //this.props.refresh(); //TODO Replace with dispatch fetchSiteProvider, ADD MapDispatchToProps.
         });
     }
     this.props.onSaveSite(this.state.form);
@@ -252,4 +255,9 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   }
 }
 
-export default SiteForm;
+const mapDispatchToProps = (dispatch) => ({
+  fetchSiteProvider: (id, url) => dispatch(fetchSiteProvider(id, url))
+})
+
+
+export default connect(null, mapDispatchToProps) (SiteForm);

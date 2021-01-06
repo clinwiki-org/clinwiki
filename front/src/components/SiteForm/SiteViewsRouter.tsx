@@ -3,7 +3,7 @@ import { SiteViewMutationInput } from 'types/globalTypes';
 import { CreateSiteInput } from 'services/site/model/InputTypes';
 import { Switch, Route, match } from 'react-router';
 import { trimPath } from 'utils/helpers';
-import { SiteFragment, SiteFragment_siteViews } from 'types/SiteFragment';
+import { SiteFragment, SiteFragment_siteViews } from 'services/site/model/SiteFragment';
 import {
   updateView,
 } from 'utils/siteViewUpdater';

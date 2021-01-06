@@ -8,7 +8,7 @@ import {
   CreateSiteViewMutation as CreateSiteViewMutationType,
   CreateSiteViewMutationVariables,
 } from 'types/CreateSiteViewMutation';
-import { SITE_VIEW_FRAGMENT } from 'containers/SiteProvider/SiteProvider';
+import { SITE_VIEW_FRAGMENT } from '../services/site/SiteFragments'
 
 interface CreateSiteViewMutationProps {
   children: (

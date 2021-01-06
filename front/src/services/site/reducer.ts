@@ -9,6 +9,8 @@ const initialState: types.SiteState = {
     isDeletingSite: false,
     isCreatingSite: false,
     isUpdatingSite: false,
+    isFetchingSiteProvider: false,
+    siteProvider: undefined,
 };
 
 const siteReducer = ( state = initialState, action: types.SiteActionTypes) : types.SiteState => {
@@ -45,6 +47,24 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isFetchingSitesPage: false
             };
+
+        case types.FETCH_SITE_PROVIDER_SEND:
+            return {
+                ...state,
+                isFetchingSiteProvider: true
+            };
+        case types.FETCH_SITE_PROVIDER_SUCCESS:
+            return {
+                ...state,
+                isFetchingSiteProvider: false,
+                siteProvider: action.payload
+            };
+        case types.FETCH_SITE_PROVIDER_ERROR:
+            return {
+                ...state,
+                isFetchingSiteProvider: false
+            };
+    
 
         case types.DELETE_SITE_SEND:
             return {

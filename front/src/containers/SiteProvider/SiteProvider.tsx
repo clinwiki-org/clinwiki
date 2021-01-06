@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { gql, useQuery } from '@apollo/client';
-import {
-  SiteProviderQuery,
-  SiteProviderQueryVariables,
-} from 'types/SiteProviderQuery';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment } from 'services/site/model/SiteFragment';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import { fetchSiteProvider } from 'services/site/actions';
+import { useEffect } from 'react';
+
 
 interface SiteProviderProps {
   id?: number;
@@ -12,352 +12,54 @@ interface SiteProviderProps {
   children: (site: SiteFragment, refetch: any) => JSX.Element | null;
 }
 
-const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
-  fragment SiteStudyExtendedGenericSectionFragment on SiteStudyExtendedGenericSection {
-    template
-    hide
-    order
-    title
-    name
-  }
-`;
-
-const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT = gql`
-  fragment SiteStudyBasicGenericSectionFragment on SiteStudyBasicGenericSection {
-    hide
-    title
-    name
-  }
-`;
-
-const SITE_STUDY_PAGE_FRAGMENT = gql`
-  fragment SiteStudyPageFragment on SiteStudyPage {
-    allFields
-    basicSections {
-      ...SiteStudyBasicGenericSectionFragment
-    }
-    extendedSections {
-      ...SiteStudyExtendedGenericSectionFragment
-    }
-  }
-
-  ${SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT}
-  ${SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT}
-`;
-
-export const SITE_VIEW_FRAGMENT = gql`
-  fragment SiteViewFragment on SiteView {
-    name
-    url
-    id
-    default
-    description
-    study {
-      ...SiteStudyPageFragment
-    }
-    search {
-      type
-      template
-      autoSuggest {
-        aggs {
-          fields {
-            order {
-              sortKind
-              desc
-            }
-            name
-            display
-            preselected {
-              kind
-              values
-            }
-            visibleOptions {
-              kind
-              values
-            }
-            autoSuggest
-            rank
-          }
-          selected {
-            kind
-            values
-          }
-        }
-        crowdAggs {
-          fields {
-            order {
-              sortKind
-              desc
-            }
-            name
-            display
-            preselected {
-              kind
-              values
-            }
-            visibleOptions {
-              kind
-              values
-            }
-            rank
-            autoSuggest
-          }
-          selected {
-            kind
-            values
-          }
-        }
-      }
-      results {
-        type
-        buttons {
-          items {
-            icon
-            target
-          }
-          location
-        }
-      }
-      crumbs {
-        search
-      }
-      presearch {
-        aggs {
-          fields {
-            order {
-              sortKind
-              desc
-            }
-            name
-            display
-            displayName
-            aggSublabel
-            preselected {
-              kind
-              values
-            }
-            visibleOptions {
-              kind
-              values
-            }
-            autoSuggest
-            rank
-            rangeStartLabel
-            rangeEndLabel
-            bucketKeyValuePairs{
-              key
-              label
-            }
-            showAllowMissing
-            showFilterToolbar
-            defaultToOpen
-            layout
-            maxCrumbs
-          }
-          selected {
-            kind
-            values
-          }
-        }
-        crowdAggs {
-          fields {
-            order {
-              sortKind
-              desc
-            }
-            name
-            display
-            displayName
-            aggSublabel
-            preselected {
-              kind
-              values
-            }
-            visibleOptions {
-              kind
-              values
-            }
-            rank
-            autoSuggest
-            rangeStartLabel
-            rangeEndLabel
-            bucketKeyValuePairs{
-              key
-              label
-            }
-            showAllowMissing
-            showFilterToolbar
-            defaultToOpen
-            layout
-            maxCrumbs
-          }
-          selected {
-            kind
-            values
-          }
-        }
-        button {
-          name
-          target
-        }
-        instructions
-      }
-      sortables
-      fields
-      config {
-        fields {
-          showPresearch
-          showFacetBar
-          showAutoSuggest
-          showBreadCrumbs
-          showResults
-        }
-      }
-
-      aggs {
-        fields {
-          order {
-            sortKind
-            desc
-          }
-          name
-          display
-          displayName
-          aggSublabel
-          preselected {
-            kind
-            values
-          }
-          visibleOptions {
-            kind
-            values
-          }
-          autoSuggest
-          rank
-          rangeStartLabel
-          rangeEndLabel
-          bucketKeyValuePairs{
-            key
-            label
-          }
-          showAllowMissing
-          showFilterToolbar
-          defaultToOpen
-          layout
-          maxCrumbs
-        }
-        selected {
-          kind
-          values
-        }
-      }
-      crowdAggs {
-        fields {
-          order {
-            sortKind
-            desc
-          }
-          name
-          display
-          displayName
-          aggSublabel
-          preselected {
-            kind
-            values
-          }
-          visibleOptions {
-            kind
-            values
-          }
-          rank
-          autoSuggest
-          rangeStartLabel
-          rangeEndLabel
-          bucketKeyValuePairs{
-            key
-            label
-          }
-          showAllowMissing
-          showFilterToolbar
-          defaultToOpen
-          layout
-          maxCrumbs
-        }
-        selected {
-          kind
-          values
-        }
-      }
-    }
-  }
-
-  ${SITE_STUDY_PAGE_FRAGMENT}
-`;
-
-export const SITE_FRAGMENT = gql`
-  fragment SiteFragment on Site {
-    id
-    editors {
-      email
-    }
-    name
-    skipLanding
-    hideDonation
-    subdomain
-    themes
-    reactionsConfig
-    userRank
-    owners {
-      email
-    }
-    siteView(url: $url) {
-      ...SiteViewFragment
-    }
-    siteViews {
-      ...SiteViewFragment
-    }
-  }
-
-  ${SITE_VIEW_FRAGMENT}
-`;
-
-const QUERY = gql`
-  query SiteProviderQuery($id: Int, $url: String) {
-    site(id: $id) {
-      ...SiteFragment
-    }
-  }
-
-  ${SITE_FRAGMENT}
-`;
 
 interface UseSiteProps {
-  id?: number;
-  url?: string;
+  id?: number | any;
+  url?: string | any;
 }
 export function useSite(props?: UseSiteProps) {
+
+  const dispatch = useDispatch();
+  const siteProvider = useSelector((state : RootState ) => state.site.siteProvider)
+  const isFetchingSiteProvider = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
+
   // console.log("USE SITE PROPS", props);
   // console.trace();
   const urlName = new URLSearchParams(window.location.search)
     .getAll('sv')
     .toString()
     .toLowerCase();
-  const result = useQuery<SiteProviderQuery>(QUERY, {
-    variables: { id: props?.id, url: props?.url },
-  });
-  if (!result.data) return { ...result, site: null, currentSiteView: null };
-  const site = result?.data?.site;
-  const currentSiteView =
-    site?.siteViews.find(
-      siteview => siteview?.url?.toLowerCase() === urlName
-    ) || site?.siteView;
-  return { ...result, site, currentSiteView };
+
+    dispatch(fetchSiteProvider(props?.id, props?.url));
+
+  const result = siteProvider
+
+  //TODO replace with useSelector to check results /data and pull site
+
+  if (!result) return { ...result, site: null, currentSiteView: null };
+  if (!isFetchingSiteProvider && result.siteProvider ) {
+    const site = siteProvider;
+    const currentSiteView =
+      site?.siteViews.find(
+        siteview => siteview?.url?.toLowerCase() === urlName
+      ) || site?.siteView;
+    return { ...result, site, currentSiteView };
+  }
 }
 
 function SiteProvider(props: SiteProviderProps) {
-  const { data, loading, error, refetch } = useSite(props);
-  if (error) console.log(error);
-  if (loading || error || !data) return null;
+
+ // useEffect( () => {
+    useSite(props);  //TODO CHECK this
+ // }, []);
+
+
+  const refetch = null //() => console.log("REFETCH"); //TODO CHECK this
+  const data = useSelector((state : RootState ) => state.site.siteProvider)
+  const loading = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
+
+  //if (error) console.log(error);
+  if (loading || !data) return null;
   return props.children(data.site!, refetch);
 }
 

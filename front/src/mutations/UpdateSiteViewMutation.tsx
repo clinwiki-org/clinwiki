@@ -9,7 +9,7 @@ import {
   UpdateSiteViewMutation as UpdateSiteViewMutationType,
   UpdateSiteViewMutationVariables,
 } from 'types/UpdateSiteViewMutation';
-import { SITE_VIEW_FRAGMENT } from 'containers/SiteProvider/SiteProvider';
+import { SITE_VIEW_FRAGMENT } from '../services/site/SiteFragments'
 
 interface UpdateSiteViewMutationProps {
   children: (
