@@ -191,8 +191,8 @@ export interface PresentSiteFragment_siteView_search_presearch_aggs_fields {
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteFragment_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteFragment_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_presearch_aggs_fields_visibleOptions;
@@ -248,8 +248,8 @@ export interface PresentSiteFragment_siteView_search_presearch_crowdAggs_fields 
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_presearch_crowdAggs_fields_visibleOptions;
@@ -285,6 +285,7 @@ export interface PresentSiteFragment_siteView_search_presearch {
   crowdAggs: PresentSiteFragment_siteView_search_presearch_crowdAggs;
   button: PresentSiteFragment_siteView_search_presearch_button;
   instructions: string;
+  showResults: boolean | null;
 }
 
 export interface PresentSiteFragment_siteView_search_config_fields {
@@ -333,8 +334,8 @@ export interface PresentSiteFragment_siteView_search_aggs_fields {
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteFragment_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteFragment_siteView_search_aggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_aggs_fields_visibleOptions;
@@ -390,8 +391,8 @@ export interface PresentSiteFragment_siteView_search_crowdAggs_fields {
   displayName: string;
   aggSublabel: string | null;
   defaultToOpen: boolean | null;
-  dropdownOpen: boolean | null;
   layout: string | null;
+  maxCrumbs: number | null;
   bucketKeyValuePairs: PresentSiteFragment_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: PresentSiteFragment_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: PresentSiteFragment_siteView_search_crowdAggs_fields_visibleOptions;
