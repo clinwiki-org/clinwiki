@@ -1,19 +1,25 @@
 import {SearchPageAggsQuery} from 'types/SearchPageAggsQuery';
+import {SearchPageSearchQuery} from 'types/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 
 export const FETCH_SEARCH_PAGE_AGGS_SEND = 'FETCH_SEARCH_PAGE_AGGS_SEND';
 export const FETCH_SEARCH_PAGE_AGGS_SUCCESS = 'FETCH_SEARCH_PAGE_AGGS_SUCCESS';
 export const FETCH_SEARCH_PAGE_AGGS_ERROR = 'FETCH_SEARCH_PAGE_AGGS_ERROR';
 
+export const FETCH_SEARCH_PARAMS_SEND = 'FETCH_SEARCH_PARAMS_SEND';
+export const FETCH_SEARCH_PARAMS_SUCCESS = 'FETCH_SEARCH_PARAMS_SUCCESS';
+export const FETCH_SEARCH_PARAMS_ERROR = 'FETCH_SEARCH_PARAMS_ERROR';
+
 export const FETCH_SEARCH_STUDIES_SEND = 'FETCH_SEARCH_STUDIES_SEND';
 export const FETCH_SEARCH_STUDIES_SUCCESS = 'FETCH_SEARCH_STUDIES_SUCCESS';
 export const FETCH_SEARCH_STUDIES_ERROR = 'FETCH_SEARCH_STUDIES_ERROR';
-
 export interface SearchState {
     isFetchingAggs: boolean,
     aggs: SearchPageAggsQuery | undefined,
     isSearching: boolean,
     searchResults: typeof SearchPageParamsQuery | undefined
+    isSearchingStudies: boolean,
+    studies: SearchPageSearchQuery | undefined
 }
 
 export interface SearchDataError {
@@ -35,14 +41,29 @@ export interface FetchSearchPageAggsErrorAction {
     payload: SearchDataError
 };
 
+export interface FetchSearchParamsSendAction {
+    type: typeof FETCH_SEARCH_PARAMS_SEND
+    hash: any
+};
+
+export interface FetchSearchParamsSuccessAction {
+    type: typeof FETCH_SEARCH_PARAMS_SUCCESS,
+    payload: typeof SearchPageParamsQuery
+};
+
+export interface FetchSearchParamsErrorAction {
+    type: typeof FETCH_SEARCH_PARAMS_ERROR,
+    payload: SearchDataError
+};
+
 export interface FetchSearchStudiesSendAction {
     type: typeof FETCH_SEARCH_STUDIES_SEND
-    hash: any
+    searchParams: any
 };
 
 export interface FetchSearchStudiesSuccessAction {
     type: typeof FETCH_SEARCH_STUDIES_SUCCESS,
-    payload: typeof SearchPageParamsQuery
+    payload: SearchPageSearchQuery
 };
 
 export interface FetchSearchStudiesErrorAction {
@@ -51,4 +72,5 @@ export interface FetchSearchStudiesErrorAction {
 };
 
 export type SearchActionTypes = FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
+    FetchSearchParamsSendAction | FetchSearchParamsSuccessAction | FetchSearchParamsErrorAction |
     FetchSearchStudiesSendAction | FetchSearchStudiesSuccessAction | FetchSearchStudiesErrorAction;

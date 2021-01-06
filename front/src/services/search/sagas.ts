@@ -19,14 +19,35 @@ function* getSearchPageAggs(action) {
     }
 }
 
-function* getSearchStudies(action) {
-    console.log('getSearchStudies')
+function* getSearchParams(action) {
     try {
-        let response = yield call(() => api.fetchSearchStudies(action.hash));
+        let response = yield call(() => api.fetchSearchParams(action.hash));
         if(response) {
             console.log(response)
-            yield put(actions.fetchSearchStudiesSuccess(response));
+//          let aggsResponse = yield call(() => api.fetchSearchPageAggs(response.data.searchParams));
+// console.log("AGG", aggsResponse)        
+            yield put(actions.fetchSearchParamsSuccess(response));
+
+}
+        else {
+            yield put(actions.fetchSearchParamsError(response.message));
         }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSearchParamsError(err.message));
+    }
+}
+function* getSearchStudies(action) {
+    console.log('getSearchStudies', action.searchParams)
+    try {
+        let response = yield call(() => api.fetchSearchStudies(action.searchParams));
+        if(response) {
+            console.log(response)
+ 
+            yield put(actions.fetchSearchStudiesSuccess(response));
+
+}
         else {
             yield put(actions.fetchSearchStudiesError(response.message));
         }
@@ -39,5 +60,6 @@ function* getSearchStudies(action) {
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
+    yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
 }

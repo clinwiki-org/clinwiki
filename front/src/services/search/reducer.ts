@@ -4,7 +4,9 @@ const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
     isSearching: false,
-    searchResults: undefined
+    searchResults: undefined,
+    isSearchingStudies: false,
+    studies: undefined,
 };
 
 const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
@@ -26,17 +28,32 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 isFetchingAggs: false
             };
 
-        case types.FETCH_SEARCH_STUDIES_SEND:
+        case types.FETCH_SEARCH_PARAMS_SEND:
             return {
                 ...state,
                 isSearching: true
             };
-        case types.FETCH_SEARCH_STUDIES_SUCCESS:
-            console.log("Reducer", action.payload)
+        case types.FETCH_SEARCH_PARAMS_SUCCESS:
             return {
                 ...state,
                 isSearching: false,
                 searchResults: action.payload
+            };
+        case types.FETCH_SEARCH_PARAMS_ERROR:
+            return {
+                ...state,
+                isSearching: false
+            };
+        case types.FETCH_SEARCH_STUDIES_SEND:
+            return {
+                ...state,
+                isSearchingStudies: true
+            };
+        case types.FETCH_SEARCH_STUDIES_SUCCESS:
+            return {
+                ...state,
+                isSearchingStudies: false,
+                studies: action.payload
             };
         case types.FETCH_SEARCH_STUDIES_ERROR:
             return {

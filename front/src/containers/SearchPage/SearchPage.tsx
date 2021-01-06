@@ -43,7 +43,6 @@ import {
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
-import SearchPageParamsQuery from 'services/search/queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
@@ -52,7 +51,7 @@ import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
 import HtmlToReact from 'html-to-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSearchStudies } from 'services/search/actions'
+import { fetchSearchParams } from 'services/search/actions'
 import {RootState} from 'reducers';
 
 const SearchPageWrapper = styled.div`
@@ -757,7 +756,7 @@ const { presentSiteView } = props;
 
 /// SEARCH PAGE PARAMS QUERY
 useEffect(()=>{
-  dispatch(fetchSearchStudies(hash));
+  dispatch(fetchSearchParams(hash));
 },[dispatch]);
 
 // const result = useQuery(SearchPageParamsQuery, {
@@ -770,11 +769,9 @@ useEffect(()=>{
 
 const data = useSelector((state : RootState ) => state.search.searchResults);
 const isLoading = useSelector((state : RootState ) => state.search.isSearching);
-const isDeleting = useSelector((state : RootState ) => state.site.isDeletingSite);
 
 // if (data == undefined && result.previousData !== undefined) { data = result.previousData }
 // if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
-console.log("DATA",data)
 if(data == undefined || isLoading) return <BeatLoader/>
 // searchParamsQueryHelper(data);
 const dataParams = searchParamsFromQuery(
