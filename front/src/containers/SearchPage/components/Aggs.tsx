@@ -133,7 +133,13 @@ interface AggsProps {
 const AggSideBarTitle = styled.h4`
   color: ${props => props.theme.aggSideBar.sideBarTitleFont};
   position: relative;
-  left: 20px;
+  left: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 1.2em 0;
 `;
 const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 
@@ -327,16 +333,22 @@ const Aggs = (props: AggsProps) => {
               )
             }
           )}  
-
+        let showPresearchResults=props.presentSiteView.search.presearch.showResults
         return (
           <PresearchContainer>
+            {showPresearchResults ? (
+            <div className="presearch-total-results">
+                <b>Total Results:</b> {recordsTotal} studies
+            </div>):null}
             <div className="horizontal-pre">
-              {aggPresearchHorizontal}
-              {crowdAggPresearchHorizontal}
+              <div className="horizontal-aggs">
+               {aggPresearchHorizontal}
+               {crowdAggPresearchHorizontal}
+              </div>
               {(aggPresearchHorizontal.length > 0 || crowdAggPresearchHorizontal.length > 0) ? 
               <div className="horizontal-pre-button">
                 <ThemedButton 
-                  style={{ width: 200, marginLeft: 13 }}
+                  style={{ width: 200 }}
                   onClick={() =>
                     //@ts-ignore
                     props.handlePresearchButtonClick (

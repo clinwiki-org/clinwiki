@@ -5,8 +5,6 @@ import {
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
-import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
-import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { SearchParams } from '../SearchPage/Types'
 
 interface BarChartComponentProps {
@@ -15,8 +13,7 @@ interface BarChartComponentProps {
   buckets: Array<AggBucket>;
   hasMore: boolean;
   handleLoadMore: any;
-  updater: AggFilterInputUpdater;
-  searchParams: SearchParams;
+  onClickHandler: (any)=>void;
 }
 
 interface BarChartComponentState {
@@ -73,8 +70,6 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
         currentBuckets: finalDataArray,
         otherBuckets: finalOtherBucketsArray,
       });
-    } else if (prevProps.searchParams !== this.props.searchParams) {
-      this.props.handleLoadMore();
     } else if (this.props.buckets.length == 0) {
       this.props.handleLoadMore();
     }
@@ -83,10 +78,10 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
     console.log(e)
     const { currentBuckets } = this.state;
     if (e.name !== "Other") {
-      this.props.updater.toggleFilter(e.name);
+      this.props.onClickHandler({key: e.name});
     } else {
       this.state.otherBuckets.map((otherBucket, index) => {
-        this.props.updater.toggleFilter(otherBucket.name);
+        this.props.onClickHandler({key: otherBucket.name});
       });
     }
   }
@@ -109,4 +104,4 @@ class BarChartComponent extends React.Component<BarChartComponentProps, BarChart
       </ComposedChart>)
   }
 }
-export default withAggContext(BarChartComponent);
+export default BarChartComponent;
