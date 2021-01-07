@@ -521,7 +521,8 @@ class SearchService
       fields = view.dig(:search, :autoSuggest, is_crowd_agg ? :crowdAggs : :aggs, :fields)
     end
 
-    field = fields.find { |f| f[:name] == agg_name }
+    field_name = is_crowd_agg ? agg_name.slice(3,(agg_name.length - 3)) : agg_name
+    field = fields.find { |f| f[:name] == field_name}
     field&.dig(:visibleOptions, :values) || []
   end
 
