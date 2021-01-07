@@ -3,13 +3,13 @@ import { SiteFragment } from 'services/site/model/SiteFragment';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { fetchSiteProvider } from 'services/site/actions';
-import { useEffect } from 'react';
 
 
 interface SiteProviderProps {
   id?: number;
   url?: string;
-  children: (site: SiteFragment, currentSiteView: any) => JSX.Element | null;
+  children: any; // (site: SiteFragment) => JSX.Element | null;
+  from?: string;
 }
 
 
@@ -17,7 +17,7 @@ interface UseSiteProps {
   id?: number | any;
   url?: string | any;
 }
-export function useSite(props?: UseSiteProps) {
+/* export function useSite(props?: UseSiteProps) {
 
   const dispatch = useDispatch();
   
@@ -44,7 +44,7 @@ export function useSite(props?: UseSiteProps) {
 
   if (!result) return { ...result, site: null, currentSiteView: null };
   if (!isFetchingSiteProvider && result.siteProvider ) {
-    const site = siteProvider;
+    const site = siteProvider.site;
     const currentSiteView =
     site?.siteViews.find(
       siteview => siteview?.url?.toLowerCase() === urlName
@@ -52,22 +52,63 @@ export function useSite(props?: UseSiteProps) {
       
       console.log("🚀 ~ file:   CURRENT SITE VIEW *****************", currentSiteView);
       
-    return { ...result, site, currentSiteView };
+    return { site, currentSiteView };
   }
-}
+} */
+
 
 function SiteProvider(props: SiteProviderProps) {
+  console.log(props?.from)
+  //ts-ignore
+ // const useSiteData = useSite(props);  //TODO CHECK this  
 
- useSite(props);  //TODO CHECK this  
-  //console.log("🚀 ~  SiteProvider ~ currentSiteView", currentSiteView);
+ const dispatch = useDispatch();
+  
+ console.log("USE SITE PROPS", props);
+ // console.trace();
+ const urlName = new URLSearchParams(window.location.search)
+ .getAll('sv')
+ .toString()
+ .toLowerCase();
+ 
+ console.log("🚀 ~ urlName", urlName);
+ 
+ dispatch(fetchSiteProvider(props?.id, props?.url));
+ 
+ const isFetchingSiteProvider = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
 
-  const data = useSelector((state : RootState ) => state.site.siteProvider)
-  const loading = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
+ const siteProvider = useSelector((state : RootState ) => state.site.siteProvider)
+ console.log("🚀 ~useSite ~ siteProvider", siteProvider);
+  //! THiS ^^^ IS COMING BACK UNDEFINED, seems it's not done fetching the data, and we can't useSelector() inside a conditional to make sure fetching is false.
 
-  //if (error) console.log(error);
-  if (loading || !data) return null;
-  return props.children(data.site!, "currentSiteView");
+ //const result = siteProvider
+ 
+ //if (!result) return { ...result, site: null, currentSiteView: null };
+ if (!isFetchingSiteProvider ) {
+   
+   const site = siteProvider.site;
+   const currentSiteView =
+   site?.siteViews.find(
+     siteview => siteview?.url?.toLowerCase() === urlName
+     ) || site?.siteView;
+     
+     console.log("🚀 ~ file:   CURRENT SITE VIEW *****************", currentSiteView);
+     
+     return props.children(site);
+  // return <>{ site, currentSiteView }</>;
+ }
 }
 
 export default SiteProvider;
+
+
+
+/*   console.log("🚀 ~ file: useSiteData props", props);
+  //console.log("🚀 ~  SiteProvider ~ currentSiteView", currentSiteView);
+  const data = useSelector((state : RootState ) => state.site.siteProvider)
+  const loading = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
+  //if (error) console.log(error);
+  if (loading || !data) return null;
+  return props.children(data.site!, "currentSiteView"); */
+
 

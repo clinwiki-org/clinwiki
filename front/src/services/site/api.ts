@@ -15,7 +15,7 @@ export const fetchSitesPage = () => {
     return callGraphql(ENDPOINT, query.SITES_PAGE_QUERY, {});
 }
 
-export const fetchSiteProvider = (id, url) => {
+export const fetchSiteProvider = (id?, url?) => {
     return callGraphql(ENDPOINT, query.SITE_PROVIDER_QUERY,
         { input: id, url});
 }

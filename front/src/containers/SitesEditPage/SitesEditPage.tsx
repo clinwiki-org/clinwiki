@@ -27,7 +27,7 @@ const SitesEditPage = ({match, history, location} : SitesEditPageProps) => {
   };
 
     return (
-      <SiteProvider id={parseInt(match.params.id, 10)}>
+      <SiteProvider id={parseInt(match.params.id, 10)} from="SitesEditPage">
         {(site) => (
           <UpdateSiteViewMutation>
             {updateSiteView => (

@@ -37,7 +37,7 @@ export const fetchSitesPageError = (message: string) : types.SiteActionTypes => 
 });
 
 
-export const fetchSiteProvider = (id: number, url: string) : types.SiteActionTypes => ({
+export const fetchSiteProvider = (id?: number, url?: string) : types.SiteActionTypes => ({
     type: types.FETCH_SITE_PROVIDER_SEND,
     id,
     url
