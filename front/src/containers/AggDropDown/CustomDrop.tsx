@@ -202,12 +202,12 @@ const SelectBoxBox = styled.div`
 
 }
 .select-box--crumb-container{
-  border: 2px solid #e8e8e8;
+  border: 2px solid ${props => props.theme.crumbs.crumbBackground};
   border-radius: 4px;
   padding: 0 5px 0 5px;
   margin: 1px;
-  background: #e8e8e8;
-  color: #595959 !important;
+  background: ${props => props.theme.crumbs.crumbBackground};
+  color: ${props => props.theme.crumbs.crumbFont} !important;
   line-height: 1.1em;
 }
 .select-item{
@@ -218,13 +218,30 @@ const SelectBoxBox = styled.div`
   cursor: pointer;
   border-bottom: 1px solid #e7e7e7;
   transition: .2s;
-}
 
+  .square-checkmark{
+    display: flex;
+    color: ${props => props.theme.crumbs.crumbBackground};
+  }
+  .square-checkmark-facet{
+    display: flex;
+    color: ${props => props.theme.aggSideBar.sideBarFont};
+  }
+
+}
 
 .select-item:hover {
   background-color: ${props => props.theme.button};
   color: white;
 
+  .square-checkmark{
+    display: flex;
+    color: ${props => props.theme.crumbs.crumbFont};
+  }
+  .square-checkmark-facet{
+    display: flex;
+    color: ${props => props.theme.aggSideBar.sideBarFontHover};
+  }
 }
 `
 const ThemedSelectBox = withTheme(SelectBoxBox)
@@ -428,7 +445,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   }
   renderPreValue = (item) => {
     if (this.props.field.display == "CHECKBOX" ||this.props.field.display == "STRING" ) {
-      return this.isSelected(item) ? <FontAwesome name='far fa-check-square check' style={{ display: 'flex' }} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>
+      return this.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`}/> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>
     }
     return null
   };
