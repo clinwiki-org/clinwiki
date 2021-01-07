@@ -395,7 +395,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
                 {item.key}          <FontAwesome
                   className={`remove crumb-icon`}
                   name={`remove`}
-                  onClick={() => this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })}
+                  onClick={() => this.selectItem(item)}
                 />
               </div>)
             })
