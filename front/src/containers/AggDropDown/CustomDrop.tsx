@@ -60,6 +60,7 @@ interface CustomDropDownProps {
   handleFilterChange: any;
   showLabel: boolean;
   isOpen: boolean;
+  fromAggField: boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -455,6 +456,30 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   handleLocation = (location) => {
     this.setState({ selectedItems: location })
   }
+  renderFilter = () => {
+    if (this.props.fromAggField || this.props.field.showFilterToolbar) {
+      return (
+        <Filter
+          buckets={this.props.buckets}
+          filter={this.props.filter}
+          desc={this.props.desc}
+          sortKind={this.props.sortKind}
+          selectAll={this.props.handleSelectAll}
+          checkSelect={this.props.checkSelect}
+          checkboxValue={this.props.checkboxValue}
+          removeSelectAll={this.props.removeSelectAll}
+          showLabel={false}
+          handleFilterChange={this.props.handleFilterChange}
+          toggleAlphaSort={this.props.toggleAlphaSort}
+          toggleNumericSort={this.props.toggleNumericSort}
+          setShowLabel={() => this.props.setShowLabel}
+        />
+      )
+
+    }
+    return
+  }
+
   renderPanel = () => {
     const { hasMore, buckets, handleLoadMore, field } = this.props
     const { showItems, loading } = this.state
@@ -637,21 +662,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             style={{ padding: '0 10px', display: this.state.showItems ? "block" : "none" }}
 
           >
-            {this.props.field.showFilterToolbar ? (<Filter
-              buckets={this.props.buckets}
-              filter={this.props.filter}
-              desc={this.props.desc}
-              sortKind={this.props.sortKind}
-              selectAll={this.props.handleSelectAll}
-              checkSelect={this.props.checkSelect}
-              checkboxValue={this.props.checkboxValue}
-              removeSelectAll={this.props.removeSelectAll}
-              showLabel={false}
-              handleFilterChange={this.props.handleFilterChange}
-              toggleAlphaSort={this.props.toggleAlphaSort}
-              toggleNumericSort={this.props.toggleNumericSort}
-              setShowLabel={() => this.props.setShowLabel}
-            />) : (null)}
+            {this.renderFilter()}
           </div>
           <div
             style={{ display: this.state.showItems ? "block" : "none" }}
