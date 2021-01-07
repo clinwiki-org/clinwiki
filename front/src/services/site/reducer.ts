@@ -76,7 +76,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isFetchingPresentSiteProvider: false,
-                siteProvider: action.payload
+                presentSiteProvider: action.payload
             };
         case types.FETCH_PRESENT_SITE_PROVIDER_ERROR:
             return {

@@ -64,7 +64,7 @@ export const SITE_PROVIDER_QUERY = `
 export const PRESENT_SITE_PROVIDER_QUERY = `
   query PresentSiteProviderQuery($id: Int, $url: String) {
     site(id: $id) {
-      ...SiteFragment
+      ...PresentSiteFragment
     }
   }
 

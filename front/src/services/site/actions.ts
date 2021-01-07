@@ -54,18 +54,19 @@ export const fetchSiteProviderError = (message: string) : types.SiteActionTypes 
     payload: { message }
 });
 
+// TODO import presentSiteProviderQuery
 export const fetchPresentSiteProvider = (id: number, url: string) : types.SiteActionTypes => ({
     type: types.FETCH_PRESENT_SITE_PROVIDER_SEND,
     id,
     url
 });
 
-export const fetchPresentSiteProviderSuccess = (payload: SiteProviderQuery) : types.SiteActionTypes => ({
-    type: types.FETCH_PRESRENT_SITE_PROVIDER_SUCCESS,
+export const fetchPresentSiteProviderSuccess = (payload: PresentSiteProviderQuery) : types.SiteActionTypes => ({
+    type: types.FETCH_PRESENT_SITE_PROVIDER_SUCCESS,
     payload
 });
 
-export const fetchPresetSiteProviderError = (message: string) : types.SiteActionTypes => ({
+export const fetchPresentSiteProviderError = (message: string) : types.SiteActionTypes => ({
     type: types.FETCH_PRESENT_SITE_PROVIDER_ERROR,
     payload: { message }
 });

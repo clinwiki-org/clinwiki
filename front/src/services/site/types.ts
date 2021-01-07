@@ -2,6 +2,7 @@ import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragm
 import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
+//import { PresentSiteProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
@@ -43,7 +44,7 @@ export interface SiteState {
     isFetchingSiteProvider: boolean,
     siteProvider: SiteProviderQuery | undefined,
     isFetchingPresentSiteProvider: boolean,
-    siteProvider: PresentSiteProviderQuery | undefined,
+    presentSiteProvider: PresentSiteProviderQuery | undefined,
 }
 
 export interface SiteDataError {
@@ -100,7 +101,7 @@ export interface FetchPresentSiteProviderSendAction {
     url: string
 };
 
-export interface FetchPresntSiteProviderSuccessAction {
+export interface FetchPresentSiteProviderSuccessAction {
     type: typeof FETCH_PRESENT_SITE_PROVIDER_SUCCESS,
     payload: PresentSiteProviderQuery
 };
@@ -162,4 +163,5 @@ export interface UpdateSiteErrorAction {
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
     DeleteSiteErrorAction  | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction  
-    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | FetchSiteProviderErrorAction | FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction;
+    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | 
+    FetchSiteProviderErrorAction | FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction;

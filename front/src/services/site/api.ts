@@ -20,6 +20,11 @@ export const fetchSiteProvider = (id, url) => {
         { input: id, url});
 }
 
+export const fetchPresentSiteProvider = (id, url) => {
+    return callGraphql(ENDPOINT, query.PRESENT_SITE_PROVIDER_QUERY,
+        { input: id, url});
+}
+
 export const deleteSite = ( id ) => {
     return callGraphql(ENDPOINT, mutate.DELETE_SITE_MUTATION, 
         { input: { id} });

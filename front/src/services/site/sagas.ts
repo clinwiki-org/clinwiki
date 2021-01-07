@@ -58,6 +58,25 @@ function* getSiteProvider(action) {
     }
 }
 
+function* getPresentSiteProvider(action) {
+            console.log("SAGA get Present Site Provider", action);
+
+    try {
+        let response = yield call(() => api.fetchPresentSiteProvider(action.id, action.url));
+        if(response) {
+            yield put(actions.fetchPresentSiteProviderSuccess(response.data));
+            return response;
+        }
+        else {
+            yield put(actions.fetchPresentSiteProviderError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchPresentSiteProviderError(err.message));
+    }
+}
+
 
 function* deleteSite(action) { 
     const currentSites = yield select(getCurrentSites)
