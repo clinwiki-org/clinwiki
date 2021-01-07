@@ -340,7 +340,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       let displayedCrumbs: any[] = this.state.selectedItems.slice(0, field.maxCrumbs)
       let otherValues = { key: `... ${this.state.selectedItems.length - displayedCrumbs.length} others` }
       displayedCrumbs.push(otherValues)
-      if (field.maxCrumbs == 0) return
+      if (field.maxCrumbs == 0 || field.maxCrumbs == null) return
       return displayedCrumbs.map((item: AggBucket, index) => {
         if (
           field?.display === FieldDisplay.DATE_RANGE ||
