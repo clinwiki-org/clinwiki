@@ -31,7 +31,6 @@ interface SiteFormProps {
   location: Location;
   onSaveSite: (CreateSiteInput) => void;
   onSaveSiteView?: UpdateSiteViewMutationFn;
-  //refresh: any;
   fetchSiteProvider?: any;
 }
 
@@ -117,6 +116,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           },
         })
         .then(() => {
+            console.log("REFRESHI")
             this.props.fetchSiteProvider(view.id, view.url)   //this.props.refresh(); //TODO Replace with dispatch fetchSiteProvider, ADD MapDispatchToProps.
         });
     }
@@ -189,6 +189,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   }
 
   render() {
+    console.log("RENDERING SITE FORM")
+  
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
     return (
@@ -214,7 +216,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               <SiteViewsRouter
                 {...props}
                 siteViews={this.props.site.siteViews}
-                refresh={this.props.refresh}
                 site={this.props.site}
               />
             )}
@@ -256,7 +257,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchSiteProvider: (id, url) => dispatch(fetchSiteProvider(id, url))
+  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url))
 })
 
 

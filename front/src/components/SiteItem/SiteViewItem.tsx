@@ -15,16 +15,18 @@ import CopySiteViewMutation, {
 } from 'mutations/CopySiteViewMutation';
 import 'override.css';
 import ThemedButton from 'components/StyledComponents/index';
+import { connect } from 'react-redux';
+import { fetchSiteProvider } from 'services/site/actions';
 
 interface SiteViewItemProps {
   match: any;
   history: History;
   location: Location;
-  refresh: () => void;
   siteView: SiteViewFragment;
   site: any;
   type: string;
   theme?: any;
+  fetchSiteProvider: any;
 }
 
 const StyledButton = styled(ThemedButton)`
@@ -59,7 +61,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         },
       },
     }).then(() => {
-      this.props.refresh();
+      this.props.fetchSiteProvider();
     });
   };
 
@@ -78,7 +80,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           },
         },
       }).then(() => {
-        this.props.refresh();
+        this.props.fetchSiteProvider();
       });
     }
   };
@@ -98,7 +100,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         },
       },
     }).then(() => {
-      this.props.refresh();
+      this.props.fetchSiteProvider();
     });
   };
 
@@ -159,7 +161,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       },
     }).then(() => {
       console.log('refreshing');
-      this.props.refresh();
+      this.props.fetchSiteProvider();
     });
   };
 
@@ -218,4 +220,9 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   }
 }
 
-export default withRouter(SiteViewItem);
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url))
+})
+
+export default connect(null, mapDispatchToProps) (withRouter(SiteViewItem));

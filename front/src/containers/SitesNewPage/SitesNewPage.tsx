@@ -33,7 +33,6 @@ const SitesNewPage = ({match, history, location} : SitesNewPageProps) => {
                 location={location}
                 match={match}
                 site={{ ...site, name: '' }}
-                refresh={null}
                 onSaveSite={input => handleSave(input)}
               />
             )

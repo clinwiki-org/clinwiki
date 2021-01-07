@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 interface SiteProviderProps {
   id?: number;
   url?: string;
-  children: (site: SiteFragment, refetch: any) => JSX.Element | null;
+  children: (site: SiteFragment, currentSiteView: any) => JSX.Element | null;
 }
 
 
@@ -20,17 +20,23 @@ interface UseSiteProps {
 export function useSite(props?: UseSiteProps) {
 
   const dispatch = useDispatch();
-  const siteProvider = useSelector((state : RootState ) => state.site.siteProvider)
-  const isFetchingSiteProvider = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
-
-  // console.log("USE SITE PROPS", props);
+  
+  console.log("USE SITE PROPS", props);
   // console.trace();
   const urlName = new URLSearchParams(window.location.search)
-    .getAll('sv')
-    .toString()
-    .toLowerCase();
+  .getAll('sv')
+  .toString()
+  .toLowerCase();
+  
+  console.log("🚀 ~ file: SiteProvider.tsx ~ line 27 ~ useSite ~ urlName", urlName);
+  
+  dispatch(fetchSiteProvider(props?.id, props?.url));
+  
+  const siteProvider = useSelector((state : RootState ) => state.site.siteProvider)
 
-    dispatch(fetchSiteProvider(props?.id, props?.url));
+  console.log("🚀 ~useSite ~ siteProvider", siteProvider);
+  const isFetchingSiteProvider = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
+
 
   const result = siteProvider
 
@@ -40,27 +46,28 @@ export function useSite(props?: UseSiteProps) {
   if (!isFetchingSiteProvider && result.siteProvider ) {
     const site = siteProvider;
     const currentSiteView =
-      site?.siteViews.find(
-        siteview => siteview?.url?.toLowerCase() === urlName
+    site?.siteViews.find(
+      siteview => siteview?.url?.toLowerCase() === urlName
       ) || site?.siteView;
+      
+      console.log("🚀 ~ file:   CURRENT SITE VIEW *****************", currentSiteView);
+      
     return { ...result, site, currentSiteView };
   }
 }
 
 function SiteProvider(props: SiteProviderProps) {
 
- // useEffect( () => {
-    useSite(props);  //TODO CHECK this
- // }, []);
+ useSite(props);  //TODO CHECK this  
+  //console.log("🚀 ~  SiteProvider ~ currentSiteView", currentSiteView);
 
-
-  const refetch = null //() => console.log("REFETCH"); //TODO CHECK this
   const data = useSelector((state : RootState ) => state.site.siteProvider)
   const loading = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
 
   //if (error) console.log(error);
   if (loading || !data) return null;
-  return props.children(data.site!, refetch);
+  return props.children(data.site!, "currentSiteView");
 }
 
 export default SiteProvider;
+

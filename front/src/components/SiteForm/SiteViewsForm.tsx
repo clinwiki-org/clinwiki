@@ -14,12 +14,15 @@ import {
 } from 'react-bootstrap';
 import ThemedButton from 'components/StyledComponents/index';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
+import { connect } from 'react-redux';
+import { fetchSiteProvider } from 'services/site/actions';
+
 
 interface SiteViewsFormProps {
   site: any;
   siteViews: SiteViewFragment[];
-  refresh: any;
   theme: any;
+  fetchSiteProvider: any;
 }
 
 interface SiteViewsFormState {
@@ -124,7 +127,7 @@ class SiteViewsForm extends React.Component<
               },
             },
             () => {
-              this.props.refresh();
+              this.props.fetchSiteProvider();
             }
           );
         });
@@ -150,7 +153,7 @@ class SiteViewsForm extends React.Component<
               },
             },
             () => {
-              this.props.refresh();
+              this.props.fetchSiteProvider();
             }
           );
         });
@@ -177,7 +180,7 @@ class SiteViewsForm extends React.Component<
               },
             },
             () => {
-              this.props.refresh();
+              this.props.fetchSiteProvider();
             }
           );
         });
@@ -203,7 +206,7 @@ class SiteViewsForm extends React.Component<
               },
             },
             () => {
-              this.props.refresh();
+              this.props.fetchSiteProvider();
             }
           );
         });
@@ -251,7 +254,7 @@ class SiteViewsForm extends React.Component<
     }
   };
   render() {
-    const { siteViews, refresh, site } = this.props;
+    const { siteViews, fetchSiteProvider, site } = this.props;
     const {
       searchViewForm,
       userViewForm,
@@ -295,7 +298,6 @@ class SiteViewsForm extends React.Component<
                         <SiteViewItem
                           key={view.id}
                           siteView={view}
-                          refresh={refresh}
                           site={site}
                           type={'search'}
                           theme={this.props.theme}
@@ -354,7 +356,6 @@ class SiteViewsForm extends React.Component<
                         <SiteViewItem
                           key={view.id}
                           siteView={view}
-                          refresh={refresh}
                           site={site}
                           type={'user'}
                           theme={this.props.theme}
@@ -410,7 +411,6 @@ class SiteViewsForm extends React.Component<
                         <SiteViewItem
                           key={view.id}
                           siteView={view}
-                          refresh={refresh}
                           site={site}
                           type={'admin'}
                           theme={this.props.theme}
@@ -465,7 +465,6 @@ class SiteViewsForm extends React.Component<
                         <SiteViewItem
                           key={view.id}
                           siteView={view}
-                          refresh={refresh}
                           site={site}
                           type={'intervention'}
                           theme={this.props.theme}
@@ -513,4 +512,11 @@ class SiteViewsForm extends React.Component<
   }
 }
 
-export default withTheme(SiteViewsForm);
+
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url))
+})
+
+
+export default connect(null, mapDispatchToProps) (withTheme(SiteViewsForm));
