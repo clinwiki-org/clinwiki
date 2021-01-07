@@ -1,4 +1,5 @@
 import { SITE_FRAGMENT } from './SiteFragments';
+import { PRESENT_SITE_FRAGMENT } from './SiteFragments';
 
 export const ADMIN_SITE_VIEW_FRAGMENT = `
     fragment AdminSiteViewFragment on SiteView {
@@ -58,4 +59,14 @@ export const SITE_PROVIDER_QUERY = `
   }
 
   ${SITE_FRAGMENT}
+`;
+
+export const PRESENT_SITE_PROVIDER_QUERY = `
+  query PresentSiteProviderQuery($id: Int, $url: String) {
+    site(id: $id) {
+      ...SiteFragment
+    }
+  }
+
+  ${PRESENT_SITE_FRAGMENT}
 `;

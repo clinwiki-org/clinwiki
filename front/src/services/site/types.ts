@@ -16,6 +16,10 @@ export const FETCH_SITE_PROVIDER_SEND = 'FETCH_SITE_PROVIDER_SEND';
 export const FETCH_SITE_PROVIDER_SUCCESS = 'FETCH_SITE_PROVIDER_SUCCESS';
 export const FETCH_SITE_PROVIDER_ERROR = 'FETCH_SITE_PROVIDER_ERROR';
 
+export const FETCH_PRESENT_SITE_PROVIDER_SEND = 'FETCH_PRESENT_SITE_PROVIDER_SEND';
+export const FETCH_PRESENT_SITE_PROVIDER_SUCCESS = 'FETCH_PRESENT_SITE_PROVIDER_SUCCESS';
+export const FETCH_PRESENT_SITE_PROVIDER_ERROR = 'FETCH_PRESENT_SITE_PROVIDER_ERROR';
+
 export const DELETE_SITE_SEND = 'DELETE_SITE_SEND';
 export const DELETE_SITE_SUCCESS = 'DELETE_SITE_SUCCESS';
 export const DELETE_SITE_ERROR = 'DELETE_SITE_ERROR';
@@ -38,6 +42,8 @@ export interface SiteState {
     isUpdatingSite: boolean,
     isFetchingSiteProvider: boolean,
     siteProvider: SiteProviderQuery | undefined,
+    isFetchingPresentSiteProvider: boolean,
+    siteProvider: PresentSiteProviderQuery | undefined,
 }
 
 export interface SiteDataError {
@@ -85,6 +91,22 @@ export interface FetchSiteProviderSuccessAction {
 
 export interface FetchSiteProviderErrorAction {
     type: typeof FETCH_SITE_PROVIDER_ERROR,
+    payload: SiteDataError
+};
+
+export interface FetchPresentSiteProviderSendAction {
+    type: typeof FETCH_PRESENT_SITE_PROVIDER_SEND,
+    id: number,
+    url: string
+};
+
+export interface FetchPresntSiteProviderSuccessAction {
+    type: typeof FETCH_PRESENT_SITE_PROVIDER_SUCCESS,
+    payload: PresentSiteProviderQuery
+};
+
+export interface FetchPresentSiteProviderErrorAction {
+    type: typeof FETCH_PRESENT_SITE_PROVIDER_ERROR,
     payload: SiteDataError
 };
 
@@ -140,4 +162,4 @@ export interface UpdateSiteErrorAction {
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
     DeleteSiteErrorAction  | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction  
-    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | FetchSiteProviderErrorAction ;
+    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | FetchSiteProviderErrorAction | FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction;

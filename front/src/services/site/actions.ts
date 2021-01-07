@@ -5,6 +5,7 @@ import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
 import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
+import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/SiteFragment';
 
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({
@@ -50,6 +51,22 @@ export const fetchSiteProviderSuccess = (payload: SiteProviderQuery) : types.Sit
 
 export const fetchSiteProviderError = (message: string) : types.SiteActionTypes => ({
     type: types.FETCH_SITE_PROVIDER_ERROR,
+    payload: { message }
+});
+
+export const fetchPresentSiteProvider = (id: number, url: string) : types.SiteActionTypes => ({
+    type: types.FETCH_PRESENT_SITE_PROVIDER_SEND,
+    id,
+    url
+});
+
+export const fetchPresentSiteProviderSuccess = (payload: SiteProviderQuery) : types.SiteActionTypes => ({
+    type: types.FETCH_PRESRENT_SITE_PROVIDER_SUCCESS,
+    payload
+});
+
+export const fetchPresetSiteProviderError = (message: string) : types.SiteActionTypes => ({
+    type: types.FETCH_PRESENT_SITE_PROVIDER_ERROR,
     payload: { message }
 });
 

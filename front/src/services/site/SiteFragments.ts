@@ -309,3 +309,41 @@ export const QUERY = `
 
   ${SITE_FRAGMENT}
 `;
+
+export const PRESENT_SITE_FRAGMENT =`
+    fragment PresentSiteFragment on Site {
+        id
+        editors {
+            email
+        }
+        name
+        skipLanding
+        subdomain
+        themes
+        reactionsConfig
+        userRank
+        owners {
+            email
+        }
+        siteView(url: $url) {
+            ...SiteViewFragment
+        }
+        pageView{
+           ...PageViewFragment
+        }
+    }
+
+    ${SITE_VIEW_FRAGMENT}
+    ${PAGE_VIEW_FRAGMENT}
+`;
+
+export const PRESENT_SITE_QUERY = `
+    query PresentSiteProviderQuery($id: Int, $url: String) {
+        site(id: $id) {
+            ...PresentSiteFragment
+        }
+    }
+
+    ${PRESENT_SITE_FRAGMENT}
+`;
+
