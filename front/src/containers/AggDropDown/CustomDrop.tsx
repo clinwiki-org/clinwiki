@@ -457,7 +457,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     this.setState({ selectedItems: location })
   }
   renderFilter = () => {
-    if (this.props.fromAggField || this.props.field.showFilterToolbar) {
+    if (this.props.fromAggField || this.props.field.showFilterToolbar == true || this.props.field.showFilterToolbar == null) {
       return (
         <Filter
           buckets={this.props.buckets}
