@@ -24,3 +24,17 @@ export const CREATE_SITE_MUTATION = `
 
   ${SITE_FRAGMENT}
 `;
+
+
+export const UPDATE_SITE_MUTATION = `
+  mutation UpdateSiteMutation($input: UpdateSiteInput!, $url: String) {
+    updateSite(input: $input) {
+      site {
+        ...SiteFragment
+      }
+      errors
+    }
+  }
+
+  ${SITE_FRAGMENT}
+`;
