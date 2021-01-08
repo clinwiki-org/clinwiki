@@ -102,3 +102,19 @@ export const updateSiteError = (message: string) : types.SiteActionTypes => ({
     type: types.UPDATE_SITE_ERROR,
     payload: { message }
 });
+
+export const deleteSiteView = (id: number) : types.SiteViewActionTypes => ({
+    type: types.DELETE_SITE_VIEW_SEND,
+    id
+});
+
+export const deleteSiteViewSuccess = (payload: any) : types.SiteViewActionTypes => ({
+    type: types.DELETE_SITE_VIEW_SUCCESS,
+    payload
+});
+
+export const deleteSiteViewError = (message: string) : types.SiteViewActionTypes => ({
+    type: types.DELETE_SITE_VIEW_ERROR,
+    payload: { message }
+});
+
