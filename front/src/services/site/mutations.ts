@@ -1,6 +1,6 @@
 
 import { SITE_FRAGMENT } from 'services/site/SiteFragments'; //TODO Move/delete site fragment from SiteProvider.tsx when we do redux there.
-
+//import { SITE_VIEW_FRAGMENT } from 'services/site/SiteFragments';
 
 export const DELETE_SITE_MUTATION = `
 mutation DeleteSiteMutation($input: DeleteSiteInput!) {
@@ -37,4 +37,17 @@ export const UPDATE_SITE_MUTATION = `
   }
 
   ${SITE_FRAGMENT}
+`;
+
+export const UPDATE_SITE_VIEW_MUTATION = `
+  mutation UpdateSiteViewMutation($input: UpdateSiteInput!, $url: String) {
+    updateSite(input: $input) {
+      site {
+        ...SiteViewFragment
+      }
+      errors
+    }
+  }
+
+  ${SITE_VIEW_FRAGMENT}
 `;

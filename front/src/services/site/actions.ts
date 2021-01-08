@@ -102,3 +102,19 @@ export const updateSiteError = (message: string) : types.SiteActionTypes => ({
     type: types.UPDATE_SITE_ERROR,
     payload: { message }
 });
+
+export const updateSiteView = (input: UpdateSiteInput, url?: string) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_SEND,
+    input,
+    url
+});
+
+export const updateSiteSuccessView = (payload: any) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_SUCCESS,
+    payload
+});
+
+export const updateSiteErrorView = (message: string) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_ERROR,
+    payload: { message }
+});
