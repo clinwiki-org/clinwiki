@@ -109,12 +109,12 @@ export const updateSiteView = (input: UpdateSiteInput, url?: string) : types.Sit
     url
 });
 
-export const updateSiteSuccessView = (payload: any) : types.SiteActionTypes => ({
+export const updateSiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
     type: types.UPDATE_SITE_VIEW_SUCCESS,
     payload
 });
 
-export const updateSiteErrorView = (message: string) : types.SiteActionTypes => ({
+export const updateSiteViewError = (message: string) : types.SiteActionTypes => ({
     type: types.UPDATE_SITE_VIEW_ERROR,
     payload: { message }
 });
