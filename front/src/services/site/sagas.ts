@@ -129,4 +129,24 @@ export default function* userSagas() {
     yield takeLatest(types.DELETE_SITE_SEND, deleteSite);
     yield takeLatest(types.CREATE_SITE_SEND, createSite);
     yield takeLatest(types.UPDATE_SITE_SEND, updateSite);
+    yield takeLatest(types.CREATE_SITE_VIEW_SEND, createSiteView);
 }
+
+function* createSiteView(action) {
+    try {
+        //console.log("SAGA CREATING SITE VIEW", action);
+        let createResponse = yield call(() => api.createSiteView(action.input));
+        if (createResponse.data.createSiteView.errors === null){
+            let response = yield getSitesPage(action);
+            yield put(actions.createSiteViewSuccess(response.data));
+        }
+        else {
+            yield put(actions.createSiteViewError(createResponse.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.createSiteViewError(err.message));
+    }
+}
+
