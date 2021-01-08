@@ -123,7 +123,7 @@ function* updateSite(action) {
 
 function* updateSiteView(action) { 
     try {
-        //console.log("SAGA Updating SITE", action);
+        //console.log("SAGA Updating SITE VIEW", action);
         let updateResponse = yield call(() => api.updateSiteView(action.input)); 
         if (updateResponse.data.updateSiteView.errors === null){ 
             let response = yield getSitesPage(action); // here?
