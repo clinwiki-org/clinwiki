@@ -2,7 +2,7 @@ import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragm
 import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
-
+import { CreateSiteViewInput, UpdateSiteViewInput } from 'services/site/model/InputTypes';
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
 export const FETCH_ADMIN_SITE_VIEW_SUCCESS = 'FETCH_ADMIN_SITE_VIEW_SUCCESS';
@@ -28,6 +28,10 @@ export const UPDATE_SITE_SEND = 'UPDATE_SITE_SEND';
 export const UPDATE_SITE_SUCCESS = 'UPDATE_SITE_SUCCESS';
 export const UPDATE_SITE_ERROR = 'UPDATE_SITE_ERROR';
 
+export const UPDATE_SITE_VIEW_SEND = 'UPDATE_SITE_SEND';
+export const UPDATE_SITE_VIEW_SUCCESS = 'UPDATE_SITE_SUCCESS';
+export const UPDATE_SITE_VIEWERROR = 'UPDATE_SITE_ERROR';
+
 export interface SiteState {
     isFetchingAdminSiteView: boolean,
     adminSiteView: AdminViewsProviderQuery | undefined,
@@ -37,6 +41,7 @@ export interface SiteState {
     isCreatingSite: boolean,
     isUpdatingSite: boolean,
     isFetchingSiteProvider: boolean,
+    isUpdatingSiteView: boolean,
     siteProvider: SiteProviderQuery | undefined,
 }
 
@@ -136,8 +141,24 @@ export interface UpdateSiteErrorAction {
     payload: SiteDataError
 };
 
+export interface UpdateSiteViewSendAction {
+    type: typeof UPDATE_SITE_SEND,
+    input: UpdateSiteInput,
+    url?: string
+}
+
+export interface UpdateSiteViewSuccessAction {
+    type: typeof UPDATE_SITE_SUCCESS,
+    payload: SitesPageQuery
+};
+
+export interface UpdateSiteViewErrorAction {
+    type: typeof UPDATE_SITE_ERROR,
+    payload: SiteDataError
+};
+
 
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
     DeleteSiteErrorAction  | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction  
-    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | FetchSiteProviderErrorAction ;
+    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | FetchSiteProviderErrorAction | UpdateSiteViewSendAction | UpdateSiteViewSuccessAction | UpdateSiteViewErrorAction;
