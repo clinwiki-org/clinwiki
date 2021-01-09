@@ -49,6 +49,9 @@ import {
 import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 import BucketsDropDown from './BucketsDropDown';
 import LocationAgg from './LocationAgg';
+import CustomDropDown from './CustomDrop';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 
 const PAGE_SIZE = 25;
 
@@ -117,7 +120,7 @@ interface AggDropDownState {
 interface AggDropDownProps {
   agg: string;
   isOpen: boolean;
-  buckets?: AggBucket[];
+  buckets: AggBucket[];
   searchParams: SearchParams;
   aggKind: AggKind;
   selectedKeys: Set<string>;
@@ -138,7 +141,8 @@ interface AggDropDownProps {
   client: ApolloClient<any>;
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
-  fromAggField?: boolean;
+  fromAggField: boolean;
+  updater: AggFilterInputUpdater | null;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -368,188 +372,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const hasMore = length(buckets) !== length(newBuckets);
     this.setState({ buckets: newBuckets, hasMore });
   };
-
-  renderPanel = (isPresearch: boolean) => {
-    const {
-      visibleOptions = [],
-      removeSelectAll,
-      agg,
-      presentSiteView,
-      presearch,
-      removeFilters
-    } = this.props;
-    const {
-      buckets = [],
-      filter,
-      desc,
-      sortKind,
-      isOpen,
-      hasMore,
-      checkboxValue,
-      showLabel,
-      loading,
-    } = this.state;
-    if (!isOpen) {
-      return null;
-    }
-    const field = findFields(agg, presentSiteView, presearch);
-    const showAllowMissing = field?.showAllowMissing
-    const showFilterToolbar = field?.showFilterToolbar
-
-    if (
-      field?.display === FieldDisplay.DATE_RANGE ||
-      field?.display === FieldDisplay.NUMBER_RANGE ||
-      field?.display === FieldDisplay.LESS_THAN_RANGE ||
-      field?.display === FieldDisplay.GREATER_THAN_RANGE
-    ) {
-      return (
-        <Panel.Collapse id="range-selector">
-          <Panel.Body>
-            <Container>
-              <RangeSelector
-                isOpen={isOpen}
-                hasMore={hasMore}
-                loading={loading}
-                buckets={buckets}
-                handleLoadMore={this.handleLoadMore}
-                aggType={field?.display}
-                field={field}
-              />
-            </Container> 
-            {showAllowMissing && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
-          </Panel.Body>
-        </Panel.Collapse>
-      );
-    }
-    else if (
-      (field?.display === FieldDisplay.DROP_DOWN ||
-      field?.display === FieldDisplay.LESS_THAN_DROP_DOWN ||
-      field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN)
-      && !this.props.fromAggField
-    ){
-      return (
-      <Panel.Collapse className="bm-panel-collapse">
-        <Panel.Body>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
-            buckets={buckets}
-            filter={filter}
-            desc={desc}
-            sortKind={sortKind}
-            selectAll={this.selectAll}
-            checkSelect={this.checkSelect}
-            checkboxValue={checkboxValue}
-            removeSelectAll={removeSelectAll}
-            showLabel={showLabel}
-            handleFilterChange={this.handleFilterChange}
-            toggleAlphaSort={this.toggleAlphaSort}
-            toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })}
-          />
-          )}
-        </Panel.Body>
-        <Panel.Body>
-          <BucketsDropDown
-            agg={agg}
-            removeFilters={removeFilters}
-            isPresearch={isPresearch}
-            visibleOptions={visibleOptions}
-            buckets={buckets}
-            isSelected={this.isSelected}
-            hasMore={hasMore}
-            handleLoadMore={this.handleLoadMore}
-            field={field}
-          />
-          {showAllowMissing &&(
-                      <AllowMissingCheckbox buckets={buckets} />
-          )}
-        </Panel.Body>
-      </Panel.Collapse>
-    );
-    } else if (
-      (field?.display === FieldDisplay.LOCATION )
-      && !this.props.fromAggField
-    ){
-      return (
-      <Panel.Collapse className="bm-panel-collapse">
-        <Panel.Body>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
-            buckets={buckets}
-            filter={filter}
-            desc={desc}
-            sortKind={sortKind}
-            selectAll={this.selectAll}
-            checkSelect={this.checkSelect}
-            checkboxValue={checkboxValue}
-            removeSelectAll={removeSelectAll}
-            showLabel={showLabel}
-            handleFilterChange={this.handleFilterChange}
-            toggleAlphaSort={this.toggleAlphaSort}
-            toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })}
-          />
-          )}
-        </Panel.Body>
-        <Panel.Body>
-        <LocationAgg
-          agg={agg}
-          removeFilters={removeFilters}
-          isPresearch={isPresearch}
-          buckets={buckets}
-          isSelected={this.isSelected}
-          hasMore={hasMore}
-          field={field}
-        />
-
-          {showAllowMissing &&(
-                      <AllowMissingCheckbox buckets={buckets} />
-          )}
-        </Panel.Body>
-      </Panel.Collapse>
-    );
-    }
-
-    return (
-      <Panel.Collapse className="bm-panel-collapse">
-        <Panel.Body>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
-            buckets={buckets}
-            filter={filter}
-            desc={desc}
-            sortKind={sortKind}
-            selectAll={this.selectAll}
-            checkSelect={this.checkSelect}
-            checkboxValue={checkboxValue}
-            removeSelectAll={removeSelectAll}
-            showLabel={showLabel}
-            handleFilterChange={this.handleFilterChange}
-            toggleAlphaSort={this.toggleAlphaSort}
-            toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })}
-          />
-          )}
-        </Panel.Body>
-        <Panel.Body>
-          <BucketsPanel
-            isPresearch={isPresearch}
-            visibleOptions={visibleOptions}
-            buckets={buckets}
-            isSelected={this.isSelected}
-            hasMore={hasMore}
-            handleLoadMore={this.handleLoadMore}
-            field={field}
-          />
-          { showAllowMissing && (
-          <AllowMissingCheckbox buckets={buckets} />)
-  }
-        </Panel.Body>
-      </Panel.Collapse>
-    );
-  };
-
   toggleAlphaSort = () => {
     this.setState({
       desc: !this.state.desc,
@@ -583,246 +405,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
   };
 
-  renderPresearchFilter = () => {
-    const {
-      agg,
-      removeSelectAll,
-      visibleOptions,
-      presentSiteView,
-      presearch,
-      removeFilters,
-
-    } = this.props;
-    const {
-      buckets = [],
-      filter,
-      desc,
-      sortKind,
-      hasMore,
-      checkboxValue,
-      showLabel,
-      isOpen,
-      loading,
-    } = this.state;
-    const field = findFields(agg, presentSiteView, presearch);
-    const showAllowMissing = field?.showAllowMissing
-    const showFilterToolbar= field?.showFilterToolbar
-    if (
-      field?.display === FieldDisplay.DATE_RANGE ||
-      field?.display === FieldDisplay.NUMBER_RANGE ||
-      field?.display === FieldDisplay.LESS_THAN_RANGE ||
-      field?.display === FieldDisplay.GREATER_THAN_RANGE
-    ) {
-      return (
-        <PresearchPanel id="range-selector">
-          <Container>
-            <RangeSelector
-              isOpen={isOpen}
-              hasMore={hasMore}
-              loading={loading}
-              buckets={buckets}
-              handleLoadMore={this.handleLoadMore}
-              aggType={field?.display}
-              field={field}
-            />
-          </Container>
-          {showAllowMissing && (
-            <Container>
-              <AllowMissingCheckbox buckets={buckets} />
-            </Container>
-          )}
-        </PresearchPanel>
-      );
-    } else if (field?.display === FieldDisplay.PIE_CHART) {
-      return (
-        <PresearchPanel>
-          <Container>
-            <TwoLevelPieChart
-              isPresearch={true}
-              visibleOptions={visibleOptions}
-              buckets={buckets}
-              isSelected={this.isSelected}
-              hasMore={hasMore}
-              handleLoadMore={this.handleLoadMore}
-              field={field}
-              searchParams={this.props.searchParams}
-            />
-          </Container>
-          {showAllowMissing && (
-            <Container>
-              <AllowMissingCheckbox buckets={buckets} />
-            </Container>
-          )}
-        </PresearchPanel>
-      );
-    } else if (field?.display === FieldDisplay.BAR_CHART) {
-      return (
-        <ChartWrapper>
-          {(showFilterToolbar == true || showFilterToolbar == null)  && (<Filter
-            buckets={buckets}
-            filter={filter}
-            desc={desc}
-            sortKind={sortKind}
-            selectAll={this.selectAll}
-            checkSelect={this.checkSelect}
-            checkboxValue={checkboxValue}
-            removeSelectAll={removeSelectAll}
-            showLabel={showLabel}
-            handleFilterChange={this.handleFilterChange}
-            toggleAlphaSort={this.toggleAlphaSort}
-            toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })}
-          />)}
-          <ChartContainer>
-            <BarChartComponent
-              isPresearch={true}
-              // visibleOptions={visibleOptions}
-              buckets={buckets}
-              // isSelected={this.isSelected}
-              hasMore={hasMore}
-              handleLoadMore={this.handleLoadMore}
-              field={field}
-              searchParams={this.props.searchParams}
-            />
-            {showAllowMissing && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
-          </ChartContainer>
-        </ChartWrapper>
-      );
-    }
-    else if (
-      field?.display === FieldDisplay.DROP_DOWN ||
-      field?.display === FieldDisplay.LESS_THAN_DROP_DOWN ||
-      field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN
-    ){
-      return (
-      <>
-        <PresearchPanel>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
-            buckets={buckets}
-            filter={filter}
-            desc={desc}
-            sortKind={sortKind}
-            selectAll={this.selectAll}
-            checkSelect={this.checkSelect}
-            checkboxValue={checkboxValue}
-            removeSelectAll={removeSelectAll}
-            showLabel={showLabel}
-            handleFilterChange={this.handleFilterChange}
-            toggleAlphaSort={this.toggleAlphaSort}
-            toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })}
-          />
-          )}
-        </PresearchPanel>
-        <PresearchPanel>
-          <BucketsDropDown
-            agg={agg}
-            removeFilters={removeFilters}
-            isPresearch={true}
-            visibleOptions={visibleOptions}
-            buckets={buckets}
-            isSelected={this.isSelected}
-            hasMore={hasMore}
-            handleLoadMore={this.handleLoadMore} 
-            field={field}
-          />
-                      {showAllowMissing && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
-        </PresearchPanel>
-      </>
-    );
-    } else if (
-      field?.display === FieldDisplay.LOCATION
-    ){ 
-      return (
-      <>
-        <PresearchPanel>
-          {(showFilterToolbar == true  || showFilterToolbar == null) && (<Filter
-            buckets={buckets}
-            filter={filter}
-            desc={desc}
-            sortKind={sortKind}
-            selectAll={this.selectAll}
-            checkSelect={this.checkSelect}
-            checkboxValue={checkboxValue}
-            removeSelectAll={removeSelectAll}
-            showLabel={showLabel}
-            handleFilterChange={this.handleFilterChange}
-            toggleAlphaSort={this.toggleAlphaSort}
-            toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })}
-          />
-          )}
-        </PresearchPanel> 
-        <PresearchPanel>
-        <LocationAgg
-          agg={agg}
-          removeFilters={removeFilters}
-          isPresearch={true}
-          buckets={buckets}
-          isSelected={this.isSelected}
-          hasMore={hasMore}
-          field={field}
-        />
-                      {showAllowMissing && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
-        </PresearchPanel>
-      </>
-    );
-    }
-
-    
-
-    return (
-      <>
-        <PresearchFilter>
-          {(showFilterToolbar == true || showFilterToolbar == null) && (<Filter
-            buckets={buckets}
-            filter={filter}
-            desc={desc}
-            sortKind={sortKind}
-            selectAll={this.selectAll}
-            checkSelect={this.checkSelect}
-            checkboxValue={checkboxValue}
-            removeSelectAll={removeSelectAll}
-            showLabel={showLabel}
-            handleFilterChange={this.handleFilterChange}
-            toggleAlphaSort={this.toggleAlphaSort}
-            toggleNumericSort={this.toggleNumericSort}
-            setShowLabel={showLabel => this.setState({ showLabel })}
-          />
-          )}
-        </PresearchFilter>
-        <PresearchPanel>
-          <BucketsPanel
-            isPresearch={true}
-            visibleOptions={visibleOptions}
-            buckets={buckets}
-            isSelected={this.isSelected}
-            hasMore={hasMore}
-            handleLoadMore={this.handleLoadMore}
-            field={field}
-          />
-                      {showAllowMissing && (
-              <Container>
-                <AllowMissingCheckbox buckets={buckets} />
-              </Container>
-            )}
-        </PresearchPanel>
-      </>
-    );
-  };
-
   componentDidMount() {
     const { agg, presentSiteView, presearch } = this.props;
     const field = findFields(agg, presentSiteView, presearch);
@@ -838,10 +420,34 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       });
     }
   }
+  handleCheckboxToggle=(bucketKey, activeOptions)=>{
+    const { agg, presentSiteView, presearch } = this.props;
+    const field = findFields(agg, presentSiteView, presearch);
+    //@ts-ignore
+    //need to handle the single select functionality
+    if(field.display == "DROP_DOWN" || field.display == "DROP_DOWN"){
+      activeOptions.forEach(o => {
+        this.props.updater &&     this.props.updater.removeFilter(o.key);
+      })
+    }
+    //Need to handle mutliselect functionality 
+    this.props.updater &&  this.props.updater.toggleFilter(bucketKey);
 
+
+  }
   render() {
-    const { agg, presearch, presentSiteView } = this.props;
-    const { isOpen } = this.state;
+    const { agg, presearch, presentSiteView, removeSelectAll} = this.props;
+    const {
+      buckets = [],
+      filter,
+      desc,
+      sortKind,
+      isOpen,
+      hasMore,
+      checkboxValue,
+      showLabel,
+      loading,
+    } = this.state;
     let currentAgg = findFields(agg, presentSiteView, presearch);
     let configuredLabel = currentAgg?.displayName || '';
     const title = aggToField(agg, configuredLabel);
@@ -849,45 +455,64 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
-        <ThemedPresearchCard>
-          <ThemedPresearchHeader>
-            <PresearchTitle>
-              {this.props.aggKind === 'crowdAggs'
-                ? capitalize(configuredLabel) || title
-                : capitalize(title)}
-            </PresearchTitle>
-          </ThemedPresearchHeader>
-          <PresearchContent>{this.renderPresearchFilter()}</PresearchContent>
-        </ThemedPresearchCard>
+        <CustomDropDown
+        buckets={buckets}
+        isPresearch={true}
+        selectedKeys={this.props.selectedKeys}
+        field={currentAgg}
+        onContainerToggle={this.handleToggle}
+        handleLoadMore={this.handleLoadMore}
+        hasMore={this.state.hasMore}
+        onCheckBoxToggle={this.handleCheckboxToggle}
+        handleSelectAll={this.selectAll}
+        filter={filter}
+        desc={desc}
+        sortKind={sortKind}
+        selectAll={this.selectAll}
+        checkSelect={this.checkSelect}
+        checkboxValue={checkboxValue}
+        removeSelectAll={removeSelectAll}
+        showLabel={showLabel}
+        handleFilterChange={this.handleFilterChange}
+        toggleAlphaSort={this.toggleAlphaSort}
+        toggleNumericSort={this.toggleNumericSort}
+        setShowLabel={showLabel => this.setState({ showLabel })}
+        isOpen={this.props.isOpen}
+        fromAggField={this.props.fromAggField}
+
+        />
       );
     } else {
       return (
-        <PanelWrapper>
-          <Panel
-            onToggle={this.handleToggle}
-            expanded={isOpen}
-            className="bm-panel-default">
-            <Panel.Heading className="bm-panel-heading">
-              <Panel.Title className="bm-panel-title" toggle>
-                <div className="flex">
-                  <span>
-                    {this.props.aggKind === 'crowdAggs'
-                      ? configuredLabel
-                      : title}
-                  </span>
-                  <span>
-                    <FontAwesome name={icon} />{' '}
-                  </span>
-                </div>
-              </Panel.Title>
-            </Panel.Heading>
-            {this.renderPanel(false)}
-          </Panel>
-        </PanelWrapper>
+        <CustomDropDown
+        buckets={this.state.buckets}
+        isPresearch={false}
+        selectedKeys={this.props.selectedKeys}
+        field={currentAgg}
+        onContainerToggle={this.handleToggle}
+        handleLoadMore={this.handleLoadMore}
+        hasMore={this.state.hasMore}
+        onCheckBoxToggle={this.handleCheckboxToggle}
+        handleSelectAll={this.selectAll}
+        filter={filter}
+        desc={desc}
+        sortKind={sortKind}
+        selectAll={this.selectAll}
+        checkSelect={this.checkSelect}
+        checkboxValue={checkboxValue}
+        removeSelectAll={removeSelectAll}
+        showLabel={showLabel}
+        handleFilterChange={this.handleFilterChange}
+        toggleAlphaSort={this.toggleAlphaSort}
+        toggleNumericSort={this.toggleNumericSort}
+        setShowLabel={showLabel => this.setState({ showLabel })}
+        isOpen={this.props.isOpen}
+        fromAggField={this.props.fromAggField}
+        />
       );
     }
   }
 }
 
 // @ts-ignore
-export default withApollo<any>(withPresentSite2(AggDropDown));
+export default withApollo<any>(withPresentSite2(withAggContext(AggDropDown)));

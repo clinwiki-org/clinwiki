@@ -121,6 +121,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         displayName
                         aggSublabel
                         defaultToOpen
+                        layout
+                        maxCrumbs
                         bucketKeyValuePairs {
                             key
                             label
@@ -156,6 +158,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                         displayName
                         aggSublabel
                         defaultToOpen
+                        layout
+                        maxCrumbs
                         bucketKeyValuePairs {
                             key
                             label
@@ -185,6 +189,7 @@ export const SITE_VIEW_FRAGMENT = gql`
                     target
                 }
                 instructions
+                showResults
             }
             sortables
             fields
@@ -209,6 +214,8 @@ export const SITE_VIEW_FRAGMENT = gql`
                     displayName
                     aggSublabel
                     defaultToOpen
+                    layout
+                    maxCrumbs
                     bucketKeyValuePairs {
                         key
                         label
@@ -244,10 +251,12 @@ export const SITE_VIEW_FRAGMENT = gql`
                     displayName
                     aggSublabel
                     defaultToOpen
+                    layout
+                    maxCrumbs
                     bucketKeyValuePairs {
                         key
                         label
-                      }
+                    }
                     preselected {
                         kind
                         values

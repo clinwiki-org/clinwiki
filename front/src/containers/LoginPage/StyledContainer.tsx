@@ -7,8 +7,7 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   border: 0px none;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1) none repeat scroll 0% 0%;
+  background: #255685;
   margin: 40px auto;
   padding: 20px;
   max-width: 500px;

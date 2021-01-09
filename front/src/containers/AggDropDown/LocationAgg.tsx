@@ -10,13 +10,13 @@ import AggFilterInputUpdater from '../SearchPage/components/AggFilterInputUpdate
 import { withAggContext } from '../SearchPage/components/AggFilterUpdateContext';
 
 interface LocationAggProps {
-  isPresearch: boolean;
   updater: AggFilterInputUpdater;
   field: SiteViewFragment_search_aggs_fields | any;
   buckets: Array<AggBucket>;
   isSelected: ()=> boolean;
   removeFilters:  AggregateAggCallback | undefined;
   agg: string;
+  handleLocation: ([])=>void
 }
 interface LocationAggState {
   zipcode?:  string | null,
@@ -45,7 +45,12 @@ class LocationAgg extends React.Component<LocationAggProps, LocationAggState> {
         this.state.radius|| this.props.updater.input?.radius || '50',
       ])
     )
-
+this.props.handleLocation([
+  { zipcode: this.state.zipcode,
+    lat: this.state.lat || this.props.updater.input?.lat,
+    long: this.state.long || this.props.updater.input?.long,
+    radius: this.state.radius|| this.props.updater.input?.radius || '50',}
+])
   }
   handleCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -62,10 +67,15 @@ class LocationAgg extends React.Component<LocationAggProps, LocationAggState> {
       ])
 
     )
+    this.props.handleLocation([
+      { zipcode: this.state.zipcode,
+        lat: this.state.lat || this.props.updater.input?.lat,
+        long: this.state.long || this.props.updater.input?.long,
+        radius: this.state.radius|| this.props.updater.input?.radius || '50',}
+      ])
   }
   render() {
     const {
-      isPresearch,
       field,
       isSelected,
       removeFilters,
@@ -74,7 +84,7 @@ class LocationAgg extends React.Component<LocationAggProps, LocationAggState> {
     const buckets: number[] = [5, 10, 25, 50, 100, 250, 500, 1000]
     return (
       <>
-        <FormGroup>
+        <FormGroup style={{marginTop:'1.5em'}}>
           <div
             style={{
               display: 'flex',
@@ -98,7 +108,7 @@ class LocationAgg extends React.Component<LocationAggProps, LocationAggState> {
             <FormControl
               type="text"
               placeholder="Enter Zip Code"
-              // value={this.state.zipcode}
+              value={this.state.zipcode}
               onChange={e =>
                 this.setState({
                   zipcode: e.target.value,
