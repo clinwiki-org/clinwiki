@@ -21,7 +21,6 @@ interface RangeSelectorProps {
   updater: AggFilterInputUpdater;
   aggType: FieldDisplay;
   field: any;
-  handleRange: ([]) => void;
 }
 
 interface RangeSelectorState {
@@ -51,16 +50,12 @@ class RangeSelector extends React.Component<
     // }
   };
 
-  onChange = () =>{
-      this.props.updater.changeRange([
+  onChange = () =>
+    this.props.updater.changeRange([
       this.state.start || this.props.updater.input?.gte,
       this.state.end || this.props.updater.input?.lte,
-    ])
-    this.props.handleRange([
-    { start: this.state.start || this.props.updater.input?.gte,
-      end: this.state.end || this.props.updater.input?.lte,}
-    ])
-  };
+    ]);
+
   render() {
     const { aggType, field } = this.props;
     const { startText, endText } = this.state;

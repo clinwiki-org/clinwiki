@@ -28,7 +28,6 @@ export interface SearchPageSearchQuery_search_studies {
   studyFirstSubmittedQcDate: string | null;
   studyFirstPostedDate: string | null;
   studyFirstPostedDateType: string | null;
-  studyViewCount: number;
   resultsFirstSubmittedQcDate: string | null;
   resultsFirstPostedDate: string | null;
   resultsFirstPostedDateType: string | null;
@@ -59,10 +58,15 @@ export interface SearchPageSearchQuery_search_studies {
   ipdUrl: string | null;
   planToShareIpd: string | null;
   planToShareIpdDescription: string | null;
+  studyViewCount: number;
 }
 
 export interface SearchPageSearchQuery_search {
   __typename: "SearchResultSet";
+  /**
+   * Total results
+   */
+  recordsTotal: number | null;
   /**
    * A set of matching studies
    */

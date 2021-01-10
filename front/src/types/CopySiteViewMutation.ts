@@ -149,12 +149,6 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_agg
   desc: boolean;
 }
 
-export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -167,6 +161,12 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_agg
   values: string[];
 }
 
+export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields {
   __typename: "SiteAggField";
   order: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_order | null;
@@ -174,18 +174,16 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_agg
   display: FieldDisplay;
   displayName: string;
   aggSublabel: string | null;
-  defaultToOpen: boolean | null;
-  layout: string | null;
-  maxCrumbs: number | null;
-  bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  showFilterToolbar: boolean | null;
+  bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_aggs_selected {
@@ -206,12 +204,6 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_cro
   desc: boolean;
 }
 
-export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -224,6 +216,12 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_cro
   values: string[];
 }
 
+export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields {
   __typename: "SiteAggField";
   order: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_order | null;
@@ -231,18 +229,16 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_cro
   display: FieldDisplay;
   displayName: string;
   aggSublabel: string | null;
-  defaultToOpen: boolean | null;
-  layout: string | null;
-  maxCrumbs: number | null;
-  bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  showFilterToolbar: boolean | null;
+  bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs_selected {
@@ -269,7 +265,6 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch {
   crowdAggs: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs;
   button: CopySiteViewMutation_copySiteView_siteView_search_presearch_button;
   instructions: string;
-  showResults: boolean | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_config_fields {
@@ -292,12 +287,6 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_o
   desc: boolean;
 }
 
-export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -310,6 +299,12 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_v
   values: string[];
 }
 
+export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields {
   __typename: "SiteAggField";
   order: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_order | null;
@@ -317,18 +312,16 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_fields {
   display: FieldDisplay;
   displayName: string;
   aggSublabel: string | null;
-  defaultToOpen: boolean | null;
-  layout: string | null;
-  maxCrumbs: number | null;
-  bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_visibleOptions;
   autoSuggest: boolean;
   rank: number | null;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  showFilterToolbar: boolean | null;
+  bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_aggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_aggs_selected {
@@ -349,12 +342,6 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fie
   desc: boolean;
 }
 
-export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs {
-  __typename: "BucketKeyValuePairs";
-  key: string | null;
-  label: string | null;
-}
-
 export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_preselected {
   __typename: "SiteSelect";
   kind: FilterKind;
@@ -367,6 +354,12 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fie
   values: string[];
 }
 
+export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs {
+  __typename: "BucketKeyValuePairs";
+  key: string | null;
+  label: string | null;
+}
+
 export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields {
   __typename: "SiteAggField";
   order: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_order | null;
@@ -374,18 +367,16 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fie
   display: FieldDisplay;
   displayName: string;
   aggSublabel: string | null;
-  defaultToOpen: boolean | null;
-  layout: string | null;
-  maxCrumbs: number | null;
-  bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   preselected: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_preselected;
   visibleOptions: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_visibleOptions;
   rank: number | null;
   autoSuggest: boolean;
   rangeStartLabel: string | null;
   rangeEndLabel: string | null;
-  showFilterToolbar: boolean | null;
+  bucketKeyValuePairs: CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_fields_bucketKeyValuePairs[] | null;
   showAllowMissing: boolean | null;
+  showFilterToolbar: boolean | null;
+  defaultToOpen: boolean | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_crowdAggs_selected {

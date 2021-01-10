@@ -34,7 +34,7 @@ export interface Theme {
     sideBarTitleFont: string;
   };
   crumbsBar: {
-    containerBackground: string;
+    containerBackground: '#f2f2f2';
     containerFont: '#333';
     filterBarBackground: 'rgba(85, 184, 141, 0.5)';
   };
@@ -44,14 +44,7 @@ export interface Theme {
   };
   presearch: {
     presearchHeaders: string;
-    presearchLabelColor: string;
-    presearchLabelTextColor: string;
-    presearchCardMargin: string;
-    presearchBorderColor: string;
   };
-  search: {
-    searchContainerBg: string;
-  }
   searchResults: {
     resultsHeaderBackground: string;
     resultsRowHighlight: string;
@@ -86,15 +79,10 @@ function themeFromSite(site): Theme {
     secondaryColor: '#1b2a38',
     lightTextColor: '#fff',
     secondaryTextColor: '#777',
-    backgroundColor: '#fff',
+    backgroundColor: '#4D5863;',
     primaryAltColor: '#4889BF',
     sideBarColor: '#4d5762',
     authHeaderColor: '#5786AD',
-    presearchLabelColor: "#6BA5D6",
-    presearchLabelTextColor: "#fff",
-    presearchCardMargin: '10px',
-    presearchBorderColor: "#e7e7e7",
-    searchContainerBg: "#ffffff"
   };
   // if JSON PARSE IS SUCCESSFUL we take the theme. if not we fall back to the above object.
   if (
@@ -117,14 +105,10 @@ function themeFromSite(site): Theme {
     secondaryColor: thisTheme.secondaryColor || '#1b2a38',
     lightTextColor: thisTheme.lightTextColor || '#fff',
     secondaryTextColor: thisTheme.secondaryTextColor || '#777',
-    backgroundColor: thisTheme.backgroundColor || '#fff',
+    backgroundColor: thisTheme.backgroundColor || '#4D5863',
     primaryAltColor: thisTheme.primaryAltColor || '#4889BF',
     sideBarColor: thisTheme.sideBarColor || '#4d5762',
     authHeaderColor: thisTheme.authHeaderColor || '#5786AD',
-    presearchLabelColor: thisTheme.presearchLabelColor || '#6BA5D6',
-    presearchLabelTextColor: thisTheme.presearchLabelTextColor || 'white',
-    presearchCardMargin: thisTheme.presearchCardMargin || '10px',
-    presearchBorderColor: thisTheme.presearchBorderColor || '#e7e7e7',
     grayHeaderFont: '#777777',
     buttonHover: '#e6e6e6',
     buttonBorderHover: '#adadad',
@@ -132,7 +116,6 @@ function themeFromSite(site): Theme {
     warningColor: '#ffcc00',
     warningAltColor: '#f6a202',
     warningTertiaryColor: '#ff6d36',
-    searchContainerBg: thisTheme.searchContainerBg || "#ffffff"
   };
 
   //this is the master map of our theme.
@@ -168,7 +151,7 @@ function themeFromSite(site): Theme {
       sideBarTitleFont: colors.lightTextColor,
     },
     crumbsBar: {
-      containerBackground: colors.searchContainerBg,
+      containerBackground: '#f2f2f2',
       containerFont: '#333',
       filterBarBackground: 'rgba(85, 184, 141, 0.5)',
     },
@@ -178,13 +161,6 @@ function themeFromSite(site): Theme {
     },
     presearch: {
       presearchHeaders: colors.primaryColor,
-      presearchLabelTextColor: colors.presearchLabelTextColor,
-      presearchLabelColor:  colors.presearchLabelColor,
-      presearchCardMargin: colors.presearchCardMargin,
-      presearchBorderColor: colors.presearchBorderColor,
-    },
-    search: {
-      searchContainerBg: colors.searchContainerBg
     },
     searchResults: {
       resultsHeaderBackground: colors.primaryColor,
