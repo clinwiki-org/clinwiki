@@ -234,6 +234,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
             name: "Search",
             target: "",
           },
+          showResults: false
         },
         autoSuggest: {
           aggs: {
@@ -333,6 +334,9 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
       show_allow_missing:true,
       show_filter_toolbar:true,
       default_to_open: true,
+      layout: "horizontal",
+      max_crumbs: 0,
+
       preselected: {
         kind: "WHITELIST",
         values: [],

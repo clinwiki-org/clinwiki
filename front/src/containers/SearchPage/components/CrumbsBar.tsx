@@ -34,7 +34,7 @@ import {  SearchParams  as SearchParamsType }  from '../../../containers/SearchP
 
 const CrumbsBarStyleWrappper = styled.div`
   border: solid white 1px;
-  background-color: #f2f2f2;
+  // background-color: ${props => props.theme.crumbsBar.containerBackground};
   color: black;
   margin-left: 45px;
   margin-right: 45px;
@@ -48,7 +48,7 @@ const CrumbsBarStyleWrappper = styled.div`
     color: #394149;
   }
   .crumbs-bar {
-    background: ${props => props.theme.crumbsBar.containerBackground};
+    // background: ${props => props.theme.crumbsBar.containerBackground};
     color: ${props => props.theme.crumbsBar.containerFont};
 
     i {
@@ -490,7 +490,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
     let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
     let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;
     return (
-      <ThemedSearchContainer>
         <ApolloConsumer>
           {apolloClient => (
             <CurrentUser>
@@ -585,7 +584,6 @@ class CrumbsBar extends React.Component<CrumbsBarProps, CrumbsBarState> {
             </CurrentUser>
           )}
         </ApolloConsumer>
-      </ThemedSearchContainer>
     );
   }
 }

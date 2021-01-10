@@ -7,7 +7,8 @@ import {
   SearchPageParamsQuery_searchParams,
 } from 'types/SearchPageParamsQuery';
 import { SearchParams, AggKind, SearchQuery } from './shared';
-import { ThemedButton, ThemedSearchContainer } from '../../components/StyledComponents';
+import { ThemedButton, ThemedSearchContainer, ThemedMainContainer } from '../../components/StyledComponents';
+import Collapser from '../../components/Collapser'
 import {
   map,
   dissoc,
@@ -44,46 +45,15 @@ import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
-import RichTextEditor from 'react-rte';
+import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
 import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
+import { assertNullableType } from 'graphql';
+import HtmlToReact from 'html-to-react';
 
 
-const MainContainer = styled(Col)`
-  background-color: #eaedf4;
-  min-height: 100vh;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  flex: 1;
-  overflow:auto;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    min-width:100vw;
-  }
 
-  .rt-th {
-    text-transform: capitalize;
-    padding: 15px !important;
-    background: ${(props) =>
-    props.theme.searchResults.resultsHeaderBackground} !important;
-    color: #fff;
-  }
-
-  .ReactTable .-pagination .-btn {
-    background: ${(props) =>
-    props.theme.searchResults.resultsPaginationButtons} !important;
-  }
-
-  div.rt-tbody div.rt-tr:hover {
-    background: ${(props) =>
-    props.theme.searchResults.resultsRowHighlight} !important;
-    color: #fff !important;
-  }
-
-  .rt-table {
-  }
-`;
 
 const SearchPageWrapper = styled.div`
   display: flex;
@@ -103,7 +73,7 @@ const SearchPageWrapper = styled.div`
   }
 `;
 const ThemedSearchPageWrapper = withTheme(SearchPageWrapper)
-const ThemedMainContainer = withTheme(MainContainer);
+
 const SideBarCollapse = styled.div`
   min-height: 100%;
   position: fixed;
@@ -135,6 +105,7 @@ const ThemedSideBarCollapse = withTheme(SideBarCollapse)
 const SidebarContainer = styled(Col)`
   padding-right: 0px !important;
   padding-top: 10px;
+  padding-left: 0px !important;
   box-sizing: border-box;
   width: 235px;
   min-width: 235px;
@@ -182,12 +153,19 @@ const InstructionsContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   padding: 0 20px;
+  width: 100%;
 `;
 const Instructions = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  width: 100%;
+  padding: 2em 0;
+  .RichTextEditor__root___2QXK- {
+    width: 100%;
+    border: none;
+  }
 `;
 
 
@@ -237,6 +215,8 @@ function SearchPage(props: SearchPageProps) {
   const [shouldRender, setShouldRender] = useState(true)
   const [totalRecords, setTotalRecords] = useState(0)
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
+  const [collapsePresearch, setCollapsePresearch] = useState(false)
+  const [collapseCrumbs, setCollapseCrumbs] = useState(false)
   const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
     variables: params.current,
     onCompleted: (data)=> afterSearchParamsUpdate(data)
@@ -522,26 +502,32 @@ function SearchPage(props: SearchPageProps) {
     const presearchText = presentSiteView.search.presearch.instructions;
     const opened = openedAgg && openedAgg.name;
     const openedKind = openedAgg && openedAgg.kind;
-
     const { pageViewUrl } = getPageView();
+    const presearchButtonOptions = {
+      hash, presearchButton, pageViewUrl
+    }
+    //console.log("PRESEARCH INST TEXT", presearchText)
+    const parser = new HtmlToReact.Parser();
+    const instructionsDiv = parser.parse(presearchText);
 
     return (
       <ThemedSearchContainer>
+        {/* <div className="collapse-container"><div>{collapsePresearch ? "Presearch" : ""}</div><div className="collapser" onClick={() => setCollapsePresearch(!collapsePresearch)}>{collapsePresearch ? <FontAwesome name={"chevron-up"} /> : <FontAwesome name={"chevron-down"} />}</div></div> */}
+        <Collapser title="Presearch" collapse={()=> setCollapsePresearch(!collapsePresearch)} state={collapsePresearch}/>
+        {!collapsePresearch ? 
+        <div>
         <InstructionsContainer>
           {presearchText && (
             <Instructions>
-              <RichTextEditor
-                readOnly
-                editorClassName="rich-text"
-                value={RichTextEditor.createValueFromString(
-                  presearchText,
-                  'markdown'
-                )}
-              />
+             <div  style={{
+                    width: "100%"
+                  }} >
+               {instructionsDiv}
+             </div>
             </Instructions>
           )}
         </InstructionsContainer>
-        {presearchButton.name && (
+        {/* {presearchButton.name && (
           <ThemedButton
             onClick={() =>
               handlePresearchButtonClick(
@@ -553,7 +539,7 @@ function SearchPage(props: SearchPageProps) {
             style={{ width: 200, marginLeft: 13, marginTop: 13 }}>
             {presearchButton.name}
           </ThemedButton>
-        )}
+        )} */}
         <Aggs
           filters={transformFilters(aggFilters)}
           crowdFilters={transformFilters(crowdAggFilters)}
@@ -574,20 +560,11 @@ function SearchPage(props: SearchPageProps) {
           openedKind={openedKind}
           onOpen={handleOpenAgg}
           getTotalResults={setTotalRecords}
+          handlePresearchButtonClick={handlePresearchButtonClick}
+          presearchButtonOptions={presearchButtonOptions}
         />
-        {presearchButton.name && (
-          <ThemedButton
-            onClick={() =>
-              handlePresearchButtonClick(
-                hash,
-                presearchButton.target,
-                pageViewUrl
-              )
-            }
-            style={{ width: 200, marginLeft: 13 }}>
-            {presearchButton.name}
-          </ThemedButton>
-        )}
+  
+        </div> : null}
       </ThemedSearchContainer>
     );
   };
@@ -608,6 +585,9 @@ function SearchPage(props: SearchPageProps) {
     const { presentSiteView } = props;
     const hash = getHashFromLocation();
     return (
+      <ThemedSearchContainer>
+       <Collapser title="Filter Bar" collapse={()=> setCollapseCrumbs(!collapseCrumbs)} state={collapseCrumbs}/>
+        {!collapseCrumbs ? 
       <CrumbsBar
         searchParams={handledParams}
         onBulkUpdate={handleBulkUpdateClick}
@@ -621,7 +601,8 @@ function SearchPage(props: SearchPageProps) {
         totalResults={totalRecords}
         searchHash={hash || ''}
         updateSearchParams={updateSearchParams}
-      />
+      /> : null}
+      </ThemedSearchContainer>
     );
   };
 

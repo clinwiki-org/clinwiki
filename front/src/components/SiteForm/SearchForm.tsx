@@ -34,7 +34,7 @@ import { equals } from 'ramda';
 import { History, Location } from 'history';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
-import RichTextEditor, { EditorValue } from 'react-rte';
+import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
 import {
   SiteFragment,
   SiteFragment_siteViews,
@@ -160,7 +160,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
         siteViewName: view.name || '',
         presearchIntructions: RichTextEditor.createValueFromString(
           view.search.presearch.instructions,
-          'markdown'
+          'html'
         ),
       });
     } else {
@@ -172,17 +172,19 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
       });
     }
   }
-
+  
   handleContentChange = (value: EditorValue) => {
+    //console.log("RTE VALUE ",value )
     this.setState({ presearchIntructions: value });
   };
 
   handleSubmitInstructions = siteView => {
+    //console.log("SUBMIT insturctions", this.state.presearchIntructions.toString("html",  {blockStyleFn: getTextAlignStyles} ))
     this.handleAddMutation(
       {
         currentTarget: {
           name: 'set:search.presearch.instructions',
-          value: this.state.presearchIntructions.toString('markdown'),
+          value: this.state.presearchIntructions.toString("html",  {blockStyleFn: getTextAlignStyles} ),
         },
       },
       siteView
@@ -205,7 +207,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
 
   handleInput = (e, inputType) => {
-    console.log('igethere');
     switch (inputType) {
       case 'url':
         this.setState({ siteUrl: e.value });
@@ -650,6 +651,14 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
+        <StyledShowContainer>
+              <span>Show Results</span>
+              <StyledCheckbox
+                name="set:search.presearch.showResults"
+                checked={view.search.presearch.showResults}
+                onChange={this.handleCheckboxToggle(view.search.presearch.showResults)}
+              />
+            </StyledShowContainer>
           <Row>
             <Col md={6}>
               <AggsHeaderContainer>
@@ -708,6 +717,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
             <Panel.Body collapsible>
               <h3>Instructions:</h3>
               <RichTextEditor
+                blockStyleFn={getTextAlignClassName}
                 onChange={this.handleContentChange}
                 value={
                   this.state.presearchIntructions ||

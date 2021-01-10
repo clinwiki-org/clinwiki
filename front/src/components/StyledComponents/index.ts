@@ -16,9 +16,10 @@ const StyledButton = styled.button`
   white-space: nowrap;
   vertical-align: middle;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 1px;
   transition: 0.5s;
   color: #fff;
+  height: 38px;
   &:hover {
     transform: scale(1.05);
     transition-duration: 0.1s;
@@ -68,7 +69,7 @@ const LinkContainer = styled.div`
 export const ThemedLinkContainer = withTheme(LinkContainer);
 
 const MainContainer = styled(Col)`
-  background-color: #eaedf4;
+  background-color: ${props => props.theme.backgroundColor}; 
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -104,40 +105,59 @@ export const ThemedMainContainer = withTheme(MainContainer);
 const PresearchCard = styled.div`
   display: flex;
   flex-direction: column;
-  border-radius: 4px;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  // border-radius: 4px;
+  // box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
   // border-width: 1px;
   // border-style: solid;
   // border-color: ${props => props.theme.buttonSecondary};
-  margin: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: ${props => props.theme.presearch.presearchCardMargin};
+  margin-right: ${props => props.theme.presearch.presearchCardMargin};
   flex: 1;
   min-width: 320px;
   max-width: 320px;
   background: white;
-  //working on preserach fix
-  min-height: 320px;
+  // min-height: 320px;
+  .select-box--sublabel{
+    padding-left: 5px;
+    // background: ${props => props.theme.primaryColor};
+    color: ${props => props.theme.presearch.presearchLabelTextColor};
+
+  }
 `;
 
 export const ThemedPresearchCard = withTheme(PresearchCard);
 
 const PresearchHeader = styled.div`
-  background-color: ${props => props.theme.presearch.presearchHeaders};
-  padding: 5px;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  height: 50px;
+  background-color: ${props => props.theme.presearch.presearchLabelColor};
+  // border-top-left-radius: 4px;
+  // border-top-right-radius: 4px;
+  // height: 60px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
+  border-top: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  border-color: ${props => props.theme.presearch.presearchBorderColor};
+  padding: 20px 12px;
+    
+  }
 `;
 
 export const ThemedPresearchHeader = withTheme(PresearchHeader);
 
 export const PresearchTitle = styled.div`
-  color: white;
-  font-size: 25px;
-  font-weight: 400;
-  margin-left: 5px;
+  color: ${props => props.theme.presearchLabelTextColor}; 
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  position: relative;
+  top: -9px;
+  cursor:pointer;
 `;
 
 const SearchCard = styled.div`
@@ -145,7 +165,7 @@ width: 350px;
 min-height: 350px;
 margin: 15px;
 box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-border-radius: 4px;
+// border-radius: 4px;
 background: #ffffff;
 padding: 5px;
  a {
@@ -162,18 +182,21 @@ padding: 5px;
 export const ThemedSearchCard = withTheme(SearchCard)
 
 const SearchContainer = styled.div`
-  border: solid white 1px;
-  background-color: #f2f2f2;
+  border: solid 1px;
+  background-color: ${props => props.theme.search.searchContainerBg};
   color: black;
   margin-bottom: 1em;
   margin-left: 45px;
   margin-right: 45px;
-  margin-bottom: 45px;
+  margin-bottom: 18px;
   display: flex;
   flex-direction: column;
   padding: 10px;
+  position: relative;
+  border-color: #e7e7e7;
+
   .rich-text {
-    background-color: #f2f2f2;
+    background-color: ${props => props.theme.search.searchContainerBg};
   }
   .container {
     border: 0px;
@@ -300,16 +323,34 @@ const SearchContainer = styled.div`
   .headerColumn {
     text-transform: none;
   }
+
+  .collapse-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .collapser {
+    cursor: pointer;
+  }
+
+  .collapse-title {
+    font-weight: 700;
+  }
 `;
 
 export const ThemedSearchContainer = withTheme(SearchContainer);
 
 export const TextFieldToggle = styled.div`
-  color: white;
+  color:  ${props => props.theme.presearchLabelTextColor};
   font-size: 28px;
   font-weight: 400;
   margin-right: 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
 `;
+export const ThemedTextFieldToggle = withTheme(TextFieldToggle)
 
 export const PresearchFilter = styled.div`
   margin-left: 5px;
@@ -317,16 +358,48 @@ export const PresearchFilter = styled.div`
   // max-height: 30px;
 `;
 
-export const PresearchPanel = styled.div`
-  overflow-x: auto;
-  max-height: 200px;
- /*  min-height: 200px; */
-  margin-left: 5px;
-  // margin-top: 30px;
-  position: relative;
-    .dropDownFacet{
-      position: relative;
+export const PresearchContainer = styled.div`
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: flex-start;
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    max-height: 1500px;
+  }
+  .presearch-total-results{
+    margin: 10px;
+  }
+  .horizontal-pre {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+  }
+  .horizontal-aggs {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .vertical-pre {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .horizontal-pre-button {
+    margin-top: 10px;
+    // margin-left: 13px;
+    // width: 200px;
+  }
+  @media (max-width: 951px) {
+    .horizontal-pre {
+      // flex-direction: column;
+      grid-template-columns: 1fr;
     }
+
+    .horizontal-pre-button {
+      margin-top: 10px;
+      margin-left: 0;
+    }
+  }
 `;
 
 export const PresearchContent = styled.div`
@@ -335,9 +408,25 @@ export const PresearchContent = styled.div`
   // border-bottom-left-radius: 12px;
   // border-bottom-right-radius: 12px;
   background-color: white;
+  height: 260px;
   max-height: 260px;
   margin-bottom: 7px;
+  overflow-Y: scroll;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e7e7e7;
 `;
+
+export const PresearchPanel = styled.div`
+  overflow-x: auto;
+  margin-left: 5px;
+  // margin-top: 30px;
+  position: relative;
+    .dropDownFacet{
+      position: relative;
+    }
+`;
+
 
 export default ThemedButton;
 
@@ -403,3 +492,47 @@ export const StyledInterventionHeading = styled.div`
   margin: 1em;
   border-bottom: solid white;
 `;
+const FacetAgg = styled.div`
+  min-height: 50px;
+  border-bottom: 1px solid ${props => props.theme.aggSideBar.sideBarFont};
+  width: 100%;
+  margin: 0;
+  position: relative;
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+ 
+`
+export const ThemedFacetAgg= withTheme(FacetAgg)
+const FacetTitle = styled.div`
+  font-size: 14px;
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+  position: relative;
+  top: -9px;
+  cursor:pointer;
+
+  
+`;
+export const ThemedFacetTitle = withTheme(FacetTitle)
+const FacetHeader = styled.div`
+
+  color: ${props => props.theme.aggSideBar.sideBarFont};
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  padding: 20px 12px;
+  vertical-align: middle;
+  text-transform: uppercase;
+
+
+  .select-box--arrow{
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 15px 3px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+`;
+
+export const ThemedFacetHeader = withTheme(FacetHeader);
