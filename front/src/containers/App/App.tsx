@@ -34,7 +34,7 @@ interface AppProps {
 }
 
 const AppWrapper = styled.div`
-  background-color: #e7e7e7;
+  background-color: ${props => props.theme.backgroundColor};
   min-height: 100vh;
   min-width: 100%;
 `;

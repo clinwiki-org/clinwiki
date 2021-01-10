@@ -36,8 +36,6 @@ export interface FieldType {
   showAllowMissing?: Boolean;
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
-  layout?: string;
-  maxCrumbs?: number;
 }
 
 export interface OptionVisibility {
@@ -47,7 +45,6 @@ export interface OptionVisibility {
   hideRank: boolean;
   hideDisplayType: boolean;
   hidePreSelected: boolean;
-  hideLayout: boolean;
 }
 
 interface AggFieldProps {
@@ -63,8 +60,6 @@ interface AggFieldProps {
   showAllowMissing?: Boolean;
   showFilterToolbar?: Boolean;
   defaultToOpen?: Boolean;
-  layout?: string;
-  maxCrumbs?: number;
 }
 
 interface AggFieldState {
@@ -151,11 +146,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
         return `workflows.${this.props.workflowName}.suggestedLabelsConfig.${this.props.field.name}`;
     }
   };
-
   handleDefaultSortMutation = e => {
-    this.props.onAddMutation(e);
-  };
-  handleLayoutMutation = e => {
     this.props.onAddMutation(e);
   };
   handleKeyValueMutations = e =>{
@@ -328,7 +319,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       hideRank: false,
       hideDisplayType: false,
       hidePreSelected: false,
-      hideLayout: false,
     };
     return { ...defaultVisibility, ...current };
   }
@@ -553,9 +543,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           <option value="LESS_THAN_DROP_DOWN">Less Than Drop Down</option>
           <option value="GREATER_THAN_DROP_DOWN">Greater Than Drop Down</option>
           <option value="LOCATION">Location</option>
-          <option value="MULTISELECT">Multi-select</option>
-          <option value="CHECKBOX">Checkbox</option>
-          <option value="CRUMBS_ONLY">Crumbs Only</option>
         </StyledFormControl>
         {this.props.field.display === 'NUMBER_RANGE' ||
           this.props.field.display === 'LESS_THAN_RANGE' ||
@@ -566,42 +553,6 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
       </>
     );
   }
-
-  
-  renderLayout(opVis: OptionVisibility) {
-    if (opVis.hideLayout) return null;
-    const configType = this.props.configType;
-    return (
-      <>
-        <ThemedStyledLabel>Pre-search Layout</ThemedStyledLabel>
-        <StyledFormControl
-          name={`set:${this.getPath(configType)}.layout`}
-          componentClass="select"
-          onChange={e => this.handleLayoutMutation(e)}
-          defaultValue={this.props.field.layout}>
-          <option value="horizontal">Horizontal</option>
-          <option value="vertical">Vertical</option>
-        </StyledFormControl>
-      </>
-    );
-  }
-  
-  renderMaxCrumb() {
-    const configType = this.props.configType;
-    return (
-      <>
-        <ThemedStyledLabel>Max Crumbs</ThemedStyledLabel>
-        <StyledFormControl
-          name={`set:${this.getPath(configType)}.maxCrumbs`}
-          placeholder="Max Number of Crumbs"
-          value={this.props.field.maxCrumbs}
-          onChange={this.props.onAddMutation}
-        />
-      </>
-    );
-  }
-
-
   shouldShowAllowMissing = () => {
     if (!this.props.field.showAllowMissing) return false
 
@@ -618,6 +569,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
 
     return this.props.field.defaultToOpen
   }
+
 
   renderSortCheckbox = () => {
     if (this.props.sortables) {
@@ -676,10 +628,8 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
           {this.renderSortType(vis)}
           {this.renderSortOrder(vis)}
           {this.renderDisplayType(vis)}
-          {this.renderLayout(vis)}
           {this.renderSortCheckbox()}
           {this.renderCheckboxes()}
-          {this.renderMaxCrumb()}
         </ThemedContainer>
       </>
     );

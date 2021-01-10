@@ -151,8 +151,6 @@ export const SITE_VIEW_FRAGMENT = gql`
             showAllowMissing
             showFilterToolbar
             defaultToOpen
-            layout
-            maxCrumbs
           }
           selected {
             kind
@@ -188,8 +186,6 @@ export const SITE_VIEW_FRAGMENT = gql`
             showAllowMissing
             showFilterToolbar
             defaultToOpen
-            layout
-            maxCrumbs
           }
           selected {
             kind
@@ -201,7 +197,6 @@ export const SITE_VIEW_FRAGMENT = gql`
           target
         }
         instructions
-        showResults
       }
       sortables
       fields
@@ -244,8 +239,6 @@ export const SITE_VIEW_FRAGMENT = gql`
           showAllowMissing
           showFilterToolbar
           defaultToOpen
-          layout
-          maxCrumbs
         }
         selected {
           kind
@@ -281,8 +274,6 @@ export const SITE_VIEW_FRAGMENT = gql`
           showAllowMissing
           showFilterToolbar
           defaultToOpen
-          layout
-          maxCrumbs
         }
         selected {
           kind

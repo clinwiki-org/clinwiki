@@ -1,15 +1,20 @@
 import * as React from 'react';
 import { PieChart, Pie, Sector, Cell } from 'recharts';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
 import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { SearchParams } from '../SearchPage/Types'
 interface TwoLevelPieChartProps {
   isPresearch: boolean;
   field: SiteViewFragment_search_aggs_fields | any;
   buckets: Array<AggBucket>;
   hasMore: boolean;
   handleLoadMore: any;
-  onClickHandler: (any)=>void;}
+  updater: AggFilterInputUpdater;
+  searchParams: SearchParams;
+}
 
 interface TwoLevelPieChartState {
   activeIndex: any;
@@ -71,6 +76,8 @@ class TwoLevelPieChart extends React.Component<
         currentBuckets: finalDataArray,
         otherBuckets: finalOtherBucketsArray,
       });
+    } else if (prevProps.searchParams !== this.props.searchParams) {
+      this.props.handleLoadMore();
     }
   };
 
@@ -126,10 +133,10 @@ class TwoLevelPieChart extends React.Component<
   onClickHelper = (data, index) => {
     const { currentBuckets } = this.state;
     if (index !== 9) {
-      this.props.onClickHandler({key: currentBuckets[index].name});
+      this.props.updater.toggleFilter(currentBuckets[index].name);
     } else {
       this.state.otherBuckets.map((otherBucket, index) => {
-        this.props.onClickHandler({key: otherBucket.name});
+        this.props.updater.toggleFilter(otherBucket.name);
       });
     }
   };
@@ -164,4 +171,4 @@ class TwoLevelPieChart extends React.Component<
   }
 }
 
-export default TwoLevelPieChart;
+export default withAggContext(TwoLevelPieChart);

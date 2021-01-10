@@ -8,7 +8,7 @@ import ThemedAutosuggestButton, {
   ThemedPresearchHeader,
   PresearchTitle,
   PresearchContent,
-  ThemedTextFieldToggle,
+  TextFieldToggle,
 } from 'components/StyledComponents';
 import * as Autosuggest from 'react-autosuggest';
 import AddFacetCard from './AddFacetCard';
@@ -277,21 +277,21 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                         <ThemedPresearchHeader>
                           <PresearchTitle>
                             {truncateString(label, 18, true)}
-                            {!showAddFacet && (
-                            <ThemedTextFieldToggle
+                          </PresearchTitle>
+                          {!showAddFacet && (
+                            <TextFieldToggle
                               onClick={() =>
                                 this.handleAddFacetPlusClick(user)
                               }>
                               +
-                            </ThemedTextFieldToggle>
+                            </TextFieldToggle>
                           )}
                           {showAddFacet && (
-                            <ThemedTextFieldToggle
+                            <TextFieldToggle
                               onClick={this.handleAddFacetPlusClick}>
                               -
-                            </ThemedTextFieldToggle>
+                            </TextFieldToggle>
                           )}
-                          </PresearchTitle>
                         </ThemedPresearchHeader>
                         <AddFacetCard
                           upsert={upsertLabelMutation}
@@ -329,20 +329,19 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                       <ThemedPresearchHeader>
                         <PresearchTitle>
                           {truncateString(label, 18, true)}
-                          {!textFieldActive && (
-                          <ThemedTextFieldToggle
+                        </PresearchTitle>
+                        {!textFieldActive && (
+                          <TextFieldToggle
                             onClick={() => this.handlePlusClick(user)}>
                             +
-                          </ThemedTextFieldToggle>
+                          </TextFieldToggle>
                         )}
                         {textFieldActive && (
-                          <ThemedTextFieldToggle onClick={this.handlePlusClick}>
+                          <TextFieldToggle onClick={this.handlePlusClick}>
                             -
-                          </ThemedTextFieldToggle>
+                          </TextFieldToggle>
                         )}
-                        </PresearchTitle>
                       </ThemedPresearchHeader>
-                      <PresearchContent style={{ overflowY: 'auto', overflowX: 'hidden'}}>
                       {textFieldActive && (
                         <Autosuggest
                           suggestions={suggestions}
@@ -379,6 +378,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                           ref={this.storeInputReference}
                         />
                       )}
+                      <PresearchContent style={{ overflowY: 'auto' }}>
                         {this.props.children}
                       </PresearchContent>
                     </ThemedPresearchCard>
