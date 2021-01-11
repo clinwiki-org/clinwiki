@@ -1,7 +1,7 @@
 // YourComponent.stories.tsx
 
 import React, { ComponentProps } from 'react';
-import { Story } from '@storybook/react';
+import { Story } from '@storybook/react/types-6-0';
 
 import CustomDropDown from './CustomDrop';
 import { FieldDisplay } from 'types/globalTypes';
