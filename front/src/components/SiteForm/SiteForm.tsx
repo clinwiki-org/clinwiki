@@ -116,8 +116,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           },
         })
         .then(() => {
-            console.log("REFRESHI")
-            this.props.fetchSiteProvider(view.id, view.url)   //this.props.refresh(); //TODO Replace with dispatch fetchSiteProvider, ADD MapDispatchToProps.
+            this.props.fetchSiteProvider(this.props.site.id)
         });
     }
     this.props.onSaveSite(this.state.form);
@@ -131,8 +130,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-      console.log('handleadd', mutation, view, currentValue)
-    );
+      console.log('handleadd', mutation, view, currentValue));
   };
 
   handleFormChange = (form: CreateSiteInput) => {
@@ -189,8 +187,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   }
 
   render() {
-    console.log("RENDERING SITE FORM")
-  
     const view = updateView(this.props.site.siteView, this.state.mutations);
     const path = trimPath(this.props.match.path);
     return (

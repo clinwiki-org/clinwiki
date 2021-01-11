@@ -17,10 +17,7 @@ interface UseSiteProps {
 }
 
 function SiteProvider(props: SiteProviderProps) {
- // const useSiteData = useSite(props);
   const dispatch = useDispatch();
-  
-  //console.log("THE ID", props?.id)
   useEffect(() => {
   dispatch(fetchSiteProvider(props?.id, props?.url));
  }, [])
@@ -33,7 +30,7 @@ function SiteProvider(props: SiteProviderProps) {
   
  const isFetchingSiteProvider = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
  const siteProvider = useSelector((state : RootState ) => state.site.siteProvider)
- console.log("🚀 ~useSite ~ siteProvider", siteProvider);
+ //console.log("🚀 ~useSite ~ siteProvider", siteProvider);
 
  //const result = siteProvider
  //if (!result) return { ...result, site: null, currentSiteView: null };
@@ -50,38 +47,9 @@ if (!isFetchingSiteProvider  ) {
 
   return props.children(site, currentSiteView);
 }
+else {
+  return <BeatLoader/>
+}
 }
 
 export default SiteProvider;
-
-
-
-/* export function useSite(props?: UseSiteProps) {
-  const dispatch = useDispatch();
-    console.log("USE SITE PROPS", props);
-  // console.trace();
-  const urlName = new URLSearchParams(window.location.search)
-  .getAll('sv')
-  .toString()
-  .toLowerCase();
-    console.log("🚀 ~ file: SiteProvider.tsx ~ line 27 ~ useSite ~ urlName", urlName);
-  
-  dispatch(fetchSiteProvider(props?.id, props?.url));
-    const siteProvider = useSelector((state : RootState ) => state.site.siteProvider)
-  console.log("🚀 ~useSite ~ siteProvider", siteProvider);
-  const isFetchingSiteProvider = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
-  const result = siteProvider
-
-  if (!result) return { ...result, site: null, currentSiteView: null };
-  if (!isFetchingSiteProvider && result.siteProvider ) {
-    const site = siteProvider.site;
-    const currentSiteView =
-    site?.siteViews.find(
-      siteview => siteview?.url?.toLowerCase() === urlName
-      ) || site?.siteView;
-      
-      console.log("🚀 ~ file:   CURRENT SITE VIEW *****************", currentSiteView);
-      
-    return { site, currentSiteView };
-  }
-} */
