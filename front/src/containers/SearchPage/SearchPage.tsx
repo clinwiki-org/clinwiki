@@ -51,7 +51,7 @@ import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
 import HtmlToReact from 'html-to-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSearchParams } from 'services/search/actions'
+import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions'
 import {RootState} from 'reducers';
 
 const SearchPageWrapper = styled.div`
@@ -216,13 +216,21 @@ function SearchPage(props: SearchPageProps) {
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
   const [collapsePresearch, setCollapsePresearch] = useState(false)
   const [collapseCrumbs, setCollapseCrumbs] = useState(false)
-  const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
-    variables: params.current,
-    onCompleted: (data)=> afterSearchParamsUpdate(data)
-  })
+
+  
+  
   const paramsUrl = useUrlParams();
   const dispatch = useDispatch();
+  
+  //Update SearchPageHashMutation 
+  const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams)
+  const isSearching = useSelector((state: RootState) => state.search.isSearching)
+  const searchHash = useSelector((state : RootState ) => state.search.searchHash);
 
+  // const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
+    //   variables: params.current,
+    //   onCompleted: (data)=> afterSearchParamsUpdate(data)
+    // })
 
 
   const getDefaultParams = (view: SiteViewFragment, email: string | undefined) => {
@@ -607,7 +615,17 @@ function SearchPage(props: SearchPageProps) {
   };
 
 
-  const afterSearchParamsUpdate = (data) => {
+ 
+
+  const updateSearchParams = (searchParams: SearchParams) => {
+    params.current =   { ...params.current, ...searchParams }  
+    dispatch( updateSearchParamsAction(params.current));
+
+  };
+
+  // TO DO -- this logic needs to br handled in the sagas. Currently only handling search
+  const afterSearchParamsUpdate = () => {
+
     // handles the query to get the hash and update the url. 
     createPageName()
     const variables = params.current;
@@ -618,7 +636,6 @@ function SearchPage(props: SearchPageProps) {
     //  page view query without passing the url into it to retrieve the default url
 
     const userId = searchQueryString.getAll('uid').toString();
-
     if (data?.provisionSearchHash?.searchHash?.short) {
       if (props.match.path === '/profile') {
         props.history.push(
@@ -640,22 +657,17 @@ function SearchPage(props: SearchPageProps) {
           }&sv=intervention&pv=${pageViewUrl}`
         );
         return;
-      } else {
-        props.history.push(
-          `/search?hash=${data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
-        );
-        return;
       }
+      //Done in the updateSearchParams saga
+      // else {
+      //   props.history.push(
+      //     `/search?hash=${data!.provisionSearchHash!.searchHash!.short
+      //     }&sv=${siteViewUrl}&pv=${pageViewUrl}`
+      //   );
+      //   return;
+      // }
     }
   }
-
-  const updateSearchParams = async (searchParams: SearchParams) => {
-    params.current = await { ...params.current, ...searchParams }
-    const { data } = await updateSearchPageHashMutation();
-    
-  };
-
   const newAddSearchTerm = (term: string) => {
     if (!term.replace(/\s/g, '').length) {
       return
@@ -744,19 +756,11 @@ function SearchPage(props: SearchPageProps) {
   }
   const hash = getHashFromLocation();
 
-const searchParamsQueryHelper =(data)=>{
-  const dataParams = searchParamsFromQuery(
-    data.data!.searchParams,
-    presentSiteView
-  );
-  params.current= dataParams
-  // setShouldRender(true)
-}
 const { presentSiteView } = props;
 
 /// SEARCH PAGE PARAMS QUERY
 useEffect(()=>{
-  dispatch(fetchSearchParams(hash));
+ dispatch(fetchSearchParams(hash));
 },[dispatch]);
 
 // const result = useQuery(SearchPageParamsQuery, {
@@ -779,6 +783,7 @@ const dataParams = searchParamsFromQuery(
   presentSiteView
 );
 params.current= dataParams
+// updateSearchParamsAction(params.current)
   return (
     <Switch>
       <Route

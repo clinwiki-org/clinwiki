@@ -124,7 +124,7 @@ interface AggsProps {
   preSearchAggs?: string[];
   preSearchCrowdAggs?: string[];
   site: PresentSiteFragment;
-  updateSearchParams: (params: SearchParams) => Promise<void>;
+  updateSearchParams: (params: SearchParams) => void;
   searchParams: SearchParams;
   getTotalResults: Function;
   handlePresearchButtonClick?: Function;

@@ -1,4 +1,5 @@
 import * as query from './queries';
+import * as mutate from './mutations'
 import { callGraphql } from 'utils/graphqlUtil';
 import { queries } from '@testing-library/react';
 
@@ -17,3 +18,7 @@ export const fetchSearchParams = (hash : any) => {
 export const fetchSearchStudies = (searchParams : any) => {
     return callGraphql(ENDPOINT,query.SEARCH_PAGE_SEARCH_QUERY, searchParams);
 };
+export const updateSearchParams = ( searchParams ) =>{
+    return callGraphql(ENDPOINT, mutate.SEARCH_PAGE_HASH_MUTATION,
+        searchParams.searchParams )
+}

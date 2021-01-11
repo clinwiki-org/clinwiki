@@ -33,6 +33,19 @@ export const fetchSearchParamsError = (message: string) : types.SearchActionType
     type: types.FETCH_SEARCH_PARAMS_ERROR,
     payload: { message }
 });
+export const updateSearchParamsAction = ( searchParams: any) : types.SearchActionTypes => ({
+    type: types.UPDATE_SEARCH_PARAMS_SEND,
+    searchParams
+});
+export const updateSearchParamsSuccess = (payload: typeof SearchPageParamsQuery) : types.SearchActionTypes => ({
+    type: types.UPDATE_SEARCH_PARAMS_SUCCESS,
+    payload
+});
+
+export const updateSearchParamsError = (message: string) : types.SearchActionTypes => ({
+    type: types.UPDATE_SEARCH_PARAMS_ERROR,
+    payload: { message }
+});
 export const fetchSearchStudies = ( searchParams: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_STUDIES_SEND,
     searchParams

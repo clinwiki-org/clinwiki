@@ -10,6 +10,10 @@ export const FETCH_SEARCH_PARAMS_SEND = 'FETCH_SEARCH_PARAMS_SEND';
 export const FETCH_SEARCH_PARAMS_SUCCESS = 'FETCH_SEARCH_PARAMS_SUCCESS';
 export const FETCH_SEARCH_PARAMS_ERROR = 'FETCH_SEARCH_PARAMS_ERROR';
 
+export const UPDATE_SEARCH_PARAMS_SEND = 'UPDATE_SEARCH_PARAMS_SEND';
+export const UPDATE_SEARCH_PARAMS_SUCCESS = 'UPDATE_SEARCH_PARAMS_SUCCESS';
+export const UPDATE_SEARCH_PARAMS_ERROR = 'UPDATE_SEARCH_PARAMS_ERROR';
+
 export const FETCH_SEARCH_STUDIES_SEND = 'FETCH_SEARCH_STUDIES_SEND';
 export const FETCH_SEARCH_STUDIES_SUCCESS = 'FETCH_SEARCH_STUDIES_SUCCESS';
 export const FETCH_SEARCH_STUDIES_ERROR = 'FETCH_SEARCH_STUDIES_ERROR';
@@ -20,6 +24,9 @@ export interface SearchState {
     searchResults: typeof SearchPageParamsQuery | undefined
     isSearchingStudies: boolean,
     studies: SearchPageSearchQuery | undefined
+    isUpdatingParams: boolean,
+    searchHash: any;
+
 }
 
 export interface SearchDataError {
@@ -55,6 +62,20 @@ export interface FetchSearchParamsErrorAction {
     type: typeof FETCH_SEARCH_PARAMS_ERROR,
     payload: SearchDataError
 };
+export interface UpdateSearchParamsSendAction {
+    type: typeof UPDATE_SEARCH_PARAMS_SEND
+    searchParams: any
+};
+
+export interface UpdateSearchParamsSuccessAction {
+    type: typeof UPDATE_SEARCH_PARAMS_SUCCESS,
+    payload: typeof SearchPageParamsQuery
+};
+
+export interface UpdateSearchParamsErrorAction {
+    type: typeof UPDATE_SEARCH_PARAMS_ERROR,
+    payload: SearchDataError
+};
 
 export interface FetchSearchStudiesSendAction {
     type: typeof FETCH_SEARCH_STUDIES_SEND
@@ -73,4 +94,5 @@ export interface FetchSearchStudiesErrorAction {
 
 export type SearchActionTypes = FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
     FetchSearchParamsSendAction | FetchSearchParamsSuccessAction | FetchSearchParamsErrorAction |
+    UpdateSearchParamsSendAction | UpdateSearchParamsSuccessAction | UpdateSearchParamsErrorAction |
     FetchSearchStudiesSendAction | FetchSearchStudiesSuccessAction | FetchSearchStudiesErrorAction;

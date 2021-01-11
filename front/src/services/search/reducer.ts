@@ -7,6 +7,8 @@ const initialState: types.SearchState = {
     searchResults: undefined,
     isSearchingStudies: false,
     studies: undefined,
+    isUpdatingParams: false,
+    searchHash: undefined
 };
 
 const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
@@ -43,6 +45,22 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
             return {
                 ...state,
                 isSearching: false
+            };
+        case types.UPDATE_SEARCH_PARAMS_SEND:
+            return {
+                ...state,
+                isUpdatingParams: true
+            };
+        case types.UPDATE_SEARCH_PARAMS_SUCCESS:
+            return {
+                ...state,
+                isUpdatingParams: false,
+                searchHash: action.payload
+            };
+        case types.UPDATE_SEARCH_PARAMS_ERROR:
+            return {
+                ...state,
+                isUpdatingParams: false
             };
         case types.FETCH_SEARCH_STUDIES_SEND:
             return {

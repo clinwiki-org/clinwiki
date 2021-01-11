@@ -1,4 +1,5 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest, select } from 'redux-saga/effects';
+import { push } from 'connected-react-router'
 import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
@@ -23,12 +24,8 @@ function* getSearchParams(action) {
     try {
         let response = yield call(() => api.fetchSearchParams(action.hash));
         if(response) {
-            console.log(response)
-//          let aggsResponse = yield call(() => api.fetchSearchPageAggs(response.data.searchParams));
-// console.log("AGG", aggsResponse)        
             yield put(actions.fetchSearchParamsSuccess(response));
-
-}
+        }
         else {
             yield put(actions.fetchSearchParamsError(response.message));
         }
@@ -39,12 +36,9 @@ function* getSearchParams(action) {
     }
 }
 function* getSearchStudies(action) {
-    console.log('getSearchStudies', action.searchParams)
     try {
         let response = yield call(() => api.fetchSearchStudies(action.searchParams));
         if(response) {
-            console.log(response)
- 
             yield put(actions.fetchSearchStudiesSuccess(response));
 
 }
@@ -57,9 +51,29 @@ function* getSearchStudies(action) {
         yield put(actions.fetchSearchStudiesError(err.message));
     }
 }
+function* updateSearchParams(action) { 
+    try {
+        let updateResponse = yield call(() => api.updateSearchParams(action)); 
+        let location = yield select( (state) => state.router.location);
+        let searchHash = updateResponse.data.provisionSearchHash.searchHash
+        if (updateResponse.data.provisionSearchHash.searchHash !== null){ 
+            yield put(actions.fetchSearchParams(searchHash.short))
+            yield put(actions.updateSearchParamsSuccess(searchHash));
+            yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv}&pv=${location.query.pv}`))
+        }
+        else {
+            yield put(actions.updateSearchParamsError(updateResponse.message));
+        }
+    }
+    catch(err) {
+        console.log("err");
+        yield put(actions.updateSearchParamsError(err.message));
+    }
+}
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
     yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
+    yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams)
 }
