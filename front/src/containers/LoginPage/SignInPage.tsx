@@ -1,12 +1,8 @@
 import React,{useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch,useSelector} from 'react-redux';
+import {RootState} from 'reducers';
 import {signIn} from 'services/user/actions';
 import { Col } from 'react-bootstrap';
-import {
-  Mutation,
-  MutationComponentOptions,
-} from '@apollo/client/react/components';
-import { gql, MutationFunction }  from '@apollo/client';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import { ThemedButton } from '../../components/StyledComponents';
@@ -22,6 +18,8 @@ const SignInPage = (props) => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [oAuthToken,setOAuthToken] = useState('');
+  const signInErrors = useSelector( (state:RootState) => state.user.signInErrors);
+  console.log('SignInPage.errors',signInErrors)
 
   const responseGoogle = (response) => {
     setEmail(response.profileObj.email);
@@ -73,6 +71,9 @@ const SignInPage = (props) => {
                     cookiePolicy={'single_host_origin'}
                   />
                 </div>
+              </div>
+              <div style={{ marginTop: 20}}>
+                {signInErrors.map( error => <StyledError key={error}>{error}</StyledError>)}
               </div>
               <ThemedLinkContainer>
                 <Link to="/sign_up">Sign up</Link>

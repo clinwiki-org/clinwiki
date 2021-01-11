@@ -231,6 +231,7 @@ const CrumbsBar = (props: CrumbsBarProps) => {
   const dispatch = useDispatch();
   const { presentSiteView, searchParams } = props;
   const user = useSelector( (state: RootState) => state.user.current);
+  
   const isFetchingAutoSuggest = useSelector( (state:RootState) => state.search.isFetchingAutoSuggest);
   const suggestions = useSelector( (state:RootState) => state.search.suggestions);
 
