@@ -127,7 +127,7 @@ class SiteViewsForm extends React.Component<
               },
             },
             () => {
-              this.props.fetchSiteProvider();
+              this.props.fetchSiteProvider(this.props.site.id);
             }
           );
         });
@@ -153,7 +153,7 @@ class SiteViewsForm extends React.Component<
               },
             },
             () => {
-              this.props.fetchSiteProvider();
+              this.props.fetchSiteProvider(this.props.site.id);
             }
           );
         });
@@ -180,7 +180,7 @@ class SiteViewsForm extends React.Component<
               },
             },
             () => {
-              this.props.fetchSiteProvider();
+              this.props.fetchSiteProvider(this.props.site.id);
             }
           );
         });
@@ -206,7 +206,7 @@ class SiteViewsForm extends React.Component<
               },
             },
             () => {
-              this.props.fetchSiteProvider();
+              this.props.fetchSiteProvider(this.props.site.id);
             }
           );
         });
@@ -254,7 +254,7 @@ class SiteViewsForm extends React.Component<
     }
   };
   render() {
-    const { siteViews, fetchSiteProvider, site } = this.props;
+    const { siteViews, site } = this.props;
     const {
       searchViewForm,
       userViewForm,
