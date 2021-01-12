@@ -39,49 +39,6 @@ import { fetchSearchPageAggs } from 'services/search/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {RootState} from 'reducers';
 
-const QUERY = gql`
-  query SearchPageAggsQuery(
-    $q: SearchQueryInput!
-    $page: Int
-    $pageSize: Int
-    $sorts: [SortInput!]
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-  ) {
-    crowdAggs: aggBuckets(
-      params: {
-        q: $q
-        page: 0
-        pageSize: 100000
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        agg: "front_matter_keys"
-      }
-    ) {
-      aggs {
-        buckets{
-          key
-        }
-      }
-    }
-    search(
-      params: {
-        q: $q
-        page: $page
-        pageSize: $pageSize
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-      }
-    ) {
-      recordsTotal
-      aggs {
-        name
-      }
-    }
-  }
-`;
 const getVisibleOptionsByName: (PresentSiteFragment) => any = compose(
   reduce(
     (byName, { name, visibleOptions }) => ({
@@ -205,7 +162,7 @@ const Aggs = (props: AggsProps) => {
   // let data = result.data
   // if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
   // if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
-  if(data == undefined || isLoading) return <BeatLoader/>
+  if(data == undefined) return <BeatLoader/>
 
   if (data.data && data.data.crowdAggs && data.data.search?.aggs) {
       let recordsTotal = data.data.search?.recordsTotal;
@@ -350,7 +307,7 @@ const Aggs = (props: AggsProps) => {
           <PresearchContainer>
             {showPresearchResults ? (
             <div className="presearch-total-results">
-                <b>Total Results:</b> {recordsTotal} studies
+                <><b>Total Results:</b> {isLoading? (<span style={{display:'inline-table', width: '5em'}}><BeatLoader/></span>): `${recordsTotal} studies`}</>
             </div>):null}
             <div className="horizontal-pre">
               <div className="horizontal-aggs">
