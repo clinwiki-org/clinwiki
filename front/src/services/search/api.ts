@@ -1,5 +1,6 @@
 import * as query from './queries';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import { callGraphql } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
@@ -13,4 +14,8 @@ export const fetchSearchPageAggs = (searchParams : any) => {
 
 export const fetchSearchStudies = (hash : any) => {
     return callGraphql(ENDPOINT,SearchPageParamsQuery, { hash });
+};
+
+export const fetchSearchAutoSuggest = (searchParams : any) => {
+    return callGraphql(ENDPOINT,AUTOSUGGEST_QUERY, searchParams);
 };

@@ -9,15 +9,15 @@ function* getCurrentUser(action) {
     try {
         let response = yield call(() => api.fetchCurrentUser());
         if(response) {
-            yield put(actions.fetchUserSuccess(response));
+            yield put(actions.fetchUserSuccess(response.data.me));
         }
         else {
-            yield put(actions.fetchUserError(response.message));
+            yield put(actions.fetchUserError([response.message]));
         }
     }
     catch(err) {
         console.log(err);
-        yield put(actions.fetchUserError(err.message));
+        yield put(actions.fetchUserError([err.message]));
     }
 }
 
@@ -25,18 +25,18 @@ function* signIn(action) {
     try {
         let response = yield call(() => api.signIn(action.email,action.password,action.oAuthToken));
         if(response?.data?.signIn?.jwt) {
-            yield call(() => setLocalJwt(response.data.signIn.jwt))
+            yield call(() => setLocalJwt(response.data.signIn.jwt));
             yield put(actions.signInSuccess(response.data.signIn.user));
             yield call(() => history.goBack());
 
         }
         else {
-            yield put(actions.signInError(response.message));
+            yield put(actions.signInError(['Invalid email or password']));
         }
     }
     catch(err) {
         console.log(err);
-        yield put(actions.signInError(err.message));
+        yield put(actions.signInError([err.message]));
     }
 }
 
@@ -47,23 +47,23 @@ function* logout(action) {
     }
     catch(err) {
         console.log(err);
-        yield put(actions.logoutError(err.message));
+        yield put(actions.logoutError([err.message]));
     }
 }
 
 function* signUp(action) {
     try {
         let response = yield call(() => api.signUp(action.email,action.password,action.oAuthToken));
-        if(response) {
+        if(response.data && response.data.signIn) {
             yield put(actions.signUpSuccess(response));
         }
         else {
-            yield put(actions.signUpError(response.message));
+            yield put(actions.signUpError([response.data.signUp.errors]));
         }
     }
     catch(err) {
         console.log(err);
-        yield put(actions.signUpError(err.message));
+        yield put(actions.signUpError([err.message]));
     }
 }
 
@@ -79,7 +79,7 @@ function* updatePassword(action) {
     }
     catch(err) {
         console.log(err);
-        yield put(actions.updatePasswordError(err.message));
+        yield put(actions.updatePasswordError([err.message]));
     }
 }
 
@@ -90,12 +90,12 @@ function* editProfile(action) {
             yield put(actions.editProfileSuccess(response));
         }
         else {
-            yield put(actions.editProfileError(response.message));
+            yield put(actions.editProfileError([response.message]));
         }
     }
     catch(err) {
         console.log(err);
-        yield put(actions.editProfileError(err.message));
+        yield put(actions.editProfileError([err.message]));
     }
 }
 

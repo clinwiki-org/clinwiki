@@ -7,7 +7,7 @@ import { callGraphql } from 'utils/graphqlUtil';
 const ENDPOINT = `http://${window.location.hostname}:3000/graphql`
 
 export const fetchCurrentUser = () => {
-    return callGraphql(ENDPOINT,query.FETCH_CURRENT_USER_QUERY, {});
+    return callGraphql(ENDPOINT,query.FETCH_CURRENT_USER_QUERY, {},'CurrentUserQuery');
 };
 
 export const signIn = (email,password,oAuthToken) => {
