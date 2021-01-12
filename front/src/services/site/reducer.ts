@@ -121,7 +121,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isDeletingSiteView: true
             };
-        case types.DELETE_SITE_VIEW_SUCCESS:            
+        case types.DELETE_SITE_VIEW_SUCCESS:
             return {
                 ...state,
                 isDeletingSiteView: false,
