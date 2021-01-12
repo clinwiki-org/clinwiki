@@ -15,16 +15,20 @@ import CopySiteViewMutation, {
 } from 'mutations/CopySiteViewMutation';
 import 'override.css';
 import ThemedButton from 'components/StyledComponents/index';
+import { connect } from 'react-redux';
+import { fetchSiteProvider } from 'services/site/actions';
+import { BeatLoader } from 'react-spinners';
 
 interface SiteViewItemProps {
   match: any;
   history: History;
   location: Location;
-  refresh: () => void;
   siteView: SiteViewFragment;
   site: any;
   type: string;
   theme?: any;
+  fetchSiteProvider: any;
+  isReloading: any;
 }
 
 const StyledButton = styled(ThemedButton)`
@@ -59,7 +63,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         },
       },
     }).then(() => {
-      this.props.refresh();
+      this.props.fetchSiteProvider(this.props.site.id);
     });
   };
 
@@ -78,7 +82,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
           },
         },
       }).then(() => {
-        this.props.refresh();
+        this.props.fetchSiteProvider(this.props.site.id);
       });
     }
   };
@@ -98,7 +102,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         },
       },
     }).then(() => {
-      this.props.refresh();
+      this.props.fetchSiteProvider(site.id);
     });
   };
 
@@ -158,8 +162,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         },
       },
     }).then(() => {
-      console.log('refreshing');
-      this.props.refresh();
+      this.props.fetchSiteProvider(this.props.site.id);
     });
   };
 
@@ -171,6 +174,10 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       urlString = `https://${site.subdomain}.clinwiki.org/search?sv=${siteView.url}`;
     } else {
       urlString = `https://clinwiki.org/search?sv=${siteView.url}`;
+    }
+
+    if (this.props.isReloading){
+      return <BeatLoader/>
     }
 
     return (
@@ -218,4 +225,13 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   }
 }
 
-export default withRouter(SiteViewItem);
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url))
+})
+
+const mapStateToProps = (state, ownProps) => ({
+  isReloading: state.site.isFetchingSiteProvider,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps) (withRouter(SiteViewItem));

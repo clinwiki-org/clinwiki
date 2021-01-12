@@ -3,7 +3,7 @@ import { SiteViewMutationInput } from 'types/globalTypes';
 import { CreateSiteInput } from 'services/site/model/InputTypes';
 import { Switch, Route, match } from 'react-router';
 import { trimPath } from 'utils/helpers';
-import { SiteFragment, SiteFragment_siteViews } from 'types/SiteFragment';
+import { SiteFragment, SiteFragment_siteViews } from 'services/site/model/SiteFragment';
 import {
   updateView,
 } from 'utils/siteViewUpdater';
@@ -17,7 +17,6 @@ interface SiteViewRouterProps {
   history: History;
   location: Location;
   siteViews: SiteFragment_siteViews[];
-  refresh: any;
   onSave?: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
   handleSiteViewEdit?: any;
 }
@@ -70,7 +69,6 @@ class SiteViewRouter extends React.Component<
             <SiteViewsForm
               siteViews={this.props.siteViews}
               site={site}
-              refresh={this.props.refresh}
             />
           )}
         />

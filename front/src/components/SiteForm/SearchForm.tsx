@@ -39,7 +39,7 @@ import {
   SiteFragment,
   SiteFragment_siteViews,
   SiteFragment_siteView,
-} from 'types/SiteFragment';
+} from 'services/site/model/SiteFragment';
 import SearchTemplate from './SearchTemplate';
 
 interface SearchFormProps {

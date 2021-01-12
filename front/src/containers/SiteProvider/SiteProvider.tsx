@@ -1,364 +1,55 @@
 import * as React from 'react';
-import { gql, useQuery } from '@apollo/client';
-import {
-  SiteProviderQuery,
-  SiteProviderQueryVariables,
-} from 'types/SiteProviderQuery';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment } from 'services/site/model/SiteFragment';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import { fetchSiteProvider } from 'services/site/actions';
+import { useEffect } from 'react';
+import { BeatLoader } from 'react-spinners';
 
 interface SiteProviderProps {
   id?: number;
   url?: string;
-  children: (site: SiteFragment, refetch: any) => JSX.Element | null;
+  children: any; // (site: SiteFragment) => JSX.Element | null;
 }
-
-const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
-  fragment SiteStudyExtendedGenericSectionFragment on SiteStudyExtendedGenericSection {
-    template
-    hide
-    order
-    title
-    name
-  }
-`;
-
-const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT = gql`
-  fragment SiteStudyBasicGenericSectionFragment on SiteStudyBasicGenericSection {
-    hide
-    title
-    name
-  }
-`;
-
-const SITE_STUDY_PAGE_FRAGMENT = gql`
-  fragment SiteStudyPageFragment on SiteStudyPage {
-    allFields
-    basicSections {
-      ...SiteStudyBasicGenericSectionFragment
-    }
-    extendedSections {
-      ...SiteStudyExtendedGenericSectionFragment
-    }
-  }
-
-  ${SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT}
-  ${SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT}
-`;
-
-export const SITE_VIEW_FRAGMENT = gql`
-  fragment SiteViewFragment on SiteView {
-    name
-    url
-    id
-    default
-    description
-    study {
-      ...SiteStudyPageFragment
-    }
-    search {
-      type
-      template
-      autoSuggest {
-        aggs {
-          fields {
-            order {
-              sortKind
-              desc
-            }
-            name
-            display
-            preselected {
-              kind
-              values
-            }
-            visibleOptions {
-              kind
-              values
-            }
-            autoSuggest
-            rank
-          }
-          selected {
-            kind
-            values
-          }
-        }
-        crowdAggs {
-          fields {
-            order {
-              sortKind
-              desc
-            }
-            name
-            display
-            preselected {
-              kind
-              values
-            }
-            visibleOptions {
-              kind
-              values
-            }
-            rank
-            autoSuggest
-          }
-          selected {
-            kind
-            values
-          }
-        }
-      }
-      results {
-        type
-        buttons {
-          items {
-            icon
-            target
-          }
-          location
-        }
-      }
-      crumbs {
-        search
-      }
-      presearch {
-        aggs {
-          fields {
-            order {
-              sortKind
-              desc
-            }
-            name
-            display
-            displayName
-            aggSublabel
-            preselected {
-              kind
-              values
-            }
-            visibleOptions {
-              kind
-              values
-            }
-            autoSuggest
-            rank
-            rangeStartLabel
-            rangeEndLabel
-            bucketKeyValuePairs{
-              key
-              label
-            }
-            showAllowMissing
-            showFilterToolbar
-            defaultToOpen
-            layout
-            maxCrumbs
-          }
-          selected {
-            kind
-            values
-          }
-        }
-        crowdAggs {
-          fields {
-            order {
-              sortKind
-              desc
-            }
-            name
-            display
-            displayName
-            aggSublabel
-            preselected {
-              kind
-              values
-            }
-            visibleOptions {
-              kind
-              values
-            }
-            rank
-            autoSuggest
-            rangeStartLabel
-            rangeEndLabel
-            bucketKeyValuePairs{
-              key
-              label
-            }
-            showAllowMissing
-            showFilterToolbar
-            defaultToOpen
-            layout
-            maxCrumbs
-          }
-          selected {
-            kind
-            values
-          }
-        }
-        button {
-          name
-          target
-        }
-        instructions
-      }
-      sortables
-      fields
-      config {
-        fields {
-          showPresearch
-          showFacetBar
-          showAutoSuggest
-          showBreadCrumbs
-          showResults
-        }
-      }
-
-      aggs {
-        fields {
-          order {
-            sortKind
-            desc
-          }
-          name
-          display
-          displayName
-          aggSublabel
-          preselected {
-            kind
-            values
-          }
-          visibleOptions {
-            kind
-            values
-          }
-          autoSuggest
-          rank
-          rangeStartLabel
-          rangeEndLabel
-          bucketKeyValuePairs{
-            key
-            label
-          }
-          showAllowMissing
-          showFilterToolbar
-          defaultToOpen
-          layout
-          maxCrumbs
-        }
-        selected {
-          kind
-          values
-        }
-      }
-      crowdAggs {
-        fields {
-          order {
-            sortKind
-            desc
-          }
-          name
-          display
-          displayName
-          aggSublabel
-          preselected {
-            kind
-            values
-          }
-          visibleOptions {
-            kind
-            values
-          }
-          rank
-          autoSuggest
-          rangeStartLabel
-          rangeEndLabel
-          bucketKeyValuePairs{
-            key
-            label
-          }
-          showAllowMissing
-          showFilterToolbar
-          defaultToOpen
-          layout
-          maxCrumbs
-        }
-        selected {
-          kind
-          values
-        }
-      }
-    }
-  }
-
-  ${SITE_STUDY_PAGE_FRAGMENT}
-`;
-
-export const SITE_FRAGMENT = gql`
-  fragment SiteFragment on Site {
-    id
-    editors {
-      email
-    }
-    name
-    skipLanding
-    hideDonation
-    subdomain
-    themes
-    reactionsConfig
-    userRank
-    owners {
-      email
-    }
-    siteView(url: $url) {
-      ...SiteViewFragment
-    }
-    siteViews {
-      ...SiteViewFragment
-    }
-  }
-
-  ${SITE_VIEW_FRAGMENT}
-`;
-
-const QUERY = gql`
-  query SiteProviderQuery($id: Int, $url: String) {
-    site(id: $id) {
-      ...SiteFragment
-    }
-  }
-
-  ${SITE_FRAGMENT}
-`;
-
 interface UseSiteProps {
-  id?: number;
-  url?: string;
-}
-export function useSite(props?: UseSiteProps) {
-  // console.log("USE SITE PROPS", props);
-  // console.trace();
-  const urlName = new URLSearchParams(window.location.search)
-    .getAll('sv')
-    .toString()
-    .toLowerCase();
-  const result = useQuery<SiteProviderQuery>(QUERY, {
-    variables: { id: props?.id, url: props?.url },
-  });
-  if (!result.data) return { ...result, site: null, currentSiteView: null };
-  const site = result?.data?.site;
-  const currentSiteView =
-    site?.siteViews.find(
-      siteview => siteview?.url?.toLowerCase() === urlName
-    ) || site?.siteView;
-  return { ...result, site, currentSiteView };
+  id?: number | any;
+  url?: string | any;
 }
 
 function SiteProvider(props: SiteProviderProps) {
-  const { data, loading, error, refetch } = useSite(props);
-  if (error) console.log(error);
-  if (loading || error || !data) return null;
-  return props.children(data.site!, refetch);
+  const dispatch = useDispatch();
+  useEffect(() => {
+  dispatch(fetchSiteProvider(props?.id, props?.url));
+ }, [])
+  
+ const urlName = new URLSearchParams(window.location.search)
+ .getAll('sv')
+ .toString()
+ .toLowerCase();
+  //console.log("🚀 ~ urlName", urlName);
+  
+ const isFetchingSiteProvider = useSelector((state : RootState) => state.site.isFetchingSiteProvider)
+ const siteProvider = useSelector((state : RootState ) => state.site.siteProvider)
+ //console.log("🚀 ~useSite ~ siteProvider", siteProvider);
+
+ //const result = siteProvider
+ //if (!result) return { ...result, site: null, currentSiteView: null };
+if (!siteProvider){
+  return <BeatLoader/>
+}
+if (!isFetchingSiteProvider  ) {
+  const site = siteProvider.site;
+  const currentSiteView =
+  site?.siteViews.find(
+    siteview => siteview?.url?.toLowerCase() === urlName
+    ) || site?.siteView;
+  //console.log("🚀 ~ file:   CURRENT SITE VIEW *", currentSiteView);
+
+  return props.children(site, currentSiteView);
+}
+else {
+  return <BeatLoader/>
+}
 }
 
 export default SiteProvider;
