@@ -81,8 +81,8 @@ export interface FetchSitesPageErrorAction {
 
 export interface FetchSiteProviderSendAction {
     type: typeof FETCH_SITE_PROVIDER_SEND,
-    id: number,
-    url: string
+    id?: number,
+    url?: string
 };
 
 export interface FetchSiteProviderSuccessAction {
