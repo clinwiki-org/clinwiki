@@ -10,9 +10,9 @@ export const fetchUserSuccess = (payload: UserFragment) : types.UserActionTypes 
     payload
 });
 
-export const fetchUserError = (message: string) : types.UserActionTypes => ({
+export const fetchUserError = (errors: Array<string>) : types.UserActionTypes => ({
     type: types.FETCH_USER_ERROR,
-    payload: { message }
+    payload: { errors }
 });
 
 export const signIn = (email: string, password: string, oAuthToken: string) : types.UserActionTypes => ({
@@ -27,9 +27,9 @@ export const signInSuccess = (payload: UserFragment) : types.UserActionTypes => 
     payload
 });
 
-export const signInError = (message: string) : types.UserActionTypes => ({
+export const signInError = (errors: Array<string>) : types.UserActionTypes => ({
     type: types.SIGN_IN_ERROR,
-    payload: { message }
+    payload: errors
 });
 
 export const signUp = (email: string, password: string, oAuthToken: string) : types.UserActionTypes => ({
@@ -44,9 +44,9 @@ export const signUpSuccess = (payload: types.UserData) : types.UserActionTypes =
     payload
 });
 
-export const signUpError = (message: string) : types.UserActionTypes => ({
+export const signUpError = (errors: Array<string>) : types.UserActionTypes => ({
     type: types.SIGN_UP_ERROR,
-    payload: { message }
+    payload: errors
 });
 
 export const updatePassword = (resetPasswordToken: string, password: string, passwordConfirmation: string) : types.UserActionTypes => ({
@@ -61,9 +61,9 @@ export const updatePasswordSuccess = (payload: types.UserData) : types.UserActio
     payload
 });
 
-export const updatePasswordError = (message: string) : types.UserActionTypes => ({
+export const updatePasswordError = (errors: Array<string>) : types.UserActionTypes => ({
     type: types.UPDATE_PASSWORD_ERROR,
-    payload: { message }
+    payload: errors
 });
 
 export const editProfile = (firstName: string, lastName: string, defaultQueryString: string) : types.UserActionTypes => ({
@@ -78,9 +78,9 @@ export const editProfileSuccess = (payload: types.UserData) : types.UserActionTy
     payload
 });
 
-export const editProfileError = (message: string) : types.UserActionTypes => ({
+export const editProfileError = (errors: Array<string>) : types.UserActionTypes => ({
     type: types.EDIT_PROFILE_ERROR,
-    payload: { message }
+    payload: errors
 });
 
 export const logout = () : types.UserActionTypes => ({
@@ -91,7 +91,7 @@ export const logoutSuccess = () : types.UserActionTypes => ({
     type: types.LOGOUT_SUCCESS
 });
 
-export const logoutError = (message: string) : types.UserActionTypes => ({
+export const logoutError = (errors: Array<string>) : types.UserActionTypes => ({
     type: types.LOGOUT_ERROR,
-    payload: { message }
+    payload: errors
 });
