@@ -143,7 +143,6 @@ const PresearchHeader = styled.div`
   border-left: 1px solid;
   border-color: ${props => props.theme.presearch.presearchBorderColor};
   padding: 20px 12px;
-  cursor:pointer;
     
   }
 `;
@@ -158,6 +157,7 @@ export const PresearchTitle = styled.div`
   letter-spacing: .1em;
   position: relative;
   top: -9px;
+  cursor:pointer;
 `;
 
 const SearchCard = styled.div`
@@ -367,14 +367,13 @@ export const PresearchContainer = styled.div`
     flex-direction: column;
     max-height: 1500px;
   }
-  span {
-    display: contents;
+  .presearch-total-results{
+    margin: 10px;
   }
   .horizontal-pre {
     display: grid;
     grid-template-columns: 1fr 200px;
   }
-
   .horizontal-aggs {
     display: flex;
     flex-wrap: wrap;
@@ -508,6 +507,7 @@ const FacetTitle = styled.div`
   color: ${props => props.theme.aggSideBar.sideBarFont};
   position: relative;
   top: -9px;
+  cursor:pointer;
 
   
 `;
@@ -520,7 +520,6 @@ const FacetHeader = styled.div`
   width: 100%;
   padding: 20px 12px;
   vertical-align: middle;
-  cursor:pointer;
   text-transform: uppercase;
 
 

@@ -285,6 +285,7 @@ export interface PresentSiteProviderQuery_site_siteView_search_presearch {
   crowdAggs: PresentSiteProviderQuery_site_siteView_search_presearch_crowdAggs;
   button: PresentSiteProviderQuery_site_siteView_search_presearch_button;
   instructions: string;
+  showResults: boolean | null;
 }
 
 export interface PresentSiteProviderQuery_site_siteView_search_config_fields {

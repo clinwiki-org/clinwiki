@@ -285,6 +285,7 @@ export interface SiteProviderQuery_site_siteView_search_presearch {
   crowdAggs: SiteProviderQuery_site_siteView_search_presearch_crowdAggs;
   button: SiteProviderQuery_site_siteView_search_presearch_button;
   instructions: string;
+  showResults: boolean | null;
 }
 
 export interface SiteProviderQuery_site_siteView_search_config_fields {
@@ -701,6 +702,7 @@ export interface SiteProviderQuery_site_siteViews_search_presearch {
   crowdAggs: SiteProviderQuery_site_siteViews_search_presearch_crowdAggs;
   button: SiteProviderQuery_site_siteViews_search_presearch_button;
   instructions: string;
+  showResults: boolean | null;
 }
 
 export interface SiteProviderQuery_site_siteViews_search_config_fields {
