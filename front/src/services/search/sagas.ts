@@ -59,6 +59,7 @@ function* updateSearchParams(action) {
         let searchHash = updateResponse.data.provisionSearchHash.searchHash
         if (updateResponse.data.provisionSearchHash.searchHash !== null){ 
             yield put(actions.fetchSearchParams(searchHash.short))
+            yield put(actions.fetchSearchPageAggs(action.searchParams))
             yield put(actions.updateSearchParamsSuccess(searchHash));
             yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv}&pv=${location.query.pv}`))
         }
