@@ -3,9 +3,9 @@ import * as types from './types';
 const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
-    isSearching: false,
+    isFetchingSearchParams: false,
     searchResults: undefined,
-    isSearchingStudies: false,
+    isFetchingStudies: false,
     studies: undefined,
     isUpdatingParams: false,
     searchHash: undefined
@@ -33,18 +33,18 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
         case types.FETCH_SEARCH_PARAMS_SEND:
             return {
                 ...state,
-                isSearching: true
+                isFetchingSearchParams: true
             };
         case types.FETCH_SEARCH_PARAMS_SUCCESS:
             return {
                 ...state,
-                isSearching: false,
+                isFetchingSearchParams: false,
                 searchResults: action.payload
             };
         case types.FETCH_SEARCH_PARAMS_ERROR:
             return {
                 ...state,
-                isSearching: false
+                isFetchingSearchParams: false
             };
         case types.UPDATE_SEARCH_PARAMS_SEND:
             return {
@@ -65,18 +65,18 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
         case types.FETCH_SEARCH_STUDIES_SEND:
             return {
                 ...state,
-                isSearchingStudies: true
+                isFetchingStudies: true
             };
         case types.FETCH_SEARCH_STUDIES_SUCCESS:
             return {
                 ...state,
-                isSearchingStudies: false,
+                isFetchingStudies: false,
                 studies: action.payload
             };
         case types.FETCH_SEARCH_STUDIES_ERROR:
             return {
                 ...state,
-                isSearching: false
+                isFetchingStudies: false
             };
     
         default:

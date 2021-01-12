@@ -20,9 +20,9 @@ export const FETCH_SEARCH_STUDIES_ERROR = 'FETCH_SEARCH_STUDIES_ERROR';
 export interface SearchState {
     isFetchingAggs: boolean,
     aggs: SearchPageAggsQuery | undefined,
-    isSearching: boolean,
+    isFetchingSearchParams: boolean,
     searchResults: typeof SearchPageParamsQuery | undefined
-    isSearchingStudies: boolean,
+    isFetchingStudies: boolean,
     studies: SearchPageSearchQuery | undefined
     isUpdatingParams: boolean,
     searchHash: any;

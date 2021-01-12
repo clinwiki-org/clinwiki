@@ -345,7 +345,7 @@ useEffect(()=>{
 },[dispatch]);
 
 const data = useSelector((state : RootState ) => state.search.studies);
-const isLoading = useSelector((state : RootState ) => state.search.isSearchingStudies);
+const isLoading = useSelector((state : RootState ) => state.search.isFetchingStudies);
   // const result =  useQuery(SEARCH_PAGE_SEARCH_QUERY, {
   //   variables: params,
   // });

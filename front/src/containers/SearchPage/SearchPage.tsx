@@ -224,7 +224,7 @@ function SearchPage(props: SearchPageProps) {
   
   //Update SearchPageHashMutation 
   const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
-  const isSearching = useSelector((state: RootState) => state.search.isSearching);
+  const isFetchingSearchParams = useSelector((state: RootState) => state.search.isFetchingSearchParams);
   const searchHash = useSelector((state : RootState ) => state.search.searchHash);
   const data = useSelector((state : RootState ) => state.search.searchResults);
 

@@ -25,6 +25,7 @@ function* getSearchParams(action) {
         let response = yield call(() => api.fetchSearchParams(action.hash));
         if(response) {
             yield put(actions.fetchSearchParamsSuccess(response));
+            yield put(actions.updateSearchParamsSuccess(action.hash))
         }
         else {
             yield put(actions.fetchSearchParamsError(response.message));
