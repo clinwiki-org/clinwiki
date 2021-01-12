@@ -1,12 +1,8 @@
 import React,{useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch,useSelector} from 'react-redux';
+import {RootState} from 'reducers';
 import {signUp} from 'services/user/actions';
 import { Col } from 'react-bootstrap';
-import {
-  Mutation,
-  MutationComponentOptions,
-} from '@apollo/client/react/components';
-import { gql, MutationFunction }  from '@apollo/client';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import { ThemedButton } from './StyledButton';
@@ -24,6 +20,7 @@ const SignUpPage = (props) => {
   const [oAuthToken,setOAuthToken] = useState('');
   const [error,setError] = useState('');
   const dispatch = useDispatch();
+  const signUpErrors = useSelector( (state:RootState) => state.user.signUpErrors);
 
   const handleSignUp = () => {
     if (password === passwordConfirmation) {
@@ -82,7 +79,9 @@ const SignUpPage = (props) => {
                 />
               </div>
             </div>
-
+            <div style={{ marginTop: 20}}>
+                {signUpErrors.map( error => <StyledError key={error}>{error}</StyledError>)}
+            </div>
         <ThemedLinkContainer>
           <Link to="/sign_in">Sign In</Link>
           <Link to="/reset_password">Reset password</Link>

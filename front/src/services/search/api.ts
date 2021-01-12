@@ -1,11 +1,12 @@
 import * as query from './queries';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import { callGraphql } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
-const ENDPOINT = 'http://localhost:3000/graphql'
+const ENDPOINT = `http://${window.location.hostname}:3000/graphql`
 
 export const fetchSearchPageAggs = (searchParams : any) => {
     return callGraphql(ENDPOINT,query.SEARCH_PAGE_AGGS_QUERY, searchParams);
@@ -13,4 +14,8 @@ export const fetchSearchPageAggs = (searchParams : any) => {
 
 export const fetchSearchStudies = (hash : any) => {
     return callGraphql(ENDPOINT,SearchPageParamsQuery, { hash });
+};
+
+export const fetchSearchAutoSuggest = (searchParams : any) => {
+    return callGraphql(ENDPOINT,AUTOSUGGEST_QUERY, searchParams);
 };

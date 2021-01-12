@@ -28,7 +28,9 @@ export interface UserState {
     current: UserFragment | null,
     isLoading: boolean,
     isSigningIn: boolean,
+    signInErrors: Array<string>,
     isSigningUp: boolean,
+    signUpErrors: Array<string>,
     isUpdatingPassword: boolean,
     isEditingProfile: boolean
 }
@@ -38,7 +40,7 @@ export interface UserData {
 };
 
 export interface UserDataError {
-    message: string
+    errors: Array<string>
 };
 
 export interface FetchUserSendAction {
@@ -69,7 +71,7 @@ export interface SignInSuccessAction {
 
 export interface SignInErrorAction {
     type: typeof SIGN_IN_ERROR,
-    payload: UserDataError
+    payload: Array<string>
 };
 
 export interface SignUpSendAction {
@@ -86,7 +88,7 @@ export interface SignUpSuccessAction {
 
 export interface SignUpErrorAction {
     type: typeof SIGN_UP_ERROR,
-    payload: UserDataError
+    payload: Array<String>
 };
 
 export interface UpdatePasswordSendAction {
@@ -103,7 +105,7 @@ export interface UpdatePasswordSuccessAction {
 
 export interface UpdatePasswordErrorAction {
     type: typeof UPDATE_PASSWORD_ERROR,
-    payload: UserDataError
+    payload: Array<string>
 };
 
 export interface EditProfileSendAction {
@@ -120,7 +122,7 @@ export interface EditProfileSuccessAction {
 
 export interface EditProfileErrorAction {
     type: typeof EDIT_PROFILE_ERROR,
-    payload: UserDataError
+    payload: Array<string>
 };
 
 export interface LogoutSendAction {
@@ -133,7 +135,7 @@ export interface LogoutSuccessAction {
 
 export interface LogoutErrorAction {
     type: typeof LOGOUT_ERROR,
-    payload: UserDataError
+    payload: Array<string>
 };
 
 export type UserActionTypes = FetchUserSendAction | FetchUserSuccessAction | FetchUserErrorAction |
