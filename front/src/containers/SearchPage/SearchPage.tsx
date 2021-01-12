@@ -223,9 +223,10 @@ function SearchPage(props: SearchPageProps) {
   const dispatch = useDispatch();
   
   //Update SearchPageHashMutation 
-  const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams)
-  const isSearching = useSelector((state: RootState) => state.search.isSearching)
+  const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
+  const isSearching = useSelector((state: RootState) => state.search.isSearching);
   const searchHash = useSelector((state : RootState ) => state.search.searchHash);
+  const data = useSelector((state : RootState ) => state.search.searchResults);
 
   // const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
     //   variables: params.current,
@@ -763,20 +764,8 @@ useEffect(()=>{
  dispatch(fetchSearchParams(hash));
 },[dispatch]);
 
-// const result = useQuery(SearchPageParamsQuery, {
-//  variables: { hash },
-//  //Looks like this was our fix to our sort again
-//  fetchPolicy: "no-cache",
-//  onCompleted: (result)=>searchParamsQueryHelper(result)
+if(data == undefined) return <BeatLoader/>
 
-// });
-
-const data = useSelector((state : RootState ) => state.search.searchResults);
-const isLoading = useSelector((state : RootState ) => state.search.isSearching);
-
-// if (data == undefined && result.previousData !== undefined) { data = result.previousData }
-// if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
-if(data == undefined || isLoading) return <BeatLoader/>
 // searchParamsQueryHelper(data);
 const dataParams = searchParamsFromQuery(
   data.data!.searchParams,
