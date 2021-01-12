@@ -26,7 +26,7 @@ import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
 import './AggDropDownStyle.css';
-import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import SortKind from './SortKind';
 import BucketsPanel from './BucketsPanel';
 import Filter from './Filter';

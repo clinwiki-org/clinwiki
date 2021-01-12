@@ -9,7 +9,7 @@ import {
   UpdateSiteViewMutation as UpdateSiteViewMutationType,
   UpdateSiteViewMutationVariables,
 } from 'types/UpdateSiteViewMutation';
-import { SITE_VIEW_FRAGMENT } from '../services/site/SiteFragments'
+import { OLD_SITE_VIEW_FRAGMENT } from '../services/site/SiteFragments'
 
 interface UpdateSiteViewMutationProps {
   children: (
@@ -30,7 +30,7 @@ const UPDATE_SITE_VIEW_MUTATION = gql`
     }
   }
 
-  ${SITE_VIEW_FRAGMENT}
+  ${OLD_SITE_VIEW_FRAGMENT}
 `;
 
 const UpdateSiteViewMutationComponent = (

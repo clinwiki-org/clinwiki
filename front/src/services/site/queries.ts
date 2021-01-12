@@ -1,5 +1,5 @@
 import { SITE_FRAGMENT } from './SiteFragments';
-import { PRESENT_SITE_FRAGMENT } from './SiteFragments';
+import { PRESENT_SITE_FRAGMENT } from './PresentSiteProviderQuery';
 
 export const ADMIN_SITE_VIEW_FRAGMENT = `
     fragment AdminSiteViewFragment on SiteView {

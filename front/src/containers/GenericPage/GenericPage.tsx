@@ -11,9 +11,12 @@ import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
+//import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import { fetchPresentSiteProvider } from 'services/site/actions';
 
 
 interface Props {
@@ -40,7 +43,15 @@ export default function GenericPage(props: Props) {
   }
   // When we add more page types we need to refactor this a little bit and pull out the query/nctid
   const params = useUrlParams();
-  const { site } = usePresentSite({ url: params.sv});
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+  dispatch(fetchPresentSiteProvider( undefined , params.sv));
+  }, [])
+
+  const site = useSelector((state : RootState ) => state.site.presentSiteProvider.site)
+  //const { site } = usePresentSite({ url: params.sv});
+
   const { data: pageViewsData } = usePageViews(site?.id);
   const { data: pageViewData } = usePageView(defaultPage());
   const currentPage = pageViewData?.site?.pageView;
@@ -68,6 +79,11 @@ export default function GenericPage(props: Props) {
   }
 
   const title = microMailMerge(currentPage?.title, studyData?.study);
+
+  if (!site){
+    return <BeatLoader/>
+  }
+
   return (
     <div>
       <Helmet>

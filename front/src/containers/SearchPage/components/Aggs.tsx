@@ -26,7 +26,7 @@ import {
   SearchPageAggsQueryVariables,
 } from 'types/SearchPageAggsQuery';
 import { BeatLoader } from 'react-spinners';
-import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import styled from 'styled-components';
 import AggFilterInputUpdater from './AggFilterInputUpdater';

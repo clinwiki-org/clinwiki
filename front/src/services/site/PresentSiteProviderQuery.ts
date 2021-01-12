@@ -1,6 +1,6 @@
 import { gql, MutationUpdaterFn, useMutation, useQuery  }  from '@apollo/client';
 
-const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
+const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = `
     fragment SiteStudyExtendedGenericSectionFragment on SiteStudyExtendedGenericSection {
         template
         hide
@@ -10,7 +10,7 @@ const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = gql`
     }
 `;
 
-const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT = gql`
+const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT =  `
     fragment SiteStudyBasicGenericSectionFragment on SiteStudyBasicGenericSection {
         hide
         title
@@ -18,7 +18,7 @@ const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT = gql`
     }
 `;
 
-const SITE_STUDY_PAGE_FRAGMENT = gql`
+const SITE_STUDY_PAGE_FRAGMENT = `
     fragment SiteStudyPageFragment on SiteStudyPage {
         allFields
         basicSections {
@@ -33,7 +33,7 @@ const SITE_STUDY_PAGE_FRAGMENT = gql`
     ${SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT}
 `;
 
-export const SITE_VIEW_FRAGMENT = gql`
+export const SITE_VIEW_FRAGMENT = `
     fragment SiteViewFragment on SiteView {
         name
         url
@@ -282,7 +282,7 @@ export const SITE_VIEW_FRAGMENT = gql`
     ${SITE_STUDY_PAGE_FRAGMENT}
 `;
 
-export const PAGE_VIEW_FRAGMENT = gql`
+export const PAGE_VIEW_FRAGMENT = `
     fragment PageViewFragment on PageView {
         id
         url
@@ -293,7 +293,7 @@ export const PAGE_VIEW_FRAGMENT = gql`
     }
 `;
 
-export const PRESENT_SITE_FRAGMENT = gql`
+export const PRESENT_SITE_FRAGMENT = `
     fragment PresentSiteFragment on Site {
         id
         editors {
@@ -320,7 +320,7 @@ export const PRESENT_SITE_FRAGMENT = gql`
     ${PAGE_VIEW_FRAGMENT}
 `;
 
-export const PRESENT_SITE_QUERY = gql`
+export const PRESENT_SITE_QUERY = `
     query PresentSiteProviderQuery($id: Int, $url: String) {
         site(id: $id) {
             ...PresentSiteFragment
@@ -329,4 +329,5 @@ export const PRESENT_SITE_QUERY = gql`
 
     ${PRESENT_SITE_FRAGMENT}
 `;
+
 export default PRESENT_SITE_QUERY

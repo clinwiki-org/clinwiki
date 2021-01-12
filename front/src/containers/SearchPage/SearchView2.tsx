@@ -8,7 +8,7 @@ import { ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput } from 'types/globalTypes';
-import { PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import { PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import {
   map,
   over,

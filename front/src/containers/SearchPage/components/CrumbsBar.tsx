@@ -22,7 +22,7 @@ import AggCrumb from 'components/MultiCrumb/AggCrumb';
 import { BeatLoader } from 'react-spinners';
 import { AggCallback, SearchParams } from '../Types';
 import { isEmpty } from 'ramda';
-import { PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import { PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents/index';

@@ -2,7 +2,7 @@ import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragm
 import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
-//import { PresentSiteProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
+import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
 
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
@@ -97,8 +97,8 @@ export interface FetchSiteProviderErrorAction {
 
 export interface FetchPresentSiteProviderSendAction {
     type: typeof FETCH_PRESENT_SITE_PROVIDER_SEND,
-    id: number,
-    url: string
+    id?: number,
+    url?: string
 };
 
 export interface FetchPresentSiteProviderSuccessAction {

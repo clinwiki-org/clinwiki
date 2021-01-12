@@ -1,5 +1,4 @@
-// TODO  Component based in checkbox BucketsPanel
-// Need to setup as dropdown
+//Component based in checkbox BucketsPanel
 
 import * as React from 'react';
 import * as InfiniteScroll from 'react-infinite-scroller';

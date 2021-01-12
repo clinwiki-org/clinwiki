@@ -39,7 +39,7 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import {
   PresentSiteFragment,
   PresentSiteFragment_siteView,
-} from 'types/PresentSiteFragment';
+} from 'services/site/model/PresentSiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';

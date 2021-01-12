@@ -5,7 +5,7 @@ import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
 import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
-import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/SiteFragment';
+import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
 
 
 export const fetchAdminUserSite = () : types.SiteActionTypes => ({
@@ -54,8 +54,7 @@ export const fetchSiteProviderError = (message: string) : types.SiteActionTypes 
     payload: { message }
 });
 
-// TODO import presentSiteProviderQuery
-export const fetchPresentSiteProvider = (id: number, url: string) : types.SiteActionTypes => ({
+export const fetchPresentSiteProvider = (id?: number, url?: string) : types.SiteActionTypes => ({
     type: types.FETCH_PRESENT_SITE_PROVIDER_SEND,
     id,
     url
