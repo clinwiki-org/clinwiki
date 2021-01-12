@@ -72,9 +72,26 @@ function* updateSearchParams(action) {
     }
 }
 
+function* getSearchAutoSuggest(action) {
+    try {
+        let response = yield call(() => api.fetchSearchAutoSuggest(action.searchParams));
+        if(response) {
+            yield put(actions.fetchSearchAutoSuggestSuccess(response));
+        }
+        else {
+            yield put(actions.fetchSearchAutoSuggestError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSearchAutoSuggestError(err.message));
+    }
+}
+
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
     yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
     yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams)
+    yield takeLatest(types.FETCH_SEARCH_AUTOSUGGEST_SEND, getSearchAutoSuggest);
 }

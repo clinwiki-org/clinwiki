@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {  SiteViewMutationInput } from 'types/globalTypes';
-import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
+import { CreateSiteInput } from 'services/site/model/InputTypes';
 import { equals, prop, last } from 'ramda';
 import { Nav, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { trimPath } from 'utils/helpers';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment } from 'services/site/model/SiteFragment';
 import { StyledContainer } from './Styled';
 import {
   updateView,
@@ -21,6 +21,9 @@ import StudyForm from './StudyForm';
 import ThemedButton from 'components/StyledComponents/index';
 import { UpdateSiteViewMutationFn } from 'mutations/UpdateSiteViewMutation';
 import PagesForm from './PagesForm';
+import { connect } from 'react-redux';
+import { fetchSiteProvider } from 'services/site/actions';
+import { SiteViewFragment } from 'types/SiteViewFragment';
 
 interface SiteFormProps {
   match: match<{}>;
@@ -29,7 +32,7 @@ interface SiteFormProps {
   location: Location;
   onSaveSite: (CreateSiteInput) => void;
   onSaveSiteView?: UpdateSiteViewMutationFn;
-  refresh: any;
+  fetchSiteProvider?: any;
 }
 
 interface SiteFormState {
@@ -114,7 +117,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
           },
         })
         .then(() => {
-          this.props.refresh();
+            this.props.fetchSiteProvider(this.props.site.id)
         });
     }
     this.props.onSaveSite(this.state.form);
@@ -124,12 +127,11 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const { name, value } = e.currentTarget;
     console.log(`mutation: ${name}=${value}`);
     const mutation = createMutation(name, value);
-    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteView as SiteViewFragment, this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
-      console.log('handleadd', mutation, view, currentValue)
-    );
+      console.log('handleadd', mutation, view, currentValue));
   };
 
   handleFormChange = (form: CreateSiteInput) => {
@@ -186,7 +188,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   }
 
   render() {
-    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteView as SiteViewFragment, this.state.mutations);
     const path = trimPath(this.props.match.path);
     return (
       <Container>
@@ -211,7 +213,6 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               <SiteViewsRouter
                 {...props}
                 siteViews={this.props.site.siteViews}
-                refresh={this.props.refresh}
                 site={this.props.site}
               />
             )}
@@ -221,7 +222,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
             render={routeProps => (
               <StudyForm
                 {...routeProps}
-                view={view}
+                view={view  as SiteViewFragment}
                 onAddMutation={this.handleAddMutation}
               />
             )}
@@ -252,4 +253,9 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   }
 }
 
-export default SiteForm;
+const mapDispatchToProps = (dispatch) => ({
+  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url))
+})
+
+
+export default connect(null, mapDispatchToProps) (SiteForm);

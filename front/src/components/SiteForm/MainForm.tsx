@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { StyledContainer, StyledLabel } from './Styled';
-import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
+import { CreateSiteInput } from 'services/site/model/InputTypes';
 import { Checkbox, Row, Col, Table, FormControl } from 'react-bootstrap';
 import StyledFormControl from 'containers/LoginPage/StyledFormControl';
 import { set, lensPath, over, reject, equals } from 'ramda';

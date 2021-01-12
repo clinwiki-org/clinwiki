@@ -1,3 +1,4 @@
+import { SITE_FRAGMENT } from './SiteFragments';
 
 export const ADMIN_SITE_VIEW_FRAGMENT = `
     fragment AdminSiteViewFragment on SiteView {
@@ -47,4 +48,14 @@ export const SITES_PAGE_QUERY = `
   }
 
   ${SITE_ITEM_FRAGMENT}
+`;
+
+export const SITE_PROVIDER_QUERY = `
+  query SiteProviderQuery($id: Int, $url: String) {
+    site(id: $id) {
+      ...SiteFragment
+    }
+  }
+
+  ${SITE_FRAGMENT}
 `;

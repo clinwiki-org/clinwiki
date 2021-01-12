@@ -4,7 +4,9 @@ const initialState: types.UserState = {
     current: null,
     isLoading: false,
     isSigningIn: false,
+    signInErrors: [],
     isSigningUp: false,
+    signUpErrors: [],
     isUpdatingPassword: false,
     isEditingProfile: false
 };
@@ -19,7 +21,8 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
         case types.FETCH_USER_SUCCESS:
             return {
                 ...state,
-                isLoading: false
+                isLoading: false,
+                current: action.payload
             };
         case types.FETCH_USER_ERROR:
             return {
@@ -29,7 +32,8 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
         case types.SIGN_IN_SEND:
             return {
                 ...state,
-                isSigningIn: true
+                isSigningIn: true,
+                signInErrors: [],
             };
         case types.SIGN_IN_SUCCESS:
             return {
@@ -38,9 +42,11 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
                 current: action.payload
             };
         case types.SIGN_IN_ERROR:
+            console.log('SIGN_IN_ERROR action',action)
             return {
                 ...state,
-                isSigningIn: false
+                isSigningIn: false,
+                signInErrors: action.payload
             };
         case types.SIGN_UP_SEND:
             return {

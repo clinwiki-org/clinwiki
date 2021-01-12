@@ -17,6 +17,10 @@ export const UPDATE_SEARCH_PARAMS_ERROR = 'UPDATE_SEARCH_PARAMS_ERROR';
 export const FETCH_SEARCH_STUDIES_SEND = 'FETCH_SEARCH_STUDIES_SEND';
 export const FETCH_SEARCH_STUDIES_SUCCESS = 'FETCH_SEARCH_STUDIES_SUCCESS';
 export const FETCH_SEARCH_STUDIES_ERROR = 'FETCH_SEARCH_STUDIES_ERROR';
+
+export const FETCH_SEARCH_AUTOSUGGEST_SEND = 'FETCH_SEARCH_AUTOSUGGEST_SEND';
+export const FETCH_SEARCH_AUTOSUGGEST_SUCCESS = 'FETCH_SEARCH_AUTOSUGGEST_SUCCESS';
+export const FETCH_SEARCH_AUTOSUGGEST_ERROR = 'FETCH_SEARCH_AUTOSUGGEST_ERROR';
 export interface SearchState {
     isFetchingAggs: boolean,
     aggs: SearchPageAggsQuery | undefined,
@@ -26,9 +30,9 @@ export interface SearchState {
     studies: SearchPageSearchQuery | undefined
     isUpdatingParams: boolean,
     searchHash: any;
-
+    isFetchingAutoSuggest: boolean,
+    suggestions: Array<any>
 }
-
 export interface SearchDataError {
     message: string
 };
@@ -92,7 +96,23 @@ export interface FetchSearchStudiesErrorAction {
     payload: SearchDataError
 };
 
+export interface FetchSearchAutoSuggestSendAction {
+    type: typeof FETCH_SEARCH_AUTOSUGGEST_SEND
+    searchParams: any
+};
+
+export interface FetchSearchAutoSuggestSuccessAction {
+    type: typeof FETCH_SEARCH_AUTOSUGGEST_SUCCESS,
+    payload: any
+};
+
+export interface FetchSearchAutoSuggestErrorAction {
+    type: typeof FETCH_SEARCH_AUTOSUGGEST_ERROR,
+    payload: SearchDataError
+};
+
 export type SearchActionTypes = FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
     FetchSearchParamsSendAction | FetchSearchParamsSuccessAction | FetchSearchParamsErrorAction |
     UpdateSearchParamsSendAction | UpdateSearchParamsSuccessAction | UpdateSearchParamsErrorAction |
-    FetchSearchStudiesSendAction | FetchSearchStudiesSuccessAction | FetchSearchStudiesErrorAction;
+    FetchSearchStudiesSendAction | FetchSearchStudiesSuccessAction | FetchSearchStudiesErrorAction |
+    FetchSearchAutoSuggestSendAction | FetchSearchAutoSuggestSuccessAction | FetchSearchAutoSuggestErrorAction;

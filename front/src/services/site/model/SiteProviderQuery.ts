@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { SortKind, FieldDisplay, FilterKind } from "./globalTypes";
+import { SortKind, FieldDisplay, FilterKind } from"../../../types/globalTypes";
 
 // ====================================================
 // GraphQL query operation: SiteProviderQuery

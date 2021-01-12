@@ -8,7 +8,9 @@ const initialState: types.SearchState = {
     isFetchingStudies: false,
     studies: undefined,
     isUpdatingParams: false,
-    searchHash: undefined
+    searchHash: undefined,
+    isFetchingAutoSuggest: false,
+    suggestions: []
 };
 
 const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
@@ -78,7 +80,24 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 ...state,
                 isFetchingStudies: false
             };
-    
+
+        case types.FETCH_SEARCH_AUTOSUGGEST_SEND:
+            return {
+                ...state,
+                isFetchingAutoSuggest: true
+            };
+        case types.FETCH_SEARCH_AUTOSUGGEST_SUCCESS:
+            return {
+                ...state,
+                isFetchingAutoSuggest: false,
+                suggestions: action.payload
+            };
+        case types.FETCH_SEARCH_AUTOSUGGEST_ERROR:
+            return {
+                ...state,
+                isFetchingAutoSuggest: false
+            };
+                
         default:
             return {...state};
     }

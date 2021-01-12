@@ -39,12 +39,12 @@ import {
   SiteFragment,
   SiteFragment_siteViews,
   SiteFragment_siteView,
-} from 'types/SiteFragment';
+} from 'services/site/model/SiteFragment';
 import SearchTemplate from './SearchTemplate';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
-  view: SiteViewFragment;
+  view: SiteViewFragment | SiteFragment_siteView;
   siteViews: SiteFragment_siteViews[];
   siteViewId: any;
   history: History;
@@ -922,7 +922,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
   render() {
     const siteviewId = +this.props.match.params.id;
-    let view = this.props.siteViews.find(view => siteviewId == view.id);
+    let view = this.props.siteViews.find(view => siteviewId == view.id) as SiteViewFragment;
     if (!view) return null;
 
     console.log([this.props.siteViews, siteviewId, view]);

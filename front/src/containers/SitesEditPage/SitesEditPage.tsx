@@ -1,13 +1,13 @@
 import * as React from 'react';
 import SiteForm from 'components/SiteForm/SiteForm';
-import UpdateSiteMutation, {
-  UpdateSiteMutationFn,
-} from 'mutations/UpdateSiteMutation';
-import { CreateSiteInput } from 'services/site/model/CreateSiteInput';
+import { UpdateSiteInput } from 'services/site/model/InputTypes';
 import { match } from 'react-router';
 import SiteProvider from 'containers/SiteProvider';
 import { History, Location } from 'history';
 import UpdateSiteViewMutation from 'mutations/UpdateSiteViewMutation';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import { updateSite } from 'services/site/actions';
 
 interface SitesEditPageProps {
   match: match<{ id: string }>;
@@ -15,43 +15,35 @@ interface SitesEditPageProps {
   location: Location;
 }
 
-class SitesEditPage extends React.PureComponent<SitesEditPageProps> {
-  handleSave = (updateSite: UpdateSiteMutationFn) => (
-    input: CreateSiteInput
-  ) => {
-    updateSite({
-      variables: {
-        input: { ...input, id: parseInt(this.props.match.params.id, 10) },
-      },
-    });
+const SitesEditPage = ({match, history, location} : SitesEditPageProps) => {
+  const dispatch = useDispatch();
+  const isUpdating = useSelector((state : RootState ) => state.site.isUpdatingSite)
+
+  const handleSave = (input: UpdateSiteInput) => {
+      let finalInput = { ...input, id: parseInt(match.params.id, 10) }
+      dispatch(updateSite(finalInput));
+      if (!isUpdating) {
+        history.push('/sites')}
   };
 
-  render() {
     return (
-      <SiteProvider id={parseInt(this.props.match.params.id, 10)}>
-        {(site, refetch) => (
+      <SiteProvider id={parseInt(match.params.id, 10)}>
+        {(site) => (
           <UpdateSiteViewMutation>
             {updateSiteView => (
-              <UpdateSiteMutation
-                onCompleted={() => this.props.history.push('/sites')}>
-                {updateSite => (
                   <SiteForm
-                    match={this.props.match}
-                    history={this.props.history}
-                    location={this.props.location}
-                    refresh={refetch}
+                    match={match}
+                    history={history}
+                    location={location}
                     site={site}
-                    onSaveSite={this.handleSave(updateSite)}
+                    onSaveSite={input => handleSave(input)}
                     onSaveSiteView={updateSiteView}
                   />
-                )}
-              </UpdateSiteMutation>
             )}
           </UpdateSiteViewMutation>
         )}
       </SiteProvider>
     );
-  }
 }
 
 export default SitesEditPage;

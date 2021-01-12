@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SiteFragment } from 'types/SiteFragment';
+import { SiteFragment } from 'services/site/model/SiteFragment';
 import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';

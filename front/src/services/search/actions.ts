@@ -60,3 +60,19 @@ export const fetchSearchStudiesError = (message: string) : types.SearchActionTyp
     type: types.FETCH_SEARCH_STUDIES_ERROR,
     payload: { message }
 });
+
+export const fetchSearchAutoSuggest = ( searchParams: any) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_AUTOSUGGEST_SEND,
+    searchParams
+});
+
+export const fetchSearchAutoSuggestSuccess = (payload: SearchPageAggsQuery) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_AUTOSUGGEST_SUCCESS,
+    payload
+});
+
+export const fetchSearchAutoSuggestError = (message: string) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_AUTOSUGGEST_ERROR,
+    payload: { message }
+});
+

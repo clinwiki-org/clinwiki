@@ -1,7 +1,7 @@
 import { getLocalJwt } from 'utils/localStorage';
 
 
-export const callGraphql = (endpoint: string, query: any, variables: any) => {
+export const callGraphql = (endpoint: string, query: any, variables: any, operationName?: string) => {
     return fetch(endpoint,{
         method: 'POST',
         headers: {
@@ -11,7 +11,8 @@ export const callGraphql = (endpoint: string, query: any, variables: any) => {
         },
         body: JSON.stringify({
             query,
-            variables
+            variables,
+            operationName
         })
     }).then(r => r.json());
 
