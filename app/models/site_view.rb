@@ -234,6 +234,7 @@ class SiteView < ApplicationRecord # rubocop:disable Metrics/ClassLength
             name: "Search",
             target: "",
           },
+          showResults: false
         },
         autoSuggest: {
           aggs: {
