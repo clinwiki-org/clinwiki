@@ -17,3 +17,13 @@ export const callGraphql = (endpoint: string, query: any, variables: any, operat
     }).then(r => r.json());
 
 }
+
+export const get_gql_url = () => {
+    if (
+      typeof window === 'undefined' ||
+      window.location.hostname.includes('localhost')
+    ) {
+      return `http://${window.location.hostname}:3000/graphql`;
+    }
+    return '/graphql';
+  }
