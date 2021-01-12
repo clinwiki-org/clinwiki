@@ -44,7 +44,7 @@ import SearchTemplate from './SearchTemplate';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
-  view: SiteViewFragment | SiteFragment_siteView;
+  view: SiteViewFragment;
   siteViews: SiteFragment_siteViews[];
   siteViewId: any;
   history: History;
