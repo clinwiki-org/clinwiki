@@ -25,7 +25,8 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
         case types.FETCH_ADMIN_SITE_VIEW_SUCCESS:
             return {
                 ...state,
-                isFetchingAdminSiteView: false
+                isFetchingAdminSiteView: false,
+                adminSiteView: action.payload
             };
         case types.FETCH_ADMIN_SITE_VIEW_ERROR:
             return {
