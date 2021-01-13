@@ -345,7 +345,7 @@ const isLoading = useSelector((state : RootState ) => state.search.isFetchingStu
   //   variables: params,
   // });
   // const { data, loading, error } = result;
-  // console.log("DATA",data)
+  console.log("DATA",data)
   if(data == undefined || isLoading) return <BeatLoader/>
   return (
     <SearchWrapper>

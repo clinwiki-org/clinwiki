@@ -163,7 +163,7 @@ const Aggs = (props: AggsProps) => {
   // if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
   // if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
   if(data == undefined) return <BeatLoader/>
-
+  console.log("Aggs",data)
   if (data.data && data.data.crowdAggs && data.data.search?.aggs) {
       let recordsTotal = data.data.search?.recordsTotal;
       props.getTotalResults(recordsTotal);
