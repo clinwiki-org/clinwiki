@@ -46,7 +46,7 @@ import {
   PresearchPanel,
   PresearchContent,
 } from 'components/StyledComponents';
-import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
+//import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 import BucketsDropDown from './BucketsDropDown';
 import LocationAgg from './LocationAgg';
 import CustomDropDown from './CustomDrop';
@@ -513,4 +513,4 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 }
 
 // @ts-ignore
-export default withApollo<any>(withPresentSite2(withAggContext(AggDropDown)));
+export default withApollo<any>(withAggContext(AggDropDown));

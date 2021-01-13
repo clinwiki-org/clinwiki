@@ -46,11 +46,14 @@ import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
-import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
+//import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
 import HtmlToReact from 'html-to-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPresentSiteProvider } from 'services/site/actions';
+import { RootState } from 'reducers';
 
 
 
@@ -176,8 +179,8 @@ interface SearchPageProps {
   searchParams?: SearchParams;
   userId?: string;
   profileParams?: any;
-  site: PresentSiteFragment;
-  presentSiteView: PresentSiteFragment_siteView;
+  //site: PresentSiteFragment;
+  //presentSiteView: PresentSiteFragment_siteView;
   mutate: any;
   email?: string;
   intervention?: boolean;
@@ -272,12 +275,40 @@ function SearchPage(props: SearchPageProps) {
     document.title = result.substring(0, result.length -2)
   }
 
+  const url =
+  window.location.search;
+  const urlName = new URLSearchParams(url)
+  .getAll('sv')
+  .toString();
+  const urlFinal = urlName ? urlName : "default";
+
+/*   const getSiteView = () => {
+    const siteView = new URLSearchParams(
+      props.history.location.search.getAll('sv').toString() || 'default'
+      );
+    return siteView;
+  }
+  let sv = getSiteView() as string; */
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+  dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
+  }, [])
+
+  const site = useSelector((state : RootState ) => state.site.presentSiteProvider.site)
+  /*   if (!site){
+    return <BeatLoader color="red" />
+  } */
+
+  const presentSiteView = site?.siteView;
+
+
   useEffect(() => {
     let searchTerm = new URLSearchParams(props.location?.search || '');
 
     let initialLoadParams = {
       ...DEFAULT_PARAMS,
-      ...preselectedFilters(props.presentSiteView),
+      ...preselectedFilters(presentSiteView),
     };
 
     if (window.innerWidth < 768) {
@@ -430,7 +461,7 @@ function SearchPage(props: SearchPageProps) {
         presentSiteView={siteView}
         searchParams={searchParams}
         updateSearchParams={updateSearchParams}
-        site={props.site}
+        site={site}
         getTotalResults={setTotalRecords}
       />
     );
@@ -438,7 +469,7 @@ function SearchPage(props: SearchPageProps) {
 
   const renderSearch = (searchParams) => {
     const hash = getHashFromLocation();
-    const { presentSiteView } = props;
+    //const { presentSiteView } = props;
     return  presentSiteView.search.config.fields.showResults ? (
       <MemoizedSearchView
         key={`${hash}+${JSON.stringify(params.current)}`}
@@ -477,7 +508,7 @@ function SearchPage(props: SearchPageProps) {
       props.history.location.search
     );
 
-    const providedPageView = props.site.pageView?.url;
+    const providedPageView = site.pageView?.url;
     const defaultPageView = providedPageView ? providedPageView : 'default';
     const pageViewUrl =
       searchQueryString.getAll('pv').toString() || defaultPageView;
@@ -494,7 +525,7 @@ function SearchPage(props: SearchPageProps) {
 
   const renderPresearch = (hash, searchParams) => {
     const { aggFilters = [], crowdAggFilters = [] } = searchParams || {};
-    const { presentSiteView } = props;
+    //const { presentSiteView } = props;
     const preSearchAggs = presentSiteView.search.presearch.aggs.selected.values;
     const preSearchCrowdAggs =
       presentSiteView.search.presearch.crowdAggs.selected.values;
@@ -555,7 +586,7 @@ function SearchPage(props: SearchPageProps) {
           preSearchCrowdAggs={preSearchCrowdAggs}
           presentSiteView={presentSiteView}
           updateSearchParams={updateSearchParams}
-          site={props.site}
+          site={site}
           opened={opened}
           openedKind={openedKind}
           onOpen={handleOpenAgg}
@@ -582,7 +613,7 @@ function SearchPage(props: SearchPageProps) {
     };
 
 
-    const { presentSiteView } = props;
+   // const { presentSiteView } = props;
     const hash = getHashFromLocation();
     return (
       <ThemedSearchContainer>
@@ -752,7 +783,7 @@ const searchParamsQueryHelper =(data)=>{
   params.current= dataParams
   setShouldRender(true)
 }
-const { presentSiteView } = props;
+//const { presentSiteView } = props;
 /// SEARCH PAGE PARAMS QUERY
 const result = useQuery(SearchPageParamsQuery, {
  variables: { hash },
@@ -771,7 +802,9 @@ if (result.error || (result.loading && data == undefined)) return <BeatLoader />
     <Switch>
       <Route
         render={() => {
-          const { presentSiteView } = props;
+          //const { presentSiteView, site } = props;
+          console.log("PRESENT SITE VIEW****", presentSiteView);
+          console.log("SITE ****",site)
           const {
             showPresearch,
             showFacetBar,
@@ -812,4 +845,4 @@ if (result.error || (result.loading && data == undefined)) return <BeatLoader />
   )
 }
 
-export default withPresentSite2((SearchPage));
+export default (SearchPage);

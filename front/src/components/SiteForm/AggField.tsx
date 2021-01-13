@@ -469,7 +469,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 isOpen={this.state.isKeyValuesOpen}
                 selectedKeys={visibleOptions}
                 onOpen={this.handleOpen('keyValuePair')}
-                currentSiteView={this.props.view}
+                presentSiteView={this.props.view}
                 configType={this.props.configType}
                 returnAll={this.props.returnAll}
                 handleKeyValueMutations={this.handleKeyValueMutations}

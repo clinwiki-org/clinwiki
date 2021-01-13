@@ -12,7 +12,6 @@ interface PresentSiteProviderProps {
     children: (site: PresentSiteFragment) => JSX.Element | null;
 }
 
-
 function PresentSiteProvider(props: PresentSiteProviderProps) {
     const url =
     window.location.search;
@@ -30,18 +29,23 @@ function PresentSiteProvider(props: PresentSiteProviderProps) {
    const presentSiteProvider = useSelector((state : RootState ) => state.site.presentSiteProvider)
 
    if (!presentSiteProvider){
-    return <BeatLoader/>
+       console.log("BEAT 1")
+    return <BeatLoader color="blue"/>
   }
-  if (!isFetchingPresentSiteProvider  ) {
+  if (!isFetchingPresentSiteProvider && presentSiteProvider ) {
     const site = presentSiteProvider.site;
     return props.children(site);
   }
   else {
-    return <BeatLoader/>
+    console.log("BEAT 2")
+    return <BeatLoader color="blue"/>
   }
   
 }
 
+export default PresentSiteProvider;
+
+/* 
 type ToOmit = 'site' | 'refetch' | 'presentSiteView' | 'prevParams';
 export function withPresentSite2<T>(
     Component: React.ComponentType<T>
@@ -49,16 +53,20 @@ export function withPresentSite2<T>(
         class WithPresentSiteProvider extends React.Component<Omit<T, ToOmit>> {
             
             render() {
+                    console.log("WITH PRESENT SITE")
+
                 return (
                     <PresentSiteProvider>
-                    {( site) => {
-                        const presentSite = site.siteView;
+                    {( site) =>
+                     {
+                         console.log("PRESENT SITE HOC SITE",site)
+                        const presentSiteView = site.siteView;
                         return (
                             <Component
                             {...(this.props as T)}
                             site={site}
                             //refetch={refetch}
-                            presentSiteView={presentSite}
+                            presentSiteView={presentSiteView}
                             />
                             );
                         }}
@@ -67,9 +75,8 @@ export function withPresentSite2<T>(
         }
     }
     return WithPresentSiteProvider;
-}
+} */
 
-export default PresentSiteProvider;
 
 /*
 interface UsePresentSiteProps {

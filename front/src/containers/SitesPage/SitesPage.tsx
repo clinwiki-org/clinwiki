@@ -46,7 +46,7 @@ const SitesPage = ({history} : SitesPageProps) => {
   },[ dispatch ]); 
   
 if (data === undefined || isLoading || isDeleting) {
-  return <BeatLoader color="#cccccc" />
+  return <BeatLoader />
 }
   return (
     <Container>

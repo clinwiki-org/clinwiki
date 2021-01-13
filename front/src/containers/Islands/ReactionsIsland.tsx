@@ -43,7 +43,7 @@ export default function ReactionsIsland(props: Props) {
   });
   
   if (!site){
-    return <BeatLoader/>
+    return <BeatLoader />
   }
 
   if (site && allReactions && studyData && theme) {

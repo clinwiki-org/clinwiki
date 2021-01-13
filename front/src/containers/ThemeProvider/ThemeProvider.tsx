@@ -1,6 +1,10 @@
 import * as React from 'react';
-import PresentSiteProvider from 'containers/PresentSiteProvider';
-import { useContext } from 'react';
+//import PresentSiteProvider from 'containers/PresentSiteProvider';
+import { useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPresentSiteProvider } from 'services/site/actions';
+import { RootState } from 'reducers';
+import { BeatLoader } from 'react-spinners';
 
 // This type is really long but I don't think we'll have to change it very often
 export interface Theme {
@@ -217,18 +221,45 @@ export const ThemeContext = React.createContext({} as Theme | null);
 let staticTheme: Theme | null = null;
 
 export const ProvideTheme = ({ children }) => {
-  return (
-    <PresentSiteProvider>
-      {site => {
-        return (
-          <ThemeContext.Provider
-            value={staticTheme || (staticTheme = themeFromSite(site))}>
-            {children}
-          </ThemeContext.Provider>
-        );
-      }}
-    </PresentSiteProvider>
-  );
+
+  const url =
+  window.location.search;
+  const urlName = new URLSearchParams(url)
+  .getAll('sv')
+  .toString();
+  const urlFinal = urlName ? urlName : "default";
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    console.log("THEME USE EFFECT")
+  dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
+  }, [])
+
+  //const isLoading = useSelector((state : RootState) => state.site.isFetchingPresentSiteProvider)
+
+  const site = useSelector((state : RootState ) =>  {
+    console.log("STATE", state)
+    
+    if(!state.site.presentSiteProvider){
+      return
+    }
+    return (
+      state?.site.presentSiteProvider.site
+    )
+  }
+    )
+
+  if (!site){
+    console.log("NO SITE on ThemeProvider")
+    return <BeatLoader/>
+  }
+    return (
+      <ThemeContext.Provider
+        value={staticTheme || (staticTheme = themeFromSite(site))}>
+        {children}
+      </ThemeContext.Provider>
+    );
+
 };
 
 export function withTheme<T>(
