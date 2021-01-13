@@ -144,13 +144,12 @@ export interface UpdateSiteErrorAction {
 export interface UpdateSiteViewSendAction {
     type: typeof UPDATE_SITE_SEND,
     input: UpdateSiteInput,
-    url?: string
 }
 
 export interface UpdateSiteViewSuccessAction {
     type: typeof UPDATE_SITE_SUCCESS,
-    payload: SitesPageQuery
-};
+    payload: SiteProviderQuery
+    };
 
 export interface UpdateSiteViewErrorAction {
     type: typeof UPDATE_SITE_ERROR,

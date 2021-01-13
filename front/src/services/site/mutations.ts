@@ -40,9 +40,9 @@ export const UPDATE_SITE_MUTATION = `
 `;
 
 export const UPDATE_SITE_VIEW_MUTATION = `
-  mutation UpdateSiteViewMutation($input: UpdateSiteInput!, $url: String) {
+  mutation UpdateSiteViewMutation($input: UpdateSiteInput!) {
     updateSite(input: $input) {
-      site {
+      siteView {
         ...SiteViewFragment
       }
       errors

@@ -104,11 +104,11 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isUpdatingSite: true
             };
-        case types.UPDATE_SITE_SUCCESS:            
+        case types.UPDATE_SITE_SUCCESS:
             return {
                 ...state,
                 isUpdatingSite: false,
-                sitesData: action.payload
+                siteProvider: action.payload
             };
         case types.UPDATE_SITE_ERROR:
             return {
