@@ -23,6 +23,7 @@ import { UpdateSiteViewMutationFn } from 'mutations/UpdateSiteViewMutation';
 import PagesForm from './PagesForm';
 import { connect } from 'react-redux';
 import { fetchSiteProvider } from 'services/site/actions';
+import { SiteViewFragment } from 'types/SiteViewFragment';
 
 interface SiteFormProps {
   match: match<{}>;
@@ -126,7 +127,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const { name, value } = e.currentTarget;
     console.log(`mutation: ${name}=${value}`);
     const mutation = createMutation(name, value);
-    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteView as SiteViewFragment, this.state.mutations);
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () =>
@@ -187,7 +188,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
   }
 
   render() {
-    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteView as SiteViewFragment, this.state.mutations);
     const path = trimPath(this.props.match.path);
     return (
       <Container>
@@ -221,7 +222,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
             render={routeProps => (
               <StudyForm
                 {...routeProps}
-                view={view}
+                view={view  as SiteViewFragment}
                 onAddMutation={this.handleAddMutation}
               />
             )}

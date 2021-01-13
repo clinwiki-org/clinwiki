@@ -153,13 +153,9 @@ animation-play-state: running;
 
 `
 
-
-
 interface UserProfileHeaderButtonProps {
-  //@ts-ignore
   user: UserFragment | null;
   history: History;
-    //@ts-ignore
 
   data: AdminViewsProviderQuery | undefined;
 }

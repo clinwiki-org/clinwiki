@@ -3,6 +3,7 @@ import { SiteViewMutationInput, SiteViewOperation } from 'types/globalTypes';
 import { find, propEq, reject } from 'ramda';
 import { cloneDeep } from 'apollo-utilities';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
+import { SiteFragment_siteView } from 'services/site/model/SiteFragment';
 
 export const createMutation = (
   name: string,

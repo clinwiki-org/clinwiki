@@ -135,7 +135,7 @@ interface CrumbsBarProps {
   totalResults: number;
   searchHash: string;
   theme: Theme;
-  updateSearchParams: (params: SearchParamsType) => Promise<void>;
+  updateSearchParams: (params: SearchParamsType) => void;
 }
 
 interface CrumbsBarState {

@@ -141,7 +141,7 @@ interface AggDropDownProps {
   client: ApolloClient<any>;
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
-  fromAggField?: boolean;
+  fromAggField: boolean;
   updater: AggFilterInputUpdater | null;
 }
 
@@ -478,6 +478,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         toggleNumericSort={this.toggleNumericSort}
         setShowLabel={showLabel => this.setState({ showLabel })}
         isOpen={this.props.isOpen}
+        fromAggField={this.props.fromAggField}
 
         />
       );
@@ -506,6 +507,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         toggleNumericSort={this.toggleNumericSort}
         setShowLabel={showLabel => this.setState({ showLabel })}
         isOpen={this.props.isOpen}
+        fromAggField={this.props.fromAggField}
         />
       );
     }

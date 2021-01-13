@@ -36,7 +36,7 @@ class DistanceDropDownOptions extends React.Component<
     super(props);
     this.state = {
       zipcode: this.props.updater.input?.zipcode,
-      radius: this.props.zipcode,
+      radius: this.props.updater.input?.radius || '50',
       lat: null,
       long: null,
     };
