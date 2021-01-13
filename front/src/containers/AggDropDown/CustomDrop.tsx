@@ -60,6 +60,7 @@ interface CustomDropDownProps {
   handleFilterChange: any;
   showLabel: boolean;
   isOpen: boolean;
+  fromAggField: boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -116,6 +117,16 @@ const SelectBoxBox = styled.div`
     box-shadow: inset 0px 0px 1px 1px #969696;
     box-sizing: border-box;
     color:${props => props.theme.aggSideBar.sideBarFont};
+  }
+  .check{
+    min-width: 13px;
+    max-width: 13px;
+    height: 13px;
+    position: relative;
+    margin-right: 7px;
+    top: 3px;
+    border-radius: 2px;
+    font-size: 1.1em;
   }
 
   .item-content {
@@ -184,14 +195,20 @@ const SelectBoxBox = styled.div`
 .select-box--crumbs{
   display:flex;
   flex-wrap: wrap;
+
+  .crumb-icon:hover {
+    cursor: pointer;
+    -webkit-text-stroke: 0.5px #333;
+  }
+
 }
 .select-box--crumb-container{
-  border: 2px solid #e8e8e8;
+  border: 2px solid ${props => props.theme.crumbs.crumbBackground};
   border-radius: 4px;
   padding: 0 5px 0 5px;
   margin: 1px;
-  background: #e8e8e8;
-  color: #595959 !important;
+  background: ${props => props.theme.crumbs.crumbBackground};
+  color: ${props => props.theme.crumbs.crumbFont} !important;
   line-height: 1.1em;
 }
 .select-item{
@@ -202,13 +219,30 @@ const SelectBoxBox = styled.div`
   cursor: pointer;
   border-bottom: 1px solid #e7e7e7;
   transition: .2s;
-}
 
+  .square-checkmark{
+    display: flex;
+    color: ${props => props.theme.crumbs.crumbBackground};
+  }
+  .square-checkmark-facet{
+    display: flex;
+    color: ${props => props.theme.aggSideBar.sideBarFont};
+  }
+
+}
 
 .select-item:hover {
   background-color: ${props => props.theme.button};
   color: white;
 
+  .square-checkmark{
+    display: flex;
+    color: ${props => props.theme.crumbs.crumbFont};
+  }
+  .square-checkmark-facet{
+    display: flex;
+    color: ${props => props.theme.aggSideBar.sideBarFontHover};
+  }
 }
 `
 const ThemedSelectBox = withTheme(SelectBoxBox)
@@ -234,11 +268,11 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   dropDown = () => {
     if (this.props.field.display == "CRUMBS_ONLY") return
     this.setState((prevState) => ({
-      showItems: !prevState.showItems
+      showItems: !prevState.showItems,
+      showAdditionalCrumbs: !prevState.showItems
     })
     );
     this.props.onContainerToggle && this.props.onContainerToggle()
-    this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })
   };
 
   selectItem = (item) => {
@@ -307,7 +341,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       let displayedCrumbs: any[] = this.state.selectedItems.slice(0, field.maxCrumbs)
       let otherValues = { key: `... ${this.state.selectedItems.length - displayedCrumbs.length} others` }
       displayedCrumbs.push(otherValues)
-      if (field.maxCrumbs == 0) return
+      if (field.maxCrumbs == 0 || field.maxCrumbs == null) return
       return displayedCrumbs.map((item: AggBucket, index) => {
         if (
           field?.display === FieldDisplay.DATE_RANGE ||
@@ -315,7 +349,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           field?.display === FieldDisplay.LESS_THAN_RANGE ||
           field?.display === FieldDisplay.GREATER_THAN_RANGE) {
           return (
-            <div className='select-box--crumb-container'>
+            <div className='select-box--crumb-container' key={item.key+"crumb-container"}>
               {this.renderRangeLabel()}
               <FontAwesome
                 className="remove crumb-icon"
@@ -344,7 +378,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
         //@ts-ignore
         if (this.isSelected(item.key)) {
           //@ts-ignore
-          return <div className='select-box--crumb-container'>
+          return <div className='select-box--crumb-container' key={item.key+'isSelected'}>
             {item.key}          <FontAwesome
               className="remove crumb-icon"
               name="remove"
@@ -358,11 +392,11 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           if (this.state.showAdditionalCrumbs) {
             let otherCrumbs: any[] = this.state.selectedItems.slice(field.maxCrumbs, this.state.selectedItems.length)
             return otherCrumbs.map(item => {
-              return (<div className='select-box--crumb-container' >
+              return (<div className='select-box--crumb-container' key={item.key}>
                 {item.key}          <FontAwesome
                   className={`remove crumb-icon`}
                   name={`remove`}
-                  onClick={() => this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })}
+                  onClick={() => this.selectItem(item)}
                 />
               </div>)
             })
@@ -411,10 +445,8 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
   }
   renderPreValue = (item) => {
-    if (this.props.field.display == "CHECKBOX") {
-      return <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}>{
-        this.isSelected(item) ? <FontAwesome name='check' style={{ display: 'flex' }} /> : null
-      }</div>;
+    if (this.props.field.display == "CHECKBOX" ||this.props.field.display == "STRING" ) {
+      return this.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`}/> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>
     }
     return null
   };
@@ -424,6 +456,30 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   handleLocation = (location) => {
     this.setState({ selectedItems: location })
   }
+  renderFilter = () => {
+    if (this.props.fromAggField || this.props.field.showFilterToolbar == true || this.props.field.showFilterToolbar == null) {
+      return (
+        <Filter
+          buckets={this.props.buckets}
+          filter={this.props.filter}
+          desc={this.props.desc}
+          sortKind={this.props.sortKind}
+          selectAll={this.props.handleSelectAll}
+          checkSelect={this.props.checkSelect}
+          checkboxValue={this.props.checkboxValue}
+          removeSelectAll={this.props.removeSelectAll}
+          showLabel={false}
+          handleFilterChange={this.props.handleFilterChange}
+          toggleAlphaSort={this.props.toggleAlphaSort}
+          toggleNumericSort={this.props.toggleNumericSort}
+          setShowLabel={() => this.props.setShowLabel}
+        />
+      )
+
+    }
+    return
+  }
+
   renderPanel = () => {
     const { hasMore, buckets, handleLoadMore, field } = this.props
     const { showItems, loading } = this.state
@@ -488,7 +544,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     else if (field.display == "CRUMBS_ONLY") {
       return null
     }
-    else if (this.props.field.display == "CHECKBOX") {
+    else if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
 
       return (
         <InfiniteScroll
@@ -511,7 +567,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             )
             .map((item) => (
               <div
-                key={item.key}
+                key={item.key+'buckets'}
                 onClick={() => this.selectItem(item)}
                 className={
                   this.state.selectedItem === item
@@ -552,7 +608,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             .map((item) => (
               this.isSelected(item.key) ? null :
                 <div
-                  key={item.key}
+                  key={item.key+'buckets'}
                   onClick={() => this.selectItem(item)}
                   className={
                     this.state.selectedItem === item
@@ -586,14 +642,15 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     return (
       <ThemedSelectBox>
         <ThemedContainer>
-          <ThemedHeader onClick={this.dropDown}>
+          <ThemedHeader>
 
-            < ThemedTitle style={{ flexDirection: 'row', display: 'flex' }}>
+            < ThemedTitle style={{ flexDirection: 'row', display: 'flex' }} onClick={this.dropDown}>
               {/* {this.props.aggKind === 'crowdAggs'
                        ? configuredLabel
                        : title}         */}
               {capitalize(title)}
-              {this.props.field.display == "CRUMBS_ONLY" ? (null) : (<FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />)}            </ThemedTitle>
+              {this.props.field.display == "CRUMBS_ONLY" ? (null) : (<FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />)}            
+            </ThemedTitle>
             {this.props.isPresearch ? (
               <div className='select-box--crumbs'>
                 {this.state.selectedItems.length > 0 ? this.renderSelectedItems() : this.renderSubLabel()}
@@ -605,21 +662,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             style={{ padding: '0 10px', display: this.state.showItems ? "block" : "none" }}
 
           >
-            {this.props.field.showFilterToolbar ? (<Filter
-              buckets={this.props.buckets}
-              filter={this.props.filter}
-              desc={this.props.desc}
-              sortKind={this.props.sortKind}
-              selectAll={this.props.handleSelectAll}
-              checkSelect={this.props.checkSelect}
-              checkboxValue={this.props.checkboxValue}
-              removeSelectAll={this.props.removeSelectAll}
-              showLabel={false}
-              handleFilterChange={this.props.handleFilterChange}
-              toggleAlphaSort={this.props.toggleAlphaSort}
-              toggleNumericSort={this.props.toggleNumericSort}
-              setShowLabel={() => this.props.setShowLabel}
-            />) : (null)}
+            {this.renderFilter()}
           </div>
           <div
             style={{ display: this.state.showItems ? "block" : "none" }}

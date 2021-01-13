@@ -10,6 +10,7 @@ import {
 import { History, Location } from 'history';
 import SearchForm from './SearchForm';
 import SiteViewsForm from './SiteViewsForm';
+import { SiteViewFragment } from 'types/SiteViewFragment';
 
 interface SiteViewRouterProps {
   match: match<{}>;
@@ -45,7 +46,7 @@ class SiteViewRouter extends React.Component<
   };
 
   render() {
-    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteView as SiteViewFragment, this.state.mutations);
     const path = trimPath(this.props.match.path);
     const allViews = this.props.siteViews;
     const site = this.props.site;
@@ -67,7 +68,7 @@ class SiteViewRouter extends React.Component<
           path={`${path}`}
           render={() => (
             <SiteViewsForm
-              siteViews={this.props.siteViews}
+              siteViews={this.props.siteViews as SiteViewFragment[]}
               site={site}
             />
           )}

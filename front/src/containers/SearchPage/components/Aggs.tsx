@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import {
   isEmpty,
   isNil,
@@ -35,6 +35,9 @@ import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
 import { useQuery } from '@apollo/client';
 import {PresearchContainer, ThemedButton} from '../../../components/StyledComponents';
+import { fetchSearchPageAggs } from 'services/search/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import {RootState} from 'reducers';
 
 const QUERY = gql`
   query SearchPageAggsQuery(
@@ -121,7 +124,7 @@ interface AggsProps {
   preSearchAggs?: string[];
   preSearchCrowdAggs?: string[];
   site: PresentSiteFragment;
-  updateSearchParams: (params: SearchParams) => Promise<void>;
+  updateSearchParams: (params: SearchParams) => void;
   searchParams: SearchParams;
   getTotalResults: Function;
   handlePresearchButtonClick?: Function;
@@ -151,6 +154,8 @@ const QueryComponent = (
 ) => Query(props);
 
 const Aggs = (props: AggsProps) => {
+
+  const dispatch = useDispatch();
   const getAggs = (siteView: PresentSiteFragment_siteView, presearch): string[] => {
     // to save having to write multiple displayFIelds functions we are splitting the path based on wheter it's presearch or aggs here
     const path = presearch ? siteView.search.presearch.aggs : siteView.search.aggs
@@ -187,22 +192,30 @@ const Aggs = (props: AggsProps) => {
   } = props;
   //commented out because not sure how to pass two parameters when using compose
   // const sortByNameCi = sortBy(compose(toLower, aggToField);
-  const result = useQuery(QUERY, {
-    variables: { ...searchParams }, 
-  });
-  let data = result.data
-  if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
-  if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
-  
-  if (data && data.crowdAggs && data.search?.aggs) {
-      let recordsTotal = data.search?.recordsTotal;
+
+// SEARCH_PAGE_AGGS_QUERY
+    useEffect(()=>{
+      dispatch(fetchSearchPageAggs(searchParams));
+    },[dispatch]);
+  // const result = useQuery(QUERY, {
+  //   variables: { ...searchParams }, 
+  // });
+  const data = useSelector((state : RootState ) => state.search.aggs);
+  const isLoading = useSelector((state : RootState ) => state.search.isFetchingAggs);
+  // let data = result.data
+  // if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
+  // if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
+  if(data == undefined || isLoading) return <BeatLoader/>
+
+  if (data.data && data.data.crowdAggs && data.data.search?.aggs) {
+      let recordsTotal = data.data.search?.recordsTotal;
       props.getTotalResults(recordsTotal);
       const aggs: AggBucketMap = {};
-      for (const a of data.search?.aggs || []) {
+      for (const a of data.data.search?.aggs || []) {
         aggs[a.name] = [];
       }
       const crowdAggs: AggBucketMap = {};
-      for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
+      for (const bucket of data.data.crowdAggs?.aggs?.[0]?.buckets || []) {
         crowdAggs[bucket.key] = [];
       }
       let crowdAggDropdowns: React.ReactElement<any> | null = null;
@@ -320,7 +333,6 @@ const Aggs = (props: AggsProps) => {
     }
 
       if (presearch && preSearchAggs) {
-        console.log('presearch options', props.presearchButtonOptions)
         const aggHFields = getAggs(props.presentSiteView, true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "horizontal" || findFields(k, props.presentSiteView, presearch)?.layout == null)
         const aggVFields = getAggs(props.presentSiteView, true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "vertical")
         {aggPresearchVertical = aggVFields.map(k => { return (
@@ -333,9 +345,13 @@ const Aggs = (props: AggsProps) => {
               )
             }
           )}  
-
+        let showPresearchResults=props.presentSiteView.search.presearch.showResults
         return (
           <PresearchContainer>
+            {showPresearchResults ? (
+            <div className="presearch-total-results">
+                <b>Total Results:</b> {recordsTotal} studies
+            </div>):null}
             <div className="horizontal-pre">
               <div className="horizontal-aggs">
                {aggPresearchHorizontal}
@@ -383,7 +399,6 @@ const Aggs = (props: AggsProps) => {
 
       if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
         const visibleOptionsByName = getVisibleOptionsByName(presentSiteView);
-
         crowdAggDropdowns = (
           <div>
             <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
