@@ -148,8 +148,8 @@ export interface DeleteSiteViewSendAction {
 
 export interface DeleteSiteViewSuccessAction {
     type: typeof DELETE_SITE_VIEW_SUCCESS,
-    payload: SitesPageQuery
-};
+    payload: SiteProviderQuery
+    };
 
 export interface DeleteSiteViewErrorAction {
     type: typeof DELETE_SITE_VIEW_ERROR,

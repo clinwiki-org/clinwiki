@@ -125,7 +125,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isDeletingSiteView: false,
-                sitesData: { me: action.payload }
+                siteProvider: { me: action.payload }
             };
         case types.DELETE_SITE_VIEW_ERROR:
             return {

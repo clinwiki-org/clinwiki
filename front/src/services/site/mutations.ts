@@ -42,7 +42,7 @@ export const UPDATE_SITE_MUTATION = `
 export const DELETE_SITE_VIEW_MUTATION = `
 mutation DeleteSiteViewMutation($input: DeleteSiteViewInput!) {
   deleteSiteView(input: $input) {
-    site {
+    siteView {
       id
     }
   }
