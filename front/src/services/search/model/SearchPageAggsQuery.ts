@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { SearchQueryInput, SortInput, AggFilterInput } from "./globalTypes";
+import { SearchQueryInput, SortInput, AggFilterInput } from "../../../types/globalTypes";
 
 // ====================================================
 // GraphQL query operation: SearchPageAggsQuery

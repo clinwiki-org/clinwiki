@@ -1,4 +1,4 @@
-import {SearchPageAggsQuery} from 'types/SearchPageAggsQuery';
+import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
 import {SearchPageSearchQuery} from 'types/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 
