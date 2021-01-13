@@ -128,4 +128,31 @@ export default function* userSagas() {
     yield takeLatest(types.DELETE_SITE_SEND, deleteSite);
     yield takeLatest(types.CREATE_SITE_SEND, createSite);
     yield takeLatest(types.UPDATE_SITE_SEND, updateSite);
+    yield takeLatest(types.COPY_SITE_VIEW_SEND, copySiteView);
+}
+
+function* copySiteView(action) { 
+    const currentSites = yield select(getCurrentSites)
+    try {
+        //console.log("SAGA Current SITES", currentSites);
+        let response = yield call(() => api.copySiteView(action.id));
+        const { id } = response.data.copySiteView.site
+        if(id === action.id) {
+            let newEditorSites = currentSites.editorSites.filter(site => site.id !== id)
+            let newOwnSites = currentSites.ownSites.filter(site => site.id !== id)
+            let newSites = {
+                id: currentSites.id,
+                ownSites: newOwnSites,
+                editorSites: newEditorSites
+            }
+            yield put(actions.copySiteViewSuccess(newSites));
+        }
+        else {
+            yield put(actions.copySiteViewError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.copySiteViewError(err.message));
+    }
 }

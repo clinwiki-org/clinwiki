@@ -10,6 +10,7 @@ const initialState: types.SiteState = {
     isCreatingSite: false,
     isUpdatingSite: false,
     isFetchingSiteProvider: false,
+    isCopyingSiteView: false,
     siteProvider: undefined,
 };
 
@@ -114,6 +115,23 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isUpdatingSite: false
             };
+        case types.COPY_SITE_VIEW_SEND:
+            return {
+                ...state,
+                isCopyingSiteView: true
+            };
+        case types.COPY_SITE_VIEW_SUCCESS:            
+            return {
+                ...state,
+                isCopyingSiteView: false,
+                sitesData: action.payload
+            };
+        case types.COPY_SITE_VIEW_ERROR:
+            return {
+                ...state,
+                isCopyingSiteView: false
+            };
+
 
         default:
             return {...state};
