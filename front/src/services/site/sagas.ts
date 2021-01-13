@@ -132,7 +132,7 @@ export default function* userSagas() {
 }
 
 function* copySiteView(action) { 
-    const currentSites = yield select(getCurrentSites)
+    const currentSites = yield select(getCurrentSites) //TODO check saga getCurrentSites
     try {
         //console.log("SAGA Current SITES", currentSites);
         let response = yield call(() => api.copySiteView(action.id));

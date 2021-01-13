@@ -103,18 +103,18 @@ export const updateSiteError = (message: string) : types.SiteActionTypes => ({
     payload: { message }
 });
 
-export const copySiteView = (input: CopySiteViewInput, url?: string) : types.SiteViewActionTypes => ({
+export const copySiteView = (input: CopySiteViewInput) : types.SiteActionTypes => ({
     type: types.COPY_SITE_VIEW_SEND,
     input,
     url
 });
 
-export const copySiteViewSuccess = (payload: any) : types.SiteViewActionTypes => ({
+export const copySiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
     type: types.COPY_SITE_VIEW_SUCCESS,
     payload
 });
 
-export const copySiteViewError = (message: string) : types.SiteViewActionTypes => ({
+export const copySiteViewError = (message: string) : types.SiteActionTypes => ({
     type: types.COPY_SITE_VIEW_ERROR,
     payload: { message }
 });

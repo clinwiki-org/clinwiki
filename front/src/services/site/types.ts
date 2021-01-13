@@ -28,9 +28,9 @@ export const UPDATE_SITE_SEND = 'UPDATE_SITE_SEND';
 export const UPDATE_SITE_SUCCESS = 'UPDATE_SITE_SUCCESS';
 export const UPDATE_SITE_ERROR = 'UPDATE_SITE_ERROR';
 
-export const COPY_SITE_VIEW_SEND = 'UPDATE_SITE_SEND';
-export const COPY_SITE_VIEW_SUCCESS = 'UPDATE_SITE_SUCCESS';
-export const COPY_SITE_VIEW_ERROR = 'UPDATE_SITE_ERROR';
+export const COPY_SITE_VIEW_SEND = 'COPY_SITE_VIEW_SEND';
+export const COPY_SITE_VIEW_SUCCESS = 'COPY_SITE_VIEW_SUCCESS';
+export const COPY_SITE_VIEW_ERROR = 'COPY_SITE_VIEW_ERROR';
 
 export interface SiteState {
     isFetchingAdminSiteView: boolean,
@@ -144,12 +144,11 @@ export interface UpdateSiteErrorAction {
 export interface CopySiteViewSendAction {
     type: typeof COPY_SITE_VIEW_SEND,
     input: CopySiteViewInput,
-    url?: string
 }
 
 export interface CopySiteViewSuccessAction {
     type: typeof COPY_SITE_VIEW_SUCCESS,
-    payload: SitesPageQuery
+    payload: SiteProviderQuery
 };
 
 export interface CopySiteViewErrorAction {

@@ -32,7 +32,7 @@ export const updateSite = (input, url?) => {
     return callGraphql(ENDPOINT, mutate.UPDATE_SITE_MUTATION, 
         { input: input, url });
 };
-export const copySiteView = (input, url?) => {
+export const copySiteView = (input) => {
     return callGraphql(ENDPOINT, mutate.COPY_SITE_VIEW_MUTATION, 
-        { input: input, url });
+        { input: input });
 };

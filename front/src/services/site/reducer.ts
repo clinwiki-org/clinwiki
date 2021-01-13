@@ -124,8 +124,8 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isCopyingSiteView: false,
-                sitesData: action.payload
-            };
+                siteProvider: action.payload //TODO double check siteProvider
+                };
         case types.COPY_SITE_VIEW_ERROR:
             return {
                 ...state,

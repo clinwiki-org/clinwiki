@@ -40,9 +40,9 @@ export const UPDATE_SITE_MUTATION = `
 `;
 
 export const COPY_SITE_VIEW_MUTATION = `
-  mutation CopySiteViewMutation($input: CopySiteViewInput!, $url: String) {
+  mutation CopySiteViewMutation($input: CopySiteViewInput!) {
     copySiteView(input: $input) {
-      site {
+      siteView {
         ...SiteViewFragment
       }
       errors
