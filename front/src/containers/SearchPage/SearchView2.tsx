@@ -16,11 +16,6 @@ import {
   fromPairs,
 } from 'ramda';
 import { snakeCase } from 'utils/helpers';
-import { useQuery } from '@apollo/client';
-import {
-  SearchPageSearchQuery,
-  SearchPageSearchQueryVariables,
-} from 'types/SearchPageSearchQuery';
 import 'react-table/react-table.css';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
 import MasonryCards from './components/MasonryCards';

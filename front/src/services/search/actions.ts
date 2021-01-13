@@ -1,6 +1,6 @@
 import * as types from './types';
 import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
-import {SearchPageSearchQuery} from 'types/SearchPageSearchQuery';
+import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 
 export const fetchSearchPageAggs = ( searchParams: any) : types.SearchActionTypes => ({
