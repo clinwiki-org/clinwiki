@@ -125,7 +125,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isCreatingSiteView: false,
-                sitesData: action.payload
+                siteProvider: action.payload
             };
         case types.CREATE_SITE_VIEW_ERROR:
             return {

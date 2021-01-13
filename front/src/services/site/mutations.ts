@@ -42,7 +42,7 @@ export const UPDATE_SITE_MUTATION = `
 export const CREATE_SITE_VIEW_MUTATION = `
   mutation CreateSiteViewMutation($input: CreateSiteViewInput!, $url: String) {
     createSiteView(input: $input) {
-      site {
+      siteView {
         ...SiteViewFragment
       }
       errors

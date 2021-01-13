@@ -144,12 +144,11 @@ export interface UpdateSiteErrorAction {
 export interface CreateSiteViewSendAction {
     type: typeof CREATE_SITE_VIEW_SEND,
     input: CreateSiteViewInput,
-    url?: string
 }
 
 export interface CreateSiteViewSuccessAction {
     type: typeof CREATE_SITE_VIEW_SUCCESS,
-    payload: SitesPageQuery
+    payload: SiteProviderQuery
 };
 
 export interface CreateSiteViewErrorAction {
