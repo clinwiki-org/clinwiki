@@ -341,11 +341,7 @@ useEffect(()=>{
 
 const data = useSelector((state : RootState ) => state.search.studies);
 const isLoading = useSelector((state : RootState ) => state.search.isFetchingStudies);
-  // const result =  useQuery(SEARCH_PAGE_SEARCH_QUERY, {
-  //   variables: params,
-  // });
-  // const { data, loading, error } = result;
-  console.log("DATA",data)
+
   if(data == undefined || isLoading) return <BeatLoader/>
   return (
     <SearchWrapper>

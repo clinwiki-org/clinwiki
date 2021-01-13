@@ -765,14 +765,12 @@ useEffect(()=>{
 },[dispatch]);
 
 if(data == undefined) return <BeatLoader/>
-console.log("Data 1", data);
 // searchParamsQueryHelper(data);
 const dataParams = searchParamsFromQuery(
   data.data!.searchParams,
   presentSiteView
 );
 params.current= dataParams;
-console.log("Data 2", dataParams);
 // updateSearchParamsAction(params.current)
   return (
     <Switch>
