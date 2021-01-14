@@ -34,10 +34,14 @@ export const createSite = (input, url?) => {
         { input: input, url });
 };
 export const updateSite = (input, url?) => {
-    return callGraphql(ENDPOINT, mutate.UPDATE_SITE_MUTATION, 
+    return callGraphql(ENDPOINT, mutate.UPDATE_SITE_MUTATION,
         { input: input, url });
 };
 export const copySiteView = (input) => {
     return callGraphql(ENDPOINT, mutate.COPY_SITE_VIEW_MUTATION, 
+        { input: input });
+};
+export const createSiteView = (input) => {
+    return callGraphql(ENDPOINT, mutate.CREATE_SITE_VIEW_MUTATION,
         { input: input });
 };

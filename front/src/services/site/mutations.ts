@@ -51,3 +51,16 @@ export const COPY_SITE_VIEW_MUTATION = `
 
   ${SITE_VIEW_FRAGMENT}
 `;
+
+export const CREATE_SITE_VIEW_MUTATION = `
+  mutation CreateSiteViewMutation($input: CreateSiteViewInput!, $url: String) {
+    createSiteView(input: $input) {
+      siteView {
+        ...SiteViewFragment
+      }
+      errors
+    }
+  }
+
+  ${SITE_VIEW_FRAGMENT}
+`;

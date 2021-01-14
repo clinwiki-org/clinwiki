@@ -137,3 +137,18 @@ export const copySiteViewError = (message: string) : types.SiteActionTypes => ({
     type: types.COPY_SITE_VIEW_ERROR,
     payload: { message }
 });
+
+export const createSiteView = (input: CreateSiteViewInput) : types.SiteViewActionTypes => ({
+    type: types.CREATE_SITE_VIEW_SEND,
+    input
+});
+
+export const createSiteViewSuccess = (payload: any) : types.SiteViewActionTypes => ({
+    type: types.CREATE_SITE_VIEW_SUCCESS,
+    payload
+});
+
+export const createSiteViewError = (message: string) : types.SiteViewActionTypes => ({
+    type: types.CREATE_SITE_VIEW_ERROR,
+    payload: { message }
+});
