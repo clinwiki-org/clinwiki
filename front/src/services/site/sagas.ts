@@ -58,7 +58,7 @@ function* getSiteProvider(action) {
 }
 
 function* getPresentSiteProvider(action) {
-            console.log("SAGA get Present Site Provider", action);
+            //console.log("SAGA get Present Site Provider", action);
     try {
         let response = yield call(() => api.fetchPresentSiteProvider(action.id, action.url));
         if(response) {

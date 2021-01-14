@@ -231,15 +231,11 @@ export const ProvideTheme = ({ children }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("THEME USE EFFECT")
   dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
   }, [])
 
   //const isLoading = useSelector((state : RootState) => state.site.isFetchingPresentSiteProvider)
-
-  const site = useSelector((state : RootState ) =>  {
-    console.log("STATE", state)
-    
+  const site = useSelector((state : RootState ) =>  {    
     if(!state.site.presentSiteProvider){
       return
     }
@@ -250,7 +246,6 @@ export const ProvideTheme = ({ children }) => {
     )
 
   if (!site){
-    console.log("NO SITE on ThemeProvider")
     return <BeatLoader/>
   }
     return (
@@ -259,7 +254,6 @@ export const ProvideTheme = ({ children }) => {
         {children}
       </ThemeContext.Provider>
     );
-
 };
 
 export function withTheme<T>(

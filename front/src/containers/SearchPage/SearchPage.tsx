@@ -784,14 +784,11 @@ params.current= dataParams;
     <Switch>
       <Route
         render={() => {
-          console.log("PRESENT SITE VIEW****", presentSiteView); //TODO Delete
-          console.log("SITE ****",site) //TODO Delete
           const {
             showPresearch,
             showFacetBar,
             showBreadCrumbs,
           } = presentSiteView.search.config.fields;
-          console.log("IN ROUTE",presentSiteView);
         return(  
             <ThemedSearchPageWrapper>
               {showFacetBar && (

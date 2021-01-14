@@ -52,6 +52,8 @@ import LocationAgg from './LocationAgg';
 import CustomDropDown from './CustomDrop';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
+import { connect } from 'react-redux';
+import { BeatLoader } from 'react-spinners';
 
 const PAGE_SIZE = 25;
 
@@ -407,6 +409,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   componentDidMount() {
     const { agg, presentSiteView, presearch } = this.props;
+    console.log("🚀 ~  presearch", presearch);
+    console.log("🚀 ~ agg", agg);
+    console.log("🚀 ~ ~ presentSiteView", presentSiteView);
+
+    
     const field = findFields(agg, presentSiteView, presearch);
     if (field?.order && field.order.sortKind === 'key') {
       this.setState({
@@ -452,6 +459,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     let configuredLabel = currentAgg?.displayName || '';
     const title = aggToField(agg, configuredLabel);
 
+    if(!currentAgg){
+     return <BeatLoader/>
+    }
+
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
@@ -479,7 +490,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
         setShowLabel={showLabel => this.setState({ showLabel })}
         isOpen={this.props.isOpen}
         fromAggField={this.props.fromAggField}
-
         />
       );
     } else {
@@ -514,5 +524,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }
 }
 
-// @ts-ignore
-export default withApollo<any>(withAggContext(AggDropDown));
+const mapStateToProps = (state, ownProps) => ({
+  presentSiteView: state.site.presentSiteProvider.site.siteView,
+})
+
+export default connect(mapStateToProps, null ) (withApollo<any>(withAggContext(AggDropDown)));

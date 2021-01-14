@@ -215,7 +215,7 @@ const Aggs = (props: AggsProps) => {
                   resetSelectAll={props.resetSelectAll}
                   removeSelectAll={props.removeSelectAll}
                   presearch
-                  presentSiteView={props.presentSiteView}
+                  //presentSiteView={props.presentSiteView}
                   configType="presearch"
                   visibleOptions={visibleOptionsByName[k]}
                 />
@@ -275,7 +275,7 @@ const Aggs = (props: AggsProps) => {
                 resetSelectAll={props.resetSelectAll}
                 removeSelectAll={props.removeSelectAll}
                 presearch
-                presentSiteView={props.presentSiteView}
+               // presentSiteView={props.presentSiteView}
                 configType="presearch"
               />
             </AggContext.Provider>
@@ -389,7 +389,7 @@ const Aggs = (props: AggsProps) => {
                   removeFilters={(agg, items) => removeFilters(agg, items, true)}
                   searchParams={searchParams}
                   visibleOptions={visibleOptionsByName[k]}
-                  presentSiteView={presentSiteView}
+                 // presentSiteView={presentSiteView}
                   configType="facetbar"
                 />
               </AggContext.Provider>
@@ -432,7 +432,7 @@ const Aggs = (props: AggsProps) => {
                         searchParams={searchParams}
                         resetSelectAll={props.resetSelectAll}
                         removeSelectAll={props.removeSelectAll}
-                        presentSiteView={props.presentSiteView}
+                        //presentSiteView={props.presentSiteView}
                         configType="facetbar"
                       />
                     </AggContext.Provider>

@@ -55,8 +55,7 @@ export const fetchSiteProviderError = (message: string) : types.SiteActionTypes 
 });
 
 export const fetchPresentSiteProvider = (id?: number, url?: string) : types.SiteActionTypes => (
-    console.log("ACTION Present Site Provider", url),
-
+    //console.log("ACTION Present Site Provider", url),
     {
     type: types.FETCH_PRESENT_SITE_PROVIDER_SEND,
     id,
