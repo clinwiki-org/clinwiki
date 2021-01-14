@@ -27,7 +27,7 @@ import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
 import './AggDropDownStyle.css';
-import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import SortKind from './SortKind';
 import BucketsKeyValuePanel from './BucketsKeyValuePanel';
 import Filter from './Filter';
@@ -46,7 +46,7 @@ import {
   PresearchPanel,
   PresearchContent,
 } from 'components/StyledComponents';
-import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
+//import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 import BucketsDropDown from './BucketsDropDown';
 
 const PAGE_SIZE = 25;
@@ -518,4 +518,4 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
 }
 
 // @ts-ignore
-export default withApollo<any>(withPresentSite2(AggKeyValuePairsDropDown));
+export default withApollo<any>(AggKeyValuePairsDropDown);

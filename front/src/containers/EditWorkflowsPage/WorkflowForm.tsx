@@ -8,7 +8,8 @@ import { fromPairs, difference, find } from 'ramda';
 import { SiteViewFragment } from 'types/SiteViewFragment';
 import { MutationSource } from 'containers/SearchPage/shared';
 import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
-import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
+import { connect } from 'react-redux';
+//import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -211,4 +212,8 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
   }
 }
 
-export default withPresentSite2(WorkflowForm);
+const mapStateToProps = (state, ownProps) => ({
+  presentSiteView: state.site.presentSiteProvider.site.siteView,
+})
+
+export default connect(mapStateToProps, null ) (WorkflowForm);

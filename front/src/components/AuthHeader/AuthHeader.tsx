@@ -14,6 +14,7 @@ import { gql }  from '@apollo/client';
 import  {Query,QueryComponentOptions, } from '@apollo/client/react/components';
 import Error from "../Error";
 import { AdminViewsProviderQuery, AdminViewsProviderQueryVariables } from 'services/site/model/AdminViewsProviderQuery';
+import { BeatLoader } from 'react-spinners';
 
 const Row = styled.div`
   display: flex;
@@ -74,6 +75,9 @@ const AuthHeader = (props) => {
       window.location.reload()
   }
 
+  if(!adminSiteView){
+    return <BeatLoader />
+  } 
   return (
         <ThemedStyledWrapper>
           <Navbar
@@ -106,7 +110,7 @@ const AuthHeader = (props) => {
                   <UserProfileHeaderButton
                     user={user}
                     history={props.history}
-                    data={adminSiteView}
+                    data={adminSiteView.data}
                   />
                 </Row>
               </Nav>

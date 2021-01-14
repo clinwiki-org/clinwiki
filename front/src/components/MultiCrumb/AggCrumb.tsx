@@ -7,7 +7,7 @@ import { withSearchParams } from 'containers/SearchPage/components/SearchParamsC
 import ValuesCrumb from './ValuesCrumb';
 import ValueCrumb from './ValueCrumb';
 import CrumbWrapper from './CrumbWrapper';
-import { PresentSiteFragment } from 'types/PresentSiteFragment';
+import { PresentSiteFragment } from 'services/site/model/PresentSiteFragment';
 import findFields from 'utils/aggs/findFields';
 import {  SearchParams  as SearchParamsType }  from '../../containers/SearchPage/shared';
 

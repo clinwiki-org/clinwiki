@@ -8,7 +8,7 @@ import {
   CreateSiteViewMutation as CreateSiteViewMutationType,
   CreateSiteViewMutationVariables,
 } from 'types/CreateSiteViewMutation';
-import { SITE_VIEW_FRAGMENT } from '../services/site/SiteFragments'
+import { OLD_SITE_VIEW_FRAGMENT } from '../services/site/SiteFragments'
 
 interface CreateSiteViewMutationProps {
   children: (
@@ -28,7 +28,7 @@ const CREATE_SITE_VIEW_MUTATION = gql`
     }
   }
 
-  ${SITE_VIEW_FRAGMENT}
+  ${OLD_SITE_VIEW_FRAGMENT}
 `;
 
 const CreateSiteViewMutationComponent = (
