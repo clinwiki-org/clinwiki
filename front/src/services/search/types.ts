@@ -1,5 +1,5 @@
-import {SearchPageAggsQuery} from 'types/SearchPageAggsQuery';
-import {SearchPageSearchQuery} from 'types/SearchPageSearchQuery';
+import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
+import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 
 export const FETCH_SEARCH_PAGE_AGGS_SEND = 'FETCH_SEARCH_PAGE_AGGS_SEND';
