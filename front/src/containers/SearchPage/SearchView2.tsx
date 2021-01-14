@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SearchParams } from './shared';
 import { ThemedButton, ThemedSearchContainer } from 'components/StyledComponents';
 import styled from 'styled-components';
@@ -16,11 +16,6 @@ import {
   fromPairs,
 } from 'ramda';
 import { snakeCase } from 'utils/helpers';
-import { useQuery } from '@apollo/client';
-import {
-  SearchPageSearchQuery,
-  SearchPageSearchQueryVariables,
-} from 'types/SearchPageSearchQuery';
 import 'react-table/react-table.css';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
 import MasonryCards from './components/MasonryCards';
@@ -34,6 +29,9 @@ import aggToField from 'utils/aggs/aggToField';
 import useUrlParams from '../../utils/UrlParamsProvider';
 import  SEARCH_PAGE_SEARCH_QUERY from 'queries/SearchPageSearchQuery';
 import SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS  from 'queries/SearchPageSearchQueryNoResults';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSearchStudies } from 'services/search/actions'
+import {RootState} from 'reducers';
 
 const SearchWrapper = styled.div`
   .rt-tr {
@@ -58,7 +56,7 @@ interface SearchView2Props {
 
 
 const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Props) {
-
+  const dispatch = useDispatch();
   const changeSorted = (sorts: [SortInput], params: SearchParams) => {
     const idSortedLens = lensProp('id');
     const snakeSorts = map(over(idSortedLens, snakeCase), sorts);
@@ -229,22 +227,15 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
         );
     }
   };
-  const renderSearch = ({
-    data,
-    loading,
-    error,
-  }: {
-    data: SearchPageSearchQuery | undefined;
-    loading: boolean;
-    error: any;
-  }) => {
+  const renderSearch = (
+    data, loading ) => {
     const { presentSiteView } = props;
     const showResults = presentSiteView.search.config.fields.showResults;
     let searchData = data?.search?.studies || [];
     const resultsType = presentSiteView.search.results.type;
-    if (error) {
-      return <div>{error.message}</div>;
-    }
+    // if (error) {
+    //   return <div>{error.message}</div>;
+    // }
     if (!data) {
       return <BeatLoader />
     }
@@ -343,12 +334,15 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
       </div>
     );
   };
+// SEARCH PAGE SEARCH QUERY 
+useEffect(()=>{
+  dispatch(fetchSearchStudies(params));
+},[dispatch]);
 
-  const result =  useQuery(SEARCH_PAGE_SEARCH_QUERY, {
-    variables: params,
-  });
-  const { data, loading, error } = result;
+const data = useSelector((state : RootState ) => state.search.studies);
+const isLoading = useSelector((state : RootState ) => state.search.isFetchingStudies);
 
+  if(data == undefined || isLoading) return <BeatLoader/>
   return (
     <SearchWrapper>
       {/* <Helmet>
@@ -358,7 +352,7 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
       {/* <Col md={12}> */}
       <div style={{ height: '100%' }}>
         <ThemedSearchContainer>
-          {renderSearch({ data, loading, error })}
+          {renderSearch(data.data, isLoading )}
         </ThemedSearchContainer>
       </div>
       {/* </Col> */}

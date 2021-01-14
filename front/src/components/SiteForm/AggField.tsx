@@ -375,7 +375,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 isOpen={this.state.isValuesOpen}
                 selectedKeys={selected}
                 onOpen={this.handleOpen('preselected')}
-                currentSiteView={this.props.view}
+                presentSiteView={this.props.view}
                 configType={this.props.configType}
                 returnAll={this.props.returnAll}
               />
@@ -427,7 +427,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 isOpen={this.state.isVisibleOptionsOpen}
                 selectedKeys={visibleOptions}
                 onOpen={this.handleOpen('visibleOptions')}
-                currentSiteView={this.props.view}
+                presentSiteView={this.props.view}
                 configType={this.props.configType}
                 returnAll={this.props.returnAll}
               />

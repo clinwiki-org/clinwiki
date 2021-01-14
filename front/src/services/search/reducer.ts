@@ -3,8 +3,12 @@ import * as types from './types';
 const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
-    isSearching: false,
+    isFetchingSearchParams: false,
     searchResults: undefined,
+    isFetchingStudies: false,
+    studies: undefined,
+    isUpdatingParams: false,
+    searchHash: undefined,
     isFetchingAutoSuggest: false,
     suggestions: []
 };
@@ -28,21 +32,53 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 isFetchingAggs: false
             };
 
+        case types.FETCH_SEARCH_PARAMS_SEND:
+            return {
+                ...state,
+                isFetchingSearchParams: true
+            };
+        case types.FETCH_SEARCH_PARAMS_SUCCESS:
+            return {
+                ...state,
+                isFetchingSearchParams: false,
+                searchResults: action.payload
+            };
+        case types.FETCH_SEARCH_PARAMS_ERROR:
+            return {
+                ...state,
+                isFetchingSearchParams: false
+            };
+        case types.UPDATE_SEARCH_PARAMS_SEND:
+            return {
+                ...state,
+                isUpdatingParams: true
+            };
+        case types.UPDATE_SEARCH_PARAMS_SUCCESS:
+            return {
+                ...state,
+                isUpdatingParams: false,
+                searchHash: action.payload
+            };
+        case types.UPDATE_SEARCH_PARAMS_ERROR:
+            return {
+                ...state,
+                isUpdatingParams: false
+            };
         case types.FETCH_SEARCH_STUDIES_SEND:
             return {
                 ...state,
-                isSearching: true
+                isFetchingStudies: true
             };
         case types.FETCH_SEARCH_STUDIES_SUCCESS:
             return {
                 ...state,
-                isSearching: false,
-                searchResults: action.payload
+                isFetchingStudies: false,
+                studies: action.payload
             };
         case types.FETCH_SEARCH_STUDIES_ERROR:
             return {
                 ...state,
-                isSearching: false
+                isFetchingStudies: false
             };
 
         case types.FETCH_SEARCH_AUTOSUGGEST_SEND:

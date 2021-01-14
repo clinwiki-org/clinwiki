@@ -651,6 +651,14 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
           </StyledPanelHeading>
         </Panel.Heading>
         <Panel.Body collapsible>
+        <StyledShowContainer>
+              <span>Show Results</span>
+              <StyledCheckbox
+                name="set:search.presearch.showResults"
+                checked={view.search.presearch.showResults}
+                onChange={this.handleCheckboxToggle(view.search.presearch.showResults)}
+              />
+            </StyledShowContainer>
           <Row>
             <Col md={6}>
               <AggsHeaderContainer>
@@ -914,7 +922,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
   render() {
     const siteviewId = +this.props.match.params.id;
-    let view = this.props.siteViews.find(view => siteviewId == view.id);
+    let view = this.props.siteViews.find(view => siteviewId == view.id) as SiteViewFragment;
     if (!view) return null;
 
     console.log([this.props.siteViews, siteviewId, view]);
@@ -1034,8 +1042,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 fieldsPresearch,
                 crowdFieldsPresearch
               )}
-              {this.renderResultsConfig(showResults, view!)}
-              {this.renderBreadCrumbsConfig(showBreadCrumbs, view!)}
+              {this.renderResultsConfig(showResults, view! as SiteFragment_siteView)}
+              {this.renderBreadCrumbsConfig(showBreadCrumbs, view! as SiteFragment_siteView)}
             </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
               Save Site View

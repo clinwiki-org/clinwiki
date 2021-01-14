@@ -135,7 +135,7 @@ interface CrumbsBarProps {
   totalResults: number;
   searchHash: string;
   theme: Theme;
-  updateSearchParams: (params: SearchParamsType) => Promise<void>;
+  updateSearchParams: (params: SearchParamsType) => void;
 }
 
 interface CrumbsBarState {
@@ -242,7 +242,7 @@ const CrumbsBar = (props: CrumbsBarProps) => {
   let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;
 
 
-
+  const isLoading = useSelector((state : RootState ) => state.search.isFetchingAggs);
   const getAggFieldsFromSubsiteConfig = aggs => {
     let aggFields: string[] = [];
     if (aggs.length > 0) {
@@ -538,7 +538,7 @@ const CrumbsBar = (props: CrumbsBarProps) => {
         <Col xs={12}>
           <div style={{ marginRight: '10px', display: 'inline' }}>
             <b>Total Results:</b>{' '}
-            {`${props.totalResults} studies`}
+            {isLoading ? (<span style={{display:'inline-table', width: '5em'}}><BeatLoader/></span>): `${props.totalResults} studies`}
           </div>
           {
             showSaveSearchButton()

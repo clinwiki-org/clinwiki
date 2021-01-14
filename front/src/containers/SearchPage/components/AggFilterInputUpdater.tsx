@@ -21,7 +21,7 @@ abstract class AbstractAggFilterInputUpdater {
   constructor(
     agg: string,
     settings: AggFilterSettings,
-    updateSettings: (params: SearchParams) => Promise<void>,
+    updateSettings: (params: SearchParams) => void,
     grouping: string
   ) {
     this.agg = agg;
