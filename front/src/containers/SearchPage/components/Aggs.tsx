@@ -24,7 +24,7 @@ import { SearchParams } from '../../../containers/SearchPage/shared';
 import {
   SearchPageAggsQuery,
   SearchPageAggsQueryVariables,
-} from '../../../services/search/model/SearchPageAggsQuery';
+} from 'services/search/model/SearchPageAggsQuery';
 import { BeatLoader } from 'react-spinners';
 import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
