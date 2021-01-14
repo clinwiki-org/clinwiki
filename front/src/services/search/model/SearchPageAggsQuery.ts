@@ -1,8 +1,38 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
+// First section below from globalTypes.ts  
 
+export interface SearchInput {
+    q: SearchQueryInput;
+    page?: number | null;
+    pageSize?: number | null;
+    sorts?: SortInput[] | null;
+    aggOptionsFilter?: string | null;
+    aggOptionsSort?: SortInput[] | null;
+    aggFilters?: AggFilterInput[] | null;
+    crowdAggFilters?: AggFilterInput[] | null;
+    agg?: string | null;
+  }
+  export interface SearchQueryInput {
+    key: string;
+    children?: SearchQueryInput[] | null;
+  }
+  export interface AggFilterInput {
+    field: string;
+    values?: string[] | null;
+    gte?: string | null;
+    lte?: string | null;
+    includeMissingFields?: boolean | null;
+    zipcode?: string | null;
+    radius?: string | null;
+    lat?: number | null;
+    long?: number | null;
+  }
+  
+export interface SortInput {
+    id: string;
+    desc?: boolean | null;
+  }
+
+  
 /**
  * An input type for a search query param (q).
  * This is a tree like structure where leafs are the search terms and

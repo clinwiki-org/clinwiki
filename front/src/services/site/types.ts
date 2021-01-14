@@ -2,6 +2,7 @@ import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragm
 import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
+import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
 
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
@@ -15,6 +16,10 @@ export const FETCH_SITES_PAGE_ERROR = 'FETCH_SITES_PAGE_ERROR';
 export const FETCH_SITE_PROVIDER_SEND = 'FETCH_SITE_PROVIDER_SEND';
 export const FETCH_SITE_PROVIDER_SUCCESS = 'FETCH_SITE_PROVIDER_SUCCESS';
 export const FETCH_SITE_PROVIDER_ERROR = 'FETCH_SITE_PROVIDER_ERROR';
+
+export const FETCH_PRESENT_SITE_PROVIDER_SEND = 'FETCH_PRESENT_SITE_PROVIDER_SEND';
+export const FETCH_PRESENT_SITE_PROVIDER_SUCCESS = 'FETCH_PRESENT_SITE_PROVIDER_SUCCESS';
+export const FETCH_PRESENT_SITE_PROVIDER_ERROR = 'FETCH_PRESENT_SITE_PROVIDER_ERROR';
 
 export const DELETE_SITE_SEND = 'DELETE_SITE_SEND';
 export const DELETE_SITE_SUCCESS = 'DELETE_SITE_SUCCESS';
@@ -38,6 +43,8 @@ export interface SiteState {
     isUpdatingSite: boolean,
     isFetchingSiteProvider: boolean,
     siteProvider: SiteProviderQuery | undefined,
+    isFetchingPresentSiteProvider: boolean,
+    presentSiteProvider: PresentSiteProviderQuery | undefined,
 }
 
 export interface SiteDataError {
@@ -85,6 +92,22 @@ export interface FetchSiteProviderSuccessAction {
 
 export interface FetchSiteProviderErrorAction {
     type: typeof FETCH_SITE_PROVIDER_ERROR,
+    payload: SiteDataError
+};
+
+export interface FetchPresentSiteProviderSendAction {
+    type: typeof FETCH_PRESENT_SITE_PROVIDER_SEND,
+    id?: number,
+    url?: string
+};
+
+export interface FetchPresentSiteProviderSuccessAction {
+    type: typeof FETCH_PRESENT_SITE_PROVIDER_SUCCESS,
+    payload: PresentSiteProviderQuery
+};
+
+export interface FetchPresentSiteProviderErrorAction {
+    type: typeof FETCH_PRESENT_SITE_PROVIDER_ERROR,
     payload: SiteDataError
 };
 
@@ -140,4 +163,5 @@ export interface UpdateSiteErrorAction {
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
     DeleteSiteErrorAction  | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction  
-    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | FetchSiteProviderErrorAction ;
+    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | 
+    FetchSiteProviderErrorAction | FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction;

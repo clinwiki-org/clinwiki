@@ -8,7 +8,7 @@ import { ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
 import { CardIcon, TableIcon } from './components/Icons';
 import { Helmet } from 'react-helmet';
 import { SortInput } from 'types/globalTypes';
-import { PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import { PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import {
   map,
   over,
@@ -16,11 +16,6 @@ import {
   fromPairs,
 } from 'ramda';
 import { snakeCase } from 'utils/helpers';
-import { useQuery } from '@apollo/client';
-import {
-  SearchPageSearchQuery,
-  SearchPageSearchQueryVariables,
-} from 'types/SearchPageSearchQuery';
 import 'react-table/react-table.css';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
 import MasonryCards from './components/MasonryCards';
@@ -346,11 +341,7 @@ useEffect(()=>{
 
 const data = useSelector((state : RootState ) => state.search.studies);
 const isLoading = useSelector((state : RootState ) => state.search.isFetchingStudies);
-  // const result =  useQuery(SEARCH_PAGE_SEARCH_QUERY, {
-  //   variables: params,
-  // });
-  // const { data, loading, error } = result;
-  // console.log("DATA",data)
+
   if(data == undefined || isLoading) return <BeatLoader/>
   return (
     <SearchWrapper>

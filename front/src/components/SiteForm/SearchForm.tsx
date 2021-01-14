@@ -1042,8 +1042,8 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 fieldsPresearch,
                 crowdFieldsPresearch
               )}
-              {this.renderResultsConfig(showResults, view!)}
-              {this.renderBreadCrumbsConfig(showBreadCrumbs, view!)}
+              {this.renderResultsConfig(showResults, view! as SiteFragment_siteView)}
+              {this.renderBreadCrumbsConfig(showBreadCrumbs, view! as SiteFragment_siteView)}
             </PanelGroup>
             <StyledButton onClick={this.handleSave(updateSiteView, view)}>
               Save Site View

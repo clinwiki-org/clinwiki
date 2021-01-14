@@ -12,11 +12,11 @@ import { UpdatePageViewInput } from "./globalTypes";
 export interface UpdatePageViewMutation_updatePageView_pageView {
   __typename: "PageView";
   id: number;
-  url: string;
-  title: string;
-  default: boolean;
-  template: string;
   pageType: string;
+  template: string;
+  title: string;
+  url: string;
+  default: boolean;
 }
 
 export interface UpdatePageViewMutation_updatePageView {

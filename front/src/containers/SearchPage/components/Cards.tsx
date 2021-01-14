@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
-import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
+import { SearchPageSearchQuery_search_studies } from '../../../services/search/model/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
 
 interface CardsProps {
@@ -27,6 +27,7 @@ class Cards extends React.Component<CardsProps, CardsState> {
       this.setState({ loading: this.props.loading });
     }
   }
+
 
   cardStyle: React.CSSProperties = {
     borderWidth: 2,

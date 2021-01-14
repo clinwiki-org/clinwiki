@@ -57,6 +57,23 @@ function* getSiteProvider(action) {
     }
 }
 
+function* getPresentSiteProvider(action) {
+            //console.log("SAGA get Present Site Provider", action);
+    try {
+        let response = yield call(() => api.fetchPresentSiteProvider(action.id, action.url));
+        if(response) {
+            yield put(actions.fetchPresentSiteProviderSuccess(response.data));
+            return response;
+        }
+        else {
+            yield put(actions.fetchPresentSiteProviderError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchPresentSiteProviderError(err.message));
+    }
+}
 
 function* deleteSite(action) { 
     const currentSites = yield select(getCurrentSites)
@@ -125,6 +142,7 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_ADMIN_SITE_VIEW_SEND, getAdminSiteView);
     yield takeLatest(types.FETCH_SITES_PAGE_SEND, getSitesPage);
     yield takeLatest(types.FETCH_SITE_PROVIDER_SEND, getSiteProvider);
+    yield takeLatest(types.FETCH_PRESENT_SITE_PROVIDER_SEND, getPresentSiteProvider);
     yield takeLatest(types.DELETE_SITE_SEND, deleteSite);
     yield takeLatest(types.CREATE_SITE_SEND, createSite);
     yield takeLatest(types.UPDATE_SITE_SEND, updateSite);

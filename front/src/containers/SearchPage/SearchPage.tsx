@@ -39,18 +39,19 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import {
   PresentSiteFragment,
   PresentSiteFragment_siteView,
-} from 'types/PresentSiteFragment';
+} from 'services/site/model/PresentSiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import withTheme from 'containers/ThemeProvider';
 import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
-import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
+//import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
 import HtmlToReact from 'html-to-react';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchPresentSiteProvider } from 'services/site/actions';
 import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions'
 import {RootState} from 'reducers';
 
@@ -175,8 +176,6 @@ interface SearchPageProps {
   searchParams?: SearchParams;
   userId?: string;
   profileParams?: any;
-  site: PresentSiteFragment;
-  presentSiteView: PresentSiteFragment_siteView;
   mutate: any;
   email?: string;
   intervention?: boolean;
@@ -281,12 +280,26 @@ function SearchPage(props: SearchPageProps) {
     document.title = result.substring(0, result.length -2)
   }
 
+  const url =
+  window.location.search;
+  const urlName = new URLSearchParams(url)
+  .getAll('sv')
+  .toString();
+  const urlFinal = urlName ? urlName : "default";
+
+  useEffect(() => {
+  dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
+  }, [])
+
+  const site = useSelector((state : RootState ) => state.site.presentSiteProvider.site)
+  const presentSiteView = site?.siteView;
+
   useEffect(() => {
     let searchTerm = new URLSearchParams(props.location?.search || '');
 
     let initialLoadParams = {
       ...DEFAULT_PARAMS,
-      ...preselectedFilters(props.presentSiteView),
+      ...preselectedFilters(presentSiteView),
     };
 
     if (window.innerWidth < 768) {
@@ -439,7 +452,7 @@ function SearchPage(props: SearchPageProps) {
         presentSiteView={siteView}
         searchParams={searchParams}
         updateSearchParams={updateSearchParams}
-        site={props.site}
+        site={site}
         getTotalResults={setTotalRecords}
       />
     );
@@ -447,7 +460,6 @@ function SearchPage(props: SearchPageProps) {
 
   const renderSearch = (searchParams) => {
     const hash = getHashFromLocation();
-    const { presentSiteView } = props;
     return  presentSiteView.search.config.fields.showResults ? (
       <MemoizedSearchView
         key={`${hash}+${JSON.stringify(params.current)}`}
@@ -486,7 +498,7 @@ function SearchPage(props: SearchPageProps) {
       props.history.location.search
     );
 
-    const providedPageView = props.site.pageView?.url;
+    const providedPageView = site.pageView?.url;
     const defaultPageView = providedPageView ? providedPageView : 'default';
     const pageViewUrl =
       searchQueryString.getAll('pv').toString() || defaultPageView;
@@ -503,7 +515,6 @@ function SearchPage(props: SearchPageProps) {
 
   const renderPresearch = (hash, searchParams) => {
     const { aggFilters = [], crowdAggFilters = [] } = searchParams || {};
-    const { presentSiteView } = props;
     const preSearchAggs = presentSiteView.search.presearch.aggs.selected.values;
     const preSearchCrowdAggs =
       presentSiteView.search.presearch.crowdAggs.selected.values;
@@ -564,7 +575,7 @@ function SearchPage(props: SearchPageProps) {
           preSearchCrowdAggs={preSearchCrowdAggs}
           presentSiteView={presentSiteView}
           updateSearchParams={updateSearchParams}
-          site={props.site}
+          site={site}
           opened={opened}
           openedKind={openedKind}
           onOpen={handleOpenAgg}
@@ -591,7 +602,6 @@ function SearchPage(props: SearchPageProps) {
     };
 
 
-    const { presentSiteView } = props;
     const hash = getHashFromLocation();
     return (
       <ThemedSearchContainer>
@@ -757,34 +767,29 @@ function SearchPage(props: SearchPageProps) {
   }
   const hash = getHashFromLocation();
 
-const { presentSiteView } = props;
-
 /// SEARCH PAGE PARAMS QUERY
 useEffect(()=>{
  dispatch(fetchSearchParams(hash));
 },[dispatch]);
 
 if(data == undefined) return <BeatLoader/>
-
 // searchParamsQueryHelper(data);
 const dataParams = searchParamsFromQuery(
   data.data!.searchParams,
   presentSiteView
 );
-params.current= dataParams
+params.current= dataParams;
 // updateSearchParamsAction(params.current)
   return (
     <Switch>
       <Route
         render={() => {
-          const { presentSiteView } = props;
           const {
             showPresearch,
             showFacetBar,
             showBreadCrumbs,
           } = presentSiteView.search.config.fields;
         return(  
-          // shouldRender ? (
             <ThemedSearchPageWrapper>
               {showFacetBar && (
                 <>
@@ -812,13 +817,11 @@ params.current= dataParams
               </ThemedMainContainer>
             </ThemedSearchPageWrapper>
           )
-          // : null);
         }
       }
       />
     </Switch>
   )
-
 }
-//@ts-ignore
-export default withPresentSite2((SearchPage));
+
+export default (SearchPage);

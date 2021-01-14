@@ -11,6 +11,8 @@ const initialState: types.SiteState = {
     isUpdatingSite: false,
     isFetchingSiteProvider: false,
     siteProvider: undefined,
+    isFetchingPresentSiteProvider: false,
+    presentSiteProvider: undefined,
 };
 
 const siteReducer = ( state = initialState, action: types.SiteActionTypes) : types.SiteState => {
@@ -23,7 +25,8 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
         case types.FETCH_ADMIN_SITE_VIEW_SUCCESS:
             return {
                 ...state,
-                isFetchingAdminSiteView: false
+                isFetchingAdminSiteView: false,
+                adminSiteView: action.payload
             };
         case types.FETCH_ADMIN_SITE_VIEW_ERROR:
             return {
@@ -63,6 +66,23 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isFetchingSiteProvider: false
+            };
+    
+        case types.FETCH_PRESENT_SITE_PROVIDER_SEND:
+            return {
+                ...state,
+                isFetchingPresentSiteProvider: true
+            };
+        case types.FETCH_PRESENT_SITE_PROVIDER_SUCCESS:
+            return {
+                ...state,
+                isFetchingPresentSiteProvider: false,
+                presentSiteProvider: action.payload
+            };
+        case types.FETCH_PRESENT_SITE_PROVIDER_ERROR:
+            return {
+                ...state,
+                isFetchingPresentSiteProvider: false
             };
     
 

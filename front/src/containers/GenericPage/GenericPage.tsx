@@ -11,13 +11,14 @@ import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
+//import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
 import { fetchPageViews, fetchPageView, fetchStudyPage, updateStudyViewLogCount } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions'
 import {RootState} from 'reducers';
+import { fetchPresentSiteProvider } from 'services/site/actions';
+
 
 interface Props {
   url?: string;
@@ -43,15 +44,20 @@ export default function GenericPage(props: Props) {
   }
   // When we add more page types we need to refactor this a little bit and pull out the query/nctid
   const params = useUrlParams();
-  const { site } = usePresentSite({ url: params.sv});
+  
   const dispatch = useDispatch();
+  const site = useSelector((state : RootState ) => state.site.presentSiteProvider.site)
   const studyData = useSelector((state:RootState) => state.study.studyPage);
   const loading = useSelector((state:RootState) => state.study.isFetchingStudyPage)
   const pageViewsData = useSelector((state:RootState) => state.study.pageViews);
   const pageViewData = useSelector((state:RootState) => state.study.pageView);
   const currentPage = pageViewData ?  pageViewData?.data.site?.pageView: null;
-
+  
   const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
+  
+  useEffect(() => {
+  dispatch(fetchPresentSiteProvider( undefined , params.sv));
+  }, [])
 
   useEffect(()=>{
     dispatch(fetchPageViews(site?.id));
@@ -69,7 +75,7 @@ export default function GenericPage(props: Props) {
   if (!props.arg) {
     return <h1>Missing NCTID in URL</h1>;
   }
-  if (loading || !pageViewData || !studyData) {
+  if (loading || !pageViewData || !studyData || !site) {
     return <BeatLoader />;
   }
 
