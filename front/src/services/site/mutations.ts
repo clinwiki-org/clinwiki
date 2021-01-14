@@ -64,3 +64,14 @@ export const CREATE_SITE_VIEW_MUTATION = `
 
   ${SITE_VIEW_FRAGMENT}
 `;
+
+export const DELETE_SITE_VIEW_MUTATION = `
+mutation DeleteSiteViewMutation($input: DeleteSiteViewInput!) {
+  deleteSiteView(input: $input) {
+    siteView {
+      id
+    }
+  }
+}
+`;
+

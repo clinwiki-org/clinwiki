@@ -45,3 +45,7 @@ export const createSiteView = (input) => {
     return callGraphql(ENDPOINT, mutate.CREATE_SITE_VIEW_MUTATION,
         { input: input });
 };
+export const deleteSiteView = ( id ) => {
+    return callGraphql(ENDPOINT, mutate.DELETE_SITE_VIEW_MUTATION, 
+        { input: { id} });
+};

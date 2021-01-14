@@ -37,9 +37,17 @@ export const COPY_SITE_VIEW_SEND = 'COPY_SITE_VIEW_SEND';
 export const COPY_SITE_VIEW_SUCCESS = 'COPY_SITE_VIEW_SUCCESS';
 export const COPY_SITE_VIEW_ERROR = 'COPY_SITE_VIEW_ERROR';
 
+export const CREATE_SITE_VIEW_SEND = 'CREATE_SITE_VIEW_SEND';
+export const CREATE_SITE_VIEW_SUCCESS = 'CREATE_SITE_VIEW_SUCCESS';
+export const CREATE_SITE_VIEW_ERROR = 'CREATE_SITE_VIEW_ERROR';
+
 export const UPDATE_SITE_VIEW_SEND = 'UPDATE_SITE_VIEW_SEND';
 export const UPDATE_SITE_VIEW_SUCCESS = 'UPDATE_SITE_VIEW_SUCCESS';
 export const UPDATE_SITE_VIEW_ERROR = 'UPDATE_SITE_VIEW_ERROR';
+
+export const DELETE_SITE_VIEW_SEND = 'DELETE_SITE_VIEW_SEND';
+export const DELETE_SITE_VIEW_SUCCESS = 'DELETE_SITE_VIEW_SUCCESS';
+export const DELETE_SITE_VIEW_ERROR = 'DELETE_SITE_VIEW_ERROR';
 
 export interface SiteState {
     isFetchingAdminSiteView: boolean,
@@ -52,6 +60,7 @@ export interface SiteState {
     isFetchingSiteProvider: boolean,
     isCopyingSiteView: boolean,
     isCreatingSiteView: boolean,
+    isDeletingSiteView: boolean,
     siteProvider: SiteProviderQuery | undefined,
     isFetchingPresentSiteProvider: boolean,
     presentSiteProvider: PresentSiteProviderQuery | undefined,
@@ -199,10 +208,27 @@ export interface CreateSiteViewErrorAction {
     payload: SiteDataError
 };
 
+export interface DeleteSiteViewSendAction {
+    type: typeof DELETE_SITE_VIEW_SEND,
+    id: number
+}
+
+export interface DeleteSiteViewSuccessAction {
+    type: typeof DELETE_SITE_VIEW_SUCCESS,
+    payload: SiteProviderQuery
+    };
+
+export interface DeleteSiteViewErrorAction {
+    type: typeof DELETE_SITE_VIEW_ERROR,
+    payload: SiteDataError
+};
+
 
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
     FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction |
     UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction |
     FetchSiteProviderErrorAction | CopySiteViewSendAction | CopySiteViewSuccessAction | CopySiteViewErrorAction | CreateSiteViewSendAction | 
-    CreateSiteViewSuccessAction  | CreateSiteViewErrorAction | DeleteSiteErrorAction | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction;
+    CreateSiteViewSuccessAction  | CreateSiteViewErrorAction | DeleteSiteErrorAction | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction |
+    DeleteSiteViewSendAction | DeleteSiteViewSuccessAction | DeleteSiteViewErrorAction ;
+    

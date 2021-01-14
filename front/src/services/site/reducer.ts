@@ -12,6 +12,7 @@ const initialState: types.SiteState = {
     isCreatingSiteView: false,
     isFetchingSiteProvider: false,
     isCopyingSiteView: false,
+    isDeletingSiteView: false,
     siteProvider: undefined,
     isFetchingPresentSiteProvider: false,
     presentSiteProvider: undefined,
@@ -169,6 +170,23 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isCreatingSiteView: false
+            };
+
+        case types.DELETE_SITE_VIEW_SEND:
+            return {
+                ...state,
+                isDeletingSiteView: true
+            };
+        case types.DELETE_SITE_VIEW_SUCCESS:
+            return {
+                ...state,
+                isDeletingSiteView: false,
+                siteProvider: { me: action.payload }
+            };
+        case types.DELETE_SITE_VIEW_ERROR:
+            return {
+                ...state,
+                isDeletingSiteView: false
             };
 
         default:
