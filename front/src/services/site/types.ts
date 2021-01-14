@@ -61,6 +61,7 @@ export interface SiteState {
     isCopyingSiteView: boolean,
     isCreatingSiteView: boolean,
     isDeletingSiteView: boolean,
+    isUpdatingSiteView: boolean,
     siteProvider: SiteProviderQuery | undefined,
     isFetchingPresentSiteProvider: boolean,
     presentSiteProvider: PresentSiteProviderQuery | undefined,
@@ -223,6 +224,21 @@ export interface DeleteSiteViewErrorAction {
     payload: SiteDataError
 };
 
+export interface UpdateSiteViewSendAction {
+    type: typeof UPDATE_SITE_SEND,
+    input: UpdateSiteInput,
+}
+
+export interface UpdateSiteViewSuccessAction {
+    type: typeof UPDATE_SITE_SUCCESS,
+    payload: SiteProviderQuery
+    };
+
+export interface UpdateSiteViewErrorAction {
+    type: typeof UPDATE_SITE_ERROR,
+    payload: SiteDataError
+};
+
 
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
@@ -230,5 +246,5 @@ export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewS
     UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction |
     FetchSiteProviderErrorAction | CopySiteViewSendAction | CopySiteViewSuccessAction | CopySiteViewErrorAction | CreateSiteViewSendAction | 
     CreateSiteViewSuccessAction  | CreateSiteViewErrorAction | DeleteSiteErrorAction | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction |
-    DeleteSiteViewSendAction | DeleteSiteViewSuccessAction | DeleteSiteViewErrorAction ;
-    
+    DeleteSiteViewSendAction | DeleteSiteViewSuccessAction | DeleteSiteViewErrorAction | UpdateSiteViewSendAction | UpdateSiteViewSuccessAction |
+    UpdateSiteViewErrorAction;

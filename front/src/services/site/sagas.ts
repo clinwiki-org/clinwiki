@@ -159,6 +159,24 @@ function* deleteSiteView(action) {
     }
     catch(err) {
         console.log(err);
+        yield put(actions.updateSiteViewError(err.message));
+    }
+}
+
+function* updateSiteView(action) { 
+    try {
+        //console.log("SAGA Updating SITE VIEW", action);
+        let updateResponse = yield call(() => api.updateSiteView(action.input)); 
+        if (updateResponse.data.updateSiteView.errors === null){ 
+            let response = yield getSitesPage(action); // here?
+            yield put(actions.updateSiteViewSuccess(response.data));
+        }
+        else {
+            yield put(actions.updateSiteViewError(updateResponse.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
         yield put(actions.deleteSiteViewError(err.message));
     }
 }
@@ -175,6 +193,7 @@ export default function* userSagas() {
     yield takeLatest(types.COPY_SITE_VIEW_SEND, copySiteView);
     yield takeLatest(types.CREATE_SITE_VIEW_SEND, createSiteView)
     yield takeLatest(types.DELETE_SITE_VIEW_SEND, deleteSiteView);
+    yield takeLatest(types.UPDATE_SITE_VIEW_SEND, updateSiteView);
 }
 
 function* copySiteView(action) { 

@@ -167,3 +167,18 @@ export const deleteSiteViewError = (message: string) : types.SiteViewActionTypes
     type: types.DELETE_SITE_VIEW_ERROR,
     payload: { message }
 });
+
+export const updateSiteView = (input: UpdateSiteInput) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_SEND,
+    input
+});
+
+export const updateSiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_SUCCESS,
+    payload
+});
+
+export const updateSiteViewError = (message: string) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_ERROR,
+    payload: { message }
+});
