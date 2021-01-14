@@ -3,7 +3,7 @@ import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
-
+import { CreateSiteViewInput, UpdateSiteViewInput, DeleteSiteViewInput, CopySiteViewInput } from 'services/site/model/InputTypes';
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
 export const FETCH_ADMIN_SITE_VIEW_SUCCESS = 'FETCH_ADMIN_SITE_VIEW_SUCCESS';
@@ -33,6 +33,10 @@ export const UPDATE_SITE_SEND = 'UPDATE_SITE_SEND';
 export const UPDATE_SITE_SUCCESS = 'UPDATE_SITE_SUCCESS';
 export const UPDATE_SITE_ERROR = 'UPDATE_SITE_ERROR';
 
+export const COPY_SITE_VIEW_SEND = 'COPY_SITE_VIEW_SEND';
+export const COPY_SITE_VIEW_SUCCESS = 'COPY_SITE_VIEW_SUCCESS';
+export const COPY_SITE_VIEW_ERROR = 'COPY_SITE_VIEW_ERROR';
+
 export interface SiteState {
     isFetchingAdminSiteView: boolean,
     adminSiteView: AdminViewsProviderQuery | undefined,
@@ -42,6 +46,7 @@ export interface SiteState {
     isCreatingSite: boolean,
     isUpdatingSite: boolean,
     isFetchingSiteProvider: boolean,
+    isCopyingSiteView: boolean,
     siteProvider: SiteProviderQuery | undefined,
     isFetchingPresentSiteProvider: boolean,
     presentSiteProvider: PresentSiteProviderQuery | undefined,
@@ -159,9 +164,25 @@ export interface UpdateSiteErrorAction {
     payload: SiteDataError
 };
 
+export interface CopySiteViewSendAction {
+    type: typeof COPY_SITE_VIEW_SEND,
+    input: CopySiteViewInput,
+}
+
+export interface CopySiteViewSuccessAction {
+    type: typeof COPY_SITE_VIEW_SUCCESS,
+    payload: SiteProviderQuery
+};
+
+export interface CopySiteViewErrorAction {
+    type: typeof COPY_SITE_VIEW_ERROR,
+    payload: SiteDataError
+};
+
 
 export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
     FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
-    DeleteSiteErrorAction  | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction  
-    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | 
-    FetchSiteProviderErrorAction | FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction;
+    DeleteSiteErrorAction  | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction
+    | FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction
+    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction |
+    FetchSiteProviderErrorAction | CopySiteViewSendAction | CopySiteViewSuccessAction | CopySiteViewErrorAction ;
