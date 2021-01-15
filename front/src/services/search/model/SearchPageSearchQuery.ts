@@ -1,27 +1,21 @@
-//From globalTypes
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-/**
- * An input type for a search query param (q).
- * This is a tree like structure where leafs are the search terms and
- * tree nodes are the AND / OR conditions.
- */
 export interface SearchQueryInput {
     key: string;
     children?: SearchQueryInput[] | null;
   }
-  /**
+/**
  * Column to sort by
  */
 export interface SortInput {
     id: string;
     desc?: boolean | null;
   }
-  
-/**
- * An Agg Filter
- */
-  
-export interface AggFilterInput {
+
+  export interface AggFilterInput {
     field: string;
     values?: string[] | null;
     gte?: string | null;
