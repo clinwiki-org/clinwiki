@@ -10,10 +10,10 @@ const initialState: types.SiteState = {
     isCreatingSite: false,
     isUpdatingSite: false,
     isCreatingSiteView: false,
-    isUpdatingSiteView: false,
-    isFetchingSiteProvider: false,
     isCopyingSiteView: false,
+    isUpdatingSiteView: false,
     isDeletingSiteView: false,
+    isFetchingSiteProvider: false,
     siteProvider: undefined,
     isFetchingPresentSiteProvider: false,
     presentSiteProvider: undefined,
@@ -131,7 +131,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isUpdatingSite: false,
-                siteProvider: action.payload
+                sitesData: action.payload
             };
         case types.UPDATE_SITE_ERROR:
             return {
@@ -182,7 +182,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isDeletingSiteView: false,
-                siteProvider: { me: action.payload }
+                siteProvider: action.payload  //TODO Check passing the left SiteViews after deleted one.
             };
         case types.DELETE_SITE_VIEW_ERROR:
             return {
@@ -199,7 +199,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isUpdatingSiteView: false,
-                sitesData: action.payload
+                siteProvider: action.payload
             };
         case types.UPDATE_SITE_VIEW_ERROR:
             return {

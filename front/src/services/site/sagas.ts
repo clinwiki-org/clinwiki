@@ -3,8 +3,9 @@ import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
 
-
 const getCurrentSites = (state) => state.site.sitesData.me;
+const getCurrentSiteViews = (state)=> state.site.siteProvider.siteViews;
+
 
 function* getAdminSiteView(action) {
     try {
@@ -75,32 +76,6 @@ function* getPresentSiteProvider(action) {
     }
 }
 
-function* deleteSite(action) { 
-    const currentSites = yield select(getCurrentSites)
-    try {
-        //console.log("SAGA Current SITES", currentSites);
-        let response = yield call(() => api.deleteSite(action.id));
-        const { id } = response.data.deleteSite.site
-        if(id === action.id) {
-            let newEditorSites = currentSites.editorSites.filter(site => site.id !== id)
-            let newOwnSites = currentSites.ownSites.filter(site => site.id !== id)
-            let newSites = {
-                id: currentSites.id,
-                ownSites: newOwnSites,
-                editorSites: newEditorSites
-            }
-            yield put(actions.deleteSiteSuccess(newSites));
-        }
-        else {
-            yield put(actions.deleteSiteError(response.message));
-        }
-    }
-    catch(err) {
-        console.log(err);
-        yield put(actions.deleteSiteError(err.message));
-    }
-}
-
 function* createSite(action) { 
     try {
         //console.log("SAGA CREATING SITE", action);
@@ -137,12 +112,12 @@ function* updateSite(action) {
     }
 }
 
-function* deleteSiteView(action) { 
+function* deleteSite(action) { 
     const currentSites = yield select(getCurrentSites)
     try {
-        //console.log("SAGA Current SITE VIEWS", currentSites);
-        let response = yield call(() => api.deleteSiteView(action.id));
-        const { id } = response.data.deleteSiteView.site
+        //console.log("SAGA Current SITES", currentSites);
+        let response = yield call(() => api.deleteSite(action.id));
+        const { id } = response.data.deleteSite.site
         if(id === action.id) {
             let newEditorSites = currentSites.editorSites.filter(site => site.id !== id)
             let newOwnSites = currentSites.ownSites.filter(site => site.id !== id)
@@ -151,24 +126,62 @@ function* deleteSiteView(action) {
                 ownSites: newOwnSites,
                 editorSites: newEditorSites
             }
-            yield put(actions.deleteSiteViewSuccess(newSites));
+            yield put(actions.deleteSiteSuccess(newSites));
         }
         else {
-            yield put(actions.deleteSiteViewError(response.message));
+            yield put(actions.deleteSiteError(response.message));
         }
     }
     catch(err) {
         console.log(err);
-        yield put(actions.updateSiteViewError(err.message));
+        yield put(actions.deleteSiteError(err.message));
     }
 }
 
+//SITE VIEW SAGAS
+
+function* createSiteView(action) {
+    try {
+        console.log("SAGA CREATING SITE VIEW", action);
+        let createResponse = yield call(() => api.createSiteView(action.input));
+        if (createResponse.data.createSiteView.errors === null){                      //TODO CHeck response for "createSiteView" /update / delete too
+            let response = yield getSiteProvider(action);
+            yield put(actions.createSiteViewSuccess(response.data));
+        }
+        else {
+            yield put(actions.createSiteViewError(createResponse.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.createSiteViewError(err.message));
+    }
+}
+
+function* copySiteView(action) { 
+    try {
+        console.log("SAGA COPY SITE VIEW", action);
+        let copyResponse = yield call(() => api.copySiteView(action.input)); 
+        if (copyResponse.data.updateSiteView.errors === null){ 
+            let response = yield getSiteProvider(action); // here?
+            yield put(actions.copySiteViewSuccess(response.data));
+        }
+        else {
+            yield put(actions.copySiteViewError(copyResponse.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.copySiteViewError(err.message));
+    }
+}    
+
 function* updateSiteView(action) { 
     try {
-        //console.log("SAGA Updating SITE VIEW", action);
+        console.log("SAGA Updating SITE VIEW", action);
         let updateResponse = yield call(() => api.updateSiteView(action.input)); 
         if (updateResponse.data.updateSiteView.errors === null){ 
-            let response = yield getSitesPage(action); // here?
+            let response = yield getSiteProvider(action); // here?
             yield put(actions.updateSiteViewSuccess(response.data));
         }
         else {
@@ -177,9 +190,36 @@ function* updateSiteView(action) {
     }
     catch(err) {
         console.log(err);
-        yield put(actions.deleteSiteViewError(err.message));
+        yield put(actions.updateSiteViewError(err.message));
     }
 }
+
+function* deleteSiteView(action) { 
+    const currentSiteViews = yield select(getCurrentSiteViews)
+    try {
+        //console.log("SAGA Current SITE VIEWS", currentSites);
+        let response = yield call(() => api.deleteSiteView(action.input));
+        const { id } = response.data.deleteSiteView.site  //TODO check response
+    /*   
+        if(id === action.id) {
+            let newEditorSites = currentSiteViews.editorSites.filter(site => site.id !== id)
+            let newOwnSites = currentSiteViews.ownSites.filter(site => site.id !== id)
+            let newSites = {
+                id: currentSiteViews.id,
+                ownSites: newOwnSites,
+                editorSites: newEditorSites
+            }    
+            yield put(actions.deleteSiteViewSuccess(newSites));
+        }    
+        else {
+            yield put(actions.deleteSiteViewError(response.message));
+        }   */  
+    }    
+    catch(err) {
+        console.log(err);
+        yield put(actions.deleteSiteViewError(err.message));
+    }    
+}    
 
 
 export default function* userSagas() {
@@ -195,48 +235,3 @@ export default function* userSagas() {
     yield takeLatest(types.DELETE_SITE_VIEW_SEND, deleteSiteView);
     yield takeLatest(types.UPDATE_SITE_VIEW_SEND, updateSiteView);
 }
-
-function* copySiteView(action) { 
-    const currentSites = yield select(getCurrentSites) //TODO check saga getCurrentSites
-    try {
-        //console.log("SAGA Current SITES", currentSites);
-        let response = yield call(() => api.copySiteView(action.id));
-        const { id } = response.data.copySiteView.site
-        if(id === action.id) {
-            let newEditorSites = currentSites.editorSites.filter(site => site.id !== id)
-            let newOwnSites = currentSites.ownSites.filter(site => site.id !== id)
-            let newSites = {
-                id: currentSites.id,
-                ownSites: newOwnSites,
-                editorSites: newEditorSites
-            }
-            yield put(actions.copySiteViewSuccess(newSites));
-        }
-        else {
-            yield put(actions.copySiteViewError(response.message));
-        }
-    }
-    catch(err) {
-        console.log(err);
-        yield put(actions.copySiteViewError(err.message));
-    }
-}
-
-function* createSiteView(action) {
-    try {
-        //console.log("SAGA CREATING SITE VIEW", action);
-        let createResponse = yield call(() => api.createSiteView(action.input));
-        if (createResponse.data.createSiteView.errors === null){
-            let response = yield getSitesPage(action);
-            yield put(actions.createSiteViewSuccess(response.data));
-        }
-        else {
-            yield put(actions.createSiteViewError(createResponse.message));
-        }
-    }
-    catch(err) {
-        console.log(err);
-        yield put(actions.createSiteViewError(err.message));
-    }
-}
-

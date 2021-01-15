@@ -3,7 +3,7 @@ import * as types from './types';
 
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
-import { CreateSiteInput, UpdateSiteInput, CopySiteViewInput, DeleteSiteViewInput } from 'services/site/model/InputTypes';
+import { CreateSiteInput, UpdateSiteInput, CreateSiteViewInput, CopySiteViewInput, UpdateSiteViewInput,  DeleteSiteViewInput } from 'services/site/model/InputTypes';
 import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
 import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
 
@@ -56,7 +56,7 @@ export const fetchSiteProviderError = (message: string) : types.SiteActionTypes 
 
 export const fetchPresentSiteProvider = (id?: number, url?: string) : types.SiteActionTypes => (
     //console.log("ACTION Present Site Provider", url),
-    {
+{
     type: types.FETCH_PRESENT_SITE_PROVIDER_SEND,
     id,
     url
@@ -124,8 +124,7 @@ export const updateSiteError = (message: string) : types.SiteActionTypes => ({
 
 export const copySiteView = (input: CopySiteViewInput) : types.SiteActionTypes => ({
     type: types.COPY_SITE_VIEW_SEND,
-    input,
-    url
+    input
 });
 
 export const copySiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
@@ -153,9 +152,9 @@ export const createSiteViewError = (message: string) : types.SiteActionTypes => 
     payload: { message }
 });
 
-export const deleteSiteView = (id: number) : types.SiteActionTypes => ({
+export const deleteSiteView = (input: DeleteSiteViewInput) : types.SiteActionTypes => ({
     type: types.DELETE_SITE_VIEW_SEND,
-    id
+    input
 });
 
 export const deleteSiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
@@ -168,7 +167,7 @@ export const deleteSiteViewError = (message: string) : types.SiteActionTypes => 
     payload: { message }
 });
 
-export const updateSiteView = (input: UpdateSiteInput) : types.SiteActionTypes => ({
+export const updateSiteView = (input: UpdateSiteViewInput) : types.SiteActionTypes => ({
     type: types.UPDATE_SITE_VIEW_SEND,
     input
 });
