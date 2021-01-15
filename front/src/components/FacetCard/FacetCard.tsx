@@ -18,6 +18,7 @@ import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
 import { UpsertMutationFn, UpsertMutationComponent, UPSERT_LABEL_MUTATION } from 'mutations/CrowdPageUpsertWikiLabelMutation';
+import { connect } from 'react-redux';
 
 const Row = styled.div`
   display: flex;
@@ -40,6 +41,7 @@ interface FacetCardProps {
   aggNames?: any;
   allValues?: any[];
   showAnimation:any;
+  user:any;
 }
 
 interface FacetCardState {
@@ -250,7 +252,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   };
 
   render() {
-    const { label, addLabel, aggNames, allValues } = this.props;
+    const { label, addLabel, aggNames, allValues, user } = this.props;
     const {
       textFieldActive,
       existingField,
@@ -262,7 +264,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     if (addLabel) {
       return (
         <CurrentUser>
-          {user => (
             <ApolloConsumer>
               {apolloClient => (
                 <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
@@ -309,13 +310,11 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                 </UpsertMutationComponent>
               )}
             </ApolloConsumer>
-          )}
         </CurrentUser>
       );
     }
     return (
       <CurrentUser>
-        {user => (
           <ApolloConsumer>
             {apolloClient => (
               <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
@@ -387,10 +386,11 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
               </UpsertMutationComponent>
             )}
           </ApolloConsumer>
-        )}
       </CurrentUser>
     );
   }
 }
-
-export default FacetCard;
+const mapStateToProps = (state, ownProps) => ({
+  user: state.user,
+})
+export default connect(mapStateToProps, null) (FacetCard);
