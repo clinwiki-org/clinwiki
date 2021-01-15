@@ -61,7 +61,8 @@ function* updateSearchParams(action) {
             yield put(actions.fetchSearchParams(searchHash.short))
             yield put(actions.fetchSearchPageAggs(action.searchParams))
             yield put(actions.updateSearchParamsSuccess(searchHash));
-            yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv}&pv=${location.query.pv}`))
+            // TODO need to pull default page view possibly defaulting to blank string which should default to configured default pageview
+            yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
         }
         else {
             yield put(actions.updateSearchParamsError(updateResponse.message));
