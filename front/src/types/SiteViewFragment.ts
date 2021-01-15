@@ -267,7 +267,6 @@ export interface SiteViewFragment_search_presearch {
   crowdAggs: SiteViewFragment_search_presearch_crowdAggs;
   button: SiteViewFragment_search_presearch_button;
   instructions: string;
-  showResults: boolean | null;
 }
 
 export interface SiteViewFragment_search_config_fields {

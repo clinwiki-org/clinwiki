@@ -3,7 +3,7 @@ import * as types from './types';
 
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
-import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
+import { CreateSiteInput, UpdateSiteInput, CopySiteViewInput, DeleteSiteViewInput } from 'services/site/model/InputTypes';
 import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
 import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
 
@@ -138,32 +138,32 @@ export const copySiteViewError = (message: string) : types.SiteActionTypes => ({
     payload: { message }
 });
 
-export const createSiteView = (input: CreateSiteViewInput) : types.SiteViewActionTypes => ({
+export const createSiteView = (input: CreateSiteViewInput) : types.SiteActionTypes => ({
     type: types.CREATE_SITE_VIEW_SEND,
     input
 });
 
-export const createSiteViewSuccess = (payload: any) : types.SiteViewActionTypes => ({
+export const createSiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
     type: types.CREATE_SITE_VIEW_SUCCESS,
     payload
 });
 
-export const createSiteViewError = (message: string) : types.SiteViewActionTypes => ({
+export const createSiteViewError = (message: string) : types.SiteActionTypes => ({
     type: types.CREATE_SITE_VIEW_ERROR,
     payload: { message }
 });
 
-export const deleteSiteView = (id: number) : types.SiteViewActionTypes => ({
+export const deleteSiteView = (id: number) : types.SiteActionTypes => ({
     type: types.DELETE_SITE_VIEW_SEND,
     id
 });
 
-export const deleteSiteViewSuccess = (payload: any) : types.SiteViewActionTypes => ({
+export const deleteSiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
     type: types.DELETE_SITE_VIEW_SUCCESS,
     payload
 });
 
-export const deleteSiteViewError = (message: string) : types.SiteViewActionTypes => ({
+export const deleteSiteViewError = (message: string) : types.SiteActionTypes => ({
     type: types.DELETE_SITE_VIEW_ERROR,
     payload: { message }
 });

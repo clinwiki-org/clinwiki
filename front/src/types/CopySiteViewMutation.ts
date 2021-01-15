@@ -267,7 +267,6 @@ export interface CopySiteViewMutation_copySiteView_siteView_search_presearch {
   crowdAggs: CopySiteViewMutation_copySiteView_siteView_search_presearch_crowdAggs;
   button: CopySiteViewMutation_copySiteView_siteView_search_presearch_button;
   instructions: string;
-  showResults: boolean | null;
 }
 
 export interface CopySiteViewMutation_copySiteView_siteView_search_config_fields {
