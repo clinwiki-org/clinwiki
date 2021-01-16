@@ -196,6 +196,7 @@ export interface CopySiteViewErrorAction {
 
 export interface CreateSiteViewSendAction {
     type: typeof CREATE_SITE_VIEW_SEND,
+    id: number,
     input: CreateSiteViewInput,
 }
 

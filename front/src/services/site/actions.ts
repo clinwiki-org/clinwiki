@@ -137,8 +137,9 @@ export const copySiteViewError = (message: string) : types.SiteActionTypes => ({
     payload: { message }
 });
 
-export const createSiteView = (input: CreateSiteViewInput) : types.SiteActionTypes => ({
+export const createSiteView = (id: number, input: CreateSiteViewInput) : types.SiteActionTypes => ({
     type: types.CREATE_SITE_VIEW_SEND,
+    id,
     input
 });
 

@@ -4,9 +4,9 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { filter } from 'ramda';
 import { SiteViewItem } from 'components/SiteItem';
-import CreateSiteViewMutation, {
+/* import CreateSiteViewMutation, {
   CreateSiteViewMutationFn,
-} from 'mutations/CreateSiteViewMutation';
+} from 'mutations/CreateSiteViewMutation'; */
 import {
   Table,
   FormControl,
@@ -15,7 +15,7 @@ import {
 import ThemedButton from 'components/StyledComponents/index';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { connect } from 'react-redux';
-import { fetchSiteProvider } from 'services/site/actions';
+import { createSiteView, fetchSiteProvider } from 'services/site/actions';
 
 
 interface SiteViewsFormProps {
@@ -81,8 +81,9 @@ class SiteViewsForm extends React.Component<
     textToCopy: '',
   };
 
-  handleSave = (createSiteView: CreateSiteViewMutationFn, type: string) => {
+  handleSave = ( type: string) => {
     const { searchViewForm, userViewForm, adminViewForm } = this.state;
+    let input = {};
     let mutationArray: any[] = [
       { path: ['search', 'type'], operation: 'SET', payload: type },
     ];
@@ -107,18 +108,17 @@ class SiteViewsForm extends React.Component<
           });
           return null;
         }
-        createSiteView({
-          variables: {
-            input: {
-              name: searchViewForm.name,
-              url: searchViewForm.path,
-              description: `search view ${this.props.site.id}`,
-              default: false,
-              mutations: mutationArray,
-              siteId: this.props.site.id,
-            },
-          },
-        }).then(() => {
+        input = {
+          name: searchViewForm.name,
+          url: searchViewForm.path,
+          description: `search view ${this.props.site.id}`,
+          default: false,
+          mutations: mutationArray,
+          siteId: this.props.site.id,
+        }
+        //ts-ignore
+        dispatchEvent(createSiteView( this.props.site.id,  input ))
+        //.then(() => {
           this.setState(
             {
               searchViewForm: {
@@ -130,7 +130,7 @@ class SiteViewsForm extends React.Component<
               this.props.fetchSiteProvider(this.props.site.id);
             }
           );
-        });
+        //});
         break;
       case 'user':
         createSiteView({
@@ -277,8 +277,6 @@ class SiteViewsForm extends React.Component<
       );
     };
     return (
-      <CreateSiteViewMutation>
-        {createSiteView => (
           <StyledContainer>
             <CollapsiblePanel header="Site Views">
               {siteViews.length > 0 && (
@@ -328,7 +326,7 @@ class SiteViewsForm extends React.Component<
                       <td>
                         <ThemedButton
                           onClick={() => {
-                            this.handleSave(createSiteView, 'search');
+                            this.handleSave('search');
                           }}>
                           + Add Site View
                         </ThemedButton>
@@ -382,7 +380,7 @@ class SiteViewsForm extends React.Component<
                       <td>
                         <ThemedButton
                           onClick={() => {
-                            this.handleSave(createSiteView, 'user');
+                            this.handleSave( 'user');
                           }}>
                           + Add Site View
                         </ThemedButton>
@@ -437,7 +435,7 @@ class SiteViewsForm extends React.Component<
                       <td>
                         <ThemedButton
                           onClick={() => {
-                            this.handleSave(createSiteView, 'admin');
+                            this.handleSave('admin');
                           }}>
                           + Add Site View
                         </ThemedButton>
@@ -495,7 +493,7 @@ class SiteViewsForm extends React.Component<
                       <td>
                         <ThemedButton
                           onClick={() => {
-                            this.handleSave(createSiteView, 'intervention');
+                            this.handleSave('intervention');
                           }}>
                           + Add Site View
                         </ThemedButton>
@@ -506,8 +504,6 @@ class SiteViewsForm extends React.Component<
               )}
             </CollapsiblePanel>
           </StyledContainer>
-        )}
-      </CreateSiteViewMutation>
     );
   }
 }
@@ -515,7 +511,8 @@ class SiteViewsForm extends React.Component<
 
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url))
+  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url)),
+  createSiteView: ( input ) => dispatch(createSiteView(input)),
 })
 
 

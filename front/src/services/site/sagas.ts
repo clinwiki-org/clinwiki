@@ -143,9 +143,14 @@ function* deleteSite(action) {
 function* createSiteView(action) {
     try {
         console.log("SAGA CREATING SITE VIEW", action);
-        let createResponse = yield call(() => api.createSiteView(action.input));
+        let createResponse = yield call(() => api.createSiteView(action.input));  //! NOTE  Looks like all CRUD site view mutations will need to pass in the site ID,
+                                                                                 //!  inside action param. Will ned to add into types & actions
+                                                                                 //! OR WE COULD ALSO DISPATCH  the fetchSiteProvider action after mutations
+                                                                                 //! in the handleSave > SiteViewsForm.tsx to refresh data.
+
+
         if (createResponse.data.createSiteView.errors === null){                      //TODO CHeck response for "createSiteView" /update / delete too
-            let response = yield getSiteProvider(action);
+            let response = yield getSiteProvider(action.id);               //TODO  getSiteProvider need to pass the site.id in the action as in fetchSiteProvider.
             yield put(actions.createSiteViewSuccess(response.data));
         }
         else {
