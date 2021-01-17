@@ -83,8 +83,14 @@ function themeFromSite(site): Theme {
   //fallback colors
   let thisTheme = {
     primaryColor: '#6BA5D6',
+    primaryColor2: '#6BA5D6',
+    primaryColor3: '#6BA5D6',
+    primaryColor4: '#6BA5D6',
     secondaryColor: '#1b2a38',
     lightTextColor: '#fff',
+    lightTextColor2: '#fff',
+    lightTextColor3: '#fff',
+    lightTextColor4: '#fff',
     secondaryTextColor: '#777',
     backgroundColor: '#fff',
     primaryAltColor: '#4889BF',
@@ -114,8 +120,14 @@ function themeFromSite(site): Theme {
   const colors = {
     //header font color
     primaryColor: thisTheme.primaryColor || '#6BA5D6',
+    primaryColor2: thisTheme.primaryColor2 || '#6BA5D6',
+    primaryColor3: thisTheme.primaryColor3 || '#6BA5D6',
+    primaryColor4: thisTheme.primaryColor4 || '#6BA5D6',
     secondaryColor: thisTheme.secondaryColor || '#1b2a38',
     lightTextColor: thisTheme.lightTextColor || '#fff',
+    lightTextColor2: thisTheme.lightTextColor2 || '#fff',
+    lightTextColor3: thisTheme.lightTextColor3 || '#fff',
+    lightTextColor4: thisTheme.lightTextColor4 || '#fff',
     secondaryTextColor: thisTheme.secondaryTextColor || '#777',
     backgroundColor: thisTheme.backgroundColor || '#fff',
     primaryAltColor: thisTheme.primaryAltColor || '#4889BF',
@@ -175,6 +187,18 @@ function themeFromSite(site): Theme {
     crumbs: {
       crumbBackground: colors.primaryColor,
       crumbFont: '#fff',
+    },
+    crumbs2: {
+      crumbBackground: colors.primaryColor2,
+      crumbFont: colors.lightTextColor2,
+    },
+    crumbs3: {
+      crumbBackground: colors.primaryColor,
+      crumbFont: colors.lightTextColor3,
+    },
+    crumbs4: {
+      crumbBackground: colors.primaryColor4,
+      crumbFont: colors.lightTextColor34,
     },
     presearch: {
       presearchHeaders: colors.primaryColor,
