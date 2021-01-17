@@ -42,6 +42,33 @@ label {
   color: ${props => props.theme.crumbs.crumbFont} !important;
   line-height: 1.85em;
 }
+.crumb-container2 {
+  border: 2px solid ${props => props.theme.crumbs.crumbBackground2};
+  border-radius: 8px;
+  padding: 0 5px 0 5px;
+  margin: 1px;
+  background: ${props => props.theme.crumbs.crumbBackground2};
+  color: ${props => props.theme.crumbs.crumbFont2} !important;
+  line-height: 1.85em;
+}
+.crumb-container3 {
+  border: 2px solid ${props => props.theme.crumbs.crumbBackground3};
+  border-radius: 8px;
+  padding: 0 5px 0 5px;
+  margin: 1px;
+  background: ${props => props.theme.crumbs.crumbBackground3};
+  color: ${props => props.theme.crumbs.crumbFont3} !important;
+  line-height: 1.85em;
+}
+.crumb-container4 {
+  border: 2px solid ${props => props.theme.crumbs.crumbBackground4};
+  border-radius: 8px;
+  padding: 0 5px 0 5px;
+  margin: 1px;
+  background: ${props => props.theme.crumbs.crumbBackground4};
+  color: ${props => props.theme.crumbs.crumbFont4} !important;
+  line-height: 1.85em;
+}
 .crumb-wrapper{
   display: flex;
   flex-wrap:wrap;
