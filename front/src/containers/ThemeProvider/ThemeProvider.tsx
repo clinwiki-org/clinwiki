@@ -189,16 +189,16 @@ function themeFromSite(site): Theme {
       crumbFont: '#fff',
     },
     crumbs2: {
-      crumbBackground: colors.primaryColor2,
-      crumbFont: colors.lightTextColor2,
+      crumbBackground2: colors.primaryColor2,
+      crumbFont2: colors.lightTextColor2,
     },
     crumbs3: {
-      crumbBackground: colors.primaryColor,
-      crumbFont: colors.lightTextColor3,
+      crumbBackground3: colors.primaryColor3,
+      crumbFont3: colors.lightTextColor3,
     },
     crumbs4: {
-      crumbBackground: colors.primaryColor4,
-      crumbFont: colors.lightTextColor34,
+      crumbBackground4: colors.primaryColor4,
+      crumbFont4: colors.lightTextColor4,
     },
     presearch: {
       presearchHeaders: colors.primaryColor,
