@@ -42,6 +42,18 @@ export interface Theme {
     crumbBackground: string;
     crumbFont: '#fff';
   };
+  crumbs2: {
+    crumbBackground2: string;
+    crumbFont2: '#fff';
+  };
+  crumbs3: {
+    crumbBackground3: string;
+    crumbFont3: '#fff';
+  };
+  crumbs4: {
+    crumbBackground4: string;
+    crumbFont4: '#fff';
+  };
   presearch: {
     presearchHeaders: string;
     presearchLabelColor: string;
