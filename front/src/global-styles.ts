@@ -43,30 +43,30 @@ label {
   line-height: 1.85em;
 }
 .crumb-container2 {
-  border: 2px solid ${props => props.theme.crumbs2.crumbBackground};
+  border: 2px solid ${props => props.theme.crumbs2.crumbBackground2};
   border-radius: 8px;
   padding: 0 5px 0 5px;
   margin: 1px;
-  background: ${props => props.theme.crumbs2.crumbBackground};
-  color: ${props => props.theme.crumbs2.crumbFont} !important;
+  background: ${props => props.theme.crumbs2.crumbBackground2};
+  color: ${props => props.theme.crumbs2.crumbFont2} !important;
   line-height: 1.85em;
 }
 .crumb-container3 {
-  border: 2px solid ${props => props.theme.crumbs3.crumbBackground};
+  border: 2px solid ${props => props.theme.crumbs3.crumbBackground3};
   border-radius: 8px;
   padding: 0 5px 0 5px;
   margin: 1px;
-  background: ${props => props.theme.crumbs3.crumbBackground};
-  color: ${props => props.theme.crumbs3.crumbFont} !important;
+  background: ${props => props.theme.crumbs3.crumbBackground3};
+  color: ${props => props.theme.crumbs3.crumbFont3} !important;
   line-height: 1.85em;
 }
 .crumb-container4 {
-  border: 2px solid ${props => props.theme.crumbs4.crumbBackground};
+  border: 2px solid ${props => props.theme.crumbs4.crumbBackground4};
   border-radius: 8px;
   padding: 0 5px 0 5px;
   margin: 1px;
-  background: ${props => props.theme.crumbs4.crumbBackground};
-  color: ${props => props.theme.crumbs4.crumbFont} !important;
+  background: ${props => props.theme.crumbs4.crumbBackground4};
+  color: ${props => props.theme.crumbs4.crumbFont4} !important;
   line-height: 1.85em;
 }
 .crumb-wrapper{
