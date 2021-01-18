@@ -40,19 +40,19 @@ export interface Theme {
   };
   crumbs: {
     crumbBackground: string;
-    crumbFont: '#fff';
+    crumbFont: string;
   };
   crumbs2: {
     crumbBackground2: string;
-    crumbFont2: '#fff';
+    crumbFont2: string;
   };
   crumbs3: {
     crumbBackground3: string;
-    crumbFont3: '#fff';
+    crumbFont3: string;
   };
   crumbs4: {
     crumbBackground4: string;
-    crumbFont4: '#fff';
+    crumbFont4: string;
   };
   presearch: {
     presearchHeaders: string;
@@ -198,7 +198,7 @@ function themeFromSite(site): Theme {
     },
     crumbs: {
       crumbBackground: colors.primaryColor,
-      crumbFont: '#fff',
+      crumbFont: colors.lightTextColor,
     },
     crumbs2: {
       crumbBackground2: colors.primaryColor2,
