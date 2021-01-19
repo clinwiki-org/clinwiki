@@ -122,8 +122,9 @@ export const updateSiteError = (message: string) : types.SiteActionTypes => ({
     payload: { message }
 });
 
-export const copySiteView = (input: CopySiteViewInput) : types.SiteActionTypes => ({
+export const copySiteView = (id: number, input: CopySiteViewInput) : types.SiteActionTypes => ({
     type: types.COPY_SITE_VIEW_SEND,
+    id,
     input
 });
 
@@ -168,8 +169,9 @@ export const deleteSiteViewError = (message: string) : types.SiteActionTypes => 
     payload: { message }
 });
 
-export const updateSiteView = (input: UpdateSiteViewInput) : types.SiteActionTypes => ({
+export const updateSiteView = (id: number, input: UpdateSiteViewInput) : types.SiteActionTypes => ({
     type: types.UPDATE_SITE_VIEW_SEND,
+    id,
     input
 });
 

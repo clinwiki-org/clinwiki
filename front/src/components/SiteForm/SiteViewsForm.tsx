@@ -4,9 +4,6 @@ import { SiteViewFragment } from 'types/SiteViewFragment';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { filter } from 'ramda';
 import { SiteViewItem } from 'components/SiteItem';
-/* import CreateSiteViewMutation, {
-  CreateSiteViewMutationFn,
-} from 'mutations/CreateSiteViewMutation'; */
 import {
   Table,
   FormControl,

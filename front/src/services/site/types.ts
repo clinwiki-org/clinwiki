@@ -181,6 +181,7 @@ export interface UpdateSiteErrorAction {
 
 export interface CopySiteViewSendAction {
     type: typeof COPY_SITE_VIEW_SEND,
+    id: number,
     input: CopySiteViewInput,
 }
 
@@ -227,6 +228,7 @@ export interface DeleteSiteViewErrorAction {
 
 export interface UpdateSiteViewSendAction {
     type: typeof UPDATE_SITE_VIEW_SEND,
+    id: number,
     input: UpdateSiteViewInput,
 }
 

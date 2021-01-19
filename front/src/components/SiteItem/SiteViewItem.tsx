@@ -10,13 +10,10 @@ import { History, Location } from 'history';
 import UpdateSiteViewMutation, {
   UpdateSiteViewMutationFn,
 } from 'mutations/UpdateSiteViewMutation';
-import CopySiteViewMutation, {
-  CopySiteViewMutationFn,
-} from 'mutations/CopySiteViewMutation';
 import 'override.css';
 import ThemedButton from 'components/StyledComponents/index';
 import { connect } from 'react-redux';
-import { fetchSiteProvider } from 'services/site/actions';
+import { copySiteView, fetchSiteProvider } from 'services/site/actions';
 import { BeatLoader } from 'react-spinners';
 
 interface SiteViewItemProps {
@@ -29,6 +26,7 @@ interface SiteViewItemProps {
   theme?: any;
   fetchSiteProvider: any;
   isReloading: any;
+  copySiteView: any;
 }
 
 const StyledButton = styled(ThemedButton)`
@@ -87,23 +85,18 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     }
   };
 
-  handleCopy = (copySiteView: CopySiteViewMutationFn) => {
+  handleCopy = () => {
     const { siteView, site } = this.props;
     const copiedName = `${siteView.name}copy`;
     const copiedUrl = `${siteView.url}copy`;
-    copySiteView({
-      variables: {
-        input: {
-          name: copiedName,
-          url: copiedUrl,
-          default: false,
-          siteId: site.id,
-          siteViewId: siteView.id,
-        },
-      },
-    }).then(() => {
-      this.props.fetchSiteProvider(site.id);
-    });
+    let input = {
+      name: copiedName,
+      url: copiedUrl,
+      default: false,
+      siteId: site.id,
+      siteViewId: siteView.id,
+    }
+    this.props.copySiteView(site.id, input);
   };
 
   renderDropDown = (siteViewUrl) => {
@@ -204,13 +197,12 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         </td>
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
-          <CopySiteViewMutation>
-            {(copySiteView) => (
-              <StyledButton onClick={() => this.handleCopy(copySiteView)}>
+        
+              <StyledButton onClick={() => this.handleCopy()}>
                 Copy
               </StyledButton>
-            )}
-          </CopySiteViewMutation>
+            
+          
           <DeleteSiteViewMutation>
             {(deleteSiteView) => (
               <StyledButton onClick={() => this.handleDelete(deleteSiteView)}>
@@ -227,7 +219,8 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
 
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url))
+  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url)),
+  copySiteView: (id, input) => dispatch(copySiteView(id, input))
 })
 
 const mapStateToProps = (state, ownProps) => ({
