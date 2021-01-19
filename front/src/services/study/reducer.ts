@@ -7,12 +7,18 @@ const initialState: types.StudyState = {
     pageViews: undefined,
     isFetchingPageView: false,
     pageView: undefined,
-    isUpdatingStudyViewLogCount: false
+    isUpdatingStudyViewLogCount: false,
+    isFetchingWorkflow: false,
+    workflowPage: undefined,
+    isUpsertingLabel: false, 
+    isDeletingLabel: false,
+    isFetchingCrowdPage: false,
+    crowdPage: undefined,
 };
 
 const studyReducer = ( state = initialState, action: types.StudyActionTypes) : types.StudyState => {
     switch(action.type) {
-        case types.FETCH_PAGE_VIEWS_SEND:
+        case types.FETCH_STUDY_PAGE_SEND:
             return {
                 ...state,
                 isFetchingStudy: true
@@ -75,7 +81,38 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 ...state,
                 isUpdatingStudyViewLogCount: false
             };
-                
+            case types.FETCH_WORKFLOW_PAGE_SEND:
+                return {
+                    ...state,
+                    isFetchingWorkflow: true
+                };
+            case types.FETCH_WORKFLOW_PAGE_SUCCESS:
+                return {
+                    ...state,
+                    isFetchingWorkflow: false,
+                    workflowPage: action.payload
+                };
+            case types.FETCH_WORKFLOW_PAGE_ERROR:
+                return {
+                    ...state,
+                    isFetchingWorkflow: false
+                };
+            case types.FETCH_CROWD_PAGE_SEND:
+                return {
+                    ...state,
+                    isFetchingCrowdPage: true
+                };
+            case types.FETCH_CROWD_PAGE_SUCCESS:
+                return {
+                    ...state,
+                    isFetchingCrowdPage: false,
+                    crowdPage: action.payload
+                };
+            case types.FETCH_CROWD_PAGE_ERROR:
+                return {
+                    ...state,
+                    isFetchingCrowdPage: false
+                };
         default:
             return {...state};
     }

@@ -53,3 +53,56 @@ export const updateStudyViewLogCountError= (message: string) : types.StudyAction
     type: types.UPDATE_STUDY_VIEW_LOG_COUNT_ERROR,
     payload: {message}
 });
+export const fetchWorkFlowPage= ( nctId: string ) : types.StudyActionTypes => ({
+    type: types.FETCH_WORKFLOW_PAGE_SEND,
+    nctId
+});
+export const fetchWorkFlowPageSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_WORKFLOW_PAGE_SUCCESS,
+    payload
+});
+export const fetchWorkFlowPageError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_WORKFLOW_PAGE_ERROR,
+    payload: {message}
+});
+export const upsertLabelMutation= ( nctId: any, key: any, value: any) : types.StudyActionTypes => ({
+    type: types.UPSERT_LABEL_MUTATION_SEND,
+    nctId,
+    key,
+    value
+});
+export const upsertLabelMutationSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.UPSERT_LABEL_MUTATION_SUCCESS,
+    payload
+});
+export const upsertLabelMutationError= (message: string) : types.StudyActionTypes => ({
+    type: types.UPSERT_LABEL_MUTATION_ERROR,
+    payload: {message}
+});
+export const deleteLabelMutation= ( nctId: any, key: any, value:any ) : types.StudyActionTypes => ({
+    type: types.DELETE_LABEL_MUTATION_SEND,
+    nctId,
+    key,
+    value
+});
+export const deleteLabelMutationSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.DELETE_LABEL_MUTATION_SUCCESS,
+    payload
+});
+export const deleteLabelMutationError= (message: string) : types.StudyActionTypes => ({
+    type: types.DELETE_LABEL_MUTATION_ERROR,
+    payload: {message}
+});
+
+export const fetchCrowdPage= ( nctId: string) : types.StudyActionTypes => ({
+    type: types.FETCH_CROWD_PAGE_SEND,
+    nctId,
+});
+export const fetchCrowdPageSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_CROWD_PAGE_SUCCESS,
+    payload
+});
+export const fetchCrowdPageError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_CROWD_PAGE_ERROR,
+    payload: {message}
+});

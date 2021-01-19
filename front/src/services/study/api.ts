@@ -18,6 +18,17 @@ export const fetchPageView= (url:any) => {
     return callGraphql(ENDPOINT, query.PAGE_VIEW_QUERY, {url: url.url});
 };
 export const updateStudyViewLogCount = (nctId:any) =>{
-    console.log(nctId)
     return callGraphql(ENDPOINT,mutate.CREATE_STUDY_VIEW_LOG_MUTATION, {nctId})
 }
+export const fetchWorkFlowPage = (nctId: any) =>{
+    return callGraphql(ENDPOINT, query.WORKFLOW_PAGE_QUERY, {nctId});
+}
+export const upsertLabelMutation = (nctId:any, key: any, value: any) =>{
+    return callGraphql(ENDPOINT,mutate.UPSERT_LABEL_MUTATION, {nctId: nctId, key: key, value: value})
+}
+export const deleteLabelMutation = (nctId:any, key: any, value: any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_LABEL_MUTATION, { nctId: nctId, key: key, value: value})
+}
+export const fetchCrowdPage= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.CROWD_PAGE_QUERY, {nctId});
+};
