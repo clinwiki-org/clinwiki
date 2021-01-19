@@ -41,7 +41,7 @@ function* getSitesPage(action) {
 }
 
 function* getSiteProvider(action) {
-            //console.log("SAGA get Site Provider", action);
+          //  console.log("SAGA get Site Provider", action);
     try {
         let response = yield call(() => api.fetchSiteProvider(action.id, action.url));
         if(response) {
@@ -142,15 +142,12 @@ function* deleteSite(action) {
 
 function* createSiteView(action) {
     try {
-        console.log("SAGA CREATING SITE VIEW", action);
-        let createResponse = yield call(() => api.createSiteView(action.input));  //! NOTE  Looks like all CRUD site view mutations will need to pass in the site ID,
-                                                                                 //!  inside action param. Will ned to add into types & actions
-                                                                                 //! OR WE COULD ALSO DISPATCH  the fetchSiteProvider action after mutations
-                                                                                 //! in the handleSave > SiteViewsForm.tsx to refresh data.
-
-
-        if (createResponse.data.createSiteView.errors === null){                      //TODO CHeck response for "createSiteView" /update / delete too
-            let response = yield getSiteProvider(action.id);               //TODO  getSiteProvider need to pass the site.id in the action as in fetchSiteProvider.
+       // console.log("SAGA CREATING SITE VIEW", action);
+        let createResponse = yield call(() => api.createSiteView(action.input)); 
+    // NOTE CRUD site view mutations now pass in the site ID inside action.param
+    // old Apollo(refetch) used the fetchSiteProvider action after mutations in the handleSave > SiteViewsForm.tsx to refresh data.
+        if (createResponse.data.createSiteView.errors === null){                     
+            let response = yield getSiteProvider(action);    
             yield put(actions.createSiteViewSuccess(response.data));
         }
         else {
@@ -202,7 +199,7 @@ function* updateSiteView(action) {
 function* deleteSiteView(action) { 
     const currentSiteViews = yield select(getCurrentSiteViews)
     try {
-        //console.log("SAGA Current SITE VIEWS", currentSites);
+        console.log("SAGA DELETE SITE VIEW", action);
         let response = yield call(() => api.deleteSiteView(action.input));
         const { id } = response.data.deleteSiteView.site  //TODO check response
     /*   
@@ -225,7 +222,6 @@ function* deleteSiteView(action) {
         yield put(actions.deleteSiteViewError(err.message));
     }    
 }    
-
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_ADMIN_SITE_VIEW_SEND, getAdminSiteView);

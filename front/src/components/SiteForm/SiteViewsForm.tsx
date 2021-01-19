@@ -23,6 +23,7 @@ interface SiteViewsFormProps {
   siteViews: SiteViewFragment[];
   theme: any;
   fetchSiteProvider: any;
+  createSiteView: any;
 }
 
 interface SiteViewsFormState {
@@ -116,9 +117,7 @@ class SiteViewsForm extends React.Component<
           mutations: mutationArray,
           siteId: this.props.site.id,
         }
-        //ts-ignore
-        dispatchEvent(createSiteView( this.props.site.id,  input ))
-        //.then(() => {
+        this.props.createSiteView( this.props.site.id,  input )
           this.setState(
             {
               searchViewForm: {
@@ -126,25 +125,19 @@ class SiteViewsForm extends React.Component<
                 path: '',
               },
             },
-            () => {
-              this.props.fetchSiteProvider(this.props.site.id);
-            }
           );
-        //});
         break;
+
       case 'user':
-        createSiteView({
-          variables: {
-            input: {
-              name: userViewForm.name,
-              url: userViewForm.path,
-              description: `user view ${this.props.site.id}`,
-              default: false,
-              mutations: mutationArray,
-              siteId: this.props.site.id,
-            },
-          },
-        }).then(() => {
+        input = {
+          name: userViewForm.name,
+          url: userViewForm.path,
+          description: `user view ${this.props.site.id}`,
+          default: false,
+          mutations: mutationArray,
+          siteId: this.props.site.id,
+        }
+        this.props.createSiteView( this.props.site.id,  input )
           this.setState(
             {
               userViewForm: {
@@ -152,26 +145,18 @@ class SiteViewsForm extends React.Component<
                 path: '',
               },
             },
-            () => {
-              this.props.fetchSiteProvider(this.props.site.id);
-            }
           );
-        });
-
         break;
       case 'admin':
-        createSiteView({
-          variables: {
-            input: {
-              name: adminViewForm.name,
-              url: adminViewForm.path,
-              description: `admin view ${this.props.site.id}`,
-              default: false,
-              mutations: mutationArray,
-              siteId: this.props.site.id,
-            },
-          },
-        }).then(() => {
+        input = {
+          name: adminViewForm.name,
+          url: adminViewForm.path,
+          description: `admin view ${this.props.site.id}`,
+          default: false,
+          mutations: mutationArray,
+          siteId: this.props.site.id,
+        }
+        this.props.createSiteView( this.props.site.id,  input )
           this.setState(
             {
               adminViewForm: {
@@ -179,25 +164,19 @@ class SiteViewsForm extends React.Component<
                 path: '',
               },
             },
-            () => {
-              this.props.fetchSiteProvider(this.props.site.id);
-            }
           );
-        });
         break;
+
       case 'intervention':
-        createSiteView({
-          variables: {
-            input: {
-              name: userViewForm.name,
-              url: userViewForm.path,
-              description: `intervention view ${this.props.site.id}`,
-              default: false,
-              mutations: mutationArray,
-              siteId: this.props.site.id,
-            },
-          },
-        }).then(() => {
+        input = {
+          name: userViewForm.name,
+          url: userViewForm.path,
+          description: `intervention view ${this.props.site.id}`,
+          default: false,
+          mutations: mutationArray,
+          siteId: this.props.site.id,
+        }
+        this.props.createSiteView( this.props.site.id,  input )
           this.setState(
             {
               userViewForm: {
@@ -205,12 +184,9 @@ class SiteViewsForm extends React.Component<
                 path: '',
               },
             },
-            () => {
-              this.props.fetchSiteProvider(this.props.site.id);
-            }
           );
-        });
         break;
+        
       default:
         return null;
     }
@@ -512,7 +488,7 @@ class SiteViewsForm extends React.Component<
 
 const mapDispatchToProps = (dispatch) => ({
   fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url)),
-  createSiteView: ( input ) => dispatch(createSiteView(input)),
+  createSiteView: ( id, input ) => dispatch(createSiteView(id, input)),
 })
 
 
