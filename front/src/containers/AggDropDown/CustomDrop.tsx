@@ -24,7 +24,8 @@ import aggToField from 'utils/aggs/aggToField';
 import { capitalize } from 'utils/helpers';
 import {
   propEq,
-  findIndex
+  findIndex,
+  find
 } from 'ramda';
 import withTheme from 'containers/ThemeProvider';
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
@@ -35,6 +36,9 @@ import BarChartComponent from './BarChart'
 import ValueCrumb from '../../components/MultiCrumb/ValueCrumb';
 import { isLeafType } from 'graphql';
 // import ValuesCrumb from '../../components/MultiCrumb/ValueCrumbs';
+import BucketsDropDown from './BucketsDropDown';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -61,6 +65,7 @@ interface CustomDropDownProps {
   showLabel: boolean;
   isOpen: boolean;
   fromAggField: boolean;
+  updater: AggFilterInputUpdater;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -274,8 +279,27 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     );
     this.props.onContainerToggle && this.props.onContainerToggle()
   };
+  onChangeRange = () => {
+    this.props.updater.changeRange([
+      //@ts-ignore
+      this.state.selectedItems[0].start || this.props.updater.input?.gte,
+      //@ts-ignore
+      this.state.selectedItems[0].end || this.props.updater.input?.lte,
+    ]);
+  }
 
   selectItem = (item) => {
+    if (this.props.field.display == "GREATER_THAN_DROP_DOWN") {
+      this.setState({ selectedItems: [{ start: item.key, end: null }] },
+        () => this.onChangeRange())
+      return
+    }
+    if (this.props.field.display == "LESS_THAN_DROP_DOWN") {
+    this.setState({ selectedItems: [{ start: null, end: item.key }] },
+        () => this.onChangeRange())
+      return
+    }
+
     this.props.onCheckBoxToggle(item.key, this.state.selectedItems);
 
     //important to note conditionals are handling our selected items behavior within the component
@@ -347,9 +371,11 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           field?.display === FieldDisplay.DATE_RANGE ||
           field?.display === FieldDisplay.NUMBER_RANGE ||
           field?.display === FieldDisplay.LESS_THAN_RANGE ||
-          field?.display === FieldDisplay.GREATER_THAN_RANGE) {
+          field?.display === FieldDisplay.GREATER_THAN_RANGE ||
+          field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN
+        ) {
           return (
-            <div className='select-box--crumb-container' key={item.key+"crumb-container"}>
+            <div className='select-box--crumb-container' key={item.key + "crumb-container"}>
               {this.renderRangeLabel()}
               <FontAwesome
                 className="remove crumb-icon"
@@ -378,7 +404,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
         //@ts-ignore
         if (this.isSelected(item.key)) {
           //@ts-ignore
-          return <div className='select-box--crumb-container' key={item.key+'isSelected'}>
+          return <div className='select-box--crumb-container' key={item.key + 'isSelected'}>
             {item.key}          <FontAwesome
               className="remove crumb-icon"
               name="remove"
@@ -567,7 +593,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             )
             .map((item) => (
               <div
-                key={item.key+'buckets'}
+                key={item.key + 'buckets'}
                 onClick={() => this.selectItem(item)}
                 className={
                   this.state.selectedItem === item
@@ -605,23 +631,26 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
                   ? this.props.field.visibleOptions.includes(bucket.key)
                   : true)
             )
-            .map((item) => (
-              this.isSelected(item.key) ? null :
-                <div
-                  key={item.key+'buckets'}
-                  onClick={() => this.selectItem(item)}
-                  className={
-                    this.state.selectedItem === item
-                      ? "selected select-item"
-                      : "select-item"
-                  }
-                >
-                  <div className="item-content">
-                    {/* {this.renderPreValue(item.key)} */}
-                    <span>{item.key} ({item.docCount})</span>
+            .map((item) => {
+              const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', item.key))(field.bucketKeyValuePairs) : false;
+              return (
+                this.isSelected(item.key) ? null :
+                  <div
+                    key={item.key + 'buckets'}
+                    onClick={() => this.selectItem(item)}
+                    className={
+                      this.state.selectedItem === item
+                        ? "selected select-item"
+                        : "select-item"
+                    }
+                  >
+                    <div className="item-content">
+                      {/* {this.renderPreValue(item.key)} */}
+                      <span>{bucketKeyValuePair ? `${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}` : item.key} ({item.docCount})</span>
+                    </div>
                   </div>
-                </div>
-            ))}
+              )
+            })}
         </InfiniteScroll>
       )
     }
@@ -677,4 +706,4 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   }
 }
 
-export default CustomDropDown;
+export default withAggContext(CustomDropDown);
