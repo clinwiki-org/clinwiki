@@ -476,6 +476,33 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
     return null
   };
+  renderValue = (item,bucketKeyValuePair) =>{
+    let text = '';
+    const { docCount } = item;
+    const value = item.key;
+    const display = this.props.field.display
+    let intValue = Math.floor(Number(value))
+    switch (display) {
+      case FieldDisplay.STAR:
+        text = {
+          0: '☆☆☆☆☆',
+          1: '★☆☆☆☆',
+          2: '★★☆☆☆',
+          3: '★★★☆☆',
+          4: '★★★★☆',
+          5: '★★★★★',
+        }[intValue];
+        break;
+      case FieldDisplay.DATE:
+        text = new Date(parseInt(value.toString(), 10))
+          .getFullYear()
+          .toString();
+        break;
+      default:
+        text = bucketKeyValuePair ?  `${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}` : value.toString();
+    }
+    return `${text} (${docCount})`;
+  }
   handleRange = (rangeArray) => {
     this.setState({ selectedItems: rangeArray })
   }
@@ -646,7 +673,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
                   >
                     <div className="item-content">
                       {/* {this.renderPreValue(item.key)} */}
-                      <span>{bucketKeyValuePair ? `${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}` : item.key} ({item.docCount})</span>
+                      <span>{this.renderValue(item, bucketKeyValuePair)}</span>
                     </div>
                   </div>
               )
