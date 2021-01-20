@@ -3,6 +3,7 @@ import { PageViewQuery } from './model/PageView';
 import { PageViewsQuery } from './model/PageViews';
 import { WorkflowPageQuery } from './model/WorkflowPageQuery';
 import { CrowdPageQuery } from './model/CrowdPageQuery';
+import { ReviewPageQuery } from './model/ReviewPageQuery';
 
 export const FETCH_STUDY_PAGE_SEND = 'FETCH_STUDY_PAGE_SEND';
 export const FETCH_STUDY_PAGE_SUCCESS = 'FETCH_STUDY_PAGE_SUCCESS';
@@ -35,6 +36,15 @@ export const DELETE_LABEL_MUTATION_ERROR = 'DELETE_LABEL_MUTATION_ERROR';
 export const FETCH_CROWD_PAGE_SEND = 'FETCH_CROWD_PAGE_SEND';
 export const FETCH_CROWD_PAGE_SUCCESS = 'FETCH_CROWD_PAGE_SUCCESS';
 export const FETCH_CROWD_PAGE_ERROR = 'FETCH_CROWD_PAGE_ERROR';
+
+export const DELETE_REVIEW_MUTATION_SEND = 'DELETE_REVIEW_MUTATION_SEND';
+export const DELETE_REVIEW_MUTATION_SUCCESS = 'DELETE_REVIEW_MUTATION_SUCCESS';
+export const DELETE_REVIEW_MUTATION_ERROR = 'DELETE_REVIEW_MUTATION_ERROR';
+
+export const FETCH_REVIEW_PAGE_SEND = 'FETCH_REVIEW_PAGE_SEND';
+export const FETCH_REVIEW_PAGE_SUCCESS = 'FETCH_REVIEW_PAGE_SUCCESS';
+export const FETCH_REVIEW_PAGE_ERROR = 'FETCH_REVIEW_PAGE_ERROR';
+
 export interface StudyState {
     isFetchingStudy: boolean,
     studyPage: any | undefined,
@@ -49,6 +59,9 @@ export interface StudyState {
     isDeletingLabel: boolean,
     isFetchingCrowdPage: boolean,
     crowdPage: CrowdPageQuery | undefined,
+    isDeletingReview: boolean,
+    isFetchingReviewPage: boolean,
+    reviewPage: ReviewPageQuery | undefined,
 }
 
 export interface SiteDataError {
@@ -142,6 +155,7 @@ export interface upsertLabelMutationErrorAction {
     type: typeof UPSERT_LABEL_MUTATION_ERROR,
     payload: SiteDataError
 };
+
 export interface deleteLabelMutationSendAction {
     type: typeof DELETE_LABEL_MUTATION_SEND
     nctId: any,
@@ -172,6 +186,36 @@ export interface fetchCrowdPageErrorAction {
     type: typeof FETCH_CROWD_PAGE_ERROR,
     payload: SiteDataError
 };
+
+export interface deleteReviewMutationSendAction {
+    type: typeof DELETE_REVIEW_MUTATION_SEND
+    nctId: any,
+};
+
+export interface deleteReviewMutationSuccessAction {
+    type: typeof DELETE_REVIEW_MUTATION_SUCCESS,
+    payload: any
+};
+
+export interface deleteReviewMutationErrorAction {
+    type: typeof DELETE_REVIEW_MUTATION_ERROR,
+    payload: SiteDataError
+};
+export interface fetchReviewPageSendAction {
+    type: typeof FETCH_REVIEW_PAGE_SEND
+    nctId: any,
+};
+
+export interface fetchReviewPageSuccessAction {
+    type: typeof FETCH_REVIEW_PAGE_SUCCESS,
+    payload: any
+};
+
+export interface fetchReviewPageErrorAction {
+    type: typeof FETCH_REVIEW_PAGE_ERROR,
+    payload: SiteDataError
+};
+
 export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
 fetchPageViewSendAction | fetchPageViewSuccessAction | fetchPageViewErrorAction |
 fetchPageViewsSendAction | fetchPageViewsSuccessAction | fetchPageViewsErrorAction |
@@ -179,4 +223,6 @@ updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updat
 fetchWorkFlowPageSendAction | fetchWorkFlowPageSuccessAction | fetchWorkFlowPageErrorAction |
 upsertLabelMutationSendAction | upsertLabelMutationSuccessAction | upsertLabelMutationErrorAction |
 deleteLabelMutationSendAction | deleteLabelMutationSuccessAction | deleteLabelMutationErrorAction |
-fetchCrowdPageSendAction | fetchCrowdPageSuccessAction | fetchCrowdPageErrorAction ;
+fetchCrowdPageSendAction | fetchCrowdPageSuccessAction | fetchCrowdPageErrorAction | deleteReviewMutationSendAction | deleteReviewMutationSuccessAction |
+deleteReviewMutationErrorAction | fetchReviewPageSendAction | fetchReviewPageSuccessAction | fetchReviewPageErrorAction;
+

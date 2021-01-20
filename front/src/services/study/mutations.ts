@@ -78,3 +78,12 @@ export const DELETE_LABEL_MUTATION = `
   ${FRAGMENT}
   ${WikiPageEditFragment}
 `;
+
+export const DELETE_REVIEW_MUTATION = `
+  mutation ReviewsPageDeleteReviewMutation($id: Int!) {
+    deleteReview(input: { id: $id }) {
+      success
+      errors
+    }
+  }
+`;

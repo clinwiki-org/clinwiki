@@ -106,3 +106,28 @@ export const fetchCrowdPageError= (message: string) : types.StudyActionTypes => 
     type: types.FETCH_CROWD_PAGE_ERROR,
     payload: {message}
 });
+export const deleteReviewMutation= ( nctId: any ) : types.StudyActionTypes => ({
+    type: types.DELETE_REVIEW_MUTATION_SEND,
+    nctId,
+});
+export const deleteReviewMutationSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.DELETE_REVIEW_MUTATION_SUCCESS,
+    payload
+});
+export const deleteReviewMutationError= (message: string) : types.StudyActionTypes => ({
+    type: types.DELETE_REVIEW_MUTATION_ERROR,
+    payload: {message}
+});
+
+export const fetchReviewPage= ( nctId: string) : types.StudyActionTypes => ({
+    type: types.FETCH_REVIEW_PAGE_SEND,
+    nctId,
+});
+export const fetchReviewPageSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_REVIEW_PAGE_SUCCESS,
+    payload
+});
+export const fetchReviewPageError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_REVIEW_PAGE_ERROR,
+    payload: {message}
+});

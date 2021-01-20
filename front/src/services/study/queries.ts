@@ -170,3 +170,33 @@ export const CROWD_PAGE_QUERY = `
   ${STUDY_SUMMARY_FRAGMENT}
   ${FRAGMENT}
 `;
+
+export const REVIEW_FRAGMENT = `
+  fragment ReviewsPageFragment on Review {
+    id
+    meta
+    content
+    createdAt
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+export const REVIEW_PAGE_QUERY =`
+query ReviewPageQuery($nctId: String!) {
+  study(nctId: $nctId) {
+    reviews {
+      ...ReviewsPageFragment
+    }
+    nctId
+  }
+  me {
+    id
+  }
+}
+${REVIEW_FRAGMENT}
+`;
+

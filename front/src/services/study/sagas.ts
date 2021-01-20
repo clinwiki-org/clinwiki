@@ -115,6 +115,36 @@ function* deleteLabelMutation(action) {
         yield put(actions.deleteLabelMutationError(err.message));
     }
 }
+function* deleteReviewMutation(action) {
+    try {
+        let response = yield call(() => api.deleteReviewMutation(action.nctId));
+        if(response) {
+            yield put(actions.deleteReviewMutation(response.nctId));
+            yield call(()=> api.fetchReviewPage(action.nctId));
+        }
+        else {
+            yield put(actions.deleteReviewMutationError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.deleteReviewMutationError(err.message));
+    }
+}
+function* getReviewPage(action) {
+    try {
+        let response = yield call(() => api.fetchReviewPage(action.nctId));
+        if(response) {
+            yield put(actions.fetchReviewPageSuccess(response));        }
+        else {
+            yield put(actions.fetchReviewPageError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchReviewPageError(err.message));
+    }
+}
 export default function* userSagas() {
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
     yield takeLatest(types.FETCH_PAGE_VIEWS_SEND, getPageViews);
@@ -123,5 +153,6 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_WORKFLOW_PAGE_SEND, getWorkFlowPage);
     yield takeLatest(types.UPSERT_LABEL_MUTATION_SEND, upsertLabelMutation);
     yield takeLatest(types.DELETE_LABEL_MUTATION_SEND, deleteLabelMutation);
-
+    yield takeLatest(types.DELETE_REVIEW_MUTATION_SEND, deleteReviewMutation);
+    yield takeLatest(types.FETCH_REVIEW_PAGE_SEND, getReviewPage);
 }

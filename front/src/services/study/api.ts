@@ -32,3 +32,9 @@ export const deleteLabelMutation = (nctId:any, key: any, value: any) =>{
 export const fetchCrowdPage= (nctId: any) => {
     return callGraphql(ENDPOINT, query.CROWD_PAGE_QUERY, {nctId});
 };
+export const deleteReviewMutation = (nctId:any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_REVIEW_MUTATION, { nctId: nctId})
+}
+export const fetchReviewPage= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.REVIEW_PAGE_QUERY, {nctId});
+};

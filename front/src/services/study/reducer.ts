@@ -14,6 +14,9 @@ const initialState: types.StudyState = {
     isDeletingLabel: false,
     isFetchingCrowdPage: false,
     crowdPage: undefined,
+    isDeletingReview: false,
+    isFetchingReviewPage: false,
+    reviewPage: undefined,
 };
 
 const studyReducer = ( state = initialState, action: types.StudyActionTypes) : types.StudyState => {
@@ -112,6 +115,22 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 return {
                     ...state,
                     isFetchingCrowdPage: false
+                };
+            case types.FETCH_REVIEW_PAGE_SEND:
+                return {
+                    ...state,
+                    isFetchingReviewPage: true
+                };
+            case types.FETCH_REVIEW_PAGE_SUCCESS:
+                return {
+                    ...state,
+                    isFetchingReviewPage: false,
+                    reviewPage: action.payload
+                };
+            case types.FETCH_REVIEW_PAGE_ERROR:
+                return {
+                    ...state,
+                    isFetchingReviewPage: false
                 };
         default:
             return {...state};
