@@ -13,7 +13,7 @@ import UpdateSiteViewMutation, {
 import 'override.css';
 import ThemedButton from 'components/StyledComponents/index';
 import { connect } from 'react-redux';
-import { copySiteView, fetchSiteProvider } from 'services/site/actions';
+import { copySiteView, fetchSiteProvider, updateSiteView } from 'services/site/actions';
 import { BeatLoader } from 'react-spinners';
 
 interface SiteViewItemProps {
@@ -27,6 +27,7 @@ interface SiteViewItemProps {
   fetchSiteProvider: any;
   isReloading: any;
   copySiteView: any;
+  updateSiteView: any;
 }
 
 const StyledButton = styled(ThemedButton)`
@@ -45,24 +46,37 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     );
   };
 
-  handleCheckbox = (updateSiteView: UpdateSiteViewMutationFn) => {
-    const { siteView } = this.props;
+  handleCheckbox = () => {
+    const { site, siteView } = this.props;
     if (siteView.default) {
       alert('There must be a default site view.');
       return null;
     }
-    updateSiteView({
-      variables: {
-        input: {
-          default: true,
-          id: siteView.id,
-          mutations: [],
-          name: siteView.name,
-        },
-      },
-    }).then(() => {
-      this.props.fetchSiteProvider(this.props.site.id);
-    });
+    let input = {
+      default: true,
+      id: siteView.id,
+      mutations: [],
+      name: siteView.name,
+    }
+    this.props.updateSiteView(site.id, input);
+  };
+
+  handleChangeType = ( type: string ) => {
+    const { site, siteView } = this.props;
+    let mutationArray: any[] = [
+      { path: ['search', 'type'], operation: 'SET', payload: type },
+    ];
+    if (siteView.default) {
+      alert('There must be a default site.');
+      return null;
+    }
+    let input =  {
+      default: false,
+      id: siteView.id,
+      mutations: mutationArray,
+      url: siteView.url,
+    }
+    this.props.updateSiteView(site.id, input);
   };
 
   handleDelete = (deleteSiteView: DeleteSiteViewMutationFn) => {
@@ -104,11 +118,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
       return;
     }
     // console.log(this.props.theme);
-    return (
-      <UpdateSiteViewMutation>
-        {(updateSiteView) => {
-          //needs to be themed, traditional methods of theming not working
-          return (
+    return (    
             <DropdownButton
               bsStyle="default"
               title="Change Type"
@@ -122,41 +132,12 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
                 <MenuItem
                   key={type}
                   name={`set:search.type`}
-                  onClick={() => this.handleChangeType(updateSiteView, type)}>
+                  onClick={() => this.handleChangeType(type)}>
                   {type}
                 </MenuItem>
               ))}
-            </DropdownButton>
-          );
-        }}
-      </UpdateSiteViewMutation>
+            </DropdownButton> 
     );
-  };
-  handleChangeType = (
-    updateSiteView: UpdateSiteViewMutationFn,
-    type: string
-  ) => {
-    const { siteView } = this.props;
-    let mutationArray: any[] = [
-      { path: ['search', 'type'], operation: 'SET', payload: type },
-    ];
-    if (siteView.default) {
-      alert('There must be a default site.');
-      return null;
-    }
-
-    updateSiteView({
-      variables: {
-        input: {
-          default: false,
-          id: siteView.id,
-          mutations: mutationArray,
-          url: siteView.url,
-        },
-      },
-    }).then(() => {
-      this.props.fetchSiteProvider(this.props.site.id);
-    });
   };
 
   render() {
@@ -179,17 +160,12 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         <td>{siteView.url}</td>
         {type === 'search' && (
           <td>
-            <UpdateSiteViewMutation>
-              {(updateSiteView) => (
                 <Checkbox
                   checked={siteView.default}
-                  onChange={() => this.handleCheckbox(updateSiteView)}
+                  onChange={() => this.handleCheckbox()}
                 />
-              )}
-            </UpdateSiteViewMutation>
           </td>
         )}
-
         <td>
           <a target="_blank" href={urlString} rel="noopener noreferrer">
             {urlString}
@@ -197,12 +173,10 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
         </td>
         <td>
           <StyledButton onClick={this.handleEditClick}>Edit</StyledButton>
-        
               <StyledButton onClick={() => this.handleCopy()}>
                 Copy
               </StyledButton>
-            
-          
+
           <DeleteSiteViewMutation>
             {(deleteSiteView) => (
               <StyledButton onClick={() => this.handleDelete(deleteSiteView)}>
@@ -220,7 +194,8 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
 
 const mapDispatchToProps = (dispatch) => ({
   fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url)),
-  copySiteView: (id, input) => dispatch(copySiteView(id, input))
+  copySiteView: (id, input) => dispatch(copySiteView(id, input)),
+  updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
 })
 
 const mapStateToProps = (state, ownProps) => ({

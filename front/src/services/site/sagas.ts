@@ -162,7 +162,7 @@ function* createSiteView(action) {
 
 function* copySiteView(action) { 
     try {
-        console.log("SAGA COPY SITE VIEW", action);
+       // console.log("SAGA COPY SITE VIEW", action);
         let copyResponse = yield call(() => api.copySiteView(action.input)); 
         if (copyResponse.data.copySiteView.errors === null){ 
             let response = yield getSiteProvider(action);
@@ -180,7 +180,7 @@ function* copySiteView(action) {
 
 function* updateSiteView(action) { 
     try {
-        console.log("SAGA Updating SITE VIEW", action);
+       // console.log("SAGA Updating SITE VIEW", action);
         let updateResponse = yield call(() => api.updateSiteView(action.input)); 
         if (updateResponse.data.updateSiteView.errors === null){ 
             let response = yield getSiteProvider(action); 

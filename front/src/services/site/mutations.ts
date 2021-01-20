@@ -52,9 +52,10 @@ export const COPY_SITE_VIEW_MUTATION = `
   ${SITE_VIEW_FRAGMENT}
 `;
 
+
 export const UPDATE_SITE_VIEW_MUTATION = `
-  mutation UpdateSiteViewMutation($input: UpdateSiteInput!) {
-    updateSite(input: $input) {
+  mutation UpdateSiteViewMutation($input: UpdateSiteViewInput!) {
+    updateSiteView(input: $input) {
       siteView {
         ...SiteViewFragment
       }
@@ -64,6 +65,7 @@ export const UPDATE_SITE_VIEW_MUTATION = `
 
   ${SITE_VIEW_FRAGMENT}
 `;
+
 
 export const CREATE_SITE_VIEW_MUTATION = `
   mutation CreateSiteViewMutation($input: CreateSiteViewInput!) {

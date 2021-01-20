@@ -409,10 +409,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   componentDidMount() {
     const { agg, presentSiteView, presearch } = this.props;
-    console.log("🚀 ~  presearch", presearch);
-    console.log("🚀 ~ agg", agg);
-    console.log("🚀 ~ ~ presentSiteView", presentSiteView);
-
     
     const field = findFields(agg, presentSiteView, presearch);
     if (field?.order && field.order.sortKind === 'key') {
