@@ -39,6 +39,7 @@ import { isLeafType } from 'graphql';
 import BucketsDropDown from './BucketsDropDown';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import AllowMissingDropDownItem from './AllowMissingDropDownItem';
 
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -73,7 +74,7 @@ interface CustomDropDownState {
   selectedItem: any[],
   type: string,
   defaultOpen: boolean,
-  selectedItems: any[]
+  selectedItems: any[],
   hasMore: boolean,
   loading: boolean,
   filter: string,
@@ -189,6 +190,9 @@ const SelectBoxBox = styled.div`
   background-color: ${props => props.theme.button};
  }
 
+ .select-box--buckets-presearch .allow-missing{
+  background-color: #ececec;
+ }
 
 .select-box--buckets-presearch{
   max-height:200px;
@@ -536,6 +540,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   renderPanel = () => {
     const { hasMore, buckets, handleLoadMore, field } = this.props
     const { showItems, loading } = this.state
+    const showAllowMissing = field.showAllowMissing;
     if (!this.props.isOpen) return
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
@@ -600,6 +605,16 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     else if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
 
       return (
+      <>
+          {showAllowMissing && (
+            <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()} >
+              <div className="item-content">
+                {this.props.updater.allowsMissing() ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>}
+
+                <AllowMissingDropDownItem buckets={buckets} />
+              </div>
+            </div>
+          )}
         <InfiniteScroll
           pageStart={0}
           loadMore={this.props.handleLoadMore}
@@ -635,11 +650,18 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
               </div>
             ))}
         </InfiniteScroll>
+      </>
       )
     }
     else {
 
       return (
+        <>
+          {showAllowMissing && !this.props.updater.allowsMissing() && (
+            <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()}>
+              <AllowMissingDropDownItem buckets={buckets} className="item-content" />
+            </div>
+          )}
         <InfiniteScroll
           pageStart={0}
           loadMore={this.props.handleLoadMore}
@@ -679,6 +701,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
               )
             })}
         </InfiniteScroll>
+        </>
       )
     }
   }
@@ -691,6 +714,8 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     const ThemedTitle = this.props.isPresearch ? PresearchTitle : ThemedFacetTitle
     let configuredLabel = this.props.field?.displayName || '';
     const title = aggToField(this.props.field.name, configuredLabel);
+    const showAllowMissing = this.props.field.showAllowMissing;
+
     if (this.props.buckets == undefined && this.props.isOpen) {
       return <BeatLoader />
     }
@@ -710,6 +735,16 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             {this.props.isPresearch ? (
               <div className='select-box--crumbs'>
                 {this.state.selectedItems.length > 0 ? this.renderSelectedItems() : this.renderSubLabel()}
+                {showAllowMissing && this.props.updater.allowsMissing() && (
+                  <div className='select-box--crumb-container'>
+                    {'Allow Missing'}
+                    <FontAwesome
+                      className="remove crumb-icon"
+                      name="remove"
+                      onClick={() => this.props.updater.toggleAllowMissing()}
+                    />
+                  </div>
+                )}
               </div>
             ) : null}
 
