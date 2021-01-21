@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FieldDisplay } from 'types/globalTypes';
 import styled from 'styled-components';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
 import { BeatLoader } from 'react-spinners';
 import * as InfiniteScroll from 'react-infinite-scroller';

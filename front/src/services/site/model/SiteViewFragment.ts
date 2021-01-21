@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { SortKind, FieldDisplay, FilterKind } from "./globalTypes";
+import { SortKind, FieldDisplay, FilterKind } from "../../../types/globalTypes";
 
 // ====================================================
 // GraphQL fragment: SiteViewFragment
@@ -267,7 +267,6 @@ export interface SiteViewFragment_search_presearch {
   crowdAggs: SiteViewFragment_search_presearch_crowdAggs;
   button: SiteViewFragment_search_presearch_button;
   instructions: string;
-  showResults: boolean | null;
 }
 
 export interface SiteViewFragment_search_config_fields {

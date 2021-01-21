@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PieChart, Pie, Sector, Cell } from 'recharts';
 import { AggBucket } from '../SearchPage/Types';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 interface TwoLevelPieChartProps {
   isPresearch: boolean;

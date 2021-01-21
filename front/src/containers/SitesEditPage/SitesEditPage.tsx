@@ -4,7 +4,6 @@ import { UpdateSiteInput } from 'services/site/model/InputTypes';
 import { match } from 'react-router';
 import SiteProvider from 'containers/SiteProvider';
 import { History, Location } from 'history';
-import UpdateSiteViewMutation from 'mutations/UpdateSiteViewMutation';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { updateSite } from 'services/site/actions';
@@ -29,18 +28,14 @@ const SitesEditPage = ({match, history, location} : SitesEditPageProps) => {
     return (
       <SiteProvider id={parseInt(match.params.id, 10)}>
         {(site) => (
-          <UpdateSiteViewMutation>
-            {updateSiteView => (
                   <SiteForm
                     match={match}
                     history={history}
                     location={location}
                     site={site}
                     onSaveSite={input => handleSave(input)}
-                    onSaveSiteView={updateSiteView}
+                    //onSaveSiteView={updateSiteView}
                   />
-            )}
-          </UpdateSiteViewMutation>
         )}
       </SiteProvider>
     );

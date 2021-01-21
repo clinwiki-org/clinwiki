@@ -17,7 +17,7 @@ import withTheme from 'containers/ThemeProvider';
 import { extractWikiSections, WikiSection } from 'utils/helpers';
 import { drop, pipe, propEq, filter, fromPairs } from 'ramda';
 import * as R from 'remeda';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'services/study/model/SiteStudyBasicGenericSectionFragment';
 import CurrentUser from 'containers/CurrentUser';
 import WikiSections from './WikiSections';
 import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';

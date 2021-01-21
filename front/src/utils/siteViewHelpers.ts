@@ -6,7 +6,7 @@ import {
   isEmpty,
   indexOf,
 } from 'ramda';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 export const preselectedFilters = (
   view: SiteViewFragment

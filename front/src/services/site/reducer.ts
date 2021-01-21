@@ -9,6 +9,10 @@ const initialState: types.SiteState = {
     isDeletingSite: false,
     isCreatingSite: false,
     isUpdatingSite: false,
+    isCreatingSiteView: false,
+    isCopyingSiteView: false,
+    isUpdatingSiteView: false,
+    isDeletingSiteView: false,
     isFetchingSiteProvider: false,
     siteProvider: undefined,
     isFetchingPresentSiteProvider: false,
@@ -123,7 +127,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isUpdatingSite: true
             };
-        case types.UPDATE_SITE_SUCCESS:            
+        case types.UPDATE_SITE_SUCCESS:
             return {
                 ...state,
                 isUpdatingSite: false,
@@ -134,7 +138,80 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 ...state,
                 isUpdatingSite: false
             };
+        case types.COPY_SITE_VIEW_SEND:
+            return {
+                ...state,
+                isCopyingSiteView: true
+            };
+        case types.COPY_SITE_VIEW_SUCCESS:            
+            return {
+                ...state,
+                isCopyingSiteView: false,
+                siteProvider: action.payload
+                };
+        case types.COPY_SITE_VIEW_ERROR:
+            return {
+                ...state,
+                isCopyingSiteView: false
+            };
 
+
+        case types.CREATE_SITE_VIEW_SEND:
+            return {
+                ...state,
+                isCreatingSiteView: true
+            };
+        case types.CREATE_SITE_VIEW_SUCCESS:
+            return {
+                ...state,
+                isCreatingSiteView: false,
+                siteProvider: action.payload
+            };
+        case types.CREATE_SITE_VIEW_ERROR:
+            return {
+                ...state,
+                isCreatingSiteView: false
+            };
+
+        case types.DELETE_SITE_VIEW_SEND:
+            return {
+                ...state,
+                isDeletingSiteView: true
+            };
+        case types.DELETE_SITE_VIEW_SUCCESS:
+            return {
+                ...state,
+                isDeletingSiteView: false,
+                siteProvider: {
+                    ...state.siteProvider,
+                    site: { 
+                        ...state.siteProvider.site,
+                        siteViews: action.payload
+                        }
+                    }  
+            };
+        case types.DELETE_SITE_VIEW_ERROR:
+            return {
+                ...state,
+                isDeletingSiteView: false
+            };
+
+        case types.UPDATE_SITE_VIEW_SEND:
+            return {
+                ...state,
+                isUpdatingSiteView: true
+            };
+        case types.UPDATE_SITE_VIEW_SUCCESS:            
+            return {
+                ...state,
+                isUpdatingSiteView: false,
+                siteProvider: action.payload
+            };
+        case types.UPDATE_SITE_VIEW_ERROR:
+            return {
+                ...state,
+                isUpdatingSiteView: false
+            };
         default:
             return {...state};
     }

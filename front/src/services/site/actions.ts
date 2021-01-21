@@ -3,7 +3,7 @@ import * as types from './types';
 
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
-import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes';
+import { CreateSiteInput, UpdateSiteInput, CreateSiteViewInput, CopySiteViewInput, UpdateSiteViewInput,  DeleteSiteViewInput } from 'services/site/model/InputTypes';
 import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
 import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
 
@@ -56,7 +56,7 @@ export const fetchSiteProviderError = (message: string) : types.SiteActionTypes 
 
 export const fetchPresentSiteProvider = (id?: number, url?: string) : types.SiteActionTypes => (
     //console.log("ACTION Present Site Provider", url),
-    {
+{
     type: types.FETCH_PRESENT_SITE_PROVIDER_SEND,
     id,
     url
@@ -119,5 +119,68 @@ export const updateSiteSuccess = (payload: any) : types.SiteActionTypes => ({
 
 export const updateSiteError = (message: string) : types.SiteActionTypes => ({
     type: types.UPDATE_SITE_ERROR,
+    payload: { message }
+});
+
+export const copySiteView = (id: number, input: CopySiteViewInput) : types.SiteActionTypes => ({
+    type: types.COPY_SITE_VIEW_SEND,
+    id,
+    input
+});
+
+export const copySiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
+    type: types.COPY_SITE_VIEW_SUCCESS,
+    payload
+});
+
+export const copySiteViewError = (message: string) : types.SiteActionTypes => ({
+    type: types.COPY_SITE_VIEW_ERROR,
+    payload: { message }
+});
+
+export const createSiteView = (id: number, input: CreateSiteViewInput) : types.SiteActionTypes => ({
+    type: types.CREATE_SITE_VIEW_SEND,
+    id,
+    input
+});
+
+export const createSiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
+    type: types.CREATE_SITE_VIEW_SUCCESS,
+    payload
+});
+
+export const createSiteViewError = (message: string) : types.SiteActionTypes => ({
+    type: types.CREATE_SITE_VIEW_ERROR,
+    payload: { message }
+});
+
+export const deleteSiteView = (input: DeleteSiteViewInput) : types.SiteActionTypes => ({
+    type: types.DELETE_SITE_VIEW_SEND,
+    input
+});
+
+export const deleteSiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
+    type: types.DELETE_SITE_VIEW_SUCCESS,
+    payload
+});
+
+export const deleteSiteViewError = (message: string) : types.SiteActionTypes => ({
+    type: types.DELETE_SITE_VIEW_ERROR,
+    payload: { message }
+});
+
+export const updateSiteView = (id: number, input: UpdateSiteViewInput) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_SEND,
+    id,
+    input
+});
+
+export const updateSiteViewSuccess = (payload: any) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_SUCCESS,
+    payload
+});
+
+export const updateSiteViewError = (message: string) : types.SiteActionTypes => ({
+    type: types.UPDATE_SITE_VIEW_ERROR,
     payload: { message }
 });
