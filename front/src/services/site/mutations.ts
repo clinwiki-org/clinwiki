@@ -81,12 +81,13 @@ export const CREATE_SITE_VIEW_MUTATION = `
 `;
 
 export const DELETE_SITE_VIEW_MUTATION = `
-mutation DeleteSiteViewMutation($input: DeleteSiteViewInput!) {
-  deleteSiteView(input: $input) {
-    siteView {
-      id
+  mutation DeleteSiteViewMutation($input: DeleteSiteViewInput!) {
+    deleteSiteView(input: $input) {
+      siteView {
+        name
+        id
+      }
+      error
     }
   }
-}
 `;
-

@@ -4,7 +4,7 @@ import {
 } from 'recharts';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import { SearchParams } from '../SearchPage/Types'
 
 interface BarChartComponentProps {

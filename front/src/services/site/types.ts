@@ -62,7 +62,7 @@ export interface SiteState {
     isCreatingSiteView: boolean,
     isDeletingSiteView: boolean,
     isUpdatingSiteView: boolean,
-    siteProvider: SiteProviderQuery | undefined,
+    siteProvider:any | SiteProviderQuery | undefined,
     isFetchingPresentSiteProvider: boolean,
     presentSiteProvider: PresentSiteProviderQuery | undefined,
 }

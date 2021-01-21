@@ -13,7 +13,7 @@ import { FacilityFragment } from 'types/FacilityFragment';
 import StudySummary from 'components/StudySummary';
 import GoogleMapReact from 'google-map-react';
 import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'services/study/model/SiteStudyBasicGenericSectionFragment';
 import MapMarker from './MapMarker';
 import FacilityCard from './FacilityCard';
 import QUERY, {FRAGMENT} from 'queries/FacilitiesPageQuery';

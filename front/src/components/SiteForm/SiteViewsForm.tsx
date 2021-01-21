@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { filter } from 'ramda';
 import { SiteViewItem } from 'components/SiteItem';

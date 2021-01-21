@@ -8,7 +8,7 @@ import {
   MenuItem,
   FormControl,
 } from 'react-bootstrap';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
 import MultiInput from 'components/MultiInput';
@@ -21,9 +21,6 @@ import { Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
 import { match } from 'react-router';
 import { SiteViewMutationInput } from 'types/globalTypes';
-import UpdateSiteViewMutation, {
-  UpdateSiteViewMutationFn,
-} from 'mutations/UpdateSiteViewMutation';
 import {
   updateView,
   createMutation,
@@ -934,7 +931,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     let view = this.props.siteViews.find(view => siteviewId == view.id) as SiteViewFragment;
     if (!view) return null;
 
-    console.log([this.props.siteViews, siteviewId, view]);
+    //console.log([this.props.siteViews, siteviewId, view]);
     view = updateView(view, this.state.mutations);
     const { site } = this.props;
     const fields = displayFields(

@@ -19,19 +19,17 @@ import SiteViewsRouter from './SiteViewsRouter';
 import { History, Location } from 'history';
 import StudyForm from './StudyForm';
 import ThemedButton from 'components/StyledComponents/index';
-import { UpdateSiteViewMutationFn } from 'mutations/UpdateSiteViewMutation';
 import PagesForm from './PagesForm';
 import { connect } from 'react-redux';
 import { fetchSiteProvider, updateSiteView } from 'services/site/actions';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 interface SiteFormProps {
   match: match<{}>;
-  site: SiteFragment;  //TODO  Move SiteFragment when we redux SiteProvider and PresentSiteProvider.
+  site: SiteFragment;
   history: History;
   location: Location;
   onSaveSite: (CreateSiteInput) => void;
-  onSaveSiteView?: UpdateSiteViewMutationFn;
   //fetchSiteProvider?: any;
   updateSiteView: any;
 }

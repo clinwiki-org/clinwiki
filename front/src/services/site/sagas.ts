@@ -4,7 +4,7 @@ import * as actions from './actions';
 import * as api from './api';
 
 const getCurrentSites = (state) => state.site.sitesData.me;
-const getCurrentSiteViews = (state)=> state.site.siteProvider.siteViews;
+const getCurrentSiteViews = (state)=> state.site.siteProvider.site.siteViews;
 
 
 function* getAdminSiteView(action) {
@@ -199,23 +199,16 @@ function* updateSiteView(action) {
 function* deleteSiteView(action) { 
     const currentSiteViews = yield select(getCurrentSiteViews)
     try {
-        console.log("SAGA DELETE SITE VIEW", action);
+        //console.log("SAGA DELETE SITE VIEW", action);
         let response = yield call(() => api.deleteSiteView(action.input));
-        const { id } = response.data.deleteSiteView.site  //TODO check response
-    /*   
-        if(id === action.id) {
-            let newEditorSites = currentSiteViews.editorSites.filter(site => site.id !== id)
-            let newOwnSites = currentSiteViews.ownSites.filter(site => site.id !== id)
-            let newSites = {
-                id: currentSiteViews.id,
-                ownSites: newOwnSites,
-                editorSites: newEditorSites
-            }    
-            yield put(actions.deleteSiteViewSuccess(newSites));
+        const { id } = response.data.deleteSiteView.siteView
+        if(id === action.input.id) {
+            let newSiteViews = currentSiteViews.filter(sv => sv.id !== id)
+            yield put(actions.deleteSiteViewSuccess(newSiteViews));
         }    
         else {
             yield put(actions.deleteSiteViewError(response.message));
-        }   */  
+        }   
     }    
     catch(err) {
         console.log(err);

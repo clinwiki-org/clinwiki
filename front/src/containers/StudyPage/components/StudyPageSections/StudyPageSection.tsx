@@ -6,8 +6,8 @@ import { History, Location } from 'history';
 import * as FontAwesome from 'react-fontawesome';
 import { CSSTransition } from 'react-transition-group';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
-import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'services/study/model/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyExtendedGenericSectionFragment } from 'services/study/model/SiteStudyExtendedGenericSectionFragment';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
 interface StudyPageSectionProps {

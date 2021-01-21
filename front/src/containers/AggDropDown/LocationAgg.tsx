@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FieldDisplay } from 'types/globalTypes';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import { AggBucket, AggregateAggCallback } from '../SearchPage/Types';
 import { FormControl, FormGroup } from 'react-bootstrap';
 import ThemedButton from 'components/StyledComponents/index';

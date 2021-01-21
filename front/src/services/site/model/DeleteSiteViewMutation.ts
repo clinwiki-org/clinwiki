@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { DeleteSiteViewInput } from "./globalTypes";
+import { DeleteSiteViewInput } from "./InputTypes";
 
 // ====================================================
 // GraphQL mutation operation: DeleteSiteViewMutation

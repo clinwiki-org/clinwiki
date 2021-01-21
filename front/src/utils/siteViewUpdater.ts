@@ -1,4 +1,4 @@
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import { SiteViewMutationInput, SiteViewOperation } from 'types/globalTypes';
 import { find, propEq, reject } from 'ramda';
 import { cloneDeep } from 'apollo-utilities';

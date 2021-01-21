@@ -5,7 +5,7 @@ import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import MultiInput from 'components/MultiInput';
 import AggField, { FieldType } from 'components/SiteForm/AggField';
 import { fromPairs, difference, find } from 'ramda';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import { MutationSource } from 'containers/SearchPage/shared';
 import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 import { connect } from 'react-redux';

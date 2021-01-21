@@ -2,7 +2,7 @@ import * as React from 'react';
 import { gql, useQuery}  from '@apollo/client';
 import { match } from 'react-router-dom';
 import { History } from 'history';
-import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import { SiteStudyExtendedGenericSectionFragment } from 'services/study/model/SiteStudyExtendedGenericSectionFragment';
 import { MailMergeView } from 'components/MailMerge';
 import { useState } from 'react';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';

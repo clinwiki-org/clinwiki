@@ -35,7 +35,7 @@ import CrowdLabel from './CrowdLabel';
 import AddCrowdLabel from './AddCrowdLabel';
 import CurrentUser from 'containers/CurrentUser';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'services/study/model/SiteStudyBasicGenericSectionFragment';
 import {
   UPSERT_LABEL_MUTATION,
   UpsertMutationComponent,

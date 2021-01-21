@@ -1,19 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Checkbox, MenuItem, DropdownButton } from 'react-bootstrap';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import { withRouter } from 'react-router-dom';
-import DeleteSiteViewMutation, {
-  DeleteSiteViewMutationFn,
-} from 'mutations/DeleteSiteViewMutation';
 import { History, Location } from 'history';
-import UpdateSiteViewMutation, {
-  UpdateSiteViewMutationFn,
-} from 'mutations/UpdateSiteViewMutation';
 import 'override.css';
 import ThemedButton from 'components/StyledComponents/index';
 import { connect } from 'react-redux';
-import { copySiteView, fetchSiteProvider, updateSiteView } from 'services/site/actions';
+import { copySiteView, deleteSiteView, fetchSiteProvider, updateSiteView } from 'services/site/actions';
 import { BeatLoader } from 'react-spinners';
 
 interface SiteViewItemProps {
@@ -28,6 +22,7 @@ interface SiteViewItemProps {
   isReloading: any;
   copySiteView: any;
   updateSiteView: any;
+  deleteSiteView: any;
 }
 
 const StyledButton = styled(ThemedButton)`
@@ -79,7 +74,7 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     this.props.updateSiteView(site.id, input);
   };
 
-  handleDelete = (deleteSiteView: DeleteSiteViewMutationFn) => {
+  handleDelete = () => {
     const { siteView } = this.props;
     if (siteView.default) {
       alert('There must be a default site.');
@@ -87,15 +82,10 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
     }
     if (!window) return;
     if (window.confirm('Are you sure?')) {
-      deleteSiteView({
-        variables: {
-          input: {
-            id: siteView.id,
-          },
-        },
-      }).then(() => {
-        this.props.fetchSiteProvider(this.props.site.id);
-      });
+      let input = {
+        id: siteView.id,
+      }
+      this.props.deleteSiteView( input );
     }
   };
 
@@ -176,14 +166,9 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
               <StyledButton onClick={() => this.handleCopy()}>
                 Copy
               </StyledButton>
-
-          <DeleteSiteViewMutation>
-            {(deleteSiteView) => (
-              <StyledButton onClick={() => this.handleDelete(deleteSiteView)}>
+              <StyledButton onClick={() => this.handleDelete()}>
                 Delete
               </StyledButton>
-            )}
-          </DeleteSiteViewMutation>
           {this.renderDropDown(siteView.url)}
         </td>
       </tr>
@@ -191,11 +176,11 @@ class SiteViewItem extends React.PureComponent<SiteViewItemProps> {
   }
 }
 
-
 const mapDispatchToProps = (dispatch) => ({
   fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url)),
   copySiteView: (id, input) => dispatch(copySiteView(id, input)),
-  updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
+  updateSiteView: (id, input) => dispatch(updateSiteView(id, input)),
+  deleteSiteView: (input) => dispatch(deleteSiteView(input))
 })
 
 const mapStateToProps = (state, ownProps) => ({

@@ -35,7 +35,7 @@ import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
 import { defaultPageSize } from './Types';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import {
   PresentSiteFragment,
   PresentSiteFragment_siteView,

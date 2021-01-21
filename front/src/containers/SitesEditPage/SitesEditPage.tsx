@@ -4,7 +4,6 @@ import { UpdateSiteInput } from 'services/site/model/InputTypes';
 import { match } from 'react-router';
 import SiteProvider from 'containers/SiteProvider';
 import { History, Location } from 'history';
-import UpdateSiteViewMutation from 'mutations/UpdateSiteViewMutation';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { updateSite } from 'services/site/actions';

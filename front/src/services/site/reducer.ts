@@ -182,7 +182,13 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isDeletingSiteView: false,
-                siteProvider: action.payload  //TODO Check passing the left SiteViews after deleted one.
+                siteProvider: {
+                    ...state.siteProvider,
+                    site: { 
+                        ...state.siteProvider.site,
+                        siteViews: action.payload
+                        }
+                    }  
             };
         case types.DELETE_SITE_VIEW_ERROR:
             return {
