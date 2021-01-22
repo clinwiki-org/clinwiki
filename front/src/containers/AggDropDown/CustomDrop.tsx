@@ -194,7 +194,9 @@ const SelectBoxBox = styled.div`
 .select-box--crumbs{
   display:flex;
   flex-wrap: wrap;
-
+  .crumb-icon{
+    padding-left:3px;
+  }
   .crumb-icon:hover {
     cursor: pointer;
     -webkit-text-stroke: 0.5px #333;
