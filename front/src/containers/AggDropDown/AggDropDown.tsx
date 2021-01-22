@@ -308,10 +308,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       configType,
       returnAll,
     } = this.props;
+
+    console.log("````````````SearchPageAggBucketsQuery", SearchPageAggBucketsQuery);
+
     const [query] =
       this.props.aggKind === 'crowdAggs'
         ? [SearchPageCrowdAggBucketsQuery, 'crowdAggFilters']
         : [SearchPageAggBucketsQuery, 'aggFilters'];
+
 
     let aggSort = this.handleSort(desc, sortKind);
 
@@ -332,10 +336,16 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       aggOptionsSort: aggSort,
     };
 
+    console.log("QUERY", query);
+
+    
+
     const response = await apolloClient.query({
       query,
       variables,
     });
+
+    console.log("RESPONSE", response);
 
     const responseBuckets = pathOr(
       [],
@@ -343,7 +353,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       response
     ) as AggBucket[];
 
+    console.log("🚀 ~`````````` responseBuckets", responseBuckets);
+    
+
     const allBuckets = buckets.concat(responseBuckets);
+
+    console.log("🚀 ~````````` file:  allBuckets", allBuckets);
 
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),

@@ -3,6 +3,10 @@ import * as types from './types';
 const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
+    isFetchingAggBuckets: false,
+    aggBuckets:  undefined,
+    isFetchingCrowdAggBuckets: false,
+    crowdAggBuckets: undefined,
     isFetchingSearchParams: false,
     searchResults: undefined,
     isFetchingStudies: false,
@@ -31,6 +35,41 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 ...state,
                 isFetchingAggs: false
             };
+
+        case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND:
+            return {
+                ...state,
+                isFetchingAggBuckets: true
+            };
+        case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS:
+            return {
+                ...state,
+                isFetchingAggBuckets: false,
+                aggBuckets: action.payload        //TODO CHeck
+            };
+        case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_ERROR:
+            return {
+                ...state,
+                isFetchingAggBuckets: false
+            };
+
+        case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: true
+            };
+        case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SUCCESS:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false,
+                crowdAggBuckets: action.payload       //TODO CHeck
+            };
+        case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false
+            };
+        
 
         case types.FETCH_SEARCH_PARAMS_SEND:
             return {

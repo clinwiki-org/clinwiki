@@ -14,6 +14,13 @@ export const fetchSearchPageAggs = (searchParams : any) => {
     return callGraphql(ENDPOINT,query.SEARCH_PAGE_AGGS_QUERY, searchParams);
 };
 
+export const fetchSearchPageAggBuckets = (searchParams : any) => {
+    return callGraphql(ENDPOINT,query.SEARCH_PAGE_AGG_BUCKETS_QUERY, searchParams);           //TODO CHeck params
+};
+export const fetchSearchPageCrowdAggBuckets = (searchParams : any) => {
+    return callGraphql(ENDPOINT,query.SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY, searchParams);     //TODO CHeck params
+};
+
 export const fetchSearchParams = (hash : any) => {
     return callGraphql(ENDPOINT,query.SEARCH_PAGE_PARAMS_QUERY, { hash });
 };
@@ -26,5 +33,5 @@ export const updateSearchParams = ( searchParams ) =>{
 }
 
 export const fetchSearchAutoSuggest = (searchParams : any) => {
-    return callGraphql(ENDPOINT,AUTOSUGGEST_QUERY, searchParams);
+    return callGraphql(ENDPOINT,AUTOSUGGEST_QUERY, searchParams);             //TODO Check this Query, import location
 };

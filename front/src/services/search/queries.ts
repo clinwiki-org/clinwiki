@@ -154,9 +154,7 @@ export const SEARCH_PAGE_SEARCH_QUERY = `
 `;
 
 
-                                        //TODO Fix Queries
-
-export const SEARCH_PAGE_AGG_BUCKETS_QUERY `
+export const SEARCH_PAGE_AGG_BUCKETS_QUERY = `
   query SearchPageAggBucketsQuery(
     $agg: String!
     $q: SearchQueryInput!
@@ -199,7 +197,7 @@ export const SEARCH_PAGE_AGG_BUCKETS_QUERY `
 `;
 
 
-export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY `
+export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
   query SearchPageCrowdAggBucketsQuery(
     $agg: String!
     $q: SearchQueryInput!

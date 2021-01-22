@@ -20,6 +20,38 @@ function* getSearchPageAggs(action) {
     }
 }
 
+function* getSearchPageAggBuckets(action) {
+    try {
+        let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));         //TODO CHeck response
+        if(response) {
+            yield put(actions.fetchSearchPageAggBucketsSuccess(response));
+        }
+        else {
+            yield put(actions.fetchSearchPageAggBucketsError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSearchPageAggBucketsError(err.message));
+    }
+}
+
+function* getSearchPageCrowdAggBuckets(action) {
+    try {
+        let response = yield call(() => api.fetchSearchPageCrowdAggBuckets(action.searchParams));        //TODO CHeck response
+        if(response) {
+            yield put(actions.fetchSearchPageCrowdAggBucketsSuccess(response));
+        }
+        else {
+            yield put(actions.fetchSearchPageCrowdAggBucketsError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSearchPageCrowdAggBucketsError(err.message));
+    }
+}
+
 function* getSearchParams(action) {
     try {
         let response = yield call(() => api.fetchSearchParams(action.hash));
