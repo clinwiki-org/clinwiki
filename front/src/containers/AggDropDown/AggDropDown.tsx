@@ -54,6 +54,7 @@ import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInp
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { connect } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
+import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 
 const PAGE_SIZE = 25;
 
@@ -145,6 +146,10 @@ interface AggDropDownProps {
   presentSiteView: PresentSiteFragment_siteView;
   fromAggField: boolean;
   updater: AggFilterInputUpdater | null;
+  fetchAggBuckets: any;
+  fetchCrowdAggBuckets: any;
+  aggBuckets: any;
+  crowdAggBuckets: any;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -309,13 +314,11 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       returnAll,
     } = this.props;
 
-    console.log("````````````SearchPageAggBucketsQuery", SearchPageAggBucketsQuery);
-
-    const [query] =
+/*     const [query, aggType] =
       this.props.aggKind === 'crowdAggs'
         ? [SearchPageCrowdAggBucketsQuery, 'crowdAggFilters']
         : [SearchPageAggBucketsQuery, 'aggFilters'];
-
+ */
 
     let aggSort = this.handleSort(desc, sortKind);
 
@@ -336,14 +339,19 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       aggOptionsSort: aggSort,
     };
 
-    console.log("QUERY", query);
 
-    
+    this.props.aggKind === "crowdAggs" ? this.props.fetchCrowdAggBuckets(variables) : this.props.fetchAggBuckets(variables);
 
-    const response = await apolloClient.query({
+
+    let response = this.props.aggKind === "crowdAggs" ? this.props.crowdAggBuckets : this.props.aggBuckets
+
+    if(!response){      //! Response comes back undefined from redux store on first run, agg buckets are one step behind, works if loaded twice 
+    }
+
+   /*  const response = await apolloClient.query({
       query,
       variables,
-    });
+    }); */
 
     console.log("RESPONSE", response);
 
@@ -353,12 +361,12 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       response
     ) as AggBucket[];
 
-    console.log("🚀 ~`````````` responseBuckets", responseBuckets);
+    console.log("🚀 ~`````````` RES_Buckets", responseBuckets);
     
 
     const allBuckets = buckets.concat(responseBuckets);
 
-    console.log("🚀 ~````````` file:  allBuckets", allBuckets);
+    console.log("🚀 ~````````` ALL Buckets", allBuckets);
 
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
@@ -389,6 +397,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const hasMore = length(buckets) !== length(newBuckets);
     this.setState({ buckets: newBuckets, hasMore });
   };
+
+  
   toggleAlphaSort = () => {
     this.setState({
       desc: !this.state.desc,
@@ -535,8 +545,16 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  presentSiteView: state.site.presentSiteProvider.site.siteView,
+const mapDispatchToProps = (dispatch) => ({
+  fetchAggBuckets: (searchParams) => dispatch(fetchSearchPageAggBuckets(searchParams)),
+  fetchCrowdAggBuckets: (searchParams) => dispatch(fetchSearchPageCrowdAggBuckets(searchParams)),
 })
 
-export default connect(mapStateToProps, null ) (withApollo<any>(withAggContext(AggDropDown)));
+
+const mapStateToProps = (state, ownProps) => ({
+  presentSiteView: state.site.presentSiteProvider.site.siteView,
+  aggBuckets: state.search.aggBuckets,
+  crowdAggBuckets: state.search.crowdAggBuckets,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps ) (withApollo<any>(withAggContext(AggDropDown)));

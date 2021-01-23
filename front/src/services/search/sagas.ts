@@ -21,6 +21,8 @@ function* getSearchPageAggs(action) {
 }
 
 function* getSearchPageAggBuckets(action) {
+    console.log("SAGA SP Agg Buckets", action);
+    
     try {
         let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));         //TODO CHeck response
         if(response) {
@@ -37,6 +39,8 @@ function* getSearchPageAggBuckets(action) {
 }
 
 function* getSearchPageCrowdAggBuckets(action) {
+    console.log("SAGA SP Agg Buckets", action);
+
     try {
         let response = yield call(() => api.fetchSearchPageCrowdAggBuckets(action.searchParams));        //TODO CHeck response
         if(response) {
@@ -124,6 +128,8 @@ function* getSearchAutoSuggest(action) {
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
+    yield takeLatest(types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND, getSearchPageAggBuckets);
+    yield takeLatest(types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND, getSearchPageCrowdAggBuckets);
     yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
     yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams)
