@@ -361,7 +361,9 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
       this.setState({ selectedItems: selectedKeysPlaceHolders })
     }
-
+    if (prevProps.isOpen !== this.props.isOpen){
+      this.setState({showItems : this.props.isOpen})
+    }
     if(this.props.field.display == "GREATER_THAN_DROP_DOWN"  && prevState.selectedItems == this.state.selectedItems){
       this.setState({ selectedItems: [{start: this.props.updater.input?.gte, end : this.props.updater.input?.lte}] })
     }
