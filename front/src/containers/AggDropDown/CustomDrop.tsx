@@ -334,7 +334,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   };
   componentDidMount = () => {
     if (this.props.field.defaultToOpen === true) {
-      this.setState({ showItems: true, showAdditionalCrumbs: true });
+      this.setState({ showItems: true });
       this.props.handleLoadMore()
 
     }

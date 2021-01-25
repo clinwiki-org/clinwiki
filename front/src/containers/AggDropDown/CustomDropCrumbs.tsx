@@ -123,7 +123,17 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
           let chevronDirection = this.state.showAdditionalCrumbs ? 'left' : 'right';
           if (this.state.showAdditionalCrumbs) {
             let otherCrumbs: any[] = this.props.selectedItems.slice(field.maxCrumbs, this.props.selectedItems.length)
+            otherCrumbs.push({key:"<" })
             return otherCrumbs.map(item => {
+          if(item.key=="<"){              
+              return (
+                <div className='select-box--crumb-container' key={item.key}>
+                  <FontAwesome
+                className={`chevron-${chevronDirection} crumb-icon`}
+                name={`chevron-${chevronDirection}`}
+                onClick={() => this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })}
+                  />
+                </div>)}
               return (
                 <div className='select-box--crumb-container' key={item.key}>
                   {item.key}
