@@ -320,7 +320,6 @@ const Aggs = (props: AggsProps) => {
     }
 
       if (presearch && preSearchAggs) {
-        console.log('presearch options', props.presearchButtonOptions)
         const aggHFields = getAggs(props.presentSiteView, true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "horizontal" || findFields(k, props.presentSiteView, presearch)?.layout == null)
         const aggVFields = getAggs(props.presentSiteView, true).filter(k => findFields(k, props.presentSiteView, presearch)?.layout == "vertical")
         {aggPresearchVertical = aggVFields.map(k => { return (
