@@ -45,7 +45,13 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
             return {
                 ...state,
                 isFetchingAggBuckets: false,
-                aggBuckets: action.payload        //TODO CHeck
+                aggBuckets: {
+                    ...state.aggBuckets,
+                    aggs: {
+                        ...state.aggBuckets?.aggs,
+                        [action.payload.name]: action.payload.buckets
+                    }
+                }      
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_ERROR:
             return {
@@ -59,10 +65,18 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 isFetchingCrowdAggBuckets: true
             };
         case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SUCCESS:
+            let backendName = action.payload.name 
+            let frontName = backendName.substring(3);     
             return {
                 ...state,
                 isFetchingCrowdAggBuckets: false,
-                crowdAggBuckets: action.payload       //TODO CHeck
+                crowdAggBuckets: {
+                    ...state.crowdAggBuckets,
+                    aggs: {
+                        ...state.crowdAggBuckets?.aggs,
+                        [frontName]: action.payload.buckets
+                    }
+                } 
             };
         case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR:
             return {

@@ -24,9 +24,10 @@ function* getSearchPageAggBuckets(action) {
     console.log("SAGA SP Agg Buckets", action);
     
     try {
-        let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));         //TODO CHeck response
+        let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));         
         if(response) {
-            yield put(actions.fetchSearchPageAggBucketsSuccess(response));
+            let nameBuckets = response.data.aggBuckets.aggs?.[0];
+            yield put(actions.fetchSearchPageAggBucketsSuccess(nameBuckets));
         }
         else {
             yield put(actions.fetchSearchPageAggBucketsError(response.message));
@@ -42,9 +43,10 @@ function* getSearchPageCrowdAggBuckets(action) {
     console.log("SAGA SP Agg Buckets", action);
 
     try {
-        let response = yield call(() => api.fetchSearchPageCrowdAggBuckets(action.searchParams));        //TODO CHeck response
+        let response = yield call(() => api.fetchSearchPageCrowdAggBuckets(action.searchParams));     
         if(response) {
-            yield put(actions.fetchSearchPageCrowdAggBucketsSuccess(response));
+            let nameBuckets = response.data.aggBuckets.aggs?.[0];
+            yield put(actions.fetchSearchPageCrowdAggBucketsSuccess(nameBuckets));
         }
         else {
             yield put(actions.fetchSearchPageCrowdAggBucketsError(response.message));

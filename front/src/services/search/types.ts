@@ -35,9 +35,9 @@ export interface SearchState {
     isFetchingAggs: boolean,
     aggs: SearchPageAggsQuery | undefined,
     isFetchingAggBuckets: boolean,
-    aggBuckets: SearchPageAggBucketsQuery | undefined,
+    aggBuckets: any | SearchPageAggBucketsQuery | undefined,
     isFetchingCrowdAggBuckets: boolean,
-    crowdAggBuckets: SearchPageCrowdAggBucketsQuery | undefined,
+    crowdAggBuckets: any | SearchPageCrowdAggBucketsQuery | undefined,
     isFetchingSearchParams: boolean,
     searchResults: typeof SearchPageParamsQuery | undefined
     isFetchingStudies: boolean,
@@ -73,7 +73,7 @@ export interface FetchSearchPageAggBucketsSendAction {
 
 export interface FetchSearchPageAggBucketsSuccessAction {
     type: typeof FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS,
-    payload: SearchPageAggBucketsQuery
+    payload: SearchPageAggBucketsQuery | any
 };
 
 export interface FetchSearchPageAggBucketsErrorAction {
@@ -89,7 +89,7 @@ export interface FetchSearchPageCrowdAggBucketsSendAction {
 
 export interface FetchSearchPageCrowdAggBucketsSuccessAction {
     type: typeof FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SUCCESS,
-    payload: SearchPageCrowdAggBucketsQuery
+    payload: SearchPageCrowdAggBucketsQuery | any
 };
 
 export interface FetchSearchPageCrowdAggBucketsErrorAction {

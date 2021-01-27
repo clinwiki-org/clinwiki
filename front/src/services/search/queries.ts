@@ -228,6 +228,7 @@ export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
       }
     ) {
       aggs {
+        name
         buckets {
           key
           keyAsString

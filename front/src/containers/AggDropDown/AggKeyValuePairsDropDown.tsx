@@ -370,6 +370,84 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
     this.setState({ buckets: newBuckets, hasMore });
   };
 
+  //TODO Implement Redux this component too
+
+/*   handleLoadMore = async () => {
+    //console.trace()
+    const { desc, sortKind, buckets, filter } = this.state;
+    const {
+      agg,
+      searchParams,
+      presentSiteView,
+      configType,
+      returnAll,
+    } = this.props;
+
+    let aggSort = this.handleSort(desc, sortKind);
+
+    const variables = {
+      ...searchParams,
+      url: presentSiteView.url,
+      configType: configType,
+      returnAll: returnAll,
+      aggFilters: maskAgg(searchParams.aggFilters, this.props.agg),
+      crowdAggFilters: maskAgg(
+        this.props.searchParams.crowdAggFilters,
+        this.props.agg
+      ),
+      agg: agg,
+      pageSize: PAGE_SIZE,
+      page: this.getFullPagesCount(this.state.buckets),
+      aggOptionsFilter: filter,
+      aggOptionsSort: aggSort,
+    };
+    this.props.aggKind === "crowdAggs" ? this.props.fetchCrowdAggBuckets(variables) : this.props.fetchAggBuckets(variables);
+    //this.handleLoadMoreResponse();
+  }
+
+  handleLoadMoreResponse = () => {
+    const { desc, sortKind, buckets, filter } = this.state;
+    const { agg, presearch, presentSiteView } = this.props;
+    let currentAgg = findFields(agg, presentSiteView, presearch);
+    //console.log("🚀 ~ currentAgg", currentAgg?.name);
+    let aggName = currentAgg!.name
+    let responseBuckets = this.props.aggKind === "crowdAggs" ?  this.props.crowdAggBuckets?.aggs[aggName] :  this.props.aggBuckets?.aggs[aggName]
+
+    //console.log("handle RESPONSE", responseBuckets);
+
+    let currentBuckets = buckets[0] === undefined ? []  : buckets
+    const allBuckets = currentBuckets.concat(responseBuckets);
+
+    let newBuckets = pipe(
+      uniqBy<AggBucket>(prop('key')),
+      sortBy<AggBucket>(prop('key'))
+    )(allBuckets);
+
+    if (!desc && sortKind === SortKind.Alpha) {
+      newBuckets = pipe(
+        uniqBy<AggBucket>(prop('key')),
+        sortBy(prop('key')),
+        reverse
+      )(allBuckets) as AggBucket[];
+    }
+    if (desc && sortKind === SortKind.Number) {
+      newBuckets = pipe(
+        uniqBy(prop('key')),
+        sortBy<AggBucket>(prop('docCount'))
+      )(allBuckets) as AggBucket[];
+    }
+    if (!desc && sortKind === SortKind.Number) {
+      newBuckets = pipe(
+        uniqBy(prop('key')),
+        sortBy<AggBucket>(prop('docCount')),
+        reverse
+      )(allBuckets) as AggBucket[];
+    }
+
+    const hasMore = length(buckets) !== length(newBuckets);
+    this.setState({ buckets: newBuckets, hasMore });
+  }; */
+
   renderPanel = (isPresearch: boolean) => {
     const {
       visibleOptions = [],
@@ -465,6 +543,7 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
     }
   };
   componentDidMount() {
+    //console.log("AGG KEY Value")             
     const { agg, presentSiteView, presearch } = this.props;
     const field = findFields(agg, presentSiteView, presearch);
     if (field?.order && field.order.sortKind === 'key') {

@@ -267,6 +267,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   dropDown = () => {
     if (this.props.field.display == "CRUMBS_ONLY") return
+    this.props.handleLoadMore();
     this.setState((prevState) => ({
       showItems: !prevState.showItems,
       showAdditionalCrumbs: !prevState.showItems
@@ -424,8 +425,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   componentDidMount = () => {
     if (this.props.field.defaultToOpen === true) {
       this.setState({ showItems: true, showAdditionalCrumbs: true });
-      this.props.handleLoadMore()
-
+      this.props.handleLoadMore()  //TODO CHeck THis
     }
     if (this.props.selectedKeys) {
       let selectedKeysPlaceHolders: any[] = [];
@@ -436,6 +436,8 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
   };
   componentDidUpdate(prevProps){
+   //! console.log("Update FIELD ", this.props.field.name, this.props.buckets);
+
     if(this.props.selectedKeys !== prevProps.selectedKeys){
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
@@ -546,6 +548,13 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
     else if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
 
+      console.log("BUCKETS @ InfiniteScroll", this.props.field.name, this.props.buckets); 
+    
+      if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0){
+        //console.log("BUCKETS 111111111111111111", this.props.field.name, this.props.buckets);  
+
+        return 
+      }
       return (
         <InfiniteScroll
           pageStart={0}
@@ -583,9 +592,13 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             ))}
         </InfiniteScroll>
       )
-    }
+    
+  }
     else {
-
+      if (this.props.buckets[0] === undefined  && this.props.buckets.length !== 0){
+        //console.log("BUCKETS 222222222222222222222222", this.props.field.name, this.props.buckets); 
+        return
+      }
       return (
         <InfiniteScroll
           pageStart={0}
