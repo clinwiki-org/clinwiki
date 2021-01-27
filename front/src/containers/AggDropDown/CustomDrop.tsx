@@ -16,7 +16,6 @@ import {
 } from 'components/StyledComponents';
 import Filter from './Filter';
 import SortKind from './SortKind';
-// import './AggDropDownStyle.css';
 import {
   AggBucket,
 } from '../SearchPage/Types';
@@ -24,17 +23,13 @@ import aggToField from 'utils/aggs/aggToField';
 import { capitalize } from 'utils/helpers';
 import {
   propEq,
-  findIndex
+  findIndex,
 } from 'ramda';
 import withTheme from 'containers/ThemeProvider';
-import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
-import LocationAgg from './LocationAgg';
-import RangeSelector from './RangeSelector';
-import TwoLevelPieChart from './TwoLevelPieChart';
-import BarChartComponent from './BarChart'
-import ValueCrumb from '../../components/MultiCrumb/ValueCrumb';
-import { isLeafType } from 'graphql';
-// import ValuesCrumb from '../../components/MultiCrumb/ValueCrumbs';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
+import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import CustomDropCrumbs from './CustomDropCrumbs';
+import CustomDropPanel from './CustomDropPanel';
 
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -61,6 +56,7 @@ interface CustomDropDownProps {
   showLabel: boolean;
   isOpen: boolean;
   fromAggField: boolean;
+  updater: AggFilterInputUpdater;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -68,7 +64,7 @@ interface CustomDropDownState {
   selectedItem: any[],
   type: string,
   defaultOpen: boolean,
-  selectedItems: any[]
+  selectedItems: any[],
   hasMore: boolean,
   loading: boolean,
   filter: string,
@@ -184,6 +180,9 @@ const SelectBoxBox = styled.div`
   background-color: ${props => props.theme.button};
  }
 
+ .select-box--buckets-presearch .allow-missing{
+  background-color: #ececec;
+ }
 
 .select-box--buckets-presearch{
   max-height:200px;
@@ -195,7 +194,9 @@ const SelectBoxBox = styled.div`
 .select-box--crumbs{
   display:flex;
   flex-wrap: wrap;
-
+  .crumb-icon{
+    padding-left:3px;
+  }
   .crumb-icon:hover {
     cursor: pointer;
     -webkit-text-stroke: 0.5px #333;
@@ -275,8 +276,27 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     );
     this.props.onContainerToggle && this.props.onContainerToggle()
   };
+  onChangeRange = () => {
+    this.props.updater.changeRange([
+      //@ts-ignore
+      this.state.selectedItems[0].start || this.props.updater.input?.gte,
+      //@ts-ignore
+      this.state.selectedItems[0].end || this.props.updater.input?.lte,
+    ]);
+  }
 
   selectItem = (item) => {
+    if (this.props.field.display == "GREATER_THAN_DROP_DOWN") {
+      this.setState({ selectedItems: [{ start: item.key, end: null }] },
+        () => this.onChangeRange())
+      return
+    }
+    if (this.props.field.display == "LESS_THAN_DROP_DOWN") {
+    this.setState({ selectedItems: [{ start: null, end: item.key }] },
+        () => this.onChangeRange())
+      return
+    }
+
     this.props.onCheckBoxToggle(item.key, this.state.selectedItems);
 
     //important to note conditionals are handling our selected items behavior within the component
@@ -299,7 +319,6 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
       if (index !== -1) {
         selectedItemsArray.splice(index, 1)
-        console.log(selectedItemsArray)
         this.setState({
           selectedItem: [],
           selectedItems: selectedItemsArray
@@ -314,144 +333,47 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
 
   };
-  renderRangeLabel = () => {
-    let range = this.state.selectedItems[0]
-    if (!this.state.selectedItems) return
-    //@ts-ignore
-    if (!range.start) return `≤ ${range.end}`
-    //@ts-ignore
-    if (!range.end) return `≥ ${range.start}`
-    //@ts-ignore
-    return `${range.start} - ${range.end}`
-
-  }
-  renderLocationLabel = () => {
-    let location = this.state.selectedItems[0]
-    //@ts-ignore
-    if (!location.zipcode && !location.radius) return
-    //@ts-ignore
-    if (!location.zipcode) return `Within ${location.radius} of current location`
-    //@ts-ignore
-    if (!location.lat && !location.long) return `Within ${location.radius} of ${location.zipcode}`
-
-  }
-
-  renderSelectedItems = () => {
-    const { field } = this.props
-    if (this.state.selectedItems.length > 0) {
-      let displayedCrumbs: any[] = this.state.selectedItems.slice(0, field.maxCrumbs)
-      let otherValues = { key: `... ${this.state.selectedItems.length - displayedCrumbs.length} others` }
-      displayedCrumbs.push(otherValues)
-      if (field.maxCrumbs == 0 || field.maxCrumbs == null) return
-      return displayedCrumbs.map((item: AggBucket, index) => {
-        if (
-          field?.display === FieldDisplay.DATE_RANGE ||
-          field?.display === FieldDisplay.NUMBER_RANGE ||
-          field?.display === FieldDisplay.LESS_THAN_RANGE ||
-          field?.display === FieldDisplay.GREATER_THAN_RANGE) {
-          return (
-            <div className='select-box--crumb-container' key={item.key+"crumb-container"}>
-              {this.renderRangeLabel()}
-              <FontAwesome
-                className="remove crumb-icon"
-                name="remove"
-                onClick={() => console.log("need a remove function")}
-              />
-              {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
-            </div>
-          )
-
-        } else if (field.display == FieldDisplay.LOCATION) {
-          return (
-            <div key="location-crumb" className='select-box--crumb-container' >
-              {this.renderLocationLabel()}
-              <FontAwesome
-                className="remove crumb-icon"
-                name="remove"
-                onClick={() => console.log("need a remove function")}
-              />
-              {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
-            </div>
-          )
-        } else if (field?.display === FieldDisplay.BAR_CHART || field?.display === FieldDisplay.PIE_CHART) {
-        }
-
-        //@ts-ignore
-        if (this.isSelected(item.key)) {
-          //@ts-ignore
-          return <div className='select-box--crumb-container' key={item.key+'isSelected'}>
-            {item.key}          <FontAwesome
-              className="remove crumb-icon"
-              name="remove"
-              onClick={() => this.selectItem(item)}
-            />
-            {/* <ValueCrumb label={item.key}  onClick={() => this.props.onCheckBoxToggle(item.key, this.state.selectedItems)} /> */}
-          </div>
-        }
-        if (this.state.selectedItems.length > field.maxCrumbs) {
-          let chevronDirection = this.state.showAdditionalCrumbs ? 'left' : 'right';
-          if (this.state.showAdditionalCrumbs) {
-            let otherCrumbs: any[] = this.state.selectedItems.slice(field.maxCrumbs, this.state.selectedItems.length)
-            return otherCrumbs.map(item => {
-              return (<div className='select-box--crumb-container' key={item.key}>
-                {item.key}          <FontAwesome
-                  className={`remove crumb-icon`}
-                  name={`remove`}
-                  onClick={() => this.selectItem(item)}
-                />
-              </div>)
-            })
-          }
-          return (
-            <div className='select-box--crumb-container'>
-              {item.key}          <FontAwesome
-                className={`chevron-${chevronDirection} crumb-icon`}
-                name={`chevron-${chevronDirection}`}
-                onClick={() => this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })}
-              />
-            </div>
-          )
-        }
-      });
-    } else {
-      console.log(3)
-    }
-  };
-  renderSubLabel = () => {
-    return (
-      <div className={"select-box--sublabel"}>{this.props.field.aggSublabel}</div>)
-
-  }
   componentDidMount = () => {
     if (this.props.field.defaultToOpen === true) {
-      this.setState({ showItems: true, showAdditionalCrumbs: true });
-      this.props.handleLoadMore()  //TODO CHeck THis
+      this.setState({ showItems: true });
+      this.props.handleLoadMore()
+
     }
     if (this.props.selectedKeys) {
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
         selectedKeysPlaceHolders.push({ key: o, docCount: null })
       ))
-      this.setState({ selectedItems: selectedKeysPlaceHolders })
+      this.setState({ selectedItems: selectedKeysPlaceHolders });
+    }
+    if(this.props.field.display == "GREATER_THAN_DROP_DOWN"){
+      this.setState({ selectedItems: [{start: this.props.updater.input?.gte, end : this.props.updater.input?.lte}] });
+    }
+    if(this.props.field.display == "LOCATION"){
+      this.setState({ selectedItems: [{zipcode: this.props.updater.input?.zipcode, radius : this.props.updater.input?.radius, lat : this.props.updater.input?.lat, long : this.props.updater.input?.long}] });
     }
   };
-  componentDidUpdate(prevProps){
-   //! console.log("Update FIELD ", this.props.field.name, this.props.buckets);
-
-    if(this.props.selectedKeys !== prevProps.selectedKeys){
+  componentDidUpdate(prevProps,prevState){
+    if(this.props.selectedKeys !== prevProps.selectedKeys&& this.props.selectedKeys[0] ){
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
         selectedKeysPlaceHolders.push({ key: o, docCount: null })
       ))
+
       this.setState({ selectedItems: selectedKeysPlaceHolders })
     }
-  }
-  renderPreValue = (item) => {
-    if (this.props.field.display == "CHECKBOX" ||this.props.field.display == "STRING" ) {
-      return this.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`}/> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>
+    if (prevProps.isOpen !== this.props.isOpen){
+      this.setState({showItems : this.props.isOpen})
     }
-    return null
-  };
+    if(this.props.field.display == "GREATER_THAN_DROP_DOWN"  && prevState.selectedItems == this.state.selectedItems){
+      this.setState({ selectedItems: [{start: this.props.updater.input?.gte, end : this.props.updater.input?.lte}] })
+    }
+    if(this.props.field.display == "LOCATION"  && prevState.selectedItems == this.state.selectedItems){ 
+      this.setState({ selectedItems: [{zipcode: this.props.updater.input?.zipcode, radius : this.props.updater.input?.radius, lat : this.props.updater.input?.lat, long : this.props.updater.input?.long}] });
+    }
+  }
+
+
   handleRange = (rangeArray) => {
     this.setState({ selectedItems: rangeArray })
   }
@@ -482,164 +404,8 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     return
   }
 
-  renderPanel = () => {
-    const { hasMore, buckets, handleLoadMore, field } = this.props
-    const { showItems, loading } = this.state
-    if (!this.props.isOpen) return
-    if (
-      field?.display === FieldDisplay.DATE_RANGE ||
-      field?.display === FieldDisplay.NUMBER_RANGE ||
-      field?.display === FieldDisplay.LESS_THAN_RANGE ||
-      field?.display === FieldDisplay.GREATER_THAN_RANGE
-    ) {
-
-      return (
-        <RangeSelector
-          isOpen={this.props.isOpen}
-          hasMore={hasMore}
-          loading={loading}
-          buckets={buckets}
-          handleLoadMore={this.props.handleLoadMore}
-          aggType={field?.display}
-          field={field}
-          handleRange={this.handleRange}
-        />
-      )
-    } else if (field?.display === FieldDisplay.PIE_CHART) {
-      return (
-        <TwoLevelPieChart
-          isPresearch={this.props.isPresearch}
-          buckets={buckets}
-          hasMore={hasMore}
-          handleLoadMore={this.props.handleLoadMore}
-          field={field}
-          onClickHandler={this.selectItem}
-        />
-      )
-    } else if (field?.display === FieldDisplay.BAR_CHART) {
-      return (
-        <BarChartComponent
-          isPresearch={this.props.isPresearch}
-          onClickHandler={this.selectItem}
-          // visibleOptions={visibleOptions}
-          buckets={buckets}
-          // isSelected={this.isSelected}
-          hasMore={hasMore}
-          handleLoadMore={this.props.handleLoadMore}
-          field={field}
-        />
-      )
-    }
-    else if (field.display == FieldDisplay.LOCATION) {
-      return (
-        <LocationAgg
-          agg={field.name}
-          removeFilters={this.props.onCheckBoxToggle}
-          buckets={buckets}
-          isSelected={this.isSelected}
-          hasMore={hasMore}
-          field={field}
-          handleLocation={this.handleLocation}
-        />
-      )
-    }
-    else if (field.display == "CRUMBS_ONLY") {
-      return null
-    }
-    else if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
-
-      console.log("BUCKETS @ InfiniteScroll", this.props.field.name, this.props.buckets); 
-    
-      if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0){
-        //console.log("BUCKETS 111111111111111111", this.props.field.name, this.props.buckets);  
-
-        return 
-      }
-      return (
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.props.handleLoadMore}
-          hasMore={this.props.hasMore}
-          useWindow={false}
-          loader={
-            <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-              <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
-            </div>
-          }>
-          {this.props.buckets
-            .filter(
-              bucket =>
-                !bucketKeyIsMissing(bucket) &&
-                (this.props.field.visibleOptions.length
-                  ? this.props.field.visibleOptions.includes(bucket.key)
-                  : true)
-            )
-            .map((item) => (
-              <div
-                key={item.key+'buckets'}
-                onClick={() => this.selectItem(item)}
-                className={
-                  this.state.selectedItem === item
-                    ? "selected select-item"
-                    : "select-item"
-                }
-              >
-                <div className="item-content">
-                  {this.renderPreValue(item.key)}
-                  <span>{item.key} ({item.docCount})</span>
-                </div>
-              </div>
-            ))}
-        </InfiniteScroll>
-      )
-    
-  }
-    else {
-      if (this.props.buckets[0] === undefined  && this.props.buckets.length !== 0){
-        //console.log("BUCKETS 222222222222222222222222", this.props.field.name, this.props.buckets); 
-        return
-      }
-      return (
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.props.handleLoadMore}
-          hasMore={this.props.hasMore}
-          useWindow={false}
-          loader={
-            <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-              <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
-            </div>
-          }>
-          {this.props.buckets
-            .filter(
-              bucket =>
-                !bucketKeyIsMissing(bucket) &&
-                (this.props.field.visibleOptions.length
-                  ? this.props.field.visibleOptions.includes(bucket.key)
-                  : true)
-            )
-            .map((item) => (
-              this.isSelected(item.key) ? null :
-                <div
-                  key={item.key+'buckets'}
-                  onClick={() => this.selectItem(item)}
-                  className={
-                    this.state.selectedItem === item
-                      ? "selected select-item"
-                      : "select-item"
-                  }
-                >
-                  <div className="item-content">
-                    {/* {this.renderPreValue(item.key)} */}
-                    <span>{item.key} ({item.docCount})</span>
-                  </div>
-                </div>
-            ))}
-        </InfiniteScroll>
-      )
-    }
-  }
-  isSelected = (key: string): boolean =>
+  
+    isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
   render() {
     const ThemedContainer = this.props.isPresearch ? ThemedPresearchCard : ThemedFacetAgg
@@ -648,6 +414,8 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     const ThemedTitle = this.props.isPresearch ? PresearchTitle : ThemedFacetTitle
     let configuredLabel = this.props.field?.displayName || '';
     const title = aggToField(this.props.field.name, configuredLabel);
+    const showAllowMissing = this.props.field.showAllowMissing;
+
     if (this.props.buckets == undefined && this.props.isOpen) {
       return <BeatLoader />
     }
@@ -666,7 +434,21 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             </ThemedTitle>
             {this.props.isPresearch ? (
               <div className='select-box--crumbs'>
-                {this.state.selectedItems.length > 0 ? this.renderSelectedItems() : this.renderSubLabel()}
+                 <CustomDropCrumbs 
+                 field = { this.props.field } 
+                 selectedItems = {this.state.selectedItems}
+                 isSelected={this.isSelected}
+                 selectItem={this.selectItem} />
+                {showAllowMissing && this.props.updater.allowsMissing() && (
+                  <div className='select-box--crumb-container'>
+                    {'Allow Missing'}
+                    <FontAwesome
+                      className="remove crumb-icon"
+                      name="remove"
+                      onClick={() => this.props.updater.toggleAllowMissing()}
+                    />
+                  </div>
+                )}
               </div>
             ) : null}
 
@@ -682,7 +464,22 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
             className={this.props.isPresearch ? "select-box--buckets-presearch" : "select-box--buckets-facet"}
           >
-            {this.renderPanel()}
+            <CustomDropPanel 
+            buckets={this.props.buckets} 
+            field={this.props.field}
+            handleLoadMore={this.props.handleLoadMore}
+            hasMore={this.props.hasMore}
+            isOpen={this.props.isOpen}
+            handleRange={this.handleRange}
+            loading={this.state.loading}
+            selectItem={this.selectItem}
+            isSelected={this.isSelected}
+            handleLocation={this.handleLocation}
+            onCheckBoxToggle={this.props.onCheckBoxToggle}
+            selectedItem={this.state.selectedItem}
+            isPresearch={this.props.isPresearch}
+
+            />
           </div>
         </ThemedContainer>
       </ThemedSelectBox>
@@ -690,4 +487,4 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   }
 }
 
-export default CustomDropDown;
+export default withAggContext(CustomDropDown);

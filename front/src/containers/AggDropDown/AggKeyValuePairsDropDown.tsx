@@ -30,24 +30,9 @@ import './AggDropDownStyle.css';
 import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import SortKind from './SortKind';
 import BucketsKeyValuePanel from './BucketsKeyValuePanel';
-import Filter from './Filter';
 import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQuery';
 import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
-import RangeSelector from './RangeSelector';
-import TwoLevelPieChart from './TwoLevelPieChart';
-import BarChartComponent from './BarChart'
-import AllowMissingCheckbox from './AllowMissingCheckbox';
-import { capitalize } from 'utils/helpers';
-import {
-  ThemedPresearchCard,
-  ThemedPresearchHeader,
-  PresearchTitle,
-  PresearchFilter,
-  PresearchPanel,
-  PresearchContent,
-} from 'components/StyledComponents';
-//import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
-import BucketsDropDown from './BucketsDropDown';
+
 
 const PAGE_SIZE = 25;
 

@@ -28,24 +28,6 @@ import { FieldDisplay } from 'types/globalTypes';
 import './AggDropDownStyle.css';
 import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import SortKind from './SortKind';
-import BucketsPanel from './BucketsPanel';
-import Filter from './Filter';
-import RangeSelector from './RangeSelector';
-import TwoLevelPieChart from './TwoLevelPieChart';
-import BarChartComponent from './BarChart'
-import AllowMissingCheckbox from './AllowMissingCheckbox';
-import { capitalize } from 'utils/helpers';
-import {
-  ThemedPresearchCard,
-  ThemedPresearchHeader,
-  PresearchTitle,
-  PresearchFilter,
-  PresearchPanel,
-  PresearchContent,
-} from 'components/StyledComponents';
-//import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
-import BucketsDropDown from './BucketsDropDown';
-import LocationAgg from './LocationAgg';
 import CustomDropDown from './CustomDrop';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
