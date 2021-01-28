@@ -291,6 +291,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 }
 
   handleLoadMore = async () => {
+    console.log("LOADIng MORE!!!!!!!!!!!!!!!!!!")
     //console.trace()
     const { desc, sortKind, buckets, filter } = this.state;
     const {
@@ -417,6 +418,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
   }
   handleCheckboxToggle=(bucketKey, activeOptions)=>{
+    console.log("CHECKBOX HIT!!!")
     const { agg, presentSiteView, presearch } = this.props;
     const field = findFields(agg, presentSiteView, presearch);
     //@ts-ignore
@@ -428,9 +430,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
     //Need to handle mutliselect functionality 
     this.props.updater &&  this.props.updater.toggleFilter(bucketKey);
-
-
   }
+
   render() {
     const { agg, presearch, presentSiteView, removeSelectAll} = this.props;
     const {
@@ -453,7 +454,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
 
     let customBuckets = this.state.buckets[0] === undefined ? []  : this.state.buckets
-   // console.log("BUCKETS state @ CustomDropD",agg, customBuckets)  
+    //console.log("BUCKETS state @ CustomDropD",agg, customBuckets)  
 
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {

@@ -40,10 +40,15 @@ interface CustomDropPanelProps {
 
 }
 interface CustomDropPanelState {
+  buckets?: AggBucket[],
 
 }
 
 class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPanelState> {
+
+  state ={
+    buckets: this.props.buckets as AggBucket[],
+  }
 
   renderPreValue = (item) => {
     if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
@@ -79,6 +84,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     return `${text} (${docCount})`;
   }
   render() {
+
     const { hasMore, buckets, handleLoadMore, field, loading } = this.props
     const showAllowMissing = field.showAllowMissing;
     //if (!this.props.isOpen) return
@@ -144,12 +150,14 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     }
     else if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
 
-      console.log("BUCKETS @ InfiniteScroll", this.props.field.name, this.props.buckets); 
+     // console.log("RENDERING DROP PANEL   111");
+
+      //console.log("BUCKETS @ InfiniteScroll", this.props.field.name, this.props.buckets); 
     
       if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0){
         //console.log("BUCKETS 111111111111111111", this.props.field.name, this.props.buckets);  
 
-        return 
+        return   <BeatLoader />
       }
       return (
         <>
@@ -169,7 +177,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
           useWindow={false}
           loader={
             <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-              <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
+              <BeatLoader key="loader" color="red" />
             </div>
           }>
           {this.props.buckets
@@ -204,7 +212,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     else {
       if (this.props.buckets[0] === undefined  && this.props.buckets.length !== 0){
         //console.log("BUCKETS 222222222222222222222222", this.props.field.name, this.props.buckets); 
-        return
+        return  <BeatLoader />
       }
       return (
         <>

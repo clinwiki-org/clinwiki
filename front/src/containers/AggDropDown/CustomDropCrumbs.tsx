@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { FieldDisplay } from 'types/globalTypes';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
 import { AggBucket } from '../SearchPage/Types';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { BeatLoader } from 'react-spinners';
 
 interface CustomDropCrumbsProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -55,7 +56,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
       let displayedCrumbs: any[] = this.props.selectedItems.slice(0, field.maxCrumbs)
       let otherValues = { key: `... ${this.props.selectedItems.length - displayedCrumbs.length} others` }
       displayedCrumbs.push(otherValues)
-      if (field.maxCrumbs == 0 || field.maxCrumbs == null || !field) return
+      if (field.maxCrumbs == 0 || field.maxCrumbs == null || !field) return<span></span>
       //the fields in the if block below technically will only ever have one crumb 
       //so we pop the last index which holds our "... and others" to prevent a duplicate crumb
       if (
@@ -78,7 +79,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
           field?.display === FieldDisplay.GREATER_THAN_DROP_DOWN
         ) {
           if (this.props.selectedItems[0].key) return
-          if (!this.props.selectedItems[0].start && !this.props.selectedItems[0].end && !this.props.selectedItems[0].key) return
+          if (!this.props.selectedItems[0].start && !this.props.selectedItems[0].end && !this.props.selectedItems[0].key) return <BeatLoader />
 
           return (
             <div className='select-box--crumb-container' key={item.key + "crumb-container"}>
@@ -93,7 +94,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
 
         } else if (field.display == FieldDisplay.LOCATION) {
           console.log("IN LOCATION", field.display)
-          if (!this.props.selectedItems[0].radius) return
+          if (!this.props.selectedItems[0].radius) return <BeatLoader />
 
           return (
             <div key={"location-crumb"} className='select-box--crumb-container' >
@@ -158,7 +159,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
         }
       });
     } else {
-      console.log("else", this.props.field.displayName)
+      //console.log("else", this.props.field.displayName)
       return (<div className={"select-box--sublabel"}>{this.props.field.aggSublabel}</div>)
     }
   }
