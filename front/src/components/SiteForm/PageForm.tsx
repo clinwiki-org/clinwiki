@@ -8,6 +8,8 @@ import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import { studyIslands } from 'containers/Islands/CommonIslands'
+import { updatePageView, deletePageView  } from 'services/study/actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -43,9 +45,11 @@ export default function PageForm(props: Props) {
   const [title, setTitle] = useState(page.title);
   const [template, setTemplate] = useState(page.template);
   const [isDefault, setDefault] = useState(page.default);
-  const savePage = useUpdatePageView(props.siteId);
   const deletePage = useDeletePageView(props.siteId);
   const theme = useTheme();
+
+  const dispatch = useDispatch();
+  let input = { id: page.id, title, url, template, default: isDefault };
 
   return (
     <div style={{ padding: '10px' }}>
@@ -80,7 +84,7 @@ export default function PageForm(props: Props) {
       />
       <hr />
       <ThemedButton
-        onClick={_ => savePage({ id: page.id, title, url, template, default: isDefault })}
+        onClick={_ => dispatch(updatePageView(input))}
         style={{ margin: '10px' }}>
         Save '{url}'
       </ThemedButton>

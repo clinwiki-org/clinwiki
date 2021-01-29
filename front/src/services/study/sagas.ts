@@ -97,7 +97,7 @@ function* updatePageView(action) {
         let updateResponse = yield call(() => api.updatePageView(action.input)); 
         if (updateResponse.data.updatePageView.errors === null){ 
             let response = yield getPageViews(action); 
-            yield put(actions.updatePageViewSuccess(response.data));
+            yield put(actions.updatePageViewSuccess(response));
         }
         else {
             yield put(actions.updatePageViewError(updateResponse.message));
