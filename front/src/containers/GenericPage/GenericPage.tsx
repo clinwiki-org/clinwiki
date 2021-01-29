@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { usePageView, usePageViews } from 'queries/PageViewQueries';
 import MailMergeView, {
   microMailMerge,
 } from 'components/MailMerge/MailMergeView';

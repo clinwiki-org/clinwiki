@@ -21,3 +21,16 @@ export const updateStudyViewLogCount = (nctId:any) =>{
     console.log(nctId)
     return callGraphql(ENDPOINT,mutate.CREATE_STUDY_VIEW_LOG_MUTATION, {nctId})
 }
+
+export const createPageView = (url, siteId) => {
+    return callGraphql(ENDPOINT, mutate.CREATE_PAGE_VIEW_MUTATION,
+        { url: url, siteId: siteId });                            //TODO CHeck input
+};
+export const updatePageView = (input) => {
+    return callGraphql(ENDPOINT, mutate.UPDATE_PAGE_VIEW_MUTATION, 
+        { input: input });
+};
+export const deletePageView = ( id ) => {
+    return callGraphql(ENDPOINT, mutate.DELETE_PAGE_VIEW_MUTATION, 
+        {  input: { id}  });                                     //TODO CHECK input
+};

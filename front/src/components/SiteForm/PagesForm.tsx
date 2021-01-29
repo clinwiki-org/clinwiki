@@ -2,12 +2,15 @@ import * as React from 'react';
 import { SiteFragment } from 'services/site/model/SiteFragment';
 import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ThemedButton from 'components/StyledComponents/index';
-import { useCreatePageView, usePageViews } from 'queries/PageViewQueries';
 import { PageViewsQuery_site_pageViews } from 'types/PageViewsQuery';
 import { History, Location } from 'history';
 import PageForm from './PageForm';
+import { fetchPageViews, createPageView,  } from 'services/study/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import {RootState} from 'reducers';
+import { BeatLoader } from 'react-spinners';
 
 const SectionForm = styled.div`
   padding: 15px 0 15px 15px;
@@ -17,23 +20,31 @@ const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
 `;
 
+
 interface AddPageProps {
   siteId: number;
   pageViews: PageViewsQuery_site_pageViews[];
 }
 function AddPage(props: AddPageProps) {
   const [pageUrl, setPageUrl] = useState('');
-  const createPageView = useCreatePageView(props.siteId);
+
+  const dispatch = useDispatch();
+
+  const handleAdd = () => { 
+    dispatch(createPageView(pageUrl, props.siteId))
+    setPageUrl("")
+  }
+
   const isDisabled = () => pageUrl === '' || pageUrl.indexOf('/') != -1;
   return (
-    <SectionForm onSubmit={_ => createPageView(pageUrl)}>
+    <SectionForm onSubmit={ _ => console.log("Add form submit")}>
       <StyledFormControl
         placeholder="New Page URL"
         value={pageUrl}
         onChange={e => setPageUrl(e.target.value)}
       />
       <ThemedButton
-        onClick={_ => createPageView(pageUrl)}
+        onClick={_ => handleAdd()}
         disabled={isDisabled()}>
         Add
       </ThemedButton>
@@ -48,11 +59,21 @@ interface PageFormProps {
 }
 export default function PagesForm(props: PageFormProps) {
   let [activeKey, setActive] = useState(-1);
-  const { data, error } = usePageViews(props.site.id);
-  if (error) console.log('Error: ', error);
+
+  const dispatch = useDispatch();
+  const pageViewsData = useSelector((state:RootState) => state.study.pageViews);
+
+  useEffect(()=>{
+    dispatch(fetchPageViews(props.site?.id));
+  },[dispatch]);
+
+    if(!pageViewsData){
+      return <BeatLoader />
+    } 
+  //console.log("pv DATA", pageViewsData)
 
   const pageViews =
-    data?.site?.pageViews?.slice().sort((a, b) => a.url.localeCompare(b.url)) || [];
+    pageViewsData?.data?.site?.pageViews?.slice().sort((a, b) => a.url.localeCompare(b.url)) || [];
   if (pageViews.length > 0 && activeKey == -1) {
     activeKey = pageViews[0].id;
   }
