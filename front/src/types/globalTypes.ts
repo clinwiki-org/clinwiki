@@ -129,7 +129,7 @@ export interface SearchQueryInput {
 /**
  * An atomic mutation of site
  */
-export interface SiteViewMutationInput {  //TODO Used in many files, don't move yet
+export interface SiteViewMutationInput {
   path: string[];
   operation: SiteViewOperation;
   payload: string;

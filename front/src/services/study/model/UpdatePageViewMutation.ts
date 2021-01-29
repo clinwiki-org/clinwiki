@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { UpdatePageViewInput } from 'services/study/model/InputTypes';
+import { UpdatePageViewInput } from './InputTypes';
 
 // ====================================================
 // GraphQL mutation operation: UpdatePageViewMutation

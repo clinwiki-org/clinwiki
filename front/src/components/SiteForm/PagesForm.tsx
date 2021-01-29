@@ -4,7 +4,7 @@ import { FormControl, Row, Col, Nav, Panel, NavItem } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import ThemedButton from 'components/StyledComponents/index';
-import { PageViewsQuery_site_pageViews } from 'types/PageViewsQuery';
+import { PageViewsQuery_site_pageViews } from 'services/study/model/PageViewsQuery';
 import { History, Location } from 'history';
 import PageForm from './PageForm';
 import { fetchPageViews, createPageView,  } from 'services/study/actions';
@@ -67,6 +67,11 @@ export default function PagesForm(props: PageFormProps) {
     dispatch(fetchPageViews(props.site?.id));
   },[dispatch]);
 
+ /*  let currentPageViews = pageViewsData?.data?.site?.pageViews;
+  useEffect(()=>{
+    dispatch(fetchPageViews(props.site?.id));
+  },[]);
+ */
     if(!pageViewsData){
       return <BeatLoader />
     } 

@@ -3,7 +3,7 @@ import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
 
-const getCurrentPageViews = (state)=> state.pageViews; //TODO CHeck path to redux store pageViews
+const getCurrentPageViews = (state)=> state.study.pageViews.data.site.pageViews; //TODO CHeck path to redux store pageViews
 
 
 function* getStudyPage(action) {
@@ -115,8 +115,9 @@ function* deletePageView(action) {
         //console.log("SAGA DELETE PAGE VIEW", action);
         let response = yield call(() => api.deletePageView(action.id));
         const { id } = response.data.deletePageView.pageView
-        if(id === action.input.id) {
-            let newPageViews = currentPageViews.filter(sv => sv.id !== id)
+        if(id === action.id) {
+            let newPageViews = currentPageViews.filter(pv => pv.id !== id)
+            //console.log("🚀 ~  ~ newPageViews", newPageViews);
             yield put(actions.deletePageViewSuccess(newPageViews));
         }    
         else {

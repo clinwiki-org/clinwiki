@@ -105,16 +105,14 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
             return {
                 ...state,
                 isDeletingPageView: false,
-                pageViews: action.payload 
-            };
-                /*  {                 //TODO Check response and store object
+                pageViews: {               
                     ...state.pageViews,
                     site: { 
                         ...state.pageViews.site,
-                        siteViews: action.payload
-                        }
-                    }   */
-           
+                        pageViews: action.payload
+                    }
+                }   
+            };
         case types.DELETE_PAGE_VIEW_ERROR:
             return {
                 ...state,

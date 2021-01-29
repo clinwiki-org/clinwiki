@@ -32,5 +32,5 @@ export const updatePageView = (input) => {
 };
 export const deletePageView = ( id ) => {
     return callGraphql(ENDPOINT, mutate.DELETE_PAGE_VIEW_MUTATION, 
-        {  input: { id}  });                                     //TODO CHECK input
+        {  id: id });                                     //TODO CHECK input
 };

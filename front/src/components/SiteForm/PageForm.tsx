@@ -2,8 +2,7 @@ import * as React from 'react';
 import { FormControl, DropdownButton, MenuItem, Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
-import { PageViewsQuery_site_pageViews } from 'types/PageViewsQuery';
-import { useUpdatePageView, useDeletePageView } from 'queries/PageViewQueries';
+import { PageViewsQuery_site_pageViews } from 'services/study/model/PageViewsQuery';
 import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
@@ -14,7 +13,6 @@ import { useDispatch, useSelector } from 'react-redux';
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
 `;
-
 interface Props {
   siteId: number;
   page: PageViewsQuery_site_pageViews;
@@ -45,7 +43,6 @@ export default function PageForm(props: Props) {
   const [title, setTitle] = useState(page.title);
   const [template, setTemplate] = useState(page.template);
   const [isDefault, setDefault] = useState(page.default);
-  const deletePage = useDeletePageView(props.siteId);
   const theme = useTheme();
 
   const dispatch = useDispatch();
@@ -89,7 +86,7 @@ export default function PageForm(props: Props) {
         Save '{url}'
       </ThemedButton>
       <ThemedButton
-        onClick={_ => deletePage(page.id)}
+        onClick={_ => dispatch(deletePageView(page.id))}
         style={{ background: theme?.buttonDanger }}>
         Delete
       </ThemedButton>

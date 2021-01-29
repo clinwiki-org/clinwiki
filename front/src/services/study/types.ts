@@ -36,7 +36,7 @@ export interface StudyState {
     isFetchingStudy: boolean,
     studyPage: any | undefined,
     isFetchingPageViews: boolean,
-    pageViews: PageViewsQuery |undefined,
+    pageViews: any |PageViewsQuery |undefined,
     isFetchingPageView: boolean,
     pageView: PageViewQuery |undefined,
     isUpdatingStudyViewLogCount: boolean,
