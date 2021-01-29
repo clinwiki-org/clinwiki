@@ -31,6 +31,7 @@ export default gql`
       }
     ) {
       aggs {
+        name
         buckets {
           key
           keyAsString

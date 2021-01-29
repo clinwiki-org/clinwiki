@@ -2,6 +2,8 @@ import * as types from './types';
 import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
 import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
+import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
 
 export const fetchSearchPageAggs = ( searchParams: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_AGGS_SEND,
@@ -15,6 +17,38 @@ export const fetchSearchPageAggsSuccess = (payload: SearchPageAggsQuery) : types
 
 export const fetchSearchPageAggsError = (message: string) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_AGGS_ERROR,
+    payload: { message }
+});
+
+
+export const fetchSearchPageAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
+    searchParams          //TODO CHeck
+});
+
+export const fetchSearchPageAggBucketsSuccess = (payload: SearchPageAggBucketsQuery) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS,
+    payload
+});
+
+export const fetchSearchPageAggBucketsError = (message: string) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_ERROR,
+    payload: { message }
+});
+
+
+export const fetchSearchPageCrowdAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND,
+    searchParams      //TODO CHeck
+});
+
+export const fetchSearchPageCrowdAggBucketsSuccess = (payload: SearchPageCrowdAggBucketsQuery) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SUCCESS,
+    payload
+});
+
+export const fetchSearchPageCrowdAggBucketsError = (message: string) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR,
     payload: { message }
 });
 

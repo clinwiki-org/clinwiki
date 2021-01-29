@@ -18,6 +18,7 @@ export interface SearchPageCrowdAggBucketsQuery_aggBuckets_aggs_buckets {
 
 export interface SearchPageCrowdAggBucketsQuery_aggBuckets_aggs {
   __typename: "Agg";
+  name: string;
   buckets: SearchPageCrowdAggBucketsQuery_aggBuckets_aggs_buckets[];
 }
 
