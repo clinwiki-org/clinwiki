@@ -67,15 +67,9 @@ export default function PagesForm(props: PageFormProps) {
     dispatch(fetchPageViews(props.site?.id));
   },[dispatch]);
 
- /*  let currentPageViews = pageViewsData?.data?.site?.pageViews;
-  useEffect(()=>{
-    dispatch(fetchPageViews(props.site?.id));
-  },[]);
- */
     if(!pageViewsData){
       return <BeatLoader />
     } 
-  //console.log("pv DATA", pageViewsData)
 
   const pageViews =
     pageViewsData?.data?.site?.pageViews?.slice().sort((a, b) => a.url.localeCompare(b.url)) || [];
