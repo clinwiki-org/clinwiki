@@ -6,6 +6,22 @@ import * as api from './api';
 const getCurrentPageViews = (state)=> state.study.pageViews.data.site.pageViews; //TODO CHeck path to redux store pageViews
 
 
+function* getSampleStudy(action) {
+    try {
+        let response = yield call(() => api.fetchSampleStudy(action.nctId));
+        if(response) {
+            yield put(actions.fetchSampleStudySuccess(response));
+        }
+        else {
+            yield put(actions.fetchSampleStudyError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSampleStudyError(err.message));
+    }
+}
+
 function* getStudyPage(action) {
     try {
         let response = yield call(() => api.fetchStudyPage(action.nctId, action.QUERY));
@@ -131,6 +147,7 @@ function* deletePageView(action) {
 }    
 
 export default function* userSagas() {
+    yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
     yield takeLatest(types.FETCH_PAGE_VIEWS_SEND, getPageViews);
     yield takeLatest(types.FETCH_PAGE_VIEW_SEND, getPageView);

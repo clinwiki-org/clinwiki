@@ -32,3 +32,15 @@ export const PAGE_VIEW_QUERY = `
   }
   ${PAGE_VIEW_FRAGMENT}
 `;
+
+export const SAMPLE_STUDY_QUERY = (name: string, frag: string) => {  //TODO Might need to pass in params from dispatch through the action
+  frag = frag || `fragment ${name} on Study { nct_id }`;
+  return `
+  query SampleStudyQuery($nctId: String!) {
+    study(nctId: $nctId) {
+      ...${name}
+    }
+  }
+  ${frag}
+`;
+};

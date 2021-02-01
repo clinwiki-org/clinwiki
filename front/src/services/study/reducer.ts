@@ -1,6 +1,8 @@
 import * as types from './types';
 
 const initialState: types.StudyState = {
+    isFetchingSampleStudy: false,
+    sampleStudy: undefined,
     isFetchingStudy: false,
     studyPage: undefined,
     isFetchingPageViews: false,
@@ -15,7 +17,23 @@ const initialState: types.StudyState = {
 
 const studyReducer = ( state = initialState, action: types.StudyActionTypes) : types.StudyState => {
     switch(action.type) {
-        case types.FETCH_PAGE_VIEWS_SEND:
+        case types.FETCH_SAMPLE_STUDY_SEND:
+            return {
+                ...state,
+                isFetchingSampleStudy: true
+            };
+        case types.FETCH_SAMPLE_STUDY_SUCCESS:
+            return {
+                ...state,
+                isFetchingSampleStudy: false,
+                sampleStudy: action.payload
+            };
+        case types.FETCH_SAMPLE_STUDY_ERROR:
+            return {
+                ...state,
+                isFetchingSampleStudy: false
+            };
+        case types.FETCH_STUDY_PAGE_SEND:
             return {
                 ...state,
                 isFetchingStudy: true

@@ -7,6 +7,9 @@ import { callGraphql } from 'utils/graphqlUtil';
 
 const ENDPOINT = `http://${window.location.hostname}:3000/graphql`
 
+export const fetchSampleStudy= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.SAMPLE_STUDY_QUERY, {nctId: nctId});
+};
 export const fetchStudyPage= (nctId: any, QUERY:any) => {
     return callGraphql(ENDPOINT, QUERY, {nctId});
 };
@@ -24,7 +27,7 @@ export const updateStudyViewLogCount = (nctId:any) =>{
 
 export const createPageView = (url, siteId) => {
     return callGraphql(ENDPOINT, mutate.CREATE_PAGE_VIEW_MUTATION,
-        { url: url, siteId: siteId });                            //TODO CHeck input
+        { url: url, siteId: siteId });                           
 };
 export const updatePageView = (input) => {
     return callGraphql(ENDPOINT, mutate.UPDATE_PAGE_VIEW_MUTATION, 
@@ -32,5 +35,5 @@ export const updatePageView = (input) => {
 };
 export const deletePageView = ( id ) => {
     return callGraphql(ENDPOINT, mutate.DELETE_PAGE_VIEW_MUTATION, 
-        {  id: id });                                     //TODO CHECK input
+        {  id: id });                                    
 };

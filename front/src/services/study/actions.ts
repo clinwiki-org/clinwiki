@@ -6,6 +6,19 @@ import { UpdatePageViewInput, } from 'services/study/model/InputTypes';
 
 
 
+export const fetchSampleStudy= ( nctId: string ) : types.StudyActionTypes => ({
+    type: types.FETCH_SAMPLE_STUDY_SEND,
+    nctId,
+});
+export const fetchSampleStudySuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_SAMPLE_STUDY_SUCCESS,
+    payload
+});
+export const fetchSampleStudyError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_SAMPLE_STUDY_ERROR,
+    payload: {message}
+});
+
 export const fetchStudyPage= ( nctId: string, QUERY: any) : types.StudyActionTypes => ({
     type: types.FETCH_STUDY_PAGE_SEND,
     nctId,
@@ -47,7 +60,7 @@ export const updateStudyViewLogCount= ( nctId: string,) : types.StudyActionTypes
     type: types.UPDATE_STUDY_VIEW_LOG_COUNT_SEND,
     nctId,
 });
-export const updateStudyViewLogCountSuccess= (payload: CreateStudyViewLogMutation) : types.StudyActionTypes => ({
+export const updateStudyViewLogCountSuccess= (payload: CreateStudyViewLogMutation) : types.StudyActionTypes => ({  //! TODO Check this payload
     type: types.UPDATE_STUDY_VIEW_LOG_COUNT_SUCCESS,
     
 });
