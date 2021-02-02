@@ -1,3 +1,4 @@
+//import { QUERY } from 'queries/SearchStudyPageQuery';
 import { CreateStudyViewLogMutation } from './model/CreateStudyViewLogMutation';
 import { PageViewQuery } from './model/PageView';
 import { PageViewsQuery } from './model/PageViews';
@@ -6,9 +7,10 @@ import { UpdatePageViewInput, } from 'services/study/model/InputTypes';
 
 
 
-export const fetchSampleStudy= ( nctId: string ) : types.StudyActionTypes => ({
+export const fetchSampleStudy= ( nctId: string, QUERY: any) : types.StudyActionTypes => ({
     type: types.FETCH_SAMPLE_STUDY_SEND,
     nctId,
+    QUERY
 });
 export const fetchSampleStudySuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.FETCH_SAMPLE_STUDY_SUCCESS,

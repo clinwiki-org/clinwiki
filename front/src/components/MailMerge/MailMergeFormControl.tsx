@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import { gql, useQuery }  from '@apollo/client';
@@ -8,6 +8,10 @@ import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
 import { IslandConstructor } from './MailMergeView';
 import { useFragment } from './MailMergeFragment';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSampleStudy } from 'services/study/actions';
+import { getSampleStudyQuery } from 'services/study/queries';
+import { RootState } from 'reducers';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
@@ -23,18 +27,7 @@ interface MailMergeFormControlProps {
   islands?: Record<string, IslandConstructor>;
 }
 
-const default_nctid = 'NCT00222898';
-const getQuery = (name: string, frag: string) => {
-  frag = frag || `fragment ${name} on Study { nct_id }`;
-  return gql`
-  query SampleStudyQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...${name}
-    }
-  }
-  ${frag}
-`;
-};
+const default_nctid = 'NCT00004074';
 
 export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const [nctId, setNctId] = useState(default_nctid);
@@ -42,9 +35,21 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
     gql(getIntrospectionQuery({ descriptions: false }))
   );
   const [fragmentName, fragment] = useFragment('Study', props.template);
-  const { data: study } = useQuery(getQuery(fragmentName, fragment), {
-    variables: { nctId: nctId },
-  });
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const QUERY = `${getSampleStudyQuery(fragmentName, fragment)}`
+    dispatch(fetchSampleStudy(nctId ?? "", QUERY));
+  },[dispatch, fragment]);
+
+  const study = useSelector((state:RootState) => state.study.sampleStudy);
+
+  console.log("STUDY", study)
+
+  if(!study){
+    return<BeatLoader/>;
+  }
 
   if (!introspection) {
     return <BeatLoader />;
@@ -65,7 +70,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
       />
       <MailMerge
         schema={schema}
-        sample={study?.study || {}}
+        sample={study?.data.study || {}}
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
         islands={props.islands}

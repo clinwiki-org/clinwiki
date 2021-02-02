@@ -58,6 +58,7 @@ export interface StudyDataError {
 export interface FetchSampleStudySendAction {
     type: typeof FETCH_SAMPLE_STUDY_SEND
     nctId: any,
+    QUERY: any
 }
 export interface FetchSampleStudySuccessAction {
     type: typeof FETCH_SAMPLE_STUDY_SUCCESS,

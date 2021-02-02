@@ -8,7 +8,7 @@ const getCurrentPageViews = (state)=> state.study.pageViews.data.site.pageViews;
 
 function* getSampleStudy(action) {
     try {
-        let response = yield call(() => api.fetchSampleStudy(action.nctId));
+        let response = yield call(() => api.fetchSampleStudy(action.nctId, action.QUERY));
         if(response) {
             yield put(actions.fetchSampleStudySuccess(response));
         }

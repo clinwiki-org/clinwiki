@@ -7,8 +7,8 @@ import { callGraphql } from 'utils/graphqlUtil';
 
 const ENDPOINT = `http://${window.location.hostname}:3000/graphql`
 
-export const fetchSampleStudy= (nctId: any) => {
-    return callGraphql(ENDPOINT, query.SAMPLE_STUDY_QUERY, {nctId: nctId});
+export const fetchSampleStudy= (nctId: any, QUERY: any) => {
+    return callGraphql(ENDPOINT, QUERY, {nctId});
 };
 export const fetchStudyPage= (nctId: any, QUERY:any) => {
     return callGraphql(ENDPOINT, QUERY, {nctId});
