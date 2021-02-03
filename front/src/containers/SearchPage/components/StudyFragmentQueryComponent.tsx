@@ -1,7 +1,6 @@
 import React, { useState }from 'react';
 import { gql, useQuery }  from '@apollo/client';
 import styled from 'styled-components';
-import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 
 
 interface Props {

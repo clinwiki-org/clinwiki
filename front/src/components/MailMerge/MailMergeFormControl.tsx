@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import { gql, useQuery }  from '@apollo/client';
-import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
@@ -12,6 +10,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchSampleStudy } from 'services/study/actions';
 import { getSampleStudyQuery } from 'services/study/queries';
 import { RootState } from 'reducers';
+import { fetchIntrospection } from 'services/introspection/actions';
+//import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
+import { introspectionQuery } from 'graphql/utilities';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
@@ -31,12 +32,17 @@ const default_nctid = 'NCT00004074';
 
 export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const [nctId, setNctId] = useState(default_nctid);
-  const { data: introspection } = useQuery<IntrospectionQuery>(
-    gql(getIntrospectionQuery({ descriptions: false }))
-  );
-  const [fragmentName, fragment] = useFragment('Study', props.template);
-
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
+    dispatch(fetchIntrospection(QUERY));
+  },[dispatch]);
+
+const introspection = useSelector((state:RootState) => state.introspection.introspection);
+//console.log("INTROSPECTION response", introspection)
+
+  const [fragmentName, fragment] = useFragment('Study', props.template);
 
   useEffect(()=>{
     const QUERY = `${getSampleStudyQuery(fragmentName, fragment)}`
@@ -44,8 +50,6 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   },[dispatch, fragment]);
 
   const study = useSelector((state:RootState) => state.study.sampleStudy);
-
-  console.log("STUDY", study)
 
   if(!study){
     return<BeatLoader/>;
@@ -58,7 +62,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const schema : GraphqlSchemaType = {
     kind: 'graphql',
     typeName: 'Study',
-    types: introspection.__schema.types,
+    types: introspection.data.__schema.types,
   };
 
   return (
