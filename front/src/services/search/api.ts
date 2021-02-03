@@ -30,7 +30,6 @@ export const updateSearchParams = ( searchParams ) =>{
     return callGraphql(ENDPOINT, mutate.SEARCH_PAGE_HASH_MUTATION,
         searchParams.searchParams )
 }
-
 export const fetchSearchAutoSuggest = (searchParams : any) => {
-    return callGraphql(ENDPOINT,AUTOSUGGEST_QUERY, searchParams);             //TODO Check this Query, import location
+    return callGraphql(ENDPOINT,query.AUTOSUGGEST_QUERY, searchParams);
 };

@@ -5,14 +5,14 @@ import SlackCounter from './SlackCounter/SlackCounter';
 import GithubSelector from './GithubSelector/GithubSelector';
 import CreateReactionMutation, {
   CREATE_REACTION,
-} from 'mutations/CreateReactionMutation';
+} from 'mutations/CreateReactionMutation'; //here
 import { find, propEq } from 'ramda';
 import { gql, useQuery, useMutation  }  from '@apollo/client';
 import StudyReactions from '../../queries/StudyReaction';
 import QUERY from 'queries/StudyPageQuery';
 import REACTION_KINDS from 'queries/ReactionKinds';
 import { ReactionKinds } from 'types/ReactionKinds';
-import { StudyReactions as StudyReactionsQueryType } from 'types/StudyReactions';
+import { StudyReactions as StudyReactionsQueryType } from 'types/StudyReactions'; //here
 import REACTIONS_QUERY from '../../queries/StudyReaction';
 
 interface ReactionsBarProps {

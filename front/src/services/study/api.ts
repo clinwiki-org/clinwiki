@@ -17,14 +17,11 @@ export const fetchPageViews= (siteId: any) => {
     return callGraphql(ENDPOINT, query.PAGE_VIEWS_QUERY, {siteId: siteId.siteId});
 };
 export const fetchPageView= (url:any) => {
-    console.log( url)
     return callGraphql(ENDPOINT, query.PAGE_VIEW_QUERY, {url: url.url});
 };
 export const updateStudyViewLogCount = (nctId:any) =>{
-    console.log(nctId)
     return callGraphql(ENDPOINT,mutate.CREATE_STUDY_VIEW_LOG_MUTATION, {nctId})
 }
-
 export const createPageView = (url, siteId) => {
     return callGraphql(ENDPOINT, mutate.CREATE_PAGE_VIEW_MUTATION,
         { url: url, siteId: siteId });                           
@@ -36,4 +33,58 @@ export const updatePageView = (input) => {
 export const deletePageView = ( id ) => {
     return callGraphql(ENDPOINT, mutate.DELETE_PAGE_VIEW_MUTATION, 
         {  id: id });                                    
+};
+export const fetchSearchStudyPage= (hash: string, id: string) => {
+    return callGraphql(ENDPOINT, query.SEARCH_STUDY_PAGE_QUERY, {hash, id});
+};
+export const fetchWorkFlowPage = (nctId: any) =>{
+    return callGraphql(ENDPOINT, query.WORKFLOW_PAGE_QUERY, {nctId});
+};
+export const upsertLabelMutation = (nctId:any, key: any, value: any) =>{
+    return callGraphql(ENDPOINT,mutate.UPSERT_LABEL_MUTATION, {nctId: nctId, key: key, value: value})
+};
+export const deleteLabelMutation = (nctId:any, key: any, value: any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_LABEL_MUTATION, { nctId: nctId, key: key, value: value})
+};
+export const fetchCrowdPage= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.CROWD_PAGE_QUERY, {nctId});
+};
+export const deleteReviewMutation = (nctId:any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_REVIEW_MUTATION, { nctId: nctId})
+};
+export const fetchReviewPage= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.REVIEW_PAGE_QUERY, {nctId});
+};
+export const fetchStudyEditsHistory= (nctId: string) => {
+    return callGraphql(ENDPOINT, query.STUDY_EDITS_HISTORY_QUERY, {nctId});
+};
+export const fetchFacilitiesPage = (nctId: any) => {
+    return callGraphql(ENDPOINT, query.FACILITIES_PAGE_QUERY, {nctId});
+};
+export const fetchWikiPage= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.WIKI_PAGE_QUERY, {nctId});
+};
+export const wikiPageUpdateContentMutation = (nctId:any, content: any) =>{
+    return callGraphql(ENDPOINT,mutate.WIKI_PAGE_UPDATE_CONTENT_MUTATION, {nctId, content})
+};
+export const fetchSuggestedLabels= (nctId: any, crowdBucketsWanted: any) => {
+    return callGraphql(ENDPOINT, query.SUGGESTED_LABELS_QUERY, {nctId: nctId, crowdBucketsWanted: crowdBucketsWanted});
+};
+export const fetchAllWorkFlows= () => {
+    return callGraphql(ENDPOINT, query.WORKFLOW_VIEW_PROVIDER, {});
+};
+export const fetchReactionsIsland= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.REACTIONS_ISLAND_QUERY, {nctId});
+};
+export const deleteReaction = (id:any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_REACTION, {id})
+};
+export const fetchReactionKinds= () => {
+    return callGraphql(ENDPOINT, query.REACTION_KINDS, {});
+};
+export const fetchStudyReactions= () => {
+    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {});
+};
+export const createReaction = ( reactionKindId: any, nctId: string) =>{
+    return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {reactionKindId, nctId})
 };

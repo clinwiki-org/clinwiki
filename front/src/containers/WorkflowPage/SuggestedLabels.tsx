@@ -1,13 +1,10 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
 import { Checkbox } from 'react-bootstrap';
 import {
-  SuggestedLabelsQuery,
-  SuggestedLabelsQueryVariables,
   SuggestedLabelsQuery_crowdAggFacets_aggs,
-} from 'types/SuggestedLabelsQuery';
+} from 'services/study/model/SuggestedLabelsQuery';
 import {
   pipe,
   map,
@@ -16,12 +13,11 @@ import {
   defaultTo,
 } from 'ramda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
-// import { SearchParams, SearchQuery } from 'containers/SearchPage/shared';
-// import { WorkSearch } from './WorkSearch';
 import FacetCard from 'components/FacetCard/FacetCard';
 import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
 import { BeatLoader } from 'react-spinners';
 import Error from 'components/Error';
+import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation } from '../../services/study/actions'
 
 interface SuggestedLabelsProps {
   nctId: string;
@@ -32,37 +28,11 @@ interface SuggestedLabelsProps {
     string,
     WorkflowConfigFragment_suggestedLabelsConfig
   >;
-  showAnimation:any;
+  showAnimation: any;
+  isLoading: any;
+  suggestedLabels: any;
+  fetchSuggestedLabels: any;
 }
-
-const QUERY = gql`
-  query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
-    crowdAggFacets(crowdBucketsWanted: $crowdBucketsWanted) { 
-      aggs {
-        name
-        buckets {
-          key
-          keyAsString
-          docCount
-        }
-      }
-    }
-    study(nctId: $nctId) {
-      nctId
-      wikiPage {
-        nctId
-        meta
-      }
-    }
-  }
-`;
-
-const QueryComponent = (
-  props: QueryComponentOptions<
-    SuggestedLabelsQuery,
-    SuggestedLabelsQueryVariables
-  >
-) => Query(props);
 
 const LabelsContainer = styled.div`
   display: flex;
@@ -76,23 +46,29 @@ interface SuggestedLabelsState {
 class SuggestedLabels extends React.PureComponent<
   SuggestedLabelsProps,
   SuggestedLabelsState
-> {
-  handleSelect = (key: string, value: string) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  > {
+  handleSelect2 = (key: string, value: string, checked) => {
     this.props.showAnimation()
-    this.props.onSelect(key, value, e.currentTarget.checked);
+
+    this.props.onSelect(key, value, checked);
   };
 
   public getID() {
     return this.props.nctId;
   }
-
+  componentDidMount() {
+    this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
+  }
+    //TODO - Previously refetch was coming from APollo made this faaux function to force refetch is needed 
+  refetch =()=>{
+    console.log("Refetching")
+    //BUT have not traced what triggers it/ or why its not currently 
+    // this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
+  }
   renderAgg = (
     key: string,
     values: [string, boolean][],
     meta: Record<string, string>,
-    refetch,
     config?: WorkflowConfigFragment_suggestedLabelsConfig
   ) => {
     // If config.visibleOptions is present replace values with the whitelist, preserve checked
@@ -125,9 +101,9 @@ class SuggestedLabels extends React.PureComponent<
         nctId={this.props.nctId}
         values={items}
         onSelect={this.props.onSelect}
-        refetch={refetch}
+        refetch={()=>this.refetch}
         showAnimation={this.props.showAnimation}
-        >
+      >
         {items.map(value => {
           if (bucketKeyStringIsMissing(value)) {
             return null;
@@ -137,7 +113,7 @@ class SuggestedLabels extends React.PureComponent<
               key={value}
               checked={checkedValues.has(value)}
               disabled={this.props.disabled}
-              onChange={this.handleSelect(key, value)}>
+              onChange={() => this.handleSelect2(key, value, checkedValues.has(value))}>
               {value}
             </Checkbox>
           );
@@ -147,21 +123,14 @@ class SuggestedLabels extends React.PureComponent<
   };
 
   render() {
-    return (
-      <QueryComponent
-        query={QUERY}
-        variables={{
-          nctId: this.props.nctId,
-          crowdBucketsWanted: this.props.allowedSuggestedLabels
-        }}>
-        {({ data, loading, error, refetch }) => {
-          
-          if (loading) return <BeatLoader />;
-          if (error) return <Error message={error.message} />;
-          if (!data) return null;
 
+          if (this.props.isLoading) return <BeatLoader />;
+          // if (error) return <Error message={error.message} />;
+          if (!this.props.suggestedLabels) return null;
+          const data = this.props.suggestedLabels.data
           let meta: Record<string, string> = {};
           try {
+            //@ts-ignore
             meta = JSON.parse(data.study?.wikiPage?.meta || '{}');
           } catch (e) {
             console.log(`Error parsing meta: ${meta}`);
@@ -208,7 +177,6 @@ class SuggestedLabels extends React.PureComponent<
                   key,
                   aggs[key],
                   meta,
-                  refetch,
                   this.props.suggestedLabelsConfig[key]
                 )
               )}
@@ -217,16 +185,23 @@ class SuggestedLabels extends React.PureComponent<
                 label="Add Label"
                 addLabel
                 nctId={this.props.nctId}
-                refetch={refetch}
+                refetch={()=>this.refetch}
                 aggNames={allCrowdAggs}
                 allValues={aggs}
                 showAnimation={this.props.showAnimation}
               />
             </LabelsContainer>
           );
-        }}
-      </QueryComponent>
-    );
-  }
+        }
 }
-export default SuggestedLabels;
+const mapDispatchToProps = (dispatch) => ({
+  fetchSuggestedLabels: (nctId?, allowedSuggestedLabels?) => dispatch(fetchSuggestedLabels(nctId, allowedSuggestedLabels)),
+  upsertLabelMutation: (nctId?, key?, value?) => dispatch(upsertLabelMutation(nctId, key, value)),
+  deleteLabelMutation: (nctId?, key?, value?) => dispatch(deleteLabelMutation(nctId, key, value))
+})
+const mapStateToProps = (state, ownProps) => ({
+  isLoading: state.study.isFetchingSuggestedLables,
+  suggestedLabels: state.study.suggestedLabels
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SuggestedLabels);

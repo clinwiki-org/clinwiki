@@ -1,5 +1,5 @@
-import React from 'react';
-import {useSelector} from 'react-redux';
+import React, { useEffect } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import { RootState } from 'reducers';
 import {
   DELETE_REVIEW_MUTATION,
@@ -28,6 +28,7 @@ import ReactStars from 'react-stars';
 import { ReviewPageQuery } from 'types/ReviewPageQuery';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { keys } from 'ramda';
+import { fetchReviewPage } from 'services/study/actions';
 interface Props {
   nctId: string;
 }
@@ -56,10 +57,16 @@ export default function ReviewsIsland(props: Props) {
   const match = useRouteMatch();
   const theme = useTheme();
   const params = useUrlParams();
+  const dispatch = useDispatch();
   // TODO: This query should be pushed up as a fragment to the Page
-  const { data: reviewData } = useQuery<ReviewPageQuery>(QUERY, {
+/*  const { data: reviewData } = useQuery<ReviewPageQuery>(QUERY, {
     variables: { nctId },
-  });
+  });*/
+  const reviewData = useSelector( (state: RootState) => state.study.reviewPage);
+  useEffect (() => {
+    console.log(props);
+    dispatch (fetchReviewPage(nctId));
+  },[dispatch]);
   const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   });
@@ -182,8 +189,9 @@ export default function ReviewsIsland(props: Props) {
       </>
     );
   };
-
-  if (reviewData) {
+console.log (reviewData)
+  if (!reviewData || !nctId ) return <BeatLoader></BeatLoader>
+  if (reviewData!.data) {
     return (
       <Switch>
         <Route
@@ -210,7 +218,7 @@ export default function ReviewsIsland(props: Props) {
             );
           }}
         />
-        <Route render={() => renderReviews(reviewData!.study!.reviews)} />
+        <Route render={() => renderReviews(reviewData!.data.study!.reviews)} />
       </Switch>
     );
   }

@@ -8,54 +8,8 @@ mutation CreateStudyViewLogMutation($nctId: String!){
     }
   `;
 
-  export const PAGE_VIEW_FRAGMENT = `
-fragment PageViewFragment on PageView {
-    id
-    pageType
-    template
-    title
-    url
-    default
-  }
-`;
-
-export const CREATE_PAGE_VIEW_MUTATION = `
-  mutation CreatePageViewMutation($url: String!, $siteId: Int!) {
-    createPageView(
-      input: { url: $url, title: $url, template: "", siteId: $siteId }
-    ) {
-      errors
-      pageView {
-        ...PageViewFragment
-      }
-    }
-  }
-  ${PAGE_VIEW_FRAGMENT}
-`;
-
-export const UPDATE_PAGE_VIEW_MUTATION = `
-  mutation UpdatePageViewMutation($input: UpdatePageViewInput!) {
-    updatePageView(input: $input) {
-      errors
-      pageView {
-        ...PageViewFragment
-      }
-    }
-  }
-  ${PAGE_VIEW_FRAGMENT}
-`;
-
-export const DELETE_PAGE_VIEW_MUTATION = `
-  mutation DeletePageViewMutation($id: Int!) {
-    deletePageView(input: { id: $id }) {
-      error
-      pageView {
-        id
-      }
-    }
-  }
-`;
-const FRAGMENT = `
+<<<<<<< HEAD
+  const FRAGMENT = `
   fragment CrowdPageFragment on WikiPage {
     nctId
     meta
@@ -87,17 +41,6 @@ const WikiPageEditFragment = `
     }
   }
 `;
-const WIKI_PAGE_EDIT_FRAGMENT = `
-  fragment WikiPageFragment on WikiPage {
-    content
-    edits {
-      ...WikiPageEditFragment
-    }
-    nctId
-    meta
-  }
-`;
-
 
 export const UPSERT_LABEL_MUTATION = `
   mutation CrowdPageUpsertWikiLabelMutation(
@@ -111,14 +54,9 @@ export const UPSERT_LABEL_MUTATION = `
         edits {
           ...WikiPageEditFragment
         }
-      }
-      errors
-    }
-  }
-  ${FRAGMENT}
-  ${WIKI_PAGE_EDIT_FRAGMENT}
-`;
-export const WIKI_PAGE_FRAGMENT =`
+=======
+
+const WIKI_PAGE_EDIT_FRAGMENT = `
   fragment WikiPageFragment on WikiPage {
     content
     edits {
@@ -127,6 +65,7 @@ export const WIKI_PAGE_FRAGMENT =`
     nctId
     meta
   }
+  ${WikiPageEditFragment}
 `;
 
 export const WIKI_PAGE_UPDATE_CONTENT_MUTATION =`
@@ -134,12 +73,17 @@ export const WIKI_PAGE_UPDATE_CONTENT_MUTATION =`
     updateWikiContent(input: { nctId: $nctId, content: $content }) {
       wikiPage {
         ...WikiPageFragment
+>>>>>>> wiki_page_island_redux
       }
       errors
     }
   }
-  ${WIKI_PAGE_FRAGMENT}
+<<<<<<< HEAD
+
+  ${FRAGMENT}
+  ${WikiPageEditFragment}
 `;
+  
 export const DELETE_LABEL_MUTATION = `
   mutation CrowdPageDeleteWikiLabelMutation($nctId: String!, $key: String!) {
     deleteWikiLabel(input: { nctId: $nctId, key: $key }) {
@@ -152,6 +96,7 @@ export const DELETE_LABEL_MUTATION = `
       errors
     }
   }
+
   ${FRAGMENT}
   ${WikiPageEditFragment}
 `;
@@ -164,41 +109,19 @@ export const DELETE_REVIEW_MUTATION = `
     }
   }
 `;
-
-export const DELETE_REACTION = `
-  mutation DeleteReaction(
-    $id: Int!
-
-  ) {
-    deleteReaction(
-        input : { id: $id }
-    ) {
-      reaction{
-        study{
-          dislikesCount
-        }
- }
-
-      errors
-    }
-  }
-`;
-export const CREATE_REACTION = `
-  mutation CreateReaction(
-    $reactionKindId: Int!
-    $nctId: String!
-
-  ) {
-    createReaction(
-        input : { reactionKindId: $reactionKindId, nctId: $nctId }
-    ) {
-      reaction{
-          reactionKind{
-            id
-          }
-      }
-      errors
-    }
-  }
+=======
+  ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
 
+export const UpdateContentMutationComponent = (
+  props: MutationComponentOptions<
+    WikiPageUpdateContentMutation,
+    WikiPageUpdateContentMutationVariables
+  >
+) => Mutation(props);
+
+export type UpdateContentMutationFn = MutationFunction<
+  WikiPageUpdateContentMutation,
+  WikiPageUpdateContentMutationVariables
+>;
+>>>>>>> wiki_page_island_redux
