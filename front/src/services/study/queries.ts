@@ -32,3 +32,15 @@ export const PAGE_VIEW_QUERY = `
   }
   ${PAGE_VIEW_FRAGMENT}
 `;
+
+export const getSampleStudyQuery = (name: string, frag: string) => {
+  frag = frag || `fragment ${name} on Study { nctId }`;
+  return `
+  query SampleStudyQuery($nctId: String!) {
+    study(nctId: $nctId) {
+      ...${name}
+    }
+  }
+  ${frag}
+`;
+};

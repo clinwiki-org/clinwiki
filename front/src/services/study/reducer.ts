@@ -1,18 +1,39 @@
 import * as types from './types';
 
 const initialState: types.StudyState = {
+    isFetchingSampleStudy: false,
+    sampleStudy: undefined,
     isFetchingStudy: false,
     studyPage: undefined,
     isFetchingPageViews: false,
     pageViews: undefined,
     isFetchingPageView: false,
     pageView: undefined,
-    isUpdatingStudyViewLogCount: false
+    isUpdatingStudyViewLogCount: false,
+    isCreatingPageView: false,
+    isUpdatingPageView: false,
+    isDeletingPageView: false,
 };
 
 const studyReducer = ( state = initialState, action: types.StudyActionTypes) : types.StudyState => {
     switch(action.type) {
-        case types.FETCH_PAGE_VIEWS_SEND:
+        case types.FETCH_SAMPLE_STUDY_SEND:
+            return {
+                ...state,
+                isFetchingSampleStudy: true
+            };
+        case types.FETCH_SAMPLE_STUDY_SUCCESS:
+            return {
+                ...state,
+                isFetchingSampleStudy: false,
+                sampleStudy: action.payload
+            };
+        case types.FETCH_SAMPLE_STUDY_ERROR:
+            return {
+                ...state,
+                isFetchingSampleStudy: false
+            };
+        case types.FETCH_STUDY_PAGE_SEND:
             return {
                 ...state,
                 isFetchingStudy: true
@@ -75,6 +96,67 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 ...state,
                 isUpdatingStudyViewLogCount: false
             };
+            
+        case types.CREATE_PAGE_VIEW_SEND:
+            return {
+                ...state,
+                isCreatingPageView: true
+            };
+        case types.CREATE_PAGE_VIEW_SUCCESS:
+            return {
+                ...state,
+                isCreatingPageView: false,
+                pageViews: action.payload
+            };
+        case types.CREATE_PAGE_VIEW_ERROR:
+            return {
+                ...state,
+                isCreatingPageView: false
+            };
+
+        case types.DELETE_PAGE_VIEW_SEND:
+            return {
+                ...state,
+                isDeletingPageView: true
+            };
+        case types.DELETE_PAGE_VIEW_SUCCESS:
+            return {
+                ...state,
+                isDeletingPageView: false,
+                pageViews: {               
+                    ...state.pageViews,
+                    data: {
+                        ...state.pageViews.data,
+                        site: { 
+                            ...state.pageViews.data.site,
+                            pageViews: action.payload
+                        }
+                    }              
+                }   
+            };
+        case types.DELETE_PAGE_VIEW_ERROR:
+            return {
+                ...state,
+                isDeletingPageView: false
+            };
+
+        case types.UPDATE_PAGE_VIEW_SEND:
+            return {
+                ...state,
+                isUpdatingPageView: true
+            };
+        case types.UPDATE_PAGE_VIEW_SUCCESS:            
+            return {
+                ...state,
+                isUpdatingPageView: false,
+                pageViews: action.payload
+            };
+        case types.UPDATE_PAGE_VIEW_ERROR:
+            return {
+                ...state,
+                isUpdatingPageView: false
+            };
+
                 
         default:
             return {...state};
