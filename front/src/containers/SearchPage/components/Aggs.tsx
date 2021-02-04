@@ -39,6 +39,7 @@ import { fetchSearchPageAggs } from 'services/search/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {RootState} from 'reducers';
 
+
 const getVisibleOptionsByName: (PresentSiteFragment) => any = compose(
   reduce(
     (byName, { name, visibleOptions }) => ({
@@ -61,6 +62,11 @@ const getVisibleOptionsByNamePresearch: (PresentSiteFragment) => any = compose(
 
   pathOr([], ['search', 'presearch', 'crowdAggs', 'fields'])
 );
+
+const PSOuter = styled.div`
+    border: 1px solid purple;
+    margin: 1em;
+`
 interface AggsProps {
   key?: any;
   // selected
@@ -187,7 +193,7 @@ const Aggs = (props: AggsProps) => {
           return (
             crowdAggs[k] ? (
               <AggContext.Provider
-                key={k}
+                key={`presearch${k}`}
                 value={{
                   updater: new AggFilterInputUpdater(
                     k,
@@ -248,8 +254,10 @@ const Aggs = (props: AggsProps) => {
       }
 
       const renderAggDropDownWContext = (k) => {
+        console.log('render ps dropw')
         return (
           aggs[k] ? (
+            <PSOuter>
             <AggContext.Provider  
               key={k}
               value={{
@@ -279,6 +287,7 @@ const Aggs = (props: AggsProps) => {
                 configType="presearch"
               />
             </AggContext.Provider>
+            </PSOuter>
           ) : (
             <div
               key={k}

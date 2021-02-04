@@ -359,9 +359,7 @@ export const PresearchFilter = styled.div`
 `;
 
 export const PresearchContainer = styled.div`
-  // display: flex;
-  // flex-wrap: wrap;
-  // justify-content: flex-start;
+
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
