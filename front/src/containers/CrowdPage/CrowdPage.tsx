@@ -1,10 +1,6 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
-import {
-  Query,
-  QueryComponentOptions,
-} from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
 import { match } from 'react-router-dom';
 import { History } from 'history';
 import { Table } from 'react-bootstrap';
@@ -12,14 +8,12 @@ import { Helmet } from 'react-helmet';
 
 import LoadingPane from 'components/LoadingPane';
 import Error from 'components/Error';
-import StudySummary from 'components/StudySummary';
-import { DELETE_LABEL_MUTATION, FRAGMENT, DeleteMutationComponent, DeleteMutationFn } from 'mutations/CrowdPageDeleteWikiLabelMutation';
+import { FRAGMENT } from 'mutations/CrowdPageDeleteWikiLabelMutation';
 
 import {
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables,
 } from 'types/CrowdPageUpsertWikiLabelMutation';
-import { CrowdPageQuery, CrowdPageQueryVariables } from 'types/CrowdPageQuery';
 
 import {
   keys,
@@ -42,6 +36,7 @@ import {
   UpsertMutationFn,
 } from 'mutations/CrowdPageUpsertWikiLabelMutation';
 
+import { fetchCrowdPage, upsertLabelMutation, deleteLabelMutation } from '../../services/study/actions'
 interface CrowdProps {
   nctId: string;
   match: match<{ nctId: string }>;
@@ -52,6 +47,11 @@ interface CrowdProps {
   forceAddLabel?: { key: string; value: string };
   metaData: SiteStudyBasicGenericSectionFragment;
   showAnimation: any;
+  fetchCrowdPage?: any;
+  isLoading: boolean;
+  crowdPage: any;
+  upsertLabelMutation: any;
+  deleteLabelMutation: any;
 }
 
 interface CrowdState {
@@ -59,33 +59,12 @@ interface CrowdState {
   prevForceAddLabel: { key: string; value: string } | null;
 }
 
-const QUERY = gql`
-  query CrowdPageQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      wikiPage {
-        ...CrowdPageFragment
-      }
-      nctId
-    }
-    me {
-      id
-    }
-  }
-
-  ${StudySummary.fragment}
-  ${FRAGMENT}
-`;
-
 const TableWrapper = styled(Table)`
   td {
     vertical-align: middle !important;
   }
 `;
 
-const QueryComponent = (
-  props: QueryComponentOptions<CrowdPageQuery, CrowdPageQueryVariables>
-) => Query(props);
 
 class Crowd extends React.Component<CrowdProps, CrowdState> {
   state: CrowdState = {
@@ -108,6 +87,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     return null;
   }
 
+  //TODO Need to remove this from here and import. Need to be done with StudyPage deprecated code removal.
   static fragment = FRAGMENT;
 
   static updateLabel = (
@@ -116,11 +96,10 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     value: string,
     meta: {},
     nctId: string,
-    upsertLabelMutation: (x: {
-      variables: CrowdPageUpsertWikiLabelMutationVariables;
-      optimisticResponse?: CrowdPageUpsertWikiLabelMutation;
-    }) => void
+    upsertLabelMutation: any
   ) => {
+    //TODO Not sure what trips this yet! Need to find and test 
+    console.log("UPDATEEEE")
     if (!value) return;
     const currentValue = meta[key];
     if (currentValue == null) return;
@@ -132,21 +111,9 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     parts[idx] = value;
     const newValue = uniq(parts).join('|');
 
-    upsertLabelMutation({
-      variables: { nctId, key, value: newValue },
-      optimisticResponse: {
-        upsertWikiLabel: {
-          __typename: 'UpsertWikiLabelPayload',
-          wikiPage: {
-            nctId,
-            __typename: 'WikiPage',
-            meta: JSON.stringify({ ...meta, [key]: newValue }),
-            edits: [],
-          },
-          errors: null,
-        },
-      },
-    });
+    upsertLabelMutation(
+      { nctId, key, value: newValue }
+    );
   };
 
   static deleteLabel = (
@@ -154,8 +121,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     value: string,
     meta: {},
     nctId: string,
-    upsertLabelMutation: UpsertMutationFn,
-    deleteLabelMutation: DeleteMutationFn
+    upsertLabelMutation: any,
+    deleteLabelMutation: any
   ) => {
     const currentValue = meta[key];
     if (!currentValue) return null;
@@ -165,41 +132,13 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     ).join('|');
     if (newValue.length === 0) {
       const newMeta = dissoc(key, meta);
-      deleteLabelMutation({
-        variables: { key, nctId },
-        optimisticResponse: {
-          deleteWikiLabel: {
-            __typename: 'DeleteWikiLabelPayload',
-            wikiPage: {
-              nctId,
-              __typename: 'WikiPage',
-              meta: JSON.stringify(newMeta),
-              edits: [],
-            },
-            errors: null,
-          },
-        },
-      });
+      deleteLabelMutation(
+        { key, nctId }
+      );
     } else {
-      upsertLabelMutation({
-        variables: {
-          nctId,
-          key,
-          value: newValue,
-        },
-        optimisticResponse: {
-          upsertWikiLabel: {
-            __typename: 'UpsertWikiLabelPayload',
-            wikiPage: {
-              nctId,
-              __typename: 'WikiPage',
-              meta: JSON.stringify({ ...meta, [key]: newValue }),
-              edits: [],
-            },
-            errors: null,
-          },
-        },
-      });
+      upsertLabelMutation(
+        { nctId, key, value: newValue }
+      );
     }
   };
 
@@ -208,7 +147,7 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
     value: string,
     meta: {},
     nctId: string,
-    upsertLabelMutation: UpsertMutationFn
+    upsertLabelMutation: any
   ) => {
     if (!value) return;
     let val = value;
@@ -218,28 +157,16 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       entries.push(value);
       val = uniq(entries).join('|');
     }
-    upsertLabelMutation({
-      variables: { nctId, key, value: val },
-      optimisticResponse: {
-        upsertWikiLabel: {
-          __typename: 'UpsertWikiLabelPayload',
-          wikiPage: {
-            nctId,
-            __typename: 'WikiPage',
-            meta: JSON.stringify({ ...meta, [key]: val }),
-            edits: [],
-          },
-          errors: null,
-        },
-      },
-    });
+    upsertLabelMutation(
+      { nctId, key, value: val }
+    );
   };
 
   handleAddLabel = (
     key: string,
     value: string,
     meta: {},
-    upsertLabelMutation: UpsertMutationFn
+    upsertLabelMutation: any
   ) => {
     Crowd.addLabel(
       key,
@@ -253,8 +180,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
 
   handleDeleteLabel = (
     meta: {},
-    upsertLabelMutation: UpsertMutationFn,
-    deleteLabelMutation: DeleteMutationFn
+    upsertLabelMutation: any,
+    deleteLabelMutation: any
   ) => (key: string, value: string) => {
     this.props.showAnimation();
     Crowd.deleteLabel(
@@ -296,8 +223,8 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
 
   renderLabels = (
     meta: {},
-    upsertLabelMutation: UpsertMutationFn,
-    deleteLabelMutation: DeleteMutationFn
+    upsertLabelMutation: any,
+    deleteLabelMutation: any
   ) => {
     const labels = pipe(
       keys,
@@ -388,48 +315,48 @@ class Crowd extends React.Component<CrowdProps, CrowdState> {
       </div>
     );
   };
+  componentDidMount() {
+    this.props.fetchCrowdPage(this.props.nctId || "")
+  }
 
   render() {
-    return (
-      <UpsertMutationComponent mutation={UPSERT_LABEL_MUTATION}>
-        {(upsertLabelMutation) => (
-          <DeleteMutationComponent mutation={DELETE_LABEL_MUTATION}>
-            {(deleteLabelMutation) => (
-              <QueryComponent
-                query={QUERY}
-                variables={{ nctId: this.props.nctId }}>
-                {({ data, loading, error }) => {
-                  if (loading) {
-                    return <LoadingPane />;
-                  }
-                  if (error) {
-                    return <Error message={error.message} />;
-                  }
-                  this.handleLoaded();
-                  if (!data || !data.study || !data.study.wikiPage) return null;
-                  let meta: {};
-                  try {
-                    meta = JSON.parse(data.study.wikiPage.meta || '{}');
-                  } catch (e) {
-                    console.error(
-                      `Error on parsing meta '${data.study.wikiPage.meta}' for nctId: ${this.props.match.params.nctId}`,
-                      e
-                    );
-                    return null;
-                  }
-                  return this.renderLabels(
-                    meta,
-                    upsertLabelMutation,
-                    deleteLabelMutation
-                  );
-                }}
-              </QueryComponent>
-            )}
-          </DeleteMutationComponent>
-        )}
-      </UpsertMutationComponent>
+    const loading = this.props.isLoading;
+    const data = this.props.crowdPage;
+    if (loading) {
+      return <LoadingPane />;
+    }
+    // if (error) {
+    //   return <Error message={error.message} />;
+    // }
+    this.handleLoaded();
+    if (!data || !data.study || !data.study.wikiPage) return null;
+    let meta: {};
+    try {
+      meta = JSON.parse(data.study.wikiPage.meta || '{}');
+    } catch (e) {
+      console.error(
+        `Error on parsing meta '${data.study.wikiPage.meta}' for nctId: ${this.props.match.params.nctId}`,
+        e
+      );
+      return null;
+    }
+    return this.renderLabels(
+      meta,
+      this.props.upsertLabelMutation,
+      this.props.deleteLabelMutation
     );
+
   }
 }
 
-export default Crowd;
+const mapDispatchToProps = (dispatch) => ({
+  fetchCrowdPage: (nctId?,) => dispatch(fetchCrowdPage(nctId)),
+  upsertLabelMutation: (nctId?, key?, value?) => dispatch(upsertLabelMutation(nctId, key, value)),
+  deleteLabelMutation: (nctId?, key?, value?) => dispatch(deleteLabelMutation(nctId, key, value))
+})
+const mapStateToProps = (state, ownProps) => ({
+  isLoading: state.study.isFetchingCrowdPage,
+  crowdPage: state.study.crowdPage
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Crowd);

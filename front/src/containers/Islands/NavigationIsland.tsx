@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import ThemedButton from 'components/StyledComponents';
 import QUERY from 'queries/SearchStudyPageQuery';
 import { useQuery, useMutation } from '@apollo/client';
@@ -9,7 +10,8 @@ import StudyPageCounter from '../StudyPage/components/StudyPageCounter'
 import { path, pathOr } from 'ramda';
 import { trimPath } from 'utils/helpers';
 import useUrlParams, {queryStringAll} from 'utils/UrlParamsProvider';
-
+import { fetchSearchStudyPage } from 'services/study/actions';
+import {RootState} from 'reducers';
 
 interface Props {
   nctId?: string;
@@ -27,9 +29,15 @@ export default function NavigationIsland(props: Props) {
     hash: hash,
     id: nctId,
   };
-  const { data: data } = useQuery<SearchStudyPageQuery>(QUERY, {
+/*  const { data: data } = useQuery<SearchStudyPageQuery>(QUERY, {
     variables: variables,
   });
+*/
+  const dispatch = useDispatch();
+  const studySearchPageData = useSelector( (state: RootState) => state.study.SearchStudyPage);
+  useEffect (() => {
+    dispatch (fetchSearchStudyPage(hash, (variables.id || "")));
+  },[dispatch]);
 
   const handleNavButtonClick = (link: string) => () => {
     history.push(`${trimPath(link)}`);
@@ -59,29 +67,29 @@ export default function NavigationIsland(props: Props) {
     let counterIndex: number | Element | null | undefined = null;
     let workflowName: string | null = null;
 
-    const prevId = path(['search', 'studyEdge', 'prevId'], data);
-    const nextId = path(['search', 'studyEdge', 'nextId'], data);
-    const firstId = path(['search', 'studyEdge', 'firstId'], data);
-    const lastId = path(['search', 'studyEdge', 'lastId'], data);
+    const prevId = path(['search', 'studyEdge', 'prevId'], studySearchPageData);
+    const nextId = path(['search', 'studyEdge', 'nextId'], studySearchPageData);
+    const firstId = path(['search', 'studyEdge', 'firstId'], studySearchPageData);
+    const lastId = path(['search', 'studyEdge', 'lastId'], studySearchPageData);
     isWorkflow = pathOr(
       false,
       ['search', 'studyEdge', 'isWorkflow'],
-      data
+      studySearchPageData
     ) as boolean;
     workflowName = pathOr(
       false,
       ['search', 'studyEdge', 'workflowName'],
-      data
+      studySearchPageData
     ) as string | null;
 
     // counterIndex will remain null if it's >200 or whatever we set the max page size to
-    counterIndex = path(['search', 'studyEdge', 'counterIndex'], data);
+    counterIndex = path(['search', 'studyEdge', 'counterIndex'], studySearchPageData);
     recordsTotal =
     counterIndex &&
       (pathOr(
         1,
         ['search', 'studyEdge', 'recordsTotal'],
-        data
+        studySearchPageData
       ) as number);
       let url = match.url
       const updatedPath = url.substring(0, url.lastIndexOf('/')); 
