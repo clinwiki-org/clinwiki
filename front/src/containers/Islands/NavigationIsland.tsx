@@ -37,7 +37,7 @@ export default function NavigationIsland(props: Props) {
   const studySearchPageData = useSelector( (state: RootState) => state.study.searchStudyPage);
   useEffect (() => {
     dispatch (fetchSearchStudyPage(hash, (variables.id || "")));
-  },[dispatch]);
+  },[dispatch, nctId]);
 
   const handleNavButtonClick = (link: string) => () => {
     history.push(`${trimPath(link)}`);

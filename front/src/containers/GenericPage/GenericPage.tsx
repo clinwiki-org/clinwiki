@@ -56,11 +56,11 @@ export default function GenericPage(props: Props) {
   
   useEffect(() => {
   dispatch(fetchPresentSiteProvider( undefined , params.sv));
-  }, [])
+  }, [dispatch, params.sv])
 
   useEffect(()=>{
     dispatch(fetchPageViews(site?.id));
-   },[dispatch]);
+   },[dispatch, site.id]);
 
   useEffect(()=>{
     dispatch(fetchPageView( params.pv || defaultPage() ));
@@ -69,7 +69,7 @@ export default function GenericPage(props: Props) {
   useEffect(()=>{
     const QUERY = `${getStudyQuery2(fragmentName, fragment)}`
     dispatch(fetchStudyPage(props.arg ?? "", QUERY));
-   },[dispatch, currentPage]);
+   },[dispatch, currentPage, props.arg]);
    
   console.log(props.arg)
   if (!props.arg) {
