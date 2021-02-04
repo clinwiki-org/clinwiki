@@ -1,4 +1,3 @@
-import { gql, MutationUpdaterFn, useMutation, useQuery  }  from '@apollo/client';
 
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = `
     fragment SiteStudyExtendedGenericSectionFragment on SiteStudyExtendedGenericSection {

@@ -2,9 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import ThemedButton from 'components/StyledComponents';
 import QUERY from 'queries/SearchStudyPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { SearchStudyPageQuery } from 'types/SearchStudyPageQuery';
 import { BeatLoader, PulseLoader } from 'react-spinners';
 import StudyPageCounter from '../StudyPage/components/StudyPageCounter'
 import { path, pathOr } from 'ramda';

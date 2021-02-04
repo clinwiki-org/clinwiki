@@ -29,7 +29,6 @@ import {
   equals,
   find,
 } from 'ramda';
-import { useQuery, useMutation } from '@apollo/client';
 import MemoizedSearchView from './SearchView2';
 import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';

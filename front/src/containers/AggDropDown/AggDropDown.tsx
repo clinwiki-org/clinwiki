@@ -11,7 +11,6 @@ import {
   find,
   reverse,
 } from 'ramda';
-import { withApollo } from '@apollo/client/react/hoc';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import {
@@ -530,4 +529,4 @@ const mapStateToProps = (state, ownProps) => ({
   loadingCrowdAggBuckets: state.search.isFetchingCrowdAggBuckets,
 })
 
-export default connect(mapStateToProps, mapDispatchToProps ) (withApollo<any>(withAggContext(AggDropDown)));
+export default connect(mapStateToProps, mapDispatchToProps ) ((withAggContext(AggDropDown)));

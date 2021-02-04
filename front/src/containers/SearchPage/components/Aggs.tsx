@@ -9,8 +9,6 @@ import {
   pathOr,
 } from 'ramda';
 import findFields from 'utils/aggs/findFields';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
 import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,
@@ -33,7 +31,6 @@ import AggFilterInputUpdater from './AggFilterInputUpdater';
 import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
-import { useQuery } from '@apollo/client';
 import {PresearchContainer, ThemedButton} from '../../../components/StyledComponents';
 import { fetchSearchPageAggs } from 'services/search/actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -103,12 +100,6 @@ const AggSideBarTitle = styled.h4`
 `;
 const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 
-const QueryComponent = (
-  props: QueryComponentOptions<
-    SearchPageAggsQuery,
-    SearchPageAggsQueryVariables
-  >
-) => Query(props);
 
 const Aggs = (props: AggsProps) => {
 

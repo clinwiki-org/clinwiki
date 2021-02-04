@@ -3,17 +3,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import { RootState } from 'reducers';
 import { Panel } from 'react-bootstrap';
 import styled from 'styled-components';
-import { ReactionsIslandQuery } from 'types/ReactionsIslandQuery';
 import { ReactionKinds } from '../../services/study/model/ReactionKinds';
 import { useTheme} from 'containers/ThemeProvider/ThemeProvider';
-//import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
-import QUERY from 'queries/ReactionsIslandQuery';
-import { useQuery } from '@apollo/client';
 import REACTION_KINDS from 'queries/ReactionKinds';
 import ReactionsBar from '../../components/ReactionsBar'
 import { fetchPresentSiteProvider } from 'services/site/actions';
 import { BeatLoader } from 'react-spinners';
-//import { usePresentSite } from "../PresentSiteProvider/PresentSiteProvider";
 import { fetchReactionsIsland } from 'services/study/actions';
 import { fetchReactionKinds } from 'services/study/actions';
 interface Props {
