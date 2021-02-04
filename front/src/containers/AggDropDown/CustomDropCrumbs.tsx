@@ -94,7 +94,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
 
         } else if (field.display == FieldDisplay.LOCATION) {
           console.log("IN LOCATION", field.display)
-          if (!this.props.selectedItems[0].radius) return <BeatLoader />
+          if (!this.props.selectedItems[0].radius) return
 
           return (
             <div key={"location-crumb"} className='select-box--crumb-container' >

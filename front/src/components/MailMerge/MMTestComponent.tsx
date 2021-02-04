@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  getIntrospectionQuery,
-  IntrospectionQuery,
   DocumentNode,
 } from 'graphql';
 import { gql, useQuery }  from '@apollo/client';
@@ -10,6 +8,12 @@ import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
 import { getStudyQuery, getSearchQuery } from './MailMergeUtils';
 import { commonIslands } from 'containers/Islands/CommonIslands';
 import { useFragment } from './MailMergeFragment';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchIntrospection } from 'services/introspection/actions';
+import { RootState } from 'reducers';
+import { introspectionQuery } from 'graphql/utilities';
+import { BeatLoader } from 'react-spinners';
+
 
 type Mode = 'Study' | 'Search';
 
@@ -66,9 +70,15 @@ export default function TestComponent() {
   const defaultSearchHash = 'tqxCyI9M';
   let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
 
-  const { data: introspection } = useQuery<IntrospectionQuery>(
-    gql(getIntrospectionQuery({ descriptions: false }))
-  );
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const QUERY = introspectionQuery
+    dispatch(fetchIntrospection(QUERY));
+  },[dispatch]);
+
+  const introspection = useSelector((state:RootState) => state.introspection.introspection);
+
 
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, template);
@@ -92,8 +102,12 @@ export default function TestComponent() {
 
   const sampleData = data?.study || data?.search?.studies?.[0];
 
+  if (!introspection) {
+    return <BeatLoader />;
+  }
+
   if (introspection) {
-    const types = introspection.__schema.types;
+    const types = introspection.data.__schema.types;
     return (
       <div>
         <DropdownButton
