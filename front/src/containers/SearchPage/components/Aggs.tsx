@@ -63,10 +63,6 @@ const getVisibleOptionsByNamePresearch: (PresentSiteFragment) => any = compose(
   pathOr([], ['search', 'presearch', 'crowdAggs', 'fields'])
 );
 
-const PSOuter = styled.div`
-    border: 1px solid purple;
-    margin: 1em;
-`
 interface AggsProps {
   key?: any;
   // selected
@@ -257,7 +253,6 @@ const Aggs = (props: AggsProps) => {
         console.log('render ps dropw')
         return (
           aggs[k] ? (
-            <PSOuter>
             <AggContext.Provider  
               key={k}
               value={{
@@ -287,7 +282,6 @@ const Aggs = (props: AggsProps) => {
                 configType="presearch"
               />
             </AggContext.Provider>
-            </PSOuter>
           ) : (
             <div
               key={k}
