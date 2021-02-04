@@ -1,4 +1,4 @@
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import { propEq, find } from 'ramda';
 
 // aggToField

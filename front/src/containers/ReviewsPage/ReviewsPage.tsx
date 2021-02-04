@@ -38,7 +38,7 @@ import { reject, propEq, over, lensPath, keys } from 'ramda';
 import { dataIdFromObject } from 'configureApollo';
 import CurrentUser from 'containers/CurrentUser';
 import { UserFragment } from 'services/user/model/UserFragment';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'services/study/model/SiteStudyBasicGenericSectionFragment';
 
 interface ReviewsPageProps {
   nctId: string;

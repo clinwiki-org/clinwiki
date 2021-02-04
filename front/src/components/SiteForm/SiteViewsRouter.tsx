@@ -10,7 +10,7 @@ import {
 import { History, Location } from 'history';
 import SearchForm from './SearchForm';
 import SiteViewsForm from './SiteViewsForm';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 interface SiteViewRouterProps {
   match: match<{}>;

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import { RootState } from 'reducers';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import QUERY from 'queries/FacilitiesPageQuery';
@@ -14,6 +16,7 @@ import GoogleMapReact from 'google-map-react';
 import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 import MapMarker from '../../containers/FacilitiesPage/MapMarker';
 import FacilityCard from '.../../containers/FacilitiesPage//FacilityCard';
+import {fetchFacilitiesPage} from 'services/study/actions'
 
 interface Props {
   nctId?: string;
@@ -158,10 +161,17 @@ export default function FacilityIsland(props: Props) {
     );
   };
 
-  const { data: facilityData } = useQuery<FacilitiesPageQuery>(QUERY, {
+  const dispatch = useDispatch();
+/*  const { data: facilityData } = useQuery<FacilitiesPageQuery>(QUERY, {
     variables: { nctId },
   });
-
+*/
+  
+  const facilityData = useSelector( (state: RootState) => state.study.facilityData);
+  //console.log (state.study)
+  useEffect (() => {
+    dispatch (fetchFacilitiesPage(props.nctId || ""));
+  },[dispatch]);
   const K_HOVER_DISTANCE = 30;
   const facilities = facilityData?.study?.facilities;
 

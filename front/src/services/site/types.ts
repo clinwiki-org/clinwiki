@@ -3,7 +3,7 @@ import { CreateSiteInput, UpdateSiteInput } from 'services/site/model/InputTypes
 import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
-
+import { CreateSiteViewInput, UpdateSiteViewInput, DeleteSiteViewInput, CopySiteViewInput } from 'services/site/model/InputTypes';
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
 export const FETCH_ADMIN_SITE_VIEW_SUCCESS = 'FETCH_ADMIN_SITE_VIEW_SUCCESS';
@@ -33,6 +33,22 @@ export const UPDATE_SITE_SEND = 'UPDATE_SITE_SEND';
 export const UPDATE_SITE_SUCCESS = 'UPDATE_SITE_SUCCESS';
 export const UPDATE_SITE_ERROR = 'UPDATE_SITE_ERROR';
 
+export const COPY_SITE_VIEW_SEND = 'COPY_SITE_VIEW_SEND';
+export const COPY_SITE_VIEW_SUCCESS = 'COPY_SITE_VIEW_SUCCESS';
+export const COPY_SITE_VIEW_ERROR = 'COPY_SITE_VIEW_ERROR';
+
+export const CREATE_SITE_VIEW_SEND = 'CREATE_SITE_VIEW_SEND';
+export const CREATE_SITE_VIEW_SUCCESS = 'CREATE_SITE_VIEW_SUCCESS';
+export const CREATE_SITE_VIEW_ERROR = 'CREATE_SITE_VIEW_ERROR';
+
+export const UPDATE_SITE_VIEW_SEND = 'UPDATE_SITE_VIEW_SEND';
+export const UPDATE_SITE_VIEW_SUCCESS = 'UPDATE_SITE_VIEW_SUCCESS';
+export const UPDATE_SITE_VIEW_ERROR = 'UPDATE_SITE_VIEW_ERROR';
+
+export const DELETE_SITE_VIEW_SEND = 'DELETE_SITE_VIEW_SEND';
+export const DELETE_SITE_VIEW_SUCCESS = 'DELETE_SITE_VIEW_SUCCESS';
+export const DELETE_SITE_VIEW_ERROR = 'DELETE_SITE_VIEW_ERROR';
+
 export interface SiteState {
     isFetchingAdminSiteView: boolean,
     adminSiteView: AdminViewsProviderQuery | undefined,
@@ -42,7 +58,11 @@ export interface SiteState {
     isCreatingSite: boolean,
     isUpdatingSite: boolean,
     isFetchingSiteProvider: boolean,
-    siteProvider: SiteProviderQuery | undefined,
+    isCopyingSiteView: boolean,
+    isCreatingSiteView: boolean,
+    isDeletingSiteView: boolean,
+    isUpdatingSiteView: boolean,
+    siteProvider:any | SiteProviderQuery | undefined,
     isFetchingPresentSiteProvider: boolean,
     presentSiteProvider: PresentSiteProviderQuery | undefined,
 }
@@ -159,9 +179,81 @@ export interface UpdateSiteErrorAction {
     payload: SiteDataError
 };
 
+export interface CopySiteViewSendAction {
+    type: typeof COPY_SITE_VIEW_SEND,
+    id: number,
+    input: CopySiteViewInput,
+}
 
-export type SiteActionTypes = FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
-    FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | DeleteSiteSendAction | DeleteSiteSuccessAction |
-    DeleteSiteErrorAction  | CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction  
-    | UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | 
-    FetchSiteProviderErrorAction | FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction;
+export interface CopySiteViewSuccessAction {
+    type: typeof COPY_SITE_VIEW_SUCCESS,
+    payload: SiteProviderQuery
+};
+
+export interface CopySiteViewErrorAction {
+    type: typeof COPY_SITE_VIEW_ERROR,
+    payload: SiteDataError
+}
+
+export interface CreateSiteViewSendAction {
+    type: typeof CREATE_SITE_VIEW_SEND,
+    id: number,
+    input: CreateSiteViewInput,
+}
+
+export interface CreateSiteViewSuccessAction {
+    type: typeof CREATE_SITE_VIEW_SUCCESS,
+    payload: SiteProviderQuery
+};
+
+export interface CreateSiteViewErrorAction {
+    type: typeof CREATE_SITE_VIEW_ERROR,
+    payload: SiteDataError
+};
+
+export interface DeleteSiteViewSendAction {
+    type: typeof DELETE_SITE_VIEW_SEND,
+    input: DeleteSiteViewInput,
+}
+
+export interface DeleteSiteViewSuccessAction {
+    type: typeof DELETE_SITE_VIEW_SUCCESS,
+    payload: SiteProviderQuery
+    };
+
+export interface DeleteSiteViewErrorAction {
+    type: typeof DELETE_SITE_VIEW_ERROR,
+    payload: SiteDataError
+};
+
+export interface UpdateSiteViewSendAction {
+    type: typeof UPDATE_SITE_VIEW_SEND,
+    id: number,
+    input: UpdateSiteViewInput,
+}
+
+export interface UpdateSiteViewSuccessAction {
+    type: typeof UPDATE_SITE_VIEW_SUCCESS,
+    payload: SiteProviderQuery
+    };
+
+export interface UpdateSiteViewErrorAction {
+    type: typeof UPDATE_SITE_VIEW_ERROR,
+    payload: SiteDataError
+};
+
+
+export type SiteActionTypes = 
+    FetchSiteProviderSendAction | FetchSiteProviderSuccessAction | FetchSiteProviderErrorAction |
+    FetchPresentSiteProviderSendAction | FetchPresentSiteProviderSuccessAction | FetchPresentSiteProviderErrorAction |
+    FetchSitesPageSendAction | FetchSitesPageSuccessAction | FetchSitesPageErrorAction | 
+    CreateSiteSendAction | CreateSiteSuccessAction | CreateSiteErrorAction |
+    UpdateSiteSendAction | UpdateSiteSuccessAction | UpdateSiteErrorAction | 
+    DeleteSiteSendAction | DeleteSiteSuccessAction | DeleteSiteErrorAction | 
+
+    FetchAdminSiteViewSendAction | FetchAdminSiteViewSuccessAction | FetchAdminSiteViewErrorAction |
+    CopySiteViewSendAction | CopySiteViewSuccessAction | CopySiteViewErrorAction | 
+    CreateSiteViewSendAction | CreateSiteViewSuccessAction  | CreateSiteViewErrorAction  | 
+    DeleteSiteViewSendAction | DeleteSiteViewSuccessAction | DeleteSiteViewErrorAction | 
+    UpdateSiteViewSendAction | UpdateSiteViewSuccessAction | UpdateSiteViewErrorAction
+;

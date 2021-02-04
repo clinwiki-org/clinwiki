@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { usePageView, usePageViews } from 'queries/PageViewQueries';
 import MailMergeView, {
   microMailMerge,
 } from 'components/MailMerge/MailMergeView';
@@ -72,13 +71,17 @@ export default function GenericPage(props: Props) {
     dispatch(fetchStudyPage(props.arg ?? "", QUERY));
    },[dispatch, currentPage]);
    
+  console.log(props.arg)
   if (!props.arg) {
     return <h1>Missing NCTID in URL</h1>;
   }
   if (loading || !pageViewData || !studyData || !site) {
     return <BeatLoader />;
   }
-
+  if (!studyData.data) {
+    return <BeatLoader />
+  }
+console.log(studyData.data)
   const title = microMailMerge(currentPage?.title, studyData?.data.study);
   return (
     <div>

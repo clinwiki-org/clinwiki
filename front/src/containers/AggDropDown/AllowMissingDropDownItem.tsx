@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
-import { Checkbox } from 'react-bootstrap';
 import { AggBucket } from '../SearchPage/Types';
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 
-interface AllowMissingCheckboxProps {
+interface AllowMissingDropDownItemProps {
   buckets: AggBucket[] | null;
   updater: AggFilterInputUpdater;
 }
 
-function AllowMissingCheckbox(props: AllowMissingCheckboxProps) {
+function AllowMissingDropDownItem(props: AllowMissingDropDownItemProps) {
   const { buckets, updater } = props;
   let totalMissing: number = 0;
   (buckets || []).forEach(bucket => {
@@ -19,12 +18,10 @@ function AllowMissingCheckbox(props: AllowMissingCheckboxProps) {
     }
   });
   return (
-    <Checkbox
-      checked={updater.allowsMissing()}
-      onChange={() =>
-        updater.toggleAllowMissing()
-      }>{`Allow Missing (${totalMissing})`}</Checkbox>
+    <div 
+      className="item-content"
+      >{`Allow Missing (${totalMissing})`}</div>
   );
 }
 
-export default withAggContext(AllowMissingCheckbox);
+export default withAggContext(AllowMissingDropDownItem);

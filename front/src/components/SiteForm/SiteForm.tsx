@@ -19,20 +19,19 @@ import SiteViewsRouter from './SiteViewsRouter';
 import { History, Location } from 'history';
 import StudyForm from './StudyForm';
 import ThemedButton from 'components/StyledComponents/index';
-import { UpdateSiteViewMutationFn } from 'mutations/UpdateSiteViewMutation';
 import PagesForm from './PagesForm';
 import { connect } from 'react-redux';
-import { fetchSiteProvider } from 'services/site/actions';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { fetchSiteProvider, updateSiteView } from 'services/site/actions';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 interface SiteFormProps {
   match: match<{}>;
-  site: SiteFragment;  //TODO  Move SiteFragment when we redux SiteProvider and PresentSiteProvider.
+  site: SiteFragment;
   history: History;
   location: Location;
   onSaveSite: (CreateSiteInput) => void;
-  onSaveSiteView?: UpdateSiteViewMutationFn;
-  fetchSiteProvider?: any;
+  //fetchSiteProvider?: any;
+  updateSiteView: any;
 }
 
 interface SiteFormState {
@@ -102,23 +101,16 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     return null;
   };
   handleSave = () => {
-    if (this.state.mutations.length > 0) {
+    if (this.state.mutations.length > 0) { 
       const view = this.props.site.siteView;
-      this.props
-        .onSaveSiteView?.({
-          variables: {
-            input: {
-              id: view.id,
-              name: view.name,
-              url: view.url,
-              default: view.default,
-              mutations: this.state.mutations.map(serializeMutation),
-            },
-          },
-        })
-        .then(() => {
-            this.props.fetchSiteProvider(this.props.site.id)
-        });
+      let input =  {
+        id: view.id,
+        name: view.name,
+        url: view.url,
+        default: view.default,
+        mutations: this.state.mutations.map(serializeMutation),
+      }
+      this.props.updateSiteView(this.props.site.id, input)
     }
     this.props.onSaveSite(this.state.form);
   };
@@ -217,9 +209,9 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
               />
             )}
           />
-          <Route
-            path={`${path}/study`}
-            render={routeProps => (
+          <Route                    
+            path={`${path}/study`} 
+            render={routeProps => (       //TODO Remove Study Tab and clean code.
               <StudyForm
                 {...routeProps}
                 view={view  as SiteViewFragment}
@@ -254,7 +246,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url))
+  // fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url)),
+  updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
 })
 
 

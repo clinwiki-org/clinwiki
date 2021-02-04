@@ -9,12 +9,12 @@ import {
   Panel,
   FormControl,
 } from 'react-bootstrap';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import { History, Location } from 'history';
 import { match, Switch, Route, Redirect } from 'react-router';
 import { trimPath } from 'utils/helpers';
-import { SiteStudyBasicGenericSectionFragment } from 'types/SiteStudyBasicGenericSectionFragment';
-import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import { SiteStudyBasicGenericSectionFragment } from 'services/study/model/SiteStudyBasicGenericSectionFragment';
+import { SiteStudyExtendedGenericSectionFragment } from 'services/study/model/SiteStudyExtendedGenericSectionFragment';
 import { isEmpty, findIndex, propEq, sortBy, find } from 'ramda';
 import * as R from 'remeda';
 import ThemedButton from 'components/StyledComponents/index';

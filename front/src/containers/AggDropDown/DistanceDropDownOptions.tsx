@@ -4,7 +4,7 @@ import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInp
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 
 interface DistanceDropDownOptionsProps {
   buckets: Array<AggBucket>;

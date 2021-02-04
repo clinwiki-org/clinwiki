@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import { FormControl, Checkbox } from 'react-bootstrap';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
 import AggKeyValuePairsDropDown from 'containers/AggDropDown/AggKeyValuePairsDropDown';
 import { capitalize } from 'utils/helpers';

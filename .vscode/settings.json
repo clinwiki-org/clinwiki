@@ -3,5 +3,8 @@
   "ruby.specCommand": "bundle exec rspec",
   "prettier.configPath": "./front/.prettierrc",
   "prettier.packageManager": "yarn",
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

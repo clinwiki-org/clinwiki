@@ -10,7 +10,7 @@ import { History, Location } from 'history';
 import { match } from 'react-router-dom';
 import InterventionItem from './InterventionItem';
 import StudySummary from 'components/StudySummary';
-import { SiteStudyExtendedGenericSectionFragment } from 'types/SiteStudyExtendedGenericSectionFragment';
+import { SiteStudyExtendedGenericSectionFragment } from 'services/study/model/SiteStudyExtendedGenericSectionFragment';
 
 const QUERY = gql`
   query InterventionsPageQuery($nctId: String!) {

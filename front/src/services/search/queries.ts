@@ -152,3 +152,132 @@ export const SEARCH_PAGE_SEARCH_QUERY = `
     planToShareIpdDescription
   }
 `;
+
+
+export const SEARCH_PAGE_AGG_BUCKETS_QUERY = `
+  query SearchPageAggBucketsQuery(
+    $agg: String!
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
+    $aggOptionsFilter: String
+    $aggOptionsSort: [SortInput!]
+    $url: String
+    $configType: String
+    $returnAll: Boolean
+  ) {
+    aggBuckets(
+      url: $url
+      configType: $configType
+      returnAll: $returnAll
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: $aggOptionsSort
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+  }
+`;
+
+
+export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
+  query SearchPageCrowdAggBucketsQuery(
+    $agg: String!
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
+    $aggOptionsFilter: String
+    $aggOptionsSort: [SortInput!]
+    $url: String
+    $configType: String
+    $returnAll: Boolean
+  ) {
+    aggBuckets: crowdAggBuckets(
+      url: $url
+      configType: $configType
+      returnAll: $returnAll
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: $aggOptionsSort
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+  }
+`;
+
+export const AUTOSUGGEST_QUERY = `
+query CrumbsSearchPageAggBucketsQuery(
+  $agg: String!
+  $q: SearchQueryInput!
+  $aggFilters: [AggFilterInput!]
+  $crowdAggFilters: [AggFilterInput!]
+  $page: Int!
+  $pageSize: Int!
+  $aggOptionsFilter: String
+  $aggFields: [String!]!
+  $crowdAggFields: [String!]!
+  $url: String
+) {
+  autocomplete(
+    aggFields: $aggFields
+    crowdAggFields: $crowdAggFields
+    url: $url
+    params: {
+      agg: $agg
+      q: $q
+      sorts: []
+      aggFilters: $aggFilters
+      crowdAggFilters: $crowdAggFilters
+      aggOptionsFilter: $aggOptionsFilter
+      aggOptionsSort: [{ id: "count", desc: true }]
+      page: $page
+      pageSize: $pageSize
+    }
+  ) {
+    autocomplete {
+      name
+      isCrowd
+      results {
+        key
+        docCount
+      }
+      __typename
+    }
+    __typename
+  }
+}
+`; 

@@ -20,6 +20,44 @@ function* getSearchPageAggs(action) {
     }
 }
 
+function* getSearchPageAggBuckets(action) {
+    console.log("SAGA SP Agg Buckets", action);
+    
+    try {
+        let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));         
+        if(response) {
+            let nameBuckets = response.data.aggBuckets.aggs?.[0];
+            yield put(actions.fetchSearchPageAggBucketsSuccess(nameBuckets));
+        }
+        else {
+            yield put(actions.fetchSearchPageAggBucketsError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSearchPageAggBucketsError(err.message));
+    }
+}
+
+function* getSearchPageCrowdAggBuckets(action) {
+    console.log("SAGA SP Agg Buckets", action);
+
+    try {
+        let response = yield call(() => api.fetchSearchPageCrowdAggBuckets(action.searchParams));     
+        if(response) {
+            let nameBuckets = response.data.aggBuckets.aggs?.[0];
+            yield put(actions.fetchSearchPageCrowdAggBucketsSuccess(nameBuckets));
+        }
+        else {
+            yield put(actions.fetchSearchPageCrowdAggBucketsError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSearchPageCrowdAggBucketsError(err.message));
+    }
+}
+
 function* getSearchParams(action) {
     try {
         let response = yield call(() => api.fetchSearchParams(action.hash));
@@ -92,6 +130,8 @@ function* getSearchAutoSuggest(action) {
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
+    yield takeLatest(types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND, getSearchPageAggBuckets);
+    yield takeLatest(types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND, getSearchPageCrowdAggBuckets);
     yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
     yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams)

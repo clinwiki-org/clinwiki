@@ -2,7 +2,7 @@
 import * as InfiniteScroll from 'react-infinite-scroller';
 import { BeatLoader } from 'react-spinners';
 import { FieldDisplay } from 'types/globalTypes';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import { AggBucket } from '../SearchPage/Types';
 import KeyValueBuckets from './KeyValueBuckets';
 

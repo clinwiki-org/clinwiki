@@ -142,7 +142,6 @@ interface CrumbsBarState {
   searchTerm: string;
   suggestions: any;
   isSuggestionLoading: boolean;
-  showFilters: boolean;
 }
 
 //
@@ -236,7 +235,6 @@ const CrumbsBar = (props: CrumbsBarProps) => {
   const suggestions = useSelector( (state:RootState) => state.search.suggestions);
 
   const [searchTerm,setSearchTerm] = useState('');
-  const [showFilters,setShowFilters] = useState(false);
   
   let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
   let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;
@@ -449,10 +447,6 @@ const CrumbsBar = (props: CrumbsBarProps) => {
     setSearchTerm('');
   };
 
-  const toggleShowFilters = () => {
-    setShowFilters(!showFilters);
-  };
-
   const showSaveSearchButton = () => {
     const {searchParams } = props;
     if (
@@ -521,15 +515,13 @@ const CrumbsBar = (props: CrumbsBarProps) => {
                   )
                 )}
               </ListGroupItem>
-              {showFilters
-                ? Array.from(
+                {Array.from(
                     mkCrumbs(
                       props.searchParams,
                       presentSiteView,
                       props
                     )
-                  )
-                : null}{' '}
+                  )}
             </ListGroup>
           </Col>
         </Row>

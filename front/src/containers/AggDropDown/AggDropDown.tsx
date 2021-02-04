@@ -28,32 +28,12 @@ import { FieldDisplay } from 'types/globalTypes';
 import './AggDropDownStyle.css';
 import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import SortKind from './SortKind';
-import BucketsPanel from './BucketsPanel';
-import Filter from './Filter';
-import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQuery';
-import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
-import RangeSelector from './RangeSelector';
-import TwoLevelPieChart from './TwoLevelPieChart';
-import BarChartComponent from './BarChart'
-import AllowMissingCheckbox from './AllowMissingCheckbox';
-import { ApolloClient }  from '@apollo/client';
-import { capitalize } from 'utils/helpers';
-import {
-  ThemedPresearchCard,
-  ThemedPresearchHeader,
-  PresearchTitle,
-  PresearchFilter,
-  PresearchPanel,
-  PresearchContent,
-} from 'components/StyledComponents';
-//import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
-import BucketsDropDown from './BucketsDropDown';
-import LocationAgg from './LocationAgg';
 import CustomDropDown from './CustomDrop';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { connect } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
+import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 
 const PAGE_SIZE = 25;
 
@@ -140,11 +120,16 @@ interface AggDropDownProps {
   configType?: 'presearch' | 'autosuggest' | 'facetbar';
   returnAll?: boolean;
   resetSelectAll?: () => void;
-  client: ApolloClient<any>;
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
   fromAggField: boolean;
   updater: AggFilterInputUpdater | null;
+  fetchAggBuckets: any;
+  fetchCrowdAggBuckets: any;
+  aggBuckets: any;
+  crowdAggBuckets: any;
+  loadingAggBuckets: boolean;
+  loadingCrowdAggBuckets: boolean;
 }
 
 class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
@@ -298,8 +283,16 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
   };
 
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.aggBuckets !== this.props.aggBuckets || prevProps.crowdAggBuckets !== this.props.crowdAggBuckets) {
+        this.handleLoadMoreResponse();
+    }
+}
+
   handleLoadMore = async () => {
-    const { client: apolloClient } = this.props;
+    console.log("LOADIng MORE!!!!!!!!!!!!!!!!!!")
+    //console.trace()
     const { desc, sortKind, buckets, filter } = this.state;
     const {
       agg,
@@ -308,10 +301,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       configType,
       returnAll,
     } = this.props;
-    const [query] =
-      this.props.aggKind === 'crowdAggs'
-        ? [SearchPageCrowdAggBucketsQuery, 'crowdAggFilters']
-        : [SearchPageAggBucketsQuery, 'aggFilters'];
 
     let aggSort = this.handleSort(desc, sortKind);
 
@@ -331,19 +320,22 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       aggOptionsFilter: filter,
       aggOptionsSort: aggSort,
     };
+    this.props.aggKind === "crowdAggs" ? this.props.fetchCrowdAggBuckets(variables) : this.props.fetchAggBuckets(variables);
+    //this.handleLoadMoreResponse();
+  }
 
-    const response = await apolloClient.query({
-      query,
-      variables,
-    });
+  handleLoadMoreResponse = () => {
+    const { desc, sortKind, buckets, filter } = this.state;
+    const { agg, presearch, presentSiteView } = this.props;
+    let currentAgg = findFields(agg, presentSiteView, presearch);
+    //console.log("🚀 ~ currentAgg", currentAgg?.name);
+    let aggName = currentAgg!.name
+    let responseBuckets = this.props.aggKind === "crowdAggs" ?  this.props.crowdAggBuckets?.aggs[aggName] :  this.props.aggBuckets?.aggs[aggName]
 
-    const responseBuckets = pathOr(
-      [],
-      ['data', 'aggBuckets', 'aggs', 0, 'buckets'],
-      response
-    ) as AggBucket[];
+    //console.log("handle RESPONSE", responseBuckets);
 
-    const allBuckets = buckets.concat(responseBuckets);
+    let currentBuckets = buckets[0] === undefined ? []  : buckets
+    const allBuckets = currentBuckets.concat(responseBuckets);
 
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
@@ -374,6 +366,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     const hasMore = length(buckets) !== length(newBuckets);
     this.setState({ buckets: newBuckets, hasMore });
   };
+  
   toggleAlphaSort = () => {
     this.setState({
       desc: !this.state.desc,
@@ -409,10 +402,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
   componentDidMount() {
     const { agg, presentSiteView, presearch } = this.props;
-    console.log("🚀 ~  presearch", presearch);
-    console.log("🚀 ~ agg", agg);
-    console.log("🚀 ~ ~ presentSiteView", presentSiteView);
-
     
     const field = findFields(agg, presentSiteView, presearch);
     if (field?.order && field.order.sortKind === 'key') {
@@ -428,6 +417,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
   }
   handleCheckboxToggle=(bucketKey, activeOptions)=>{
+    console.log("CHECKBOX HIT!!!")
     const { agg, presentSiteView, presearch } = this.props;
     const field = findFields(agg, presentSiteView, presearch);
     //@ts-ignore
@@ -439,9 +429,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
     //Need to handle mutliselect functionality 
     this.props.updater &&  this.props.updater.toggleFilter(bucketKey);
-
-
   }
+
   render() {
     const { agg, presearch, presentSiteView, removeSelectAll} = this.props;
     const {
@@ -463,11 +452,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
      return <BeatLoader/>
     }
 
+    let customBuckets = this.state.buckets[0] === undefined ? []  : this.state.buckets
+    //console.log("BUCKETS state @ CustomDropD",agg, customBuckets)  
+
     const icon = `chevron${isOpen ? '-up' : '-down'}`;
     if (presearch) {
       return (
         <CustomDropDown
-        buckets={buckets}
+        buckets={customBuckets}
         isPresearch={true}
         selectedKeys={this.props.selectedKeys}
         field={currentAgg}
@@ -495,7 +487,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     } else {
       return (
         <CustomDropDown
-        buckets={this.state.buckets}
+        buckets={customBuckets}
         isPresearch={false}
         selectedKeys={this.props.selectedKeys}
         field={currentAgg}
@@ -524,8 +516,18 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  presentSiteView: state.site.presentSiteProvider.site.siteView,
+const mapDispatchToProps = (dispatch) => ({
+  fetchAggBuckets: (searchParams) => dispatch(fetchSearchPageAggBuckets(searchParams)),
+  fetchCrowdAggBuckets: (searchParams) => dispatch(fetchSearchPageCrowdAggBuckets(searchParams)),
 })
 
-export default connect(mapStateToProps, null ) (withApollo<any>(withAggContext(AggDropDown)));
+
+const mapStateToProps = (state, ownProps) => ({
+  presentSiteView: state.site.presentSiteProvider.site.siteView,
+  aggBuckets: state.search.aggBuckets,
+  crowdAggBuckets: state.search.crowdAggBuckets,
+  loadingAggBuckets: state.search.isFetchingAggBuckets,
+  loadingCrowdAggBuckets: state.search.isFetchingCrowdAggBuckets,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps ) (withApollo<any>(withAggContext(AggDropDown)));
