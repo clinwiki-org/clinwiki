@@ -289,7 +289,7 @@ function SearchPage(props: SearchPageProps) {
 
   useEffect(() => {
   dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
-  }, [])
+  }, [dispatch, urlFinal])
 
   const site = useSelector((state : RootState ) => state.site.presentSiteProvider.site)
   const presentSiteView = site?.siteView;
