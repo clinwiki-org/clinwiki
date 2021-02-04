@@ -34,7 +34,7 @@ export default function NavigationIsland(props: Props) {
   });
 */
   const dispatch = useDispatch();
-  const studySearchPageData = useSelector( (state: RootState) => state.study.SearchStudyPage);
+  const studySearchPageData = useSelector( (state: RootState) => state.study.searchStudyPage);
   useEffect (() => {
     dispatch (fetchSearchStudyPage(hash, (variables.id || "")));
   },[dispatch]);
@@ -67,29 +67,31 @@ export default function NavigationIsland(props: Props) {
     let counterIndex: number | Element | null | undefined = null;
     let workflowName: string | null = null;
 
-    const prevId = path(['search', 'studyEdge', 'prevId'], studySearchPageData);
-    const nextId = path(['search', 'studyEdge', 'nextId'], studySearchPageData);
-    const firstId = path(['search', 'studyEdge', 'firstId'], studySearchPageData);
-    const lastId = path(['search', 'studyEdge', 'lastId'], studySearchPageData);
+    if(!studySearchPageData) return <BeatLoader/>
+
+    const prevId = path(['search', 'studyEdge', 'prevId'], studySearchPageData.data);
+    const nextId = path(['search', 'studyEdge', 'nextId'], studySearchPageData.data);
+    const firstId = path(['search', 'studyEdge', 'firstId'], studySearchPageData.data);
+    const lastId = path(['search', 'studyEdge', 'lastId'], studySearchPageData.data);
     isWorkflow = pathOr(
       false,
       ['search', 'studyEdge', 'isWorkflow'],
-      studySearchPageData
+      studySearchPageData.data
     ) as boolean;
     workflowName = pathOr(
       false,
       ['search', 'studyEdge', 'workflowName'],
-      studySearchPageData
+      studySearchPageData.data
     ) as string | null;
 
     // counterIndex will remain null if it's >200 or whatever we set the max page size to
-    counterIndex = path(['search', 'studyEdge', 'counterIndex'], studySearchPageData);
+    counterIndex = path(['search', 'studyEdge', 'counterIndex'], studySearchPageData.data);
     recordsTotal =
     counterIndex &&
       (pathOr(
         1,
         ['search', 'studyEdge', 'recordsTotal'],
-        studySearchPageData
+        studySearchPageData.data
       ) as number);
       let url = match.url
       const updatedPath = url.substring(0, url.lastIndexOf('/')); 
