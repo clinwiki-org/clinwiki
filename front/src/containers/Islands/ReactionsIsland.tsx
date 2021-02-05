@@ -40,7 +40,7 @@ export default function ReactionsIsland(props: Props) {
     variables: { nctId },
   });
   */
-  const reactionsIslandData = useSelector( (state: RootState) => state.study.ReactionsIsland);
+  const reactionsIslandData = useSelector( (state: RootState) => state.study.reactionsIsland);
   useEffect (() => {
     dispatch (fetchReactionsIsland(nctId || ""));
   },[dispatch]);
@@ -52,9 +52,11 @@ export default function ReactionsIsland(props: Props) {
   useEffect (() => {
     dispatch (fetchReactionKinds());
   },[dispatch]);
-  if (!site){
+  if (!site || !reactionKindsData || !reactionsIslandData){
     return <BeatLoader />
   }
+  console.log(reactionKindsData);
+  console.log(reactionsIslandData);
 
   if (site && reactionKindsData && reactionsIslandData && theme) {
     return (
