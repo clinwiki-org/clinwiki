@@ -332,7 +332,6 @@ function* getStudyReactions(action) {
 }
 function* createReaction(action) { 
     try {
-        console.log(action);
         let response = yield call(() => api.createReaction(action.nctId, action.reactionKindId)); 
         if (response){ 
             yield put(actions.createReactionSuccess(response.data));

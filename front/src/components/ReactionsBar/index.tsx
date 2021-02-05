@@ -82,8 +82,6 @@ export default function ReactionsBar(props: ReactionsBarProps) {
     refetchQueries: [{ query: REACTIONS_QUERY, variables: { nctId } }],
   });*/
   const createReactionMutation = (action)=>{
-    console.log("createReactionMutation called");
-    console.log(action);
     if(!action.variables.nctId || !action.variables.reactionKindId) return
     return dispatch(createReaction(action.variables.nctId, action.variables.reactionKindId))}
 
@@ -108,8 +106,6 @@ export default function ReactionsBar(props: ReactionsBarProps) {
   };
   useEffect(() => {
     function updateUserReactions() {
-      console.log(reactionsConfig);
-      console.log(allReactions);
       let reactions = activeReactions(reactionsConfig, allReactions);
       setReactions(reactions);
     }
@@ -137,8 +133,6 @@ export default function ReactionsBar(props: ReactionsBarProps) {
       return;
     }
 
-    console.log(reactions);
-    console.log(allReactions);
     setShowReactions(false);
     let currentReaction = find(propEq('unicode', e))(allReactions);
 

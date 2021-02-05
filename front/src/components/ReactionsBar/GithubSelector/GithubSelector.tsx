@@ -47,14 +47,12 @@ padding: 5px;
 
 `
 useGlobalMouseUp(e => closeSelector());
-  console.log(reactions);
   return (
     <Selector>
       <p>Add your reaction</p>
       <div className="divider"  />
       <div className="emoji">
         { _.map(reactions, (reaction, i) => {
-          console.log(reaction);
           return (
             <GithubSelectorEmoji
               key={ i }
