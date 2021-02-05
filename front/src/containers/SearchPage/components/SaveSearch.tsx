@@ -1,62 +1,37 @@
 import * as React from 'react';
-import gql from 'graphql-tag';
-import { graphql }  from '@apollo/client/react/hoc' ;
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
 import Snackbar from 'components/Snackbar';
 import LabeledButton from 'components/LabeledButton';
-
-const CREATE_SAVED_SEARCH_MUTATION = gql`
-  mutation CreateSavedSearchMutation($searchHash: String!, $url: String!){
-  createSavedSearch(input: {
-    searchHash: $searchHash,
-    url: $url
-  }) {
-    savedSearch {
-      shortLink
-      {
-        long
-      	short
-      }
-      userId
-      createdAt
-      nameLabel
-    }
-    }
-  }
-`;
-
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createSavedSearch } from 'services/search/actions';
+import { RootState } from 'reducers';
+import { BeatLoader } from 'react-spinners';
 
 interface SaveSearchProps {
   siteView: any;
   searchHash: string;
-  mutate: any;
   user?: any;
 }
-
 interface SaveSearchState {
   showLoginModal: boolean;
 }
 
-class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
-  
-  state = {
-    showLoginModal: false,
-  };
-  
+export default function SaveSearch (props: SaveSearchProps) {
 
-
-  render() {
+  const [showLoginModal, setShowLoginModal] = useState(false)
     const { 
-      mutate,
       searchHash, 
       user 
-    } = this.props;
-    
-    const { showLoginModal } = this.state;
-    const setShowLoginModal = showLoginModal => {
-      this.setState({ showLoginModal });
+    } = props;
+
+    const dispatch = useDispatch();
+    const userSavedSearches = useSelector((state:RootState) => state.search.savedSearches);
+
+    const toggleShowLoginModal = showLoginModal => {
+      setShowLoginModal(showLoginModal)
     };
     
     const snackbarRef = React.createRef();
@@ -70,39 +45,36 @@ class SaveSearch extends React.Component<SaveSearchProps, SaveSearchState> {
   
       if (user) {
           const url = window.location.href
-          const { data } = await mutate({
-          variables: { 
-            searchHash: searchHash,
-            url: url
-          },
-        });
+
+          dispatch(createSavedSearch(searchHash, url, user.id));
+
+    /*   if(!userSavedSearches){
+        return <BeatLoader/>
+      }
+      console.log("Last save search name " , userSavedSearches.data.savedSearch.last) //TODO  Find new saved search name(byId) in redux store to display on the alert box
+ */
         //TODO Give user notification / snackbar. FIX TS Errors
         //_showSnackbarHandler();
        //@ts-ignore
         //<Snackbar ref={snackbarRef}/>
-        alert("Saved search: \n" + data?.createSavedSearch.savedSearch.nameLabel) 
+        alert("Saved search") //: \n" + data?.createSavedSearch.savedSearch.nameLabel) 
       } else {
-        setShowLoginModal(true);
+        toggleShowLoginModal(true);
       }
     }
     return (
       <>
         <LoginModal
           show={showLoginModal}
-          cancel={() => setShowLoginModal(false)}
+          cancel={() => toggleShowLoginModal(false)}
         />
-      
-       <LabeledButton
+        <LabeledButton
           helperText={"Save Search"}
           theClick={onClick}
           iconName={"bookmark"}
-       />
-       
+        />
       </>
     );
-  }
-}
 
-export default graphql<any, any, any, any>(CREATE_SAVED_SEARCH_MUTATION)(
-    SaveSearch
-); 
+};
+

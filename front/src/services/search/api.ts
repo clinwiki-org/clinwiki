@@ -33,3 +33,17 @@ export const updateSearchParams = ( searchParams ) =>{
 export const fetchSearchAutoSuggest = (searchParams : any) => {
     return callGraphql(ENDPOINT,query.AUTOSUGGEST_QUERY, searchParams);
 };
+
+export const fetchSavedSearches= (userId: any) => {
+    return callGraphql(ENDPOINT, query.SAVED_SEARCHES_QUERY, {userId: userId});
+};
+
+export const createSavedSearch = ( searchHash: string, url: string) => {
+    return callGraphql(ENDPOINT, mutate.CREATE_SAVED_SEARCH_MUTATION,
+        { searchHash: searchHash, url: url });                           
+};
+
+export const deleteSavedSearch = ( id ) => {
+    return callGraphql(ENDPOINT, mutate.DELETE_SAVED_SEARCH_MUTATION, 
+        {  id: id });                                    
+};

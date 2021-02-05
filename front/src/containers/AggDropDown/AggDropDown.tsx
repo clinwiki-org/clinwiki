@@ -149,7 +149,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     props: AggDropDownProps,
     state: AggDropDownState
   ) {
-    console.log('YO YO YO YO Yo')
     if (props.isOpen !== state.isOpen) {
       if (props.isOpen) {
         return {

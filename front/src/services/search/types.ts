@@ -1,8 +1,11 @@
+import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
 import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
 import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
+
+
 
 export const FETCH_SEARCH_PAGE_AGGS_SEND = 'FETCH_SEARCH_PAGE_AGGS_SEND';
 export const FETCH_SEARCH_PAGE_AGGS_SUCCESS = 'FETCH_SEARCH_PAGE_AGGS_SUCCESS';
@@ -31,6 +34,20 @@ export const FETCH_SEARCH_STUDIES_ERROR = 'FETCH_SEARCH_STUDIES_ERROR';
 export const FETCH_SEARCH_AUTOSUGGEST_SEND = 'FETCH_SEARCH_AUTOSUGGEST_SEND';
 export const FETCH_SEARCH_AUTOSUGGEST_SUCCESS = 'FETCH_SEARCH_AUTOSUGGEST_SUCCESS';
 export const FETCH_SEARCH_AUTOSUGGEST_ERROR = 'FETCH_SEARCH_AUTOSUGGEST_ERROR';
+
+export const FETCH_SAVED_SEARCHES_SEND = 'FETCH_SAVED_SEARCHES_SEND';
+export const FETCH_SAVED_SEARCHES_SUCCESS = 'FETCH_SAVED_SEARCHES_SUCCESS';
+export const FETCH_SAVED_SEARCHES_ERROR = 'FETCH_SAVED_SEARCHES_ERROR';
+
+export const CREATE_SAVED_SEARCH_SEND = 'CREATE_SAVED_SEARCH_SEND';
+export const CREATE_SAVED_SEARCH_SUCCESS = 'CREATE_SAVED_SEARCH_SUCCESS';
+export const CREATE_SAVED_SEARCH_ERROR = 'CREATE_SAVED_SEARCH_ERROR';
+
+export const DELETE_SAVED_SEARCH_SEND = 'DELETE_SAVED_SEARCH_SEND';
+export const DELETE_SAVED_SEARCH_SUCCESS = 'DELETE_SAVED_SEARCH_SUCCESS';
+export const DELETE_SAVED_SEARCH_ERROR = 'DELETE_SAVED_SEARCH_ERROR';
+
+
 export interface SearchState {
     isFetchingAggs: boolean,
     aggs: SearchPageAggsQuery | undefined,
@@ -46,6 +63,10 @@ export interface SearchState {
     searchHash: any;
     isFetchingAutoSuggest: boolean,
     suggestions: Array<any>
+    isFetchingSavedSearches: boolean,
+    savedSearches: UserSavedSearchesQuery | undefined,
+    isCreatingSavedSearch: boolean,
+    isDeletingSavedSearch: boolean,
 }
 export interface SearchDataError {
     message: string
@@ -157,6 +178,54 @@ export interface FetchSearchAutoSuggestErrorAction {
     payload: SearchDataError
 };
 
+export interface FetchSavedSearchesSendAction {
+    type: typeof FETCH_SAVED_SEARCHES_SEND
+    userId: number
+};
+
+export interface FetchSavedSearchesSuccessAction {
+    type: typeof FETCH_SAVED_SEARCHES_SUCCESS,
+    payload:  UserSavedSearchesQuery
+};
+
+export interface FetchSavedSearchesErrorAction {
+    type: typeof FETCH_SAVED_SEARCHES_ERROR,
+    payload: SearchDataError
+};
+
+export interface CreateSavedSearchSendAction {
+    type: typeof CREATE_SAVED_SEARCH_SEND
+    searchHash: string,
+    url: string,
+    userId: number,
+};
+
+export interface CreateSavedSearchSuccessAction {
+    type: typeof CREATE_SAVED_SEARCH_SUCCESS,
+    payload: UserSavedSearchesQuery
+};
+
+export interface CreateSavedSearchErrorAction {
+    type: typeof CREATE_SAVED_SEARCH_ERROR,
+    payload: SearchDataError
+};
+
+export interface DeleteSavedSearchSendAction {
+    type: typeof DELETE_SAVED_SEARCH_SEND
+    id: number
+};
+
+export interface DeleteSavedSearchSuccessAction {
+    type: typeof DELETE_SAVED_SEARCH_SUCCESS,
+    payload:  UserSavedSearchesQuery
+};
+
+export interface DeleteSavedSearchErrorAction {
+    type: typeof DELETE_SAVED_SEARCH_ERROR,
+    payload: SearchDataError
+};
+
+
 export type SearchActionTypes = 
     FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
     FetchSearchPageAggBucketsSendAction | FetchSearchPageAggBucketsSuccessAction | FetchSearchPageAggBucketsErrorAction |
@@ -164,4 +233,8 @@ export type SearchActionTypes =
     FetchSearchParamsSendAction | FetchSearchParamsSuccessAction | FetchSearchParamsErrorAction |
     UpdateSearchParamsSendAction | UpdateSearchParamsSuccessAction | UpdateSearchParamsErrorAction |
     FetchSearchStudiesSendAction | FetchSearchStudiesSuccessAction | FetchSearchStudiesErrorAction |
-    FetchSearchAutoSuggestSendAction | FetchSearchAutoSuggestSuccessAction | FetchSearchAutoSuggestErrorAction;
+    FetchSearchAutoSuggestSendAction | FetchSearchAutoSuggestSuccessAction | FetchSearchAutoSuggestErrorAction |
+    FetchSavedSearchesSendAction | FetchSavedSearchesSuccessAction | FetchSavedSearchesErrorAction |
+    CreateSavedSearchSendAction | CreateSavedSearchSuccessAction | CreateSavedSearchErrorAction |
+    DeleteSavedSearchSendAction | DeleteSavedSearchSuccessAction | DeleteSavedSearchErrorAction 
+    ;

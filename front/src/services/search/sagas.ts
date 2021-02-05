@@ -4,6 +4,9 @@ import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
 
+const getCurrentSavedSearches = (state)=> state.study.savedSearches.data.savedSearches; 
+
+
 function* getSearchPageAggs(action) {
     try {
         let response = yield call(() => api.fetchSearchPageAggs(action.searchParams));
@@ -128,6 +131,62 @@ function* getSearchAutoSuggest(action) {
     }
 }
 
+function* getSavedSearches(action) {
+    console.log("SAGA get Saved Searches", action)
+    try {
+        let response = yield call(() => api.fetchSavedSearches(action.userId));
+        if(response) {
+            yield put(actions.fetchSavedSearchesSuccess(response));
+            return response;
+        }
+        else {
+            yield put(actions.fetchSavedSearchesError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSavedSearchesError(err.message));
+    }
+}
+
+
+function* createSavedSearch(action) {
+    try {
+        let createResponse = yield call(() => api.createSavedSearch(action.searchHash, action.url)); 
+        if (createResponse.data.createSavedSearch.savedSearch){                     
+            let response = yield getSavedSearches(action);    
+            yield put(actions.createSavedSearchSuccess(response));
+        }
+        else {
+            yield put(actions.createSavedSearchError(createResponse.message));
+        }
+    }
+catch(err) {
+    console.log(err);
+    yield put(actions.createSavedSearchError(err.message));
+}    
+} 
+
+function* deleteSavedSearch(action) { 
+    const currentSavedSearches = yield select(getCurrentSavedSearches)
+    try {
+        let response = yield call(() => api.deleteSavedSearch(action.id));
+        const { id } = response.data.deleteSavedSearch.savedSearch
+        if(id === action.id) {
+            let newSavedSearches = currentSavedSearches.filter(s => s.id !== id)
+            //console.log("🚀 ~  ~ newSavedSearches", newSavedSearches);
+            yield put(actions.deleteSavedSearchSuccess(newSavedSearches));
+        }    
+        else {
+            yield put(actions.deleteSavedSearchError(response.message));
+        }   
+    }    
+    catch(err) {
+        console.log(err);
+        yield put(actions.deleteSavedSearchError(err.message));
+    }    
+} 
+
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND, getSearchPageAggBuckets);
@@ -136,4 +195,7 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
     yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams)
     yield takeLatest(types.FETCH_SEARCH_AUTOSUGGEST_SEND, getSearchAutoSuggest);
+    yield takeLatest(types.FETCH_SAVED_SEARCHES_SEND, getSavedSearches);
+    yield takeLatest(types.CREATE_SAVED_SEARCH_SEND, createSavedSearch);
+    yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
 }
