@@ -198,11 +198,13 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 return {
                     ...state,
                     isDeletingSavedSearch: false,
-                    savedSearches:action.payload
-                   /*    {               
+                    savedSearches: {       
                         ...state.savedSearches,
-                        data: action.payload          
-                    }    */
+                        data: {
+                            ...state.savedSearches.data,
+                            savedSearch: action.payload
+                        }         
+                    }    
                 };
             case types.DELETE_SAVED_SEARCH_ERROR:
                 return {

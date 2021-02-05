@@ -64,7 +64,7 @@ export interface SearchState {
     isFetchingAutoSuggest: boolean,
     suggestions: Array<any>
     isFetchingSavedSearches: boolean,
-    savedSearches: UserSavedSearchesQuery | undefined,
+    savedSearches: any | UserSavedSearchesQuery | undefined,
     isCreatingSavedSearch: boolean,
     isDeletingSavedSearch: boolean,
 }

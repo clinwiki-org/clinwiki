@@ -4,7 +4,7 @@ import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
 
-const getCurrentSavedSearches = (state)=> state.study.savedSearches.data.savedSearches; 
+const getCurrentSavedSearches = (state)=> state.search.savedSearches.data.savedSearch; 
 
 
 function* getSearchPageAggs(action) {
@@ -93,17 +93,27 @@ function* getSearchStudies(action) {
         yield put(actions.fetchSearchStudiesError(err.message));
     }
 }
+
 function* updateSearchParams(action) { 
     try {
         let updateResponse = yield call(() => api.updateSearchParams(action)); 
         let location = yield select( (state) => state.router.location);
         let searchHash = updateResponse.data.provisionSearchHash.searchHash
-        if (updateResponse.data.provisionSearchHash.searchHash !== null){ 
+        console.log(searchHash)
+        if (updateResponse.data.provisionSearchHash.searchHash !== null && location.pathname =='/profile' ){ 
             yield put(actions.fetchSearchParams(searchHash.short))
             yield put(actions.fetchSearchPageAggs(action.searchParams))
             yield put(actions.updateSearchParamsSuccess(searchHash));
+            console.log(location)
+                    yield put(push(`/profile?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
             // TODO need to pull default page view possibly defaulting to blank string which should default to configured default pageview
-            yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
+        }
+        if (updateResponse.data.provisionSearchHash.searchHash !== null && location.pathname =='/search' ){ 
+            yield put(actions.fetchSearchParams(searchHash.short))
+            yield put(actions.fetchSearchPageAggs(action.searchParams))
+            yield put(actions.updateSearchParamsSuccess(searchHash));
+            console.log(location)
+                    yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
         }
         else {
             yield put(actions.updateSearchParamsError(updateResponse.message));
@@ -132,7 +142,7 @@ function* getSearchAutoSuggest(action) {
 }
 
 function* getSavedSearches(action) {
-    console.log("SAGA get Saved Searches", action)
+    //console.log("SAGA get Saved Searches", action)
     try {
         let response = yield call(() => api.fetchSavedSearches(action.userId));
         if(response) {
@@ -168,6 +178,7 @@ catch(err) {
 } 
 
 function* deleteSavedSearch(action) { 
+   // console.log("SAGA Delete Saved Search", action)
     const currentSavedSearches = yield select(getCurrentSavedSearches)
     try {
         let response = yield call(() => api.deleteSavedSearch(action.id));

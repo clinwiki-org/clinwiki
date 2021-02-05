@@ -65,13 +65,7 @@ if(!userSavedSearches){
 
 const savedSearches = userSavedSearches.data.savedSearch
 
-/*     const { data: savedSearch } = useQuery<UserSavedSearchesQuery>(QUERY, {
-        variables: { userId },
-      });
-      const savedSearches= savedSearch?.savedSearch
- */
-
-      console.log('saved seraches', savedSearches)
+      //console.log('saved seraches', savedSearches)
       return (
           (savedSearches && savedSearches?.length !==0) ?  
           <>{
