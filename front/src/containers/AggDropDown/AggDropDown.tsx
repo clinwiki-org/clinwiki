@@ -179,7 +179,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
 
     if (props.presearch && !equals(state.prevParams, props.searchParams)) {
-      console.log('ARE YOU THE PROBLEM');
       return {
         hasMore: true,
         loading: false,

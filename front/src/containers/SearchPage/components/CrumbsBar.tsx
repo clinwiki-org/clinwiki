@@ -122,6 +122,7 @@ const LoaderWrapper = styled.div`
 `;
 
 interface CrumbsBarProps {
+  params: any;
   searchParams: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   removeFilter: AggCallback;
@@ -461,6 +462,7 @@ const CrumbsBar = (props: CrumbsBarProps) => {
       ) {
         return (
           <SaveSearch
+            params={props.params}
             user={user}
             siteView={props.presentSiteView}
             searchHash={props.searchHash}

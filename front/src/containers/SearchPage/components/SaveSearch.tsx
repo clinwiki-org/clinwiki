@@ -14,12 +14,47 @@ interface SaveSearchProps {
   siteView: any;
   searchHash: string;
   user?: any;
+  params: any;
 }
 interface SaveSearchState {
   showLoginModal: boolean;
 }
 
+
 export default function SaveSearch (props: SaveSearchProps) {
+
+  
+const getSearchName = () => {
+  let searchParams = props.params.current;
+  let entries = 0 
+  let result = ""
+  if (searchParams!["q"]["children"][0]) {
+    let search_term = searchParams["q"]["children"][0]["key"]
+    result = result + `${search_term} | `
+    entries = entries + 1 
+  }
+  if (searchParams!["crowdAggFilters"]) {
+
+    searchParams!["crowdAggFilters"].map((value) => {
+      if(!value) return
+      value!.values?.map((subValue) => {
+        result = result + `${subValue} | `
+        entries = entries + 1 
+      })
+    })
+  }
+  if (searchParams!["aggFilters"]) {
+    searchParams!["aggFilters"].map((value) => {
+      if(value.values==undefined) return
+      value!.values?.map((subValue) => {
+        result = result + `${subValue} | `
+        entries = entries + 1 
+      })
+    })
+  }
+  let searchName = result.substring(0, result.length -2)
+  return searchName;
+}
 
   const [showLoginModal, setShowLoginModal] = useState(false)
     const { 
@@ -48,16 +83,14 @@ export default function SaveSearch (props: SaveSearchProps) {
 
           dispatch(createSavedSearch(searchHash, url, user.id));
 
-    /*   if(!userSavedSearches){
-        return <BeatLoader/>
-      }
-      console.log("Last save search name " , userSavedSearches.data.savedSearch.last) //TODO  Find new saved search name(byId) in redux store to display on the alert box
- */
+
+        let savedSearchName = getSearchName();
+
         //TODO Give user notification / snackbar. FIX TS Errors
         //_showSnackbarHandler();
        //@ts-ignore
         //<Snackbar ref={snackbarRef}/>
-        alert("Saved search") //: \n" + data?.createSavedSearch.savedSearch.nameLabel) 
+        alert("Saved search: \n" + savedSearchName)//data?.createSavedSearch.savedSearch.nameLabel) 
       } else {
         toggleShowLoginModal(true);
       }

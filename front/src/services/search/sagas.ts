@@ -24,8 +24,7 @@ function* getSearchPageAggs(action) {
 }
 
 function* getSearchPageAggBuckets(action) {
-    console.log("SAGA SP Agg Buckets", action);
-    
+   // console.log("SAGA SP Agg Buckets", action);
     try {
         let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));         
         if(response) {
@@ -43,8 +42,7 @@ function* getSearchPageAggBuckets(action) {
 }
 
 function* getSearchPageCrowdAggBuckets(action) {
-    console.log("SAGA SP Agg Buckets", action);
-
+    //console.log("SAGA SP Agg Buckets", action);
     try {
         let response = yield call(() => api.fetchSearchPageCrowdAggBuckets(action.searchParams));     
         if(response) {
