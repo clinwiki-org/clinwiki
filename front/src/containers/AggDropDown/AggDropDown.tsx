@@ -420,7 +420,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
   }
   handleCheckboxToggle=(bucketKey, activeOptions)=>{
-    console.log("CHECKBOX HIT!!!")
     const { agg, presentSiteView, presearch } = this.props;
     const field = findFields(agg, presentSiteView, presearch);
     //@ts-ignore

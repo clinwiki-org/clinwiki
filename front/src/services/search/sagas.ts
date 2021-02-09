@@ -97,7 +97,7 @@ function* updateSearchParams(action) {
         let updateResponse = yield call(() => api.updateSearchParams(action)); 
         let location = yield select( (state) => state.router.location);
         let searchHash = updateResponse.data.provisionSearchHash.searchHash
-        console.log(searchHash)
+        //console.log(searchHash)
         if (updateResponse.data.provisionSearchHash.searchHash !== null && location.pathname =='/profile' ){ 
             yield put(actions.fetchSearchParams(searchHash.short))
             yield put(actions.fetchSearchPageAggs(action.searchParams))
@@ -110,7 +110,7 @@ function* updateSearchParams(action) {
             yield put(actions.fetchSearchParams(searchHash.short))
             yield put(actions.fetchSearchPageAggs(action.searchParams))
             yield put(actions.updateSearchParamsSuccess(searchHash));
-            console.log(location)
+            //console.log(location)
                     yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
         }
         else {
