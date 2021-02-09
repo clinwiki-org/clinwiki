@@ -258,7 +258,7 @@ function SearchPage(props: SearchPageProps) {
       result = result + `${search_term} | `
       entries = entries + 1 
     }
-    if (searchParams!["crowd_agg_filters"]) {
+    if (searchParams!["crowdAggFilters"]) {
 
       searchParams!["crowdAggFilters"].map((value) => {
         if(!value) return
@@ -608,6 +608,7 @@ function SearchPage(props: SearchPageProps) {
        <Collapser title="Filter Bar" collapse={()=> setCollapseCrumbs(!collapseCrumbs)} state={collapseCrumbs}/>
         {!collapseCrumbs ? 
       <CrumbsBar
+        params={params}
         searchParams={handledParams}
         onBulkUpdate={handleBulkUpdateClick}
         removeFilter={newRemoveFilter}

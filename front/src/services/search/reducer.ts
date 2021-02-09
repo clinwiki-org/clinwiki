@@ -14,7 +14,11 @@ const initialState: types.SearchState = {
     isUpdatingParams: false,
     searchHash: undefined,
     isFetchingAutoSuggest: false,
-    suggestions: []
+    suggestions: [],
+    isFetchingSavedSearches: false,
+    savedSearches: undefined,
+    isCreatingSavedSearch: false,
+    isDeletingSavedSearch: false,
 };
 
 const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
@@ -150,6 +154,64 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 ...state,
                 isFetchingAutoSuggest: false
             };
+
+            case types.FETCH_SAVED_SEARCHES_SEND:
+                return {
+                    ...state,
+                    isFetchingSavedSearches: true
+                };
+            case types.FETCH_SAVED_SEARCHES_SUCCESS:
+                return {
+                    ...state,
+                    isFetchingSavedSearches: false,
+                    savedSearches: action.payload
+                };
+            case types.FETCH_SAVED_SEARCHES_ERROR:
+                return {
+                    ...state,
+                    isFetchingSavedSearches: false
+                };
+
+            case types.CREATE_SAVED_SEARCH_SEND:
+                return {
+                    ...state,
+                    isCreatingSavedSearch: true
+                };
+            case types.CREATE_SAVED_SEARCH_SUCCESS:
+                return {
+                    ...state,
+                    isCreatingSavedSearch: false,
+                    savedSearches: action.payload
+                };
+            case types.CREATE_SAVED_SEARCH_ERROR:
+                return {
+                    ...state,
+                    isCreatingSavedSearch: false
+                };
+    
+            case types.DELETE_SAVED_SEARCH_SEND:
+                return {
+                    ...state,
+                    isDeletingSavedSearch: true
+                };
+            case types.DELETE_SAVED_SEARCH_SUCCESS:
+                return {
+                    ...state,
+                    isDeletingSavedSearch: false,
+                    savedSearches: {       
+                        ...state.savedSearches,
+                        data: {
+                            ...state.savedSearches.data,
+                            savedSearch: action.payload
+                        }         
+                    }    
+                };
+            case types.DELETE_SAVED_SEARCH_ERROR:
+                return {
+                    ...state,
+                    isDeletingSavedSearch: false
+                };
+    
                 
         default:
             return {...state};

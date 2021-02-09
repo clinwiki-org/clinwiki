@@ -281,3 +281,22 @@ query CrumbsSearchPageAggBucketsQuery(
   }
 }
 `; 
+
+
+export const SAVED_SEARCHES_QUERY = `
+query UserSavedSearchesQuery($userId: Int!){
+    savedSearch(userId: $userId) {
+        id
+        userId
+        nameLabel
+        createdAt
+        updatedAt
+        isSubscribed
+        url
+        shortLink {
+            long
+            short
+        }  
+    }
+} 
+`;

@@ -177,7 +177,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
           useWindow={false}
           loader={
             <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-              <BeatLoader key="loader" color="red" />
+              <BeatLoader key="loader" />
             </div>
           }>
           {this.props.buckets

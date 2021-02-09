@@ -250,7 +250,6 @@ const Aggs = (props: AggsProps) => {
       }
 
       const renderAggDropDownWContext = (k) => {
-        console.log('render ps dropw')
         return (
           aggs[k] ? (
             <AggContext.Provider  

@@ -10,36 +10,16 @@ import {
   ThemedMainContainer,
   ThemedSearchContainer,
 } from 'components/StyledComponents';
-import QUERY from 'queries/UserSavedSearchesQuery';
 import { ThemedButton } from '../../LoginPage/StyledButton';
 import { UserFragment } from 'services/user/model/UserFragment';
-import { UserSavedSearchesQuery } from 'types/UserSavedSearchesQuery';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useHistory } from 'react-router-dom';
-import { DeleteSavedSearchMutation } from 'types/DeleteSavedSearchMutation';
 import LabeledButton from 'components/LabeledButton';
-
-
-
-const DELETE_SAVED_SEARCH_MUTATION = gql`
-  mutation DeleteSavedSearchMutation($id: Int!){
-  deleteSavedSearch(input: {
-    id: $id
-  }) {
-      success
-      errors
-      savedSearch{
-        id
-        userId
-        shortLink{
-          short
-          long
-        }
-        isSubscribed
-      }
-      }
-  }
-`;
+import { deleteSavedSearch, fetchSavedSearches } from 'services/search/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { RootState } from 'reducers';
+import { BeatLoader } from 'react-spinners';
 
 interface UserSavedSearchesProps {
   //@ts-ignore
@@ -50,10 +30,8 @@ interface UserSavedSearchesState {
   isEditing: boolean;
 }
 
-
-
 export default function UserSavedSearches(props: UserSavedSearchesProps) {
-  const userId =  props.user?.id;
+  const userId =  props.user!.id;
   //const {id} = props;
 
 let history = useHistory();
@@ -66,23 +44,28 @@ history.push(`search?hash=${shortLink}&sv=default&pv=${pv}`);
 //with current user SITEVIEW history.push(`search?hash=${shortLink}&sv=${sv}&pv=${pv}`);
 }
 
-const [deleteSavedSearch] = useMutation(DELETE_SAVED_SEARCH_MUTATION, {
-  refetchQueries: [{ query: QUERY, variables: { userId } }],
-});
+const dispatch = useDispatch();
 
 const handleDeleteSavedSearch = (
-  deleteSavedSearch: any,
   id: number
 ) => () => {
-  deleteSavedSearch({ variables: { id } });
+  dispatch(deleteSavedSearch(id));
 };
 
 
-    const { data: savedSearch } = useQuery<UserSavedSearchesQuery>(QUERY, {
-        variables: { userId },
-      });
-      const savedSearches= savedSearch?.savedSearch
-      console.log('saved seraches', savedSearches)
+useEffect(()=>{
+  dispatch(fetchSavedSearches(userId));
+},[dispatch]);
+
+const userSavedSearches = useSelector((state:RootState) => state.search.savedSearches);
+
+if(!userSavedSearches){
+  return <BeatLoader/>
+}
+
+const savedSearches = userSavedSearches.data.savedSearch
+
+      //console.log('saved seraches', savedSearches)
       return (
           (savedSearches && savedSearches?.length !==0) ?  
           <>{
@@ -92,7 +75,7 @@ const handleDeleteSavedSearch = (
             <div style={{ float: 'right' , margin: "1px 2px" }} >
               <LabeledButton
                 helperText={"Delete Search"}
-                theClick={handleDeleteSavedSearch(deleteSavedSearch, search.id)}
+                theClick={handleDeleteSavedSearch(search.id)}
                 iconName={"trash"}
               />
               <LabeledButton
