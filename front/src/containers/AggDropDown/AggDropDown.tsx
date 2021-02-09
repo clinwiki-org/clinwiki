@@ -295,7 +295,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 }
 
   handleLoadMore = () => {
-    console.log("LOADIng MORE!!!!!!!!!!!!!!!!!!")
     //console.trace()
     const { desc, sortKind, buckets, filter } = this.state;
     const {
