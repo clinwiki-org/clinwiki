@@ -247,4 +247,20 @@ div.DraftEditor-editorContainer{
 .ellipsed-text {
   display:none;
 }
+.testing-mm{
+  width: 350px;
+min-height: 350px;
+margin: 15px;
+box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+// border-radius: 4px;
+background: #ffffff;
+padding: 5px;
+ a {
+  ${props => props.theme.button};
+ }
+
+ .mail-merge {
+   position: relative;
+ }
+}
 `);

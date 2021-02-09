@@ -48,6 +48,20 @@ export const getSampleStudyQuery = (name: string, frag: string) => {
   ${frag}
 `;
 };
+export function getSampleSearchQuery(name: string, frag: string) {
+  frag = frag || `fragment ${name} on ElasticStudy { nctId }`;
+  return `
+  query Search${name}Query($hash:String) {
+    search(searchHash: $hash) {
+      studies {
+        averageRating
+        ...${name}
+      }
+    }
+  }
+  ${frag}
+  `;
+}
 export const SEARCH_STUDY_PAGE_QUERY =`
 query SearchStudyPageQuery($hash: String!, $id: String!) {
   search(searchHash: $hash) {

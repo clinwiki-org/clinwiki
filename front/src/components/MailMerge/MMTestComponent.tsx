@@ -30,46 +30,58 @@ function getClassForMode(mode: Mode) {
   }
 }
 
-// function getModeData(
-//   mode: Mode,
-//   arg: string,
-//   fragment: string,
-//   fragmentName: string
-// ): [DocumentNode, object, string] {
-//   switch (mode) {
-//     case 'Study':
-//       return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
-//     case 'Search':
-//       return [
-//         getSearchQuery(fragmentName, fragment),
-//         { hash: arg },
-//         'ElasticStudy',
-//       ];
-//   }
-// }
+function getModeData(
+  mode: Mode,
+  arg: string,
+  fragment: string,
+  fragmentName: string
+): [DocumentNode, object, string] {
+  switch (mode) {
+    case 'Study':
+      return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
+    case 'Search':
+      return [
+        getSearchQuery(fragmentName, fragment),
+        { hash: arg },
+        'ElasticStudy',
+      ];
+  }
+}
+const template1= `
+<navigation></navigation>
+{{nctId}}  
+{{$TRUNCATE briefTitle 5}}
+{{$TRUNCATE nctId 5}}
 
+{{briefTitle}}  
+{{briefSummary}}  
+`
+const template2= `
+# title: Search Page
+{{#$RenderEach studies }}
+{{nctId}}  
+{{briefTitle}}  
+{{briefSummary}}  
+{{/$RenderEach }}
+`
+const template3= `
+# title: Search Page
+{{#each studies }}
+<div class="testing-mm">
+  <div class ="mail-merge" >
+    <span>ID: <a href="/search{{querystring ALL}} ">{{nctId}}</a></span><br/>
+    <span>Title: {{briefTitle}}</span><br/><span>Summary: {{briefSummary}}</span>
+  </div>
+</div>
+{{/each }}
+
+`
 export default function TestComponent() {
-  const [template, setTemplate] = useState(`
-# title: {{briefTitle}}
-<Expander header="outter">
-  <table class="table table-striped table-bordered table-condensed">
-    <tbody>
-      <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
-      <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
-      <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
-      <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
-      <tr> <th>Source</th> <td>{{source}}</td> </tr>
-    </tbody>
-  </table>
-  <Expander header=details collapsed=true>
-    <Groot></Groot>
-  </Expander>
-</Expander>
-`);
-  const [mode, setMode] = useState<Mode>('Study');
+  const [template, setTemplate] = useState(template3);
+  const [mode, setMode] = useState<Mode>('Search');
   const defaultNctId = 'NCT03847779';
   const defaultSearchHash = 'tqxCyI9M';
-  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
+  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultSearchHash);
 
   const dispatch = useDispatch();
 
@@ -92,10 +104,10 @@ export default function TestComponent() {
 
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, template);
-  // const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
-  // const { data } = useQuery(query, { variables });
-  const studyData = useSelector((state:RootState) => state.study.studyPage);
-
+  const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
+  console.log("QUERY",query);
+  const { data } = useQuery(query, { variables });
+console.log("FRAG", fragmentName, fragment)
   const updateMode = mode => {
     setMode(mode);
     if (mode === 'Study') setNctOrSearchHash(defaultNctId);
@@ -111,13 +123,24 @@ export default function TestComponent() {
     },
   };
 
-  
-  if (!introspection || !studyData) {
+  const sampleData = data?.study || data?.search?.studies?.[0];
+  const searchData = ()=> {
+      let studies : any[]=[]
+    data?.search?.studies?.map((study, index)=>{
+      studies.push( {...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL'})
+    })
+    // const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+  // :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }// const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+  // :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }
+    return studies
+  }
+
+
+  if (!introspection) {
     return <BeatLoader />;
   }
-  
-  const sampleData = studyData?.data.study || studyData.data?.search?.studies?.[0];
-  
+
+  console.log(searchData())
   if (introspection) {
     const types = introspection.data.__schema.types;
     return (
@@ -137,10 +160,13 @@ export default function TestComponent() {
         />
         <MailMerge
           schema={{ kind: 'graphql', typeName: schemaType, types }}
-          sample={sampleData}
+          // sample={data?.study || data?.search?.studies[0]}
+          // sample={data?.study || data?.search?.studies}
+          sample={data?.study || searchData()}
           template={template}
           onTemplateChanged={setTemplate}
           islands={islands}
+          pageType={mode}
         />
         <pre>{fragment}</pre>
         <pre>

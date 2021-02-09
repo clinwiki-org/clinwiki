@@ -1,6 +1,7 @@
 import Handlebars from 'handlebars';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { link } from 'fs';
+import {ThemedSearchCard} from 'components/StyledComponents';
 
 export function registerHandlebarsHelpers() {
   Handlebars.registerHelper('stars', (value: number) => {
@@ -23,6 +24,8 @@ export function registerHandlebarsHelpers() {
   });
   Handlebars.registerHelper('querystring', (value: string) => {
     const linkAttributes =  useUrlParams()
+    console.log("VALUE", value)
+
     switch (value) {
       case 'hash':
         return linkAttributes.hash;
@@ -48,6 +51,7 @@ export function registerHandlebarsHelpers() {
 });
   Handlebars.registerHelper('$TRUNCATE', (value: string, characters: number) => {
     if(value.length<characters) return value
+    console.log("Green")
     let ellipses = '...'
     let newVal = value.slice(0,characters) 
     let cutValues = value.slice(characters, value.length)
@@ -69,5 +73,12 @@ export function registerHandlebarsHelpers() {
       return new Handlebars.SafeString(values[indexFound])
     }
   });
-
+  Handlebars.registerHelper('$RenderEach', (value: any) => {
+    console.log("Somee cvalue", value)
+    // console.log(this)
+    return new Handlebars.SafeString(value.map((item)=>{
+    return new Handlebars.SafeString(`${item}`)
+      
+    }))
+});
 }

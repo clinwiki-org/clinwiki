@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
+import { type } from 'remeda';
 
 function mustacheTokens(input: string) {
+  console.log("input",input)
   let tokens: string[] = [];
+  console.log("tokens", tokens)
   const yeet = (t: string) => {
     if (t !== '') tokens.push(t);
   };
@@ -26,14 +29,19 @@ function mustacheTokens(input: string) {
     }
     last = ch;
   }
+  console.log(tokens)
   return tokens;
 }
 
 type Marker = 'x';
 function tokensToGraphQLOb(tags: string[]) {
+  console.log("TokensGQL", tags)
   let result: Record<string, object | Marker> = {};
+  console.log(result)
   let scope = result;
+  console.log(scope)
   let stack = [result];
+  console.log(stack)
   const pushScope = name => {
     const parts = name.split('.');
     stack.push(scope);
@@ -56,7 +64,13 @@ function tokensToGraphQLOb(tags: string[]) {
       pushScope(scopeName);
       scope[propName] = 'x';
       popScope();
-    } else {
+    } 
+    
+    if (name== 'this') {
+      console.log(name)
+    }
+
+    else {
       // single value
       scope[name] = 'x';
     }
@@ -67,8 +81,16 @@ function tokensToGraphQLOb(tags: string[]) {
       // split on any whitespace, remove blanks
       const parts = t.split(/\s/).filter(id => id);
       if (parts.length > 1) {
+        console.log("PARTS",parts)
         const name = parts[1];
-        pushScope(name);
+        if (
+          parts[0] == '#$RenderEach'
+           || 
+          parts[0] == '#each' && parts[1] == 'studies'
+        ) {
+        } else {
+          pushScope(name);
+        }
       }
     } else if (t.startsWith('/')) {
       popScope();
@@ -84,7 +106,9 @@ function tokensToGraphQLOb(tags: string[]) {
           parts[0] == 'querystring' ||
           parts[0] == '$LEFT' ||
           parts[0] == '$RIGHT' ||
-          parts[0] == '$TRUNCATE'
+          parts[0] == '$TRUNCATE' ||
+          parts[0] == '$RenderEach' || 
+          typeof parts[0] == typeof 1
         ) {
 
         } else {
@@ -95,6 +119,7 @@ function tokensToGraphQLOb(tags: string[]) {
       setProperty(t);
     }
   }
+  console.log(result)
   return result;
 }
 
@@ -102,6 +127,7 @@ function jsonToFragmentBody(
   json: Record<string, object | Marker>,
   indent = ''
 ) {
+  console.log(json)
   if (Object.keys(json).length == 0) return '';
   var result = '{\n';
   for (const key in json) {
@@ -119,6 +145,7 @@ function jsonToFragmentBody(
     }
   }
   result += '}\n';
+  console.log(result)
   return result;
 }
 
@@ -148,6 +175,7 @@ function randomIdentifier() {
 }
 
 export function useFragment(className : string, template : string) {
+  console.log(className, template )
   const [fragmentName, _] = useState<string>(randomIdentifier());
   return useMemo(
     () => [fragmentName, compileFragment(fragmentName, className, template)],

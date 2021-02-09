@@ -16,6 +16,7 @@ export interface Props {
   style?: object;
   islands?: Record<string, IslandConstructor>;
   refetchQuery?:any;
+  pageType?:any;
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
@@ -29,6 +30,7 @@ const defaultStyle: React.CSSProperties = {
 };
 
 function compileTemplate(template: string) {
+  console.log("compiling template", template)
   try {
     return Handlebars.compile(template);
   } catch (e) {
@@ -39,10 +41,14 @@ function compileTemplate(template: string) {
 
 function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,
-  context?: object
+  context?: object,
+  pageType?:any
 ) {
   try {
-    context = {...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL'}
+     context = pageType=="Study"? { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+  :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies: context }
+    console.log("Applying template",context)
+    console.log(template(context))
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;
@@ -50,6 +56,7 @@ function applyTemplate(
 }
 
 export function microMailMerge(template = '', context?: object | null) {
+  console.log("Micro")
   if (context && template.indexOf('{{') >= 0) {
     const compiled = compileTemplate(template);
     return applyTemplate(compiled, context);
@@ -63,11 +70,13 @@ export default function MailMergeView(props: Props) {
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
   ]);
-  const raw = useMemo(() => applyTemplate(compiled, props.context), [
+  console.log("Comped",compiled)
+  console.log(props.pageType)
+  const raw = useMemo(() => applyTemplate(compiled, props.context, props.pageType), [
     compiled,
     props.context,
   ]);
-
+console.log("RAW",raw)
   const style = props.style
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
@@ -99,12 +108,13 @@ export default function MailMergeView(props: Props) {
     },
   ];
   const parser = new HtmlToReact.Parser();
+  console.log("Parsing", parser)
   const reactElement = parser.parseWithInstructions(
     raw,
     () => true,
     instructions
   );
-
+ console.log("Creating react element")
   return (
     <div className="mail-merge" style={style}>
       {reactElement}

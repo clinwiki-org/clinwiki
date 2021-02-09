@@ -9,10 +9,11 @@ import ThemedButton from 'components/StyledComponents/index';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import { updatePageView, deletePageView  } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
-
+import {capitalize} from '../../utils/helpers'
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
 `;
+type Mode = "Study" | "Search";
 interface Props {
   siteId: number;
   page: PageViewsQuery_site_pageViews;
@@ -39,14 +40,30 @@ function checkboxHelper(
 }
 export default function PageForm(props: Props) {
   const page = props.page;
+  const default_nctid = 'NCT00004074';
+  const default_hash ='gELcp_Fb'
+  console.log("Paging Dr. ", page)
   const [url, setUrl] = useState(page.url);
   const [title, setTitle] = useState(page.title);
   const [template, setTemplate] = useState(page.template);
   const [isDefault, setDefault] = useState(page.default);
+  const [mode, setMode] = useState(page.pageType);
   const theme = useTheme();
+  let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
 
   const dispatch = useDispatch();
-  let input = { id: page.id, title, url, template, default: isDefault };
+  let input = { id: page.id, title, url, template, pageType: mode as string, default: isDefault };
+
+  const updateMode = mode => {
+    setMode(mode);
+    if (mode === 'Study'){
+      setNctOrSearchHash(default_nctid);
+    }
+    if (mode === 'Search'){
+      setNctOrSearchHash(default_hash);
+      
+    }
+  };
 
   return (
     <div style={{ padding: '10px' }}>
@@ -59,6 +76,7 @@ export default function PageForm(props: Props) {
       />
       <label>Page Type</label>
       <div>
+        {/* 
         <DropdownButton
           bsStyle="default"
           title="Type: Study"
@@ -70,7 +88,24 @@ export default function PageForm(props: Props) {
           }}>
           <MenuItem>Study</MenuItem>
         </DropdownButton>
+        */}
+        <DropdownButton
+          bsStyle="default"
+          title={`Type: ${capitalize(mode)}`}
+          key={mode}
+          style={{ marginBottom: '10px',
+          background: theme?.button,
+        }}>
+          <MenuItem onClick={_ => updateMode("Study")}>Study</MenuItem>
+          <MenuItem onClick={_ => updateMode("Search")}>Search</MenuItem>
+        </DropdownButton>
+       <FormControl
+          placeholder="Select an nctid"
+          value={nctOrSearchHash}
+          onChange={e => setNctOrSearchHash(e.target.value || default_nctid)}
+        />
       </div>
+
       <label>Title</label>
       {formControl('Title', title, setTitle)}
       <label>Content Template</label>
@@ -78,6 +113,11 @@ export default function PageForm(props: Props) {
         template={template}
         onTemplateChanged={setTemplate}
         islands={studyIslands}
+        pageType={capitalize(mode)}
+        // nctOrSearchHash={nctOrSearchHash}
+        // setNctOrSearchHash={setNctOrSearchHash}
+
+
       />
       <hr />
       <ThemedButton

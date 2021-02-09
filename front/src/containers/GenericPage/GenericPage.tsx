@@ -4,7 +4,8 @@ import MailMergeView, {
 } from 'components/MailMerge/MailMergeView';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
+import { useQuery, useMutation} from '@apollo/client';
+import { getStudyQuery2, getSearchQuery2 } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
@@ -16,12 +17,41 @@ import { fetchPageViews, fetchPageView, fetchStudyPage, updateStudyViewLogCount 
 import { useDispatch, useSelector } from 'react-redux';
 import {RootState} from 'reducers';
 import { fetchPresentSiteProvider } from 'services/site/actions';
-
+import { DocumentNode } from 'graphql';
 
 interface Props {
   url?: string;
   arg?: string;
 }
+type Mode = 'Study' | 'Search';
+
+function getClassForMode(mode: Mode) {
+  switch (mode) {
+    case 'Study':
+      return 'Study';
+    case 'Search':
+      return 'ElasticStudy';
+  }
+}
+
+// function getModeData(
+//   mode: Mode,
+//   arg: string,
+//   fragment: string,
+//   fragmentName: string
+// ): [DocumentNode, object, string] {
+//   switch (mode) {
+//     case 'Study':
+//       return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
+//     case 'Search':
+//       return [
+//         getSearchQuery(fragmentName, fragment),
+//         { hash: arg },
+//         'ElasticStudy',
+//       ];
+//   }
+// }
+
 export default function GenericPage(props: Props) {
   const history = useHistory();
   const match = useRouteMatch();
@@ -50,9 +80,12 @@ export default function GenericPage(props: Props) {
   const pageViewsData = useSelector((state:RootState) => state.study.pageViews);
   const pageViewData = useSelector((state:RootState) => state.study.pageView);
   const currentPage = pageViewData ?  pageViewData?.data.site?.pageView: null;
-  
-  const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
-  
+ 
+  // const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
+  const pageType = match.path="/search2/" ? "Search": "Study"
+  const schemaType = getClassForMode(pageType);
+  const [fragmentName, fragment] = useFragment(schemaType, currentPage?.template || '');
+
   useEffect(() => {
   dispatch(fetchPresentSiteProvider( undefined , params.sv));
   }, [dispatch, params.sv])
@@ -66,21 +99,34 @@ export default function GenericPage(props: Props) {
    },[dispatch, params.pv]);
 
   useEffect(()=>{
-    const QUERY = `${getStudyQuery(fragmentName, fragment)}`
-    dispatch(fetchStudyPage(props.arg ?? "", QUERY));
+    console.log(pageType)
+    const STUDY_QUERY = `${getStudyQuery2(fragmentName, fragment)}`
+    const SEARCH_QUERY = `${getSearchQuery2(fragmentName, fragment)}`
+    dispatch(pageType=="Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPage(params.hash ?? "", SEARCH_QUERY) );
    },[dispatch, currentPage, props.arg]);
    
-  if (!props.arg) {
-    return <h1>Missing NCTID in URL</h1>;
-  }
+  console.log(props.arg, pageViewData)
+  const searchData = ()=> {
+    let studies : any[]=[]
+  studyData.data?.search?.studies?.map((study, index)=>{
+    studies.push( {...study, ALL:'ALL'})
+  })
+  return studies
+}
   if (loading || !pageViewData || !studyData || !site) {
     return <BeatLoader />;
   }
   if (!studyData.data) {
     return <BeatLoader />
   }
-//console.log(studyData.data)
-  const title = microMailMerge(currentPage?.title, studyData?.data.study);
+  if (!props.arg && pageType == "Study" ) {
+    return <h1>Missing NCTID in URL</h1>;
+  }
+console.log(studyData.data) 
+  const title = microMailMerge(currentPage?.title, studyData?.data.study || searchData());
+  // const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+  // :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }
+
   return (
     <div>
       <Helmet>
@@ -88,8 +134,9 @@ export default function GenericPage(props: Props) {
       </Helmet>
       <MailMergeView
         template={currentPage?.template || ''}
-        context={studyData?.data.study}
+        context={studyData?.data.study || searchData()}
         islands={studyIslands}
+        pageType={pageType}
       />
     </div>
   );

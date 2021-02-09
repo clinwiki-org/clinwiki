@@ -79,6 +79,7 @@ class MasonryCards extends React.Component<MasonryCardsProps, MasonryCardsState>
             style={this.cardStyle}
             template={this.props.template}
             context={listItems[index]}
+            pageType={"Study"}
           />
         </ThemedSearchCard>
     );

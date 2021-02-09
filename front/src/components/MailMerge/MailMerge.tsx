@@ -8,6 +8,7 @@ interface Props extends Omit<ViewProps, 'context'> {
   schema: SchemaType;
   sample?: object;
   onTemplateChanged: (template: string) => void;
+  pageType?:any;
 }
 
 const defaultStyle: React.CSSProperties = {
@@ -26,6 +27,7 @@ export default function MailMerge(props: Props) {
     props.onTemplateChanged(before + templateString + after);
   };
   const style = { ...defaultStyle, ...props.style };
+  console.log('sample ', props.sample)
   return (
     <>
       <div style={style}>
@@ -41,6 +43,7 @@ export default function MailMerge(props: Props) {
         template={template}
         context={props.sample}
         islands={props.islands}
+        pageType={props.pageType}
       />
     </>
   );

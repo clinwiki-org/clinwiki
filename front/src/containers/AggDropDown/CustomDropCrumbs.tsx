@@ -110,7 +110,6 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
         }
 
         if (this.props.isSelected(item.key)) {
-          //console.log(item.key)
           return <div className='select-box--crumb-container' key={item.key + 'isSelected'}>
             {item.key}
             <FontAwesome
