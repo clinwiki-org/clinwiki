@@ -1,12 +1,6 @@
 import React,{useState} from 'react';
 import {useDispatch,useSelector} from 'react-redux';
 import {editProfile} from 'services/user/actions';
-import {RootState} from 'reducers';
-import {
-  Mutation,
-  MutationComponentOptions,
-} from '@apollo/client/react/components';
-import { gql, MutationFunction }  from '@apollo/client';
 import SearchPage from 'containers/SearchPage';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
@@ -28,6 +22,7 @@ import ReactionsById from 'containers/StudyPage/components/ReactionsById';
 import * as FontAwesome from 'react-fontawesome';
 import UserSearchLogs from './components/UserSearchLogs';
 import UserSavedSearches from './components/UserSavedSearches';
+import { RootState } from 'reducers';
 
 interface EditProfilePageProps {
   //@ts-ignore

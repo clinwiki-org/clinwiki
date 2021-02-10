@@ -1,12 +1,6 @@
 import * as FontAwesome from 'react-fontawesome';
 import * as React from 'react';
 import {
-  Mutation,
-  MutationComponentOptions
-} from '@apollo/client/react/components';
-
-import {useQuery} from '@apollo/client';
-import {
   StyledProfileForm,
   StyledProfileLabel,
   StyledProfileLogValue,
@@ -31,11 +25,12 @@ interface UserSearchLogsState {
 
 export default function UserSearchLogs(props: UserSearchLogsProps) {
    const userId =  props.user?.id;
-
-    const { data: searchLogs } = useQuery<UserSearchLogsQuery>(QUERY, {
+/* 
+    const { data: searchLogs } = useQuery<UserSearchLogsQuery>(QUERY, {     
+       //! NOTE: We worked on Search Logs plan was to create a delete all search logs mutation for user privacy. WIll need it on redux.
         variables: { userId },
       });
-
+ */
       return (
         <>
             <h4>Search History:</h4>

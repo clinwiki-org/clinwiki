@@ -4,7 +4,7 @@ import { gql }  from '@apollo/client';
 import {
   EditReviewQuery,
   EditReviewQueryVariables,
-} from 'types/EditReviewQuery';
+} from 'services/study/model/EditReviewQuery';
 import { match } from 'react-router-dom';
 import { find, propEq, pipe, split, dropLast, join } from 'ramda';
 import ReviewForm from 'containers/ReviewForm';

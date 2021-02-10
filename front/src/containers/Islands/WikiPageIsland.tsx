@@ -3,13 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'reducers';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { WikiPageQuery } from 'types/WikiPageQuery';
-import { UPDATE_CONTENT_MUTATION } from 'mutations/WikiPageUpdateContentMutation';
 import { WikiPageUpdateContentMutationVariables } from 'types/WikiPageUpdateContentMutation';
 import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
-import QUERY from 'queries/WikiPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
-//import CurrentUser, { useCurrentUser, QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { useHistory, useLocation, useRouteMatch, Prompt } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
@@ -68,10 +64,7 @@ export default function WikiPageIsland(props: Props) {
     dispatch(fetchWikiPage( nctId ));
     }, [dispatch])
   const wikiPageData = useSelector((state: RootState) => state.study.wikiPage);
-/*  const [updateContentMutation] = useMutation(UPDATE_CONTENT_MUTATION, {
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: QUERY, variables: { nctId } }],
-  });*/
+
   const updateContentMutation = (action)=>{
     if(!action.variables.key) return
     return dispatch(wikiPageUpdateContentMutation(nctId, action.content) )}

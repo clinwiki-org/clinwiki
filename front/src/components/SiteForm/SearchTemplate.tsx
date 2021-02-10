@@ -6,10 +6,8 @@ import { BeatLoader } from 'react-spinners';
 import MailMerge from '../MailMerge/MailMerge';
 import { GraphqlSchemaType } from '../MailMerge/SchemaSelector';
 import { fromPairs } from 'ramda';
-import { PREFETCH_QUERY } from 'containers/StudyPage/StudyPage';
 import { useQuery, gql} from '@apollo/client';
 import { SchemaType } from 'components/MailMerge/SchemaSelector';
-import { StudyPagePrefetchQuery } from 'types/StudyPagePrefetchQuery';
 import { camelCase } from 'utils/helpers';
 import { useFragment } from '../MailMerge/MailMergeFragment'
 import { getStudyQuery } from '../MailMerge/MailMergeUtils';
