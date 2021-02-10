@@ -176,11 +176,13 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       const key = props.aggKind === 'aggs' ? 'aggFilters' : 'crowdAggFilters';
       return find(agg => agg.field === props.agg, searchParams[key]);
     };
+
+
     if (props.presearch && !equals(state.prevParams, props.searchParams)) {
       return {
         hasMore: true,
         loading: false,
-        buckets: [],
+        // buckets: [],
         prevParams: props.searchParams,
       };
     }
@@ -192,6 +194,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       !equals(state.prevParams, props.searchParams) &&
       equals(prevAggValue, nextAggValue)
     ) {
+
       return {
         hasMore: true,
         loading: false,
@@ -204,6 +207,8 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     return null;
   }
+
+
 
   isSelected = (key: string): boolean =>     
     this.props.selectedKeys && this.props.selectedKeys.has(key);
@@ -289,8 +294,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
 }
 
-  handleLoadMore = async () => {
-    console.log("LOADIng MORE!!!!!!!!!!!!!!!!!!")
+  handleLoadMore = () => {
     //console.trace()
     const { desc, sortKind, buckets, filter } = this.state;
     const {
@@ -416,7 +420,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
   }
   handleCheckboxToggle=(bucketKey, activeOptions)=>{
-    console.log("CHECKBOX HIT!!!")
     const { agg, presentSiteView, presearch } = this.props;
     const field = findFields(agg, presentSiteView, presearch);
     //@ts-ignore
@@ -529,4 +532,4 @@ const mapStateToProps = (state, ownProps) => ({
   loadingCrowdAggBuckets: state.search.isFetchingCrowdAggBuckets,
 })
 
-export default connect(mapStateToProps, mapDispatchToProps ) ((withAggContext(AggDropDown)));
+export default connect(mapStateToProps, mapDispatchToProps ) (withAggContext(AggDropDown));

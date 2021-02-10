@@ -306,7 +306,7 @@ function* getReactionKinds(action) {
     try {
         let response = yield call(() => api.fetchReactionKinds());
         if(response) {
-            yield put(actions.fetchReactionKinds());        }
+            yield put(actions.fetchReactionKindsSuccess(response));        }
         else {
             yield put(actions.fetchReactionKindsError(response.message));
         }
@@ -332,10 +332,9 @@ function* getStudyReactions(action) {
 }
 function* createReaction(action) { 
     try {
-        let response = yield call(() => api.createReaction(action.input, action.nctId)); 
+        let response = yield call(() => api.createReaction(action.nctId, action.reactionKindId)); 
         if (response){ 
             yield put(actions.createReactionSuccess(response.data));
-            yield call(()=> api.fetchReactionsIsland(action.nctId)); // ?????????? is like redirect or method call
         }
         else {
             yield put(actions.createReactionError(response.message));

@@ -155,7 +155,6 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       //console.log("BUCKETS @ InfiniteScroll", this.props.field.name, this.props.buckets); 
     
       if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0){
-        //console.log("BUCKETS 111111111111111111", this.props.field.name, this.props.buckets);  
 
         return   <BeatLoader />
       }
@@ -177,7 +176,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
           useWindow={false}
           loader={
             <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-              <BeatLoader key="loader" color="red" />
+              <BeatLoader key="loader" />
             </div>
           }>
           {this.props.buckets

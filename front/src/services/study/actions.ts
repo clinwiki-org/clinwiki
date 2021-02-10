@@ -313,7 +313,7 @@ export const deleteReactionError= (message: string) : types.StudyActionTypes => 
 export const fetchReactionKinds= () : types.StudyActionTypes => ({
     type: types.FETCH_REACTION_KINDS_SEND,
 });
-export const fetchReactionsKindsSuccess= (payload: any) : types.StudyActionTypes => ({
+export const fetchReactionKindsSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.FETCH_REACTION_KINDS_SUCCESS,
     payload
 });
@@ -333,10 +333,10 @@ export const fetchStudyReactionsError= (message: string) : types.StudyActionType
     type: types.FETCH_STUDY_REACTIONS_ERROR,
     payload: {message}
 });
-export const createReaction= ( reactionKindId: any, nctId: string,) : types.StudyActionTypes => ({
+export const createReaction= ( nctId: string, reactionKindId: any) : types.StudyActionTypes => ({
     type: types.CREATE_REACTION_SEND,
-    reactionKindId,
     nctId,
+    reactionKindId,
 });
 export const createReactionSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.CREATE_REACTION_SUCCESS,

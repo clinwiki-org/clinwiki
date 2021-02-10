@@ -10,11 +10,12 @@ import { useQuery, gql} from '@apollo/client';
 import { SchemaType } from 'components/MailMerge/SchemaSelector';
 import { camelCase } from 'utils/helpers';
 import { useFragment } from '../MailMerge/MailMergeFragment'
-import { getStudyQuery, getSearchQuery } from '../MailMerge/MailMergeUtils';
+import { getStudyQuery } from '../MailMerge/MailMergeUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchIntrospection } from 'services/introspection/actions';
 import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
+import { fetchStudyPage } from 'services/study/actions';
 
 
 interface Props {
@@ -44,15 +45,23 @@ function SearchTemplate(props: Props) {
     dispatch(fetchIntrospection(QUERY));
   },[dispatch]);
 
+  useEffect(()=>{
+    const QUERY = `${getStudyQuery(fragmentName, fragment)}`
+    dispatch(fetchStudyPage(nctId ?? "", QUERY));
+  },[dispatch]);
+
   const introspection = useSelector((state:RootState) => state.introspection.introspection);
 
 
   const [fragmentName, fragment] = useFragment('Study', props.template);
-  const { data: study } = useQuery(getStudyQuery(fragmentName, fragment), {
-    variables: { 
-      nctId: nctId
-     },
-  });
+  // const { data: study } = useQuery(getStudyQuery(fragmentName, fragment), {
+  //   variables: { 
+  //     nctId: nctId
+  //    },
+  // });
+
+  const study= useSelector((state:RootState) => state.study.studyPage);
+
   if (!introspection) {
     return <BeatLoader />;
   }
@@ -66,7 +75,7 @@ function SearchTemplate(props: Props) {
       />
       <MailMergeEditor
         schema={{ kind: 'graphql', typeName: 'Study', types }}
-        sample={study?.study || {}}
+        sample={study?.data?.study || {}}
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
       />

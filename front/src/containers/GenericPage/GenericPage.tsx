@@ -4,7 +4,7 @@ import MailMergeView, {
 } from 'components/MailMerge/MailMergeView';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { getStudyQuery2 } from 'components/MailMerge/MailMergeUtils';
+import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
@@ -55,20 +55,20 @@ export default function GenericPage(props: Props) {
   
   useEffect(() => {
   dispatch(fetchPresentSiteProvider( undefined , params.sv));
-  }, [])
+  }, [dispatch, params.sv])
 
   useEffect(()=>{
     dispatch(fetchPageViews(site?.id));
-   },[dispatch]);
+   },[dispatch, site.id]);
 
   useEffect(()=>{
     dispatch(fetchPageView( params.pv || defaultPage() ));
    },[dispatch, params.pv]);
 
   useEffect(()=>{
-    const QUERY = `${getStudyQuery2(fragmentName, fragment)}`
+    const QUERY = `${getStudyQuery(fragmentName, fragment)}`
     dispatch(fetchStudyPage(props.arg ?? "", QUERY));
-   },[dispatch, currentPage]);
+   },[dispatch, currentPage, props.arg]);
    
   console.log(props.arg)
   if (!props.arg) {
