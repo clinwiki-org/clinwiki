@@ -46,7 +46,6 @@ import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import StudyPageCounter from './components/StudyPageCounter';
 import withTheme from 'containers/ThemeProvider';
-import GenericStudySectionPage from 'containers/GenericStudySectionPage';
 import ThemedButton from 'components/StyledComponents';
 import { WorkflowsViewFragment_workflows } from 'types/WorkflowsViewFragment';
 import { UserFragment } from 'services/user/model/UserFragment';
@@ -211,7 +210,7 @@ class StudyPage extends React.Component<StudyPageProps, StudyPageState> {
       case 'interventions':
         return InterventionsPage;
       default:
-        return GenericStudySectionPage;
+        return;
     }
   };
 
