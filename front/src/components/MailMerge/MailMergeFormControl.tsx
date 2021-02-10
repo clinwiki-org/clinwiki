@@ -74,7 +74,7 @@ const introspection = useSelector((state:RootState) => state.introspection.intro
       />
       <MailMerge
         schema={schema}
-        sample={study?.data.study || {}}
+        sample={study?.data?.study || {}}
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
         islands={props.islands}

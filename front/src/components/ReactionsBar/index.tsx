@@ -1,4 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import { RootState } from 'reducers';
 import styled from 'styled-components';
 import LoginModal from '../LoginModal';
 import SlackCounter from './SlackCounter/SlackCounter';
@@ -14,6 +16,8 @@ import REACTION_KINDS from 'queries/ReactionKinds';
 import { ReactionKinds } from 'types/ReactionKinds';
 import { StudyReactions as StudyReactionsQueryType } from 'types/StudyReactions'; //here
 import REACTIONS_QUERY from '../../queries/StudyReaction';
+import { fetchReactionsIsland, createReaction  } from 'services/study/actions';
+import { BeatLoader } from 'react-spinners';
 
 interface ReactionsBarProps {
   user: any;
@@ -61,16 +65,26 @@ export default function ReactionsBar(props: ReactionsBarProps) {
   const handleAddReaction = () => {
     setShowReactions(!showReactions);
   };
-  const { data: userReactions } = useQuery<StudyReactionsQueryType>(
+  /*const { data: userReactions } = useQuery<StudyReactionsQueryType>(
     REACTIONS_QUERY,
     {
       variables: { nctId },
     }
-  );
+  );*/
+  const dispatch = useDispatch();
+  const userReactions = useSelector( (state: RootState) => state.study.reactionsIsland);
+  useEffect (() => {
+//    console.log(props);
+    dispatch (fetchReactionsIsland(nctId));
+  },[dispatch]);
 
-  const [createReactionMutation] = useMutation(CREATE_REACTION, {
+/*  const [createReactionMutation] = useMutation(CREATE_REACTION, {
     refetchQueries: [{ query: REACTIONS_QUERY, variables: { nctId } }],
-  });
+  });*/
+  const createReactionMutation = (action)=>{
+    if(!action.variables.nctId || !action.variables.reactionKindId) return
+    return dispatch(createReaction(action.variables.nctId, action.variables.reactionKindId))}
+
   const activeReactions = (reactionsConfig, allReactions) => {
     let obj = JSON.parse(reactionsConfig);
     let activeArray: object[] = [];
@@ -135,12 +149,15 @@ export default function ReactionsBar(props: ReactionsBarProps) {
     });
   };
 
+  if (!userReactions) {
+    return <BeatLoader />;
+  }
   return (
     <HeaderContentWrapper>
       <LoginModal show={showLoginModal} cancel={() => cancelHelper()} />
       <ReactionsContainer>
         <SlackCounter
-          currentUserAndStudy={userReactions?.me?.reactions}
+          currentUserAndStudy={userReactions?.data.me?.reactions}
           activeReactions={counters}
           allReactions={allReactions}
           user={user}
@@ -148,8 +165,9 @@ export default function ReactionsBar(props: ReactionsBarProps) {
           nctId={nctId}
         />
       </ReactionsContainer>
-      {showReactions == true ? (
+      {(showReactions == true && reactions) ? (
         <GithubSelector
+          
           reactions={reactions}
           onSelect={e =>
             handleSelectorClick(

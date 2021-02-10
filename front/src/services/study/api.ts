@@ -85,6 +85,6 @@ export const fetchReactionKinds= () => {
 export const fetchStudyReactions= () => {
     return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {});
 };
-export const createReaction = ( reactionKindId: any, nctId: string) =>{
-    return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {reactionKindId, nctId})
+export const createReaction = ( nctId: string, reactionKindId: any) =>{
+    return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})
 };
