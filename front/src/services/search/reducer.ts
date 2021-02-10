@@ -19,6 +19,9 @@ const initialState: types.SearchState = {
     savedSearches: undefined,
     isCreatingSavedSearch: false,
     isDeletingSavedSearch: false,
+    isFetchingSearchExport: false,
+    searchExport: undefined,
+    isExportingToCsv: false,
 };
 
 const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
@@ -155,62 +158,96 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 isFetchingAutoSuggest: false
             };
 
-            case types.FETCH_SAVED_SEARCHES_SEND:
-                return {
-                    ...state,
-                    isFetchingSavedSearches: true
-                };
-            case types.FETCH_SAVED_SEARCHES_SUCCESS:
-                return {
-                    ...state,
-                    isFetchingSavedSearches: false,
-                    savedSearches: action.payload
-                };
-            case types.FETCH_SAVED_SEARCHES_ERROR:
-                return {
-                    ...state,
-                    isFetchingSavedSearches: false
-                };
+        case types.FETCH_SAVED_SEARCHES_SEND:
+            return {
+                ...state,
+                isFetchingSavedSearches: true
+            };
+        case types.FETCH_SAVED_SEARCHES_SUCCESS:
+            return {
+                ...state,
+                isFetchingSavedSearches: false,
+                savedSearches: action.payload
+            };
+        case types.FETCH_SAVED_SEARCHES_ERROR:
+            return {
+                ...state,
+                isFetchingSavedSearches: false
+            };
 
-            case types.CREATE_SAVED_SEARCH_SEND:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: true
-                };
-            case types.CREATE_SAVED_SEARCH_SUCCESS:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: false,
-                    savedSearches: action.payload
-                };
-            case types.CREATE_SAVED_SEARCH_ERROR:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: false
-                };
-    
-            case types.DELETE_SAVED_SEARCH_SEND:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: true
-                };
-            case types.DELETE_SAVED_SEARCH_SUCCESS:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: false,
-                    savedSearches: {       
-                        ...state.savedSearches,
-                        data: {
-                            ...state.savedSearches.data,
-                            savedSearch: action.payload
-                        }         
-                    }    
-                };
-            case types.DELETE_SAVED_SEARCH_ERROR:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: false
-                };
+        case types.CREATE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isCreatingSavedSearch: true
+            };
+        case types.CREATE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isCreatingSavedSearch: false,
+                savedSearches: action.payload
+            };
+        case types.CREATE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isCreatingSavedSearch: false
+            };
+
+        case types.DELETE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isDeletingSavedSearch: true
+            };
+        case types.DELETE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isDeletingSavedSearch: false,
+                savedSearches: {       
+                    ...state.savedSearches,
+                    data: {
+                        ...state.savedSearches.data,
+                        savedSearch: action.payload
+                    }         
+                }    
+            };
+        case types.DELETE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isDeletingSavedSearch: false
+            };
+        
+        case types.SEARCH_EXPORT_SEND:
+            return {
+                ...state,
+                isFetchingSearchExport:true
+            };
+        case types.SEARCH_EXPORT_SUCCESS:
+            return {
+                ...state,
+                isFetchingSearchExport: false,
+                searchExport: action.payload
+            };
+        case types.SEARCH_EXPORT_ERROR:
+            return {
+                ...state,
+                isFetchingSearchExport: false
+            };
+        
+        case types.EXPORT_T0_CSV_SEND:
+            return {
+                ...state,
+                isExportingToCsv: true
+            }
+        case types.EXPORT_T0_CSV_SUCCESS:
+            return {
+                ...state,
+                isExportingToCsv: false,
+                searchExport: action.payload        //! TODO CHeck the redux store structure for searchExport/exportToCsv
+            }
+        case types.EXPORT_T0_CSV_ERROR:
+            return {
+                ...state,
+                isExportingToCsv: false,
+            }
     
                 
         default:

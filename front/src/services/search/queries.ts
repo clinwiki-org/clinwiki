@@ -300,3 +300,12 @@ query UserSavedSearchesQuery($userId: Int!){
     }
 } 
 `;
+
+
+export const SEARCH_EXPORT_QUERY = `
+  query SearchExportQuery($searchExportId: Int!) {
+    searchExport(searchExportId: $searchExportId) {
+      downloadUrl
+    }
+  }
+`;

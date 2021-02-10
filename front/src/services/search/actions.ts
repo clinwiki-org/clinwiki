@@ -25,7 +25,7 @@ export const fetchSearchPageAggsError = (message: string) : types.SearchActionTy
 
 export const fetchSearchPageAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
-    searchParams          //TODO CHeck
+    searchParams         
 });
 
 export const fetchSearchPageAggBucketsSuccess = (payload: SearchPageAggBucketsQuery) : types.SearchActionTypes => ({
@@ -41,7 +41,7 @@ export const fetchSearchPageAggBucketsError = (message: string) : types.SearchAc
 
 export const fetchSearchPageCrowdAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND,
-    searchParams      //TODO CHeck
+    searchParams     
 });
 
 export const fetchSearchPageCrowdAggBucketsSuccess = (payload: SearchPageCrowdAggBucketsQuery) : types.SearchActionTypes => ({
@@ -159,3 +159,34 @@ export const deleteSavedSearchError = (message: string) : types.SearchActionType
     type: types.DELETE_SAVED_SEARCH_ERROR,
     payload: { message }
 });
+
+export const SearchExport = (searchExportId: number) : types.SearchActionTypes => ({
+    type: types.SEARCH_EXPORT_SEND,
+    searchExportId,
+});
+
+export const SearchExportSuccess = (payload: any) : types.SearchActionTypes => ({
+    type: types.SEARCH_EXPORT_SUCCESS,
+    payload
+});
+
+export const SearchExportError = ( message: string) : types.SearchActionTypes => ({
+    type: types.SEARCH_EXPORT_ERROR,
+    payload: { message }
+});
+
+export const ExportToCsv = ( searchHash: string, siteViewId: number ) : types.SearchActionTypes => ({
+    type: types.EXPORT_T0_CSV_SEND,
+    searchHash,
+    siteViewId
+})
+
+export const ExportToCsvSuccess = (payload: any) : types.SearchActionTypes => ({
+    type: types.EXPORT_T0_CSV_SUCCESS,
+    payload
+})
+
+export const ExportToCsvError = (message: string) : types.SearchActionTypes => ({
+    type: types.EXPORT_T0_CSV_ERROR,
+    payload: { message }
+})

@@ -1,3 +1,4 @@
+import { SearchExport } from './actions';
 import * as query from './queries';
 import * as mutate from './mutations'
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
@@ -46,4 +47,14 @@ export const createSavedSearch = ( searchHash: string, url: string) => {
 export const deleteSavedSearch = ( id ) => {
     return callGraphql(ENDPOINT, mutate.DELETE_SAVED_SEARCH_MUTATION, 
         {  id: id });                                    
+};
+
+export const searchExport = ( searchExportId: number) => {
+    return callGraphql(ENDPOINT, query.SEARCH_EXPORT_QUERY,
+        { searchExportId: searchExportId });
+}
+
+export const exportToCsv = ( searchHash: string, siteViewId: number) => {
+    return callGraphql(ENDPOINT, mutate.EXPORT_TO_CSV_MUTATION,
+        { searchHash: searchHash, siteViewId: siteViewId });                           
 };
