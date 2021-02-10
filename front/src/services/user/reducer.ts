@@ -2,6 +2,8 @@ import * as types from './types';
 
 const initialState: types.UserState = {
     current: null,
+    user: undefined,
+    isFetchingUser: false,
     isLoading: false,
     isSigningIn: false,
     signInErrors: [],
@@ -16,15 +18,35 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
         case types.FETCH_USER_SEND:
             return {
                 ...state,
-                isLoading: true
+                isFetchingUser: true
             };
         case types.FETCH_USER_SUCCESS:
+            let user = action.payload.user.userId
+            return {
+                ...state,
+                isFetchingUser: false,
+                user: {
+                    ...state.user,
+                    [user]: action.payload.user
+                }
+            };
+        case types.FETCH_USER_ERROR:
+            return {
+                ...state,
+                isFetchingUser: false
+            };
+        case types.FETCH_CURRENT_USER_SEND:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case types.FETCH_CURRENT_USER_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 current: action.payload
             };
-        case types.FETCH_USER_ERROR:
+        case types.FETCH_CURRENT_USER_ERROR:
             return {
                 ...state,
                 isLoading: false

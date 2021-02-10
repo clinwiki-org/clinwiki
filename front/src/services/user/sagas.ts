@@ -5,11 +5,12 @@ import * as api from './api';
 import history from 'createHistory';
 import { setLocalJwt } from 'utils/localStorage';
 
-function* getCurrentUser(action) {
+function* getUser(action) {
     try {
-        let response = yield call(() => api.fetchCurrentUser());
+        let response = yield call(() => api.fetchUser(action.userId));
         if(response) {
-            yield put(actions.fetchUserSuccess(response.data.me));
+            response.data.user.userId = action.userId
+            yield put(actions.fetchUserSuccess(response.data));
         }
         else {
             yield put(actions.fetchUserError([response.message]));
@@ -18,6 +19,22 @@ function* getCurrentUser(action) {
     catch(err) {
         console.log(err);
         yield put(actions.fetchUserError([err.message]));
+    }
+}
+
+function* getCurrentUser(action) {
+    try {
+        let response = yield call(() => api.fetchCurrentUser());
+        if(response) {
+            yield put(actions.fetchCurrentUserSuccess(response.data.me));
+        }
+        else {
+            yield put(actions.fetchCurrentUserError([response.message]));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchCurrentUserError([err.message]));
     }
 }
 
@@ -100,7 +117,8 @@ function* editProfile(action) {
 }
 
 export default function* userSagas() {
-    yield takeLatest(types.FETCH_USER_SEND, getCurrentUser);
+    yield takeLatest(types.FETCH_USER_SEND, getUser);
+    yield takeLatest(types.FETCH_CURRENT_USER_SEND, getCurrentUser);
     yield takeLatest(types.SIGN_IN_SEND, signIn);
     yield takeLatest(types.LOGOUT_SEND, logout);
     yield takeLatest(types.SIGN_UP_SEND, signUp);
