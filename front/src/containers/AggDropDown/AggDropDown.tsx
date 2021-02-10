@@ -295,7 +295,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 }
 
   handleLoadMore = () => {
-    console.log("LOADIng MORE!!!!!!!!!!!!!!!!!!")
     //console.trace()
     const { desc, sortKind, buckets, filter } = this.state;
     const {
@@ -421,7 +420,6 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     }
   }
   handleCheckboxToggle=(bucketKey, activeOptions)=>{
-    console.log("CHECKBOX HIT!!!")
     const { agg, presentSiteView, presearch } = this.props;
     const field = findFields(agg, presentSiteView, presearch);
     //@ts-ignore

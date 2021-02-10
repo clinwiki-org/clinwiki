@@ -76,7 +76,7 @@ const getSearchName = () => {
     }
 
     async function onClick() {
-      console.log('window.location.href', window.location.href)
+      //console.log('window.location.href', window.location.href)
   
       if (user) {
           const url = window.location.href
