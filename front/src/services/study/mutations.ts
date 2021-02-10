@@ -202,3 +202,38 @@ export const CREATE_REACTION = `
   }
 `;
 
+export const REVIEW_FRAGMENT = `
+  fragment ReviewsPageFragment on Review {
+    id
+    meta
+    content
+    createdAt
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+
+export const REVIEW_FORM_MUTATION =`
+  mutation ReviewFormMutation(
+    $id: Int
+    $nctId: String!
+    $meta: String!
+    $content: String!
+  ) {
+    upsertReview(
+      input: { id: $id, nctId: $nctId, meta: $meta, content: $content }
+    ) {
+      review {
+        ...ReviewFragment
+      }
+      errors
+    }
+  }
+
+  ${REVIEW_FRAGMENT}
+`;
+

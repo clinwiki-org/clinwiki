@@ -170,10 +170,13 @@ function* deleteLabelMutation(action) {
 }
 function* deleteReviewMutation(action) {
     try {
-        let response = yield call(() => api.deleteReviewMutation(action.nctId));
+        console.log(action)
+        let response = yield call(() => api.deleteReviewMutation(action.id, action.nctId));
         if(response) {
-            yield put(actions.deleteReviewMutation(response.nctId));
-            yield call(()=> api.fetchReviewPage(action.nctId)); //????????? is like redirect or method call?
+            yield put(actions.deleteReviewMutationSuccess(response.id));
+            //yield call(()=> api.fetchReviewPage(action.nctId));
+            console.log(action.nctId);
+            let response2 = yield getReviewPage(action);
         }
         else {
             yield put(actions.deleteReviewMutationError(response.message));
@@ -291,7 +294,7 @@ function* deleteReaction(action) {
         let response = yield call(() => api.deleteReaction(action.id));
         if(response) {
             yield put(actions.deleteReaction(response.id));
-            yield call(()=> api.fetchReactionsIsland(action.nctId));  // ??????????? is like redirect or a method call
+            yield call(()=> api.fetchReactionsIsland(action.nctId));
         }
         else {
             yield put(actions.deleteReactionError(response.message));
@@ -306,7 +309,7 @@ function* getReactionKinds(action) {
     try {
         let response = yield call(() => api.fetchReactionKinds());
         if(response) {
-            yield put(actions.fetchReactionKinds());        }
+            yield put(actions.fetchReactionKindsSuccess(response));        }
         else {
             yield put(actions.fetchReactionKindsError(response.message));
         }
@@ -320,7 +323,7 @@ function* getStudyReactions(action) {
     try {
         let response = yield call(() => api.fetchStudyReactions());
         if(response) {
-            yield put(actions.fetchStudyReactions(action.nctId));        }
+            yield put(actions.fetchStudyReactionsSuccess(action.nctId));        }
         else {
             yield put(actions.fetchStudyReactionsError(response.message));
         }
@@ -332,10 +335,9 @@ function* getStudyReactions(action) {
 }
 function* createReaction(action) { 
     try {
-        let response = yield call(() => api.createReaction(action.input, action.nctId)); 
+        let response = yield call(() => api.createReaction(action.nctId, action.reactionKindId)); 
         if (response){ 
             yield put(actions.createReactionSuccess(response.data));
-            yield call(()=> api.fetchReactionsIsland(action.nctId)); // ?????????? is like redirect or method call
         }
         else {
             yield put(actions.createReactionError(response.message));
@@ -403,6 +405,36 @@ function* deletePageView(action) {
         yield put(actions.deletePageViewError(err.message));
     }    
 } 
+function* upsertReviewFormMutation(action) {
+    try {
+        let response = yield call(() => api.upsertReviewFormMutation(action.id, action.nctId, action.meta, action.content));
+        if (action) {
+        //console.log(action)
+        let response2 = yield getReviewPage(action);
+        }
+        else {
+            yield put(actions.upsertReviewFormMutationError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.upsertReviewFormMutationError(err.message));
+    }
+}
+function* getEditReview(action) {
+    try {
+        let response = yield call(() => api.fetchEditReview(action.nctId));
+        if(response) {
+            yield put(actions.fetchEditReviewSuccess(action.nctId));        }
+        else {
+            yield put(actions.fetchEditReviewError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchEditReviewError(err.message));
+    }
+}
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
@@ -429,4 +461,6 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_REACTION_KINDS_SEND, getReactionKinds);
     yield takeLatest(types.FETCH_STUDY_REACTIONS_SEND, getStudyReactions);
     yield takeLatest(types.CREATE_REACTION_SEND, createReaction);
+    yield takeLatest(types.UPSERT_REVIEW_FORM_MUTATION_SEND, upsertReviewFormMutation);
+    yield takeLatest(types.FETCH_EDIT_REVIEW_SEND, getEditReview);
 }

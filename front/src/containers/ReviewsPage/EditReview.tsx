@@ -14,6 +14,7 @@ import { History } from 'history';
 import StudySummary from 'components/StudySummary';
 import { trimPath } from 'utils/helpers';
 import withTheme from 'containers/ThemeProvider';
+import { } from '../../services/study/actions';
 
 interface EditReviewProps {
   match: match<{ nctId: string; id?: string }>;
@@ -23,6 +24,7 @@ interface EditReviewProps {
   nextLink?: string | null;
   theme?: any;
   nctId:string;
+  upsertReviewFormMutation: any;
 }
 
 const QUERY = gql`
@@ -39,6 +41,8 @@ const QUERY = gql`
   ${ReviewForm.fragment}
   ${StudySummary.fragment}
 `;
+
+
 
 const QueryComponent = (
   props: QueryComponentOptions<EditReviewQuery, EditReviewQueryVariables>
@@ -86,6 +90,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
               afterSave={this.handleReviewSave}
               theme={this.props.theme}
               handleClose={this.handleCloseReview}
+              upsertReviewFormMutation={this.props.upsertReviewFormMutation}
             />
           );
         }}

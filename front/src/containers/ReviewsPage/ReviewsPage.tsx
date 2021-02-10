@@ -287,6 +287,7 @@ class ReviewsPage extends React.PureComponent<ReviewsPageProps> {
                 render={() => {
                   this.props.onLoaded && this.props.onLoaded();
                   return (
+                    //@ts-ignore
                     <ReviewForm
                       theme={this.props.theme}
                       nctId={this.props.nctId}

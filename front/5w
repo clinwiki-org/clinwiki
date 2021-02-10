@@ -126,7 +126,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   state: ReviewFormState = defaultState;
   // Use this hook to trigger submit using ref from parent
   submitReview: () => void = () => {};
-  static fragment = REVIEW_FRAGMENT;
+//  static fragment = REVIEW_FRAGMENT;
 
   static getDerivedStateFromProps = (
     props: ReviewFormProps,
@@ -244,7 +244,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   };
 
   render() {
-    this.submitReview = this.handleSubmitReview(this.props.upsertReviewFormMutation);
+    this.submitReview = this.handleSubmitReview(upsertReview);
     return (
       <div>
         {this.renderMeta()}
@@ -258,7 +258,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
               <>
                 <ThemedButton
                   style={{ margin: 10 }}
-                  onClick={this.handleSubmitReview(this.props.upsertReviewFormMutation)}>
+                  onClick={this.handleSubmitReview(upsertReview)}>
                   Submit
                 </ThemedButton>
                 <ThemedButton
@@ -273,4 +273,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
     );
   }
 }
-export default ReviewForm;
+mapDispatchToProps = (dispatch) => ({
+  upsertReviewFormMutation: (variables) => dispatch(upsertReviewFormMutation(variables.id, variables.nctId, variables.meta, variables.content))
+});
+export default connect (null, mapDispatchToProps) (ReviewForm);

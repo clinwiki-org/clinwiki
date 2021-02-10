@@ -117,7 +117,7 @@ class WorkflowPage extends React.Component<
   };
 
   renderReview = (hideMeta: boolean) => {
-    if (this.state.editReviewMode) {
+/*    if (this.state.editReviewMode) {
       return (
         <ReviewForm
           ref={ref => {
@@ -132,7 +132,7 @@ class WorkflowPage extends React.Component<
           handleClose={()=>console.log(`Hi, this page is no longer in use`)}
         />
       );
-    }
+    }*/
 
     const content = (this.state.review && this.state.review.content) || '';
     return (

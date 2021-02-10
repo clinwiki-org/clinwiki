@@ -49,8 +49,8 @@ export const deleteLabelMutation = (nctId:any, key: any, value: any) =>{
 export const fetchCrowdPage= (nctId: any) => {
     return callGraphql(ENDPOINT, query.CROWD_PAGE_QUERY, {nctId});
 };
-export const deleteReviewMutation = (nctId:any) =>{
-    return callGraphql(ENDPOINT,mutate.DELETE_REVIEW_MUTATION, { nctId: nctId})
+export const deleteReviewMutation = (id:any, nctId:any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_REVIEW_MUTATION, { id, nctId})
 };
 export const fetchReviewPage= (nctId: any) => {
     return callGraphql(ENDPOINT, query.REVIEW_PAGE_QUERY, {nctId});
@@ -85,6 +85,12 @@ export const fetchReactionKinds= () => {
 export const fetchStudyReactions= () => {
     return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {});
 };
-export const createReaction = ( reactionKindId: any, nctId: string) =>{
-    return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {reactionKindId, nctId})
+export const createReaction = ( nctId: string, reactionKindId: any) =>{
+    return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})
+};
+export const upsertReviewFormMutation = (id:any, nctId:any, meta: any, content: any) =>{
+    return callGraphql(ENDPOINT,mutate.UPSERT_LABEL_MUTATION, {id: id, nctId: nctId, meta: meta, content: content})
+};
+export const fetchEditReview= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.EDIT_REVIEW_QUERY, {nctId});
 };
