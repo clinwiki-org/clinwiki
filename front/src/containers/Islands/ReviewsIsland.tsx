@@ -66,7 +66,7 @@ export default function ReviewsIsland(props: Props) {
   });*/
   const reviewData = useSelector( (state: RootState) => state.study.reviewPage);
   useEffect (() => {
-    console.log(props);
+//    console.log(props);
     dispatch (fetchReviewPage(nctId));
   },[dispatch]);
 /*  const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
