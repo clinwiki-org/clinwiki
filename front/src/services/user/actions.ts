@@ -1,17 +1,32 @@
 import * as types from './types';
 import { UserFragment } from 'services/user/model/UserFragment';
 
-export const fetchUser = () : types.UserActionTypes => ({
-    type: types.FETCH_USER_SEND
+export const fetchUser = (userId: number) : types.UserActionTypes => ({
+    type: types.FETCH_USER_SEND,
+    userId
 });
 
-export const fetchUserSuccess = (payload: UserFragment) : types.UserActionTypes => ({
+export const fetchUserSuccess = (payload: any) : types.UserActionTypes => ({
     type: types.FETCH_USER_SUCCESS,
     payload
 });
 
 export const fetchUserError = (errors: Array<string>) : types.UserActionTypes => ({
     type: types.FETCH_USER_ERROR,
+    payload: { errors }
+});
+
+export const fetchCurrentUser = () : types.UserActionTypes => ({
+    type: types.FETCH_CURRENT_USER_SEND
+});
+
+export const fetchCurrentUserSuccess = (payload: UserFragment) : types.UserActionTypes => ({
+    type: types.FETCH_CURRENT_USER_SUCCESS,
+    payload
+});
+
+export const fetchCurrentUserError = (errors: Array<string>) : types.UserActionTypes => ({
+    type: types.FETCH_CURRENT_USER_ERROR,
     payload: { errors }
 });
 

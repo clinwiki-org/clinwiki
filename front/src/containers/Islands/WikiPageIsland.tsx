@@ -15,7 +15,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
-import { CurrentUserQuery, CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
+import { CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import LoginModal from '../../components/LoginModal';
 import { wikiPageUpdateContentMutation, fetchWikiPage } from 'services/study/actions';
@@ -50,15 +50,12 @@ export default function WikiPageIsland(props: Props) {
   const [richEditorText, setRichEditorText] = useState('');
   const [flashAnimation, setFlashAnimation] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  // const user = useCurrentUser()?.data?.me;
-  //const { data: userData, refetch } = useQuery<CurrentUserQuery>(UserQuery)
+  
   const user = useSelector( (state: RootState) => state.user.current);
   const params = useUrlParams();
   //const user = userData ? userData.me : null;
   // TODO: This query should be pushed up as a fragment to the Page
-  //const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {
-  //  variables: { nctId },
-  //});
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchWikiPage( nctId ));

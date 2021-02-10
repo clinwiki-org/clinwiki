@@ -1,5 +1,9 @@
 import { UserFragment } from 'services/user/model/UserFragment';
 
+export const FETCH_CURRENT_USER_SEND = 'FETCH_CURRENT_USER_SEND';
+export const FETCH_CURRENT_USER_SUCCESS = 'FETCH_CURRENT_USER_SUCCESS';
+export const FETCH_CURRENT_USER_ERROR = 'FETCH_CURRENT_USER_ERROR';
+
 export const FETCH_USER_SEND = 'FETCH_USER_SEND';
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 export const FETCH_USER_ERROR = 'FETCH_USER_ERROR';
@@ -25,6 +29,8 @@ export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const LOGOUT_ERROR = 'LOGOUT_ERROR';
 
 export interface UserState {
+    user: any | undefined,
+    isFetchingUser: boolean,
     current: UserFragment | null,
     isLoading: boolean,
     isSigningIn: boolean,
@@ -45,15 +51,30 @@ export interface UserDataError {
 
 export interface FetchUserSendAction {
     type: typeof FETCH_USER_SEND
+    userId: number
 };
 
 export interface FetchUserSuccessAction {
     type: typeof FETCH_USER_SUCCESS,
-    payload: UserFragment
+    payload: any
 };
 
 export interface FetchUserErrorAction {
     type: typeof FETCH_USER_ERROR,
+    payload: UserDataError
+};
+
+export interface FetchCurrentUserSendAction {
+    type: typeof FETCH_CURRENT_USER_SEND
+};
+
+export interface FetchCurrentUserSuccessAction {
+    type: typeof FETCH_CURRENT_USER_SUCCESS,
+    payload: UserFragment
+};
+
+export interface FetchCurrentUserErrorAction {
+    type: typeof FETCH_CURRENT_USER_ERROR,
     payload: UserDataError
 };
 
@@ -138,7 +159,9 @@ export interface LogoutErrorAction {
     payload: Array<string>
 };
 
-export type UserActionTypes = FetchUserSendAction | FetchUserSuccessAction | FetchUserErrorAction |
+export type UserActionTypes =
+    FetchCurrentUserSendAction | FetchCurrentUserSuccessAction | FetchCurrentUserErrorAction |
+    FetchUserSendAction | FetchUserSuccessAction | FetchUserErrorAction |
     SignInSendAction | SignInSuccessAction | SignInErrorAction | 
     SignUpSendAction | SignUpSuccessAction | SignUpErrorAction |
     UpdatePasswordSendAction | UpdatePasswordSuccessAction | UpdatePasswordErrorAction |
