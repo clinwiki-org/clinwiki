@@ -3,13 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'reducers';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { WikiPageQuery } from 'types/WikiPageQuery';
-import { UPDATE_CONTENT_MUTATION } from 'mutations/WikiPageUpdateContentMutation';
 import { WikiPageUpdateContentMutationVariables } from 'types/WikiPageUpdateContentMutation';
 import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
-import QUERY from 'queries/WikiPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
-//import CurrentUser, { useCurrentUser, QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { useHistory, useLocation, useRouteMatch, Prompt } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
@@ -19,7 +15,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import * as FontAwesome from 'react-fontawesome';
 import WikiPageEditor from '../../components/WikiPageEditor/WikiPageEditor';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
-import { CurrentUserQuery, CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
+import { CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import LoginModal from '../../components/LoginModal';
 import { wikiPageUpdateContentMutation, fetchWikiPage } from 'services/study/actions';
@@ -54,24 +50,18 @@ export default function WikiPageIsland(props: Props) {
   const [richEditorText, setRichEditorText] = useState('');
   const [flashAnimation, setFlashAnimation] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  // const user = useCurrentUser()?.data?.me;
-  //const { data: userData, refetch } = useQuery<CurrentUserQuery>(UserQuery)
+  
   const user = useSelector( (state: RootState) => state.user.current);
   const params = useUrlParams();
   //const user = userData ? userData.me : null;
   // TODO: This query should be pushed up as a fragment to the Page
-  //const { data: studyData } = useQuery<WikiPageQuery>(QUERY, {
-  //  variables: { nctId },
-  //});
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchWikiPage( nctId ));
     }, [dispatch])
   const wikiPageData = useSelector((state: RootState) => state.study.wikiPage);
-/*  const [updateContentMutation] = useMutation(UPDATE_CONTENT_MUTATION, {
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: QUERY, variables: { nctId } }],
-  });*/
+
   const updateContentMutation = (action)=>{
     if(!action.variables.key) return
     return dispatch(wikiPageUpdateContentMutation(nctId, action.content) )}

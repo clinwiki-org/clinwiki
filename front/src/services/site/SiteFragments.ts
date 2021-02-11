@@ -1,4 +1,3 @@
-import { gql } from "@apollo/client";
 
 
 export const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = `

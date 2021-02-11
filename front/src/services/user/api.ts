@@ -6,6 +6,10 @@ import { callGraphql, get_gql_url  } from 'utils/graphqlUtil';
 
 const ENDPOINT = get_gql_url()
 
+export const fetchUser = ( userId: number ) => {
+    return callGraphql(ENDPOINT,query.USER_QUERY, { userId: userId});
+};
+
 export const fetchCurrentUser = () => {
     return callGraphql(ENDPOINT,query.FETCH_CURRENT_USER_QUERY, {},'CurrentUserQuery');
 };

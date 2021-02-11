@@ -85,3 +85,20 @@ export const FETCH_CURRENT_USER_QUERY = ` query CurrentUserQuery {
   }
   ${CURRENT_USER_FRAGMENT}`;
 
+  export const USER_QUERY = `
+  query User($userId: Int!) {
+    user(userId: $userId) {
+      firstName
+      lastName
+      reviewCount
+      rank
+      reviews {
+        nctId
+        briefTitle
+        content
+      }
+      contributions
+      pictureUrl
+    }
+  }
+`;

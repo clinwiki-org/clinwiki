@@ -13,6 +13,7 @@ import { fetchIntrospection } from 'services/introspection/actions';
 import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
 import { BeatLoader } from 'react-spinners';
+import { fetchStudyPage } from 'services/study/actions';
 
 
 type Mode = 'Study' | 'Search';
@@ -29,23 +30,23 @@ function getClassForMode(mode: Mode) {
   }
 }
 
-function getModeData(
-  mode: Mode,
-  arg: string,
-  fragment: string,
-  fragmentName: string
-): [DocumentNode, object, string] {
-  switch (mode) {
-    case 'Study':
-      return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
-    case 'Search':
-      return [
-        getSearchQuery(fragmentName, fragment),
-        { hash: arg },
-        'ElasticStudy',
-      ];
-  }
-}
+// function getModeData(
+//   mode: Mode,
+//   arg: string,
+//   fragment: string,
+//   fragmentName: string
+// ): [DocumentNode, object, string] {
+//   switch (mode) {
+//     case 'Study':
+//       return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
+//     case 'Search':
+//       return [
+//         getSearchQuery(fragmentName, fragment),
+//         { hash: arg },
+//         'ElasticStudy',
+//       ];
+//   }
+// }
 
 export default function TestComponent() {
   const [template, setTemplate] = useState(`
@@ -77,13 +78,23 @@ export default function TestComponent() {
     dispatch(fetchIntrospection(QUERY));
   },[dispatch]);
 
+  useEffect(()=>{
+    const QUERY = `${getStudyQuery(fragmentName, fragment)}`
+    dispatch(fetchStudyPage(nctOrSearchHash ?? "", QUERY));
+    console.log(mode)
+    const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
+    const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
+    dispatch(mode=="Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPage(nctOrSearchHash ?? "", SEARCH_QUERY) );
+   },[dispatch, nctOrSearchHash]);
+
   const introspection = useSelector((state:RootState) => state.introspection.introspection);
 
 
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, template);
-  const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
-  const { data } = useQuery(query, { variables });
+  // const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
+  // const { data } = useQuery(query, { variables });
+  const studyData = useSelector((state:RootState) => state.study.studyPage);
 
   const updateMode = mode => {
     setMode(mode);
@@ -100,12 +111,13 @@ export default function TestComponent() {
     },
   };
 
-  const sampleData = data?.study || data?.search?.studies?.[0];
-
-  if (!introspection) {
+  
+  if (!introspection || !studyData) {
     return <BeatLoader />;
   }
-
+  
+  const sampleData = studyData?.data.study || studyData.data?.search?.studies?.[0];
+  
   if (introspection) {
     const types = introspection.data.__schema.types;
     return (
@@ -125,14 +137,14 @@ export default function TestComponent() {
         />
         <MailMerge
           schema={{ kind: 'graphql', typeName: schemaType, types }}
-          sample={data?.study || data?.search?.studies?.[0]}
+          sample={sampleData}
           template={template}
           onTemplateChanged={setTemplate}
           islands={islands}
         />
         <pre>{fragment}</pre>
         <pre>
-          {JSON.stringify(data?.study || data?.search?.studies, null, 2)}
+          {JSON.stringify(studyData?.data.study  ||studyData.data?.search?.studies, null, 2)}
         </pre>
       </div>
     );

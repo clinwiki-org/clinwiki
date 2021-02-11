@@ -1,11 +1,6 @@
 import React,{useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {updatePassword} from 'services/user/actions';
-import {
-  Mutation,
-  MutationComponentOptions,
-} from '@apollo/client/react/components';
-import { gql, MutationFunction }  from '@apollo/client';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import ThemedButton from '../../components/StyledComponents';

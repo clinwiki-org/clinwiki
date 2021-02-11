@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
-import { fetchUser } from 'services/user/actions';
+import { fetchCurrentUser } from 'services/user/actions';
 
 const CurrentUser = ({children}) => {
   const dispatch = useDispatch();
   useEffect( () => {
-    dispatch(fetchUser());
+    dispatch(fetchCurrentUser());
   },[dispatch]);
   return (
     <div>

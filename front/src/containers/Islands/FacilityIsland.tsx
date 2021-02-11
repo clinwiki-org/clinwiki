@@ -3,9 +3,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import { RootState } from 'reducers';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
-import QUERY from 'queries/FacilitiesPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
-
 import {
   FacilitiesPageQuery,
   FacilitiesPageQueryVariables,
