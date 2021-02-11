@@ -23,10 +23,15 @@ interface ExportToCsvDialogProps {
 class ExportToCsvDialog extends React.Component<ExportToCsvDialogProps> {
   componentWillMount() {
     this.props.data.startPolling(250);
+    const { setExportId, loading, data } = this.props;
+    console.log("🚀 ~ SearchExport data", data);
   }
 
   render() {
     const { setExportId, loading, data } = this.props;
+    console.log("🚀 ~ SearchExport data", data);
+
+    
 
     let body = <div />;
     const noDownloadUrl =

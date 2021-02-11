@@ -218,8 +218,8 @@ function* exportToCsv(action) {
         let exportResponse = yield call(() => api.exportToCsv(action.searchHash, action.siteViewId)); 
         console.log("EXPORT RES", exportResponse)
         if (exportResponse.data.exportToCsv){                     
-            let response = yield getSearchExport(action);     //! Will we need this?
-            yield put(actions.ExportToCsvSuccess(response));
+            //let response = yield getSearchExport(action);     //! Will we need this?
+            yield put(actions.ExportToCsvSuccess(exportResponse));
         }
         else {
             yield put(actions.ExportToCsvError(exportResponse.message));

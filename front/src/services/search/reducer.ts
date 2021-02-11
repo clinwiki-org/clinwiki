@@ -1,3 +1,4 @@
+import { exportToCsv, searchExport } from './api';
 import * as types from './types';
 
 const initialState: types.SearchState = {
@@ -241,7 +242,7 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
             return {
                 ...state,
                 isExportingToCsv: false,
-                searchExport: action.payload        //! TODO CHeck the redux store structure for searchExport/exportToCsv
+                searchExport: action.payload.data.exportToCsv.searchExport  //! TODO CHeck the redux store structure for searchExport/exportToCsv
             }
         case types.EXPORT_T0_CSV_ERROR:
             return {
