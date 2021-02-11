@@ -1,6 +1,7 @@
 import StudySummary from 'components/StudySummary';
 import ReviewForm from 'containers/ReviewForm';
 
+
 export const PAGE_VIEW_FRAGMENT = `
 fragment PageViewFragment on PageView {
     id
@@ -285,7 +286,7 @@ export const STUDY_FRAGMENT =`
 `;
 
 
-export const REVIEW_PAGE_QUERY =`
+export const REVIEW_QUERY =`
 query ReviewPageQuery($nctId: String!) {
   study(nctId: $nctId) {
     reviews {
@@ -298,6 +299,7 @@ query ReviewPageQuery($nctId: String!) {
   }
 }
 ${REVIEW_FRAGMENT}
+
 `;
 export const STUDY_EDITS_HISTORY_QUERY = `
   query StudyEditsHistoryQuery($nctId: String!) {

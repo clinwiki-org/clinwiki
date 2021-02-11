@@ -181,6 +181,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
     upsertReview: (x: { variables: ReviewFormMutationVariables }) => void
   ) => () => {
     const id = (this.props.review && this.props.review.id) || undefined;
+    console.log("handleSubmitReview called");
     upsertReview({
       variables: {
         id,
@@ -255,7 +256,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
               value={this.state.content}
             />
             {this.props.hideSaveButton ? null : 
-              <>
+              (<>
                 <ThemedButton
                   style={{ margin: 10 }}
                   onClick={this.handleSubmitReview(this.props.upsertReviewFormMutation)}>
@@ -266,7 +267,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                   onClick={()=>this.props.handleClose()}>
                   Cancel
                 </ThemedButton>
-              </>};
+              </>)}
           </Panel.Body>
         </Panel>
       </div>

@@ -374,3 +374,8 @@ export const fetchEditReviewError= (message: string) : types.StudyActionTypes =>
     type: types.FETCH_EDIT_REVIEW_ERROR,
     payload: {message}
 });
+/*export const updateSearchParamsAction = ( searchParams: any) : types.SearchActionTypes => ({
+    type: types.UPDATE_SEARCH_PARAMS_SEND,
+    searchParams
+});*/
+

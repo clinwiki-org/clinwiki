@@ -198,6 +198,7 @@ export default function ReviewsIsland(props: Props) {
   };
   console.log (reviewData)
   const upsertReview = (reviewData) => { 
+    console.log(reviewData);
     return dispatch(upsertReviewFormMutation(reviewData.variables.id, reviewData.variables.nctId, reviewData.variables.meta, reviewData.variables.content)); 
   }  
 

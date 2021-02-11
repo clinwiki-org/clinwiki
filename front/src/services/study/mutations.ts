@@ -62,7 +62,7 @@ const FRAGMENT = `
   }
 `;
 
-const WikiPageEditFragment = `
+export const WikiPageEditFragment = `
   fragment WikiPageEditFragment on WikiPageEdit {
     user {
       id
@@ -203,19 +203,20 @@ export const CREATE_REACTION = `
 `;
 
 export const REVIEW_FRAGMENT = `
-  fragment ReviewsPageFragment on Review {
-    id
-    meta
-    content
-    createdAt
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
-  }
-`;
+   fragment ReviewFragment on Review {
+     id
+     meta
+     content
+     createdAt
+     user {
+       id
+       firstName
+       lastName
+       email
+     }
+   }
+ `;
+
 
 export const REVIEW_FORM_MUTATION =`
   mutation ReviewFormMutation(

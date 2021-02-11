@@ -1,7 +1,9 @@
+import { push } from 'connected-react-router'
 import { call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
+import {updateSearchParamsSuccess} from './../search/actions';
 
 const getCurrentPageViews = (state)=> state.study.pageViews.data.site.pageViews; //TODO CHeck path to redux store pageViews
 
@@ -207,7 +209,7 @@ function* getReviewPage(action) {
         console.log(action)
         let response = yield call(() => api.fetchReviewPage(action.nctId));
         if(response) {
-            yield put(actions.fetchReviewPageSuccess(response));        }
+            yield put(actions.fetchReviewPageSuccess(response));            }
         else {
             yield put(actions.fetchReviewPageError(response.message));
         }
@@ -404,13 +406,19 @@ function* deletePageView(action) {
         console.log(err);
         yield put(actions.deletePageViewError(err.message));
     }    
-} 
+}
 function* upsertReviewFormMutation(action) {
     try {
+        console.log(action);
         let response = yield call(() => api.upsertReviewFormMutation(action.id, action.nctId, action.meta, action.content));
         if (action) {
-        //console.log(action)
-        let response2 = yield getReviewPage(action);
+            let location = yield select( (state) => state.router.location);
+
+            console.log(location)
+            let response2 = yield getReviewPage(action);
+            let path = location.pathname.slice(0,-4);
+            yield put(push(`${path}?hash=${location.query.hash}&sv=${location.query.sv}&pv=${location.query.pv}`));
+//basically something like yield put(push('/study/NCT00000126?hash=eyNO5sqt&sv='default'&pv=default')); but those values would come from that location object
         }
         else {
             yield put(actions.upsertReviewFormMutationError(response.message));
