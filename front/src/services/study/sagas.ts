@@ -418,7 +418,6 @@ function* upsertReviewFormMutation(action) {
             let response2 = yield getReviewPage(action);
             let path = location.pathname.slice(0,-4);
             yield put(push(`${path}?hash=${location.query.hash}&sv=${location.query.sv}&pv=${location.query.pv}`));
-//basically something like yield put(push('/study/NCT00000126?hash=eyNO5sqt&sv='default'&pv=default')); but those values would come from that location object
         }
         else {
             yield put(actions.upsertReviewFormMutationError(response.message));
