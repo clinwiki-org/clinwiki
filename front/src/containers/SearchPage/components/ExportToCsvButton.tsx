@@ -1,24 +1,10 @@
 import * as React from 'react';
-import gql from 'graphql-tag';
-import { graphql } from '@apollo/client/react/hoc';
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
 import LabeledButton from 'components/LabeledButton';
 import { connect } from 'react-redux';
-import { ExportToCsv } from 'services/search/actions';
-import { BeatLoader } from 'react-spinners';
-
-//! TODO Remove
-const EXPORT_TO_CSV_MUTATION = gql`
-  mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {
-    exportToCsv(input: { searchHash: $searchHash, siteViewId: $siteViewId }) {
-      searchExport {
-        id
-      }
-    }
-  }
-`;
+import { exportToCsv } from 'services/search/actions';
 
 interface ExportToCsvButtonProps {
   siteView: any;
@@ -27,9 +13,8 @@ interface ExportToCsvButtonProps {
   setExportId: any;
   user?: any;
   exportToCsv: any;
- // searchExport: any;
+  setShowExportModal: any;
 }
-
 interface ExportToCsvButtonState {
   showLoginModal: boolean;
 }
@@ -47,11 +32,11 @@ class ExportToCsvButton extends React.Component<
     };
 
     handleExportClick = () => {
-      const { exportToCsv, siteView, searchHash, setExportId, user } = this.props;
+      const { setShowExportModal, exportToCsv, siteView, searchHash, setExportId, user } = this.props;
       if (user) {
       exportToCsv(searchHash, siteView.id);
-
       //setExportId(searchExport.id);
+      setShowExportModal(true);
     } else {
       this.setShowLoginModal(true);
     }
@@ -76,7 +61,7 @@ class ExportToCsvButton extends React.Component<
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  exportToCsv: (searchHash, siteViewId) => dispatch(ExportToCsv(searchHash, siteViewId)),
+  exportToCsv: (searchHash, siteViewId) => dispatch(exportToCsv(searchHash, siteViewId)),
 })
 
 const mapStateToProps = (state, ownProps) => ({

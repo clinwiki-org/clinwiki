@@ -160,33 +160,33 @@ export const deleteSavedSearchError = (message: string) : types.SearchActionType
     payload: { message }
 });
 
-export const SearchExport = (searchExportId: number) : types.SearchActionTypes => ({
+export const searchExport = (searchExportId: number) : types.SearchActionTypes => ({
     type: types.SEARCH_EXPORT_SEND,
     searchExportId,
 });
 
-export const SearchExportSuccess = (payload: any) : types.SearchActionTypes => ({
+export const searchExportSuccess = (payload: any) : types.SearchActionTypes => ({
     type: types.SEARCH_EXPORT_SUCCESS,
     payload
 });
 
-export const SearchExportError = ( message: string) : types.SearchActionTypes => ({
+export const searchExportError = ( message: string) : types.SearchActionTypes => ({
     type: types.SEARCH_EXPORT_ERROR,
     payload: { message }
 });
 
-export const ExportToCsv = ( searchHash: string, siteViewId: number ) : types.SearchActionTypes => ({
+export const exportToCsv = ( searchHash: string, siteViewId: number ) : types.SearchActionTypes => ({
     type: types.EXPORT_T0_CSV_SEND,
     searchHash,
     siteViewId
 })
 
-export const ExportToCsvSuccess = (payload: any) : types.SearchActionTypes => ({
+export const exportToCsvSuccess = (payload: any) : types.SearchActionTypes => ({
     type: types.EXPORT_T0_CSV_SUCCESS,
     payload
 })
 
-export const ExportToCsvError = (message: string) : types.SearchActionTypes => ({
+export const exportToCsvError = (message: string) : types.SearchActionTypes => ({
     type: types.EXPORT_T0_CSV_ERROR,
     payload: { message }
 })

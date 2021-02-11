@@ -225,7 +225,7 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
             return {
                 ...state,
                 isFetchingSearchExport: false,
-                searchExport: action.payload
+                searchExport: action.payload.data.searchExport
             };
         case types.SEARCH_EXPORT_ERROR:
             return {

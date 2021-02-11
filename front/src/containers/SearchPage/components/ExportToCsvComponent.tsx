@@ -4,7 +4,6 @@ import { RootState } from 'reducers';
 import ExportToCsvButton from './ExportToCsvButton';
 import ExportToCsvDialog from './ExportToCsvDialog';
 
-
 interface ExportToCsvComponentProps {
   siteView: any;
   searchHash: string;
@@ -12,18 +11,16 @@ interface ExportToCsvComponentProps {
 
 interface ExportToCsvComponentState {
   exportId?: Number | null;
+  setShowExportModal: boolean;
 }
 
 const ExportToCsvComponent = (props: ExportToCsvComponentProps ) => {
   const [exportId,setExportId] = useState(null);
   const user = useSelector( (state:RootState) => state.user.current);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const searchExport = useSelector( (state: RootState) => state.search.searchExport);
- 
-  console.log("🚀 ~ file: searchExport", searchExport);
-  
-  
-  //console.log("🚀 ~ Parent state~ exportId", exportId);
+  //console.log("🚀 ~ file: searchExport", searchExport);
 
   if(!searchExport){
     return (
@@ -31,6 +28,7 @@ const ExportToCsvComponent = (props: ExportToCsvComponentProps ) => {
       siteView={props.siteView}
       searchHash={props.searchHash}
       setExportId={setExportId}
+      setShowExportModal={setShowExportModal}
       user={user}
     />
     )
@@ -42,10 +40,11 @@ const ExportToCsvComponent = (props: ExportToCsvComponentProps ) => {
           siteView={props.siteView}
           searchHash={props.searchHash}
           setExportId={setExportId}
+          setShowExportModal={setShowExportModal}
           user={user}
         />
-        {searchExport !== undefined ? (
-          <ExportToCsvDialog exportId={searchExport.id} setExportId={setExportId} />
+        {searchExport !== undefined && showExportModal ?  (
+          <ExportToCsvDialog exportId={searchExport.id} setExportId={setExportId} setShowExportModal={setShowExportModal} />
         ) : null}
       </>
     );

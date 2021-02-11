@@ -196,38 +196,42 @@ function* deleteSavedSearch(action) {
     }    
 } 
 
-
 function* getSearchExport(action) {
+    //console.log("Search EXPORT", action)
     try {
         let response = yield call(() => api.searchExport(action.searchExportId));
+       // console.log("🚀 ~ etSearchExport ~ response", response);
+        if(response.data.searchExport.downloadUrl === null){
+            yield getSearchExport(action);
+            return;
+        }
         if(response) {
-            yield put(actions.SearchExportSuccess(response));
+            yield put(actions.searchExportSuccess(response));
         }
         else {
-            yield put(actions.SearchExportError(response.message));
+            yield put(actions.searchExportError(response.message));
         }
     }
     catch(err) {
         console.log(err);
-        yield put(actions.SearchExportError(err.message));
+        yield put(actions.searchExportError(err.message));
     }
 }
 
 function* exportToCsv(action) {
     try {
         let exportResponse = yield call(() => api.exportToCsv(action.searchHash, action.siteViewId)); 
-        console.log("EXPORT RES", exportResponse)
+        //console.log("EXPORT RES", exportResponse)
         if (exportResponse.data.exportToCsv){                     
-            //let response = yield getSearchExport(action);     //! Will we need this?
-            yield put(actions.ExportToCsvSuccess(exportResponse));
+            yield put(actions.exportToCsvSuccess(exportResponse));
         }
         else {
-            yield put(actions.ExportToCsvError(exportResponse.message));
+            yield put(actions.exportToCsvError(exportResponse.message));
         }
     }
 catch(err) {
     console.log(err);
-    yield put(actions.ExportToCsvError(err.message));
+    yield put(actions.exportToCsvError(err.message));
 }    
 } 
 
