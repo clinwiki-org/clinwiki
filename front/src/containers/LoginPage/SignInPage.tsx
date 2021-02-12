@@ -19,12 +19,12 @@ const SignInPage = (props) => {
   const [password,setPassword] = useState('');
   const [oAuthToken,setOAuthToken] = useState('');
   const signInErrors = useSelector( (state:RootState) => state.user.signInErrors);
-  console.log('SignInPage.errors',signInErrors)
 
   const responseGoogle = (response) => {
+    console.log(response);
     setEmail(response.profileObj.email);
     setOAuthToken(response.tokenObj.id_token);
-    dispatch(signIn(email,password,oAuthToken));
+    dispatch(signIn(response.profileObj.email,password,response.tokenObj.id_token));
   };
 
   return (

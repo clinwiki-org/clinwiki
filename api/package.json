@@ -1,0 +1,51 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./server.js --exec babel-node",
+    "build": "babel . -d dist --ignore spec.js,node_modules",
+    "serve": "node dist/server.js",
+    "start_babel": "babel-node --preset @babel/preset-env ./server.js ",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "date-fns": "^2.14.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.9",
+    "express-graphql": "^0.12.0",
+    "google-auth-library": "^7.0.1",
+    "graphql": "^15.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.2.1",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.5.1",
+    "pug": "^2.0.4",
+    "rotating-file-stream": "^2.0.2",
+    "sanitize-html": "^1.20.1",
+    "split": "^1.0.1",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@babel/node": "^7.10.3",
+    "@babel/core": "^7.10.3",
+    "@babel/cli": "^7.10.3",
+    "babel-eslint": "^10.1.0",
+    "@babel/preset-env": "^7.10.3",
+    "eslint": "^5.16.0",
+    "nodemon": "^2.0.4"
+  }
+}
