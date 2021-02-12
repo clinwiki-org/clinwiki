@@ -43,6 +43,8 @@ const initialState: types.StudyState = {
     isFetchingStudyReactions: false,
     studyReactions: undefined,
     isCreatingReaction: false,
+    isFetchingReactionsById: false,
+    reactionsById: undefined,
 };
 
 const studyReducer = ( state = initialState, action: types.StudyActionTypes) : types.StudyState => {
@@ -470,6 +472,23 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
             return {
                 ...state,
                 isCreatingReaction: false
+            };
+        case types.FETCH_REACTIONS_BY_ID_SEND:
+            return {
+                ...state,
+                isFetchingReactionsById: true
+            };
+        case types.FETCH_REACTIONS_BY_ID_SUCCESS:
+            console.log(action.payload);
+            return {
+                ...state,
+                isFetchingReactionsById: false,
+                reactionsById: action.payload
+            };
+        case types.FETCH_REACTIONS_BY_ID_ERROR:
+            return {
+                ...state,
+                isFetchingReactionsById: false
             };
         default:
             return {...state};

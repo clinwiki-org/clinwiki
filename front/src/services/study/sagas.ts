@@ -401,7 +401,23 @@ function* deletePageView(action) {
         console.log(err);
         yield put(actions.deletePageViewError(err.message));
     }    
-} 
+}
+function* getReactionsById(action) {
+    try {
+        console.log(action)
+        let response = yield call(() => api.fetchReactionsById(action.reactionKindId));
+        console.log(response);
+        if(response) {
+            yield put(actions.fetchReactionsByIdSuccess(response));            }
+        else {
+            yield put(actions.fetchReactionsByIdError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchReactionsByIdError(err.message));
+    }
+}
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
@@ -428,4 +444,5 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_REACTION_KINDS_SEND, getReactionKinds);
     yield takeLatest(types.FETCH_STUDY_REACTIONS_SEND, getStudyReactions);
     yield takeLatest(types.CREATE_REACTION_SEND, createReaction);
+    yield takeLatest(types.FETCH_REACTIONS_BY_ID_SEND, getReactionsById);
 }

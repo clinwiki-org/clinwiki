@@ -1,12 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: ReactionsById
-// ====================================================
-
 export interface ReactionsById_me_reactions_reactionKind {
   __typename: "ReactionKind";
   /**
@@ -37,7 +28,6 @@ export interface ReactionsById_me_reactions {
   study: ReactionsById_me_reactions_study;
   nctId: string;
 }
-
 export interface ReactionsById_me {
   __typename: "User";
   /**
@@ -69,3 +59,4 @@ export interface ReactionsById {
 export interface ReactionsByIdVariables {
   reactionKindId: string;
 }
+

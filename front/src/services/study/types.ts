@@ -16,6 +16,7 @@ import { SuggestedLabelsQuery } from './model/SuggestedLabelsQuery'
 import { ReactionsIslandQuery } from './model/ReactionsIslandQuery'
 import { ReactionKinds } from './model/ReactionKinds'
 import { StudyReactions } from './model/StudyReactions'
+import { ReactionsById } from './model/ReactionsById';
 
 export const FETCH_SAMPLE_STUDY_SEND = 'FETCH_SAMPLE_STUDY_SEND';
 export const FETCH_SAMPLE_STUDY_SUCCESS = 'FETCH_SAMPLE_STUDY_SUCCESS';
@@ -120,6 +121,10 @@ export const CREATE_REACTION_SEND = 'CREATE_REACTION';
 export const CREATE_REACTION_SUCCESS = 'CREATE_REACTION_SUCCESS';
 export const CREATE_REACTION_ERROR = 'CREATE_REACTION_ERROR';
 
+export const FETCH_REACTIONS_BY_ID_SEND = 'FETCH_REACTIONS_BY_ID_SEND';
+export const FETCH_REACTIONS_BY_ID_SUCCESS = 'FETCH_REACTIONS_BY_ID_SUCCESS';
+export const FETCH_REACTIONS_BY_ID_ERROR = 'FETCH_REACTIONS_BY_ID_ERROR';
+
 export interface StudyState {
     isFetchingSampleStudy: boolean,
     sampleStudy: any | undefined,
@@ -163,6 +168,8 @@ export interface StudyState {
     isFetchingStudyReactions: boolean,
     studyReactions: StudyReactions | undefined,
     isCreatingReaction: boolean,
+    isFetchingReactionsById: boolean,
+    reactionsById: ReactionsById | undefined,
 }
 
 export interface StudyDataError {
@@ -554,6 +561,18 @@ export interface createReactionErrorAction {
     type: typeof CREATE_REACTION_ERROR,
     payload:StudyDataError
 };
+export interface FetchReactionsByIdSendAction {
+    type: typeof FETCH_REACTIONS_BY_ID_SEND
+    reactionKindId: any
+};
+export interface FetchReactionsByIdSuccessAction {
+    type: typeof FETCH_REACTIONS_BY_ID_SUCCESS,
+    payload: any
+};
+export interface FetchReactionsByIdErrorAction {
+    type: typeof FETCH_REACTIONS_BY_ID_ERROR,
+    payload: StudyDataError
+};
 export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
 fetchPageViewSendAction | fetchPageViewSuccessAction | fetchPageViewErrorAction |
 fetchPageViewsSendAction | fetchPageViewsSuccessAction | fetchPageViewsErrorAction |
@@ -581,5 +600,5 @@ FetchSampleStudySendAction | FetchSampleStudySuccessAction | FetchSampleStudyErr
 FetchStudyPageSendAction | updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
 CreatePageViewSendAction | CreatePageViewSuccessAction  | CreatePageViewErrorAction  | 
 DeletePageViewSendAction | DeletePageViewSuccessAction | DeletePageViewErrorAction | 
-UpdatePageViewSendAction | UpdatePageViewSuccessAction | UpdatePageViewErrorAction
-;;
+UpdatePageViewSendAction | UpdatePageViewSuccessAction | UpdatePageViewErrorAction |
+FetchReactionsByIdSendAction | FetchReactionsByIdSuccessAction | FetchReactionsByIdErrorAction;

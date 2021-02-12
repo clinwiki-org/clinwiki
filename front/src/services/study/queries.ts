@@ -471,4 +471,26 @@ export const STUDY_REACTIONS =`
   }
 
 `;
+export const REACTIONS_QUERY = `
+  query ReactionsById($reactionKindId: String!) {
+    me {
+        id
+        email
+        firstName
+        lastName
+        reactions(reactionKindId: $reactionKindId){
+          reactionKindId
+          reactionKind{
+            id
+            name
+          }
+          study{
+            briefTitle
+          }
+          nctId
+        }
+    }
+  }
+
+`;
 
