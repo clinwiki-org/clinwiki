@@ -27,11 +27,13 @@ type Mode = 'Study' | 'Search';
 // query, params, schema
 
 function getClassForMode(mode: Mode) {
+  console.log("MODEEE", mode)
   switch (mode) {
     case 'Study':
       return 'Study';
     case 'Search':
       return 'ElasticStudy';
+      
   }
 }
 interface MailMergeFormControlProps {

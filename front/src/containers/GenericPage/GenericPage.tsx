@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet';
 import { useQuery, useMutation} from '@apollo/client';
 import { getStudyQuery2, getSearchQuery2 } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
-import { studyIslands } from 'containers/Islands/CommonIslands'
+import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
 //import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
@@ -127,6 +127,7 @@ console.log(studyData.data)
   // const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
   // :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }
 
+  const islands = pageType == 'Study'? studyIslands: searchIslands;
   return (
     <div>
       <Helmet>
@@ -135,7 +136,7 @@ console.log(studyData.data)
       <MailMergeView
         template={currentPage?.template || ''}
         context={studyData?.data.study || searchData()}
-        islands={studyIslands}
+        islands={islands}
         pageType={pageType}
       />
     </div>

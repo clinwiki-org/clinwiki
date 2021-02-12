@@ -21,6 +21,7 @@ import SitesPage from 'containers/SitesPage';
 import SitesNewPage from 'containers/SitesNewPage';
 import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
+import EditAggIslandsPage from 'containers/EditAggIslandsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponent'
@@ -70,6 +71,7 @@ class App extends React.PureComponent<AppProps> {
                   <Route exact path="/profile" component={EditProfilePage} />
                   <Route path="/profile/:id/" component={ProfilePage} />
                   <Route path="/workflows" component={EditWorkflowsPage} />
+                  <Route path="/aggIslands" component={EditAggIslandsPage} />
                   <Route path={`/bulk`} component={BulkEditPage} />
                   <Route path="/sites/:id/edit" component={SitesEditPage} />
                   <Route path="/sites/new" component={SitesNewPage} />

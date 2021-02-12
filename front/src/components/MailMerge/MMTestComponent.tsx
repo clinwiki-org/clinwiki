@@ -14,6 +14,7 @@ import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
 import { BeatLoader } from 'react-spinners';
 import { fetchStudyPage } from 'services/study/actions';
+import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 
 
 type Mode = 'Study' | 'Search';
@@ -65,6 +66,7 @@ const template2= `
 {{/$RenderEach }}
 `
 const template3= `
+<agg hash='{{querystring hash}}'></agg>
 # title: Search Page
 {{#each studies }}
 <div class="testing-mm">
@@ -114,8 +116,9 @@ console.log("FRAG", fragmentName, fragment)
     if (mode === 'Search') setNctOrSearchHash(defaultSearchHash);
   };
 
-  const islands = {
-    ...commonIslands,
+  let islands = mode == 'Study'? studyIslands: searchIslands;
+   islands = {
+    ...islands,
     groot: (attributes: Record<string, string>) => {
       return (
         <img src="https://media.giphy.com/media/11vDNL1PrUUo0/source.gif" />

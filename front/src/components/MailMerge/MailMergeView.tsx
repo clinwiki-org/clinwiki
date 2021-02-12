@@ -114,7 +114,7 @@ console.log("RAW",raw)
     () => true,
     instructions
   );
- console.log("Creating react element")
+ console.log("Creating react element", props?.islands)
   return (
     <div className="mail-merge" style={style}>
       {reactElement}

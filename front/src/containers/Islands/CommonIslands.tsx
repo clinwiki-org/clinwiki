@@ -9,6 +9,7 @@ import ReactionsIsland from './ReactionsIsland';
 import ReviewsIsland from './ReviewsIsland';
 import EditsHistoryIsland from './EditsHistoryIsland';
 import CollapsiblePanel from 'components/CollapsiblePanel';
+import IslandAgg from './IslandAgg'
 
 /*
   Common island configuration for MailMerge pages
@@ -52,4 +53,10 @@ export const studyIslands: Record<string, IslandConstructor> = {
   reviews: (attributes: Record<string, string>, context?: any) => (
     <ReviewsIsland nctId={context?.nctId} />
   ),
+};
+export const searchIslands: Record<string, IslandConstructor> = {
+  ...commonIslands,
+  agg: (attributes: Record<string, string>, context?: any) => (
+    <IslandAgg hash={attributes['hash']} aggId={attributes['id']} />
+  )
 };

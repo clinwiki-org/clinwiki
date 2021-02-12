@@ -37,7 +37,9 @@ abstract class AbstractAggFilterInputUpdater {
   abstract onUpdateFilter(allowsMissingChanged?: boolean): void;
 
   configureInput() {
-    const result = find(propEq('field', this.agg))(
+    console.log(this.agg)
+    console.log(this.settings)
+    const result = this.agg && this.settings[this.grouping]&& find(propEq('field', this.agg))(
       this.settings[this.grouping]
     );
     if (result) {
@@ -88,6 +90,7 @@ abstract class AbstractAggFilterInputUpdater {
   }
 
   toggleFilter(key: string): void {
+    console.log("Kay",key)
     this.isSelected(key) ? this.removeFilter(key) : this.addFilter(key);
   }
 
@@ -207,9 +210,12 @@ abstract class AbstractAggFilterInputUpdater {
  */
 class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
   onUpdateFilter(): void {
+    console.log("X-games",this.agg, this.settings, this.grouping);
+    console.log(this.settings[this.grouping])
+    if(this.settings[this.grouping]){
     const allButThisAgg = filter(
       (x: AggFilterInput) => x.field !== this.agg,
-      this.settings[this.grouping]
+      this.settings[this.grouping] || {}
     );
     if (this.hasNoFilters()) {
       this.updateSettings({
@@ -235,6 +241,25 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
         [this.grouping]: [...allButThisAgg, newInput],
       });
     }
+  }
+  console.log(this.grouping)
+ console.log( this.settings.aggFilters )
+ console.log( this.settings[this.grouping] )
+  
+ let newInput = {
+  field: this.input?.field,
+  values: this.input?.values,
+  gte: this.input?.gte || null,
+  lte: this.input?.lte || null,
+  includeMissingFields: this.input?.includeMissingFields || null,
+  zipcode: this.input?.zipcode || null,
+  radius: this.input?.radius || null,
+  lat: this.input?.lat || null,
+  long: this.input?.long || null
+}      
+this.updateSettings({
+  [this.grouping]: [... this.settings.aggFilters, newInput],
+});
   }
 }
 

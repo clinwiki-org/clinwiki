@@ -15,7 +15,7 @@ const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
 `;
 
-interface WorkflowFormProps {
+interface EditIslandFormProps {
   workflow: WorkflowConfigFragment;
   onAddMutations: (e: MutationSource[]) => void;
   presentSiteView: SiteViewFragment;
@@ -30,7 +30,7 @@ const StyledCheckbox = styled(Checkbox)`
   align-items: center;
 `;
 
-class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
+class EditIslandForm extends React.PureComponent<EditIslandFormProps> {
   handleCheckboxToggle = value => (e: {
     currentTarget: { name: string; value: any };
   }) => {
@@ -217,4 +217,4 @@ const mapStateToProps = (state, ownProps) => ({
   presentSiteView: state.site.presentSiteProvider.site.siteView,
 })
 
-export default connect(mapStateToProps, null ) (WorkflowForm);
+export default connect(mapStateToProps, null ) (EditIslandForm);
