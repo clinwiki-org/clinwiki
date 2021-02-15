@@ -45,6 +45,9 @@ const initialState: types.StudyState = {
     isCreatingReaction: false,
     isFetchingReactionsById: false,
     reactionsById: undefined,
+    isUpsertingReviewForm: false,
+    isFetchingEditReview: false,
+    editReview: undefined,
 };
 
 const studyReducer = ( state = initialState, action: types.StudyActionTypes) : types.StudyState => {
@@ -490,6 +493,36 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
             return {
                 ...state,
                 isFetchingReactionsById: false
+        case types.UPSERT_REVIEW_FORM_MUTATION_SEND:
+            return {
+                ...state,
+                isUpsertingReviewForm: true
+            };
+        case types.UPSERT_REVIEW_FORM_MUTATION_SUCCESS:
+            return {
+                ...state,
+                isUpsertingReviewForm: false,
+            };
+        case types.UPSERT_REVIEW_FORM_MUTATION_ERROR:
+            return {
+                ...state,
+                isUpsertingReviewForm: false
+            };
+        case types.FETCH_EDIT_REVIEW_SEND:
+            return {
+                ...state,
+                isFetchingEditReview: true
+            };
+        case types.FETCH_EDIT_REVIEW_SUCCESS:
+            return {
+                ...state,
+                isFetchingEditReview: false,
+                editReview: action.payload
+            };
+        case types.FETCH_EDIT_REVIEW_ERROR:
+            return {
+                ...state,
+                isFetchingEditReview: false
             };
         default:
             return {...state};

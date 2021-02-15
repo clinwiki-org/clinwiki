@@ -223,6 +223,5 @@ const mapDispatchToProps = (dispatch) => ({
   createReaction: (nctId, reactionKindId) => dispatch(createReaction(nctId, reactionKindId)),
       
   deleteReaction: (id) => dispatch(deleteReaction(id))
-
-})
+});
 export default connect(null, mapDispatchToProps) (SlackCounter);

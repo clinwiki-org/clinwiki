@@ -1,3 +1,7 @@
+import StudySummary from 'components/StudySummary';
+import ReviewForm from 'containers/ReviewForm';
+
+
 export const PAGE_VIEW_FRAGMENT = `
 fragment PageViewFragment on PageView {
     id
@@ -270,7 +274,19 @@ export const REVIEW_FRAGMENT = `
     }
   }
 `;
-export const REVIEW_PAGE_QUERY =`
+export const STUDY_FRAGMENT =`
+  fragment ReviewFormStudyFragment on Study {
+    nctId
+    reviews {
+      ...ReviewFragment
+    }
+  }
+
+  ${REVIEW_FRAGMENT}
+`;
+
+
+export const REVIEW_QUERY =`
 query ReviewPageQuery($nctId: String!) {
   study(nctId: $nctId) {
     reviews {
@@ -283,6 +299,7 @@ query ReviewPageQuery($nctId: String!) {
   }
 }
 ${REVIEW_FRAGMENT}
+
 `;
 export const STUDY_EDITS_HISTORY_QUERY = `
   query StudyEditsHistoryQuery($nctId: String!) {
@@ -491,6 +508,19 @@ export const REACTIONS_QUERY = `
         }
     }
   }
-
 `;
 
+export const EDIT_REVIEW_QUERY =`
+  query EditReviewQuery($nctId: String!) {
+    study(nctId: $nctId) {
+      ...StudySummaryFragment
+      reviews {
+        ...ReviewFragment
+      }
+      nctId
+    }
+  }
+
+  ${ReviewForm.fragment}
+  ${StudySummary.fragment}
+`;
