@@ -6,10 +6,11 @@ import SlackCounterGroup from './SlackCounterGroup'
 import { find, propEq } from 'ramda';
 import { Icon, InlineIcon } from '@iconify/react';
 import smilePlus from '@iconify/icons-fe/smile-plus';
-import DeleteReactionMutation, {
-} from 'mutations/DeleteReactionMutation';
-import CreateReactionMutation, {
-} from 'mutations/CreateReactionMutation';
+//import DeleteReactionMutation, {} from 'mutations/DeleteReactionMutation';
+import {} from 'mutations/DeleteReactionMutation'; //ketp this but deleted mutation
+//import CreateReactionMutation, {} from 'mutations/CreateReactionMutation';
+import {} from 'mutations/CreateReactionMutation'; //kept this but deleted mutation
+import { CREATE_REACTION, DELETE_REACTION } from '../../../services/study/mutations';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import REACTIONS_QUERY from '../../../queries/StudyReaction'
 import QUERY from 'queries/StudyPageQuery';
