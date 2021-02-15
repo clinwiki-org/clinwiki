@@ -199,8 +199,9 @@ export const fetchCrowdPageError= (message: string) : types.StudyActionTypes => 
     type: types.FETCH_CROWD_PAGE_ERROR,
     payload: {message}
 });
-export const deleteReviewMutation= ( nctId: any ) : types.StudyActionTypes => ({
+export const deleteReviewMutation= ( id: any, nctId: any ) : types.StudyActionTypes => ({
     type: types.DELETE_REVIEW_MUTATION_SEND,
+    id,
     nctId,
 });
 export const deleteReviewMutationSuccess= (payload: any) : types.StudyActionTypes => ({
@@ -346,3 +347,31 @@ export const createReactionError= (message: string) : types.StudyActionTypes => 
     type: types.CREATE_REACTION_ERROR,
     payload: {message}
 });
+export const upsertReviewFormMutation= ( id: any, nctId: any, meta: any, content: any) : types.StudyActionTypes => ({
+    type: types.UPSERT_REVIEW_FORM_MUTATION_SEND,
+    id,
+    nctId,
+    meta,
+    content
+});
+export const upsertReviewFormMutationSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.UPSERT_REVIEW_FORM_MUTATION_SUCCESS,
+    payload
+});
+export const upsertReviewFormMutationError= (message: string) : types.StudyActionTypes => ({
+    type: types.UPSERT_REVIEW_FORM_MUTATION_ERROR,
+    payload: {message}
+});
+export const fetchEditReview= (nctId: string) : types.StudyActionTypes => ({
+    type: types.FETCH_EDIT_REVIEW_SEND,
+    nctId,
+});
+export const fetchEditReviewSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_EDIT_REVIEW_SUCCESS,
+    payload
+});
+export const fetchEditReviewError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_EDIT_REVIEW_ERROR,
+    payload: {message}
+});
+

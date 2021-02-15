@@ -1,7 +1,9 @@
+import { push } from 'connected-react-router'
 import { call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
+import {updateSearchParamsSuccess} from './../search/actions';
 
 const getCurrentPageViews = (state)=> state.study.pageViews.data.site.pageViews; //TODO CHeck path to redux store pageViews
 
@@ -170,10 +172,13 @@ function* deleteLabelMutation(action) {
 }
 function* deleteReviewMutation(action) {
     try {
-        let response = yield call(() => api.deleteReviewMutation(action.nctId));
+        console.log(action)
+        let response = yield call(() => api.deleteReviewMutation(action.id, action.nctId));
         if(response) {
-            yield put(actions.deleteReviewMutation(response.nctId));
-            yield call(()=> api.fetchReviewPage(action.nctId)); //????????? is like redirect or method call?
+            yield put(actions.deleteReviewMutationSuccess(response.id));
+            //yield call(()=> api.fetchReviewPage(action.nctId));
+            console.log(action.nctId);
+            let response2 = yield getReviewPage(action);
         }
         else {
             yield put(actions.deleteReviewMutationError(response.message));
@@ -204,7 +209,7 @@ function* getReviewPage(action) {
         console.log(action)
         let response = yield call(() => api.fetchReviewPage(action.nctId));
         if(response) {
-            yield put(actions.fetchReviewPageSuccess(response));        }
+            yield put(actions.fetchReviewPageSuccess(response));            }
         else {
             yield put(actions.fetchReviewPageError(response.message));
         }
@@ -291,7 +296,7 @@ function* deleteReaction(action) {
         let response = yield call(() => api.deleteReaction(action.id));
         if(response) {
             yield put(actions.deleteReaction(response.id));
-            yield call(()=> api.fetchReactionsIsland(action.nctId));  // ??????????? is like redirect or a method call
+            yield call(()=> api.fetchReactionsIsland(action.nctId));
         }
         else {
             yield put(actions.deleteReactionError(response.message));
@@ -320,7 +325,7 @@ function* getStudyReactions(action) {
     try {
         let response = yield call(() => api.fetchStudyReactions());
         if(response) {
-            yield put(actions.fetchStudyReactions(action.nctId));        }
+            yield put(actions.fetchStudyReactionsSuccess(action.nctId));        }
         else {
             yield put(actions.fetchStudyReactionsError(response.message));
         }
@@ -401,7 +406,42 @@ function* deletePageView(action) {
         console.log(err);
         yield put(actions.deletePageViewError(err.message));
     }    
-} 
+}
+function* upsertReviewFormMutation(action) {
+    try {
+        console.log(action);
+        let response = yield call(() => api.upsertReviewFormMutation(action.id, action.nctId, action.meta, action.content));
+        if (action) {
+            let location = yield select( (state) => state.router.location);
+
+            console.log(location)
+            let response2 = yield getReviewPage(action);
+            let path = location.pathname.slice(0,-4);
+            yield put(push(`${path}?hash=${location.query.hash}&sv=${location.query.sv}&pv=${location.query.pv}`));
+        }
+        else {
+            yield put(actions.upsertReviewFormMutationError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.upsertReviewFormMutationError(err.message));
+    }
+}
+function* getEditReview(action) {
+    try {
+        let response = yield call(() => api.fetchEditReview(action.nctId));
+        if(response) {
+            yield put(actions.fetchEditReviewSuccess(action.nctId));        }
+        else {
+            yield put(actions.fetchEditReviewError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchEditReviewError(err.message));
+    }
+}
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
@@ -428,4 +468,6 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_REACTION_KINDS_SEND, getReactionKinds);
     yield takeLatest(types.FETCH_STUDY_REACTIONS_SEND, getStudyReactions);
     yield takeLatest(types.CREATE_REACTION_SEND, createReaction);
+    yield takeLatest(types.UPSERT_REVIEW_FORM_MUTATION_SEND, upsertReviewFormMutation);
+    yield takeLatest(types.FETCH_EDIT_REVIEW_SEND, getEditReview);
 }
