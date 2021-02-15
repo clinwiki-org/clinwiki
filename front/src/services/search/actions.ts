@@ -3,6 +3,7 @@ import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
 import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
+import { CrumbsSearchPageAggBucketsQuery } from 'types/CrumbsSearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
 import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
 
@@ -51,6 +52,21 @@ export const fetchSearchPageCrowdAggBucketsSuccess = (payload: SearchPageCrowdAg
 
 export const fetchSearchPageCrowdAggBucketsError = (message: string) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR,
+    payload: { message }
+});
+
+export const fetchCrumbsSearchPageAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
+    searchParams          //TODO CHeck
+});
+
+export const fetchCrumbsSearchPageAggBucketsSuccess = (payload: SearchPageAggBucketsQuery) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS,
+    payload
+});
+
+export const fetchCrumbsSearchPageAggBucketsError = (message: string) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_ERROR,
     payload: { message }
 });
 
