@@ -82,8 +82,8 @@ export const deleteReaction = (id:any) =>{
 export const fetchReactionKinds= () => {
     return callGraphql(ENDPOINT, query.REACTION_KINDS, {});
 };
-export const fetchStudyReactions= () => {
-    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {});
+export const fetchStudyReactions= (nctId: string) => {
+    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {nctId});
 };
 export const createReaction = ( nctId: string, reactionKindId: any) =>{
     return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})

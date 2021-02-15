@@ -290,8 +290,10 @@ function* deleteReaction(action) {
     try {
         let response = yield call(() => api.deleteReaction(action.id));
         if(response) {
-            yield put(actions.deleteReaction(response.id));
-            yield call(()=> api.fetchReactionsIsland(action.nctId));  // ??????????? is like redirect or a method call
+            yield put(actions.deleteReactionSuccess(response.id));
+            yield getReactionsById(action.reactionKindId);
+            yield call(()=> api.fetchReactionsIsland(action.nctId));
+            //still have to refetch study page query        
         }
         else {
             yield put(actions.deleteReactionError(response.message));
@@ -318,16 +320,16 @@ function* getReactionKinds(action) {
 }
 function* getStudyReactions(action) {
     try {
-        let response = yield call(() => api.fetchStudyReactions());
+        let response = yield call(() => api.fetchStudyReactions(action.nctId));
         if(response) {
-            yield put(actions.fetchStudyReactions(action.nctId));        }
+            yield put(actions.fetchStudyReactionsSuccess(response.data));        }
         else {
             yield put(actions.fetchStudyReactionsError(response.message));
         }
     }
     catch(err) {
         console.log(err);
-        yield put(actions.fetchReactionKindsError(err.message));
+        yield put(actions.fetchStudyReactionsError(err.message));
     }
 }
 function* createReaction(action) { 
@@ -335,6 +337,8 @@ function* createReaction(action) {
         let response = yield call(() => api.createReaction(action.nctId, action.reactionKindId)); 
         if (response){ 
             yield put(actions.createReactionSuccess(response.data));
+            yield getReactionsById(action.reactionKindId);
+            //still have to refetch study page query
         }
         else {
             yield put(actions.createReactionError(response.message));

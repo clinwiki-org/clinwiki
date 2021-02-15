@@ -46,7 +46,7 @@ export const getSampleStudyQuery = (name: string, frag: string) => {
 };
 export const SEARCH_STUDY_PAGE_QUERY =`
 query SearchStudyPageQuery($hash: String!, $id: String!) {
-  search(searchHash: $hash) {
+  search(searStudyPageQuerychHash: $hash) {
     studyEdge(id: $id) {
       nextId
       prevId
