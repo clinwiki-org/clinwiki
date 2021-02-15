@@ -83,7 +83,7 @@ class AddFacetCard extends React.PureComponent<
     );
   };
 
-  getSuggestions = async () => {
+  getSuggestions = () => {
     const { values } = this.props;
     const { title, description } = this.state;
 
