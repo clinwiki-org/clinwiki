@@ -43,6 +43,7 @@ const initialState: types.StudyState = {
     isFetchingStudyReactions: false,
     studyReactions: undefined,
     isCreatingReaction: false,
+    isUpdatingWorkFlows: false,
 };
 
 const studyReducer = ( state = initialState, action: types.StudyActionTypes) : types.StudyState => {
@@ -470,6 +471,21 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
             return {
                 ...state,
                 isCreatingReaction: false
+            };
+        case types.UPDATE_WORKFLOW_PAGE_SEND:
+            return {
+                ...state,
+                isUpdatingWorkFlows: true
+            };
+        case types.UPDATE_WORKFLOW_PAGE_SUCCESS:
+            return {
+                ...state,
+                isUpdatingWorkFlows: false,
+            };
+        case types.UPDATE_WORKFLOW_PAGE_ERROR:
+            return {
+                ...state,
+                isUpdatingWorkFlows: false
             };
         default:
             return {...state};

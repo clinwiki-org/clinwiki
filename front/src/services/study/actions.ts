@@ -346,3 +346,15 @@ export const createReactionError= (message: string) : types.StudyActionTypes => 
     type: types.CREATE_REACTION_ERROR,
     payload: {message}
 });
+export const updateWorkflowPage = (input: any) : types.StudyActionTypes => ({
+    type: types.UPDATE_WORKFLOW_PAGE_SEND,
+    input
+});
+export const updateWorkflowPageSuccess = (payload: any) : types.StudyActionTypes => ({
+    type: types.UPDATE_WORKFLOW_PAGE_SUCCESS,
+
+});
+export const updateWorkflowPageError = (message: string) : types.StudyActionTypes => ({
+    type: types.UPDATE_WORKFLOW_PAGE_ERROR,
+    payload: {message}
+});

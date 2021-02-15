@@ -88,3 +88,6 @@ export const fetchStudyReactions= () => {
 export const createReaction = ( nctId: string, reactionKindId: any) =>{
     return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})
 };
+export const updateWorkflowPage = (input: any) =>{
+    return callGraphql(ENDPOINT,mutate.UPDATE_WORKFLOW_PAGE_MUTATION,  input )
+};

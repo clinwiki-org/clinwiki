@@ -1,3 +1,5 @@
+import {WORKFLOW_VIEW_PROVIDER_FRAGMENT} from './queries';
+
 export const CREATE_STUDY_VIEW_LOG_MUTATION =`
 mutation CreateStudyViewLogMutation($nctId: String!){
     createStudyViewLog(input: {
@@ -202,3 +204,15 @@ export const CREATE_REACTION = `
   }
 `;
 
+export const UPDATE_WORKFLOW_PAGE_MUTATION = `
+mutation UpdateWorkflowsViewMutation($input: UpdateWorkflowsViewInput!) {
+  updateWorkflowsView(input: $input) {
+    workflowsView {
+      ...WorkflowsViewFragment
+    }
+    errors
+  }
+}
+
+${WORKFLOW_VIEW_PROVIDER_FRAGMENT}
+`

@@ -7,13 +7,15 @@ import { gql }  from '@apollo/client';
 import { Query, Mutation } from '@apollo/client/react/components';
 import { omit, prop } from 'ramda';
 import * as R from 'remeda';
-import WorkflowsViewProvider from 'containers/WorkflowsViewProvider';
 import BulkEditView from './BulkEditView';
 import SearchPageParamsQuery, {
   SearchPageParamsQueryComponent,
 } from 'queries/SearchPageParamsQuery';
 import { BulkLabelsQuery } from 'types/BulkLabelsQuery';
 import { STRING_MISSING_IDENTIFIER } from 'utils/constants';
+import { fetchAllWorkFlows } from 'services/study/actions';
+import { connect } from 'react-redux';
+import { BeatLoader } from 'react-spinners';
 
 const BULK_QUERY_UPDATE_MUTATION = gql`
   mutation BulkQueryUpdateMutation($input: BulkQueryUpdateInput!) {
@@ -72,14 +74,12 @@ const LABELS_QUERY = gql`
 `;
 // escape label
 const el = (label: string) => label.replace(/ /g, '').replace('|', '_');
-
 const buildParams = (labels: string[]): string => {
   return labels.reduce(
     (s, label) => `$${el(label)}Params: SearchInput! ${s}`,
     ''
   );
 };
-
 const variablesForLabels = (labels: string[], params: any) => {
   return labels.reduce(
     (variables, label) => ({
@@ -92,7 +92,6 @@ const variablesForLabels = (labels: string[], params: any) => {
     {}
   );
 };
-
 const bucketsForLabels = (labels: string[]) => {
   const query = gql`
   query BucketsForLabelsQuery (${buildParams(labels)}) {
@@ -160,6 +159,8 @@ const groupBucketsByLabel = ({ data, labels }) =>
 interface BulkEditProps {
   match: match<{ searchId?: string }>;
   history: History;
+  fetchAllWorkFlows: any;
+  allWorkflows: any;
 }
 interface BulkEditState {
   undoHistory: any[];
@@ -332,17 +333,18 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
       </SearchPageParamsQueryComponent>
     );
   }
+  componentDidMount(){
+    this.props.fetchAllWorkFlows()
+  }
+  
   render() {
-    return (
-      <WorkflowsViewProvider>
-        {(workflowsView) => {
-          const workflow = workflowsView.workflows.filter(
+    if(!this.props.allWorkflows){
+      return <BeatLoader/>
+    }
+          const workflow = this.props.allWorkflows.data.workflowsView.workflows.filter(
             (w) => w.name.toLowerCase() === 'wf_bulk'
           )?.[0];
           return this.renderWorkflow(workflow);
-        }}
-      </WorkflowsViewProvider>
-    );
   }
 }
 
@@ -352,4 +354,12 @@ const FILTERED_LABELS = [
   'phase',
 ];
 
-export default BulkEditPage;
+const mapStateToProps = (state, ownProps) => ({
+  allWorkflows: state.study.allWorkFlows
+})
+const mapDispatchToProps = (dispatch) => ({
+  fetchAllWorkFlows: () => dispatch(fetchAllWorkFlows())
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(BulkEditPage);

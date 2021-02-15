@@ -402,6 +402,21 @@ function* deletePageView(action) {
         yield put(actions.deletePageViewError(err.message));
     }    
 } 
+function* updateWorkflowPage(action) { 
+    try {
+        let response = yield call(() => api.updateWorkflowPage(action.input)); 
+        if (response){ 
+            yield put(actions.updateWorkflowPageSuccess(response.data));
+        }
+        else {
+            yield put(actions.updateWorkflowPageError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.updateWorkflowPageError(err.message));
+    }
+}
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
@@ -428,4 +443,5 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_REACTION_KINDS_SEND, getReactionKinds);
     yield takeLatest(types.FETCH_STUDY_REACTIONS_SEND, getStudyReactions);
     yield takeLatest(types.CREATE_REACTION_SEND, createReaction);
+    yield takeLatest(types.UPDATE_WORKFLOW_PAGE_SEND, updateWorkflowPage);
 }

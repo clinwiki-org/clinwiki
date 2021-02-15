@@ -375,7 +375,7 @@ query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
 }
 `;
 
-const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
+export const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
   fragment WorkflowsViewFragment on WorkflowsView {
     id
     workflows {

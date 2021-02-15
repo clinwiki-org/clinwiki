@@ -120,6 +120,10 @@ export const CREATE_REACTION_SEND = 'CREATE_REACTION';
 export const CREATE_REACTION_SUCCESS = 'CREATE_REACTION_SUCCESS';
 export const CREATE_REACTION_ERROR = 'CREATE_REACTION_ERROR';
 
+export const UPDATE_WORKFLOW_PAGE_SEND = 'UPDATE_WORKFLOW_PAGE';
+export const UPDATE_WORKFLOW_PAGE_SUCCESS = 'UPDATE_WORKFLOW_PAGE_SUCCESS';
+export const UPDATE_WORKFLOW_PAGE_ERROR = 'UPDATE_WORKFLOW_PAGE_ERROR';
+
 export interface StudyState {
     isFetchingSampleStudy: boolean,
     sampleStudy: any | undefined,
@@ -163,6 +167,7 @@ export interface StudyState {
     isFetchingStudyReactions: boolean,
     studyReactions: StudyReactions | undefined,
     isCreatingReaction: boolean,
+    isUpdatingWorkFlows: boolean,
 }
 
 export interface StudyDataError {
@@ -554,6 +559,19 @@ export interface createReactionErrorAction {
     type: typeof CREATE_REACTION_ERROR,
     payload:StudyDataError
 };
+export interface updateWorkflowPageSendAction {
+    type: typeof UPDATE_WORKFLOW_PAGE_SEND,
+    input: any;
+};
+
+export interface updateWorkflowPageSuccessAction {
+    type: typeof UPDATE_WORKFLOW_PAGE_SUCCESS,
+};
+
+export interface updateWorkflowPageErrorAction {
+    type: typeof UPDATE_WORKFLOW_PAGE_ERROR,
+    payload:StudyDataError
+};
 export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
 fetchPageViewSendAction | fetchPageViewSuccessAction | fetchPageViewErrorAction |
 fetchPageViewsSendAction | fetchPageViewsSuccessAction | fetchPageViewsErrorAction |
@@ -577,6 +595,7 @@ deleteReactionSendAction | deleteReactionSuccessAction | deleteReactionErrorActi
 fetchReactionKindsSendAction | fetchReactionKindsSuccessAction | fetchReactionKindsErrorAction | 
 fetchStudyReactionsSendAction | fetchStudyReactionsSuccessAction | fetchStudyReactionsErrorAction |
 createReactionSendAction | createReactionSuccessAction | createReactionErrorAction |
+updateWorkflowPageSendAction | updateWorkflowPageSuccessAction | updateWorkflowPageErrorAction |
 FetchSampleStudySendAction | FetchSampleStudySuccessAction | FetchSampleStudyErrorAction |
 FetchStudyPageSendAction | updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
 CreatePageViewSendAction | CreatePageViewSuccessAction  | CreatePageViewErrorAction  | 
