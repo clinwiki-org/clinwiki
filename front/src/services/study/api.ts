@@ -82,11 +82,15 @@ export const deleteReaction = (id:any) =>{
 export const fetchReactionKinds= () => {
     return callGraphql(ENDPOINT, query.REACTION_KINDS, {});
 };
-export const fetchStudyReactions= () => {
-    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {});
+export const fetchStudyReactions= (nctId: string) => {
+    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {nctId});
 };
 export const createReaction = ( nctId: string, reactionKindId: any) =>{
     return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})
+};
+export const fetchReactionsById= (reactionKindId: any) => {
+    console.log(`fetchReactionsById called ${reactionKindId}`);
+    return callGraphql(ENDPOINT, query.REACTIONS_QUERY, {reactionKindId: reactionKindId})
 };
 export const upsertReviewFormMutation = (id:any, nctId:any, meta: any, content: any) =>{
     return callGraphql(ENDPOINT,mutate.REVIEW_FORM_MUTATION, {id: id, nctId: nctId, meta: meta, content: content})

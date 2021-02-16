@@ -17,6 +17,7 @@ import { SuggestedLabelsQuery } from './model/SuggestedLabelsQuery'
 import { ReactionsIslandQuery } from './model/ReactionsIslandQuery'
 import { ReactionKinds } from './model/ReactionKinds'
 import { StudyReactions } from './model/StudyReactions'
+import { ReactionsById } from './model/ReactionsById';
 import { ReviewFormMutation, ReviewFormMutationVariables } from './model/ReviewFormMutation'
 import { EditReviewQuery } from './model/EditReviewQuery'
 
@@ -124,6 +125,10 @@ export const CREATE_REACTION_SEND = 'CREATE_REACTION';
 export const CREATE_REACTION_SUCCESS = 'CREATE_REACTION_SUCCESS';
 export const CREATE_REACTION_ERROR = 'CREATE_REACTION_ERROR';
 
+export const FETCH_REACTIONS_BY_ID_SEND = 'FETCH_REACTIONS_BY_ID_SEND';
+export const FETCH_REACTIONS_BY_ID_SUCCESS = 'FETCH_REACTIONS_BY_ID_SUCCESS';
+export const FETCH_REACTIONS_BY_ID_ERROR = 'FETCH_REACTIONS_BY_ID_ERROR';
+
 export const UPSERT_REVIEW_FORM_MUTATION_SEND = 'UPSERT_REVIEW_FORM_MUTATION_SEND';
 export const UPSERT_REVIEW_FORM_MUTATION_SUCCESS = 'UPSERT_REVIEW_FORM_MUTATION_SUCCESS';
 export const UPSERT_REVIEW_FORM_MUTATION_ERROR = 'UPSERT_REVIEW_FORM_MUTATION_ERROR';
@@ -175,6 +180,8 @@ export interface StudyState {
     isFetchingStudyReactions: boolean,
     studyReactions: StudyReactions | undefined,
     isCreatingReaction: boolean,
+    isFetchingReactionsById: boolean,
+    reactionsById: ReactionsById | undefined,
     isUpsertingReviewForm: boolean,
     isFetchingEditReview: boolean,
     editReview: EditReviewQuery | undefined,
@@ -570,6 +577,18 @@ export interface createReactionErrorAction {
     type: typeof CREATE_REACTION_ERROR,
     payload:StudyDataError
 };
+export interface FetchReactionsByIdSendAction {
+    type: typeof FETCH_REACTIONS_BY_ID_SEND
+    reactionKindId: any
+};
+export interface FetchReactionsByIdSuccessAction {
+    type: typeof FETCH_REACTIONS_BY_ID_SUCCESS,
+    payload: any
+};
+export interface FetchReactionsByIdErrorAction {
+    type: typeof FETCH_REACTIONS_BY_ID_ERROR,
+    payload: StudyDataError
+};
 
 export interface upsertReviewFormMutationSendAction {
     type: typeof UPSERT_REVIEW_FORM_MUTATION_SEND,
@@ -629,5 +648,6 @@ FetchStudyPageSendAction | updateStudyViewLogCountSendAction | updateStudyViewLo
 CreatePageViewSendAction | CreatePageViewSuccessAction  | CreatePageViewErrorAction  | 
 DeletePageViewSendAction | DeletePageViewSuccessAction | DeletePageViewErrorAction | 
 UpdatePageViewSendAction | UpdatePageViewSuccessAction | UpdatePageViewErrorAction |
+FetchReactionsByIdSendAction | FetchReactionsByIdSuccessAction | FetchReactionsByIdErrorAction |
 upsertReviewFormMutationSendAction | upsertReviewFormMutationSuccessAction | upsertReviewFormMutationErrorAction |
 FetchEditReviewSendAction | FetchEditReviewSuccessAction | FetchEditReviewErrorAction;

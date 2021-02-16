@@ -50,7 +50,7 @@ export const getSampleStudyQuery = (name: string, frag: string) => {
 };
 export const SEARCH_STUDY_PAGE_QUERY =`
 query SearchStudyPageQuery($hash: String!, $id: String!) {
-  search(searchHash: $hash) {
+  search(searStudyPageQuerychHash: $hash) {
     studyEdge(id: $id) {
       nextId
       prevId
@@ -488,6 +488,28 @@ export const STUDY_REACTIONS =`
   }
 
 `;
+export const REACTIONS_QUERY = `
+  query ReactionsById($reactionKindId: String!) {
+    me {
+        id
+        email
+        firstName
+        lastName
+        reactions(reactionKindId: $reactionKindId){
+          reactionKindId
+          reactionKind{
+            id
+            name
+          }
+          study{
+            briefTitle
+          }
+          nctId
+        }
+    }
+  }
+`;
+
 export const EDIT_REVIEW_QUERY =`
   query EditReviewQuery($nctId: String!) {
     study(nctId: $nctId) {
@@ -502,4 +524,3 @@ export const EDIT_REVIEW_QUERY =`
   ${ReviewForm.fragment}
   ${StudySummary.fragment}
 `;
-

@@ -43,6 +43,8 @@ const initialState: types.StudyState = {
     isFetchingStudyReactions: false,
     studyReactions: undefined,
     isCreatingReaction: false,
+    isFetchingReactionsById: false,
+    reactionsById: undefined,
     isUpsertingReviewForm: false,
     isFetchingEditReview: false,
     editReview: undefined,
@@ -357,7 +359,8 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 isFetchingReactionsIsland: true
             };
         case types.FETCH_REACTIONS_ISLAND_SUCCESS:
-            return {
+                console.log(action.payload);
+                return {
                 ...state,
                 isFetchingReactionsIsland: false,
                 reactionsIsland: action.payload
@@ -473,6 +476,23 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
             return {
                 ...state,
                 isCreatingReaction: false
+            };
+        case types.FETCH_REACTIONS_BY_ID_SEND:
+            return {
+                ...state,
+                isFetchingReactionsById: true
+            };
+        case types.FETCH_REACTIONS_BY_ID_SUCCESS:
+            console.log(action.payload);
+            return {
+                ...state,
+                isFetchingReactionsById: false,
+                reactionsById: action.payload
+            };
+        case types.FETCH_REACTIONS_BY_ID_ERROR:
+            return {
+                ...state,
+                isFetchingReactionsById: false
             };
         case types.UPSERT_REVIEW_FORM_MUTATION_SEND:
             return {

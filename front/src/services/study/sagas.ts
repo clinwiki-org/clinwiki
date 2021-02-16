@@ -295,8 +295,10 @@ function* deleteReaction(action) {
     try {
         let response = yield call(() => api.deleteReaction(action.id));
         if(response) {
-            yield put(actions.deleteReaction(response.id));
+            yield put(actions.deleteReactionSuccess(response.id));
+            yield getReactionsById(action.reactionKindId);
             yield call(()=> api.fetchReactionsIsland(action.nctId));
+            //still have to refetch study page query        
         }
         else {
             yield put(actions.deleteReactionError(response.message));
@@ -323,16 +325,16 @@ function* getReactionKinds(action) {
 }
 function* getStudyReactions(action) {
     try {
-        let response = yield call(() => api.fetchStudyReactions());
+        let response = yield call(() => api.fetchStudyReactions(action.nctId));
         if(response) {
-            yield put(actions.fetchStudyReactionsSuccess(action.nctId));        }
+            yield put(actions.fetchStudyReactionsSuccess(response.data));        }
         else {
             yield put(actions.fetchStudyReactionsError(response.message));
         }
     }
     catch(err) {
         console.log(err);
-        yield put(actions.fetchReactionKindsError(err.message));
+        yield put(actions.fetchStudyReactionsError(err.message));
     }
 }
 function* createReaction(action) { 
@@ -340,6 +342,8 @@ function* createReaction(action) {
         let response = yield call(() => api.createReaction(action.nctId, action.reactionKindId)); 
         if (response){ 
             yield put(actions.createReactionSuccess(response.data));
+            yield getReactionsById(action.reactionKindId);
+            //still have to refetch study page query
         }
         else {
             yield put(actions.createReactionError(response.message));
@@ -407,6 +411,22 @@ function* deletePageView(action) {
         yield put(actions.deletePageViewError(err.message));
     }    
 }
+function* getReactionsById(action) {
+    try {
+        console.log(action)
+        let response = yield call(() => api.fetchReactionsById(action.reactionKindId));
+        console.log(response);
+        if(response) {
+            yield put(actions.fetchReactionsByIdSuccess(response));            }
+        else {
+            yield put(actions.fetchReactionsByIdError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchReactionsByIdError(err.message));
+    }
+}
 function* upsertReviewFormMutation(action) {
     try {
         console.log(action);
@@ -468,6 +488,7 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_REACTION_KINDS_SEND, getReactionKinds);
     yield takeLatest(types.FETCH_STUDY_REACTIONS_SEND, getStudyReactions);
     yield takeLatest(types.CREATE_REACTION_SEND, createReaction);
+    yield takeLatest(types.FETCH_REACTIONS_BY_ID_SEND, getReactionsById);
     yield takeLatest(types.UPSERT_REVIEW_FORM_MUTATION_SEND, upsertReviewFormMutation);
     yield takeLatest(types.FETCH_EDIT_REVIEW_SEND, getEditReview);
 }

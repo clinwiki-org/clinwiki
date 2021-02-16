@@ -8,7 +8,7 @@ import { StudyReactions } from './model/StudyReactions';
 import * as types from './types';
 import { UpdatePageViewInput, } from 'services/study/model/InputTypes';
 import { WikiPageUpdateContentMutation } from './model/WikiPageUpdateContentMutation';
-
+import { ReactionsById } from './model/ReactionsById';
 
 
 export const fetchSampleStudy= ( nctId: string, QUERY: any) : types.StudyActionTypes => ({
@@ -347,6 +347,18 @@ export const createReactionError= (message: string) : types.StudyActionTypes => 
     type: types.CREATE_REACTION_ERROR,
     payload: {message}
 });
+export const fetchReactionsById= ( reactionKindId: any) : types.StudyActionTypes => ({
+    type: types.FETCH_REACTIONS_BY_ID_SEND,
+    reactionKindId,
+});
+export const fetchReactionsByIdSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_REACTIONS_BY_ID_SUCCESS,
+    payload
+});
+export const fetchReactionsByIdError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_REACTIONS_BY_ID_ERROR,
+    payload: {message}
+});
 export const upsertReviewFormMutation= ( id: any, nctId: any, meta: any, content: any) : types.StudyActionTypes => ({
     type: types.UPSERT_REVIEW_FORM_MUTATION_SEND,
     id,
@@ -374,4 +386,3 @@ export const fetchEditReviewError= (message: string) : types.StudyActionTypes =>
     type: types.FETCH_EDIT_REVIEW_ERROR,
     payload: {message}
 });
-
