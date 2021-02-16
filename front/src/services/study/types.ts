@@ -16,6 +16,7 @@ import { SuggestedLabelsQuery } from './model/SuggestedLabelsQuery'
 import { ReactionsIslandQuery } from './model/ReactionsIslandQuery'
 import { ReactionKinds } from './model/ReactionKinds'
 import { StudyReactions } from './model/StudyReactions'
+import { BulkLabelsQuery } from './model/BulkLabelsQuery';// move to model
 
 export const FETCH_SAMPLE_STUDY_SEND = 'FETCH_SAMPLE_STUDY_SEND';
 export const FETCH_SAMPLE_STUDY_SUCCESS = 'FETCH_SAMPLE_STUDY_SUCCESS';
@@ -124,6 +125,21 @@ export const UPDATE_WORKFLOW_PAGE_SEND = 'UPDATE_WORKFLOW_PAGE';
 export const UPDATE_WORKFLOW_PAGE_SUCCESS = 'UPDATE_WORKFLOW_PAGE_SUCCESS';
 export const UPDATE_WORKFLOW_PAGE_ERROR = 'UPDATE_WORKFLOW_PAGE_ERROR';
 
+export const FETCH_LABELS_SEND = 'FETCH_LABELS';
+export const FETCH_LABELS_SUCCESS = 'FETCH_LABELS_SUCCESS';
+export const FETCH_LABELS_ERROR = 'FETCH_LABELS_ERROR';
+
+export const FETCH_LABELS_BUCKETS_SEND = 'FETCH_LABELS_BUCKETS';
+export const FETCH_LABELS_BUCKETS_SUCCESS = 'FETCH_LABELS_BUCKETS_SUCCESS';
+export const FETCH_LABELS_BUCKETS_ERROR = 'FETCH_LABELS_BUCKETS_ERROR';
+
+export const BULK_QUERY_UPDATE_MUTATION_SEND = 'BULK_QUERY_UPDATE_MUTATION';
+export const BULK_QUERY_UPDATE_MUTATION_SUCCESS = 'BULK_QUERY_UPDATE_MUTATION_SUCCESS';
+export const BULK_QUERY_UPDATE_MUTATION_ERROR = 'BULK_QUERY_UPDATE_MUTATION_ERROR';
+
+export const BULK_LIST_UPDATE_MUTATION_SEND = 'BULK_LIST_UPDATE_MUTATION';
+export const BULK_LIST_UPDATE_MUTATION_SUCCESS = 'BULK_LIST_UPDATE_MUTATION_SUCCESS';
+export const BULK_LIST_UPDATE_MUTATION_ERROR = 'BULK_LIST_UPDATE_MUTATION_ERROR';
 export interface StudyState {
     isFetchingSampleStudy: boolean,
     sampleStudy: any | undefined,
@@ -168,6 +184,13 @@ export interface StudyState {
     studyReactions: StudyReactions | undefined,
     isCreatingReaction: boolean,
     isUpdatingWorkFlows: boolean,
+    isFetchingLabels: boolean,
+    workflowLabels: BulkLabelsQuery | undefined,
+    isFetchingLabelsBuckets: boolean,
+    workflowLabelsBuckets: any | undefined,
+    isBulkQueryUpdating: boolean,
+    bulkQueryUpdate: any,
+    isBulkListUpdating: boolean,
 }
 
 export interface StudyDataError {
@@ -572,6 +595,63 @@ export interface updateWorkflowPageErrorAction {
     type: typeof UPDATE_WORKFLOW_PAGE_ERROR,
     payload:StudyDataError
 };
+export interface fetchLabelsSendAction {
+    type: typeof FETCH_LABELS_SEND,
+    variables: any;
+};
+
+export interface fetchLabelsSuccessAction {
+    type: typeof FETCH_LABELS_SUCCESS,
+    payload: any;
+
+};
+export interface fetchLabelsErrorAction {
+    type: typeof FETCH_LABELS_ERROR,
+    payload:StudyDataError
+};
+export interface fetchLabelsBucketsSendAction {
+    type: typeof FETCH_LABELS_BUCKETS_SEND,
+    variables: any,
+    QUERY: any
+};
+
+export interface fetchLabelsBucketsSuccessAction {
+    type: typeof FETCH_LABELS_BUCKETS_SUCCESS,
+    payload: any;
+
+};
+export interface fetchLabelsBucketsErrorAction {
+    type: typeof FETCH_LABELS_BUCKETS_ERROR,
+    payload:StudyDataError
+};
+export interface bulkQueryUpdateSendAction {
+    type: typeof BULK_QUERY_UPDATE_MUTATION_SEND,
+    input: any;
+};
+
+export interface bulkQueryUpdateSuccessAction {
+    type: typeof BULK_QUERY_UPDATE_MUTATION_SUCCESS,
+    payload:any;
+};
+
+export interface bulkQueryUpdateErrorAction {
+    type: typeof BULK_QUERY_UPDATE_MUTATION_ERROR,
+    payload:StudyDataError
+};
+
+export interface bulkListUpdateSendAction {
+    type: typeof BULK_LIST_UPDATE_MUTATION_SEND,
+    input: any;
+};
+
+export interface bulkListUpdateSuccessAction {
+    type: typeof BULK_LIST_UPDATE_MUTATION_SUCCESS,
+};
+
+export interface bulkListUpdateErrorAction {
+    type: typeof BULK_LIST_UPDATE_MUTATION_ERROR,
+    payload:StudyDataError
+};
 export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
 fetchPageViewSendAction | fetchPageViewSuccessAction | fetchPageViewErrorAction |
 fetchPageViewsSendAction | fetchPageViewsSuccessAction | fetchPageViewsErrorAction |
@@ -596,6 +676,10 @@ fetchReactionKindsSendAction | fetchReactionKindsSuccessAction | fetchReactionKi
 fetchStudyReactionsSendAction | fetchStudyReactionsSuccessAction | fetchStudyReactionsErrorAction |
 createReactionSendAction | createReactionSuccessAction | createReactionErrorAction |
 updateWorkflowPageSendAction | updateWorkflowPageSuccessAction | updateWorkflowPageErrorAction |
+fetchLabelsSendAction | fetchLabelsSuccessAction | fetchLabelsErrorAction |
+fetchLabelsBucketsSendAction | fetchLabelsBucketsSuccessAction | fetchLabelsBucketsErrorAction |
+bulkListUpdateSendAction | bulkListUpdateSuccessAction | bulkListUpdateErrorAction |
+bulkQueryUpdateSendAction | bulkQueryUpdateSuccessAction | bulkQueryUpdateErrorAction |
 FetchSampleStudySendAction | FetchSampleStudySuccessAction | FetchSampleStudyErrorAction |
 FetchStudyPageSendAction | updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
 CreatePageViewSendAction | CreatePageViewSuccessAction  | CreatePageViewErrorAction  | 

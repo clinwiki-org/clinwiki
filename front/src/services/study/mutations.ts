@@ -216,3 +216,25 @@ mutation UpdateWorkflowsViewMutation($input: UpdateWorkflowsViewInput!) {
 
 ${WORKFLOW_VIEW_PROVIDER_FRAGMENT}
 `
+export const BULK_QUERY_UPDATE_MUTATION = `
+  mutation BulkQueryUpdateMutation($input: BulkQueryUpdateInput!) {
+    bulkQueryUpdate(input: $input) {
+      clientMutationId
+      undoActions {
+        nctId
+        state {
+          enable
+          name
+          value
+        }
+      }
+    }
+  }
+`;
+export const BULK_LIST_UPDATE_MUTATION = `
+  mutation BulkListUpdateMutation($input: BulkListUpdateInput!) {
+    bulkListUpdate(input: $input) {
+      clientMutationId
+    }
+  }
+`;

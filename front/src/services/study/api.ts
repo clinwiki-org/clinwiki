@@ -91,3 +91,16 @@ export const createReaction = ( nctId: string, reactionKindId: any) =>{
 export const updateWorkflowPage = (input: any) =>{
     return callGraphql(ENDPOINT,mutate.UPDATE_WORKFLOW_PAGE_MUTATION,  input )
 };
+export const fetchLabels= (variables) => {
+    return callGraphql(ENDPOINT, query.LABELS_QUERY, variables);
+};
+export const fetchLabelsBuckets= (variables, QUERY) => {
+    console.log(QUERY)
+    return callGraphql(ENDPOINT, QUERY, variables);
+};
+export const bulkQueryUpdate = (input: any) =>{
+    return callGraphql(ENDPOINT,mutate.BULK_QUERY_UPDATE_MUTATION,  input )
+};
+export const bulkListUpdate = (input: any) =>{
+    return callGraphql(ENDPOINT,mutate.BULK_LIST_UPDATE_MUTATION,  input )
+};

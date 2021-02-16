@@ -345,6 +345,64 @@ function* createReaction(action) {
         yield put(actions.createReactionError(err.message));
     }
 }
+function* getLabels(action) {
+    try {
+        let response = yield call(() => api.fetchLabels(action.variables));
+        if(response) {
+            yield put(actions.fetchLabelsSuccess(response));        }
+        else {
+            yield put(actions.fetchLabelsError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchLabelsError(err.message));
+    }
+}
+function* getLabelsBuckets(action) {
+    try {
+        let response = yield call(() => api.fetchLabelsBuckets(action.variables, action.QUERY));
+        if(response) {
+            yield put(actions.fetchLabelsBucketsSuccess(response));        }
+        else {
+            yield put(actions.fetchLabelsBucketsError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchLabelsBucketsError(err.message));
+    }
+}
+function* bulkListUpdate(action) { 
+    try {
+        let response = yield call(() => api.bulkListUpdate(action.input)); 
+        if (response){ 
+            yield put(actions.bulkListUpdateSuccess(response.data));
+        }
+        else {
+            yield put(actions.bulkListUpdateError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.bulkListUpdateError(err.message));
+    }
+}
+function* bulkQueryUpdate(action) { 
+    try {
+        let response = yield call(() => api.bulkQueryUpdate(action.input)); 
+        if (response){ 
+            yield put(actions.bulkQueryUpdateSuccess(response.data));
+        }
+        else {
+            yield put(actions.bulkQueryUpdateError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.bulkQueryUpdateError(err.message));
+    }
+}
 //PAGE VIEW SAGAS
 
 function* createPageView(action) {
@@ -444,4 +502,8 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_STUDY_REACTIONS_SEND, getStudyReactions);
     yield takeLatest(types.CREATE_REACTION_SEND, createReaction);
     yield takeLatest(types.UPDATE_WORKFLOW_PAGE_SEND, updateWorkflowPage);
+    yield takeLatest(types.FETCH_LABELS_SEND, getLabels);
+    yield takeLatest(types.FETCH_LABELS_BUCKETS_SEND, getLabelsBuckets);
+    yield takeLatest(types.BULK_LIST_UPDATE_MUTATION_SEND, bulkListUpdate);
+    yield takeLatest(types.BULK_QUERY_UPDATE_MUTATION_SEND, bulkQueryUpdate);
 }

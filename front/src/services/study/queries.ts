@@ -472,3 +472,35 @@ export const STUDY_REACTIONS =`
 
 `;
 
+export const LABELS_QUERY = `
+  query BulkLabelsQuery($searchHash: String!, $params: SearchInput!) {
+    myCrowdAggs: aggBuckets(searchHash: $searchHash, params: $params) {
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+    allCrowdAggs: aggBuckets(
+      params: {
+        page: 0
+        pageSize: 99999
+        q: { key: "*" }
+        agg: "front_matter_keys"
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+    search(searchHash: $searchHash) {
+      recordsTotal
+    }
+  }
+`;
