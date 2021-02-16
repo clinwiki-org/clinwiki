@@ -1,12 +1,6 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import {useDispatch,useSelector} from 'react-redux';
 import {editProfile} from 'services/user/actions';
-import {RootState} from 'reducers';
-import {
-  Mutation,
-  MutationComponentOptions,
-} from '@apollo/client/react/components';
-import { gql, MutationFunction }  from '@apollo/client';
 import SearchPage from 'containers/SearchPage';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
@@ -24,11 +18,11 @@ import { ThemedButton } from '../LoginPage/StyledButton';
 import ProfileScoreBoard from './components/ProfileScoreBoard';
 import ProfilePicture from './components/ProfilePicture';
 import ReviewsTable from './components/ReviewsTable';
-import ReactionsById from 'containers/StudyPage/components/ReactionsById';
 import * as FontAwesome from 'react-fontawesome';
 import UserSearchLogs from './components/UserSearchLogs';
 import UserSavedSearches from './components/UserSavedSearches';
-
+import { RootState } from 'reducers';
+import { fetchReactionsById } from './../../services/study/actions'
 interface EditProfilePageProps {
   //@ts-ignore
   user: UserFragment | null;
@@ -125,6 +119,15 @@ const EditProfilePage = (props : EditProfilePageProps) => {
   const [currentDisplay,setCurrentDisplay] = useState('contributions');
   const [totalContributions,setTotalContributions] = useState('');
   const user = useSelector( (state : RootState) => state.user.current);
+  const reactions = useSelector( (state: RootState) => state.study.reactionsById);
+
+  const dispatch = useDispatch();
+
+  const ids = ["1","2","3","4"]
+  useEffect (() => {
+    ids.map(id => {
+    dispatch (fetchReactionsById(id))});
+  },[dispatch]);
 
   if (!user || !user.reactions) {
     return <div>No user</div>;
@@ -146,6 +149,7 @@ const EditProfilePage = (props : EditProfilePageProps) => {
     }
     return;
   };
+
 
   const renderResults = user => {
     const email = user.email;
@@ -175,6 +179,7 @@ const EditProfilePage = (props : EditProfilePageProps) => {
           </div>
         );
       case 'reactions':
+        console.log(reactions);
         let idArray = ['1', '2', '3', '4'];
         return (
           <div>
@@ -195,8 +200,8 @@ const EditProfilePage = (props : EditProfilePageProps) => {
               };
 
               return (
-                <ReactionsById reactionKindId={id} key={id}>
-                  {reactions =>
+                
+
                     reactions ? (
                       <span>
                         <h2>
@@ -210,8 +215,6 @@ const EditProfilePage = (props : EditProfilePageProps) => {
                         />
                       </span>
                     ) : null
-                  }
-                </ReactionsById>
               );
             })}
           </div>

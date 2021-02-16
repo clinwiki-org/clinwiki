@@ -9,8 +9,6 @@ import {
   pathOr,
 } from 'ramda';
 import findFields from 'utils/aggs/findFields';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
 import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,
@@ -33,11 +31,11 @@ import AggFilterInputUpdater from './AggFilterInputUpdater';
 import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
-import { useQuery } from '@apollo/client';
 import {PresearchContainer, ThemedButton} from '../../../components/StyledComponents';
 import { fetchSearchPageAggs } from 'services/search/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {RootState} from 'reducers';
+
 
 const getVisibleOptionsByName: (PresentSiteFragment) => any = compose(
   reduce(
@@ -61,6 +59,7 @@ const getVisibleOptionsByNamePresearch: (PresentSiteFragment) => any = compose(
 
   pathOr([], ['search', 'presearch', 'crowdAggs', 'fields'])
 );
+
 interface AggsProps {
   key?: any;
   // selected
@@ -103,12 +102,6 @@ const AggSideBarTitle = styled.h4`
 `;
 const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 
-const QueryComponent = (
-  props: QueryComponentOptions<
-    SearchPageAggsQuery,
-    SearchPageAggsQueryVariables
-  >
-) => Query(props);
 
 const Aggs = (props: AggsProps) => {
 
@@ -187,7 +180,7 @@ const Aggs = (props: AggsProps) => {
           return (
             crowdAggs[k] ? (
               <AggContext.Provider
-                key={k}
+                key={`presearch${k}`}
                 value={{
                   updater: new AggFilterInputUpdater(
                     k,

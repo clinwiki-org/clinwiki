@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { usePageView, usePageViews } from 'queries/PageViewQueries';
 import MailMergeView, {
   microMailMerge,
 } from 'components/MailMerge/MailMergeView';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useQuery, useMutation} from '@apollo/client';
-import { getStudyQuery2 } from 'components/MailMerge/MailMergeUtils';
+import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
@@ -57,28 +55,32 @@ export default function GenericPage(props: Props) {
   
   useEffect(() => {
   dispatch(fetchPresentSiteProvider( undefined , params.sv));
-  }, [])
+  }, [dispatch, params.sv])
 
   useEffect(()=>{
     dispatch(fetchPageViews(site?.id));
-   },[dispatch]);
+   },[dispatch, site.id]);
 
   useEffect(()=>{
     dispatch(fetchPageView( params.pv || defaultPage() ));
    },[dispatch, params.pv]);
 
   useEffect(()=>{
-    const QUERY = `${getStudyQuery2(fragmentName, fragment)}`
+    const QUERY = `${getStudyQuery(fragmentName, fragment)}`
     dispatch(fetchStudyPage(props.arg ?? "", QUERY));
-   },[dispatch, currentPage]);
+   },[dispatch, currentPage, props.arg]);
    
+  console.log(props.arg)
   if (!props.arg) {
     return <h1>Missing NCTID in URL</h1>;
   }
   if (loading || !pageViewData || !studyData || !site) {
     return <BeatLoader />;
   }
-
+  if (!studyData.data) {
+    return <BeatLoader />
+  }
+console.log(studyData.data)
   const title = microMailMerge(currentPage?.title, studyData?.data.study);
   return (
     <div>

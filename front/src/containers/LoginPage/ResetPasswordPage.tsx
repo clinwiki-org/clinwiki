@@ -1,15 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Col } from 'react-bootstrap';
-import {
-  Mutation,
-  MutationComponentOptions,
-  } from '@apollo/client/react/components';
-import { gql, MutationFunction }  from '@apollo/client';
-import {
-  ResetPasswordMutation,
-  ResetPasswordMutationVariables,
-} from 'types/ResetPasswordMutation';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import ThemedButton from '../../components/StyledComponents';
@@ -17,9 +8,12 @@ import { Link } from 'react-router-dom';
 import { History } from 'history';
 import StyledError from './StyledError';
 import StyledWrapper from './StyledWrapper';
+import {resetPassword} from 'services/user/actions';
+import { connect } from 'react-redux';
 
 interface ResetPasswordPageProps {
   history: History;
+  resetPassword: any;
 }
 interface ResetPasswordPageState {
   form: {
@@ -27,26 +21,6 @@ interface ResetPasswordPageState {
   };
   errors: string[];
 }
-
-const RESET_PASSWORD_MUTATION = gql`
-  mutation ResetPasswordMutation($input: ResetPasswordInput!) {
-    resetPassword(input: $input) {
-      success
-    }
-  }
-`;
-
-const ResetPasswordMutationComponent = (
-  props: MutationComponentOptions<
-    ResetPasswordMutation,
-    ResetPasswordMutationVariables
-  >
-) => Mutation(props);
-
-type ResetPasswordMutationFn = MutationFunction<
-  ResetPasswordMutation,
-  ResetPasswordMutationVariables
->;
 
 const LinkContainer = styled.div`
   position: absolute;
@@ -56,7 +30,6 @@ const LinkContainer = styled.div`
     margin-right: 15px;
   }
 `;
-
 class ResetPasswordPage extends React.Component<
   ResetPasswordPageProps,
   ResetPasswordPageState
@@ -74,12 +47,14 @@ class ResetPasswordPage extends React.Component<
     });
   };
 
-  handleResetPassword = (resetPassword: ResetPasswordMutationFn) => () => {
-    resetPassword({ variables: { input: this.state.form } }).then(() =>
+  handleResetPassword = () => () => {
+    this.props.resetPassword(this.state.form.email);
       this.setState({
         errors: ['Password reset instructions have been sent to your email.'],
       })
-    );
+      // this.setState({
+      //   errors: ['Instructions have been sent to your email'],
+      // });
   };
 
   renderErrors = () => {
@@ -104,7 +79,7 @@ class ResetPasswordPage extends React.Component<
               value={this.state.form.email}
               onChange={this.handleInputChange}
             />
-            <ResetPasswordMutationComponent
+            {/* <ResetPasswordMutationComponent
               mutation={RESET_PASSWORD_MUTATION}
               update={(cache, { data }) => {
                 if (data && data.resetPassword && data.resetPassword.success) {
@@ -113,12 +88,12 @@ class ResetPasswordPage extends React.Component<
                   });
                 }
               }}>
-              {resetPassword => (
-                <ThemedButton onClick={this.handleResetPassword(resetPassword)}>
+              {resetPassword => ( */}
+                <ThemedButton onClick={this.handleResetPassword()}>
                   Send Instructions
                 </ThemedButton>
-              )}
-            </ResetPasswordMutationComponent>
+              {/* )} */}
+            {/* </ResetPasswordMutationComponent> */}
             {this.renderErrors()}
             <LinkContainer>
               <Link to="/sign_in">Sign in</Link>
@@ -131,4 +106,8 @@ class ResetPasswordPage extends React.Component<
   }
 }
 
-export default ResetPasswordPage;
+const mapDispatchToProps = (dispatch) => ({
+  resetPassword: (email) => dispatch(resetPassword(email))
+})
+
+export default connect(null, mapDispatchToProps)(ResetPasswordPage);

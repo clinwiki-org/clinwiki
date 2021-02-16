@@ -7,6 +7,10 @@ import { callGraphql, get_gql_url, getGraphQLMigrationURL } from 'utils/graphqlU
 const ENDPOINT = get_gql_url();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 
+export const fetchUser = ( userId: number ) => {
+    return callGraphql(ENDPOINT,query.USER_QUERY, { userId: userId});
+};
+
 export const fetchCurrentUser = () => {
     return callGraphql(NODE_ENDPOINT,query.FETCH_CURRENT_USER_QUERY, {},'CurrentUserQuery');
 };
@@ -22,6 +26,11 @@ export const signUp = (email,password,oAuthToken) => {
 export const updatePassword = (resetPasswordToken,password,passwordConfirmation) => {
     return callGraphql(ENDPOINT,query.UPDATE_PASSWORD_MUTATION, 
         { input: { resetPasswordToken, password, passwordConfirmation} });
+};
+
+export const resetPassword = (email) => {
+    return callGraphql(ENDPOINT,query.RESET_PASSWORD_MUTATION, 
+        { input: { email } });
 };
 
 export const editProfile = (firstName, lastName, defaultQueryString) => {

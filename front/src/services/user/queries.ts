@@ -74,6 +74,14 @@ export const FETCH_CURRENT_USER_QUERY = ` query CurrentUserQuery {
   }
   ${CURRENT_USER_FRAGMENT}`;
 
+  export const RESET_PASSWORD_MUTATION = `
+  mutation ResetPasswordMutation($input: ResetPasswordInput!) {
+    resetPassword(input: $input) {
+      success
+    }
+  }
+  `;
+
   export const EDIT_PROFILE_MUTATION = `
   mutation EditProfileMutation($input: UpdateProfileInput!) {
     updateProfile(input: $input) {
@@ -85,3 +93,20 @@ export const FETCH_CURRENT_USER_QUERY = ` query CurrentUserQuery {
   }
   ${CURRENT_USER_FRAGMENT}`;
 
+  export const USER_QUERY = `
+  query User($userId: Int!) {
+    user(userId: $userId) {
+      firstName
+      lastName
+      reviewCount
+      rank
+      reviews {
+        nctId
+        briefTitle
+        content
+      }
+      contributions
+      pictureUrl
+    }
+  }
+`;

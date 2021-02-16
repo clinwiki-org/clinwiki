@@ -25,3 +25,43 @@ export const SEARCH_PAGE_HASH_MUTATION =`
     }
   }
 `;
+
+export const CREATE_SAVED_SEARCH_MUTATION = `
+  mutation CreateSavedSearchMutation($searchHash: String!, $url: String!){
+  createSavedSearch(input: {
+    searchHash: $searchHash,
+    url: $url
+  }) {
+    savedSearch {
+      shortLink
+      {
+        long
+      	short
+      }
+      userId
+      createdAt
+      nameLabel
+    }
+    }
+  }
+`;
+
+export const DELETE_SAVED_SEARCH_MUTATION = `
+  mutation DeleteSavedSearchMutation($id: Int!){
+  deleteSavedSearch(input: {
+    id: $id
+  }) {
+      success
+      errors
+      savedSearch{
+        id
+        userId
+        shortLink{
+          short
+          long
+        }
+        isSubscribed
+      }
+      }
+  }
+`;

@@ -238,3 +238,65 @@ export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
     }
   }
 `;
+
+export const AUTOSUGGEST_QUERY = `
+query CrumbsSearchPageAggBucketsQuery(
+  $agg: String!
+  $q: SearchQueryInput!
+  $aggFilters: [AggFilterInput!]
+  $crowdAggFilters: [AggFilterInput!]
+  $page: Int!
+  $pageSize: Int!
+  $aggOptionsFilter: String
+  $aggFields: [String!]!
+  $crowdAggFields: [String!]!
+  $url: String
+) {
+  autocomplete(
+    aggFields: $aggFields
+    crowdAggFields: $crowdAggFields
+    url: $url
+    params: {
+      agg: $agg
+      q: $q
+      sorts: []
+      aggFilters: $aggFilters
+      crowdAggFilters: $crowdAggFilters
+      aggOptionsFilter: $aggOptionsFilter
+      aggOptionsSort: [{ id: "count", desc: true }]
+      page: $page
+      pageSize: $pageSize
+    }
+  ) {
+    autocomplete {
+      name
+      isCrowd
+      results {
+        key
+        docCount
+      }
+      __typename
+    }
+    __typename
+  }
+}
+`; 
+
+
+export const SAVED_SEARCHES_QUERY = `
+query UserSavedSearchesQuery($userId: Int!){
+    savedSearch(userId: $userId) {
+        id
+        userId
+        nameLabel
+        createdAt
+        updatedAt
+        isSubscribed
+        url
+        shortLink {
+            long
+            short
+        }  
+    }
+} 
+`;

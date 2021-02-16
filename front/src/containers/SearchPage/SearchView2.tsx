@@ -27,8 +27,6 @@ import {
 } from 'react-virtualized';
 import aggToField from 'utils/aggs/aggToField';
 import useUrlParams from '../../utils/UrlParamsProvider';
-import  SEARCH_PAGE_SEARCH_QUERY from 'queries/SearchPageSearchQuery';
-import SEARCH_PAGE_SEARCH_QUERY_NO_RESULTS  from 'queries/SearchPageSearchQueryNoResults';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSearchStudies } from 'services/search/actions'
 import {RootState} from 'reducers';

@@ -13,7 +13,6 @@ import {
   ListGroupItem,
 } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
-import { ApolloConsumer } from '@apollo/client';
 import * as Autosuggest from 'react-autosuggest';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
@@ -122,6 +121,7 @@ const LoaderWrapper = styled.div`
 `;
 
 interface CrumbsBarProps {
+  params: any;
   searchParams: SearchParams;
   onBulkUpdate: (hash: string, siteViewUrl: string) => void;
   removeFilter: AggCallback;
@@ -314,10 +314,7 @@ const CrumbsBar = (props: CrumbsBarProps) => {
       crowdAggFields: crowdAggFields,
     };
     dispatch(fetchSearchAutoSuggest(variables));
-    // const response = await apolloClient.query({
-    //   query,
-    //   variables,
-    // });
+
     // const array = response.data.autocomplete.autocomplete;
     // setSuggestions(array);
     // setSuggestionLoading(false);
@@ -461,6 +458,7 @@ const CrumbsBar = (props: CrumbsBarProps) => {
       ) {
         return (
           <SaveSearch
+            params={props.params}
             user={user}
             siteView={props.presentSiteView}
             searchHash={props.searchHash}

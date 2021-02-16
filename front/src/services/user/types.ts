@@ -1,5 +1,9 @@
 import { UserFragment } from 'services/user/model/UserFragment';
 
+export const FETCH_CURRENT_USER_SEND = 'FETCH_CURRENT_USER_SEND';
+export const FETCH_CURRENT_USER_SUCCESS = 'FETCH_CURRENT_USER_SUCCESS';
+export const FETCH_CURRENT_USER_ERROR = 'FETCH_CURRENT_USER_ERROR';
+
 export const FETCH_USER_SEND = 'FETCH_USER_SEND';
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 export const FETCH_USER_ERROR = 'FETCH_USER_ERROR';
@@ -16,6 +20,10 @@ export const UPDATE_PASSWORD_SEND = 'UPDATE_PASSWORD_SEND';
 export const UPDATE_PASSWORD_SUCCESS = 'UPDATE_PASSWORD_SUCCESS';
 export const UPDATE_PASSWORD_ERROR = 'UPDATE_PASSWORD_ERROR';
 
+export const RESET_PASSWORD_SEND = 'RESET_PASSWORD_SEND';
+export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
+export const RESET_PASSWORD_ERROR = 'RESET_PASSWORD_ERROR';
+
 export const EDIT_PROFILE_SEND = 'EDIT_PROFILE_SEND';
 export const EDIT_PROFILE_SUCCESS = 'EDIT_PROFILE_SUCCESS';
 export const EDIT_PROFILE_ERROR = 'EDIT_PROFILE_ERROR';
@@ -25,6 +33,8 @@ export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const LOGOUT_ERROR = 'LOGOUT_ERROR';
 
 export interface UserState {
+    user: any | undefined,
+    isFetchingUser: boolean,
     current: UserFragment | null,
     isLoading: boolean,
     isSigningIn: boolean,
@@ -32,7 +42,8 @@ export interface UserState {
     isSigningUp: boolean,
     signUpErrors: Array<string>,
     isUpdatingPassword: boolean,
-    isEditingProfile: boolean
+    isEditingProfile: boolean,
+    isResettingPassword: boolean
 }
 
 export interface UserData {
@@ -45,15 +56,30 @@ export interface UserDataError {
 
 export interface FetchUserSendAction {
     type: typeof FETCH_USER_SEND
+    userId: number
 };
 
 export interface FetchUserSuccessAction {
     type: typeof FETCH_USER_SUCCESS,
-    payload: UserFragment
+    payload: any
 };
 
 export interface FetchUserErrorAction {
     type: typeof FETCH_USER_ERROR,
+    payload: UserDataError
+};
+
+export interface FetchCurrentUserSendAction {
+    type: typeof FETCH_CURRENT_USER_SEND
+};
+
+export interface FetchCurrentUserSuccessAction {
+    type: typeof FETCH_CURRENT_USER_SUCCESS,
+    payload: UserFragment
+};
+
+export interface FetchCurrentUserErrorAction {
+    type: typeof FETCH_CURRENT_USER_ERROR,
     payload: UserDataError
 };
 
@@ -89,6 +115,21 @@ export interface SignUpSuccessAction {
 export interface SignUpErrorAction {
     type: typeof SIGN_UP_ERROR,
     payload: Array<String>
+};
+
+export interface ResetPasswordSendAction {
+    type: typeof RESET_PASSWORD_SEND,
+    email: string,
+}
+
+export interface ResetPasswordSuccessAction {
+    type: typeof RESET_PASSWORD_SUCCESS,
+    payload: string
+};
+
+export interface ResetPasswordErrorAction {
+    type: typeof RESET_PASSWORD_ERROR,
+    payload: Array<string>
 };
 
 export interface UpdatePasswordSendAction {
@@ -138,9 +179,12 @@ export interface LogoutErrorAction {
     payload: Array<string>
 };
 
-export type UserActionTypes = FetchUserSendAction | FetchUserSuccessAction | FetchUserErrorAction |
+export type UserActionTypes =
+    FetchCurrentUserSendAction | FetchCurrentUserSuccessAction | FetchCurrentUserErrorAction |
+    FetchUserSendAction | FetchUserSuccessAction | FetchUserErrorAction |
     SignInSendAction | SignInSuccessAction | SignInErrorAction | 
     SignUpSendAction | SignUpSuccessAction | SignUpErrorAction |
     UpdatePasswordSendAction | UpdatePasswordSuccessAction | UpdatePasswordErrorAction |
+    ResetPasswordSendAction | ResetPasswordSuccessAction | ResetPasswordErrorAction |
     EditProfileSendAction | EditProfileSuccessAction | EditProfileErrorAction |
     LogoutSendAction | LogoutSuccessAction | LogoutErrorAction;
