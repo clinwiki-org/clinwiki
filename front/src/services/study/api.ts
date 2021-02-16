@@ -113,3 +113,4 @@ export const bulkQueryUpdate = (input: any) =>{
 };
 export const bulkListUpdate = (input: any) =>{
     return callGraphql(ENDPOINT,mutate.BULK_LIST_UPDATE_MUTATION,  input )
+};

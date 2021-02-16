@@ -1,4 +1,4 @@
-import {WORKFLOW_VIEW_PROVIDER_FRAGMENT} from './queries';
+// import { WORKFLOW_VIEW_PROVIDER_FRAGMENT } from './queries';
 
 export const CREATE_STUDY_VIEW_LOG_MUTATION =`
 mutation CreateStudyViewLogMutation($nctId: String!){
@@ -64,7 +64,7 @@ const FRAGMENT = `
   }
 `;
 
-export const WikiPageEditFragment = `
+export const WIKI_PAGE_EDIT_FRAGMENT = `
   fragment WikiPageEditFragment on WikiPageEdit {
     user {
       id
@@ -89,16 +89,7 @@ export const WikiPageEditFragment = `
     }
   }
 `;
-const WIKI_PAGE_EDIT_FRAGMENT = `
-  fragment WikiPageFragment on WikiPage {
-    content
-    edits {
-      ...WikiPageEditFragment
-    }
-    nctId
-    meta
-  }
-`;
+
 
 
 export const UPSERT_LABEL_MUTATION = `
@@ -155,7 +146,7 @@ export const DELETE_LABEL_MUTATION = `
     }
   }
   ${FRAGMENT}
-  ${WikiPageEditFragment}
+  ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
 
 export const DELETE_REVIEW_MUTATION = `
@@ -203,7 +194,48 @@ export const CREATE_REACTION = `
     }
   }
 `;
-
+export const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
+  fragment WorkflowsViewFragment on WorkflowsView {
+    id
+    workflows {
+      ...WorkflowConfigFragment
+    }
+  }
+  fragment WorkflowConfigFragment on WorkflowConfig {
+    allSuggestedLabels
+    allWikiSections
+    allSummaryFields
+    disableAddRating
+    hideReviews
+    name
+    summaryTemplate
+    suggestedLabelsFilter {
+      kind
+      values
+    }
+    suggestedLabelsConfig {
+      name
+      rank
+      display
+      order {
+        desc
+        sortKind
+      }
+      visibleOptions {
+        kind
+        values
+      }
+    }
+    wikiSectionsFilter {
+      kind
+      values
+    }
+    summaryFieldsFilter {
+      kind
+      values
+    }
+  }
+`;
 export const UPDATE_WORKFLOW_PAGE_MUTATION = `
 mutation UpdateWorkflowsViewMutation($input: UpdateWorkflowsViewInput!) {
   updateWorkflowsView(input: $input) {
