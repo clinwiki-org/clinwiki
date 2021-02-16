@@ -493,6 +493,7 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
             return {
                 ...state,
                 isFetchingReactionsById: false
+            };
         case types.UPSERT_REVIEW_FORM_MUTATION_SEND:
             return {
                 ...state,
