@@ -49,11 +49,11 @@ export const deleteLabelMutation = (nctId:any, key: any, value: any) =>{
 export const fetchCrowdPage= (nctId: any) => {
     return callGraphql(ENDPOINT, query.CROWD_PAGE_QUERY, {nctId});
 };
-export const deleteReviewMutation = (nctId:any) =>{
-    return callGraphql(ENDPOINT,mutate.DELETE_REVIEW_MUTATION, { nctId: nctId})
+export const deleteReviewMutation = (id:any, nctId:any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_REVIEW_MUTATION, { id, nctId})
 };
 export const fetchReviewPage= (nctId: any) => {
-    return callGraphql(ENDPOINT, query.REVIEW_PAGE_QUERY, {nctId});
+    return callGraphql(ENDPOINT, query.REVIEW_QUERY, {nctId});
 };
 export const fetchStudyEditsHistory= (nctId: string) => {
     return callGraphql(ENDPOINT, query.STUDY_EDITS_HISTORY_QUERY, {nctId});
@@ -82,11 +82,21 @@ export const deleteReaction = (id:any) =>{
 export const fetchReactionKinds= () => {
     return callGraphql(ENDPOINT, query.REACTION_KINDS, {});
 };
-export const fetchStudyReactions= () => {
-    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {});
+export const fetchStudyReactions= (nctId: string) => {
+    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {nctId});
 };
 export const createReaction = ( nctId: string, reactionKindId: any) =>{
     return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})
+};
+export const fetchReactionsById= (reactionKindId: any) => {
+    console.log(`fetchReactionsById called ${reactionKindId}`);
+    return callGraphql(ENDPOINT, query.REACTIONS_QUERY, {reactionKindId: reactionKindId})
+};
+export const upsertReviewFormMutation = (id:any, nctId:any, meta: any, content: any) =>{
+    return callGraphql(ENDPOINT,mutate.REVIEW_FORM_MUTATION, {id: id, nctId: nctId, meta: meta, content: content})
+};
+export const fetchEditReview= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.EDIT_REVIEW_QUERY, {nctId});
 };
 export const updateWorkflowPage = (input: any) =>{
     return callGraphql(ENDPOINT,mutate.UPDATE_WORKFLOW_PAGE_MUTATION,  input )
@@ -103,4 +113,3 @@ export const bulkQueryUpdate = (input: any) =>{
 };
 export const bulkListUpdate = (input: any) =>{
     return callGraphql(ENDPOINT,mutate.BULK_LIST_UPDATE_MUTATION,  input )
-};
