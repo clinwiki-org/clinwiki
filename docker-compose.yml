@@ -39,15 +39,15 @@ services:
         hard: -1
     volumes:
       - es-data:/usr/share/elasticsearch/data/
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:6.8.0
-  #   container_name: kibana
-  #   environment:
-  #     - ELASTICSEARCH_HOSTS=http://elastic:9200/
-  #     - ELASTICSEARCH_USERNAME=elastic
-  #     - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
-  #   ports:
-  #     - 5601:5601
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.8.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic:9200/
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    ports:
+      - 5601:5601
   redis:
     image: redis:5.0.5
     container_name: redis
@@ -75,40 +75,40 @@ services:
       - db
       - elastic
       - redis
-  # sidekiq:
-  #   image: cwlite
-  #   build:
-  #     context: .
-  #     dockerfile: compose/Dockerfile
-  #   container_name: sidekiq
-  #   volumes:
-  #     - .:/clinwiki
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
-  #     - REDIS_URL=redis://redis:6379/0
-  #     - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
-  #   depends_on:
-  #     - db
-  #     - elastic
-  #     - redis
-  #   command: bundle exec sidekiq -C config/sidekiq.yml
-  # nodejs:
-  #   image: keymetrics/pm2:14-alpine
-  #   build:
-  #     context: .
-  #     dockerfile: api/Dockerfile
-  #   command: npm start
-  #   container_name: nodejs
-  #   volumes:
-  #     - .:/api
-  #   ports:
-  #     - 8088:8088
-  #   depends_on:
-  #     - db
-  #     - elastic
-  #     - clinwiki
+  sidekiq:
+    image: cwlite
+    build:
+      context: .
+      dockerfile: compose/Dockerfile
+    container_name: sidekiq
+    volumes:
+      - .:/clinwiki
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
+      - REDIS_URL=redis://redis:6379/0
+      - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
+    depends_on:
+      - db
+      - elastic
+      - redis
+    command: bundle exec sidekiq -C config/sidekiq.yml
+  nodejs:
+    image: keymetrics/pm2:14-alpine
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    command: npm start
+    container_name: nodejs
+    volumes:
+      - .:/api
+    ports:
+      - 8088:8088
+    depends_on:
+      - db
+      - elastic
+      - clinwiki
 
 
 volumes:
