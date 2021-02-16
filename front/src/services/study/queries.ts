@@ -50,7 +50,7 @@ export const getSampleStudyQuery = (name: string, frag: string) => {
 };
 export const SEARCH_STUDY_PAGE_QUERY =`
 query SearchStudyPageQuery($hash: String!, $id: String!) {
-  search(searStudyPageQuerychHash: $hash) {
+  search(searchHash: $hash) {
     studyEdge(id: $id) {
       nextId
       prevId
@@ -392,7 +392,7 @@ query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
 }
 `;
 
-const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
+export const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
   fragment WorkflowsViewFragment on WorkflowsView {
     id
     workflows {
@@ -510,6 +510,38 @@ export const REACTIONS_QUERY = `
   }
 `;
 
+export const LABELS_QUERY = `
+  query BulkLabelsQuery($searchHash: String!, $params: SearchInput!) {
+    myCrowdAggs: aggBuckets(searchHash: $searchHash, params: $params) {
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+    allCrowdAggs: aggBuckets(
+      params: {
+        page: 0
+        pageSize: 99999
+        q: { key: "*" }
+        agg: "front_matter_keys"
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+    search(searchHash: $searchHash) {
+      recordsTotal
+    }
+  }
+`;
 export const EDIT_REVIEW_QUERY =`
   query EditReviewQuery($nctId: String!) {
     study(nctId: $nctId) {
