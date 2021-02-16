@@ -10,7 +10,6 @@ import StyledError from './StyledError';
 import StyledWrapper from './StyledWrapper';
 import {resetPassword} from 'services/user/actions';
 import { connect } from 'react-redux';
-// import RESET_PASSWORD_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
 
 interface ResetPasswordPageProps {
   history: History;
@@ -23,8 +22,6 @@ interface ResetPasswordPageState {
   errors: string[];
 }
 
-
-
 const LinkContainer = styled.div`
   position: absolute;
   bottom: 30px;
@@ -33,7 +30,6 @@ const LinkContainer = styled.div`
     margin-right: 15px;
   }
 `;
-
 class ResetPasswordPage extends React.Component<
   ResetPasswordPageProps,
   ResetPasswordPageState
@@ -52,17 +48,13 @@ class ResetPasswordPage extends React.Component<
   };
 
   handleResetPassword = () => () => {
-
-    this.props.resetPassword({ variables: { input: this.state.form } })
-
-      // this.setState({
-      //   errors: ['Password reset instructions have been sent to your email.'],
-      // })
-
+    this.props.resetPassword(this.state.form.email);
+      this.setState({
+        errors: ['Password reset instructions have been sent to your email.'],
+      })
       // this.setState({
       //   errors: ['Instructions have been sent to your email'],
       // });
-
   };
 
   renderErrors = () => {
@@ -115,10 +107,7 @@ class ResetPasswordPage extends React.Component<
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  // upsertLabelMutation: (variables?) => dispatch(upsertLabelMutation(variables.nctId, variables.key, variables.value)),
-  resetPassword: (variables) => dispatch(resetPassword(variables))
+  resetPassword: (email) => dispatch(resetPassword(email))
 })
-
-
 
 export default connect(null, mapDispatchToProps)(ResetPasswordPage);
