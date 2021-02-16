@@ -101,6 +101,7 @@ function* updatePassword(action) {
 }
 
 function* resetPassword(action) {
+    //console.log("SAGA reset pass", action)
     try {
         let response = yield call(() => api.resetPassword(action.email));
         if(response) {
