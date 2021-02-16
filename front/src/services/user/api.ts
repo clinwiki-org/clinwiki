@@ -27,6 +27,11 @@ export const updatePassword = (resetPasswordToken,password,passwordConfirmation)
         { input: { resetPasswordToken, password, passwordConfirmation} });
 };
 
+export const resetPassword = (email) => {
+    return callGraphql(ENDPOINT,query.RESET_PASSWORD_MUTATION, 
+        { input: { email } });
+};
+
 export const editProfile = (firstName, lastName, defaultQueryString) => {
     return callGraphql(ENDPOINT,query.EDIT_PROFILE_MUTATION, 
         { input: { firstName, lastName, defaultQueryString } });
