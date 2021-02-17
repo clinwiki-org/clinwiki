@@ -27,3 +27,13 @@ export const get_gql_url = () => {
     }
     return '/graphql';
   }
+
+export const getGraphQLMigrationURL = () => {
+  if (
+    typeof window === 'undefined' ||
+    window.location.hostname.includes('localhost')
+  ) {
+    return `http://${window.location.hostname}:8088/graphql`;
+  }
+  return '/graphql';
+}

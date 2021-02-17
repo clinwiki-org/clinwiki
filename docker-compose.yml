@@ -94,6 +94,22 @@ services:
       - elastic
       - redis
     command: bundle exec sidekiq -C config/sidekiq.yml
+  nodejs:
+    image: keymetrics/pm2:14-alpine
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    command: npm start
+    container_name: nodejs
+    volumes:
+      - .:/api
+    ports:
+      - 8088:8088
+    depends_on:
+      - db
+      - elastic
+      - clinwiki
+
 
 volumes:
   es-data:
