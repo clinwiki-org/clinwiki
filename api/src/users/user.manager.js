@@ -10,7 +10,10 @@ const QUERY_USER_ROLES = 'select name from roles where id in (select role_id fro
 const QUERY_USER_REVIEWS = 'select * from reviews where user_id=$1';
 const QUERY_USER_WIKI_CONTRIBUTIONS = 'select distinct wiki_page_id from wiki_page_edits where user_id=$1';
 const QUERY_NEW_USER = 'insert into users (email,encrypted_password,default_query_string,picture_url) values ($1,$2,$3,$4)';
+const QUERY_USER_REACTIONS = 'select * from reactions where user_id=$1';
 
+const ROLE_SITE_OWNER = 'site_owner';
+const ROLE_ADMIN = 'admin';
 
 export async function authenticate(email,password,oAuthToken) {
     logger.info('Authenticate user '+email);
@@ -66,12 +69,18 @@ export async function getUserByEmail(email) {
     const results = await query(QUERY_USER,[email]);
     if(results.rows.length === 1) {
         const user = results.rows[0];
-        user.roles = await getUserRoles(user.id);        
+        user.roles = await getUserRoles(user.id);
         user.reviews = await getUserReviews(user.id);
         user.reviewCount = user.reviews ? user.reviews.length : 0;
+        user.reactions = await getUserReactions(user.id);
+        user.reactionsCount = user.reactions ? user.reactions.length : 0;
         const wikis = await getUserWikis(user.id);
         user.contributions = wikis ? wikis.length : 0;
 
+        if(user.roles.includes(ROLE_SITE_OWNER)) {
+            logger.debug('User is a site owner. Populate role dependent fields')
+            
+        }
         return user;
     }
 }
@@ -83,7 +92,17 @@ export async function getUserRoles(userId) {
 
 export async function getUserReviews(userId) {
         const reviewResults = await query(QUERY_USER_REVIEWS,[userId]);
-        return reviewResults.rows;
+        const list = reviewResults.rows.map( review => ({
+            content: review.text,
+            nctId: review.nct_id,
+            briefTitle: 'ToDo: Migrate frontmatter parser for review content'
+        }))
+        return list;
+}
+
+export async function getUserReactions(userId) {
+    const reviewResults = await query(QUERY_USER_REACTIONS,[userId]);
+    return reviewResults.rows;
 }
 
 export async function getUserWikis(userId) {
