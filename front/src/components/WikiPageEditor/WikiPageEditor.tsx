@@ -91,7 +91,7 @@ export default function WikiPageEditor(props: Props) {
       </Panel>
     );
   }
-  console.log("PLAIN")
+ 
   return (
 
     <Panel>

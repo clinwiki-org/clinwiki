@@ -213,7 +213,9 @@ export const deleteReviewMutationError= (message: string) : types.StudyActionTyp
     payload: {message}
 });
 
-export const fetchReviewPage= ( nctId: string) : types.StudyActionTypes => (console.log(nctId),{
+export const fetchReviewPage= ( nctId: string) : types.StudyActionTypes => (
+    //console.log(nctId),
+    {
     type: types.FETCH_REVIEW_PAGE_SEND,
     nctId,
 });

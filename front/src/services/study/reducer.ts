@@ -367,7 +367,7 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 isFetchingReactionsIsland: true
             };
         case types.FETCH_REACTIONS_ISLAND_SUCCESS:
-                console.log(action.payload);
+                //console.log(action.payload);
                 return {
                 ...state,
                 isFetchingReactionsIsland: false,
@@ -492,7 +492,7 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 isFetchingReactionsById: true
             };
         case types.FETCH_REACTIONS_BY_ID_SUCCESS:
-            console.log(action.payload);
+            //console.log(action.payload);
             return {
                 ...state,
                 isFetchingReactionsById: false,

@@ -253,11 +253,12 @@ function* getWikiPage(action) {
     }
 }
 function* wikiPageUpdateContentMutation(action) {
+    //console.log("SAGA WIKI EDIT", action)
     try {
         console.log(action)
         let response = yield call(() => api.wikiPageUpdateContentMutation(action.nctId, action.content));
         if (response) {
-            yield put(actions.wikiPageUpdateContentMutation(response.nctId, response.content));
+            yield put(actions.wikiPageUpdateContentMutationSuccess(response));
         }
         else {
             yield put(actions.wikiPageUpdateContentMutationError(response.message));

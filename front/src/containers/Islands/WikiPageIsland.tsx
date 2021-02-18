@@ -50,8 +50,8 @@ export default function WikiPageIsland(props: Props) {
   const [richEditorText, setRichEditorText] = useState('');
   const [flashAnimation, setFlashAnimation] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  
-  const user = useSelector( (state: RootState) => state.user.current);
+
+  const user = useSelector((state: RootState) => state.user.current);
   const params = useUrlParams();
   //const user = userData ? userData.me : null;
   // TODO: This query should be pushed up as a fragment to the Page
@@ -62,9 +62,10 @@ export default function WikiPageIsland(props: Props) {
     }, [dispatch])
   const wikiPageData = useSelector((state: RootState) => state.study.wikiPage);
 
-  const updateContentMutation = (action)=>{
-    if(!action.variables.key) return
-    return dispatch(wikiPageUpdateContentMutation(nctId, action.content) )}
+/*   const updateContentMutation = (action) => {
+    if (!action.variables.key) return
+    return dispatch(wikiPageUpdateContentMutation(nctId, action.content))
+  } */
 
   const readOnly = !location.pathname.includes('/wiki/edit');
   const editPath = `${trimPath(match.path)}/wiki/edit`;
@@ -106,17 +107,10 @@ export default function WikiPageIsland(props: Props) {
     setRichEditorText(text)
 
   }
-  const handleEditSubmit = (
-    updateWikiContent: (vars: {
-      variables: WikiPageUpdateContentMutationVariables;
-    }) => void
-  ) => {
-    updateWikiContent({
-      variables: {
-        nctId: nctId,
-        content: getEditorText() || '',
-      },
-    });
+  const handleEditSubmit = () => {
+    let content = getEditorText() || ''
+    dispatch(wikiPageUpdateContentMutation(nctId, content ));
+
     history.push(`${match.url}${queryStringAll(params)}`);
     setFlashAnimation(true)
   };
@@ -135,18 +129,18 @@ export default function WikiPageIsland(props: Props) {
     let editMessage = `Changes not saved. Are you sure you want to leave while editing?`;
 
     return (
-    <div>
-      <Prompt
-      when={!readOnly}
-      message={location => editMessage}
-      />
-      <ThemedButton
-        onClick={() => {editMessage = "Save changes?";  handleEditSubmit(updateContentMutation);}}
-        disabled={editorTextState === editorTextData}
-        style={{ marginLeft: '10px' }}>
-        Save <FontAwesome name="pencil" />
-      </ThemedButton>
-    </div>
+      <div>
+        <Prompt
+          when={!readOnly}
+          message={location => editMessage}
+        />
+        <ThemedButton
+          onClick={() => { editMessage = "Save changes?"; handleEditSubmit(); }}
+          disabled={editorTextState === editorTextData}
+          style={{ marginLeft: '10px' }}>
+          Save <FontAwesome name="pencil" />
+        </ThemedButton>
+      </div>
     );
   };
 
@@ -185,12 +179,12 @@ export default function WikiPageIsland(props: Props) {
       </Toolbar>
     );
   };
-  const resetHelper = ()=>{
+  const resetHelper = () => {
     setFlashAnimation(false)
     //refetch()
   }
-  const handleResetAnimation=()=>{
-    setTimeout(  resetHelper, 6500);
+  const handleResetAnimation = () => {
+    setTimeout(resetHelper, 6500);
 
   }
   const renderEditor = (data: WikiPageQuery) => {
@@ -212,7 +206,7 @@ export default function WikiPageIsland(props: Props) {
 
     if (editorState === 'rich') {
       return (
-        <Panel style={{border:"none", padding:"0px"}}>
+        <Panel style={{ border: "none", padding: "0px" }}>
           <Panel.Body >
             <StyledRTE
               readOnly={readOnly}
@@ -238,29 +232,28 @@ export default function WikiPageIsland(props: Props) {
     );
   };
 
-  console.log(`wikiPageData = ${wikiPageData}`)
-  console.log(`nctId = ${nctId}`)
   if (!wikiPageData || !nctId) return <BeatLoader />;
+  
   if (showLoginModal) return <LoginModal
     show={showLoginModal}
     cancel={() => setShowLoginModal(false)}
   />
   return (
     <>
-      {flashAnimation == true?
-      <WorkFlowAnimation
-        resetAnimation={handleResetAnimation}
-        rankColor={theme? theme.button: 'default'}
-      /> :null}
-    <div>
-      <StyledPanel>
-        <div>
-        <Route exact path = {editPath} render={props=><WikiPageEditor updateText={handleUpdateText} data={wikiPageData.data}/>}/>
-        {readOnly? <Route render={ () => renderEditor(wikiPageData.data)} />: null} 
-          {renderToolbar(wikiPageData.data, user, readOnly)}
-        </div>
-      </StyledPanel>
-    </div>
+      {flashAnimation == true ?
+        <WorkFlowAnimation
+          resetAnimation={handleResetAnimation}
+          rankColor={theme ? theme.button : 'default'}
+        /> : null}
+      <div>
+        <StyledPanel>
+          <div>
+            <Route exact path={editPath} render={props => <WikiPageEditor updateText={handleUpdateText} data={wikiPageData.data} />} />
+            {readOnly ? <Route render={() => renderEditor(wikiPageData.data)} /> : null}
+            {renderToolbar(wikiPageData.data, user, readOnly)}
+          </div>
+        </StyledPanel>
+      </div>
     </>
   );
 }
