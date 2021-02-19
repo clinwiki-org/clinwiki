@@ -59,7 +59,7 @@ export default function WikiPageIsland(props: Props) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchWikiPage( nctId ));
-    }, [dispatch])
+    }, [dispatch, nctId])
   const wikiPageData = useSelector((state: RootState) => state.study.wikiPage);
 
 /*   const updateContentMutation = (action) => {
@@ -156,11 +156,16 @@ export default function WikiPageIsland(props: Props) {
   };
 
   const renderToolbar = (
+    
     data: WikiPageQuery,
     //@ts-ignore
     user: CurrentUserQuery_me | null | undefined,
     readOnly: boolean
   ) => {
+
+    console.log("TOOLBAR - WIKI DATA", data?.study?.wikiPage)
+
+
     const isAuthenticated = user !== null;
 
     return (
@@ -188,6 +193,9 @@ export default function WikiPageIsland(props: Props) {
 
   }
   const renderEditor = (data: WikiPageQuery) => {
+
+    console.log("EDITOOR - WIKI DATA", data?.study?.wikiPage)
+
     if (!data || !data.study || !data.study.wikiPage) return null;
     const text = getEditorText() || '';
     if (text !== data.study.wikiPage.content && !text) {
@@ -238,6 +246,8 @@ export default function WikiPageIsland(props: Props) {
     show={showLoginModal}
     cancel={() => setShowLoginModal(false)}
   />
+  //console.log("WIKI DARTA", wikiPageData.data.study.wikiPage)
+
   return (
     <>
       {flashAnimation == true ?

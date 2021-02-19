@@ -1,14 +1,9 @@
 import React, { useEffect } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import { RootState } from 'reducers';
-//import {
-//  DELETE_REVIEW_MUTATION,
-//  DeleteMutationFn,
-//} from 'mutations/ReviewsPageDeleteReviewMutation';
 import { DELETE_REVIEW_MUTATION } from '../../services/study/mutations';
 import styled from 'styled-components';
 import QUERY from 'queries/ReviewPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
 //import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
@@ -68,7 +63,7 @@ export default function ReviewsIsland(props: Props) {
   useEffect (() => {
 //    console.log(props);
     dispatch (fetchReviewPage(nctId));
-  },[dispatch]);
+  },[dispatch,nctId]);
 /*  const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
     refetchQueries: [{ query: QUERY, variables: { nctId } }],
   }); *deleteReviewMutation/

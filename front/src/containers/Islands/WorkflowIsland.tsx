@@ -64,11 +64,11 @@ export default function WorkflowIsland(props: Props) {
 
   useEffect(() => {
     dispatch(fetchWorkFlowPage( nctId || "" ));
-    }, [dispatch])
+    }, [dispatch, nctId])
 
   useEffect(() => {
     dispatch(fetchAllWorkFlows());
-  }, [dispatch])
+  }, [dispatch, nctId])
 
   const upsertMutation = (action) => {
     if (!action.key) return
