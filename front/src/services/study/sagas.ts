@@ -27,7 +27,7 @@ function* getSampleStudy(action) {
 function* getStudyPage(action) {
     try {
         let response = yield call(() => api.fetchStudyPage(action.nctId, action.QUERY));
-        console.log(response)
+        //console.log(response)
         if (response) {
             yield put(actions.fetchStudyPageSuccess(response));
             yield call(() => api.updateStudyViewLogCount(action.nctId));

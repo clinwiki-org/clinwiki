@@ -156,7 +156,7 @@ export default function ReactionsBar(props: ReactionsBarProps) {
   if (!userReactions) {
     return <BeatLoader />;
   }
-  console.log(userReactions);
+  //console.log(userReactions);
   return (
     <HeaderContentWrapper>
       <LoginModal show={showLoginModal} cancel={() => cancelHelper()} />

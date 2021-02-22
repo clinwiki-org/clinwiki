@@ -18,6 +18,7 @@ import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConf
 import { BeatLoader } from 'react-spinners';
 import Error from 'components/Error';
 import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation } from '../../services/study/actions'
+import  equal  from 'fast-deep-equal';
 
 interface SuggestedLabelsProps {
   nctId: string;
@@ -59,6 +60,13 @@ class SuggestedLabels extends React.PureComponent<
   componentDidMount() {
     this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
   }
+
+  componentDidUpdate(prevProps) {
+    if(!equal(this.props.nctId, prevProps.nctId)) // Check if it's a new nctId, refetch
+    {
+      this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
+    }
+  } 
     //TODO - Previously refetch was coming from APollo made this faaux function to force refetch is needed 
   refetch =()=>{
     console.log("Refetching")
