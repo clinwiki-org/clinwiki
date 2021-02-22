@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import { RootState } from 'reducers';
-import { DELETE_REVIEW_MUTATION } from '../../services/study/mutations';
 import styled from 'styled-components';
-import QUERY from 'queries/ReviewPageQuery';
 //import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
@@ -22,7 +20,6 @@ import { Row, Col, Table, Label } from 'react-bootstrap';
 import ReactStars from 'react-stars';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { keys } from 'ramda';
-//import { ReviewPageQuery } from 'types/ReviewPageQuery';
 import { fetchReviewPage, deleteReviewMutation } from 'services/study/actions';
 import { ReviewPageQuery } from '../../services/study/model/ReviewPageQuery';
 import { upsertReviewFormMutation } from '../../services/study/actions';
@@ -64,10 +61,7 @@ export default function ReviewsIsland(props: Props) {
 //    console.log(props);
     dispatch (fetchReviewPage(nctId));
   },[dispatch,nctId]);
-/*  const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
-    refetchQueries: [{ query: QUERY, variables: { nctId } }],
-  }); *deleteReviewMutation/
-*/
+
   const deleteReviewMut = (action) => {
     console.log("deleteReviewMutation called");
     console.log(action);
@@ -89,13 +83,10 @@ export default function ReviewsIsland(props: Props) {
     history.push(`${trimPath(match.url)}/${id}/edit${queryStringAll(params)}`);
   };
   const handleCloseReview = () => {
-    history.push(`${trimPath(match.url)}${queryStringAll(params)}`);
+    let path = `${trimPath(match.url)}/${queryStringAll(params)}`
+    history.push(path);
+    //console.log("THE LINK\n" +`${trimPath(match.url)}/${queryStringAll(params)}`)
   };
-  //const handleDeleteReview = (
-  //  id: number
-  //) => () => {
-  //  dispatch(deleteReviewMutation(id));
-  //};
 
   const getName = (user: ReviewsPageFragment_user) => {
     if (user.firstName) {

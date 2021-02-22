@@ -516,15 +516,14 @@ function* getReactionsById(action) {
 }
 function* upsertReviewFormMutation(action) {
     try {
-        console.log(action);
+       //console.log(action);
         let response = yield call(() => api.upsertReviewFormMutation(action.id, action.nctId, action.meta, action.content));
-        if (action) {
-            let location = yield select((state) => state.router.location);
-
-            console.log(location)
+        if (response) {
+            yield put(actions.upsertReviewFormMutationSuccess(response));
             let response2 = yield getReviewPage(action);
-            let path = location.pathname.slice(0, -4);
-            yield put(push(`${path}?hash=${location.query.hash}&sv=${location.query.sv}&pv=${location.query.pv}`));
+           // let location = yield select((state) => state.router.location);
+            //let path = location.pathname.slice(0, -4);
+           // yield put(push(`${path}?hash=${location.query.hash}&sv=${location.query.sv}&pv=${location.query.pv}`));
         }
         else {
             yield put(actions.upsertReviewFormMutationError(response.message));

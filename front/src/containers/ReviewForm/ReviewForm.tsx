@@ -122,7 +122,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
     upsertReview: (x: { variables: ReviewFormMutationVariables }) => void
   ) => () => {
     const id = (this.props.review && this.props.review.id) || undefined;
-    console.log("handleSubmitReview called");
+    //console.log("handleSubmitReview called");
     upsertReview({
       variables: {
         id,
@@ -131,7 +131,8 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
         nctId: this.props.nctId,
       },
     });
-    this.setState(defaultState, ()=>this.props.handleClose());
+    this.setState(defaultState);//, ()=>this.props.handleClose());
+    this.props.handleClose();
   };
 
   renderMeta = () => {
