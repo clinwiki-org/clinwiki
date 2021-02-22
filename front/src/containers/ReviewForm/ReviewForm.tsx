@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Row, Col, FormControl, Panel } from 'react-bootstrap';
-import { Mutation, MutationComponentOptions } from '@apollo/client/react/components';
 import styled from 'styled-components';
 import {
   keys,
@@ -15,19 +14,13 @@ import {
 import ReactStars from 'react-stars';
 import * as FontAwesome from 'react-fontawesome';
 import RichTextEditor, { EditorValue } from 'react-rte';
-import { gql }  from '@apollo/client';
 import ThemedButton from 'components/StyledComponents/index';
 import {
   ReviewFormMutationVariables
 } from 'types/ReviewFormMutation';
-import { REVIEW_FORM_MUTATION, REVIEW_FRAGMENT } from '../../services/study/mutations'
-import { STUDY_FRAGMENT } from '../../services/study/queries'
 import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
-import { ReviewFormStudyFragment } from 'types/ReviewFormStudyFragment';
-import { dataIdFromObject } from 'configureApollo';
 import { ReviewFragment } from 'types/ReviewFragment';
-import { connect } from 'react-redux';
-import { upsertReviewFormMutation } from '../../services/study/actions';
+
 
 interface ReviewFormProps {
   nctId: string;
@@ -47,51 +40,7 @@ interface ReviewFormState {
   prevReview: ReviewsPageFragment | null;
 }
 
-/*const FRAGMENT = gql`
-  fragment ReviewFragment on Review {
-    id
-    meta
-    content
-    createdAt
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
-  }
-`;
 
-const MUTATION = gql`
-  mutation ReviewFormMutation(
-    $id: Int
-    $nctId: String!
-    $meta: String!
-    $content: String!
-  ) {
-    upsertReview(
-      input: { id: $id, nctId: $nctId, meta: $meta, content: $content }
-    ) {
-      review {
-        ...ReviewFragment
-      }
-      errors
-    }
-  }
-
-  ${FRAGMENT}
-`;
-
-const STUDY_FRAGMENT = gql`
-  fragment ReviewFormStudyFragment on Study {
-    nctId
-    reviews {
-      ...ReviewFragment
-    }
-  }
-
-  ${FRAGMENT}
-`;*/
 
 const defaultState = {
   meta: { 'Overall Rating': 0},
@@ -115,18 +64,10 @@ const AddRatingWrapper = styled.div`
   }
 `;
 
-/*const ReviewFormMutationComponent = (
-  props: MutationComponentOptions<
-    REVIEW_FORM_MUTATION,
-    ReviewFormMutationVariables
-  >
-) => Mutation(props);*/
-
 class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   state: ReviewFormState = defaultState;
   // Use this hook to trigger submit using ref from parent
   submitReview: () => void = () => {};
-  static fragment = REVIEW_FRAGMENT;
 
   static getDerivedStateFromProps = (
     props: ReviewFormProps,

@@ -208,7 +208,7 @@ function* getSuggestedLabels(action) {
 }
 function* getReviewPage(action) {
     try {
-        console.log(action)
+        //console.log(action)
         let response = yield call(() => api.fetchReviewPage(action.nctId));
         if (response) {
             yield put(actions.fetchReviewPageSuccess(response));

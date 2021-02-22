@@ -177,7 +177,6 @@ export default function ReviewsIsland(props: Props) {
   };
 
   const renderReviews = (reviews: ReviewsPageFragment[]) => {
-    console.log(reviews);
     return (
       <>
         <div style={{ display: 'flex' }}>
@@ -191,9 +190,7 @@ export default function ReviewsIsland(props: Props) {
       </>
     );
   };
-  console.log (reviewData)
   const upsertReview = (reviewData) => { 
-    console.log(reviewData);
     return dispatch(upsertReviewFormMutation(reviewData.variables.id, reviewData.variables.nctId, reviewData.variables.meta, reviewData.variables.content)); 
   }  
 
@@ -221,6 +218,7 @@ export default function ReviewsIsland(props: Props) {
             return (
               <EditReview
                 {...newProps}
+                handleClose={handleCloseReview}
                 onLoaded={() => console.log('Loaded')}
                 upsertReviewFormMutation={upsertReview}
               />

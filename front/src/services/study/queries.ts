@@ -542,6 +542,7 @@ export const LABELS_QUERY = `
     }
   }
 `;
+
 export const EDIT_REVIEW_QUERY =`
   query EditReviewQuery($nctId: String!) {
     study(nctId: $nctId) {
@@ -553,6 +554,7 @@ export const EDIT_REVIEW_QUERY =`
     }
   }
 
-  ${ReviewForm.fragment}
+  ${REVIEW_FRAGMENT}
   ${StudySummary.fragment}
 `;
+
