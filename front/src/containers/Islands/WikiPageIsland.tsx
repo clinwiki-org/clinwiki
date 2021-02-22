@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'reducers';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { WikiPageQuery } from 'types/WikiPageQuery';
-import { WikiPageUpdateContentMutationVariables } from 'types/WikiPageUpdateContentMutation';
 import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
@@ -163,9 +162,6 @@ export default function WikiPageIsland(props: Props) {
     readOnly: boolean
   ) => {
 
-    console.log("TOOLBAR - WIKI DATA", data?.study?.wikiPage)
-
-
     const isAuthenticated = user !== null;
 
     return (
@@ -192,16 +188,18 @@ export default function WikiPageIsland(props: Props) {
     setTimeout(resetHelper, 6500);
 
   }
+
   const renderEditor = (data: WikiPageQuery) => {
-
-    console.log("EDITOOR - WIKI DATA", data?.study?.wikiPage)
-
+    //console.log("EDITOOR - WIKI DATA: ", data?.study?.wikiPage)
     if (!data || !data.study || !data.study.wikiPage) return null;
     const text = getEditorText() || '';
-    if (text !== data.study.wikiPage.content && !text) {
+
+    if (text !== data.study.wikiPage.content || !text) {
       if (editorState === 'rich') {
+       // console.log("RICH Editor 111111111111", richEditorText)
+        const {content} = data.study.wikiPage
         const richEditorText = RichTextEditor.createValueFromString(
-          data.study.wikiPage.content || '',
+          content || '',
           'markdown'
         );
         setRichEditorText(richEditorText);
@@ -246,7 +244,7 @@ export default function WikiPageIsland(props: Props) {
     show={showLoginModal}
     cancel={() => setShowLoginModal(false)}
   />
-  //console.log("WIKI DARTA", wikiPageData.data.study.wikiPage)
+  //console.log("WIKI DATA", wikiPageData.data.study.wikiPage)
 
   return (
     <>
