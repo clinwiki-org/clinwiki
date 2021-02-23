@@ -17,9 +17,9 @@ import RichTextEditor, { EditorValue } from 'react-rte';
 import ThemedButton from 'components/StyledComponents/index';
 import {
   ReviewFormMutationVariables
-} from 'types/ReviewFormMutation';
-import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
-import { ReviewFragment } from 'types/ReviewFragment';
+} from '../../services/study/model/ReviewFormMutation';
+import { ReviewsPageFragment } from '../../services/study/model/ReviewsPageFragment';
+import { ReviewFragment } from '../../services/study/model/ReviewFragment';
 
 
 interface ReviewFormProps {
