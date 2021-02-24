@@ -9,7 +9,7 @@ import ReactionsIsland from './ReactionsIsland';
 import ReviewsIsland from './ReviewsIsland';
 import EditsHistoryIsland from './EditsHistoryIsland';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-import IslandAgg from './IslandAgg'
+import IslandAgg from './IslandAgg';
 
 /*
   Common island configuration for MailMerge pages

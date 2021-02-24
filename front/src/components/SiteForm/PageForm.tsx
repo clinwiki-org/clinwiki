@@ -52,7 +52,7 @@ export default function PageForm(props: Props) {
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
 
   const dispatch = useDispatch();
-  let input = { id: page.id, title, url, template, pageType: mode as string, default: isDefault };
+  let input = { id: page.id, title, url, template, default: isDefault };
 
   const updateMode = mode => {
     setMode(mode);

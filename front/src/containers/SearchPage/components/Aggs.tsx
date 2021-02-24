@@ -241,6 +241,9 @@ const Aggs = (props: AggsProps) => {
       }
 
       const renderAggDropDownWContext = (k) => {
+        console.log(k, "Green table")
+        console.log(filters, "Green table")
+
         return (
           aggs[k] ? (
             <AggContext.Provider  

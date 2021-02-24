@@ -29,10 +29,22 @@ import {
   equals,
   find,
   reverse,
+  contains,
+  filter,
+  isEmpty, 
+  isNil,
+  map,
+  dissoc,
+  any,
+  head,
+  propOr,
+  groupBy,
 } from 'ramda';
 import { BeatLoader } from 'react-spinners';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
+import { AggFilterInput, SortInput } from 'types/globalTypes';
+
 interface Props {
   hash?: string;
   aggId?: string;
@@ -77,7 +89,7 @@ useEffect(()=>{
 const [desc, setDesc] = useState(true);
 const [sortKind, setSortKind] = useState(SortKind.Alpha); 
     const [buckets, setBuckets] = useState([]);
-    const [filter, setFilter] = useState('') ;
+    const [aggFilter, setFilter] = useState('') ;
     const [hasMore, setHasMore]= useState(true);
     const [isOpen, setIsOpen]= useState(false);
     const [showLabel, setShowLabel]= useState(false);
@@ -85,21 +97,25 @@ const [sortKind, setSortKind] = useState(SortKind.Alpha);
     
     
     const data = useSelector((state : RootState ) => state.search.searchResults);
-    const aggBuckets = useSelector((state : RootState) => state.search.aggBuckets)
-    const crowdAggBuckets = useSelector((state : RootState) => state.search.crowdAggBuckets)
-    
+    const aggBuckets = useSelector((state : RootState) => state.search.aggBuckets);
+    const crowdAggBuckets = useSelector((state : RootState) => state.search.crowdAggBuckets);
+    const isUpdatingParams = useSelector((state : RootState) => state.search.isUpdatingParams);
     const searchParams = data?.data?.searchParams;
     const paramsUrl = useUrlParams();
-    const updateSearchParams = (searchParams) => {
-      console.log("In Update PARAMS")
-      const currentRams = {...searchParams, q : JSON.parse(searchParams.q)}
-  dispatch( updateSearchParamsAction(currentRams));
+    const updateSearchParams = (value) => {
+      console.log("In Update PARAMS", searchParams)
+      const currentRams = {...searchParams, value, q : JSON.parse(searchParams.q)}
 
-};
+      !isUpdatingParams &&  dispatch( updateSearchParamsAction(currentRams));
+
+    };
     if(!searchParams){
       return <BeatLoader/>
     }
-
+    let aggValues = find(
+      (x) =>(console.log(x), x.field == currentAgg.name),
+      searchParams['aggFilters']
+    );
     //helper functions
     const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
     const handleSort = (desc: boolean, sortKind: SortKind) => {
@@ -110,20 +126,147 @@ const [sortKind, setSortKind] = useState(SortKind.Alpha);
           return [{ id: 'count', desc: !desc }];
       }
     };
+
+    // const updater = new AggFilterInputUpdater(
+    //   currentAgg.name,
+    //   searchParams || {},
+    //   updateSearchParams,
+    //  ' aggFilters'
+    // );
+    const  ACCEPTED_FIELDS = ['values', 'gte', 'lte', 'includeMissingFields', 'zipcode','radius', 'lat', 'long'];
+
+   const  onUpdateFilter=()=> {
+
+   const aggSettings = find(
+    (x) => x.field == currentAgg.name,
+    searchParams
+  );
+  const grouping = 'aggFilters'
+      if(searchParams[grouping] || aggSettings ){
+      const allButThisAgg = filter(
+        (x) => x.field !== currentAgg.name,
+        searchParams[grouping] || aggSettings
+      );
+      console.log(aggSettings)
+      console.log(allButThisAgg)
+      if (hasNoFilters()) {
+
+        console.log("About to update")
+        updateSearchParams({
+          [grouping as string]: allButThisAgg,
+        });
+      } else if (aggValues?.includeMissingFields == false &&aggValues.values?.length == 0) {
+        console.log("About to update")
+        updateSearchParams({
+          [grouping as string]: allButThisAgg,
+        });
+      } else {
+        let newInput = {
+          field:aggValues?.field,
+          values:aggValues?.values,
+          gte:aggValues?.gte || null,
+          lte:aggValues?.lte || null,
+          includeMissingFields:aggValues?.includeMissingFields || null,
+          zipcode:aggValues?.zipcode || null,
+          radius:aggValues?.radius || null,
+          lat:aggValues?.lat || null,
+          long:aggValues?.long || null
+        }      
+        console.log("About to update")
+        updateSearchParams({
+          [grouping]: [...allButThisAgg, newInput],
+        });
+      }
+    }
+  //   console.log(grouping)
+  //  console.log( searchParams )
+  //  console.log( searchParams[grouping] )
+    
+  //  let newInput = {
+  //   field:aggValues?.field,
+  //   values:aggValues?.values,
+  //   gte:aggValues?.gte || null,
+  //   lte:aggValues?.lte || null,
+  //   includeMissingFields:aggValues?.includeMissingFields || null,
+  //   zipcode:aggValues?.zipcode || null,
+  //   radius:aggValues?.radius || null,
+  //   lat:aggValues?.lat || null,
+  //   long:aggValues?.long || null
+  // }      
+  // console.log(newInput)
+  // console.log("About to update")
+  // updateSearchParams({
+  //   [grouping]: [... searchParams.aggFilters, newInput],
+  // });
+    }
+    
+    const hasNoFilters=()=> {
+      for (let field of ACCEPTED_FIELDS) {
+        if (isEmpty(aggValues?.[field])) {
+          continue;
+        }
+        if (isNil(aggValues?.[field])) {
+          continue;
+        }
+        return false;
+      }
+      return true;
+    }
+    const addFilter =(value: string)=> {
+      if (aggValues) {
+        console.log("addFilter", aggValues)
+        aggValues.values = aggValues?.values
+          ? [...aggValues.values, value]
+          : [value];
+        onUpdateFilter();
+      }
+    }
+  
+    const removeFilter =(value: string)=> {
+      console.log('renmove filter', aggValues)
+      if (aggValues) {
+        // aggValues.values = aggValues.values
+        //    aggValues.values;
+      aggValues.values =aggValues.values
+        ? filter(x => x !== value,aggValues.values)
+        :aggValues.values;
+        onUpdateFilter();
+      }
+    }
+  
+    const isSelected=(key: string)=> {
+      console.log("PARAMS",searchParams)
+      console.log(searchParams['aggFilters'])
+
+
+    console.log("ValueCity",aggValues)
+      if (aggValues === undefined) {
+        return false;
+      }
+      return contains(key as string, aggValues.values as Array<string>);
+    }
+  
+    const toggleFilter=(key: string)=> {
+      console.log("Kay",key)
+
+      isSelected(key) ? removeFilter(key) : addFilter(key);
+    }
+
     const handleCheckboxToggle=(bucketKey, activeOptions)=>{
       //@ts-ignore
       //need to handle the single select functionality
       if(currentAgg.display == "DROP_DOWN" || currentAgg.display == "DROP_DOWN"){
         activeOptions.forEach(o => {
-          updater &&     updater.removeFilter(o.key);
+          // updater &&     updater.removeFilter(o.key);
           console.log("Need to hit updater",o)
         })
       }
       //Need to handle mutliselect functionality
-      console.log(updater)
+      // console.log(updater)
 
-      updater &&  updater.toggleFilter(bucketKey);
+      // updater &&  updater.toggleFilter(bucketKey);
       console.log("Need to hit updater", bucketKey)
+      toggleFilter(bucketKey)
 
     }
     const handleLoadMore = () => {
@@ -144,7 +287,7 @@ const [sortKind, setSortKind] = useState(SortKind.Alpha);
       agg: currentAgg.name,
       pageSize: PAGE_SIZE,
       page: getFullPagesCount(buckets),
-      aggOptionsFilter: filter,
+      aggOptionsFilter: aggFilter,
       aggOptionsSort: aggSort,
       q: JSON.parse(searchParams.q)
     };
@@ -212,6 +355,17 @@ const [sortKind, setSortKind] = useState(SortKind.Alpha);
     setBuckets([]);
     setHasMore(true);
   };
+  const transformFilters = (
+    filters: AggFilterInput[]
+  ): { [key: string]: Set<string> } => {
+    return pipe(
+      groupBy<AggFilterInput>(prop('field')),
+      map(head),
+      map(propOr([], 'values')),
+      map(arr => new Set(arr))
+    )(filters) as { [key: string]: Set<string> };
+  };
+  const filters = transformFilters(searchParams['aggFilters'])
   console.log("HI from Island ", props)
 //  if (!crowdAggBuckets && !aggBuckets){
 //    return <BeatLoader/>
@@ -222,12 +376,7 @@ if(currentAgg.aggKind === "crowdAggs" && !crowdAggBuckets){
 if(!aggBuckets && isOpen){
   return <BeatLoader/>
 }
-const updater = new AggFilterInputUpdater(
-  currentAgg.name,
-  searchParams || {},
-  updateSearchParams,
- ' aggFilters'
-);
+
   return (
     <>
       <div>
@@ -237,7 +386,7 @@ const updater = new AggFilterInputUpdater(
       <CustomDropDown
         buckets={buckets || []}
         isPresearch={true}
-        selectedKeys={emptySet}
+        selectedKeys={filters[currentAgg.name]}
         field={currentAgg}
         onContainerToggle={()=>setIsOpen(!isOpen)}
         handleLoadMore={handleLoadMore}

@@ -83,6 +83,7 @@ abstract class AbstractAggFilterInputUpdater {
   }
    
   isSelected(key: string): boolean {
+    console.log("Input",this.input)
     if (this.input?.values === undefined) {
       return false;
     }
@@ -212,11 +213,18 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
   onUpdateFilter(): void {
     console.log("X-games",this.agg, this.settings, this.grouping);
     console.log(this.settings[this.grouping])
-    if(this.settings[this.grouping]){
+ const aggSettings = find(
+  (x: AggFilterInput) => x.field == this.agg,
+  this.settings
+);
+
+    if(this.settings[this.grouping] || aggSettings ){
     const allButThisAgg = filter(
       (x: AggFilterInput) => x.field !== this.agg,
-      this.settings[this.grouping] || {}
+      this.settings[this.grouping] || aggSettings
     );
+    console.log(aggSettings)
+    console.log(allButThisAgg)
     if (this.hasNoFilters()) {
       this.updateSettings({
         [this.grouping as string]: allButThisAgg,
@@ -243,7 +251,7 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
     }
   }
   console.log(this.grouping)
- console.log( this.settings.aggFilters )
+ console.log( this.settings )
  console.log( this.settings[this.grouping] )
   
  let newInput = {
@@ -257,6 +265,7 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
   lat: this.input?.lat || null,
   long: this.input?.long || null
 }      
+console.log(newInput)
 this.updateSettings({
   [this.grouping]: [... this.settings.aggFilters, newInput],
 });

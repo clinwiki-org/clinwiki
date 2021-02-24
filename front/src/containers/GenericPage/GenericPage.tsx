@@ -5,7 +5,7 @@ import MailMergeView, {
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useQuery, useMutation} from '@apollo/client';
-import { getStudyQuery2, getSearchQuery2 } from 'components/MailMerge/MailMergeUtils';
+import { getStudyQuery, getSearchQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
@@ -13,7 +13,7 @@ import { find, propEq } from 'ramda';
 //import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
-import { fetchPageViews, fetchPageView, fetchStudyPage, updateStudyViewLogCount } from 'services/study/actions';
+import { fetchPageViews, fetchPageView, fetchStudyPage, fetchStudyPageHash, updateStudyViewLogCount } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {RootState} from 'reducers';
 import { fetchPresentSiteProvider } from 'services/site/actions';
@@ -100,10 +100,10 @@ export default function GenericPage(props: Props) {
 
   useEffect(()=>{
     console.log(pageType)
-    const STUDY_QUERY = `${getStudyQuery2(fragmentName, fragment)}`
-    const SEARCH_QUERY = `${getSearchQuery2(fragmentName, fragment)}`
-    dispatch(pageType=="Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPage(params.hash ?? "", SEARCH_QUERY) );
-   },[dispatch, currentPage, props.arg]);
+    const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
+    const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
+    dispatch(pageType=="Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY) );
+   },[dispatch, currentPage, props.arg, params.hash]);
    
   console.log(props.arg, pageViewData)
   const searchData = ()=> {

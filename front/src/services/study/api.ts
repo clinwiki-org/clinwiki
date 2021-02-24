@@ -5,13 +5,16 @@ import { callGraphql, get_gql_url } from 'utils/graphqlUtil';
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
-const ENDPOINT = get_gql_url();
+const ENDPOINT = get_gql_url()
 
 export const fetchSampleStudy= (nctId: any, QUERY: any) => {
     return callGraphql(ENDPOINT, QUERY, {nctId});
 };
 export const fetchStudyPage= (nctId: any, QUERY:any) => {
     return callGraphql(ENDPOINT, QUERY, {nctId});
+};
+export const fetchStudyPageHash= (hash: any, QUERY:any) => {
+    return callGraphql(ENDPOINT, QUERY, {hash});
 };
 export const fetchPageViews= (siteId: any) => {
     return callGraphql(ENDPOINT, query.PAGE_VIEWS_QUERY, {siteId: siteId.siteId});

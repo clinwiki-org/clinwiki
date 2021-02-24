@@ -38,6 +38,19 @@ export const fetchStudyPageError= (message: string) : types.StudyActionTypes => 
     type: types.FETCH_STUDY_PAGE_ERROR,
     payload: {message}
 });
+export const fetchStudyPageHash= ( hash: string, QUERY: any) : types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_HASH_SEND,
+    hash,
+    QUERY
+});
+export const fetchStudyPageHashSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_HASH_SUCCESS,
+    payload
+});
+export const fetchStudyPageHashError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_HASH_ERROR,
+    payload: {message}
+});
 export const fetchPageViews= ( siteId: any) : types.StudyActionTypes => ({
     type: types.FETCH_PAGE_VIEWS_SEND,
     siteId

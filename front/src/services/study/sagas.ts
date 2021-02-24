@@ -26,6 +26,7 @@ function* getSampleStudy(action) {
 
 function* getStudyPage(action) {
     try {
+        console.log(action)
         let response = yield call(() => api.fetchStudyPage(action.nctId, action.QUERY));
         //console.log(response)
         if (response) {
@@ -37,6 +38,23 @@ function* getStudyPage(action) {
         }
     }
     catch (err) {
+        console.log(err);
+        yield put(actions.fetchStudyPageError(err.message));
+    }
+}
+function* getStudyPageHash(action) {
+    try {
+        console.log("ACTION",action)
+        let response = yield call(() => api.fetchStudyPageHash(action.hash, action.QUERY));
+        console.log(response)
+        if(response) {
+            yield put(actions.fetchStudyPageSuccess(response));
+        }
+        else {
+            yield put(actions.fetchStudyPageError(response.message));
+        }
+    }
+    catch(err) {
         console.log(err);
         yield put(actions.fetchStudyPageError(err.message));
     }
@@ -446,21 +464,22 @@ function* createPageView(action) {
             yield put(actions.createPageViewError(createResponse.message));
         }
     }
-    catch (err) {
+    catch(err) {
         console.log(err);
         yield put(actions.createPageViewError(err.message));
+    }    
+} 
+function* updatePageView(action) { 
+try {
+    // console.log("SAGA Updating PAGE VIEW", action);
+    let updateResponse = yield call(() => api.updatePageView(action.input)); 
+   console.log(updateResponse)
+    if (updateResponse.data.updatePageView.errors === null){ 
+        let response = yield getPageViews(action); 
+        yield put(actions.updatePageViewSuccess(response));
     }
-}
-function* updatePageView(action) {
-    try {
-        // console.log("SAGA Updating PAGE VIEW", action);
-        let updateResponse = yield call(() => api.updatePageView(action.input));
-        if (updateResponse.data.updatePageView.errors === null) {
-            let response = yield getPageViews(action);
-            yield put(actions.updatePageViewSuccess(response));
-        }
-        else {
-            yield put(actions.updatePageViewError(updateResponse.message));
+    else {
+        yield put(actions.updatePageViewError(updateResponse.message));
 
         }
     }
@@ -560,6 +579,7 @@ function* getEditReview(action) {
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
+    yield takeLatest(types.FETCH_STUDY_PAGE_HASH_SEND, getStudyPageHash);
     yield takeLatest(types.FETCH_PAGE_VIEWS_SEND, getPageViews);
     yield takeLatest(types.FETCH_PAGE_VIEW_SEND, getPageView);
     yield takeLatest(types.UPDATE_STUDY_VIEW_LOG_COUNT_SEND, updateStudyViewLogCount);

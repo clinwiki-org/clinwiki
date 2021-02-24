@@ -30,6 +30,10 @@ export const FETCH_STUDY_PAGE_SEND = 'FETCH_STUDY_PAGE_SEND';
 export const FETCH_STUDY_PAGE_SUCCESS = 'FETCH_STUDY_PAGE_SUCCESS';
 export const FETCH_STUDY_PAGE_ERROR = 'FETCH_STUDY_PAGE_ERROR';
 
+export const FETCH_STUDY_PAGE_HASH_SEND = 'FETCH_STUDY_PAGE_HASH_SEND';
+export const FETCH_STUDY_PAGE_HASH_SUCCESS = 'FETCH_STUDY_PAGE_HASH_SUCCESS';
+export const FETCH_STUDY_PAGE_HASH_ERROR = 'FETCH_STUDY_PAGE_HASH_ERROR';
+
 export const FETCH_PAGE_VIEWS_SEND = 'FETCH_PAGE_VIEWS_SEND';
 export const FETCH_PAGE_VIEWS_SUCCESS = 'FETCH_PAGE_VIEWS_SUCCESS';
 export const FETCH_PAGE_VIEWS_ERROR = 'FETCH_PAGE_VIEWS_ERROR';
@@ -250,6 +254,20 @@ export interface fetchStudyPageSuccessAction {
 };
 export interface fetchStudyPageErrorAction {
     type: typeof FETCH_STUDY_PAGE_ERROR,
+    payload: StudyDataError
+};
+export interface fetchStudyPageHashSendAction {
+    type: typeof FETCH_STUDY_PAGE_HASH_SEND,
+    hash: any,
+    QUERY: any
+};
+
+export interface fetchStudyPageHashSuccessAction {
+    type: typeof FETCH_STUDY_PAGE_HASH_SUCCESS,
+    payload: SearchStudyPageQuery 
+};
+export interface fetchStudyPageHashErrorAction {
+    type: typeof FETCH_STUDY_PAGE_HASH_ERROR,
     payload: StudyDataError
 };
 export interface fetchPageViewsSendAction {
@@ -723,6 +741,7 @@ export interface bulkListUpdateErrorAction {
 };
 
 export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
+fetchStudyPageHashSendAction | fetchStudyPageHashSuccessAction | fetchStudyPageHashErrorAction |
 fetchPageViewSendAction | fetchPageViewSuccessAction | fetchPageViewErrorAction |
 fetchPageViewsSendAction | fetchPageViewsSuccessAction | fetchPageViewsErrorAction |
 updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |

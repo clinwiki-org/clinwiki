@@ -97,23 +97,39 @@ function* updateSearchParams(action) {
         let updateResponse = yield call(() => api.updateSearchParams(action)); 
         let location = yield select( (state) => state.router.location);
         let searchHash = updateResponse.data.provisionSearchHash.searchHash
-        //console.log(searchHash)
-        if (updateResponse.data.provisionSearchHash.searchHash !== null && location.pathname =='/profile' ){ 
+        console.log("SAGAS",searchHash)
+        if (updateResponse.data.provisionSearchHash.searchHash !== null){ 
             yield put(actions.fetchSearchParams(searchHash.short))
             yield put(actions.fetchSearchPageAggs(action.searchParams))
             yield put(actions.updateSearchParamsSuccess(searchHash));
             console.log(location)
+            switch(location.pathname){
+                case "/profile":
                     yield put(push(`/profile?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
+                    return
+                case "/search":
+                    yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
+                    return
+                case "/search2":
+                    yield put(push(`/search2?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
+                    return
+                case "/mmtest":
+                    yield put(push(`/mmtest?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
+
+            }
             // TODO need to pull default page view possibly defaulting to blank string which should default to configured default pageview
         }
-        if (updateResponse.data.provisionSearchHash.searchHash !== null && location.pathname =='/search' ){ 
-            yield put(actions.fetchSearchParams(searchHash.short))
-            yield put(actions.fetchSearchPageAggs(action.searchParams))
-            yield put(actions.updateSearchParamsSuccess(searchHash));
-            //console.log(location)
-                    yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
-        }
+        // if (updateResponse.data.provisionSearchHash.searchHash !== null && location.pathname =='/search' ){ 
+            //     yield put(actions.fetchSearchParams(searchHash.short))
+            //     yield put(actions.fetchSearchPageAggs(action.searchParams))
+            //     yield put(actions.updateSearchParamsSuccess(searchHash));
+            //             yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
+        //     //console.log(location)
+        // }
+
+
         else {
+            console.log("Updating Response",updateResponse)
             yield put(actions.updateSearchParamsError(updateResponse.message));
         }
     }
