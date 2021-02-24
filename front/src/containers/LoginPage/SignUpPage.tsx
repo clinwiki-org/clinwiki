@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import {useDispatch,useSelector} from 'react-redux';
 import {RootState} from 'reducers';
 import {signUp} from 'services/user/actions';
+//import {signUp} from '../../../../api/src/users/user.api';
 import { Col } from 'react-bootstrap';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
@@ -23,7 +24,8 @@ const SignUpPage = (props) => {
   const signUpErrors = useSelector( (state:RootState) => state.user.signUpErrors);
 
   const handleSignUp = () => {
-    if (password === passwordConfirmation) {
+      console.log(oAuthToken);
+      if (password === passwordConfirmation) {
       dispatch(signUp(email,password,oAuthToken));
     }
     else {

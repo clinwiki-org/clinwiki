@@ -139,12 +139,14 @@ export async function signup(email,password, defaultQueryString, oAuthToken) {
 // end
     let pictureUrl = null;
     let encryptedPassword = null;
+    console.log(oAuthToken);
     if(oAuthToken) {
-        
+        encryptedPassword = oAuthToken
     }
     else {
-        //encryptedPassword = bcrypt.
+        encryptedPassword = bcrypt
     }
+    console.log(encryptedPassword)
     const exists = await query(QUERY_USER,[email]);
     if(exists) {
         throw new Error('Email already exixts');
@@ -153,6 +155,7 @@ export async function signup(email,password, defaultQueryString, oAuthToken) {
 }
 
 async function createNewUser(email,password,defaultQueryString,pictureUrl) {
+    console.log("createNewUserCalled");
     const user = await query(QUERY_NEW_USER,[email,password,defaultQueryString,pictureUrl]);
     return user;
 }

@@ -5,10 +5,12 @@ import logger from '../util/logger';
 
 export default async function getAuthenticatedUser(req) {
     try {
-        if(!req.headers['authorization']) {
+        console.log(req.headers['authorization'].split(' '));
+	if(!req.headers['authorization']) {
             return undefined;
         }
-        const bearer = req.headers['authorization'].split(' ');
+	const bearer = req.headers['authorization'].split(' ');
+        console.log(bearer);
         if(bearer.length !== 2) {
             return undefined;
         }
