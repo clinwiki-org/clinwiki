@@ -2,6 +2,7 @@ import { push } from 'connected-react-router'
 import { call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from './types';
 import * as actions from './actions';
+import { fetchCurrentUser } from '../user/actions';
 import * as api from './api';
 import { updateSearchParamsSuccess } from './../search/actions';
 
@@ -140,6 +141,7 @@ function* upsertLabelMutation(action) {
         console.log(action)
         let response = yield call(() => api.upsertLabelMutation(action.nctId, action.key, action.value));
         if (!response.data.upsertWikiLabel.errors) {
+            yield put(fetchCurrentUser());
             let response2 = yield getWorkFlowPage(action);
             let response3 = yield getSuggestedLabels(action);
             let response4 = yield getAllWorkFlows(action);
@@ -239,6 +241,7 @@ function* getFacilitiesPage(action) {
 }
 function* getWikiPage(action) {
     try {
+        //console.log(action);
         let response = yield call(() => api.fetchWikiPage(action.nctId));
         if (response) {
             yield put(actions.fetchWikiPageSuccess(response));
@@ -255,9 +258,11 @@ function* getWikiPage(action) {
 function* wikiPageUpdateContentMutation(action) {
     //console.log("SAGA WIKI EDIT", action)
     try {
-        console.log(action)
+        //console.log(action)
         let response = yield call(() => api.wikiPageUpdateContentMutation(action.nctId, action.content));
         if (response) {
+            yield put(actions.fetchWikiPage(action.nctId));
+            yield put(fetchCurrentUser());
             yield put(actions.wikiPageUpdateContentMutationSuccess(response));
         }
         else {
