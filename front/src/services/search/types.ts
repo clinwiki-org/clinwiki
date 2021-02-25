@@ -4,7 +4,7 @@ import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
-import { FacetConfigQuery } from '../study/model/FacetConfigQuery';
+import { FacetConfigQuery } from './model/FacetConfigQuery';
 import { UpdateFacetConfigInput } from './model/UpdateFacetConfigInput'
 
 

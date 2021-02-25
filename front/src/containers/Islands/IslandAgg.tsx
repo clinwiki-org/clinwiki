@@ -46,15 +46,15 @@ import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdate
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 
 interface Props {
-  hash?: string;
   aggId?: string;
-  // updater: AggFilterInputUpdater | null;
 
 }
 
  function IslandAgg(props: Props) {
-  const { hash, aggId } = props;
+  const { aggId } = props;
   const dispatch = useDispatch();
+  const params = useUrlParams();
+  const hash = params.hash
 //constants to be switched
 const PAGE_SIZE = 25;
 
@@ -79,15 +79,25 @@ const currentAgg= {
   visibleOptions: {kind: "WHITELIST", values: Array(0)} , 
   aggKind: "aggs"
 }
+const mainConfig =  "{\"default\":{\"0\":{\"agg_sublabel\":null,\"auto_suggest\":false,\"bucket_key_value_pairs\":null,\"default_to_open\":null,\"display\":\"STRING\",\"display_name\":\"default\",\"layout\":\"horizontal\",\"max_crumbs\":null,\"name\":\"default\",\"order\":{\"sortKind\":\"key\",\"desc\":true},\"preselected\":{\"kind\":\"WHITELIST\",\"values\":[]},\"range_end_label\":null,\"range_start_label\":null,\"rank\":null,\"show_allow_missing\":null,\"show_filter_toolbar\":null,\"visible_options\":{\"kind\":\"WHITELIST\",\"values\":[]},\"agg_kind\":\"aggs\"}}}"
+
+ let getCurrentAgg = () =>{
+   console.log('current agg id', aggId)
+
+   let jsonConfig = JSON.parse(mainConfig)
+   console.log(jsonConfig)
+  aggId &&  console.log(jsonConfig.default[aggId])
+  return aggId && jsonConfig.default[aggId]
+
+ }
 
 
+    useEffect(()=>{
+      dispatch(fetchSearchParams(hash));
+    },[dispatch]);
 
-
-useEffect(()=>{
-  dispatch(fetchSearchParams(hash));
-},[dispatch]);
-const [desc, setDesc] = useState(true);
-const [sortKind, setSortKind] = useState(SortKind.Alpha); 
+    const [desc, setDesc] = useState(true);
+    const [sortKind, setSortKind] = useState(SortKind.Alpha); 
     const [buckets, setBuckets] = useState([]);
     const [aggFilter, setFilter] = useState('') ;
     const [hasMore, setHasMore]= useState(true);
@@ -109,14 +119,19 @@ const [sortKind, setSortKind] = useState(SortKind.Alpha);
       !isUpdatingParams &&  dispatch( updateSearchParamsAction(currentRams));
 
     };
-    if(!searchParams){
+    if(!searchParams || !aggId){
+      // getCurrentAgg()
       return <BeatLoader/>
     }
+
+    // let currentAgg = getCurrentAgg();
+console.log("HERE", currentAgg)
     let aggValues = find(
       (x) =>(console.log(x), x.field == currentAgg.name),
       searchParams['aggFilters']
     );
-    //helper functions
+    //helper functions\
+
     const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
     const handleSort = (desc: boolean, sortKind: SortKind) => {
       switch (sortKind) {
@@ -269,6 +284,7 @@ const [sortKind, setSortKind] = useState(SortKind.Alpha);
       toggleFilter(bucketKey)
 
     }
+
     const handleLoadMore = () => {
     console.log("HML")
     let aggSort = handleSort(desc, sortKind);
@@ -376,7 +392,6 @@ if(currentAgg.aggKind === "crowdAggs" && !crowdAggBuckets){
 if(!aggBuckets && isOpen){
   return <BeatLoader/>
 }
-
   return (
     <>
       <div>
