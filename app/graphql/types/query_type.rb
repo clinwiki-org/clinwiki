@@ -95,11 +95,11 @@ module Types
 #      subscribed = is_subscribed? from params if present
 #      name_label = name_label from params if present
 #      name_default = context[:search_params][:agg_filters][0][:values].join('|')
-      name_default = build_name_default context[:search_params]
-      name_default.delete_suffix!('|')
-      hash = { user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default }
-#      SearchLog.create(user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default )
-      SearchLog.find_or_create_by hash
+#       name_default = build_name_default context[:search_params]
+#       name_default.delete_suffix!('|')
+#       hash = { user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default }
+# #      SearchLog.create(user_id: context[:current_user]&.id, short_link_id:link.id, name_default: name_default )
+#       SearchLog.find_or_create_by hash
       search_service = SearchService.new(context[:search_params])
       search_service.search
     end

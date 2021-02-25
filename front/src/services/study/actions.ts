@@ -6,7 +6,7 @@ import { SearchStudyPageQuery } from './model/SearchStudyPageQuery';
 import { StudyEditsHistoryQuery } from './model/StudyEditsHistoryQuery';
 import { StudyReactions } from './model/StudyReactions';
 import * as types from './types';
-import { UpdatePageViewInput, } from 'services/study/model/InputTypes';
+import { UpdatePageViewInput } from 'services/study/model/InputTypes';
 import { WikiPageUpdateContentMutation } from './model/WikiPageUpdateContentMutation';
 import { ReactionsById } from './model/ReactionsById';
 

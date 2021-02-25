@@ -65,3 +65,20 @@ export const DELETE_SAVED_SEARCH_MUTATION = `
       }
   }
 `;
+const FACET_CONFIG_FRAGMENT =`
+  fragment FacetConfigFragment on FacetConfig {
+    mainConfig
+  }
+`;
+
+export const UPDATE_FACET_CONFIG = `
+  mutation UpdateFacetConfig($input: UpdateFacetConfigInput!) {
+    updateFacetConfig(input: $input) {
+      errors
+      facetConfig {
+        ...FacetConfigFragment
+      }
+    }
+  }
+  ${FACET_CONFIG_FRAGMENT}
+`;

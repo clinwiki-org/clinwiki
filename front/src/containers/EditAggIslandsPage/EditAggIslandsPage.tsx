@@ -1,24 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { find, propEq, equals } from 'ramda';
-import WorkflowsViewProvider from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
-import EditIslandForm from './EditIslandForm';
-import { SiteViewMutationInput } from 'types/globalTypes';
-import {
-  createMutation,
-  updateView,
-  getViewValueByPath,
-  serializeMutation,
-} from 'utils/siteViewUpdater';
-import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
-import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
-import UpdateWorkflowsViewMutation, {
-  UpdateWorkflowsViewMutationFn,
-} from 'mutations/UpdateWorflowsViewMutation';
 import ThemedButton from 'components/StyledComponents';
-import { MutationSource } from 'containers/SearchPage/shared';
-import AggField from '../AggDropDown/AggDropDown'
-import { filter } from 'remeda';
 import { Checkbox, Row, Col, Table, FormControl, Nav, NavItem, Panel } from 'react-bootstrap';
 
 interface EditWorkflowsPageProps { }

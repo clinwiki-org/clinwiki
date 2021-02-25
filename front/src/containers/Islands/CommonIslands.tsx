@@ -57,6 +57,6 @@ export const studyIslands: Record<string, IslandConstructor> = {
 export const searchIslands: Record<string, IslandConstructor> = {
   ...commonIslands,
   agg: (attributes: Record<string, string>, context?: any) => (
-    <IslandAgg hash={attributes['hash']} aggId={attributes['id']} />
+    <IslandAgg aggId={attributes['id']} />
   )
 };

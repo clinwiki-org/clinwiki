@@ -47,3 +47,11 @@ export const deleteSavedSearch = ( id ) => {
     return callGraphql(ENDPOINT, mutate.DELETE_SAVED_SEARCH_MUTATION, 
         {  id: id });                                    
 };
+
+export const fetchFacetConfig= () => {
+    return callGraphql(ENDPOINT, query.FACET_CONFIG_QUERY, {} );
+};
+export const updateFacetConfig = (input) => {
+    return callGraphql(ENDPOINT, mutate.UPDATE_FACET_CONFIG, 
+        { input: input });
+};

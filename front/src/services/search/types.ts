@@ -4,7 +4,8 @@ import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
-
+import { FacetConfigQuery } from '../study/model/FacetConfigQuery';
+import { UpdateFacetConfigInput } from './model/UpdateFacetConfigInput'
 
 
 export const FETCH_SEARCH_PAGE_AGGS_SEND = 'FETCH_SEARCH_PAGE_AGGS_SEND';
@@ -47,6 +48,13 @@ export const DELETE_SAVED_SEARCH_SEND = 'DELETE_SAVED_SEARCH_SEND';
 export const DELETE_SAVED_SEARCH_SUCCESS = 'DELETE_SAVED_SEARCH_SUCCESS';
 export const DELETE_SAVED_SEARCH_ERROR = 'DELETE_SAVED_SEARCH_ERROR';
 
+export const FETCH_FACET_CONFIG_SEND = 'FETCH_FACET_CONFIG_SEND';
+export const FETCH_FACET_CONFIG_SUCCESS = 'FETCH_FACET_CONFIG_SUCCESS';
+export const FETCH_FACET_CONFIG_ERROR = 'FETCH_FACET_CONFIG_ERROR';
+
+export const UPDATE_FACET_CONFIG_SEND = 'UPDATE_FACET_CONFIG_SEND';
+export const UPDATE_FACET_CONFIG_SUCCESS = 'UPDATE_FACET_CONFIG_SUCCESS';
+export const UPDATE_FACET_CONFIG_ERROR = 'UPDATE_FACET_CONFIG_ERROR';
 
 export interface SearchState {
     isFetchingAggs: boolean,
@@ -67,6 +75,9 @@ export interface SearchState {
     savedSearches: any | UserSavedSearchesQuery | undefined,
     isCreatingSavedSearch: boolean,
     isDeletingSavedSearch: boolean,
+    isFetchingFacetConfig: boolean,
+    facetConfig: FacetConfigQuery | undefined 
+    isUpdatingFacetConfig: boolean,
 }
 export interface SearchDataError {
     message: string
@@ -224,7 +235,32 @@ export interface DeleteSavedSearchErrorAction {
     type: typeof DELETE_SAVED_SEARCH_ERROR,
     payload: SearchDataError
 };
+export interface FetchFacetConfigSendAction {
+    type: typeof FETCH_FACET_CONFIG_SEND
+}
+export interface FetchFacetConfigSuccessAction {
+    type: typeof FETCH_FACET_CONFIG_SUCCESS,
+    payload: any
+};
+export interface FetchFacetConfigErrorAction {
+    type: typeof FETCH_FACET_CONFIG_ERROR,
+    payload: SearchDataError
+};
 
+export interface UpdateFacetConfigSendAction {
+    type: typeof UPDATE_FACET_CONFIG_SEND,
+    input: UpdateFacetConfigInput,
+}
+
+export interface UpdateFacetConfigSuccessAction {
+    type: typeof UPDATE_FACET_CONFIG_SUCCESS,
+    payload: FacetConfigQuery
+    };
+
+export interface UpdateFacetConfigErrorAction {
+    type: typeof UPDATE_FACET_CONFIG_ERROR,
+    payload: SearchDataError
+};
 
 export type SearchActionTypes = 
     FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
@@ -236,5 +272,6 @@ export type SearchActionTypes =
     FetchSearchAutoSuggestSendAction | FetchSearchAutoSuggestSuccessAction | FetchSearchAutoSuggestErrorAction |
     FetchSavedSearchesSendAction | FetchSavedSearchesSuccessAction | FetchSavedSearchesErrorAction |
     CreateSavedSearchSendAction | CreateSavedSearchSuccessAction | CreateSavedSearchErrorAction |
-    DeleteSavedSearchSendAction | DeleteSavedSearchSuccessAction | DeleteSavedSearchErrorAction 
-    ;
+    DeleteSavedSearchSendAction | DeleteSavedSearchSuccessAction | DeleteSavedSearchErrorAction |
+    FetchFacetConfigSendAction | FetchFacetConfigSuccessAction | FetchFacetConfigErrorAction |
+    UpdateFacetConfigSendAction | UpdateFacetConfigSuccessAction | UpdateFacetConfigErrorAction;

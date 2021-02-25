@@ -571,4 +571,3 @@ export const EDIT_REVIEW_QUERY =`
   ${REVIEW_FRAGMENT}
   ${StudySummary.fragment}
 `;
-

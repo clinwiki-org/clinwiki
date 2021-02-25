@@ -19,6 +19,9 @@ const initialState: types.SearchState = {
     savedSearches: undefined,
     isCreatingSavedSearch: false,
     isDeletingSavedSearch: false,
+    isFetchingFacetConfig: false,
+    facetConfig: undefined,
+    isUpdatingFacetConfig: false,
 };
 
 const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
@@ -211,7 +214,37 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                     ...state,
                     isDeletingSavedSearch: false
                 };
-    
+                case types.FETCH_FACET_CONFIG_SEND:
+                    return {
+                        ...state,
+                        isFetchingFacetConfig: true
+                    };
+                case types.FETCH_FACET_CONFIG_SUCCESS:
+                    return {
+                        ...state,
+                        isFetchingFacetConfig: false,
+                        facetConfig: action.payload
+                    };
+                case types.FETCH_FACET_CONFIG_ERROR:
+                    return {
+                        ...state,
+                        isFetchingFacetConfig: false
+                    };
+                case types.UPDATE_FACET_CONFIG_SEND:
+                    return {
+                        ...state,
+                        isUpdatingFacetConfig: true
+                    };
+                case types.UPDATE_FACET_CONFIG_SUCCESS:
+                    return {
+                        ...state,
+                        isUpdatingFacetConfig: false,
+                    };
+                case types.UPDATE_FACET_CONFIG_ERROR:
+                    return {
+                        ...state,
+                        isUpdatingFacetConfig: false
+                    };
                 
         default:
             return {...state};

@@ -15,13 +15,9 @@ import { introspectionQuery } from 'graphql/utilities';
 import { BeatLoader } from 'react-spinners';
 import { fetchStudyPage } from 'services/study/actions';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
-
-
 type Mode = 'Study' | 'Search';
-
 // return a tuple of the elements that differ with the mode
 // query, params, schema
-
 function getClassForMode(mode: Mode) {
   switch (mode) {
     case 'Study':
@@ -30,30 +26,11 @@ function getClassForMode(mode: Mode) {
       return 'ElasticStudy';
   }
 }
-
-function getModeData(
-  mode: Mode,
-  arg: string,
-  fragment: string,
-  fragmentName: string
-): [DocumentNode, object, string] {
-  switch (mode) {
-    case 'Study':
-      return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
-    case 'Search':
-      return [
-        getSearchQuery(fragmentName, fragment),
-        { hash: arg },
-        'ElasticStudy',
-      ];
-  }
-}
 const template1= `
 <navigation></navigation>
 {{nctId}}  
 {{$TRUNCATE briefTitle 5}}
 {{$TRUNCATE nctId 5}}
-
 {{briefTitle}}  
 {{briefSummary}}  
 `
@@ -66,7 +43,7 @@ const template2= `
 {{/$RenderEach }}
 `
 const template3= `
-<agg hash='{{querystring hash}}'></agg>
+<agg id='0'></agg>
 # title: Search Page
 {{#each studies }}
 <div class="testing-mm">
@@ -76,46 +53,54 @@ const template3= `
   </div>
 </div>
 {{/each }}
-
 `
+// function getModeData(
+//   mode: Mode,
+//   arg: string,
+//   fragment: string,
+//   fragmentName: string
+// ): [DocumentNode, object, string] {
+//   switch (mode) {
+//     case 'Study':
+//       return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
+//     case 'Search':
+//       return [
+//         getSearchQuery(fragmentName, fragment),
+//         { hash: arg },
+//         'ElasticStudy',
+//       ];
+//   }
+// }
 export default function TestComponent() {
   const [template, setTemplate] = useState(template3);
   const [mode, setMode] = useState<Mode>('Search');
   const defaultNctId = 'NCT03847779';
   const defaultSearchHash = 'tqxCyI9M';
   let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultSearchHash);
-
   const dispatch = useDispatch();
-
   useEffect(()=>{
     const QUERY = introspectionQuery
     dispatch(fetchIntrospection(QUERY));
   },[dispatch]);
-
   useEffect(()=>{
     const QUERY = `${getStudyQuery(fragmentName, fragment)}`
     dispatch(fetchStudyPage(nctOrSearchHash ?? "", QUERY));
-    console.log(mode)
+    console.log(mode);
     const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
     dispatch(mode=="Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPage(nctOrSearchHash ?? "", SEARCH_QUERY) );
    },[dispatch, nctOrSearchHash]);
-
   const introspection = useSelector((state:RootState) => state.introspection.introspection);
-
-
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, template);
-  const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
-  console.log("QUERY",query);
-  const { data } = useQuery(query, { variables });
-console.log("FRAG", fragmentName, fragment)
+  // const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
+  // const { data } = useQuery(query, { variables });
+  const studyData = useSelector((state:RootState) => state.study.studyPage);
   const updateMode = mode => {
     setMode(mode);
     if (mode === 'Study') setNctOrSearchHash(defaultNctId);
     if (mode === 'Search') setNctOrSearchHash(defaultSearchHash);
   };
-
   let islands = mode == 'Study'? studyIslands: searchIslands;
    islands = {
     ...islands,
@@ -125,25 +110,20 @@ console.log("FRAG", fragmentName, fragment)
       );
     },
   };
-
-  const sampleData = data?.study || data?.search?.studies?.[0];
-  const searchData = ()=> {
-      let studies : any[]=[]
-    data?.search?.studies?.map((study, index)=>{
-      studies.push( {...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL'})
-    })
-    // const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-  // :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }// const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-  // :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }
-    return studies
-  }
-
-
-  if (!introspection) {
+  if (!introspection || !studyData) {
     return <BeatLoader />;
   }
-
-  console.log(searchData())
+  const sampleData = studyData?.data.study || studyData.data?.search?.studies?.[0];
+  const searchData = ()=> {
+    let studies : any[]=[]
+  studyData?.data?.search?.studies?.map((study, index)=>{
+    studies.push( {...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL'})
+  })
+  // const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+// :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }// const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+// :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }
+  return studies
+}
   if (introspection) {
     const types = introspection.data.__schema.types;
     return (
@@ -163,9 +143,7 @@ console.log("FRAG", fragmentName, fragment)
         />
         <MailMerge
           schema={{ kind: 'graphql', typeName: schemaType, types }}
-          // sample={data?.study || data?.search?.studies[0]}
-          // sample={data?.study || data?.search?.studies}
-          sample={data?.study || searchData()}
+          sample={studyData?.data?.study || searchData()}
           template={template}
           onTemplateChanged={setTemplate}
           islands={islands}

@@ -4,7 +4,7 @@ import { DeleteReaction } from './model/DeleteReaction';
 //import { DeleteReview } from './model/DeleteReviewMutation';
 import { PageViewQuery } from './model/PageView';
 import { PageViewsQuery } from './model/PageViews';
-import { UpdatePageViewInput, } from 'services/study/model/InputTypes';
+import { UpdatePageViewInput } from 'services/study/model/InputTypes';
 import { SearchStudyPageQuery } from './model/SearchStudyPageQuery';
 import { WorkflowPageQuery } from './model/WorkflowPageQuery';
 import { CrowdPageQuery } from './model/CrowdPageQuery';
@@ -776,4 +776,4 @@ DeletePageViewSendAction | DeletePageViewSuccessAction | DeletePageViewErrorActi
 UpdatePageViewSendAction | UpdatePageViewSuccessAction | UpdatePageViewErrorAction |
 FetchReactionsByIdSendAction | FetchReactionsByIdSuccessAction | FetchReactionsByIdErrorAction |
 upsertReviewFormMutationSendAction | upsertReviewFormMutationSuccessAction | upsertReviewFormMutationErrorAction |
-FetchEditReviewSendAction | FetchEditReviewSuccessAction | FetchEditReviewErrorAction;
+FetchEditReviewSendAction | FetchEditReviewSuccessAction | FetchEditReviewErrorAction ;

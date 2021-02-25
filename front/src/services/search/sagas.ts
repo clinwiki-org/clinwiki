@@ -212,6 +212,39 @@ function* deleteSavedSearch(action) {
     }    
 } 
 
+function* getFacetConfig() {
+    try {
+        //console.log(action)
+        let response = yield call(() => api.fetchFacetConfig());
+        if (response) {
+            yield put(actions.fetchFacetConfigSuccess(response));
+        }
+        else {
+            yield put(actions.fetchFacetConfigError(response.message));
+        }
+    }
+    catch (err) {
+        console.log(err);
+        yield put(actions.fetchFacetConfigError(err.message));
+    }
+}
+function* updateFacetConfig(action) {
+    try {
+        // console.log("SAGA Updating PAGE VIEW", action);
+        let updateResponse = yield call(() => api.updateFacetConfig(action.input));
+        if (updateResponse.data.updateFacetConfig.errors === null) {
+            let response = yield getFacetConfig();
+            yield put(actions.updateFacetConfigSuccess(response));
+        }
+        else {
+            yield put(actions.updateFacetConfigError(updateResponse.message));
+        }
+    }
+    catch (err) {
+        console.log(err);
+        yield put(actions.updateFacetConfigError(err.message));
+    }
+}
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND, getSearchPageAggBuckets);
@@ -223,4 +256,6 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SAVED_SEARCHES_SEND, getSavedSearches);
     yield takeLatest(types.CREATE_SAVED_SEARCH_SEND, createSavedSearch);
     yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
+    yield takeLatest(types.FETCH_FACET_CONFIG_SEND, getFacetConfig);
+    yield takeLatest(types.UPDATE_FACET_CONFIG_SEND, updateFacetConfig);
 }
