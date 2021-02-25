@@ -4,7 +4,6 @@ import * as types from './types';
 import * as actions from './actions';
 import { fetchCurrentUser } from '../user/actions';
 import * as api from './api';
-import { updateSearchParamsSuccess } from './../search/actions';
 
 const getCurrentPageViews = (state) => state.study.pageViews.data.site.pageViews; //TODO CHeck path to redux store pageViews
 
@@ -136,12 +135,14 @@ function* getWorkFlowPage(action) {
         yield put(actions.fetchWorkFlowPageError(err.message));
     }
 }
+
 function* upsertLabelMutation(action) {
     try {
-        console.log(action)
+        //console.log("SAGA Upsert Label", action)
         let response = yield call(() => api.upsertLabelMutation(action.nctId, action.key, action.value));
         if (!response.data.upsertWikiLabel.errors) {
             yield put(fetchCurrentUser());
+            yield put (actions.fetchStudyPage(action.nctId ?? "", action.studyQuery));
             let response2 = yield getWorkFlowPage(action);
             let response3 = yield getSuggestedLabels(action);
             let response4 = yield getAllWorkFlows(action);
@@ -160,6 +161,7 @@ function* deleteLabelMutation(action) {
     try {
         let response = yield call(() => api.deleteLabelMutation(action.nctId, action.key, action.value));
         if (response) {
+            yield put (actions.fetchStudyPage(action.nctId ?? "", action.studyQuery));
             let response2 = yield getWorkFlowPage(action);
             let response3 = yield getSuggestedLabels(action);
 
@@ -241,8 +243,9 @@ function* getFacilitiesPage(action) {
 }
 function* getWikiPage(action) {
     try {
-        //console.log(action);
+        //console.log("SAGA Get WIKIpage", action);
         let response = yield call(() => api.fetchWikiPage(action.nctId));
+        //console.log("Get WIKI res",response)
         if (response) {
             yield put(actions.fetchWikiPageSuccess(response));
         }
@@ -256,12 +259,12 @@ function* getWikiPage(action) {
     }
 }
 function* wikiPageUpdateContentMutation(action) {
-    //console.log("SAGA WIKI EDIT", action)
+    //console.log("SAGA WIKI EDIT UpdateContent", action)
     try {
         //console.log(action)
         let response = yield call(() => api.wikiPageUpdateContentMutation(action.nctId, action.content));
         if (response) {
-            yield put(actions.fetchWikiPage(action.nctId));
+            yield put(actions.fetchWikiPage(action.nctId)); //yield getWikiPage(action);
             yield put(fetchCurrentUser());
             yield put(actions.wikiPageUpdateContentMutationSuccess(response));
         }
