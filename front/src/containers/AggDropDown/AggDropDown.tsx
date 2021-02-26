@@ -317,13 +317,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       crowdAggFilters: maskAgg(
         this.props.searchParams.crowdAggFilters,
         this.props.agg
-      ),
-      agg: agg,
-      pageSize: PAGE_SIZE,
-      page: this.getFullPagesCount(this.state.buckets),
-      aggOptionsFilter: filter,
-      aggOptionsSort: aggSort,
-    };
+        ),
+        agg: agg,
+        pageSize: PAGE_SIZE,
+        page: 0, // this.getFullPagesCount(this.state.buckets), //! Pagination not being used, component will be deprecated on MMSearchPage
+        aggOptionsFilter: filter, 
+        aggOptionsSort: aggSort,
+      };
+      //console.log("🚀 ~  ~ variables", variables);
     this.props.aggKind === "crowdAggs" ? this.props.fetchCrowdAggBuckets(variables) : this.props.fetchAggBuckets(variables);
     //this.handleLoadMoreResponse();
   }
