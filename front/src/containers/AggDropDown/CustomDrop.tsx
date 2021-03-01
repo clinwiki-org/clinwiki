@@ -355,7 +355,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
   };
   componentDidUpdate(prevProps,prevState){
-    if(this.props.selectedKeys !== prevProps.selectedKeys&& this.props.selectedKeys[0] ){
+    if(this.props.selectedKeys !== prevProps.selectedKeys || this.props.selectedKeys[0] ){
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
         selectedKeysPlaceHolders.push({ key: o, docCount: null })
