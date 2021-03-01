@@ -300,17 +300,12 @@ query UserSavedSearchesQuery($userId: Int!){
     }
 } 
 `;
-const FACET_CONFIG_FRAGMENT =`
-  fragment FacetConfigFragment on FacetConfig {
+
+export const FACET_CONFIG_QUERY =`
+query FacetConfig{
+  facetConfig{
     mainConfig
   }
-`;
-export const FACET_CONFIG_QUERY =`
-query FacetConfigQuery() {
-  FacetConfig() {
-    ...FacetConfigFragment
-  }
 }
-${FACET_CONFIG_FRAGMENT}
 `;
 

@@ -214,7 +214,6 @@ function* deleteSavedSearch(action) {
 
 function* getFacetConfig() {
     try {
-        //console.log(action)
         let response = yield call(() => api.fetchFacetConfig());
         if (response) {
             yield put(actions.fetchFacetConfigSuccess(response));

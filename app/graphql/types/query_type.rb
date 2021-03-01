@@ -76,6 +76,7 @@ module Types
       argument :user_id, type: Integer, required: false
     end
 
+    field :facet_config, FacetConfigType, "Facet Config", null: true 
 
     DISPLAY_NAMES = {
       "browse_condition_mesh_terms" => "Browse Condition Mesh Terms",
@@ -318,6 +319,10 @@ module Types
       user.saved_searches
     end
 
+    def facet_config
+      FacetConfig.first
+    end
+    
     private
 
     def fetch_and_merge_search_params(search_hash: nil, params: nil)

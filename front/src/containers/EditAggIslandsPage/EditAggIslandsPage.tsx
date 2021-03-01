@@ -1,7 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
 import styled from 'styled-components';
 import ThemedButton from 'components/StyledComponents';
-import { Checkbox, Row, Col, Table, FormControl, Nav, NavItem, Panel } from 'react-bootstrap';
+import { Row, Col, FormControl, Nav, NavItem, Panel } from 'react-bootstrap';
+import { fetchFacetConfig } from 'services/search/actions'
+import { BeatLoader } from 'react-spinners';
 
 interface EditWorkflowsPageProps { }
 interface EditWorkflowsPageState {
@@ -27,82 +31,33 @@ const StyledFormInput = styled(FormControl)`
 `;
 
 function EditAggIslandsPage(props: EditWorkflowsPageProps) {
-  const [aggConfig, setConfig]= useState("");
 
-  const currentAgg = {
-    aggSublabel: null,
-    autoSuggest: false,
-    bucketKeyValuePairs: null,
-    defaultToOpen: null,
-    display: "STRING",
-    displayName: "overall_status",
-    layout: "horizontal",
-    maxCrumbs: null,
-    name: "overall_status",
-    order: { sortKind: "key", desc: true },
-    preselected: { kind: "WHITELIST", values: Array(0) },
-    rangeEndLabel: null,
-    rangeStartLabel: null,
-    rank: null,
-    showAllowMissing: null,
-    showFilterToolbar: null,
-    visibleOptions: { kind: "WHITELIST", values: Array(0) },
-    aggKind: "aggs"
+  const dispatch = useDispatch();
+  const [aggConfig, setConfig] = useState("");
+  const [aggs, setAggs] = useState("");
+  const facetConfig = useSelector((state: RootState) => state.search.facetConfig);
+
+
+  useEffect(() => {
+    dispatch(fetchFacetConfig());
+  }, [dispatch]);
+
+  useEffect(() => {
+    let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig)
+
+    facetConfig && setConfig(JSON.stringify(mainConfig.default[0]));
+    facetConfig && setAggs(mainConfig.default);
+
+  }, [facetConfig])
+
+  if (!facetConfig) {
+    return <BeatLoader />
   }
 
-  useEffect(()=>{
-
-    setConfig(JSON.stringify(currentAgg));
-
-  }, [])
-  let aggs =
-  {
-    0: {
-      aggSublabel: null,
-      autoSuggest: false,
-      bucketKeyValuePairs: null,
-      defaultToOpen: null,
-      display: "STRING",
-      displayName: "overall_status",
-      layout: "horizontal",
-      maxCrumbs: null,
-      name: "overall_status",
-      order: { sortKind: "key", desc: true },
-      preselected: { kind: "WHITELIST", values: Array(0) },
-      rangeEndLabel: null,
-      rangeStartLabel: null,
-      rank: null,
-      showAllowMissing: null,
-      showFilterToolbar: null,
-      visibleOptions: { kind: "WHITELIST", values: Array(0) },
-      aggKind: "aggs"
-    },
-    1: {
-      aggSublabel: null,
-      autoSuggest: false,
-      bucketKeyValuePairs: null,
-      defaultToOpen: null,
-      display: "STRING",
-      displayName: "city",
-      layout: "horizontal",
-      maxCrumbs: null,
-      name: "city",
-      order: { sortKind: "key", desc: true },
-      preselected: { kind: "WHITELIST", values: Array(0) },
-      rangeEndLabel: null,
-      rangeStartLabel: null,
-      rank: null,
-      showAllowMissing: null,
-      showFilterToolbar: null,
-      visibleOptions: { kind: "WHITELIST", values: Array(0) },
-      aggKind: "aggs"
-    },
-
-  };
   let aggsArray = Object.keys(aggs)
 
   console.log(aggsArray)
-  const handleSaveIsland =(e)=>{
+  const handleSaveIsland = (e) => {
     console.log("Save Isalnd Mutation", e.currentTarget)
   }
   if (aggs == null)

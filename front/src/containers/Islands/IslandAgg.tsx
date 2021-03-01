@@ -6,7 +6,7 @@ import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import SortKind from 'containers/AggDropDown/SortKind';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions'
+import { fetchSearchParams, updateSearchParamsAction, fetchFacetConfig } from 'services/search/actions'
 import {RootState} from 'reducers';
 import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 
@@ -59,32 +59,32 @@ interface Props {
 const PAGE_SIZE = 25;
 
 const emptySet = new Set();
-const currentAgg= {
-  aggSublabel: null,
-  autoSuggest: false,
-  bucketKeyValuePairs: null,
-  defaultToOpen: null,
-  display: "STRING",
-  displayName: "overall_status",
-  layout: "horizontal",
-  maxCrumbs: null,
-  name: "overall_status",
-  order: {sortKind: "key", desc: true},
-  preselected: {kind: "WHITELIST", values: Array(0)},
-  rangeEndLabel: null,
-  rangeStartLabel: null,
-  rank: null,
-  showAllowMissing: null,
-  showFilterToolbar: null,
-  visibleOptions: {kind: "WHITELIST", values: Array(0)} , 
-  aggKind: "aggs"
-}
-const mainConfig =  "{\"default\":{\"0\":{\"agg_sublabel\":null,\"auto_suggest\":false,\"bucket_key_value_pairs\":null,\"default_to_open\":null,\"display\":\"STRING\",\"display_name\":\"default\",\"layout\":\"horizontal\",\"max_crumbs\":null,\"name\":\"default\",\"order\":{\"sortKind\":\"key\",\"desc\":true},\"preselected\":{\"kind\":\"WHITELIST\",\"values\":[]},\"range_end_label\":null,\"range_start_label\":null,\"rank\":null,\"show_allow_missing\":null,\"show_filter_toolbar\":null,\"visible_options\":{\"kind\":\"WHITELIST\",\"values\":[]},\"agg_kind\":\"aggs\"}}}"
+// const currentAgg= {
+//   aggSublabel: null,
+//   autoSuggest: false,
+//   bucketKeyValuePairs: null,
+//   defaultToOpen: null,
+//   display: "STRING",
+//   displayName: "overall_status",
+//   layout: "horizontal",
+//   maxCrumbs: null,
+//   name: "overall_status",
+//   order: {sortKind: "key", desc: true},
+//   preselected: {kind: "WHITELIST", values: Array(0)},
+//   rangeEndLabel: null,
+//   rangeStartLabel: null,
+//   rank: null,
+//   showAllowMissing: null,
+//   showFilterToolbar: null,
+//   visibleOptions: {kind: "WHITELIST", values: Array(0)} , 
+//   aggKind: "aggs"
+// }
+// const mainConfig =  "{\"default\":{\"0\":{\"agg_sublabel\":null,\"auto_suggest\":false,\"bucket_key_value_pairs\":null,\"default_to_open\":null,\"display\":\"STRING\",\"display_name\":\"default\",\"layout\":\"horizontal\",\"max_crumbs\":null,\"name\":\"default\",\"order\":{\"sortKind\":\"key\",\"desc\":true},\"preselected\":{\"kind\":\"WHITELIST\",\"values\":[]},\"range_end_label\":null,\"range_start_label\":null,\"rank\":null,\"show_allow_missing\":null,\"show_filter_toolbar\":null,\"visible_options\":{\"kind\":\"WHITELIST\",\"values\":[]},\"agg_kind\":\"aggs\"}}}"
 
  let getCurrentAgg = () =>{
    console.log('current agg id', aggId)
 
-   let jsonConfig = JSON.parse(mainConfig)
+   let jsonConfig = JSON.parse(facetConfig.data.facetConfig.mainConfig)
    console.log(jsonConfig)
   aggId &&  console.log(jsonConfig.default[aggId])
   return aggId && jsonConfig.default[aggId]
@@ -94,6 +94,10 @@ const mainConfig =  "{\"default\":{\"0\":{\"agg_sublabel\":null,\"auto_suggest\"
 
     useEffect(()=>{
       dispatch(fetchSearchParams(hash));
+    },[dispatch]);
+    useEffect(()=>{
+      console.log("In facet config ")
+      dispatch(fetchFacetConfig());
     },[dispatch]);
 
     const [desc, setDesc] = useState(true);
@@ -110,6 +114,8 @@ const mainConfig =  "{\"default\":{\"0\":{\"agg_sublabel\":null,\"auto_suggest\"
     const aggBuckets = useSelector((state : RootState) => state.search.aggBuckets);
     const crowdAggBuckets = useSelector((state : RootState) => state.search.crowdAggBuckets);
     const isUpdatingParams = useSelector((state : RootState) => state.search.isUpdatingParams);
+    const isFetchingFacetConfig = useSelector((state : RootState) => state.search.isFetchingFacetConfig);
+    const facetConfig = useSelector((state : RootState) => state.search.facetConfig);
     const searchParams = data?.data?.searchParams;
     const paramsUrl = useUrlParams();
     const updateSearchParams = (value) => {
@@ -119,13 +125,12 @@ const mainConfig =  "{\"default\":{\"0\":{\"agg_sublabel\":null,\"auto_suggest\"
       !isUpdatingParams &&  dispatch( updateSearchParamsAction(currentRams));
 
     };
-    if(!searchParams || !aggId){
+    if(!searchParams || !aggId || !facetConfig){
       // getCurrentAgg()
       return <BeatLoader/>
     }
 
-    // let currentAgg = getCurrentAgg();
-console.log("HERE", currentAgg)
+    let currentAgg = getCurrentAgg();
     let aggValues = find(
       (x) =>(console.log(x), x.field == currentAgg.name),
       searchParams['aggFilters']
