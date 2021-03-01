@@ -9,7 +9,12 @@ export enum FacetConfigOperation {
 /**
  * An atomic mutation of facet Config 
  */
+export interface Input {
+      jsonObj: string;
+      clientMutationId: string | null;
+}
 export interface UpdateFacetConfigInput {
-    operation: FacetConfigOperation;
-    payload: string;
+    // jsonObj: string;
+    // clientMutationId?: string;
+    input: Input
   }

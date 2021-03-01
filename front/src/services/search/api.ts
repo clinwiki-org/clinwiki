@@ -53,5 +53,5 @@ export const fetchFacetConfig= () => {
 };
 export const updateFacetConfig = (input) => {
     return callGraphql(ENDPOINT, mutate.UPDATE_FACET_CONFIG, 
-        { input: input });
+        { input : input.input});
 };

@@ -75,10 +75,6 @@ export const UPDATE_FACET_CONFIG = `
   mutation UpdateFacetConfig($input: UpdateFacetConfigInput!) {
     updateFacetConfig(input: $input) {
       errors
-      facetConfig {
-        ...FacetConfigFragment
-      }
     }
   }
-  ${FACET_CONFIG_FRAGMENT}
 `;
