@@ -9,36 +9,22 @@ import ThemedLoaderWrapper from '../../components/LoadingPane/LoadingPane';
 import ProfileScoreBoard from './components/ProfileScoreBoard';
 import ProfilePicture from './components/ProfilePicture';
 import ReviewsTable from './components/ReviewsTable';
-import { Query } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
+import { connect } from 'react-redux';
+import { fetchUser } from 'services/user/actions';
 
 interface ProfilePageProps {
   history: History;
   location: Location;
   match: any;
+  fetchUser: any;
+  isFetchingUser: boolean;
+  userData: any;
+  users: any;
 }
 interface ProfilePageState {
   currentDisplay: string;
   username: string;
 }
-
-const USER_QUERY = gql`
-  query User($userId: Int!) {
-    user(userId: $userId) {
-      firstName
-      lastName
-      reviewCount
-      rank
-      reviews {
-        nctId
-        briefTitle
-        content
-      }
-      contributions
-      pictureUrl
-    }
-  }
-`;
 
 class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
   state: ProfilePageState = {
@@ -63,7 +49,11 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
       .toString();
   };
   componentDidMount() {
+    let uId = new URLSearchParams(this.props.location.search).getAll('uid').toString();
+    const userId = parseInt(uId)
+    this.props.fetchUser(userId);
     this.setState({ username: this.username() });
+    
   }
   componentDidUpdate(currentState) {
     //  if(currentState.username!= this.username() ){
@@ -105,50 +95,54 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
     }
   };
   render() {
-    let userId = new URLSearchParams(this.props.location.search)
-      .getAll('uid')
-      .toString();
-    return (
-      <Query query={USER_QUERY} variables={{ userId: parseInt(userId) }}>
-        {arg => {
-          const { loading, error, data } = arg;
-          if (loading)
-            return (
+      let uId = new URLSearchParams(this.props.location.search).getAll('uid').toString();
+      const userId = parseInt(uId)
+      const {users} = this.props;
+      
+      if (!users)
+      return (
               <ThemedMainContainer>
                 <ThemedLoaderWrapper />
               </ThemedMainContainer>
             );
-          if (error) return <div>Error</div>;
-          const userData = data;
-          console.log('userData', userData);
+            
+        const userData = users[userId]
+          //console.log('userData', userData);
           return (
             <div>
               <ThemedMainContainer>
-                <ProfilePicture pictureUrl={userData.user.pictureUrl} />
+                <ProfilePicture pictureUrl={userData.pictureUrl} />
                 <h2>
-                  {userData.user.firstName || this.state.username}'s
+                  {userData.firstName || this.state.username}'s
                   Contributions
                 </h2>
                 <ThemedSearchContainer>
                   <ProfileScoreBoard
                     totalPoints={0}
-                    totalContributions={userData.user.contributions}
-                    totalReviews={userData.user.reviewCount}
+                    totalContributions={userData.contributions}
+                    totalReviews={userData.reviewCount}
                     totalTags={'Coming Soon'}
                     totalFavorites={0}
                     handleDisplayChange={this.handleDisplayChange}
-                    rank={userData.user.rank}
+                    rank={userData.rank}
                   />
                 </ThemedSearchContainer>
-                {this.renderHeader(userData.user)}
-                {this.renderResults(userData.user.reviews)}
+                {this.renderHeader(userData)}
+                {this.renderResults(userData.reviews)}
               </ThemedMainContainer>
             </div>
           );
-        }}
-      </Query>
-    );
+      
   }
 }
 
-export default ProfilePage;
+const mapDispatchToProps = (dispatch) => ({
+  fetchUser: (userId) => dispatch(fetchUser(userId)),
+})
+
+const mapStateToProps = (state, ownProps) => ({
+  isFetchingUser: state.user.isFetchingUser,
+  users: state.user.user//[ownProps.userId]
+})
+
+export default connect(mapStateToProps, mapDispatchToProps ) (ProfilePage);

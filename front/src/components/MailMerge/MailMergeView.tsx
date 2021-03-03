@@ -81,7 +81,7 @@ export default function MailMergeView(props: Props) {
 
     //      node.attribs.onChange =()=>{
     //         // props.refetchQuery()
-    //         console.log("OnChange")
+           //  console.log(props.context)
     // }
         const create = props.islands?.[node.name];
         return (

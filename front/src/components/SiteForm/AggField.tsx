@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import aggToField from 'utils/aggs/aggToField';
 import { FormControl, Checkbox } from 'react-bootstrap';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import AggDropDown from 'containers/AggDropDown';
 import AggKeyValuePairsDropDown from 'containers/AggDropDown/AggKeyValuePairsDropDown';
 import { capitalize } from 'utils/helpers';
@@ -375,7 +375,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 isOpen={this.state.isValuesOpen}
                 selectedKeys={selected}
                 onOpen={this.handleOpen('preselected')}
-                currentSiteView={this.props.view}
+               // presentSiteView={this.props.view}
                 configType={this.props.configType}
                 returnAll={this.props.returnAll}
               />
@@ -427,7 +427,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 isOpen={this.state.isVisibleOptionsOpen}
                 selectedKeys={visibleOptions}
                 onOpen={this.handleOpen('visibleOptions')}
-                currentSiteView={this.props.view}
+               // presentSiteView={this.props.view}
                 configType={this.props.configType}
                 returnAll={this.props.returnAll}
               />
@@ -469,7 +469,7 @@ class AggField extends React.Component<AggFieldProps, AggFieldState> {
                 isOpen={this.state.isKeyValuesOpen}
                 selectedKeys={visibleOptions}
                 onOpen={this.handleOpen('keyValuePair')}
-                currentSiteView={this.props.view}
+                presentSiteView={this.props.view}
                 configType={this.props.configType}
                 returnAll={this.props.returnAll}
                 handleKeyValueMutations={this.handleKeyValueMutations}

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import {
   isEmpty,
   isNil,
@@ -9,8 +9,6 @@ import {
   pathOr,
 } from 'ramda';
 import findFields from 'utils/aggs/findFields';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
 import AggDropDown from 'containers/AggDropDown';
 import {
   AggBucketMap,
@@ -24,61 +22,21 @@ import { SearchParams } from '../../../containers/SearchPage/shared';
 import {
   SearchPageAggsQuery,
   SearchPageAggsQueryVariables,
-} from 'types/SearchPageAggsQuery';
+} from 'services/search/model/SearchPageAggsQuery';
 import { BeatLoader } from 'react-spinners';
-import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import styled from 'styled-components';
 import AggFilterInputUpdater from './AggFilterInputUpdater';
 import AggContext from './AggFilterUpdateContext';
 import { withSearchParams } from './SearchParamsContext';
 import withTheme from 'containers/ThemeProvider';
-import { useQuery } from '@apollo/client';
 import {PresearchContainer, ThemedButton} from '../../../components/StyledComponents';
+import { fetchSearchPageAggs } from 'services/search/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import {RootState} from 'reducers';
 
-const QUERY = gql`
-  query SearchPageAggsQuery(
-    $q: SearchQueryInput!
-    $page: Int
-    $pageSize: Int
-    $sorts: [SortInput!]
-    $aggFilters: [AggFilterInput!]
-    $crowdAggFilters: [AggFilterInput!]
-  ) {
-    crowdAggs: aggBuckets(
-      params: {
-        q: $q
-        page: 0
-        pageSize: 100000
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-        agg: "front_matter_keys"
-      }
-    ) {
-      aggs {
-        buckets{
-          key
-        }
-      }
-    }
-    search(
-      params: {
-        q: $q
-        page: $page
-        pageSize: $pageSize
-        sorts: $sorts
-        aggFilters: $aggFilters
-        crowdAggFilters: $crowdAggFilters
-      }
-    ) {
-      recordsTotal
-      aggs {
-        name
-      }
-    }
-  }
-`;
+
 const getVisibleOptionsByName: (PresentSiteFragment) => any = compose(
   reduce(
     (byName, { name, visibleOptions }) => ({
@@ -101,6 +59,7 @@ const getVisibleOptionsByNamePresearch: (PresentSiteFragment) => any = compose(
 
   pathOr([], ['search', 'presearch', 'crowdAggs', 'fields'])
 );
+
 interface AggsProps {
   key?: any;
   // selected
@@ -121,7 +80,7 @@ interface AggsProps {
   preSearchAggs?: string[];
   preSearchCrowdAggs?: string[];
   site: PresentSiteFragment;
-  updateSearchParams: (params: SearchParams) => Promise<void>;
+  updateSearchParams: (params: SearchParams) => void;
   searchParams: SearchParams;
   getTotalResults: Function;
   handlePresearchButtonClick?: Function;
@@ -143,14 +102,10 @@ const AggSideBarTitle = styled.h4`
 `;
 const ThemedAggSideBarTitle = withTheme(AggSideBarTitle);
 
-const QueryComponent = (
-  props: QueryComponentOptions<
-    SearchPageAggsQuery,
-    SearchPageAggsQueryVariables
-  >
-) => Query(props);
 
 const Aggs = (props: AggsProps) => {
+
+  const dispatch = useDispatch();
   const getAggs = (siteView: PresentSiteFragment_siteView, presearch): string[] => {
     // to save having to write multiple displayFIelds functions we are splitting the path based on wheter it's presearch or aggs here
     const path = presearch ? siteView.search.presearch.aggs : siteView.search.aggs
@@ -187,22 +142,30 @@ const Aggs = (props: AggsProps) => {
   } = props;
   //commented out because not sure how to pass two parameters when using compose
   // const sortByNameCi = sortBy(compose(toLower, aggToField);
-  const result = useQuery(QUERY, {
-    variables: { ...searchParams }, 
-  });
-  let data = result.data
-  if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
-  if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
-  
-  if (data && data.crowdAggs && data.search?.aggs) {
-      let recordsTotal = data.search?.recordsTotal;
+
+// SEARCH_PAGE_AGGS_QUERY
+    useEffect(()=>{
+      dispatch(fetchSearchPageAggs(searchParams));
+    },[dispatch]);
+  // const result = useQuery(QUERY, {
+  //   variables: { ...searchParams }, 
+  // });
+  const data = useSelector((state : RootState ) => state.search.aggs);
+  const isLoading = useSelector((state : RootState ) => state.search.isFetchingAggs);
+  // let data = result.data
+  // if (data == undefined && result.previousData !== undefined ) {data = result.previousData}
+  // if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
+  if(data == undefined) return <BeatLoader/>
+
+  if (data.data && data.data.crowdAggs && data.data.search?.aggs) {
+      let recordsTotal = data.data.search?.recordsTotal;
       props.getTotalResults(recordsTotal);
       const aggs: AggBucketMap = {};
-      for (const a of data.search?.aggs || []) {
+      for (const a of data.data.search?.aggs || []) {
         aggs[a.name] = [];
       }
       const crowdAggs: AggBucketMap = {};
-      for (const bucket of data.crowdAggs?.aggs?.[0]?.buckets || []) {
+      for (const bucket of data.data.crowdAggs?.aggs?.[0]?.buckets || []) {
         crowdAggs[bucket.key] = [];
       }
       let crowdAggDropdowns: React.ReactElement<any> | null = null;
@@ -217,7 +180,7 @@ const Aggs = (props: AggsProps) => {
           return (
             crowdAggs[k] ? (
               <AggContext.Provider
-                key={k}
+                key={`presearch${k}`}
                 value={{
                   updater: new AggFilterInputUpdater(
                     k,
@@ -245,7 +208,7 @@ const Aggs = (props: AggsProps) => {
                   resetSelectAll={props.resetSelectAll}
                   removeSelectAll={props.removeSelectAll}
                   presearch
-                  presentSiteView={props.presentSiteView}
+                  //presentSiteView={props.presentSiteView}
                   configType="presearch"
                   visibleOptions={visibleOptionsByName[k]}
                 />
@@ -305,7 +268,7 @@ const Aggs = (props: AggsProps) => {
                 resetSelectAll={props.resetSelectAll}
                 removeSelectAll={props.removeSelectAll}
                 presearch
-                presentSiteView={props.presentSiteView}
+               // presentSiteView={props.presentSiteView}
                 configType="presearch"
               />
             </AggContext.Provider>
@@ -337,7 +300,7 @@ const Aggs = (props: AggsProps) => {
           <PresearchContainer>
             {showPresearchResults ? (
             <div className="presearch-total-results">
-                <b>Total Results:</b> {recordsTotal} studies
+                <><b>Total Results:</b> {isLoading? (<span style={{display:'inline-table', width: '5em'}}><BeatLoader/></span>): `${recordsTotal} studies`}</>
             </div>):null}
             <div className="horizontal-pre">
               <div className="horizontal-aggs">
@@ -386,7 +349,6 @@ const Aggs = (props: AggsProps) => {
 
       if (!isEmpty(crowdAggs) && !isNil(crowdAggs)) {
         const visibleOptionsByName = getVisibleOptionsByName(presentSiteView);
-
         crowdAggDropdowns = (
           <div>
             <ThemedAggSideBarTitle>Crowd Facets</ThemedAggSideBarTitle>
@@ -420,7 +382,7 @@ const Aggs = (props: AggsProps) => {
                   removeFilters={(agg, items) => removeFilters(agg, items, true)}
                   searchParams={searchParams}
                   visibleOptions={visibleOptionsByName[k]}
-                  presentSiteView={presentSiteView}
+                 // presentSiteView={presentSiteView}
                   configType="facetbar"
                 />
               </AggContext.Provider>
@@ -463,7 +425,7 @@ const Aggs = (props: AggsProps) => {
                         searchParams={searchParams}
                         resetSelectAll={props.resetSelectAll}
                         removeSelectAll={props.removeSelectAll}
-                        presentSiteView={props.presentSiteView}
+                        //presentSiteView={props.presentSiteView}
                         configType="facetbar"
                       />
                     </AggContext.Provider>

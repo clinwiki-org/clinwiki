@@ -1,4 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import { RootState } from 'reducers';
 import styled from 'styled-components';
 import LoginModal from '../LoginModal';
 import SlackCounter from './SlackCounter/SlackCounter';
@@ -14,6 +16,8 @@ import REACTION_KINDS from 'queries/ReactionKinds';
 import { ReactionKinds } from 'types/ReactionKinds';
 import { StudyReactions as StudyReactionsQueryType } from 'types/StudyReactions';
 import REACTIONS_QUERY from '../../queries/StudyReaction';
+import { fetchReactionsIsland, createReaction, fetchStudyReactions } from 'services/study/actions';
+import { BeatLoader } from 'react-spinners';
 
 interface ReactionsBarProps {
   user: any;
@@ -61,16 +65,29 @@ export default function ReactionsBar(props: ReactionsBarProps) {
   const handleAddReaction = () => {
     setShowReactions(!showReactions);
   };
-  const { data: userReactions } = useQuery<StudyReactionsQueryType>(
+  /*const { data: userReactions } = useQuery<StudyReactionsQueryType>(
     REACTIONS_QUERY,
     {
       variables: { nctId },
     }
-  );
+  );*/
+  const dispatch = useDispatch();
+  const userReactions = useSelector( (state: RootState) => state.study.studyReactions);
+  useEffect (() => {
+//    console.log(props);
+    dispatch (fetchReactionsIsland(nctId));
+  },[dispatch]);
 
-  const [createReactionMutation] = useMutation(CREATE_REACTION, {
+/*  const [createReactionMutation] = useMutation(CREATE_REACTION, {
     refetchQueries: [{ query: REACTIONS_QUERY, variables: { nctId } }],
-  });
+  });*/
+  useEffect (() => {
+  dispatch (fetchStudyReactions(nctId));
+  },[dispatch]);
+  const createReactionMutation = (action)=>{
+    if(!action.variables.nctId || !action.variables.reactionKindId) return
+    return dispatch(createReaction(action.variables.nctId, action.variables.reactionKindId))}
+
   const activeReactions = (reactionsConfig, allReactions) => {
     let obj = JSON.parse(reactionsConfig);
     let activeArray: object[] = [];
@@ -107,34 +124,39 @@ export default function ReactionsBar(props: ReactionsBarProps) {
           }
         });
         setCounters(activeCount);
+        }
       }
-    }
-    updateUserReactions();
-    updateReactionsCount();
-  }, [allReactions, studyData]);
-  const handleSelectorClick = (e, createReaction, allReactions) => {
-    const { nctId, user } = props;
-    if (user == null) {
-      setShowLoginModal(true);
-      return;
-    }
+      updateUserReactions();
+      updateReactionsCount();
+    }, [allReactions, studyData, userReactions]);
 
-    setShowReactions(false);
-    let currentReaction = find(propEq('unicode', e))(allReactions);
+    const handleSelectorClick = (e, createReaction, allReactions) => {
+      const { nctId, user } = props;
+      if (user == null) {
+        setShowLoginModal(true);
+        return;
+      }
 
-    createReaction({
-      variables: {
-        reactionKindId: currentReaction.id,
-        nctId: nctId,
-      },
-      awaitRefetchQueries: true,
-      refetchQueries: [
-        { query: QUERY, variables: { nctId } },
-        { query: REACTIONS_QUERY, variables: { nctId } },
-      ],
-    });
-  };
+      setShowReactions(false);
+      let currentReaction = find(propEq('unicode', e))(allReactions);
 
+      createReaction({
+        variables: {
+          reactionKindId: currentReaction.id,
+          nctId: nctId,
+        },
+        awaitRefetchQueries: true,
+        //refetchQueries: [
+        //  { query: QUERY, variables: { nctId } },
+        //  { query: REACTIONS_QUERY, variables: { nctId } },
+        //],
+      });
+    };
+
+  if (!userReactions) {
+    return <BeatLoader />;
+  }
+  //console.log(userReactions);
   return (
     <HeaderContentWrapper>
       <LoginModal show={showLoginModal} cancel={() => cancelHelper()} />
@@ -148,8 +170,9 @@ export default function ReactionsBar(props: ReactionsBarProps) {
           nctId={nctId}
         />
       </ReactionsContainer>
-      {showReactions == true ? (
+      {(showReactions == true && reactions) ? (
         <GithubSelector
+          
           reactions={reactions}
           onSelect={e =>
             handleSelectorClick(

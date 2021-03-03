@@ -11,8 +11,6 @@ import {
   find,
   reverse,
 } from 'ramda';
-import { withApollo } from '@apollo/client/react/hoc';
-import { ApolloClient } from '@apollo/client/';
 import { Panel } from 'react-bootstrap';
 import * as FontAwesome from 'react-fontawesome';
 import {
@@ -27,12 +25,12 @@ import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
 import { FieldDisplay } from 'types/globalTypes';
 import './AggDropDownStyle.css';
-import { PresentSiteFragment, PresentSiteFragment_siteView } from 'types/PresentSiteFragment';
+import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import SortKind from './SortKind';
 import BucketsKeyValuePanel from './BucketsKeyValuePanel';
-import SearchPageCrowdAggBucketsQuery from 'queries/SearchPageCrowdAggBucketsQuery';
-import SearchPageAggBucketsQuery from 'queries/SearchPageAggBucketsQuery';
-import {withPresentSite2} from "../PresentSiteProvider/PresentSiteProvider";
+import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
+import { connect } from 'react-redux';
+
 
 const PAGE_SIZE = 25;
 
@@ -119,12 +117,17 @@ interface AggKeyValuePairsDropDownProps {
   configType?: 'presearch' | 'autosuggest' | 'facetbar';
   returnAll?: boolean;
   resetSelectAll?: () => void;
-  client: ApolloClient<any>;
   site: PresentSiteFragment;
   presentSiteView: PresentSiteFragment_siteView;
   fromAggField?: boolean;
   handleKeyValueMutations: (e: { currentTarget: { name: string; value: any } }) => void;
   getPath: ()=>void;
+  fetchAggBuckets: any;
+  fetchCrowdAggBuckets: any;
+  aggBuckets: any;
+  crowdAggBuckets: any;
+  loadingAggBuckets: boolean;
+  loadingCrowdAggBuckets: boolean;
 }
 
 class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownProps, AggKeyValuePairsDropDownState> {
@@ -278,8 +281,14 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
     }
   };
 
-  handleLoadMore = async () => {
-    const { client: apolloClient } = this.props;
+  componentDidUpdate(prevProps) {
+    if (prevProps.aggBuckets !== this.props.aggBuckets || prevProps.crowdAggBuckets !== this.props.crowdAggBuckets) {
+        this.handleLoadMoreResponse();
+    }
+}
+
+   handleLoadMore = async () => {
+    //console.trace()
     const { desc, sortKind, buckets, filter } = this.state;
     const {
       agg,
@@ -288,10 +297,6 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
       configType,
       returnAll,
     } = this.props;
-    const [query] =
-      this.props.aggKind === 'crowdAggs'
-        ? [SearchPageCrowdAggBucketsQuery, 'crowdAggFilters']
-        : [SearchPageAggBucketsQuery, 'aggFilters'];
 
     let aggSort = this.handleSort(desc, sortKind);
 
@@ -311,19 +316,22 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
       aggOptionsFilter: filter,
       aggOptionsSort: aggSort,
     };
+    this.props.aggKind === "crowdAggs" ? this.props.fetchCrowdAggBuckets(variables) : this.props.fetchAggBuckets(variables);
+    //this.handleLoadMoreResponse();
+  }
 
-    const response = await apolloClient.query({
-      query,
-      variables,
-    });
+  handleLoadMoreResponse = () => {
+    const { desc, sortKind, buckets, filter } = this.state;
+    const { agg, presearch, presentSiteView } = this.props;
+    let currentAgg = findFields(agg, presentSiteView, presearch);
+    //console.log("🚀 ~ currentAgg", currentAgg?.name);
+    let aggName = currentAgg!.name
+    let responseBuckets = this.props.aggKind === "crowdAggs" ?  this.props.crowdAggBuckets?.aggs[aggName] :  this.props.aggBuckets?.aggs[aggName]
 
-    const responseBuckets = pathOr(
-      [],
-      ['data', 'aggBuckets', 'aggs', 0, 'buckets'],
-      response
-    ) as AggBucket[];
+    //console.log("handle RESPONSE", responseBuckets);
 
-    const allBuckets = buckets.concat(responseBuckets);
+    let currentBuckets = buckets[0] === undefined ? []  : buckets
+    const allBuckets = currentBuckets.concat(responseBuckets);
 
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
@@ -353,7 +361,7 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
 
     const hasMore = length(buckets) !== length(newBuckets);
     this.setState({ buckets: newBuckets, hasMore });
-  };
+  }; 
 
   renderPanel = (isPresearch: boolean) => {
     const {
@@ -450,6 +458,7 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
     }
   };
   componentDidMount() {
+    //console.log("AGG KEY Value")             
     const { agg, presentSiteView, presearch } = this.props;
     const field = findFields(agg, presentSiteView, presearch);
     if (field?.order && field.order.sortKind === 'key') {
@@ -502,5 +511,17 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
   }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  fetchAggBuckets: (searchParams) => dispatch(fetchSearchPageAggBuckets(searchParams)),
+  fetchCrowdAggBuckets: (searchParams) => dispatch(fetchSearchPageCrowdAggBuckets(searchParams)),
+})
+
+const mapStateToProps = (state, ownProps) => ({
+  aggBuckets: state.search.aggBuckets,
+  crowdAggBuckets: state.search.crowdAggBuckets,
+  loadingAggBuckets: state.search.isFetchingAggBuckets,
+  loadingCrowdAggBuckets: state.search.isFetchingCrowdAggBuckets,
+})
+
 // @ts-ignore
-export default withApollo<any>(withPresentSite2(AggKeyValuePairsDropDown));
+export default connect(mapStateToProps, mapDispatchToProps)(AggKeyValuePairsDropDown);

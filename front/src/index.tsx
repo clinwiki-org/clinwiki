@@ -7,6 +7,15 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import * as FullStory from '@fullstory/browser';
 
+import {Provider} from 'react-redux';
+import {applyMiddleware, createStore} from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import rootReducer from './reducers';
+import sagas from './sagas';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import history from 'createHistory';
+
 // Import root app
 import App from 'containers/App';
 
@@ -39,16 +48,22 @@ const orgId = process.env.REACT_APP_FULLSTORY_ID || 'Q5CJJ';
 
 const MOUNT_NODE = document.getElementById('app');
 
+const sagaMiddleware = createSagaMiddleware();
+export const store = createStore(rootReducer(history), composeWithDevTools( applyMiddleware(sagaMiddleware,routerMiddleware(history)) ));
+sagaMiddleware.run(sagas);
+
 const render = () => {
   ReactDOM.render(
-    <Router>
-      <ApolloProvider client={apolloClient}>
-        <ProvideTheme>
-          <GlobalStyle />
-          <App />
-        </ProvideTheme>
-      </ApolloProvider>
-    </Router>,
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <ApolloProvider client={apolloClient}>
+          <ProvideTheme>
+            <GlobalStyle />
+            <App />
+          </ProvideTheme>
+        </ApolloProvider>
+      </ConnectedRouter>
+    </Provider>,
     MOUNT_NODE
   );
 };

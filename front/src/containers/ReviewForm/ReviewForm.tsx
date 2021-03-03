@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Row, Col, FormControl, Panel } from 'react-bootstrap';
-import { Mutation, MutationComponentOptions } from '@apollo/client/react/components';
 import styled from 'styled-components';
 import {
   keys,
@@ -15,16 +14,13 @@ import {
 import ReactStars from 'react-stars';
 import * as FontAwesome from 'react-fontawesome';
 import RichTextEditor, { EditorValue } from 'react-rte';
-import { gql }  from '@apollo/client';
 import ThemedButton from 'components/StyledComponents/index';
 import {
-  ReviewFormMutation,
-  ReviewFormMutationVariables,
-} from 'types/ReviewFormMutation';
-import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
-import { ReviewFormStudyFragment } from 'types/ReviewFormStudyFragment';
-import { dataIdFromObject } from 'configureApollo';
-import { ReviewFragment } from 'types/ReviewFragment';
+  ReviewFormMutationVariables
+} from '../../services/study/model/ReviewFormMutation';
+import { ReviewsPageFragment } from '../../services/study/model/ReviewsPageFragment';
+import { ReviewFragment } from '../../services/study/model/ReviewFragment';
+
 
 interface ReviewFormProps {
   nctId: string;
@@ -34,6 +30,7 @@ interface ReviewFormProps {
   afterSave?: (review: ReviewFragment) => void;
   theme?: any;
   handleClose: ()=>void;
+  upsertReviewFormMutation: any;
 }
 
 interface ReviewFormState {
@@ -43,51 +40,7 @@ interface ReviewFormState {
   prevReview: ReviewsPageFragment | null;
 }
 
-const FRAGMENT = gql`
-  fragment ReviewFragment on Review {
-    id
-    meta
-    content
-    createdAt
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
-  }
-`;
 
-const MUTATION = gql`
-  mutation ReviewFormMutation(
-    $id: Int
-    $nctId: String!
-    $meta: String!
-    $content: String!
-  ) {
-    upsertReview(
-      input: { id: $id, nctId: $nctId, meta: $meta, content: $content }
-    ) {
-      review {
-        ...ReviewFragment
-      }
-      errors
-    }
-  }
-
-  ${FRAGMENT}
-`;
-
-const STUDY_FRAGMENT = gql`
-  fragment ReviewFormStudyFragment on Study {
-    nctId
-    reviews {
-      ...ReviewFragment
-    }
-  }
-
-  ${FRAGMENT}
-`;
 
 const defaultState = {
   meta: { 'Overall Rating': 0},
@@ -111,18 +64,10 @@ const AddRatingWrapper = styled.div`
   }
 `;
 
-const ReviewFormMutationComponent = (
-  props: MutationComponentOptions<
-    ReviewFormMutation,
-    ReviewFormMutationVariables
-  >
-) => Mutation(props);
-
 class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   state: ReviewFormState = defaultState;
   // Use this hook to trigger submit using ref from parent
   submitReview: () => void = () => {};
-  static fragment = FRAGMENT;
 
   static getDerivedStateFromProps = (
     props: ReviewFormProps,
@@ -177,6 +122,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
     upsertReview: (x: { variables: ReviewFormMutationVariables }) => void
   ) => () => {
     const id = (this.props.review && this.props.review.id) || undefined;
+    //console.log("handleSubmitReview called");
     upsertReview({
       variables: {
         id,
@@ -185,7 +131,9 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
         nctId: this.props.nctId,
       },
     });
-    this.setState(defaultState, ()=>this.props.handleClose());
+    this.setState(defaultState);//, ()=>this.props.handleClose());
+    //this.props.afterSave();
+    this.props.handleClose();
   };
 
   renderMeta = () => {
@@ -240,6 +188,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
   };
 
   render() {
+    this.submitReview = this.handleSubmitReview(this.props.upsertReviewFormMutation);
     return (
       <div>
         {this.renderMeta()}
@@ -249,70 +198,23 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
               onChange={this.handleContentChange}
               value={this.state.content}
             />
-            <ReviewFormMutationComponent
-              mutation={MUTATION}
-              update={(cache, { data }) => {
-                const review =
-                  data && data.upsertReview && data.upsertReview.review;
-                if (!review) return;
-                const id = dataIdFromObject({
-                  id: this.props.nctId,
-                  __typename: 'Study',
-                });
-                const study = cache.readFragment<ReviewFormStudyFragment>({
-                  id,
-                  fragment: STUDY_FRAGMENT,
-                  fragmentName: 'ReviewFormStudyFragment',
-                });
-                const reviews = (study && study.reviews) || [];
-
-                const idx = findIndex(propEq('id', review.id), reviews);
-                let newStudy;
-                if (idx === -1) {
-                  const reviewsLens = lensPath(['reviews']);
-                  newStudy = over(
-                    reviewsLens,
-                    reviews => [review, ...(reviews as any)],
-                    study
-                  );
-                } else {
-                  const reviewLens = lensPath(['reviews', idx]);
-                  newStudy = set(reviewLens, review, study);
-                }
-
-                cache.writeFragment({
-                  id,
-                  fragment: STUDY_FRAGMENT,
-                  fragmentName: 'ReviewFormStudyFragment',
-                  data: newStudy,
-                });
-
-                this.props.afterSave && this.props.afterSave(review);
-              }}>
-              {upsertReview => {
-                this.submitReview = this.handleSubmitReview(upsertReview);
-                if (this.props.hideSaveButton) return null;
-                return (
-                <>
-                  <ThemedButton
-                    style={{ margin: 10 }}
-                    onClick={this.handleSubmitReview(upsertReview)}>
-                    Submit
-                  </ThemedButton>
-                  <ThemedButton
-                    style={{ margin: 10 }}
-                    onClick={()=>this.props.handleClose()}>
-                    Cancel
-                  </ThemedButton>
-                </>
-                );
-              }}
-            </ReviewFormMutationComponent>
+            {this.props.hideSaveButton ? null : 
+              (<>
+                <ThemedButton
+                  style={{ margin: 10 }}
+                  onClick={this.handleSubmitReview(this.props.upsertReviewFormMutation)}>
+                  Submit
+                </ThemedButton>
+                <ThemedButton
+                  style={{ margin: 10 }}
+                  onClick={()=>this.props.handleClose()}>
+                  Cancel
+                </ThemedButton>
+              </>)}
           </Panel.Body>
         </Panel>
       </div>
     );
   }
 }
-
 export default ReviewForm;

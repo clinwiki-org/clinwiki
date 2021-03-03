@@ -1,11 +1,13 @@
-import * as React from 'react';
+import React,{useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {logout} from 'services/user/actions';
 import styled, { keyframes } from 'styled-components';
-import { logout, getStarColor } from 'utils/auth';
+import { getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-import { UserFragment } from 'types/UserFragment';
-import { AdminViewsProviderQuery } from 'types/AdminViewsProviderQuery';
+import { UserFragment } from 'services/user/model/UserFragment';
+import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 
 const UserImage = styled.img`
@@ -151,89 +153,63 @@ animation-play-state: running;
 
 `
 
-
-
 interface UserProfileHeaderButtonProps {
   user: UserFragment | null;
   history: History;
+
   data: AdminViewsProviderQuery | undefined;
 }
+const UserProfileHeaderButton = ({ user, history, data} : UserProfileHeaderButtonProps ) => {
 
-interface UserProfileHeaderButtonState {
-  showDropdown: boolean;
-  flashAnimation: boolean;
-}
+  const dispatch = useDispatch();
+  const [showDropdown,setShowDropdown] = useState(false);
+  const [flashAnimation,setFlashAnimation] = useState(false);
+  const [dropDown,setDropdown] = useState(undefined);
 
-class UserProfileHeaderButton extends React.PureComponent<
-  UserProfileHeaderButtonProps,
-  UserProfileHeaderButtonState
-  > {
-  private dropDown?: HTMLDivElement;
-  constructor(props) {
-    super(props);
-    this.dropDown = undefined;
-  }
-  state = {
-    showDropdown: false,
-    flashAnimation: false,
+  const toggleMenuDropdown = () => setShowDropdown(!showDropdown);
+
+  const closeMenuDropdown = () => setShowDropdown(false);
+
+  const handleSitesClick = () => {
+    closeMenuDropdown();
+    history.push('/sites');
   };
 
-  toggleMenuDropdown = () => {
-    this.setState({
-      showDropdown: !this.state.showDropdown,
-    });
+  const handleProfileClick = () => {
+    closeMenuDropdown();
+    history.push('/profile?sv=user');
   };
 
-  closeMenuDropdown = () => {
-    this.setState({
-      showDropdown: false,
-    });
+  const handleWorkflowsClick = () => {
+    closeMenuDropdown();
+    history.push('/workflows');
   };
 
-  handleSitesClick = () => {
-    this.closeMenuDropdown();
-    this.props.history.push('/sites');
+  const handleSignInClick = () => {
+    closeMenuDropdown();
+    history.push('/sign_in');
   };
 
-  handleProfileClick = () => {
-    this.closeMenuDropdown();
-    this.props.history.push('/profile?sv=user');
-  };
-
-  handleWorkflowsClick = () => {
-    this.closeMenuDropdown();
-    this.props.history.push('/workflows');
-  };
-
-  handleSignInClick = () => {
-    this.closeMenuDropdown();
-    this.props.history.push('/sign_in');
-  };
-
-  handleSignOutClick = () => {
-    this.closeMenuDropdown();
-    logout(this.props.history);
-  };
-
-  handleAdminClick = (url) => {
+  const handleAdminClick = (url) => {
     const linkUrl = '/search/' + url;
-    this.props.history.push(linkUrl);
+    history.push(linkUrl);
   };
 
-  renderAdminMenuItems = (site) => {
+  const renderAdminMenuItems = (site) => {
+    if(!site) return null;
     const adminViews = site.siteViews.filter(
       (siteview) => siteview.search.type === 'admin'
     );
     return adminViews.map((view) => {
       return (
-        <ThemedDropDownItem onClick={() => this.handleAdminClick(view.url)}>
+        <ThemedDropDownItem onClick={() => handleAdminClick(view.url)}>
           {view.name}
         </ThemedDropDownItem>
       );
     });
   };
 
-  renderUserImage = (url) => {
+  const renderUserImage = (url) => {
     if (url) {
       return (
         <UserImage
@@ -251,65 +227,29 @@ class UserProfileHeaderButton extends React.PureComponent<
     );
   };
 
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleClick, false);
+  if (!user) {
+    return (
+      <ThemedSignInButton onClick={handleSignInClick}>
+        <SignIn>Sign In</SignIn>
+      </ThemedSignInButton>
+    );
   }
-
-  componentWillUnmount() {
-    document.addEventListener('mousedown', this.handleClick, false);
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState({ flashAnimation: true })
-      setTimeout(this.resetHelperFunction, 2500)
-    }
-  }
-  resetHelperFunction = () => {
-    this.setState({ flashAnimation: false })
-  }
-  handleClick = (e) => {
-    if (this.dropDown?.contains(e.target)) {
-      return;
-    }
-    this.closeMenuDropdown();
-  };
-
-  render() {
-    const { showDropdown } = this.state;
-    const { user } = this.props;
-    if (!user) {
-      return (
-        <ThemedSignInButton onClick={this.handleSignInClick}>
-          <SignIn>Sign In</SignIn>
-        </ThemedSignInButton>
-      );
-    }
-    if (user) {
-      return (
-        <div
-          ref={(node: any) => {
-            this.dropDown = node;
-          }}>
-          <ThemedUserButton onClick={this.toggleMenuDropdown}>
-            {this.renderUserImage(user.pictureUrl)}
-            <ContributionContainer>
-              <ContributionCount>{user.contributions}</ContributionCount>
-              <FontAwesome
-                name="pencil"
-                style={{ color: 'white', marginLeft: 2 }}
-              />
-            </ContributionContainer>
-            {this.state.flashAnimation === true ?
-              <HeaderAnimation>
-                <FontAwesome
-                  name="star"
-                  style={{
-                    color: getStarColor(user.rank),
-                    fontSize: 18,
-                  }}
-                />
-              </HeaderAnimation>
-              :
+    return (
+      <div
+        ref={(node: any) => {
+          setDropdown(node);
+        }}>
+        <ThemedUserButton onClick={toggleMenuDropdown}>
+          {renderUserImage(user.pictureUrl)}
+          <ContributionContainer>
+            <ContributionCount>{user.contributions}</ContributionCount>
+            <FontAwesome
+              name="pencil"
+              style={{ color: 'white', marginLeft: 2 }}
+            />
+          </ContributionContainer>
+          {flashAnimation === true ?
+            <HeaderAnimation>
               <FontAwesome
                 name="star"
                 style={{
@@ -317,45 +257,56 @@ class UserProfileHeaderButton extends React.PureComponent<
                   fontSize: 18,
                 }}
               />
-            }
-
+            </HeaderAnimation>
+            :
             <FontAwesome
-              name="chevron-down"
-              style={{ color: 'white', fontSize: 10 }}
+              name="star"
+              style={{
+                color: getStarColor(user.rank),
+                fontSize: 18,
+              }}
             />
-          </ThemedUserButton>
-          {showDropdown && (
-            <DropDownMenu>
-              {/* <DropDownEmail>
-                    {this.props.user?.email && `Signed in as:`}
-                  </DropDownEmail>
-                  <DropDownEmail>
-                    <b>
-                      {this.props.user?.email && `${this.props.user.email}`}
-                    </b>
-                  </DropDownEmail> */}
-              <ThemedDropDownItem onClick={this.handleSitesClick}>
-                Sites
-                    </ThemedDropDownItem>
-              <ThemedDropDownItem onClick={this.handleProfileClick}>
-                Profile
-                    </ThemedDropDownItem>
-              {this.props.user &&
-                this.props.user.roles.includes('admin') && (
-                  <ThemedDropDownItem onClick={this.handleWorkflowsClick}>
-                    Workflows
+          }
+
+          <FontAwesome
+            name="chevron-down"
+            style={{ color: 'white', fontSize: 10 }}
+          />
+        </ThemedUserButton>
+        {showDropdown && (
+          <DropDownMenu>
+            {/* <DropDownEmail>
+                  {this.props.user?.email && `Signed in as:`}
+                </DropDownEmail>
+                <DropDownEmail>
+                  <b>
+                    {this.props.user?.email && `${this.props.user.email}`}
+                  </b>
+                </DropDownEmail> */}
+            <ThemedDropDownItem onClick={handleSitesClick}>
+              Sites
                   </ThemedDropDownItem>
-                )}
-              {this.renderAdminMenuItems(this.props.data?.site)}
-              <ThemedDropDownItem onClick={this.handleSignOutClick}>
-                Log Out
-                    </ThemedDropDownItem>
-            </DropDownMenu>
-          )}
-        </div>
-      );
-    }
-  }
+            <ThemedDropDownItem onClick={handleProfileClick}>
+              Profile
+                  </ThemedDropDownItem>
+            {user &&
+              user.roles.includes('admin') && (
+                <ThemedDropDownItem onClick={handleWorkflowsClick}>
+                  Workflows
+                </ThemedDropDownItem>
+              )}
+            {renderAdminMenuItems(data?.site)}
+            <ThemedDropDownItem onClick={() => {
+              closeMenuDropdown();
+              dispatch(logout());
+              }}>
+              Log Out
+                  </ThemedDropDownItem>
+          </DropDownMenu>
+        )}
+      </div>
+    );
+
 }
 
 export default UserProfileHeaderButton;

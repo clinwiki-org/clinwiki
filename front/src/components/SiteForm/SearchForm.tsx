@@ -8,7 +8,7 @@ import {
   MenuItem,
   FormControl,
 } from 'react-bootstrap';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import { displayFields } from 'utils/siteViewHelpers';
 import { StyledContainer, StyledFormControl, StyledLabel } from './Styled';
 import MultiInput from 'components/MultiInput';
@@ -21,9 +21,6 @@ import { Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
 import { match } from 'react-router';
 import { SiteViewMutationInput } from 'types/globalTypes';
-import UpdateSiteViewMutation, {
-  UpdateSiteViewMutationFn,
-} from 'mutations/UpdateSiteViewMutation';
 import {
   updateView,
   createMutation,
@@ -39,8 +36,10 @@ import {
   SiteFragment,
   SiteFragment_siteViews,
   SiteFragment_siteView,
-} from 'types/SiteFragment';
+} from 'services/site/model/SiteFragment';
 import SearchTemplate from './SearchTemplate';
+import { connect } from 'react-redux';
+import { updateSiteView } from 'services/site/actions';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
@@ -51,6 +50,9 @@ interface SearchFormProps {
   location: Location;
   site: SiteFragment;
   theme: Theme;
+  updateSiteView: any;
+  isUpdating: any;
+  isLoading: any;
 }
 
 interface SearchFormState {
@@ -191,20 +193,24 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     );
   };
 
-  handleSave = (updateSiteView: UpdateSiteViewMutationFn, view: any) => () => {
-    console.log('save', view);
-    updateSiteView({
-      variables: {
-        input: {
-          mutations: this.state.mutations.map(serializeMutation),
-          id: view.id,
-          name: view.name,
-          url: view.url,
-          default: view.default,
-        },
-      },
-    });
-  };
+  handleSave = (view: any) => () => {
+    const { site, isUpdating, isLoading } = this.props;
+    //console.log('save view', view);
+    let input = {
+      mutations: this.state.mutations.map(serializeMutation),
+      id: view.id,
+      name: view.name,
+      url: view.url,
+      default: view.default,
+    }
+    this.props.updateSiteView(site.id, input);
+    if (!isUpdating && !isLoading) {
+      this.props.history.push(`/sites/${site.id}/edit/siteviews`)
+    
+    }
+};
+
+
 
   handleInput = (e, inputType) => {
     switch (inputType) {
@@ -230,7 +236,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     const currentValue = getViewValueByPath(mutation.path, view);
     if (equals(value, currentValue)) return;
     this.setState({ mutations: [...this.state.mutations, mutation] }, () => {
-      console.log('MUTATIONS', this.state.mutations);
+      //console.log('MUTATIONS', this.state.mutations);
     });
   };
 
@@ -922,10 +928,10 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
   };
   render() {
     const siteviewId = +this.props.match.params.id;
-    let view = this.props.siteViews.find(view => siteviewId == view.id);
+    let view = this.props.siteViews.find(view => siteviewId == view.id) as SiteViewFragment;
     if (!view) return null;
 
-    console.log([this.props.siteViews, siteviewId, view]);
+    //console.log([this.props.siteViews, siteviewId, view]);
     view = updateView(view, this.state.mutations);
     const { site } = this.props;
     const fields = displayFields(
@@ -985,11 +991,6 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
     const showResults = view.search.config.fields.showResults;
     const showPresearch = view.search.config.fields.showPresearch;
     return (
-      <UpdateSiteViewMutation
-        onCompleted={() =>
-          this.props.history.push(`/sites/${site.id}/edit/siteviews`)
-        }>
-        {updateSiteView => (
           <StyledContainer>
             <span
               style={{
@@ -1042,17 +1043,24 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
                 fieldsPresearch,
                 crowdFieldsPresearch
               )}
-              {this.renderResultsConfig(showResults, view!)}
-              {this.renderBreadCrumbsConfig(showBreadCrumbs, view!)}
+              {this.renderResultsConfig(showResults, view! as SiteFragment_siteView)}
+              {this.renderBreadCrumbsConfig(showBreadCrumbs, view! as SiteFragment_siteView)}
             </PanelGroup>
-            <StyledButton onClick={this.handleSave(updateSiteView, view)}>
+            <StyledButton onClick={this.handleSave(view)}>
               Save Site View
             </StyledButton>
           </StyledContainer>
-        )}
-      </UpdateSiteViewMutation>
     );
   }
 }
 
-export default withTheme(SearchForm);
+const mapDispatchToProps = (dispatch) => ({
+  updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
+})
+
+const mapStateToProps = (state, ownProps) => ({
+  isUpdating: state.site.isUpdatingSiteView,
+  isLoading: state.site.isFetchingSiteProvider
+})
+
+export default connect(mapStateToProps, mapDispatchToProps) (withTheme(SearchForm));

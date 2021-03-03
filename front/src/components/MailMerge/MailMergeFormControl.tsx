@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
-import { gql, useQuery }  from '@apollo/client';
-import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
 import { IslandConstructor } from './MailMergeView';
 import { useFragment } from './MailMergeFragment';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSampleStudy } from 'services/study/actions';
+import { getSampleStudyQuery } from 'services/study/queries';
+import { RootState } from 'reducers';
+import { fetchIntrospection } from 'services/introspection/actions';
+//import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
+import { introspectionQuery } from 'graphql/utilities';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
@@ -23,28 +28,32 @@ interface MailMergeFormControlProps {
   islands?: Record<string, IslandConstructor>;
 }
 
-const default_nctid = 'NCT00222898';
-const getQuery = (name: string, frag: string) => {
-  frag = frag || `fragment ${name} on Study { nct_id }`;
-  return gql`
-  query SampleStudyQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...${name}
-    }
-  }
-  ${frag}
-`;
-};
+const default_nctid = 'NCT00004074';
 
 export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const [nctId, setNctId] = useState(default_nctid);
-  const { data: introspection } = useQuery<IntrospectionQuery>(
-    gql(getIntrospectionQuery({ descriptions: false }))
-  );
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
+    dispatch(fetchIntrospection(QUERY));
+  },[dispatch]);
+
+const introspection = useSelector((state:RootState) => state.introspection.introspection);
+//console.log("INTROSPECTION response", introspection)
+
   const [fragmentName, fragment] = useFragment('Study', props.template);
-  const { data: study } = useQuery(getQuery(fragmentName, fragment), {
-    variables: { nctId: nctId },
-  });
+
+  useEffect(()=>{
+    const QUERY = `${getSampleStudyQuery(fragmentName, fragment)}`
+    dispatch(fetchSampleStudy(nctId ?? "", QUERY));
+  },[dispatch, fragment]);
+
+  const study = useSelector((state:RootState) => state.study.sampleStudy);
+
+  if(!study){
+    return<BeatLoader/>;
+  }
 
   if (!introspection) {
     return <BeatLoader />;
@@ -53,7 +62,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const schema : GraphqlSchemaType = {
     kind: 'graphql',
     typeName: 'Study',
-    types: introspection.__schema.types,
+    types: introspection.data.__schema.types,
   };
 
   return (
@@ -65,7 +74,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
       />
       <MailMerge
         schema={schema}
-        sample={study?.study || {}}
+        sample={study?.data?.study || {}}
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
         islands={props.islands}

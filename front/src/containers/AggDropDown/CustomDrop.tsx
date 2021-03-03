@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FieldDisplay } from 'types/globalTypes';
 import styled from 'styled-components';
-import { SiteViewFragment_search_aggs_fields } from 'types/SiteViewFragment';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
 import { BeatLoader } from 'react-spinners';
 import * as InfiniteScroll from 'react-infinite-scroller';
@@ -268,6 +268,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   dropDown = () => {
     if (this.props.field.display == "CRUMBS_ONLY") return
+    this.props.handleLoadMore();
     this.setState((prevState) => ({
       showItems: !prevState.showItems,
       showAdditionalCrumbs: !prevState.showItems
@@ -339,6 +340,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
     }
     if (this.props.selectedKeys) {
+      //console.log("SELECTED KEYS ", this.props.selectedKeys)
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
         selectedKeysPlaceHolders.push({ key: o, docCount: null })
@@ -353,7 +355,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
   };
   componentDidUpdate(prevProps,prevState){
-    if(this.props.selectedKeys !== prevProps.selectedKeys&& this.props.selectedKeys[0] ){
+    if(this.props.selectedKeys !== prevProps.selectedKeys || this.props.selectedKeys[0] ){
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
         selectedKeysPlaceHolders.push({ key: o, docCount: null })
