@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Col } from 'react-bootstrap';
 import { PulseLoader } from 'react-spinners';
-import { SearchPageSearchQuery_search_studies } from 'types/SearchPageSearchQuery';
+import { SearchPageSearchQuery_search_studies } from  '../../../services/search/model/SearchPageSearchQuery';
 import { MailMergeView } from 'components/MailMerge';
 import { List } from 'react-virtualized';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';

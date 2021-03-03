@@ -1,13 +1,8 @@
-import React from 'react';
-import {
-  DELETE_REVIEW_MUTATION,
-  DeleteMutationFn,
-} from 'mutations/ReviewsPageDeleteReviewMutation';
-
+import React, { useEffect } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import { RootState } from 'reducers';
 import styled from 'styled-components';
-import QUERY from 'queries/ReviewPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
-import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
+//import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { Switch, Route } from 'react-router-dom';
@@ -18,14 +13,16 @@ import EditReview from '../ReviewsPage/EditReview';
 import {
   ReviewsPageFragment,
   ReviewsPageFragment_user,
-} from 'types/ReviewsPageFragment';
+} from '../../services/study/model/ReviewsPageFragment';
 import { trimPath } from 'utils/helpers';
 import ThemedButton from 'components/StyledComponents/index';
 import { Row, Col, Table, Label } from 'react-bootstrap';
 import ReactStars from 'react-stars';
-import { ReviewPageQuery } from 'types/ReviewPageQuery';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { keys } from 'ramda';
+import { fetchReviewPage, deleteReviewMutation } from 'services/study/actions';
+import { ReviewPageQuery } from '../../services/study/model/ReviewPageQuery';
+import { upsertReviewFormMutation } from '../../services/study/actions';
 interface Props {
   nctId: string;
 }
@@ -50,19 +47,30 @@ const ButtonsWrapper = styled.div`
 export default function ReviewsIsland(props: Props) {
   const { nctId } = props;
   const history = useHistory();
-  const location = useLocation();
+ // const location = useLocation();
   const match = useRouteMatch();
   const theme = useTheme();
   const params = useUrlParams();
+  const dispatch = useDispatch();
   // TODO: This query should be pushed up as a fragment to the Page
-  const { data: reviewData } = useQuery<ReviewPageQuery>(QUERY, {
+/*  const { data: reviewData } =[] useQuery<ReviewPageQuery>(QUERY, {
     variables: { nctId },
-  });
-  const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
-    refetchQueries: [{ query: QUERY, variables: { nctId } }],
-  });
+  });*/
+  const reviewData = useSelector( (state: RootState) => state.study.reviewPage);
+  useEffect (() => {
+//    console.log(props);
+    dispatch (fetchReviewPage(nctId));
+  },[dispatch,nctId]);
 
-  const user = useCurrentUser()?.data?.me;
+  const deleteReviewMut = (action) => {
+    console.log("deleteReviewMutation called");
+    console.log(action);
+    if (!action) return
+    return dispatch(deleteReviewMutation(action.id, action.nctId))
+  }
+
+  //const user = useCurrentUser()?.data?.me;
+  const user = useSelector( (state: RootState) => state.user.current);
 
   const WriteReviewButton = styled(ThemedButton)`
     margin-bottom: 10px;
@@ -75,13 +83,9 @@ export default function ReviewsIsland(props: Props) {
     history.push(`${trimPath(match.url)}/${id}/edit${queryStringAll(params)}`);
   };
   const handleCloseReview = () => {
-    history.push(`${trimPath(match.url)}${queryStringAll(params)}`);
-  };
-  const handleDeleteReview = (
-    deleteReview: DeleteMutationFn,
-    id: number
-  ) => () => {
-    deleteReview({ variables: { id } });
+    let path = `${trimPath(match.url)}${queryStringAll(params)}`
+    history.push(path);
+    //console.log("THE LINK\n" +`${trimPath(match.url)}${queryStringAll(params)}`)
   };
 
   const getName = (user: ReviewsPageFragment_user) => {
@@ -146,10 +150,8 @@ export default function ReviewsIsland(props: Props) {
                   </ThemedButton>
 
                   <ThemedButton
-                    onClick={handleDeleteReview(
-                      //@ts-ignore
-                      deleteReviewMutation,
-                      review.id
+                    onClick={ () => deleteReviewMut(
+                      {id: review.id, nctId: nctId}
                     )}>
                     Delete
                   </ThemedButton>
@@ -179,8 +181,12 @@ export default function ReviewsIsland(props: Props) {
       </>
     );
   };
+  const upsertReview = (reviewData) => { 
+    return dispatch(upsertReviewFormMutation(reviewData.variables.id, reviewData.variables.nctId, reviewData.variables.meta, reviewData.variables.content)); 
+  }  
 
-  if (reviewData) {
+  if (!reviewData || !nctId ) return <BeatLoader></BeatLoader>
+  if (reviewData!.data) {
     return (
       <Switch>
         <Route
@@ -191,6 +197,7 @@ export default function ReviewsIsland(props: Props) {
                 theme={theme}
                 nctId={nctId}
                 handleClose={handleCloseReview}
+                upsertReviewFormMutation={upsertReview}
               />
             );
           }}
@@ -202,12 +209,14 @@ export default function ReviewsIsland(props: Props) {
             return (
               <EditReview
                 {...newProps}
+                handleClose={handleCloseReview}
                 onLoaded={() => console.log('Loaded')}
+                upsertReviewFormMutation={upsertReview}
               />
             );
           }}
         />
-        <Route render={() => renderReviews(reviewData!.study!.reviews)} />
+        <Route render={() => renderReviews(reviewData!.data!.study!.reviews)} />
       </Switch>
     );
   }

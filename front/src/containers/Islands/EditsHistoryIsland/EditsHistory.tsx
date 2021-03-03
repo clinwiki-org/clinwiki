@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Route, useRouteMatch } from 'react-router';
 
-import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
+//import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'services/study/model/StudyEditsHistoryQuery';
 import EditsExpansionContext from 'components/Edits/EditsExpansionContext';
 import Edits from 'components/Edits';
 import EditsHistoryButtons from './EditsHistoryButtons';

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { usePageView, usePageViews } from 'queries/PageViewQueries';
 import MailMergeView, {
   microMailMerge,
 } from 'components/MailMerge/MailMergeView';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useQuery, useMutation} from '@apollo/client';
 import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
+//import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
+import { fetchPageViews, fetchPageView, fetchStudyPage, updateStudyViewLogCount } from 'services/study/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import {RootState} from 'reducers';
+import { fetchPresentSiteProvider } from 'services/site/actions';
 
 
 interface Props {
@@ -28,46 +30,57 @@ export default function GenericPage(props: Props) {
       return props.url
     }
     if(params.pv && pageViewsData){
-      const defaultPageView= find(propEq('url', params.pv))(pageViewsData?.site?.pageViews)
+      const defaultPageView= find(propEq('url', params.pv))(pageViewsData?.data.site?.pageViews)
       if (defaultPageView){
         return defaultPageView.url
       }
     }
     if(pageViewsData){
-     const defaultPageView= find(propEq('default', true))(pageViewsData?.site?.pageViews)
+     const defaultPageView= find(propEq('default', true))(pageViewsData?.data.site?.pageViews)
       return defaultPageView.url
     }
   }
   // When we add more page types we need to refactor this a little bit and pull out the query/nctid
   const params = useUrlParams();
-  const { site } = usePresentSite({ url: params.sv});
-  const { data: pageViewsData } = usePageViews(site?.id);
-  const { data: pageViewData } = usePageView(defaultPage());
-  const currentPage = pageViewData?.site?.pageView;
-  const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
-  const { data: studyData, loading, refetch } = useQuery(
-    getStudyQuery(fragmentName, fragment),
-    {
-      skip: fragment == '' || !props.arg,
-      variables: { nctId: props.arg ?? '' },
-    }
-  );
-  const [updateStudiViewLogCount] = useMutation(StudyViewLogMutaion, {
-    variables: {nctId: props.arg},
-  })
   
-  useEffect(()=>{
-    updateStudiViewLogCount();
+  const dispatch = useDispatch();
+  const site = useSelector((state : RootState ) => state.site.presentSiteProvider.site)
+  const studyData = useSelector((state:RootState) => state.study.studyPage);
+  const loading = useSelector((state:RootState) => state.study.isFetchingStudyPage)
+  const pageViewsData = useSelector((state:RootState) => state.study.pageViews);
+  const pageViewData = useSelector((state:RootState) => state.study.pageView);
+  const currentPage = pageViewData ?  pageViewData?.data.site?.pageView: null;
+  
+  const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
+  
+  useEffect(() => {
+  dispatch(fetchPresentSiteProvider( undefined , params.sv));
+  }, [dispatch, params.sv])
 
-  },[])
+  useEffect(()=>{
+    dispatch(fetchPageViews(site?.id));
+   },[dispatch, site.id]);
+
+  useEffect(()=>{
+    dispatch(fetchPageView( params.pv || defaultPage() ));
+   },[dispatch, params.pv]);
+
+  useEffect(()=>{
+    const QUERY = `${getStudyQuery(fragmentName, fragment)}`
+    dispatch(fetchStudyPage(props.arg ?? "", QUERY));
+   },[dispatch, currentPage, props.arg]);
+   
   if (!props.arg) {
     return <h1>Missing NCTID in URL</h1>;
   }
-  if (loading || !pageViewData) {
+  if (loading || !pageViewData || !studyData || !site) {
     return <BeatLoader />;
   }
-
-  const title = microMailMerge(currentPage?.title, studyData?.study);
+  if (!studyData.data) {
+    return <BeatLoader />
+  }
+//console.log(studyData.data)
+  const title = microMailMerge(currentPage?.title, studyData?.data.study);
   return (
     <div>
       <Helmet>
@@ -75,9 +88,8 @@ export default function GenericPage(props: Props) {
       </Helmet>
       <MailMergeView
         template={currentPage?.template || ''}
-        context={studyData?.study}
+        context={studyData?.data.study}
         islands={studyIslands}
-        // refetchQuery={refetch}
       />
     </div>
   );

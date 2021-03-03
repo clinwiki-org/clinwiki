@@ -50,7 +50,7 @@ class WikiPage < ApplicationRecord
 
   def create_edit
     return unless should_create_edit?
-    raise "Cannot update WikiPage with updater not specified" if @updater.blank?
+    raise "Cannot update WikiPage with updater/user/email not specified" if @updater.blank?
     diff = Diffy::Diff.new(text_was, text)
     wiki_page_edits << WikiPageEdit.new(
       user: @updater,

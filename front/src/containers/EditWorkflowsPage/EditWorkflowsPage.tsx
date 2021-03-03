@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from 'reducers';
 import styled from 'styled-components';
 import { Row, Col, Nav, NavItem, Panel } from 'react-bootstrap';
 import { find, propEq, equals } from 'ramda';
-import WorkflowsViewProvider from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
 import WorkflowForm from './WorkflowForm';
 import { SiteViewMutationInput } from 'types/globalTypes';
 import {
@@ -13,16 +14,14 @@ import {
 } from 'utils/siteViewUpdater';
 import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
 import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
-import UpdateWorkflowsViewMutation, {
-  UpdateWorkflowsViewMutationFn,
-} from 'mutations/UpdateWorflowsViewMutation';
 import ThemedButton from 'components/StyledComponents';
 import { MutationSource } from 'containers/SearchPage/shared';
+import { fetchAllWorkFlows, updateWorkflowPage } from 'services/study/actions';
+import { BeatLoader } from 'react-spinners';
 
-interface EditWorkflowsPageProps {}
-interface EditWorkflowsPageState {
-  currentWorkflowName: string | null;
-  mutations: SiteViewMutationInput[];
+interface EditWorkflowsPageProps {
+  fetchAllWorkFlows: any;
+  allWorkflows: any;
 }
 
 const Container = styled.div`
@@ -33,35 +32,39 @@ const StyledPanel = styled(Panel)`
   padding: 15px;
 `;
 
-class EditWorkflowsPage extends React.Component<
-  EditWorkflowsPageProps,
-  EditWorkflowsPageState
-> {
-  state: EditWorkflowsPageState = { currentWorkflowName: null, mutations: [] };
+function EditWorkflowsPage(props: EditWorkflowsPageProps) {
+const [currentWorkFlowName, setCurrentWorkFlowName] = useState("");
+const [mutations, setMutations] = useState([]);
+const allWorkflows = useSelector((state: RootState) => state.study.allWorkFlows);
+const isFetchingWorkflows = useSelector((state: RootState) => state.study.isFetchingAllWorkFlows);
 
-  applyMutations = (
+const dispatch = useDispatch();
+useEffect(()=>{
+
+  dispatch(fetchAllWorkFlows())
+}, [dispatch])
+
+  const applyMutations = (
     workflowsView: WorkflowsViewFragment
   ): WorkflowsViewFragment => {
-    return updateView(workflowsView, this.state.mutations);
+    return updateView(workflowsView, mutations);
   };
 
-  handleSave = (updateWorkflowsView: UpdateWorkflowsViewMutationFn) => () => {
-    updateWorkflowsView({
-      variables: {
-        input: { mutations: this.state.mutations.map(serializeMutation) },
-      },
-    });
+  const handleSave = () => () => {
+    dispatch(updateWorkflowPage({
+        input: { mutations: mutations.map(serializeMutation) },
+    }));
   };
 
-  handleWorkflowSelect = (workflow: string) => {
-    this.setState({ currentWorkflowName: workflow });
+  const handleWorkflowSelect = (workflow: string) => {
+    setCurrentWorkFlowName(workflow);
   };
 
-  handleAddMutations = (workflowView: WorkflowsViewFragment) => (
+  const handleAddMutations = (workflowView: WorkflowsViewFragment) => (
     ee: MutationSource[]
   ) => {
-    let mutations: SiteViewMutationInput[] = [];
-    let view = this.applyMutations(workflowView);
+    let mutations = [];
+    let view = applyMutations(workflowView);
     for (const e of ee) {
       const { name, value } = e.currentTarget;
       const mut = createMutation(name, value);
@@ -69,37 +72,38 @@ class EditWorkflowsPage extends React.Component<
       // If a mutation would have no do not apply it
       if (mut.operation !== 'SET' || !equals(mut.payload, currentValue)) {
         view = updateView(view, [mut]);
+        //@ts-ignore
         mutations.push(mut);
       }
     }
-    this.setState({ mutations: [...this.state.mutations, ...mutations] });
+    setMutations([...mutations, ...mutations]);
   };
 
-  handleAddMutation = (workflowView: WorkflowsViewFragment) => (
+  const handleAddMutation = (workflowView: WorkflowsViewFragment) => (
     e: MutationSource
   ) => {
-    this.handleAddMutations(workflowView)([e]);
+    handleAddMutations(workflowView)([e]);
   };
 
-  render() {
-    return (
-      <WorkflowsViewProvider>
-        {rawWorkflowsView => {
-          if (
-            !this.state.currentWorkflowName &&
+    if(!allWorkflows || isFetchingWorkflows){
+      return <BeatLoader/>
+    }
+    const rawWorkflowsView = allWorkflows?.data?.workflowsView
+
+    if (
+            !currentWorkFlowName &&
             rawWorkflowsView.workflows &&
             rawWorkflowsView.workflows.length > 0
+            && !isFetchingWorkflows
           ) {
-            this.setState({
-              currentWorkflowName: rawWorkflowsView.workflows[0].name,
-            });
+            setCurrentWorkFlowName(rawWorkflowsView.workflows[0].name);
             return null;
           }
 
-          const workflowsView = this.applyMutations(rawWorkflowsView);
+          const workflowsView = applyMutations(rawWorkflowsView);
 
           const workflow = find(
-            propEq('name', this.state.currentWorkflowName),
+            propEq('name', currentWorkFlowName),
             workflowsView.workflows
           ) as WorkflowConfigFragment;
 
@@ -117,8 +121,8 @@ class EditWorkflowsPage extends React.Component<
                     <Nav
                       bsStyle="pills"
                       stacked
-                      activeKey={this.state.currentWorkflowName}
-                      onSelect={this.handleWorkflowSelect}>
+                      activeKey={currentWorkFlowName}
+                      onSelect={handleWorkflowSelect}>
                       {workflowsView.workflows.map(workflow => (
                         <NavItem key={workflow.name} eventKey={workflow.name}>
                           {workflow.name}
@@ -130,26 +134,18 @@ class EditWorkflowsPage extends React.Component<
                     <StyledPanel>
                       <WorkflowForm
                         workflow={workflow}
-                        onAddMutations={this.handleAddMutations(workflowsView)}
+                        onAddMutations={handleAddMutations(workflowsView)}
                       />
-                      <UpdateWorkflowsViewMutation>
-                        {updateWorflowsView => (
                           <ThemedButton
                             style={{ marginTop: 15 }}
-                            onClick={this.handleSave(updateWorflowsView)}>
+                            onClick={handleSave()}>
                             Save
                           </ThemedButton>
-                        )}
-                      </UpdateWorkflowsViewMutation>
                     </StyledPanel>
                   </Col>
                 </Row>
               </Container>
             );
-        }}
-      </WorkflowsViewProvider>
-    );
-  }
 }
 
 export default EditWorkflowsPage;

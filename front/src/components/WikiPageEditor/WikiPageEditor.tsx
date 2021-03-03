@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { WikiPageQuery } from 'types/WikiPageQuery';
@@ -11,7 +11,6 @@ interface Props {
   data: WikiPageQuery;
   updateText: (string) => void;
 }
-
 
 export default function WikiPageEditor(props: Props) {
   useUnload(e => {
@@ -26,6 +25,10 @@ export default function WikiPageEditor(props: Props) {
   const [richEditorText, setRichEditorText] = useState('');
 
   const [editorState, setEditorState] = useState('rich');
+
+/*   useEffect(() => {
+    //console.log("HELLO!!!!!!!!!!!!!!!!!!!!!", data)
+    }, [props.data]) */
 
   const handleRichEditorChange = (richEditorText: EditorValue) => {
     props.updateText(richEditorText)
@@ -91,7 +94,7 @@ export default function WikiPageEditor(props: Props) {
       </Panel>
     );
   }
-  console.log("PLAIN")
+ 
   return (
 
     <Panel>

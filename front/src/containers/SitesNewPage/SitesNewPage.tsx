@@ -1,13 +1,14 @@
 import * as React from 'react';
 import SiteForm from 'components/SiteForm/SiteForm';
-import { CreateSiteInput } from 'types/globalTypes';
-import CreateSiteMutation, {
-  CreateSiteMutationFn,
-} from 'mutations/CreateSiteMutation';
+import { CreateSiteInput } from 'services/site/model/InputTypes';
 import SiteProvider from 'containers/SiteProvider';
 import { pathOr } from 'ramda';
 import { History, Location } from 'history';
 import { match } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import { createSite } from 'services/site/actions';
+
 
 interface SitesNewPageProps {
   match: match<{}>;
@@ -15,42 +16,29 @@ interface SitesNewPageProps {
   location: Location;
 }
 
-class SitesNewPage extends React.PureComponent<SitesNewPageProps> {
-  handleSave = (createSite: CreateSiteMutationFn) => (
-    input: CreateSiteInput
-  ) => {
-    createSite({ variables: { input } }).then(res => {
-      if (!res) return;
-      const id = pathOr(
-        null,
-        ['data', 'createSite', 'site', 'siteView', 'id'],
-        res
-      ) as number | null;
-      if (!id) return;
-    });
-  };
+const SitesNewPage = ({match, history, location} : SitesNewPageProps) => {
+  const dispatch = useDispatch();
+  const isCreating = useSelector((state : RootState ) => state.site.isCreatingSite)
 
-  render() {
+  const handleSave = (input: CreateSiteInput) => {
+      dispatch(createSite(input));
+      if (!isCreating) {
+        history.push('/sites')}
+  };
     return (
       <SiteProvider id={0}>
         {site => (
-          <CreateSiteMutation
-            onCompleted={() => this.props.history.push('/sites')}>
-            {createSite => (
               <SiteForm
-                history={this.props.history}
-                location={this.props.location}
-                match={this.props.match}
+                history={history}
+                location={location}
+                match={match}
                 site={{ ...site, name: '' }}
-                refresh={null}
-                onSaveSite={this.handleSave(createSite)}
+                onSaveSite={input => handleSave(input)}
               />
-            )}
-          </CreateSiteMutation>
-        )}
+            )
+        }
       </SiteProvider>
     );
-  }
 }
 
 export default SitesNewPage;

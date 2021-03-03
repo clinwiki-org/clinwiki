@@ -1,5 +1,6 @@
-import * as React from 'react';
-import CurrentUser from 'containers/CurrentUser';
+import React,{useState} from 'react';
+import {useDispatch,useSelector} from 'react-redux';
+import { RootState } from 'reducers';
 import ExportToCsvButton from './ExportToCsvButton';
 import ExportToCsvDialog from './ExportToCsvDialog';
 
@@ -13,34 +14,23 @@ interface ExportToCsvComponentState {
   exportId?: Number | null;
 }
 
-class ExportToCsvComponent extends React.Component<
-  ExportToCsvComponentProps,
-  ExportToCsvComponentState
-> {
-  state = { exportId: null };
-  render() {
-    const { exportId } = this.state;
-
-    const setExportId = exportId => this.setState({ exportId });
+const ExportToCsvComponent = (props: ExportToCsvComponentProps ) => {
+  const [exportId,setExportId] = useState(null);
+  const user = useSelector( (state:RootState) => state.user.current);
 
     return (
       <>
-        <CurrentUser>
-          {user => (
-            <ExportToCsvButton
-              siteView={this.props.siteView}
-              searchHash={this.props.searchHash}
-              setExportId={setExportId}
-              user={user}
-            />
-          )}
-        </CurrentUser>
+        <ExportToCsvButton
+          siteView={props.siteView}
+          searchHash={props.searchHash}
+          setExportId={setExportId}
+          user={user}
+        />
         {exportId !== null ? (
           <ExportToCsvDialog exportId={exportId} setExportId={setExportId} />
         ) : null}
       </>
     );
-  }
 }
 
 export default ExportToCsvComponent;

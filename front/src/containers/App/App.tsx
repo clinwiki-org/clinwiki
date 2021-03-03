@@ -8,9 +8,6 @@ import { ProfilePage, EditProfilePage } from 'containers/ProfilePage';
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
 import ReleaseNotes from 'containers/ReleaseNotes';
-import StudyPage from 'containers/StudyPage';
-import SearchStudyPage from 'containers/SearchStudyPage';
-import InterventionPage from 'containers/InterventionPage';
 import {
   SignInPage,
   SignUpPage,
@@ -46,9 +43,8 @@ class App extends React.PureComponent<AppProps> {
     return (
       <ThemedAppWrapper>
         <CurrentUser>
-          {(user, refetch) =>
             <span>
-              <AuthHeader user={user} history={this.props.history} />
+              <AuthHeader history={this.props.history} />
               <div className="main" style={{ paddingTop: '50px' }}>
                 <Switch>
                   <Route
@@ -62,17 +58,12 @@ class App extends React.PureComponent<AppProps> {
                   <Route exact path="/version" component={ReleaseNotes} />
                   <Route path="/search/" component={SearchPage} />
                   <Route path="/search/:siteviewUrl" component={SearchPage} />
-                  <Route
-                    path="/study/:nctId/review/:reviewId/edit"
-                    component={StudyPage}
-                  />
                   <Route path="/study/:nctId"
                     render={(props) => <GenericPage arg={props.match.params.nctId} />}
                   />
                   <Route path="/p/:page/:arg?"
                     render={(props) => <GenericPage url={props.match.params.page} arg={props.match.params.arg} />}
                     />
-                  <Route path="/intervention/:id" component={InterventionPage} />
                   <Route exact path="/profile" component={EditProfilePage} />
                   <Route path="/profile/:id/" component={ProfilePage} />
                   <Route path="/workflows" component={EditWorkflowsPage} />
@@ -90,7 +81,6 @@ class App extends React.PureComponent<AppProps> {
                 </Switch>
               </div>
             </span>
-          }
         </CurrentUser>
       </ThemedAppWrapper>
     );

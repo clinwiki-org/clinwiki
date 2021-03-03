@@ -1,28 +1,20 @@
-import React, { useState } from 'react';
-import { useWorkflowsView } from 'containers/WorkflowsViewProvider/WorkflowsViewProvider';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from 'reducers';
 import { displayFields } from 'utils/siteViewHelpers';
 import * as R from 'remeda';
 import { fromPairs } from 'ramda';
-import {
-  DELETE_LABEL_MUTATION,
-  DeleteMutationFn,
-} from 'mutations/CrowdPageDeleteWikiLabelMutation';
-import {
-  UPSERT_LABEL_MUTATION,
-  UpsertMutationFn,
-} from 'mutations/CrowdPageUpsertWikiLabelMutation';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
-import QUERY from 'queries/WorkflowPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
-import { WorkflowPageQuery } from 'types/WorkflowPageQuery';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
-import {  QUERY as UserQuery } from 'containers/CurrentUser/CurrentUser';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import CrowdPage from 'containers/CrowdPage';
 import { BeatLoader } from 'react-spinners';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
-import { CurrentUserQuery } from 'types/CurrentUserQuery';
+import { deleteLabelMutation, fetchWorkFlowPage, upsertLabelMutation } from 'services/study/actions';
+import { fetchAllWorkFlows } from 'services/study/actions';
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
+import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 
 interface Props {
   name: string;
@@ -34,43 +26,59 @@ const StyledPanel = styled(Panel)`
   padding: 16px;
 `;
 
-const handleSelect = (
-  meta: {},
-  nctId: string,
-  upsertLabel: UpsertMutationFn,
-  deleteLabel: DeleteMutationFn
-) => (key: string, value: string, checked: boolean) => {
-  if (checked) {
-    CrowdPage.addLabel(key, value, meta, nctId, upsertLabel);
-  } else {
-    CrowdPage.deleteLabel(key, value, meta, nctId, upsertLabel, deleteLabel);
-  }
-};
-
 export default function WorkflowIsland(props: Props) {
   const { name, nctId } = props;
   const theme = useTheme();
-  const { data: allWorkflows } = useWorkflowsView();
-  const workflow = allWorkflows?.workflowsView.workflows.filter(
+  const dispatch = useDispatch();
+  const studyData = useSelector((state: RootState) => state.study.workflowPage);
+  const allWorkflows = useSelector((state: RootState) => state.study.allWorkFlows);
+  const user = useSelector( (state: RootState) => state.user.current);
+  const [flashAnimation, setFlashAnimation] = useState(false);
+  const workflow = allWorkflows?.data.workflowsView.workflows.filter(
     wf => wf.name === name
   )?.[0];
+  const pageViewData = useSelector((state:RootState) => state.study.pageView);
+  const currentPage = pageViewData ?  pageViewData?.data.site?.pageView : null;
+  const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
+  const studyQuery = `${getStudyQuery(fragmentName, fragment)}`
+
 
   // TODO: This query should be pushed up as a fragment to the Page
-  const { data: studyData } = useQuery<WorkflowPageQuery>(QUERY, {
-    variables: { nctId },
-  });
-  const {data:user, refetch }= useQuery<CurrentUserQuery>(UserQuery)
-  const [upsertMutation] = useMutation(UPSERT_LABEL_MUTATION, {
-    refetchQueries: [{ query: QUERY, variables: { nctId } }],
-  });
-  const [deleteMutation] = useMutation(DELETE_LABEL_MUTATION, {
-    refetchQueries: [{ query: QUERY, variables: { nctId } }],
-  });
+  // const { data: studyData } = useQuery<WorkflowPageQuery>(QUERY, {
+  //   variables: { nctId },
+  // });
 
-  const [flashAnimation, setFlashAnimation] = useState(false);
+  useEffect(() => {
+    dispatch(fetchWorkFlowPage( nctId || "" ));
+    }, [dispatch, nctId])
 
+  useEffect(() => {
+    dispatch(fetchAllWorkFlows());
+  }, [dispatch, nctId])
 
-  if (!workflow || !nctId) return <BeatLoader />;
+  const upsertMutation = (action) => {
+    if (!action.key) return
+    return dispatch(upsertLabelMutation(action.nctId, action.key, action.value, studyQuery))
+  }
+  const deleteMutation = (action) => {
+    if (!action.key) return
+    return dispatch(deleteLabelMutation(action.nctId, action.key, action.value, studyQuery))
+
+  }
+
+  const handleSelect = (key, value, checked) => {
+    const meta = JSON.parse(studyData?.data.study?.wikiPage?.meta || '{}')
+    if (!checked) {
+      //@ts-ignore
+      CrowdPage.addLabel(key, value, meta, nctId || "", upsertMutation);
+
+    } else {
+      //@ts-ignore
+      CrowdPage.deleteLabel(key, value, meta, nctId || "", upsertMutation, deleteMutation);
+    }
+  }
+
+  if (!workflow || !nctId || !studyData) return <BeatLoader />;
 
   const allowedSuggestedLabels = displayFields(
     workflow.suggestedLabelsFilter.kind,
@@ -86,13 +94,12 @@ export default function WorkflowIsland(props: Props) {
   );
   const resetHelper = ()=>{
     setFlashAnimation(false)
-    refetch()
+    //refetch()
     // props.onChange()
   }
   const handleResetAnimation=()=>{
     setTimeout(  resetHelper, 6500);
   }
-
   return (
   <>
     {flashAnimation == true? 
@@ -104,18 +111,11 @@ export default function WorkflowIsland(props: Props) {
       <StyledPanel>
         <SuggestedLabels
           nctId={nctId}
-          onSelect={handleSelect(
-            JSON.parse(studyData?.study?.wikiPage?.meta || '{}'),
-            nctId,
-            //@ts-ignore
-            upsertMutation,
-            deleteMutation
-          )}
+          onSelect={(key, value, checked)=>handleSelect(key, value, checked)}
           allowedSuggestedLabels={allowedSuggestedLabels}
           suggestedLabelsConfig={suggestedLabelsConfig}
-          disabled={!user?.me}
-          showAnimation={() =>
-            setFlashAnimation(true)
+          disabled={!user}
+          showAnimation={()=>setFlashAnimation(true)
           }
         />
       </StyledPanel>

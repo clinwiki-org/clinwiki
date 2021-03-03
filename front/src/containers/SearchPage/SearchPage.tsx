@@ -29,31 +29,30 @@ import {
   equals,
   find,
 } from 'ramda';
-import { useQuery, useMutation } from '@apollo/client';
 import MemoizedSearchView from './SearchView2';
 import CrumbsBar from './components/CrumbsBar';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
 import { defaultPageSize } from './Types';
-import { SiteViewFragment } from 'types/SiteViewFragment';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import {
   PresentSiteFragment,
   PresentSiteFragment_siteView,
-} from 'types/PresentSiteFragment';
+} from 'services/site/model/PresentSiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
 import SearchPageHashMutation from 'queries/SearchPageHashMutation';
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import withTheme from 'containers/ThemeProvider';
 import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
-import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
+//import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
 import HtmlToReact from 'html-to-react';
-
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPresentSiteProvider } from 'services/site/actions';
+import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions'
+import {RootState} from 'reducers';
 
 const SearchPageWrapper = styled.div`
   display: flex;
@@ -176,8 +175,6 @@ interface SearchPageProps {
   searchParams?: SearchParams;
   userId?: string;
   profileParams?: any;
-  site: PresentSiteFragment;
-  presentSiteView: PresentSiteFragment_siteView;
   mutate: any;
   email?: string;
   intervention?: boolean;
@@ -212,17 +209,27 @@ function SearchPage(props: SearchPageProps) {
 
   const [openedAgg, setOpenedAgg] = useState<OpenedAgg>({ name: null, kind: null })
   const [removeSelectAll, setRemoveSelectAll] = useState(false)
-  const [shouldRender, setShouldRender] = useState(true)
+  // const [shouldRender, setShouldRender] = useState(true)
   const [totalRecords, setTotalRecords] = useState(0)
   const [collapseFacetBar, setCollapseFacetBar] = useState(false)
   const [collapsePresearch, setCollapsePresearch] = useState(false)
   const [collapseCrumbs, setCollapseCrumbs] = useState(false)
-  const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
-    variables: params.current,
-    onCompleted: (data)=> afterSearchParamsUpdate(data)
-  })
-  const paramsUrl = useUrlParams()
 
+  
+  
+  const paramsUrl = useUrlParams();
+  const dispatch = useDispatch();
+  
+  //Update SearchPageHashMutation 
+  const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
+  const isFetchingSearchParams = useSelector((state: RootState) => state.search.isFetchingSearchParams);
+  const searchHash = useSelector((state : RootState ) => state.search.searchHash);
+  const data = useSelector((state : RootState ) => state.search.searchResults);
+
+  // const [updateSearchPageHashMutation] = useMutation(SearchPageHashMutation, {
+    //   variables: params.current,
+    //   onCompleted: (data)=> afterSearchParamsUpdate(data)
+    // })
 
 
   const getDefaultParams = (view: SiteViewFragment, email: string | undefined) => {
@@ -250,7 +257,7 @@ function SearchPage(props: SearchPageProps) {
       result = result + `${search_term} | `
       entries = entries + 1 
     }
-    if (searchParams!["crowd_agg_filters"]) {
+    if (searchParams!["crowdAggFilters"]) {
 
       searchParams!["crowdAggFilters"].map((value) => {
         if(!value) return
@@ -272,12 +279,26 @@ function SearchPage(props: SearchPageProps) {
     document.title = result.substring(0, result.length -2)
   }
 
+  const url =
+  window.location.search;
+  const urlName = new URLSearchParams(url)
+  .getAll('sv')
+  .toString();
+  const urlFinal = urlName ? urlName : "default";
+
+  useEffect(() => {
+  dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
+  }, [dispatch, urlFinal])
+
+  const site = useSelector((state : RootState ) => state.site.presentSiteProvider.site)
+  const presentSiteView = site?.siteView;
+
   useEffect(() => {
     let searchTerm = new URLSearchParams(props.location?.search || '');
 
     let initialLoadParams = {
       ...DEFAULT_PARAMS,
-      ...preselectedFilters(props.presentSiteView),
+      ...preselectedFilters(presentSiteView),
     };
 
     if (window.innerWidth < 768) {
@@ -300,7 +321,7 @@ function SearchPage(props: SearchPageProps) {
 
     //// PROBABLY STILL NEEDS TO BE FIXED
     if (!searchTerm.has('hash')) {
-      setShouldRender(true)
+      // setShouldRender(true)
 
       updateSearchParams(initialLoadParams)
 
@@ -309,7 +330,7 @@ function SearchPage(props: SearchPageProps) {
     if (props.intervention) {
       updateSearchParams(props.searchParams || initialLoadParams)
     }if(searchTerm.has('hash')){
-      setShouldRender(false)
+      // setShouldRender(false)
       return
     }
     updateSearchParams(initialLoadParams)
@@ -430,7 +451,7 @@ function SearchPage(props: SearchPageProps) {
         presentSiteView={siteView}
         searchParams={searchParams}
         updateSearchParams={updateSearchParams}
-        site={props.site}
+        site={site}
         getTotalResults={setTotalRecords}
       />
     );
@@ -438,7 +459,6 @@ function SearchPage(props: SearchPageProps) {
 
   const renderSearch = (searchParams) => {
     const hash = getHashFromLocation();
-    const { presentSiteView } = props;
     return  presentSiteView.search.config.fields.showResults ? (
       <MemoizedSearchView
         key={`${hash}+${JSON.stringify(params.current)}`}
@@ -477,7 +497,7 @@ function SearchPage(props: SearchPageProps) {
       props.history.location.search
     );
 
-    const providedPageView = props.site.pageView?.url;
+    const providedPageView = site.pageView?.url;
     const defaultPageView = providedPageView ? providedPageView : 'default';
     const pageViewUrl =
       searchQueryString.getAll('pv').toString() || defaultPageView;
@@ -494,7 +514,6 @@ function SearchPage(props: SearchPageProps) {
 
   const renderPresearch = (hash, searchParams) => {
     const { aggFilters = [], crowdAggFilters = [] } = searchParams || {};
-    const { presentSiteView } = props;
     const preSearchAggs = presentSiteView.search.presearch.aggs.selected.values;
     const preSearchCrowdAggs =
       presentSiteView.search.presearch.crowdAggs.selected.values;
@@ -555,7 +574,7 @@ function SearchPage(props: SearchPageProps) {
           preSearchCrowdAggs={preSearchCrowdAggs}
           presentSiteView={presentSiteView}
           updateSearchParams={updateSearchParams}
-          site={props.site}
+          site={site}
           opened={opened}
           openedKind={openedKind}
           onOpen={handleOpenAgg}
@@ -582,13 +601,13 @@ function SearchPage(props: SearchPageProps) {
     };
 
 
-    const { presentSiteView } = props;
     const hash = getHashFromLocation();
     return (
       <ThemedSearchContainer>
        <Collapser title="Filter Bar" collapse={()=> setCollapseCrumbs(!collapseCrumbs)} state={collapseCrumbs}/>
         {!collapseCrumbs ? 
       <CrumbsBar
+        params={params}
         searchParams={handledParams}
         onBulkUpdate={handleBulkUpdateClick}
         removeFilter={newRemoveFilter}
@@ -607,7 +626,17 @@ function SearchPage(props: SearchPageProps) {
   };
 
 
-  const afterSearchParamsUpdate = (data) => {
+ 
+
+  const updateSearchParams = (searchParams: SearchParams) => {
+    params.current =   { ...params.current, ...searchParams }  
+    dispatch( updateSearchParamsAction(params.current));
+
+  };
+
+  // TO DO -- this logic needs to br handled in the sagas. Currently only handling search
+  const afterSearchParamsUpdate = () => {
+
     // handles the query to get the hash and update the url. 
     createPageName()
     const variables = params.current;
@@ -618,7 +647,6 @@ function SearchPage(props: SearchPageProps) {
     //  page view query without passing the url into it to retrieve the default url
 
     const userId = searchQueryString.getAll('uid').toString();
-
     if (data?.provisionSearchHash?.searchHash?.short) {
       if (props.match.path === '/profile') {
         props.history.push(
@@ -640,22 +668,17 @@ function SearchPage(props: SearchPageProps) {
           }&sv=intervention&pv=${pageViewUrl}`
         );
         return;
-      } else {
-        props.history.push(
-          `/search?hash=${data!.provisionSearchHash!.searchHash!.short
-          }&sv=${siteViewUrl}&pv=${pageViewUrl}`
-        );
-        return;
       }
+      //Done in the updateSearchParams saga
+      // else {
+      //   props.history.push(
+      //     `/search?hash=${data!.provisionSearchHash!.searchHash!.short
+      //     }&sv=${siteViewUrl}&pv=${pageViewUrl}`
+      //   );
+      //   return;
+      // }
     }
   }
-
-  const updateSearchParams = async (searchParams: SearchParams) => {
-    params.current = await { ...params.current, ...searchParams }
-    const { data } = await updateSearchPageHashMutation();
-    
-  };
-
   const newAddSearchTerm = (term: string) => {
     if (!term.replace(/\s/g, '').length) {
       return
@@ -744,40 +767,29 @@ function SearchPage(props: SearchPageProps) {
   }
   const hash = getHashFromLocation();
 
-const searchParamsQueryHelper =(data)=>{
-  const dataParams = searchParamsFromQuery(
-    data!.searchParams,
-    presentSiteView
-  );
-  params.current= dataParams
-  setShouldRender(true)
-}
-const { presentSiteView } = props;
 /// SEARCH PAGE PARAMS QUERY
-const result = useQuery(SearchPageParamsQuery, {
- variables: { hash },
- //Looks like this was our fix to our sort again
- fetchPolicy: "no-cache",
- onCompleted: (result)=>searchParamsQueryHelper(result)
+useEffect(()=>{
+ dispatch(fetchSearchParams(hash));
+},[dispatch]);
 
-});
-let data = result.data
-if (data == undefined && result.previousData !== undefined) { data = result.previousData }
-if (result.error || (result.loading && data == undefined)) return <BeatLoader />;
-
-
-
+if(data == undefined) return <BeatLoader/>
+// searchParamsQueryHelper(data);
+const dataParams = searchParamsFromQuery(
+  data.data!.searchParams,
+  presentSiteView
+);
+params.current= dataParams;
+// updateSearchParamsAction(params.current)
   return (
     <Switch>
       <Route
         render={() => {
-          const { presentSiteView } = props;
           const {
             showPresearch,
             showFacetBar,
             showBreadCrumbs,
           } = presentSiteView.search.config.fields;
-        return(  shouldRender ? (
+        return(  
             <ThemedSearchPageWrapper>
               {showFacetBar && (
                 <>
@@ -805,11 +817,11 @@ if (result.error || (result.loading && data == undefined)) return <BeatLoader />
               </ThemedMainContainer>
             </ThemedSearchPageWrapper>
           )
-          : null);
-        }}
+        }
+      }
       />
     </Switch>
   )
 }
 
-export default withPresentSite2((SearchPage));
+export default (SearchPage);

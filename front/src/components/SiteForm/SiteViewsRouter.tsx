@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { CreateSiteInput, SiteViewMutationInput } from 'types/globalTypes';
+import { SiteViewMutationInput } from 'types/globalTypes';
+import { CreateSiteInput } from 'services/site/model/InputTypes';
 import { Switch, Route, match } from 'react-router';
 import { trimPath } from 'utils/helpers';
-import { SiteFragment, SiteFragment_siteViews } from 'types/SiteFragment';
+import { SiteFragment, SiteFragment_siteViews } from 'services/site/model/SiteFragment';
 import {
   updateView,
 } from 'utils/siteViewUpdater';
 import { History, Location } from 'history';
 import SearchForm from './SearchForm';
 import SiteViewsForm from './SiteViewsForm';
+import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 interface SiteViewRouterProps {
   match: match<{}>;
@@ -16,7 +18,6 @@ interface SiteViewRouterProps {
   history: History;
   location: Location;
   siteViews: SiteFragment_siteViews[];
-  refresh: any;
   onSave?: (form: CreateSiteInput, mutations: SiteViewMutationInput[]) => void;
   handleSiteViewEdit?: any;
 }
@@ -45,7 +46,7 @@ class SiteViewRouter extends React.Component<
   };
 
   render() {
-    const view = updateView(this.props.site.siteView, this.state.mutations);
+    const view = updateView(this.props.site.siteView as SiteViewFragment, this.state.mutations);
     const path = trimPath(this.props.match.path);
     const allViews = this.props.siteViews;
     const site = this.props.site;
@@ -67,9 +68,8 @@ class SiteViewRouter extends React.Component<
           path={`${path}`}
           render={() => (
             <SiteViewsForm
-              siteViews={this.props.siteViews}
+              siteViews={this.props.siteViews as SiteViewFragment[]}
               site={site}
-              refresh={this.props.refresh}
             />
           )}
         />
