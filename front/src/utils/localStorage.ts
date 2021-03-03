@@ -6,6 +6,7 @@ export const lsGet = (key: string) => {
   if (cachedItem) return cachedItem;
 
   const lsItem = localStorage.getItem(key);
+  console.log(lsItem);
   if (lsItem != null) {
     cache[key] = lsItem;
     return lsItem;

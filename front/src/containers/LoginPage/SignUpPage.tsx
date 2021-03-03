@@ -24,7 +24,8 @@ const SignUpPage = (props) => {
   const signUpErrors = useSelector( (state:RootState) => state.user.signUpErrors);
 
   const handleSignUp = () => {
-      console.log(oAuthToken);
+      console.log("handleSignUp called");
+      console.log(`${password === passwordConfirmation}`);
       if (password === passwordConfirmation) {
       dispatch(signUp(email,password,oAuthToken));
     }

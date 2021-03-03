@@ -16,6 +16,7 @@ const ROLE_SITE_OWNER = 'site_owner';
 const ROLE_ADMIN = 'admin';
 
 export async function authenticate(email,password,oAuthToken) {
+    console.log('authenticate (signIn called');
     logger.info('Authenticate user '+email);
 
     try {
@@ -27,7 +28,8 @@ export async function authenticate(email,password,oAuthToken) {
             if(user) {
                 logger.info('Found user '+user.id)
                     const token = await generateJWT(user);
-                    return {
+                    console.log(token);
+		    return {
                         jwt: token,
                         user: user
                     };
@@ -58,6 +60,8 @@ export async function authenticate(email,password,oAuthToken) {
 }
 
 async function generateJWT(user) {
+    console.log("generateJWT called");
+    console.log(user);
     const token = jwt.sign({
         email: user.email,
         exp: Math.floor(Date.now() / 1000) + config.jwtExpire
@@ -66,7 +70,10 @@ async function generateJWT(user) {
 }
 
 export async function getUserByEmail(email) {
+    console.log("getUserByEmail called");
     const results = await query(QUERY_USER,[email]);
+    console.log("results = ");
+    console.log(results);
     if(results.rows.length === 1) {
         const user = results.rows[0];
         user.roles = await getUserRoles(user.id);
@@ -110,8 +117,8 @@ export async function getUserWikis(userId) {
     return wikis.rows;
 }
 
-export async function signup(email,password, defaultQueryString, oAuthToken) {
-//     if o_auth_token
+export async function signUp(email,password, defaultQueryString, oAuthToken) {
+//   if o_auth_token
 //     return { jwt: nil, user: nil, errors: ["Oauth token not three segments"] } if !o_auth_token.split(".").size.eql? 3
 //     header = Base64.decode64 (o_auth_token.split(".")[0])
 //     kid = header ? JSON.parse(header)["kid"] : nil
@@ -137,25 +144,95 @@ export async function signup(email,password, defaultQueryString, oAuthToken) {
 //     { jwt: nil, user: nil, errors: user.errors.full_messages }
 //   end
 // end
+    console.log("user.manager signUp called");
+    //const exp_secs = ENV["JWT_EXPIRATION_TIME_SECS"] || 86_400  need to figure out ENV
+    const exp_secs = 86_400
     let pictureUrl = null;
     let encryptedPassword = null;
-    console.log(oAuthToken);
+    console.log(`oAuthToken = ${oAuthToken}`);
     if(oAuthToken) {
-        encryptedPassword = oAuthToken
+	console.log("oAuthToken present");
+	encryptedPassword = oAuthToken
     }
     else {
-        encryptedPassword = bcrypt
+	console.log("oAuthToken not present");
+	console.log(`pw = ${password}`);
+	encryptedPassword = await bcrypt.hash(password, 10);
+	console.log(`created pw = ${encryptedPassword}`);
     }
-    console.log(encryptedPassword)
+    console.log(`encryptedPassword = ${encryptedPassword}`);
     const exists = await query(QUERY_USER,[email]);
-    if(exists) {
-        throw new Error('Email already exixts');
+    console.log(exists.rows.length !== 0);
+    if(exists.rows.length !== 0) {
+        console.log(`exists.rows.length !== 0`);
+        //return { jwt: null, user: null, errors: ["Email already exists"] }
+	throw new Error('Email already exixts');
     }
     const user = await createNewUser(email,encryptedPassword,defaultQueryString,pictureUrl);
+    console.log(user);
+    const createdUser = await getUserByEmail(email)
+    console.log("createUser = ");
+    console.log(createdUser);
+    if (createdUser) {
+        /*console.log('user exists');
+	const exp = Date.now.to_i + exp_secs.to_i
+	console.log(exp);
+        const header = { "typ": "JWT", "alg": "HS256" }
+	console.log(header);
+        const data = { email: user.email, exp: exp }
+	console.log(data);
+        const unsignedToken = base64url(header) + "." + base64url(data)
+	console.log(unsignedToken);
+        //hmac_secret = Rails.application.secrets.secret_key_base // need to get equivalent
+        const hmac_secret = '12345' // need to get equivalent
+        const jwt = unsignedToken + "." + base64url(HMAC256(unsignedToken, hmac_secret))
+        console.log(jwt);
+        //jwt = JWT.encode({ email: user.email, exp: exp }, hmac_secret, "HS256")
+        //{ jwt: jwt, user: user, errors: nil }*/
+	console.log("found user by email");
+	const jwt = await generateJWT(createdUser);
+    	if (jwt) {
+    	    console.log('jwt present');
+    	    console.log(jwt);
+    	    return {
+    	        jwt: jwt,
+    	        user: createdUser//,
+    	        //errors: nil
+    	    };
+    	}
+    }
+    else {
+	
+    }
+
+    console.log('jwt not present');
+    return null;
 }
 
 async function createNewUser(email,password,defaultQueryString,pictureUrl) {
     console.log("createNewUserCalled");
+    console.log(`email = ${email}, password = ${password}, defaultQueryString = ${defaultQueryString}, pictureUrl = ${pictureUrl}`);
     const user = await query(QUERY_NEW_USER,[email,password,defaultQueryString,pictureUrl]);
-    return user;
+    console.log(user);
+    const newUser = await query(QUERY_USER,[email]);
+    console.log(newUser.rows[0]);
+    return newUser.rows[0];
 }
+
+/*function base64url(source) {
+    console.log('base64url called');
+    console.log(JSON.stringify(source));
+    // Encode in classical base64
+    //const encodedSource = CryptoJS.enc.Base64.stringify(source);
+    const encodedSource = Buffer.from(JSON.stringify(source));
+    console.log(encodedSource);
+    // Remove padding equal characters
+    encodedSource = encodedSource.replace(/=+$/, '');
+
+    // Replace characters according to base64url specifications
+    encodedSource = encodedSource.replace(/\+/g, '-');
+    encodedSource = encodedSource.replace(/\//g, '_');
+    console.log(encodedSource);
+    return encodedSource;
+}*/
+

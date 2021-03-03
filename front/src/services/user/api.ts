@@ -22,8 +22,12 @@ export const signIn = (email,password,oAuthToken) => {
 };
 
 export const signUp = (email,password,oAuthToken) => {
-    console.log("signUp called");
-    return callGraphql(ENDPOINT,query.SIGN_UP_MUTATION, { input: { email, password, oAuthToken} });
+    console.log("signUp called from api");
+    console.log(`email = ${email}, password= ${password}, oAuth = ${oAuthToken}`);
+    console.log(query.SIGN_UP_MUTATION);
+    let abc = callGraphql(NODE_ENDPOINT,query.SIGN_UP_MUTATION, { input: { email, password, oAuthToken} });//returns signUp: null
+    console.log(abc);
+    return callGraphql(NODE_ENDPOINT,query.SIGN_UP_MUTATION, { input: { email, password, oAuthToken} });
 };
 
 export const updatePassword = (resetPasswordToken,password,passwordConfirmation) => {
