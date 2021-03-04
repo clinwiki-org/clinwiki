@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import {
-  DocumentNode,
-} from 'graphql';
-import { gql, useQuery }  from '@apollo/client';
 import MailMerge from './MailMerge';
 import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
 import { getStudyQuery, getSearchQuery } from './MailMergeUtils';

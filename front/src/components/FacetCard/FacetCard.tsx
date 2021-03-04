@@ -14,7 +14,6 @@ import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
-import { UpsertMutationFn, UpsertMutationComponent, UPSERT_LABEL_MUTATION } from 'mutations/CrowdPageUpsertWikiLabelMutation';
 import { connect } from 'react-redux';
 import { upsertLabelMutation } from '../../services/study/actions'
 import {fetchSearchAutoSuggest} from 'services/search/actions';
@@ -36,7 +35,7 @@ interface FacetCardProps {
   addLabel?: boolean;
   meta: Record<string, string>;
   values?: any[];
-  refetch?: () => void;
+  //refetch?: () => void;
   aggNames?: any;
   allValues?: any[];
   showAnimation:any;
@@ -165,7 +164,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     key: string,
     value: string,
     meta: {},
-    upsertLabelMutation: UpsertMutationFn
+    upsertLabelMutation: any
   ) => {
     if (this.props.nctId) {
       CrowdPage.addLabel(
@@ -175,7 +174,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
         this.props.nctId,
         upsertLabelMutation
       );
-      if (this.props.refetch) (this.props.refetch());
+     // if (this.props.refetch) (this.props.refetch());
     }
   };
 
