@@ -4,6 +4,7 @@ import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
 import { updateSearchParamsSuccess } from './../search/actions';
+import { SEARCH_STUDY_PAGE_QUERY } from './queries';
 
 const getCurrentPageViews = (state) => state.study.pageViews.data.site.pageViews; //TODO CHeck path to redux store pageViews
 
@@ -25,9 +26,10 @@ function* getSampleStudy(action) {
 }
 
 function* getStudyPage(action) {
+    console.log(action);
     try {
         let response = yield call(() => api.fetchStudyPage(action.nctId, action.QUERY));
-        //console.log(response)
+        console.log(response)
         if (response) {
             yield put(actions.fetchStudyPageSuccess(response));
             yield call(() => api.updateStudyViewLogCount(action.nctId));
@@ -286,7 +288,9 @@ function* getAllWorkFlows(action) {
 }
 function* getReactionsIsland(action) {
     try {
+        console.log(action);
         let response = yield call(() => api.fetchReactionsIsland(action.nctId));
+        console.log(response);
         if (response) {
             yield put(actions.fetchReactionsIslandSuccess(response));
         }
@@ -301,10 +305,12 @@ function* getReactionsIsland(action) {
 }
 function* deleteReaction(action) {
     try {
+        console.log(action.nctId);
         let response = yield call(() => api.deleteReaction(action.id));
         if (response) {
             yield put(actions.deleteReactionSuccess(response.id));
-            yield getReactionsById(action.reactionKindId);
+            console.log(action);
+            yield getReactionsById(action.id);
             yield call(() => api.fetchReactionsIsland(action.nctId));
             //still have to refetch study page query        
         }
@@ -353,7 +359,12 @@ function* createReaction(action) {
         if (response) {
             yield put(actions.createReactionSuccess(response.data));
             yield getReactionsById(action.reactionKindId);
-            //still have to refetch study page query
+            //still have to refetch study page query qqqqqqqqqqqqqqqq
+            action.QUERY = SEARCH_STUDY_PAGE_QUERY;
+            action.type = types.FETCH_STUDY_PAGE_SEND;
+            delete action.reactionKindId;
+            console.log(action);
+            let response2 = yield getStudyPage(action);
         }
         else {
             yield put(actions.createReactionError(response.message));
@@ -499,8 +510,8 @@ function* updateWorkflowPage(action) {
 }
 function* getReactionsById(action) {
     try {
-        console.log(action)
-        let response = yield call(() => api.fetchReactionsById(action.reactionKindId));
+        //console.log(action)
+        let response = yield call(() => api.fetchReactionsById(action.toString()));
         console.log(response);
         if (response) {
             yield put(actions.fetchReactionsByIdSuccess(response));
