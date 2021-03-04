@@ -23,7 +23,7 @@ puts "started with #{starting_value} ReactionKinds, created #{added_value} addit
 
 
 puts "creating FacetConfig"
-json = {"default"=>{"0"=>{"agg_sublabel"=> nil,"auto_suggest"=> false,"bucket_key_value_pairs"=> nil,"default_to_open"=> nil,"display"=> "STRING","display_name"=> "default","layout"=> "horizontal","max_crumbs"=> nil,"name"=> "default","order"=> {sortKind: "key", desc: true},"preselected"=> {"kind"=> "WHITELIST", "values"=> [] },"range_end_label"=> nil,"range_start_label"=> nil,"rank"=> nil,"show_allow_missing"=> nil,"show_filter_toolbar"=> nil,"visible_options"=> {"kind"=> "WHITELIST", "values"=> []},"agg_kind"=> "aggs"}}}.to_json
+json = {"default"=>{"0"=>{"aggSublabel"=> nil,"autoSuggest"=> false,"bucketKeyValuePairs"=> nil,"defaultToOpen"=> nil,"display"=> "STRING","displayName"=> "default","layout"=> "horizontal","maxCrumbs"=> nil,"name"=> "default","order"=> {sortKind: "key", desc: true},"preselected"=> {"kind"=> "WHITELIST", "values"=> [] },"rangeEndLabel"=> nil,"rangeStartLabel"=> nil,"rank"=> nil,"showAllowMissing"=> nil,"showFilterToolbar"=> nil,"visibleOptions"=> {"kind"=> "WHITELIST", "values"=> []},"aggKind"=> "aggs"}}}.to_json
 hash = {main_config: json}
 f = FacetConfig.create!(main_config: json)
 puts f.present? ? "FacetConfig created" : "Could not create FacetConfig"

@@ -4,7 +4,7 @@ import { RootState } from 'reducers';
 import styled from 'styled-components';
 import ThemedButton from 'components/StyledComponents';
 import { Row, Col, FormControl, Nav, NavItem, Panel } from 'react-bootstrap';
-import { fetchFacetConfig } from 'services/search/actions'
+import { fetchFacetConfig, updateFacetConfig } from 'services/search/actions'
 import { BeatLoader } from 'react-spinners';
 
 interface EditWorkflowsPageProps { }
@@ -28,6 +28,7 @@ const StyledFormInput = styled(FormControl)`
   color: #333;
   font-size: 2em;
   padding-left: 5px;
+  min-height: 8em;
 `;
 
 function EditAggIslandsPage(props: EditWorkflowsPageProps) {
@@ -35,11 +36,12 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   const dispatch = useDispatch();
   const [aggConfig, setConfig] = useState("");
   const [aggs, setAggs] = useState("");
+  const [currentAggId, setCurrentAggId] = useState("")
   const facetConfig = useSelector((state: RootState) => state.search.facetConfig);
 
 
   useEffect(() => {
-    dispatch(fetchFacetConfig());
+  dispatch(fetchFacetConfig());
   }, [dispatch]);
 
   useEffect(() => {
@@ -47,8 +49,17 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
 
     facetConfig && setConfig(JSON.stringify(mainConfig.default[0]));
     facetConfig && setAggs(mainConfig.default);
+    facetConfig && setCurrentAggId("0")
 
   }, [facetConfig])
+  useEffect(() => {
+    let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig)
+
+    facetConfig && setConfig(JSON.stringify(mainConfig.default[currentAggId]));
+    facetConfig && setAggs(mainConfig.default);
+    // facetConfig && setCurrentAggId("0")
+
+  }, [currentAggId])
 
   if (!facetConfig) {
     return <BeatLoader />
@@ -56,9 +67,42 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
 
   let aggsArray = Object.keys(aggs)
 
-  console.log(aggsArray)
   const handleSaveIsland = (e) => {
-    console.log("Save Isalnd Mutation", e.currentTarget)
+    let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig);
+    mainConfig.default[currentAggId] = JSON.parse(aggConfig);
+
+    let variables = {
+      jsonObj: JSON.stringify(mainConfig),
+      clientMutationId: null
+    }
+
+    dispatch(updateFacetConfig({ input: variables }))
+
+
+  }
+  const handleConfigChange = (e) => {
+    setConfig(e.target.value)
+  }
+  const handleNewFacet = (e) => {
+    let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig);
+    let mainDefaultString = facetConfig && JSON.stringify(mainConfig);
+    let index = Object.keys(aggs).length
+
+    mainDefaultString = mainDefaultString.slice(0, mainDefaultString.length - 2) + `, "${index}" : ${aggConfig} }}`;
+
+    let newDefaultObject = JSON.parse(mainDefaultString)
+    mainConfig = {
+      ...mainConfig,
+      default: newDefaultObject.default
+    }
+
+    let variables = {
+      jsonObj: JSON.stringify(mainConfig),
+      clientMutationId: null
+    }
+
+    dispatch(updateFacetConfig({ input: variables }))
+
   }
   if (aggs == null)
     return (
@@ -74,33 +118,34 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
             <Nav
               bsStyle="pills"
               stacked
-              activeKey={null}
-              onSelect={console.log("selected")}>
+              activeKey={currentAggId}
+              onSelect={key => setCurrentAggId(key)}>
               {
                 aggsArray.map(agg => (console.log(agg),
                   <NavItem key={agg} eventKey={agg} >
                     {agg}
                   </NavItem>
                 ))}
-
+              <ThemedButton
+                style={{ marginTop: 15 }}
+                onClick={(handleNewFacet)}>
+                New Facet
+                </ThemedButton>
             </Nav>
           </Col>
           <Col md={10}>
             <StyledPanel>
-              <div>Our Config goes here</div>
-
-              {/* <EditIslandForm/> */}
 
               <StyledFormInput
                 componentClass="textarea"
                 name="reactionsConfig"
                 placeholder={"SOmething"}
                 value={aggConfig}
-                onChange={setConfig}
+                onChange={(e) => handleConfigChange(e)}
               />
               <ThemedButton
                 style={{ marginTop: 15 }}
-                onClick={(e) => handleSaveIsland}>
+                onClick={(e) => handleSaveIsland(e)}>
                 Save
                 </ThemedButton>
 

@@ -24,8 +24,6 @@ export function registerHandlebarsHelpers() {
   });
   Handlebars.registerHelper('querystring', (value: string) => {
     const linkAttributes =  useUrlParams()
-    console.log("VALUE", value)
-
     switch (value) {
       case 'hash':
         return linkAttributes.hash;
@@ -51,16 +49,13 @@ export function registerHandlebarsHelpers() {
 });
   Handlebars.registerHelper('$TRUNCATE', (value: string, characters: number) => {
     if(value.length<characters) return value
-    console.log("Green")
     let ellipses = '...'
     let newVal = value.slice(0,characters) 
     let cutValues = value.slice(characters, value.length)
     return new Handlebars.SafeString(`${newVal}<span id="ellipses"> ${ellipses}</span><span class="ellipsed-text">${cutValues}</span>`)
 });
   Handlebars.registerHelper('DateToString', (value: string) => {
-    console.log("VAL",value)
     let newVal = value
-    console.log("NEW:", newVal)
     return newVal
 });
   Handlebars.registerHelper('$FindAndReplace', ( arrayOfValuesToFind: string, arrayOfValues:string, valueToReplace: string ) => {
@@ -73,12 +68,4 @@ export function registerHandlebarsHelpers() {
       return new Handlebars.SafeString(values[indexFound])
     }
   });
-  Handlebars.registerHelper('$RenderEach', (value: any) => {
-    console.log("Somee cvalue", value)
-    // console.log(this)
-    return new Handlebars.SafeString(value.map((item)=>{
-    return new Handlebars.SafeString(`${item}`)
-      
-    }))
-});
 }

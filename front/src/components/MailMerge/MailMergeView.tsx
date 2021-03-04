@@ -30,7 +30,6 @@ const defaultStyle: React.CSSProperties = {
 };
 
 function compileTemplate(template: string) {
-  console.log("compiling template", template)
   try {
     return Handlebars.compile(template);
   } catch (e) {
@@ -45,10 +44,7 @@ function applyTemplate(
   pageType?:any
 ) {
   try {
-     context = pageType=="Study"? { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-  :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies: context }
-    console.log("Applying template",context)
-    console.log(template(context))
+     context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;
@@ -56,7 +52,6 @@ function applyTemplate(
 }
 
 export function microMailMerge(template = '', context?: object | null) {
-  console.log("Micro")
   if (context && template.indexOf('{{') >= 0) {
     const compiled = compileTemplate(template);
     return applyTemplate(compiled, context);
@@ -70,13 +65,10 @@ export default function MailMergeView(props: Props) {
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
   ]);
-  console.log("Comped",compiled)
-  console.log(props.pageType)
   const raw = useMemo(() => applyTemplate(compiled, props.context, props.pageType), [
     compiled,
     props.context,
   ]);
-console.log("RAW",raw)
   const style = props.style
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
@@ -108,13 +100,11 @@ console.log("RAW",raw)
     },
   ];
   const parser = new HtmlToReact.Parser();
-  console.log("Parsing", parser)
   const reactElement = parser.parseWithInstructions(
     raw,
     () => true,
     instructions
   );
- console.log("Creating react element", props?.islands)
   return (
     <div className="mail-merge" style={style}>
       {reactElement}

@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import {
-  DocumentNode,
-} from 'graphql';
-import { gql, useQuery }  from '@apollo/client';
 import MailMerge from './MailMerge';
 import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
 import { getStudyQuery, getSearchQuery } from './MailMergeUtils';
@@ -26,25 +22,19 @@ function getClassForMode(mode: Mode) {
       return 'ElasticStudy';
   }
 }
-const template1= `
-<navigation></navigation>
-{{nctId}}  
-{{$TRUNCATE briefTitle 5}}
-{{$TRUNCATE nctId 5}}
-{{briefTitle}}  
-{{briefSummary}}  
-`
-const template2= `
+const TEMPLATE = `
 # title: Search Page
-{{#$RenderEach studies }}
-{{nctId}}  
-{{briefTitle}}  
-{{briefSummary}}  
-{{/$RenderEach }}
-`
-const template3= `
-<agg id='0'></agg>
-# title: Search Page
+
+<div class='mm-single-line'>
+    <agg id='0'></agg>
+    <agg id='1'></agg>
+    <agg id='2'></agg>
+</div>
+
+# Total Studies: {{recordsTotal}}
+
+<div class="testing-container">
+
 {{#each studies }}
 <div class="testing-mm">
   <div class ="mail-merge" >
@@ -53,56 +43,41 @@ const template3= `
   </div>
 </div>
 {{/each }}
+</div>
 `
-// function getModeData(
-//   mode: Mode,
-//   arg: string,
-//   fragment: string,
-//   fragmentName: string
-// ): [DocumentNode, object, string] {
-//   switch (mode) {
-//     case 'Study':
-//       return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
-//     case 'Search':
-//       return [
-//         getSearchQuery(fragmentName, fragment),
-//         { hash: arg },
-//         'ElasticStudy',
-//       ];
-//   }
-// }
 export default function TestComponent() {
-  const [template, setTemplate] = useState(template3);
+  const [template, setTemplate] = useState(TEMPLATE);
   const [mode, setMode] = useState<Mode>('Search');
   const defaultNctId = 'NCT03847779';
   const defaultSearchHash = 'tqxCyI9M';
   let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultSearchHash);
   const dispatch = useDispatch();
-  useEffect(()=>{
+
+  useEffect(() => {
     const QUERY = introspectionQuery
     dispatch(fetchIntrospection(QUERY));
-  },[dispatch]);
-  useEffect(()=>{
-    const QUERY = `${getStudyQuery(fragmentName, fragment)}`
-    dispatch(fetchStudyPage(nctOrSearchHash ?? "", QUERY));
-    console.log(mode);
+  }, [dispatch]);
+
+  useEffect(() => {
     const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-    dispatch(mode=="Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPage(nctOrSearchHash ?? "", SEARCH_QUERY) );
-   },[dispatch, nctOrSearchHash]);
-  const introspection = useSelector((state:RootState) => state.introspection.introspection);
+    dispatch(mode == "Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPage(nctOrSearchHash ?? "", SEARCH_QUERY));
+  }, [dispatch, nctOrSearchHash]);
+  
+  const introspection = useSelector((state: RootState) => state.introspection.introspection);
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, template);
-  // const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
-  // const { data } = useQuery(query, { variables });
-  const studyData = useSelector((state:RootState) => state.study.studyPage);
+  const studyData = useSelector((state: RootState) => state.study.studyPage);
+  const aggsList = useSelector((state: RootState) => state.search.aggs);
+  const recordsTotal = aggsList?.data?.search?.recordsTotal;
+
   const updateMode = mode => {
     setMode(mode);
     if (mode === 'Study') setNctOrSearchHash(defaultNctId);
     if (mode === 'Search') setNctOrSearchHash(defaultSearchHash);
   };
-  let islands = mode == 'Study'? studyIslands: searchIslands;
-   islands = {
+  let islands = mode == 'Study' ? studyIslands : searchIslands;
+  islands = {
     ...islands,
     groot: (attributes: Record<string, string>) => {
       return (
@@ -114,16 +89,13 @@ export default function TestComponent() {
     return <BeatLoader />;
   }
   const sampleData = studyData?.data.study || studyData.data?.search?.studies?.[0];
-  const searchData = ()=> {
-    let studies : any[]=[]
-  studyData?.data?.search?.studies?.map((study, index)=>{
-    studies.push( {...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL'})
-  })
-  // const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-// :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }// const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-// :{ hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL', studies:  searchData() }
-  return studies
-}
+  const searchData = () => {
+    let studies: any[] = []
+    studyData?.data?.search?.studies?.map((study, index) => {
+      studies.push({ ...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' })
+    })
+    return { studies, recordsTotal }
+  }
   if (introspection) {
     const types = introspection.data.__schema.types;
     return (
@@ -151,7 +123,7 @@ export default function TestComponent() {
         />
         <pre>{fragment}</pre>
         <pre>
-          {JSON.stringify(studyData?.data.study  ||studyData.data?.search?.studies, null, 2)}
+          {JSON.stringify(studyData?.data.study || studyData.data?.search?.studies, null, 2)}
         </pre>
       </div>
     );

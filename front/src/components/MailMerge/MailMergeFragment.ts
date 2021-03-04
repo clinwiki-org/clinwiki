@@ -2,9 +2,7 @@ import { useMemo, useState } from 'react';
 import { type } from 'remeda';
 
 function mustacheTokens(input: string) {
-  console.log("input",input)
   let tokens: string[] = [];
-  console.log("tokens", tokens)
   const yeet = (t: string) => {
     if (t !== '') tokens.push(t);
   };
@@ -29,19 +27,14 @@ function mustacheTokens(input: string) {
     }
     last = ch;
   }
-  console.log(tokens)
   return tokens;
 }
 
 type Marker = 'x';
 function tokensToGraphQLOb(tags: string[]) {
-  console.log("TokensGQL", tags)
   let result: Record<string, object | Marker> = {};
-  console.log(result)
   let scope = result;
-  console.log(scope)
   let stack = [result];
-  console.log(stack)
   const pushScope = name => {
     const parts = name.split('.');
     stack.push(scope);
@@ -66,7 +59,7 @@ function tokensToGraphQLOb(tags: string[]) {
       popScope();
     } 
     
-    if (name== 'this') {
+    if (name== 'this'|| name == 'recordsTotal') {
       console.log(name)
     }
 
@@ -81,7 +74,6 @@ function tokensToGraphQLOb(tags: string[]) {
       // split on any whitespace, remove blanks
       const parts = t.split(/\s/).filter(id => id);
       if (parts.length > 1) {
-        console.log("PARTS",parts)
         const name = parts[1];
         if (
           parts[0] == '#$RenderEach'
@@ -119,7 +111,6 @@ function tokensToGraphQLOb(tags: string[]) {
       setProperty(t);
     }
   }
-  console.log(result)
   return result;
 }
 
@@ -127,7 +118,6 @@ function jsonToFragmentBody(
   json: Record<string, object | Marker>,
   indent = ''
 ) {
-  console.log(json)
   if (Object.keys(json).length == 0) return '';
   var result = '{\n';
   for (const key in json) {
@@ -145,7 +135,6 @@ function jsonToFragmentBody(
     }
   }
   result += '}\n';
-  console.log(result)
   return result;
 }
 
@@ -175,7 +164,6 @@ function randomIdentifier() {
 }
 
 export function useFragment(className : string, template : string) {
-  console.log(className, template )
   const [fragmentName, _] = useState<string>(randomIdentifier());
   return useMemo(
     () => [fragmentName, compileFragment(fragmentName, className, template)],

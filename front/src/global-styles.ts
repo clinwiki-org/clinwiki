@@ -222,6 +222,7 @@ div.DraftEditor-editorContainer{
 }
 .mm-single-line{
   display: flex;
+  flex-wrap: wrap;
 }
 .mm-single-line .mail-merge-island{
   padding-right: 1em;
@@ -247,17 +248,26 @@ div.DraftEditor-editorContainer{
 .ellipsed-text {
   display:none;
 }
+.testing-container{
+  display: flex;
+  flex-wrap:wrap;
+
+}
 .testing-mm{
-  width: 350px;
-min-height: 350px;
-margin: 15px;
-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-// border-radius: 4px;
-background: #ffffff;
-padding: 5px;
- a {
-  ${props => props.theme.button};
- }
+  max-width: 350px;
+  min-height: 350px;
+  max-height: 350px;
+  margin: 15px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  background: #ffffff;
+  padding: 5px;
+  display: flex;
+  flex-wrap:wrap;
+  overflow: hidden;
+  
+  a {
+    ${props => props.theme.button};
+  }
 
  .mail-merge {
    position: relative;
