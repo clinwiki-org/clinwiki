@@ -11,6 +11,7 @@ const QUERY_USER_REVIEWS = 'select * from reviews where user_id=$1';
 const QUERY_USER_WIKI_CONTRIBUTIONS = 'select distinct wiki_page_id from wiki_page_edits where user_id=$1';
 const QUERY_NEW_USER = 'insert into users (email,encrypted_password,default_query_string,picture_url) values ($1,$2,$3,$4)';
 const QUERY_USER_REACTIONS = 'select * from reactions where user_id=$1';
+const QUERY_USER_REACTIONS_COUNT = 'select rk.name, count(r.id) from reactions r inner join reaction_kinds rk on rk.id=r.reaction_kind_id where r.user_id=$1 group by rk.name';
 
 const ROLE_SITE_OWNER = 'site_owner';
 const ROLE_ADMIN = 'admin';
@@ -80,9 +81,7 @@ export async function getUserByEmail(email) {
         user.reviews = await getUserReviews(user.id);
         user.reviewCount = user.reviews ? user.reviews.length : 0;
         user.reactions = await getUserReactions(user.id);
-        console.log(user.reactions);
-	user.reactionsCount = user.reactions ? user.reactions.length : 0;
-        console.log(user.reactionsCount);
+    	user.reactionsCount = await getUserReactionsCount(user.id);
         const wikis = await getUserWikis(user.id);
         user.contributions = wikis ? wikis.length : 0;
 
@@ -112,6 +111,11 @@ export async function getUserReviews(userId) {
 export async function getUserReactions(userId) {
     const reviewResults = await query(QUERY_USER_REACTIONS,[userId]);
     return reviewResults.rows;
+}
+
+export async function getUserReactionsCount(userId) {
+    const reactionsResults = await query(QUERY_USER_REACTIONS_COUNT,[userId]);
+    return reactionsResults.rows;
 }
 
 export async function getUserWikis(userId) {
