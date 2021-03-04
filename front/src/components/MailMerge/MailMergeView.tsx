@@ -45,7 +45,6 @@ function randomIdentifier() {
 function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,
   context?: object,
-  pageType?:any
 ) {
   try {
      context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
@@ -69,7 +68,7 @@ export default function MailMergeView(props: Props) {
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
   ]);
-  const raw = useMemo(() => applyTemplate(compiled, props.context, props.pageType), [
+  const raw = useMemo(() => applyTemplate(compiled, props.context), [
     compiled,
     props.context,
   ]);

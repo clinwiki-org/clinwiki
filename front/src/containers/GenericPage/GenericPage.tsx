@@ -65,7 +65,7 @@ export default function GenericPage(props: Props) {
 
 //Currently making assumption anything diplayed in our search2 route is of pageType study 
 //Ideally should be set from PageView but was having issues , response was not saving 
-  const pageType = match.path = "/search2/" ? "Search" : "Study"
+  const pageType = match.path == "/search2/" ? "Search" : "Study"
   const schemaType = getClassForMode(pageType);
   const [fragmentName, fragment] = useFragment(schemaType, currentPage?.template || '');
 

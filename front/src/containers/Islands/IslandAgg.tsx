@@ -85,9 +85,10 @@ function IslandAgg(props: Props) {
   const facetConfig = useSelector((state: RootState) => state.search.facetConfig);
   const searchParams = data?.data?.searchParams;
   const paramsUrl = useUrlParams();
+  const match = useRouteMatch();
 
   useEffect(() => {
-    dispatch(fetchSearchParams(hash));
+    match.path == "/search2/" && dispatch(fetchSearchParams(hash));
   }, [dispatch]);
 
   useEffect(() => {
