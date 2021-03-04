@@ -73,9 +73,9 @@ function* signUp(action) {
     console.log("signup in saga called");
     try {
         let response = yield call(() => api.signUp(action.email,action.password,action.oAuthToken));
-        console.log(response);
+/*        console.log(response);
         console.log(response.data);
-        console.log(response.data.signUp);
+        console.log(response.data.signUp);*/
         if(response.data && response.data.signUp) {
             yield put(actions.signUpSuccess(response));
             yield call(() => actions.signIn(action.email,action.password,action.oAuthToken));

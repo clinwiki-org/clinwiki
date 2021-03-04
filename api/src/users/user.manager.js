@@ -80,7 +80,9 @@ export async function getUserByEmail(email) {
         user.reviews = await getUserReviews(user.id);
         user.reviewCount = user.reviews ? user.reviews.length : 0;
         user.reactions = await getUserReactions(user.id);
-        user.reactionsCount = user.reactions ? user.reactions.length : 0;
+        console.log(user.reactions);
+	user.reactionsCount = user.reactions ? user.reactions.length : 0;
+        console.log(user.reactionsCount);
         const wikis = await getUserWikis(user.id);
         user.contributions = wikis ? wikis.length : 0;
 

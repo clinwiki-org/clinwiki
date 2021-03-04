@@ -12,7 +12,8 @@ const userResolver = {
     signUp: async (args,context) => {
         console.log("signUp called in resolver");
 	const payload = await UserManager.signUp(args.input.email,args.input.password,args.input.oAuthToken);
-        return payload;
+        console.log('payload', payload);
+	return payload;
     }
     
 }
