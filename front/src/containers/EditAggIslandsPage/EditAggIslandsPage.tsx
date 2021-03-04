@@ -42,24 +42,15 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
 
   useEffect(() => {
   dispatch(fetchFacetConfig());
+  setCurrentAggId("0")
   }, [dispatch]);
 
   useEffect(() => {
     let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig)
 
-    facetConfig && setConfig(JSON.stringify(mainConfig.default[0]));
-    facetConfig && setAggs(mainConfig.default);
-    facetConfig && setCurrentAggId("0")
-
-  }, [facetConfig])
-  useEffect(() => {
-    let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig)
-
     facetConfig && setConfig(JSON.stringify(mainConfig.default[currentAggId]));
     facetConfig && setAggs(mainConfig.default);
-    // facetConfig && setCurrentAggId("0")
-
-  }, [currentAggId])
+  }, [dispatch, facetConfig, currentAggId])
 
   if (!facetConfig) {
     return <BeatLoader />

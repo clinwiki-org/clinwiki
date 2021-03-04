@@ -37,7 +37,11 @@ function compileTemplate(template: string) {
     return _ => errMsg;
   }
 }
-
+function randomIdentifier() {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
+  const randomChar = () => chars[Math.floor((Math.random()*chars.length))]
+  return Array.from({ length: 12 }, randomChar).join('');
+}
 function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,
   context?: object,
@@ -88,7 +92,7 @@ export default function MailMergeView(props: Props) {
         return (
           <div
             className="mail-merge-island"
-            key={node.attribs['key'] || node.name}>
+            key={node.attribs['key'] + randomIdentifier() || node.name}>
             {create?.(node.attribs, props.context, children)}
           </div>
         );
