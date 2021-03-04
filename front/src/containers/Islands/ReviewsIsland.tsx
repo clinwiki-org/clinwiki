@@ -47,7 +47,7 @@ const ButtonsWrapper = styled.div`
 export default function ReviewsIsland(props: Props) {
   const { nctId } = props;
   const history = useHistory();
-  const location = useLocation();
+ // const location = useLocation();
   const match = useRouteMatch();
   const theme = useTheme();
   const params = useUrlParams();
@@ -83,9 +83,9 @@ export default function ReviewsIsland(props: Props) {
     history.push(`${trimPath(match.url)}/${id}/edit${queryStringAll(params)}`);
   };
   const handleCloseReview = () => {
-    let path = `${trimPath(match.url)}/${queryStringAll(params)}`
+    let path = `${trimPath(match.url)}${queryStringAll(params)}`
     history.push(path);
-    //console.log("THE LINK\n" +`${trimPath(match.url)}/${queryStringAll(params)}`)
+    //console.log("THE LINK\n" +`${trimPath(match.url)}${queryStringAll(params)}`)
   };
 
   const getName = (user: ReviewsPageFragment_user) => {

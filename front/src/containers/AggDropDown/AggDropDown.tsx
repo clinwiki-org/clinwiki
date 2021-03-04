@@ -308,7 +308,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     } = this.props;
 
     let aggSort = this.handleSort(desc, sortKind);
-
+    let page = this.getFullPagesCount(this.state.buckets);
+    const pageNumber = isNaN(page) || page === null ? 0 : page; 
+    //console.log("🚀 ~ AggDropDown ~ pageNumber", pageNumber);
+    
     const variables = {
       ...searchParams,
       url: presentSiteView.url,
@@ -318,13 +321,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       crowdAggFilters: maskAgg(
         this.props.searchParams.crowdAggFilters,
         this.props.agg
-      ),
-      agg: agg,
-      pageSize: PAGE_SIZE,
-      page: this.getFullPagesCount(this.state.buckets),
-      aggOptionsFilter: filter,
-      aggOptionsSort: aggSort,
-    };
+        ),
+        agg: agg,
+        pageSize: PAGE_SIZE,
+        page: pageNumber,//this.getFullPagesCount(this.state.buckets),//! Pagination IS being used for InfiniteLoader, bug fix 351, component will be deprecated on MMSearchPage
+        aggOptionsFilter: filter, 
+        aggOptionsSort: aggSort,
+      };
+      //console.log("🚀 ~  ~ variables", variables);
     this.props.aggKind === "crowdAggs" ? this.props.fetchCrowdAggBuckets(variables) : this.props.fetchAggBuckets(variables);
     //this.handleLoadMoreResponse();
   }

@@ -52,7 +52,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     const { field } = this.props
 
     if (this.props.selectedItems.length > 0) {
-
+      //console.log("CRUMBS PROPS", field.name, this.props.selectedItems)
       let displayedCrumbs: any[] = this.props.selectedItems.slice(0, field.maxCrumbs)
       let otherValues = { key: `... ${this.props.selectedItems.length - displayedCrumbs.length} others` }
       displayedCrumbs.push(otherValues)

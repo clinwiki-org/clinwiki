@@ -159,12 +159,12 @@ function* upsertLabelMutation(action) {
         //console.log("SAGA Upsert Label", action)
         let response = yield call(() => api.upsertLabelMutation(action.nctId, action.key, action.value));
         if (!response.data.upsertWikiLabel.errors) {
-            yield put(fetchCurrentUser());
+            let response3 = yield getSuggestedLabels(action);
             yield put (actions.fetchStudyPage(action.nctId ?? "", action.studyQuery));
             let response2 = yield getWorkFlowPage(action);
-            let response3 = yield getSuggestedLabels(action);
-            let response4 = yield getAllWorkFlows(action);
             yield put(actions.upsertLabelMutationSuccess(response2));
+            let response4 = yield getAllWorkFlows(action);
+            yield put(fetchCurrentUser());
         }
         else {
             yield put(actions.upsertLabelMutationError(response.message));

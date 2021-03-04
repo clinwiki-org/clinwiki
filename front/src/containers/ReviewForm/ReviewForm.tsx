@@ -132,6 +132,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
       },
     });
     this.setState(defaultState);//, ()=>this.props.handleClose());
+    //this.props.afterSave();
     this.props.handleClose();
   };
 
