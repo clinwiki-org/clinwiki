@@ -3,8 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { FilterKind, FieldDisplay, SortKind } from "../../../types/globalTypes";
-
+import { FilterKind, FieldDisplay, SortKind } from 'services/site/model/InputTypes';
 // ====================================================
 // GraphQL query operation: WorkflowsViewProviderQuery
 // ====================================================

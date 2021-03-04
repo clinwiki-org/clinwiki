@@ -14,7 +14,7 @@ import {
 } from 'ramda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import FacetCard from 'components/FacetCard/FacetCard';
-import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
+import { WorkflowConfigFragment_suggestedLabelsConfig } from '../../services/study/model/WorkflowConfigFragment';
 import { BeatLoader } from 'react-spinners';
 import Error from 'components/Error';
 import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation } from '../../services/study/actions'

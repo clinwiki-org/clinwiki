@@ -13,7 +13,7 @@ import {
 } from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AggFilterInputUpdateContext from 'containers/SearchPage/components/AggFilterUpdateContext';
 import withTheme from 'containers/ThemeProvider';
-import { FieldDisplay, FilterKind } from 'types/globalTypes';
+import { FieldDisplay, FilterKind } from '../../services/site/model/InputTypes';
 import { contains, without } from 'ramda';
 
 interface SiteSelect {

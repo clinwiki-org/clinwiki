@@ -23,7 +23,7 @@ import {
 } from '../SearchPage/Types';
 import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import './AggDropDownStyle.css';
 import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import SortKind from './SortKind';

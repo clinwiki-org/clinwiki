@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 
-import { StudyEditsHistoryQuery } from 'types/StudyEditsHistoryQuery';
+import { StudyEditsHistoryQuery } from 'services/study/model/StudyEditsHistoryQuery';
 import QUERY from 'queries/StudyEditsHistoryQuery';
 import Error from 'components/Error';
 import EditsHistory from './EditsHistory';
