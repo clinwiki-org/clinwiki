@@ -4,7 +4,6 @@ import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
 import { updateSearchParamsSuccess } from './../search/actions';
-import { SEARCH_STUDY_PAGE_QUERY } from './queries';
 
 const getCurrentPageViews = (state) => state.study.pageViews.data.site.pageViews; //TODO CHeck path to redux store pageViews
 
@@ -306,13 +305,13 @@ function* getReactionsIsland(action) {
 function* deleteReaction(action) {
     try {
         console.log(action.nctId);
-        let response = yield call(() => api.deleteReaction(action.id));
+        let response = yield call(() => api.deleteReaction(action.id, action.studyQuery, action.nctId));
         if (response) {
             yield put(actions.deleteReactionSuccess(response.id));
             console.log(action);
-            yield getReactionsById(action.id);
-            yield call(() => api.fetchReactionsIsland(action.nctId));
-            //still have to refetch study page query        
+            yield getReactionsIsland(action);
+            yield getStudyReactions(action);
+            yield put (actions.fetchStudyPage(action.nctId ?? "", action.studyQuery));
         }
         else {
             yield put(actions.deleteReactionError(response.message));
@@ -359,12 +358,11 @@ function* createReaction(action) {
         if (response) {
             yield put(actions.createReactionSuccess(response.data));
             yield getReactionsById(action.reactionKindId);
-            //still have to refetch study page query qqqqqqqqqqqqqqqq
-            action.QUERY = SEARCH_STUDY_PAGE_QUERY;
-            action.type = types.FETCH_STUDY_PAGE_SEND;
-            delete action.reactionKindId;
             console.log(action);
-            let response2 = yield getStudyPage(action);
+            yield getStudyReactions(action);
+            yield put (actions.fetchStudyPage(action.nctId ?? "", action.studyQuery));
+            console.log(action.nctId);
+            yield getReactionsIsland(action);
         }
         else {
             yield put(actions.createReactionError(response.message));

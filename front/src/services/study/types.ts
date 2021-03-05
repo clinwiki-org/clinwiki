@@ -552,6 +552,8 @@ export interface fetchReactionsIslandErrorAction {
 export interface deleteReactionSendAction {
     type: typeof DELETE_REACTION_SEND,
     id: any,
+    studyQuery,
+    nctId,
 };
 
 export interface deleteReactionSuccessAction {
@@ -595,7 +597,8 @@ export interface fetchStudyReactionsErrorAction {
 export interface createReactionSendAction {
     type: typeof CREATE_REACTION_SEND,
     nctId: any,
-    reactionKindId: any
+    reactionKindId: any,
+    studyQuery: any
 };
 
 export interface createReactionSuccessAction {

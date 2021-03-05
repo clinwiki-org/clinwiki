@@ -76,8 +76,8 @@ export const fetchAllWorkFlows= () => {
 export const fetchReactionsIsland= (nctId: any) => {
     return callGraphql(ENDPOINT, query.REACTIONS_ISLAND_QUERY, {nctId});
 };
-export const deleteReaction = (id:any) =>{
-    return callGraphql(ENDPOINT,mutate.DELETE_REACTION, {id})
+export const deleteReaction = (id:any, studyQuery: any, nctId: any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_REACTION, {id, studyQuery, nctId})
 };
 export const fetchReactionKinds= () => {
     return callGraphql(ENDPOINT, query.REACTION_KINDS, {});
