@@ -224,6 +224,11 @@ div.DraftEditor-editorContainer{
   display: flex;
   flex-wrap: wrap;
 }
+.mm-single-line-center{
+  margin:auto;
+  display: flex;
+  flex-wrap: wrap;
+}
 .mm-single-line .mail-merge-island{
   padding-right: 1em;
 }
@@ -248,12 +253,34 @@ div.DraftEditor-editorContainer{
 .ellipsed-text {
   display:none;
 }
-.testing-container{
+.cards-container{
   display: flex;
   flex-wrap:wrap;
 
 }
-.testing-mm{
+.mm-card{
+  width: 80%;
+  min-height: 225px;
+  max-height: 350px;
+  margin: 15px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.7);
+  background: #ffffff;
+  padding: 5px;
+  display: flex;
+  overflow: hidden;
+  margin:auto;
+  
+  a {
+    ${props => props.theme.button};
+  }
+
+
+ .mail-merge {
+   position: relative;
+ }
+}
+
+.mm-card2{
   max-width: 350px;
   min-height: 350px;
   max-height: 350px;
@@ -273,4 +300,118 @@ div.DraftEditor-editorContainer{
    position: relative;
  }
 }
+
+
+.grid-container{
+  // display: flex;
+  width:100vw;
+  height:100vh;
+}
+.grid {
+  display: grid;
+  grid-template-areas:
+    "one one two two"
+    "one one two two"
+    "three three four four"
+    "three three four four";
+  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 100px);
+  inline-size: 500px;
+    margin: 1em;
+
+}
+
+.grid > * {
+  background-color: rgba(111,41,97,.1);
+  border-radius: 5px;
+  padding: 10px;
+}
+.grid2 {
+
+  display: grid;
+  grid-template-areas:
+    "one one two two"
+    "one one two two"
+    "three three four four"
+    "three three four four";
+  gap: 10px;
+  grid-template-columns: repeat(4, 25px);
+  grid-template-rows: repeat(4, 25px);
+  height:95%;
+  width:95%;
+/*   inline-size: 500px; */
+}
+
+.grid2 > * {
+  background-color: rgba(0,41,97,.1);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-areas:
+    "one two two two"
+    "one two two two"
+    "one three three three"
+    "one three three three";
+  gap: 10px;
+  grid-template-columns: 25em 1fr;
+  // grid-template-rows: repeat(4, 100px);
+  inline-size: 500px;
+  margin: 1em;
+  width: 98vw;
+
+}
+
+.grid3 > * {
+  background-color: rgba(111,41,97,.1);
+  border-radius: 5px;
+  padding: 10px;
+}
+.grid4 {
+  display: grid;
+  grid-template-areas:
+    "two two two two"
+    "two two two two"
+    "three three three three"
+    "three three three three";
+  gap: 10px;
+  // grid-template-columns: repeat(4, 1fr);
+  // grid-template-rows: repeat(4, 100px);
+  inline-size: 500px;
+  margin: 1em;
+  width: 98vw;
+
+
+}
+
+.grid4 > * {
+  background-color: rgba(111,41,97,.1);
+  border-radius: 5px;
+  padding: 10px;
+}
+.one {
+  grid-area: one;
+}
+
+.two {
+  grid-area: two;
+}
+
+.three {
+  grid-area: three;
+}
+
+.four {
+  grid-area: four;
+}
+
+.grid > .five {
+  background-color: orange;
+  grid-row: 2 / 4;
+  grid-column: 2 / 4;
+}
+
 `);
