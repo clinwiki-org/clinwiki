@@ -1,43 +1,44 @@
 import * as React from 'react';
-import gql from 'graphql-tag';
-import { graphql } from '@apollo/client/react/hoc';
 import { Modal } from 'react-bootstrap';
 import ThemedButton from 'components/StyledComponents/index';
-
-const SEARCH_EXPORT_QUERY = gql`
-  query SearchExportQuery($searchExportId: Int!) {
-    searchExport(searchExportId: $searchExportId) {
-      downloadUrl
-    }
-  }
-`;
+import { connect } from 'react-redux';
+import { searchExport } from 'services/search/actions';
 
 interface ExportToCsvDialogProps {
   exportId?: Number;
   data: any;
   loading: boolean;
   setExportId: any;
+  searchExport: any;
+  searchExportToCsv: any;
+  setShowExportModal: any;
 }
 
 class ExportToCsvDialog extends React.Component<ExportToCsvDialogProps> {
-  componentWillMount() {
-    this.props.data.startPolling(250);
+
+  componentDidMount(){
+    this.props.searchExportToCsv(this.props.exportId)
   }
 
-  render() {
-    const { setExportId, loading, data } = this.props;
+/*   componentWillMount() {
+    this.props.data.startPolling(250);
+  } */
 
+  render() {
+    const { setExportId, loading, searchExport } = this.props;
+    //console.log("🚀 ~ ren SearchExport data", searchExport);
     let body = <div />;
     const noDownloadUrl =
-      data?.searchExport?.downloadUrl === null ||
-      data?.searchExport?.downloadUrl === undefined;
+      searchExport?.downloadUrl === null ||
+      searchExport?.downloadUrl === undefined;
     if (loading || noDownloadUrl) {
       body = <span>Your export is running...</span>;
     } else {
       const openDownloadUrl = () => {
-        window.open(data.searchExport.downloadUrl);
-        data.stopPolling();
+        window.open(searchExport.downloadUrl);
+        //data.stopPolling();
         setExportId(null);
+        this.props.setShowExportModal(false);
       };
       body = (
         <ThemedButton onClick={openDownloadUrl}>Download Export</ThemedButton>
@@ -54,7 +55,7 @@ class ExportToCsvDialog extends React.Component<ExportToCsvDialogProps> {
           <Modal.Body style={{ textAlign: 'center' }}>{body}</Modal.Body>
 
           <Modal.Footer>
-            <ThemedButton onClick={() => setExportId(null)}>Close</ThemedButton>
+            <ThemedButton onClick={() => this.props.setShowExportModal(false)}>Close</ThemedButton>
           </Modal.Footer>
         </Modal.Dialog>
       </Modal>
@@ -62,8 +63,12 @@ class ExportToCsvDialog extends React.Component<ExportToCsvDialogProps> {
   }
 }
 
-export default graphql<any, any, any, any>(SEARCH_EXPORT_QUERY, {
-  options: (props: any) => ({
-    variables: { searchExportId: props.exportId },
-  }),
-})(ExportToCsvDialog);
+const mapDispatchToProps = (dispatch) => ({
+  searchExportToCsv: (searchExportId) => dispatch(searchExport(searchExportId)),
+})
+
+const mapStateToProps = (state, ownProps) => ({
+  searchExport: state.search.searchExport,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps ) (ExportToCsvDialog);
