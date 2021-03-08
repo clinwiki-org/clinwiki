@@ -1,12 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: ReviewFormMutation
-// ====================================================
-
 export interface ReviewFormMutation_upsertReview_review_user {
   __typename: "User";
   /**
@@ -55,3 +46,4 @@ export interface ReviewFormMutationVariables {
   meta: string;
   content: string;
 }
+

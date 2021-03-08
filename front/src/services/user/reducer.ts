@@ -10,7 +10,8 @@ const initialState: types.UserState = {
     isSigningUp: false,
     signUpErrors: [],
     isUpdatingPassword: false,
-    isEditingProfile: false
+    isEditingProfile: false,
+    isResettingPassword: false
 };
 
 const userReducer = ( state = initialState, action: types.UserActionTypes) : types.UserState => {
@@ -100,6 +101,22 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
                 ...state,
                 isUpdatingPassword: false
             };
+        case types.RESET_PASSWORD_SEND:
+            return {
+                ...state,
+                isResettingPassword: true
+            };
+        case types.RESET_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                isResettingPassword: false
+            };
+        case types.RESET_PASSWORD_ERROR:
+            return {
+                ...state,
+                isResettingPassword: false
+            };
+        
         case types.EDIT_PROFILE_SEND:
             return {
                 ...state,

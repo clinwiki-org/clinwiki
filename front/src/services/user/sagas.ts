@@ -100,6 +100,23 @@ function* updatePassword(action) {
     }
 }
 
+function* resetPassword(action) {
+    //console.log("SAGA reset pass", action)
+    try {
+        let response = yield call(() => api.resetPassword(action.email));
+        if(response) {
+            yield put(actions.resetPasswordSuccess(response));
+        }
+        else {
+            yield put(actions.resetPasswordError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.resetPasswordError([err.message]));
+    }
+}
+
 function* editProfile(action) {
     try {
         let response = yield call(() => api.editProfile(action.firstName,action.lastName,action.defaultQueryString));
@@ -123,5 +140,6 @@ export default function* userSagas() {
     yield takeLatest(types.LOGOUT_SEND, logout);
     yield takeLatest(types.SIGN_UP_SEND, signUp);
     yield takeLatest(types.UPDATE_PASSWORD_SEND, updatePassword);
+    yield takeLatest(types.RESET_PASSWORD_SEND, resetPassword);
     yield takeLatest(types.EDIT_PROFILE_SEND, editProfile);
 }

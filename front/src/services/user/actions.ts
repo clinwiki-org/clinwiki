@@ -81,6 +81,21 @@ export const updatePasswordError = (errors: Array<string>) : types.UserActionTyp
     payload: errors
 });
 
+export const resetPassword = (email: string) : types.UserActionTypes => ({
+    type: types.RESET_PASSWORD_SEND,
+    email
+});
+
+export const resetPasswordSuccess = (payload: string) : types.UserActionTypes => ({
+    type: types.RESET_PASSWORD_SUCCESS,
+    payload
+});
+
+export const resetPasswordError = (errors: Array<string>) : types.UserActionTypes => ({
+    type: types.RESET_PASSWORD_ERROR,
+    payload: errors
+});
+
 export const editProfile = (firstName: string, lastName: string, defaultQueryString: string) : types.UserActionTypes => ({
     type: types.EDIT_PROFILE_SEND,
     firstName,

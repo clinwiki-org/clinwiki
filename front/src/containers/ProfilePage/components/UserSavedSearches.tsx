@@ -1,7 +1,4 @@
-import * as FontAwesome from 'react-fontawesome';
 import * as React from 'react';
-import gql from 'graphql-tag';
-import { useQuery, useMutation } from '@apollo/client';
 import {
   StyledProfileForm,
   StyledProfileLabel,

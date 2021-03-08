@@ -38,7 +38,7 @@ export default function ReactionsIsland(props: Props) {
   const reactionsIslandData = useSelector( (state: RootState) => state.study.reactionsIsland);
   useEffect (() => {
     dispatch (fetchReactionsIsland(nctId || ""));
-  },[dispatch]);
+  },[dispatch, nctId]);
  /* const { data: allReactions } = useQuery<ReactionKinds>(REACTION_KINDS, {
     variables: { nctId },
   });

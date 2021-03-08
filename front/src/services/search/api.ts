@@ -1,7 +1,5 @@
 import * as query from './queries';
 import * as mutate from './mutations'
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import { callGraphql, get_gql_url } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS

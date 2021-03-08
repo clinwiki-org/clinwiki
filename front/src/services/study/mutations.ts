@@ -1,3 +1,5 @@
+// import { WORKFLOW_VIEW_PROVIDER_FRAGMENT } from './queries';
+
 export const CREATE_STUDY_VIEW_LOG_MUTATION =`
 mutation CreateStudyViewLogMutation($nctId: String!){
     createStudyViewLog(input: {
@@ -62,7 +64,7 @@ const FRAGMENT = `
   }
 `;
 
-const WikiPageEditFragment = `
+export const WIKI_PAGE_EDIT_FRAGMENT = `
   fragment WikiPageEditFragment on WikiPageEdit {
     user {
       id
@@ -87,16 +89,7 @@ const WikiPageEditFragment = `
     }
   }
 `;
-const WIKI_PAGE_EDIT_FRAGMENT = `
-  fragment WikiPageFragment on WikiPage {
-    content
-    edits {
-      ...WikiPageEditFragment
-    }
-    nctId
-    meta
-  }
-`;
+
 
 
 export const UPSERT_LABEL_MUTATION = `
@@ -127,6 +120,7 @@ export const WIKI_PAGE_FRAGMENT =`
     nctId
     meta
   }
+  ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
 
 export const WIKI_PAGE_UPDATE_CONTENT_MUTATION =`
@@ -153,7 +147,7 @@ export const DELETE_LABEL_MUTATION = `
     }
   }
   ${FRAGMENT}
-  ${WikiPageEditFragment}
+  ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
 
 export const DELETE_REVIEW_MUTATION = `
@@ -200,5 +194,116 @@ export const CREATE_REACTION = `
       errors
     }
   }
+`;
+export const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
+  fragment WorkflowsViewFragment on WorkflowsView {
+    id
+    workflows {
+      ...WorkflowConfigFragment
+    }
+  }
+  fragment WorkflowConfigFragment on WorkflowConfig {
+    allSuggestedLabels
+    allWikiSections
+    allSummaryFields
+    disableAddRating
+    hideReviews
+    name
+    summaryTemplate
+    suggestedLabelsFilter {
+      kind
+      values
+    }
+    suggestedLabelsConfig {
+      name
+      rank
+      display
+      order {
+        desc
+        sortKind
+      }
+      visibleOptions {
+        kind
+        values
+      }
+    }
+    wikiSectionsFilter {
+      kind
+      values
+    }
+    summaryFieldsFilter {
+      kind
+      values
+    }
+  }
+`;
+export const UPDATE_WORKFLOW_PAGE_MUTATION = `
+mutation UpdateWorkflowsViewMutation($input: UpdateWorkflowsViewInput!) {
+  updateWorkflowsView(input: $input) {
+    workflowsView {
+      ...WorkflowsViewFragment
+    }
+    errors
+  }
+}
+
+${WORKFLOW_VIEW_PROVIDER_FRAGMENT}
+`
+export const BULK_QUERY_UPDATE_MUTATION = `
+  mutation BulkQueryUpdateMutation($input: BulkQueryUpdateInput!) {
+    bulkQueryUpdate(input: $input) {
+      clientMutationId
+      undoActions {
+        nctId
+        state {
+          enable
+          name
+          value
+        }
+      }
+    }
+  }
+`;
+export const BULK_LIST_UPDATE_MUTATION = `
+  mutation BulkListUpdateMutation($input: BulkListUpdateInput!) {
+    bulkListUpdate(input: $input) {
+      clientMutationId
+    }
+  }
+`;
+export const REVIEW_FRAGMENT = `
+   fragment ReviewFragment on Review {
+     id
+     meta
+     content
+     createdAt
+     user {
+       id
+       firstName
+       lastName
+       email
+     }
+   }
+ `;
+
+
+export const REVIEW_FORM_MUTATION =`
+  mutation ReviewFormMutation(
+    $id: Int
+    $nctId: String!
+    $meta: String!
+    $content: String!
+  ) {
+    upsertReview(
+      input: { id: $id, nctId: $nctId, meta: $meta, content: $content }
+    ) {
+      review {
+        ...ReviewFragment
+      }
+      errors
+    }
+  }
+
+  ${REVIEW_FRAGMENT}
 `;
 

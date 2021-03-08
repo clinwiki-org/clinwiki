@@ -9,7 +9,6 @@ import { BeatLoader } from 'react-spinners';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
-import UpdateWorkflowsViewMutation from 'mutations/UpdateWorflowsViewMutation';
 
 interface HistoPanelProps {
   isOpen: boolean;

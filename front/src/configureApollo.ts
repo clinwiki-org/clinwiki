@@ -2,7 +2,6 @@ import { ApolloClient, InMemoryCache, createHttpLink, gql } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import { getLocalJwt } from 'utils/localStorage';
 // import { persistCache } from 'apollo-cache-persist';
-import  SearchPageParamsQuery  from 'queries/SearchPageParamsQuery';
 
 export const dataIdFromObject = object => {
   const id = object['id'] || object['_id'] || object['nctId'] || null;
@@ -78,11 +77,5 @@ const data = {
   // searchQuery: [],
 };
 
-cache.writeQuery({
-    query: SearchPageParamsQuery,
-  data });
-
-client.onResetStore(() => Promise.resolve(cache.writeQuery({     query: SearchPageParamsQuery,
-  data })));
 
 export default client;

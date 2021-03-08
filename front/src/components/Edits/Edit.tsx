@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 
-import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'services/study/model/StudyEditsHistoryQuery';
 import EditsExpansionContext from './EditsExpansionContext';
 import EditBlurb from './EditBlurb';
 import ExpandedEdit from './ExpandedEdit';

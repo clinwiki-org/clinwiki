@@ -1,3 +1,7 @@
+import StudySummary from 'components/StudySummary';
+import ReviewForm from 'containers/ReviewForm';
+
+
 export const PAGE_VIEW_FRAGMENT = `
 fragment PageViewFragment on PageView {
     id
@@ -270,7 +274,19 @@ export const REVIEW_FRAGMENT = `
     }
   }
 `;
-export const REVIEW_PAGE_QUERY =`
+export const STUDY_FRAGMENT =`
+  fragment ReviewFormStudyFragment on Study {
+    nctId
+    reviews {
+      ...ReviewFragment
+    }
+  }
+
+  ${REVIEW_FRAGMENT}
+`;
+
+
+export const REVIEW_QUERY =`
 query ReviewPageQuery($nctId: String!) {
   study(nctId: $nctId) {
     reviews {
@@ -283,6 +299,7 @@ query ReviewPageQuery($nctId: String!) {
   }
 }
 ${REVIEW_FRAGMENT}
+
 `;
 export const STUDY_EDITS_HISTORY_QUERY = `
   query StudyEditsHistoryQuery($nctId: String!) {
@@ -375,7 +392,7 @@ query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
 }
 `;
 
-const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
+export const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
   fragment WorkflowsViewFragment on WorkflowsView {
     id
     workflows {
@@ -470,5 +487,74 @@ export const STUDY_REACTIONS =`
     }
   }
 
+`;
+export const REACTIONS_QUERY = `
+  query ReactionsById($reactionKindId: String!) {
+    me {
+        id
+        email
+        firstName
+        lastName
+        reactions(reactionKindId: $reactionKindId){
+          reactionKindId
+          reactionKind{
+            id
+            name
+          }
+          study{
+            briefTitle
+          }
+          nctId
+        }
+    }
+  }
+`;
+
+export const LABELS_QUERY = `
+  query BulkLabelsQuery($searchHash: String!, $params: SearchInput!) {
+    myCrowdAggs: aggBuckets(searchHash: $searchHash, params: $params) {
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+    allCrowdAggs: aggBuckets(
+      params: {
+        page: 0
+        pageSize: 99999
+        q: { key: "*" }
+        agg: "front_matter_keys"
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          docCount
+        }
+      }
+    }
+    search(searchHash: $searchHash) {
+      recordsTotal
+    }
+  }
+`;
+
+export const EDIT_REVIEW_QUERY =`
+  query EditReviewQuery($nctId: String!) {
+    study(nctId: $nctId) {
+      ...StudySummaryFragment
+      reviews {
+        ...ReviewFragment
+      }
+      nctId
+    }
+  }
+
+  ${REVIEW_FRAGMENT}
+  ${StudySummary.fragment}
 `;
 

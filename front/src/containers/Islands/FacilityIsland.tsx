@@ -169,7 +169,7 @@ export default function FacilityIsland(props: Props) {
   //console.log (state.study)
   useEffect (() => {
     dispatch (fetchFacilitiesPage(props.nctId || ""));
-  },[dispatch]);
+  },[dispatch, nctId]);
 
   if(!facilityData){
     return <BeatLoader />

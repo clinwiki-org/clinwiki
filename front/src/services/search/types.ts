@@ -1,7 +1,7 @@
 import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
 import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
-import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import {SearchPageSearchQuery} from '../../services/search/model/SearchPageSearchQuery'
+import {SearchPageParamsQuery} from  '../../services/search/model/SearchPageParamsQuery'
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
 
@@ -61,7 +61,7 @@ export interface SearchState {
     isFetchingCrowdAggBuckets: boolean,
     crowdAggBuckets: any | SearchPageCrowdAggBucketsQuery | undefined,
     isFetchingSearchParams: boolean,
-    searchResults: typeof SearchPageParamsQuery | undefined
+    searchResults: SearchPageParamsQuery | undefined
     isFetchingStudies: boolean,
     studies: SearchPageSearchQuery | undefined
     isUpdatingParams: boolean,
@@ -135,7 +135,7 @@ export interface FetchSearchParamsSendAction {
 
 export interface FetchSearchParamsSuccessAction {
     type: typeof FETCH_SEARCH_PARAMS_SUCCESS,
-    payload: typeof SearchPageParamsQuery
+    payload:  SearchPageParamsQuery
 };
 
 export interface FetchSearchParamsErrorAction {
@@ -149,7 +149,7 @@ export interface UpdateSearchParamsSendAction {
 
 export interface UpdateSearchParamsSuccessAction {
     type: typeof UPDATE_SEARCH_PARAMS_SUCCESS,
-    payload: typeof SearchPageParamsQuery
+    payload:  SearchPageParamsQuery
 };
 
 export interface UpdateSearchParamsErrorAction {

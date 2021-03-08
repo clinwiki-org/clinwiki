@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useContext, useState, useEffect } from 'react';
+import {connect, useSelector, useDispatch} from 'react-redux';
 // import reactCSS, { hover } from 'reactcss'
 import _ from 'lodash'
 import styled from 'styled-components';
@@ -6,13 +7,9 @@ import SlackCounterGroup from './SlackCounterGroup'
 import { find, propEq } from 'ramda';
 import { Icon, InlineIcon } from '@iconify/react';
 import smilePlus from '@iconify/icons-fe/smile-plus';
-import DeleteReactionMutation, {
-} from 'mutations/DeleteReactionMutation';
-import CreateReactionMutation, {
-} from 'mutations/CreateReactionMutation';
+import { createReaction, deleteReaction} from '../../../services/study/actions';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-import REACTIONS_QUERY from '../../../queries/StudyReaction'
-import QUERY from 'queries/StudyPageQuery';
+
 interface SlackCounterProps {
     activeReactions: any;
     user: any;
@@ -21,6 +18,8 @@ interface SlackCounterProps {
     nctId: any;
     currentUserAndStudy: any;
     allReactions: any;
+    deleteReaction: any;
+    createReaction: any;
 }
 interface SlackCounterState {
     showLabel: boolean;
@@ -80,21 +79,31 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
             this.setState({ currentUserAndStudy: this.props.currentUserAndStudy })
         }
     }
-    deleteReactionHelper = (deleteReaction, reaction) => {
+    deleteReactionHelper = (reaction) => {
+        console.log(reaction);
         const { nctId }= this.props
-        deleteReaction({
+        let id = reaction.id
+        /*deleteReaction({
             variables: {
                 id: reaction.id
             },
             awaitRefetchQueries: true,
             refetchQueries: [{ query: QUERY, variables: { nctId } },{ query: REACTIONS_QUERY, variables: { nctId } }]
-        })
+        })*/
+        this.props.deleteReaction(id);
+
+        /*const deleteReactionMutation = (id)=>{
+          console.log(id);
+          if(!id) return
+          return this.props.deleteReaction(id)
+        }*/
+
     }
-    createReactionHelper = (createReaction, reaction) => {
-        let reactionID = reaction.id
+    createReactionHelper = (reaction) => {
+        let reactionKindId = reaction.id
         const {nctId}= this.props
 
-        createReaction({
+        /*createReaction({
             variables: {
                 reactionKindId: reactionID,
                 nctId: this.props.nctId
@@ -103,8 +112,14 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
              refetchQueries: [
                  { query: QUERY, variables: { nctId } }, { query : REACTIONS_QUERY, variables: { nctId } } 
             ]
-        })
-
+        })*/
+        
+        //implement redux dispatch here
+        this.props.createReaction(nctId, reactionKindId);
+        /*const createReactionMutation = (nctId, reactionKindId)=>{
+          if(!nctId || !reactionKindId) return
+          return this.props.createReaction(nctId, reactionKindId)
+        }*/
     }
     currentReactionFilter = (reactionName) => {
         //we dont have all the necessary data in activeReactions to interact with the db, 
@@ -140,37 +155,25 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 if (isUserReaction && currentReaction) {
                     return (
                         <div className="group-active" key={reaction.name}>
-                            <DeleteReactionMutation>
-                                {deleteReaction => (
-                                    <SlackCounterGroup
-                                        emoji={currentReaction.unicode}
-                                        count={reaction.count}
-                                        names={' '}
-                                        active={' '}
-                                        onSelect={() => this.deleteReactionHelper(deleteReaction, isUserReaction)}
-
-                                    />
-                                )}
-                            </DeleteReactionMutation>
+                            <SlackCounterGroup
+                                emoji={currentReaction.unicode}
+                                count={reaction.count}
+                                names={' '}
+                                active={' '}
+                                onSelect={() => this.deleteReactionHelper(isUserReaction)}
+                            />
                         </div>
                     )
                 } else if (isUserReaction == undefined && currentReaction) {
                     return (
                         <div className="group-not-active" key={reaction.name}>
-                            <CreateReactionMutation>
-                                {createReaction => (
-                                    <SlackCounterGroup
-                                        emoji={currentReaction.unicode}
-                                        count={reaction.count}
-                                        names={' '}
-                                        active={' '}
-                                        onSelect={() => this.createReactionHelper(createReaction, currentReaction)}
-                                    />
-                                )
-
-                                }
-                            </CreateReactionMutation>
-
+                            <SlackCounterGroup
+                                emoji={currentReaction.unicode}
+                                count={reaction.count}
+                                names={' '}
+                                active={' '}
+                                onSelect={() => this.createReactionHelper(currentReaction)}
+                            />
 
 
                         </div>
@@ -208,4 +211,9 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
 }
 
-export default SlackCounter
+const mapDispatchToProps = (dispatch) => ({
+  createReaction: (nctId, reactionKindId) => dispatch(createReaction(nctId, reactionKindId)),
+      
+  deleteReaction: (id) => dispatch(deleteReaction(id))
+});
+export default connect(null, mapDispatchToProps) (SlackCounter);

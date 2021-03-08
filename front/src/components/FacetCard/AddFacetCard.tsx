@@ -4,8 +4,8 @@ import ThemedButton, { PresearchContent } from 'components/StyledComponents';
 import * as Autosuggest from 'react-autosuggest';
 import AddFieldAuto from 'components/FacetCard/AddFieldAuto';
 import ThemedAutosuggestButton from 'components/StyledComponents';
-import { ApolloConsumer } from '@apollo/client';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
+import { connect } from 'react-redux';
+import {fetchSearchAutoSuggest} from 'services/search/actions';
 
 const MarginContainer = styled.div`
   margin: 4px;
@@ -23,10 +23,12 @@ interface AddFacetCardProps {
   upsert?: any;
   user?: any;
   showLogin: any;
-  apolloClient?: any;
   aggNames?: any;
   values?: any;
   showAddFacet: boolean;
+  fetchSearchAutoSuggest: any;
+  suggestions: any;
+  isFetchingAutoSuggest: any;
 }
 
 interface AddFacetCardState {
@@ -67,22 +69,21 @@ class AddFacetCard extends React.PureComponent<
     });
   };
 
-  handleDescriptionFieldChange = (e, { newValue }, apolloClient) => {
+  handleDescriptionFieldChange = (e, { newValue }) => {
     this.setState(
       {
         description: newValue,
       },
       () => {
-        this.getSuggestions(apolloClient);
+        this.getSuggestions();
       }
     );
   };
 
-  getSuggestions = async apolloClient => {
+  getSuggestions = () => {
     const { values } = this.props;
     const { title, description } = this.state;
 
-    const query = AUTOSUGGEST_QUERY;
     const variables = {
       agg: 'browse_condition_mesh_terms',
       aggFilters: [],
@@ -98,12 +99,12 @@ class AddFacetCard extends React.PureComponent<
       aggFields: [],
       crowdAggFields: [title],
     };
-    const response = await apolloClient.query({
-      query,
-      variables,
-    });
 
-    const array = response.data.autocomplete.autocomplete[0].results;
+    this.props.fetchSearchAutoSuggest(variables);
+
+    const array = this.props.suggestions.data && this.props.suggestions.data.autocomplete.autocomplete[0].results || [];
+
+    // const array = response.data.autocomplete.autocomplete[0].results;
 
     if (values[title]) {
       array.map(({ key }, i) => {
@@ -217,8 +218,7 @@ class AddFacetCard extends React.PureComponent<
               onSuggestionSelected={this.onFieldSuggestionSelected}
             />
             <MarginContainer>Description</MarginContainer>
-            <ApolloConsumer>
-              {apolloClient => (
+    
                 <Autosuggest
                   suggestions={descriptionSuggestions}
                   renderSuggestion={this.renderFieldSuggestion}
@@ -226,7 +226,7 @@ class AddFacetCard extends React.PureComponent<
                     disabled: title ? false : true,
                     value: description ? description : '',
                     onChange: (e, value) =>
-                      this.handleDescriptionFieldChange(e, value, apolloClient),
+                      this.handleDescriptionFieldChange(e, value),
                   }}
                   onSuggestionSelected={this.onSuggestionSelected}
                   onSuggestionsFetchRequested={() =>
@@ -235,8 +235,8 @@ class AddFacetCard extends React.PureComponent<
                   onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                   getSuggestionValue={this.getSuggestionValue}
                 />
-              )}
-            </ApolloConsumer>
+              
+
             <div style={{ marginTop: 5, marginLeft: 2, marginBottom: 5 }}>
               <ThemedButton
                 style={{ marginRight: 5 }}
@@ -253,4 +253,15 @@ class AddFacetCard extends React.PureComponent<
   }
 }
 
-export default AddFacetCard;
+const mapStateToProps = (state, ownProps) => ({
+  // user: state.user,
+  suggestions: state.search.suggestions,
+  isFetchingAutoSuggest:  state.search.isFetchingAutoSuggest
+})
+const mapDispatchToProps = (dispatch) => ({
+  // upsertLabelMutation: (variables?) => dispatch(upsertLabelMutation(variables.nctId, variables.key, variables.value)),
+  fetchSearchAutoSuggest: (variables) => dispatch(fetchSearchAutoSuggest(variables))
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps) (AddFacetCard);

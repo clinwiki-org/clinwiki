@@ -4,10 +4,8 @@ import { PageViewQuery } from './model/PageView';
 import { PageViewsQuery } from './model/PageViews';
 import { SearchStudyPageQuery } from './model/SearchStudyPageQuery';
 import { StudyEditsHistoryQuery } from './model/StudyEditsHistoryQuery';
-import { StudyReactions } from './model/StudyReactions';
 import * as types from './types';
 import { UpdatePageViewInput, } from 'services/study/model/InputTypes';
-import { WikiPageUpdateContentMutation } from './model/WikiPageUpdateContentMutation';
 
 
 
@@ -66,7 +64,7 @@ export const updateStudyViewLogCount= ( nctId: string,) : types.StudyActionTypes
     type: types.UPDATE_STUDY_VIEW_LOG_COUNT_SEND,
     nctId,
 });
-export const updateStudyViewLogCountSuccess= (payload: CreateStudyViewLogMutation) : types.StudyActionTypes => ({  //! TODO Check this payload
+export const updateStudyViewLogCountSuccess= (payload: CreateStudyViewLogMutation) : types.StudyActionTypes => ({
     type: types.UPDATE_STUDY_VIEW_LOG_COUNT_SUCCESS,
     
 });
@@ -158,11 +156,12 @@ export const fetchAllWorkFlowsError= (message: string) : types.StudyActionTypes 
     type: types.FETCH_ALL_WORKFLOWS_ERROR,
     payload: {message}
 });
-export const upsertLabelMutation= ( nctId: any, key: any, value: any) : types.StudyActionTypes => ({
+export const upsertLabelMutation= ( nctId: any, key: any, value: any, studyQuery?: any) : types.StudyActionTypes => ({
     type: types.UPSERT_LABEL_MUTATION_SEND,
     nctId,
     key,
-    value
+    value,
+    studyQuery
 });
 export const upsertLabelMutationSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.UPSERT_LABEL_MUTATION_SUCCESS,
@@ -172,11 +171,12 @@ export const upsertLabelMutationError= (message: string) : types.StudyActionType
     type: types.UPSERT_LABEL_MUTATION_ERROR,
     payload: {message}
 });
-export const deleteLabelMutation= ( nctId: any, key: any, value:any ) : types.StudyActionTypes => ({
+export const deleteLabelMutation= ( nctId: any, key: any, value:any, studyQuery?: any ) : types.StudyActionTypes => ({
     type: types.DELETE_LABEL_MUTATION_SEND,
     nctId,
     key,
-    value
+    value,
+    studyQuery
 });
 export const deleteLabelMutationSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.DELETE_LABEL_MUTATION_SUCCESS,
@@ -199,8 +199,9 @@ export const fetchCrowdPageError= (message: string) : types.StudyActionTypes => 
     type: types.FETCH_CROWD_PAGE_ERROR,
     payload: {message}
 });
-export const deleteReviewMutation= ( nctId: any ) : types.StudyActionTypes => ({
+export const deleteReviewMutation= ( id: any, nctId: any ) : types.StudyActionTypes => ({
     type: types.DELETE_REVIEW_MUTATION_SEND,
+    id,
     nctId,
 });
 export const deleteReviewMutationSuccess= (payload: any) : types.StudyActionTypes => ({
@@ -212,7 +213,9 @@ export const deleteReviewMutationError= (message: string) : types.StudyActionTyp
     payload: {message}
 });
 
-export const fetchReviewPage= ( nctId: string) : types.StudyActionTypes => (console.log(nctId),{
+export const fetchReviewPage= ( nctId: string) : types.StudyActionTypes => (
+    //console.log(nctId),
+    {
     type: types.FETCH_REVIEW_PAGE_SEND,
     nctId,
 });
@@ -344,5 +347,105 @@ export const createReactionSuccess= (payload: any) : types.StudyActionTypes => (
 });
 export const createReactionError= (message: string) : types.StudyActionTypes => ({
     type: types.CREATE_REACTION_ERROR,
+    payload: {message}
+});
+
+export const fetchReactionsById= ( reactionKindId: any) : types.StudyActionTypes => ({
+    type: types.FETCH_REACTIONS_BY_ID_SEND,
+    reactionKindId,
+});
+export const fetchReactionsByIdSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_REACTIONS_BY_ID_SUCCESS,
+    payload
+});
+export const fetchReactionsByIdError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_REACTIONS_BY_ID_ERROR,
+    payload: {message}
+});
+export const upsertReviewFormMutation= ( id: any, nctId: any, meta: any, content: any) : types.StudyActionTypes => ({
+    type: types.UPSERT_REVIEW_FORM_MUTATION_SEND,
+    id,
+    nctId,
+    meta,
+    content
+});
+export const upsertReviewFormMutationSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.UPSERT_REVIEW_FORM_MUTATION_SUCCESS,
+    payload
+});
+export const upsertReviewFormMutationError= (message: string) : types.StudyActionTypes => ({
+    type: types.UPSERT_REVIEW_FORM_MUTATION_ERROR,
+    payload: {message}
+});
+export const fetchEditReview= (nctId: string) : types.StudyActionTypes => ({
+    type: types.FETCH_EDIT_REVIEW_SEND,
+    nctId,
+});
+export const fetchEditReviewSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_EDIT_REVIEW_SUCCESS,
+    payload
+});
+export const fetchEditReviewError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_EDIT_REVIEW_ERROR,
+    payload: {message}
+});
+export const updateWorkflowPage = (input: any) : types.StudyActionTypes => ({
+    type: types.UPDATE_WORKFLOW_PAGE_SEND,
+    input
+});
+export const updateWorkflowPageSuccess = (payload: any) : types.StudyActionTypes => ({
+    type: types.UPDATE_WORKFLOW_PAGE_SUCCESS,
+
+});
+export const updateWorkflowPageError = (message: string) : types.StudyActionTypes => ({
+    type: types.UPDATE_WORKFLOW_PAGE_ERROR,
+    payload: {message}
+});
+export const fetchLabels= (variables: string) : types.StudyActionTypes => ({
+    type: types.FETCH_LABELS_SEND,
+    variables,
+});
+export const fetchLabelsSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_LABELS_SUCCESS,
+    payload
+});
+export const fetchLabelsError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_LABELS_ERROR,
+    payload: {message}
+});
+export const fetchLabelsBuckets= (variables: string, QUERY: any) : types.StudyActionTypes => ({
+    type: types.FETCH_LABELS_BUCKETS_SEND,
+    variables,
+    QUERY
+});
+export const fetchLabelsBucketsSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_LABELS_BUCKETS_SUCCESS,
+    payload
+});
+export const fetchLabelsBucketsError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_LABELS_BUCKETS_ERROR,
+    payload: {message}
+});
+export const bulkQueryUpdate = (input: any) : types.StudyActionTypes => ({
+    type: types.BULK_QUERY_UPDATE_MUTATION_SEND,
+    input
+});
+export const bulkQueryUpdateSuccess = (payload: any) : types.StudyActionTypes => ({
+    type: types.BULK_QUERY_UPDATE_MUTATION_SUCCESS,
+    payload
+});
+export const bulkQueryUpdateError = (message: string) : types.StudyActionTypes => ({
+    type: types.BULK_QUERY_UPDATE_MUTATION_ERROR,
+    payload: {message}
+});
+export const bulkListUpdate = (input: any) : types.StudyActionTypes => ({
+    type: types.BULK_LIST_UPDATE_MUTATION_SEND,
+    input
+});
+export const bulkListUpdateSuccess = (payload: any) : types.StudyActionTypes => ({
+    type: types.BULK_LIST_UPDATE_MUTATION_SUCCESS,
+});
+export const bulkListUpdateError = (message: string) : types.StudyActionTypes => ({
+    type: types.BULK_LIST_UPDATE_MUTATION_ERROR,
     payload: {message}
 });

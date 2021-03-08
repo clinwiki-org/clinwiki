@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import styled from 'styled-components';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
@@ -84,6 +84,10 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     return `${text} (${docCount})`;
   }
   render() {
+
+ /*   if(this.props.buckets.length > 0) {
+     console.log(this.props.isPresearch,"CusDr Panel BUckets ", this.props.buckets)
+  } */
 
     const { hasMore, buckets, handleLoadMore, field, loading } = this.props
     const showAllowMissing = field.showAllowMissing;

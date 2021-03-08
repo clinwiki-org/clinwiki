@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import styled from 'styled-components';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
@@ -340,6 +340,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
     }
     if (this.props.selectedKeys) {
+      //console.log("SELECTED KEYS ", this.props.selectedKeys)
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
         selectedKeysPlaceHolders.push({ key: o, docCount: null })
@@ -354,7 +355,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
   };
   componentDidUpdate(prevProps,prevState){
-    if(this.props.selectedKeys !== prevProps.selectedKeys&& this.props.selectedKeys[0] ){
+    if(this.props.selectedKeys !== prevProps.selectedKeys || this.props.selectedKeys[0] ){
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
         selectedKeysPlaceHolders.push({ key: o, docCount: null })

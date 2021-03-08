@@ -1,11 +1,11 @@
 import * as query from './queries';
 import * as mutate from './mutations'
-import { callGraphql } from 'utils/graphqlUtil';
+import { callGraphql, get_gql_url } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
-const ENDPOINT = `http://${window.location.hostname}:3000/graphql`
+const ENDPOINT = get_gql_url();
 
 export const fetchSampleStudy= (nctId: any, QUERY: any) => {
     return callGraphql(ENDPOINT, QUERY, {nctId});
@@ -49,11 +49,11 @@ export const deleteLabelMutation = (nctId:any, key: any, value: any) =>{
 export const fetchCrowdPage= (nctId: any) => {
     return callGraphql(ENDPOINT, query.CROWD_PAGE_QUERY, {nctId});
 };
-export const deleteReviewMutation = (nctId:any) =>{
-    return callGraphql(ENDPOINT,mutate.DELETE_REVIEW_MUTATION, { nctId: nctId})
+export const deleteReviewMutation = (id:any, nctId:any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_REVIEW_MUTATION, { id, nctId})
 };
 export const fetchReviewPage= (nctId: any) => {
-    return callGraphql(ENDPOINT, query.REVIEW_PAGE_QUERY, {nctId});
+    return callGraphql(ENDPOINT, query.REVIEW_QUERY, {nctId});
 };
 export const fetchStudyEditsHistory= (nctId: string) => {
     return callGraphql(ENDPOINT, query.STUDY_EDITS_HISTORY_QUERY, {nctId});
@@ -65,7 +65,7 @@ export const fetchWikiPage= (nctId: any) => {
     return callGraphql(ENDPOINT, query.WIKI_PAGE_QUERY, {nctId});
 };
 export const wikiPageUpdateContentMutation = (nctId:any, content: any) =>{
-    return callGraphql(ENDPOINT,mutate.WIKI_PAGE_UPDATE_CONTENT_MUTATION, {nctId, content})
+    return callGraphql(ENDPOINT,mutate.WIKI_PAGE_UPDATE_CONTENT_MUTATION, {nctId: nctId, content: content})
 };
 export const fetchSuggestedLabels= (nctId: any, crowdBucketsWanted: any) => {
     return callGraphql(ENDPOINT, query.SUGGESTED_LABELS_QUERY, {nctId: nctId, crowdBucketsWanted: crowdBucketsWanted});
@@ -82,9 +82,35 @@ export const deleteReaction = (id:any) =>{
 export const fetchReactionKinds= () => {
     return callGraphql(ENDPOINT, query.REACTION_KINDS, {});
 };
-export const fetchStudyReactions= () => {
-    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {});
+export const fetchStudyReactions= (nctId: string) => {
+    return callGraphql(ENDPOINT, query.STUDY_REACTIONS, {nctId});
 };
 export const createReaction = ( nctId: string, reactionKindId: any) =>{
     return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})
+};
+export const fetchReactionsById= (reactionKindId: any) => {
+    //console.log(`fetchReactionsById called ${reactionKindId}`);
+    return callGraphql(ENDPOINT, query.REACTIONS_QUERY, {reactionKindId: reactionKindId})
+};
+export const upsertReviewFormMutation = (id:any, nctId:any, meta: any, content: any) =>{
+    return callGraphql(ENDPOINT,mutate.REVIEW_FORM_MUTATION, {id: id, nctId: nctId, meta: meta, content: content})
+};
+export const fetchEditReview= (nctId: any) => {
+    return callGraphql(ENDPOINT, query.EDIT_REVIEW_QUERY, {nctId});
+};
+export const updateWorkflowPage = (input: any) =>{
+    return callGraphql(ENDPOINT,mutate.UPDATE_WORKFLOW_PAGE_MUTATION,  input )
+};
+export const fetchLabels= (variables) => {
+    return callGraphql(ENDPOINT, query.LABELS_QUERY, variables);
+};
+export const fetchLabelsBuckets= (variables, QUERY) => {
+    //console.log(QUERY)
+    return callGraphql(ENDPOINT, QUERY, variables);
+};
+export const bulkQueryUpdate = (input: any) =>{
+    return callGraphql(ENDPOINT,mutate.BULK_QUERY_UPDATE_MUTATION,  input )
+};
+export const bulkListUpdate = (input: any) =>{
+    return callGraphql(ENDPOINT,mutate.BULK_LIST_UPDATE_MUTATION,  input )
 };

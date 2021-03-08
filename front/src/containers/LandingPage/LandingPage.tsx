@@ -2,7 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import Heading from 'components/Heading';
 import { Row, Col, Form, FormControl } from 'react-bootstrap';
-import { gql, ApolloClient, ApolloConsumer }  from '@apollo/client';
 import { History } from 'history';
 
 const MainContainer = styled(Col)`
@@ -21,7 +20,7 @@ const MainContainer = styled(Col)`
   }
 `;
 
-const HASH_MUTATION = gql`
+/* const HASH_MUTATION = gql`
   mutation LandingSearchPageHashMutation($q: SearchQueryInput!) {
     provisionSearchHash(input: { params: { q: $q, page: 0, pageSize: 25 } }) {
       searchHash {
@@ -30,7 +29,7 @@ const HASH_MUTATION = gql`
     }
   }
 `;
-
+ */
 interface LandingPageProps {
   history: History;
 }
@@ -45,7 +44,7 @@ class LandingPage extends React.PureComponent<
   state: LandingPageState = {
     searchTerm: '',
   };
-  onSubmit = async (e, client: ApolloClient<any>) => {
+/*   onSubmit = async (e, client: ApolloClient<any>) => {
     e.preventDefault();
     let params = {};
     if (this.state.searchTerm.replace(/\s/g, '').length) {
@@ -62,11 +61,11 @@ class LandingPage extends React.PureComponent<
     this.props.history.push(
       `/search/default/${data.provisionSearchHash!.searchHash!.short}`
     );
-  };
+  }; */
   searchChanged = e => {
     this.setState({ searchTerm: e.target.value });
   };
-  renderMain = (client: ApolloClient<any>) => (
+/*   renderMain = (client: ApolloClient<any>) => (
     <MainContainer>
       <Heading> </Heading>
       <div className="container">
@@ -84,9 +83,13 @@ class LandingPage extends React.PureComponent<
         </Row>
       </div>
     </MainContainer>
-  );
+  
   render() {
     return <ApolloConsumer>{client => this.renderMain(client)}</ApolloConsumer>;
+  } */
+
+  render (){
+    return <div>Landing Page NOT ACTIVE</div>
   }
 }
 

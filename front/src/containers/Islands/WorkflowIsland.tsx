@@ -4,12 +4,6 @@ import { RootState } from 'reducers';
 import { displayFields } from 'utils/siteViewHelpers';
 import * as R from 'remeda';
 import { fromPairs } from 'ramda';
-import {
-  DeleteMutationFn,
-} from 'mutations/CrowdPageDeleteWikiLabelMutation';
-import {
-  UpsertMutationFn,
-} from 'mutations/CrowdPageUpsertWikiLabelMutation';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
 import SuggestedLabels from 'containers/WorkflowPage/SuggestedLabels';
@@ -19,7 +13,8 @@ import { BeatLoader } from 'react-spinners';
 import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
 import { deleteLabelMutation, fetchWorkFlowPage, upsertLabelMutation } from 'services/study/actions';
 import { fetchAllWorkFlows } from 'services/study/actions';
-
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
+import { getStudyQuery } from 'components/MailMerge/MailMergeUtils';
 
 interface Props {
   name: string;
@@ -30,20 +25,6 @@ interface Props {
 const StyledPanel = styled(Panel)`
   padding: 16px;
 `;
-
-const handleSelect = (
-  meta: {},
-  nctId: string,
-  upsertLabel: UpsertMutationFn,
-  deleteLabel: DeleteMutationFn
-) => (key: string, value: string, checked: boolean) => {
-  console.log("META",meta)
-  if (checked) {
-    CrowdPage.addLabel(key, value, meta, nctId, upsertLabel);
-  } else {
-    CrowdPage.deleteLabel(key, value, meta, nctId, upsertLabel, deleteLabel);
-  }
-};
 
 export default function WorkflowIsland(props: Props) {
   const { name, nctId } = props;
@@ -56,6 +37,11 @@ export default function WorkflowIsland(props: Props) {
   const workflow = allWorkflows?.data.workflowsView.workflows.filter(
     wf => wf.name === name
   )?.[0];
+  const pageViewData = useSelector((state:RootState) => state.study.pageView);
+  const currentPage = pageViewData ?  pageViewData?.data.site?.pageView : null;
+  const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
+  const studyQuery = `${getStudyQuery(fragmentName, fragment)}`
+
 
   // TODO: This query should be pushed up as a fragment to the Page
   // const { data: studyData } = useQuery<WorkflowPageQuery>(QUERY, {
@@ -64,19 +50,19 @@ export default function WorkflowIsland(props: Props) {
 
   useEffect(() => {
     dispatch(fetchWorkFlowPage( nctId || "" ));
-    }, [dispatch])
+    }, [dispatch, nctId])
 
   useEffect(() => {
     dispatch(fetchAllWorkFlows());
-  }, [dispatch])
+  }, [dispatch, nctId])
 
   const upsertMutation = (action) => {
     if (!action.key) return
-    return dispatch(upsertLabelMutation(action.nctId, action.key, action.value))
+    return dispatch(upsertLabelMutation(action.nctId, action.key, action.value, studyQuery))
   }
   const deleteMutation = (action) => {
     if (!action.key) return
-    return dispatch(deleteLabelMutation(action.nctId, action.key, action.value))
+    return dispatch(deleteLabelMutation(action.nctId, action.key, action.value, studyQuery))
 
   }
 

@@ -43,6 +43,19 @@ const initialState: types.StudyState = {
     isFetchingStudyReactions: false,
     studyReactions: undefined,
     isCreatingReaction: false,
+    isUpdatingWorkFlows: false,
+    isFetchingLabels: false,
+    workflowLabels: undefined,
+    isFetchingLabelsBuckets: false,
+    workflowLabelsBuckets: undefined,
+    isBulkQueryUpdating: false,
+    bulkQueryUpdate:undefined,
+    isBulkListUpdating: false,
+    isFetchingReactionsById: false,
+    reactionsById: undefined,
+    isUpsertingReviewForm: false,
+    isFetchingEditReview: false,
+    editReview: undefined,
 };
 
 const studyReducer = ( state = initialState, action: types.StudyActionTypes) : types.StudyState => {
@@ -354,7 +367,8 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 isFetchingReactionsIsland: true
             };
         case types.FETCH_REACTIONS_ISLAND_SUCCESS:
-            return {
+                //console.log(action.payload);
+                return {
                 ...state,
                 isFetchingReactionsIsland: false,
                 reactionsIsland: action.payload
@@ -471,6 +485,134 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 ...state,
                 isCreatingReaction: false
             };
+
+        case types.FETCH_REACTIONS_BY_ID_SEND:
+            return {
+                ...state,
+                isFetchingReactionsById: true
+            };
+        case types.FETCH_REACTIONS_BY_ID_SUCCESS:
+            //console.log(action.payload);
+            return {
+                ...state,
+                isFetchingReactionsById: false,
+                reactionsById: action.payload
+            };
+        case types.FETCH_REACTIONS_BY_ID_ERROR:
+            return {
+                ...state,
+                isFetchingReactionsById: false
+            };
+        case types.UPSERT_REVIEW_FORM_MUTATION_SEND:
+            return {
+                ...state,
+                isUpsertingReviewForm: true
+            };
+        case types.UPSERT_REVIEW_FORM_MUTATION_SUCCESS:
+            return {
+                ...state,
+                isUpsertingReviewForm: false,
+            };
+        case types.UPSERT_REVIEW_FORM_MUTATION_ERROR:
+            return {
+                ...state,
+                isUpsertingReviewForm: false
+            };
+        case types.FETCH_EDIT_REVIEW_SEND:
+            return {
+                ...state,
+                isFetchingEditReview: true
+            };
+        case types.FETCH_EDIT_REVIEW_SUCCESS:
+            return {
+                ...state,
+                isFetchingEditReview: false,
+                editReview: action.payload
+            };
+        case types.FETCH_EDIT_REVIEW_ERROR:
+            return {
+                ...state,
+                isFetchingEditReview: false
+            };
+            case types.UPDATE_WORKFLOW_PAGE_SEND:
+                return {
+                    ...state,
+                    isUpdatingWorkFlows: true
+                };
+            case types.UPDATE_WORKFLOW_PAGE_SUCCESS:
+                return {
+                    ...state,
+                    isUpdatingWorkFlows: false,
+                };
+            case types.UPDATE_WORKFLOW_PAGE_ERROR:
+                return {
+                    ...state,
+                    isUpdatingWorkFlows: false
+                };
+            case types.FETCH_LABELS_SEND:
+                return {
+                    ...state,
+                    isFetchingLabels: true
+                };
+            case types.FETCH_LABELS_SUCCESS:
+                return {
+                    ...state,
+                    isFetchingLabels: false,
+                    workflowLabels: action.payload
+                };
+            case types.FETCH_LABELS_ERROR:
+                return {
+                    ...state,
+                    isFetchingLabels: false
+                };
+            case types.FETCH_LABELS_BUCKETS_SEND:
+                return {
+                    ...state,
+                    isFetchingLabelsBuckets: true
+                };
+            case types.FETCH_LABELS_BUCKETS_SUCCESS:
+                return {
+                    ...state,
+                    isFetchingLabelsBuckets: false,
+                    workflowLabelsBuckets: action.payload
+                };
+            case types.FETCH_LABELS_BUCKETS_ERROR:
+                return {
+                    ...state,
+                    isFetchingLabelsBuckets: false
+                };
+            case types.BULK_QUERY_UPDATE_MUTATION_SEND:
+                return {
+                    ...state,
+                    isBulkQueryUpdating: true
+                };
+            case types.BULK_QUERY_UPDATE_MUTATION_SUCCESS:
+                return {
+                    ...state,
+                    isBulkQueryUpdating: false,
+                    bulkQueryUpdate: action.payload
+    
+                };
+            case types.BULK_QUERY_UPDATE_MUTATION_ERROR:
+                return {
+                    ...state,
+                    isBulkQueryUpdating: false,
+                };
+            case types.BULK_LIST_UPDATE_MUTATION_SEND:
+                return {
+                    ...state,
+                    isBulkListUpdating: true
+                };
+            case types.BULK_LIST_UPDATE_MUTATION_SUCCESS:
+                return {
+                    ...state,
+                    isBulkListUpdating: false,
+                };
+            case types.BULK_LIST_UPDATE_MUTATION_ERROR:
+                return {
+                    ...state,
+                    isBulkListUpdating: false
+                }
         default:
             return {...state};
     }

@@ -66,6 +66,7 @@ export const DELETE_SAVED_SEARCH_MUTATION = `
   }
 `;
 
+
 export const EXPORT_TO_CSV_MUTATION = `
   mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {
     exportToCsv(input: { searchHash: $searchHash, siteViewId: $siteViewId }) {
@@ -73,5 +74,12 @@ export const EXPORT_TO_CSV_MUTATION = `
         id
       }
     }
+  }
+`;
+
+export const CROWD_PAGE_FRAGMENT = `
+  fragment CrowdPageFragment on WikiPage {
+    nctId
+    meta
   }
 `;

@@ -1,12 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: ReviewFragment
-// ====================================================
-
 export interface ReviewFragment_user {
   __typename: "User";
   /**
@@ -38,3 +29,4 @@ export interface ReviewFragment {
   createdAt: any;
   user: ReviewFragment_user;
 }
+

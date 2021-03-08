@@ -13,8 +13,6 @@ import CrowdPage from 'containers/CrowdPage';
 import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
-import { UpsertMutationFn, UpsertMutationComponent, UPSERT_LABEL_MUTATION } from 'mutations/CrowdPageUpsertWikiLabelMutation';
 import { connect } from 'react-redux';
 import { upsertLabelMutation } from '../../services/study/actions'
 import {fetchSearchAutoSuggest} from 'services/search/actions';
@@ -36,7 +34,7 @@ interface FacetCardProps {
   addLabel?: boolean;
   meta: Record<string, string>;
   values?: any[];
-  refetch?: () => void;
+  //refetch?: () => void;
   aggNames?: any;
   allValues?: any[];
   showAnimation:any;
@@ -118,7 +116,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   queryAutoSuggest = () => {
     const { existingField } = this.state;
     const { label, values } = this.props;
-    const query = AUTOSUGGEST_QUERY;
     const variables = {
       // todo: probably want to query more than just browse_condition_mesh_terms
       agg: 'browse_condition_mesh_terms',
@@ -165,7 +162,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
     key: string,
     value: string,
     meta: {},
-    upsertLabelMutation: UpsertMutationFn
+    upsertLabelMutation: any
   ) => {
     if (this.props.nctId) {
       CrowdPage.addLabel(
@@ -175,7 +172,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
         this.props.nctId,
         upsertLabelMutation
       );
-      if (this.props.refetch) (this.props.refetch());
+     // if (this.props.refetch) (this.props.refetch());
     }
   };
 
@@ -263,7 +260,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
 
     if (addLabel) {
       return (
-        <CurrentUser>
+        <>
                       <LoginModal
                         show={showLoginModal}
                         cancel={() => this.setShowLoginModal(false)}
@@ -299,11 +296,11 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                           showAddFacet={showAddFacet}
                         />
                       </ThemedPresearchCard>
-        </CurrentUser>
+        </>
       );
     }
     return (
-      <CurrentUser>
+      <>
                     <LoginModal
                       show={showLoginModal}
                       cancel={() => this.setShowLoginModal(false)}
@@ -364,7 +361,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                         {this.props.children}
                       </PresearchContent>
                     </ThemedPresearchCard>
-      </CurrentUser>
+      </>
     );
   }
 }

@@ -20,6 +20,10 @@ export const UPDATE_PASSWORD_SEND = 'UPDATE_PASSWORD_SEND';
 export const UPDATE_PASSWORD_SUCCESS = 'UPDATE_PASSWORD_SUCCESS';
 export const UPDATE_PASSWORD_ERROR = 'UPDATE_PASSWORD_ERROR';
 
+export const RESET_PASSWORD_SEND = 'RESET_PASSWORD_SEND';
+export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
+export const RESET_PASSWORD_ERROR = 'RESET_PASSWORD_ERROR';
+
 export const EDIT_PROFILE_SEND = 'EDIT_PROFILE_SEND';
 export const EDIT_PROFILE_SUCCESS = 'EDIT_PROFILE_SUCCESS';
 export const EDIT_PROFILE_ERROR = 'EDIT_PROFILE_ERROR';
@@ -38,7 +42,8 @@ export interface UserState {
     isSigningUp: boolean,
     signUpErrors: Array<string>,
     isUpdatingPassword: boolean,
-    isEditingProfile: boolean
+    isEditingProfile: boolean,
+    isResettingPassword: boolean
 }
 
 export interface UserData {
@@ -112,6 +117,21 @@ export interface SignUpErrorAction {
     payload: Array<String>
 };
 
+export interface ResetPasswordSendAction {
+    type: typeof RESET_PASSWORD_SEND,
+    email: string,
+}
+
+export interface ResetPasswordSuccessAction {
+    type: typeof RESET_PASSWORD_SUCCESS,
+    payload: string
+};
+
+export interface ResetPasswordErrorAction {
+    type: typeof RESET_PASSWORD_ERROR,
+    payload: Array<string>
+};
+
 export interface UpdatePasswordSendAction {
     type: typeof UPDATE_PASSWORD_SEND,
     resetPasswordToken: string,
@@ -165,5 +185,6 @@ export type UserActionTypes =
     SignInSendAction | SignInSuccessAction | SignInErrorAction | 
     SignUpSendAction | SignUpSuccessAction | SignUpErrorAction |
     UpdatePasswordSendAction | UpdatePasswordSuccessAction | UpdatePasswordErrorAction |
+    ResetPasswordSendAction | ResetPasswordSuccessAction | ResetPasswordErrorAction |
     EditProfileSendAction | EditProfileSuccessAction | EditProfileErrorAction |
     LogoutSendAction | LogoutSuccessAction | LogoutErrorAction;
