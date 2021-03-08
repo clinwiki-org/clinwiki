@@ -1,7 +1,6 @@
 import * as types from './types';
 import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
 import {SearchPageSearchQuery} from '../../services/search/model/SearchPageSearchQuery'
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
 import { CrumbsSearchPageAggBucketsQuery } from 'types/CrumbsSearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
@@ -76,7 +75,7 @@ export const fetchSearchParams = ( hash: any) : types.SearchActionTypes => ({
     hash
 });
 
-export const fetchSearchParamsSuccess = (payload: typeof SearchPageParamsQuery) : types.SearchActionTypes => ({
+export const fetchSearchParamsSuccess = (payload:  any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PARAMS_SUCCESS,
     payload
 });
@@ -89,7 +88,7 @@ export const updateSearchParamsAction = ( searchParams: any) : types.SearchActio
     type: types.UPDATE_SEARCH_PARAMS_SEND,
     searchParams
 });
-export const updateSearchParamsSuccess = (payload: typeof SearchPageParamsQuery) : types.SearchActionTypes => ({
+export const updateSearchParamsSuccess = (payload:  any) : types.SearchActionTypes => ({
     type: types.UPDATE_SEARCH_PARAMS_SUCCESS,
     payload
 });
