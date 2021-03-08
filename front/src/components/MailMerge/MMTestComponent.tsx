@@ -25,6 +25,8 @@ function getClassForMode(mode: Mode) {
 const TEMPLATE = `
 # title: Search Page
 
+<searchwithin></searchwithin>
+
 <div class='mm-single-line'>
     <agg id='0'></agg>
     <agg id='1'></agg>
