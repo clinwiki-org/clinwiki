@@ -62,7 +62,7 @@ export async function authenticate(email,password,oAuthToken) {
 
 async function generateJWT(user) {
     console.log("generateJWT called");
-    console.log(user);
+    //console.log(user);
     const token = jwt.sign({
         email: user.email,
         exp: Math.floor(Date.now() / 1000) + config.jwtExpire
@@ -73,8 +73,8 @@ async function generateJWT(user) {
 export async function getUserByEmail(email) {
     console.log("getUserByEmail called");
     const results = await query(QUERY_USER,[email]);
-    console.log("results = ");
-    console.log(results);
+    console.log("got user by email = ");
+    console.log(results !== null);
     if(results.rows.length === 1) {
         const user = results.rows[0];
         user.roles = await getUserRoles(user.id);
@@ -168,6 +168,7 @@ export async function signUp(email,password, defaultQueryString, oAuthToken) {
     }
     console.log(`encryptedPassword = ${encryptedPassword}`);
     const exists = await query(QUERY_USER,[email]);
+    console.log("user already exits = ");
     console.log(exists.rows.length !== 0);
     if(exists.rows.length !== 0) {
         console.log(`exists.rows.length !== 0`);
@@ -175,10 +176,11 @@ export async function signUp(email,password, defaultQueryString, oAuthToken) {
 	throw new Error('Email already exixts');
     }
     const user = await createNewUser(email,encryptedPassword,defaultQueryString,pictureUrl);
-    console.log(user);
+    console.log("(signUp) user created = ");
+    console.log(user !== null);
     const createdUser = await getUserByEmail(email)
-    console.log("createUser = ");
-    console.log(createdUser);
+    console.log("created user found= ");
+    console.log(createdUser !== null);
     if (createdUser) {
         /*console.log('user exists');
 	const exp = Date.now.to_i + exp_secs.to_i
@@ -198,8 +200,8 @@ export async function signUp(email,password, defaultQueryString, oAuthToken) {
 	console.log("found user by email");
 	const jwt = await generateJWT(createdUser);
     	if (jwt) {
-    	    console.log('jwt present');
-    	    console.log(jwt);
+    	    console.log('jwt present, returning token and user');
+    	    //console.log(jwt);
     	    return {
     	        jwt: jwt,
     	        user: createdUser//,
@@ -211,7 +213,7 @@ export async function signUp(email,password, defaultQueryString, oAuthToken) {
 	
     }
 
-    console.log('jwt not present');
+    console.log('jwt not present, returning null');
     return null;
 }
 
@@ -219,9 +221,10 @@ async function createNewUser(email,password,defaultQueryString,pictureUrl) {
     console.log("createNewUserCalled");
     console.log(`email = ${email}, password = ${password}, defaultQueryString = ${defaultQueryString}, pictureUrl = ${pictureUrl}`);
     const user = await query(QUERY_NEW_USER,[email,password,defaultQueryString,pictureUrl]);
-    console.log(user);
+    //console.log(user);
     const newUser = await query(QUERY_USER,[email]);
-    console.log(newUser.rows[0]);
+    console.log("(createNewUser) user created = ");
+    console.log(newUser.rows[0] !== null);
     return newUser.rows[0];
 }
 

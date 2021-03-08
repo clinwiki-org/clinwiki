@@ -78,7 +78,7 @@ function* signUp(action) {
         console.log(response.data.signUp);*/
         if(response.data && response.data.signUp) {
             yield put(actions.signUpSuccess(response));
-            yield call(() => actions.signIn(action.email,action.password,action.oAuthToken));
+            yield signIn(action);
         }
         else {
             yield put(actions.signUpError([response.data.signUp.errors]));

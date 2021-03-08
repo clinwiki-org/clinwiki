@@ -2,12 +2,12 @@ import { getLocalJwt } from 'utils/localStorage';
 
 
 export const callGraphql = (endpoint: string, query: any, variables: any, operationName?: string) => {
-    /*console.log("callGraphql called");
-    console.log(endpoint);
-    console.log(query);
-    console.log(variables);
-    console.log(operationName);
-    console.log(`auth = ${getLocalJwt()}`);*/
+    console.log("callGraphql called");
+    console.log(`endpoint = ${endpoint}`);
+    //console.log(query);
+    console.log("variables = ",variables);
+    console.log(`operationName = ${operationName}`);
+    console.log(`auth = ${getLocalJwt()}`);
     const abc = fetch(endpoint,{
         method: 'POST',
         headers: {
