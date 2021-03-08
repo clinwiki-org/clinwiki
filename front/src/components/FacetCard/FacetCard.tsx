@@ -13,7 +13,6 @@ import CrowdPage from 'containers/CrowdPage';
 import CurrentUser from 'containers/CurrentUser';
 import LoginModal from 'components/LoginModal';
 import { truncateString } from 'containers/FacilitiesPage/FacilityUtils';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
 import { connect } from 'react-redux';
 import { upsertLabelMutation } from '../../services/study/actions'
 import {fetchSearchAutoSuggest} from 'services/search/actions';
@@ -117,7 +116,6 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
   queryAutoSuggest = () => {
     const { existingField } = this.state;
     const { label, values } = this.props;
-    const query = AUTOSUGGEST_QUERY;
     const variables = {
       // todo: probably want to query more than just browse_condition_mesh_terms
       agg: 'browse_condition_mesh_terms',
