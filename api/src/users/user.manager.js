@@ -173,7 +173,8 @@ export async function signUp(email,password, defaultQueryString, oAuthToken) {
     if(exists.rows.length !== 0) {
         console.log(`exists.rows.length !== 0`);
         //return { jwt: null, user: null, errors: ["Email already exists"] }
-	throw new Error('Email already exixts');
+	//throw new Error('Email already exixts');
+	return { jwt: null, user: null, errors: ["Email already exists"] }
     }
     const user = await createNewUser(email,encryptedPassword,defaultQueryString,pictureUrl);
     console.log("(signUp) user created = ");

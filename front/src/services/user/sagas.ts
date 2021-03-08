@@ -76,7 +76,7 @@ function* signUp(action) {
 /*        console.log(response);
         console.log(response.data);
         console.log(response.data.signUp);*/
-        if(response.data && response.data.signUp) {
+        if(response.data && response.data.signUp && response.data.signUp.errors == null) {
             yield put(actions.signUpSuccess(response));
             yield signIn(action);
         }

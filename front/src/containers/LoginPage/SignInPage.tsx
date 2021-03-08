@@ -19,12 +19,13 @@ const SignInPage = (props) => {
   const [password,setPassword] = useState('');
   const [oAuthToken,setOAuthToken] = useState('');
   const signInErrors = useSelector( (state:RootState) => state.user.signInErrors);
+  //console.log('SignInPage.errors',signInErrors)
 
   const responseGoogle = (response) => {
-    console.log(response);
+    //console.log("GOOGLE RES", response)
     setEmail(response.profileObj.email);
     setOAuthToken(response.tokenObj.id_token);
-    dispatch(signIn(response.profileObj.email,password,response.tokenObj.id_token));
+    dispatch(signIn(response.profileObj.email,password, response.tokenObj.id_token));
   };
 
   return (
@@ -69,6 +70,7 @@ const SignInPage = (props) => {
                     //@ts-ignore
                     onFailure={responseGoogle}
                     cookiePolicy={'single_host_origin'}
+                    //isSignedIn={true}
                   />
                 </div>
               </div>

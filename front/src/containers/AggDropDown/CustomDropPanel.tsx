@@ -85,6 +85,10 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
   }
   render() {
 
+ /*   if(this.props.buckets.length > 0) {
+     console.log(this.props.isPresearch,"CusDr Panel BUckets ", this.props.buckets)
+  } */
+
     const { hasMore, buckets, handleLoadMore, field, loading } = this.props
     const showAllowMissing = field.showAllowMissing;
     //if (!this.props.isOpen) return

@@ -70,7 +70,6 @@ export default function GenericPage(props: Props) {
     dispatch(fetchStudyPage(props.arg ?? "", QUERY));
    },[dispatch, currentPage, props.arg]);
    
-  console.log(props.arg)
   if (!props.arg) {
     return <h1>Missing NCTID in URL</h1>;
   }
@@ -80,7 +79,7 @@ export default function GenericPage(props: Props) {
   if (!studyData.data) {
     return <BeatLoader />
   }
-console.log(studyData.data)
+//console.log(studyData.data)
   const title = microMailMerge(currentPage?.title, studyData?.data.study);
   return (
     <div>

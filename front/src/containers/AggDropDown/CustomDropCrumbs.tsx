@@ -52,7 +52,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     const { field } = this.props
 
     if (this.props.selectedItems.length > 0) {
-
+      //console.log("CRUMBS PROPS", field.name, this.props.selectedItems)
       let displayedCrumbs: any[] = this.props.selectedItems.slice(0, field.maxCrumbs)
       let otherValues = { key: `... ${this.props.selectedItems.length - displayedCrumbs.length} others` }
       displayedCrumbs.push(otherValues)
@@ -93,7 +93,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
           )
 
         } else if (field.display == FieldDisplay.LOCATION) {
-          console.log("IN LOCATION", field.display)
+          //console.log("IN LOCATION", field.display)
           if (!this.props.selectedItems[0].radius) return
 
           return (
@@ -110,7 +110,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
         }
 
         if (this.props.isSelected(item.key)) {
-          console.log(item.key)
+          //console.log(item.key)
           return <div className='select-box--crumb-container' key={item.key + 'isSelected'}>
             {item.key}
             <FontAwesome
