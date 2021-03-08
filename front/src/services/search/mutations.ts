@@ -65,3 +65,10 @@ export const DELETE_SAVED_SEARCH_MUTATION = `
       }
   }
 `;
+
+export const CROWD_PAGE_FRAGMENT = `
+  fragment CrowdPageFragment on WikiPage {
+    nctId
+    meta
+  }
+`;
