@@ -1,6 +1,6 @@
 import * as types from './types';
 import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
-import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
+import {SearchPageSearchQuery} from '../../services/search/model/SearchPageSearchQuery'
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
 import { CrumbsSearchPageAggBucketsQuery } from 'types/CrumbsSearchPageAggBucketsQuery';
