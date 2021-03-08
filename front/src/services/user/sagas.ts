@@ -39,7 +39,7 @@ function* getCurrentUser(action) {
 }
 
 function* signIn(action) {
-    console.log("signIn in saga called");
+    //console.log("signIn in saga called");
     try {
         let response = yield call(() => api.signIn(action.email,action.password,action.oAuthToken));
         if(response?.data?.signIn?.jwt) {
@@ -70,7 +70,7 @@ function* logout(action) {
 }
 
 function* signUp(action) {
-    console.log("signup in saga called");
+    //console.log("signup in saga called");
     try {
         let response = yield call(() => api.signUp(action.email,action.password,action.oAuthToken));
 /*        console.log(response);

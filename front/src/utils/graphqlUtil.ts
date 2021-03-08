@@ -2,12 +2,12 @@ import { getLocalJwt } from 'utils/localStorage';
 
 
 export const callGraphql = (endpoint: string, query: any, variables: any, operationName?: string) => {
-    console.log("callGraphql called");
+    /*console.log("callGraphql called");
     console.log(`endpoint = ${endpoint}`);
     //console.log(query);
     console.log("variables = ",variables);
     console.log(`operationName = ${operationName}`);
-    console.log(`auth = ${getLocalJwt()}`);
+    console.log(`auth = ${getLocalJwt()}`);*/
     const abc = fetch(endpoint,{
         method: 'POST',
         headers: {
@@ -21,7 +21,7 @@ export const callGraphql = (endpoint: string, query: any, variables: any, operat
             operationName
         })
     }).then(r => r.json());
-    console.log(abc);
+    //console.log(abc);
     return abc;
 }
 
@@ -36,7 +36,7 @@ export const get_gql_url = () => {
   }
 
 export const getGraphQLMigrationURL = () => {
-    console.log(window.location.hostname.includes('localhost'));
+    //console.log(window.location.hostname.includes('localhost'));
     if (
     typeof window === 'undefined' ||
     window.location.hostname.includes('localhost')

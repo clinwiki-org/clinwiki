@@ -17,7 +17,7 @@ const ROLE_SITE_OWNER = 'site_owner';
 const ROLE_ADMIN = 'admin';
 
 export async function authenticate(email,password,oAuthToken) {
-    console.log('authenticate (signIn called');
+    //console.log('authenticate (signIn called');
     logger.info('Authenticate user '+email);
 
     try {
@@ -29,7 +29,7 @@ export async function authenticate(email,password,oAuthToken) {
             if(user) {
                 logger.info('Found user '+user.id)
                     const token = await generateJWT(user);
-                    console.log(token);
+                    //console.log(token);
 		    return {
                         jwt: token,
                         user: user
@@ -61,7 +61,7 @@ export async function authenticate(email,password,oAuthToken) {
 }
 
 async function generateJWT(user) {
-    console.log("generateJWT called");
+    //console.log("generateJWT called");
     //console.log(user);
     const token = jwt.sign({
         email: user.email,
@@ -71,10 +71,10 @@ async function generateJWT(user) {
 }
 
 export async function getUserByEmail(email) {
-    console.log("getUserByEmail called");
+    //console.log("getUserByEmail called");
     const results = await query(QUERY_USER,[email]);
-    console.log("got user by email = ");
-    console.log(results !== null);
+    //console.log("got user by email = ");
+    //console.log(results !== null);
     if(results.rows.length === 1) {
         const user = results.rows[0];
         user.roles = await getUserRoles(user.id);
@@ -150,38 +150,38 @@ export async function signUp(email,password, defaultQueryString, oAuthToken) {
 //     { jwt: nil, user: nil, errors: user.errors.full_messages }
 //   end
 // end
-    console.log("user.manager signUp called");
+    //console.log("user.manager signUp called");
     //const exp_secs = ENV["JWT_EXPIRATION_TIME_SECS"] || 86_400  need to figure out ENV
     const exp_secs = 86_400
     let pictureUrl = null;
     let encryptedPassword = null;
-    console.log(`oAuthToken = ${oAuthToken}`);
+    //console.log(`oAuthToken = ${oAuthToken}`);
     if(oAuthToken) {
-	console.log("oAuthToken present");
+	//console.log("oAuthToken present");
 	encryptedPassword = oAuthToken
     }
     else {
-	console.log("oAuthToken not present");
-	console.log(`pw = ${password}`);
+	//console.log("oAuthToken not present");
+	//console.log(`pw = ${password}`);
 	encryptedPassword = await bcrypt.hash(password, 10);
-	console.log(`created pw = ${encryptedPassword}`);
+	//console.log(`created pw = ${encryptedPassword}`);
     }
-    console.log(`encryptedPassword = ${encryptedPassword}`);
+    //console.log(`encryptedPassword = ${encryptedPassword}`);
     const exists = await query(QUERY_USER,[email]);
-    console.log("user already exits = ");
-    console.log(exists.rows.length !== 0);
+    //console.log("user already exits = ");
+    //console.log(exists.rows.length !== 0);
     if(exists.rows.length !== 0) {
-        console.log(`exists.rows.length !== 0`);
+        //console.log(`exists.rows.length !== 0`);
         //return { jwt: null, user: null, errors: ["Email already exists"] }
 	//throw new Error('Email already exixts');
 	return { jwt: null, user: null, errors: ["Email already exists"] }
     }
     const user = await createNewUser(email,encryptedPassword,defaultQueryString,pictureUrl);
-    console.log("(signUp) user created = ");
-    console.log(user !== null);
+    //console.log("(signUp) user created = ");
+    //console.log(user !== null);
     const createdUser = await getUserByEmail(email)
-    console.log("created user found= ");
-    console.log(createdUser !== null);
+    //console.log("created user found= ");
+    //console.log(createdUser !== null);
     if (createdUser) {
         /*console.log('user exists');
 	const exp = Date.now.to_i + exp_secs.to_i
@@ -198,10 +198,10 @@ export async function signUp(email,password, defaultQueryString, oAuthToken) {
         console.log(jwt);
         //jwt = JWT.encode({ email: user.email, exp: exp }, hmac_secret, "HS256")
         //{ jwt: jwt, user: user, errors: nil }*/
-	console.log("found user by email");
+	//console.log("found user by email");
 	const jwt = await generateJWT(createdUser);
     	if (jwt) {
-    	    console.log('jwt present, returning token and user');
+    	    //console.log('jwt present, returning token and user');
     	    //console.log(jwt);
     	    return {
     	        jwt: jwt,
@@ -214,35 +214,17 @@ export async function signUp(email,password, defaultQueryString, oAuthToken) {
 	
     }
 
-    console.log('jwt not present, returning null');
+    //console.log('jwt not present, returning null');
     return null;
 }
 
 async function createNewUser(email,password,defaultQueryString,pictureUrl) {
-    console.log("createNewUserCalled");
-    console.log(`email = ${email}, password = ${password}, defaultQueryString = ${defaultQueryString}, pictureUrl = ${pictureUrl}`);
+    //console.log("createNewUserCalled");
+    //console.log(`email = ${email}, password = ${password}, defaultQueryString = ${defaultQueryString}, pictureUrl = ${pictureUrl}`);
     const user = await query(QUERY_NEW_USER,[email,password,defaultQueryString,pictureUrl]);
     //console.log(user);
     const newUser = await query(QUERY_USER,[email]);
-    console.log("(createNewUser) user created = ");
-    console.log(newUser.rows[0] !== null);
+    //console.log("(createNewUser) user created = ");
+    //console.log(newUser.rows[0] !== null);
     return newUser.rows[0];
 }
-
-/*function base64url(source) {
-    console.log('base64url called');
-    console.log(JSON.stringify(source));
-    // Encode in classical base64
-    //const encodedSource = CryptoJS.enc.Base64.stringify(source);
-    const encodedSource = Buffer.from(JSON.stringify(source));
-    console.log(encodedSource);
-    // Remove padding equal characters
-    encodedSource = encodedSource.replace(/=+$/, '');
-
-    // Replace characters according to base64url specifications
-    encodedSource = encodedSource.replace(/\+/g, '-');
-    encodedSource = encodedSource.replace(/\//g, '_');
-    console.log(encodedSource);
-    return encodedSource;
-}*/
-
