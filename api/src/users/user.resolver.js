@@ -5,14 +5,14 @@ const userResolver = {
         return context.user;
     },
     signIn: async (args,context) => {
-        console.log("signIn called in the resolver");
+        //console.log("signIn called in the resolver");
 	const payload = await UserManager.authenticate(args.input.email,args.input.password,args.input.oAuthToken);
         return payload;
     },
     signUp: async (args,context) => {
-        console.log("signUp called in resolver");
+        //console.log("signUp called in resolver");
 	const payload = await UserManager.signUp(args.input.email,args.input.password,args.input.oAuthToken);
-        console.log('payload', payload);
+        //console.log('payload', payload);
 	return payload;
     }
     

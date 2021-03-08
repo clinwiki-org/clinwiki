@@ -4,7 +4,7 @@ import config from '../../config';
 import logger from '../util/logger';
 
 export default async function getAuthenticatedUser(req) {
-    console.log("getAuthenticatedUser called");
+    //console.log("getAuthenticatedUser called");
     try {
 	if(!req.headers['authorization']) {
             return undefined;
@@ -15,9 +15,9 @@ export default async function getAuthenticatedUser(req) {
         }
         const token = bearer[1];
         const decoded = jwt.verify(token,config.jwtSecret);
-        console.log("before getUserByEmail")
+        //console.log("before getUserByEmail")
 	const user = await UserManager.getUserByEmail(decoded.email);
-	console.log("user = ", user);
+	//console.log("user = ", user);
 	return user;
     }
     catch(err) {
