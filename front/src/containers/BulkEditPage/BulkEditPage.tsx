@@ -15,13 +15,17 @@ import { fetchSearchParams } from 'services/search/actions';
 // escape label
 const el = (label: string) => label.replace(/ /g, '').replace('|', '_');
 const buildParams = (labels: string[]): string => {
-  return labels.reduce(
+  let newLabels = without(["Key/Values", "Demographics"],labels) //Removes Key/Values to avid parsing error on '/'
+
+  return newLabels.reduce(
     (s, label) => `$${el(label)}Params: SearchInput! ${s}`,
     ''
   );
 };
 const variablesForLabels = (labels: string[], params: any) => {
-  return labels.reduce(
+  let newLabels = without(["Key/Values", "Demographics"],labels) //Removes Key/Values to avid parsing error on '/'
+
+  return newLabels.reduce(
     (variables, label) => ({
       ...variables,
       [`${el(label)}Params`]: {
@@ -33,9 +37,12 @@ const variablesForLabels = (labels: string[], params: any) => {
   );
 };
 const bucketsForLabels = (labels: string[]) => {
+let newLabels = without(["Key/Values", "Demographics"],labels) //Removes Key/Values to avid parsing error on '/'
+console.log("🚀 ~ fils ~ newLabels", newLabels);
+
   const query = `
-  query BucketsForLabelsQuery (${buildParams(labels)}) {
-    ${labels.reduce(
+  query BucketsForLabelsQuery (${buildParams(newLabels)}) {
+    ${newLabels.reduce(
       (s, l) => `
       ${s}
       ${el(l)}Selected: crowdAggBuckets(
