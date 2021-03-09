@@ -158,8 +158,6 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                 let currentReaction = this.currentReactionFilter(reaction.name)
 
                 let isUserReaction = this.findUserReaction(currentReaction, userReactionsCurrent)
-                console.log(currentReaction);
-                console.log(userReactionsCurrent);
                 if (isUserReaction && currentReaction) {
                     return (
                         <div className="group-active" key={reaction.name}>

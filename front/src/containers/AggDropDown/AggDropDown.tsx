@@ -178,14 +178,15 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     };
 
 
-    if (props.presearch && !equals(state.prevParams, props.searchParams)) {
+  /*   if (props.presearch && !equals(state.prevParams, props.searchParams)) {  
+    //! Do we still need this? Take out fix for other buckets/facets not updating bug
       return {
         hasMore: true,
         loading: false,
         // buckets: [],
         prevParams: props.searchParams,
       };
-    }
+    } */
     const prevAggValue = findAgg(state.prevParams);
     const nextAggValue = findAgg(props.searchParams);
 
@@ -306,7 +307,10 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     } = this.props;
 
     let aggSort = this.handleSort(desc, sortKind);
-
+    let page = this.getFullPagesCount(this.state.buckets);
+    const pageNumber = isNaN(page) || page === null ? 0 : page; 
+    //console.log("🚀 ~ AggDropDown ~ pageNumber", pageNumber);
+    
     const variables = {
       ...searchParams,
       url: presentSiteView.url,
@@ -316,13 +320,14 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
       crowdAggFilters: maskAgg(
         this.props.searchParams.crowdAggFilters,
         this.props.agg
-      ),
-      agg: agg,
-      pageSize: PAGE_SIZE,
-      page: this.getFullPagesCount(this.state.buckets),
-      aggOptionsFilter: filter,
-      aggOptionsSort: aggSort,
-    };
+        ),
+        agg: agg,
+        pageSize: PAGE_SIZE,
+        page: pageNumber,//this.getFullPagesCount(this.state.buckets),//! Pagination IS being used for InfiniteLoader, bug fix 351, component will be deprecated on MMSearchPage
+        aggOptionsFilter: filter, 
+        aggOptionsSort: aggSort,
+      };
+      //console.log("🚀 ~  ~ variables", variables);
     this.props.aggKind === "crowdAggs" ? this.props.fetchCrowdAggBuckets(variables) : this.props.fetchAggBuckets(variables);
     //this.handleLoadMoreResponse();
   }
@@ -337,7 +342,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 
     //console.log("handle RESPONSE", responseBuckets);
 
-    let currentBuckets = buckets[0] === undefined ? []  : buckets
+    let currentBuckets = buckets === undefined || buckets[0] === undefined ? []  : buckets
     const allBuckets = currentBuckets.concat(responseBuckets);
 
     let newBuckets = pipe(
@@ -454,7 +459,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
      return <BeatLoader/>
     }
 
-    let customBuckets = this.state.buckets[0] === undefined ? []  : this.state.buckets
+    let customBuckets = this.state.buckets === undefined || this.state.buckets[0] === undefined ? []  : this.state.buckets
     //console.log("BUCKETS state @ CustomDropD",agg, customBuckets)  
 
     const icon = `chevron${isOpen ? '-up' : '-down'}`;

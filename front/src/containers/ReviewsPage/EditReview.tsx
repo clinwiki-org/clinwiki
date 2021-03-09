@@ -1,10 +1,4 @@
 import * as React from 'react';
-import { Query, QueryComponentOptions } from '@apollo/client/react/components';
-import { gql }  from '@apollo/client';
-import {
-  EditReviewQuery,
-  EditReviewQueryVariables,
-} from 'services/study/model/EditReviewQuery';
 import { match } from 'react-router-dom';
 import { find, propEq, pipe, split, dropLast, join } from 'ramda';
 import ReviewForm from 'containers/ReviewForm';
@@ -27,28 +21,8 @@ interface EditReviewProps {
   nctId:string;
   upsertReviewFormMutation: any;
   review: any;
+  handleClose: any;
 }
-
-const QUERY = gql`
-  query EditReviewQuery($nctId: String!) {
-    study(nctId: $nctId) {
-      ...StudySummaryFragment
-      reviews {
-        ...ReviewFragment
-      }
-      nctId
-    }
-  }
-
-  ${ReviewForm.fragment}
-  ${StudySummary.fragment}
-`;
-
-
-
-const QueryComponent = (
-  props: QueryComponentOptions<EditReviewQuery, EditReviewQueryVariables>
-) => Query(props);
 
 class EditReview extends React.PureComponent<EditReviewProps> {
   handleReviewSave = () => {
@@ -61,10 +35,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
     this.props.history.push(redirectPath);
   };
 
-  handleCloseReview = () => {
-    const params = useUrlParams()
-    this.props.history.push(`${trimPath(this.props.match.url)}${queryStringAll(params)}`);
-  };
+
   render() {
     const data = this.props.review.data;
     if (!data || !data.study || !data.study.reviews) {
@@ -87,7 +58,7 @@ class EditReview extends React.PureComponent<EditReviewProps> {
         nctId={this.props.match.params.nctId||this.props.nctId}
         afterSave={this.handleReviewSave}
         theme={this.props.theme}
-        handleClose={this.handleCloseReview}
+        handleClose={this.props.handleClose}
         upsertReviewFormMutation={this.props.upsertReviewFormMutation}
       />
     );

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Checkbox } from 'react-bootstrap';
 import {
   SuggestedLabelsQuery_crowdAggFacets_aggs,
 } from 'services/study/model/SuggestedLabelsQuery';
@@ -18,6 +17,8 @@ import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConf
 import { BeatLoader } from 'react-spinners';
 import Error from 'components/Error';
 import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation } from '../../services/study/actions'
+import  equal  from 'fast-deep-equal';
+import FacetCardCheckbox from 'components/FacetCard/FacetCardCheckbox';
 
 interface SuggestedLabelsProps {
   nctId: string;
@@ -48,9 +49,8 @@ class SuggestedLabels extends React.PureComponent<
   SuggestedLabelsState
   > {
   handleSelect2 = (key: string, value: string, checked) => {
-    this.props.showAnimation()
-
     this.props.onSelect(key, value, checked);
+    this.props.showAnimation();
   };
 
   public getID() {
@@ -59,6 +59,13 @@ class SuggestedLabels extends React.PureComponent<
   componentDidMount() {
     this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
   }
+
+  componentDidUpdate(prevProps) {
+    if(!equal(this.props.nctId, prevProps.nctId)) // Check if it's a new nctId, refetch
+    {
+      this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
+    }
+  } 
     //TODO - Previously refetch was coming from APollo made this faaux function to force refetch is needed 
   refetch =()=>{
     console.log("Refetching")
@@ -78,7 +85,6 @@ class SuggestedLabels extends React.PureComponent<
     );
 
     let items = values.map(([value, _]) => value);
-
     if (
       config &&
       config.visibleOptions.kind === 'WHITELIST' &&
@@ -109,13 +115,14 @@ class SuggestedLabels extends React.PureComponent<
             return null;
           }
           return (
-            <Checkbox
+            <FacetCardCheckbox
+              nctId={this.props.nctId}
+              notKey={key}
               key={value}
-              checked={checkedValues.has(value)}
+              value={value}
+              checkedValues={checkedValues}
               disabled={this.props.disabled}
-              onChange={() => this.handleSelect2(key, value, checkedValues.has(value))}>
-              {value}
-            </Checkbox>
+              handleSelect2={this.handleSelect2}/>
           );
         })}
       </FacetCard>

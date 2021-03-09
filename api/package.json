@@ -17,6 +17,7 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
+    "Buffer": "0.0.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "date-fns": "^2.14.0",
@@ -40,11 +41,11 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@babel/node": "^7.10.3",
-    "@babel/core": "^7.10.3",
     "@babel/cli": "^7.10.3",
-    "babel-eslint": "^10.1.0",
+    "@babel/core": "^7.10.3",
+    "@babel/node": "^7.13.0",
     "@babel/preset-env": "^7.10.3",
+    "babel-eslint": "^10.1.0",
     "eslint": "^5.16.0",
     "nodemon": "^2.0.4"
   }

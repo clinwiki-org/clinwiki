@@ -1,14 +1,7 @@
 import React, { useEffect } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import { RootState } from 'reducers';
-//import {
-//  DELETE_REVIEW_MUTATION,
-//  DeleteMutationFn,
-//} from 'mutations/ReviewsPageDeleteReviewMutation';
-import { DELETE_REVIEW_MUTATION } from '../../services/study/mutations';
 import styled from 'styled-components';
-import QUERY from 'queries/ReviewPageQuery';
-import { useQuery, useMutation } from '@apollo/client';
 //import { useCurrentUser } from 'containers/CurrentUser/CurrentUser';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
@@ -27,7 +20,6 @@ import { Row, Col, Table, Label } from 'react-bootstrap';
 import ReactStars from 'react-stars';
 import RichTextEditor, { EditorValue } from 'react-rte';
 import { keys } from 'ramda';
-//import { ReviewPageQuery } from 'types/ReviewPageQuery';
 import { fetchReviewPage, deleteReviewMutation } from 'services/study/actions';
 import { ReviewPageQuery } from '../../services/study/model/ReviewPageQuery';
 import { upsertReviewFormMutation } from '../../services/study/actions';
@@ -55,7 +47,7 @@ const ButtonsWrapper = styled.div`
 export default function ReviewsIsland(props: Props) {
   const { nctId } = props;
   const history = useHistory();
-  const location = useLocation();
+ // const location = useLocation();
   const match = useRouteMatch();
   const theme = useTheme();
   const params = useUrlParams();
@@ -68,11 +60,8 @@ export default function ReviewsIsland(props: Props) {
   useEffect (() => {
 //    console.log(props);
     dispatch (fetchReviewPage(nctId));
-  },[dispatch]);
-/*  const [deleteReviewMutation] = useMutation(DELETE_REVIEW_MUTATION, {
-    refetchQueries: [{ query: QUERY, variables: { nctId } }],
-  }); *deleteReviewMutation/
-*/
+  },[dispatch,nctId]);
+
   const deleteReviewMut = (action) => {
     console.log("deleteReviewMutation called");
     console.log(action);
@@ -94,13 +83,10 @@ export default function ReviewsIsland(props: Props) {
     history.push(`${trimPath(match.url)}/${id}/edit${queryStringAll(params)}`);
   };
   const handleCloseReview = () => {
-    history.push(`${trimPath(match.url)}${queryStringAll(params)}`);
+    let path = `${trimPath(match.url)}${queryStringAll(params)}`
+    history.push(path);
+    //console.log("THE LINK\n" +`${trimPath(match.url)}${queryStringAll(params)}`)
   };
-  //const handleDeleteReview = (
-  //  id: number
-  //) => () => {
-  //  dispatch(deleteReviewMutation(id));
-  //};
 
   const getName = (user: ReviewsPageFragment_user) => {
     if (user.firstName) {
@@ -182,7 +168,6 @@ export default function ReviewsIsland(props: Props) {
   };
 
   const renderReviews = (reviews: ReviewsPageFragment[]) => {
-    console.log(reviews);
     return (
       <>
         <div style={{ display: 'flex' }}>
@@ -196,9 +181,7 @@ export default function ReviewsIsland(props: Props) {
       </>
     );
   };
-  console.log (reviewData)
   const upsertReview = (reviewData) => { 
-    console.log(reviewData);
     return dispatch(upsertReviewFormMutation(reviewData.variables.id, reviewData.variables.nctId, reviewData.variables.meta, reviewData.variables.content)); 
   }  
 
@@ -226,6 +209,7 @@ export default function ReviewsIsland(props: Props) {
             return (
               <EditReview
                 {...newProps}
+                handleClose={handleCloseReview}
                 onLoaded={() => console.log('Loaded')}
                 upsertReviewFormMutation={upsertReview}
               />

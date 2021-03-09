@@ -120,6 +120,7 @@ export const WIKI_PAGE_FRAGMENT =`
     nctId
     meta
   }
+  ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
 
 export const WIKI_PAGE_UPDATE_CONTENT_MUTATION =`

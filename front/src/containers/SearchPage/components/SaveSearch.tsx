@@ -90,7 +90,7 @@ const getSearchName = () => {
         //_showSnackbarHandler();
        //@ts-ignore
         //<Snackbar ref={snackbarRef}/>
-        alert("Saved search: \n" + savedSearchName)//data?.createSavedSearch.savedSearch.nameLabel) 
+        alert("Saved and subscribed to weekly changes to search: \n" + savedSearchName + " \n To unsubscribe, go to your profile")//data?.createSavedSearch.savedSearch.nameLabel) 
       } else {
         toggleShowLoginModal(true);
       }

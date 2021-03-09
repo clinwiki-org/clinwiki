@@ -39,6 +39,7 @@ function* getCurrentUser(action) {
 }
 
 function* signIn(action) {
+    //console.log("signIn in saga called");
     try {
         let response = yield call(() => api.signIn(action.email,action.password,action.oAuthToken));
         if(response?.data?.signIn?.jwt) {
@@ -69,10 +70,15 @@ function* logout(action) {
 }
 
 function* signUp(action) {
+    //console.log("signup in saga called");
     try {
         let response = yield call(() => api.signUp(action.email,action.password,action.oAuthToken));
-        if(response.data && response.data.signIn) {
+/*        console.log(response);
+        console.log(response.data);
+        console.log(response.data.signUp);*/
+        if(response.data && response.data.signUp && response.data.signUp.errors == null) {
             yield put(actions.signUpSuccess(response));
+            yield signIn(action);
         }
         else {
             yield put(actions.signUpError([response.data.signUp.errors]));

@@ -263,7 +263,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
 
     if (addLabel) {
       return (
-        <CurrentUser>
+        <>
                       <LoginModal
                         show={showLoginModal}
                         cancel={() => this.setShowLoginModal(false)}
@@ -299,11 +299,11 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                           showAddFacet={showAddFacet}
                         />
                       </ThemedPresearchCard>
-        </CurrentUser>
+        </>
       );
     }
     return (
-      <CurrentUser>
+      <>
                     <LoginModal
                       show={showLoginModal}
                       cancel={() => this.setShowLoginModal(false)}
@@ -364,7 +364,7 @@ class FacetCard extends React.PureComponent<FacetCardProps, FacetCardState> {
                         {this.props.children}
                       </PresearchContent>
                     </ThemedPresearchCard>
-      </CurrentUser>
+      </>
     );
   }
 }
