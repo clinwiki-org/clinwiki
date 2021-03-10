@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'services/study/model/StudyEditsHistoryQuery';
 
 interface EditProps {
   edit: StudyEditsHistoryQuery_study_wikiPage_edits;

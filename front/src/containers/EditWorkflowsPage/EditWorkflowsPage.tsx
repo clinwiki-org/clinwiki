@@ -5,15 +5,14 @@ import styled from 'styled-components';
 import { Row, Col, Nav, NavItem, Panel } from 'react-bootstrap';
 import { find, propEq, equals } from 'ramda';
 import WorkflowForm from './WorkflowForm';
-import { SiteViewMutationInput } from 'types/globalTypes';
 import {
   createMutation,
   updateView,
   getViewValueByPath,
   serializeMutation,
 } from 'utils/siteViewUpdater';
-import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
-import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
+import { WorkflowConfigFragment } from '../../services/study/model/WorkflowConfigFragment';
+import { WorkflowsViewFragment } from 'services/study/model/WorkflowsViewFragment';
 import ThemedButton from 'components/StyledComponents';
 import { MutationSource } from 'containers/SearchPage/shared';
 import { fetchAllWorkFlows, updateWorkflowPage } from 'services/study/actions';

@@ -196,6 +196,45 @@ function* deleteSavedSearch(action) {
     }    
 } 
 
+function* getSearchExport(action) {
+    //console.log("Search EXPORT", action)
+    try {
+        let response = yield call(() => api.searchExport(action.searchExportId));
+       // console.log("🚀 ~ etSearchExport ~ response", response);
+        if(response.data.searchExport.downloadUrl === null){
+            yield getSearchExport(action);
+            return;
+        }
+        if(response) {
+            yield put(actions.searchExportSuccess(response));
+        }
+        else {
+            yield put(actions.searchExportError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.searchExportError(err.message));
+    }
+}
+
+function* exportToCsv(action) {
+    try {
+        let exportResponse = yield call(() => api.exportToCsv(action.searchHash, action.siteViewId)); 
+        //console.log("EXPORT RES", exportResponse)
+        if (exportResponse.data.exportToCsv){                     
+            yield put(actions.exportToCsvSuccess(exportResponse));
+        }
+        else {
+            yield put(actions.exportToCsvError(exportResponse.message));
+        }
+    }
+catch(err) {
+    console.log(err);
+    yield put(actions.exportToCsvError(err.message));
+}    
+} 
+
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND, getSearchPageAggBuckets);
@@ -207,4 +246,6 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SAVED_SEARCHES_SEND, getSavedSearches);
     yield takeLatest(types.CREATE_SAVED_SEARCH_SEND, createSavedSearch);
     yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
+    yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
+    yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
 }

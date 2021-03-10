@@ -2,7 +2,7 @@
 /* eslint-disable */
 // @generated
 // This file was automatically generated and should not be edited.
-import { SortKind, FieldDisplay, FilterKind } from "../../../types/globalTypes";
+import { SortKind, FieldDisplay, FilterKind } from "./InputTypes";
 // ====================================================
 // GraphQL fragment: PresentSiteFragment
 // ====================================================
