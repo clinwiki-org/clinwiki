@@ -300,9 +300,11 @@ export const fetchReactionsIslandError= (message: string) : types.StudyActionTyp
     type: types.FETCH_REACTIONS_ISLAND_ERROR,
     payload: {message}
 });
-export const deleteReaction= ( id: any ) : types.StudyActionTypes => ({
+export const deleteReaction= ( id: any, studyQuery?: any, nctId?: any ) : types.StudyActionTypes => ({
     type: types.DELETE_REACTION_SEND,
     id,
+    studyQuery,
+    nctId
 });
 export const deleteReactionSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.DELETE_REACTION_SUCCESS,
@@ -336,10 +338,11 @@ export const fetchStudyReactionsError= (message: string) : types.StudyActionType
     type: types.FETCH_STUDY_REACTIONS_ERROR,
     payload: {message}
 });
-export const createReaction= ( nctId: string, reactionKindId: any) : types.StudyActionTypes => ({
+export const createReaction= ( nctId: string, reactionKindId: any, studyQuery?: any) : types.StudyActionTypes => ({
     type: types.CREATE_REACTION_SEND,
     nctId,
     reactionKindId,
+    studyQuery
 });
 export const createReactionSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.CREATE_REACTION_SUCCESS,

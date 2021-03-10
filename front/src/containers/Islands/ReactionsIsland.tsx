@@ -44,6 +44,7 @@ export default function ReactionsIsland(props: Props) {
   });
   */
   const reactionKindsData = useSelector( (state: RootState) => state.study.reactionKinds);
+  //console.log(reactionKindsData);
   useEffect (() => {
     dispatch (fetchReactionKinds());
   },[dispatch]);
