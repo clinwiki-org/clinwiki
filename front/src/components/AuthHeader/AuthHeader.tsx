@@ -92,11 +92,11 @@ const AuthHeader = (props) => {
                   null : <NavItem
                     target="_blank"
                     eventKey={2}
-                    href="https://home.clinwiki.org/make-a-donation/">
+                    href="https://www.clinwiki.org/make-a-donation/">
                     Donate to ClinWiki
                     </NavItem>
                 }
-                <NavItem eventKey={1} href="https://home.clinwiki.org/" target="_blank">
+                <NavItem eventKey={1} href="https://www.clinwiki.org/" target="_blank">
                   About ClinWiki
           </NavItem>
                 <Row>
