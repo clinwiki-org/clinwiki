@@ -295,7 +295,6 @@ function IslandAgg(props: Props) {
     let aggName = currentAgg!.name
     let responseBuckets = currentAgg.aggKind === "crowdAggs" ? crowdAggBuckets?.aggs[aggName] : aggBuckets?.aggs[aggName]
 
-
     let currentBuckets = buckets[0] === undefined ? [] : buckets
     const allBuckets = currentBuckets.concat(responseBuckets);
     let newBuckets = pipe(
@@ -331,19 +330,19 @@ function IslandAgg(props: Props) {
   const toggleAlphaSort = () => {
     setDesc(!desc);
     setSortKind(SortKind.Alpha);
-    // setBuckets([]);
+    setBuckets([]);
     setHasMore(true);
   }
   const toggleNumericSort = () => {
     setDesc(!desc);
     setSortKind(SortKind.Number);
-    // setBuckets([]);
+    setBuckets([]);
     setHasMore(true);
   }
   const handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
     setFilter(value);
-    // setBuckets([]);
+    setBuckets([]);
     setHasMore(true);
   };
   const transformFilters = (
@@ -364,7 +363,6 @@ function IslandAgg(props: Props) {
   //   return <BeatLoader/>
   // }
   // if(!aggBuckets && isOpen){
-  //   console.log(21)
   //   return <BeatLoader/>
   // }
   const filters = transformFilters(searchParams[grouping])
