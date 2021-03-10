@@ -7,8 +7,8 @@ import useUrlParams from 'utils/UrlParamsProvider';
 import * as Autosuggest from 'react-autosuggest';
 import LabeledButton from 'components/LabeledButton';
 import { displayFields } from 'utils/siteViewHelpers';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
-import { fetchSearchAutoSuggest } from 'services/search/actions';
+// import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
+// import { fetchSearchAutoSuggest } from 'services/search/actions';
 import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions';
 import aggToField from 'utils/aggs/aggToField';
 import { Form, FormGroup, ControlLabel } from 'react-bootstrap';
@@ -20,7 +20,7 @@ import { defaultPageSize } from '../SearchPage/Types';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
 import {
   SearchPageParamsQuery_searchParams,
-} from 'types/SearchPageParamsQuery';
+} from '../../services/search/model/SearchPageParamsQuery';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 const LoaderWrapper = styled.div`
