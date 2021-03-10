@@ -3,17 +3,10 @@ import {useDispatch,useSelector} from 'react-redux';
 import {RootState} from 'reducers';
 import {fetchAdminUserSite} from 'services/site/actions';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { History } from 'history';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import logo from 'images/clinwiki-501.png';
 import UserProfileHeaderButton from './UserProfileHeaderButton';
-import { UserFragment } from 'services/user/model/UserFragment';
-import { gql }  from '@apollo/client';
-import  {Query,QueryComponentOptions, } from '@apollo/client/react/components';
-import Error from "../Error";
-import { AdminViewsProviderQuery, AdminViewsProviderQueryVariables } from 'services/site/model/AdminViewsProviderQuery';
 import { BeatLoader } from 'react-spinners';
 
 const Row = styled.div`

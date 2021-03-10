@@ -4,11 +4,9 @@ import { PageViewQuery } from './model/PageView';
 import { PageViewsQuery } from './model/PageViews';
 import { SearchStudyPageQuery } from './model/SearchStudyPageQuery';
 import { StudyEditsHistoryQuery } from './model/StudyEditsHistoryQuery';
-import { StudyReactions } from './model/StudyReactions';
 import * as types from './types';
 import { UpdatePageViewInput, } from 'services/study/model/InputTypes';
-import { WikiPageUpdateContentMutation } from './model/WikiPageUpdateContentMutation';
-import { ReactionsById } from './model/ReactionsById';
+
 
 
 export const fetchSampleStudy= ( nctId: string, QUERY: any) : types.StudyActionTypes => ({
@@ -66,7 +64,7 @@ export const updateStudyViewLogCount= ( nctId: string,) : types.StudyActionTypes
     type: types.UPDATE_STUDY_VIEW_LOG_COUNT_SEND,
     nctId,
 });
-export const updateStudyViewLogCountSuccess= (payload: CreateStudyViewLogMutation) : types.StudyActionTypes => ({  //! TODO Check this payload
+export const updateStudyViewLogCountSuccess= (payload: CreateStudyViewLogMutation) : types.StudyActionTypes => ({
     type: types.UPDATE_STUDY_VIEW_LOG_COUNT_SUCCESS,
     
 });
@@ -158,11 +156,12 @@ export const fetchAllWorkFlowsError= (message: string) : types.StudyActionTypes 
     type: types.FETCH_ALL_WORKFLOWS_ERROR,
     payload: {message}
 });
-export const upsertLabelMutation= ( nctId: any, key: any, value: any) : types.StudyActionTypes => ({
+export const upsertLabelMutation= ( nctId: any, key: any, value: any, studyQuery?: any) : types.StudyActionTypes => ({
     type: types.UPSERT_LABEL_MUTATION_SEND,
     nctId,
     key,
-    value
+    value,
+    studyQuery
 });
 export const upsertLabelMutationSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.UPSERT_LABEL_MUTATION_SUCCESS,
@@ -172,11 +171,12 @@ export const upsertLabelMutationError= (message: string) : types.StudyActionType
     type: types.UPSERT_LABEL_MUTATION_ERROR,
     payload: {message}
 });
-export const deleteLabelMutation= ( nctId: any, key: any, value:any ) : types.StudyActionTypes => ({
+export const deleteLabelMutation= ( nctId: any, key: any, value:any, studyQuery?: any ) : types.StudyActionTypes => ({
     type: types.DELETE_LABEL_MUTATION_SEND,
     nctId,
     key,
-    value
+    value,
+    studyQuery
 });
 export const deleteLabelMutationSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.DELETE_LABEL_MUTATION_SUCCESS,

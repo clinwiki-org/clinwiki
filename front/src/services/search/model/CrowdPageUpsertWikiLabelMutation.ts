@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Diff } from "./globalTypes";
+import { Diff } from "../../../types/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: CrowdPageUpsertWikiLabelMutation

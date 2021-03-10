@@ -360,7 +360,8 @@ export interface upsertLabelMutationSendAction {
     type: typeof UPSERT_LABEL_MUTATION_SEND,
     nctId: any,
     key: any,
-    value: any;
+    value: any,
+    studyQuery?: any,
 };
 
 export interface upsertLabelMutationSuccessAction {
@@ -377,7 +378,8 @@ export interface deleteLabelMutationSendAction {
     type: typeof DELETE_LABEL_MUTATION_SEND,
     nctId: any,
     key: any,
-    value: any
+    value: any,
+    studyQuery?: any,
 };
 
 export interface deleteLabelMutationSuccessAction {

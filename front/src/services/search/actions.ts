@@ -1,9 +1,7 @@
 import * as types from './types';
 import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
-import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import {SearchPageSearchQuery} from '../../services/search/model/SearchPageSearchQuery'
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
-import { CrumbsSearchPageAggBucketsQuery } from 'types/CrumbsSearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
 import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
 
@@ -26,7 +24,7 @@ export const fetchSearchPageAggsError = (message: string) : types.SearchActionTy
 
 export const fetchSearchPageAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
-    searchParams          //TODO CHeck
+    searchParams         
 });
 
 export const fetchSearchPageAggBucketsSuccess = (payload: SearchPageAggBucketsQuery) : types.SearchActionTypes => ({
@@ -42,7 +40,7 @@ export const fetchSearchPageAggBucketsError = (message: string) : types.SearchAc
 
 export const fetchSearchPageCrowdAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND,
-    searchParams      //TODO CHeck
+    searchParams     
 });
 
 export const fetchSearchPageCrowdAggBucketsSuccess = (payload: SearchPageCrowdAggBucketsQuery) : types.SearchActionTypes => ({
@@ -76,7 +74,7 @@ export const fetchSearchParams = ( hash: any) : types.SearchActionTypes => ({
     hash
 });
 
-export const fetchSearchParamsSuccess = (payload: typeof SearchPageParamsQuery) : types.SearchActionTypes => ({
+export const fetchSearchParamsSuccess = (payload:  any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PARAMS_SUCCESS,
     payload
 });
@@ -89,7 +87,7 @@ export const updateSearchParamsAction = ( searchParams: any) : types.SearchActio
     type: types.UPDATE_SEARCH_PARAMS_SEND,
     searchParams
 });
-export const updateSearchParamsSuccess = (payload: typeof SearchPageParamsQuery) : types.SearchActionTypes => ({
+export const updateSearchParamsSuccess = (payload:  any) : types.SearchActionTypes => ({
     type: types.UPDATE_SEARCH_PARAMS_SUCCESS,
     payload
 });
@@ -175,3 +173,34 @@ export const deleteSavedSearchError = (message: string) : types.SearchActionType
     type: types.DELETE_SAVED_SEARCH_ERROR,
     payload: { message }
 });
+
+export const searchExport = (searchExportId: number) : types.SearchActionTypes => ({
+    type: types.SEARCH_EXPORT_SEND,
+    searchExportId,
+});
+
+export const searchExportSuccess = (payload: any) : types.SearchActionTypes => ({
+    type: types.SEARCH_EXPORT_SUCCESS,
+    payload
+});
+
+export const searchExportError = ( message: string) : types.SearchActionTypes => ({
+    type: types.SEARCH_EXPORT_ERROR,
+    payload: { message }
+});
+
+export const exportToCsv = ( searchHash: string, siteViewId: number ) : types.SearchActionTypes => ({
+    type: types.EXPORT_T0_CSV_SEND,
+    searchHash,
+    siteViewId
+})
+
+export const exportToCsvSuccess = (payload: any) : types.SearchActionTypes => ({
+    type: types.EXPORT_T0_CSV_SUCCESS,
+    payload
+})
+
+export const exportToCsvError = (message: string) : types.SearchActionTypes => ({
+    type: types.EXPORT_T0_CSV_ERROR,
+    payload: { message }
+})
