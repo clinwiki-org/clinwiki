@@ -76,8 +76,8 @@ export const fetchAllWorkFlows= () => {
 export const fetchReactionsIsland= (nctId: any) => {
     return callGraphql(ENDPOINT, query.REACTIONS_ISLAND_QUERY, {nctId});
 };
-export const deleteReaction = (id:any, studyQuery: any, nctId: any) =>{
-    return callGraphql(ENDPOINT,mutate.DELETE_REACTION, {id, studyQuery, nctId})
+export const deleteReaction = (id:any) =>{
+    return callGraphql(ENDPOINT,mutate.DELETE_REACTION, {id})
 };
 export const fetchReactionKinds= () => {
     return callGraphql(ENDPOINT, query.REACTION_KINDS, {});
@@ -89,7 +89,6 @@ export const createReaction = ( nctId: string, reactionKindId: any) =>{
     return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})
 };
 export const fetchReactionsById= (reactionKindId: any) => {
-    //console.log(`fetchReactionsById called ${reactionKindId}`);
     return callGraphql(ENDPOINT, query.REACTIONS_QUERY, {reactionKindId: reactionKindId})
 };
 export const upsertReviewFormMutation = (id:any, nctId:any, meta: any, content: any) =>{

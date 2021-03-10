@@ -7,8 +7,6 @@ import SlackCounterGroup from './SlackCounterGroup'
 import { find, propEq } from 'ramda';
 import { Icon, InlineIcon } from '@iconify/react';
 import smilePlus from '@iconify/icons-fe/smile-plus';
-import {} from 'mutations/DeleteReactionMutation'; //delete after working to see if there's a difference
-import {} from 'mutations/CreateReactionMutation'; //kept this but deleted mutation
 import { createReaction, deleteReaction} from '../../../services/study/actions';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { useFragment } from '../../MailMerge/MailMergeFragment';
@@ -72,9 +70,9 @@ export default function SlackCounter(props: SlackCounterProps) {
 
     useEffect (() => {
       setCurrentUserAndStudy(props.currentUserAndStudy);
-  },[props.currentUserAndStudy])
+    },[props.currentUserAndStudy])
 
-    const deleteReactionHelper = (reaction, studyQuery) => {
+    const deleteReactionHelper = (reaction) => {
         console.log(reaction);
         const { nctId } = props
         let id = reaction.id
@@ -125,7 +123,7 @@ export default function SlackCounter(props: SlackCounterProps) {
                                 count={reaction.count}
                                 names={' '}
                                 active={' '}
-                                onSelect={() => deleteReactionHelper(isUserReaction, studyQuery)}
+                                onSelect={() => deleteReactionHelper(isUserReaction)}
                             />
                         </div>
                     )
