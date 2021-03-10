@@ -1,7 +1,5 @@
 import * as query from './queries';
 import * as mutate from './mutations'
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import { callGraphql, get_gql_url } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
@@ -54,4 +52,13 @@ export const fetchFacetConfig= () => {
 export const updateFacetConfig = (input) => {
     return callGraphql(ENDPOINT, mutate.UPDATE_FACET_CONFIG, 
         { input : input.input});
+};
+export const searchExport = ( searchExportId: number) => {
+    return callGraphql(ENDPOINT, query.SEARCH_EXPORT_QUERY,
+        { searchExportId: searchExportId });
+}
+
+export const exportToCsv = ( searchHash: string, siteViewId: number) => {
+    return callGraphql(ENDPOINT, mutate.EXPORT_TO_CSV_MUTATION,
+        { searchHash: searchHash, siteViewId: siteViewId });                           
 };

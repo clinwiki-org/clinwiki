@@ -4,7 +4,6 @@ import { PageViewQuery } from './model/PageView';
 import { PageViewsQuery } from './model/PageViews';
 import { SearchStudyPageQuery } from './model/SearchStudyPageQuery';
 import { StudyEditsHistoryQuery } from './model/StudyEditsHistoryQuery';
-import { StudyReactions } from './model/StudyReactions';
 import * as types from './types';
 import { UpdatePageViewInput } from 'services/study/model/InputTypes';
 import { WikiPageUpdateContentMutation } from './model/WikiPageUpdateContentMutation';

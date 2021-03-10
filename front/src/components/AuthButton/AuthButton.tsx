@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { History } from 'history';
-import { logout } from 'utils/auth';
+//import { logout } from 'utils/auth';
 import SiteProvider from 'containers/SiteProvider';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 
@@ -74,7 +74,7 @@ class AuthButton extends React.PureComponent<AuthButtonProps> {
   };
 
   handleSignOutClick = () => {
-    logout(this.props.history);
+    console.log("LogOut moved to Redux actions")//logout(this.props.history);
   };
 
   renderAdminMenuItems = site => {

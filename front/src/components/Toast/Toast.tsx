@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { gql }  from '@apollo/client';
 import { Alert, Button } from 'react-bootstrap';
 
 interface ToastProps {
@@ -9,13 +8,13 @@ interface ToastProps {
 }
 
 class Toast extends React.PureComponent<ToastProps> {
-  static fragment = gql`
+/*   static fragment = gql`
     fragment ToastFragment on Site {
       id
       name
       subdomain
     }
-  `;
+  `; */
 
   render() {
     const { message, buttons } = this.props;

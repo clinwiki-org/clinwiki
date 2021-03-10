@@ -16,11 +16,11 @@ import AggField from './AggField';
 import { sentanceCase } from 'utils/helpers';
 import { aggsOrdered, studyFields } from 'utils/constants';
 import aggToField from 'utils/aggs/aggToField';
-import { FilterKind } from 'types/globalTypes';
+import { FilterKind } from '../../services/site/model/InputTypes';
 import { Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
 import { match } from 'react-router';
-import { SiteViewMutationInput } from 'types/globalTypes';
+import { SiteViewMutationInput } from '../../services/site/model/InputTypes';
 import {
   updateView,
   createMutation,

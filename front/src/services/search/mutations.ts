@@ -76,5 +76,22 @@ export const UPDATE_FACET_CONFIG = `
     updateFacetConfig(input: $input) {
       errors
     }
+`;
+
+
+export const EXPORT_TO_CSV_MUTATION = `
+  mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {
+    exportToCsv(input: { searchHash: $searchHash, siteViewId: $siteViewId }) {
+      searchExport {
+        id
+      }
+    }
+  }
+`;
+
+export const CROWD_PAGE_FRAGMENT = `
+  fragment CrowdPageFragment on WikiPage {
+    nctId
+    meta
   }
 `;
