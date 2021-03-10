@@ -1,9 +1,0 @@
-{"message":"Loading .env from /home/chuck/clinwiki/.env","level":"info","timestamp":"2021-03-05 16:40:36"}
-{"message":"Loading schema.graphql","level":"info","timestamp":"2021-03-05 16:40:36"}
-{"message":"_________ .__  .__       __      __.__ __   .__ ","level":"info","timestamp":"2021-03-05 16:40:36"}
-{"message":"\\_   ___ \\|  | |__| ____/  \\    /  \\__|  | _|__|","level":"info","timestamp":"2021-03-05 16:40:36"}
-{"message":"/    \\  \\/|  | |  |/    \\   \\/\\/   /  |  |/ /  |","level":"info","timestamp":"2021-03-05 16:40:36"}
-{"message":"\\     \\___|  |_|  |   |  \\        /|  |    <|  |","level":"info","timestamp":"2021-03-05 16:40:36"}
-{"message":" \\______  /____/__|___|  /\\__/\\  / |__|__|_ \\__|","level":"info","timestamp":"2021-03-05 16:40:36"}
-{"message":"        \\/             \\/      \\/          \\/     ","level":"info","timestamp":"2021-03-05 16:40:36"}
-{"message":"Server started on port 8088","level":"info","timestamp":"2021-03-05 16:40:36"}
