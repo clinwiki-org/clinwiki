@@ -92,7 +92,6 @@ export const createReaction = ( nctId: string, reactionKindId: any) =>{
     return callGraphql(ENDPOINT,mutate.CREATE_REACTION, {nctId: nctId, reactionKindId: reactionKindId})
 };
 export const fetchReactionsById= (reactionKindId: any) => {
-    //console.log(`fetchReactionsById called ${reactionKindId}`);
     return callGraphql(ENDPOINT, query.REACTIONS_QUERY, {reactionKindId: reactionKindId})
 };
 export const upsertReviewFormMutation = (id:any, nctId:any, meta: any, content: any) =>{

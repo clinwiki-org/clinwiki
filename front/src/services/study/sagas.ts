@@ -25,6 +25,7 @@ function* getSampleStudy(action) {
 }
 
 function* getStudyPage(action) {
+    //console.log(action);
     try {
         console.log(action)
         let response = yield call(() => api.fetchStudyPage(action.nctId, action.QUERY));
@@ -196,12 +197,12 @@ function* deleteLabelMutation(action) {
 }
 function* deleteReviewMutation(action) {
     try {
-        console.log(action)
+        //console.log(action)
         let response = yield call(() => api.deleteReviewMutation(action.id, action.nctId));
         if (response) {
             yield put(actions.deleteReviewMutationSuccess(response.id));
             //yield call(()=> api.fetchReviewPage(action.nctId));
-            console.log(action.nctId);
+            //console.log(action.nctId);
             let response2 = yield getReviewPage(action);
         }
         else {
@@ -312,7 +313,9 @@ function* getAllWorkFlows(action) {
 }
 function* getReactionsIsland(action) {
     try {
+        //console.log(action);
         let response = yield call(() => api.fetchReactionsIsland(action.nctId));
+        //console.log(response);
         if (response) {
             yield put(actions.fetchReactionsIslandSuccess(response));
         }
@@ -321,18 +324,20 @@ function* getReactionsIsland(action) {
         }
     }
     catch (err) {
-        console.log(err);
+        //console.log(err);
         yield put(actions.fetchReactionsIslandError(err.message));
     }
 }
 function* deleteReaction(action) {
     try {
+        //console.log(action.nctId);
         let response = yield call(() => api.deleteReaction(action.id));
         if (response) {
             yield put(actions.deleteReactionSuccess(response.id));
-            yield getReactionsById(action.reactionKindId);
-            yield call(() => api.fetchReactionsIsland(action.nctId));
-            //still have to refetch study page query        
+            //console.log(action);
+            yield getReactionsIsland(action);
+            yield getStudyReactions(action);
+            yield put (actions.fetchStudyPage(action.nctId ?? "", action.studyQuery));
         }
         else {
             yield put(actions.deleteReactionError(response.message));
@@ -379,7 +384,11 @@ function* createReaction(action) {
         if (response) {
             yield put(actions.createReactionSuccess(response.data));
             yield getReactionsById(action.reactionKindId);
-            //still have to refetch study page query
+            //console.log(action);
+            yield getStudyReactions(action);
+            yield put (actions.fetchStudyPage(action.nctId ?? "", action.studyQuery));
+            //console.log(action.nctId);
+            yield getReactionsIsland(action);
         }
         else {
             yield put(actions.createReactionError(response.message));
@@ -526,9 +535,9 @@ function* updateWorkflowPage(action) {
 }
 function* getReactionsById(action) {
     try {
-        console.log(action)
-        let response = yield call(() => api.fetchReactionsById(action.reactionKindId));
-        console.log(response);
+        //console.log(action)
+        let response = yield call(() => api.fetchReactionsById(action.toString()));
+        //console.log(response);
         if (response) {
             yield put(actions.fetchReactionsByIdSuccess(response));
         }
