@@ -5,17 +5,7 @@ import styled from 'styled-components';
 import LoginModal from '../LoginModal';
 import SlackCounter from './SlackCounter/SlackCounter';
 import GithubSelector from './GithubSelector/GithubSelector';
-import CreateReactionMutation, {
-  CREATE_REACTION,
-} from 'mutations/CreateReactionMutation';
 import { find, propEq } from 'ramda';
-import { gql, useQuery, useMutation  }  from '@apollo/client';
-import StudyReactions from '../../queries/StudyReaction';
-import QUERY from 'queries/StudyPageQuery';
-import REACTION_KINDS from 'queries/ReactionKinds';
-import { ReactionKinds } from 'types/ReactionKinds';
-import { StudyReactions as StudyReactionsQueryType } from 'types/StudyReactions';
-import REACTIONS_QUERY from '../../queries/StudyReaction';
 import { fetchReactionsIsland, createReaction, fetchStudyReactions } from 'services/study/actions';
 import { BeatLoader } from 'react-spinners';
 
@@ -24,7 +14,7 @@ interface ReactionsBarProps {
   studyData: any;
   theme: any;
   nctId: any;
-  reactionsConfig?: any;
+  reactionsConfig: any;
   allReactions: any;
 }
 const HeaderContentWrapper = styled.div`
