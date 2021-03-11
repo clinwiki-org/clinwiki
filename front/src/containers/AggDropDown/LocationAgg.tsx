@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import { AggBucket, AggregateAggCallback } from '../SearchPage/Types';
 import { FormControl, FormGroup } from 'react-bootstrap';

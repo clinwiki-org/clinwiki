@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { defaultTo } from 'ramda';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import { AggBucket } from '../SearchPage/Types';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';

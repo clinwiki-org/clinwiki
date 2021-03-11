@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { SearchQueryInput, AggFilterInput } from "./globalTypes";
+import { SearchQueryInput, AggFilterInput } from "../../../types/globalTypes";
 
 // ====================================================
 // GraphQL query operation: CrumbsSearchPageAggBucketsQuery

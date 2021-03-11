@@ -2,7 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import Heading from 'components/Heading';
 import { Row, Col, Form, FormControl } from 'react-bootstrap';
-//import { gql, ApolloClient, ApolloConsumer }  from '@apollo/client';
 import { History } from 'history';
 
 const MainContainer = styled(Col)`

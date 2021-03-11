@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
-
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 interface BucketProps {
   value: string | number;
   display: FieldDisplay;

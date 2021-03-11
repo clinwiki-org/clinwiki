@@ -145,7 +145,7 @@ function* createSiteView(action) {
        // console.log("SAGA CREATING SITE VIEW", action);
         let createResponse = yield call(() => api.createSiteView(action.input)); 
     // NOTE CRUD site view mutations now pass in the site ID inside action.param
-    // old Apollo(refetch) used the fetchSiteProvider action after mutations in the handleSave > SiteViewsForm.tsx to refresh data.
+    // old A pollo(refetch) used the fetchSiteProvider action after mutations in the handleSave > SiteViewsForm.tsx to refresh data.
         if (createResponse.data.createSiteView.errors === null){                     
             let response = yield getSiteProvider(action);    
             yield put(actions.createSiteViewSuccess(response.data));

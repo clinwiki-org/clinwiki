@@ -1,5 +1,5 @@
 import { History } from 'history';
-import apolloClient from '../configureApollo';
+//import apolloClient from '../configureApollo';
 import { getLocalJwt, setLocalJwt } from './localStorage';
 
 export const getLocalEmail = (): string | null => {
@@ -19,10 +19,11 @@ export const getLocalEmail = (): string | null => {
   return payload['email'];
 };
 
-export const logout = (history: History) => {
+/* export const logout = (history: History) => {
+  console.log("OUTOUTOUTOTUTOUT")
   setLocalJwt(null);
   apolloClient.resetStore().then(() => history.push('/'));
-};
+}; */
 
 export const getStarColor = rank => {
   const firstTier = '#A97142';

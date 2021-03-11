@@ -26,7 +26,6 @@ import { displayFields } from 'utils/siteViewHelpers';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
 import {ThemedButton, ThemedSearchContainer} from 'components/StyledComponents/index';
 import ExportToCsvComponent from './ExportToCsvComponent';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import SaveSearch from './SaveSearch';
 import LabeledButton from 'components/LabeledButton';
 import {  SearchParams  as SearchParamsType }  from '../../../containers/SearchPage/shared';
@@ -296,7 +295,6 @@ const CrumbsBar = (props: CrumbsBarProps) => {
 
     const crowdAggFields = getCrowdAggAutoSuggest();
 
-    const query = AUTOSUGGEST_QUERY;
     const variables = {
       agg: 'browse_condition_mesh_terms',
       aggFilters: searchParams.aggFilters,

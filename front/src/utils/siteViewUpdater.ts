@@ -1,8 +1,8 @@
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
-import { SiteViewMutationInput, SiteViewOperation } from 'types/globalTypes';
+import { SiteViewMutationInput, SiteViewOperation } from '../services/site/model/InputTypes';
 import { find, propEq, reject } from 'ramda';
 import { cloneDeep } from 'apollo-utilities';
-import { WorkflowsViewFragment } from 'types/WorkflowsViewFragment';
+import { WorkflowsViewFragment } from 'services/study/model/WorkflowsViewFragment';
 import { SiteFragment_siteView } from 'services/site/model/SiteFragment';
 
 export const createMutation = (
