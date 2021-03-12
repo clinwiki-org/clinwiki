@@ -8,6 +8,14 @@ import { callGraphql, callHasura, getHasuraURL, get_gql_url } from 'utils/graphq
 const ENDPOINT = get_gql_url();
 const HASURA = getHasuraURL();
 
+
+const HASURA_QUERY = `query hasuraStudyQuery($nctId:String!) {
+    ctgov_studies(where: {nct_id: {_eq: $nctId}}){
+        nct_id
+        brief_title
+    }
+}
+`;
 export const fetchSampleStudy= (nctId: any, QUERY: any) => {
     return callGraphql(ENDPOINT, QUERY, {nctId});
 };

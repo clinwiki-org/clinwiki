@@ -104,7 +104,7 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
             return {
                 ...state,
                 isFetchingStudy: false,
-                studyPage: action.payload,
+                studyPageHasura: action.payload,
             };
         case types.FETCH_STUDY_PAGE_HASURA_ERROR:
             return {

@@ -38,10 +38,10 @@ export const fetchStudyPageError= (message: string) : types.StudyActionTypes => 
 });
 
 
-export const fetchStudyPageHasura= ( nctId: string, QUERY: any) : types.StudyActionTypes => ({
+export const fetchStudyPageHasura= ( nctId: string, HASURA_STUDY_QUERY: any) : types.StudyActionTypes => ({
     type: types.FETCH_STUDY_PAGE_HASURA_SEND,
     nctId,
-    QUERY
+    HASURA_STUDY_QUERY
 });
 export const fetchStudyPageHasuraSuccess= (payload: any) : types.StudyActionTypes => ({
     type: types.FETCH_STUDY_PAGE_HASURA_SUCCESS,

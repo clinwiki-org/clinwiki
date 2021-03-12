@@ -44,10 +44,10 @@ function* getStudyPage(action) {
 }
 
 function* getStudyPageHasura(action) {
-    //console.log(action);
+    console.log("SAGA GET STUDY HASURA", action.HASURA_STUDY_QUERY);
     try {
         let response = yield call(() => api.fetchStudyPageHasura(action.nctId, action.HASURA_STUDY_QUERY));
-        //console.log(response)
+        console.log("HASURA STUDY RESPONSE", response)
         if (response) {
             yield put(actions.fetchStudyPageHasuraSuccess(response));
             yield call(() => api.updateStudyViewLogCount(action.nctId));

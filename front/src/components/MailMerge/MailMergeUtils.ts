@@ -25,3 +25,28 @@ export function getSearchQuery(name: string, frag: string) {
   ${frag}
   `;
 }
+
+const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+
+export function getHasuraStudyQuery(name: string, frag: string) {
+  frag = frag || `fragment ${name} on Study { nctId }`;
+  return `
+  query Study${name}Query($nctId: String!) {
+    ctgov_studies(where: {nct_id: {_eq: $nctId}}) {
+      ...${name}
+    }
+  }
+  ${frag}
+`;
+}
+
+
+//nctId  wont work, need snake cased  nct_id
+
+const HASURA_STUDY_QUERY = `query hasuraStudyQuery($nctId:String!) {
+  ctgov_studies(where: {nct_id: {_eq: $nctId}}){
+      nct_id
+      brief_title
+  }
+}
+`;

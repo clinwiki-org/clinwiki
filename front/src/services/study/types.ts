@@ -262,7 +262,7 @@ export interface fetchStudyPageErrorAction {
 export interface fetchStudyPageHasuraSendAction {
     type: typeof FETCH_STUDY_PAGE_HASURA_SEND,
     nctId: any,
-    QUERY: any
+    HASURA_STUDY_QUERY: any
 };
 
 export interface fetchStudyPageHasuraSuccessAction {
