@@ -1,3 +1,4 @@
+import { getHasuraURL, callHasura } from './../../utils/graphqlUtil';
 import * as query from './queries';
 import { callGraphql, get_gql_url  } from 'utils/graphqlUtil';
 
@@ -5,6 +6,7 @@ import { callGraphql, get_gql_url  } from 'utils/graphqlUtil';
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
 const ENDPOINT = get_gql_url()
+const HASURA = getHasuraURL();
 
 export const fetchUser = ( userId: number ) => {
     return callGraphql(ENDPOINT,query.USER_QUERY, { userId: userId});
