@@ -25,6 +25,7 @@ import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponent'
 import GenericPage from 'containers/GenericPage/GenericPage';
+import GenericPage2 from 'containers/GenericPage2/GenericPage2.';
 
 interface AppProps {
   history: History;
@@ -60,6 +61,9 @@ class App extends React.PureComponent<AppProps> {
                   <Route path="/search/:siteviewUrl" component={SearchPage} />
                   <Route path="/study/:nctId"
                     render={(props) => <GenericPage arg={props.match.params.nctId} />}
+                  />
+                  <Route path="/study2/:nctId"
+                    render={(props) => <GenericPage2 arg={props.match.params.nctId} />}
                   />
                   <Route path="/p/:page/:arg?"
                     render={(props) => <GenericPage url={props.match.params.page} arg={props.match.params.arg} />}

@@ -1,6 +1,8 @@
 import * as types from './types';
 
 const initialState: types.StudyState = {
+    studyPageHasura: undefined,
+    isFetchingStudyPageHasura: false,
     isFetchingSampleStudy: false,
     sampleStudy: undefined,
     isFetchingStudy: false,
@@ -92,6 +94,24 @@ const studyReducer = ( state = initialState, action: types.StudyActionTypes) : t
                 ...state,
                 isFetchingStudy: false
             };
+
+        case types.FETCH_STUDY_PAGE_HASURA_SEND:
+            return {
+                ...state,
+                isFetchingStudy: true,
+            };
+        case types.FETCH_STUDY_PAGE_HASURA_SUCCESS:
+            return {
+                ...state,
+                isFetchingStudy: false,
+                studyPage: action.payload,
+            };
+        case types.FETCH_STUDY_PAGE_HASURA_ERROR:
+            return {
+                ...state,
+                isFetchingStudy: false
+            };
+
         case types.FETCH_PAGE_VIEWS_SEND:
             return {
                 ...state,

@@ -42,6 +42,26 @@ function* getStudyPage(action) {
         yield put(actions.fetchStudyPageError(err.message));
     }
 }
+
+function* getStudyPageHasura(action) {
+    //console.log(action);
+    try {
+        let response = yield call(() => api.fetchStudyPageHasura(action.nctId, action.HASURA_STUDY_QUERY));
+        //console.log(response)
+        if (response) {
+            yield put(actions.fetchStudyPageHasuraSuccess(response));
+            yield call(() => api.updateStudyViewLogCount(action.nctId));
+        }
+        else {
+            yield put(actions.fetchStudyPageHasuraError(response.message));
+        }
+    }
+    catch (err) {
+        console.log(err);
+        yield put(actions.fetchStudyPageHasuraError(err.message));
+    }
+}
+
 function* getPageViews(action) {
     try {
         let response = yield call(() => api.fetchPageViews(action));
@@ -569,6 +589,7 @@ function* getEditReview(action) {
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
+    yield takeLatest(types.FETCH_STUDY_PAGE_HASURA_SEND, getStudyPageHasura);
     yield takeLatest(types.FETCH_PAGE_VIEWS_SEND, getPageViews);
     yield takeLatest(types.FETCH_PAGE_VIEW_SEND, getPageView);
     yield takeLatest(types.UPDATE_STUDY_VIEW_LOG_COUNT_SEND, updateStudyViewLogCount);

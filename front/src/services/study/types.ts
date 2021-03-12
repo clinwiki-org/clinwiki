@@ -30,6 +30,10 @@ export const FETCH_STUDY_PAGE_SEND = 'FETCH_STUDY_PAGE_SEND';
 export const FETCH_STUDY_PAGE_SUCCESS = 'FETCH_STUDY_PAGE_SUCCESS';
 export const FETCH_STUDY_PAGE_ERROR = 'FETCH_STUDY_PAGE_ERROR';
 
+export const FETCH_STUDY_PAGE_HASURA_SEND = 'FETCH_STUDY_PAGE_HASURA_SEND';
+export const FETCH_STUDY_PAGE_HASURA_SUCCESS = 'FETCH_STUDY_PAGE_HASURA_SUCCESS';
+export const FETCH_STUDY_PAGE_HASURA_ERROR = 'FETCH_STUDY_PAGE_HASURA_ERROR';
+
 export const FETCH_PAGE_VIEWS_SEND = 'FETCH_PAGE_VIEWS_SEND';
 export const FETCH_PAGE_VIEWS_SUCCESS = 'FETCH_PAGE_VIEWS_SUCCESS';
 export const FETCH_PAGE_VIEWS_ERROR = 'FETCH_PAGE_VIEWS_ERROR';
@@ -159,6 +163,8 @@ export const BULK_LIST_UPDATE_MUTATION_SEND = 'BULK_LIST_UPDATE_MUTATION';
 export const BULK_LIST_UPDATE_MUTATION_SUCCESS = 'BULK_LIST_UPDATE_MUTATION_SUCCESS';
 export const BULK_LIST_UPDATE_MUTATION_ERROR = 'BULK_LIST_UPDATE_MUTATION_ERROR';
 export interface StudyState {
+    studyPageHasura: any | undefined,
+    isFetchingStudyPageHasura: any,
     isFetchingSampleStudy: boolean,
     sampleStudy: any | undefined,
     isFetchingStudy: boolean,
@@ -252,6 +258,22 @@ export interface fetchStudyPageErrorAction {
     type: typeof FETCH_STUDY_PAGE_ERROR,
     payload: StudyDataError
 };
+
+export interface fetchStudyPageHasuraSendAction {
+    type: typeof FETCH_STUDY_PAGE_HASURA_SEND,
+    nctId: any,
+    QUERY: any
+};
+
+export interface fetchStudyPageHasuraSuccessAction {
+    type: typeof FETCH_STUDY_PAGE_HASURA_SUCCESS,
+    payload: SearchStudyPageQuery 
+};
+export interface fetchStudyPageHasuraErrorAction {
+    type: typeof FETCH_STUDY_PAGE_HASURA_ERROR,
+    payload: StudyDataError
+};
+
 export interface fetchPageViewsSendAction {
     type: typeof FETCH_PAGE_VIEWS_SEND,
     siteId: any
@@ -725,7 +747,9 @@ export interface bulkListUpdateErrorAction {
     payload:StudyDataError
 };
 
-export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
+export type StudyActionTypes = 
+fetchStudyPageHasuraSendAction | fetchStudyPageHasuraSuccessAction | fetchStudyPageHasuraErrorAction |
+fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
 fetchPageViewSendAction | fetchPageViewSuccessAction | fetchPageViewErrorAction |
 fetchPageViewsSendAction | fetchPageViewsSuccessAction | fetchPageViewsErrorAction |
 updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |

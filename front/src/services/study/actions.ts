@@ -36,6 +36,23 @@ export const fetchStudyPageError= (message: string) : types.StudyActionTypes => 
     type: types.FETCH_STUDY_PAGE_ERROR,
     payload: {message}
 });
+
+
+export const fetchStudyPageHasura= ( nctId: string, QUERY: any) : types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_HASURA_SEND,
+    nctId,
+    QUERY
+});
+export const fetchStudyPageHasuraSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_HASURA_SUCCESS,
+    payload
+});
+export const fetchStudyPageHasuraError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_HASURA_ERROR,
+    payload: {message}
+});
+
+
 export const fetchPageViews= ( siteId: any) : types.StudyActionTypes => ({
     type: types.FETCH_PAGE_VIEWS_SEND,
     siteId
