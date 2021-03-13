@@ -137,11 +137,11 @@ interface CrumbsBarProps {
   updateSearchParams: (params: SearchParamsType) => void;
 }
 
-interface CrumbsBarState {
-  searchTerm: string;
-  suggestions: any;
-  isSuggestionLoading: boolean;
-}
+// interface CrumbsBarState {
+//   searchTerm: string;
+//   suggestions: any;
+//   isSuggestionLoading: boolean;
+// }
 
 //
 // NEW CODE HERE
@@ -240,6 +240,7 @@ const CrumbsBar = (props: CrumbsBarProps) => {
 
 
   const isLoading = useSelector((state : RootState ) => state.search.isFetchingAggs);
+  // const isLoading = true;
   const getAggFieldsFromSubsiteConfig = aggs => {
     let aggFields: string[] = [];
     if (aggs.length > 0) {
@@ -467,6 +468,9 @@ const CrumbsBar = (props: CrumbsBarProps) => {
     }
     return null
   }  
+
+  
+
   return (
     <Grid className="crumbs-bar">
       {showCrumbsBar ? (
@@ -526,7 +530,7 @@ const CrumbsBar = (props: CrumbsBarProps) => {
         <Col xs={12}>
           <div style={{ marginRight: '10px', display: 'inline' }}>
             <b>Total Results:</b>{' '}
-            {isLoading ? (<span style={{display:'inline-table', width: '5em'}}><BeatLoader/></span>): `${props.totalResults} studies`}
+            {isLoading ? (<span className="grey-loader" style={{display: 'inline-block', width: '5em', minHeight: '25px', position: 'relative', top: '8px'}}></span>): `${props.totalResults} studies`}
           </div>
           {
             showSaveSearchButton()

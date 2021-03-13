@@ -247,4 +247,45 @@ div.DraftEditor-editorContainer{
 .ellipsed-text {
   display:none;
 }
+
+.cards-loader-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.grey-loader {
+  height: 100%;
+  border-radius: .1em;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: placeHolderShimmer;
+  -webkit-animation-timing-function: linear;
+  background: #737373;
+  background-image: linear-gradient(to right, #737373 0%, #888 20%, #737373 40%, #737373 100%);
+  // background-repeat: no-repeat;
+  // background-size: 800px 104px;
+  position: relative;
+  width: 5em;
+}
+
+@-webkit-keyframes placeHolderShimmer {
+  0% {
+    background-position: -468px 0
+  }
+  100% {
+    background-position: 468px 0
+  }
+}
+
+@-webkit-keyframes prideShimmer {
+  from {
+    background-position: top left
+  }
+  to {
+    background-position: top right
+  }
+}
+
 `);

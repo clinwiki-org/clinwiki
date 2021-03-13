@@ -300,7 +300,7 @@ const Aggs = (props: AggsProps) => {
           <PresearchContainer>
             {showPresearchResults ? (
             <div className="presearch-total-results">
-                <><b>Total Results:</b> {isLoading? (<span style={{display:'inline-table', width: '5em'}}><BeatLoader/></span>): `${recordsTotal} studies`}</>
+                <><b>Total Results:</b> {isLoading? (<span className="grey-loader" style={{display:'inline-table', width: '5em'}}></span>): `${recordsTotal} studies`}</>
             </div>):null}
             <div className="horizontal-pre">
               <div className="horizontal-aggs">

@@ -20,6 +20,7 @@ import 'react-table/react-table.css';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
 import MasonryCards from './components/MasonryCards';
 import ListCards from './components/ListCards';
+import CardsLoader from './components/CardsLoader';
 import withTheme from 'containers/ThemeProvider';
 import TableRV from './components/TableRV';
 import {
@@ -340,7 +341,10 @@ useEffect(()=>{
 const data = useSelector((state : RootState ) => state.search.studies);
 const isLoading = useSelector((state : RootState ) => state.search.isFetchingStudies);
 
-  if(data == undefined || isLoading) return <BeatLoader/>
+  if(data == undefined || isLoading) return (
+  <ThemedSearchContainer>
+    <CardsLoader />
+  </ThemedSearchContainer>)
   return (
     <SearchWrapper>
       {/* <Helmet>
