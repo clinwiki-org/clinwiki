@@ -17,7 +17,7 @@ export const fetchStudyPageHash= (hash: any, QUERY:any) => {
     return callGraphql(ENDPOINT, QUERY, {hash});
 };
 export const fetchPageViews= (siteId: any) => {
-    return callGraphql(ENDPOINT, query.PAGE_VIEWS_QUERY, {siteId: siteId.siteId});
+    return callGraphql(ENDPOINT, query.PAGE_VIEWS_QUERY, { id: siteId.siteId});
 };
 export const fetchPageView= (url:any) => {
     return callGraphql(ENDPOINT, query.PAGE_VIEW_QUERY, {url: url.url});
