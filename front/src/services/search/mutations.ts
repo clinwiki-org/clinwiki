@@ -76,6 +76,7 @@ export const UPDATE_FACET_CONFIG = `
     updateFacetConfig(input: $input) {
       errors
     }
+  }
 `;
 
 
