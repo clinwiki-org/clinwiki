@@ -35,12 +35,12 @@ const TEMPLATE = `
 
 # Total Studies: {{recordsTotal}}
 
-<div class="testing-container">
+<div class="cards-container">
 
 {{#each studies }}
-<div class="testing-mm">
+<div class="mm-card2">
   <div class ="mail-merge" >
-    <span>ID: <a href="/search{{querystring ALL}} ">{{nctId}}</a></span><br/>
+    <span>ID: <a href="/study/{{nctId}}?hash={{querystring hash}}&sv=search3&pv=default">{{nctId}}</a></span><br/>
     <span>Title: {{briefTitle}}</span><br/><span>Summary: {{briefSummary}}</span>
   </div>
 </div>
