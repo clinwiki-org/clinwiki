@@ -8,6 +8,7 @@ export const callGraphql = (endpoint: string, query: any, variables: any, operat
     console.log("variables = ",variables);
     console.log(`operationName = ${operationName}`);
     console.log(`auth = ${getLocalJwt()}`);*/
+    console.log('endpoint being hit', endpoint)
     const abc = fetch(endpoint,{
         method: 'POST',
         headers: {
