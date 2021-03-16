@@ -2,12 +2,13 @@ import * as query from './queries';
 import * as mutate from './mutations'
 import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
 import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
-import { callGraphql, get_gql_url } from 'utils/graphqlUtil';
+import { callGraphql, get_gql_url, getGraphQLMigrationURL } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
-const ENDPOINT = get_gql_url()
+const ENDPOINT = get_gql_url();
+const NODE_ENDPOINT = getGraphQLMigrationURL();
 
 export const fetchSearchPageAggs = (searchParams : any) => {
     return callGraphql(ENDPOINT,query.SEARCH_PAGE_AGGS_QUERY, searchParams);
@@ -24,7 +25,7 @@ export const fetchSearchParams = (hash : any) => {
     return callGraphql(ENDPOINT,query.SEARCH_PAGE_PARAMS_QUERY, { hash });
 };
 export const fetchSearchStudies = (searchParams : any) => {
-    return callGraphql(ENDPOINT,query.SEARCH_PAGE_SEARCH_QUERY, searchParams);
+    return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_SEARCH_QUERY, searchParams);
 };
 export const updateSearchParams = ( searchParams ) =>{
     return callGraphql(ENDPOINT, mutate.SEARCH_PAGE_HASH_MUTATION,
