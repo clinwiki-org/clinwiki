@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import MailMerge from './MailMerge';
 import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
-import { getStudyQuery, getSearchQuery } from './MailMergeUtils';
+import { getStudyQuery, getSearchQuery, getHasuraStudyQuery } from './MailMergeUtils';
 import { commonIslands } from 'containers/Islands/CommonIslands';
-import { useFragment } from './MailMergeFragment';
+import { useHasuraFragment } from './MMFragment2';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchHasuraIntrospection } from 'services/introspection/actions';
 import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
 import { BeatLoader } from 'react-spinners';
-import { fetchStudyPage } from 'services/study/actions';
+import { fetchStudyPage, fetchStudyPageHasura } from 'services/study/actions';
 
 
-type Mode = 'Study' | 'Search';
-
+type Mode = 'Study' | 'Search' | 'HasuraStudy';
 // return a tuple of the elements that differ with the mode
 // query, params, schema
 
@@ -23,36 +22,20 @@ function getClassForMode(mode: Mode) {
             return 'Study';
         case 'Search':
             return 'ElasticStudy';
+        case 'HasuraStudy':
+            return 'ctgov_studies';
     }
 }
 
-// function getModeData(
-//   mode: Mode,
-//   arg: string,
-//   fragment: string,
-//   fragmentName: string
-// ): [DocumentNode, object, string] {
-//   switch (mode) {
-//     case 'Study':
-//       return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
-//     case 'Search':
-//       return [
-//         getSearchQuery(fragmentName, fragment),
-//         { hash: arg },
-//         'ElasticStudy',
-//       ];
-//   }
-// }
-
 export default function TestComponent2() {
     const [template, setTemplate] = useState(`
-# title: {{briefTitle}}
+# title: {{brief_title}}
 <Expander header="outter">
   <table class="table table-striped table-bordered table-condensed">
     <tbody>
-      <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
-      <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
-      <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
+      <tr> <th>NCT ID</th> <td>{{nct_id}}</td> </tr>
+      <tr> <th>Overall Status</th> <td>{{overall_status}}</td> </tr>
+      <tr> <th>Completion Date</th> <td>{{completion_date}}</td> </tr>
       <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
       <tr> <th>Source</th> <td>{{source}}</td> </tr>
     </tbody>
@@ -62,36 +45,106 @@ export default function TestComponent2() {
   </Expander>
 </Expander>
 `);
-    const [mode, setMode] = useState<Mode>('Study');
+
+    const [template2, setTemplate2] = useState(`
+<div style="max-width: 80%; padding-left: 10%;">
+<Back></Back>
+
+<Navigation></Navigation>
+
+<h2 style="text-align:center">{{brief_title}}<Reactions></Reactions></h2>
+
+<table class="table table-striped table-bordered table-condensed">
+  <tbody>
+    <tr> <td>NCT ID</td> <td>{{nct_id}} <A HREF="https://clinicaltrials.gov/ct2/show/{{nctId}}"  target=_blank><img src="https://logo.clearbit.com/nih.gov" title="Open at clinicaltrials.gov" title="Open at clinicaltrials.gov"  width="25"></A> </td> </tr>
+    <tr> <td>Overall Status</td> <td>{{overall_status}} (Completion Date: {{completionDate}}) </td></tr>
+    <tr> <td>Enrollment {{enrollment_type}}</td> <td>{{enrollment}} </td> </tr>
+<tr><td> Conditions</td><td>{{conditions}} </td></tr>
+    <tr> <td>Source</td> <td>{{source}}</td> </tr>
+    <tr><td>Trial Type</td><td>{{study_type}} </td></tr>
+<tr><td> Phase</td><td>{{phase}}</td></tr>
+<tr><td> Start Date {{start_date_type}}</td><td>{{start_date}} 
+<tr> <td>Trial Last Updated</td> <td>{{last_update_posted_date}}</td> </tr>
+ 
+</td></tr>
+  </tbody>
+</table>  
+
+### Workflow:
+<Workflow name="WF_AliveAndKickn1"></Workflow>
+
+<h3 style="text align:center">Facilities</h3>
+<Facility></Facility>
+
+### Wiki
+<Wikipage></Wikipage>
+
+### Edits History
+<EditsHistory></EditsHistory>
+
+### Reviews
+<Reviews></Reviews>
+
+### General Trial Information
+### Description
+<pre>{{brief_summary}}{{detailed_description}} </pre>
+### Eligibility Criteria
+<pre>{{eligibility_criteria}}</pre> 
+
+<table class="table table-striped table-bordered table-condensed" class="center">
+  <tbody>
+    <tr> <td style="min-width:150px">Official Title</td> <td>{{official_title}}</td> </tr>
+    <tr> <td>Gender Eligibility</td> <td> {{eligibility_gender}}  
+ </td></tr>
+<tr> <td>Accepts Healthy Volunteers</td> <td>{{eligibility_healthy_volunteers}} </td></tr>
+<tr><td>Expanded Access</td><td>{{has_expanded_access}}</td></tr>
+    <tr> <td>FDA-regulated
+</td> <td>{{is_fda_regulated}}  
+</td> </tr>
+<tr> <td>Has a Data Monitoring Committee  
+</td> <td>{{has_data_monitoring_committee}}  
+</td> </tr>
+    <tr> <td>Primary Outcome Measure(s)</td> <td>{{primary_measures}}  
+</td> </tr>
+ <tr> <td>Secondary Outcome Measure(s)</td> <td>{{secondary_measures}}</td></tr>
+<tr> <td>Responsible Party</td> <td>{{responsible_party}} 
+</td> </tr>
+<tr> <td>Trial Last Updated</td> <td>{{last_update_posted_date}}</td> </tr>
+  </tbody>
+</table>  
+<button type="button"><strong>Accepts Healthy Volunteers: {{eligibility_healthy_volunteers}}</strong></button>
+`);
+
+
+
+    const [mode, setMode] = useState<Mode>('HasuraStudy');
     const defaultNctId = 'NCT03847779';
     const defaultSearchHash = 'tqxCyI9M';
     let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
 
     const dispatch = useDispatch();
 
+    const schemaType = getClassForMode(mode);
+    // const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
+    const studyData = useSelector((state: RootState) => state.study.studyPageHasura);
+    const [fragmentName, fragment] = useHasuraFragment(schemaType, template);
+
     useEffect(() => {
-        console.log("INTROSPECTION Query", introspectionQuery)
+        //console.log("INTROSPECTION Query", introspectionQuery)
         const QUERY = introspectionQuery
         dispatch(fetchHasuraIntrospection(QUERY));
     }, [dispatch]);
 
     useEffect(() => {
-        const QUERY = `${getStudyQuery(fragmentName, fragment)}`
-        dispatch(fetchStudyPage(nctOrSearchHash ?? "", QUERY));
-        console.log(mode)
-        const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
+        const QUERY = `${getHasuraStudyQuery(fragmentName, fragment)}`
+        dispatch(fetchStudyPageHasura(nctOrSearchHash ?? "", QUERY));
+        const STUDY_QUERY = `${getHasuraStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-        dispatch(mode == "Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPage(nctOrSearchHash ?? "", SEARCH_QUERY));
+        dispatch(mode == "Study" ? fetchStudyPageHasura(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPage(nctOrSearchHash ?? "", SEARCH_QUERY));
     }, [dispatch, nctOrSearchHash]);
 
     const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
 
-
-    const schemaType = getClassForMode(mode);
-    const [fragmentName, fragment] = useFragment(schemaType, template);
-    // const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
-    // const { data } = useQuery(query, { variables });
-    const studyData = useSelector((state: RootState) => state.study.studyPage);
 
     const updateMode = mode => {
         setMode(mode);
@@ -113,10 +166,9 @@ export default function TestComponent2() {
         return <BeatLoader />;
     }
 
-    const sampleData = studyData?.data.study || studyData.data?.search?.studies?.[0];
+    const sampleData = studyData?.data.ctgov_studies[0] || studyData.data?.search?.studies?.[0];
 
     if (introspection) {
-        console.log("INTROSPECTION STATE", introspection)
         const types = introspection.data.__schema.types;
         return (
             <div>
