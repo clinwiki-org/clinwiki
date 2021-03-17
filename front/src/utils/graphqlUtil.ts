@@ -51,7 +51,7 @@ export const getHasuraURL = () => {
     typeof window === 'undefined' ||
     window.location.hostname.includes('localhost')
   ) {
-    return `https://clinwiki-aact.hasura.app/v1/graphql`;
+    return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
   }
   return '/graphql';
 }

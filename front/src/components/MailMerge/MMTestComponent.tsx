@@ -70,6 +70,7 @@ export default function TestComponent() {
   const dispatch = useDispatch();
 
   useEffect(()=>{
+    console.log("INTROSPECTION Query", introspectionQuery)
     const QUERY = introspectionQuery
     dispatch(fetchIntrospection(QUERY));
   },[dispatch]);
@@ -115,6 +116,7 @@ export default function TestComponent() {
   const sampleData = studyData?.data.study || studyData.data?.search?.studies?.[0];
   
   if (introspection) {
+    console.log("INTROSPECTION STATE", introspection)
     const types = introspection.data.__schema.types;
     return (
       <div>
