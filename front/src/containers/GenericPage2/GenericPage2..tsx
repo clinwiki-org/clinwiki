@@ -1,4 +1,4 @@
-      
+
 import React, { useEffect, useState } from 'react';
 import MailMergeView, {
     microMailMerge,
@@ -17,6 +17,7 @@ import { fetchPageViews, fetchPageView, fetchStudyPage, updateStudyViewLogCount,
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { fetchPresentSiteProvider } from 'services/site/actions';
+import { useHasuraFragment } from 'components/MailMerge/MMFragment2';
 
 
 interface Props {
@@ -46,16 +47,15 @@ export default function GenericPage2(props: Props) {
 
     const dispatch = useDispatch();
     const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
-    const studyData = useSelector((state: RootState) => state.study.studyPage);
+    //const studyData = useSelector((state: RootState) => state.study.studyPage);
     const loading = useSelector((state: RootState) => state.study.isFetchingStudyPage)
     const pageViewsData = useSelector((state: RootState) => state.study.pageViews);
     const pageViewData = useSelector((state: RootState) => state.study.pageView);
     const currentPage = pageViewData ? pageViewData?.data.site?.pageView : null;
 
-    const [fragmentName, fragment] = useFragment('Study', currentPage?.template || '');
+    const [fragmentName, fragment] = useHasuraFragment('ctgov_studies', currentPage?.template || '');
 
-
-    const studyDataHasura = useSelector((state: RootState) => state.study.studyPageHasura);
+    const studyData = useSelector((state: RootState) => state.study.studyPageHasura);
     //console.log("🚀  GenericPage2 ~ studyDataHasura", studyDataHasura);
 
 
@@ -72,28 +72,17 @@ export default function GenericPage2(props: Props) {
     }, [dispatch, params.pv]);
 
 
-
- /*    const HASURA_STUDY_QUERY = `query hasuraStudyQuery($nctId:String!) {
-        ctgov_studies(where: {nct_id: {_eq: $nctId}}){
-            nct_id
-            brief_title
-        }
-    }
-    `; */
-
     useEffect(() => {
         const QUERY = `${getStudyQuery(fragmentName, fragment)}`
 
-        const  HASURA_STUDY_QUERY =  `${getHasuraStudyQuery(fragmentName, fragment)}`
+        const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(fragmentName, fragment)}`
 
-        console.log("🚀 ~ file: GenericPage2..tsx ~ line 1 ~ useEffect ~ fragment", fragment);
-        console.log("🚀 ~ file: GenericPage2..tsx ~ line 1 ~ useEffect ~ fragmentName", fragmentName);
-
-
-        console.log("QUERY", HASURA_STUDY_QUERY);
+        //console.log("🚀 ~ file: GenericPage2..tsx ~ line 1 ~ useEffect ~ fragment", fragment);
+        //console.log("🚀 ~ file: GenericPage2..tsx ~ line 1 ~ useEffect ~ fragmentName", fragmentName);
+        //console.log("QUERY", HASURA_STUDY_QUERY);
         dispatch(fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY));
 
-        dispatch(fetchStudyPage(props.arg ?? "", QUERY));
+        //dispatch(fetchStudyPage(props.arg ?? "", QUERY));
     }, [dispatch, currentPage, props.arg]);
 
 
@@ -108,9 +97,7 @@ export default function GenericPage2(props: Props) {
         return <BeatLoader />
     }
 
-    if (!studyDataHasura.data) {
-        return <BeatLoader />
-    }
+
     //console.log(studyData.data)
     const title = microMailMerge(currentPage?.title, studyData?.data.study);
     return (
@@ -120,7 +107,7 @@ export default function GenericPage2(props: Props) {
             </Helmet>
             <MailMergeView
                 template={currentPage?.template || ''}
-                context={studyDataHasura?.data.study}
+                context={studyData?.data.ctgov_studies[0]}
                 islands={studyIslands}
             />
         </div>
