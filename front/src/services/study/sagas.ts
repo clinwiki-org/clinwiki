@@ -45,9 +45,7 @@ function* getStudyPage(action) {
 }
 function* getStudyPageHash(action) {
     try {
-        console.log("ACTION",action)
         let response = yield call(() => api.fetchStudyPageHash(action.hash, action.QUERY));
-        console.log(response)
         if(response) {
             yield put(actions.fetchStudyPageSuccess(response));
         }

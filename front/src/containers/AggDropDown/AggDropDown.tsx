@@ -341,11 +341,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     let aggName = currentAgg!.name
     let responseBuckets = this.props.aggKind === "crowdAggs" ?  this.props.crowdAggBuckets?.aggs[aggName] :  this.props.aggBuckets?.aggs[aggName]
 
-    //console.log("handle RESPONSE", responseBuckets);
 
     let currentBuckets = buckets === undefined || buckets[0] === undefined ? []  : buckets
     const allBuckets = currentBuckets.concat(responseBuckets);
-
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
       sortBy<AggBucket>(prop('key'))
