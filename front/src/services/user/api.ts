@@ -9,7 +9,7 @@ const NODE_ENDPOINT = getGraphQLMigrationURL();
 
 export const fetchUser = ( userId: number ) => {
     console.log("fetchUser called");
-    return callGraphql(NODE_ENDPOINT,query.USER_QUERY, { userId: userId});
+    return callGraphql(ENDPOINT,query.USER_QUERY, { userId: userId});
 };
 
 export const fetchCurrentUser = () => {
