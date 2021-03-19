@@ -42,7 +42,7 @@ export const getGraphQLMigrationURL = () => {
     typeof window === 'undefined' ||
     window.location.hostname.includes('localhost')
   ) {
-    return `http://${window.location.hostname}:8088/graphql`;
+    return `http://${window.location.hostname}:8088/nodeql`;
   }
-  return '/graphql';
+  return '/nodeql';
 }
