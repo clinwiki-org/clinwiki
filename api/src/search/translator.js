@@ -4,6 +4,20 @@ const util = require('util');
 const esb = require('elastic-builder');
 const zg = require('zip2geo');
 
+const ENABLED_AGGS = [
+    'average_rating', 'overall_status', 'facility_states', 'conditions',
+    'facility_cities', 'facility_names', 'facility_countries', 'study_type', 'sponsors',
+    'browse_condition_mesh_terms', 'phase', 'rating_dimensions',
+    'browse_interventions_mesh_terms', 'interventions_mesh_terms',
+    'front_matter_keys', 'start_date', 'wiki_page_edits.email', 'wiki_page_edits.created_at',
+    'reactions.kind', 'indexed_at', 'last_update_posted_date',
+    'last_changed_date',  'number_of_arms', 'study_views_count',
+    'number_of_groups', 'why_stopped', 'results_first_submitted_date',
+    'plan_to_share_ipd', 'design_outcome_measures',
+    'location'
+  ];
+
+
 const translate = async (criteria,lastDate) => {
     logger.debug('translate.lastDate '+lastDate);
 
