@@ -23,7 +23,7 @@ function* getAdminSiteView(action) {
     }
 }
 
-function* getSitesPage(action) {
+export function* getSitesPage(action) {
     try {
         let response = yield call(() => api.fetchSitesPage());
         if(response) {

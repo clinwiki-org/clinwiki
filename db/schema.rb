@@ -30,6 +30,12 @@ ActiveRecord::Schema.define(version: 2021_03_03_224723) do
     t.integer "user_id"
   end
 
+  create_table "facet_configs", force: :cascade do |t|
+    t.json "main_config"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "facility_locations", force: :cascade do |t|
     t.string "name"
     t.string "city"

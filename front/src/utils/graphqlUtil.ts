@@ -55,3 +55,13 @@ export const getHasuraURL = () => {
   }
   return '/graphql';
 }
+
+export const getHasuraClinwikiURL  = () => {
+  if (
+    typeof window === 'undefined' ||
+    window.location.hostname.includes('localhost')
+  ) {
+    return `https://clinwiki-crowd-stg.hasura.app/v1/graphql`;
+  }
+  return '/graphql';
+}
