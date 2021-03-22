@@ -19,10 +19,10 @@ const ENABLED_AGGS = [
 
 
 const translate = async (criteria,lastDate) => {
-    logger.debug('translate.lastDate '+lastDate);
 
-    let boolQuery = esb.boolQuery();
-    
+    let agg = translateAgg(criteria);
+
+    let boolQuery = esb.boolQuery();    
     await translateAggFilters(criteria.agg_filters,boolQuery,false);
     await translateAggFilters(criteria.crowd_agg_filters,boolQuery,true);
 
@@ -42,7 +42,9 @@ const translate = async (criteria,lastDate) => {
         logger.debug('indexed_at dateString: '+dateString);
         boolQuery.must(esb.simpleQueryStringQuery('indexed_at:{'+dateString+' TO *}'));
     }
-    let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(config.elasticMaxResults);
+
+    // Create the aggs and crowd aggs
+    let requestBody = esb.requestBodySearch().agg(agg).query( boolQuery ).from(0).size(config.elasticMaxResults);
 
     return requestBody.toJSON();
 }
@@ -114,5 +116,11 @@ const translateGeoLoc = async (agg,isCrowdAgg) => {
 
 const getFieldName = (agg,isCrowdAgg) => {
     return isCrowdAgg ? 'fm_'+agg.field : agg.field;
+}
+
+const translateAgg = (criteria) => {
+    let fmAgg = esb.termsAggregation('front_matter_keys', 'front_matter_keys')
+
+    return fmAgg;
 }
 export default translate;

@@ -9,9 +9,8 @@ export async function runSearch(args) {
         const translated = await translate(args.params);
         console.log('translated', util.inspect(translated, false, null, true));
         let esResults = await elastic.query(translated);
-        console.log('esResults', util.inspect(esResults, false, null, true));
+        //console.log('esResults', util.inspect(esResults, false, null, true));
         const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
-        console.log(studies);
         return {
             recordsTotal: esResults.body.hits.total,
             studies,
