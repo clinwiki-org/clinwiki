@@ -11,6 +11,7 @@ import EditsHistoryIsland from './EditsHistoryIsland';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import IslandAgg from './IslandAgg';
 import SearchWithin from './SearchWithin';
+import IslandAggWrapper from './IslandAggWrappper';
 
 /*
   Common island configuration for MailMerge pages
@@ -58,7 +59,7 @@ export const studyIslands: Record<string, IslandConstructor> = {
 export const searchIslands: Record<string, IslandConstructor> = {
   ...commonIslands,
   agg: (attributes: Record<string, string>, context?: any) => (
-    <IslandAgg aggId={attributes['id']} />
+    <IslandAggWrapper aggId={attributes['id']} />
   ),
   searchwithin: (attributes: Record<string, string>, context?: any) => (
     <SearchWithin />
