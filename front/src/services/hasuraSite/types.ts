@@ -13,6 +13,7 @@ export interface SiteState {
     isUpdatingSiteHasura: boolean, 
     sitesData: any | SitesPageQuery | undefined,
     isFetchingSitesPageHasura: boolean,
+    hasuraSitesData: any,
 }                                                                                   
                                                                                     
 export interface SiteDataError {                                                    
@@ -41,7 +42,7 @@ export interface FetchSitesPageHasuraSendAction {
 
 export interface FetchSitesPageHasuraSuccessAction {
     type: typeof FETCH_SITES_PAGE_HASURA_SUCCESS,
-    payload: SitesPageQuery
+    payload: any 
 };
 
 export interface FetchSitesPageHasuraErrorAction {
@@ -51,6 +52,6 @@ export interface FetchSitesPageHasuraErrorAction {
 
 
 
-export type SiteActionTypes = 
+export type HasuraSiteActionTypes = 
     UpdateSiteHasuraSendAction | UpdateSiteHasuraSuccessAction | UpdateSiteHasuraErrorAction |
     FetchSitesPageHasuraSendAction | FetchSitesPageHasuraSuccessAction | FetchSitesPageHasuraErrorAction;

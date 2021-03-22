@@ -5,9 +5,10 @@ const initialState: types.SiteState = {
     isFetchingSitesPageHasura: false,
     isUpdatingSiteHasura: false,                                                    
     sitesData: undefined,
+    hasuraSitesData: undefined,
 };                                                                                  
                                                                                     
-const siteReducer = ( state = initialState, action: types.SiteActionTypes) : types.SiteState => {
+const siteReducer = ( state = initialState, action: types.HasuraSiteActionTypes) : types.SiteState => {
     switch(action.type) {                                                           
         case types.UPDATE_SITE_HASURA_SEND:                                         
             return {
@@ -26,15 +27,17 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
                 isUpdatingSiteHasura: false                                         
             };
         case types.FETCH_SITES_PAGE_HASURA_SEND:
-            return {
+            console.log("FETCH_SITES_PAGE_HASURA_SEND hit in hasuraSite reducer"); 
+	    return {
                 ...state,
                 isFetchingSitesPageHasura: true
             };
         case types.FETCH_SITES_PAGE_HASURA_SUCCESS:
+            console.log("FETCH_SITES_PAGE_HASURA_SUCCESS hit in hasuraSite reducer"); 
             return {
                 ...state,
                 isFetchingSitesPageHasura: false,
-                sitesData: action.payload
+                hasuraSitesData: action.payload
             };
         case types.FETCH_SITES_PAGE_HASURA_ERROR:
             return {
