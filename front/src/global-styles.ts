@@ -403,7 +403,6 @@ div.DraftEditor-editorContainer{
 .three {
   grid-area: three;
 }
-
 .four {
   grid-area: four;
 }
@@ -414,4 +413,7 @@ div.DraftEditor-editorContainer{
   grid-column: 2 / 4;
 }
 
+.loader-container {
+  position: relative;
+}
 `);

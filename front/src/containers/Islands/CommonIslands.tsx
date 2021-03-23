@@ -13,6 +13,7 @@ import SearchWithin from './SearchWithin';
 import SaveSearchIsland from './SaveSearchIsland';
 import DownloadCSVIsland from './DownloadCSVIsland';
 import ResultSort from './ResultSort';
+import ResultLoader from './ResultLoader';
 import IslandAggWrapper from './IslandAggWrappper';
 
 /*
@@ -74,5 +75,8 @@ export const searchIslands: Record<string, IslandConstructor> = {
   ),
   resultsort: (attributes: Record<string, string>, context?: any) => (
     <ResultSort/>
+  ),
+  resultloader: (attributes: Record<string, string>, context?: any) => (
+    <ResultLoader/>
   ),
 };

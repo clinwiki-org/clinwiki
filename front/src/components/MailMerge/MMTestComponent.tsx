@@ -40,7 +40,8 @@ const TEMPLATE = `
 </div>
 
 </div>
-  <div class="three ">
+  <div class="three loader-container">
+  <resultloader></resultloader>
 <div class="mm-single-line-center">
 <savesearch></savesearch>
 <csv></csv>
