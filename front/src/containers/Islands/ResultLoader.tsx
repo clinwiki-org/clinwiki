@@ -41,7 +41,6 @@ function ResultLoader() {
 
     );
   }
-  debugger
   return null
 }
 export default ResultLoader;
