@@ -255,24 +255,28 @@ function IslandAggChild(props: Props) {
         ? [...aggValues.values, value]
         : [value];
       onUpdateFilter();
-    }
+    }else{
 
-    let newInput = {
-      field: currentAgg.name,
-      values: [value],
-      gte: aggValues?.gte || null,
-      lte: aggValues?.lte || null,
-      includeMissingFields: aggValues?.includeMissingFields || null,
-      zipcode: aggValues?.zipcode || null,
-      radius: aggValues?.radius || null,
-      lat: aggValues?.lat || null,
-      long: aggValues?.long || null
+      let newInput = {
+        field: currentAgg.name,
+        values: [value],
+        gte: aggValues?.gte || null,
+        lte: aggValues?.lte || null,
+        includeMissingFields: aggValues?.includeMissingFields || null,
+        zipcode: aggValues?.zipcode || null,
+        radius: aggValues?.radius || null,
+        lat: aggValues?.lat || null,
+        long: aggValues?.long || null
+      }
+      return updateSearchParams2({
+        [grouping as string]: [...searchParams[grouping], newInput],
+      });
     }
 
 
 
     updateSearchParams2({
-      [grouping as string]: [...searchParams[grouping], newInput],
+      [grouping as string]: [...searchParams[grouping]],
     });
   }
 
@@ -280,10 +284,14 @@ function IslandAggChild(props: Props) {
     if (aggValues.values) {
 
       aggValues.values = filter(x => x !== value, aggValues.values)
+      if(aggValues.values.length>0){
 
-      updateSearchParams2({
-        [grouping as string]: aggValues,
-      });
+        updateSearchParams2({
+          [grouping as string]: aggValues,
+        });
+      }else{
+        onUpdateFilter();
+      }
     } else {
       aggValues.values = []
       onUpdateFilter();
