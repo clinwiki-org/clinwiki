@@ -6,6 +6,7 @@ export const loadConfig = () => {
     config.elasticsearchHost= process.env.ELASTICSEARCH_HOSTS || 'changeme';
     config.elasticsearchUsername= process.env.ELASTICSEARCH_USERNAME || 'changeme';
     config.elasticsearchPassword= process.env.ELASTICSEARCH_PASSWORD || 'changeme';
+    config.elasticMaxResults = process.env.ELASTICSEARCH_MAXRESULTS || 100;
     config.smtpHost= process.env.SMTP_HOST || 'changeme';
     config.smtpPort= process.env.SMTP_PORT || 'changeme';
     config.smtpUser= process.env.SMTP_USER || 'changeme';

@@ -10,7 +10,9 @@ export async function runSearch(args) {
         console.log('translated', util.inspect(translated, false, null, true));
         let esResults = await elastic.query(translated);
         //console.log('esResults', util.inspect(esResults, false, null, true));
-        const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
+        const studies = esResults.body.hits.hits.filter( study => study.nct_id).map( study => esToGraphql(study));
+        console.log('hits '+esResults.body.hits.total);
+        console.log('studies '+studies.length);
         return {
             recordsTotal: esResults.body.hits.total,
             studies,
@@ -26,5 +28,7 @@ function esToGraphql(study) {
     let obj = keysToCamel(study._source);
     obj.studyViewCount = obj.studyViewsCount;
     obj.isFdaRegulated = obj.isFdaRegulatedDrug | obj.isFdaRegulatedDevice;
+    obj.averageRating = 0;
+    console.log(obj.nctId)
     return obj;
 }

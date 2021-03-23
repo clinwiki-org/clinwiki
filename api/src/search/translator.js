@@ -22,9 +22,10 @@ const translate = async (criteria,lastDate) => {
 
     let agg = translateAgg(criteria);
 
-    let boolQuery = esb.boolQuery();    
-    await translateAggFilters(criteria.agg_filters,boolQuery,false);
-    await translateAggFilters(criteria.crowd_agg_filters,boolQuery,true);
+    let boolQuery = esb.boolQuery();
+    boolQuery.must(esb.simpleQueryStringQuery('*'));
+    await translateAggFilters(criteria.aggFilters,boolQuery,false);
+    await translateAggFilters(criteria.crowdAggFilters,boolQuery,true);
 
     if(criteria.q.key === 'AND' && criteria.q.children) {
         criteria.q.children.forEach( child => {
@@ -44,7 +45,7 @@ const translate = async (criteria,lastDate) => {
     }
 
     // Create the aggs and crowd aggs
-    let requestBody = esb.requestBodySearch().agg(agg).query( boolQuery ).from(0).size(config.elasticMaxResults);
+    let requestBody = esb.requestBodySearch().agg(agg).query( boolQuery ).from(0).size(criteria.pageSize);
 
     return requestBody.toJSON();
 }
