@@ -81,7 +81,7 @@ function IslandAggChild(props: Props) {
   })
   let getCurrentAgg = () => {
 
-    let jsonConfig = JSON.parse(facetConfig.data.facetConfig.mainConfig)
+    let jsonConfig = facetConfig.facetConfig.mainConfig
     return aggId && jsonConfig.default[aggId]
 
   }
@@ -340,9 +340,6 @@ function IslandAggChild(props: Props) {
       q: JSON.parse(searchParams.q)
     };
 
-    console.log("VARS", currentAgg)
-    console.log("VARS", crowdAggBuckets)
-    console.log("VARS", variables)
 
     currentAgg.aggKind === "crowdAggs" ? dispatch(fetchSearchPageCrowdAggBuckets(variables)) : dispatch(fetchSearchPageAggBuckets(variables));
     handleLoadMoreResponse();
@@ -352,10 +349,8 @@ function IslandAggChild(props: Props) {
 
     let aggName = currentAgg!.name
     let responseBuckets = currentAgg.aggKind === "crowdAggs" ? crowdAggBuckets?.aggs[aggName] : aggBuckets?.aggs[aggName]
-    console.log(responseBuckets)
     let currentBuckets = buckets[0] === undefined ? [] : buckets
     const allBuckets = currentBuckets.concat(responseBuckets);
-    console.log(allBuckets)
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
       sortBy<AggBucket>(prop('key'))
@@ -509,7 +504,16 @@ function IslandAggChild(props: Props) {
     }
   };
 
+  const handleContainerToggle =()=>{
+    let newConfig = facetConfig
+    if(aggId){
+      newConfig.facetConfig.mainConfig.default[aggId].defaultToOpen = !facetConfig.facetConfig.mainConfig.default[aggId].defaultToOpen
 
+    }
+    // console.log(newConfig)
+    }
+    // dispatch(updateAggOpenState())
+  
   const filters = transformFilters(searchParams[grouping])
 
   return (
@@ -519,7 +523,7 @@ function IslandAggChild(props: Props) {
         isPresearch={true}
         selectedKeys={filters[currentAgg!.name] || emptySet}
         field={currentAgg}
-        onContainerToggle={() => setIsOpen(!isOpen)}
+        onContainerToggle={() => handleContainerToggle()}
         handleLoadMore={handleLoadMore}
         hasMore={hasMore}
         onCheckBoxToggle={handleCheckboxToggle}
@@ -536,7 +540,7 @@ function IslandAggChild(props: Props) {
         toggleAlphaSort={toggleAlphaSort}
         toggleNumericSort={toggleNumericSort}
         setShowLabel={showLabel => setShowLabel(showLabel)}
-        isOpen={isOpen}
+        isOpen={currentAgg.defaultToOpen}
         fromAggField={false}
       />
     </>

@@ -46,7 +46,7 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   }, [dispatch]);
 
   useEffect(() => {
-    let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig)
+    let mainConfig = facetConfig && facetConfig.facetConfig.mainConfig;
 
     facetConfig && setConfig(JSON.stringify(mainConfig.default[currentAggId]));
     facetConfig && setAggs(mainConfig.default);
@@ -59,7 +59,7 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   let aggsArray = Object.keys(aggs)
 
   const handleSaveIsland = (e) => {
-    let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig);
+    let mainConfig = facetConfig && facetConfig.facetConfig.mainConfig;
     mainConfig.default[currentAggId] = JSON.parse(aggConfig);
 
     let variables = {
