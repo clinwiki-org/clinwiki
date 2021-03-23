@@ -8,7 +8,7 @@ const initialState: types.SiteState = {
     hasuraSitesData: undefined,
 };                                                                                  
                                                                                     
-const siteReducer = ( state = initialState, action: types.HasuraSiteActionTypes) : types.SiteState => {
+const hasuraSiteReducer = ( state = initialState, action: types.HasuraSiteActionTypes) : types.SiteState => {
     switch(action.type) {                                                           
         case types.UPDATE_SITE_HASURA_SEND:                                         
             return {
@@ -28,7 +28,7 @@ const siteReducer = ( state = initialState, action: types.HasuraSiteActionTypes)
             };
         case types.FETCH_SITES_PAGE_HASURA_SEND:
             console.log("FETCH_SITES_PAGE_HASURA_SEND hit in hasuraSite reducer"); 
-	    return {
+	        return {
                 ...state,
                 isFetchingSitesPageHasura: true
             };
@@ -50,4 +50,4 @@ const siteReducer = ( state = initialState, action: types.HasuraSiteActionTypes)
     }       
 }   
 
-export default siteReducer;        
+export default hasuraSiteReducer;        

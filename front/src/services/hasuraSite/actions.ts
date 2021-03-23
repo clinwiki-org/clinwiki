@@ -23,7 +23,7 @@ export const fetchSitesPageHasura = () : types.HasuraSiteActionTypes => (console
     type: types.FETCH_SITES_PAGE_HASURA_SEND
 });
 
-export const fetchSitesPageHasuraSuccess = (payload: SitesPageQuery) : types.HasuraSiteActionTypes => ({
+export const fetchSitesPageHasuraSuccess = (payload: any) : types.HasuraSiteActionTypes => (console.log("fetchSitesPageHasuraSuccess called in hasuraSite/api"), {
     type: types.FETCH_SITES_PAGE_HASURA_SUCCESS,
     payload
 });

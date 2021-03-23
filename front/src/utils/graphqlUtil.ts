@@ -45,6 +45,22 @@ export const get_gql_url = () => {
     }).then(r => r.json());
 }
 
+export const callHasuraClinwiki = (endpoint: string, query: any, variables: any, operationName?: string) => {
+    return fetch(endpoint,{
+        method: 'POST',
+        headers: {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json',
+            'x-hasura-admin-secret': `${process.env.REACT_APP_HAS_TOKEN}`
+        },
+        body: JSON.stringify({
+            query,
+            variables,
+            operationName
+        })
+    }).then(r => r.json());
+}
+
 
 export const getHasuraURL = () => {
   if (
