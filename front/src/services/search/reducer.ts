@@ -1,4 +1,5 @@
 import { exportToCsv, searchExport } from './api';
+import { FacetConfigQuery } from './model/FacetConfigQuery';
 import * as types from './types';
 
 const initialState: types.SearchState = {
@@ -224,10 +225,15 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                         isFetchingFacetConfig: true
                     };
                 case types.FETCH_FACET_CONFIG_SUCCESS:
+                    let response = {
+                            facetConfig: {
+                                mainConfig:JSON.parse(action.payload.data.facetConfig.mainConfig)
+                            }
+                        } as FacetConfigQuery
                     return {
                         ...state,
                         isFetchingFacetConfig: false,
-                        facetConfig: action.payload
+                        facetConfig: response
                     };
                 case types.FETCH_FACET_CONFIG_ERROR:
                     return {
