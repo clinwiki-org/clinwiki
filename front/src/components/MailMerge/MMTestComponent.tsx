@@ -23,29 +23,47 @@ function getClassForMode(mode: Mode) {
   }
 }
 const TEMPLATE = `
-# title: Search Page
-
-<searchwithin></searchwithin>
-
-<div class='mm-single-line'>
+<div class="grid-container">
+<div class="grid3">
+  <div class="one">
     <agg id='0'></agg>
     <agg id='1'></agg>
-    <agg id='2'></agg>
+    <agg id='2'></agg>    
+
+</div>
+  <div class="two">    
+<searchwithin></searchwithin>
+<div class="mm-single-line-center">
+    <agg id='4'></agg>
+    <agg id='5'></agg>
+    <agg id='6'></agg>
 </div>
 
-# Total Studies: {{recordsTotal}}
-
+</div>
+  <div class="three ">
+<div class="mm-single-line-center">
+<savesearch></savesearch>
+<csv></csv>
+</div>
+<resultsort></resultsort>
 <div class="cards-container">
-
 {{#each studies }}
 <div class="mm-card2">
   <div class ="mail-merge" >
-    <span>ID: <a href="/study/{{nctId}}?hash={{querystring hash}}&sv=search3&pv=default">{{nctId}}</a></span><br/>
+    <span> ID: <a href="/search{{querystring ALL}} ">{{nctId}}</a></span><br/>
     <span>Title: {{briefTitle}}</span><br/><span>Summary: {{briefSummary}}</span>
   </div>
 </div>
 {{/each }}
 </div>
+
+</div>
+
+</div>
+
+  
+
+ </div>
 `
 export default function TestComponent() {
   const [template, setTemplate] = useState(TEMPLATE);
