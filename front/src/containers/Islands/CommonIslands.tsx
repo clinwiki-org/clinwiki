@@ -9,8 +9,10 @@ import ReactionsIsland from './ReactionsIsland';
 import ReviewsIsland from './ReviewsIsland';
 import EditsHistoryIsland from './EditsHistoryIsland';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-import IslandAgg from './IslandAgg';
 import SearchWithin from './SearchWithin';
+import SaveSearchIsland from './SaveSearchIsland';
+import DownloadCSVIsland from './DownloadCSVIsland';
+import ResultSort from './ResultSort';
 import IslandAggWrapper from './IslandAggWrappper';
 
 /*
@@ -63,5 +65,14 @@ export const searchIslands: Record<string, IslandConstructor> = {
   ),
   searchwithin: (attributes: Record<string, string>, context?: any) => (
     <SearchWithin />
-  )
+  ),
+  savesearch: (attributes: Record<string, string>, context?: any) => (
+    <SaveSearchIsland/>
+  ),
+  csv: (attributes: Record<string, string>, context?: any) => (
+    <DownloadCSVIsland/>
+  ),
+  resultsort: (attributes: Record<string, string>, context?: any) => (
+    <ResultSort/>
+  ),
 };
