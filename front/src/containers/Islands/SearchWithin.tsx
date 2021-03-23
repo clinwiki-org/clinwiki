@@ -14,6 +14,7 @@ import aggToField from 'utils/aggs/aggToField';
 import { Form, FormGroup, ControlLabel } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
 import { SearchParams, SearchQuery } from '../SearchPage/shared';
+import MultiCrumb from '../../components/MultiCrumb';
 import { map, dissoc, propEq, reject } from 'ramda';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { defaultPageSize } from '../SearchPage/Types';
@@ -296,9 +297,18 @@ export default function SearchWithin(props: Props) {
       return null;
     }
   };
-
+  let crumbValues: string[] = [];
+  searchParams.q.children.map(v=>{
+    crumbValues.push(v.key)
+  })
   return (
     <div>
+      <MultiCrumb
+        key="Search"
+        category="search"
+        values={crumbValues}
+        onClick={()=>console.log("remove please")}
+      > 
       <Form
         inline
         className="searchInput"
@@ -309,6 +319,7 @@ export default function SearchWithin(props: Props) {
           showAutoSuggest
         )}
       </Form>
+      </MultiCrumb>
     </div>
   );
 }
