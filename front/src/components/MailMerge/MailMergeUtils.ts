@@ -26,7 +26,8 @@ export function getSearchQuery(name: string, frag: string) {
   `;
 }
 
-const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+const camelToSnakeCase = str =>
+  str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
 export function getHasuraStudyQuery(name: string, frag: string) {
   frag = frag || `fragment ${name} on ctgov_studies{nct_id}`;
@@ -40,6 +41,29 @@ export function getHasuraStudyQuery(name: string, frag: string) {
 `;
 }
 
+export const getSampleStudyQuery = (name: string, frag: string) => {
+  frag = frag || `fragment ${name} on Study { nctId }`;
+  return `
+  query SampleStudyQuery($nctId: String!) {
+    study(nctId: $nctId) {
+      ...${name}
+    }
+  }
+  ${frag}
+`;
+};
+
+export const getHasuraSampleStudyQuery = (name: string, frag: string) => {
+  frag = frag || `fragment ${name} on ctgov_studies{nct_id}`;
+  return `
+query HasuraSampleStudyQuery($nctId: String!) {
+  ctgov_studies(where: {nct_id: {_eq: $nctId}}) {
+    ...${name}
+  }
+}
+${frag}
+`;
+};
 
 //nctId  wont work, need snake cased  nct_id
 

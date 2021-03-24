@@ -3,7 +3,7 @@ import MailMerge from './MailMerge';
 import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
 import { getStudyQuery, getSearchQuery, getHasuraStudyQuery } from './MailMergeUtils';
 import { commonIslands } from 'containers/Islands/CommonIslands';
-import { useHasuraFragment } from './MMFragment2';
+import { useHasuraFragment } from './HasuraMMFragment';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchHasuraIntrospection } from 'services/introspection/actions';
 import { RootState } from 'reducers';
@@ -27,7 +27,7 @@ function getClassForMode(mode: Mode) {
     }
 }
 
-export default function TestComponent2() {
+export default function HasuraTestComponent() {
     const [template, setTemplate] = useState(`
 # title: {{brief_title}}
 <Expander header="outter">
@@ -118,7 +118,7 @@ export default function TestComponent2() {
 
 
     const [mode, setMode] = useState<Mode>('HasuraStudy');
-    const defaultNctId = 'NCT03847779';
+    const defaultNctId = 'NCT00102700';
     const defaultSearchHash = 'tqxCyI9M';
     let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
 

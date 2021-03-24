@@ -24,9 +24,9 @@ import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponent'
-import MMTest2 from 'components/MailMerge/MMTestComponent2'
+import HasuraMMTest from 'components/MailMerge/HasuraMMTestComponent'
 import GenericPage from 'containers/GenericPage/GenericPage';
-import GenericPage2 from 'containers/GenericPage2/GenericPage2.';
+import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
 
 interface AppProps {
   history: History;
@@ -63,11 +63,14 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/study/:nctId"
                   render={(props) => <GenericPage arg={props.match.params.nctId} />}
                 />
-                <Route path="/study2/:nctId"
-                  render={(props) => <GenericPage2 arg={props.match.params.nctId} />}
+                <Route path="/hasurastudy/:nctId"
+                  render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}
                 />
                 <Route path="/p/:page/:arg?"
                   render={(props) => <GenericPage url={props.match.params.page} arg={props.match.params.arg} />}
+                />
+                <Route path="/p/:hasurapage/:arg?"
+                  render={(props) => <HasuraGenericPage url={props.match.params.page} arg={props.match.params.arg} />}
                 />
                 <Route exact path="/profile" component={EditProfilePage} />
                 <Route path="/profile/:id/" component={ProfilePage} />
@@ -82,7 +85,7 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/not-configured" component={NotConfiguredPage} />
                 <Route path="/update_password" component={UpdatePassword} />
                 <Route path="/mmtest" component={MMTest} />
-                <Route path="/mmtest2" component={MMTest2} />
+                <Route path="/hasurammtest" component={HasuraMMTest} />
                 <Route component={NotFoundPage} />
               </Switch>
             </div>

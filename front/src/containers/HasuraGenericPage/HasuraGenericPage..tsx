@@ -10,21 +10,19 @@ import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-//import {usePresentSite} from "../PresentSiteProvider/PresentSiteProvider";
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
 import { fetchPageViews, fetchPageView, fetchStudyPage, updateStudyViewLogCount, fetchStudyPageHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { fetchPresentSiteProvider } from 'services/site/actions';
-import { useHasuraFragment } from 'components/MailMerge/MMFragment2';
-
+import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
 
 interface Props {
     url?: string;
     arg?: string;
 }
-export default function GenericPage2(props: Props) {
+export default function HasuraGenericPage(props: Props) {
     const history = useHistory();
     const match = useRouteMatch();
     const defaultPage = () => {
@@ -56,8 +54,6 @@ export default function GenericPage2(props: Props) {
     const [fragmentName, fragment] = useHasuraFragment('ctgov_studies', currentPage?.template || '');
 
     const studyData = useSelector((state: RootState) => state.study.studyPageHasura);
-    //console.log("🚀  GenericPage2 ~ studyDataHasura", studyDataHasura);
-
 
     useEffect(() => {
         dispatch(fetchPresentSiteProvider(undefined, params.sv));
@@ -73,18 +69,9 @@ export default function GenericPage2(props: Props) {
 
 
     useEffect(() => {
-        const QUERY = `${getStudyQuery(fragmentName, fragment)}`
-
         const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(fragmentName, fragment)}`
-
-        //console.log("🚀 ~ file: GenericPage2..tsx ~ line 1 ~ useEffect ~ fragment", fragment);
-        //console.log("🚀 ~ file: GenericPage2..tsx ~ line 1 ~ useEffect ~ fragmentName", fragmentName);
-        //console.log("QUERY", HASURA_STUDY_QUERY);
         dispatch(fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY));
-
-        //dispatch(fetchStudyPage(props.arg ?? "", QUERY));
     }, [dispatch, currentPage, props.arg]);
-
 
 
     if (!props.arg) {
@@ -97,8 +84,6 @@ export default function GenericPage2(props: Props) {
         return <BeatLoader />
     }
 
-
-    //console.log(studyData.data)
     const title = microMailMerge(currentPage?.title, studyData?.data.study);
     return (
         <div>
