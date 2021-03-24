@@ -44,5 +44,5 @@ export const getGraphQLMigrationURL = () => {
   ) {
     return `http://${window.location.hostname}:8088/graphql`;
   }
-  return '/graphql';
+  return `http://${window.location.hostname}:8088/graphql`;
 }

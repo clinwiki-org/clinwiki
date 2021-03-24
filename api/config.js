@@ -13,7 +13,7 @@ export const loadConfig = () => {
     config.smtpPassword= process.env.SMTP_PASSWORD || 'changeme';
     config.outboundEmail= process.env.SMTP_OUTBOUND_EMAIL || 'no-reply@yourdomain.com';
     config.webUrl= process.env.WEB_URL || 'changeme';
-    config.jwtSecret = process.env.SECRET_KEY_BASE || 'InsertSecretHere';
+    config.jwtSecret = process.env.SECRET_KEY_BASE_NODE || 'InsertSecretHere';
     config.jwtExpire = process.env.JWT_EXPIRATION_TIME_SECS || 86400;
     config.googleClientId = process.env.GOOGLE_CLIENT_ID || 'GoogleIdHere'
     
