@@ -60,6 +60,7 @@ class App extends React.PureComponent<AppProps> {
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/version" component={ReleaseNotes} />
                 <Route path="/search/" component={SearchPage} />
+                <Route path="/search2/" render={(props) => <GenericPage/>} />
                 <Route path="/search/:siteviewUrl" component={SearchPage} />
                 <Route path="/study/:nctId"
                   render={(props) => <GenericPage arg={props.match.params.nctId} />}
