@@ -73,6 +73,7 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/p/:hasurapage/:arg?"
                   render={(props) => <HasuraGenericPage url={props.match.params.page} arg={props.match.params.arg} />}
                 />
+                <Route path="/aggIslands" component={EditAggIslandsPage} />
                 <Route exact path="/profile" component={EditProfilePage} />
                 <Route path="/profile/:id/" component={ProfilePage} />
                 <Route path="/workflows" component={EditWorkflowsPage} />
