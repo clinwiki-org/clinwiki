@@ -35,7 +35,7 @@ export const fetchStudyPageHasura = (nctId: any, HASURA_STUDY_QUERY: any) => {
 
 export const fetchPageViews = (siteId: any) => {
   return callGraphql(ENDPOINT, query.PAGE_VIEWS_QUERY, {
-    siteId: siteId.siteId,
+    id: siteId.siteId,
   });
 };
 export const fetchPageView = (url: any) => {
