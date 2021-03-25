@@ -1,4 +1,5 @@
-import { FilterKind, AggFilterInput } from 'types/globalTypes';
+import { FilterKind} from '../services/site/model/InputTypes';
+import {  AggFilterInput } from 'types/globalTypes';
 import {
   reject,
   filter,

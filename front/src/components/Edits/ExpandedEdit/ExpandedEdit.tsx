@@ -1,5 +1,5 @@
 import React from 'react';
-import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'types/StudyEditsHistoryQuery';
+import { StudyEditsHistoryQuery_study_wikiPage_edits } from 'services/study/model/StudyEditsHistoryQuery';
 import ExpandedAsRawDiff from './ExpandedAsRawDiff';
 import FrontMatterExpandedEdit from './FrontMatterExpandedEdit';
 import WikiExpandedEdit from './WikiExpandedEdit';

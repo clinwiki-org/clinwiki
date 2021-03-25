@@ -5,7 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import {
   SearchPageParamsQuery_searchParams,
-} from 'types/SearchPageParamsQuery';
+} from '../../services/search/model/SearchPageParamsQuery'
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import { ThemedButton, ThemedSearchContainer, ThemedMainContainer } from '../../components/StyledComponents';
 import Collapser from '../../components/Collapser'

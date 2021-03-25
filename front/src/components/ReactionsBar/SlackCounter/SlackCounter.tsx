@@ -7,15 +7,11 @@ import SlackCounterGroup from './SlackCounterGroup'
 import { find, propEq } from 'ramda';
 import { Icon, InlineIcon } from '@iconify/react';
 import smilePlus from '@iconify/icons-fe/smile-plus';
-//import DeleteReactionMutation, {} from 'mutations/DeleteReactionMutation';
-import {} from 'mutations/DeleteReactionMutation'; //delete after working to see if there's a difference
-//import CreateReactionMutation, {} from 'mutations/CreateReactionMutation';
-import {} from 'mutations/CreateReactionMutation'; //kept this but deleted mutation
 import { createReaction, deleteReaction} from '../../../services/study/actions';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-//import REACTIONS_QUERY from '../../../queries/StudyReaction'
-//import REACTIONS_QUERY from '../../../services/study/queries'
-//import QUERY from 'queries/StudyPageQuery';
+import { useFragment } from '../../MailMerge/MailMergeFragment';
+import { getStudyQuery } from '../../MailMerge/MailMergeUtils';
+import { RootState } from 'reducers';
 interface SlackCounterProps {
     activeReactions: any;
     user: any;
@@ -24,12 +20,6 @@ interface SlackCounterProps {
     nctId: any;
     currentUserAndStudy: any;
     allReactions: any;
-    deleteReaction: any;
-    createReaction: any;
-}
-interface SlackCounterState {
-    showLabel: boolean;
-    currentUserAndStudy: any[];
 }
 const StyledCounter = styled.div`
     display: flex;
@@ -70,75 +60,42 @@ const StyledCounter = styled.div`
 `
 
 export const ThemedCounter = withTheme(StyledCounter);
-class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState> {
-    state: SlackCounterState = {
-        showLabel: false,
-        currentUserAndStudy: []
-    }
+export default function SlackCounter(props: SlackCounterProps) {
+    const pageViewData = useSelector((state:RootState) => state.study.pageView);
+    const currentPage = pageViewData ? pageViewData?.data?.site?.pageView : null;
+    const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
+    const studyQuery = `${getStudyQuery(fragmentName, fragment)}`
+    const dispatch = useDispatch();
+    const [currentUserAndStudy, setCurrentUserAndStudy] = useState([]);
 
+    useEffect (() => {
+      setCurrentUserAndStudy(props.currentUserAndStudy);
+    },[props.currentUserAndStudy])
 
-    componentDidMount() {
-        this.setState({ currentUserAndStudy: this.props.currentUserAndStudy })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps !== this.props) {
-            this.setState({ currentUserAndStudy: this.props.currentUserAndStudy })
-        }
-    }
-    deleteReactionHelper = (reaction) => {
+    const deleteReactionHelper = (reaction) => {
         console.log(reaction);
-        const { nctId }= this.props
+        const { nctId } = props
         let id = reaction.id
-        /*deleteReaction({
-            variables: {
-                id: reaction.id
-            },
-            awaitRefetchQueries: true,
-            refetchQueries: [{ query: QUERY, variables: { nctId } },{ query: REACTIONS_QUERY, variables: { nctId } }]
-        })*/
-        this.props.deleteReaction(id);
-
-        /*const deleteReactionMutation = (id)=>{
-          console.log(id);
-          if(!id) return
-          return this.props.deleteReaction(id)
-        }*/
-
+        nctId && dispatch (deleteReaction(id, studyQuery, props.nctId));
     }
-    createReactionHelper = (reaction) => {
+    const createReactionHelper = (reaction) => {
         let reactionKindId = reaction.id
-        const {nctId}= this.props
+        const {nctId}= props
 
-        /*createReaction({
-            variables: {
-                reactionKindId: reactionID,
-                nctId: this.props.nctId
-            },
-            awaitRefetchQueries: true,
-             refetchQueries: [
-                 { query: QUERY, variables: { nctId } }, { query : REACTIONS_QUERY, variables: { nctId } } 
-            ]
-        })*/
-        
-        //implement redux dispatch here
-        this.props.createReaction(nctId, reactionKindId);
-        /*const createReactionMutation = (nctId, reactionKindId)=>{
-          if(!nctId || !reactionKindId) return
-          return this.props.createReaction(nctId, reactionKindId)
-        }*/
+        dispatch (createReaction(nctId, reactionKindId, studyQuery));
     }
-    currentReactionFilter = (reactionName) => {
+    const currentReactionFilter = (reactionName) => {
         //we dont have all the necessary data in activeReactions to interact with the db, 
         //this is where this function comes into play:
 
         //we take the reaction name and find it in our array with all our reactions that has all that data
 
-        if (this.props.allReactions) {
-            let allReactions = this.props.allReactions.reactionKinds
+        if (props.allReactions) {
+            let allReactions = props.allReactions.reactionKinds
             return find(propEq('name', reactionName))(allReactions)
         }
     }
-    findUserReaction = (reaction: any | undefined, userReactions: any[]): object | undefined => {
+    const findUserReaction = (reaction: any | undefined, userReactions: any[]): object | undefined => {
         //much like currentReactionFilter() we don't have the necesarry data 
         //to interact with db  in the case a reaction is one a user has already interacted with before
 
@@ -150,14 +107,14 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
         }
         return
     }
-    renderReactionButtons = () => {
-        let userReactionsCurrent = this.state.currentUserAndStudy;
+    const renderReactionButtons = () => {
+        let userReactionsCurrent = currentUserAndStudy;
         return (
-            this.props.activeReactions.map((reaction, index) => {
+            props.activeReactions.map((reaction, index) => {
 
-                let currentReaction = this.currentReactionFilter(reaction.name)
+                let currentReaction = currentReactionFilter(reaction.name)
 
-                let isUserReaction = this.findUserReaction(currentReaction, userReactionsCurrent)
+                let isUserReaction = findUserReaction(currentReaction, userReactionsCurrent)
                 if (isUserReaction && currentReaction) {
                     return (
                         <div className="group-active" key={reaction.name}>
@@ -166,7 +123,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                                 count={reaction.count}
                                 names={' '}
                                 active={' '}
-                                onSelect={() => this.deleteReactionHelper(isUserReaction)}
+                                onSelect={() => deleteReactionHelper(isUserReaction)}
                             />
                         </div>
                     )
@@ -178,7 +135,7 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
                                 count={reaction.count}
                                 names={' '}
                                 active={' '}
-                                onSelect={() => this.createReactionHelper(currentReaction)}
+                                onSelect={() => createReactionHelper(currentReaction)}
                             />
 
 
@@ -192,34 +149,23 @@ class SlackCounter extends React.Component<SlackCounterProps, SlackCounterState>
 
         )
     }
-    render() {
-        let addEmoji = <Icon icon={smilePlus} width="1.5em" />
-        let userReactionsCurrent = this.state.currentUserAndStudy;
-        return (
-            <ThemedCounter>
+    let addEmoji = <Icon icon={smilePlus} width="1.5em" />
+    let userReactionsCurrent = props.currentUserAndStudy;
+    return (
+        <ThemedCounter>
 
-                {this.renderReactionButtons()}
-                <div className="add" onClick={this.props.onAdd}>
-                    <SlackCounterGroup
-                        emoji={addEmoji}
-                        count={''}
-                        names={''}
-                        active={''}
-                        onSelect={''}
+            {renderReactionButtons()}
+            <div className="add" onClick={props.onAdd}>
+                <SlackCounterGroup
+                    emoji={addEmoji}
+                    count={''}
+                    names={''}
+                    active={''}
+                    onSelect={''}
 
-                    />
+                />
 
-                </div>
-            </ThemedCounter>
-        )
-    }
-
-
+            </div>
+        </ThemedCounter>
+    )
 }
-
-const mapDispatchToProps = (dispatch) => ({
-  createReaction: (nctId, reactionKindId) => dispatch(createReaction(nctId, reactionKindId)),
-      
-  deleteReaction: (id) => dispatch(deleteReaction(id))
-});
-export default connect(null, mapDispatchToProps) (SlackCounter);

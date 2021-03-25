@@ -8,7 +8,7 @@ import { IslandConstructor } from './MailMergeView';
 import { useFragment } from './MailMergeFragment';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSampleStudy } from 'services/study/actions';
-import { getSampleStudyQuery } from 'services/study/queries';
+import { getSampleStudyQuery } from '../../components/MailMerge/MailMergeUtils';
 import { RootState } from 'reducers';
 import { fetchIntrospection } from 'services/introspection/actions';
 //import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
@@ -34,32 +34,31 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const [nctId, setNctId] = useState(default_nctid);
   const dispatch = useDispatch();
 
-  useEffect(()=>{
+  useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
     dispatch(fetchIntrospection(QUERY));
-  },[dispatch]);
+  }, [dispatch]);
 
-const introspection = useSelector((state:RootState) => state.introspection.introspection);
-//console.log("INTROSPECTION response", introspection)
+  const introspection = useSelector((state: RootState) => state.introspection.introspection);
 
   const [fragmentName, fragment] = useFragment('Study', props.template);
 
-  useEffect(()=>{
+  useEffect(() => {
     const QUERY = `${getSampleStudyQuery(fragmentName, fragment)}`
     dispatch(fetchSampleStudy(nctId ?? "", QUERY));
-  },[dispatch, fragment]);
+  }, [dispatch, fragment]);
 
-  const study = useSelector((state:RootState) => state.study.sampleStudy);
+  const study = useSelector((state: RootState) => state.study.sampleStudy);
 
-  if(!study){
-    return<BeatLoader/>;
+  if (!study) {
+    return <BeatLoader />;
   }
 
   if (!introspection) {
     return <BeatLoader />;
   }
 
-  const schema : GraphqlSchemaType = {
+  const schema: GraphqlSchemaType = {
     kind: 'graphql',
     typeName: 'Study',
     types: introspection.data.__schema.types,

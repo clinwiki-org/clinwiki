@@ -113,7 +113,6 @@ ActiveRecord::Schema.define(version: 2021_03_03_224723) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "url"
-    t.datetime "last_notification_date", precision: 6
     t.index ["short_link_id"], name: "index_saved_searches_on_short_link_id"
     t.index ["user_id"], name: "index_saved_searches_on_user_id"
   end
@@ -215,7 +214,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_224723) do
     t.string "picture_url"
     t.string "reset_token_url"
     t.string "search_notification_criteria"
-    t.datetime "search_last_notification", default: "2021-03-03 22:48:37"
+    t.datetime "search_last_notification", default: "2021-03-08 18:06:19"
     t.integer "search_notification_frequency"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

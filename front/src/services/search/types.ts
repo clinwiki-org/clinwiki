@@ -1,11 +1,9 @@
 import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
 import {SearchPageAggsQuery} from './model/SearchPageAggsQuery';
-import {SearchPageSearchQuery} from './model/SearchPageSearchQuery';
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+import {SearchPageSearchQuery} from '../../services/search/model/SearchPageSearchQuery'
+import {SearchPageParamsQuery} from  '../../services/search/model/SearchPageParamsQuery'
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
-
-
 
 export const FETCH_SEARCH_PAGE_AGGS_SEND = 'FETCH_SEARCH_PAGE_AGGS_SEND';
 export const FETCH_SEARCH_PAGE_AGGS_SUCCESS = 'FETCH_SEARCH_PAGE_AGGS_SUCCESS';
@@ -47,6 +45,13 @@ export const DELETE_SAVED_SEARCH_SEND = 'DELETE_SAVED_SEARCH_SEND';
 export const DELETE_SAVED_SEARCH_SUCCESS = 'DELETE_SAVED_SEARCH_SUCCESS';
 export const DELETE_SAVED_SEARCH_ERROR = 'DELETE_SAVED_SEARCH_ERROR';
 
+export const SEARCH_EXPORT_SEND = 'SEARCH_EXPORT_SEND';
+export const SEARCH_EXPORT_SUCCESS = 'SEARCH_EXPORT_SUCCESS';
+export const SEARCH_EXPORT_ERROR = 'SEARCH_EXPORT_ERROR';
+
+export const EXPORT_T0_CSV_SEND = 'EXPORT_TO_CSV_SEND';
+export const EXPORT_T0_CSV_SUCCESS = 'EXPORT_TO_CSV_SUCCESS';
+export const EXPORT_T0_CSV_ERROR = 'EXPORT_TO_CSV_ERROR';
 
 export interface SearchState {
     isFetchingAggs: boolean,
@@ -56,7 +61,7 @@ export interface SearchState {
     isFetchingCrowdAggBuckets: boolean,
     crowdAggBuckets: any | SearchPageCrowdAggBucketsQuery | undefined,
     isFetchingSearchParams: boolean,
-    searchResults: typeof SearchPageParamsQuery | undefined
+    searchResults: SearchPageParamsQuery | undefined
     isFetchingStudies: boolean,
     studies: SearchPageSearchQuery | undefined
     isUpdatingParams: boolean,
@@ -67,6 +72,10 @@ export interface SearchState {
     savedSearches: any | UserSavedSearchesQuery | undefined,
     isCreatingSavedSearch: boolean,
     isDeletingSavedSearch: boolean,
+    isFetchingSearchExport: boolean,
+    searchExport: any;
+    isExportingToCsv: boolean,
+
 }
 export interface SearchDataError {
     message: string
@@ -89,7 +98,7 @@ export interface FetchSearchPageAggsErrorAction {
 
 export interface FetchSearchPageAggBucketsSendAction {
     type: typeof FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND
-    searchParams: any                                   //TODO CHeck
+    searchParams: any                                  
 };
 
 export interface FetchSearchPageAggBucketsSuccessAction {
@@ -105,7 +114,7 @@ export interface FetchSearchPageAggBucketsErrorAction {
 
 export interface FetchSearchPageCrowdAggBucketsSendAction {
     type: typeof FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND
-    searchParams: any                                           //TODO Check
+    searchParams: any                                         
 };
 
 export interface FetchSearchPageCrowdAggBucketsSuccessAction {
@@ -126,7 +135,7 @@ export interface FetchSearchParamsSendAction {
 
 export interface FetchSearchParamsSuccessAction {
     type: typeof FETCH_SEARCH_PARAMS_SUCCESS,
-    payload: typeof SearchPageParamsQuery
+    payload:  SearchPageParamsQuery
 };
 
 export interface FetchSearchParamsErrorAction {
@@ -140,7 +149,7 @@ export interface UpdateSearchParamsSendAction {
 
 export interface UpdateSearchParamsSuccessAction {
     type: typeof UPDATE_SEARCH_PARAMS_SUCCESS,
-    payload: typeof SearchPageParamsQuery
+    payload:  SearchPageParamsQuery
 };
 
 export interface UpdateSearchParamsErrorAction {
@@ -225,6 +234,31 @@ export interface DeleteSavedSearchErrorAction {
     payload: SearchDataError
 };
 
+export interface SearchExportSendAction {
+    type: typeof SEARCH_EXPORT_SEND,
+    searchExportId: number
+}
+export interface SearchExportSuccessAction {
+    type: typeof SEARCH_EXPORT_SUCCESS,
+    payload: any;
+}
+export interface SearchExportErrorAction {
+    type: typeof SEARCH_EXPORT_ERROR,
+    payload: SearchDataError
+}
+export interface ExportToCsvSendAction {
+    type: typeof EXPORT_T0_CSV_SEND,
+    searchHash: string,
+    siteViewId: number
+}
+export interface ExportToCsvSuccessAction {
+    type: typeof EXPORT_T0_CSV_SUCCESS,
+    payload: any;
+}
+export interface ExportToCsvErrorAction {
+    type: typeof EXPORT_T0_CSV_ERROR,
+    payload: SearchDataError
+}
 
 export type SearchActionTypes = 
     FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
@@ -236,5 +270,7 @@ export type SearchActionTypes =
     FetchSearchAutoSuggestSendAction | FetchSearchAutoSuggestSuccessAction | FetchSearchAutoSuggestErrorAction |
     FetchSavedSearchesSendAction | FetchSavedSearchesSuccessAction | FetchSavedSearchesErrorAction |
     CreateSavedSearchSendAction | CreateSavedSearchSuccessAction | CreateSavedSearchErrorAction |
-    DeleteSavedSearchSendAction | DeleteSavedSearchSuccessAction | DeleteSavedSearchErrorAction 
-    ;
+    DeleteSavedSearchSendAction | DeleteSavedSearchSuccessAction | DeleteSavedSearchErrorAction |
+    SearchExportSendAction  | SearchExportSuccessAction | SearchExportErrorAction |
+    ExportToCsvSendAction | ExportToCsvSuccessAction |  ExportToCsvErrorAction  
+;
