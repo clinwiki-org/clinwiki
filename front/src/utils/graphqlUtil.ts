@@ -53,5 +53,5 @@ export const getHasuraURL = () => {
   ) {
     return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
   }
-  return '/graphql';
+  return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
 }
