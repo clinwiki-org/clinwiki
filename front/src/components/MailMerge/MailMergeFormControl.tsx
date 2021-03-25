@@ -27,7 +27,6 @@ type Mode = 'Study' | 'Search';
 // query, params, schema
 
 function getClassForMode(mode: Mode) {
-  console.log("MODEEE", mode)
   switch (mode) {
     case 'Study':
       return 'Study';
@@ -51,7 +50,6 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const [searchHash, setSearchHash] = useState(default_hash);
   // const [mode, setMode] = useState<Mode>('Study');
   const mode = props.pageType
-  console.log("mode", mode)
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
 
   const dispatch = useDispatch();
@@ -59,19 +57,15 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
 
 
   const introspection = useSelector((state: RootState) => state.introspection.introspection);
-  //console.log("INTROSPECTION response", introspection)
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, props.template);
   // const [fragmentName, fragment] = useFragment('Study', props.template);
   useEffect(() => {
-    console.log("MODEL2", mode)
-
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
     dispatch(fetchIntrospection(QUERY));
   }, [dispatch, fragment, mode]);
 
   useEffect(() => {
-    console.log("MODEL", mode)
     const STUDY_QUERY = `${getSampleStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSampleSearchQuery(fragmentName, fragment)}`
     dispatch(mode == "Study" ? fetchSampleStudy(nctId ?? "", STUDY_QUERY) : fetchSampleStudy(searchHash ?? "", SEARCH_QUERY));
@@ -99,10 +93,8 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   //   typeName: 'Search',
   //   types: introspection.data.__schema.types,
   // };
-  console.log(mode, sample)
   const types = introspection.data.__schema.types;
   const searchData = () => {
-    console.log("s-data", sample.data)
     let studies: any[] = []
     sample?.data?.search?.studies?.map((study, index) => {
       studies.push({ ...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' })

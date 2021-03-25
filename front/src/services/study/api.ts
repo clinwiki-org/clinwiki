@@ -160,7 +160,6 @@ export const fetchLabels = variables => {
   return callGraphql(ENDPOINT, query.LABELS_QUERY, variables);
 };
 export const fetchLabelsBuckets = (variables, QUERY) => {
-  //console.log(QUERY)
   return callGraphql(ENDPOINT, QUERY, variables);
 };
 export const bulkQueryUpdate = (input: any) => {

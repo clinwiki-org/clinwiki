@@ -64,7 +64,7 @@ export default function HasuraGenericPage(props: Props) {
     }, [dispatch, site.id]);
 
     useEffect(() => {
-        dispatch(fetchPageView(params.pv || defaultPage()));
+        dispatch(fetchPageView(site?.id, params.pv || defaultPage()));
     }, [dispatch, params.pv]);
 
 

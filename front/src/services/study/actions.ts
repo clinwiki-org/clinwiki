@@ -120,8 +120,9 @@ export const fetchPageViewsError = (
     type: types.FETCH_PAGE_VIEWS_ERROR,
     payload: { message },
 });
-export const fetchPageView = (url: string): types.StudyActionTypes => ({
+export const fetchPageView = (id: string, url: string): types.StudyActionTypes => ({
     type: types.FETCH_PAGE_VIEW_SEND,
+    id,
     url,
 });
 export const fetchPageViewSuccess = (

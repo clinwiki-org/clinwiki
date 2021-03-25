@@ -108,7 +108,7 @@ function* getPageViews(action) {
 }
 function* getPageView(action) {
   try {
-    let response = yield call(() => api.fetchPageView(action.id, action.input));
+    let response = yield call(() => api.fetchPageView(action.id, action.url));
     if (response) {
       yield put(actions.fetchPageViewSuccess(response));
     } else {

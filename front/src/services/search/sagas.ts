@@ -101,7 +101,6 @@ function* updateSearchParams(action) {
         let updateResponse = yield call(() => api.updateSearchParams(action)); 
         let location = yield select( (state) => state.router.location);
         let searchHash = updateResponse.data.provisionSearchHash.searchHash
-        console.log("SAGAS",searchHash)
         if (updateResponse.data.provisionSearchHash.searchHash !== null){ 
             yield put(actions.fetchSearchParams(searchHash.short))
             yield put(actions.fetchSearchPageAggs(action.searchParams))
@@ -133,12 +132,10 @@ function* updateSearchParams(action) {
 
 
         else {
-            console.log("Updating Response",updateResponse)
             yield put(actions.updateSearchParamsError(updateResponse.message));
         }
     }
     catch(err) {
-        console.log("err");
         yield put(actions.updateSearchParamsError(err.message));
     }
 }

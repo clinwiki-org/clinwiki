@@ -345,6 +345,7 @@ export interface fetchPageViewsErrorAction {
 }
 export interface fetchPageViewSendAction {
     type: typeof FETCH_PAGE_VIEW_SEND;
+    id: any;
     url: any;
 }
 
