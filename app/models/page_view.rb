@@ -1,7 +1,7 @@
 class PageView < ApplicationRecord
   belongs_to :site
   validates :site, presence: true
-  enum page_type: [ :study ]
+  enum page_type: [ :study, :hasuraStudy ]
   validates :url, uniqueness: { scope: :site }
   include MutationHelpers
 

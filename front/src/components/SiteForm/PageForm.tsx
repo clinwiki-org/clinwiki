@@ -7,9 +7,11 @@ import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import { studyIslands } from 'containers/Islands/CommonIslands'
-import { updatePageView, deletePageView  } from 'services/study/actions';
+import { updatePageView, deletePageView } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {capitalize} from '../../utils/helpers'
+import HasuraMailMergeFormControl from 'components/MailMerge/HasuraMailMergeFormControl';
+
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
 `;
@@ -42,9 +44,10 @@ export default function PageForm(props: Props) {
   const page = props.page;
   const default_nctid = 'NCT00004074';
   const default_hash ='gELcp_Fb'
-  console.log("Paging Dr. ", page)
+
   const [url, setUrl] = useState(page.url);
   const [title, setTitle] = useState(page.title);
+  const [pageType, setPageType] = useState(page.pageType)
   const [template, setTemplate] = useState(page.template);
   const [isDefault, setDefault] = useState(page.default);
   const [mode, setMode] = useState(page.pageType);
@@ -52,7 +55,36 @@ export default function PageForm(props: Props) {
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
 
   const dispatch = useDispatch();
-  let input = { id: page.id, title, url, template, default: isDefault };
+  let input = { id: page.id, title, url, template, default: isDefault, pageType };
+
+
+  const updatePageType = type => {
+    if (type === 'Study') setPageType("study");
+    if (type === 'Hasura Study') setPageType("hasuraStudy");
+  };
+
+  const dropDownTitle = type => {
+    let title = ""
+    if (type === 'study') { title = "Study" }
+    if (type === 'hasuraStudy') { title = "Hasura Study" }
+    return title;
+  };
+
+  const selectedMailMergeType =
+    pageType === 'hasuraStudy' ?
+      <HasuraMailMergeFormControl
+        template={template}
+        onTemplateChanged={setTemplate}
+        islands={studyIslands}
+      /> :
+
+      <MailMergeFormControl
+        template={template}
+        onTemplateChanged={setTemplate}
+        islands={studyIslands}
+        pageType={capitalize(mode)}
+      />
+    ;
 
   const updateMode = mode => {
     setMode(mode);
@@ -79,14 +111,14 @@ export default function PageForm(props: Props) {
         {/* 
         <DropdownButton
           bsStyle="default"
-          title="Type: Study"
+          title={dropDownTitle(pageType)}
           key="default"
-          disabled
           style={{
             marginBottom: '10px',
             background: theme?.button,
           }}>
-          <MenuItem>Study</MenuItem>
+          <MenuItem onClick={() => updatePageType('Hasura Study')}>Hasura Study</MenuItem>
+          <MenuItem onClick={() => updatePageType('Study')}>Study</MenuItem>
         </DropdownButton>
         */}
         <DropdownButton
@@ -109,16 +141,8 @@ export default function PageForm(props: Props) {
       <label>Title</label>
       {formControl('Title', title, setTitle)}
       <label>Content Template</label>
-      <MailMergeFormControl
-        template={template}
-        onTemplateChanged={setTemplate}
-        islands={studyIslands}
-        pageType={capitalize(mode)}
-        // nctOrSearchHash={nctOrSearchHash}
-        // setNctOrSearchHash={setNctOrSearchHash}
 
-
-      />
+      {selectedMailMergeType}
       <hr />
       <ThemedButton
         onClick={_ => dispatch(updatePageView(input))}
