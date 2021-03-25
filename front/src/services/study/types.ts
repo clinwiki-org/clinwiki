@@ -313,9 +313,6 @@ export interface fetchStudyPageHashErrorAction {
     type: typeof FETCH_STUDY_PAGE_HASH_ERROR,
     payload: StudyDataError
 };
-    type: typeof FETCH_STUDY_PAGE_ERROR;
-    payload: StudyDataError;
-}
 
 export interface fetchStudyPageHasuraSendAction {
     type: typeof FETCH_STUDY_PAGE_HASURA_SEND;
