@@ -89,12 +89,18 @@ export default function PageForm(props: Props) {
   const updateMode = mode => {
     setMode(mode);
     if (mode === 'Study'){
+      setPageType('study');
       setNctOrSearchHash(default_nctid);
     }
     if (mode === 'Search'){
+      setPageType('search');
       setNctOrSearchHash(default_hash);
-      
     }
+    if (mode === 'Hasura Study'){
+      setPageType('hasuraStudy');
+      setNctOrSearchHash(default_hash);
+    }
+
   };
 
   return (
@@ -130,6 +136,7 @@ export default function PageForm(props: Props) {
         }}>
           <MenuItem onClick={_ => updateMode("Study")}>Study</MenuItem>
           <MenuItem onClick={_ => updateMode("Search")}>Search</MenuItem>
+          <MenuItem onClick={_ => updateMode("Hasura Study")}>Hasura Study</MenuItem>
         </DropdownButton>
        <FormControl
           placeholder="Select an nctid"
