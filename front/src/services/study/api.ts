@@ -38,8 +38,8 @@ export const fetchPageViews = (siteId: any) => {
     id: siteId.siteId,
   });
 };
-export const fetchPageView = (url: any) => {
-  return callGraphql(ENDPOINT, query.PAGE_VIEW_QUERY, { url: url.url });
+export const fetchPageView = (id: any, url: any) => {
+  return callGraphql(ENDPOINT, query.PAGE_VIEW_QUERY, { id: id, url: url });
 };
 export const updateStudyViewLogCount = (nctId: any) => {
   return callGraphql(ENDPOINT, mutate.CREATE_STUDY_VIEW_LOG_MUTATION, {
@@ -52,8 +52,9 @@ export const createPageView = (url, siteId) => {
     siteId: siteId,
   });
 };
-export const updatePageView = input => {
+export const updatePageView = (id, input) => {
   return callGraphql(ENDPOINT, mutate.UPDATE_PAGE_VIEW_MUTATION, {
+    id:id,
     input: input,
   });
 };

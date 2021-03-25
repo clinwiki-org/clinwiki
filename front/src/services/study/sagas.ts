@@ -108,7 +108,7 @@ function* getPageViews(action) {
 }
 function* getPageView(action) {
   try {
-    let response = yield call(() => api.fetchPageView(action));
+    let response = yield call(() => api.fetchPageView(action.id, action.input));
     if (response) {
       yield put(actions.fetchPageViewSuccess(response));
     } else {
@@ -479,12 +479,14 @@ function* createPageView(action) {
 } 
 function* updatePageView(action) { 
 try {
-    // console.log("SAGA Updating PAGE VIEW", action);
-    let updateResponse = yield call(() => api.updatePageView(action.input)); 
-   console.log(updateResponse)
+    let updateResponse = yield call(() => api.updatePageView(action.id, action.input)); 
     if (updateResponse.data.updatePageView.errors === null){ 
-        let response = yield getPageViews(action); 
-        yield put(actions.updatePageViewSuccess(response));
+        let response = yield call (()=> api.fetchPageView(action.id, updateResponse.data.updatePageView.pageView.url)); 
+        let response2 = yield call (()=> api.fetchPageViews(action.id)); 
+
+        yield put(actions.fetchPageViewSuccess(response));
+        yield put(actions.fetchPageViewsSuccess(response2));
+        yield put(actions.updatePageViewSuccess(updateResponse));
     }
     else {
         yield put(actions.updatePageViewError(updateResponse.message));

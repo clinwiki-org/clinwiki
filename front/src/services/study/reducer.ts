@@ -248,7 +248,6 @@ const studyReducer = (
             return {
                 ...state,
                 isUpdatingPageView: false,
-                pageViews: action.payload,
             };
         case types.UPDATE_PAGE_VIEW_ERROR:
             return {

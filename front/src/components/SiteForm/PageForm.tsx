@@ -152,7 +152,7 @@ export default function PageForm(props: Props) {
       {selectedMailMergeType}
       <hr />
       <ThemedButton
-        onClick={_ => dispatch(updatePageView(input))}
+        onClick={_ => dispatch(updatePageView(props.siteId, input))}
         style={{ margin: '10px' }}>
         Save '{url}'
       </ThemedButton>

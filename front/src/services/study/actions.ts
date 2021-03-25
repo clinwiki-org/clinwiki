@@ -196,11 +196,11 @@ export const deletePageViewError = (
     payload: { message },
 });
 
-export const updatePageView = (
+export const updatePageView = (id: any,
     input: UpdatePageViewInput
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_SEND,
-    // id,
+    id,
     input,
 });
 
