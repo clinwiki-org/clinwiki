@@ -62,7 +62,7 @@ export default function WorkflowIsland(props: Props) {
   }
   const deleteMutation = (action) => {
     if (!action.key) return
-    return dispatch(deleteLabelMutation(action.nctId, action.key, action.value, studyQuery))
+    return dispatch(deleteLabelMutation(action.nctId, action.key, studyQuery))
 
   }
 

@@ -455,7 +455,6 @@ export interface deleteLabelMutationSendAction {
     type: typeof DELETE_LABEL_MUTATION_SEND;
     nctId: any;
     key: any;
-    value: any;
     studyQuery?: any;
 }
 

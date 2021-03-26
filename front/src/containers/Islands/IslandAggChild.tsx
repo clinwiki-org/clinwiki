@@ -103,7 +103,9 @@ function IslandAggChild(props: Props) {
   const data = useSelector((state: RootState) => state.search.searchResults);
   // const aggsList = useSelector((state : RootState ) => state.search.aggs);
   const aggBuckets = useSelector((state: RootState) => state.search.aggBuckets);
+  const isFetchingAggBuckets = useSelector((state: RootState) => state.search.isFetchingAggBuckets);
   const crowdAggBuckets = useSelector((state: RootState) => state.search.crowdAggBuckets);
+  const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
   const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
   const facetConfig = useSelector((state: RootState) => state.search.facetConfig);
   const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
@@ -349,7 +351,7 @@ function IslandAggChild(props: Props) {
     };
 
 
-    currentAgg.aggKind === "crowdAggs" ? dispatch(fetchSearchPageCrowdAggBuckets(variables)) : dispatch(fetchSearchPageAggBuckets(variables));
+    currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageCrowdAggBuckets(variables)) : !isFetchingAggBuckets && dispatch(fetchSearchPageAggBuckets(variables));
     handleLoadMoreResponse();
   }
 
@@ -523,7 +525,6 @@ function IslandAggChild(props: Props) {
     // dispatch(updateAggOpenState())
   
   const filters = transformFilters(searchParams[grouping])
-
   return (
     <>
       <CustomDropDown

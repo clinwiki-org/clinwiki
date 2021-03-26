@@ -15,6 +15,7 @@ import DownloadCSVIsland from './DownloadCSVIsland';
 import ResultSort from './ResultSort';
 import ResultLoader from './ResultLoader';
 import IslandAggWrapper from './IslandAggWrappper';
+import IslandAggWrapper2 from './IslandAggWrappper2';
 
 /*
   Common island configuration for MailMerge pages
@@ -57,6 +58,9 @@ export const studyIslands: Record<string, IslandConstructor> = {
   ),
   reviews: (attributes: Record<string, string>, context?: any) => (
     <ReviewsIsland nctId={context?.nctId} />
+  ),
+  wfagg: (attributes: Record<string, string>, context?: any) => (
+    <IslandAggWrapper2 nctId={context?.nctId} aggId={attributes['id']} />
   ),
 };
 export const searchIslands: Record<string, IslandConstructor> = {

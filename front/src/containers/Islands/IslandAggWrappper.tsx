@@ -33,20 +33,20 @@ function IslandAggWrapper(props: Props) {
 
   const data = useSelector((state: RootState) => state.search.searchResults); 
   const facetConfig = useSelector((state: RootState) => state.search.facetConfig);
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
+  const isFetchingFacetConfig = useSelector((state: RootState) => state.search.isFetchingFacetConfig);
+  const isFetchingSearchParams = useSelector((state: RootState) => state.search.isFetchingSearchParams);
   const searchParams = data?.data?.searchParams;
   const match = useRouteMatch();
 
-  const presentSiteView = site?.siteView;
   useEffect(() => {
-    match.path == "/search2/" && dispatch(fetchSearchParams(hash));
-  }, [dispatch]);
+    match.path == "/search2/" && !data && !isFetchingSearchParams && !isFetchingFacetConfig && dispatch(fetchSearchParams(hash));
+  }, [dispatch, hash]);
 
   useEffect(() => {
-    !facetConfig && dispatch(fetchFacetConfig());
-  }, [dispatch]);
+    !facetConfig &&  !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchFacetConfig());
+  }, [dispatch, facetConfig]);
 
-  if (!searchParams || !aggId || !facetConfig || !presentSiteView) {
+  if (!searchParams || !aggId || !facetConfig ) {
     return <BeatLoader />
   }
  

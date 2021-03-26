@@ -78,7 +78,6 @@ export const deleteLabelMutation = (nctId: any, key: any, value: any) => {
   return callGraphql(ENDPOINT, mutate.DELETE_LABEL_MUTATION, {
     nctId: nctId,
     key: key,
-    value: value,
   });
 };
 export const fetchCrowdPage = (nctId: any) => {

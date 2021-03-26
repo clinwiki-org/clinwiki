@@ -296,13 +296,11 @@ export const upsertLabelMutationError = (
 export const deleteLabelMutation = (
     nctId: any,
     key: any,
-    value: any,
     studyQuery?: any
 ): types.StudyActionTypes => ({
     type: types.DELETE_LABEL_MUTATION_SEND,
     nctId,
     key,
-    value,
     studyQuery,
 });
 export const deleteLabelMutationSuccess = (
