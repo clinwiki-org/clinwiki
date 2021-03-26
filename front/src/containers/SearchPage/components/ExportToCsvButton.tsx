@@ -1,21 +1,10 @@
 import * as React from 'react';
-import gql from 'graphql-tag';
-import { graphql } from '@apollo/client/react/hoc';
 import * as FontAwesome from 'react-fontawesome';
 import ThemedButton from 'components/StyledComponents/index';
 import LoginModal from 'components/LoginModal';
 import LabeledButton from 'components/LabeledButton';
-
-
-const EXPORT_TO_CSV_MUTATION = gql`
-  mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {
-    exportToCsv(input: { searchHash: $searchHash, siteViewId: $siteViewId }) {
-      searchExport {
-        id
-      }
-    }
-  }
-`;
+import { connect } from 'react-redux';
+import { exportToCsv } from 'services/search/actions';
 
 interface ExportToCsvButtonProps {
   siteView: any;
@@ -23,8 +12,9 @@ interface ExportToCsvButtonProps {
   mutate: any;
   setExportId: any;
   user?: any;
+  exportToCsv: any;
+  setShowExportModal: any;
 }
-
 interface ExportToCsvButtonState {
   showLoginModal: boolean;
 }
@@ -36,41 +26,47 @@ class ExportToCsvButton extends React.Component<
   state = {
     showLoginModal: false,
   };
-  render() {
-    const { mutate, siteView, searchHash, setExportId, user } = this.props;
-    const { showLoginModal } = this.state;
 
-    const setShowLoginModal = showLoginModal => {
+    setShowLoginModal = showLoginModal => {
       this.setState({ showLoginModal });
     };
 
-    async function onClick() {
+    handleExportClick = () => {
+      const { setShowExportModal, exportToCsv, siteView, searchHash, setExportId, user } = this.props;
       if (user) {
-        const { data } = await mutate({
-          variables: { siteViewId: siteView.id, searchHash },
-        });
-        setExportId(data.exportToCsv.searchExport.id);
-      } else {
-        setShowLoginModal(true);
-      }
+      exportToCsv(searchHash, siteView.id);
+      //setExportId(searchExport.id);
+      setShowExportModal(true);
+    } else {
+      this.setShowLoginModal(true);
     }
+  }
+
+  render() {
+    const { showLoginModal } = this.state;
     return (
       <>
         <LoginModal
           show={showLoginModal}
-          cancel={() => setShowLoginModal(false)}
+          cancel={() => this.setShowLoginModal(false)}
         />
-         <LabeledButton
+        <LabeledButton
           helperText={"Download CSV"}
-          theClick={onClick}
+          theClick={this.handleExportClick}
           iconName={"download"}
-       />
+        />
       </>
     );
   }
 }
 
-// it's a little annoying that the HOC expects so many types
-export default graphql<any, any, any, any>(EXPORT_TO_CSV_MUTATION)(
-  ExportToCsvButton
-);
+const mapDispatchToProps = (dispatch) => ({
+  exportToCsv: (searchHash, siteViewId) => dispatch(exportToCsv(searchHash, siteViewId)),
+})
+
+const mapStateToProps = (state, ownProps) => ({
+  //searchExport: state.search.searchExport,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps ) (ExportToCsvButton);
+

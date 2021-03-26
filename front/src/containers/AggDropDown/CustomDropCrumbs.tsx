@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
 import { AggBucket } from '../SearchPage/Types';
@@ -110,7 +110,6 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
         }
 
         if (this.props.isSelected(item.key)) {
-          //console.log(item.key)
           return <div className='select-box--crumb-container' key={item.key + 'isSelected'}>
             {item.key}
             <FontAwesome

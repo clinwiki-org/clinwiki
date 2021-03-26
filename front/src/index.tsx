@@ -3,10 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import 'sanitize.css/sanitize.css';
 import { BrowserRouter as Router } from 'react-router-dom';
-
-import { ApolloProvider } from '@apollo/client';
 import * as FullStory from '@fullstory/browser';
-
 import {Provider} from 'react-redux';
 import {applyMiddleware, createStore} from 'redux';
 import createSagaMiddleware from 'redux-saga';
@@ -37,7 +34,6 @@ import './images/star_outline.png';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { ProvideTheme } from 'containers/ThemeProvider/ThemeProvider';
 
-import apolloClient from './configureApollo';
 
 // Import CSS reset and Global Styles
 import GlobalStyle from './global-styles';
@@ -56,12 +52,10 @@ const render = () => {
   ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <ApolloProvider client={apolloClient}>
           <ProvideTheme>
             <GlobalStyle />
             <App />
           </ProvideTheme>
-        </ApolloProvider>
       </ConnectedRouter>
     </Provider>,
     MOUNT_NODE

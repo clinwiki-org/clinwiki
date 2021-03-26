@@ -9,6 +9,12 @@ import ReactionsIsland from './ReactionsIsland';
 import ReviewsIsland from './ReviewsIsland';
 import EditsHistoryIsland from './EditsHistoryIsland';
 import CollapsiblePanel from 'components/CollapsiblePanel';
+import SearchWithin from './SearchWithin';
+import SaveSearchIsland from './SaveSearchIsland';
+import DownloadCSVIsland from './DownloadCSVIsland';
+import ResultSort from './ResultSort';
+import ResultLoader from './ResultLoader';
+import IslandAggWrapper from './IslandAggWrappper';
 
 /*
   Common island configuration for MailMerge pages
@@ -51,5 +57,26 @@ export const studyIslands: Record<string, IslandConstructor> = {
   ),
   reviews: (attributes: Record<string, string>, context?: any) => (
     <ReviewsIsland nctId={context?.nctId} />
+  ),
+};
+export const searchIslands: Record<string, IslandConstructor> = {
+  ...commonIslands,
+  agg: (attributes: Record<string, string>, context?: any) => (
+    <IslandAggWrapper aggId={attributes['id']} />
+  ),
+  searchwithin: (attributes: Record<string, string>, context?: any) => (
+    <SearchWithin />
+  ),
+  savesearch: (attributes: Record<string, string>, context?: any) => (
+    <SaveSearchIsland/>
+  ),
+  csv: (attributes: Record<string, string>, context?: any) => (
+    <DownloadCSVIsland/>
+  ),
+  resultsort: (attributes: Record<string, string>, context?: any) => (
+    <ResultSort/>
+  ),
+  resultloader: (attributes: Record<string, string>, context?: any) => (
+    <ResultLoader/>
   ),
 };

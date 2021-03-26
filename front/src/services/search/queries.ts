@@ -300,3 +300,20 @@ query UserSavedSearchesQuery($userId: Int!){
     }
 } 
 `;
+
+export const FACET_CONFIG_QUERY =`
+query FacetConfig{
+  facetConfig{
+    mainConfig
+  }
+}
+`;
+
+
+export const SEARCH_EXPORT_QUERY = `
+  query SearchExportQuery($searchExportId: Int!) {
+    searchExport(searchExportId: $searchExportId) {
+      downloadUrl
+    }
+  }
+`;

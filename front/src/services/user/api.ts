@@ -1,3 +1,4 @@
+import { getHasuraURL, callHasura } from './../../utils/graphqlUtil';
 import * as query from './queries';
 import { callGraphql, get_gql_url, getGraphQLMigrationURL } from 'utils/graphqlUtil';
 
@@ -6,6 +7,7 @@ import { callGraphql, get_gql_url, getGraphQLMigrationURL } from 'utils/graphqlU
 
 const ENDPOINT = get_gql_url();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
+const HASURA = getHasuraURL();
 
 export const fetchUser = ( userId: number ) => {
     console.log("fetchUser called");

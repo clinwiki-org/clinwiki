@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {  SiteViewMutationInput } from 'types/globalTypes';
+import {  SiteViewMutationInput } from '../../services/site/model/InputTypes';
 import { CreateSiteInput } from 'services/site/model/InputTypes';
 import { equals, prop, last } from 'ramda';
 import { Nav, NavItem } from 'react-bootstrap';

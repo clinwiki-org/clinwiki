@@ -65,3 +65,34 @@ export const DELETE_SAVED_SEARCH_MUTATION = `
       }
   }
 `;
+const FACET_CONFIG_FRAGMENT =`
+  fragment FacetConfigFragment on FacetConfig {
+    mainConfig
+  }
+`;
+
+export const UPDATE_FACET_CONFIG = `
+  mutation UpdateFacetConfig($input: UpdateFacetConfigInput!) {
+    updateFacetConfig(input: $input) {
+      errors
+    }
+  }
+`;
+
+
+export const EXPORT_TO_CSV_MUTATION = `
+  mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {
+    exportToCsv(input: { searchHash: $searchHash, siteViewId: $siteViewId }) {
+      searchExport {
+        id
+      }
+    }
+  }
+`;
+
+export const CROWD_PAGE_FRAGMENT = `
+  fragment CrowdPageFragment on WikiPage {
+    nctId
+    meta
+  }
+`;

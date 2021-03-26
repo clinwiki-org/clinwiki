@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import styled from 'styled-components';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
@@ -251,7 +251,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   //@ts-ignore
   state = {
     buckets: this.props.buckets as AggBucket[],
-    showItems: false,
+    showItems: this.props.field.defaultToOpen,
     selectedItem: this.props.buckets && this.props.buckets[0],
     type: this.props.field.display || "checkbox",
     defaultOpen: this.props.field.dropDownDefaultOpen || false,
@@ -334,11 +334,6 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   };
   componentDidMount = () => {
-    if (this.props.field.defaultToOpen === true) {
-      this.setState({ showItems: true });
-      this.props.handleLoadMore()
-
-    }
     if (this.props.selectedKeys) {
       //console.log("SELECTED KEYS ", this.props.selectedKeys)
       let selectedKeysPlaceHolders: any[] = [];

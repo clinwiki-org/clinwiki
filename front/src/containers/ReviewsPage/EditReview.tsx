@@ -5,7 +5,6 @@ import ReviewForm from 'containers/ReviewForm';
 import useUrlParams,{queryStringAll} from 'utils/UrlParamsProvider';
 import { ReviewsPageFragment } from 'types/ReviewsPageFragment';
 import { History } from 'history';
-import StudySummary from 'components/StudySummary';
 import { trimPath } from 'utils/helpers';
 import withTheme from 'containers/ThemeProvider';
 import { } from '../../services/study/actions';

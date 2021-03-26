@@ -125,7 +125,7 @@ function graphqlToInternal(x: GraphqlSchemaType) {
       case 'INTERFACE':
       case 'OBJECT':
         for (const field of root.fields) {
-          if (field.isDeprecated || field.args.length > 0) continue;
+          if (field.isDeprecated) continue;
           gqlFieldToInternal(
             subPath(path, field.name),
             field.type,

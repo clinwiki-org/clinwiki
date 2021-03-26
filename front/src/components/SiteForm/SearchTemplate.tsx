@@ -3,12 +3,6 @@ import { MailMergeEditor } from 'components/MailMerge';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import { BeatLoader } from 'react-spinners';
-import MailMerge from '../MailMerge/MailMerge';
-import { GraphqlSchemaType } from '../MailMerge/SchemaSelector';
-import { fromPairs } from 'ramda';
-import { useQuery, gql} from '@apollo/client';
-import { SchemaType } from 'components/MailMerge/SchemaSelector';
-import { camelCase } from 'utils/helpers';
 import { useFragment } from '../MailMerge/MailMergeFragment'
 import { getStudyQuery } from '../MailMerge/MailMergeUtils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -54,11 +48,7 @@ function SearchTemplate(props: Props) {
 
 
   const [fragmentName, fragment] = useFragment('Study', props.template);
-  // const { data: study } = useQuery(getStudyQuery(fragmentName, fragment), {
-  //   variables: { 
-  //     nctId: nctId
-  //    },
-  // });
+
 
   const study= useSelector((state:RootState) => state.study.studyPage);
 

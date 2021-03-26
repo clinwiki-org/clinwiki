@@ -4,8 +4,6 @@ import ThemedButton, { PresearchContent } from 'components/StyledComponents';
 import * as Autosuggest from 'react-autosuggest';
 import AddFieldAuto from 'components/FacetCard/AddFieldAuto';
 import ThemedAutosuggestButton from 'components/StyledComponents';
-import { ApolloConsumer } from '@apollo/client';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery'
 import { connect } from 'react-redux';
 import {fetchSearchAutoSuggest} from 'services/search/actions';
 
@@ -25,7 +23,6 @@ interface AddFacetCardProps {
   upsert?: any;
   user?: any;
   showLogin: any;
-  apolloClient?: any;
   aggNames?: any;
   values?: any;
   showAddFacet: boolean;
@@ -87,7 +84,6 @@ class AddFacetCard extends React.PureComponent<
     const { values } = this.props;
     const { title, description } = this.state;
 
-    const query = AUTOSUGGEST_QUERY;
     const variables = {
       agg: 'browse_condition_mesh_terms',
       aggFilters: [],
@@ -103,10 +99,7 @@ class AddFacetCard extends React.PureComponent<
       aggFields: [],
       crowdAggFields: [title],
     };
-    // const response = await apolloClient.query({
-    //   query,
-    //   variables,
-    // });
+
     this.props.fetchSearchAutoSuggest(variables);
 
     const array = this.props.suggestions.data && this.props.suggestions.data.autocomplete.autocomplete[0].results || [];

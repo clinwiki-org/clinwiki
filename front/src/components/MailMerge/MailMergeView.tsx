@@ -16,6 +16,7 @@ export interface Props {
   style?: object;
   islands?: Record<string, IslandConstructor>;
   refetchQuery?:any;
+  pageType?:any;
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
@@ -36,13 +37,17 @@ function compileTemplate(template: string) {
     return _ => errMsg;
   }
 }
-
+function randomIdentifier() {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
+  const randomChar = () => chars[Math.floor((Math.random()*chars.length))]
+  return Array.from({ length: 12 }, randomChar).join('');
+}
 function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,
-  context?: object
+  context?: object,
 ) {
   try {
-    context = {...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL'}
+     context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;
@@ -67,7 +72,6 @@ export default function MailMergeView(props: Props) {
     compiled,
     props.context,
   ]);
-
   const style = props.style
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
@@ -87,7 +91,7 @@ export default function MailMergeView(props: Props) {
         return (
           <div
             className="mail-merge-island"
-            key={node.attribs['key'] || node.name}>
+            key={node.attribs['key'] + randomIdentifier() || node.name}>
             {create?.(node.attribs, props.context, children)}
           </div>
         );
@@ -104,7 +108,6 @@ export default function MailMergeView(props: Props) {
     () => true,
     instructions
   );
-
   return (
     <div className="mail-merge" style={style}>
       {reactElement}

@@ -23,7 +23,7 @@ import {
 } from '../SearchPage/Types';
 import aggToField from 'utils/aggs/aggToField';
 import findFields from 'utils/aggs/findFields';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import './AggDropDownStyle.css';
 import { PresentSiteFragment, PresentSiteFragment_siteView } from 'services/site/model/PresentSiteFragment';
 import SortKind from './SortKind';
@@ -296,6 +296,7 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
 }
 
   handleLoadMore = () => {
+    // console.log("LOADIng MORE!!!!!!!!!!!!!!!!!!")
     //console.trace()
     const { desc, sortKind, buckets, filter } = this.state;
     const {
@@ -340,11 +341,9 @@ class AggDropDown extends React.Component<AggDropDownProps, AggDropDownState> {
     let aggName = currentAgg!.name
     let responseBuckets = this.props.aggKind === "crowdAggs" ?  this.props.crowdAggBuckets?.aggs[aggName] :  this.props.aggBuckets?.aggs[aggName]
 
-    //console.log("handle RESPONSE", responseBuckets);
 
     let currentBuckets = buckets === undefined || buckets[0] === undefined ? []  : buckets
     const allBuckets = currentBuckets.concat(responseBuckets);
-
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
       sortBy<AggBucket>(prop('key'))

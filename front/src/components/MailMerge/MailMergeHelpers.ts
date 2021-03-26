@@ -1,6 +1,7 @@
 import Handlebars from 'handlebars';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { link } from 'fs';
+import {ThemedSearchCard} from 'components/StyledComponents';
 
 export function registerHandlebarsHelpers() {
   Handlebars.registerHelper('stars', (value: number) => {
@@ -35,18 +36,21 @@ export function registerHandlebarsHelpers() {
       case 'ALL':
         return queryStringAll(linkAttributes)
       default:
-        return value
+        return 
     }
   });
     Handlebars.registerHelper('$LEFT', (value: string, characters: number) => {
-    let newVal = value.slice(0, characters) 
+      if(!value) return
+      let newVal = value.slice(0, characters) 
     return newVal
 });
   Handlebars.registerHelper('$RIGHT', (value: string, characters: number) => {
+    if(!value) return
     let newVal = value.slice(value.length-characters, value.length) 
     return newVal
 });
   Handlebars.registerHelper('$TRUNCATE', (value: string, characters: number) => {
+    if(!value) return
     if(value.length<characters) return value
     let ellipses = '...'
     let newVal = value.slice(0,characters) 
@@ -54,12 +58,11 @@ export function registerHandlebarsHelpers() {
     return new Handlebars.SafeString(`${newVal}<span id="ellipses"> ${ellipses}</span><span class="ellipsed-text">${cutValues}</span>`)
 });
   Handlebars.registerHelper('DateToString', (value: string) => {
-    console.log("VAL",value)
     let newVal = value
-    console.log("NEW:", newVal)
     return newVal
 });
   Handlebars.registerHelper('$FindAndReplace', ( arrayOfValuesToFind: string, arrayOfValues:string, valueToReplace: string ) => {
+    if(!arrayOfValuesToFind) return
     let valuesToFind: string[] = arrayOfValuesToFind.toLowerCase().replace(/\s/g, "").split('|');
     let values: string[] = arrayOfValues.split('|');
     let indexFound= valuesToFind.indexOf(valueToReplace.toLocaleLowerCase().replace(/\s/g, ""))
@@ -69,5 +72,4 @@ export function registerHandlebarsHelpers() {
       return new Handlebars.SafeString(values[indexFound])
     }
   });
-
 }

@@ -23,6 +23,7 @@ class MultiCrumb extends React.Component<MultiCrumbProps> {
     return (
       <ListGroupItem className="filter-values">
         <CrumbWrapper>
+          {this.props.children}
           <ValuesCrumb
             category={category}
             values={values}

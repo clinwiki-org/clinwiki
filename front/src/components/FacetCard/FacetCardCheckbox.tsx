@@ -34,7 +34,7 @@ export default function FacetCardCheckbox (props: FacetCardCheckboxProps) {
         <Checkbox
             //key={value}
             checked={isChecked}
-            disabled={isUpdating}
+            disabled={ disabled || isUpdating}
             onChange={handleClick}>
             {value}
         </Checkbox>

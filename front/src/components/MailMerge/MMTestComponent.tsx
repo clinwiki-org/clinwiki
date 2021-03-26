@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import {
-  DocumentNode,
-} from 'graphql';
-import { gql, useQuery }  from '@apollo/client';
 import MailMerge from './MailMerge';
 import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
 import { getStudyQuery, getSearchQuery } from './MailMergeUtils';
@@ -14,13 +10,10 @@ import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
 import { BeatLoader } from 'react-spinners';
 import { fetchStudyPage } from 'services/study/actions';
-
-
+import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 type Mode = 'Study' | 'Search';
-
 // return a tuple of the elements that differ with the mode
 // query, params, schema
-
 function getClassForMode(mode: Mode) {
   switch (mode) {
     case 'Study':
@@ -29,95 +22,101 @@ function getClassForMode(mode: Mode) {
       return 'ElasticStudy';
   }
 }
+const TEMPLATE = `
+<div class="grid-container">
+<div class="grid3">
+  <div class="one">
+    <agg id='0'></agg>
+    <agg id='1'></agg>
+    <agg id='2'></agg>    
 
-// function getModeData(
-//   mode: Mode,
-//   arg: string,
-//   fragment: string,
-//   fragmentName: string
-// ): [DocumentNode, object, string] {
-//   switch (mode) {
-//     case 'Study':
-//       return [getStudyQuery(fragmentName, fragment), { nctId: arg }, 'Study'];
-//     case 'Search':
-//       return [
-//         getSearchQuery(fragmentName, fragment),
-//         { hash: arg },
-//         'ElasticStudy',
-//       ];
-//   }
-// }
+</div>
+  <div class="two">    
+<searchwithin></searchwithin>
+<div class="mm-single-line-center">
+    <agg id='4'></agg>
+    <agg id='5'></agg>
+    <agg id='6'></agg>
+</div>
 
+</div>
+  <div class="three loader-container">
+  <resultloader></resultloader>
+<div class="mm-single-line-center">
+<savesearch></savesearch>
+<csv></csv>
+</div>
+<resultsort></resultsort>
+<div class="cards-container">
+{{#each studies }}
+<div class="mm-card2">
+  <div class ="mail-merge" >
+    <span> ID: <a href="/search{{querystring ALL}} ">{{nctId}}</a></span><br/>
+    <span>Title: {{briefTitle}}</span><br/><span>Summary: {{briefSummary}}</span>
+  </div>
+</div>
+{{/each }}
+</div>
+
+</div>
+
+</div>
+
+  
+
+ </div>
+`
 export default function TestComponent() {
-  const [template, setTemplate] = useState(`
-# title: {{briefTitle}}
-<Expander header="outter">
-  <table class="table table-striped table-bordered table-condensed">
-    <tbody>
-      <tr> <th>NCT ID</th> <td>{{nctId}}</td> </tr>
-      <tr> <th>Overall Status</th> <td>{{overallStatus}}</td> </tr>
-      <tr> <th>Completion Date</th> <td>{{completionDate}}</td> </tr>
-      <tr> <th>Enrollment</th> <td>{{enrollment}}</td> </tr>
-      <tr> <th>Source</th> <td>{{source}}</td> </tr>
-    </tbody>
-  </table>
-  <Expander header=details collapsed=true>
-    <Groot></Groot>
-  </Expander>
-</Expander>
-`);
-  const [mode, setMode] = useState<Mode>('Study');
+  const [template, setTemplate] = useState(TEMPLATE);
+  const [mode, setMode] = useState<Mode>('Search');
   const defaultNctId = 'NCT03847779';
   const defaultSearchHash = 'tqxCyI9M';
-  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
-
+  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultSearchHash);
   const dispatch = useDispatch();
 
-  useEffect(()=>{
+  useEffect(() => {
     const QUERY = introspectionQuery
     dispatch(fetchIntrospection(QUERY));
-  },[dispatch]);
+  }, [dispatch]);
 
-  useEffect(()=>{
-    const QUERY = `${getStudyQuery(fragmentName, fragment)}`
-    dispatch(fetchStudyPage(nctOrSearchHash ?? "", QUERY));
-    console.log(mode)
+  useEffect(() => {
     const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-    dispatch(mode=="Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPage(nctOrSearchHash ?? "", SEARCH_QUERY) );
-   },[dispatch, nctOrSearchHash]);
-
-  const introspection = useSelector((state:RootState) => state.introspection.introspection);
-
-
+    dispatch(mode == "Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPage(nctOrSearchHash ?? "", SEARCH_QUERY));
+  }, [dispatch, nctOrSearchHash]);
+  
+  const introspection = useSelector((state: RootState) => state.introspection.introspection);
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, template);
-  // const [query, variables] = getModeData(mode, nctOrSearchHash, fragment, fragmentName);
-  // const { data } = useQuery(query, { variables });
-  const studyData = useSelector((state:RootState) => state.study.studyPage);
+  const studyData = useSelector((state: RootState) => state.study.studyPage);
+  const aggsList = useSelector((state: RootState) => state.search.aggs);
+  const recordsTotal = aggsList?.data?.search?.recordsTotal;
 
   const updateMode = mode => {
     setMode(mode);
     if (mode === 'Study') setNctOrSearchHash(defaultNctId);
     if (mode === 'Search') setNctOrSearchHash(defaultSearchHash);
   };
-
-  const islands = {
-    ...commonIslands,
+  let islands = mode == 'Study' ? studyIslands : searchIslands;
+  islands = {
+    ...islands,
     groot: (attributes: Record<string, string>) => {
       return (
         <img src="https://media.giphy.com/media/11vDNL1PrUUo0/source.gif" />
       );
     },
   };
-
-  
   if (!introspection || !studyData) {
     return <BeatLoader />;
   }
-  
   const sampleData = studyData?.data.study || studyData.data?.search?.studies?.[0];
-  
+  const searchData = () => {
+    let studies: any[] = []
+    studyData?.data?.search?.studies?.map((study, index) => {
+      studies.push({ ...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' })
+    })
+    return { studies, recordsTotal }
+  }
   if (introspection) {
     const types = introspection.data.__schema.types;
     return (
@@ -137,14 +136,15 @@ export default function TestComponent() {
         />
         <MailMerge
           schema={{ kind: 'graphql', typeName: schemaType, types }}
-          sample={sampleData}
+          sample={studyData?.data?.study || searchData()}
           template={template}
           onTemplateChanged={setTemplate}
           islands={islands}
+          pageType={mode}
         />
         <pre>{fragment}</pre>
         <pre>
-          {JSON.stringify(studyData?.data.study  ||studyData.data?.search?.studies, null, 2)}
+          {JSON.stringify(studyData?.data.study || studyData.data?.search?.studies, null, 2)}
         </pre>
       </div>
     );
