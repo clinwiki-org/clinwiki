@@ -28,7 +28,7 @@ interface SitesPageProps {
 const SitesPage = ({history} : SitesPageProps) => {
 
   const dispatch = useDispatch();
-  const data = useSelector((state : RootState ) => state.hasuraSite)
+  const data = useSelector((state : RootState ) => state.site.sitesData)
   const isLoading = useSelector((state : RootState ) => state.site.isFetchingSitesPage)
   const isDeleting = useSelector((state : RootState ) => state.site.isDeletingSite)
 
@@ -43,18 +43,16 @@ const SitesPage = ({history} : SitesPageProps) => {
   };
 
   useEffect(() => {
-      console.log("Sites page");
-      dispatch(fetchSitesPageHasura());
-      //dispatch(fetchSitesPage());
+    dispatch(fetchSitesPageHasura());
   },[ dispatch ]); 
+  
 if (data === undefined || isLoading || isDeleting) {
-  console.log(data);
   return <BeatLoader />
 }
   return (
     <Container>
       <CollapsiblePanel header="My Sites">
-        {data!.hasuraSite.hasuraSitesData.length > 0 && (
+        {data?.me.ownSites.length > 0 && (
           <Table striped bordered condensed>
             <thead>
               <tr>
@@ -65,7 +63,7 @@ if (data === undefined || isLoading || isDeleting) {
             </thead>
             <tbody>            
                   <>
-                    {data!.sites.map(site => (
+                    {data!.me!.ownSites.map(site => (
                       <SiteItem
                         site={site}
                         key={site.subdomain}
@@ -77,7 +75,7 @@ if (data === undefined || isLoading || isDeleting) {
             </tbody>
           </Table>
         )}
-        {data.sites.length === 0 && 'No sites yet'}
+        {data.me.ownSites.length === 0 && 'No sites yet'}
       </CollapsiblePanel>
       <ButtonsContainer>
         <ThemedButton onClick={handleCreateSite}>
@@ -85,7 +83,7 @@ if (data === undefined || isLoading || isDeleting) {
         </ThemedButton>
       </ButtonsContainer>
       <CollapsiblePanel header="Editable Sites">
-        {data.sites.length > 0 && (
+        {data.me.editorSites.length > 0 && (
           <Table striped bordered condensed>
             <thead>
               <tr>
@@ -94,7 +92,7 @@ if (data === undefined || isLoading || isDeleting) {
               </tr>
             </thead>
             <tbody>
-              {data.sites.map(site => (
+              {data.me.editorSites.map(site => (
                 <SiteItem
                   site={site}
                   key={site.subdomain}
@@ -104,7 +102,7 @@ if (data === undefined || isLoading || isDeleting) {
             </tbody>
           </Table>
         )}
-        {data.sites.length === 0 && 'No sites yet'}
+        {data.me.editorSites.length === 0 && 'No sites yet'}
       </CollapsiblePanel>
     </Container>
   );

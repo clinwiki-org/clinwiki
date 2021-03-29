@@ -1,4 +1,3 @@
-import { SitesPageQuery } from '../site/model/SitesPageQuery';
 import * as types from './types';
 
 const initialState: types.SiteState = {
@@ -6,6 +5,8 @@ const initialState: types.SiteState = {
     isUpdatingSiteHasura: false,                                                    
     sitesData: undefined,
     hasuraSitesData: undefined,
+    isFetchingSiteProviderHasura: false,
+    siteProviderHasura: undefined,
 };                                                                                  
                                                                                     
 const hasuraSiteReducer = ( state = initialState, action: types.HasuraSiteActionTypes) : types.SiteState => {
@@ -44,7 +45,26 @@ const hasuraSiteReducer = ( state = initialState, action: types.HasuraSiteAction
                 ...state,
                 isFetchingSitesPageHasura: false
             };
-
+        case types.FETCH_SITE_PROVIDER_HASURA_SEND:
+            console.log("FETCH_SITE_PROVIDER_HASURA_SEND called in hasuraSite/reducer");
+            return {
+                ...state,
+                isFetchingSiteProviderHasura: true
+            };
+        case types.FETCH_SITE_PROVIDER_HASURA_SUCCESS:
+            console.log("FETCH_SITE_PROVIDER_HASURA_SUCCESS called in hasuraSite/reducer");
+            return {
+                ...state,
+                isFetchingSiteProviderHasura: false,
+                siteProviderHasura: action.payload
+            };
+        case types.FETCH_SITE_PROVIDER_HASURA_ERROR:
+            console.log("FETCH_SITE_PROVIDER_HASURA_ERROR called in hasuraSite/reducer");
+            return {
+                ...state,
+                isFetchingSiteProviderHasura: false
+            };
+        
         default:                                                                    
             return {...state};                                                      
     }       

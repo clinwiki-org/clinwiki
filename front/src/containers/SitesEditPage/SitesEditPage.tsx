@@ -7,6 +7,8 @@ import { History, Location } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { updateSite } from 'services/site/actions';
+import { updateSiteHasura } from 'services/hasuraSite/actions';
+import { snakeCase } from '../../utils/helpers';
 
 interface SitesEditPageProps {
   match: match<{ id: string }>;
@@ -18,13 +20,27 @@ const SitesEditPage = ({match, history, location} : SitesEditPageProps) => {
   const dispatch = useDispatch();
   const isUpdating = useSelector((state : RootState ) => state.site.isUpdatingSite)
 
-  const handleSave = (input: UpdateSiteInput) => {
+  const handleSave = async (input: any) => {
+      console.log(input);
       let finalInput = { ...input, id: parseInt(match.params.id, 10) }
-      dispatch(updateSite(finalInput));
+      console.log("finalInput= ", finalInput);
+      const finalInput2 = await replaceKeys(finalInput);
+      console.log('finalInput2 = ', finalInput2);
+      dispatch(updateSiteHasura(finalInput2));
       if (!isUpdating) {
         history.push('/sites')}
   };
 
+  const replaceKeys = async (x) => {
+    let newObject = {};
+    for(var camel in x) {
+      newObject[snakeCase(camel)] = x[camel];
+      console.log(newObject);
+    }
+    console.log(newObject);
+    return newObject;
+  }
+console.log(`sitesEditPage: ${match.params.id}`);
     return (
       <SiteProvider id={parseInt(match.params.id, 10)}>
         {(site) => (

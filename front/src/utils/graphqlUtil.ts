@@ -51,7 +51,7 @@ export const callHasuraClinwiki = (endpoint: string, query: any, variables: any,
         headers: {
             'Content-Type' : 'application/json',
             'Accept' : 'application/json',
-            'x-hasura-admin-secret': `${process.env.REACT_APP_HAS_TOKEN}`
+            'x-hasura-admin-secret': ``
         },
         body: JSON.stringify({
             query,
