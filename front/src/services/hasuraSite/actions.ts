@@ -18,22 +18,21 @@ export const updateSiteHasuraError = (message: string) : types.HasuraSiteActionT
     payload: { message }
 });
 
-export const fetchSitesPageHasura = () : types.HasuraSiteActionTypes => (console.log("fetchSitesPageHasura hit in hasuraSite/actions"),
-    {
+export const fetchSitesPageHasura = () : types.HasuraSiteActionTypes => ({
     type: types.FETCH_SITES_PAGE_HASURA_SEND
 });
 
-export const fetchSitesPageHasuraSuccess = (payload: any) : types.HasuraSiteActionTypes => (console.log("fetchSitesPageHasuraSuccess called in hasuraSite/api"), {
+export const fetchSitesPageHasuraSuccess = (payload: any) : types.HasuraSiteActionTypes => ({
     type: types.FETCH_SITES_PAGE_HASURA_SUCCESS,
     payload
 });
 
-export const fetchSitesPageHasuraError = (message: string) : types.HasuraSiteActionTypes => (console.log("fetchSitesPageHasuraError called in hasuraSite/api"), {
+export const fetchSitesPageHasuraError = (message: string) : types.HasuraSiteActionTypes => ({
     type: types.FETCH_SITES_PAGE_HASURA_ERROR,
     payload: { message }
 });
 
-export const fetchSiteProviderHasura = (id?: number, url?: string) : types.HasuraSiteActionTypes => (console.log("fetchSiteProviderHasura called in hasuraSite/actions"), {
+export const fetchSiteProviderHasura = (id?: number, url?: string) : types.HasuraSiteActionTypes => ({
     type: types.FETCH_SITE_PROVIDER_HASURA_SEND,
     id,
     url

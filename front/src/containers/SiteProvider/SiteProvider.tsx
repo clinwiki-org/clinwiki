@@ -19,7 +19,7 @@ interface UseSiteProps {
 function SiteProvider(props: SiteProviderProps) {
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log(`SiteProvider:`, props.url);
+    //console.log(`SiteProvider:`, props.url);
     dispatch(fetchSiteProviderHasura(props?.id, props?.url));
  }, [])
   
@@ -35,7 +35,7 @@ function SiteProvider(props: SiteProviderProps) {
 
  //const result = siteProvider
  //if (!result) return { ...result, site: null, currentSiteView: null };
-console.log(siteProvider);
+//console.log(siteProvider);
  if (!siteProvider){
   return <BeatLoader color="red"/>
 }

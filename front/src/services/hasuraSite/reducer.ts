@@ -28,13 +28,13 @@ const hasuraSiteReducer = ( state = initialState, action: types.HasuraSiteAction
                 isUpdatingSiteHasura: false                                         
             };
         case types.FETCH_SITES_PAGE_HASURA_SEND:
-            console.log("FETCH_SITES_PAGE_HASURA_SEND hit in hasuraSite reducer"); 
+            //console.log("FETCH_SITES_PAGE_HASURA_SEND hit in hasuraSite reducer"); 
 	        return {
                 ...state,
                 isFetchingSitesPageHasura: true
             };
         case types.FETCH_SITES_PAGE_HASURA_SUCCESS:
-            console.log("FETCH_SITES_PAGE_HASURA_SUCCESS hit in hasuraSite reducer"); 
+            //console.log("FETCH_SITES_PAGE_HASURA_SUCCESS hit in hasuraSite reducer"); 
             return {
                 ...state,
                 isFetchingSitesPageHasura: false,
@@ -46,20 +46,20 @@ const hasuraSiteReducer = ( state = initialState, action: types.HasuraSiteAction
                 isFetchingSitesPageHasura: false
             };
         case types.FETCH_SITE_PROVIDER_HASURA_SEND:
-            console.log("FETCH_SITE_PROVIDER_HASURA_SEND called in hasuraSite/reducer");
+            //console.log("FETCH_SITE_PROVIDER_HASURA_SEND called in hasuraSite/reducer");
             return {
                 ...state,
                 isFetchingSiteProviderHasura: true
             };
         case types.FETCH_SITE_PROVIDER_HASURA_SUCCESS:
-            console.log("FETCH_SITE_PROVIDER_HASURA_SUCCESS called in hasuraSite/reducer");
+            //console.log("FETCH_SITE_PROVIDER_HASURA_SUCCESS called in hasuraSite/reducer");
             return {
                 ...state,
                 isFetchingSiteProviderHasura: false,
                 siteProviderHasura: action.payload
             };
         case types.FETCH_SITE_PROVIDER_HASURA_ERROR:
-            console.log("FETCH_SITE_PROVIDER_HASURA_ERROR called in hasuraSite/reducer");
+            //console.log("FETCH_SITE_PROVIDER_HASURA_ERROR called in hasuraSite/reducer");
             return {
                 ...state,
                 isFetchingSiteProviderHasura: false

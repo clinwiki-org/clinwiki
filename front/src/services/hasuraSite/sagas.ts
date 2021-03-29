@@ -7,9 +7,9 @@ import * as siteActions from '../site/actions'
 
 function* updateSiteHasura(action) { 
     try {
-        console.log("updateSiteHasura called in hasiraSite/sagas", action);
+        //console.log("updateSiteHasura called in hasiraSite/sagas", action);
         let updateResponse = yield call(() => api.updateSiteHasura(action.input));
-        console.log('response = ', updateResponse);
+        //console.log('response = ', updateResponse);
         if (updateResponse.data.updateSitehasura.errors === null){ 
             let response = yield getSitesPage(action);
             yield put(actions.updateSiteHasuraSuccess(response.data));
@@ -19,18 +19,18 @@ function* updateSiteHasura(action) {
         }
     }
     catch(err) {
-        console.log(err);
+        //console.log(err);
         yield put(actions.updateSiteHasuraError(err.message));
     }
 }
 
 export function* getSitesPageHasura(action) {
-    console.log("getSitesPageHasura called in hasuraSites sagas");
+    //console.log("getSitesPageHasura called in hasuraSites sagas");
     try {
         let response = yield call(() => api.fetchSitesPageHasura());
-    	console.log(response);
+    	//console.log(response);
         const hasuraSites = {"me": {"id": 1, "ownSites": response.data.sites, "editorSites": response.data.sites}};
-        console.log(hasuraSites);
+        //console.log(hasuraSites);
         if(response) {
             yield put(siteActions.fetchSitesPageSuccess(hasuraSites));
             return response;
@@ -40,16 +40,16 @@ export function* getSitesPageHasura(action) {
         }
     }
     catch(err) {
-        console.log(err);
+        //console.log(err);
         yield put(actions.fetchSitesPageHasuraError(err.message));
     }
 }
 
 function* getSiteProviderHasura(action) {
-    console.log("getSiteProviderHasura called in hasuraSite/sagas", action);
+    //console.log("getSiteProviderHasura called in hasuraSite/sagas", action);
     try {
         let response = yield call(() => api.fetchSiteProviderHasura(action.id, action.url));
-        console.log(response);
+        //console.log(response);
         const hasuraSiteProvider = {"id": response.data.sites[0].id, 
                                     "editors": [ "charlesvincentanderson@gmail.com" ], 
                                     "name": response.data.sites[0].name, 
@@ -61,7 +61,7 @@ function* getSiteProviderHasura(action) {
                                     "userRank": response.data.sites[0].user_rank, 
                                     "owners": [ "charlesvincentanderson@gmail.com"]
                                     };
-        console.log(hasuraSiteProvider);
+        //console.log(hasuraSiteProvider);
         if(response) {
             yield put(actions.fetchSiteProviderHasuraSuccess(hasuraSiteProvider));
             return hasuraSiteProvider;
@@ -71,7 +71,7 @@ function* getSiteProviderHasura(action) {
         }
     }
     catch(err) {
-        console.log(err);
+        //console.log(err);
         yield put(actions.fetchSiteProviderHasuraError(err.message));
     }
 }

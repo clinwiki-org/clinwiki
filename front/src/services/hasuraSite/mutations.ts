@@ -14,14 +14,4 @@ export const UPDATE_SITE_MUTATION = `
     }                                                             
   }                                                                                                                                                   
 `;                   
-
-// export const UPDATE_SITE_MUTATION = `                                               
-//   mutation UpdateSiteMutation($id: bigint, $name: String) {             
-//     update_sites(where: {id: {_eq: $id}}, _set: {name: $name}) {
-//       returning {
-//         id
-//         name
-//       }
-//     }                                                             
-//   }                                                                                                                                                   
-// `;                   
+                 

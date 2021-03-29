@@ -21,11 +21,11 @@ const SitesEditPage = ({match, history, location} : SitesEditPageProps) => {
   const isUpdating = useSelector((state : RootState ) => state.site.isUpdatingSite)
 
   const handleSave = async (input: any) => {
-      console.log(input);
+      //console.log(input);
       let finalInput = { ...input, id: parseInt(match.params.id, 10) }
-      console.log("finalInput= ", finalInput);
+      //console.log("finalInput= ", finalInput);
       const finalInput2 = await replaceKeys(finalInput);
-      console.log('finalInput2 = ', finalInput2);
+      //console.log('finalInput2 = ', finalInput2);
       dispatch(updateSiteHasura(finalInput2));
       if (!isUpdating) {
         history.push('/sites')}
@@ -35,12 +35,12 @@ const SitesEditPage = ({match, history, location} : SitesEditPageProps) => {
     let newObject = {};
     for(var camel in x) {
       newObject[snakeCase(camel)] = x[camel];
-      console.log(newObject);
+      //console.log(newObject);
     }
-    console.log(newObject);
+    //console.log(newObject);
     return newObject;
   }
-console.log(`sitesEditPage: ${match.params.id}`);
+//console.log(`sitesEditPage: ${match.params.id}`);
     return (
       <SiteProvider id={parseInt(match.params.id, 10)}>
         {(site) => (
