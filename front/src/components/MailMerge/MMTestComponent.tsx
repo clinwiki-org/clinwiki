@@ -22,6 +22,9 @@ function getClassForMode(mode: Mode) {
       return 'ElasticStudy';
   }
 }
+const TEMPLATE2 = `
+<wfagg id="0"></wfagg>
+`
 const TEMPLATE = `
 <div class="grid-container">
 <div class="grid3">
@@ -47,7 +50,7 @@ const TEMPLATE = `
 <csv></csv>
 </div>
 <resultsort></resultsort>
-<div class="cards-container">
+<div class="cards-container" key={{querystring hash}}>
 {{#each studies }}
 <div class="mm-card2">
   <div class ="mail-merge" >
@@ -67,11 +70,11 @@ const TEMPLATE = `
  </div>
 `
 export default function TestComponent() {
-  const [template, setTemplate] = useState(TEMPLATE);
-  const [mode, setMode] = useState<Mode>('Search');
+  const [template, setTemplate] = useState(TEMPLATE2);
+  const [mode, setMode] = useState<Mode>('Study');
   const defaultNctId = 'NCT03847779';
   const defaultSearchHash = 'tqxCyI9M';
-  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultSearchHash);
+  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -109,7 +112,6 @@ export default function TestComponent() {
   if (!introspection || !studyData) {
     return <BeatLoader />;
   }
-  const sampleData = studyData?.data.study || studyData.data?.search?.studies?.[0];
   const searchData = () => {
     let studies: any[] = []
     studyData?.data?.search?.studies?.map((study, index) => {
@@ -144,7 +146,7 @@ export default function TestComponent() {
         />
         <pre>{fragment}</pre>
         <pre>
-          {JSON.stringify(studyData?.data.study || studyData.data?.search?.studies, null, 2)}
+          {JSON.stringify(studyData?.data?.study || studyData.data?.search?.studies, null, 2)}
         </pre>
       </div>
     );

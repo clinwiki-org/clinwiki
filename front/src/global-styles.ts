@@ -416,4 +416,103 @@ div.DraftEditor-editorContainer{
 .loader-container {
   position: relative;
 }
+.subgrid{
+  display: grid;
+   grid-template-areas:
+     "a1 a2 a3 a4"
+     "b1 b2 b3 b4"
+     "c1 c2 c3 c4"
+ }
+.card-subgrid{
+  display: grid;
+   grid-template-areas:
+     "a1 a2 a3 a4"
+     "b1 b2 b3 b4"
+     "c1 c2 c3 c4"
+     "d1 d2 d3 d4"
+     "e1 e2 e3 e4"
+     "f1 f2 f3 f4"
+ }
+ .a1 {
+   grid-area: a1;
+ }
+ .a2 {
+    grid-area: a2;
+ }
+ .a3 {
+    grid-area: a3;
+ }
+ .a4 {
+    grid-area: a4;
+ }
+ 
+ .b1 {
+   grid-area: b1;
+ }
+ .b2 {
+    grid-area: b2;
+ }
+ .b3 {
+    grid-area: b3;
+ }
+ .b4 {
+    grid-area: b4;
+ }
+ 
+ .c1 {
+   grid-area: c1;
+ }
+ .c2 {
+    grid-area: c2;
+ }
+ .c3 {
+    grid-area: c3;
+ }
+ .c4 {
+    grid-area: c4;
+ }
+ .d1 {
+   grid-area: d1;
+ }
+ .d2 {
+    grid-area: d2;
+ }
+ .d3 {
+    grid-area: d3;
+ }
+ .d4 {
+    grid-area: d4;
+ }
+ .e1 {
+  grid-area: e1;
+}
+.e2 {
+   grid-area: e2;
+}
+.e3 {
+   grid-area: e3;
+}
+.e4 {
+   grid-area: e4;
+}
+.f1 {
+  grid-area: f1;
+}
+.f2 {
+   grid-area: f2;
+}
+.f3 {
+   grid-area: f3;
+}
+.f4 {
+   grid-area: f4;
+}
+ 
+ .right {
+   text-align: right
+ }
+ 
+ .left {
+   text-align: left
+ }
 `);
