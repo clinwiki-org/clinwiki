@@ -51,7 +51,7 @@ export const getGraphQLMigrationURL = () => {
   return `http://${window.location.hostname}:8088/graphql`;
 };
 
-export const callHasura = (
+export const callHasuraAACT = (
   endpoint: string,
   query: any,
   variables: any,
@@ -62,7 +62,7 @@ export const callHasura = (
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'x-hasura-admin-secret': `${process.env.REACT_APP_HAS_TOKEN}`,
+      'x-hasura-admin-secret': `${process.env.REACT_APP_HAS_AACT_TOKEN}`,
     },
     body: JSON.stringify({
       query,
@@ -72,7 +72,28 @@ export const callHasura = (
   }).then(r => r.json());
 };
 
-export const getHasuraURL = () => {
+export const callHasuraClinwiki = (
+  endpoint: string,
+  query: any,
+  variables: any,
+  operationName?: string
+) => {
+  return fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'x-hasura-admin-secret': `${process.env.REACT_APP_HAS_CW_TOKEN}`,
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+      operationName,
+    }),
+  }).then(r => r.json());
+};
+
+export const getHasuraURLAACT = () => {
   if (
     typeof window === 'undefined' ||
     window.location.hostname.includes('localhost')
@@ -80,4 +101,14 @@ export const getHasuraURL = () => {
     return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
   }
   return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
+};
+
+export const getHasuraClinwikiURL = () => {
+  if (
+    typeof window === 'undefined' ||
+    window.location.hostname.includes('localhost')
+  ) {
+    return `https://clinwiki-crowd-stg.hasura.app/v1/graphql`;
+  }
+  return 'https://clinwiki-crowd-stg.hasura.app/v1/graphql';
 };
