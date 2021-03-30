@@ -31,39 +31,40 @@ interface Props {
 function IslandAggChild(props: Props) {
   const name = 'wf_test'
 
-  let currentAgg = {
-    "aggSublabel": null,
-    "autoSuggest": false,
-    "bucketKeyValuePairs": null,
-    "defaultToOpen": null,
-    "display": "STRING",
-    "displayName": "Tags",
-    "layout": "horizontal",
-    "maxCrumbs": 5,
-    "name": "tags",
-    "order": {
-      "sortKind": "key",
-      "desc": true
-    },
-    "preselected": {
-      "kind": "WHITELIST",
-      "values": [
+//  SAMPLE JSON CONFIG //
+  // {
+  //   "aggSublabel": null,
+  //   "autoSuggest": false,
+  //   "bucketKeyValuePairs": null,
+  //   "defaultToOpen": null,
+  //   "display": "STRING",
+  //   "displayName": "Tags",
+  //   "layout": "horizontal",
+  //   "maxCrumbs": 5,
+  //   "name": "tags",
+  //   "order": {
+  //     "sortKind": "key",
+  //     "desc": true
+  //   },
+  //   "preselected": {
+  //     "kind": "WHITELIST",
+  //     "values": [
 
-      ]
-    },
-    "rangeEndLabel": null,
-    "rangeStartLabel": null,
-    "rank": null,
-    "showAllowMissing": null,
-    "showFilterToolbar": null,
-    "visibleOptions": {
-      "kind": "WHITELIST",
-      "values": [
+  //     ]
+  //   },
+  //   "rangeEndLabel": null,
+  //   "rangeStartLabel": null,
+  //   "rank": null,
+  //   "showAllowMissing": null,
+  //   "showFilterToolbar": null,
+  //   "visibleOptions": {
+  //     "kind": "WHITELIST",
+  //     "values": [
 
-      ]
-    },
-    "aggKind": "workflow"
-  }
+  //     ]
+  //   },
+  //   "aggKind": "workflow"
+  // }
 
 
   const { aggId, nctId } = props;
@@ -78,6 +79,8 @@ function IslandAggChild(props: Props) {
 
   const isLoading = useSelector((state: RootState) => state.study.isFetchingSuggestedLables);
   const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
+  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
+
   const allowedSuggestedLabels = displayFields(
     workflow.suggestedLabelsFilter.kind,
     workflow.suggestedLabelsFilter.values,
@@ -90,6 +93,11 @@ function IslandAggChild(props: Props) {
   useEffect(() => {
     dispatch(fetchSuggestedLabels(nctId, allowedSuggestedLabels));
   }, [dispatch, nctId])
+  let getCurrentAgg = () => {
+    let jsonConfig = islandConfig
+    return aggId && jsonConfig[aggId]
+  }
+  let currentAgg = getCurrentAgg();
 
   if (isLoading) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;

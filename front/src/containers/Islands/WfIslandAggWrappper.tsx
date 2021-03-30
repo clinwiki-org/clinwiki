@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import { useRouteMatch } from 'react-router-dom';
-import useUrlParams from 'utils/UrlParamsProvider';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
-import IslandAggChild2  from './IslandAggChild2'
+import IslandAggChild2  from './WfIslandAggChild'
 import { fetchAllWorkFlows } from 'services/study/actions';
-import { deleteLabelMutation, fetchWorkFlowPage, upsertLabelMutation } from 'services/study/actions';
+import { fetchWorkFlowPage } from 'services/study/actions';
+import {  fetchIslandConfig } from 'services/search/actions'
 
 
 interface Props {
@@ -18,14 +17,12 @@ interface Props {
 function IslandAggWrapper(props: Props) {
   const { aggId, nctId } = props;
   const dispatch = useDispatch();
-  const params = useUrlParams();
-  const hash = params.hash
 
-
-
-  const data = useSelector((state: RootState) => state.search.searchResults); 
   const allWorkFlows = useSelector((state:RootState)=> state.study.allWorkFlows)
-  
+  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
+  const isFetchingFacetConfig = useSelector((state: RootState) => state.search.isFetchingFacetConfig);
+  const isFetchingSearchParams = useSelector((state: RootState) => state.search.isFetchingSearchParams);
+
   useEffect(() => {
     dispatch(fetchWorkFlowPage( nctId || "" ));
     }, [dispatch, nctId])
@@ -35,7 +32,11 @@ function IslandAggWrapper(props: Props) {
     dispatch(fetchAllWorkFlows());
   }, [dispatch, nctId])
 
-  if (!allWorkFlows || !aggId  ) {
+  useEffect(() => {
+    !islandConfig &&  !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchIslandConfig());
+  }, [dispatch, islandConfig]);
+
+  if (!allWorkFlows || !aggId  || !islandConfig ) {
     return <BeatLoader />
   }
  
