@@ -12,6 +12,7 @@ import { find, propEq } from 'ramda';
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
 import { fetchPageViews, fetchPageView, fetchStudyPage, fetchStudyPageHash, updateStudyViewLogCount } from 'services/study/actions';
+import { fetchSearchParams } from 'services/search/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { fetchPresentSiteProvider } from 'services/site/actions';
@@ -82,7 +83,7 @@ export default function GenericPage(props: Props) {
   useEffect(() => {
     const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-    dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY));
+    dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) :( fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY), fetchSearchParams(params.hash)) );
   }, [dispatch, currentPage, props.arg, params.hash]);
 
   const searchData = () => {

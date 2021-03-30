@@ -46,8 +46,8 @@ export const deleteSavedSearch = ( id ) => {
         {  id: id });                                    
 };
 
-export const fetchFacetConfig= () => {
-    return callGraphql(ENDPOINT, query.FACET_CONFIG_QUERY, {} );
+export const fetchIslandConfig= () => {
+    return callGraphql(ENDPOINT, query.ISLAND_CONFIG_QUERY, {} );
 };
 export const updateFacetConfig = (input) => {
     return callGraphql(ENDPOINT, mutate.UPDATE_FACET_CONFIG, 

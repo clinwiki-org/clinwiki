@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSearchParams, fetchFacetConfig } from 'services/search/actions'
+import { fetchIslandConfig } from 'services/search/actions'
 import { RootState } from 'reducers';
 import { SearchParams } from '../SearchPage/shared';
 
@@ -32,21 +32,18 @@ function IslandAggWrapper(props: Props) {
 
 
   const data = useSelector((state: RootState) => state.search.searchResults); 
-  const facetConfig = useSelector((state: RootState) => state.search.facetConfig);
+  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
   const isFetchingFacetConfig = useSelector((state: RootState) => state.search.isFetchingFacetConfig);
   const isFetchingSearchParams = useSelector((state: RootState) => state.search.isFetchingSearchParams);
   const searchParams = data?.data?.searchParams;
   const match = useRouteMatch();
 
   useEffect(() => {
-    match.path == "/search2/" && !data && !isFetchingSearchParams && !isFetchingFacetConfig && dispatch(fetchSearchParams(hash));
-  }, [dispatch, hash]);
+    !islandConfig &&  !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchIslandConfig());
+  }, [dispatch, islandConfig]);
 
-  useEffect(() => {
-    !facetConfig &&  !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchFacetConfig());
-  }, [dispatch, facetConfig]);
 
-  if (!searchParams || !aggId || !facetConfig ) {
+  if (!searchParams || !aggId || !islandConfig ) {
     return <BeatLoader />
   }
  

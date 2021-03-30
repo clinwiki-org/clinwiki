@@ -4,7 +4,7 @@ import { RootState } from 'reducers';
 import styled from 'styled-components';
 import ThemedButton from 'components/StyledComponents';
 import { Row, Col, FormControl, Nav, NavItem, Panel } from 'react-bootstrap';
-import { fetchFacetConfig, updateFacetConfig } from 'services/search/actions'
+import { fetchIslandConfig, updateFacetConfig } from 'services/search/actions'
 import { BeatLoader } from 'react-spinners';
 
 interface EditWorkflowsPageProps { }
@@ -37,29 +37,28 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   const [aggConfig, setConfig] = useState("");
   const [aggs, setAggs] = useState("");
   const [currentAggId, setCurrentAggId] = useState("")
-  const facetConfig = useSelector((state: RootState) => state.search.facetConfig);
+  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
 
 
   useEffect(() => {
-  dispatch(fetchFacetConfig());
-  setCurrentAggId("0")
+  dispatch(fetchIslandConfig());
+  setCurrentAggId("3")
   }, [dispatch]);
 
   useEffect(() => {
-    let mainConfig = facetConfig && facetConfig.facetConfig.mainConfig;
+    let mainConfig = islandConfig && islandConfig;
+    islandConfig && setConfig(JSON.stringify(mainConfig[currentAggId]));
+    islandConfig && setAggs(mainConfig);
+  }, [dispatch, islandConfig, currentAggId])
 
-    facetConfig && setConfig(JSON.stringify(mainConfig.default[currentAggId]));
-    facetConfig && setAggs(mainConfig.default);
-  }, [dispatch, facetConfig, currentAggId])
-
-  if (!facetConfig) {
+  if (!islandConfig) {
     return <BeatLoader />
   }
 
   let aggsArray = Object.keys(aggs)
 
   const handleSaveIsland = (e) => {
-    let mainConfig = facetConfig && facetConfig.facetConfig.mainConfig;
+    let mainConfig = islandConfig && islandConfig.islandConfig.mainConfig;
     mainConfig.default[currentAggId] = JSON.parse(aggConfig);
 
     let variables = {
@@ -75,12 +74,9 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
     setConfig(e.target.value)
   }
   const handleNewFacet = (e) => {
-    let mainConfig = facetConfig && JSON.parse(facetConfig.data.facetConfig.mainConfig);
-    let mainDefaultString = facetConfig && JSON.stringify(mainConfig);
+    let mainConfig = islandConfig
     let index = Object.keys(aggs).length
-
-    mainDefaultString = mainDefaultString.slice(0, mainDefaultString.length - 2) + `, "${index}" : ${aggConfig} }}`;
-
+    let mainDefaultString = islandConfig && JSON.stringify(mainConfig);    
     let newDefaultObject = JSON.parse(mainDefaultString)
     mainConfig = {
       ...mainConfig,
@@ -88,7 +84,7 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
     }
 
     let variables = {
-      jsonObj: JSON.stringify(mainConfig),
+      jsonObj: JSON.stringify(aggConfig),
       clientMutationId: null
     }
 

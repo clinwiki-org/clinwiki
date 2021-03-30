@@ -9,7 +9,6 @@ import { RootState } from 'reducers';
 import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
 import { SortInput } from 'types/globalTypes';
-
 import {
   AggBucket,
   maskAgg,
@@ -81,8 +80,8 @@ function IslandAggChild(props: Props) {
   })
   let getCurrentAgg = () => {
 
-    let jsonConfig = facetConfig.facetConfig.mainConfig
-    return aggId && jsonConfig.default[aggId]
+    let jsonConfig = islandConfig
+    return aggId && jsonConfig[aggId]
 
   }
 
@@ -107,7 +106,7 @@ function IslandAggChild(props: Props) {
   const crowdAggBuckets = useSelector((state: RootState) => state.search.crowdAggBuckets);
   const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
   const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
-  const facetConfig = useSelector((state: RootState) => state.search.facetConfig);
+  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
   const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
   const searchParams = data?.data?.searchParams;
   const paramsUrl = useUrlParams();
@@ -515,14 +514,11 @@ function IslandAggChild(props: Props) {
   };
 
   const handleContainerToggle =()=>{
-    let newConfig = facetConfig
     if(aggId){
-      newConfig.facetConfig.mainConfig.default[aggId].defaultToOpen = !facetConfig.facetConfig.mainConfig.default[aggId].defaultToOpen
+      islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
 
     }
-    // console.log(newConfig)
     }
-    // dispatch(updateAggOpenState())
   
   const filters = transformFilters(searchParams[grouping])
   return (

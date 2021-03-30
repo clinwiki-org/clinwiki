@@ -301,10 +301,12 @@ query UserSavedSearchesQuery($userId: Int!){
 } 
 `;
 
-export const FACET_CONFIG_QUERY =`
-query FacetConfig{
-  facetConfig{
-    mainConfig
+export const ISLAND_CONFIG_QUERY =`
+query IslandConfig{
+  islandConfig{
+    id
+    config
+    islandType
   }
 }
 `;
