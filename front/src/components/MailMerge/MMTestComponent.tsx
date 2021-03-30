@@ -22,35 +22,58 @@ function getClassForMode(mode: Mode) {
       return 'ElasticStudy';
   }
 }
-const TEMPLATE2 = `
-<wfagg id="0"></wfagg>
+const STUDY_TEMPLATE = `
+<wfagg id="3"></wfagg>
 `
-const TEMPLATE = `
+const SEARCH_TEMPLATE = `
+
 <div class="grid-container">
 <div class="grid3">
   <div class="one">
-    <agg id='0'></agg>
-    <agg id='1'></agg>
+    <agg id='2'></agg>
+    <agg id='3'></agg>
     <agg id='2'></agg>    
+
+  <div class="mm-card2 card-subgrid">
+    <span class="a1"> A1 </span>
+    <span class="a2">A2</span>
+    <span class="b3"> B3 </span>
+    <span class="b4">B4</span>
+    <span class="c1">C1</span>
+    <span class="c2"> C2 </span>
+    <span class="d3"> D3 </span>
+    <span class="d4">D4</span>
+    <span class="e1"> E1 </span>
+    <span class="e2">E2</span>
+    <span class="f3"> F3 </span>
+    <span class="f4">F4</span>
+  </div>
+
 
 </div>
   <div class="two">    
 <searchwithin></searchwithin>
 <div class="mm-single-line-center">
-    <agg id='4'></agg>
-    <agg id='5'></agg>
-    <agg id='6'></agg>
+    <agg id='2'></agg>
+    <agg id='3'></agg>
+    <agg id='2'></agg>
 </div>
 
 </div>
-  <div class="three loader-container">
+  <div class="three  loader-container subgrid">
   <resultloader></resultloader>
-<div class="mm-single-line-center">
+<div class="mm-single-line a1">
 <savesearch></savesearch>
 <csv></csv>
 </div>
+<div class="a2"></div>
+
+<div class="a3">
 <resultsort></resultsort>
-<div class="cards-container" key={{querystring hash}}>
+</div>
+<div class="a4"></div>
+
+<div class="cards-container b1" key={{querystring ALL}}>
 {{#each studies }}
 <div class="mm-card2">
   <div class ="mail-merge" >
@@ -68,9 +91,10 @@ const TEMPLATE = `
   
 
  </div>
+
 `
 export default function TestComponent() {
-  const [template, setTemplate] = useState(TEMPLATE2);
+  const [template, setTemplate] = useState(STUDY_TEMPLATE);
   const [mode, setMode] = useState<Mode>('Study');
   const defaultNctId = 'NCT03847779';
   const defaultSearchHash = 'tqxCyI9M';
@@ -97,8 +121,14 @@ export default function TestComponent() {
 
   const updateMode = mode => {
     setMode(mode);
-    if (mode === 'Study') setNctOrSearchHash(defaultNctId);
-    if (mode === 'Search') setNctOrSearchHash(defaultSearchHash);
+    if (mode === 'Study'){
+      setTemplate(STUDY_TEMPLATE)
+      setNctOrSearchHash(defaultNctId);
+    } 
+    if (mode === 'Search'){
+      setTemplate(SEARCH_TEMPLATE)
+      setNctOrSearchHash(defaultSearchHash);
+    } 
   };
   let islands = mode == 'Study' ? studyIslands : searchIslands;
   islands = {
