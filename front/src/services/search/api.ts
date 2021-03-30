@@ -15,7 +15,7 @@ export const fetchSearchPageAggs = (searchParams : any) => {
 };
 
 export const fetchSearchPageAggBuckets = (searchParams : any) => {
-    return callGraphql(ENDPOINT,query.SEARCH_PAGE_AGG_BUCKETS_QUERY, searchParams);           //TODO CHeck params
+    return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_AGG_BUCKETS_QUERY, searchParams);           //TODO CHeck params
 };
 export const fetchSearchPageCrowdAggBuckets = (searchParams : any) => {
     return callGraphql(ENDPOINT,query.SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY, searchParams);     //TODO CHeck params

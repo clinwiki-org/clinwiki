@@ -158,100 +158,9 @@ const getFieldName = (agg,isCrowdAgg) => {
     return isCrowdAgg ? 'fm_'+agg.field : agg.field;
 }
 
-const translateAgg = (criteria,json) => {
-
-    let aggList = criteria.aggFilters.map( af => {
-        console.log(util.inspect(af, false, null, true));
-        let t = {};
-        t[af.field] = {value: af.values[0]};
-
-        return {
-            bool: {
-                filter: [
-                    {
-                        bool: {
-                            should: [
-                                {
-                                    bool: {
-                                        filter: [
-                                            {
-                                                term: t
-                                            }
-                                        ]
-                                    }
-                                }                                
-                            ]
-                        }
-                    }
-                ]
-            }
-        }
-
-        });
-
-    let crowdAggList = criteria.crowdAggFilters.map( af => {
-        console.log(af.field)
-        return {
-            bool: {
-                filter: [
-                    {
-                        term: {
-                            fm_tags: {
-                                value: af.field
-                            }
-                        }
-                    }
-                ]
-            }
-        };
-        });
-
-    let aggs = {
-        front_matter_keys: {
-            filter: {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                must: aggList
-                            }
-                        }
-                    ]
-                }
-            },
-
-            aggs:{
-                front_matter_keys:{
-                   terms:{
-                      field:"front_matter_keys",
-                      size:1000000,
-                      order:{
-                         _term:"asc"
-                      },
-                      missing:"-99999999999"
-                   },
-                   aggs:{
-                      agg_bucket_sort:{
-                         bucket_sort:{
-                            from:0,
-                            size:100,
-                            sort:[
-                               
-                            ]
-                         }
-                      }
-                   }
-                }
-             }
-                         
-        }
-    };
-    json.aggs = aggs;   
-}
 
 function injectAggs(criteria,json) {
     let aggList = criteria.aggFilters.map( af => {
-        console.log(util.inspect(af, false, null, true));
         let t = {};
         t[af.field] = {value: af.values[0]};
 
@@ -282,6 +191,14 @@ function injectAggs(criteria,json) {
     let aggs = {};
     ENABLED_AGGS.forEach( enabledAgg => {
 
+        let bucketAgg = {};
+        bucketAgg[enabledAgg] = {
+            "terms":{
+               "field":enabledAgg,
+               "size":10
+            }
+         };
+
         aggs[enabledAgg] = {
             filter: {
                 bool: {
@@ -293,7 +210,8 @@ function injectAggs(criteria,json) {
                         }
                     ]
                 }
-            }
+            },
+            aggs: bucketAgg
         }
     });
     json.aggs = aggs;       
