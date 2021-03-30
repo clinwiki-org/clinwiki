@@ -44,7 +44,7 @@ const SitesPage = ({ history }: SitesPageProps) => {
   };
 
   useEffect(() => {
-    dispatch(fetchSitesPage());
+    dispatch(fetchSitesPageHasura());
   }, [dispatch]);
 
   if (data === undefined || isLoading || isDeleting) {
