@@ -1,2 +1,0 @@
-class FacetConfig < ApplicationRecord
-end

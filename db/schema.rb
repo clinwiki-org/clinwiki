@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_15_165217) do
+ActiveRecord::Schema.define(version: 2021_03_30_155744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,12 +30,6 @@ ActiveRecord::Schema.define(version: 2021_03_15_165217) do
     t.integer "user_id"
   end
 
-  create_table "facet_configs", force: :cascade do |t|
-    t.string "main_config"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "facility_locations", force: :cascade do |t|
     t.string "name"
     t.string "city"
@@ -46,6 +40,11 @@ ActiveRecord::Schema.define(version: 2021_03_15_165217) do
     t.float "longitude"
     t.string "status"
     t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
+  end
+
+  create_table "island_configs", force: :cascade do |t|
+    t.string "config"
+    t.string "island_type"
   end
 
   create_table "locations", force: :cascade do |t|
