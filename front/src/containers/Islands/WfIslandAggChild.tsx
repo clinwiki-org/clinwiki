@@ -29,7 +29,6 @@ interface Props {
 }
 
 function IslandAggChild(props: Props) {
-  const name = 'wf_test'
 
 //  SAMPLE JSON CONFIG //
   // {
@@ -71,15 +70,26 @@ function IslandAggChild(props: Props) {
   const dispatch = useDispatch();
   const params = useUrlParams();
   const allWorkflows = useSelector((state: RootState) => state.study.allWorkFlows);
-  // console.log(allWorkflows)
-  const workflow = allWorkflows?.data.workflowsView.workflows.filter(
-    wf => wf.name === name
-  )?.[0];
-  const emptySet = new Set();
 
-  const isLoading = useSelector((state: RootState) => state.study.isFetchingSuggestedLables);
-  const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
-  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
+    const emptySet = new Set();
+    
+    const isLoading = useSelector((state: RootState) => state.study.isFetchingSuggestedLables);
+    const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
+    const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
+    
+
+    let getCurrentAgg = () => {
+      let jsonConfig = islandConfig
+      return aggId && jsonConfig[aggId]
+    }
+    let currentAgg = getCurrentAgg();
+
+    const workflow = allWorkflows?.data.workflowsView.workflows.filter(
+      wf => wf.name === currentAgg.name
+      )?.[0];
+
+      console.log("WF", workflow)
+
 
   const allowedSuggestedLabels = displayFields(
     workflow.suggestedLabelsFilter.kind,
@@ -93,11 +103,6 @@ function IslandAggChild(props: Props) {
   useEffect(() => {
     dispatch(fetchSuggestedLabels(nctId, allowedSuggestedLabels));
   }, [dispatch, nctId])
-  let getCurrentAgg = () => {
-    let jsonConfig = islandConfig
-    return aggId && jsonConfig[aggId]
-  }
-  let currentAgg = getCurrentAgg();
 
   if (isLoading) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
