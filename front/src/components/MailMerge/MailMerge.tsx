@@ -27,7 +27,6 @@ export default function MailMerge(props: Props) {
     props.onTemplateChanged(before + templateString + after);
   };
   const style = { ...defaultStyle, ...props.style };
-  console.log('sample ', props.sample)
   return (
     <>
       <div style={style}>
