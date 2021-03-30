@@ -15,7 +15,7 @@ import DownloadCSVIsland from './DownloadCSVIsland';
 import ResultSort from './ResultSort';
 import ResultLoader from './ResultLoader';
 import IslandAggWrapper from './IslandAggWrappper';
-import IslandAggWrapper2 from './IslandAggWrappper2';
+import IslandAggWrapper2 from './WfIslandAggWrappper';
 
 /*
   Common island configuration for MailMerge pages

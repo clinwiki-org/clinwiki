@@ -1,19 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
-import { trimPath } from 'utils/helpers';
-import ThemedButton from 'components/StyledComponents';
-import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
-import SortKind from 'containers/AggDropDown/SortKind';
-import CustomDropDown from 'containers/AggDropDown/CustomDrop';
+import React, { useEffect, useRef } from 'react';
+import { useRouteMatch } from 'react-router-dom';
+import useUrlParams from 'utils/UrlParamsProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSearchParams, updateSearchParamsAction, fetchFacetConfig } from 'services/search/actions'
+import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions'
 import { RootState } from 'reducers';
-import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
 import {  SortInput } from 'types/globalTypes';
-import ExportToCsvComponent from '../SearchPage/components/ExportToCsvComponent';
 import aggToField from 'utils/aggs/aggToField';
-import { ButtonGroup, MenuItem, DropdownButton } from 'react-bootstrap';
+import { MenuItem, DropdownButton } from 'react-bootstrap';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import { snakeCase } from 'utils/helpers';
 
@@ -26,35 +20,7 @@ import {
   defaultPageSize
 } from '../SearchPage/Types';
 
-import {
-  pipe,
-  length,
-  prop,
-  sortBy,
-  pathOr,
-  uniqBy,
-  equals,
-  find,
-  reverse,
-  contains,
-  filter,
-  isEmpty,
-  isNil,
-  map,
-  dissoc,
-  any,
-  head,
-  propOr,
-  groupBy,
-  lensPath,
-  over,
-  findIndex,
-  propEq,
-  reject,
-  view,
-  remove,
-  lensProp
-} from 'ramda';
+import {  map, dissoc, over, lensProp } from 'ramda';
 import { BeatLoader } from 'react-spinners';
 import { AggFilterInput } from 'types/globalTypes';
 import {
