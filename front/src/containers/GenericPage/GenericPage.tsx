@@ -88,22 +88,28 @@ export default function GenericPage(props: Props) {
 
   const searchData = () => {
     let studies: any[] = []
-    studyData.data?.search?.studies?.map((study, index) => {
+    studyData?.data?.search?.studies?.map((study, index) => {
       studies.push({ ...study, ALL: 'ALL' })
     })
     return {
       studies,
-      recordsTotal: studyData.data?.search?.recordsTotal
+      recordsTotal: studyData?.data?.search?.recordsTotal
     }
   }
-  if (loading || !pageViewData || !studyData || !site) {
+  if (loading || !pageViewData || (!studyData && pageType == "Study") || !site) {
     return <BeatLoader />;
   }
-  if (!studyData.data) {
+  if (studyData && !studyData.data && pageType == "Study" ) {
     return <BeatLoader />
   }
   if (!props.arg && pageType == "Study") {
     return <h1>Missing NCTID in URL</h1>;
+  }
+  if (!params.hash && pageType == "Search") {
+    return <h1>Missing NCTID in URL</h1>;
+  }
+  if (!params.pv && pageType == "Search") {
+    return <h1>Missing PageView in URL</h1>;
   }
   const title = microMailMerge(currentPage?.title, studyData?.data.study || searchData());
   // const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
