@@ -6,9 +6,9 @@ import {keysToCamel} from '../util/case.convert';
 export async function search(args) {
     try {
         const translated = await translateSearch(args.params,true);
-        //console.log('translated', util.inspect(translated, false, null, true));
+        
         let esResults = await elastic.query(translated);
-        //console.log('esResults', util.inspect(esResults, false, null, true));
+
         const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
         let aggs = [];
         for( const [key,value] of Object.entries(esResults.body.aggregations)) {
@@ -30,10 +30,9 @@ export async function search(args) {
 export async function aggBuckets(args) {
     try {
         const translated = await translateAggBuckets(args.params,false);
-        //console.log('translated', util.inspect(translated, false, null, true));
-        console.log('translated',JSON.stringify(translated));
+
         let esResults = await elastic.query(translated);
-        //console.log('esResults', util.inspect(esResults, false, null, true));
+        
         const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
         let aggs = [];
         for( const [key,value] of Object.entries(esResults.body.aggregations)) {
