@@ -204,6 +204,7 @@ class SearchService
     options = search_kick_query_options(aggs: aggs, search_after: search_after, reverse: reverse)
     options[:includes] = includes
     options[:load] = false
+    options[:debug] = true
     options
   end
 
