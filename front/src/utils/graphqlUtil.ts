@@ -80,10 +80,11 @@ export const callHasuraClinwiki = (
 ) => {
   return fetch(endpoint, {
     method: 'POST',
+
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'x-hasura-admin-secret': `${process.env.REACT_APP_HAS_CW_TOKEN}`,
+      Authorization: getLocalJwt() ? `Bearer ${getLocalJwt()}` : '',
     },
     body: JSON.stringify({
       query,
