@@ -57,6 +57,7 @@ interface CustomDropDownProps {
   isOpen: boolean;
   fromAggField: boolean;
   updater: AggFilterInputUpdater;
+  disabled?: boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -245,6 +246,24 @@ const SelectBoxBox = styled.div`
     color: ${props => props.theme.aggSideBar.sideBarFontHover};
   }
 }
+.disabled-check{
+  color: #e6e6e6 !important;
+}
+.disabled-text{
+  color: #b4b4b4 !important;
+  cursor: not-allowed
+}
+.disabled-checkbox{
+  border: 1px solid #b4b4b4;
+}
+.disabled-cursor{
+  cursor: not-allowed !important;
+  .select-item{
+    cursor: not-allowed !important;
+
+  }
+}
+
 `
 const ThemedSelectBox = withTheme(SelectBoxBox)
 class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDownState> {
@@ -458,7 +477,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           <div
             style={{ display: this.state.showItems ? "block" : "none" }}
 
-            className={this.props.isPresearch ? "select-box--buckets-presearch" : "select-box--buckets-facet"}
+            className={`${this.props.isPresearch ? "select-box--buckets-presearch" : "select-box--buckets-facet" } ${this.props.disabled ? "disabled-cursor" : ""}`}
           >
             <CustomDropPanel 
             buckets={this.props.buckets} 
@@ -474,6 +493,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             onCheckBoxToggle={this.props.onCheckBoxToggle}
             selectedItem={this.state.selectedItem}
             isPresearch={this.props.isPresearch}
+            disabled={this.props.disabled}
 
             />
           </div>

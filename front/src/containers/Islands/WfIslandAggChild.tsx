@@ -19,7 +19,7 @@ import {
   SuggestedLabelsQuery_crowdAggFacets_aggs,
 } from 'services/study/model/SuggestedLabelsQuery';
 import { displayFields } from 'utils/siteViewHelpers';
-import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation } from '../../services/study/actions'
+import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation, setShowLoginModal } from '../../services/study/actions'
 
 
 interface Props {
@@ -76,7 +76,9 @@ function IslandAggChild(props: Props) {
     const isLoading = useSelector((state: RootState) => state.study.isFetchingSuggestedLables);
     const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
     const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
-    
+    const user = useSelector( (state: RootState) => state.user.current);
+    const isUpsertingLabel = useSelector((state:RootState) => state.study.isUpsertingLabel)
+
 
     let getCurrentAgg = () => {
       let jsonConfig = islandConfig
@@ -144,6 +146,11 @@ function IslandAggChild(props: Props) {
   );
 
   const handleSelect = (key, value) => {
+
+    if(!user || isUpsertingLabel){
+      // !user && dispatch(setShowLoginModal(true))
+      return console.log(!user ? "Sorry, must be logged in to do this": "Sorry still upserting")
+    }
     // console.log(key, value)
 
     // console.log(suggestedLabels)
@@ -229,6 +236,7 @@ function IslandAggChild(props: Props) {
         setShowLabel={() => console.log("Hi")}
         isOpen={true}
         fromAggField={false}
+        disabled={!user || isUpsertingLabel}
       />
     </>
   );

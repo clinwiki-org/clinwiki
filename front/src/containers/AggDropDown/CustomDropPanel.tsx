@@ -23,8 +23,8 @@ import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInp
 import AllowMissingDropDownItem from './AllowMissingDropDownItem';
 interface CustomDropPanelProps {
   field: SiteViewFragment_search_aggs_fields | any;
-  buckets: AggBucket[],
-  isPresearch: boolean,
+  buckets: AggBucket[];
+  isPresearch: boolean;
   handleLoadMore: () => any;
   hasMore: boolean;
   handleRange: any;
@@ -35,7 +35,8 @@ interface CustomDropPanelProps {
   isOpen: boolean;
   updater: AggFilterInputUpdater;
   loading: boolean;
-  selectedItem: any,
+  selectedItem: any;
+  disabled?:boolean;
 
 
 }
@@ -51,8 +52,9 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
   }
 
   renderPreValue = (item) => {
+    const { disabled } = this.props;
     if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
-      return this.props.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>
+      return this.props.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet" } ${disabled ? "disabled-check" : ""}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"} ${disabled ? "disabled-checkbox" : ""}`}></div>
     }
     return null
   };
@@ -84,6 +86,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     return `${text} (${docCount})`;
   }
   render() {
+    const { disabled } = this.props;
 
  /*   if(this.props.buckets.length > 0) {
      console.log(this.props.isPresearch,"CusDr Panel BUckets ", this.props.buckets)
@@ -201,7 +204,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
                     : "select-item"
                 }
               >
-                <div className="item-content">
+                <div className={`item-content ${disabled ? "disabled-text" : ""}`}>
                   {this.renderPreValue(item.key)}
                   <span>{item.key} ({item.docCount})</span>
                 </div>
