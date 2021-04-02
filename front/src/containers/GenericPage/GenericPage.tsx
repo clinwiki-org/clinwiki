@@ -81,9 +81,13 @@ export default function GenericPage(props: Props) {
   }, [dispatch, params.pv]);
 
   useEffect(() => {
+    dispatch((pageType == "Search" ? fetchSearchParams(params.hash) : null ))
+  }, [dispatch, params.hash]);
+
+  useEffect(() => {
     const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-    dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) :( fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY), fetchSearchParams(params.hash)) );
+    dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY))
   }, [dispatch, currentPage, props.arg, params.hash]);
 
   const searchData = () => {
