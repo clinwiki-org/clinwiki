@@ -3,6 +3,7 @@ import { call, put, takeLatest, select } from 'redux-saga/effects';
 import * as types from './types';
 import * as actions from './actions';
 import { fetchCurrentUser } from '../user/actions';
+import { fetchSearchParams } from '../search/actions';
 import * as api from './api';
 
 const getCurrentPageViews = state => state.study.pageViews.data.site.pageViews; //TODO CHeck path to redux store pageViews
@@ -63,6 +64,7 @@ function* getStudyPage(action) {
 function* getStudyPageHash(action) {
     try {
         let response = yield call(() => api.fetchStudyPageHash(action.hash, action.QUERY));
+        yield put(fetchSearchParams(action.hash))
         if(response) {
             yield put(actions.fetchStudyPageSuccess(response));
         }
