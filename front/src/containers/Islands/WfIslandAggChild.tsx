@@ -148,7 +148,7 @@ function IslandAggChild(props: Props) {
   const handleSelect = (key, value) => {
 
     if(!user || isUpsertingLabel){
-      // !user && dispatch(setShowLoginModal(true))
+      !user && dispatch(setShowLoginModal(true))
       return console.log(!user ? "Sorry, must be logged in to do this": "Sorry still upserting")
     }
     // console.log(key, value)

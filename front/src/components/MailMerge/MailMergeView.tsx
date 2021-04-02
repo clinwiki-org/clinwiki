@@ -3,6 +3,10 @@ import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
 import marked from 'marked';
 import HtmlToReact from 'html-to-react';
+import { setShowLoginModal } from 'services/study/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import LoginModal from 'components/LoginModal';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -64,6 +68,8 @@ export function microMailMerge(template = '', context?: object | null) {
 
 export default function MailMergeView(props: Props) {
   useHandlebars();
+  const dispatch = useDispatch();
+  const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
 
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
@@ -110,6 +116,10 @@ export default function MailMergeView(props: Props) {
   );
   return (
     <div className="mail-merge" style={style}>
+      <LoginModal
+        show={showLoginModal}
+        cancel={() => dispatch(setShowLoginModal(false))}
+      />
       {reactElement}
     </div>
   );

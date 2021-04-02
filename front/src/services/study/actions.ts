@@ -688,3 +688,7 @@ export const bulkListUpdateError = (
     type: types.BULK_LIST_UPDATE_MUTATION_ERROR,
     payload: { message },
 });
+export const setShowLoginModal = (input: any): types.StudyActionTypes => ({
+    type: types.SET_SHOW_LOGIN_MODAL,
+    input,
+});

@@ -176,6 +176,8 @@ export const FETCH_LABELS_BUCKETS_SEND = 'FETCH_LABELS_BUCKETS';
 export const FETCH_LABELS_BUCKETS_SUCCESS = 'FETCH_LABELS_BUCKETS_SUCCESS';
 export const FETCH_LABELS_BUCKETS_ERROR = 'FETCH_LABELS_BUCKETS_ERROR';
 
+export const SET_SHOW_LOGIN_MODAL = 'SET_SHOW_LOGIN_MODAL';
+
 export const BULK_QUERY_UPDATE_MUTATION_SEND = 'BULK_QUERY_UPDATE_MUTATION';
 export const BULK_QUERY_UPDATE_MUTATION_SUCCESS =
     'BULK_QUERY_UPDATE_MUTATION_SUCCESS';
@@ -247,6 +249,7 @@ export interface StudyState {
     isBulkQueryUpdating: boolean;
     bulkQueryUpdate: any;
     isBulkListUpdating: boolean;
+    showLoginModal: boolean;
 }
 
 export interface StudyDataError {
@@ -797,6 +800,10 @@ export interface bulkListUpdateErrorAction {
     type: typeof BULK_LIST_UPDATE_MUTATION_ERROR,
     payload:StudyDataError
 };
+export interface setShowLoginModalSendAction {
+    type: typeof SET_SHOW_LOGIN_MODAL;
+    input: any;
+}
 
 export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
 fetchStudyPageHashSendAction | fetchStudyPageHashSuccessAction | fetchStudyPageHashErrorAction |
@@ -839,4 +846,5 @@ FetchEditReviewSendAction | FetchEditReviewSuccessAction | FetchEditReviewErrorA
 | FetchSampleStudyHasuraErrorAction
 | fetchStudyPageHasuraSendAction
 | fetchStudyPageHasuraSuccessAction
-| fetchStudyPageHasuraErrorAction;
+| fetchStudyPageHasuraErrorAction
+| setShowLoginModalSendAction;
