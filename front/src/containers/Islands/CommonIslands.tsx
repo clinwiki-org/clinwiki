@@ -16,6 +16,7 @@ import ResultSort from './ResultSort';
 import ResultLoader from './ResultLoader';
 import IslandAggWrapper from './IslandAggWrappper';
 import IslandAggWrapper2 from './WfIslandAggWrappper';
+import CrumbsBarIsland from './CrumbsBarIsland';
 
 /*
   Common island configuration for MailMerge pages
@@ -70,6 +71,9 @@ export const searchIslands: Record<string, IslandConstructor> = {
   ),
   searchwithin: (attributes: Record<string, string>, context?: any) => (
     <SearchWithin />
+  ),
+  crumbsbar: (attributes: Record<string, string>, context?: any) => (
+    <CrumbsBarIsland />
   ),
   savesearch: (attributes: Record<string, string>, context?: any) => (
     <SaveSearchIsland/>
