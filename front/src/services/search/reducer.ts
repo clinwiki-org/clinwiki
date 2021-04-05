@@ -1,5 +1,5 @@
 import { exportToCsv, searchExport } from './api';
-import { FacetConfigQuery } from './model/FacetConfigQuery';
+import { IslandConfigQuery } from './model/IslandConfigQuery';
 import * as types from './types';
 
 const initialState: types.SearchState = {
@@ -22,7 +22,7 @@ const initialState: types.SearchState = {
     isCreatingSavedSearch: false,
     isDeletingSavedSearch: false,
     isFetchingFacetConfig: false,
-    facetConfig: undefined,
+    islandConfig: undefined,
     isUpdatingFacetConfig: false,
     isFetchingSearchExport: false,
     searchExport: undefined,
@@ -180,81 +180,81 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 isFetchingSavedSearches: false
             };
 
-            case types.CREATE_SAVED_SEARCH_SEND:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: true
-                };
-            case types.CREATE_SAVED_SEARCH_SUCCESS:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: false,
-                    savedSearches: action.payload
-                };
-            case types.CREATE_SAVED_SEARCH_ERROR:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: false
-                };
-    
-            case types.DELETE_SAVED_SEARCH_SEND:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: true
-                };
-            case types.DELETE_SAVED_SEARCH_SUCCESS:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: false,
-                    savedSearches: {       
-                        ...state.savedSearches,
-                        data: {
-                            ...state.savedSearches.data,
-                            savedSearch: action.payload
-                        }         
-                    }    
-                };
-            case types.DELETE_SAVED_SEARCH_ERROR:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: false
-                };
-                case types.FETCH_FACET_CONFIG_SEND:
-                    return {
-                        ...state,
-                        isFetchingFacetConfig: true
-                    };
-                case types.FETCH_FACET_CONFIG_SUCCESS:
-                    let response = {
-                            facetConfig: {
-                                mainConfig:JSON.parse(action.payload.data.facetConfig.mainConfig)
-                            }
-                        } as FacetConfigQuery
-                    return {
-                        ...state,
-                        isFetchingFacetConfig: false,
-                        facetConfig: response
-                    };
-                case types.FETCH_FACET_CONFIG_ERROR:
-                    return {
-                        ...state,
-                        isFetchingFacetConfig: false
-                    };
-                case types.UPDATE_FACET_CONFIG_SEND:
-                    return {
-                        ...state,
-                        isUpdatingFacetConfig: true
-                    };
-                case types.UPDATE_FACET_CONFIG_SUCCESS:
-                    return {
-                        ...state,
-                        isUpdatingFacetConfig: false,
-                    };
-                case types.UPDATE_FACET_CONFIG_ERROR:
-                    return {
-                        ...state,
-                        isUpdatingFacetConfig: false
-                    };
+        case types.CREATE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isCreatingSavedSearch: true
+            };
+        case types.CREATE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isCreatingSavedSearch: false,
+                savedSearches: action.payload
+            };
+        case types.CREATE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isCreatingSavedSearch: false
+            };
+
+        case types.DELETE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isDeletingSavedSearch: true
+            };
+        case types.DELETE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isDeletingSavedSearch: false,
+                savedSearches: {
+                    ...state.savedSearches,
+                    data: {
+                        ...state.savedSearches.data,
+                        savedSearch: action.payload
+                    }
+                }   
+            };
+        case types.DELETE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isDeletingSavedSearch: false
+            };
+        case types.FETCH_ISLAND_CONFIG_SEND:
+            return {
+                ...state,
+                isFetchingFacetConfig: true
+            };
+        case types.FETCH_ISLAND_CONFIG_SUCCESS:
+            let response = action.payload.data.islandConfig
+            let newObject = {} as IslandConfigQuery
+            response.map((island)=>{
+                newObject[island.id] = JSON.parse(island.config)
+            })
+            return {
+                ...state,
+                isFetchingFacetConfig: false,
+                islandConfig: newObject
+            };
+        case types.FETCH_ISLAND_CONFIG_ERROR:
+            return {
+                ...state,
+                isFetchingFacetConfig: false
+            };
+        case types.UPDATE_FACET_CONFIG_SEND:
+            return {
+                ...state,
+                isUpdatingFacetConfig: true
+            };
+        case types.UPDATE_FACET_CONFIG_SUCCESS:
+            return {
+                ...state,
+                isUpdatingFacetConfig: false,
+            };
+        case types.UPDATE_FACET_CONFIG_ERROR:
+            return {
+                ...state,
+                isUpdatingFacetConfig: false
+            };
         case types.CREATE_SAVED_SEARCH_SEND:
             return {
                 ...state,

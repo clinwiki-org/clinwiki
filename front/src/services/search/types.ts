@@ -5,6 +5,7 @@ import {SearchPageParamsQuery} from  '../../services/search/model/SearchPagePara
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
 import { FacetConfigQuery } from './model/FacetConfigQuery';
+import { IslandConfigQuery } from './model/IslandConfigQuery';
 import { UpdateFacetConfigInput } from './model/UpdateFacetConfigInput'
 
 
@@ -51,6 +52,9 @@ export const DELETE_SAVED_SEARCH_ERROR = 'DELETE_SAVED_SEARCH_ERROR';
 export const FETCH_FACET_CONFIG_SEND = 'FETCH_FACET_CONFIG_SEND';
 export const FETCH_FACET_CONFIG_SUCCESS = 'FETCH_FACET_CONFIG_SUCCESS';
 export const FETCH_FACET_CONFIG_ERROR = 'FETCH_FACET_CONFIG_ERROR';
+export const FETCH_ISLAND_CONFIG_SEND = 'FETCH_ISLAND_CONFIG_SEND';
+export const FETCH_ISLAND_CONFIG_SUCCESS = 'FETCH_ISLAND_CONFIG_SUCCESS';
+export const FETCH_ISLAND_CONFIG_ERROR = 'FETCH_ISLAND_CONFIG_ERROR';
 
 export const UPDATE_FACET_CONFIG_SEND = 'UPDATE_FACET_CONFIG_SEND';
 export const UPDATE_FACET_CONFIG_SUCCESS = 'UPDATE_FACET_CONFIG_SUCCESS';
@@ -83,7 +87,7 @@ export interface SearchState {
     isCreatingSavedSearch: boolean,
     isDeletingSavedSearch: boolean,
     isFetchingFacetConfig: boolean,
-    facetConfig: FacetConfigQuery | undefined 
+    islandConfig: IslandConfigQuery | undefined ,
     isUpdatingFacetConfig: boolean,
     isFetchingSearchExport: boolean,
     searchExport: any;
@@ -246,15 +250,27 @@ export interface DeleteSavedSearchErrorAction {
     type: typeof DELETE_SAVED_SEARCH_ERROR,
     payload: SearchDataError
 };
-export interface FetchFacetConfigSendAction {
-    type: typeof FETCH_FACET_CONFIG_SEND
-}
-export interface FetchFacetConfigSuccessAction {
-    type: typeof FETCH_FACET_CONFIG_SUCCESS,
-    payload: any
-};
+// export interface FetchFacetConfigSendAction {
+//     type: typeof FETCH_FACET_CONFIG_SEND
+// }
+// export interface FetchFacetConfigSuccessAction {
+//     type: typeof FETCH_FACET_CONFIG_SUCCESS,
+//     payload: any
+// };
+
 export interface FetchFacetConfigErrorAction {
     type: typeof FETCH_FACET_CONFIG_ERROR,
+    payload: any
+}
+export interface FetchIslandConfigSendAction {
+    type: typeof FETCH_ISLAND_CONFIG_SEND
+}
+export interface FetchIslandConfigSuccessAction {
+    type: typeof FETCH_ISLAND_CONFIG_SUCCESS,
+    payload: any
+};
+export interface FetchIslandConfigErrorAction {
+    type: typeof FETCH_ISLAND_CONFIG_ERROR,
     payload: SearchDataError
 };
 
@@ -309,8 +325,10 @@ export type SearchActionTypes =
     FetchSavedSearchesSendAction | FetchSavedSearchesSuccessAction | FetchSavedSearchesErrorAction |
     CreateSavedSearchSendAction | CreateSavedSearchSuccessAction | CreateSavedSearchErrorAction |
     DeleteSavedSearchSendAction | DeleteSavedSearchSuccessAction | DeleteSavedSearchErrorAction |
-    FetchFacetConfigSendAction | FetchFacetConfigSuccessAction | FetchFacetConfigErrorAction |
+    FetchFacetConfigErrorAction | UpdateFacetConfigSendAction | UpdateFacetConfigSuccessAction | UpdateFacetConfigErrorAction |
+    SearchExportSendAction  | SearchExportSuccessAction | SearchExportErrorAction |
+    ExportToCsvSendAction | ExportToCsvSuccessAction |  ExportToCsvErrorAction  |
+    FetchIslandConfigSendAction | FetchIslandConfigSuccessAction | FetchIslandConfigErrorAction |
     UpdateFacetConfigSendAction | UpdateFacetConfigSuccessAction | UpdateFacetConfigErrorAction |
     SearchExportSendAction  | SearchExportSuccessAction | SearchExportErrorAction |
-    ExportToCsvSendAction | ExportToCsvSuccessAction |  ExportToCsvErrorAction  
-;
+    ExportToCsvSendAction | ExportToCsvSuccessAction |  ExportToCsvErrorAction ;

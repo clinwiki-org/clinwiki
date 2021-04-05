@@ -4,6 +4,7 @@ import * as mutate from './mutations'
 // import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import { callGraphql, get_gql_url, getGraphQLMigrationURL } from 'utils/graphqlUtil';
 
+
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
@@ -49,9 +50,10 @@ export const deleteSavedSearch = ( id ) => {
         {  id: id });                                    
 };
 
-export const fetchFacetConfig= () => {
-    return callGraphql(ENDPOINT, query.FACET_CONFIG_QUERY, {} );
+export const fetchIslandConfig= () => {
+    return callGraphql(ENDPOINT, query.ISLAND_CONFIG_QUERY, {} );
 };
+
 export const updateFacetConfig = (input) => {
     return callGraphql(ENDPOINT, mutate.UPDATE_FACET_CONFIG, 
         { input : input.input});

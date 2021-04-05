@@ -173,15 +173,29 @@ export const deleteSavedSearchError = (message: string) : types.SearchActionType
     type: types.DELETE_SAVED_SEARCH_ERROR,
     payload: { message }
 });
-export const fetchFacetConfig= () : types.SearchActionTypes => ({
-    type: types.FETCH_FACET_CONFIG_SEND,
-});
-export const fetchFacetConfigSuccess= (payload: any) : types.SearchActionTypes => ({
-    type: types.FETCH_FACET_CONFIG_SUCCESS,
-    payload
-});
+// export const fetchFacetConfig= () : types.SearchActionTypes => ({
+//     type: types.FETCH_FACET_CONFIG_SEND,
+// });
+// export const fetchFacetConfigSuccess= (payload: any) : types.SearchActionTypes => ({
+//     type: types.FETCH_FACET_CONFIG_SUCCESS,
+//     payload
+// });
+
 export const fetchFacetConfigError= (message: string) : types.SearchActionTypes => ({
     type: types.FETCH_FACET_CONFIG_ERROR,
+    payload: {message}
+})
+
+export const fetchIslandConfig= () : types.SearchActionTypes => ({
+    type: types.FETCH_ISLAND_CONFIG_SEND,
+});
+
+export const fetchIslandConfigSuccess= (payload: any) : types.SearchActionTypes => ({
+    type: types.FETCH_ISLAND_CONFIG_SUCCESS,
+    payload
+});
+export const fetchIslandConfigError= (message: string) : types.SearchActionTypes => ({
+    type: types.FETCH_ISLAND_CONFIG_ERROR,
     payload: {message}
 });
 export const updateFacetConfig= ( input: UpdateFacetConfigInput) : types.SearchActionTypes => ({

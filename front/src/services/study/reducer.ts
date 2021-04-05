@@ -60,6 +60,7 @@ const initialState: types.StudyState = {
     isUpsertingReviewForm: false,
     isFetchingEditReview: false,
     editReview: undefined,
+    showLoginModal: false,
 };
 
 const studyReducer = (
@@ -665,6 +666,11 @@ const studyReducer = (
             return {
                 ...state,
                 isBulkListUpdating: false,
+            };
+        case types.SET_SHOW_LOGIN_MODAL:
+            return {
+                ...state,
+                showLoginModal: action.input
             };
         default:
             return { ...state };

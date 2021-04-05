@@ -6,7 +6,6 @@ import { SearchStudyPageQuery } from './model/SearchStudyPageQuery';
 import { StudyEditsHistoryQuery } from './model/StudyEditsHistoryQuery';
 import * as types from './types';
 import { UpdatePageViewInput } from 'services/study/model/InputTypes';
-
 export const fetchSampleStudy = (
     nctId: string,
     QUERY: any
@@ -27,7 +26,6 @@ export const fetchSampleStudyError = (
     type: types.FETCH_SAMPLE_STUDY_ERROR,
     payload: { message },
 });
-
 export const fetchSampleStudyHasura = (
     nctId: string,
     QUERY: any
@@ -48,7 +46,6 @@ export const fetchSampleStudyHasuraError = (
     type: types.FETCH_SAMPLE_STUDY_HASURA_ERROR,
     payload: { message },
 });
-
 export const fetchStudyPage = (
     nctId: string,
     QUERY: any
@@ -82,7 +79,6 @@ export const fetchStudyPageHashError= (message: string) : types.StudyActionTypes
     type: types.FETCH_STUDY_PAGE_HASH_ERROR,
     payload: {message}
 });
-
 export const fetchStudyPageHasura = (
     nctId: string,
     HASURA_STUDY_QUERY: any
@@ -103,7 +99,6 @@ export const fetchStudyPageHasuraError = (
     type: types.FETCH_STUDY_PAGE_HASURA_ERROR,
     payload: { message },
 });
-
 export const fetchPageViews = (siteId: any): types.StudyActionTypes => ({
     type: types.FETCH_PAGE_VIEWS_SEND,
     siteId,
@@ -154,7 +149,6 @@ export const updateStudyViewLogCountError = (
     type: types.UPDATE_STUDY_VIEW_LOG_COUNT_ERROR,
     payload: { message },
 });
-
 export const createPageView = (
     url: string,
     siteId: number
@@ -163,40 +157,34 @@ export const createPageView = (
     url,
     siteId,
 });
-
 export const createPageViewSuccess = (
     payload: any
 ): types.StudyActionTypes => ({
     type: types.CREATE_PAGE_VIEW_SUCCESS,
     payload,
 });
-
 export const createPageViewError = (
     message: string
 ): types.StudyActionTypes => ({
     type: types.CREATE_PAGE_VIEW_ERROR,
     payload: { message },
 });
-
 export const deletePageView = (id: number): types.StudyActionTypes => ({
     type: types.DELETE_PAGE_VIEW_SEND,
     id,
 });
-
 export const deletePageViewSuccess = (
     payload: any
 ): types.StudyActionTypes => ({
     type: types.DELETE_PAGE_VIEW_SUCCESS,
     payload,
 });
-
 export const deletePageViewError = (
     message: string
 ): types.StudyActionTypes => ({
     type: types.DELETE_PAGE_VIEW_ERROR,
     payload: { message },
 });
-
 export const updatePageView = (id: any,
     input: UpdatePageViewInput
 ): types.StudyActionTypes => ({
@@ -204,14 +192,12 @@ export const updatePageView = (id: any,
     id,
     input,
 });
-
 export const updatePageViewSuccess = (
     payload: any
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_SUCCESS,
     payload,
 });
-
 export const updatePageViewError = (
     message: string
 ): types.StudyActionTypes => ({
@@ -296,13 +282,11 @@ export const upsertLabelMutationError = (
 export const deleteLabelMutation = (
     nctId: any,
     key: any,
-    value: any,
     studyQuery?: any
 ): types.StudyActionTypes => ({
     type: types.DELETE_LABEL_MUTATION_SEND,
     nctId,
     key,
-    value,
     studyQuery,
 });
 export const deleteLabelMutationSuccess = (
@@ -317,7 +301,6 @@ export const deleteLabelMutationError = (
     type: types.DELETE_LABEL_MUTATION_ERROR,
     payload: { message },
 });
-
 export const fetchCrowdPage = (nctId: string): types.StudyActionTypes => ({
     type: types.FETCH_CROWD_PAGE_SEND,
     nctId,
@@ -354,7 +337,6 @@ export const deleteReviewMutationError = (
     type: types.DELETE_REVIEW_MUTATION_ERROR,
     payload: { message },
 });
-
 export const fetchReviewPage = (nctId: string): types.StudyActionTypes =>
     //console.log(nctId),
     ({
@@ -500,7 +482,6 @@ export const deleteReactionError = (
     type: types.DELETE_REACTION_ERROR,
     payload: { message },
 });
-
 export const fetchReactionKinds = (): types.StudyActionTypes => ({
     type: types.FETCH_REACTION_KINDS_SEND,
 });
@@ -553,7 +534,6 @@ export const createReactionError = (
     type: types.CREATE_REACTION_ERROR,
     payload: { message },
 });
-
 export const fetchReactionsById = (
     reactionKindId: any
 ): types.StudyActionTypes => ({
@@ -689,4 +669,8 @@ export const bulkListUpdateError = (
 ): types.StudyActionTypes => ({
     type: types.BULK_LIST_UPDATE_MUTATION_ERROR,
     payload: { message },
+});
+export const setShowLoginModal = (input: any): types.StudyActionTypes => ({
+    type: types.SET_SHOW_LOGIN_MODAL,
+    input,
 });

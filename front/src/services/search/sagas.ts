@@ -24,6 +24,7 @@ function* getSearchPageAggs(action) {
 }
 
 function* getSearchPageAggBuckets(action) {
+//    console.log("SAGA SP Agg Buckets", action);
     try {
         let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));
         if(response) {
@@ -212,27 +213,43 @@ function* deleteSavedSearch(action) {
     }    
 } 
 
-function* getFacetConfig() {
+// function* getFacetConfig() {
+//     try {
+//         let response = yield call(() => api.fetchFacetConfig());
+//         if (response) {
+//             yield put(actions.fetchFacetConfigSuccess(response));
+//         }
+//         else {
+//             yield put(actions.fetchFacetConfigError(response.message));
+//         }
+//     }  catch (err) {
+//         console.log(err);
+//         yield put(actions.fetchFacetConfigError(err.message));
+//     }
+// }
+
+function* getIslandConfig() {
     try {
-        let response = yield call(() => api.fetchFacetConfig());
+        let response = yield call(() => api.fetchIslandConfig());
         if (response) {
-            yield put(actions.fetchFacetConfigSuccess(response));
+            yield put(actions.fetchIslandConfigSuccess(response));
         }
         else {
-            yield put(actions.fetchFacetConfigError(response.message));
+            yield put(actions.fetchIslandConfigError(response.message));
         }
     }
     catch (err) {
         console.log(err);
-        yield put(actions.fetchFacetConfigError(err.message));
+        yield put(actions.fetchIslandConfigError(err.message));
     }
 }
+
 function* updateFacetConfig(action) {
     try {
         // console.log("SAGA Updating PAGE VIEW", action);
         let updateResponse = yield call(() => api.updateFacetConfig(action.input));
         if (updateResponse.data.updateFacetConfig.errors === null) {
-            let response = yield getFacetConfig();
+            let response = yield getIslandConfig();
             yield put(actions.updateFacetConfigSuccess(response));
         }
         else {
@@ -244,6 +261,7 @@ function* updateFacetConfig(action) {
         yield put(actions.updateFacetConfigError(err.message));
     }
 }
+
 function* getSearchExport(action) {
     //console.log("Search EXPORT", action)
     try {
@@ -294,7 +312,8 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SAVED_SEARCHES_SEND, getSavedSearches);
     yield takeLatest(types.CREATE_SAVED_SEARCH_SEND, createSavedSearch);
     yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
-    yield takeLatest(types.FETCH_FACET_CONFIG_SEND, getFacetConfig);
+    // yield takeLatest(types.FETCH_FACET_CONFIG_SEND, getFacetConfig);
+    yield takeLatest(types.FETCH_ISLAND_CONFIG_SEND, getIslandConfig);
     yield takeLatest(types.UPDATE_FACET_CONFIG_SEND, updateFacetConfig);
     yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
     yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);

@@ -22,8 +22,8 @@ added_value = ReactionKind.all.count - starting_value
 puts "started with #{starting_value} ReactionKinds, created #{added_value} additional ReactionKinds"
 
 
-puts "creating FacetConfig"
-json = {"default"=>{"0"=>{"aggSublabel"=> nil,"autoSuggest"=> false,"bucketKeyValuePairs"=> nil,"defaultToOpen"=> nil,"display"=> "STRING","displayName"=> "default","layout"=> "horizontal","maxCrumbs"=> nil,"name"=> "default","order"=> {sortKind: "key", desc: true},"preselected"=> {"kind"=> "WHITELIST", "values"=> [] },"rangeEndLabel"=> nil,"rangeStartLabel"=> nil,"rank"=> nil,"showAllowMissing"=> nil,"showFilterToolbar"=> nil,"visibleOptions"=> {"kind"=> "WHITELIST", "values"=> []},"aggKind"=> "aggs"}}}.to_json
-hash = {main_config: json}
-f = FacetConfig.create!(main_config: json)
-puts f.present? ? "FacetConfig created" : "Could not create FacetConfig"
+puts "creating Island Config"
+config = "{\"aggSublabel\":null,\"autoSuggest\":false,\"bucketKeyValuePairs\":null,\"defaultToOpen\":null,\"display\":\"STRING\",\"displayName\":\"Status\",\"layout\":\"horizontal\",\"maxCrumbs\":null,\"name\":\"overall_status\",\"order\":{\"sortKind\":\"key\",\"desc\":true},\"preselected\":{\"kind\":\"WHITELIST\",\"values\":[]},\"rangeEndLabel\":null,\"rangeStartLabel\":null,\"rank\":null,\"showAllowMissing\":null,\"showFilterToolbar\":null,\"visibleOptions\":{\"kind\":\"WHITELIST\",\"values\":[]},\"aggKind\":\"aggs\"}"
+type = "facet"
+f = IslandConfig.create!(config: config, island_type: type)
+puts f.present? ? "Island created" : "Could not create Island"

@@ -12,6 +12,7 @@ import { find, propEq } from 'ramda';
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
 import { fetchPageViews, fetchPageView, fetchStudyPage, fetchStudyPageHash, updateStudyViewLogCount } from 'services/study/actions';
+import { fetchSearchParams } from 'services/search/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { fetchPresentSiteProvider } from 'services/site/actions';
@@ -82,27 +83,33 @@ export default function GenericPage(props: Props) {
   useEffect(() => {
     const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-    dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY));
+    dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY))
   }, [dispatch, currentPage, props.arg, params.hash]);
 
   const searchData = () => {
     let studies: any[] = []
-    studyData.data?.search?.studies?.map((study, index) => {
-      studies.push({ ...study, ALL: 'ALL' })
+    studyData?.data?.search?.studies?.map((study, index) => {
+      studies.push({ ...study, ALL: 'ALL',  hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
     })
     return {
       studies,
-      recordsTotal: studyData.data?.search?.recordsTotal
+      recordsTotal: studyData?.data?.search?.recordsTotal
     }
   }
-  if (loading || !pageViewData || !studyData || !site) {
+  if (loading || !pageViewData || (!studyData && pageType == "Study") || !site) {
     return <BeatLoader />;
   }
-  if (!studyData.data) {
+  if (studyData && !studyData.data && pageType == "Study" ) {
     return <BeatLoader />
   }
   if (!props.arg && pageType == "Study") {
     return <h1>Missing NCTID in URL</h1>;
+  }
+  if (!params.hash && pageType == "Search") {
+    return <h1>Missing NCTID in URL</h1>;
+  }
+  if (!params.pv && pageType == "Search") {
+    return <h1>Missing PageView in URL</h1>;
   }
   const title = microMailMerge(currentPage?.title, studyData?.data.study || searchData());
   // const context = pageType=="Study"? { ...studyData?.data.study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
