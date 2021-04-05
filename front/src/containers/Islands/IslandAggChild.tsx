@@ -414,6 +414,10 @@ function IslandAggChild(props: Props) {
     handleLoadMoreResponse()
   }, [aggBuckets]);
 
+  useEffect(() => {
+    setSortKind(currentAgg.order.sortKind == "count"? SortKind.Alpha:SortKind.Number);
+    setDesc(currentAgg.order.desc);  }, [currentAgg]);
+
   const transformFilters = (
     filters: AggFilterInput[]
   ): { [key: string]: Set<string> } => {
@@ -520,7 +524,7 @@ function IslandAggChild(props: Props) {
     }
     }
   
-  const filters = transformFilters(searchParams[grouping])
+  const filters = transformFilters(searchParams[grouping]);
   return (
     <>
       <CustomDropDown
