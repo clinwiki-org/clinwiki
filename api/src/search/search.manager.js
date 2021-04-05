@@ -2,6 +2,7 @@ const util = require('util');
 import {translateSearch,translateAggBuckets} from './translator';
 import * as elastic from './elastic';
 import {keysToCamel} from '../util/case.convert';
+import logger from '../util/logger';
 
 export async function search(args) {
     try {
@@ -9,7 +10,7 @@ export async function search(args) {
         
         let esResults = await elastic.query(translated);
 
-        const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
+        const studies = esResults.body.hits.hits.filter(study => study._source.nct_id?true:false).map( study => esToGraphql(study));
         let aggs = [];
         for( const [key,value] of Object.entries(esResults.body.aggregations)) {
             const agg = aggToGraphql(key,value);
@@ -23,7 +24,7 @@ export async function search(args) {
         };
     }
     catch(err) {
-        console.log(err);
+        logger.error('Error running search: '+err);
     }
 }
 
@@ -45,7 +46,7 @@ export async function aggBuckets(args) {
         };
     }
     catch(err) {
-        console.log(err);
+        logger.error(err);
     }
 }
 
