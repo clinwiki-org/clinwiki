@@ -333,7 +333,7 @@ export default function CrumbsBarIsland(props: Props) {
 
   return (
         <div style={{display: "grid"}}>
-            <Form
+            {/* <Form
               inline
               className="searchInput"
               onSubmit={onSubmit}
@@ -342,7 +342,7 @@ export default function CrumbsBarIsland(props: Props) {
                 searchTerm,
                 showAutoSuggest
               )}
-            </Form>
+            </Form> */}
               <Col
                 md={12}
                 style={{
