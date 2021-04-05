@@ -89,7 +89,7 @@ export default function GenericPage(props: Props) {
   const searchData = () => {
     let studies: any[] = []
     studyData?.data?.search?.studies?.map((study, index) => {
-      studies.push({ ...study, ALL: 'ALL' })
+      studies.push({ ...study, ALL: 'ALL',  hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
     })
     return {
       studies,
