@@ -3,9 +3,7 @@ let config = {};
 export const loadConfig = () => {
     config.port=process.env.NODE_PORT || 8088;
     config.postgresUrl= process.env.DATABASE_URL_NODE || 'changeme';
-    config.elasticsearchHost= process.env.ELASTICSEARCH_HOSTS || 'changeme';
-    config.elasticsearchUsername= process.env.ELASTICSEARCH_USERNAME || 'changeme';
-    config.elasticsearchPassword= process.env.ELASTICSEARCH_PASSWORD || 'changeme';
+    config.searchboxUrl= process.env.SEARCHBOX_URL || 'changeme';
     config.elasticMaxResults = process.env.ELASTICSEARCH_MAXRESULTS || 100;
     config.smtpHost= process.env.SMTP_HOST || 'changeme';
     config.smtpPort= process.env.SMTP_PORT || 'changeme';

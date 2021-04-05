@@ -1,6 +1,7 @@
 import {Client} from '@elastic/elasticsearch';
 import superagent from 'superagent';
 import config from '../../config';
+import logger from '../util/logger';
 const util = require('util')
 
 export const query = async (body) => {
@@ -16,7 +17,7 @@ export const query = async (body) => {
         return results;
     }
     catch(err) {
-        console.log('ERROR',err);
+        logger.error('Error elastic.query: '+err);
         if(err.statusCode === 400) {
             console.log(err.body.error)
         }
@@ -24,12 +25,9 @@ export const query = async (body) => {
 };
 
 const getConnection = () => {
+    //logger.debug('getConnection config.searchboxUrl: '+config.searchboxUrl);
     const client = new Client({
-        node: config.elasticsearchHost,
-        auth: {
-            username: config.elasticsearchUsername,
-            password: config.elasticsearchPassword
-        }
+        node: config.searchboxUrl
     });
     return client;
 };
