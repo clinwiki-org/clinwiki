@@ -24,11 +24,10 @@ function* getSearchPageAggs(action) {
 }
 
 function* getSearchPageAggBuckets(action) {
-//    console.log("SAGA SP Agg Buckets", action);
     try {
-        let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));         
+        let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));
         if(response) {
-            let nameBuckets = response.data.aggBuckets.aggs?.[0];
+            let nameBuckets = response.data.aggBuckets.aggs.filter( agg => agg.name === action.searchParams.agg)[0];
             yield put(actions.fetchSearchPageAggBucketsSuccess(nameBuckets));
         }
         else {
