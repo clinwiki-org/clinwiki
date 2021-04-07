@@ -129,7 +129,18 @@ export default function CrumbsBarIsland(props: Props) {
     }
     !isUpdatingParams && dispatch(updateSearchParamsAction(currentRams));
   }
-
+  const newRemoveSearchTerm = (term: string) => {
+    let currentParams:SearchParams = searchParams;
+    const children = reject(
+      propEq('key', term),
+     searchParams.q.children || []
+    ) as SearchQuery[];
+    currentParams = {
+      ...searchParams,
+      q: { ...searchParams.q, children }
+    }
+    !isUpdatingParams && dispatch(updateSearchParamsAction(currentParams));
+  };
   function* mkCrumbs(searchParams: SearchParams, thisSiteView, props) {
 
     const q: string[] =
@@ -148,7 +159,7 @@ export default function CrumbsBarIsland(props: Props) {
           key="Search"
           category="search"
           values={handledParams.q }
-          onClick={term => props.removeSearchTerm(term)}
+          onClick={term => newRemoveSearchTerm(term)}
         />
       );
     }
