@@ -550,6 +550,7 @@ function IslandAggChild(props: Props) {
         setShowLabel={showLabel => setShowLabel(showLabel)}
         isOpen={currentAgg.defaultToOpen}
         fromAggField={false}
+        allowsMissing={aggValues?.includeMissingFields}
       />
     </>
   );

@@ -58,6 +58,7 @@ interface CustomDropDownProps {
   fromAggField: boolean;
   updater: AggFilterInputUpdater;
   disabled?: boolean;
+  allowsMissing?:boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -454,7 +455,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
                  selectedItems = {this.state.selectedItems}
                  isSelected={this.isSelected}
                  selectItem={this.selectItem} />
-                {showAllowMissing && this.props.updater.allowsMissing() && (
+                {showAllowMissing && this.props.allowsMissing && (
                   <div className='select-box--crumb-container'>
                     {'Allow Missing'}
                     <FontAwesome
@@ -494,6 +495,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
             selectedItem={this.state.selectedItem}
             isPresearch={this.props.isPresearch}
             disabled={this.props.disabled}
+            allowsMissing={this.props.allowsMissing}
 
             />
           </div>
