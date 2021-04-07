@@ -17,6 +17,7 @@ const initialState: types.SiteState = {
     siteProvider: undefined,
     isFetchingPresentSiteProvider: false,
     presentSiteProvider: undefined,
+    isFetchingSitesPageHasura: false,
 };
 
 const siteReducer = ( state = initialState, action: types.SiteActionTypes) : types.SiteState => {
@@ -47,6 +48,7 @@ const siteReducer = ( state = initialState, action: types.SiteActionTypes) : typ
             return {
                 ...state,
                 isFetchingSitesPage: false,
+                isFetchingSitesPageHasura: false,
                 sitesData: action.payload
             };
         case types.FETCH_SITES_PAGE_ERROR:

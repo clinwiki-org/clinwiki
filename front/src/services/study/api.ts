@@ -2,8 +2,8 @@ import * as query from './queries';
 import * as mutate from './mutations';
 import {
   callGraphql,
-  callHasura,
-  getHasuraURL,
+  callHasuraAACT,
+  getHasuraURLAACT,
   get_gql_url,
 } from 'utils/graphqlUtil';
 
@@ -11,18 +11,18 @@ import {
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
 const ENDPOINT = get_gql_url();
-const HASURA = getHasuraURL();
+const HASURA_AACT = getHasuraURLAACT();
 
 export const fetchSampleStudy = (nctId: any, QUERY: any) => {
   return callGraphql(ENDPOINT, QUERY, { nctId });
 };
 
-export const fetchStudyPageHash= (hash: any, QUERY:any) => {
-    return callGraphql(ENDPOINT, QUERY, {hash});
+export const fetchStudyPageHash = (hash: any, QUERY: any) => {
+  return callGraphql(ENDPOINT, QUERY, { hash });
 };
 
 export const fetchHasuraSampleStudy = (nctId: any, QUERY: any) => {
-  return callHasura(HASURA, QUERY, { nctId });
+  return callHasuraAACT(HASURA_AACT, QUERY, { nctId });
 };
 
 export const fetchStudyPage = (nctId: any, QUERY: any) => {
@@ -30,7 +30,7 @@ export const fetchStudyPage = (nctId: any, QUERY: any) => {
 };
 
 export const fetchStudyPageHasura = (nctId: any, HASURA_STUDY_QUERY: any) => {
-  return callHasura(HASURA, HASURA_STUDY_QUERY, { nctId });
+  return callHasuraAACT(HASURA_AACT, HASURA_STUDY_QUERY, { nctId });
 };
 
 export const fetchPageViews = (siteId: any) => {
@@ -54,7 +54,7 @@ export const createPageView = (url, siteId) => {
 };
 export const updatePageView = (id, input) => {
   return callGraphql(ENDPOINT, mutate.UPDATE_PAGE_VIEW_MUTATION, {
-    id:id,
+    id: id,
     input: input,
   });
 };

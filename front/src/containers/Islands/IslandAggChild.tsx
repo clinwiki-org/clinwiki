@@ -256,7 +256,7 @@ function IslandAggChild(props: Props) {
         ? [...aggValues.values, value]
         : [value];
       onUpdateFilter();
-    }else{
+    } else {
 
       let newInput = {
         field: currentAgg.name,
@@ -285,12 +285,12 @@ function IslandAggChild(props: Props) {
     if (aggValues.values) {
 
       aggValues.values = filter(x => x !== value, aggValues.values)
-      if(aggValues.values.length>0){
+      if (aggValues.values.length > 0) {
 
         updateSearchParams2({
           [grouping as string]: aggValues,
         });
-      }else{
+      } else {
         onUpdateFilter();
       }
     } else {
@@ -415,8 +415,9 @@ function IslandAggChild(props: Props) {
   }, [aggBuckets]);
 
   useEffect(() => {
-    setSortKind(currentAgg.order.sortKind == "count"? SortKind.Alpha:SortKind.Number);
-    setDesc(currentAgg.order.desc);  }, [currentAgg]);
+    setSortKind(currentAgg.order.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
+    setDesc(currentAgg.order.desc);
+  }, [currentAgg]);
 
   const transformFilters = (
     filters: AggFilterInput[]
@@ -517,13 +518,13 @@ function IslandAggChild(props: Props) {
     }
   };
 
-  const handleContainerToggle =()=>{
-    if(aggId){
+  const handleContainerToggle = () => {
+    if (aggId) {
       islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
 
     }
-    }
-  
+  }
+
   const filters = transformFilters(searchParams[grouping]);
   return (
     <>

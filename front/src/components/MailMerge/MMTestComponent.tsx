@@ -24,7 +24,7 @@ function getClassForMode(mode: Mode) {
 }
 const STUDY_TEMPLATE = `
 <wfagg id="3"></wfagg>
-`
+`;
 const SEARCH_TEMPLATE = `
 
 <div class="grid-container">
@@ -111,7 +111,7 @@ export default function TestComponent() {
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
     dispatch(mode == "Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPageHash(nctOrSearchHash ?? "", SEARCH_QUERY));
   }, [dispatch, nctOrSearchHash]);
-  
+
   const introspection = useSelector((state: RootState) => state.introspection.introspection);
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, template);
@@ -121,14 +121,14 @@ export default function TestComponent() {
 
   const updateMode = mode => {
     setMode(mode);
-    if (mode === 'Study'){
+    if (mode === 'Study') {
       setTemplate(STUDY_TEMPLATE)
       setNctOrSearchHash(defaultNctId);
-    } 
-    if (mode === 'Search'){
+    }
+    if (mode === 'Search') {
       setTemplate(SEARCH_TEMPLATE)
       setNctOrSearchHash(defaultSearchHash);
-    } 
+    }
   };
   let islands = mode == 'Study' ? studyIslands : searchIslands;
   islands = {

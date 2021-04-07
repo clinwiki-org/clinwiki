@@ -7,6 +7,7 @@ import { History } from 'history';
 import ThemedButton from 'components/StyledComponents/index';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteSite, fetchSitesPage } from 'services/site/actions'
+import { fetchSitesPageHasura } from 'services/hasuraSite/actions'
 import { useEffect } from 'react';
 import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
@@ -43,18 +44,18 @@ const SitesPage = ({ history }: SitesPageProps) => {
   };
 
   useEffect(() => {
-    dispatch(fetchSitesPage());
+    dispatch(fetchSitesPageHasura());
   }, [dispatch]);
 
   if (data === undefined || isLoading || isDeleting) {
     return <BeatLoader />
   }
-  if (data.me == null) {
-    return <LoginModal
-      show={true}
-      cancel={() => history.goBack()}
-    />
-  }
+  /*   if (data.me == null) {
+      return <LoginModal
+        show={true}
+        cancel={() => history.goBack()}
+      />
+    } */
   return (
     <Container>
       <CollapsiblePanel header="My Sites">

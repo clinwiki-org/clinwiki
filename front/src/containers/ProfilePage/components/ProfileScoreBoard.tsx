@@ -23,28 +23,28 @@ interface ProfileScoreBoardProps {
   reactedStudies?: any[] | null;
 }
 
-interface ProfileScoreBoardState{
-    showSelector: boolean;
+interface ProfileScoreBoardState {
+  showSelector: boolean;
 }
 
 class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps, ProfileScoreBoardState> {
-    state: ProfileScoreBoardState ={
-      showSelector : false
-    }
+  state: ProfileScoreBoardState = {
+    showSelector: false
+  }
   starLogo = () => {
 
     let color = getStarColor(this.props.rank)
-          return (
-          <span style={{ display: 'flex', margin: 'auto' }}>
-            <ReactStars
-              count={1}
-              color1={color}
-              color2={color}
-              half={false}
-              size={25}
-            />
-          </span>
-        );
+    return (
+      <span style={{ display: 'flex', margin: 'auto' }}>
+        <ReactStars
+          count={1}
+          color1={color}
+          color2={color}
+          half={false}
+          size={25}
+        />
+      </span>
+    );
   };
   // handleSelectorClick=(e)=>{
   //   console.log(e)
@@ -70,18 +70,18 @@ class ProfileScoreBoard extends React.Component<ProfileScoreBoardProps, ProfileS
             <StyledProfileScoreLabel>Contributions</StyledProfileScoreLabel>
           </StyledLabelValuePair>
           <StyledLabelValuePair
-            onClick={() => this.props.handleDisplayChange('reviews')}>
+            onClick={() => console.log("Need profile reviews") /*//TODO Fix reviews this.props.handleDisplayChange('reviews') */}>
             <StyledProfileScoreValue>
               {this.props.totalReviews}
             </StyledProfileScoreValue>
             <StyledProfileScoreLabel>Reviews</StyledProfileScoreLabel>
           </StyledLabelValuePair>
           <StyledLabelValuePair
-            onClick={() => this.props.handleDisplayChange('reactions')}
-            // onMouseEnter={()=>this.setState({showSelector: true})}
-            // onMouseLeave={()=>this.setState({showSelector: false})}
-            >
-              {/* {
+            onClick={() => console.log("Need profile reactions") /*//TODO Fix reactions  this.props.handleDisplayChange('reactions') */}
+          // onMouseEnter={()=>this.setState({showSelector: true})}
+          // onMouseLeave={()=>this.setState({showSelector: false})}
+          >
+            {/* {
                 this.state.showSelector == true ?
                 <GithubSelector
                 reactions={['👍', '👎', '❤️', '☠️']}

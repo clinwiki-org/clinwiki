@@ -46,7 +46,7 @@ function IslandAggWrapper(props: Props) {
   if (!searchParams || !aggId || !islandConfig ) {
     return <BeatLoader />
   }
- 
+
   return (
     <IslandAggChild
     aggId={props.aggId}

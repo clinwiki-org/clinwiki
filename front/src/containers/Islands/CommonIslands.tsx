@@ -76,16 +76,16 @@ export const searchIslands: Record<string, IslandConstructor> = {
     <CrumbsBarIsland />
   ),
   savesearch: (attributes: Record<string, string>, context?: any) => (
-    <SaveSearchIsland/>
+    <SaveSearchIsland />
   ),
   csv: (attributes: Record<string, string>, context?: any) => (
-    <DownloadCSVIsland/>
+    <DownloadCSVIsland />
   ),
   resultsort: (attributes: Record<string, string>, context?: any) => (
-    <ResultSort/>
+    <ResultSort />
   ),
   resultloader: (attributes: Record<string, string>, context?: any) => (
-    <ResultLoader/>
+    <ResultLoader />
   ),
 };
 

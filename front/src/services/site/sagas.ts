@@ -23,7 +23,7 @@ function* getAdminSiteView(action) {
     }
 }
 
-function* getSitesPage(action) {
+export function* getSitesPage(action) {
     try {
         let response = yield call(() => api.fetchSitesPage());
         if(response) {
@@ -41,7 +41,7 @@ function* getSitesPage(action) {
 }
 
 function* getSiteProvider(action) {
-          //  console.log("SAGA get Site Provider", action);
+            console.log("SAGA get Site Provider", action);
     try {
         let response = yield call(() => api.fetchSiteProvider(action.id, action.url));
         if(response) {

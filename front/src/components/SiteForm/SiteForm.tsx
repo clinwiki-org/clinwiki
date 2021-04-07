@@ -22,6 +22,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import PagesForm from './PagesForm';
 import { connect } from 'react-redux';
 import { fetchSiteProvider, updateSiteView } from 'services/site/actions';
+import { fetchSiteProviderHasura } from 'services/hasuraSite/actions';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 interface SiteFormProps {
@@ -30,7 +31,7 @@ interface SiteFormProps {
   history: History;
   location: Location;
   onSaveSite: (CreateSiteInput) => void;
-  //fetchSiteProvider?: any;
+  fetchSiteProviderHasura: any;
   updateSiteView: any;
 }
 
@@ -246,7 +247,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  // fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url)),
+  fetchSiteProviderHasura: (id?, url?) => dispatch(fetchSiteProviderHasura(id, url)),
   updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
 })
 
