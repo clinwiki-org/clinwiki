@@ -26,7 +26,7 @@ import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponent'
 import HasuraMMTest from 'components/MailMerge/HasuraMMTestComponent'
-import GenericPage from 'containers/GenericPage/GenericPage';
+import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
 import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
 
 interface AppProps {
@@ -59,17 +59,17 @@ class App extends React.PureComponent<AppProps> {
                 />
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/version" component={ReleaseNotes} />
-                <Route path="/search/" component={SearchPage} />
-                <Route path="/search2/" render={(props) => <GenericPage/>} />
-                <Route path="/search/:siteviewUrl" component={SearchPage} />
+                <Route path="/search/" render={(props) => <GenericPageWrapper/>} />
+                <Route path="/search2/" component={SearchPage} />
+                <Route path="/search2/:siteviewUrl" component={SearchPage} />
                 <Route path="/study/:nctId"
-                  render={(props) => <GenericPage arg={props.match.params.nctId} />}
+                  render={(props) => <GenericPageWrapper arg={props.match.params.nctId} />}
                 />
                 <Route path="/hasurastudy/:nctId"
                   render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}
                 />
                 <Route path="/p/:page/:arg?"
-                  render={(props) => <GenericPage url={props.match.params.page} arg={props.match.params.arg} />}
+                  render={(props) => <GenericPageWrapper url={props.match.params.page} arg={props.match.params.arg} />}
                 />
                 <Route path="/p/:hasurapage/:arg?"
                   render={(props) => <HasuraGenericPage url={props.match.params.page} arg={props.match.params.arg} />}
