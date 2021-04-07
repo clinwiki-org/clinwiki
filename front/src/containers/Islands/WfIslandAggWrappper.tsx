@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
-import IslandAggChild2  from './WfIslandAggChild'
+import WfIslandAggChild  from './WfIslandAggChild'
 import { fetchAllWorkFlows } from 'services/study/actions';
 import { fetchWorkFlowPage } from 'services/study/actions';
 import {  fetchIslandConfig } from 'services/search/actions'
@@ -41,7 +41,7 @@ function IslandAggWrapper(props: Props) {
   }
  
   return (
-    <IslandAggChild2
+    <WfIslandAggChild
     aggId={props.aggId}
     nctId={props.nctId || ""}
     />

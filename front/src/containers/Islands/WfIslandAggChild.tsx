@@ -28,42 +28,7 @@ interface Props {
 
 }
 
-function IslandAggChild(props: Props) {
-
-//  SAMPLE JSON CONFIG //
-  // {
-  //   "aggSublabel": null,
-  //   "autoSuggest": false,
-  //   "bucketKeyValuePairs": null,
-  //   "defaultToOpen": null,
-  //   "display": "STRING",
-  //   "displayName": "Tags",
-  //   "layout": "horizontal",
-  //   "maxCrumbs": 5,
-  //   "name": "tags",
-  //   "order": {
-  //     "sortKind": "key",
-  //     "desc": true
-  //   },
-  //   "preselected": {
-  //     "kind": "WHITELIST",
-  //     "values": [
-
-  //     ]
-  //   },
-  //   "rangeEndLabel": null,
-  //   "rangeStartLabel": null,
-  //   "rank": null,
-  //   "showAllowMissing": null,
-  //   "showFilterToolbar": null,
-  //   "visibleOptions": {
-  //     "kind": "WHITELIST",
-  //     "values": [
-
-  //     ]
-  //   },
-  //   "aggKind": "workflow"
-  // }
+function WfIslandAggChild(props: Props) {
 
 
   const { aggId, nctId } = props;
@@ -108,11 +73,10 @@ function IslandAggChild(props: Props) {
 
   if (isLoading) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
-  if (!suggestedLabels) return null;
+  if (!suggestedLabels) return <BeatLoader/>;
   const data = suggestedLabels.data
   let meta: Record<string, string> = {};
   try {
-    //@ts-ignore
     meta = JSON.parse(data.study?.wikiPage?.meta || '{}');
   } catch (e) {
     // console.log(`Error parsing meta: ${meta}`);
@@ -175,7 +139,7 @@ function IslandAggChild(props: Props) {
         dispatch(upsertLabelMutation(nctId, currentAgg.name, val));
       }
 
-      dispatch(upsertLabelMutation(nctId, currentAgg.name, key));
+      // dispatch(upsertLabelMutation(nctId, currentAgg.name, key));
 
       // console.log(nctId, currentAgg.name, key)
 
@@ -241,4 +205,4 @@ function IslandAggChild(props: Props) {
     </>
   );
 }
-export default IslandAggChild;
+export default WfIslandAggChild;

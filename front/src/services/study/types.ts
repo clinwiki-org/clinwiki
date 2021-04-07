@@ -282,12 +282,6 @@ export interface FetchSampleStudyHasuraErrorAction {
     type: typeof FETCH_SAMPLE_STUDY_HASURA_ERROR;
     payload: StudyDataError;
 }
-
-export interface FetchStudyPageSendAction {
-    type: typeof FETCH_STUDY_PAGE_SEND;
-    nctId: any;
-    QUERY: any;
-}
 export interface fetchStudyPageSendAction {
     type: typeof FETCH_STUDY_PAGE_SEND;
     nctId: any;
@@ -834,8 +828,7 @@ fetchLabelsSendAction | fetchLabelsSuccessAction | fetchLabelsErrorAction |
 fetchLabelsBucketsSendAction | fetchLabelsBucketsSuccessAction | fetchLabelsBucketsErrorAction |
 bulkListUpdateSendAction | bulkListUpdateSuccessAction | bulkListUpdateErrorAction |
 bulkQueryUpdateSendAction | bulkQueryUpdateSuccessAction | bulkQueryUpdateErrorAction |
-FetchSampleStudySendAction | FetchSampleStudySuccessAction | FetchSampleStudyErrorAction |
-FetchStudyPageSendAction | updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
+FetchSampleStudySendAction | FetchSampleStudySuccessAction | FetchSampleStudyErrorAction | updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
 CreatePageViewSendAction | CreatePageViewSuccessAction  | CreatePageViewErrorAction  | 
 DeletePageViewSendAction | DeletePageViewSuccessAction | DeletePageViewErrorAction | 
 UpdatePageViewSendAction | UpdatePageViewSuccessAction | UpdatePageViewErrorAction |
