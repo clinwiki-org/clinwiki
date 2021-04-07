@@ -220,7 +220,7 @@ ActiveRecord::Schema.define(version: 2021_03_15_165217) do
     t.string "picture_url"
     t.string "reset_token_url"
     t.string "search_notification_criteria"
-    t.datetime "search_last_notification", default: "2021-03-10 20:01:44"
+    t.datetime "search_last_notification", default: "2021-03-08 18:06:19"
     t.integer "search_notification_frequency"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
