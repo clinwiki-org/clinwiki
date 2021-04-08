@@ -174,6 +174,11 @@ function WfIslandAggChild(props: Props) {
     fm => fm.name === `fm_${currentAgg.name}`
   )?.[0];
   // console.log(currentAggBuckets)
+  const handleContainerToggle =()=>{
+    if(aggId){
+      islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
+    }
+  }
   return (
     <>
       <CustomDropDown
@@ -181,7 +186,7 @@ function WfIslandAggChild(props: Props) {
         isPresearch={true}
         selectedKeys={checkedValues || emptySet}
         field={currentAgg}
-        onContainerToggle={() => console.log("Hi")}
+        onContainerToggle={() => handleContainerToggle()}
         handleLoadMore={() => console.log("Hi")}
         hasMore={false}
         onCheckBoxToggle={handleSelect}

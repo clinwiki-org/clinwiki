@@ -35,7 +35,7 @@ export default function GenericPageWrapper(props: Props) {
     const dispatch = useDispatch();
     const params = useUrlParams();
     const studyData = useSelector((state: RootState) => state.study.studyPage);
-    const loading = useSelector((state: RootState) => state.study.isFetchingStudyPage)
+    const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel)
     const pageViewData = useSelector((state: RootState) => state.study.pageView);
     const currentPage = pageViewData ? pageViewData?.data.site?.pageView : null;
 
@@ -52,7 +52,7 @@ export default function GenericPageWrapper(props: Props) {
 
         console.log(pageType, STUDY_QUERY)
         dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY))
-    }, [dispatch, currentPage, props.arg]);
+    }, [dispatch, currentPage, props.arg, upsertingLabel]);
 
 
     const searchData = () => {

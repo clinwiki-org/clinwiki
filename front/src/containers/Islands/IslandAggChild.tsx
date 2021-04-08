@@ -411,7 +411,7 @@ function IslandAggChild(props: Props) {
 
   useEffect(() => {
     handleLoadMoreResponse()
-  }, [aggBuckets]);
+  }, [aggBuckets, crowdAggBuckets]);
 
   useEffect(() => {
     setSortKind(currentAgg?.order?.sortKind == "count"? SortKind.Alpha:SortKind.Number);
