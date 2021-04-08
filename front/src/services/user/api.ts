@@ -12,7 +12,7 @@ const ENDPOINT = get_gql_url();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 
 export const fetchUser = (userId: number) => {
-  console.log('fetchUser called');
+  console.log('fetchUser called, userId', userId);
   return callGraphql(ENDPOINT, query.USER_QUERY, { userId: userId });
 };
 
