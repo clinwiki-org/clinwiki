@@ -27,6 +27,7 @@ export const fetchCurrentUser = () => {
 };
 
 export const signIn = (email, password, oAuthToken) => {
+  console.log('signin test log', email )
   return callGraphql(NODE_ENDPOINT, query.SIGN_IN_MUTATION, {
     input: { email, password, oAuthToken },
   });
