@@ -63,7 +63,7 @@ export async function authenticate(email, password, oAuthToken) {
 }
 
 async function generateJWT(user) {
-  //console.log("generateJWT called");
+  logger.info("generateJWT called");
   //console.log(user);
   let userId = user.id;
   userId = userId.toString();
@@ -80,6 +80,7 @@ async function generateJWT(user) {
     config.jwtSecret,
     { algorithm: 'HS256' }
   );
+  logger.info('TOKEN', token)
   return token;
 }
 async function findUserRole(roles) {
@@ -94,6 +95,7 @@ async function findUserRole(roles) {
   return role;
 }
 export async function getUserByEmail(email) {
+  logger.info('GETTING USERS BY EMAIL')
   //console.log("getUserByEmail called");
   const results = await query(QUERY_USER, [email]);
   //console.log("got user by email = ");
