@@ -50,9 +50,8 @@ export default function GenericPageWrapper(props: Props) {
         const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
 
-        console.log(pageType, STUDY_QUERY)
         dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY))
-    }, [dispatch, currentPage, props.arg, upsertingLabel]);
+    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash]);
 
 
     const searchData = () => {

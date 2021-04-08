@@ -147,7 +147,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
           removeFilters={this.props.onCheckBoxToggle}
           buckets={buckets}
           isSelected={this.props.isSelected}
-          hasMore={hasMore}
+          // hasMore={hasMore}
           field={field}
           handleLocation={this.props.handleLocation}
         />
