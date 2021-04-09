@@ -37,6 +37,7 @@ interface CustomDropPanelProps {
   loading: boolean;
   selectedItem: any;
   disabled?:boolean;
+  allowsMissing?:boolean;
 
 
 }
@@ -146,7 +147,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
           removeFilters={this.props.onCheckBoxToggle}
           buckets={buckets}
           isSelected={this.props.isSelected}
-          hasMore={hasMore}
+          // hasMore={hasMore}
           field={field}
           handleLocation={this.props.handleLocation}
         />
@@ -168,9 +169,10 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       return (
         <>
         {showAllowMissing && (
-          <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()} >
+          // <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()} >
+          <div className="select-item allow-missing" onClick={() => console.log("Need a new function, prev updater")} >
             <div className="item-content">
-              {this.props.updater.allowsMissing() ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>}
+              {this.props.allowsMissing ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>}
 
               <AllowMissingDropDownItem buckets={buckets} />
             </div>
@@ -222,7 +224,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       }
       return (
         <>
-        {showAllowMissing && !this.props.updater.allowsMissing() && (
+        {showAllowMissing && this.props.allowsMissing && (
           <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()}>
             <AllowMissingDropDownItem buckets={buckets} className="item-content" />
           </div>

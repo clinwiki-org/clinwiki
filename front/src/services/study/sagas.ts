@@ -43,11 +43,9 @@ function* getHasuraSampleStudy(action) {
 }
 
 function* getStudyPage(action) {
-    //console.log(action);
     try {
         console.log(action)
         let response = yield call(() => api.fetchStudyPage(action.nctId, action.QUERY));
-        //console.log(response)
         if (response) {
             yield put(actions.fetchStudyPageSuccess(response));
             yield call(() => api.updateStudyViewLogCount(action.nctId));
@@ -180,13 +178,11 @@ function* getWorkFlowPage(action) {
 
 function* upsertLabelMutation(action) {
   try {
-    //console.log("SAGA Upsert Label", action)
     let response = yield call(() =>
       api.upsertLabelMutation(action.nctId, action.key, action.value)
     );
     if (!response.data.upsertWikiLabel.errors) {
       let response3 = yield getSuggestedLabels(action);
-      yield put(actions.fetchStudyPage(action.nctId ?? '', action.studyQuery));
       let response2 = yield getWorkFlowPage(action);
       yield put(actions.upsertLabelMutationSuccess(response2));
       let response4 = yield getAllWorkFlows(action);
@@ -295,7 +291,6 @@ function* getWikiPage(action) {
   }
 }
 function* wikiPageUpdateContentMutation(action) {
-  //console.log("SAGA WIKI EDIT UpdateContent", action)
   try {
     //console.log(action)
     let response = yield call(() =>

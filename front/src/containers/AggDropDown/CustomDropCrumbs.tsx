@@ -39,12 +39,13 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
   }
   renderLocationLabel = () => {
     let location = this.props.selectedItems[0]
+    console.log(location)
     //@ts-ignore
     if (!location.zipcode && !location.radius) return
     //@ts-ignore
-    if (!location.zipcode) return `Within ${location.radius} of current location`
+    if (!location.zipcode) return `Within ${location.radius} miles of current location`
     //@ts-ignore
-    if (!location.lat && !location.long) return `Within ${location.radius} of ${location.zipcode}`
+    if (!location.lat && !location.long) return `Within ${location.radius} miles of ${location.zipcode}`
 
   }
 
@@ -93,7 +94,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
           )
 
         } else if (field.display == FieldDisplay.LOCATION) {
-          //console.log("IN LOCATION", field.display)
+          console.log("IN LOCATION", this.props.selectedItems)
           if (!this.props.selectedItems[0].radius) return
 
           return (

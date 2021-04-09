@@ -123,7 +123,19 @@ export default function SearchWithin(props: Props) {
   }
 
 
-
+  const newRemoveSearchTerm = (term: string) => {
+    let currentParams:SearchParams = searchParams;
+    console.log(term, currentParams)
+    const children = reject(
+      propEq('key', term),
+     searchParams.q.children || []
+    ) as SearchQuery[];
+    currentParams = {
+      ...searchParams,
+      q: { ...searchParams.q, children }
+    }
+    !isUpdatingParams && dispatch(updateSearchParamsAction(currentParams));
+  };
   //AUTOSUGGEST Still needs some love to get it working believe issue is in the queryAutoSuggest()
   const getAutoSuggestFields = () => {
     let aggFields = displayFields(
@@ -307,7 +319,7 @@ export default function SearchWithin(props: Props) {
         key="Search"
         category="search"
         values={crumbValues}
-        onClick={()=>console.log("remove please")}
+        onClick={term => newRemoveSearchTerm(term)}
       > 
       <Form
         inline

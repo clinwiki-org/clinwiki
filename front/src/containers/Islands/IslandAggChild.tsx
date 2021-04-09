@@ -355,7 +355,6 @@ function IslandAggChild(props: Props) {
   }
 
   const handleLoadMoreResponse = () => {
-
     let aggName = currentAgg!.name
     let responseBuckets = currentAgg.aggKind === "crowdAggs" ? crowdAggBuckets?.aggs[aggName] : aggBuckets?.aggs[aggName]
     let currentBuckets = buckets[0] === undefined ? [] : buckets
@@ -412,12 +411,11 @@ function IslandAggChild(props: Props) {
 
   useEffect(() => {
     handleLoadMoreResponse()
-  }, [aggBuckets]);
+  }, [aggBuckets, crowdAggBuckets]);
 
   useEffect(() => {
-    setSortKind(currentAgg.order.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
-    setDesc(currentAgg.order.desc);
-  }, [currentAgg]);
+    setSortKind(currentAgg?.order?.sortKind == "count"? SortKind.Alpha:SortKind.Number);
+    setDesc(currentAgg?.order?.desc);  }, [currentAgg]);
 
   const transformFilters = (
     filters: AggFilterInput[]
@@ -552,6 +550,7 @@ function IslandAggChild(props: Props) {
         setShowLabel={showLabel => setShowLabel(showLabel)}
         isOpen={currentAgg.defaultToOpen}
         fromAggField={false}
+        allowsMissing={aggValues?.includeMissingFields}
       />
     </>
   );

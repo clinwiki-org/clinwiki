@@ -27,11 +27,28 @@ label {
 .btn, button, .-btn{
   border: 0px;
   font-family: 'Lato', Arial, sans-serif !important;
-  border-radius: 4px;
+}
+.labeled-btn{
+  margin: 0 0.5em 0.5em 0;
 }
 .btn, .-btn{
   background: ${(props:any) => props.theme.crumbs.crumbBackground};
   color: #fff !important;
+  padding: 10px 15px;
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 0.5em 0.5em 0;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 1px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  height: 38px;
 }
 .crumb-container {
   border: 2px solid ${props => props.theme.crumbs.crumbBackground};
@@ -220,17 +237,28 @@ div.DraftEditor-editorContainer{
 .modal-container .modal, .modal-container .modal-backdrop {
   position: absolute;
 }
-.mm-single-line{
+.mm-flex-row{
   display: flex;
   flex-wrap: wrap;
+  padding: 1em;
+  position: relative;
 }
-.mm-single-line-center{
-  margin:auto;
-  display: flex;
-  flex-wrap: wrap;
+.mm-flex-row .active-btn{
+  margin-bottom: 0.5em;
+  position: relative;
+  padding: 7px;
+  font-size: 11px;
+
 }
-.mm-single-line .mail-merge-island{
-  padding-right: 1em;
+.active-btn{
+  margin: 0 0.5em 0.5em 0;
+
+}
+.text-l{
+  font-size: 16px;
+}
+.text-s{
+  font-size: 8px;
 }
 
 .mail-merge pre {

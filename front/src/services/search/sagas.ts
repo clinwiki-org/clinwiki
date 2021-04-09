@@ -66,9 +66,9 @@ function* getSearchParams(action) {
             yield put(actions.fetchSearchParamsSuccess(response));
             yield put(actions.updateSearchParamsSuccess(action.hash))
             //need this to run to populate our recordsTotal for time being was quick and easy way but probs not ideal 
-            yield put(actions.fetchSearchPageAggs({...response.data.searchParams,
-                q : JSON.parse(response.data.searchParams.q)
-            }))
+            // yield put(actions.fetchSearchPageAggs({...response.data.searchParams,
+            //     q : JSON.parse(response.data.searchParams.q)
+            // }))
         }
         else {
             yield put(actions.fetchSearchParamsError(response.message));

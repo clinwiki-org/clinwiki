@@ -51,7 +51,7 @@ class LabeledButton extends React.PureComponent<LabeledButtonProps, LabeledButto
     return (
       <ThemedButton
       type={theType}
-      style={{ margin: '0.5em' }} 
+      className="labeled-btn" 
       onClick={theClick}
       onMouseEnter={() => this.setShowLabel()}
       onMouseLeave={() => this.setShowLabel()}>
