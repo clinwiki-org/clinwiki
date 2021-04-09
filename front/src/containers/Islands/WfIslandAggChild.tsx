@@ -52,26 +52,26 @@ function WfIslandAggChild(props: Props) {
     let currentAgg = getCurrentAgg();
 
     const workflow = allWorkflows?.data.workflowsView.workflows.filter(
-      wf => wf.name === currentAgg.name
+      wf => wf.name === currentAgg?.name
       )?.[0];
 
       console.log("WF", workflow)
 
 
-  const allowedSuggestedLabels = displayFields(
-    workflow.suggestedLabelsFilter.kind,
-    workflow.suggestedLabelsFilter.values,
-    workflow.allSuggestedLabels.map(name => ({
+  const allowedSuggestedLabels = workflow && displayFields(
+    workflow?.suggestedLabelsFilter?.kind,
+    workflow?.suggestedLabelsFilter?.values,
+    workflow?.allSuggestedLabels.map(name => ({
       name,
       rank: null,
     }))
   ).map(R.prop('name'));
 
   useEffect(() => {
-    dispatch(fetchSuggestedLabels(nctId, allowedSuggestedLabels));
+    allowedSuggestedLabels && dispatch(fetchSuggestedLabels(nctId, allowedSuggestedLabels));
   }, [dispatch, nctId])
 
-  if (isLoading) return <BeatLoader />;
+  if (isLoading || !currentAgg) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
   if (!suggestedLabels) return <BeatLoader/>;
   const data = suggestedLabels.data
@@ -106,7 +106,7 @@ function WfIslandAggChild(props: Props) {
   )(data?.crowdAggFacets?.aggs || []);
 
   const checkedValues = new Set(
-    aggs[currentAgg.name].filter(([_, checked]) => checked).map(([value, _]) => value)
+    aggs[currentAgg?.name].filter(([_, checked]) => checked).map(([value, _]) => value)
   );
 
   const handleSelect = (key, value) => {
@@ -129,24 +129,24 @@ function WfIslandAggChild(props: Props) {
       // console.log(value, !value)
       if (!value) return;
       let val = value;
-      // console.log(meta[currentAgg.name])
-      if (meta[currentAgg.name]) {
-        const oldVal = meta[currentAgg.name];
+      // console.log(meta[currentAgg?.name])
+      if (meta[currentAgg?.name]) {
+        const oldVal = meta[currentAgg?.name];
         const entries = oldVal.split('|').filter((x) => x !== val);
         entries.push(key);
         val = uniq(entries).join('|');
         // console.log("VAl", val)
-        dispatch(upsertLabelMutation(nctId, currentAgg.name, val));
+        dispatch(upsertLabelMutation(nctId, currentAgg?.name, val));
       }
 
-      // dispatch(upsertLabelMutation(nctId, currentAgg.name, key));
+      // dispatch(upsertLabelMutation(nctId, currentAgg?.name, key));
 
-      // console.log(nctId, currentAgg.name, key)
+      // console.log(nctId, currentAgg?.name, key)
 
 
 
     } else {
-      const currentValue = meta[currentAgg.name];
+      const currentValue = meta[currentAgg?.name];
 
 
       // console.log(currentValue)
@@ -157,13 +157,13 @@ function WfIslandAggChild(props: Props) {
       ).join('|');
       if (newValue.length === 0) {
         const newMeta = dissoc(key, meta);
-        // console.log(currentAgg.name, nctId)
-        dispatch(deleteLabelMutation(nctId, currentAgg.name));
+        // console.log(currentAgg?.name, nctId)
+        dispatch(deleteLabelMutation(nctId, currentAgg?.name));
       } else {
-        // console.log(nctId, currentAgg.name, newValue)
+        // console.log(nctId, currentAgg?.name, newValue)
 
         dispatch(upsertLabelMutation(
-          nctId, currentAgg.name, newValue
+          nctId, currentAgg?.name, newValue
         ));
       }
     }
@@ -171,7 +171,7 @@ function WfIslandAggChild(props: Props) {
   // console.log(suggestedLabels.data.crowdAggFacets.aggs)
 
   const currentAggBuckets = suggestedLabels.data.crowdAggFacets.aggs.filter(
-    fm => fm.name === `fm_${currentAgg.name}`
+    fm => fm.name === `fm_${currentAgg?.name}`
   )?.[0];
   // console.log(currentAggBuckets)
   const handleContainerToggle =()=>{
@@ -179,6 +179,7 @@ function WfIslandAggChild(props: Props) {
       islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
     }
   }
+  console.log(currentAgg)
   return (
     <>
       <CustomDropDown
