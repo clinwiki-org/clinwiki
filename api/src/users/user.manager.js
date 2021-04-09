@@ -72,7 +72,7 @@ async function generateJWT(user) {
             exp: Math.floor(Date.now() / 1000) + config.jwtExpire,
             'https://hasura.io/jwt/claims': {
                 'x-hasura-allowed-roles': ['user', 'admin', 'anonymous'],
-                'x-hasura-default-role': user.roles.length > 0 ? user.roles[user.roles.length - 1].name : 'user',
+                'x-hasura-default-role': user.role,
                 'x-hasura-user-id': userId,
             },
         },
@@ -86,9 +86,14 @@ async function findUserRole(roles) {
     //console.log(roles);
     let role = 'user';
     //console.log(roles.includes('admin'));
-    if (roles.includes('admin')) {
-        role = 'admin';
-    }
+    // if (roles.includes('admin')) {
+    //     role = 'admin';
+    // }
+    console.log('ROLES', roles)
+    if (roles.some(role => role.name == 'admin')) {
+        logger.info('FILTERING HIT ADMIN', role.name)
+        role="admin"
+      }
     //console.log("role = ", role)
     return role;
 }
@@ -111,7 +116,7 @@ export async function getUserByEmail(email) {
         user.contributions = wikis ? wikis.length : 0;
         console.log("user = ", user);
         //console.log("user.roles = ", user.roles);
-        //console.log("user.role = ", user.role);
+        console.log("user.role = ", user.role);
         if (user.roles.includes(ROLE_SITE_OWNER)) {
             logger.debug('User is a site owner. Populate role dependent fields');
         }
