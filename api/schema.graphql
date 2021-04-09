@@ -2318,6 +2318,14 @@ type UpsertWikiTagPayload {
   errors: [String!]
   wikiPage: WikiPage
 }
+type Role {
+    id: Int!,
+    name: String!,
+    resource_type: String,
+    resource_id: Int,
+    created_at: DateTime!,
+    updated_at: DateTime!
+}
 
 type User {
   contributions: Int!
@@ -2367,7 +2375,7 @@ type User {
   """
   reviewCount: Int!
   reviews: [Review!]!
-  roles: [String!]!
+  roles: [Role]!
   savedSearches: [SavedSearch!]
   searchLogs(limit: Int, offset: Int): [SearchLog!]
   studyViewLogs(limit: Int, offset: Int): [StudyViewLog!]
