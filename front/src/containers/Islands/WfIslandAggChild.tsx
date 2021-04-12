@@ -121,9 +121,11 @@ function WfIslandAggChild(props: Props) {
         val = uniq(entries).join('|');
         // console.log("VAl", val)
         dispatch(upsertLabelMutation(nctId, currentAgg?.name, val));
+      }else{
+      //handles case where meta is empty 
+        dispatch(upsertLabelMutation(nctId, currentAgg?.name, key));
       }
 
-      // dispatch(upsertLabelMutation(nctId, currentAgg?.name, key));
 
       // console.log(nctId, currentAgg?.name, key)
 
