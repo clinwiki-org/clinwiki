@@ -57,13 +57,13 @@ class SuggestedLabels extends React.PureComponent<
     return this.props.nctId;
   }
   componentDidMount() {
-    this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
+    this.props.fetchSuggestedLabels(this.props.nctId)
   }
 
   componentDidUpdate(prevProps) {
     if(!equal(this.props.nctId, prevProps.nctId)) // Check if it's a new nctId, refetch
     {
-      this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
+      this.props.fetchSuggestedLabels(this.props.nctId)
     }
   } 
 
@@ -197,7 +197,7 @@ class SuggestedLabels extends React.PureComponent<
         }
 }
 const mapDispatchToProps = (dispatch) => ({
-  fetchSuggestedLabels: (nctId?, allowedSuggestedLabels?) => dispatch(fetchSuggestedLabels(nctId, allowedSuggestedLabels)),
+  fetchSuggestedLabels: (nctId? ) => dispatch(fetchSuggestedLabels(nctId)),
   upsertLabelMutation: (nctId?, key?, value?) => dispatch(upsertLabelMutation(nctId, key, value)),
   deleteLabelMutation: (nctId?, key?, value?) => dispatch(deleteLabelMutation(nctId, key, value))
 })
