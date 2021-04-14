@@ -30,7 +30,7 @@ export const fetchCurrentUserError = (errors: Array<string>) : types.UserActionT
     payload: { errors }
 });
 
-export const signIn = (email: string, password: string, oAuthToken: string) : types.UserActionTypes => ({
+export const signIn = (email: string, password: string, oAuthToken: any) : types.UserActionTypes => ({
     type: types.SIGN_IN_SEND,
     email,
     password,
@@ -47,7 +47,7 @@ export const signInError = (errors: Array<string>) : types.UserActionTypes => ({
     payload: errors
 });
 
-export const signUp = (email: string, password: string, oAuthToken: string) : types.UserActionTypes => ({
+export const signUp = (email: string, password: string, oAuthToken: any) : types.UserActionTypes => ({
     type: types.SIGN_UP_SEND,
     email,
     password,

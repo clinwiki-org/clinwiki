@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_03_224723) do
+ActiveRecord::Schema.define(version: 2021_03_30_155744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,11 @@ ActiveRecord::Schema.define(version: 2021_03_03_224723) do
     t.float "longitude"
     t.string "status"
     t.index ["name", "city", "state", "zip", "country"], name: "facility_locations_idx", unique: true
+  end
+
+  create_table "island_configs", force: :cascade do |t|
+    t.string "config"
+    t.string "island_type"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -214,7 +219,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_224723) do
     t.string "picture_url"
     t.string "reset_token_url"
     t.string "search_notification_criteria"
-    t.datetime "search_last_notification", default: "2021-03-08 18:06:19"
+    t.datetime "search_last_notification", default: "2021-03-10 20:01:44"
     t.integer "search_notification_frequency"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
