@@ -17,7 +17,7 @@ const SignInPage = (props) => {
   const dispatch = useDispatch();
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
-  const [oAuthToken,setOAuthToken] = useState('');
+  const [oAuthToken,setOAuthToken] = useState(null);
   const signInErrors = useSelector( (state:RootState) => state.user.signInErrors);
   //console.log('SignInPage.errors',signInErrors)
 

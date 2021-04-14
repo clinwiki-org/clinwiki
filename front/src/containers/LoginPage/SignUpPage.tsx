@@ -17,7 +17,7 @@ const SignUpPage = (props) => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [passwordConfirmation,setPasswordConfirmation] = useState('');
-  const [oAuthToken,setOAuthToken] = useState('');
+  const [oAuthToken,setOAuthToken] = useState(null);
   const [error,setError] = useState('');
   const dispatch = useDispatch();
   const signUpErrors = useSelector( (state:RootState) => state.user.signUpErrors);

@@ -1,0 +1,140 @@
+{"message":"Loading .env from /Users/hifilorau/code/CTD/clinwiki/.env","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":"Loading schema.graphql","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":"_________ .__  .__       __      __.__ __   .__ ","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":"\\_   ___ \\|  | |__| ____/  \\    /  \\__|  | _|__|","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":"/    \\  \\/|  | |  |/    \\   \\/\\/   /  |  |/ /  |","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":"\\     \\___|  |_|  |   |  \\        /|  |    <|  |","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":" \\______  /____/__|___|  /\\__/\\  / |__|__|_ \\__|","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":"        \\/             \\/      \\/          \\/     ","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":"Server started on port 8088","level":"info","timestamp":"2021-04-14 14:06:10"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:31:30"}
+{"message":"POST /graphql 200 142.154 ms - 239","level":"info","timestamp":"2021-04-14 14:31:30"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:31:33"}
+{"message":"POST /graphql 200 17.124 ms - 239","level":"info","timestamp":"2021-04-14 14:31:33"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:31:37"}
+{"message":"POST /graphql 200 16.947 ms - 239","level":"info","timestamp":"2021-04-14 14:31:37"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:31:40"}
+{"message":"POST /graphql 200 20.378 ms - 239","level":"info","timestamp":"2021-04-14 14:31:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:31:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:31:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:31:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:31:40"}
+{"message":"POST /graphql 200 13454.325 ms - 6087","level":"info","timestamp":"2021-04-14 14:31:53"}
+{"message":"POST /graphql 200 13599.282 ms - 6087","level":"info","timestamp":"2021-04-14 14:31:54"}
+{"message":"POST /graphql 200 15018.610 ms - 6087","level":"info","timestamp":"2021-04-14 14:31:55"}
+{"message":"POST /graphql 200 15147.508 ms - 155062","level":"info","timestamp":"2021-04-14 14:31:55"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:34:57"}
+{"message":"POST /graphql 200 39.717 ms - 239","level":"info","timestamp":"2021-04-14 14:34:57"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:37:47"}
+{"message":"POST /graphql 200 54.589 ms - 239","level":"info","timestamp":"2021-04-14 14:37:47"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:37:47"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:37:47"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 14:37:47"}
+{"message":"POST /graphql 200 3123.837 ms - 6087","level":"info","timestamp":"2021-04-14 14:37:51"}
+{"message":"POST /graphql 200 4690.488 ms - 155062","level":"info","timestamp":"2021-04-14 14:37:52"}
+{"message":"POST /graphql 200 4774.921 ms - 6087","level":"info","timestamp":"2021-04-14 14:37:52"}
+{"message":"Loading .env from /Users/hifilorau/code/CTD/clinwiki/.env","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":"Loading schema.graphql","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":"_________ .__  .__       __      __.__ __   .__ ","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":"\\_   ___ \\|  | |__| ____/  \\    /  \\__|  | _|__|","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":"/    \\  \\/|  | |  |/    \\   \\/\\/   /  |  |/ /  |","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":"\\     \\___|  |_|  |   |  \\        /|  |    <|  |","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":" \\______  /____/__|___|  /\\__/\\  / |__|__|_ \\__|","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":"        \\/             \\/      \\/          \\/     ","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":"Server started on port 8088","level":"info","timestamp":"2021-04-14 16:34:16"}
+{"message":"Loading .env from /Users/hifilorau/code/CTD/clinwiki/.env","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":"Loading schema.graphql","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":"_________ .__  .__       __      __.__ __   .__ ","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":"\\_   ___ \\|  | |__| ____/  \\    /  \\__|  | _|__|","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":"/    \\  \\/|  | |  |/    \\   \\/\\/   /  |  |/ /  |","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":"\\     \\___|  |_|  |   |  \\        /|  |    <|  |","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":" \\______  /____/__|___|  /\\__/\\  / |__|__|_ \\__|","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":"        \\/             \\/      \\/          \\/     ","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":"Server started on port 8088","level":"info","timestamp":"2021-04-14 16:38:37"}
+{"message":"Loading .env from /Users/hifilorau/code/CTD/clinwiki/.env","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":"Loading schema.graphql","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":"_________ .__  .__       __      __.__ __   .__ ","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":"\\_   ___ \\|  | |__| ____/  \\    /  \\__|  | _|__|","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":"/    \\  \\/|  | |  |/    \\   \\/\\/   /  |  |/ /  |","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":"\\     \\___|  |_|  |   |  \\        /|  |    <|  |","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":" \\______  /____/__|___|  /\\__/\\  / |__|__|_ \\__|","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":"        \\/             \\/      \\/          \\/     ","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":"Server started on port 8088","level":"info","timestamp":"2021-04-14 16:45:29"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:48:35"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:48:35"}
+{"message":"POST /graphql 200 116.666 ms - 524","level":"info","timestamp":"2021-04-14 16:48:35"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:02"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:02"}
+{"message":"POST /graphql 200 30.462 ms - 524","level":"info","timestamp":"2021-04-14 16:49:02"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:26"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:26"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:26"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:26"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:26"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:26"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:26"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:26"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:26"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:26"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:26"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:26"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:31"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:31"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:31"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:31"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:31"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:31"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:40"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:40"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:40"}
+{"message":"POST /graphql 200 69.667 ms - 524","level":"info","timestamp":"2021-04-14 16:49:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:40"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:40"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:40"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:40"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:46"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:46"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:46"}
+{"message":"POST /graphql - - ms - -","level":"info","timestamp":"2021-04-14 16:49:46"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:48"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:48"}
+{"message":"POST /graphql 200 33.519 ms - 524","level":"info","timestamp":"2021-04-14 16:49:48"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:49"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:49"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:49:49"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:49"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:49"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:49:49"}
+{"message":"POST /graphql 200 6053.052 ms - 6087","level":"info","timestamp":"2021-04-14 16:49:55"}
+{"message":"POST /graphql 200 6748.865 ms - 6087","level":"info","timestamp":"2021-04-14 16:49:55"}
+{"message":"POST /graphql 200 6926.232 ms - 155062","level":"info","timestamp":"2021-04-14 16:49:56"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:50:13"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:50:13"}
+{"message":"POST /graphql 200 52.772 ms - 524","level":"info","timestamp":"2021-04-14 16:50:13"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:50:33"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:50:33"}
+{"message":"POST /graphql 200 38.850 ms - 524","level":"info","timestamp":"2021-04-14 16:50:33"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:50:34"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:50:34"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 16:50:34"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:50:34"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:50:34"}
+{"level":"info","message":"FILTERING HIT ADMIN","timestamp":"2021-04-14 16:50:34"}
+{"message":"POST /graphql 200 3170.063 ms - 6087","level":"info","timestamp":"2021-04-14 16:50:37"}
+{"message":"POST /graphql 200 4213.575 ms - 155062","level":"info","timestamp":"2021-04-14 16:50:38"}
+{"message":"POST /graphql 200 4737.874 ms - 6087","level":"info","timestamp":"2021-04-14 16:50:38"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 17:17:37"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 17:17:37"}
+{"message":"POST /graphql 200 1628.804 ms - 15219","level":"info","timestamp":"2021-04-14 17:17:39"}
+{"message":"POST /graphql 200 1573.197 ms - 15219","level":"info","timestamp":"2021-04-14 17:17:39"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 17:17:39"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 17:17:40"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 17:17:40"}
+{"message":"POST /graphql 200 1261.565 ms - 15219","level":"info","timestamp":"2021-04-14 17:17:40"}
+{"message":"POST /graphql 200 1814.940 ms - 15219","level":"info","timestamp":"2021-04-14 17:17:42"}
+{"message":"POST /graphql 200 1826.315 ms - 15219","level":"info","timestamp":"2021-04-14 17:17:42"}
+{"message":"GETTING USERS BY EMAIL","level":"info","timestamp":"2021-04-14 17:17:42"}
+{"message":"POST /graphql 200 1052.013 ms - 15219","level":"info","timestamp":"2021-04-14 17:17:43"}
