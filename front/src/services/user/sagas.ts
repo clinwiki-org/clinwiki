@@ -40,6 +40,7 @@ function* getCurrentUser(action) {
 
 function* signIn(action) {
     try {
+        console.log('action', action)
         let response = yield call(() => api.signIn(action.email,action.password,action.oAuthToken));
         if(response?.data?.signIn?.jwt) {
             yield call(() => setLocalJwt(response.data.signIn.jwt));
@@ -71,8 +72,11 @@ function* logout(action) {
 function* signUp(action) {
     try {
         let response = yield call(() => api.signUp(action.email,action.password,action.oAuthToken));
-        if(response.data && response.data.signIn) {
+        if(response.data) {
+            yield signIn(action)
             yield put(actions.signUpSuccess(response));
+            
+           
         }
         else {
             yield put(actions.signUpError([response.data.signUp.errors]));
