@@ -12,7 +12,7 @@ const ENDPOINT = get_gql_url();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 
 export const fetchSearchPageAggs = (searchParams : any) => {
-    return callGraphql(ENDPOINT,query.SEARCH_PAGE_AGGS_QUERY, searchParams);
+    return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_AGGS_QUERY, searchParams);
 };
 
 export const fetchSearchPageAggBuckets = (searchParams : any) => {

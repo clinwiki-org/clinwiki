@@ -79,7 +79,35 @@ export const translateAggBuckets = async (criteria) => {
     let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
     
     const json = requestBody.toJSON();
-    injectAggs(criteria,json);
+    injectCrowdAggBuckets(criteria,json);
+
+
+    return json;
+}
+
+export const translateCrowdAggBuckets = async (criteria) => {
+
+    let boolQuery = esb.boolQuery();
+    boolQuery.must(esb.simpleQueryStringQuery('*'));
+    await translateAggFilters(criteria.aggFilters,boolQuery,false);
+    await translateAggFilters(criteria.crowdAggFilters,boolQuery,true);
+
+    if(criteria.q.key === 'AND' && criteria.q.children) {
+        criteria.q.children.forEach( child => {
+            boolQuery.must(esb.simpleQueryStringQuery('('+child.key+')') );
+        })
+    }
+    if(criteria.q.key === 'OR' && criteria.q.children) {
+        criteria.q.children.forEach( child => {
+            boolQuery.should(esb.simpleQueryStringQuery('('+child.key+')') );
+        })
+    }
+
+    // Create the aggs and crowd aggs
+    let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
+    
+    const json = requestBody.toJSON();
+    injectCrowdAggBuckets(criteria,json,true);
 
 
     return json;
@@ -239,5 +267,52 @@ function injectAggs(criteria,json) {
             aggs: bucketAgg
         }
     });
+    json.aggs = aggs;       
+}
+
+
+function injectCrowdAggBuckets(criteria,json,usePrefix) {
+    let aggs = {};
+    const aggKey = usePrefix ? 'fm_'+criteria.agg : criteria.agg;
+
+    let innerAggs = {};
+    innerAggs[aggKey] = {
+        terms: {
+            field: aggKey,
+            size: 1000000,
+            missing: '-99999999999'
+        },
+        aggs:  {
+            agg_bucket_sort:{
+                bucket_sort:{
+                   from:0,
+                   size:25,
+                   sort:[
+                      {
+                         _key:{
+                            order:"asc"
+                         }
+                      }
+                   ]
+                }
+             }            
+        }
+    }
+
+    aggs[aggKey] = {
+        filter:{
+            bool:{
+               must:[
+                  {
+                     bool:{
+                        must:[]
+                     }
+                  }
+               ]
+            }
+         },
+        aggs: innerAggs
+    }
+    
     json.aggs = aggs;       
 }
