@@ -584,7 +584,7 @@ export interface wikiPageUpdateContentMutationErrorAction {
 export interface fetchSuggestedLabelsSendAction {
     type: typeof FETCH_SUGGESTED_LABELS_SEND;
     nctId: any;
-    crowdBucketsWanted: any;
+    // crowdBucketsWanted: any;
 }
 
 export interface fetchSuggestedLabelsSuccessAction {

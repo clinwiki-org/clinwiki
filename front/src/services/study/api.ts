@@ -108,7 +108,7 @@ export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
 export const fetchSuggestedLabels = (nctId: any, crowdBucketsWanted: any) => {
   return callGraphql(ENDPOINT, query.SUGGESTED_LABELS_QUERY, {
     nctId: nctId,
-    crowdBucketsWanted: crowdBucketsWanted,
+    // crowdBucketsWanted: crowdBucketsWanted,
   });
 };
 export const fetchAllWorkFlows = () => {

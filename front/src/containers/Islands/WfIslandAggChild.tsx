@@ -34,7 +34,6 @@ function WfIslandAggChild(props: Props) {
   const { aggId, nctId } = props;
   const dispatch = useDispatch();
   const params = useUrlParams();
-  const allWorkflows = useSelector((state: RootState) => state.study.allWorkFlows);
 
     const emptySet = new Set();
     
@@ -51,24 +50,9 @@ function WfIslandAggChild(props: Props) {
     }
     let currentAgg = getCurrentAgg();
 
-    const workflow = allWorkflows?.data.workflowsView.workflows.filter(
-      wf => wf.name === currentAgg?.name
-      )?.[0];
-
-      console.log("WF", workflow)
-
-
-  const allowedSuggestedLabels = workflow && displayFields(
-    workflow?.suggestedLabelsFilter?.kind,
-    workflow?.suggestedLabelsFilter?.values,
-    workflow?.allSuggestedLabels.map(name => ({
-      name,
-      rank: null,
-    }))
-  ).map(R.prop('name'));
 
   useEffect(() => {
-    allowedSuggestedLabels && dispatch(fetchSuggestedLabels(nctId, allowedSuggestedLabels));
+  dispatch(fetchSuggestedLabels(nctId));
   }, [dispatch, nctId])
 
   if (isLoading || !currentAgg) return <BeatLoader />;
@@ -137,9 +121,11 @@ function WfIslandAggChild(props: Props) {
         val = uniq(entries).join('|');
         // console.log("VAl", val)
         dispatch(upsertLabelMutation(nctId, currentAgg?.name, val));
+      }else{
+      //handles case where meta is empty 
+        dispatch(upsertLabelMutation(nctId, currentAgg?.name, key));
       }
 
-      // dispatch(upsertLabelMutation(nctId, currentAgg?.name, key));
 
       // console.log(nctId, currentAgg?.name, key)
 

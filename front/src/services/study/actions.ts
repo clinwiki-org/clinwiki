@@ -424,11 +424,11 @@ export const wikiPageUpdateContentMutationError = (
 });
 export const fetchSuggestedLabels = (
     nctId: string,
-    crowdBucketsWanted: string[]
+    // crowdBucketsWanted: string[]
 ): types.StudyActionTypes => ({
     type: types.FETCH_SUGGESTED_LABELS_SEND,
     nctId,
-    crowdBucketsWanted,
+    // crowdBucketsWanted,
 });
 export const fetchSuggestedLabelsSuccess = (
     payload: any
