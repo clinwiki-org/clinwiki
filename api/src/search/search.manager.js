@@ -1,5 +1,5 @@
 const util = require('util');
-import {translateSearch,translateAggBuckets} from './translator';
+import {translateSearch,translateAggBuckets,translateCrowdAggBuckets} from './translator';
 import * as elastic from './elastic';
 import {keysToCamel} from '../util/case.convert';
 import logger from '../util/logger';
@@ -31,9 +31,29 @@ export async function search(args) {
 export async function aggBuckets(args) {
     try {
         const translated = await translateAggBuckets(args.params,false);
-
+        //console.log('##### AGGBUCKETS'+util.inspect(translated, false, null, true));
         let esResults = await elastic.query(translated);
         
+        const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
+        let aggs = [];
+        for( const [key,value] of Object.entries(esResults.body.aggregations)) {
+            const agg = aggToGraphql(key,value);
+            aggs.push(agg);
+        }
+        return {
+            recordsTotal: esResults.body.hits.total,
+            aggs: aggs
+        };
+    }
+    catch(err) {
+        logger.error(err);
+    }
+}
+
+export async function crowdAggBuckets(args) {
+    try {
+        const translated = await translateCrowdAggBuckets(args.params,false);        
+        let esResults = await elastic.query(translated);
         const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
         let aggs = [];
         for( const [key,value] of Object.entries(esResults.body.aggregations)) {
