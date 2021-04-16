@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import {useDispatch,useSelector} from 'react-redux';
 import {RootState} from 'reducers';
 import {signUp} from 'services/user/actions';
@@ -21,10 +21,13 @@ const SignUpPage = (props) => {
   const [error,setError] = useState('');
   const dispatch = useDispatch();
   const signUpErrors = useSelector( (state:RootState) => state.user.signUpErrors);
+  const signUpMessage = useSelector( (state:RootState) => state.user.signUpMessage);
 
   const handleSignUp = () => {
     if (password === passwordConfirmation) {
       dispatch(signUp(email,password,oAuthToken));
+      // setPassword('')
+      // setPasswordConfirmation('')
     }
     else {
       setError("Password confirmation doesn't match");
@@ -36,6 +39,10 @@ const SignUpPage = (props) => {
     setOAuthToken(response.tokenObj.id_token);
     dispatch(signUp(email,password,oAuthToken));
   };
+
+ console.log('errors', signUpErrors)
+
+
 
   return (
     <StyledWrapper>
@@ -81,6 +88,7 @@ const SignUpPage = (props) => {
             </div>
             <div style={{ marginTop: 20}}>
                 {signUpErrors.map( error => <StyledError key={error}>{error}</StyledError>)}
+                {error.length > 1 && <StyledError>{error}</StyledError>}
             </div>
         <ThemedLinkContainer>
           <Link to="/sign_in">Sign In</Link>

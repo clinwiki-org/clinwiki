@@ -44,6 +44,7 @@ function* signIn(action) {
         if(response?.data?.signIn?.jwt) {
             yield call(() => setLocalJwt(response.data.signIn.jwt));
             yield put(actions.signInSuccess(response.data.signIn.user));
+            console.log('history', history)
             yield call(() => history.goBack());
 
         }
@@ -71,8 +72,9 @@ function* logout(action) {
 function* signUp(action) {
     try {
         let response = yield call(() => api.signUp(action.email,action.password,action.oAuthToken));
-        if(response.data && response.data.signIn) {
+        if(response.data && response.data.signUp.errors == null) {
             yield put(actions.signUpSuccess(response));
+            yield call (() => signIn(action));
         }
         else {
             yield put(actions.signUpError([response.data.signUp.errors]));
