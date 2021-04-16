@@ -11,7 +11,8 @@ const initialState: types.UserState = {
     signUpErrors: [],
     isUpdatingPassword: false,
     isEditingProfile: false,
-    isResettingPassword: false
+    isResettingPassword: false,
+    signUpMessage: ""
 };
 
 const userReducer = ( state = initialState, action: types.UserActionTypes) : types.UserState => {
@@ -79,12 +80,14 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
         case types.SIGN_UP_SUCCESS:
             return {
                 ...state,
-                isSigningUp: false
+                isSigningUp: false,
+                signUpMessage: "Congratulations, you have successfully signed up!"
             };
         case types.SIGN_UP_ERROR:
             return {
                 ...state,
-                isSigningUp: false
+                isSigningUp: false,
+                signUpErrors: action.payload
             };
         case types.UPDATE_PASSWORD_SEND:
             return {

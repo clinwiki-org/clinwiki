@@ -43,7 +43,8 @@ export interface UserState {
     signUpErrors: Array<string>,
     isUpdatingPassword: boolean,
     isEditingProfile: boolean,
-    isResettingPassword: boolean
+    isResettingPassword: boolean,
+    signUpMessage: string
 }
 
 export interface UserData {
@@ -87,7 +88,7 @@ export interface SignInSendAction {
     type: typeof SIGN_IN_SEND,
     email: string,
     password: string,
-    oAuthToken: string
+    oAuthToken: any
 }
 
 export interface SignInSuccessAction {
@@ -104,7 +105,7 @@ export interface SignUpSendAction {
     type: typeof SIGN_UP_SEND,
     email: string,
     password: string,
-    oAuthToken: string
+    oAuthToken: any
 }
 
 export interface SignUpSuccessAction {
@@ -114,7 +115,7 @@ export interface SignUpSuccessAction {
 
 export interface SignUpErrorAction {
     type: typeof SIGN_UP_ERROR,
-    payload: Array<String>
+    payload: Array<string>
 };
 
 export interface ResetPasswordSendAction {
