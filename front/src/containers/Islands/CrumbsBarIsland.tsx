@@ -15,7 +15,6 @@ import { Form, FormGroup, ControlLabel } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
 import { SearchParams, SearchQuery } from '../SearchPage/shared';
 import MultiCrumb from '../../components/MultiCrumb';
-import { map, dissoc, propEq, reject } from 'ramda';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { defaultPageSize } from '../SearchPage/Types';
 import { AggFilterInput, SortInput } from 'types/globalTypes';
@@ -24,7 +23,17 @@ import {
 } from '../../services/search/model/SearchPageParamsQuery';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import AggCrumb from 'components/MultiCrumb/AggCrumb';
-import { isEmpty, prop } from 'ramda';
+import { 
+  isEmpty, 
+  prop,
+  find,
+  filter,
+  map,
+  dissoc,
+  findIndex,
+  propEq,
+  reject,
+ } from 'ramda';
 import {
   Grid,
   Row,
@@ -115,6 +124,51 @@ export default function CrumbsBarIsland(props: Props) {
     !data && dispatch(fetchSearchParams(queryString.hash));
   }, [dispatch]);
 
+  const removeFilter =  (
+    aggValue: string,
+    aggName: string,
+    isCrowd?: boolean
+  ) => {
+    const grouping = isCrowd ? 'crowdAggFilters' : 'aggFilters';
+
+    let currentAggFilters = find(
+      (x) => (x.field == aggName),
+      searchParams[grouping]
+    );
+
+    let newAggFilterValues = filter(x => x !== aggValue, currentAggFilters.values)
+    
+
+    if (newAggFilterValues.length >0) {
+
+      let index = findIndex(x => x.field == aggName, searchParams[grouping]);
+
+      let newAggFilters = searchParams[grouping];
+
+      newAggFilters[index].values= newAggFilterValues;
+      let newParams = isCrowd ? {...searchParams,
+      crowdAggFilters: newAggFilters
+    } : {...searchParams,
+      aggFilters: newAggFilters
+    } 
+    
+      
+      !isUpdatingParams && dispatch(updateSearchParamsAction(newParams));
+    }else{
+
+      let newAggFilterValues = filter(x => x.field !== aggName, searchParams[grouping]);
+      let newParams = isCrowd ? {... searchParams,
+        crowdAggFilters: newAggFilterValues
+      
+      } : {... searchParams,
+        aggFilters: newAggFilterValues
+      
+      }
+      !isUpdatingParams && dispatch(updateSearchParamsAction(newParams));
+
+    }
+  };
+
   const newAddSearchTerm = (term: string) => {
     if (!term.replace(/\s/g, '').length) {
       return
@@ -174,6 +228,7 @@ export default function CrumbsBarIsland(props: Props) {
           thisSiteView={thisSiteView}
           searchParams={props.searchParams}
           updateSearchParams={props.updateSearchParams}
+          removeFilter={(term) => removeFilter(term, agg.field, false)}
         />
       );
     }
@@ -190,6 +245,7 @@ export default function CrumbsBarIsland(props: Props) {
           thisSiteView={thisSiteView}
           searchParams={props.searchParams}
           updateSearchParams={props.updateSearchParams}
+          removeFilter={(term) => removeFilter(term, agg.field, true)}
         />
       );
     }

@@ -17,6 +17,7 @@ interface AggCrumbProps {
   searchParams: SearchParams;
   updateSearchParams: (params: SearchParamsType) => Promise<void>;
   thisSiteView: PresentSiteFragment;
+  removeFilter: any;
 }
 
 interface AggCrumbState {}
@@ -42,7 +43,7 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       crumb = (
         <ValuesCrumb
           values={agg.values}
-          onClick={(val) => updater.removeFilter(val)}
+          onClick={(val) => this.props.removeFilter(val)}
           allowMissingFields={agg.includeMissingFields}
           removeAllowMissing={() => updater.removeAllowMissing()}
         />
