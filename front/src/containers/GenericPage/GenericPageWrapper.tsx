@@ -63,7 +63,9 @@ export default function GenericPageWrapper(props: Props) {
     return <h1>Missing NCTID in URL</h1>;
   }
   if (!params.hash && pageType == "Search") {
-    return <h1>Missing Hash in URL</h1>;
+    history.push(`/search?hash=${site.defaultHash}&pv=${site.defaultSearchPage}`)
+    window.location.reload()
+
   }
   if (!params.pv && pageType == "Search") {
     return <h1>Missing PageView in URL</h1>;
