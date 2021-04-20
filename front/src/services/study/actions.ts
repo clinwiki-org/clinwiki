@@ -66,18 +66,25 @@ export const fetchStudyPageError = (
     type: types.FETCH_STUDY_PAGE_ERROR,
     payload: { message },
 });
-export const fetchStudyPageHash= ( hash: string, QUERY: any) : types.StudyActionTypes => ({
+export const fetchStudyPageHash = (
+    hash: string,
+    QUERY: any
+): types.StudyActionTypes => ({
     type: types.FETCH_STUDY_PAGE_HASH_SEND,
     hash,
-    QUERY
+    QUERY,
 });
-export const fetchStudyPageHashSuccess= (payload: any) : types.StudyActionTypes => ({
+export const fetchStudyPageHashSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
     type: types.FETCH_STUDY_PAGE_HASH_SUCCESS,
-    payload
+    payload,
 });
-export const fetchStudyPageHashError= (message: string) : types.StudyActionTypes => ({
+export const fetchStudyPageHashError = (
+    message: string
+): types.StudyActionTypes => ({
     type: types.FETCH_STUDY_PAGE_HASH_ERROR,
-    payload: {message}
+    payload: { message },
 });
 export const fetchStudyPageHasura = (
     nctId: string,
@@ -115,7 +122,10 @@ export const fetchPageViewsError = (
     type: types.FETCH_PAGE_VIEWS_ERROR,
     payload: { message },
 });
-export const fetchPageView = (id: string, url: string): types.StudyActionTypes => ({
+export const fetchPageView = (
+    id: string,
+    url: string
+): types.StudyActionTypes => ({
     type: types.FETCH_PAGE_VIEW_SEND,
     id,
     url,
@@ -185,7 +195,8 @@ export const deletePageViewError = (
     type: types.DELETE_PAGE_VIEW_ERROR,
     payload: { message },
 });
-export const updatePageView = (id: any,
+export const updatePageView = (
+    id: any,
     input: UpdatePageViewInput
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_SEND,
@@ -389,6 +400,7 @@ export const fetchFacilitiesPageError = (
     type: types.FETCH_FACILITIES_PAGE_ERROR,
     payload: { message },
 });
+
 export const fetchWikiPage = (nctId: string): types.StudyActionTypes => ({
     type: types.FETCH_WIKI_PAGE_SEND,
     nctId,
@@ -403,6 +415,24 @@ export const fetchWikiPageError = (
     type: types.FETCH_WIKI_PAGE_ERROR,
     payload: { message },
 });
+
+export const fetchHasuraWikiPage = (nctId: string): types.StudyActionTypes => ({
+    type: types.FETCH_HASURA_WIKI_PAGE_SEND,
+    nctId,
+});
+export const fetchHasuraWikiPageSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_HASURA_WIKI_PAGE_SUCCESS,
+    payload,
+});
+export const fetchHasuraWikiPageError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_HASURA_WIKI_PAGE_ERROR,
+    payload: { message },
+});
+
 export const wikiPageUpdateContentMutation = (
     nctId: any,
     content: string
@@ -423,7 +453,7 @@ export const wikiPageUpdateContentMutationError = (
     payload: { message },
 });
 export const fetchSuggestedLabels = (
-    nctId: string,
+    nctId: string
     // crowdBucketsWanted: string[]
 ): types.StudyActionTypes => ({
     type: types.FETCH_SUGGESTED_LABELS_SEND,

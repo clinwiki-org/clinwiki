@@ -109,7 +109,7 @@ export const getHasuraClinwikiURL = () => {
     typeof window === 'undefined' ||
     window.location.hostname.includes('localhost')
   ) {
-    return `https://clinwiki-crowd-stg.hasura.app/v1/graphql`;
+    return `https://clinwiki-crowd-exp.hasura.app/v1/graphql`;
   }
-  return 'https://clinwiki-crowd-stg.hasura.app/v1/graphql';
+  return 'https://clinwiki-crowd-exp.hasura.app/v1/graphql';
 };

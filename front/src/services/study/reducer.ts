@@ -34,6 +34,8 @@ const initialState: types.StudyState = {
     facilitiesPage: undefined,
     isFetchingWikiPage: false,
     wikiPage: undefined,
+    isFetchingHasuraWikiPage: false,
+    hasuraWikiPage: undefined,
     isWikiPageUpdatingContentMutation: false,
     isFetchingSuggestedLabels: false,
     suggestedLabels: undefined,
@@ -147,7 +149,7 @@ const studyReducer = (
         case types.FETCH_STUDY_PAGE_HASH_ERROR:
             return {
                 ...state,
-                isFetchingStudy: false
+                isFetchingStudy: false,
             };
         case types.FETCH_PAGE_VIEWS_SEND:
             return {
@@ -367,6 +369,23 @@ const studyReducer = (
             return {
                 ...state,
                 isFetchingWikiPage: false,
+            };
+
+        case types.FETCH_HASURA_WIKI_PAGE_SEND:
+            return {
+                ...state,
+                isFetchingHasuraWikiPage: true,
+            };
+        case types.FETCH_HASURA_WIKI_PAGE_SUCCESS:
+            return {
+                ...state,
+                isFetchingHasuraWikiPage: false,
+                hasuraWikiPage: action.payload,
+            };
+        case types.FETCH_HASURA_WIKI_PAGE_ERROR:
+            return {
+                ...state,
+                isFetchingHasuraWikiPage: false,
             };
 
         case types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND:
@@ -670,7 +689,7 @@ const studyReducer = (
         case types.SET_SHOW_LOGIN_MODAL:
             return {
                 ...state,
-                showLoginModal: action.input
+                showLoginModal: action.input,
             };
         default:
             return { ...state };

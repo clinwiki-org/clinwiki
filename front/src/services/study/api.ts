@@ -3,6 +3,8 @@ import * as mutate from './mutations';
 import {
   callGraphql,
   callHasuraAACT,
+  getHasuraClinwikiURL,
+  callHasuraClinwiki,
   getHasuraURLAACT,
   get_gql_url,
 } from 'utils/graphqlUtil';
@@ -12,6 +14,7 @@ import {
 
 const ENDPOINT = get_gql_url();
 const HASURA_AACT = getHasuraURLAACT();
+const HASURA_CW = getHasuraClinwikiURL();
 
 export const fetchSampleStudy = (nctId: any, QUERY: any) => {
   return callGraphql(ENDPOINT, QUERY, { nctId });
@@ -99,6 +102,13 @@ export const fetchFacilitiesPage = (nctId: any) => {
 export const fetchWikiPage = (nctId: any) => {
   return callGraphql(ENDPOINT, query.WIKI_PAGE_QUERY, { nctId });
 };
+
+export const fetchHasuraWikiPage = (nctId: any) => {
+  return callHasuraClinwiki(HASURA_CW, query.HASURA_WIKI_PAGE_QUERY, {
+    nctId,
+  });
+};
+
 export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
   return callGraphql(ENDPOINT, mutate.WIKI_PAGE_UPDATE_CONTENT_MUTATION, {
     nctId: nctId,
