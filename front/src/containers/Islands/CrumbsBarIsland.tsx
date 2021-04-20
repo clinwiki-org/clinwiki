@@ -124,6 +124,28 @@ export default function CrumbsBarIsland(props: Props) {
     !data && dispatch(fetchSearchParams(queryString.hash));
   }, [dispatch]);
 
+  const removeRange = (aggName, isCrowd) => {
+    const grouping = isCrowd ? 'crowdAggFilters' : 'aggFilters';
+
+    const allButThisAgg = filter(
+      (x) => x.field !== aggName,
+      searchParams[grouping]
+    );
+    console.log(allButThisAgg)
+
+
+    let newParams = isCrowd ? {
+      ...searchParams,
+      crowdAggFilters: allButThisAgg
+
+    } : {
+      ...searchParams,
+      aggFilters: allButThisAgg
+
+    }
+    !isUpdatingParams && dispatch(updateSearchParamsAction(newParams));
+
+  }
   const removeFilter =  (
     aggValue: string,
     aggName: string,
@@ -229,6 +251,7 @@ export default function CrumbsBarIsland(props: Props) {
           searchParams={props.searchParams}
           updateSearchParams={props.updateSearchParams}
           removeFilter={(term) => removeFilter(term, agg.field, false)}
+          removeRange={() => removeRange(agg.field, false)}
         />
       );
     }
@@ -246,6 +269,7 @@ export default function CrumbsBarIsland(props: Props) {
           searchParams={props.searchParams}
           updateSearchParams={props.updateSearchParams}
           removeFilter={(term) => removeFilter(term, agg.field, true)}
+          removeRange={() => removeRange(agg.field, true)}
         />
       );
     }

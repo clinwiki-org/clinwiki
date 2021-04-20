@@ -10,7 +10,7 @@ import CrumbWrapper from './CrumbWrapper';
 import { PresentSiteFragment } from 'services/site/model/PresentSiteFragment';
 import findFields from 'utils/aggs/findFields';
 import {  SearchParams  as SearchParamsType }  from '../../containers/SearchPage/shared';
-
+import {getMaxString, getMinString}  from '../../containers/Islands/IslandsUtils'
 interface AggCrumbProps {
   grouping: string;
   agg: AggFilterListItem;
@@ -18,6 +18,7 @@ interface AggCrumbProps {
   updateSearchParams: (params: SearchParamsType) => Promise<void>;
   thisSiteView: PresentSiteFragment;
   removeFilter: any;
+  removeRange:any;
 }
 
 interface AggCrumbState {}
@@ -49,17 +50,17 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         />
       );
     } else if (agg.lte || agg.gte) {
-      let label = `${updater.getMinString(
-        thisSiteView
-      )} — ${updater.getMaxString(thisSiteView)}`;
+      let label = `${getMinString(
+        agg
+      )} — ${getMaxString(agg)}`;
       if (!agg.lte) {
-        label = `≥ ${updater.getMinString(thisSiteView)}`;
+        label = `≥ ${getMinString(agg)}`;
       }
       if (!agg.gte) {
-        label = `≤ ${updater.getMaxString(thisSiteView)}`;
+        label = `≤ ${getMaxString(agg)}`;
       }
       crumb = (
-        <ValueCrumb label={label} onClick={() => updater.removeRange()} />
+        <ValueCrumb label={label} onClick={(agg) => this.props.removeRange(agg.field)} />
       );
     } else if (agg.includeMissingFields) {
       let label = "Allow Missing"
