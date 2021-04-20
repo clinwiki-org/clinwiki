@@ -4,6 +4,8 @@
 export interface CreateSiteInput {
     name: string;
     subdomain: string;
+    defaultHash: string;
+    defaultSearchPage: string;
     skipLanding?: boolean | null;
     hideDonation?: boolean | null;
     themes?: string | null;

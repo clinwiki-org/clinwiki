@@ -37,6 +37,8 @@ class SiteViewRouter extends React.Component<
     form: {
       name: '',
       subdomain: '',
+      defaultHash:'',
+      defaultSearchPage:'',
       skipLanding: false,
       editorEmails: [],
     },

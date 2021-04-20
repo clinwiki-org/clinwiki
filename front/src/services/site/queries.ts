@@ -32,6 +32,8 @@ fragment SiteItemFragment on Site {
   id
   name
   subdomain
+  defaultHash
+  defaultSearchPage
 }
 `;
 

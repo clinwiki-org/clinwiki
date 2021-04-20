@@ -399,6 +399,8 @@ export interface PresentSiteFragment {
   name: string;
   skipLanding: boolean | null;
   subdomain: string;
+  defaultHash:string;
+  defaultSearchPage:string;
   themes: string;
   reactionsConfig: string;
   userRank: string;

@@ -3,6 +3,8 @@ module Types
     field :id, Int, null: false
     field :name, String, null: false
     field :subdomain, String, null: false
+    field :default_hash, String, null: false
+    field :default_search_page, String, null: false
     field :skip_landing, Boolean, null: true
     field :hide_donation, Boolean, null: true
     field :owners, [UserType], null: false

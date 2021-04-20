@@ -865,6 +865,8 @@ export interface SiteFragment {
   skipLanding: boolean | null;
   hideDonation: boolean | null;
   subdomain: string;
+  defaultHash: string;
+  defaultSearchPage: string;
   themes: string;
   reactionsConfig: string;
   userRank: string;

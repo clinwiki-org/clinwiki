@@ -120,7 +120,7 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
   render() {
     const noEditors =
       !this.props.form.editorEmails || !this.props.form.editorEmails.length;
-
+console.log("FORM", this.props.form)
     return (
       <StyledContainer>
         <Row>
@@ -142,6 +142,22 @@ class MainForm extends React.Component<MainFormProps, MainFormState> {
               type="text"
               placeholder="Subdomain"
               value={this.props.form.subdomain}
+              onChange={this.handleInputChange}
+            />
+            <StyledFormControl
+              id="defaultHash"
+              name="defaultHash"
+              type="text"
+              placeholder="Default Hash"
+              value={this.props.form.defaultHash}
+              onChange={this.handleInputChange}
+            />
+            <StyledFormControl
+              id="defaultSearchPage"
+              name="defaultSearchPage"
+              type="text"
+              placeholder="Default Hash"
+              value={this.props.form.defaultSearchPage}
               onChange={this.handleInputChange}
             />
             <StyledLabel htmlFor="subdomain">Skip landing page</StyledLabel>

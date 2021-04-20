@@ -62,6 +62,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     form: {
       name: '',
       subdomain: '',
+      defaultHash:'',
+      defaultSearchPage: '',
       skipLanding: false,
       editorEmails: [],
     },
@@ -78,6 +80,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const {
       name,
       subdomain,
+      defaultHash,
+      defaultSearchPage,
       skipLanding,
       hideDonation,
       editors,
@@ -89,6 +93,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const form = {
       name,
       subdomain,
+      defaultHash,
+      defaultSearchPage,
       skipLanding,
       hideDonation,
       editorEmails,
