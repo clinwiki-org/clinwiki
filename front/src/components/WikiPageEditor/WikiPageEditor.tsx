@@ -8,7 +8,7 @@ import { useUnload } from "../../hooks/useUnload";
 import { BeatLoader } from 'react-spinners';
 
 interface Props {
-  data: WikiPageQuery;
+  data: any;
   updateText: (string) => void;
 }
 
@@ -26,9 +26,9 @@ export default function WikiPageEditor(props: Props) {
 
   const [editorState, setEditorState] = useState('rich');
 
-/*   useEffect(() => {
-    //console.log("HELLO!!!!!!!!!!!!!!!!!!!!!", data)
-    }, [props.data]) */
+  /*   useEffect(() => {
+      //console.log("HELLO!!!!!!!!!!!!!!!!!!!!!", data)
+      }, [props.data]) */
 
   const handleRichEditorChange = (richEditorText: EditorValue) => {
     props.updateText(richEditorText)
@@ -62,14 +62,34 @@ export default function WikiPageEditor(props: Props) {
   };
 
   const { data, } = props;
-  if (!data || !data.study || !data.study.wikiPage) return null;
+
+  console.log("***********************DATA in wiki Editor", data);
+  /* 
+    if (!data || !data.study || !data.study.wikiPage) return null;
+    const text = getEditorText() || '';
+    if (text !== data.study.wikiPage.content && !text) {
+      handlePreview()
+  
+      if (editorState === 'rich') {
+        const richEditorText = RichTextEditor.createValueFromString(
+          data.wiki_pages[0].text || '',
+          'markdown'
+        );
+        setRichEditorText(richEditorText);
+      } else {
+        setplainEditorText(text);
+      }
+    }
+   */
+
+  if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) return null;  //(!data || !data.study || !data.study.wikiPage) return null;
   const text = getEditorText() || '';
-  if (text !== data.study.wikiPage.content && !text) {
+  if (text !== data.wiki_pages[0].text && !text) {
     handlePreview()
 
     if (editorState === 'rich') {
       const richEditorText = RichTextEditor.createValueFromString(
-        data.study.wikiPage.content || '',
+        data.wiki_pages[0].text || '',
         'markdown'
       );
       setRichEditorText(richEditorText);
@@ -94,7 +114,7 @@ export default function WikiPageEditor(props: Props) {
       </Panel>
     );
   }
- 
+
   return (
 
     <Panel>

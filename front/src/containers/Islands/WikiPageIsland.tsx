@@ -17,7 +17,7 @@ import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
 import { CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import LoginModal from '../../components/LoginModal';
-import { wikiPageUpdateContentMutation, fetchWikiPage } from 'services/study/actions';
+import { wikiPageUpdateContentMutation, fetchWikiPage, fetchHasuraWikiPage } from 'services/study/actions';
 
 interface Props {
   nctId: string;
@@ -57,14 +57,18 @@ export default function WikiPageIsland(props: Props) {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchWikiPage( nctId ));
-    }, [dispatch, nctId])
-  const wikiPageData = useSelector((state: RootState) => state.study.wikiPage);
+    //dispatch(fetchWikiPage(nctId));
+    dispatch(fetchHasuraWikiPage(nctId));
+  }, [dispatch, nctId])
+  //const wikiPageData = useSelector((state: RootState) => state.study.wikiPage);
 
-/*   const updateContentMutation = (action) => {
-    if (!action.variables.key) return
-    return dispatch(wikiPageUpdateContentMutation(nctId, action.content))
-  } */
+  const wikiPageData = useSelector((state: RootState) => state.study.hasuraWikiPage);
+
+
+  /*   const updateContentMutation = (action) => {
+      if (!action.variables.key) return
+      return dispatch(wikiPageUpdateContentMutation(nctId, action.content))
+    } */
 
   const readOnly = !location.pathname.includes('/wiki/edit');
   const editPath = `${trimPath(match.path)}/wiki/edit`;
@@ -108,7 +112,7 @@ export default function WikiPageIsland(props: Props) {
   }
   const handleEditSubmit = () => {
     let content = getEditorText() || ''
-    dispatch(wikiPageUpdateContentMutation(nctId, content ));
+    dispatch(wikiPageUpdateContentMutation(nctId, content));
 
     history.push(`${match.url}${queryStringAll(params)}`);
     setFlashAnimation(true)
@@ -155,7 +159,7 @@ export default function WikiPageIsland(props: Props) {
   };
 
   const renderToolbar = (
-    
+
     data: WikiPageQuery,
     //@ts-ignore
     user: CurrentUserQuery_me | null | undefined,
@@ -189,17 +193,17 @@ export default function WikiPageIsland(props: Props) {
 
   }
 
-  const renderEditor = (data: WikiPageQuery) => {
-    //console.log("EDITOOR - WIKI DATA: ", data?.study?.wikiPage)
-    if (!data || !data.study || !data.study.wikiPage) return null;
-    const text = getEditorText() || '';
+  const renderEditor = (data: any) => {
+    console.log("EDITOOR - WIKI DATA: ", data?.wiki_pages)
 
-    if (text !== data.study.wikiPage.content || !text) {
+    if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) return "No Wiki Content"; //(!data || !data.study || !data.study.wikiPage) return null;
+    const text = getEditorText() || '';
+    if (text !== data.wiki_pages[0].text && !text) {
+      //handlePreview()
+
       if (editorState === 'rich') {
-       // console.log("RICH Editor 111111111111", richEditorText)
-        const {content} = data.study.wikiPage
         const richEditorText = RichTextEditor.createValueFromString(
-          content || '',
+          data.wiki_pages[0].text || '',
           'markdown'
         );
         setRichEditorText(richEditorText);
@@ -207,6 +211,25 @@ export default function WikiPageIsland(props: Props) {
         setplainEditorText(text);
       }
     }
+
+    /*    if (!data || !data.study || !data.study.wikiPage) return null;
+       const text = getEditorText() || '';
+   
+   
+   
+       if (text !== data.study.wikiPage.content || !text) {
+         if (editorState === 'rich') {
+           // console.log("RICH Editor 111111111111", richEditorText)
+           const { content } = data.study.wikiPage
+           const richEditorText = RichTextEditor.createValueFromString(
+             content || '',
+             'markdown'
+           );
+           setRichEditorText(richEditorText);
+         } else {
+           setplainEditorText(text);
+         }
+       } */
 
     const readOnly = !location.pathname.includes('/wiki/edit');
 
@@ -239,7 +262,9 @@ export default function WikiPageIsland(props: Props) {
   };
 
   if (!wikiPageData || !nctId) return <BeatLoader />;
-  
+
+  console.log("🚀 ~ WikiPageIsland ~ wikiPageData", wikiPageData);
+
   if (showLoginModal) return <LoginModal
     show={showLoginModal}
     cancel={() => setShowLoginModal(false)}
@@ -249,6 +274,7 @@ export default function WikiPageIsland(props: Props) {
   return (
     <>
       {flashAnimation == true ?
+
         <WorkFlowAnimation
           resetAnimation={handleResetAnimation}
           rankColor={theme ? theme.button : 'default'}
