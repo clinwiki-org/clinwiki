@@ -452,6 +452,7 @@ query HasuraFacilitiesPageQuery($nctId: String!) {
       location {
         latitude
         longitude
+        status
       }
     }
     nct_id
