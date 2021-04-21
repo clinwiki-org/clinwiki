@@ -428,6 +428,37 @@ query FacilitiesPageQuery($nctId: String!) {
 }
 ${FACILITY_FRAGMENT}
 `;
+
+export const HASURA_FACILITY_ISLAND_QUERY = `
+query HasuraFacilitiesPageQuery($nctId: String!) {
+  ctgov_studies(where: {nct_id: {_eq: $nctId}}) {
+    facilities {
+      city
+      country
+      id
+      name
+      nct_id
+      state
+      status
+      zip
+      contacts {
+        contact_type
+        email
+        id
+        name
+        nct_id
+        phone
+      }
+      location {
+        latitude
+        longitude
+      }
+    }
+    nct_id
+  }
+}
+`;
+
 export const SUGGESTED_LABELS_QUERY = `
 query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
   crowdAggFacets(crowdBucketsWanted: $crowdBucketsWanted) { 

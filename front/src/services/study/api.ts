@@ -16,6 +16,12 @@ const ENDPOINT = get_gql_url();
 const HASURA_AACT = getHasuraURLAACT();
 const HASURA_CW = getHasuraClinwikiURL();
 
+export const fetchFacilitiesPageHasura = (nctId: any) => {
+  return callHasuraAACT(HASURA_AACT, query.HASURA_FACILITY_ISLAND_QUERY, {
+    nctId,
+  });
+};
+
 export const fetchSampleStudy = (nctId: any, QUERY: any) => {
   return callGraphql(ENDPOINT, QUERY, { nctId });
 };

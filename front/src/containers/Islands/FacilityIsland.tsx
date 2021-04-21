@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'reducers';
 import styled from 'styled-components';
 import { Panel } from 'react-bootstrap';
@@ -13,7 +13,7 @@ import GoogleMapReact from 'google-map-react';
 import { pipe, addIndex, map, flatten, isEmpty } from 'ramda';
 import MapMarker from '../../containers/FacilitiesPage/MapMarker';
 import FacilityCard from '.../../containers/FacilitiesPage//FacilityCard';
-import {fetchFacilitiesPage} from 'services/study/actions'
+import { fetchFacilitiesHasuraPage, fetchFacilitiesPage } from 'services/study/actions'
 import { BeatLoader } from 'react-spinners';
 
 interface Props {
@@ -160,22 +160,30 @@ export default function FacilityIsland(props: Props) {
   };
 
   const dispatch = useDispatch();
-/*  const { data: facilityData } = useQuery<FacilitiesPageQuery>(QUERY, {
-    variables: { nctId },
-  });
-*/
-  
-  const facilityData = useSelector( (state: RootState) => state.study.facilitiesPage);
-  //console.log (state.study)
-  useEffect (() => {
-    dispatch (fetchFacilitiesPage(props.nctId || ""));
-  },[dispatch, nctId]);
+  /*  const { data: facilityData } = useQuery<FacilitiesPageQuery>(QUERY, {
+      variables: { nctId },
+    });
+  */
 
-  if(!facilityData){
+  //console.log (state.study)
+  useEffect(() => {
+
+    dispatch(fetchFacilitiesHasuraPage(props.nctId || ""));
+    //dispatch(fetchFacilitiesPage(props.nctId || ""));
+  }, [dispatch, nctId]);
+
+
+  //const facilityData = useSelector((state: RootState) => state.study.facilitiesPage);
+
+  const facilityData = useSelector((state: RootState) => state.study.facilitiesPageHasura);
+
+
+  if (!facilityData || !facilityData.data.ctgov_studies[0]) {
     return <BeatLoader />
   }
   const K_HOVER_DISTANCE = 30;
-  const facilities = facilityData?.data?.study?.facilities;
+  const facilities = facilityData?.data?.ctgov_studies[0].facilities// facilityData?.data?.study?.facilities;
+
 
   if (facilities && facilities?.length > 0) {
     const items = pipe(addIndex(map)(processFacility), flatten)(facilities) as {

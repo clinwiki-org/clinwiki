@@ -6,6 +6,28 @@ import { SearchStudyPageQuery } from './model/SearchStudyPageQuery';
 import { StudyEditsHistoryQuery } from './model/StudyEditsHistoryQuery';
 import * as types from './types';
 import { UpdatePageViewInput } from 'services/study/model/InputTypes';
+
+//HASURA
+
+export const fetchFacilitiesHasuraPage = (
+    nctId: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_FACILITIES_PAGE_HASURA_SEND,
+    nctId,
+});
+export const fetchFacilitiesPageHasuraSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_FACILITIES_PAGE_HASURA_SUCCESS,
+    payload,
+});
+export const fetchFacilitiesPageHasuraError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_FACILITIES_PAGE_HASURA_ERROR,
+    payload: { message },
+});
+
 export const fetchSampleStudy = (
     nctId: string,
     QUERY: any

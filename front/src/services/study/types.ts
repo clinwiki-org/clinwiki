@@ -25,6 +25,15 @@ import {
 import { EditReviewQuery } from './model/EditReviewQuery';
 import { BulkLabelsQuery } from './model/BulkLabelsQuery';
 
+//HASURA
+
+export const FETCH_FACILITIES_PAGE_HASURA_SEND =
+    'FETCH_FACILITIES_PAGE_HASURA_SEND';
+export const FETCH_FACILITIES_PAGE_HASURA_SUCCESS =
+    'FETCH_FACILITIES_PAGE_HASURA_SUCCESS';
+export const FETCH_FACILITIES_PAGE_HASURA_ERROR =
+    'FETCH_FACILITIES_PAGE_HASURA_ERROR';
+
 export const FETCH_SAMPLE_STUDY_SEND = 'FETCH_SAMPLE_STUDY_SEND';
 export const FETCH_SAMPLE_STUDY_SUCCESS = 'FETCH_SAMPLE_STUDY_SUCCESS';
 export const FETCH_SAMPLE_STUDY_ERROR = 'FETCH_SAMPLE_STUDY_ERROR';
@@ -197,6 +206,9 @@ export const BULK_LIST_UPDATE_MUTATION_SUCCESS =
 export const BULK_LIST_UPDATE_MUTATION_ERROR =
     'BULK_LIST_UPDATE_MUTATION_ERROR';
 export interface StudyState {
+    isFetchingFacilitiesPageHasura: boolean;
+    facilitiesPageHasura: any | undefined;
+
     studyPageHasura: any | undefined;
     isFetchingStudyPageHasura: any;
     isFetchingSampleStudy: boolean;
@@ -263,6 +275,21 @@ export interface StudyState {
 
 export interface StudyDataError {
     message: string;
+}
+
+export interface fetchFacilitiesPageHasuraSendAction {
+    type: typeof FETCH_FACILITIES_PAGE_HASURA_SEND;
+    nctId: any;
+}
+
+export interface fetchFacilitiesPageHasuraSuccessAction {
+    type: typeof FETCH_FACILITIES_PAGE_HASURA_SUCCESS;
+    payload: any;
+}
+
+export interface fetchFacilitiesPageHasuraErrorAction {
+    type: typeof FETCH_FACILITIES_PAGE_HASURA_ERROR;
+    payload: StudyDataError;
 }
 
 export interface FetchSampleStudySendAction {
@@ -824,6 +851,9 @@ export interface setShowLoginModalSendAction {
 }
 
 export type StudyActionTypes =
+    | fetchFacilitiesPageHasuraSendAction
+    | fetchFacilitiesPageHasuraSuccessAction
+    | fetchFacilitiesPageHasuraErrorAction
     | fetchStudyPageSendAction
     | fetchStudyPageSuccessAction
     | fetchStudyPageErrorAction

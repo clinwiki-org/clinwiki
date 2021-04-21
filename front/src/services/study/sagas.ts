@@ -601,7 +601,28 @@ function* getEditReview(action) {
     yield put(actions.fetchEditReviewError(err.message));
   }
 }
+
+function* getFacilitiesPageHasura(action) {
+  try {
+    let response = yield call(() =>
+      api.fetchFacilitiesPageHasura(action.nctId)
+    );
+    if (response) {
+      yield put(actions.fetchFacilitiesPageHasuraSuccess(response));
+    } else {
+      yield put(actions.fetchFacilitiesPageHasuraError(response.message));
+    }
+  } catch (err) {
+    console.log(err);
+    yield put(actions.fetchFacilitiesPageHasuraError(err.message));
+  }
+}
+
 export default function* userSagas() {
+  yield takeLatest(
+    types.FETCH_FACILITIES_PAGE_HASURA_SEND,
+    getFacilitiesPageHasura
+  );
   yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
   yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
   yield takeLatest(types.FETCH_STUDY_PAGE_HASH_SEND, getStudyPageHash);
