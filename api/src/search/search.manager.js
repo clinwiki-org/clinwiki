@@ -48,8 +48,9 @@ export async function aggBuckets(args) {
                     }
                 })
                 aggs.push({ ...agg, buckets: finalBuckets });
+            }else{
+                aggs.push(agg)
             }
-            aggs.push(agg)
         }
         return {
             recordsTotal: esResults.body.hits.total,
@@ -79,8 +80,9 @@ export async function crowdAggBuckets(args) {
                     }
                 })
                 aggs.push({ ...agg, buckets: finalBuckets });
+            }else{
+                aggs.push(agg)
             }
-            aggs.push(agg)
         }
         return {
             recordsTotal: esResults.body.hits.total,
