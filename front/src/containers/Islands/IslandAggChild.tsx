@@ -336,17 +336,13 @@ function IslandAggChild(props: Props) {
       url: paramsUrl.sv,
       configType: 'presearch',
       returnAll: false,
-      aggFilters: maskAgg(searchParams.aggFilters, currentAgg.name),
-      crowdAggFilters: maskAgg(
-        searchParams.crowdAggFilters,
-        currentAgg.name
-      ),
       agg: currentAgg.name,
       pageSize: PAGE_SIZE,
       page: getFullPagesCount(buckets),
       aggOptionsFilter: aggFilter,
       aggOptionsSort: aggSort,
-      q: JSON.parse(searchParams.q)
+      q: JSON.parse(searchParams.q),
+      bucketsWanted: currentAgg.visibleOptions.values
     };
 
 

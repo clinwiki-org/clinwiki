@@ -36,9 +36,20 @@ export async function aggBuckets(args) {
         
         const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
         let aggs = [];
-        for( const [key,value] of Object.entries(esResults.body.aggregations)) {
-            const agg = aggToGraphql(key,value);
-            aggs.push(agg);
+        for (const [key, value] of Object.entries(esResults.body.aggregations)) {
+            const agg = aggToGraphql(key, value);
+            if (args.bucketsWanted.length !== 0) {
+                let finalBuckets = [];
+                agg.buckets.map((bucket) => {
+                    for (const key of args.bucketsWanted) {
+                        if (key == bucket.key) {
+                            finalBuckets.push(bucket)
+                        }
+                    }
+                })
+                aggs.push({ ...agg, buckets: finalBuckets });
+            }
+            aggs.push(agg)
         }
         return {
             recordsTotal: esResults.body.hits.total,
@@ -52,13 +63,24 @@ export async function aggBuckets(args) {
 
 export async function crowdAggBuckets(args) {
     try {
-        const translated = await translateCrowdAggBuckets(args.params,false);        
+        const translated = await translateCrowdAggBuckets(args.params, false);
         let esResults = await elastic.query(translated);
-        const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
+        const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
         let aggs = [];
-        for( const [key,value] of Object.entries(esResults.body.aggregations)) {
-            const agg = aggToGraphql(key,value);
-            aggs.push(agg);
+        for (const [key, value] of Object.entries(esResults.body.aggregations)) {
+            const agg = aggToGraphql(key, value);
+            if (args.bucketsWanted.length !== 0) {
+                let finalBuckets = [];
+                agg.buckets.map((bucket) => {
+                    for (const key of args.bucketsWanted) {
+                        if (key == bucket.key) {
+                            finalBuckets.push(bucket)
+                        }
+                    }
+                })
+                aggs.push({ ...agg, buckets: finalBuckets });
+            }
+            aggs.push(agg)
         }
         return {
             recordsTotal: esResults.body.hits.total,

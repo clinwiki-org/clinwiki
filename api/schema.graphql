@@ -1220,9 +1220,9 @@ type PublicUser {
 }
 
 type Query {
-  aggBuckets(configType: String, params: SearchInput, returnAll: Boolean, searchHash: String, url: String): SearchResultSet!
+  aggBuckets(configType: String, params: SearchInput, returnAll: Boolean, searchHash: String, url: String,  bucketsWanted: [String!]): SearchResultSet!
   autocomplete(aggFields: [String!]!, crowdAggFields: [String!]!, params: SearchInput, searchHash: String, url: String): SearchResultSet!
-  crowdAggBuckets(configType: String, params: SearchInput!, returnAll: Boolean, url: String): SearchResultSet!
+  crowdAggBuckets(configType: String, params: SearchInput!, returnAll: Boolean, url: String, bucketsWanted: [String!]): SearchResultSet!
   crowdAggFacets(crowdBucketsWanted: [String!]): SearchResultSet!
   feed(id: Int!): Feed
   health: Health!

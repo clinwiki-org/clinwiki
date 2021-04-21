@@ -167,11 +167,13 @@ export const SEARCH_PAGE_AGG_BUCKETS_QUERY = `
     $url: String
     $configType: String
     $returnAll: Boolean
+    $bucketsWanted: [String!]
   ) {
     aggBuckets(
       url: $url
       configType: $configType
       returnAll: $returnAll
+      bucketsWanted: $bucketsWanted
       params: {
         agg: $agg
         q: $q
@@ -210,11 +212,13 @@ export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
     $url: String
     $configType: String
     $returnAll: Boolean
+    $bucketsWanted: [String!]
   ) {
     aggBuckets: crowdAggBuckets(
       url: $url
       configType: $configType
       returnAll: $returnAll
+      bucketsWanted: $bucketsWanted
       params: {
         agg: $agg
         q: $q
