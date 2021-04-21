@@ -6,13 +6,17 @@ import { AggBucket } from '../SearchPage/Types';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { BeatLoader } from 'react-spinners';
-
+import { updateSearchParamsAction } from 'services/search/actions'
+import { filter } from 'ramda';
+import { connect } from 'react-redux';
 interface CustomDropCrumbsProps {
   field: SiteViewFragment_search_aggs_fields | any;
   isSelected: any;
   updater: AggFilterInputUpdater;
   selectedItems: any[];
   selectItem: any;
+  searchResultData: any;
+  updateSearchParamsAction: any;
 
 }
 interface CustomDropCrumbsState {
@@ -46,6 +50,33 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     if (!location.zipcode) return `Within ${location.radius} miles of current location`
     //@ts-ignore
     if (!location.lat && !location.long) return `Within ${location.radius} miles of ${location.zipcode}`
+
+  }
+   removeFilter = (aggName, isCrowd) => {
+    const searchParams = this.props.searchResultData?.data?.searchParams;
+
+    const grouping = isCrowd ? 'crowdAggFilters' : 'aggFilters';
+
+    const allButThisAgg = filter(
+      (x) => x.field !== aggName,
+      searchParams[grouping]
+    );
+    console.log(allButThisAgg)
+
+
+    let newParams = isCrowd ? {
+      ...searchParams,
+      q: JSON.parse(searchParams.q),
+      crowdAggFilters: allButThisAgg
+
+    } : {
+      ...searchParams,
+      q: JSON.parse(searchParams.q),
+      aggFilters: allButThisAgg
+
+    }
+    console.log(newParams)
+    this.props.updateSearchParamsAction(newParams);
 
   }
 
@@ -88,7 +119,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
               <FontAwesome
                 className="remove crumb-icon"
                 name="remove"
-                onClick={() => this.props.updater.removeRange()}
+                onClick={() => this.removeFilter(field.name, field.aggKind == "crowdAgg")}
               />
             </div>
           )
@@ -103,7 +134,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
               <FontAwesome
                 className="remove crumb-icon"
                 name="remove"
-                onClick={() => this.props.updater.removeDistance()}
+                onClick={() => this.removeFilter(field.name, field.aggKind == "crowdAgg")}
               />
             </div>
           )
@@ -165,5 +196,11 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
   }
 };
 
+const mapStateToProps = (state, ownProps) => ({
+  searchResultData: state.search.searchResults,
+})
+const mapDispatchToProps = (dispatch) => ({
+  updateSearchParamsAction: (variables?) => dispatch(updateSearchParamsAction(variables)),
 
-export default withAggContext(CustomDropCrumbs);
+})
+export default connect(mapStateToProps, mapDispatchToProps)(withAggContext(CustomDropCrumbs));

@@ -17,8 +17,8 @@ interface AggCrumbProps {
   searchParams: SearchParams;
   updateSearchParams: (params: SearchParamsType) => Promise<void>;
   thisSiteView: PresentSiteFragment;
-  removeFilter: any;
-  removeRange:any;
+  removeValueFromFilter: any;
+  removeFilter:any;
 }
 
 interface AggCrumbState {}
@@ -44,12 +44,13 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
       crumb = (
         <ValuesCrumb
           values={agg.values}
-          onClick={(val) => this.props.removeFilter(val)}
+          onClick={(val) => this.props.removeValueFromFilter(val)}
           allowMissingFields={agg.includeMissingFields}
           removeAllowMissing={() => updater.removeAllowMissing()}
         />
       );
     } else if (agg.lte || agg.gte) {
+      // console.log(agg)
       let label = `${getMinString(
         agg
       )} — ${getMaxString(agg)}`;
@@ -60,22 +61,22 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         label = `≤ ${getMaxString(agg)}`;
       }
       crumb = (
-        <ValueCrumb label={label} onClick={(agg) => this.props.removeRange(agg.field)} />
+        <ValueCrumb label={label} onClick={(agg) => this.props.removeFilter(agg.field)} />
       );
     } else if (agg.includeMissingFields) {
       let label = "Allow Missing"
       crumb = (
-        <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
+        <ValueCrumb label={label} onClick={(agg) => this.props.removeFilter(agg.field)} />
       );
     } else if (agg.radius && agg.lat) {
       let label = `Within ${agg.radius} miles of current location`;
       crumb = (
-        <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
+        <ValueCrumb label={label} onClick={(agg) => this.props.removeFilter(agg.field)} />
       )
     } else if (agg.radius && agg.zipcode) {
       let label = `Within ${agg.radius} miles of ${agg.zipcode}`;
       crumb = (
-        <ValueCrumb label={label} onClick={() => updater.removeAllowMissing()} />
+        <ValueCrumb label={label} onClick={(agg) => this.props.removeFilter(agg.field)} />
       )
     }
     const field = findFields(agg.field, thisSiteView, false);

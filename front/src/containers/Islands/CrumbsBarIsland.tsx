@@ -124,7 +124,7 @@ export default function CrumbsBarIsland(props: Props) {
     !data && dispatch(fetchSearchParams(queryString.hash));
   }, [dispatch]);
 
-  const removeRange = (aggName, isCrowd) => {
+  const removeFilter = (aggName, isCrowd) => {
     const grouping = isCrowd ? 'crowdAggFilters' : 'aggFilters';
 
     const allButThisAgg = filter(
@@ -146,7 +146,7 @@ export default function CrumbsBarIsland(props: Props) {
     !isUpdatingParams && dispatch(updateSearchParamsAction(newParams));
 
   }
-  const removeFilter =  (
+  const removeValueFromFilter =  (
     aggValue: string,
     aggName: string,
     isCrowd?: boolean
@@ -250,8 +250,8 @@ export default function CrumbsBarIsland(props: Props) {
           thisSiteView={thisSiteView}
           searchParams={props.searchParams}
           updateSearchParams={props.updateSearchParams}
-          removeFilter={(term) => removeFilter(term, agg.field, false)}
-          removeRange={() => removeRange(agg.field, false)}
+          removeValueFromFilter={(term) => removeValueFromFilter(term, agg.field, false)}
+          removeFilter={() => removeFilter(agg.field, false)}
         />
       );
     }
@@ -268,8 +268,8 @@ export default function CrumbsBarIsland(props: Props) {
           thisSiteView={thisSiteView}
           searchParams={props.searchParams}
           updateSearchParams={props.updateSearchParams}
-          removeFilter={(term) => removeFilter(term, agg.field, true)}
-          removeRange={() => removeRange(agg.field, true)}
+          removeValueFromFilter={(term) => removeValueFromFilter(term, agg.field, true)}
+          removeFilter={() => removeFilter(agg.field, true)}
         />
       );
     }

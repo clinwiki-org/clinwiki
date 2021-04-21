@@ -62,7 +62,7 @@ class RangeSelector extends React.Component<
       (x) => x.field == this.props.field.name,
       searchParams[grouping]
     );
-    console.log(aggSettings)
+    // console.log(aggSettings)
     aggSettings && this.setState({ startText: aggSettings.gte, endText: aggSettings.lte })
     // let showAlternate= true
     // if(showAlternate){
