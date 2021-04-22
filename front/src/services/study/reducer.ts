@@ -36,7 +36,8 @@ const initialState: types.StudyState = {
     wikiPage: undefined,
     isFetchingHasuraWikiPage: false,
     hasuraWikiPage: undefined,
-    isWikiPageUpdatingContentMutation: false,
+    //isWikiPageUpdatingContentMutation: false,
+    isWikiPageUpdatingHasuraMutation: false,
     isFetchingSuggestedLabels: false,
     suggestedLabels: undefined,
     isFetchingAllWorkFlows: false,
@@ -388,20 +389,35 @@ const studyReducer = (
                 isFetchingHasuraWikiPage: false,
             };
 
-        case types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND:
+        // case types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND:
+        //     return {
+        //         ...state,
+        //         isWikiPageUpdatingContentMutation: true,
+        //     };
+        // case types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS:
+        //     return {
+        //         ...state,
+        //         isWikiPageUpdatingContentMutation: false,
+        //     };
+        // case types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR:
+        //     return {
+        //         ...state,
+        //         isWikiPageUpdatingContentMutation: false,
+        //     };
+        case types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND:
             return {
                 ...state,
-                isWikiPageUpdatingContentMutation: true,
+                isWikiPageUpdatingHasuraMutation: true,
             };
-        case types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS:
+        case types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SUCCESS:
             return {
                 ...state,
-                isWikiPageUpdatingContentMutation: false,
+                isWikiPageUpdatingHasuraMutation: false,
             };
-        case types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR:
+        case types.WIKI_PAGE_UPDATE_HASURA_MUTATION_ERROR:
             return {
                 ...state,
-                isWikiPageUpdatingContentMutation: false,
+                isWikiPageUpdatingHasuraMutation: false,
             };
         case types.FETCH_SUGGESTED_LABELS_SEND:
             return {

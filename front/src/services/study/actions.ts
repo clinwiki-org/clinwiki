@@ -433,25 +433,46 @@ export const fetchHasuraWikiPageError = (
     payload: { message },
 });
 
-export const wikiPageUpdateContentMutation = (
+// export const wikiPageUpdateContentMutation = (
+//     nctId: any,
+//     content: string
+// ): types.StudyActionTypes => ({
+//     type: types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND,
+//     nctId,
+//     content,
+// });
+// export const wikiPageUpdateContentMutationSuccess = (
+//     payload: any
+// ): types.StudyActionTypes => ({
+//     type: types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS,
+// });
+// export const wikiPageUpdateContentMutationError = (
+//     message: string
+// ): types.StudyActionTypes => ({
+//     type: types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR,
+//     payload: { message },
+// });
+
+export const wikiPageUpdateHasuraMutation = (
     nctId: any,
     content: string
 ): types.StudyActionTypes => ({
-    type: types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND,
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND,
     nctId,
     content,
 });
-export const wikiPageUpdateContentMutationSuccess = (
+export const wikiPageUpdateHasuraMutationSuccess = (
     payload: any
 ): types.StudyActionTypes => ({
-    type: types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS,
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SUCCESS,
 });
-export const wikiPageUpdateContentMutationError = (
+export const wikiPageUpdateHasuraMutationError = (
     message: string
 ): types.StudyActionTypes => ({
-    type: types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR,
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_ERROR,
     payload: { message },
 });
+
 export const fetchSuggestedLabels = (
     nctId: string
     // crowdBucketsWanted: string[]

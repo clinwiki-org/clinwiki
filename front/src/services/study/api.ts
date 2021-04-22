@@ -109,12 +109,20 @@ export const fetchHasuraWikiPage = (nctId: any) => {
   });
 };
 
-export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
-  return callGraphql(ENDPOINT, mutate.WIKI_PAGE_UPDATE_CONTENT_MUTATION, {
+// export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
+//   return callGraphql(ENDPOINT, mutate.WIKI_PAGE_UPDATE_CONTENT_MUTATION, {
+//     nctId: nctId,
+//     content: content,
+//   });
+// };
+
+export const wikiPageUpdateHasuraMutation = (nctId: any, content: any) => {
+  return callHasuraClinwiki(HASURA_CW, mutate.WIKI_PAGE_UPDATE_HASURA_MUTATION, {
     nctId: nctId,
     content: content,
   });
 };
+
 export const fetchSuggestedLabels = (nctId: any, crowdBucketsWanted: any) => {
   return callGraphql(ENDPOINT, query.SUGGESTED_LABELS_QUERY, {
     nctId: nctId,

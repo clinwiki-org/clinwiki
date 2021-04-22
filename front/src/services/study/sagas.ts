@@ -307,24 +307,44 @@ function* getHasuraWikiPage(action) {
   }
 }
 
-function* wikiPageUpdateContentMutation(action) {
+// function* wikiPageUpdateContentMutation(action) {
+//   try {
+//     //console.log(action)
+//     let response = yield call(() =>
+//       api.wikiPageUpdateContentMutation(action.nctId, action.content)
+//     );
+//     if (response) {
+//       yield put(actions.fetchWikiPage(action.nctId)); //yield getWikiPage(action);
+//       yield put(fetchCurrentUser());
+//       yield put(actions.wikiPageUpdateContentMutationSuccess(response));
+//     } else {
+//       yield put(actions.wikiPageUpdateContentMutationError(response.message));
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     yield put(actions.wikiPageUpdateContentMutationError(err.message));
+//   }
+// }
+
+function* wikiPageUpdateHasuraMutation(action) {
   try {
     //console.log(action)
     let response = yield call(() =>
-      api.wikiPageUpdateContentMutation(action.nctId, action.content)
+      api.wikiPageUpdateHasuraMutation(action.nctId, action.content)
     );
     if (response) {
       yield put(actions.fetchWikiPage(action.nctId)); //yield getWikiPage(action);
       yield put(fetchCurrentUser());
-      yield put(actions.wikiPageUpdateContentMutationSuccess(response));
+      yield put(actions.wikiPageUpdateHasuraMutationSuccess(response));
     } else {
-      yield put(actions.wikiPageUpdateContentMutationError(response.message));
+      yield put(actions.wikiPageUpdateHasuraMutationError(response.message));
     }
   } catch (err) {
     console.log(err);
-    yield put(actions.wikiPageUpdateContentMutationError(err.message));
+    yield put(actions.wikiPageUpdateHasuraMutationError(err.message));
   }
 }
+
 function* getAllWorkFlows(action) {
   try {
     let response = yield call(() => api.fetchAllWorkFlows());
@@ -624,9 +644,13 @@ export default function* userSagas() {
   yield takeLatest(types.FETCH_FACILITIES_PAGE_SEND, getFacilitiesPage);
   yield takeLatest(types.FETCH_WIKI_PAGE_SEND, getWikiPage);
   yield takeLatest(types.FETCH_HASURA_WIKI_PAGE_SEND, getHasuraWikiPage);
+  // yield takeLatest(
+  //   types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND,
+  //   wikiPageUpdateContentMutation
+  // );
   yield takeLatest(
-    types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND,
-    wikiPageUpdateContentMutation
+    types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND,
+    wikiPageUpdateHasuraMutation
   );
   yield takeLatest(types.FETCH_SUGGESTED_LABELS_SEND, getSuggestedLabels);
   yield takeLatest(types.FETCH_ALL_WORKFLOWS_SEND, getAllWorkFlows);

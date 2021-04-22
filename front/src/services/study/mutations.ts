@@ -123,13 +123,13 @@ export const WIKI_PAGE_FRAGMENT =`
   ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
 
-export const WIKI_PAGE_UPDATE_CONTENT_MUTATION =`
-  mutation WikiPageUpdateContentMutation($nctId: String!, $content: String!) {
-    updateWikiContent(input: { nctId: $nctId, content: $content }) {
-      wikiPage {
-        ...WikiPageFragment
+export const WIKI_PAGE_UPDATE_HASURA_MUTATION =`
+  mutation WikiPageUpdateHasuraMutation($nctId: String) {
+    update_wiki_pages(where: {nct_id: {_eq: $nctId}}) {
+      returning{
+        text
+        nct_id
       }
-      errors
     }
   }
   ${WIKI_PAGE_FRAGMENT}
