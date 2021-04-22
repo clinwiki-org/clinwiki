@@ -121,12 +121,12 @@ export const FETCH_HASURA_WIKI_PAGE_SEND = 'FETCH_HASURA_WIKI_PAGE_SEND';
 export const FETCH_HASURA_WIKI_PAGE_SUCCESS = 'FETCH_HASURA_WIKI_PAGE_SUCCESS';
 export const FETCH_HASURA_WIKI_PAGE_ERROR = 'FETCH_HASURA_WIKI_PAGE_ERROR';
 
-// export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND =
-//     'WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND';
-// export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS =
-//     'WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS';
-// export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR =
-//     'WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR';
+export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND =
+    'WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND';
+export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS =
+    'WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS';
+export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR =
+    'WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR';
 
 export const WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND =
     'WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND';
@@ -236,7 +236,7 @@ export interface StudyState {
     isFetchingFacilitiesPage: boolean;
     facilitiesPage: FacilitiesPageQuery | undefined;
     isFetchingWikiPage: boolean;
-    // isWikiPageUpdatingContentMutation: boolean;
+    isWikiPageUpdatingContentMutation: boolean;
     isWikiPageUpdatingHasuraMutation: boolean;
     wikiPage: WikiPageQuery | undefined;
     isFetchingHasuraWikiPage: boolean;
@@ -598,25 +598,25 @@ export interface fetchHasuraWikiPageErrorAction {
     payload: StudyDataError;
 }
 
-// export interface wikiPageUpdateContentMutationSendAction {
-//     type: typeof WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND;
-//     nctId: any;
-//     content: any;
-// }
+export interface wikiPageUpdateContentMutationSendAction {
+    type: typeof WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND;
+    nctId: any;
+    content: any;
+}
 
-// export interface wikiPageUpdateContentMutationSuccessAction {
-//     type: typeof WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS;
-// }
+export interface wikiPageUpdateContentMutationSuccessAction {
+    type: typeof WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS;
+}
 
-// export interface wikiPageUpdateContentMutationErrorAction {
-//     type: typeof WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR;
-//     payload: StudyDataError;
-// }
+export interface wikiPageUpdateContentMutationErrorAction {
+    type: typeof WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR;
+    payload: StudyDataError;
+}
 
 export interface wikiPageUpdateHasuraMutationSendAction {
     type: typeof WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND;
     nctId: any;
-    content: any;
+    text: any;
 }
 
 export interface wikiPageUpdateHasuraMutationSuccessAction {
@@ -901,9 +901,9 @@ export type StudyActionTypes =
     | fetchHasuraWikiPageSendAction
     | fetchHasuraWikiPageSuccessAction
     | fetchHasuraWikiPageErrorAction
-    // | wikiPageUpdateContentMutationSendAction
-    // | wikiPageUpdateContentMutationSuccessAction
-    // | wikiPageUpdateContentMutationErrorAction
+    | wikiPageUpdateContentMutationSendAction
+    | wikiPageUpdateContentMutationSuccessAction
+    | wikiPageUpdateContentMutationErrorAction
     | wikiPageUpdateHasuraMutationSendAction
     | wikiPageUpdateHasuraMutationSuccessAction
     | wikiPageUpdateHasuraMutationErrorAction

@@ -1,6 +1,6 @@
 // import { WORKFLOW_VIEW_PROVIDER_FRAGMENT } from './queries';
 
-export const CREATE_STUDY_VIEW_LOG_MUTATION =`
+export const CREATE_STUDY_VIEW_LOG_MUTATION = `
 mutation CreateStudyViewLogMutation($nctId: String!){
     createStudyViewLog(input: {
       nctId: $nctId
@@ -10,7 +10,7 @@ mutation CreateStudyViewLogMutation($nctId: String!){
     }
   `;
 
-  export const PAGE_VIEW_FRAGMENT = `
+export const PAGE_VIEW_FRAGMENT = `
 fragment PageViewFragment on PageView {
     id
     pageType
@@ -90,8 +90,6 @@ export const WIKI_PAGE_EDIT_FRAGMENT = `
   }
 `;
 
-
-
 export const UPSERT_LABEL_MUTATION = `
   mutation CrowdPageUpsertWikiLabelMutation(
     $nctId: String!
@@ -111,7 +109,7 @@ export const UPSERT_LABEL_MUTATION = `
   ${FRAGMENT}
   ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
-export const WIKI_PAGE_FRAGMENT =`
+export const WIKI_PAGE_FRAGMENT = `
   fragment WikiPageFragment on WikiPage {
     content
     edits {
@@ -123,17 +121,30 @@ export const WIKI_PAGE_FRAGMENT =`
   ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
 
-export const WIKI_PAGE_UPDATE_HASURA_MUTATION =`
-  mutation WikiPageUpdateHasuraMutation($nctId: String) {
-    update_wiki_pages(where: {nct_id: {_eq: $nctId}}) {
-      returning{
-        text
-        nct_id
+export const WIKI_PAGE_UPDATE_CONTENT_MUTATION = `
+  mutation WikiPageUpdateContentMutation($nctId: String!, $content: String!) {
+    updateWikiContent(input: { nctId: $nctId, content: $content }) {
+      wikiPage {
+        ...WikiPageFragment
       }
+      errors
     }
   }
   ${WIKI_PAGE_FRAGMENT}
 `;
+
+export const WIKI_PAGE_UPDATE_HASURA_MUTATION = `
+
+mutation HasuraUpdateWikiPageMutation($nctId: String, $text: String) {
+  update_wiki_pages(where: {nct_id: {_eq: $nctId}}, _set: {text: $text}) {
+    returning {
+      text
+      nct_id
+    }
+  }
+}
+`;
+
 export const DELETE_LABEL_MUTATION = `
   mutation CrowdPageDeleteWikiLabelMutation($nctId: String!, $key: String!) {
     deleteWikiLabel(input: { nctId: $nctId, key: $key }) {
@@ -248,7 +259,7 @@ mutation UpdateWorkflowsViewMutation($input: UpdateWorkflowsViewInput!) {
 }
 
 ${WORKFLOW_VIEW_PROVIDER_FRAGMENT}
-`
+`;
 export const BULK_QUERY_UPDATE_MUTATION = `
   mutation BulkQueryUpdateMutation($input: BulkQueryUpdateInput!) {
     bulkQueryUpdate(input: $input) {
@@ -286,8 +297,7 @@ export const REVIEW_FRAGMENT = `
    }
  `;
 
-
-export const REVIEW_FORM_MUTATION =`
+export const REVIEW_FORM_MUTATION = `
   mutation ReviewFormMutation(
     $id: Int
     $nctId: String!
@@ -306,4 +316,3 @@ export const REVIEW_FORM_MUTATION =`
 
   ${REVIEW_FRAGMENT}
 `;
-
