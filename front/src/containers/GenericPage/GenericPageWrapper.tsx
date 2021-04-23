@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { fetchPresentSiteProvider } from 'services/site/actions';
 import GenericPageChild from './GenericPageChild';
+import { fetchSearchParams } from 'services/search/actions';
 interface Props {
   url?: string;
   arg?: string;
@@ -39,6 +40,7 @@ export default function GenericPageWrapper(props: Props) {
   const pageViewsData = useSelector((state: RootState) => state.study.pageViews);
   const pageViewData = useSelector((state: RootState) => state.study.pageView);
   const currentPage = pageViewData ? pageViewData?.data.site?.pageView : null;
+  const data = useSelector((state : RootState ) => state.search.searchResults);
 
 //Currently making assumption anything diplayed in our search route is of pageType study 
 //Ideally should be set from PageView but was having issues , response was not saving 
@@ -55,8 +57,11 @@ export default function GenericPageWrapper(props: Props) {
   useEffect(() => {
     dispatch( fetchPageView(site?.id, params.pv || defaultPage()));
   }, [dispatch, params.pv]);
+  useEffect(()=>{
+    pageType == "Search" && dispatch(fetchSearchParams(params.hash));
+   },[dispatch, params.hash]);
 
-  if(!currentPage){
+  if(!currentPage || !data){
     return <BeatLoader/>
   }
   if (!props.arg && pageType == "Study") {

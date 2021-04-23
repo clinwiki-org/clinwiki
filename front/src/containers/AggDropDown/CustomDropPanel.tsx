@@ -74,7 +74,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
           3: '★★★☆☆',
           4: '★★★★☆',
           5: '★★★★★',
-        }[intValue];
+        }[intValue] || "NaN";
         break;
       case FieldDisplay.DATE:
         text = new Date(parseInt(value.toString(), 10))

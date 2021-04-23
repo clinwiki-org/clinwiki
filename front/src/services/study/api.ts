@@ -5,6 +5,7 @@ import {
   callHasuraAACT,
   getHasuraURLAACT,
   get_gql_url,
+  getGraphQLMigrationURL
 } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
@@ -12,13 +13,14 @@ import {
 
 const ENDPOINT = get_gql_url();
 const HASURA_AACT = getHasuraURLAACT();
+const NODE_ENDPOINT = getGraphQLMigrationURL();
 
 export const fetchSampleStudy = (nctId: any, QUERY: any) => {
   return callGraphql(ENDPOINT, QUERY, { nctId });
 };
 
-export const fetchStudyPageHash = (hash: any, QUERY: any) => {
-  return callGraphql(ENDPOINT, QUERY, { hash });
+export const fetchSearchPageMM = (params: any, QUERY: any) => {
+  return callGraphql(NODE_ENDPOINT, QUERY, { params: params });
 };
 
 export const fetchHasuraSampleStudy = (nctId: any, QUERY: any) => {

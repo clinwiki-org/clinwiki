@@ -59,10 +59,10 @@ function* getStudyPage(action) {
         yield put(actions.fetchStudyPageError(err.message));
     }
 }
-function* getStudyPageHash(action) {
+function* getSearchPageMM(action) {
     try {
-        let response = yield call(() => api.fetchStudyPageHash(action.hash, action.QUERY));
-        yield put(fetchSearchParams(action.hash))
+        let response = yield call(() => api.fetchSearchPageMM(action.params, action.QUERY));
+        // yield put(fetchSearchParams(action.hash))
         if(response) {
             yield put(actions.fetchStudyPageSuccess(response));
         }
@@ -583,7 +583,7 @@ function* getEditReview(action) {
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
-    yield takeLatest(types.FETCH_STUDY_PAGE_HASH_SEND, getStudyPageHash);
+    yield takeLatest(types.FETCH_SEARCH_PAGE_MM_SEND, getSearchPageMM);
     yield takeLatest(types.FETCH_PAGE_VIEWS_SEND, getPageViews);
     yield takeLatest(types.FETCH_PAGE_VIEW_SEND, getPageView);
     yield takeLatest(types.UPDATE_STUDY_VIEW_LOG_COUNT_SEND, updateStudyViewLogCount);

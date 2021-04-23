@@ -66,17 +66,17 @@ export const fetchStudyPageError = (
     type: types.FETCH_STUDY_PAGE_ERROR,
     payload: { message },
 });
-export const fetchStudyPageHash= ( hash: string, QUERY: any) : types.StudyActionTypes => ({
-    type: types.FETCH_STUDY_PAGE_HASH_SEND,
-    hash,
+export const fetchSearchPageMM= ( params: any, QUERY: any) : types.StudyActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_MM_SEND,
+    params,
     QUERY
 });
-export const fetchStudyPageHashSuccess= (payload: any) : types.StudyActionTypes => ({
-    type: types.FETCH_STUDY_PAGE_HASH_SUCCESS,
+export const fetchSearchPageMMSuccess= (payload: any) : types.StudyActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_MM_SUCCESS,
     payload
 });
-export const fetchStudyPageHashError= (message: string) : types.StudyActionTypes => ({
-    type: types.FETCH_STUDY_PAGE_HASH_ERROR,
+export const fetchSearchPageMMError= (message: string) : types.StudyActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_MM_ERROR,
     payload: {message}
 });
 export const fetchStudyPageHasura = (

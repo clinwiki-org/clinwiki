@@ -8,7 +8,7 @@ import { getStudyQuery, getSearchQuery } from 'components/MailMerge/MailMergeUti
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
-import { fetchStudyPage, fetchStudyPageHash } from 'services/study/actions';
+import { fetchStudyPage, fetchSearchPageMM } from 'services/study/actions';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
@@ -35,8 +35,9 @@ export default function GenericPageWrapper(props: Props) {
     const dispatch = useDispatch();
     const params = useUrlParams();
     const studyData = useSelector((state: RootState) => state.study.studyPage);
-    const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel)
+    const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
     const pageViewData = useSelector((state: RootState) => state.study.pageView);
+    const data = useSelector((state : RootState ) => state.search.searchResults);
     const currentPage = pageViewData ? pageViewData?.data.site?.pageView : null;
 
 
@@ -47,11 +48,11 @@ export default function GenericPageWrapper(props: Props) {
     const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
 
     useEffect(() => {
+        let searchParams = {...data.data.searchParams, q: JSON.parse(data.data.searchParams.q)}
         const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-
-        dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchStudyPageHash(params.hash ?? "", SEARCH_QUERY))
-    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash]);
+        dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchSearchPageMM(searchParams, SEARCH_QUERY));
+    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash,data]);
 
 
     const searchData = () => {

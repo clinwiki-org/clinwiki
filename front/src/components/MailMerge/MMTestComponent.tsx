@@ -9,7 +9,7 @@ import { fetchIntrospection } from 'services/introspection/actions';
 import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
 import { BeatLoader } from 'react-spinners';
-import { fetchStudyPage, fetchStudyPageHash } from 'services/study/actions';
+import { fetchStudyPage, fetchSearchPageMM } from 'services/study/actions';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 type Mode = 'Study' | 'Search';
 // return a tuple of the elements that differ with the mode
@@ -109,7 +109,7 @@ export default function TestComponent() {
   useEffect(() => {
     const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-    dispatch(mode == "Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchStudyPageHash(nctOrSearchHash ?? "", SEARCH_QUERY));
+    dispatch(mode == "Study" ? fetchStudyPage(nctOrSearchHash ?? "", STUDY_QUERY) : fetchSearchPageMM(nctOrSearchHash ?? "", SEARCH_QUERY));
   }, [dispatch, nctOrSearchHash]);
 
   const introspection = useSelector((state: RootState) => state.introspection.introspection);

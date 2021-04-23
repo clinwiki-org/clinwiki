@@ -37,9 +37,9 @@ export const FETCH_STUDY_PAGE_SEND = 'FETCH_STUDY_PAGE_SEND';
 export const FETCH_STUDY_PAGE_SUCCESS = 'FETCH_STUDY_PAGE_SUCCESS';
 export const FETCH_STUDY_PAGE_ERROR = 'FETCH_STUDY_PAGE_ERROR';
 
-export const FETCH_STUDY_PAGE_HASH_SEND = 'FETCH_STUDY_PAGE_HASH_SEND';
-export const FETCH_STUDY_PAGE_HASH_SUCCESS = 'FETCH_STUDY_PAGE_HASH_SUCCESS';
-export const FETCH_STUDY_PAGE_HASH_ERROR = 'FETCH_STUDY_PAGE_HASH_ERROR';
+export const FETCH_SEARCH_PAGE_MM_SEND = 'FETCH_SEARCH_PAGE_MM_SEND';
+export const FETCH_SEARCH_PAGE_MM_SUCCESS = 'FETCH_SEARCH_PAGE_MM_SUCCESS';
+export const FETCH_SEARCH_PAGE_MM_ERROR = 'FETCH_SEARCH_PAGE_MM_ERROR';
 export const FETCH_STUDY_PAGE_HASURA_SEND = 'FETCH_STUDY_PAGE_HASURA_SEND';
 export const FETCH_STUDY_PAGE_HASURA_SUCCESS = 'FETCH_STUDY_PAGE_HASURA_SUCCESS';
 export const FETCH_STUDY_PAGE_HASURA_ERROR = 'FETCH_STUDY_PAGE_HASURA_ERROR';
@@ -296,18 +296,18 @@ export interface fetchStudyPageErrorAction {
     type: typeof FETCH_STUDY_PAGE_ERROR,
     payload: StudyDataError
 };
-export interface fetchStudyPageHashSendAction {
-    type: typeof FETCH_STUDY_PAGE_HASH_SEND,
-    hash: any,
+export interface fetchSearchPageMMSendAction {
+    type: typeof FETCH_SEARCH_PAGE_MM_SEND,
+    params: any,
     QUERY: any
 };
 
-export interface fetchStudyPageHashSuccessAction {
-    type: typeof FETCH_STUDY_PAGE_HASH_SUCCESS,
+export interface fetchSearchPageMMSuccessAction {
+    type: typeof FETCH_SEARCH_PAGE_MM_SUCCESS,
     payload: SearchStudyPageQuery 
 };
-export interface fetchStudyPageHashErrorAction {
-    type: typeof FETCH_STUDY_PAGE_HASH_ERROR,
+export interface fetchSearchPageMMErrorAction {
+    type: typeof FETCH_SEARCH_PAGE_MM_ERROR,
     payload: StudyDataError
 };
 
@@ -800,7 +800,7 @@ export interface setShowLoginModalSendAction {
 }
 
 export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
-fetchStudyPageHashSendAction | fetchStudyPageHashSuccessAction | fetchStudyPageHashErrorAction |
+fetchSearchPageMMSendAction | fetchSearchPageMMSuccessAction | fetchSearchPageMMErrorAction |
 fetchPageViewSendAction | fetchPageViewSuccessAction | fetchPageViewErrorAction |
 fetchPageViewsSendAction | fetchPageViewsSuccessAction | fetchPageViewsErrorAction |
 updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
