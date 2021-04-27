@@ -95,8 +95,60 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 ...state,
                 isFetchingCrowdAggBuckets: false
             };
-        
-
+        case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: true
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS:
+            // console.log("Payload",action.payload)
+            let aggObject = {};
+             action.payload.data.openAggBuckets.aggs.map((agg)=>{
+                 aggObject[agg.name] = agg.buckets 
+             })
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false,
+                aggBuckets: {
+                    ...state.aggBuckets,
+                    aggs: {
+                        ...state.aggBuckets?.aggs,
+                        ...aggObject
+                    }
+                } 
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_ERROR:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: true
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS:
+            // console.log("Payload",action.payload)
+            let crowdAggObject = {};
+             action.payload.data.openCrowdAggBuckets.aggs.map((agg)=>{
+                crowdAggObject[agg.name.substring(3)] = agg.buckets 
+             })
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false,
+                crowdAggBuckets: {
+                    ...state.crowdAggBuckets,
+                    aggs: {
+                        ...state.crowdAggBuckets?.aggs,
+                        ...crowdAggObject
+                    }
+                } 
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false
+            };
         case types.FETCH_SEARCH_PARAMS_SEND:
             return {
                 ...state,

@@ -58,6 +58,36 @@ function* getSearchPageCrowdAggBuckets(action) {
         yield put(actions.fetchSearchPageCrowdAggBucketsError(err.message));
     }
 }
+function* getSearchPageOpenCrowdAggBuckets(action) {
+    try {
+        let response = yield call(() => api.fetchSearchPageOpenCrowdAggBuckets(action.searchParams));     
+        if(response) {
+            yield put(actions.fetchSearchPageOpenCrowdAggBucketsSuccess(response));
+        }
+        else {
+            yield put(actions.fetchSearchPageOpenCrowdAggBucketsError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSearchPageOpenCrowdAggBucketsError(err.message));
+    }
+}
+function* getSearchPageOpenAggBuckets(action) {
+    try {
+        let response = yield call(() => api.fetchSearchPageOpenAggBuckets(action.searchParams));     
+        if(response) {
+            yield put(actions.fetchSearchPageOpenAggBucketsSuccess(response));
+        }
+        else {
+            yield put(actions.fetchSearchPageOpenAggBucketsError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchSearchPageOpenAggBucketsError(err.message));
+    }
+}
 
 function* getSearchParams(action) {
     try {
@@ -102,8 +132,8 @@ function* updateSearchParams(action) {
         let location = yield select( (state) => state.router.location);
         let searchHash = updateResponse.data.provisionSearchHash.searchHash
         if (updateResponse.data.provisionSearchHash.searchHash !== null){ 
-            yield put(actions.fetchSearchParams(searchHash.short))
-            yield put(actions.fetchSearchPageAggs(action.searchParams))
+            // yield put(actions.fetchSearchParams(searchHash.short))
+            // yield put(actions.fetchSearchPageAggs(action.searchParams))
             yield put(actions.updateSearchParamsSuccess(searchHash));
             console.log(location)
             switch(location.pathname){
@@ -305,6 +335,8 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND, getSearchPageAggBuckets);
     yield takeLatest(types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND, getSearchPageCrowdAggBuckets);
+    yield takeLatest(types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND, getSearchPageOpenAggBuckets);
+    yield takeLatest(types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND, getSearchPageOpenCrowdAggBuckets);
     yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
     yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams)

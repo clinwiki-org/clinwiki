@@ -345,8 +345,8 @@ function IslandAggChild(props: Props) {
       bucketsWanted: currentAgg.visibleOptions.values
     };
 
-
-    currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageCrowdAggBuckets(variables)) : !isFetchingAggBuckets && dispatch(fetchSearchPageAggBuckets(variables));
+    //Come back and rework how we load more individually
+    // currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageCrowdAggBuckets(variables)) : !isFetchingAggBuckets && dispatch(fetchSearchPageAggBuckets(variables));
     handleLoadMoreResponse();
   }
 
@@ -411,7 +411,8 @@ function IslandAggChild(props: Props) {
 
   useEffect(() => {
     setSortKind(currentAgg?.order?.sortKind == "count"? SortKind.Alpha:SortKind.Number);
-    setDesc(currentAgg?.order?.desc);  }, [currentAgg]);
+    setDesc(currentAgg?.order?.desc);  
+  }, [currentAgg]);
 
   const transformFilters = (
     filters: AggFilterInput[]

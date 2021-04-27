@@ -52,6 +52,34 @@ export const fetchSearchPageCrowdAggBucketsError = (message: string) : types.Sea
     type: types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR,
     payload: { message }
 });
+export const fetchSearchPageOpenCrowdAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND,
+    searchParams     
+});
+
+export const fetchSearchPageOpenCrowdAggBucketsSuccess = (payload: SearchPageCrowdAggBucketsQuery) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS,
+    payload
+});
+
+export const fetchSearchPageOpenCrowdAggBucketsError = (message: string) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR,
+    payload: { message }
+});
+export const fetchSearchPageOpenAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND,
+    searchParams     
+});
+
+export const fetchSearchPageOpenAggBucketsSuccess = (payload: SearchPageCrowdAggBucketsQuery) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS,
+    payload
+});
+
+export const fetchSearchPageOpenAggBucketsError = (message: string) : types.SearchActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_ERROR,
+    payload: { message }
+});
 
 export const fetchCrumbsSearchPageAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,

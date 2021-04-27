@@ -38,9 +38,9 @@ function IslandAggWrapper(props: Props) {
   const searchParams = data?.data?.searchParams;
   const match = useRouteMatch();
 
-  useEffect(() => {
-    !islandConfig &&  !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchIslandConfig());
-  }, [dispatch, islandConfig]);
+  // useEffect(() => {
+  //   !islandConfig &&  !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchIslandConfig());
+  // }, [dispatch, islandConfig]);
 
 
   if (!searchParams || !aggId || !islandConfig ) {

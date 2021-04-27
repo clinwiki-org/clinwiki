@@ -242,6 +242,92 @@ export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
     }
   }
 `;
+export const SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_QUERY = `
+  query SearchPageOpenCrowdAggBucketsQuery(
+    $agg: [String]
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
+    $aggOptionsFilter: String
+    $aggOptionsSort: [SortInput!]
+    $url: String
+    $configType: String
+    $returnAll: Boolean
+    $bucketsWanted: [String!]
+  ) {
+    openCrowdAggBuckets(
+      url: $url
+      configType: $configType
+      returnAll: $returnAll
+      bucketsWanted: $bucketsWanted
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: $aggOptionsSort
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+  }
+`;
+export const SEARCH_PAGE_OPEN_AGG_BUCKETS_QUERY = `
+  query SearchPageOpenAggBucketsQuery(
+    $agg: [String]
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
+    $aggOptionsFilter: String
+    $aggOptionsSort: [SortInput!]
+    $url: String
+    $configType: String
+    $returnAll: Boolean
+    $bucketsWanted: [String!]
+  ) {
+    openAggBuckets(
+      url: $url
+      configType: $configType
+      returnAll: $returnAll
+      bucketsWanted: $bucketsWanted
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: $aggOptionsSort
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+  }
+`;
 
 export const AUTOSUGGEST_QUERY = `
 query CrumbsSearchPageAggBucketsQuery(

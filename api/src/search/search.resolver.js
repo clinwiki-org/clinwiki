@@ -17,6 +17,16 @@ const searchResolver = {
         const results = await SearchManager.crowdAggBuckets(args);
         return results;
     },
+    openCrowdAggBuckets: async (args,context) => {
+        // console.log('##### CROWD AGGBUCKETS'+util.inspect(args, false, null, true));
+        const results = await SearchManager.openCrowdAggBuckets(args);
+        return results;
+    },
+    openAggBuckets: async (args,context) => {
+        // console.log('##### AGGBUCKETS'+util.inspect(args, false, null, true));
+        const results = await SearchManager.openAggBuckets(args);
+        return results;
+    },
     crowdAggFacets: async (args,context) => {
         console.log('searchResolver.crowdAggFacets')
         return "";

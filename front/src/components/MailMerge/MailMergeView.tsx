@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
 import marked from 'marked';
@@ -6,7 +6,10 @@ import HtmlToReact from 'html-to-react';
 import { setShowLoginModal } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
+import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
+import useUrlParams from 'utils/UrlParamsProvider';
 import LoginModal from 'components/LoginModal';
+import { uniq } from 'ramda';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -19,8 +22,8 @@ export interface Props {
   context?: object;
   style?: object;
   islands?: Record<string, IslandConstructor>;
-  refetchQuery?:any;
-  pageType?:any;
+  refetchQuery?: any;
+  pageType?: any;
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
@@ -67,9 +70,15 @@ export function microMailMerge(template = '', context?: object | null) {
 }
 
 export default function MailMergeView(props: Props) {
+  let aggIslands: any[] = [];
+
   useHandlebars();
   const dispatch = useDispatch();
   const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
+  const data = useSelector((state: RootState) => state.search.searchResults);
+
+  const searchParams = data?.data?.searchParams;
+  const paramsUrl = useUrlParams();
 
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
@@ -78,6 +87,10 @@ export default function MailMergeView(props: Props) {
     compiled,
     props.context,
   ]);
+  const aggIslandsCurrent = useRef({
+    currentIsalnds: [] as any[]
+  })
+
   const style = props.style
     ? { ...defaultStyle, ...props.style }
     : defaultStyle;
@@ -88,11 +101,9 @@ export default function MailMergeView(props: Props) {
     {
       shouldProcessNode: node => islandKeys.has(node.name),
       processNode: (node, children) => {
-
-    //      node.attribs.onChange =()=>{
-    //         // props.refetchQuery()
-           //  console.log(props.context)
-    // }
+        if (node.name == "agg") {
+          aggIslandsCurrent.current.currentIsalnds = [...aggIslandsCurrent.current.currentIsalnds, node.attribs]
+        }
         const create = props.islands?.[node.name];
         return (
           <div
@@ -108,6 +119,56 @@ export default function MailMergeView(props: Props) {
       processNode: processNodeDefinitions.processDefaultNode,
     },
   ];
+
+  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
+
+
+  useEffect(() => {
+    !islandConfig && dispatch(fetchIslandConfig());
+  })
+  useEffect(() => {
+    let uniqueIds = uniq(aggIslandsCurrent.current.currentIsalnds)
+    let aggArray: any[] = [];
+    let crowdAggArray: any[] = [];
+
+    islandConfig && uniqueIds.map((agg) => {
+      if (islandConfig[agg.id].defaultToOpen == true) {
+
+        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
+        islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
+      }
+    })
+
+
+    const variables = {
+      ...searchParams,
+      url: paramsUrl.sv,
+      configType: 'presearch',
+      returnAll: false,
+      agg: crowdAggArray,
+      pageSize: 100,
+      page: 1,
+
+      q: JSON.parse(searchParams.q),
+      bucketsWanted: []
+    };
+    const variables2 = {
+      ...searchParams,
+      url: paramsUrl.sv,
+      configType: 'presearch',
+      returnAll: false,
+      agg: aggArray,
+      pageSize: 100,
+      page: 1,
+
+      q: JSON.parse(searchParams.q),
+      bucketsWanted: []
+    };
+
+    variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables))
+    variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2))
+  }, [dispatch, islandConfig, searchParams])
+
   const parser = new HtmlToReact.Parser();
   const reactElement = parser.parseWithInstructions(
     raw,

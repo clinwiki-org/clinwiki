@@ -21,6 +21,12 @@ export const fetchSearchPageAggBuckets = (searchParams : any) => {
 export const fetchSearchPageCrowdAggBuckets = (searchParams : any) => {
     return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY, searchParams);     //TODO CHeck params
 };
+export const fetchSearchPageOpenAggBuckets = (searchParams : any) => {
+    return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_OPEN_AGG_BUCKETS_QUERY, searchParams);     //TODO CHeck params
+};
+export const fetchSearchPageOpenCrowdAggBuckets = (searchParams : any) => {
+    return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_QUERY, searchParams);     //TODO CHeck params
+};
 
 export const fetchSearchParams = (hash : any) => {
     return callGraphql(ENDPOINT,query.SEARCH_PAGE_PARAMS_QUERY, { hash });

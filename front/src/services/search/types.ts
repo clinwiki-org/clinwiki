@@ -21,6 +21,14 @@ export const FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND = 'FETCH_SEARCH_PAGE_CROWD
 export const FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SUCCESS = 'FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SUCCESS';
 export const FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR = 'FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR';
 
+export const FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND = 'FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND';
+export const FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS = 'FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS';
+export const FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_ERROR = 'FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_ERROR';
+
+export const FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND = 'FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND';
+export const FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS = 'FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS';
+export const FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR = 'FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR';
+
 export const FETCH_SEARCH_PARAMS_SEND = 'FETCH_SEARCH_PARAMS_SEND';
 export const FETCH_SEARCH_PARAMS_SUCCESS = 'FETCH_SEARCH_PARAMS_SUCCESS';
 export const FETCH_SEARCH_PARAMS_ERROR = 'FETCH_SEARCH_PARAMS_ERROR';
@@ -141,6 +149,34 @@ export interface FetchSearchPageCrowdAggBucketsSuccessAction {
 
 export interface FetchSearchPageCrowdAggBucketsErrorAction {
     type: typeof FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR,
+    payload: SearchDataError
+};
+export interface FetchSearchPageOpenAggBucketsSendAction {
+    type: typeof FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND
+    searchParams: any                                         
+};
+
+export interface FetchSearchPageOpenAggBucketsSuccessAction {
+    type: typeof FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS,
+    payload: SearchPageCrowdAggBucketsQuery | any
+};
+
+export interface FetchSearchPageOpenAggBucketsErrorAction {
+    type: typeof FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_ERROR,
+    payload: SearchDataError
+};
+export interface FetchSearchPageOpenCrowdAggBucketsSendAction {
+    type: typeof FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND
+    searchParams: any                                         
+};
+
+export interface FetchSearchPageOpenCrowdAggBucketsSuccessAction {
+    type: typeof FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS,
+    payload: SearchPageCrowdAggBucketsQuery | any
+};
+
+export interface FetchSearchPageOpenCrowdAggBucketsErrorAction {
+    type: typeof FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR,
     payload: SearchDataError
 };
 
@@ -318,6 +354,8 @@ export type SearchActionTypes =
     FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
     FetchSearchPageAggBucketsSendAction | FetchSearchPageAggBucketsSuccessAction | FetchSearchPageAggBucketsErrorAction |
     FetchSearchPageCrowdAggBucketsSendAction | FetchSearchPageCrowdAggBucketsSuccessAction | FetchSearchPageCrowdAggBucketsErrorAction |
+    FetchSearchPageOpenAggBucketsSendAction | FetchSearchPageOpenAggBucketsSuccessAction | FetchSearchPageOpenAggBucketsErrorAction |
+    FetchSearchPageOpenCrowdAggBucketsSendAction | FetchSearchPageOpenCrowdAggBucketsSuccessAction | FetchSearchPageOpenCrowdAggBucketsErrorAction |
     FetchSearchParamsSendAction | FetchSearchParamsSuccessAction | FetchSearchParamsErrorAction |
     UpdateSearchParamsSendAction | UpdateSearchParamsSuccessAction | UpdateSearchParamsErrorAction |
     FetchSearchStudiesSendAction | FetchSearchStudiesSuccessAction | FetchSearchStudiesErrorAction |
