@@ -38,7 +38,7 @@ export async function aggBuckets(args) {
         let aggs = [];
         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
             const agg = aggToGraphql(key, value);
-            if (args.bucketsWanted.length !== 0) {
+            if (args.bucketsWanted?.length !== 0) {
                 let finalBuckets = [];
                 agg.buckets.map((bucket) => {
                     for (const key of args.bucketsWanted) {
@@ -71,7 +71,7 @@ export async function crowdAggBuckets(args) {
         let aggs = [];
         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
             const agg = aggToGraphql(key, value);
-            if (args.bucketsWanted.length !== 0) {
+            if (args.bucketsWanted?.length !== 0) {
                 let finalBuckets = [];
                 agg.buckets.map((bucket) => {
                     for (const key of args.bucketsWanted) {

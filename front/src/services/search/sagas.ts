@@ -42,7 +42,6 @@ function* getSearchPageAggBuckets(action) {
 }
 
 function* getSearchPageCrowdAggBuckets(action) {
-    //console.log("SAGA SP Agg Buckets", action);
     try {
         let response = yield call(() => api.fetchSearchPageCrowdAggBuckets(action.searchParams));     
         if(response) {
@@ -330,6 +329,29 @@ catch(err) {
     yield put(actions.exportToCsvError(err.message));
 }    
 } 
+function* toggleAgg(action) {
+    try {
+        const variables = {
+            ...action.searchParams,
+            // url: paramsUrl.sv,
+            configType: 'presearch',
+            returnAll: false,
+            agg: action.input.name,
+            pageSize: 100,
+            page: 25,
+            q: JSON.parse(action.searchParams.q),
+            bucketsWanted: []
+            // bucketsWanted: action.searchParams.visibleOptions.values
+        };
+        console.log("VARS", variables)
+
+        action.input.aggKind == 'crowdAggs' ? yield getSearchPageCrowdAggBuckets({ searchParams: variables }) : yield getSearchPageAggBuckets({ searchParams: variables });
+
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
@@ -349,4 +371,5 @@ export default function* userSagas() {
     yield takeLatest(types.UPDATE_FACET_CONFIG_SEND, updateFacetConfig);
     yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
     yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
+    yield takeLatest(types.TOGGLE_AGG, toggleAgg);
 }

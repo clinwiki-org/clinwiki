@@ -269,3 +269,9 @@ export const exportToCsvError = (message: string) : types.SearchActionTypes => (
     type: types.EXPORT_T0_CSV_ERROR,
     payload: { message }
 })
+export const toggleAgg = (id:string, input: any, searchParams: any): types.SearchActionTypes => ({
+    type: types.TOGGLE_AGG,
+    id,
+    input,
+    searchParams
+});

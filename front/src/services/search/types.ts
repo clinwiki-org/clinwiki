@@ -75,6 +75,8 @@ export const EXPORT_T0_CSV_SEND = 'EXPORT_TO_CSV_SEND';
 export const EXPORT_T0_CSV_SUCCESS = 'EXPORT_TO_CSV_SUCCESS';
 export const EXPORT_T0_CSV_ERROR = 'EXPORT_TO_CSV_ERROR';
 
+export const TOGGLE_AGG = 'TOGGLE_AGG';
+
 export interface SearchState {
     isFetchingAggs: boolean,
     aggs: SearchPageAggsQuery | undefined,
@@ -349,7 +351,12 @@ export interface ExportToCsvErrorAction {
     type: typeof EXPORT_T0_CSV_ERROR,
     payload: SearchDataError
 }
-
+export interface toggleAgg {
+    type: typeof TOGGLE_AGG;
+    id:any;
+    input: any;
+    searchParams:any;
+}
 export type SearchActionTypes = 
     FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
     FetchSearchPageAggBucketsSendAction | FetchSearchPageAggBucketsSuccessAction | FetchSearchPageAggBucketsErrorAction |
@@ -369,4 +376,4 @@ export type SearchActionTypes =
     FetchIslandConfigSendAction | FetchIslandConfigSuccessAction | FetchIslandConfigErrorAction |
     UpdateFacetConfigSendAction | UpdateFacetConfigSuccessAction | UpdateFacetConfigErrorAction |
     SearchExportSendAction  | SearchExportSuccessAction | SearchExportErrorAction |
-    ExportToCsvSendAction | ExportToCsvSuccessAction |  ExportToCsvErrorAction ;
+    ExportToCsvSendAction | ExportToCsvSuccessAction |  ExportToCsvErrorAction | toggleAgg;

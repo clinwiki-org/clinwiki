@@ -380,7 +380,16 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 ...state,
                 isExportingToCsv: false,
             }
-    
+        case types.TOGGLE_AGG:
+            let newIslandConfig = state.islandConfig || {}  as IslandConfigQuery;
+            newIslandConfig[action.id] = {...action.input};
+            newIslandConfig[action.id] = {...newIslandConfig[action.id],
+                defaultToOpen: !newIslandConfig[action.id].defaultToOpen
+            }
+            return {
+                ...state,
+                islandConfig: newIslandConfig
+            }
                 
         default:
             return {...state};

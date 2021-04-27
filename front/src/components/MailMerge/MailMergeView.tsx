@@ -78,7 +78,7 @@ export default function MailMergeView(props: Props) {
   const data = useSelector((state: RootState) => state.search.searchResults);
 
   const searchParams = data?.data?.searchParams;
-  const paramsUrl = useUrlParams();
+  const params = useUrlParams();
 
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
@@ -142,7 +142,7 @@ export default function MailMergeView(props: Props) {
 
     const variables = {
       ...searchParams,
-      url: paramsUrl.sv,
+      url: params.sv,
       configType: 'presearch',
       returnAll: false,
       agg: crowdAggArray,
@@ -154,7 +154,7 @@ export default function MailMergeView(props: Props) {
     };
     const variables2 = {
       ...searchParams,
-      url: paramsUrl.sv,
+      url: params.sv,
       configType: 'presearch',
       returnAll: false,
       agg: aggArray,
@@ -167,7 +167,7 @@ export default function MailMergeView(props: Props) {
 
     variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables))
     variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2))
-  }, [dispatch, islandConfig, searchParams])
+  }, [dispatch, islandConfig, params.hash])
 
   const parser = new HtmlToReact.Parser();
   const reactElement = parser.parseWithInstructions(

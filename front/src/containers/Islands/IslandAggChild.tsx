@@ -4,7 +4,7 @@ import useUrlParams from 'utils/UrlParamsProvider';
 import SortKind from 'containers/AggDropDown/SortKind';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateSearchParamsAction } from 'services/search/actions'
+import { toggleAgg, updateSearchParamsAction } from 'services/search/actions'
 import { RootState } from 'reducers';
 import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
@@ -515,7 +515,9 @@ function IslandAggChild(props: Props) {
 
   const handleContainerToggle = () => {
     if (aggId) {
-      islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
+      // console.log("AGG", aggId)
+      // islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
+      dispatch(toggleAgg(aggId, islandConfig[aggId], searchParams))
 
     }
   }
