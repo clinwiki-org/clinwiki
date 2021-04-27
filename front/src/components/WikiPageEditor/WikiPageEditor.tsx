@@ -57,13 +57,12 @@ export default function WikiPageEditor(props: Props) {
       setEditorState('rich');
       setRichEditorText(RichTextEditor.createValueFromString(text, 'markdown'));
     }
-
     history.push(`${match.url}${queryStringAll(params)}`);
   };
 
   const { data, } = props;
 
-  console.log("***********************DATA in wiki Editor", data);
+  console.log("*DATA in wiki Editor", data);
   /* 
     if (!data || !data.study || !data.study.wikiPage) return null;
     const text = getEditorText() || '';
@@ -85,7 +84,7 @@ export default function WikiPageEditor(props: Props) {
   if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) return null;  //(!data || !data.study || !data.study.wikiPage) return null;
   const text = getEditorText() || '';
   if (text !== data.wiki_pages[0].text && !text) {
-    handlePreview()
+    //handlePreview()
 
     if (editorState === 'rich') {
       const richEditorText = RichTextEditor.createValueFromString(

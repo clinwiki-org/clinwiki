@@ -301,9 +301,9 @@ function* getWikiPage(action) {
 
 function* getHasuraWikiPage(action) {
     try {
-        console.log('SAGA Get HASURA WIKIpage', action);
+        //console.log('SAGA Get HASURA WIKIpage', action);
         let response = yield call(() => api.fetchHasuraWikiPage(action.nctId));
-        console.log('HASURA WIKI res', response);
+        //console.log('HASURA WIKI res', response);
         if (response) {
             yield put(actions.fetchHasuraWikiPageSuccess(response));
         } else {
