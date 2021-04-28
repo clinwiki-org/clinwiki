@@ -1,6 +1,7 @@
 import logger from '../../util/logger';
 import {queryAACT} from '../../util/db';
-import {bulkUpdate} from '../../search/elastic';
+import {bulkUpsert} from '../../search/elastic';
+import {JOB_TYPES,enqueueJob} from '../pipeline.queue';
 const util = require('util')
 
 const STUDIES_TO_INDEX_QUERY = "select nct_id from studies where updated_at > localtimestamp - INTERVAL '1 day'";
@@ -20,18 +21,11 @@ const aactJob = async () => {
             const bulkList = chunkList(studyIds,CHUNK_SIZE);
 
             for(let j=0;j<bulkList.length;j++) {
-                const idList = bulkList[j];                
-                const results = await getBulkStudies(idList);
-                
-                let studies = [];
-                for(let i=0;i<results.rowCount;i++) {
-                    const study = results.rows[i];
-                    studies.push(study);
-                }
-                logger.info("Sending bulk update of "+idList.length);
-                await bulkUpsert(studies);
-                logger.info("Bulk update complete.");
+                const idList = bulkList[j];
+                // Queue these up for reindexing
+                await enqueueJob(JOB_TYPES.AACT_STUDY_REINDEX,{studies: idList});                
             }
+
 
             logger.info('Job AACT Finished.')
             IS_RUNNING = false;
@@ -42,6 +36,22 @@ const aactJob = async () => {
         IS_RUNNING = false;
     }
 };
+
+export const aactStudyReindex = async (payload) => {
+    const idList = payload.studies;
+
+    const results = await getBulkStudies(idList);
+                
+    let studies = [];
+    for(let i=0;i<results.rowCount;i++) {
+        const study = results.rows[i];
+        studies.push(study);
+    }
+    logger.info("Sending bulk update of "+idList.length);
+    await bulkUpsert(studies);
+    logger.info("Bulk update complete.");
+
+}
 
 const getStudiesToIndex = async () => {
     const rs = await queryAACT(STUDIES_TO_INDEX_QUERY,[]);

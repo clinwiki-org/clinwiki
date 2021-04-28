@@ -2,15 +2,16 @@ import schedule from 'node-schedule';
 import config from '../../config';
 import aactJob from './jobs/aact.job';
 import clinwikiJob from './jobs/clinwiki.job';
-import reindexJob from './jobs/reindex.job';
+import {serveQueue} from './pipeline.queue';
+
 const util = require('util')
 
-const INTERVAL = 10 * 1000;
+const INTERVAL = 5 * 1000;
  
 export const runScheduler = () => {
     schedule.scheduleJob(config.clinwikiCronTab, clinwikiJob);
-    //schedule.scheduleJob(config.aactCronTab, aactJob);
-    //setInterval(reindexJob, INTERVAL);
+    schedule.scheduleJob(config.aactCronTab, aactJob);
+    setInterval(serveQueue, INTERVAL);
     
 }
 

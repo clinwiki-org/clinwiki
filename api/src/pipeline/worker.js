@@ -3,6 +3,7 @@ import {runScheduler} from './scheduler';
 import logger from '../util/logger';
 import dotenv from 'dotenv';
 import {loadConfig} from '../../config';
+import {initQueue} from './pipeline.queue';
 
                             
 logger.info(" _____ _ _     _ _ _ _ _   _ ");
@@ -19,6 +20,9 @@ dotenv.config({
   
 loadConfig();
 
+logger.info('Initializing pipeline queue');
+initQueue();
 logger.info('Running...');
+
 
 runScheduler();
