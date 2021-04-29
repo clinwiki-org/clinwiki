@@ -11,6 +11,7 @@ import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import { fetchStudyPage, fetchSearchPageMM } from 'services/study/actions';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
 
 
@@ -48,7 +49,7 @@ export default function GenericPageWrapper(props: Props) {
     const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
 
     useEffect(() => {
-        let searchParams = {...data.data.searchParams, q: JSON.parse(data.data.searchParams.q)}
+        let searchParams = pageType == "Search"? {...data.data.searchParams, q: JSON.parse(data.data.searchParams.q)} : null;
         const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
         dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchSearchPageMM(searchParams, SEARCH_QUERY));
@@ -68,7 +69,9 @@ export default function GenericPageWrapper(props: Props) {
     const title = microMailMerge(currentPage?.title, studyData?.data?.study || searchData());
 
     const islands = pageType == 'Study' ? studyIslands : searchIslands;
-
+    if(pageType == 'Study' && !studyData){
+        return <BeatLoader />
+      }
     return (
         <div>
             <Helmet>

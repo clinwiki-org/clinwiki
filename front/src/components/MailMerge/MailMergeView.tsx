@@ -46,7 +46,7 @@ function compileTemplate(template: string) {
 }
 function randomIdentifier() {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
-  const randomChar = () => chars[Math.floor((Math.random()*chars.length))]
+  const randomChar = () => chars[Math.floor((Math.random() * chars.length))]
   return Array.from({ length: 12 }, randomChar).join('');
 }
 function applyTemplate(
@@ -54,7 +54,7 @@ function applyTemplate(
   context?: object,
 ) {
   try {
-     context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+    context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;
@@ -132,7 +132,7 @@ export default function MailMergeView(props: Props) {
     let crowdAggArray: any[] = [];
 
     islandConfig && uniqueIds.map((agg) => {
-      if (islandConfig[agg.id].defaultToOpen == true) {
+      if (islandConfig[agg.id]?.defaultToOpen == true) {
 
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
         islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
@@ -140,33 +140,40 @@ export default function MailMergeView(props: Props) {
     })
 
 
-    const variables = {
-      ...searchParams,
-      url: params.sv,
-      configType: 'presearch',
-      returnAll: false,
-      agg: crowdAggArray,
-      pageSize: 100,
-      page: 1,
+    if (crowdAggArray.length !== 0) {
 
-      q: JSON.parse(searchParams.q),
-      bucketsWanted: []
-    };
-    const variables2 = {
-      ...searchParams,
-      url: params.sv,
-      configType: 'presearch',
-      returnAll: false,
-      agg: aggArray,
-      pageSize: 100,
-      page: 1,
 
-      q: JSON.parse(searchParams.q),
-      bucketsWanted: []
-    };
+      const variables = {
+        ...searchParams,
+        url: params.sv,
+        configType: 'presearch',
+        returnAll: false,
+        agg: crowdAggArray,
+        pageSize: 100,
+        page: 1,
 
-    variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables))
-    variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2))
+        q: JSON.parse(searchParams.q),
+        bucketsWanted: []
+      };
+      variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables))
+    }
+    if (aggArray.length !== 0) {
+
+      const variables2 = {
+        ...searchParams,
+        url: params.sv,
+        configType: 'presearch',
+        returnAll: false,
+        agg: aggArray,
+        pageSize: 100,
+        page: 1,
+
+        q: JSON.parse(searchParams.q),
+        bucketsWanted: []
+      };
+      variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2))
+    }
+
   }, [dispatch, islandConfig, params.hash])
 
   const parser = new HtmlToReact.Parser();

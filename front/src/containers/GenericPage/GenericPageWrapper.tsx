@@ -61,7 +61,10 @@ export default function GenericPageWrapper(props: Props) {
     pageType == "Search" && dispatch(fetchSearchParams(params.hash));
    },[dispatch, params.hash]);
 
-  if(!currentPage || !data){
+  if(!currentPage){
+    return <BeatLoader/>
+  }
+  if(pageType == 'Search' && !data){
     return <BeatLoader/>
   }
   if (!props.arg && pageType == "Study") {

@@ -37,7 +37,7 @@ function SiteProvider(props: SiteProviderProps) {
  //if (!result) return { ...result, site: null, currentSiteView: null };
 //console.log(siteProvider);
  if (!siteProvider){
-  return <BeatLoader color="red"/>
+  return <BeatLoader />
 }
 if (!isFetchingSiteProviderHasura  ) {
   const site = siteProvider;
