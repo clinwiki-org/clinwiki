@@ -15,24 +15,14 @@ const clinwikiJob = async () => {
             logger.info('Starting Clinwiki Job');
 
             const wikiPageIds = await getWikiPagesToIndex();
-            console.log(wikiPageIds)
             //const studyIds = ['NCT00001431'];
             logger.debug("Number of wiki pages to index: "+wikiPageIds.length);
             const bulkList = chunkList(wikiPageIds,CHUNK_SIZE);
 
             for(let j=0;j<bulkList.length;j++) {
-                const idList = bulkList[j];                
-                const results = await getBulkWikiPages(idList);
-                console.log(results);
-                
-                let wikiPages = [];
-                for(let i=0;i<results.rowCount;i++) {
-                    const wikiPage = results.rows[i];                    
-                    wikiPages.push(esWikiPage(wikiPage));
-                }
-                logger.info("Sending bulk update of "+idList.length);
-                await bulkUpdate(wikiPages);
-                logger.info("Bulk update complete.");
+                const idList = bulkList[j];
+                // Queue these up for reindexing
+                await enqueueJob(JOB_TYPES.WIKI_TEXT_REINDIX_2ND_PASS,{list: idList});                
             }
 
             logger.info('Job Clinwiki Finished.')
@@ -44,6 +34,20 @@ const clinwikiJob = async () => {
         IS_RUNNING = false;
     }
 };
+
+export const wikiPageReindex = async (payload) => {
+    const idList = payload.list;
+    const results = await getBulkWikiPages(idList);
+                
+    let wikiPages = [];
+    for(let i=0;i<results.rowCount;i++) {
+        const wikiPage = results.rows[i];                    
+        wikiPages.push(esWikiPage(wikiPage));
+    }
+    logger.info("Sending bulk update of "+idList.length);
+    await bulkUpdate(wikiPages);
+    logger.info("Bulk update complete.");
+}
 
 const getWikiPagesToIndex = async () => {
     const rs = await query(WIKI_PAGES_TO_INDEX_QUERY,[]);

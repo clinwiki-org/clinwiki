@@ -2,7 +2,8 @@ import {Client} from '@elastic/elasticsearch';
 import superagent from 'superagent';
 import config from '../../config';
 import logger from '../util/logger';
-const util = require('util')
+const util = require('util');
+const Url = require('url-parse');
 
 export const query = async (body) => {
     try {
@@ -46,35 +47,6 @@ export const newQuery = async (body) => {
     }
 }
 
-export const bulkUpdateOLD = async (list) => {
-    try {
-        const body = list.flatMap( doc => [
-            { index: { 
-                _index: config.elasticIndex, 
-                _type: '_doc',
-                _id: doc.nct_id
-            }},
-            { doc, doc_as_upsert: true}
-        ]);
-        //logger.debug(util.inspect(body,false, null, true));
-        const connection = getConnection();
-        const payload = {
-            index: config.elasticIndex,
-            body
-        };
-        //console.log(util.inspect(payload, false, null, true /* enable colors */))
-        await connection.bulk(payload);
-        //console.log(util.inspect(results, false, null, true /* enable colors */))
-        
-    }
-    catch(err) {
-        logger.error('Error elastic.query: '+err);
-        if(err.statusCode === 400) {
-            console.log(err.body.error)
-        }
-    }
-};
-
 export const bulkUpsert = async (list) => {
     try {
         let body = '';
@@ -91,11 +63,11 @@ export const bulkUpsert = async (list) => {
             body = body.concat("\n");
         });
 
-        //logger.debug(util.inspect(body,false, null, true));
-        //logger.debug(body);
-        let encode = Buffer.from('elastic:changeme')
+        const url = Url(config.searchboxUrl);
+        let encode = Buffer.from(url.username+':'+url.password)
             .toString('base64');
-        return await superagent.post('http://localhost:9200/_bulk')
+        const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
+        return await superagent.post(elasticUrl)
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
             .send(body).then(response => response.body);
@@ -125,12 +97,11 @@ export const bulkUpdate = async (list) => {
             body = body.concat("\n");
         });
 
-        //logger.debug(util.inspect(body,false, null, true));
-        logger.debug('BODY')
-        logger.debug(body);
-        let encode = Buffer.from('elastic:changeme')
+        const url = Url(config.searchboxUrl);
+        let encode = Buffer.from(url.username+':'+url.password)
             .toString('base64');
-        return await superagent.post('http://localhost:9200/_bulk')
+        const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
+        return await superagent.post(elasticUrl)
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
             .send(body).then(response => response.body);

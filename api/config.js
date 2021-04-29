@@ -15,9 +15,9 @@ export const loadConfig = () => {
     config.jwtSecret = process.env.SECRET_KEY_BASE_NODE || 'InsertSecretHere';
     config.jwtExpire = process.env.JWT_EXPIRATION_TIME_SECS || 86400;
     config.googleClientId = process.env.GOOGLE_CLIENT_ID || 'GoogleIdHere',
-    config.aactCronTab= process.env.AACT_CRONTAB || '*/1 * * * *';
+    config.aactCronTab= process.env.AACT_CRONTAB || '0 1 * * *';
     config.clinwikiCronTab= process.env.CLINWIKI_CRONTAB || '*/1 * * * *';
-    config.elasticIndex = process.env.ELASTICSEARCH_INDEX || 'studies';    
+    config.elasticIndex = process.env.ELASTICSEARCH_INDEX || 'studies_development';    
 }
 
 export default config;
