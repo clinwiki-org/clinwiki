@@ -30,7 +30,7 @@ export default function WorkflowIsland(props: Props) {
   const { name, nctId } = props;
   const theme = useTheme();
   const dispatch = useDispatch();
-  const studyData = useSelector((state: RootState) => state.study.workflowPage);
+  // const studyData = useSelector((state: RootState) => state.study.workflowPage);
   const allWorkflows = useSelector((state: RootState) => state.study.allWorkFlows);
   const user = useSelector( (state: RootState) => state.user.current);
   const [flashAnimation, setFlashAnimation] = useState(false);
@@ -48,9 +48,9 @@ export default function WorkflowIsland(props: Props) {
   //   variables: { nctId },
   // });
 
-  useEffect(() => {
-    dispatch(fetchWorkFlowPage( nctId || "" ));
-    }, [dispatch, nctId])
+  // useEffect(() => {
+  //   dispatch(fetchWorkFlowPage( nctId || "" ));
+  //   }, [dispatch, nctId])
 
   useEffect(() => {
     dispatch(fetchAllWorkFlows());
@@ -67,18 +67,20 @@ export default function WorkflowIsland(props: Props) {
   }
 
   const handleSelect = (key, value, checked) => {
-    const meta = JSON.parse(studyData?.data.study?.wikiPage?.meta || '{}')
-    if (!checked) {
-      //@ts-ignore
-      CrowdPage.addLabel(key, value, meta, nctId || "", upsertMutation);
+    console.log('handleSelect')
+    // const meta = JSON.parse(studyData?.data.study?.wikiPage?.meta || '{}')
+    // if (!checked) {
+    //   //@ts-ignore
+    //   CrowdPage.addLabel(key, value, meta, nctId || "", upsertMutation);
 
-    } else {
-      //@ts-ignore
-      CrowdPage.deleteLabel(key, value, meta, nctId || "", upsertMutation, deleteMutation);
-    }
+    // } else {
+    //   //@ts-ignore
+    //   CrowdPage.deleteLabel(key, value, meta, nctId || "", upsertMutation, deleteMutation);
+    // }
   }
 
-  if (!workflow || !nctId || !studyData) return <BeatLoader />;
+  // if (!workflow || !nctId || !studyData) return <BeatLoader />;
+  if (!workflow || !nctId ) return <BeatLoader />;
 
   const allowedSuggestedLabels = displayFields(
     workflow.suggestedLabelsFilter.kind,

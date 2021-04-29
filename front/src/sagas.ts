@@ -5,6 +5,7 @@ import searchSagas from 'services/search/sagas';
 import studySagas from 'services/study/sagas';
 import introspectionSagas from 'services/introspection/sagas';
 import hasuraSiteSagas from 'services/hasuraSite/sagas';
+import crowdKeysSagas from 'services/crowdKeys/sagas';
 
 export default function* sagas() {
   yield spawn(userSagas);
@@ -13,4 +14,5 @@ export default function* sagas() {
   yield spawn(studySagas);
   yield spawn(introspectionSagas);
   yield spawn(hasuraSiteSagas);
+  yield spawn(crowdKeysSagas);
 }

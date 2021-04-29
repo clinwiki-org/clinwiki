@@ -20,6 +20,7 @@ import {
 } from 'services/study/model/SuggestedLabelsQuery';
 import { displayFields } from 'utils/siteViewHelpers';
 import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation, setShowLoginModal } from '../../services/study/actions'
+import { insertCrowdKeyValueId, deleteCrowdKeyValueId} from '../../services/crowdKeys/actions'
 
 
 interface Props {
@@ -114,17 +115,26 @@ function WfIslandAggChild(props: Props) {
       if (!value) return;
       let val = value;
       // console.log(meta[currentAgg?.name])
-      if (meta[currentAgg?.name]) {
-        const oldVal = meta[currentAgg?.name];
-        const entries = oldVal.split('|').filter((x) => x !== val);
-        entries.push(key);
-        val = uniq(entries).join('|');
-        // console.log("VAl", val)
-        dispatch(upsertLabelMutation(nctId, currentAgg?.name, val));
-      }else{
-      //handles case where meta is empty 
-        dispatch(upsertLabelMutation(nctId, currentAgg?.name, key));
-      }
+      dispatch(insertCrowdKeyValueId(props.nctId, key, currentAgg.name, user.id, false, false))
+
+      // if (meta[currentAgg?.name]) {
+
+        
+      //   const oldVal = meta[currentAgg?.name];
+      //   const entries = oldVal.split('|').filter((x) => x !== val);
+      //   entries.push(key);
+      //   val = uniq(entries).join('|');
+      //   // console.log("VAl", val)
+
+      //   console.log("DISPATCH", user)
+      //   // dispatch(upsertLabelMutation(nctId, currentAgg?.name, val)); <--------------
+      // }else{
+      // //handles case where meta is empty 
+      // console.log("No META")
+
+
+      // // dispatch(upsertLabelMutation(nctId, currentAgg?.name, key));   <--------------
+      // }
 
 
       // console.log(nctId, currentAgg?.name, key)
@@ -141,17 +151,22 @@ function WfIslandAggChild(props: Props) {
       const newValue = uniq(
         currentValue.split('|').filter((x) => x !== key)
       ).join('|');
-      if (newValue.length === 0) {
-        const newMeta = dissoc(key, meta);
-        // console.log(currentAgg?.name, nctId)
-        dispatch(deleteLabelMutation(nctId, currentAgg?.name));
-      } else {
-        // console.log(nctId, currentAgg?.name, newValue)
 
-        dispatch(upsertLabelMutation(
-          nctId, currentAgg?.name, newValue
-        ));
-      }
+      dispatch(deleteCrowdKeyValueId(props.nctId, key, currentAgg.name))
+      
+      // if (newValue.length === 0) {
+      //   const newMeta = dissoc(key, meta);
+      //   console.log("REMOVE WHOLE FILTER META")
+      //   // console.log(currentAgg?.name, nctId)
+      //   // dispatch(deleteLabelMutation(nctId, currentAgg?.name));
+      // } else {
+      //   console.log("remove crowd Key")
+      //   // console.log(nctId, currentAgg?.name, newValue)
+
+      //   // dispatch(upsertLabelMutation(
+      //   //   nctId, currentAgg?.name, newValue
+      //   // ));
+      // }
     }
   }
   // console.log(suggestedLabels.data.crowdAggFacets.aggs)
