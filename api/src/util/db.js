@@ -14,3 +14,16 @@ export const query = async (str,params) => {
 }
 
 
+export const queryAACT = async (str,params) => {
+    if(!pool) {
+	    pool = new Pool({ connectionString: config.aactUrl });
+    }
+    //logger.debug('Query DB: '+str+' with params: '+params);
+    //const res = await pool.query(str,params);
+    //return res;
+    const client = await pool.connect();
+    const res = await client.query(str,params);
+    await client.release(true);
+    return res;
+}
+

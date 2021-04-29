@@ -45,3 +45,101 @@ export const newQuery = async (body) => {
         console.log(util.inspect(err, false, null, true /* enable colors */))
     }
 }
+
+export const bulkUpdateOLD = async (list) => {
+    try {
+        const body = list.flatMap( doc => [
+            { index: { 
+                _index: config.elasticIndex, 
+                _type: '_doc',
+                _id: doc.nct_id
+            }},
+            { doc, doc_as_upsert: true}
+        ]);
+        //logger.debug(util.inspect(body,false, null, true));
+        const connection = getConnection();
+        const payload = {
+            index: config.elasticIndex,
+            body
+        };
+        //console.log(util.inspect(payload, false, null, true /* enable colors */))
+        await connection.bulk(payload);
+        //console.log(util.inspect(results, false, null, true /* enable colors */))
+        
+    }
+    catch(err) {
+        logger.error('Error elastic.query: '+err);
+        if(err.statusCode === 400) {
+            console.log(err.body.error)
+        }
+    }
+};
+
+export const bulkUpsert = async (list) => {
+    try {
+        let body = '';
+        list.forEach( doc => {
+            body = body.concat(JSON.stringify(
+                { index: { 
+                    _index: config.elasticIndex, 
+                    _type: '_doc',
+                    _id: doc.nct_id
+                }}
+            ));
+            body = body.concat("\n");
+            body = body.concat(JSON.stringify({ doc, doc_as_upsert: true}))
+            body = body.concat("\n");
+        });
+
+        //logger.debug(util.inspect(body,false, null, true));
+        //logger.debug(body);
+        let encode = Buffer.from('elastic:changeme')
+            .toString('base64');
+        return await superagent.post('http://localhost:9200/_bulk')
+            .set('Authorization','Basic '+ encode)
+            .set('Content-Type', 'application/json')
+            .send(body).then(response => response.body);
+        
+    }
+    catch(err) {
+        logger.error('Error elastic.query: '+err);
+        if(err.statusCode === 400) {
+            console.log(err.body.error)
+        }
+    }
+};
+
+export const bulkUpdate = async (list) => {
+    try {
+        let body = '';
+        list.forEach( doc => {
+            body = body.concat(JSON.stringify(
+                { update: { 
+                    _index: config.elasticIndex, 
+                    _type: '_doc',
+                    _id: doc.nct_id
+                }}
+            ));
+            body = body.concat("\n");
+            body = body.concat(JSON.stringify({ doc, doc_as_upsert: false}))
+            body = body.concat("\n");
+        });
+
+        //logger.debug(util.inspect(body,false, null, true));
+        logger.debug('BODY')
+        logger.debug(body);
+        let encode = Buffer.from('elastic:changeme')
+            .toString('base64');
+        return await superagent.post('http://localhost:9200/_bulk')
+            .set('Authorization','Basic '+ encode)
+            .set('Content-Type', 'application/json')
+            .send(body).then(response => response.body);
+        
+    }
+    catch(err) {
+        logger.error('Error elastic.query: '+err);
+        if(err.statusCode === 400) {
+            console.log(err.body.error)
+        }
+    }
+};
