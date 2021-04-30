@@ -1,6 +1,14 @@
 import * as types from './types';
 
 const initialState: types.StudyState = {
+    isFetchingPageViewsHasura: false,
+    pageViewsHasura: undefined,
+    isFetchingPageViewHasura: false,
+    pageViewHasura: undefined,
+    isCreatingPageViewHasura: false,
+    isUpdatingPageViewHasura: false,
+    isDeletingPageViewHasura: false,
+
     studyPageHasura: undefined,
     isFetchingStudyPageHasura: false,
     isFetchingSampleStudy: false,
@@ -68,6 +76,98 @@ const studyReducer = (
     action: types.StudyActionTypes
 ): types.StudyState => {
     switch (action.type) {
+        case types.FETCH_PAGE_VIEWS_HASURA_SEND:
+            return {
+                ...state,
+                isFetchingPageViewsHasura: true,
+            };
+        case types.FETCH_PAGE_VIEWS_HASURA_SUCCESS:
+            return {
+                ...state,
+                isFetchingPageViewsHasura: false,
+                pageViewsHasura: action.payload,
+            };
+        case types.FETCH_PAGE_VIEWS_HASURA_ERROR:
+            return {
+                ...state,
+                isFetchingPageViewsHasura: false,
+            };
+        case types.FETCH_PAGE_VIEW_HASURA_SEND:
+            return {
+                ...state,
+                isFetchingPageViewHasura: true,
+            };
+        case types.FETCH_PAGE_VIEW_HASURA_SUCCESS:
+            return {
+                ...state,
+                isFetchingPageViewHasura: false,
+                pageViewHasura: action.payload,
+            };
+        case types.FETCH_PAGE_VIEW_HASURA_ERROR:
+            return {
+                ...state,
+                isFetchingPageViewHasura: false,
+            };
+
+        case types.CREATE_PAGE_VIEW_HASURA_SEND:
+            return {
+                ...state,
+                isCreatingPageView: true,
+            };
+        case types.CREATE_PAGE_VIEW_HASURA_SUCCESS:
+            return {
+                ...state,
+                isCreatingPageViewHasura: false,
+                pageViewsHasura: action.payload,
+            };
+        case types.CREATE_PAGE_VIEW_HASURA_ERROR:
+            return {
+                ...state,
+                isCreatingPageViewHasura: false,
+            };
+
+        case types.DELETE_PAGE_VIEW_HASURA_SEND:
+            return {
+                ...state,
+                isDeletingPageViewHasura: true,
+            };
+        case types.DELETE_PAGE_VIEW_HASURA_SUCCESS:
+            return {
+                ...state,
+                isDeletingPageViewHasura: false,
+                pageViewsHasura: {
+                    ...state.pageViewsHasura,
+                    data: {
+                        ...state.pageViewsHasura.data,
+                        site: {
+                            ...state.pageViewsHasura.data.site,
+                            pageViewsHasura: action.payload,
+                        },
+                    },
+                },
+            };
+        case types.DELETE_PAGE_VIEW_HASURA_ERROR:
+            return {
+                ...state,
+                isDeletingPageViewHasura: false,
+            };
+
+        case types.UPDATE_PAGE_VIEW_HASURA_SEND:
+            return {
+                ...state,
+                isUpdatingPageViewHasura: true,
+            };
+        case types.UPDATE_PAGE_VIEW_HASURA_SUCCESS:
+            return {
+                ...state,
+                isUpdatingPageViewHasura: false,
+            };
+        case types.UPDATE_PAGE_VIEW_HASURA_ERROR:
+            return {
+                ...state,
+                isUpdatingPageViewHasura: false,
+            };
+
         case types.FETCH_SAMPLE_STUDY_HASURA_SEND:
             return {
                 ...state,
@@ -147,7 +247,7 @@ const studyReducer = (
         case types.FETCH_SEARCH_PAGE_MM_ERROR:
             return {
                 ...state,
-                isFetchingStudy: false
+                isFetchingStudy: false,
             };
         case types.FETCH_PAGE_VIEWS_SEND:
             return {
@@ -670,7 +770,7 @@ const studyReducer = (
         case types.SET_SHOW_LOGIN_MODAL:
             return {
                 ...state,
-                showLoginModal: action.input
+                showLoginModal: action.input,
             };
         default:
             return { ...state };

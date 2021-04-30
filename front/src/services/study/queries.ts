@@ -1,3 +1,29 @@
+export const PAGE_VIEWS_HASURA_QUERY = `
+query PageViewsQueryHausura ($id: bigint!){
+  page_views(where: {site_id: {_eq: $id}}) {
+    id
+    page_type
+    template
+    title
+    url
+    default
+  }
+}
+`;
+
+export const PAGE_VIEW_HASURA_QUERY = `
+  query HasuraPageViewQuery($id: bigint!, $url: String!) {
+  page_views(where:{ _and: [{site_id: {_eq: $id}},  {url: {_eq: $url}}] }) {
+    id
+    page_type
+    template
+    title
+    url
+    default
+  }
+}
+`;
+
 export const PAGE_VIEW_FRAGMENT = `
 fragment PageViewFragment on PageView {
     id
@@ -33,8 +59,8 @@ export const PAGE_VIEW_QUERY = `
 `;
 
 export const getSampleStudyQuery = (name: string, frag: string) => {
-  frag = frag || `fragment ${name} on Study { nctId }`;
-  return `
+    frag = frag || `fragment ${name} on Study { nctId }`;
+    return `
   query SampleStudyQuery($nctId: String!) {
     study(nctId: $nctId) {
       ...${name}
@@ -44,8 +70,8 @@ export const getSampleStudyQuery = (name: string, frag: string) => {
 `;
 };
 export function getSampleSearchQuery(name: string, frag: string) {
-  frag = frag || `fragment ${name} on ElasticStudy { nctId }`;
-  return `
+    frag = frag || `fragment ${name} on ElasticStudy { nctId }`;
+    return `
   query Search${name}Query($hash:String) {
     search(searchHash: $hash) {
       studies {
@@ -57,7 +83,7 @@ export function getSampleSearchQuery(name: string, frag: string) {
   ${frag}
   `;
 }
-export const SEARCH_STUDY_PAGE_QUERY =`
+export const SEARCH_STUDY_PAGE_QUERY = `
 query SearchStudyPageQuery($hash: String!, $id: String!) {
   search(searchHash: $hash) {
     studyEdge(id: $id) {
