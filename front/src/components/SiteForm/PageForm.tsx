@@ -9,7 +9,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import { updatePageView, deletePageView } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import {capitalize} from '../../utils/helpers'
+import { capitalize, camelCase } from '../../utils/helpers'
 import HasuraMailMergeFormControl from 'components/MailMerge/HasuraMailMergeFormControl';
 
 const StyledFormControl = styled(FormControl)`
@@ -18,7 +18,7 @@ const StyledFormControl = styled(FormControl)`
 type Mode = "Study" | "Search";
 interface Props {
   siteId: number;
-  page: PageViewsQuery_site_pageViews;
+  page: any;
 }
 
 function formControl(
@@ -43,14 +43,23 @@ function checkboxHelper(
 export default function PageForm(props: Props) {
   const page = props.page;
   const default_nctid = 'NCT00004074';
-  const default_hash ='gELcp_Fb'
+  const default_hash = 'gELcp_Fb'
+
+  const intToStringPageType = (pageType: number) => {
+    if (pageType === 0) return 'search'
+    if (pageType === 1) return 'study'
+    if (pageType === 2) return 'hasuraStudy'
+    else return "study"
+  }
+
+  console.log("PAGE FORM PAGE TYPE", page)
 
   const [url, setUrl] = useState(page.url);
   const [title, setTitle] = useState(page.title);
-  const [pageType, setPageType] = useState(page.pageType)
+  const [pageType, setPageType] = useState(intToStringPageType(page?.page_type))
   const [template, setTemplate] = useState(page.template);
   const [isDefault, setDefault] = useState(page.default);
-  const [mode, setMode] = useState(page.pageType);
+  const [mode, setMode] = useState(intToStringPageType(page?.page_type));
   const theme = useTheme();
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
 
@@ -88,15 +97,15 @@ export default function PageForm(props: Props) {
 
   const updateMode = mode => {
     setMode(mode);
-    if (mode === 'Study'){
+    if (mode === 'Study') {
       setPageType('study');
       setNctOrSearchHash(default_nctid);
     }
-    if (mode === 'Search'){
+    if (mode === 'Search') {
       setPageType('search');
       setNctOrSearchHash(default_hash);
     }
-    if (mode === 'Hasura Study'){
+    if (mode === 'Hasura Study') {
       setPageType('hasuraStudy');
       setNctOrSearchHash(default_hash);
     }
@@ -131,14 +140,15 @@ export default function PageForm(props: Props) {
           bsStyle="default"
           title={`Type: ${capitalize(mode)}`}
           key={mode}
-          style={{ marginBottom: '10px',
-          background: theme?.button,
-        }}>
+          style={{
+            marginBottom: '10px',
+            background: theme?.button,
+          }}>
           <MenuItem onClick={_ => updateMode("Study")}>Study</MenuItem>
           <MenuItem onClick={_ => updateMode("Search")}>Search</MenuItem>
           <MenuItem onClick={_ => updateMode("Hasura Study")}>Hasura Study</MenuItem>
         </DropdownButton>
-       <FormControl
+        <FormControl
           placeholder="Select an nctid"
           value={nctOrSearchHash}
           onChange={e => setNctOrSearchHash(e.target.value || default_nctid)}

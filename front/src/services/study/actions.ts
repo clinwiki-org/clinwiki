@@ -6,6 +6,101 @@ import { SearchStudyPageQuery } from './model/SearchStudyPageQuery';
 import { StudyEditsHistoryQuery } from './model/StudyEditsHistoryQuery';
 import * as types from './types';
 import { UpdatePageViewInput } from 'services/study/model/InputTypes';
+
+export const fetchPageViewsHasura = (siteId: any): types.StudyActionTypes => ({
+    type: types.FETCH_PAGE_VIEWS_HASURA_SEND,
+    siteId,
+});
+export const fetchPageViewsHasuraSuccess = (
+    payload: PageViewsQuery
+): types.StudyActionTypes => ({
+    type: types.FETCH_PAGE_VIEWS_HASURA_SUCCESS,
+    payload,
+});
+export const fetchPageViewsHasuraError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_PAGE_VIEWS_HASURA_ERROR,
+    payload: { message },
+});
+export const fetchPageViewHasura = (
+    id: string,
+    url: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_PAGE_VIEW_HASURA_SEND,
+    id,
+    url,
+});
+export const fetchPageViewHasuraSuccess = (
+    payload: PageViewQuery
+): types.StudyActionTypes => ({
+    type: types.FETCH_PAGE_VIEW_HASURA_SUCCESS,
+    payload,
+});
+export const fetchPageViewHasuraError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_PAGE_VIEW_HASURA_ERROR,
+    payload: { message },
+});
+
+export const createPageViewHasura = (
+    url: string,
+    siteId: number
+): types.StudyActionTypes => ({
+    type: types.CREATE_PAGE_VIEW_HASURA_SEND,
+    url,
+    siteId,
+});
+export const createPageViewHasuraSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.CREATE_PAGE_VIEW_HASURA_SUCCESS,
+    payload,
+});
+export const createPageViewHasuraError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.CREATE_PAGE_VIEW_HASURA_ERROR,
+    payload: { message },
+});
+export const deletePageViewHasura = (id: number): types.StudyActionTypes => ({
+    type: types.DELETE_PAGE_VIEW_HASURA_SEND,
+    id,
+});
+export const deletePageViewHasuraSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.DELETE_PAGE_VIEW_HASURA_SUCCESS,
+    payload,
+});
+export const deletePageViewHasuraError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.DELETE_PAGE_VIEW_HASURA_ERROR,
+    payload: { message },
+});
+export const updatePageViewHasura = (
+    id: any,
+    input: UpdatePageViewInput
+): types.StudyActionTypes => ({
+    type: types.UPDATE_PAGE_VIEW_HASURA_SEND,
+    id,
+    input,
+});
+export const updatePageViewHasuraSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.UPDATE_PAGE_VIEW_HASURA_SUCCESS,
+    payload,
+});
+export const updatePageViewHasuraError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.UPDATE_PAGE_VIEW_HASURA_ERROR,
+    payload: { message },
+});
+
 export const fetchSampleStudy = (
     nctId: string,
     QUERY: any
@@ -66,18 +161,25 @@ export const fetchStudyPageError = (
     type: types.FETCH_STUDY_PAGE_ERROR,
     payload: { message },
 });
-export const fetchSearchPageMM= ( params: any, QUERY: any) : types.StudyActionTypes => ({
+export const fetchSearchPageMM = (
+    params: any,
+    QUERY: any
+): types.StudyActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_MM_SEND,
     params,
-    QUERY
+    QUERY,
 });
-export const fetchSearchPageMMSuccess= (payload: any) : types.StudyActionTypes => ({
+export const fetchSearchPageMMSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_MM_SUCCESS,
-    payload
+    payload,
 });
-export const fetchSearchPageMMError= (message: string) : types.StudyActionTypes => ({
+export const fetchSearchPageMMError = (
+    message: string
+): types.StudyActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_MM_ERROR,
-    payload: {message}
+    payload: { message },
 });
 export const fetchStudyPageHasura = (
     nctId: string,
@@ -115,7 +217,10 @@ export const fetchPageViewsError = (
     type: types.FETCH_PAGE_VIEWS_ERROR,
     payload: { message },
 });
-export const fetchPageView = (id: string, url: string): types.StudyActionTypes => ({
+export const fetchPageView = (
+    id: string,
+    url: string
+): types.StudyActionTypes => ({
     type: types.FETCH_PAGE_VIEW_SEND,
     id,
     url,
@@ -185,7 +290,8 @@ export const deletePageViewError = (
     type: types.DELETE_PAGE_VIEW_ERROR,
     payload: { message },
 });
-export const updatePageView = (id: any,
+export const updatePageView = (
+    id: any,
     input: UpdatePageViewInput
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_SEND,
@@ -423,7 +529,7 @@ export const wikiPageUpdateContentMutationError = (
     payload: { message },
 });
 export const fetchSuggestedLabels = (
-    nctId: string,
+    nctId: string
     // crowdBucketsWanted: string[]
 ): types.StudyActionTypes => ({
     type: types.FETCH_SUGGESTED_LABELS_SEND,
