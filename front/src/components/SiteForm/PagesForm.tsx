@@ -65,21 +65,14 @@ export default function PagesForm(props: PageFormProps) {
   const pageViewsData = useSelector((state: RootState) => state.study.pageViewsHasura);
 
 
-  /*   useEffect(() => {
-      console.log("YES HERER")
-      dispatch(fetchPageViews(props.site?.id));
-    }, [dispatch]);
-   */
   useEffect(() => {
-    console.log("FETCH Hasu page views site ", props.site?.id)
     dispatch(fetchPageViewsHasura(props.site?.id));
   }, [dispatch]);
 
   if (!pageViewsData) {
     return <BeatLoader />
   }
-  console.log("page views datea", pageViewsData
-  )
+  //console.log("page views datea", pageViewsData)
 
   const pageViews =
     pageViewsData?.data?.page_views?.slice().sort((a, b) => a.url.localeCompare(b.url)) || [];

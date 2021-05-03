@@ -12,6 +12,7 @@ const getCurrentPageViewsHasura = state =>
     state.study.pageViewsHasura.data.site.pageViewsHasura; //TODO CHeck path to redux store pageViews HASURA
 
 function* getPageViewsHasura(action) {
+    //console.log('SAGA Hasura Page ViewS', action);
     try {
         let response = yield call(() => api.fetchPageViewsHasura(action));
         if (response) {
@@ -26,6 +27,7 @@ function* getPageViewsHasura(action) {
     }
 }
 function* getPageViewHasura(action) {
+    //console.log('SAGA Hasura Page VIEW', action);
     try {
         let response = yield call(() =>
             api.fetchPageViewHasura(action.id, action.url)
@@ -65,15 +67,16 @@ function* updatePageViewHasura(action) {
         let updateResponse = yield call(() =>
             api.updatePageViewHasura(action.id, action.input)
         );
-        if (updateResponse.data.updatePageViewHasura.errors === null) {
+        if (updateResponse.data.update_page_views.returning[0]) {
+            let url = updateResponse.data.update_page_views.returning[0].url;
+            let siteIdObj = { siteId: null };
+            siteIdObj.siteId =
+                updateResponse.data.update_page_views.returning[0].site_id;
             let response = yield call(() =>
-                api.fetchPageViewHasura(
-                    action.id,
-                    updateResponse.data.updatePageView.pageView.url
-                )
+                api.fetchPageViewHasura(action.id, url)
             );
             let response2 = yield call(() =>
-                api.fetchPageViewsHasura(action.id)
+                api.fetchPageViewsHasura(siteIdObj)
             );
             yield put(actions.fetchPageViewHasuraSuccess(response));
             yield put(actions.fetchPageViewsHasuraSuccess(response2));
