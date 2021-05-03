@@ -26,15 +26,19 @@ export const CREATE_PAGE_VIEW_HASURA_MUTATION = `
 `;
 
 export const UPDATE_PAGE_VIEW_HASURA_MUTATION = `
-  mutation UpdatePageViewMutation($input: UpdatePageViewInput!) {
-    updatePageView(input: $input) {
-      errors
-      pageView {
-        ...PageViewFragment
-      }
+mutation HasuraUpdatePageViewMutation($siteId: bigint!, $url: String!, $title:String, $template: String, $default: Boolean, $pageType: Int ) {
+  update_page_views(where: {_and: [{site_id: {_eq: $siteId}}, {url: {_eq: $url}}]}, _set: {url: $url, template: $template,  title: $title, default: $default, page_type: $pageType }) {
+    returning {
+      id
+      page_type
+      template
+      title
+      url
+      default
+      site_id
     }
   }
-  ${PAGE_VIEW_FRAGMENT}
+}
 `;
 
 export const DELETE_PAGE_VIEW_HASURA_MUTATION = `

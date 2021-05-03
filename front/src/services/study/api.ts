@@ -45,8 +45,12 @@ export const updatePageViewHasura = (id, input) => {
         HASURA_CW,
         mutate.UPDATE_PAGE_VIEW_HASURA_MUTATION,
         {
-            id: id,
-            input: input,
+            siteId: id,
+            title: input.title,
+            url: input.url,
+            template: input.template,
+            default: input.default,
+            pageType: input.pageType,
         }
     );
 };

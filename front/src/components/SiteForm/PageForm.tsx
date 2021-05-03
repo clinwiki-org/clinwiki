@@ -7,7 +7,7 @@ import MailMergeFormControl from 'components/MailMerge/MailMergeFormControl';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import ThemedButton from 'components/StyledComponents/index';
 import { studyIslands } from 'containers/Islands/CommonIslands'
-import { updatePageView, deletePageView } from 'services/study/actions';
+import { updatePageView, deletePageView, updatePageViewHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize, camelCase } from '../../utils/helpers'
 import HasuraMailMergeFormControl from 'components/MailMerge/HasuraMailMergeFormControl';
@@ -46,13 +46,13 @@ export default function PageForm(props: Props) {
   const default_hash = 'gELcp_Fb'
 
   const intToStringPageType = (pageType: number) => {
-    if (pageType === 0) return 'search'
-    if (pageType === 1) return 'study'
-    if (pageType === 2) return 'hasuraStudy'
+    if (pageType === 0 || 'search') return 'search'
+    if (pageType === 1 || 'study') return 'study'
+    if (pageType === 2 || 'hasuraStudy') return 'hasuraStudy'
     else return "study"
   }
 
-  console.log("PAGE FORM PAGE TYPE", page)
+  //console.log("PAGE FORM PAGE TYPE", page)
 
   const [url, setUrl] = useState(page.url);
   const [title, setTitle] = useState(page.title);
@@ -63,9 +63,15 @@ export default function PageForm(props: Props) {
   const theme = useTheme();
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
 
-  const dispatch = useDispatch();
-  let input = { id: page.id, title, url, template, default: isDefault, pageType };
+  const stringToIntPageType = (pageType: any) => {
+    if (pageType === 'search' || 0) return 0
+    if (pageType === 'study' || 1) return 1
+    if (pageType === 'hasuraStudy' || 2) return 2
+    else return 1
+  }
 
+  const dispatch = useDispatch();
+  let input = { id: page.id, title, url, template, default: isDefault, pageType: stringToIntPageType(pageType) };
 
   const updatePageType = type => {
     if (type === 'Study') setPageType("study");
@@ -162,7 +168,7 @@ export default function PageForm(props: Props) {
       {selectedMailMergeType}
       <hr />
       <ThemedButton
-        onClick={_ => dispatch(updatePageView(props.siteId, input))}
+        onClick={_ => dispatch(updatePageViewHasura(props.siteId, input))}
         style={{ margin: '10px' }}>
         Save '{url}'
       </ThemedButton>

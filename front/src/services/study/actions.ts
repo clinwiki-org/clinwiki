@@ -82,7 +82,7 @@ export const deletePageViewHasuraError = (
 });
 export const updatePageViewHasura = (
     id: any,
-    input: UpdatePageViewInput
+    input: any
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_HASURA_SEND,
     id,
