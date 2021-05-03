@@ -62,6 +62,7 @@ interface CustomDropDownProps {
   disabled?: boolean;
   allowsMissing?:boolean;
   searchResultData:any;
+  isUpdatingParams:boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -524,6 +525,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 }
 const mapStateToProps = (state, ownProps) => ({
   // user: state.user,
+  isUpdatingParams: state.search.isUpdatingParams,
   searchResultData: state.search.searchResults,
   isFetchingAutoSuggest:  state.search.isFetchingAutoSuggest
 })

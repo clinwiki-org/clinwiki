@@ -174,7 +174,7 @@ export default function MailMergeView(props: Props) {
       variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2))
     }
 
-  }, [dispatch, islandConfig, params.hash])
+  }, [dispatch, islandConfig, searchParams])
 
   const parser = new HtmlToReact.Parser();
   const reactElement = parser.parseWithInstructions(
