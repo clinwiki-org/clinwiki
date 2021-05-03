@@ -25,13 +25,39 @@ import {
 import { EditReviewQuery } from './model/EditReviewQuery';
 import { BulkLabelsQuery } from './model/BulkLabelsQuery';
 
+export const FETCH_PAGE_VIEWS_HASURA_SEND = 'FETCH_PAGE_VIEWS_HASURA_SEND';
+export const FETCH_PAGE_VIEWS_HASURA_SUCCESS =
+    'FETCH_PAGE_VIEWS_HASURA_SUCCESS';
+export const FETCH_PAGE_VIEWS_HASURA_ERROR = 'FETCH_PAGE_VIEWS_HASURA_ERROR';
+
+export const FETCH_PAGE_VIEW_HASURA_SEND = 'FETCH_PAGE_VIEW_HASURA_SEND';
+export const FETCH_PAGE_VIEW_HASURA_SUCCESS = 'FETCH_PAGE_VIEW_HASURA_SUCCESS';
+export const FETCH_PAGE_VIEW_HASURA_ERROR = 'FETCH_PAGE_VIEW_HASURA_ERROR';
+
+export const CREATE_PAGE_VIEW_HASURA_SEND = 'CREATE_PAGE_VIEW_HASURA_SEND';
+export const CREATE_PAGE_VIEW_HASURA_SUCCESS =
+    'CREATE_PAGE_VIEW_HASURA_SUCCESS';
+export const CREATE_PAGE_VIEW_HASURA_ERROR = 'CREATE_PAGE_VIEW_HASURA_ERROR';
+
+export const UPDATE_PAGE_VIEW_HASURA_SEND = 'UPDATE_PAGE_VIEW_HASURA_SEND';
+export const UPDATE_PAGE_VIEW_HASURA_SUCCESS =
+    'UPDATE_PAGE_VIEW_HASURA_SUCCESS';
+export const UPDATE_PAGE_VIEW_HASURA_ERROR = 'UPDATE_PAGE_VIEW_HASURA_ERROR';
+
+export const DELETE_PAGE_VIEW_HASURA_SEND = 'DELETE_PAGE_VIEW_HASURA_SEND';
+export const DELETE_PAGE_VIEW_HASURA_SUCCESS =
+    'DELETE_PAGE_VIEW_HASURA_SUCCESS';
+export const DELETE_PAGE_VIEW_HASURA_ERROR = 'DELETE_PAGE_VIEW_HASURA_ERROR';
+
 export const FETCH_SAMPLE_STUDY_SEND = 'FETCH_SAMPLE_STUDY_SEND';
 export const FETCH_SAMPLE_STUDY_SUCCESS = 'FETCH_SAMPLE_STUDY_SUCCESS';
 export const FETCH_SAMPLE_STUDY_ERROR = 'FETCH_SAMPLE_STUDY_ERROR';
 
 export const FETCH_SAMPLE_STUDY_HASURA_SEND = 'FETCH_SAMPLE_STUDY_HASURA_SEND';
-export const FETCH_SAMPLE_STUDY_HASURA_SUCCESS ='FETCH_SAMPLE_STUDY_HASURA_SUCCESS';
-export const FETCH_SAMPLE_STUDY_HASURA_ERROR = 'FETCH_SAMPLE_STUDY_HASURA_ERROR';
+export const FETCH_SAMPLE_STUDY_HASURA_SUCCESS =
+    'FETCH_SAMPLE_STUDY_HASURA_SUCCESS';
+export const FETCH_SAMPLE_STUDY_HASURA_ERROR =
+    'FETCH_SAMPLE_STUDY_HASURA_ERROR';
 
 export const FETCH_STUDY_PAGE_SEND = 'FETCH_STUDY_PAGE_SEND';
 export const FETCH_STUDY_PAGE_SUCCESS = 'FETCH_STUDY_PAGE_SUCCESS';
@@ -41,7 +67,8 @@ export const FETCH_SEARCH_PAGE_MM_SEND = 'FETCH_SEARCH_PAGE_MM_SEND';
 export const FETCH_SEARCH_PAGE_MM_SUCCESS = 'FETCH_SEARCH_PAGE_MM_SUCCESS';
 export const FETCH_SEARCH_PAGE_MM_ERROR = 'FETCH_SEARCH_PAGE_MM_ERROR';
 export const FETCH_STUDY_PAGE_HASURA_SEND = 'FETCH_STUDY_PAGE_HASURA_SEND';
-export const FETCH_STUDY_PAGE_HASURA_SUCCESS = 'FETCH_STUDY_PAGE_HASURA_SUCCESS';
+export const FETCH_STUDY_PAGE_HASURA_SUCCESS =
+    'FETCH_STUDY_PAGE_HASURA_SUCCESS';
 export const FETCH_STUDY_PAGE_HASURA_ERROR = 'FETCH_STUDY_PAGE_HASURA_ERROR';
 
 export const FETCH_PAGE_VIEWS_SEND = 'FETCH_PAGE_VIEWS_SEND';
@@ -190,6 +217,14 @@ export const BULK_LIST_UPDATE_MUTATION_SUCCESS =
 export const BULK_LIST_UPDATE_MUTATION_ERROR =
     'BULK_LIST_UPDATE_MUTATION_ERROR';
 export interface StudyState {
+    isFetchingPageViewsHasura: boolean;
+    pageViewsHasura: any | PageViewsQuery | undefined;
+    isFetchingPageViewHasura: boolean;
+    pageViewHasura: PageViewQuery | undefined;
+    isCreatingPageViewHasura: boolean;
+    isDeletingPageViewHasura: boolean;
+    isUpdatingPageViewHasura: boolean;
+
     studyPageHasura: any | undefined;
     isFetchingStudyPageHasura: any;
     isFetchingSampleStudy: boolean;
@@ -256,6 +291,83 @@ export interface StudyDataError {
     message: string;
 }
 
+export interface fetchPageViewsHasuraSendAction {
+    type: typeof FETCH_PAGE_VIEWS_HASURA_SEND;
+    siteId: any;
+}
+
+export interface fetchPageViewsHasuraSuccessAction {
+    type: typeof FETCH_PAGE_VIEWS_HASURA_SUCCESS;
+    payload: PageViewsQuery;
+}
+
+export interface fetchPageViewsHasuraErrorAction {
+    type: typeof FETCH_PAGE_VIEWS_HASURA_ERROR;
+    payload: StudyDataError;
+}
+export interface fetchPageViewHasuraSendAction {
+    type: typeof FETCH_PAGE_VIEW_HASURA_SEND;
+    id: any;
+    url: any;
+}
+
+export interface fetchPageViewHasuraSuccessAction {
+    type: typeof FETCH_PAGE_VIEW_HASURA_SUCCESS;
+    payload: PageViewQuery;
+}
+
+export interface fetchPageViewHasuraErrorAction {
+    type: typeof FETCH_PAGE_VIEW_HASURA_ERROR;
+    payload: StudyDataError;
+}
+
+export interface CreatePageViewHasuraSendAction {
+    type: typeof CREATE_PAGE_VIEW_HASURA_SEND;
+    url: string;
+    siteId: number;
+}
+
+export interface CreatePageViewHasuraSuccessAction {
+    type: typeof CREATE_PAGE_VIEW_HASURA_SUCCESS;
+    payload: PageViewsQuery;
+}
+
+export interface CreatePageViewHasuraErrorAction {
+    type: typeof CREATE_PAGE_VIEW_HASURA_ERROR;
+    payload: StudyDataError;
+}
+
+export interface DeletePageViewHasuraSendAction {
+    type: typeof DELETE_PAGE_VIEW_HASURA_SEND;
+    id: number;
+}
+
+export interface DeletePageViewHasuraSuccessAction {
+    type: typeof DELETE_PAGE_VIEW_HASURA_SUCCESS;
+    payload: PageViewsQuery;
+}
+
+export interface DeletePageViewHasuraErrorAction {
+    type: typeof DELETE_PAGE_VIEW_HASURA_ERROR;
+    payload: StudyDataError;
+}
+
+export interface UpdatePageViewHasuraSendAction {
+    type: typeof UPDATE_PAGE_VIEW_HASURA_SEND;
+    id?: number;
+    input: UpdatePageViewInput;
+}
+
+export interface UpdatePageViewHasuraSuccessAction {
+    type: typeof UPDATE_PAGE_VIEW_HASURA_SUCCESS;
+    payload: PageViewsQuery;
+}
+
+export interface UpdatePageViewHasuraErrorAction {
+    type: typeof UPDATE_PAGE_VIEW_HASURA_ERROR;
+    payload: StudyDataError;
+}
+
 export interface FetchSampleStudySendAction {
     type: typeof FETCH_SAMPLE_STUDY_SEND;
     nctId: any;
@@ -293,23 +405,23 @@ export interface fetchStudyPageSuccessAction {
     payload: SearchStudyPageQuery;
 }
 export interface fetchStudyPageErrorAction {
-    type: typeof FETCH_STUDY_PAGE_ERROR,
-    payload: StudyDataError
-};
+    type: typeof FETCH_STUDY_PAGE_ERROR;
+    payload: StudyDataError;
+}
 export interface fetchSearchPageMMSendAction {
-    type: typeof FETCH_SEARCH_PAGE_MM_SEND,
-    params: any,
-    QUERY: any
-};
+    type: typeof FETCH_SEARCH_PAGE_MM_SEND;
+    params: any;
+    QUERY: any;
+}
 
 export interface fetchSearchPageMMSuccessAction {
-    type: typeof FETCH_SEARCH_PAGE_MM_SUCCESS,
-    payload: SearchStudyPageQuery 
-};
+    type: typeof FETCH_SEARCH_PAGE_MM_SUCCESS;
+    payload: SearchStudyPageQuery;
+}
 export interface fetchSearchPageMMErrorAction {
-    type: typeof FETCH_SEARCH_PAGE_MM_ERROR,
-    payload: StudyDataError
-};
+    type: typeof FETCH_SEARCH_PAGE_MM_ERROR;
+    payload: StudyDataError;
+}
 
 export interface fetchStudyPageHasuraSendAction {
     type: typeof FETCH_STUDY_PAGE_HASURA_SEND;
@@ -791,53 +903,148 @@ export interface bulkListUpdateSuccessAction {
 }
 
 export interface bulkListUpdateErrorAction {
-    type: typeof BULK_LIST_UPDATE_MUTATION_ERROR,
-    payload:StudyDataError
-};
+    type: typeof BULK_LIST_UPDATE_MUTATION_ERROR;
+    payload: StudyDataError;
+}
 export interface setShowLoginModalSendAction {
     type: typeof SET_SHOW_LOGIN_MODAL;
     input: any;
 }
 
-export type StudyActionTypes = fetchStudyPageSendAction | fetchStudyPageSuccessAction | fetchStudyPageErrorAction |
-fetchSearchPageMMSendAction | fetchSearchPageMMSuccessAction | fetchSearchPageMMErrorAction |
-fetchPageViewSendAction | fetchPageViewSuccessAction | fetchPageViewErrorAction |
-fetchPageViewsSendAction | fetchPageViewsSuccessAction | fetchPageViewsErrorAction |
-updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
-fetchWorkFlowPageSendAction | fetchWorkFlowPageSuccessAction | fetchWorkFlowPageErrorAction |
-upsertLabelMutationSendAction | upsertLabelMutationSuccessAction | upsertLabelMutationErrorAction |
-deleteLabelMutationSendAction | deleteLabelMutationSuccessAction | deleteLabelMutationErrorAction |
-fetchCrowdPageSendAction | fetchCrowdPageSuccessAction | fetchCrowdPageErrorAction | deleteReviewMutationSendAction | deleteReviewMutationSuccessAction |
-deleteReviewMutationErrorAction | fetchReviewPageSendAction | fetchReviewPageSuccessAction | fetchReviewPageErrorAction |
-updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
-fetchSearchStudyPageSendAction | fetchSearchStudyPageSuccessAction | fetchSearchStudyPageErrorAction |
-updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
-fetchStudyEditsHistorySendAction | fetchStudyEditsHistorySuccessAction | fetchStudyEditsHistoryErrorAction |
-FetchFacilitiesPageSendAction | FetchFacilitiesPageSuccessAction | FetchFacilitiesPageErrorAction |
-fetchWikiPageSendAction | fetchWikiPageSuccessAction | fetchWikiPageErrorAction |
-wikiPageUpdateContentMutationSendAction | wikiPageUpdateContentMutationSuccessAction | wikiPageUpdateContentMutationErrorAction |
-fetchAllWorkFlowsSendAction | fetchAllWorkFlowsSuccessAction | fetchAllWorkFlowsErrorAction |
-fetchSuggestedLabelsSendAction | fetchSuggestedLabelsSuccessAction | fetchSuggestedLabelsErrorAction |
-fetchReactionsIslandSendAction | fetchReactionsIslandSuccessAction | fetchReactionsIslandErrorAction |
-deleteReactionSendAction | deleteReactionSuccessAction | deleteReactionErrorAction |
-fetchReactionKindsSendAction | fetchReactionKindsSuccessAction | fetchReactionKindsErrorAction | 
-fetchStudyReactionsSendAction | fetchStudyReactionsSuccessAction | fetchStudyReactionsErrorAction |
-createReactionSendAction | createReactionSuccessAction | createReactionErrorAction |
-updateWorkflowPageSendAction | updateWorkflowPageSuccessAction | updateWorkflowPageErrorAction |
-fetchLabelsSendAction | fetchLabelsSuccessAction | fetchLabelsErrorAction |
-fetchLabelsBucketsSendAction | fetchLabelsBucketsSuccessAction | fetchLabelsBucketsErrorAction |
-bulkListUpdateSendAction | bulkListUpdateSuccessAction | bulkListUpdateErrorAction |
-bulkQueryUpdateSendAction | bulkQueryUpdateSuccessAction | bulkQueryUpdateErrorAction |
-FetchSampleStudySendAction | FetchSampleStudySuccessAction | FetchSampleStudyErrorAction | updateStudyViewLogCountSendAction | updateStudyViewLogCountSuccessAction | updateStudyViewLogCountErrorAction |
-CreatePageViewSendAction | CreatePageViewSuccessAction  | CreatePageViewErrorAction  | 
-DeletePageViewSendAction | DeletePageViewSuccessAction | DeletePageViewErrorAction | 
-UpdatePageViewSendAction | UpdatePageViewSuccessAction | UpdatePageViewErrorAction |
-FetchReactionsByIdSendAction | FetchReactionsByIdSuccessAction | FetchReactionsByIdErrorAction |
-upsertReviewFormMutationSendAction | upsertReviewFormMutationSuccessAction | upsertReviewFormMutationErrorAction |
-FetchEditReviewSendAction | FetchEditReviewSuccessAction | FetchEditReviewErrorAction     | FetchSampleStudyHasuraSendAction
-| FetchSampleStudyHasuraSuccessAction
-| FetchSampleStudyHasuraErrorAction
-| fetchStudyPageHasuraSendAction
-| fetchStudyPageHasuraSuccessAction
-| fetchStudyPageHasuraErrorAction
-| setShowLoginModalSendAction;
+export type StudyActionTypes =
+    | fetchPageViewHasuraSendAction
+    | fetchPageViewHasuraSuccessAction
+    | fetchPageViewHasuraErrorAction
+    | fetchPageViewsHasuraSendAction
+    | fetchPageViewsHasuraSuccessAction
+    | fetchPageViewsHasuraErrorAction
+    | CreatePageViewHasuraSendAction
+    | CreatePageViewHasuraSuccessAction
+    | CreatePageViewHasuraErrorAction
+    | DeletePageViewHasuraSendAction
+    | DeletePageViewHasuraSuccessAction
+    | DeletePageViewHasuraErrorAction
+    | UpdatePageViewHasuraSendAction
+    | UpdatePageViewHasuraSuccessAction
+    | UpdatePageViewHasuraErrorAction
+    | fetchStudyPageSendAction
+    | fetchStudyPageSuccessAction
+    | fetchStudyPageErrorAction
+    | fetchSearchPageMMSendAction
+    | fetchSearchPageMMSuccessAction
+    | fetchSearchPageMMErrorAction
+    | fetchPageViewSendAction
+    | fetchPageViewSuccessAction
+    | fetchPageViewErrorAction
+    | fetchPageViewsSendAction
+    | fetchPageViewsSuccessAction
+    | fetchPageViewsErrorAction
+    | updateStudyViewLogCountSendAction
+    | updateStudyViewLogCountSuccessAction
+    | updateStudyViewLogCountErrorAction
+    | fetchWorkFlowPageSendAction
+    | fetchWorkFlowPageSuccessAction
+    | fetchWorkFlowPageErrorAction
+    | upsertLabelMutationSendAction
+    | upsertLabelMutationSuccessAction
+    | upsertLabelMutationErrorAction
+    | deleteLabelMutationSendAction
+    | deleteLabelMutationSuccessAction
+    | deleteLabelMutationErrorAction
+    | fetchCrowdPageSendAction
+    | fetchCrowdPageSuccessAction
+    | fetchCrowdPageErrorAction
+    | deleteReviewMutationSendAction
+    | deleteReviewMutationSuccessAction
+    | deleteReviewMutationErrorAction
+    | fetchReviewPageSendAction
+    | fetchReviewPageSuccessAction
+    | fetchReviewPageErrorAction
+    | updateStudyViewLogCountSendAction
+    | updateStudyViewLogCountSuccessAction
+    | updateStudyViewLogCountErrorAction
+    | fetchSearchStudyPageSendAction
+    | fetchSearchStudyPageSuccessAction
+    | fetchSearchStudyPageErrorAction
+    | updateStudyViewLogCountSendAction
+    | updateStudyViewLogCountSuccessAction
+    | updateStudyViewLogCountErrorAction
+    | fetchStudyEditsHistorySendAction
+    | fetchStudyEditsHistorySuccessAction
+    | fetchStudyEditsHistoryErrorAction
+    | FetchFacilitiesPageSendAction
+    | FetchFacilitiesPageSuccessAction
+    | FetchFacilitiesPageErrorAction
+    | fetchWikiPageSendAction
+    | fetchWikiPageSuccessAction
+    | fetchWikiPageErrorAction
+    | wikiPageUpdateContentMutationSendAction
+    | wikiPageUpdateContentMutationSuccessAction
+    | wikiPageUpdateContentMutationErrorAction
+    | fetchAllWorkFlowsSendAction
+    | fetchAllWorkFlowsSuccessAction
+    | fetchAllWorkFlowsErrorAction
+    | fetchSuggestedLabelsSendAction
+    | fetchSuggestedLabelsSuccessAction
+    | fetchSuggestedLabelsErrorAction
+    | fetchReactionsIslandSendAction
+    | fetchReactionsIslandSuccessAction
+    | fetchReactionsIslandErrorAction
+    | deleteReactionSendAction
+    | deleteReactionSuccessAction
+    | deleteReactionErrorAction
+    | fetchReactionKindsSendAction
+    | fetchReactionKindsSuccessAction
+    | fetchReactionKindsErrorAction
+    | fetchStudyReactionsSendAction
+    | fetchStudyReactionsSuccessAction
+    | fetchStudyReactionsErrorAction
+    | createReactionSendAction
+    | createReactionSuccessAction
+    | createReactionErrorAction
+    | updateWorkflowPageSendAction
+    | updateWorkflowPageSuccessAction
+    | updateWorkflowPageErrorAction
+    | fetchLabelsSendAction
+    | fetchLabelsSuccessAction
+    | fetchLabelsErrorAction
+    | fetchLabelsBucketsSendAction
+    | fetchLabelsBucketsSuccessAction
+    | fetchLabelsBucketsErrorAction
+    | bulkListUpdateSendAction
+    | bulkListUpdateSuccessAction
+    | bulkListUpdateErrorAction
+    | bulkQueryUpdateSendAction
+    | bulkQueryUpdateSuccessAction
+    | bulkQueryUpdateErrorAction
+    | FetchSampleStudySendAction
+    | FetchSampleStudySuccessAction
+    | FetchSampleStudyErrorAction
+    | updateStudyViewLogCountSendAction
+    | updateStudyViewLogCountSuccessAction
+    | updateStudyViewLogCountErrorAction
+    | CreatePageViewSendAction
+    | CreatePageViewSuccessAction
+    | CreatePageViewErrorAction
+    | DeletePageViewSendAction
+    | DeletePageViewSuccessAction
+    | DeletePageViewErrorAction
+    | UpdatePageViewSendAction
+    | UpdatePageViewSuccessAction
+    | UpdatePageViewErrorAction
+    | FetchReactionsByIdSendAction
+    | FetchReactionsByIdSuccessAction
+    | FetchReactionsByIdErrorAction
+    | upsertReviewFormMutationSendAction
+    | upsertReviewFormMutationSuccessAction
+    | upsertReviewFormMutationErrorAction
+    | FetchEditReviewSendAction
+    | FetchEditReviewSuccessAction
+    | FetchEditReviewErrorAction
+    | FetchSampleStudyHasuraSendAction
+    | FetchSampleStudyHasuraSuccessAction
+    | FetchSampleStudyHasuraErrorAction
+    | fetchStudyPageHasuraSendAction
+    | fetchStudyPageHasuraSuccessAction
+    | fetchStudyPageHasuraErrorAction
+    | setShowLoginModalSendAction;

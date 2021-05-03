@@ -7,9 +7,9 @@ import ThemedButton from 'components/StyledComponents/index';
 import { PageViewsQuery_site_pageViews } from 'services/study/model/PageViewsQuery';
 import { History, Location } from 'history';
 import PageForm from './PageForm';
-import { fetchPageViews, createPageView,  } from 'services/study/actions';
+import { fetchPageViews, createPageView, fetchPageViewsHasura, } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import {RootState} from 'reducers';
+import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
 
 const SectionForm = styled.div`
@@ -30,14 +30,14 @@ function AddPage(props: AddPageProps) {
 
   const dispatch = useDispatch();
 
-  const handleAdd = () => { 
+  const handleAdd = () => {
     dispatch(createPageView(pageUrl, props.siteId))
     setPageUrl("")
   }
 
   const isDisabled = () => pageUrl === '' || pageUrl.indexOf('/') != -1;
   return (
-    <SectionForm onSubmit={ _ => console.log("Add form submit")}>
+    <SectionForm onSubmit={_ => console.log("Add form submit")}>
       <StyledFormControl
         placeholder="New Page URL"
         value={pageUrl}
@@ -61,18 +61,28 @@ export default function PagesForm(props: PageFormProps) {
   let [activeKey, setActive] = useState(-1);
 
   const dispatch = useDispatch();
-  const pageViewsData = useSelector((state:RootState) => state.study.pageViews);
+  //const pageViewsData = useSelector((state: RootState) => state.study.pageViews);
+  const pageViewsData = useSelector((state: RootState) => state.study.pageViewsHasura);
 
-  useEffect(()=>{
-    dispatch(fetchPageViews(props.site?.id));
-  },[dispatch]);
 
-    if(!pageViewsData){
-      return <BeatLoader />
-    } 
+  /*   useEffect(() => {
+      console.log("YES HERER")
+      dispatch(fetchPageViews(props.site?.id));
+    }, [dispatch]);
+   */
+  useEffect(() => {
+    console.log("FETCH Hasu page views site ", props.site?.id)
+    dispatch(fetchPageViewsHasura(props.site?.id));
+  }, [dispatch]);
+
+  if (!pageViewsData) {
+    return <BeatLoader />
+  }
+  console.log("page views datea", pageViewsData
+  )
 
   const pageViews =
-    pageViewsData?.data?.site?.pageViews?.slice().sort((a, b) => a.url.localeCompare(b.url)) || [];
+    pageViewsData?.data?.page_views?.slice().sort((a, b) => a.url.localeCompare(b.url)) || [];
   if (pageViews.length > 0 && activeKey == -1) {
     activeKey = pageViews[0].id;
   }
