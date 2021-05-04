@@ -62,6 +62,12 @@ export const deletePageViewHasura = id => {
     );
 };
 
+export const fetchFacilitiesPageHasura = (nctId: any) => {
+    return callHasuraClinwiki(HASURA_CW, query.HASURA_FACILITY_ISLAND_QUERY, {
+        nctId,
+    });
+};
+
 export const fetchSampleStudy = (nctId: any, QUERY: any) => {
     return callGraphql(ENDPOINT, QUERY, { nctId });
 };
@@ -148,6 +154,13 @@ export const fetchFacilitiesPage = (nctId: any) => {
 export const fetchWikiPage = (nctId: any) => {
     return callGraphql(ENDPOINT, query.WIKI_PAGE_QUERY, { nctId });
 };
+
+export const fetchHasuraWikiPage = (nctId: any) => {
+    return callHasuraClinwiki(HASURA_CW, query.HASURA_WIKI_PAGE_QUERY, {
+        nctId,
+    });
+};
+
 export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
     return callGraphql(ENDPOINT, mutate.WIKI_PAGE_UPDATE_CONTENT_MUTATION, {
         nctId: nctId,

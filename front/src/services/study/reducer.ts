@@ -8,7 +8,8 @@ const initialState: types.StudyState = {
     isCreatingPageViewHasura: false,
     isUpdatingPageViewHasura: false,
     isDeletingPageViewHasura: false,
-
+    isFetchingFacilitiesPageHasura: false,
+    facilitiesPageHasura: undefined,
     studyPageHasura: undefined,
     isFetchingStudyPageHasura: false,
     isFetchingSampleStudy: false,
@@ -42,6 +43,8 @@ const initialState: types.StudyState = {
     facilitiesPage: undefined,
     isFetchingWikiPage: false,
     wikiPage: undefined,
+    isFetchingHasuraWikiPage: false,
+    hasuraWikiPage: undefined,
     isWikiPageUpdatingContentMutation: false,
     isFetchingSuggestedLabels: false,
     suggestedLabels: undefined,
@@ -166,6 +169,22 @@ const studyReducer = (
             return {
                 ...state,
                 isUpdatingPageViewHasura: false,
+            };
+        case types.FETCH_FACILITIES_PAGE_HASURA_SEND:
+            return {
+                ...state,
+                isFetchingFacilitiesPageHasura: true,
+            };
+        case types.FETCH_FACILITIES_PAGE_HASURA_SUCCESS:
+            return {
+                ...state,
+                isFetchingFacilitiesPageHasura: false,
+                facilitiesPageHasura: action.payload,
+            };
+        case types.FETCH_FACILITIES_PAGE_HASURA_ERROR:
+            return {
+                ...state,
+                isFetchingFacilitiesPageHasura: false,
             };
 
         case types.FETCH_SAMPLE_STUDY_HASURA_SEND:
@@ -467,6 +486,23 @@ const studyReducer = (
             return {
                 ...state,
                 isFetchingWikiPage: false,
+            };
+
+        case types.FETCH_HASURA_WIKI_PAGE_SEND:
+            return {
+                ...state,
+                isFetchingHasuraWikiPage: true,
+            };
+        case types.FETCH_HASURA_WIKI_PAGE_SUCCESS:
+            return {
+                ...state,
+                isFetchingHasuraWikiPage: false,
+                hasuraWikiPage: action.payload,
+            };
+        case types.FETCH_HASURA_WIKI_PAGE_ERROR:
+            return {
+                ...state,
+                isFetchingHasuraWikiPage: false,
             };
 
         case types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND:

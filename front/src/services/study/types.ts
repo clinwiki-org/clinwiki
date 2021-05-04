@@ -48,6 +48,14 @@ export const DELETE_PAGE_VIEW_HASURA_SEND = 'DELETE_PAGE_VIEW_HASURA_SEND';
 export const DELETE_PAGE_VIEW_HASURA_SUCCESS =
     'DELETE_PAGE_VIEW_HASURA_SUCCESS';
 export const DELETE_PAGE_VIEW_HASURA_ERROR = 'DELETE_PAGE_VIEW_HASURA_ERROR';
+//HASURA
+
+export const FETCH_FACILITIES_PAGE_HASURA_SEND =
+    'FETCH_FACILITIES_PAGE_HASURA_SEND';
+export const FETCH_FACILITIES_PAGE_HASURA_SUCCESS =
+    'FETCH_FACILITIES_PAGE_HASURA_SUCCESS';
+export const FETCH_FACILITIES_PAGE_HASURA_ERROR =
+    'FETCH_FACILITIES_PAGE_HASURA_ERROR';
 
 export const FETCH_SAMPLE_STUDY_SEND = 'FETCH_SAMPLE_STUDY_SEND';
 export const FETCH_SAMPLE_STUDY_SUCCESS = 'FETCH_SAMPLE_STUDY_SUCCESS';
@@ -141,6 +149,10 @@ export const FETCH_WIKI_PAGE_SEND = 'FETCH_WIKI_PAGE_SEND';
 export const FETCH_WIKI_PAGE_SUCCESS = 'FETCH_WIKI_PAGE_SUCCESS';
 export const FETCH_WIKI_PAGE_ERROR = 'FETCH_WIKI_PAGE_ERROR';
 
+export const FETCH_HASURA_WIKI_PAGE_SEND = 'FETCH_HASURA_WIKI_PAGE_SEND';
+export const FETCH_HASURA_WIKI_PAGE_SUCCESS = 'FETCH_HASURA_WIKI_PAGE_SUCCESS';
+export const FETCH_HASURA_WIKI_PAGE_ERROR = 'FETCH_HASURA_WIKI_PAGE_ERROR';
+
 export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND =
     'WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND';
 export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS =
@@ -224,7 +236,8 @@ export interface StudyState {
     isCreatingPageViewHasura: boolean;
     isDeletingPageViewHasura: boolean;
     isUpdatingPageViewHasura: boolean;
-
+    isFetchingFacilitiesPageHasura: boolean;
+    facilitiesPageHasura: any | undefined;
     studyPageHasura: any | undefined;
     isFetchingStudyPageHasura: any;
     isFetchingSampleStudy: boolean;
@@ -259,6 +272,8 @@ export interface StudyState {
     isFetchingWikiPage: boolean;
     isWikiPageUpdatingContentMutation: boolean;
     wikiPage: WikiPageQuery | undefined;
+    isFetchingHasuraWikiPage: boolean;
+    hasuraWikiPage: WikiPageQuery | undefined;
     isFetchingSuggestedLabels: boolean;
     suggestedLabels: SuggestedLabelsQuery | undefined;
     isFetchingAllWorkFlows: boolean;
@@ -365,6 +380,19 @@ export interface UpdatePageViewHasuraSuccessAction {
 
 export interface UpdatePageViewHasuraErrorAction {
     type: typeof UPDATE_PAGE_VIEW_HASURA_ERROR;
+}
+export interface fetchFacilitiesPageHasuraSendAction {
+    type: typeof FETCH_FACILITIES_PAGE_HASURA_SEND;
+    nctId: any;
+}
+
+export interface fetchFacilitiesPageHasuraSuccessAction {
+    type: typeof FETCH_FACILITIES_PAGE_HASURA_SUCCESS;
+    payload: any;
+}
+
+export interface fetchFacilitiesPageHasuraErrorAction {
+    type: typeof FETCH_FACILITIES_PAGE_HASURA_ERROR;
     payload: StudyDataError;
 }
 
@@ -678,6 +706,21 @@ export interface fetchWikiPageErrorAction {
     payload: StudyDataError;
 }
 
+export interface fetchHasuraWikiPageSendAction {
+    type: typeof FETCH_HASURA_WIKI_PAGE_SEND;
+    nctId: any;
+}
+
+export interface fetchHasuraWikiPageSuccessAction {
+    type: typeof FETCH_HASURA_WIKI_PAGE_SUCCESS;
+    payload: any;
+}
+
+export interface fetchHasuraWikiPageErrorAction {
+    type: typeof FETCH_HASURA_WIKI_PAGE_ERROR;
+    payload: StudyDataError;
+}
+
 export interface wikiPageUpdateContentMutationSendAction {
     type: typeof WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND;
     nctId: any;
@@ -933,6 +976,12 @@ export type StudyActionTypes =
     | fetchSearchPageMMSendAction
     | fetchSearchPageMMSuccessAction
     | fetchSearchPageMMErrorAction
+    | fetchFacilitiesPageHasuraSendAction
+    | fetchFacilitiesPageHasuraSuccessAction
+    | fetchFacilitiesPageHasuraErrorAction
+    | fetchStudyPageSendAction
+    | fetchStudyPageSuccessAction
+    | fetchStudyPageErrorAction
     | fetchPageViewSendAction
     | fetchPageViewSuccessAction
     | fetchPageViewErrorAction
@@ -978,6 +1027,9 @@ export type StudyActionTypes =
     | fetchWikiPageSendAction
     | fetchWikiPageSuccessAction
     | fetchWikiPageErrorAction
+    | fetchHasuraWikiPageSendAction
+    | fetchHasuraWikiPageSuccessAction
+    | fetchHasuraWikiPageErrorAction
     | wikiPageUpdateContentMutationSendAction
     | wikiPageUpdateContentMutationSuccessAction
     | wikiPageUpdateContentMutationErrorAction
