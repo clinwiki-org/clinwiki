@@ -51,7 +51,7 @@ export const getGraphQLMigrationURL = () => {
     return `http://${window.location.hostname}:8088/graphql`;
 };
 
-export const callHasuraAACT = (
+/* export const callHasuraAACT = (
     endpoint: string,
     query: any,
     variables: any,
@@ -71,7 +71,7 @@ export const callHasuraAACT = (
         }),
     }).then(r => r.json());
 };
-
+ */
 export const callHasuraClinwiki = (
     endpoint: string,
     query: any,
@@ -94,7 +94,7 @@ export const callHasuraClinwiki = (
     }).then(r => r.json());
 };
 
-export const getHasuraURLAACT = () => {
+/* export const getHasuraURLAACT = () => {
     if (
         typeof window === 'undefined' ||
         window.location.hostname.includes('localhost')
@@ -102,14 +102,14 @@ export const getHasuraURLAACT = () => {
         return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
     }
     return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
-};
+}; */
 
 export const getHasuraClinwikiURL = () => {
     if (
         typeof window === 'undefined' ||
         window.location.hostname.includes('localhost')
     ) {
-        return `https://clinwiki-crowd-exp.hasura.app/v1/graphql`;
+        return `https://clinwiki-ctgov-exp-x.hasura.app/v1/graphql`;
     }
-    return 'https://clinwiki-crowd-exp.hasura.app/v1/graphql';
+    return 'https://clinwiki-ctgov-exp-x.hasura.app/v1/graphql';
 };

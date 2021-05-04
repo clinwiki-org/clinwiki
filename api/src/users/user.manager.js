@@ -47,7 +47,10 @@ export async function authenticate(email, password, oAuthToken) {
             if (user) {
                 console.log('got user');
                 logger.info('Found user ' + user.id);
-                const isValid = await bcrypt.compare(password, user.encrypted_password);
+                const isValid = await bcrypt.compare(
+                    password,
+                    user.encrypted_password
+                );
                 if (isValid) {
                     const token = await generateJWT(user);
                     return {
@@ -63,22 +66,30 @@ export async function authenticate(email, password, oAuthToken) {
 }
 
 async function generateJWT(user) {
-    logger.info("generateJWT called");
+    logger.info('generateJWT called');
     //console.log(user);
     let userId = user.id;
     userId = userId.toString();
-    const token = jwt.sign({
+    const token = jwt.sign(
+        {
             email: user.email,
             exp: Math.floor(Date.now() / 1000) + config.jwtExpire,
             'https://hasura.io/jwt/claims': {
-                'x-hasura-allowed-roles': ['user', 'admin', 'anonymous'],
-                'x-hasura-default-role': user.role,
+                'x-hasura-allowed-roles': [
+                    'user',
+                    'admin',
+                    'anonymous',
+                    'contributor',
+                    'indexer',
+                ],
+                'x-hasura-default-role': 'admin', //TODO change to user.role,  once the Hasura permissions for new roles are configured
                 'x-hasura-user-id': userId,
             },
         },
-        config.jwtSecret, { algorithm: 'HS256' }
+        config.jwtSecret,
+        { algorithm: 'HS256' }
     );
-    logger.info('TOKEN', token)
+    logger.info('TOKEN', token);
     return token;
 }
 async function findUserRole(roles) {
@@ -89,17 +100,17 @@ async function findUserRole(roles) {
     // if (roles.includes('admin')) {
     //     role = 'admin';
     // }
-    console.log('ROLES', roles)
+    console.log('ROLES', roles);
     if (roles.some(role => role.name == 'admin')) {
-        logger.info('FILTERING HIT ADMIN', role.name)
-        role="admin"
-      }
+        logger.info('FILTERING HIT ADMIN', role.name);
+        role = 'admin';
+    }
     //console.log("role = ", role)
     return role;
 }
 export async function getUserByEmail(email) {
-    logger.info('GETTING USERS BY EMAIL')
-        //console.log("getUserByEmail called");
+    logger.info('GETTING USERS BY EMAIL');
+    //console.log("getUserByEmail called");
     const results = await query(QUERY_USER, [email]);
     //console.log("got user by email = ");
     //console.log(results !== null);
@@ -114,11 +125,13 @@ export async function getUserByEmail(email) {
         user.reactionsCount = await getUserReactionsCount(user.id);
         const wikis = await getUserWikis(user.id);
         user.contributions = wikis ? wikis.length : 0;
-        console.log("user = ", user);
+        console.log('user = ', user);
         //console.log("user.roles = ", user.roles);
-        console.log("user.role = ", user.role);
+        console.log('user.role = ', user.role);
         if (user.roles.includes(ROLE_SITE_OWNER)) {
-            logger.debug('User is a site owner. Populate role dependent fields');
+            logger.debug(
+                'User is a site owner. Populate role dependent fields'
+            );
         }
         return user;
     }
@@ -210,7 +223,8 @@ export async function signUp(email, password, defaultQueryString, oAuthToken) {
                 user: createdUser,
             };
         }
-    } else {}
+    } else {
+    }
     return null;
 }
 
