@@ -380,6 +380,7 @@ export interface UpdatePageViewHasuraSuccessAction {
 
 export interface UpdatePageViewHasuraErrorAction {
     type: typeof UPDATE_PAGE_VIEW_HASURA_ERROR;
+    payload: any;
 }
 export interface fetchFacilitiesPageHasuraSendAction {
     type: typeof FETCH_FACILITIES_PAGE_HASURA_SEND;
