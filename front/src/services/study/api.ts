@@ -3,9 +3,9 @@ import * as query from './queries';
 import * as mutate from './mutations';
 import {
     callGraphql,
-    callHasuraAACT,
+    // callHasuraAACT,
     callHasuraClinwiki,
-    getHasuraURLAACT,
+    //getHasuraURLAACT,
     get_gql_url,
     getGraphQLMigrationURL,
 } from 'utils/graphqlUtil';
@@ -14,7 +14,7 @@ import {
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
 const ENDPOINT = get_gql_url();
-const HASURA_AACT = getHasuraURLAACT();
+//const HASURA_AACT = getHasuraURLAACT();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 const HASURA_CW = getHasuraClinwikiURL();
 
@@ -71,7 +71,7 @@ export const fetchSearchPageMM = (params: any, QUERY: any) => {
 };
 
 export const fetchHasuraSampleStudy = (nctId: any, QUERY: any) => {
-    return callHasuraAACT(HASURA_AACT, QUERY, { nctId });
+    return callHasuraClinwiki(HASURA_CW, QUERY, { nctId });
 };
 
 export const fetchStudyPage = (nctId: any, QUERY: any) => {
@@ -79,7 +79,7 @@ export const fetchStudyPage = (nctId: any, QUERY: any) => {
 };
 
 export const fetchStudyPageHasura = (nctId: any, HASURA_STUDY_QUERY: any) => {
-    return callHasuraAACT(HASURA_AACT, HASURA_STUDY_QUERY, { nctId });
+    return callHasuraClinwiki(HASURA_CW, HASURA_STUDY_QUERY, { nctId });
 };
 
 export const fetchPageViews = (siteId: any) => {
