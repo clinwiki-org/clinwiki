@@ -1,6 +1,6 @@
 import logger from '../../util/logger';
 import {queryAACT} from '../../util/db';
-import {bulkUpsert} from '../../search/elastic';
+import {bulkUpsert,bulkUpdate} from '../../search/elastic';
 import {JOB_TYPES,enqueueJob} from '../pipeline.queue';
 const util = require('util')
 
@@ -16,7 +16,6 @@ const aactJob = async () => {
             logger.info('Starting AACT Job');
 
             const studyIds = await getStudiesToIndex();
-            //const studyIds = ['NCT00001431'];
             logger.debug("Number of studies to index: "+studyIds.length);
             const bulkList = chunkList(studyIds,CHUNK_SIZE);
 
@@ -49,6 +48,8 @@ export const aactStudyReindex = async (payload) => {
     }
     logger.info("Sending bulk update of "+idList.length);
     await bulkUpsert(studies);
+    await sendBriefSummaries(idList);
+    await sendConditions(idList);
     logger.info("Bulk update complete.");
 
 }
@@ -63,6 +64,40 @@ const getBulkStudies = async (idList) => {
     const query = 'select * from studies where nct_id in ('+params.join(',')+')';
     const rs = await queryAACT(query,idList);
     return rs;
+}
+
+const sendBriefSummaries = async (idList) => {
+    let params = idList.map( (id,index) => '$'+(index+1));
+    const query = 'select * from brief_summaries where nct_id in ('+params.join(',')+')';
+    const results = await queryAACT(query,idList);
+    
+    let studies = [];
+    for(let i=0;i<results.rowCount;i++) {
+        const summary = results.rows[i];
+        const study = {
+            nct_id: summary.nct_id,
+            brief_summary: summary.description
+        };
+        studies.push(study);
+    }
+    await bulkUpdate(studies);
+}
+
+const sendConditions = async (idList) => {
+    let params = idList.map( (id,index) => '$'+(index+1));
+    const query = 'select nct_id,array_agg(downcase_name) condi from conditions where nct_id in ('+params.join(',')+') group by nct_id';
+    const results = await queryAACT(query,idList);
+    
+    let studies = [];
+    for(let i=0;i<results.rowCount;i++) {
+        const s = results.rows[i];
+        const study = {
+            nct_id: s.nct_id,
+            conditions: s.condi
+        };
+        studies.push(study);
+    }
+    await bulkUpdate(studies);
 }
 
 const chunkList = (list, size) => {

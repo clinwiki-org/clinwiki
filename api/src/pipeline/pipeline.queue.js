@@ -2,6 +2,7 @@ import logger from '../util/logger';
 import {query} from '../util/db';
 import {reindexWikiPage} from './jobs/reindex.job';
 import {aactStudyReindex} from './jobs/aact.job';
+import {initMonitorTriggers} from './trigger.monitor';
 const util = require('util')
 
 const POLL_QUERY = 'select * from pipeline_queue order by created_at asc';
@@ -25,6 +26,7 @@ export const initQueue = async () => {
         logger.error("BZZZT PIPELINE_QUEUE table doesn't exist. Creating it...");
         await createQueueTable();
     }
+    await initMonitorTriggers();
 }
 
 const createQueueTable = async () => {
@@ -32,14 +34,14 @@ const createQueueTable = async () => {
 }
 
 export const serveQueue = async () => {
-    logger.info('Serving pipeline queue');
+    //logger.info('Serving pipeline queue');
     let results = await query(POLL_QUERY,[]);
     
         for(let i=0;i<results.rowCount;i++) {
             await runJob(results.rows[i]);
         }
 
-    logger.info('Pipeline queue done');
+    //logger.info('Pipeline queue done');
 }
 
 const runJob = async (job) => {

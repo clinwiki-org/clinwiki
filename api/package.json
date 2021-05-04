@@ -38,6 +38,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pg": "^8.5.1",
+    "pg-listen": "^1.7.0",
     "pug": "^3.0.2",
     "rotating-file-stream": "^2.0.2",
     "sanitize-html": "^1.20.1",

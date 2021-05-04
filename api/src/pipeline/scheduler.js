@@ -9,7 +9,7 @@ const util = require('util')
 const INTERVAL = 5 * 1000;
  
 export const runScheduler = () => {
-    schedule.scheduleJob(config.clinwikiCronTab, clinwikiJob);
+    //schedule.scheduleJob(config.clinwikiCronTab, clinwikiJob);
     schedule.scheduleJob(config.aactCronTab, aactJob);
     setInterval(serveQueue, INTERVAL);
     

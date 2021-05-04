@@ -14,7 +14,6 @@ export const query = async (str,params) => {
     return res;
 }
 
-
 export const queryAACT = async (str,params) => {
     if(!aactPool) {
 	    aactPool = new Pool({ connectionString: config.aactUrl });
