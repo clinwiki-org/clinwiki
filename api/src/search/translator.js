@@ -1,6 +1,7 @@
 import logger from '../util/logger';
 const esb = require('elastic-builder');
 const zg = require('zip2geo');
+const util = require('util');
 
 const ENABLED_AGGS = [
     'average_rating', 'overall_status', 'facility_states', 'conditions',
@@ -235,11 +236,19 @@ const getFieldName = (agg,isCrowdAgg) => {
 
 
 function injectAggs(criteria,json) {
-    let aggList = criteria.aggFilters.map( af => {
+
+    let aggList = [];
+    criteria.aggFilters.map( af => {
         let t = {};
+        if(af.field == 'location'){
+            return
+        }
+        if(af.gte || af.lte){
+            return
+        }
         t[af.field] = {value: af.values[0]};
 
-        return {
+        aggList.push({
             bool: {
                 filter: [
                     {
@@ -259,12 +268,15 @@ function injectAggs(criteria,json) {
                     }
                 ]
             }
-        }
+        });
     });
 
-    let crowdAggList = criteria.crowdAggFilters.map( af => {
-
-        return {
+    let crowdAggList = [];
+    criteria.crowdAggFilters.map( af => {
+        if(af.gte || af.lte){
+            return
+        }
+        crowdAggList.push({
             bool: {
                 filter: [
                     {
@@ -288,7 +300,7 @@ function injectAggs(criteria,json) {
                     }
                 ]
             }
-        }
+        });
     });
 
     let aggs = {};
