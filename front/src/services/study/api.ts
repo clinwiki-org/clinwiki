@@ -167,6 +167,18 @@ export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
         content: content,
     });
 };
+
+export const wikiPageUpdateHasuraMutation = (nctId: any, text: any) => {
+    return callHasuraClinwiki(
+        HASURA_CW,
+        mutate.WIKI_PAGE_UPDATE_HASURA_MUTATION,
+        {
+            nctId: nctId,
+            text: text,
+        }
+    );
+};
+
 export const fetchSuggestedLabels = (nctId: any, crowdBucketsWanted: any) => {
     return callGraphql(ENDPOINT, query.SUGGESTED_LABELS_QUERY, {
         nctId: nctId,

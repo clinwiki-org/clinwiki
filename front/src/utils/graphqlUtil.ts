@@ -12,7 +12,7 @@ export const callGraphql = (
     console.log("variables = ",variables);
     console.log(`operationName = ${operationName}`);
     console.log(`auth = ${getLocalJwt()}`);*/
-    console.log('endpoint being hit', endpoint);
+    //console.log('endpoint being hit', endpoint);
     const abc = fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -95,6 +95,7 @@ export const callHasuraClinwiki = (
 };
 
 /* export const getHasuraURLAACT = () => {
+export const getHasuraURLAACT = () => {
     if (
         typeof window === 'undefined' ||
         window.location.hostname.includes('localhost')

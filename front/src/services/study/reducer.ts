@@ -46,6 +46,7 @@ const initialState: types.StudyState = {
     isFetchingHasuraWikiPage: false,
     hasuraWikiPage: undefined,
     isWikiPageUpdatingContentMutation: false,
+    isWikiPageUpdatingHasuraMutation: false,
     isFetchingSuggestedLabels: false,
     suggestedLabels: undefined,
     isFetchingAllWorkFlows: false,
@@ -519,6 +520,21 @@ const studyReducer = (
             return {
                 ...state,
                 isWikiPageUpdatingContentMutation: false,
+            };
+        case types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND:
+            return {
+                ...state,
+                isWikiPageUpdatingHasuraMutation: true,
+            };
+        case types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SUCCESS:
+            return {
+                ...state,
+                isWikiPageUpdatingHasuraMutation: false,
+            };
+        case types.WIKI_PAGE_UPDATE_HASURA_MUTATION_ERROR:
+            return {
+                ...state,
+                isWikiPageUpdatingHasuraMutation: false,
             };
         case types.FETCH_SUGGESTED_LABELS_SEND:
             return {

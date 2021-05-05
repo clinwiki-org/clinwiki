@@ -566,6 +566,27 @@ export const wikiPageUpdateContentMutationError = (
     type: types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR,
     payload: { message },
 });
+
+export const wikiPageUpdateHasuraMutation = (
+    nctId: any,
+    text: string
+): types.StudyActionTypes => ({
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND,
+    nctId,
+    text,
+});
+export const wikiPageUpdateHasuraMutationSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SUCCESS,
+});
+export const wikiPageUpdateHasuraMutationError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_ERROR,
+    payload: { message },
+});
+
 export const fetchSuggestedLabels = (
     nctId: string
     // crowdBucketsWanted: string[]

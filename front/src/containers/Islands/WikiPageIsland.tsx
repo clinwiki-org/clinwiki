@@ -17,7 +17,8 @@ import WorkFlowAnimation from '../StudyPage/components/StarAnimation';
 import { CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import LoginModal from '../../components/LoginModal';
-import { wikiPageUpdateContentMutation, fetchWikiPage, fetchHasuraWikiPage } from 'services/study/actions';
+import { wikiPageUpdateContentMutation, fetchWikiPage, fetchHasuraWikiPage, wikiPageUpdateHasuraMutation } from 'services/study/actions';
+import data from '@iconify/icons-fe/smile-plus';
 
 interface Props {
   nctId: string;
@@ -111,15 +112,18 @@ export default function WikiPageIsland(props: Props) {
 
   }
   const handleEditSubmit = () => {
-    let content = getEditorText() || ''
-    dispatch(wikiPageUpdateContentMutation(nctId, content));
+    //@ts-ignore
+    let content = getEditorText() || wikiPageData.data.wiki_pages[0].text
+
+    //dispatch(wikiPageUpdateContentMutation(nctId, content));
+    dispatch(wikiPageUpdateHasuraMutation(nctId, content));
 
     history.push(`${match.url}${queryStringAll(params)}`);
     setFlashAnimation(true)
   };
 
   const renderSubmitButton = (
-    data: WikiPageQuery,
+    data: any,
     isAuthenticated: boolean,
     readOnly: boolean
   ) => {
@@ -127,7 +131,7 @@ export default function WikiPageIsland(props: Props) {
     if (readOnly) return false;
     const editorTextState = getEditorText();
     const editorTextData =
-      data.study && data.study.wikiPage && data.study.wikiPage.content;
+      data && data.wiki_pages[0] && data.wiki_pages[0].text // data.study && data.study.wikiPage && data.study.wikiPage.content;
 
     let editMessage = `Changes not saved. Are you sure you want to leave while editing?`;
 

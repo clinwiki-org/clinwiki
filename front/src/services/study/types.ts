@@ -160,6 +160,13 @@ export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_SUCCESS =
 export const WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR =
     'WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR';
 
+export const WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND =
+    'WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND';
+export const WIKI_PAGE_UPDATE_HASURA_MUTATION_SUCCESS =
+    'WIKI_PAGE_UPDATE_HASURA_MUTATION_SUCCESS';
+export const WIKI_PAGE_UPDATE_HASURA_MUTATION_ERROR =
+    'WIKI_PAGE_UPDATE_HASURA_MUTATION_ERROR';
+
 export const FETCH_SUGGESTED_LABELS_SEND = 'FETCH_SUGGESTED_LABELS_SEND';
 export const FETCH_SUGGESTED_LABELS_SUCCESS = 'FETCH_SUGGESTED_LABELS_SUCCESS';
 export const FETCH_SUGGESTED_LABELS_ERROR = 'FETCH_SUGGESTED_LABELS_ERROR';
@@ -271,6 +278,7 @@ export interface StudyState {
     facilitiesPage: FacilitiesPageQuery | undefined;
     isFetchingWikiPage: boolean;
     isWikiPageUpdatingContentMutation: boolean;
+    isWikiPageUpdatingHasuraMutation: boolean;
     wikiPage: WikiPageQuery | undefined;
     isFetchingHasuraWikiPage: boolean;
     hasuraWikiPage: WikiPageQuery | undefined;
@@ -737,6 +745,21 @@ export interface wikiPageUpdateContentMutationErrorAction {
     payload: StudyDataError;
 }
 
+export interface wikiPageUpdateHasuraMutationSendAction {
+    type: typeof WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND;
+    nctId: any;
+    text: any;
+}
+
+export interface wikiPageUpdateHasuraMutationSuccessAction {
+    type: typeof WIKI_PAGE_UPDATE_HASURA_MUTATION_SUCCESS;
+}
+
+export interface wikiPageUpdateHasuraMutationErrorAction {
+    type: typeof WIKI_PAGE_UPDATE_HASURA_MUTATION_ERROR;
+    payload: StudyDataError;
+}
+
 export interface fetchSuggestedLabelsSendAction {
     type: typeof FETCH_SUGGESTED_LABELS_SEND;
     nctId: any;
@@ -1034,6 +1057,9 @@ export type StudyActionTypes =
     | wikiPageUpdateContentMutationSendAction
     | wikiPageUpdateContentMutationSuccessAction
     | wikiPageUpdateContentMutationErrorAction
+    | wikiPageUpdateHasuraMutationSendAction
+    | wikiPageUpdateHasuraMutationSuccessAction
+    | wikiPageUpdateHasuraMutationErrorAction
     | fetchAllWorkFlowsSendAction
     | fetchAllWorkFlowsSuccessAction
     | fetchAllWorkFlowsErrorAction
