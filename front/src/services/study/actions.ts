@@ -101,6 +101,25 @@ export const updatePageViewHasuraError = (
     payload: { message },
 });
 
+export const fetchFacilitiesHasuraPage = (
+    nctId: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_FACILITIES_PAGE_HASURA_SEND,
+    nctId,
+});
+export const fetchFacilitiesPageHasuraSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_FACILITIES_PAGE_HASURA_SUCCESS,
+    payload,
+});
+export const fetchFacilitiesPageHasuraError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_FACILITIES_PAGE_HASURA_ERROR,
+    payload: { message },
+});
+
 export const fetchSampleStudy = (
     nctId: string,
     QUERY: any
@@ -495,6 +514,7 @@ export const fetchFacilitiesPageError = (
     type: types.FETCH_FACILITIES_PAGE_ERROR,
     payload: { message },
 });
+
 export const fetchWikiPage = (nctId: string): types.StudyActionTypes => ({
     type: types.FETCH_WIKI_PAGE_SEND,
     nctId,
@@ -509,6 +529,24 @@ export const fetchWikiPageError = (
     type: types.FETCH_WIKI_PAGE_ERROR,
     payload: { message },
 });
+
+export const fetchHasuraWikiPage = (nctId: string): types.StudyActionTypes => ({
+    type: types.FETCH_HASURA_WIKI_PAGE_SEND,
+    nctId,
+});
+export const fetchHasuraWikiPageSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_HASURA_WIKI_PAGE_SUCCESS,
+    payload,
+});
+export const fetchHasuraWikiPageError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_HASURA_WIKI_PAGE_ERROR,
+    payload: { message },
+});
+
 export const wikiPageUpdateContentMutation = (
     nctId: any,
     content: string
@@ -528,6 +566,27 @@ export const wikiPageUpdateContentMutationError = (
     type: types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_ERROR,
     payload: { message },
 });
+
+export const wikiPageUpdateHasuraMutation = (
+    nctId: any,
+    text: string
+): types.StudyActionTypes => ({
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND,
+    nctId,
+    text,
+});
+export const wikiPageUpdateHasuraMutationSuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SUCCESS,
+});
+export const wikiPageUpdateHasuraMutationError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_ERROR,
+    payload: { message },
+});
+
 export const fetchSuggestedLabels = (
     nctId: string
     // crowdBucketsWanted: string[]

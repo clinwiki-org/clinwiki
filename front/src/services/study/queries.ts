@@ -294,6 +294,57 @@ export const WIKI_PAGE_QUERY = `
   ${WIKI_PAGE_EDIT_FRAGMENT}
   ${WIKI_PAGE_FRAGMENT}
 `;
+
+export const HASURA_WIKI_PAGE_QUERY = `
+  query HasuraWikiPageQuery($nctId: String) {
+  wiki_pages(where: {nct_id: {_eq: $nctId}}) {
+    nct_id
+    text
+  }
+}
+
+`;
+
+const JOINT_WIKI_PAGE_QUERY = `
+   query WikiPageQuery($nctId: String!) {
+    study(nctId: $nctId) {
+      wikiPage {
+        content
+    edits {
+     user {
+      id
+      firstName
+      lastName
+      email
+    }
+    createdAt
+    id
+    comment
+    diff
+    diffHtml
+    changeSet {
+      bodyChanged
+      frontMatterChanged
+      editLines {
+        status
+        content
+        frontMatter
+        body
+      }
+    }
+    }
+    nctId
+    meta
+      }
+      nctId
+    }
+    me {
+      id
+    }
+  }
+
+`;
+
 export const REVIEW_FRAGMENT = `
   fragment ReviewsPageFragment on Review {
     id
@@ -403,6 +454,38 @@ query FacilitiesPageQuery($nctId: String!) {
 }
 ${FACILITY_FRAGMENT}
 `;
+
+export const HASURA_FACILITY_ISLAND_QUERY = `
+query HasuraFacilitiesPageQuery($nctId: String!) {
+  ctgov_studies(where: {nct_id: {_eq: $nctId}}) {
+    facilities {
+      city
+      country
+      id
+      name
+      nct_id
+      state
+      status
+      zip
+      contacts {
+        contact_type
+        email
+        id
+        name
+        nct_id
+        phone
+      }
+      location {
+        latitude
+        longitude
+        status
+      }
+    }
+    nct_id
+  }
+}
+`;
+
 export const SUGGESTED_LABELS_QUERY = `
 query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
   crowdAggFacets(crowdBucketsWanted: $crowdBucketsWanted) { 
@@ -474,6 +557,23 @@ export const WORKFLOW_VIEW_PROVIDER = `
     }
   }
   ${WORKFLOW_VIEW_PROVIDER_FRAGMENT}
+`;
+
+export const HASURA_STUDY_REACTIONS = `
+query ReactionsCount ($nctId : String){
+  reactions(where: {nct_id: {_eq: $nctId}}) {
+    reaction_kind {
+      name
+      id
+      unicode
+    }
+    id
+    nct_id
+    reaction_kind_id
+    user_id
+  }
+}
+
 `;
 
 export const REACTIONS_ISLAND_QUERY = `

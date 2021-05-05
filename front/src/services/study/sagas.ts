@@ -164,6 +164,7 @@ function* getStudyPage(action) {
         yield put(actions.fetchStudyPageError(err.message));
     }
 }
+
 function* getSearchPageMM(action) {
     try {
         let response = yield call(() =>
@@ -180,6 +181,7 @@ function* getSearchPageMM(action) {
         yield put(actions.fetchStudyPageError(err.message));
     }
 }
+
 function* getStudyPageHasura(action) {
     //console.log('SAGA GET STUDY HASURA', action.HASURA_STUDY_QUERY);
     try {
@@ -403,6 +405,23 @@ function* getWikiPage(action) {
         yield put(actions.fetchWikiPageError(err.message));
     }
 }
+
+function* getHasuraWikiPage(action) {
+    try {
+        //console.log('SAGA Get HASURA WIKIpage', action);
+        let response = yield call(() => api.fetchHasuraWikiPage(action.nctId));
+        console.log('HASURA WIKI res', response);
+        if (response) {
+            yield put(actions.fetchHasuraWikiPageSuccess(response));
+        } else {
+            yield put(actions.fetchHasuraWikiPageError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchHasuraWikiPageError(err.message));
+    }
+}
+
 function* wikiPageUpdateContentMutation(action) {
     try {
         //console.log(action)
@@ -423,6 +442,29 @@ function* wikiPageUpdateContentMutation(action) {
         yield put(actions.wikiPageUpdateContentMutationError(err.message));
     }
 }
+
+function* wikiPageUpdateHasuraMutation(action) {
+    try {
+        console.log('SAGA Hasura Wiki Update', action);
+        let response = yield call(() =>
+            api.wikiPageUpdateHasuraMutation(action.nctId, action.text)
+        );
+        if (response) {
+            console.log('SAGA RES Hasura Wiki Update', response);
+            yield getHasuraWikiPage(action); //yield put(actions.fetchHasuraWikiPage(action.nctId));
+            yield put(fetchCurrentUser());
+            yield put(actions.wikiPageUpdateHasuraMutationSuccess(response));
+        } else {
+            yield put(
+                actions.wikiPageUpdateHasuraMutationError(response.message)
+            );
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.wikiPageUpdateHasuraMutationError(err.message));
+    }
+}
+
 function* getAllWorkFlows(action) {
     try {
         let response = yield call(() => api.fetchAllWorkFlows());
@@ -471,6 +513,7 @@ function* deleteReaction(action) {
         yield put(actions.deleteReactionError(err.message));
     }
 }
+
 function* getReactionKinds(action) {
     try {
         let response = yield call(() => api.fetchReactionKinds());
@@ -618,6 +661,7 @@ function* updatePageView(action) {
         yield put(actions.updatePageViewError(err.message));
     }
 }
+
 function* deletePageView(action) {
     const currentPageViews = yield select(getCurrentPageViews);
     try {
@@ -705,14 +749,34 @@ function* getEditReview(action) {
         yield put(actions.fetchEditReviewError(err.message));
     }
 }
+
+function* getFacilitiesPageHasura(action) {
+    try {
+        let response = yield call(() =>
+            api.fetchFacilitiesPageHasura(action.nctId)
+        );
+        /*  console.log(
+            '🚀 ~ SAGA HAS function*getFacilitiesPageHasura ~ response',
+            response
+        ); */
+
+        if (response) {
+            yield put(actions.fetchFacilitiesPageHasuraSuccess(response));
+        } else {
+            yield put(actions.fetchFacilitiesPageHasuraError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchFacilitiesPageHasuraError(err.message));
+    }
+}
+
 export default function* userSagas() {
     yield takeLatest(types.FETCH_PAGE_VIEWS_HASURA_SEND, getPageViewsHasura);
     yield takeLatest(types.FETCH_PAGE_VIEW_HASURA_SEND, getPageViewHasura);
-
     yield takeLatest(types.CREATE_PAGE_VIEW_HASURA_SEND, createPageViewHasura);
     yield takeLatest(types.DELETE_PAGE_VIEW_HASURA_SEND, deletePageViewHasura);
     yield takeLatest(types.UPDATE_PAGE_VIEW_HASURA_SEND, updatePageViewHasura);
-
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
     yield takeLatest(types.FETCH_SEARCH_PAGE_MM_SEND, getSearchPageMM);
@@ -737,9 +801,14 @@ export default function* userSagas() {
     );
     yield takeLatest(types.FETCH_FACILITIES_PAGE_SEND, getFacilitiesPage);
     yield takeLatest(types.FETCH_WIKI_PAGE_SEND, getWikiPage);
+    yield takeLatest(types.FETCH_HASURA_WIKI_PAGE_SEND, getHasuraWikiPage);
     yield takeLatest(
         types.WIKI_PAGE_UPDATE_CONTENT_MUTATION_SEND,
         wikiPageUpdateContentMutation
+    );
+    yield takeLatest(
+        types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND,
+        wikiPageUpdateHasuraMutation
     );
     yield takeLatest(types.FETCH_SUGGESTED_LABELS_SEND, getSuggestedLabels);
     yield takeLatest(types.FETCH_ALL_WORKFLOWS_SEND, getAllWorkFlows);
@@ -764,4 +833,8 @@ export default function* userSagas() {
         getHasuraSampleStudy
     );
     yield takeLatest(types.FETCH_STUDY_PAGE_HASURA_SEND, getStudyPageHasura);
+    yield takeLatest(
+        types.FETCH_FACILITIES_PAGE_HASURA_SEND,
+        getFacilitiesPageHasura
+    );
 }
