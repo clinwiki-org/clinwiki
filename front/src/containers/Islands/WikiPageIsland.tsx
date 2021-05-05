@@ -202,11 +202,11 @@ export default function WikiPageIsland(props: Props) {
   }
 
   const renderEditor = (data: any) => {
-    console.log("EDITOOR - WIKI DATA: ", data?.wiki_pages)
+    // console.log("EDITOOR - WIKI DATA: ", data?.wiki_pages)
 
     if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) return "No Wiki Content"; //(!data || !data.study || !data.study.wikiPage) return null;
     const text = getEditorText() || '';
-    console.log("🚀 ~ renderEditor ~ TEXT", text);
+    //console.log("🚀 ~ renderEditor ~ TEXT", text);
 
     if (text !== data.wiki_pages[0].text || !text) {
       //handlePreview()
@@ -225,7 +225,7 @@ export default function WikiPageIsland(props: Props) {
     const readOnly = !location.pathname.includes('/wiki/edit');
 
     if (editorState === 'rich') {
-      console.log("RICH E TEXZ", richEditorText)
+      //console.log("RICH E TEXZ", richEditorText)
       return (
         <Panel style={{ border: "none", padding: "0px" }}>
           <Panel.Body >
@@ -255,7 +255,7 @@ export default function WikiPageIsland(props: Props) {
 
   if (!wikiPageData || !nctId) return <BeatLoader />;
 
-  console.log("🚀 ~ WikiPageIsland ~ wikiPageData", wikiPageData);
+  //console.log("🚀 ~ WikiPageIsland ~ wikiPageData", wikiPageData);
 
   if (showLoginModal) return <LoginModal
     show={showLoginModal}
