@@ -6,7 +6,7 @@ import { WikiPageQuery } from 'types/WikiPageQuery';
 import styled from 'styled-components';
 import { Panel, FormControl } from 'react-bootstrap';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
-import { useHistory, useLocation, useRouteMatch, Prompt } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
 import { Switch, Route } from 'react-router';
 import { trimPath } from 'utils/helpers';
@@ -18,7 +18,6 @@ import { CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
 import { useTheme } from 'containers/ThemeProvider/ThemeProvider';
 import LoginModal from '../../components/LoginModal';
 import { wikiPageUpdateContentMutation, fetchWikiPage, fetchHasuraWikiPage, wikiPageUpdateHasuraMutation } from 'services/study/actions';
-import data from '@iconify/icons-fe/smile-plus';
 
 interface Props {
   nctId: string;
@@ -122,7 +121,11 @@ export default function WikiPageIsland(props: Props) {
     setFlashAnimation(true)
   };
 
-  const renderSubmitButton = (
+  const handleCancelEdit = () => {
+    history.push(`${match.url}${queryStringAll(params)}`);
+  };
+
+  const renderEditStateButtons = (
     data: any,
     isAuthenticated: boolean,
     readOnly: boolean
@@ -137,10 +140,11 @@ export default function WikiPageIsland(props: Props) {
 
     return (
       <div>
-        <Prompt
-          when={!readOnly}
-          message={location => editMessage}
-        />
+        <ThemedButton
+          onClick={() => { editMessage = "Save changes?"; handleCancelEdit(); }}
+          style={{ marginLeft: '10px', background: 'white', color: '#6BA5D6', border: "1px solid #6BA5D6" }}>
+          Cancel <FontAwesome name="X" />
+        </ThemedButton>
         <ThemedButton
           onClick={() => { editMessage = "Save changes?"; handleEditSubmit(); }}
           disabled={editorTextState === editorTextData}
@@ -179,7 +183,7 @@ export default function WikiPageIsland(props: Props) {
             path={editPath}
             render={() => (
               <>
-                {renderSubmitButton(data, isAuthenticated, readOnly)}
+                {renderEditStateButtons(data, isAuthenticated, readOnly)}
               </>
             )}
           />
@@ -202,7 +206,9 @@ export default function WikiPageIsland(props: Props) {
 
     if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) return "No Wiki Content"; //(!data || !data.study || !data.study.wikiPage) return null;
     const text = getEditorText() || '';
-    if (text !== data.wiki_pages[0].text && !text) {
+    console.log("🚀 ~ renderEditor ~ TEXT", text);
+
+    if (text !== data.wiki_pages[0].text || !text) {
       //handlePreview()
 
       if (editorState === 'rich') {
@@ -216,28 +222,10 @@ export default function WikiPageIsland(props: Props) {
       }
     }
 
-    /*    if (!data || !data.study || !data.study.wikiPage) return null;
-       const text = getEditorText() || '';
-   
-   
-   
-       if (text !== data.study.wikiPage.content || !text) {
-         if (editorState === 'rich') {
-           // console.log("RICH Editor 111111111111", richEditorText)
-           const { content } = data.study.wikiPage
-           const richEditorText = RichTextEditor.createValueFromString(
-             content || '',
-             'markdown'
-           );
-           setRichEditorText(richEditorText);
-         } else {
-           setplainEditorText(text);
-         }
-       } */
-
     const readOnly = !location.pathname.includes('/wiki/edit');
 
     if (editorState === 'rich') {
+      console.log("RICH E TEXZ", richEditorText)
       return (
         <Panel style={{ border: "none", padding: "0px" }}>
           <Panel.Body >

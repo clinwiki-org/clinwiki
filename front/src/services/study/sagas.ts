@@ -755,6 +755,10 @@ function* getFacilitiesPageHasura(action) {
         let response = yield call(() =>
             api.fetchFacilitiesPageHasura(action.nctId)
         );
+        /*  console.log(
+            '🚀 ~ SAGA HAS function*getFacilitiesPageHasura ~ response',
+            response
+        ); */
 
         if (response) {
             yield put(actions.fetchFacilitiesPageHasuraSuccess(response));
