@@ -3,9 +3,9 @@ import * as query from './queries';
 import * as mutate from './mutations';
 import {
     callGraphql,
-    callHasuraAACT,
+    // callHasuraAACT,
     callHasuraClinwiki,
-    getHasuraURLAACT,
+    //getHasuraURLAACT,
     get_gql_url,
     getGraphQLMigrationURL,
 } from 'utils/graphqlUtil';
@@ -14,7 +14,7 @@ import {
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
 const ENDPOINT = get_gql_url();
-const HASURA_AACT = getHasuraURLAACT();
+//const HASURA_AACT = getHasuraURLAACT();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 const HASURA_CW = getHasuraClinwikiURL();
 
@@ -62,6 +62,12 @@ export const deletePageViewHasura = id => {
     );
 };
 
+export const fetchFacilitiesPageHasura = (nctId: any) => {
+    return callHasuraClinwiki(HASURA_CW, query.HASURA_FACILITY_ISLAND_QUERY, {
+        nctId,
+    });
+};
+
 export const fetchSampleStudy = (nctId: any, QUERY: any) => {
     return callGraphql(ENDPOINT, QUERY, { nctId });
 };
@@ -71,7 +77,7 @@ export const fetchSearchPageMM = (params: any, QUERY: any) => {
 };
 
 export const fetchHasuraSampleStudy = (nctId: any, QUERY: any) => {
-    return callHasuraAACT(HASURA_AACT, QUERY, { nctId });
+    return callHasuraClinwiki(HASURA_CW, QUERY, { nctId });
 };
 
 export const fetchStudyPage = (nctId: any, QUERY: any) => {
@@ -79,7 +85,7 @@ export const fetchStudyPage = (nctId: any, QUERY: any) => {
 };
 
 export const fetchStudyPageHasura = (nctId: any, HASURA_STUDY_QUERY: any) => {
-    return callHasuraAACT(HASURA_AACT, HASURA_STUDY_QUERY, { nctId });
+    return callHasuraClinwiki(HASURA_CW, HASURA_STUDY_QUERY, { nctId });
 };
 
 export const fetchPageViews = (siteId: any) => {
@@ -148,12 +154,31 @@ export const fetchFacilitiesPage = (nctId: any) => {
 export const fetchWikiPage = (nctId: any) => {
     return callGraphql(ENDPOINT, query.WIKI_PAGE_QUERY, { nctId });
 };
+
+export const fetchHasuraWikiPage = (nctId: any) => {
+    return callHasuraClinwiki(HASURA_CW, query.HASURA_WIKI_PAGE_QUERY, {
+        nctId,
+    });
+};
+
 export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
     return callGraphql(ENDPOINT, mutate.WIKI_PAGE_UPDATE_CONTENT_MUTATION, {
         nctId: nctId,
         content: content,
     });
 };
+
+export const wikiPageUpdateHasuraMutation = (nctId: any, text: any) => {
+    return callHasuraClinwiki(
+        HASURA_CW,
+        mutate.WIKI_PAGE_UPDATE_HASURA_MUTATION,
+        {
+            nctId: nctId,
+            text: text,
+        }
+    );
+};
+
 export const fetchSuggestedLabels = (nctId: any, crowdBucketsWanted: any) => {
     return callGraphql(ENDPOINT, query.SUGGESTED_LABELS_QUERY, {
         nctId: nctId,

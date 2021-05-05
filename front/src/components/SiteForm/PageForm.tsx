@@ -46,9 +46,9 @@ export default function PageForm(props: Props) {
   const default_hash = 'gELcp_Fb'
 
   const intToStringPageType = (pageType: number) => {
-    if (pageType === 0 || 'search') return 'search'
-    if (pageType === 1 || 'study') return 'study'
-    if (pageType === 2 || 'hasuraStudy') return 'hasuraStudy'
+    if (pageType === 0 || 'study') return 'search'
+    if (pageType === 1 || 'hasuraStudy') return 'study'
+    if (pageType === 2 || 'search') return 'hasuraStudy'
     else return "study"
   }
 
@@ -64,10 +64,10 @@ export default function PageForm(props: Props) {
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
 
   const stringToIntPageType = (pageType: any) => {
-    if (pageType === 'search' || 0) return 0
-    if (pageType === 'study' || 1) return 1
-    if (pageType === 'hasuraStudy' || 2) return 2
-    else return 1
+    if (pageType === 'study' || 0) return 0
+    if (pageType === 'hasuraStudy' || 1) return 1
+    if (pageType === 'search' || 2) return 2
+    else return 0
   }
 
   const dispatch = useDispatch();

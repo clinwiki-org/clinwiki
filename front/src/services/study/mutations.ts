@@ -173,6 +173,19 @@ export const WIKI_PAGE_UPDATE_CONTENT_MUTATION = `
   }
   ${WIKI_PAGE_FRAGMENT}
 `;
+
+export const WIKI_PAGE_UPDATE_HASURA_MUTATION = `
+
+mutation HasuraUpdateWikiPageMutation($nctId: String, $text: String) {
+  update_wiki_pages(where: {nct_id: {_eq: $nctId}}, _set: {text: $text}) {
+    returning {
+      text
+      nct_id
+    }
+  }
+}
+`;
+
 export const DELETE_LABEL_MUTATION = `
   mutation CrowdPageDeleteWikiLabelMutation($nctId: String!, $key: String!) {
     deleteWikiLabel(input: { nctId: $nctId, key: $key }) {
