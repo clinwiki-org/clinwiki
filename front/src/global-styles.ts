@@ -247,4 +247,7 @@ div.DraftEditor-editorContainer{
 .ellipsed-text {
   display:none;
 }
+.white-text {
+  color: #fff;
+}
 `);
