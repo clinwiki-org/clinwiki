@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import MailMergeView, {
     microMailMerge,
 } from 'components/MailMerge/MailMergeView';
-import {  useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { getStudyQuery, getSearchQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
@@ -37,10 +37,9 @@ export default function GenericPageWrapper(props: Props) {
     const params = useUrlParams();
     const studyData = useSelector((state: RootState) => state.study.studyPage);
     const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
-    const pageViewData = useSelector((state: RootState) => state.study.pageView);
-    const data = useSelector((state : RootState ) => state.search.searchResults);
-    const currentPage = pageViewData ? pageViewData?.data.site?.pageView : null;
-
+    const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
+    const data = useSelector((state: RootState) => state.search.searchResults);
+    const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
 
     //Currently making assumption anything diplayed in our search route is of pageType study 
     //Ideally should be set from PageView but was having issues , response was not saving
@@ -49,11 +48,11 @@ export default function GenericPageWrapper(props: Props) {
     const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
 
     useEffect(() => {
-        let searchParams = pageType == "Search"? {...data.data.searchParams, q: JSON.parse(data.data.searchParams.q)} : null;
+        let searchParams = pageType == "Search" ? { ...data.data.searchParams, q: JSON.parse(data.data.searchParams.q) } : null;
         const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
         dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchSearchPageMM(searchParams, SEARCH_QUERY));
-    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash,data]);
+    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data]);
 
 
     const searchData = () => {
@@ -66,23 +65,23 @@ export default function GenericPageWrapper(props: Props) {
             recordsTotal: studyData?.data?.search?.recordsTotal
         }
     }
-    const title = microMailMerge(currentPage?.title, studyData?.data?.study || searchData());
+    const title = microMailMerge(currentPage?.title, studyData?.data?.study || searchData()) || "Add a Title";
 
     const islands = pageType == 'Study' ? studyIslands : searchIslands;
-    if(pageType == 'Study' && !studyData){
+    if (pageType == 'Study' && !studyData) {
         return <BeatLoader />
-      }
+    }
     return (
         <div>
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            <MailMergeView
+            { currentPage && <MailMergeView
                 template={currentPage?.template || ''}
                 context={studyData?.data?.study || searchData()}
                 islands={islands}
                 pageType={pageType}
-            />
+            />}
         </div>
     );
 }
