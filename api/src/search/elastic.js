@@ -59,7 +59,9 @@ export const bulkUpsert = async (list) => {
                 }}
             ));
             body = body.concat("\n");
-            body = body.concat(JSON.stringify({ doc, doc_as_upsert: true}))
+            let payload = {...doc};
+            payload.doc_as_upsert = true;
+            body = body.concat(JSON.stringify(payload));
             body = body.concat("\n");
         });
 

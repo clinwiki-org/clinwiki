@@ -1,14 +1,14 @@
 version: "3"
 services:
-  # nginx:
-  #   image: nginx:stable
-  #   container_name: nginx
-  #   ports:
-  #     - 80:80
-  #   volumes:
-  #     - ./compose/nginx:/etc/nginx/conf.d/
-  #   depends_on:
-  #     - clinwiki
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./compose/nginx:/etc/nginx/conf.d/
+    depends_on:
+      - clinwiki
   db:
     image: postgres:11.8
     container_name: clinwiki-db
@@ -19,62 +19,62 @@ services:
     environment:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-  # elastic:
-  #   image: elasticsearch:6.8.8
-  #   container_name: elastic
-  #   ports:
-  #     - 9200:9200
-  #   environment:
-  #     - discovery.type=single-node
-  #     - http.port=9200
-  #     - http.cors.enabled=true
-  #     - http.cors.allow-origin=http://localhost:3030,http://127.0.0.1:3030,http://localhost:1358,http://127.0.0.1:1358,https://opensource.appbase.io
-  #     - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
-  #     - http.cors.allow-credentials=true
-  #     - xpack.security.enabled=true
-  #     - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
-  #   volumes:
-  #     - es-data:/usr/share/elasticsearch/data/
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:6.8.0
-  #   container_name: kibana
-  #   environment:
-  #     - ELASTICSEARCH_HOSTS=http://elastic:9200/
-  #     - ELASTICSEARCH_USERNAME=elastic
-  #     - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
-  #   ports:
-  #     - 5601:5601
-  # redis:
-  #   image: redis:5.0.5
-  #   container_name: redis
-  #   volumes:
-  #     - redis-data:/data
-  # clinwiki:
-  #   image: cwlite
-  #   build:
-  #     context: .
-  #     dockerfile: compose/Dockerfile
-  #   container_name: clinwiki
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - .:/clinwiki
-  #     - ./compose/entrypoint.sh:/usr/bin/entrypoint.sh
-  #     - node_modules:/clinwiki/front/node_modules
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
-  #     - REDIS_URL=redis://redis:6379/0
-  #     - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
-  #   depends_on:
-  #     - db
-  #     - elastic
-  #     - redis
+  elastic:
+    image: elasticsearch:6.8.8
+    container_name: elastic
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - http.port=9200
+      - http.cors.enabled=true
+      - http.cors.allow-origin=http://localhost:3030,http://127.0.0.1:3030,http://localhost:1358,http://127.0.0.1:1358,https://opensource.appbase.io
+      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      - http.cors.allow-credentials=true
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-data:/usr/share/elasticsearch/data/
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.8.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic:9200/
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    ports:
+      - 5601:5601
+  redis:
+    image: redis:5.0.5
+    container_name: redis
+    volumes:
+      - redis-data:/data
+  clinwiki:
+    image: cwlite
+    build:
+      context: .
+      dockerfile: compose/Dockerfile
+    container_name: clinwiki
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/clinwiki
+      - ./compose/entrypoint.sh:/usr/bin/entrypoint.sh
+      - node_modules:/clinwiki/front/node_modules
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
+      - REDIS_URL=redis://redis:6379/0
+      - SEARCHBOX_URL=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
+    depends_on:
+      - db
+      - elastic
+      - redis
   # sidekiq:
   #   image: cwlite
   #   build:
@@ -94,44 +94,44 @@ services:
   #     - elastic
   #     - redis
   #   command: bundle exec sidekiq -C config/sidekiq.yml
-  # nodejs:
-  #   image: keymetrics/pm2:14-alpine
-  #   env_file:
-  #     - .env
-  #   build:
-  #     context: .
-  #     dockerfile: api/Dockerfile
-  #   command: npm start
-  #   container_name: nodejs
-  #   volumes:
-  #     - .:/api
-  #   ports:
-  #     - 8088:8088
-  #   environment:
-  #     - DATABASE_URL_NODE=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
-  #     - SEARCHBOX_URL_NODE=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
-  #   depends_on:
-  #     - db
-  #     - elastic
-  #     - clinwiki
-  # data-pipeline:
-  #   image: keymetrics/pm2:14-alpine
-  #   env_file:
-  #     - .env
-  #   build:
-  #     context: .
-  #     dockerfile: api/Dockerfile
-  #   command: npm run pipeline-start
-  #   container_name: data-pipeline
-  #   volumes:
-  #     - .:/api
-  #   environment:
-  #     - DATABASE_URL_NODE=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
-  #     - SEARCHBOX_URL_NODE=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
-  #   depends_on:
-  #     - db
-  #     - elastic
-  #     - clinwiki
+  nodejs:
+    image: keymetrics/pm2:14-alpine
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    command: npm start
+    container_name: nodejs
+    volumes:
+      - .:/api
+    ports:
+      - 8088:8088
+    environment:
+      - DATABASE_URL_NODE=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
+      - SEARCHBOX_URL_NODE=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
+    depends_on:
+      - db
+      - elastic
+      - clinwiki
+  data-pipeline:
+    image: keymetrics/pm2:14-alpine
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    command: npm run pipeline-start
+    container_name: data-pipeline
+    volumes:
+      - .:/api
+    environment:
+      - DATABASE_URL_NODE=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
+      - SEARCHBOX_URL_NODE=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
+    depends_on:
+      - db
+      - elastic
+      - clinwiki
 
 volumes:
   es-data:

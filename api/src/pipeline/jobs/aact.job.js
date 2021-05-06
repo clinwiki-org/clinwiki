@@ -25,7 +25,6 @@ const aactJob = async () => {
                 await enqueueJob(JOB_TYPES.AACT_STUDY_REINDEX,{studies: idList});                
             }
 
-
             logger.info('Job AACT Finished.')
             IS_RUNNING = false;
         }
@@ -50,6 +49,7 @@ export const aactStudyReindex = async (payload) => {
     await bulkUpsert(studies);
     await sendBriefSummaries(idList);
     await sendConditions(idList);
+    await enqueueJob(JOB_TYPES.GEOCODE_LOCATIONS,{studies: idList});
     logger.info("Bulk update complete.");
 
 }

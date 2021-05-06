@@ -2,6 +2,7 @@ import logger from '../util/logger';
 import {query} from '../util/db';
 import {reindexWikiPage} from './jobs/reindex.job';
 import {aactStudyReindex} from './jobs/aact.job';
+import {geocodeStudies} from './jobs/geocode.job';
 import {initMonitorTriggers} from './trigger.monitor';
 const util = require('util')
 
@@ -14,8 +15,10 @@ export const JOB_TYPES = {
     AACT_CONDITIONS_REINDEX: 'AACT_CONDITIONS_REINDEX',
     WIKI_TEXT_REINDIX_2ND_PASS: 'WIKI_TEXT_REINDIX_2ND_PASS',
     WIKI_TEXT_REINDEX: 'WIKI_TEXT_REINDEX',
-    WIKI_PAGE_EDIT_REINDEX: 'WIKI_PAGE_EDIT_REINDEX'
+    WIKI_PAGE_EDIT_REINDEX: 'WIKI_PAGE_EDIT_REINDEX',
+    GEOCODE_LOCATIONS: 'GEOCODE_LOCATIONS'
 };
+let IS_RUNNING = false;
 
 export const initQueue = async () => {
     // Check to see if the table exists
@@ -35,17 +38,26 @@ const createQueueTable = async () => {
 
 export const serveQueue = async () => {
     //logger.info('Serving pipeline queue');
-    let results = await query(POLL_QUERY,[]);
-    
-        for(let i=0;i<results.rowCount;i++) {
-            await runJob(results.rows[i]);
+    if(!IS_RUNNING) {
+        IS_RUNNING = true;
+        try {
+            let results = await query(POLL_QUERY,[]);        
+            for(let i=0;i<results.rowCount;i++) {
+                await runJob(results.rows[i]);
+            }
         }
+        catch(err) {
+            logger.error(err);
+            IS_RUNNING = false;
+        }
+        IS_RUNNING = false;
+    }
 
     //logger.info('Pipeline queue done');
 }
 
 const runJob = async (job) => {
-    logger.debug('Running job '+job.id);
+    logger.debug('Running job '+job.id+' of type '+job.job_type);
     try {
         switch(job.job_type) {
             case JOB_TYPES.AACT_STUDY_REINDEX:
@@ -56,11 +68,14 @@ const runJob = async (job) => {
                 break;
             case JOB_TYPES.WIKI_PAGE_EDIT_REINDEX:
                 break;
+            case JOB_TYPES.GEOCODE_LOCATIONS:
+                await geocodeStudies(JSON.parse(job.payload));
+                break;
             default:
                 logger.error('Unknown job type: '+job.job_type);
         }
         logger.debug('Job finished. Removing from queue.')
-        await query(DEQUEUE_JOB_QUERY,[job.id]);    
+        await query(DEQUEUE_JOB_QUERY,[job.id]);
     }
     catch(err) {
         logger.error(err);
