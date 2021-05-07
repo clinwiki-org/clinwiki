@@ -23,4 +23,3 @@ const esWikiPage = (row) => {
     es.wiki_text = row.text;
     return es;
 }
-
