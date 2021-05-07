@@ -153,8 +153,11 @@ export async function getUserReviews(userId) {
 }
 
 export async function getUserReactions(userId) {
-    const reviewResults = await query(QUERY_USER_REACTIONS, [userId]);
-    return reviewResults.rows;
+    const reactionResults = await query(QUERY_USER_REACTIONS, [userId]);
+    if (reactionResults.row==null ){
+        return []
+    }
+    return reactionResults.rows;
 }
 
 export async function getUserReactionsCount(userId) {
