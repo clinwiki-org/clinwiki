@@ -3,9 +3,12 @@ import { RouterState, connectRouter } from 'connected-react-router'
 import { History } from 'history';
 import userReducer from 'services/user/reducer';
 import siteReducer from 'services/site/reducer';
+import hasuraSiteReducer from 'services/hasuraSite/reducer';
+import hasuraFacilityReducer from 'services/hasuraFacility/reducer';
 import searchReducer from 'services/search/reducer';
 import studyReducer from 'services/study/reducer';
 import introspectionReducer from 'services/introspection/reducer';
+import crowdKeysReducer from 'services/crowdKeys/reducer';
 
 const rootReducer = (history : History) => combineReducers({
     router: connectRouter(history),
@@ -14,6 +17,9 @@ const rootReducer = (history : History) => combineReducers({
     search: searchReducer,
     study: studyReducer,
     introspection: introspectionReducer,
+    hasuraSite: hasuraSiteReducer,
+    crowdKeys: crowdKeysReducer,
+    hasuraFacility: hasuraFacilityReducer,
 });
 
 export default rootReducer;
@@ -25,6 +31,9 @@ export interface RootState {
     search: any,
     study: any,
     introspection: any,
+    hasuraSite: any,
+    crowdKeys: any,
+    hasuraFacility: any,
 };
 
 //export type RootState = ReturnType<typeof rootReducer>;

@@ -1,6 +1,7 @@
 import logger from '../util/logger';
 const esb = require('elastic-builder');
 const zg = require('zip2geo');
+const util = require('util');
 
 const ENABLED_AGGS = [
     'average_rating', 'overall_status', 'facility_states', 'conditions',
@@ -113,6 +114,61 @@ export const translateCrowdAggBuckets = async (criteria) => {
     return json;
 }
 
+export const translateOpenCrowdAggBuckets = async (criteria) => {
+
+    let boolQuery = esb.boolQuery();
+    boolQuery.must(esb.simpleQueryStringQuery('*'));
+    await translateAggFilters(criteria.aggFilters,boolQuery,false);
+    await translateAggFilters(criteria.crowdAggFilters,boolQuery,true);
+
+    if(criteria.q.key === 'AND' && criteria.q.children) {
+        criteria.q.children.forEach( child => {
+            boolQuery.must(esb.simpleQueryStringQuery('('+child.key+')') );
+        })
+    }
+    if(criteria.q.key === 'OR' && criteria.q.children) {
+        criteria.q.children.forEach( child => {
+            boolQuery.should(esb.simpleQueryStringQuery('('+child.key+')') );
+        })
+    }
+
+    // Create the aggs and crowd aggs
+    let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
+    
+    const json = requestBody.toJSON();
+    injectOpenCrowdAggBuckets(criteria,json,true);
+
+
+    return json;
+}
+
+export const translateOpenAggBuckets = async (criteria) => {
+
+    let boolQuery = esb.boolQuery();
+    boolQuery.must(esb.simpleQueryStringQuery('*'));
+    await translateAggFilters(criteria.aggFilters,boolQuery,false);
+    await translateAggFilters(criteria.crowdAggFilters,boolQuery,true);
+
+    if(criteria.q.key === 'AND' && criteria.q.children) {
+        criteria.q.children.forEach( child => {
+            boolQuery.must(esb.simpleQueryStringQuery('('+child.key+')') );
+        })
+    }
+    if(criteria.q.key === 'OR' && criteria.q.children) {
+        criteria.q.children.forEach( child => {
+            boolQuery.should(esb.simpleQueryStringQuery('('+child.key+')') );
+        })
+    }
+
+    // Create the aggs and crowd aggs
+    let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
+    const json = requestBody.toJSON();
+    injectOpenAggBuckets(criteria,json,true);
+
+
+    return json;
+}
+
 
 const translateAggFilters = async (aggFilters,boolQuery,isCrowdAgg) => {
     if(aggFilters) {
@@ -180,11 +236,19 @@ const getFieldName = (agg,isCrowdAgg) => {
 
 
 function injectAggs(criteria,json) {
-    let aggList = criteria.aggFilters.map( af => {
+
+    let aggList = [];
+    criteria.aggFilters.map( af => {
         let t = {};
+        if(af.field == 'location'){
+            return
+        }
+        if(af.gte || af.lte){
+            return
+        }
         t[af.field] = {value: af.values[0]};
 
-        return {
+        aggList.push({
             bool: {
                 filter: [
                     {
@@ -204,12 +268,15 @@ function injectAggs(criteria,json) {
                     }
                 ]
             }
-        }
+        });
     });
 
-    let crowdAggList = criteria.crowdAggFilters.map( af => {
-
-        return {
+    let crowdAggList = [];
+    criteria.crowdAggFilters.map( af => {
+        if(af.gte || af.lte){
+            return
+        }
+        crowdAggList.push({
             bool: {
                 filter: [
                     {
@@ -233,7 +300,7 @@ function injectAggs(criteria,json) {
                     }
                 ]
             }
-        }
+        });
     });
 
     let aggs = {};
@@ -313,6 +380,109 @@ function injectCrowdAggBuckets(criteria,json,usePrefix) {
          },
         aggs: innerAggs
     }
+    
+    json.aggs = aggs;       
+}
+function injectOpenCrowdAggBuckets(criteria,json,usePrefix) {
+    let aggs = {};
+    const aggKeys = criteria.agg;
+    let innerAggs = {};
+
+    aggKeys.map(aggKey=>{
+        innerAggs[`fm_${aggKey}`] = {
+            terms: {
+                field: `fm_${aggKey}`,
+                size: 1000000,
+                missing: '-99999999999'
+            },
+            aggs:  {
+                agg_bucket_sort:{
+                    bucket_sort:{
+                       from:0,
+                       size:25,
+                       sort:[
+                          {
+                             _key:{
+                                order:"asc"
+                             }
+                          }
+                       ]
+                    }
+                 }            
+            }
+        }
+
+    })
+
+aggKeys.map(aggKey=>{
+    aggs[`fm_${aggKey}`] = {
+        filter:{
+            bool:{
+               must:[
+                  {
+                     bool:{
+                        must:[]
+                     }
+                  }
+               ]
+            }
+         },
+        aggs: innerAggs
+    }
+
+})
+    
+    json.aggs = aggs;       
+}
+function injectOpenAggBuckets(criteria,json,usePrefix) {
+    let aggs = {};
+    const aggKeys = criteria.agg;
+    let innerAggs = {};
+
+    aggKeys.map(aggKey=>{
+        innerAggs[aggKey] = {
+            terms: {
+                field: aggKey,
+                size: 1000000,
+                missing: '-99999999999'
+            },
+            aggs:  {
+                agg_bucket_sort:{
+                    bucket_sort:{
+                       from:0,
+                       size:25,
+                       sort:[
+                          {
+                             _key:{
+                                order:"asc"
+                             }
+                          }
+                       ]
+                    }
+                 }            
+            }
+        }
+
+    })
+
+
+aggKeys.map(aggKey=>{
+    aggs[aggKey] = {
+        filter:{
+            bool:{
+               must:[
+                  {
+                     bool:{
+                        must:[]
+                     }
+                  }
+               ]
+            }
+         },
+        aggs: innerAggs
+    }
+
+})
     
     json.aggs = aggs;       
 }

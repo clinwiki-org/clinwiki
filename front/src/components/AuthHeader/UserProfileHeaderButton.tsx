@@ -184,6 +184,10 @@ const UserProfileHeaderButton = ({ user, history, data} : UserProfileHeaderButto
     closeMenuDropdown();
     history.push('/workflows');
   };
+  const handleAggIslandsClick = () => {
+    closeMenuDropdown();
+    history.push('/aggIslands');
+  };
 
   const handleSignInClick = () => {
     closeMenuDropdown();
@@ -291,9 +295,14 @@ const UserProfileHeaderButton = ({ user, history, data} : UserProfileHeaderButto
                   </ThemedDropDownItem>
             {user &&
               user.roles.includes('admin') && (
+                <>
                 <ThemedDropDownItem onClick={handleWorkflowsClick}>
                   Workflows
                 </ThemedDropDownItem>
+                <ThemedDropDownItem onClick={handleAggIslandsClick}>
+                  Agg Islands
+                </ThemedDropDownItem>
+                </>
               )}
             {renderAdminMenuItems(data?.site)}
             <ThemedDropDownItem onClick={() => {

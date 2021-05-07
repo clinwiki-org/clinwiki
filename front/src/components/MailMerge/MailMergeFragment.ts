@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { type } from 'remeda';
 
 function mustacheTokens(input: string) {
   let tokens: string[] = [];
@@ -56,7 +57,13 @@ function tokensToGraphQLOb(tags: string[]) {
       pushScope(scopeName);
       scope[propName] = 'x';
       popScope();
-    } else {
+    } 
+    
+    if (name== 'this'|| name == 'recordsTotal') {
+      console.log(name)
+    }
+
+    else {
       // single value
       scope[name] = 'x';
     }
@@ -68,7 +75,14 @@ function tokensToGraphQLOb(tags: string[]) {
       const parts = t.split(/\s/).filter(id => id);
       if (parts.length > 1) {
         const name = parts[1];
-        pushScope(name);
+        if (
+          parts[0] == '#$RenderEach'
+           || 
+          parts[0] == '#each' && parts[1] == 'studies'
+        ) {
+        } else {
+          pushScope(name);
+        }
       }
     } else if (t.startsWith('/')) {
       popScope();
@@ -84,7 +98,9 @@ function tokensToGraphQLOb(tags: string[]) {
           parts[0] == 'querystring' ||
           parts[0] == '$LEFT' ||
           parts[0] == '$RIGHT' ||
-          parts[0] == '$TRUNCATE'
+          parts[0] == '$TRUNCATE' ||
+          parts[0] == '$RenderEach' || 
+          typeof parts[0] == typeof 1
         ) {
 
         } else {

@@ -5,26 +5,17 @@ import styled from 'styled-components';
 import LoginModal from '../LoginModal';
 import SlackCounter from './SlackCounter/SlackCounter';
 import GithubSelector from './GithubSelector/GithubSelector';
-import CreateReactionMutation, {
-  CREATE_REACTION,
-} from 'mutations/CreateReactionMutation';
 import { find, propEq } from 'ramda';
-import { gql, useQuery, useMutation  }  from '@apollo/client';
-import StudyReactions from '../../queries/StudyReaction';
-import QUERY from 'queries/StudyPageQuery';
-import REACTION_KINDS from 'queries/ReactionKinds';
-import { ReactionKinds } from 'types/ReactionKinds';
-import { StudyReactions as StudyReactionsQueryType } from 'types/StudyReactions';
-import REACTIONS_QUERY from '../../queries/StudyReaction';
 import { fetchReactionsIsland, createReaction, fetchStudyReactions } from 'services/study/actions';
 import { BeatLoader } from 'react-spinners';
-
+import { getStudyQuery } from '../MailMerge/MailMergeUtils';
+import { useFragment } from '../MailMerge/MailMergeFragment';
 interface ReactionsBarProps {
   user: any;
   studyData: any;
   theme: any;
   nctId: any;
-  reactionsConfig?: any;
+  reactionsConfig: any;
   allReactions: any;
 }
 const HeaderContentWrapper = styled.div`
@@ -65,28 +56,23 @@ export default function ReactionsBar(props: ReactionsBarProps) {
   const handleAddReaction = () => {
     setShowReactions(!showReactions);
   };
-  /*const { data: userReactions } = useQuery<StudyReactionsQueryType>(
-    REACTIONS_QUERY,
-    {
-      variables: { nctId },
-    }
-  );*/
   const dispatch = useDispatch();
   const userReactions = useSelector( (state: RootState) => state.study.studyReactions);
   useEffect (() => {
-//    console.log(props);
     dispatch (fetchReactionsIsland(nctId));
   },[dispatch]);
-
-/*  const [createReactionMutation] = useMutation(CREATE_REACTION, {
-    refetchQueries: [{ query: REACTIONS_QUERY, variables: { nctId } }],
-  });*/
   useEffect (() => {
   dispatch (fetchStudyReactions(nctId));
   },[dispatch]);
+  const isCreatingReaction = useSelector((state:RootState) => state.study.isCreatingReaction);
+  const isDeletingReaction = useSelector((state:RootState) => state.study.isDeletingReaction);
+  const pageViewData = useSelector((state:RootState) => state.study.pageView);
+  const currentPage = pageViewData ?  pageViewData?.data.site?.pageView : null;
+  const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
+  const studyQuery = `${getStudyQuery(fragmentName, fragment)}`
   const createReactionMutation = (action)=>{
     if(!action.variables.nctId || !action.variables.reactionKindId) return
-    return dispatch(createReaction(action.variables.nctId, action.variables.reactionKindId))}
+    return dispatch(createReaction(action.variables.nctId, action.variables.reactionKindId, studyQuery))}
 
   const activeReactions = (reactionsConfig, allReactions) => {
     let obj = JSON.parse(reactionsConfig);
@@ -128,7 +114,7 @@ export default function ReactionsBar(props: ReactionsBarProps) {
       }
       updateUserReactions();
       updateReactionsCount();
-    }, [allReactions, studyData, userReactions]);
+    }, [allReactions, studyData, userReactions, isCreatingReaction, isDeletingReaction]);
 
     const handleSelectorClick = (e, createReaction, allReactions) => {
       const { nctId, user } = props;

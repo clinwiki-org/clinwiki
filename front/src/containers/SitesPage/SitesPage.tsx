@@ -7,9 +7,11 @@ import { History } from 'history';
 import ThemedButton from 'components/StyledComponents/index';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteSite, fetchSitesPage } from 'services/site/actions'
+import { fetchSitesPageHasura } from 'services/hasuraSite/actions'
 import { useEffect } from 'react';
-import {RootState} from 'reducers';
+import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
+import LoginModal from 'components/LoginModal';
 
 const Container = styled.div`
 padding: 20px;
@@ -24,12 +26,12 @@ interface SitesPageProps {
   history: History;
 }
 
-const SitesPage = ({history} : SitesPageProps) => {
+const SitesPage = ({ history }: SitesPageProps) => {
 
   const dispatch = useDispatch();
-  const data = useSelector((state : RootState ) => state.site.sitesData)
-  const isLoading = useSelector((state : RootState ) => state.site.isFetchingSitesPage)
-  const isDeleting = useSelector((state : RootState ) => state.site.isDeletingSite)
+  const data = useSelector((state: RootState) => state.site.sitesData)
+  const isLoading = useSelector((state: RootState) => state.site.isFetchingSitesPage)
+  const isDeleting = useSelector((state: RootState) => state.site.isDeletingSite)
 
   const handleCreateSite = () => {
     history.push('/sites/new');
@@ -42,12 +44,18 @@ const SitesPage = ({history} : SitesPageProps) => {
   };
 
   useEffect(() => {
-    dispatch(fetchSitesPage());
-  },[ dispatch ]); 
-  
-if (data === undefined || isLoading || isDeleting) {
-  return <BeatLoader />
-}
+    dispatch(fetchSitesPageHasura());
+  }, [dispatch]);
+
+  if (data === undefined || isLoading || isDeleting) {
+    return <BeatLoader />
+  }
+  /*   if (data.me == null) {
+      return <LoginModal
+        show={true}
+        cancel={() => history.goBack()}
+      />
+    } */
   return (
     <Container>
       <CollapsiblePanel header="My Sites">
@@ -60,17 +68,17 @@ if (data === undefined || isLoading || isDeleting) {
                 <th />
               </tr>
             </thead>
-            <tbody>            
-                  <>
-                    {data!.me!.ownSites.map(site => (
-                      <SiteItem
-                        site={site}
-                        key={site.subdomain}
-                        onEdit={handleSiteEdit}
-                        onDelete={handleSiteDelete}
-                      />
-                    ))}
-                  </>
+            <tbody>
+              <>
+                {data!.me!.ownSites.map(site => (
+                  <SiteItem
+                    site={site}
+                    key={site.subdomain}
+                    onEdit={handleSiteEdit}
+                    onDelete={handleSiteDelete}
+                  />
+                ))}
+              </>
             </tbody>
           </Table>
         )}

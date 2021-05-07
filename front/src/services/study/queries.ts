@@ -1,6 +1,28 @@
-import StudySummary from 'components/StudySummary';
-import ReviewForm from 'containers/ReviewForm';
+export const PAGE_VIEWS_HASURA_QUERY = `
+query PageViewsQueryHausura ($id: bigint!){
+  page_views(where: {site_id: {_eq: $id}}) {
+    id
+    page_type
+    template
+    title
+    url
+    default
+  }
+}
+`;
 
+export const PAGE_VIEW_HASURA_QUERY = `
+  query HasuraPageViewQuery($id: bigint!, $url: String!) {
+  page_views(where:{ _and: [{site_id: {_eq: $id}},  {url: {_eq: $url}}] }) {
+    id
+    page_type
+    template
+    title
+    url
+    default
+  }
+}
+`;
 
 export const PAGE_VIEW_FRAGMENT = `
 fragment PageViewFragment on PageView {
@@ -24,7 +46,6 @@ export const PAGE_VIEWS_QUERY = `
   ${PAGE_VIEW_FRAGMENT}
 `;
 
-
 export const PAGE_VIEW_QUERY = `
   query PageViewQuery($id: Int, $url: String) {
     site(id: $id) {
@@ -38,8 +59,8 @@ export const PAGE_VIEW_QUERY = `
 `;
 
 export const getSampleStudyQuery = (name: string, frag: string) => {
-  frag = frag || `fragment ${name} on Study { nctId }`;
-  return `
+    frag = frag || `fragment ${name} on Study { nctId }`;
+    return `
   query SampleStudyQuery($nctId: String!) {
     study(nctId: $nctId) {
       ...${name}
@@ -48,7 +69,21 @@ export const getSampleStudyQuery = (name: string, frag: string) => {
   ${frag}
 `;
 };
-export const SEARCH_STUDY_PAGE_QUERY =`
+export function getSampleSearchQuery(name: string, frag: string) {
+    frag = frag || `fragment ${name} on ElasticStudy { nctId }`;
+    return `
+  query Search${name}Query($hash:String) {
+    search(searchHash: $hash) {
+      studies {
+        averageRating
+        ...${name}
+      }
+    }
+  }
+  ${frag}
+  `;
+}
+export const SEARCH_STUDY_PAGE_QUERY = `
 query SearchStudyPageQuery($hash: String!, $id: String!) {
   search(searchHash: $hash) {
     studyEdge(id: $id) {
@@ -233,8 +268,7 @@ const WIKI_PAGE_EDIT_FRAGMENT = `
   }
 `;
 
-
-export const WIKI_PAGE_FRAGMENT =`
+export const WIKI_PAGE_FRAGMENT = `
   fragment WikiPageFragment on WikiPage {
     content
     edits {
@@ -245,7 +279,7 @@ export const WIKI_PAGE_FRAGMENT =`
   }
 `;
 
-export const WIKI_PAGE_QUERY =`
+export const WIKI_PAGE_QUERY = `
   query WikiPageQuery($nctId: String!) {
     study(nctId: $nctId) {
       wikiPage {
@@ -260,6 +294,57 @@ export const WIKI_PAGE_QUERY =`
   ${WIKI_PAGE_EDIT_FRAGMENT}
   ${WIKI_PAGE_FRAGMENT}
 `;
+
+export const HASURA_WIKI_PAGE_QUERY = `
+  query HasuraWikiPageQuery($nctId: String) {
+  wiki_pages(where: {nct_id: {_eq: $nctId}}) {
+    nct_id
+    text
+  }
+}
+
+`;
+
+const JOINT_WIKI_PAGE_QUERY = `
+   query WikiPageQuery($nctId: String!) {
+    study(nctId: $nctId) {
+      wikiPage {
+        content
+    edits {
+     user {
+      id
+      firstName
+      lastName
+      email
+    }
+    createdAt
+    id
+    comment
+    diff
+    diffHtml
+    changeSet {
+      bodyChanged
+      frontMatterChanged
+      editLines {
+        status
+        content
+        frontMatter
+        body
+      }
+    }
+    }
+    nctId
+    meta
+      }
+      nctId
+    }
+    me {
+      id
+    }
+  }
+
+`;
+
 export const REVIEW_FRAGMENT = `
   fragment ReviewsPageFragment on Review {
     id
@@ -274,7 +359,7 @@ export const REVIEW_FRAGMENT = `
     }
   }
 `;
-export const STUDY_FRAGMENT =`
+export const STUDY_FRAGMENT = `
   fragment ReviewFormStudyFragment on Study {
     nctId
     reviews {
@@ -285,8 +370,7 @@ export const STUDY_FRAGMENT =`
   ${REVIEW_FRAGMENT}
 `;
 
-
-export const REVIEW_QUERY =`
+export const REVIEW_QUERY = `
 query ReviewPageQuery($nctId: String!) {
   study(nctId: $nctId) {
     reviews {
@@ -357,7 +441,7 @@ export const FACILITY_FRAGMENT = `
     }
   }
 `;
-export const FACILITIES_PAGE_QUERY =`
+export const FACILITIES_PAGE_QUERY = `
 query FacilitiesPageQuery($nctId: String!) {
   study(nctId: $nctId) {
     facilities {
@@ -370,6 +454,38 @@ query FacilitiesPageQuery($nctId: String!) {
 }
 ${FACILITY_FRAGMENT}
 `;
+
+export const HASURA_FACILITY_ISLAND_QUERY = `
+query HasuraFacilitiesPageQuery($nctId: String!) {
+  ctgov_studies(where: {nct_id: {_eq: $nctId}}) {
+    facilities {
+      city
+      country
+      id
+      name
+      nct_id
+      state
+      status
+      zip
+      contacts {
+        contact_type
+        email
+        id
+        name
+        nct_id
+        phone
+      }
+      location {
+        latitude
+        longitude
+        status
+      }
+    }
+    nct_id
+  }
+}
+`;
+
 export const SUGGESTED_LABELS_QUERY = `
 query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
   crowdAggFacets(crowdBucketsWanted: $crowdBucketsWanted) { 
@@ -434,7 +550,7 @@ export const WORKFLOW_VIEW_PROVIDER_FRAGMENT = `
     }
   }
 `;
-export const WORKFLOW_VIEW_PROVIDER =`
+export const WORKFLOW_VIEW_PROVIDER = `
   query WorkflowsViewProviderQuery {
     workflowsView {
       ...WorkflowsViewFragment
@@ -443,7 +559,24 @@ export const WORKFLOW_VIEW_PROVIDER =`
   ${WORKFLOW_VIEW_PROVIDER_FRAGMENT}
 `;
 
-export const REACTIONS_ISLAND_QUERY =`
+export const HASURA_STUDY_REACTIONS = `
+query ReactionsCount ($nctId : String){
+  reactions(where: {nct_id: {_eq: $nctId}}) {
+    reaction_kind {
+      name
+      id
+      unicode
+    }
+    id
+    nct_id
+    reaction_kind_id
+    user_id
+  }
+}
+
+`;
+
+export const REACTIONS_ISLAND_QUERY = `
 query ReactionsIslandQuery($nctId: String!) {
   study(nctId: $nctId) {
     reactionsCount {
@@ -455,7 +588,7 @@ query ReactionsIslandQuery($nctId: String!) {
 }
 
 `;
-export const REACTION_KINDS =`
+export const REACTION_KINDS = `
 query ReactionKinds {
   reactionKinds {
     id
@@ -464,7 +597,7 @@ query ReactionKinds {
   }
 }
 `;
-export const STUDY_REACTIONS =`
+export const STUDY_REACTIONS = `
   query StudyReactions($nctId: String!) {
     me {
         id
@@ -543,7 +676,7 @@ export const LABELS_QUERY = `
   }
 `;
 
-export const EDIT_REVIEW_QUERY =`
+export const EDIT_REVIEW_QUERY = `
   query EditReviewQuery($nctId: String!) {
     study(nctId: $nctId) {
       ...StudySummaryFragment
@@ -555,6 +688,5 @@ export const EDIT_REVIEW_QUERY =`
   }
 
   ${REVIEW_FRAGMENT}
-  ${StudySummary.fragment}
+  ${STUDY_SUMMARY_FRAGMENT}
 `;
-

@@ -27,7 +27,7 @@ export const fetchSitesPage = () : types.SiteActionTypes => ({
     type: types.FETCH_SITES_PAGE_SEND
 });
 
-export const fetchSitesPageSuccess = (payload: SitesPageQuery) : types.SiteActionTypes => ({
+export const fetchSitesPageSuccess = (payload: any) : types.SiteActionTypes => ({
     type: types.FETCH_SITES_PAGE_SUCCESS,
     payload
 });

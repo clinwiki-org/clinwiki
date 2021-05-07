@@ -39,5 +39,6 @@ module Types
     #field :updateSavedSearch, mutation: Mutations::UpdateSavedSearch
     field :deleteSavedSearch, mutation: Mutations::DeleteSavedSearch
     field :createStudyViewLog, mutation: Mutations::CreateStudyViewLog
+    field :updateFacetConfig, mutation: Mutations::UpdateFacetConfig
   end
 end

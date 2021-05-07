@@ -20,6 +20,24 @@ function* getIntrospection(action) {
     }
 }
 
+function* getHasuraIntrospection(action) {
+    try {
+        let response = yield call(() => api.fetchHasuraIntrospection(action.QUERY));
+        if(response) {
+            yield put(actions.fetchHasuraIntrospectionSuccess(response));
+        }
+        else {
+            yield put(actions.fetchHasuraIntrospectionError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchHasuraIntrospectionError(err.message));
+    }
+}
+
+
 export default function* introspectionSagas() {
     yield takeLatest(types.FETCH_INTROSPECTION_SEND, getIntrospection);
+    yield takeLatest(types.FETCH_HASURA_INTROSPECTION_SEND, getHasuraIntrospection);
 }

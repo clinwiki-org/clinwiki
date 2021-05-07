@@ -1,18 +1,22 @@
 import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
 import { AggBucket } from '../SearchPage/Types';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { BeatLoader } from 'react-spinners';
-
+import { updateSearchParamsAction } from 'services/search/actions'
+import { filter } from 'ramda';
+import { connect } from 'react-redux';
 interface CustomDropCrumbsProps {
   field: SiteViewFragment_search_aggs_fields | any;
   isSelected: any;
   updater: AggFilterInputUpdater;
   selectedItems: any[];
   selectItem: any;
+  searchResultData: any;
+  updateSearchParamsAction: any;
 
 }
 interface CustomDropCrumbsState {
@@ -39,12 +43,40 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
   }
   renderLocationLabel = () => {
     let location = this.props.selectedItems[0]
+    console.log(location)
     //@ts-ignore
     if (!location.zipcode && !location.radius) return
     //@ts-ignore
-    if (!location.zipcode) return `Within ${location.radius} of current location`
+    if (!location.zipcode) return `Within ${location.radius} miles of current location`
     //@ts-ignore
-    if (!location.lat && !location.long) return `Within ${location.radius} of ${location.zipcode}`
+    if (!location.lat && !location.long) return `Within ${location.radius} miles of ${location.zipcode}`
+
+  }
+   removeFilter = (aggName, isCrowd) => {
+    const searchParams = this.props.searchResultData?.data?.searchParams;
+
+    const grouping = isCrowd ? 'crowdAggFilters' : 'aggFilters';
+
+    const allButThisAgg = filter(
+      (x) => x.field !== aggName,
+      searchParams[grouping]
+    );
+    console.log(allButThisAgg)
+
+
+    let newParams = isCrowd ? {
+      ...searchParams,
+      q: JSON.parse(searchParams.q),
+      crowdAggFilters: allButThisAgg
+
+    } : {
+      ...searchParams,
+      q: JSON.parse(searchParams.q),
+      aggFilters: allButThisAgg
+
+    }
+    console.log(newParams)
+    this.props.updateSearchParamsAction(newParams);
 
   }
 
@@ -87,13 +119,13 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
               <FontAwesome
                 className="remove crumb-icon"
                 name="remove"
-                onClick={() => this.props.updater.removeRange()}
+                onClick={() => this.removeFilter(field.name, field.aggKind == "crowdAgg")}
               />
             </div>
           )
 
         } else if (field.display == FieldDisplay.LOCATION) {
-          //console.log("IN LOCATION", field.display)
+          console.log("IN LOCATION", this.props.selectedItems)
           if (!this.props.selectedItems[0].radius) return
 
           return (
@@ -102,7 +134,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
               <FontAwesome
                 className="remove crumb-icon"
                 name="remove"
-                onClick={() => this.props.updater.removeDistance()}
+                onClick={() => this.removeFilter(field.name, field.aggKind == "crowdAgg")}
               />
             </div>
           )
@@ -110,7 +142,6 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
         }
 
         if (this.props.isSelected(item.key)) {
-          //console.log(item.key)
           return <div className='select-box--crumb-container' key={item.key + 'isSelected'}>
             {item.key}
             <FontAwesome
@@ -165,5 +196,11 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
   }
 };
 
+const mapStateToProps = (state, ownProps) => ({
+  searchResultData: state.search.searchResults,
+})
+const mapDispatchToProps = (dispatch) => ({
+  updateSearchParamsAction: (variables?) => dispatch(updateSearchParamsAction(variables)),
 
-export default withAggContext(CustomDropCrumbs);
+})
+export default connect(mapStateToProps, mapDispatchToProps)(withAggContext(CustomDropCrumbs));

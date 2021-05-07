@@ -938,7 +938,10 @@ type FacetState {
   name: String
   value: String
 }
-
+input VisibleOptions {
+  kind: FilterKind!
+  values: [String!]!
+}
 """
 Describe the state of a single facet.
 """
@@ -1220,9 +1223,11 @@ type PublicUser {
 }
 
 type Query {
-  aggBuckets(configType: String, params: SearchInput, returnAll: Boolean, searchHash: String, url: String): SearchResultSet!
+  aggBuckets(configType: String, params: SearchInput, returnAll: Boolean, searchHash: String, url: String,  bucketsWanted: [String!]): SearchResultSet!
   autocomplete(aggFields: [String!]!, crowdAggFields: [String!]!, params: SearchInput, searchHash: String, url: String): SearchResultSet!
-  crowdAggBuckets(configType: String, params: SearchInput!, returnAll: Boolean, url: String): SearchResultSet!
+  crowdAggBuckets(configType: String, params: SearchInput!, returnAll: Boolean, url: String, bucketsWanted: [String!]): SearchResultSet!
+  openAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, bucketsWanted: [VisibleOptions!]): SearchResultSet!
+  openCrowdAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, bucketsWanted: [VisibleOptions!]): SearchResultSet!
   crowdAggFacets(crowdBucketsWanted: [String!]): SearchResultSet!
   feed(id: Int!): Feed
   health: Health!
@@ -1414,6 +1419,52 @@ input SearchInput {
   an agg to query for, used when retrieving all buckets for an agg
   """
   agg: String
+
+  """
+  the aggs we are filtering on
+  """
+  aggFilters: [AggFilterInput!]
+
+  """
+  the values in aggs will be filtered by that paramater using a substring match
+  """
+  aggOptionsFilter: String
+
+  """
+  the values in aggs will be sorted by this option
+  """
+  aggOptionsSort: [SortInput!]
+
+  """
+  the crowd aggs we should filter on
+  """
+  crowdAggFilters: [AggFilterInput!]
+
+  """
+  which page of search results we want. for now, use either page and pageSize or none of them
+  """
+  page: Int = 1
+
+  """
+  how many results we want. for now, use either page and pageSize or none of them
+  """
+  pageSize: Int = 25
+
+  """
+  an optional query -- defaults to current user default query
+  """
+  q: SearchQueryInput!
+
+  """
+  which fields to sort by
+  """
+  sorts: [SortInput!]
+}
+input SearchInput2 {
+  """
+  an agg to query for, used when retrieving all buckets for an agg
+  """
+  agg: [String]
 
   """
   the aggs we are filtering on
@@ -2318,6 +2369,14 @@ type UpsertWikiTagPayload {
   errors: [String!]
   wikiPage: WikiPage
 }
+type Role {
+    id: Int!,
+    name: String!,
+    resource_type: String,
+    resource_id: Int,
+    created_at: DateTime!,
+    updated_at: DateTime!
+}
 
 type User {
   contributions: Int!
@@ -2367,7 +2426,7 @@ type User {
   """
   reviewCount: Int!
   reviews: [Review!]!
-  roles: [String!]!
+  roles: [Role]!
   savedSearches: [SavedSearch!]
   searchLogs(limit: Int, offset: Int): [SearchLog!]
   studyViewLogs(limit: Int, offset: Int): [StudyViewLog!]

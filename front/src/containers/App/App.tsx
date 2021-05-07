@@ -21,10 +21,13 @@ import SitesPage from 'containers/SitesPage';
 import SitesNewPage from 'containers/SitesNewPage';
 import SitesEditPage from 'containers/SitesEditPage';
 import EditWorkflowsPage from 'containers/EditWorkflowsPage';
+import EditAggIslandsPage from 'containers/EditAggIslandsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponent'
-import GenericPage from 'containers/GenericPage/GenericPage';
+import HasuraMMTest from 'components/MailMerge/HasuraMMTestComponent'
+import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
+import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
 
 interface AppProps {
   history: History;
@@ -43,44 +46,53 @@ class App extends React.PureComponent<AppProps> {
     return (
       <ThemedAppWrapper>
         <CurrentUser>
-            <span>
-              <AuthHeader history={this.props.history} />
-              <div className="main" style={{ paddingTop: '50px' }}>
-                <Switch>
-                  <Route
-                    exact
-                    path="/"
-                    component={
-                      this.props.history.location.search ? SearchPage : LandingPage
-                    }
-                  />
-                  <Route exact path="/about" component={AboutPage} />
-                  <Route exact path="/version" component={ReleaseNotes} />
-                  <Route path="/search/" component={SearchPage} />
-                  <Route path="/search/:siteviewUrl" component={SearchPage} />
-                  <Route path="/study/:nctId"
-                    render={(props) => <GenericPage arg={props.match.params.nctId} />}
-                  />
-                  <Route path="/p/:page/:arg?"
-                    render={(props) => <GenericPage url={props.match.params.page} arg={props.match.params.arg} />}
-                    />
-                  <Route exact path="/profile" component={EditProfilePage} />
-                  <Route path="/profile/:id/" component={ProfilePage} />
-                  <Route path="/workflows" component={EditWorkflowsPage} />
-                  <Route path={`/bulk`} component={BulkEditPage} />
-                  <Route path="/sites/:id/edit" component={SitesEditPage} />
-                  <Route path="/sites/new" component={SitesNewPage} />
-                  <Route path="/sites" component={SitesPage} />
-                  <Route path="/reset_password" component={ResetPasswordPage} />
-                  <Route path="/sign_in" component={SignInPage} />
-                  <Route path="/sign_up" component={SignUpPage} />
-                  <Route path="/not-configured" component={NotConfiguredPage} />
-                  <Route path="/update_password" component={UpdatePassword} />
-                  <Route path="/mmtest" component={MMTest} />
-                  <Route component={NotFoundPage} />
-                </Switch>
-              </div>
-            </span>
+          <span>
+            <AuthHeader history={this.props.history} />
+            <div className="main" style={{ paddingTop: '50px' }}>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  component={
+                    this.props.history.location.search ? SearchPage : LandingPage
+                  }
+                />
+                <Route exact path="/about" component={AboutPage} />
+                <Route exact path="/version" component={ReleaseNotes} />
+                <Route path="/search/" render={(props) => <GenericPageWrapper/>} />
+                <Route path="/search2/" component={SearchPage} />
+                <Route path="/search2/:siteviewUrl" component={SearchPage} />
+                <Route path="/study/:nctId"
+                  render={(props) => <GenericPageWrapper arg={props.match.params.nctId} />}
+                />
+                <Route path="/hasurastudy/:nctId"
+                  render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}
+                />
+                <Route path="/p/:page/:arg?"
+                  render={(props) => <GenericPageWrapper url={props.match.params.page} arg={props.match.params.arg} />}
+                />
+                <Route path="/p/:hasurapage/:arg?"
+                  render={(props) => <HasuraGenericPage url={props.match.params.page} arg={props.match.params.arg} />}
+                />
+                <Route path="/aggIslands" component={EditAggIslandsPage} />
+                <Route exact path="/profile" component={EditProfilePage} />
+                <Route path="/profile/:id/" component={ProfilePage} />
+                <Route path="/workflows" component={EditWorkflowsPage} />
+                <Route path={`/bulk`} component={BulkEditPage} />
+                <Route path="/sites/:id/edit" component={SitesEditPage} />
+                <Route path="/sites/new" component={SitesNewPage} />
+                <Route path="/sites" component={SitesPage} />
+                <Route path="/reset_password" component={ResetPasswordPage} />
+                <Route path="/sign_in" component={SignInPage} />
+                <Route path="/sign_up" component={SignUpPage} />
+                <Route path="/not-configured" component={NotConfiguredPage} />
+                <Route path="/update_password" component={UpdatePassword} />
+                <Route path="/mmtest" component={MMTest} />
+                <Route path="/hasurammtest" component={HasuraMMTest} />
+                <Route component={NotFoundPage} />
+              </Switch>
+            </div>
+          </span>
         </CurrentUser>
       </ThemedAppWrapper>
     );

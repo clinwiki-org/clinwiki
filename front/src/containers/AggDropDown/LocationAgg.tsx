@@ -1,16 +1,17 @@
-import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
+import React, {useEffect, useState} from 'react';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import { AggBucket, AggregateAggCallback } from '../SearchPage/Types';
 import { FormControl, FormGroup } from 'react-bootstrap';
 import ThemedButton from 'components/StyledComponents/index';
 import DistanceDropDownOptions from './DistanceDropDownOptions';
 import LabeledButton from 'components/LabeledButton';
-import AggFilterInputUpdater from '../SearchPage/components/AggFilterInputUpdater';
-import { withAggContext } from '../SearchPage/components/AggFilterUpdateContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import { find, findIndex } from 'ramda';
+import { updateSearchParamsAction } from 'services/search/actions';
 
 interface LocationAggProps {
-  updater: AggFilterInputUpdater;
   field: SiteViewFragment_search_aggs_fields | any;
   buckets: Array<AggBucket>;
   isSelected: ()=> boolean;
@@ -25,62 +26,113 @@ interface LocationAggState {
   long: number | null,
 }
 
-class LocationAgg extends React.Component<LocationAggProps, LocationAggState> {
+function LocationAgg ( props: LocationAggProps) {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      zipcode: this.props.updater.input?.zipcode,
-      radius: this.props.updater.input?.radius,
-      lat: null,
-      long: null,
-    };
+  const data = useSelector((state: RootState) => state.search.searchResults);
+  const searchParams = data?.data?.searchParams;
+        const dispatch= useDispatch()
+        const [zipcode, setZip] = useState("");
+        const [lat, setLat] = useState(null);
+        const [long, setLong] =  useState(null);
+        const [radius, setRadius]= useState('50');
+
+useEffect(()=>{
+  const aggSettings = find(
+    (x) => x.field == "location",
+    searchParams["aggFilters"]
+  );
+  if(aggSettings){
+    setZip(aggSettings.zipcode);
+    setLat(aggSettings.lat);
+    setLong(aggSettings.long);
+    setRadius(aggSettings.radius);
   }
-  showLocation = (position) => {
-    this.setState({ lat: position.coords.latitude, long: position.coords.longitude, zipcode: null, radius: this.state.radius },
-      () => this.props.updater.changeDistance([
-        this.state.zipcode,
-        this.state.lat || this.props.updater.input?.lat,
-        this.state.long || this.props.updater.input?.long,
-        this.state.radius|| this.props.updater.input?.radius || '50',
+},[])
+  const newChangeDistance = (positionData: any[])=>{
+
+    const aggSettings = find(
+      (x) => x.field == "location",
+      searchParams["aggFilters"]
+    );
+    if(!aggSettings){
+      let locationFilter = {
+        field:"location",
+        gte:null,
+        lte:null,
+        values: [],
+        includeMissingFields:null,
+        zipcode:positionData[0],
+        radius:positionData[3],
+        lat:positionData[1],
+        long:positionData[2],
+      }
+
+      searchParams['aggFilters'].push(locationFilter)
+      let newParams = {...searchParams, q: JSON.parse(searchParams.q), aggFilters: searchParams["aggFilters"]}
+      dispatch(updateSearchParamsAction(newParams));
+    }
+    let index = findIndex((x)=>x.field=="location", searchParams["aggFilters"])
+    searchParams['aggFilters'][index] = {
+      field:"location",
+      gte:null,
+      lte:null,
+      values: [],
+      includeMissingFields:null,
+      zipcode:positionData[0],
+      radius:positionData[3],
+      lat:positionData[1],
+      long:positionData[2],
+    }
+    let newParams = {...searchParams, q: JSON.parse(searchParams.q), aggFilters: searchParams["aggFilters"]}
+    dispatch(updateSearchParamsAction(newParams));
+
+  }
+
+
+
+  const showLocation = (position) => {
+    setZip("");
+    setLat(position.coords.latitude);
+    setLong(position.coords.longitude);
+//     this.setState({ lat: position.coords.latitude, long: position.coords.longitude, zipcode: null, radius: this.state.radius },
+  newChangeDistance([
+        null,
+        position.coords.latitude,
+        position.coords.longitude,
+        radius ,
       ])
-    )
-this.props.handleLocation([
-  { zipcode: this.state.zipcode,
-    lat: this.state.lat || this.props.updater.input?.lat,
-    long: this.state.long || this.props.updater.input?.long,
-    radius: this.state.radius|| this.props.updater.input?.radius || '50',}
-])
+  props.handleLocation([
+        null,
+        position.coords.latitude,
+        position.coords.longitude,
+        radius ,
+      ])
   }
-  handleCurrentLocation = () => {
+  const handleCurrentLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.showLocation)
+      navigator.geolocation.getCurrentPosition(showLocation)
     }
   }
-  handleZipcode = () => {
-    this.setState({ zipcode: this.state.zipcode, lat: null, long: null, radius: this.state.radius},
-      () => this.props.updater.changeDistance([
-        this.state.zipcode || this.props.updater.input?.zipcode,
-        this.state.lat,
-        this.state.long,
-        this.state.radius|| this.props.updater.input?.radius|| '50',
-      ])
-
-    )
-    this.props.handleLocation([
-      { zipcode: this.state.zipcode,
-        lat: this.state.lat || this.props.updater.input?.lat,
-        long: this.state.long || this.props.updater.input?.long,
-        radius: this.state.radius|| this.props.updater.input?.radius || '50',}
-      ])
+  const handleZipcode = () => {
+    newChangeDistance([
+      zipcode,
+      null,
+      null,
+      radius ,
+    ])
+props.handleLocation([
+      zipcode,
+      null,
+      null,
+      radius ,
+    ])
   }
-  render() {
     const {
       field,
       isSelected,
       removeFilters,
       agg
-    } = this.props;
+    } = props;
     const buckets: number[] = [5, 10, 25, 50, 100, 250, 500, 1000]
     return (
       <>
@@ -101,19 +153,16 @@ this.props.handleLocation([
               }}>
               <LabeledButton
                 helperText={"Use Current Location"}
-                theClick={this.handleCurrentLocation}
+                theClick={handleCurrentLocation}
                 iconName={"compass"}
               />
             </div>
             <FormControl
               type="text"
               placeholder="Enter Zip Code"
-              value={this.state.zipcode}
-              onChange={e =>
-                this.setState({
-                  zipcode: e.target.value,
-                })}
-              onBlur={() => this.handleZipcode()
+              value={zipcode}
+              onChange={e =>setZip(e.target.value)}
+              onBlur={() => handleZipcode()
               }
               style={{ flex: 4, margin: '4px' }}
             />
@@ -123,11 +172,12 @@ this.props.handleLocation([
           <DistanceDropDownOptions
             removeFilters={removeFilters}
             display={(field && field.display) || FieldDisplay.STRING}
+            //@ts-ignore
             buckets={buckets}
             isSelected={isSelected}
             field={field}
             agg={agg}
-            zipcode={this.state.zipcode || '50'}
+            zipcode={zipcode}
           />
         </FormGroup>
         <FormGroup>
@@ -137,6 +187,6 @@ this.props.handleLocation([
       </>
     );
   }
-}
 
-export default withAggContext(LocationAgg);
+
+export default LocationAgg;

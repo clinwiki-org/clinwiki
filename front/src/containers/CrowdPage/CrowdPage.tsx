@@ -8,13 +8,12 @@ import { Helmet } from 'react-helmet';
 
 import LoadingPane from 'components/LoadingPane';
 import Error from 'components/Error';
-import { FRAGMENT } from 'mutations/CrowdPageDeleteWikiLabelMutation';
+import { CROWD_PAGE_FRAGMENT } from 'services/search/mutations';
 
 import {
   CrowdPageUpsertWikiLabelMutation,
   CrowdPageUpsertWikiLabelMutationVariables,
-} from 'types/CrowdPageUpsertWikiLabelMutation';
-
+} from 'services/search/model/CrowdPageUpsertWikiLabelMutation';
 import {
   keys,
   pipe,
@@ -30,11 +29,6 @@ import AddCrowdLabel from './AddCrowdLabel';
 import CurrentUser from 'containers/CurrentUser';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import { SiteStudyBasicGenericSectionFragment } from 'services/study/model/SiteStudyBasicGenericSectionFragment';
-import {
-  UPSERT_LABEL_MUTATION,
-  UpsertMutationComponent,
-  UpsertMutationFn,
-} from 'mutations/CrowdPageUpsertWikiLabelMutation';
 
 import { fetchCrowdPage, upsertLabelMutation, deleteLabelMutation } from '../../services/study/actions'
 interface CrowdProps {
@@ -88,7 +82,7 @@ console.log()
   }
 
   //TODO Need to remove this from here and import. Need to be done with StudyPage deprecated code removal.
-  static fragment = FRAGMENT;
+  static fragment = CROWD_PAGE_FRAGMENT;
 
   static updateLabel = (
     key: string,

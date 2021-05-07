@@ -257,7 +257,7 @@ class FacilityCard extends React.PureComponent<any> {
           {contacts.map((item, index) => (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <ThemedContactHead>
-                {this.capitalize(item.contactType)}
+                {this.capitalize(item.contact_type)}
               </ThemedContactHead>
               <div style={{ marginLeft: '20px' }}>
                 <Row>

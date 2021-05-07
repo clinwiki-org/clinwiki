@@ -1,3 +1,5 @@
+import { exportToCsv, searchExport } from './api';
+import { IslandConfigQuery } from './model/IslandConfigQuery';
 import * as types from './types';
 
 const initialState: types.SearchState = {
@@ -19,6 +21,12 @@ const initialState: types.SearchState = {
     savedSearches: undefined,
     isCreatingSavedSearch: false,
     isDeletingSavedSearch: false,
+    isFetchingFacetConfig: false,
+    islandConfig: undefined,
+    isUpdatingFacetConfig: false,
+    isFetchingSearchExport: false,
+    searchExport: undefined,
+    isExportingToCsv: false,
 };
 
 const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
@@ -87,8 +95,60 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 ...state,
                 isFetchingCrowdAggBuckets: false
             };
-        
-
+        case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: true
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS:
+            // console.log("Payload",action.payload)
+            let aggObject = {};
+             action.payload.data.openAggBuckets.aggs.map((agg)=>{
+                 aggObject[agg.name] = agg.buckets 
+             })
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false,
+                aggBuckets: {
+                    ...state.aggBuckets,
+                    aggs: {
+                        ...state.aggBuckets?.aggs,
+                        ...aggObject
+                    }
+                } 
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_ERROR:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: true
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS:
+            // console.log("Payload",action.payload)
+            let crowdAggObject = {};
+             action.payload.data.openCrowdAggBuckets.aggs.map((agg)=>{
+                crowdAggObject[agg.name.substring(3)] = agg.buckets 
+             })
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false,
+                crowdAggBuckets: {
+                    ...state.crowdAggBuckets,
+                    aggs: {
+                        ...state.crowdAggBuckets?.aggs,
+                        ...crowdAggObject
+                    }
+                } 
+            };
+        case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR:
+            return {
+                ...state,
+                isFetchingCrowdAggBuckets: false
+            };
         case types.FETCH_SEARCH_PARAMS_SEND:
             return {
                 ...state,
@@ -155,63 +215,181 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                 isFetchingAutoSuggest: false
             };
 
-            case types.FETCH_SAVED_SEARCHES_SEND:
-                return {
-                    ...state,
-                    isFetchingSavedSearches: true
-                };
-            case types.FETCH_SAVED_SEARCHES_SUCCESS:
-                return {
-                    ...state,
-                    isFetchingSavedSearches: false,
-                    savedSearches: action.payload
-                };
-            case types.FETCH_SAVED_SEARCHES_ERROR:
-                return {
-                    ...state,
-                    isFetchingSavedSearches: false
-                };
+        case types.FETCH_SAVED_SEARCHES_SEND:
+            return {
+                ...state,
+                isFetchingSavedSearches: true
+            };
+        case types.FETCH_SAVED_SEARCHES_SUCCESS:
+            return {
+                ...state,
+                isFetchingSavedSearches: false,
+                savedSearches: action.payload
+            };
+        case types.FETCH_SAVED_SEARCHES_ERROR:
+            return {
+                ...state,
+                isFetchingSavedSearches: false
+            };
 
-            case types.CREATE_SAVED_SEARCH_SEND:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: true
-                };
-            case types.CREATE_SAVED_SEARCH_SUCCESS:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: false,
-                    savedSearches: action.payload
-                };
-            case types.CREATE_SAVED_SEARCH_ERROR:
-                return {
-                    ...state,
-                    isCreatingSavedSearch: false
-                };
-    
-            case types.DELETE_SAVED_SEARCH_SEND:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: true
-                };
-            case types.DELETE_SAVED_SEARCH_SUCCESS:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: false,
-                    savedSearches: {       
-                        ...state.savedSearches,
-                        data: {
-                            ...state.savedSearches.data,
-                            savedSearch: action.payload
-                        }         
-                    }    
-                };
-            case types.DELETE_SAVED_SEARCH_ERROR:
-                return {
-                    ...state,
-                    isDeletingSavedSearch: false
-                };
-    
+        case types.CREATE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isCreatingSavedSearch: true
+            };
+        case types.CREATE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isCreatingSavedSearch: false,
+                savedSearches: action.payload
+            };
+        case types.CREATE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isCreatingSavedSearch: false
+            };
+
+        case types.DELETE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isDeletingSavedSearch: true
+            };
+        case types.DELETE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isDeletingSavedSearch: false,
+                savedSearches: {
+                    ...state.savedSearches,
+                    data: {
+                        ...state.savedSearches.data,
+                        savedSearch: action.payload
+                    }
+                }   
+            };
+        case types.DELETE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isDeletingSavedSearch: false
+            };
+        case types.FETCH_ISLAND_CONFIG_SEND:
+            return {
+                ...state,
+                isFetchingFacetConfig: true
+            };
+        case types.FETCH_ISLAND_CONFIG_SUCCESS:
+            let response = action.payload.data.islandConfig
+            let newObject = {} as IslandConfigQuery
+            response.map((island)=>{
+                newObject[island.id] = JSON.parse(island.config)
+            })
+            return {
+                ...state,
+                isFetchingFacetConfig: false,
+                islandConfig: newObject
+            };
+        case types.FETCH_ISLAND_CONFIG_ERROR:
+            return {
+                ...state,
+                isFetchingFacetConfig: false
+            };
+        case types.UPDATE_FACET_CONFIG_SEND:
+            return {
+                ...state,
+                isUpdatingFacetConfig: true
+            };
+        case types.UPDATE_FACET_CONFIG_SUCCESS:
+            return {
+                ...state,
+                isUpdatingFacetConfig: false,
+            };
+        case types.UPDATE_FACET_CONFIG_ERROR:
+            return {
+                ...state,
+                isUpdatingFacetConfig: false
+            };
+        case types.CREATE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isCreatingSavedSearch: true
+            };
+        case types.CREATE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isCreatingSavedSearch: false,
+                savedSearches: action.payload
+            };
+        case types.CREATE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isCreatingSavedSearch: false
+            };
+
+        case types.DELETE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isDeletingSavedSearch: true
+            };
+        case types.DELETE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isDeletingSavedSearch: false,
+                savedSearches: {       
+                    ...state.savedSearches,
+                    data: {
+                        ...state.savedSearches.data,
+                        savedSearch: action.payload
+                    }         
+                }    
+            };
+        case types.DELETE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isDeletingSavedSearch: false
+            };
+        
+        case types.SEARCH_EXPORT_SEND:
+            return {
+                ...state,
+                isFetchingSearchExport:true
+            };
+        case types.SEARCH_EXPORT_SUCCESS:
+            return {
+                ...state,
+                isFetchingSearchExport: false,
+                searchExport: action.payload.data.searchExport
+            };
+        case types.SEARCH_EXPORT_ERROR:
+            return {
+                ...state,
+                isFetchingSearchExport: false
+            };
+        
+        case types.EXPORT_T0_CSV_SEND:
+            return {
+                ...state,
+                isExportingToCsv: true
+            }
+        case types.EXPORT_T0_CSV_SUCCESS:
+            return {
+                ...state,
+                isExportingToCsv: false,
+                searchExport: action.payload.data.exportToCsv.searchExport  //! TODO CHeck the redux store structure for searchExport/exportToCsv
+            }
+        case types.EXPORT_T0_CSV_ERROR:
+            return {
+                ...state,
+                isExportingToCsv: false,
+            }
+        case types.TOGGLE_AGG:
+            let newIslandConfig = state.islandConfig || {}  as IslandConfigQuery;
+            newIslandConfig[action.id] = {...action.input};
+            newIslandConfig[action.id] = {...newIslandConfig[action.id],
+                defaultToOpen: !newIslandConfig[action.id].defaultToOpen
+            }
+            return {
+                ...state,
+                islandConfig: newIslandConfig
+            }
                 
         default:
             return {...state};

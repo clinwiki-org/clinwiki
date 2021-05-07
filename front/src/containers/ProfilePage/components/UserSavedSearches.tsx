@@ -1,16 +1,8 @@
-import * as FontAwesome from 'react-fontawesome';
 import * as React from 'react';
-import gql from 'graphql-tag';
-import { useQuery, useMutation } from '@apollo/client';
 import {
-  StyledProfileForm,
   StyledProfileLabel,
   StyledProfileLogValue,
-  StyledProfileValue,
-  ThemedMainContainer,
-  ThemedSearchContainer,
 } from 'components/StyledComponents';
-import { ThemedButton } from '../../LoginPage/StyledButton';
 import { UserFragment } from 'services/user/model/UserFragment';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useHistory } from 'react-router-dom';
@@ -70,17 +62,17 @@ const savedSearches = userSavedSearches.data.savedSearch
           (savedSearches && savedSearches?.length !==0) ?  
           <>{
           savedSearches.map( (search)=>(
-          <StyledProfileLogValue key={search.shortLink + search.createdAt}>
-            <a href={search.url}> { search.nameLabel } </a> 
+          <StyledProfileLogValue key={search?.shortLink + search?.createdAt}>
+            <a href={search?.url}> { search?.nameLabel } </a> 
             <div style={{ float: 'right' , margin: "1px 2px" }} >
               <LabeledButton
                 helperText={"Delete Search"}
-                theClick={handleDeleteSavedSearch(search.id)}
+                theClick={handleDeleteSavedSearch(search?.id)}
                 iconName={"trash"}
               />
               <LabeledButton
                 helperText={"Navigate to Link"}
-                theClick={() => buildLink(search.shortLink.short)}
+                theClick={() => buildLink(search?.shortLink.short)}
                 iconName={"link"}
               />
             </div>

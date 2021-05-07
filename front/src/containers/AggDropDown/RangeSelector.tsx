@@ -9,8 +9,16 @@ import {
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import { AggBucket } from '../SearchPage/Types';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import ThemedButton from 'components/StyledComponents';
+import { connect } from 'react-redux';
+import {
+  propEq,
+  findIndex,
+  find,
+  filter
+} from 'ramda';
+import { updateSearchParamsAction } from 'services/search/actions'
 
 interface RangeSelectorProps {
   isOpen: boolean;
@@ -22,6 +30,9 @@ interface RangeSelectorProps {
   aggType: FieldDisplay;
   field: any;
   handleRange: ([]) => void;
+  searchResultData: any;
+  updateSearchParamsAction: any;
+
 }
 
 interface RangeSelectorState {
@@ -38,79 +49,76 @@ class RangeSelector extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      start: null,
-      end: null,
-      startText: this.props.updater.input?.gte,
-      endText: this.props.updater.input?.lte,
+      startText: "",
+      endText: "",
     };
   }
   componentDidMount = () => {
+    const searchParams = this.props.searchResultData?.data?.searchParams;
+
+    const grouping = this.props.field.aggKind == "crowdAggs" ? 'crowdAggFilters' : 'aggFilters';
+
+    const aggSettings = find(
+      (x) => x.field == this.props.field.name,
+      searchParams[grouping]
+    );
+    // console.log(aggSettings)
+    aggSettings && this.setState({ startText: aggSettings.gte, endText: aggSettings.lte })
     // let showAlternate= true
     // if(showAlternate){
     //   this.setState({startText: 'Greater Than or Equal to:'})
     // }
   };
+  onChange = () => {
+    const grouping = this.props.field.aggKind == "crowdAggs" ? 'crowdAggFilters' : 'aggFilters';
 
-  onChange = () =>{
-      this.props.updater.changeRange([
-      this.state.start || this.props.updater.input?.gte,
-      this.state.end || this.props.updater.input?.lte,
-    ])
-    this.props.handleRange([
-    { start: this.state.start || this.props.updater.input?.gte,
-      end: this.state.end || this.props.updater.input?.lte,}
-    ])
+    const searchParams = this.props.searchResultData?.data?.searchParams;
+    const aggSettings = find(
+      (x) => x.field == this.props.field.name,
+      searchParams[grouping]
+    );
+
+    const allButThisAgg = filter(
+      (x) => x.field !== this.props.field.name,
+      searchParams[grouping] || aggSettings
+    );
+    if (searchParams[grouping] && aggSettings) {
+      console.log("Zettings", aggSettings)
+      console.log(this.state)
+
+      let newInput = {
+        field: this.props.field.name,
+        values: aggSettings?.values,
+        gte: this.state.startText || aggSettings?.gte || null,
+        lte: this.state.endText || aggSettings?.lte || null,
+        includeMissingFields: aggSettings?.includeMissingFields || null,
+        zipcode: aggSettings?.zipcode || null,
+        radius: aggSettings?.radius || null,
+        lat: aggSettings?.lat || null,
+        long: aggSettings?.long || null
+      }
+      const currentParams = { ...searchParams, [grouping as string]: [...allButThisAgg, newInput], q: JSON.parse(searchParams.q) }
+
+      this.props.updateSearchParamsAction(currentParams);
+    } else {
+      let newInput = {
+        field: this.props.field.name,
+        values: aggSettings?.values,
+        gte: this.state.startText || aggSettings?.gte || null,
+        lte: this.state.endText || aggSettings?.lte || null,
+        includeMissingFields: aggSettings?.includeMissingFields || null,
+        zipcode: aggSettings?.zipcode || null,
+        radius: aggSettings?.radius || null,
+        lat: aggSettings?.lat || null,
+        long: aggSettings?.long || null
+      }
+      const currentParams = { ...searchParams, [grouping as string]: [...allButThisAgg, newInput], q: JSON.parse(searchParams.q) }
+      this.props.updateSearchParamsAction(currentParams);
+    }
   };
   render() {
     const { aggType, field } = this.props;
     const { startText, endText } = this.state;
-    //Removing Temporarily to see if it fixes date range query issue seems
-    //Seems like we don't need a hasMore or beat loader in the Range Selector
-
-    // if (hasMore || loading) {
-    //   handleLoadMore();
-    //   return (
-    //     <div style={{ display: 'flex', justifyContent: 'center' }}>
-    //       <BeatLoader key="loader" color="#fff" />
-    //     </div>
-    //   );
-    // }
-
-    // if (isEmpty(buckets)) {
-    //   return (
-    //     <div style={{ display: 'flex', justifyContent: 'center' }}>None</div>
-    //   );
-    // }
-
-    // const start: any[] = [];
-    // buckets.forEach(({ key, keyAsString = null }) => {
-    //   const identifier = keyAsString || key;
-    //   if (
-    //     identifier === null ||
-    //     (this.props?.updater?.input?.lte &&
-    //       identifier >= this.props?.updater?.input?.lte)
-    //   ) {
-    //     return;
-    //   }
-    //   start.push(identifier);
-    // });
-
-    // const end: any[] = [];
-    // buckets.forEach(({ key, keyAsString = null }) => {
-    //   const identifier = keyAsString || key;
-    //   if (
-    //     identifier === null ||
-    //     (this.props?.updater?.input?.gte &&
-    //       identifier <= this.props?.updater?.input?.gte)
-    //   ) {
-    //     return;
-    //   }
-    //   end.push(identifier);
-    // });
-
-    // we need a smarter sort function than default.
-    // start.sort();
-    // end.sort();
 
     const startLabel = (field && field.rangeStartLabel) || 'Start';
     const endLabel = (field && field.rangeEndLabel) || 'End';
@@ -235,5 +243,11 @@ class RangeSelector extends React.Component<
     }
   }
 }
+const mapStateToProps = (state, ownProps) => ({
+  searchResultData: state.search.searchResults,
+})
+const mapDispatchToProps = (dispatch) => ({
+  updateSearchParamsAction: (variables?) => dispatch(updateSearchParamsAction(variables)),
 
-export default withAggContext(RangeSelector);
+})
+export default connect(mapStateToProps, mapDispatchToProps)(withAggContext(RangeSelector));

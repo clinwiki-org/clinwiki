@@ -13,7 +13,7 @@ import {
 } from 'ramda';
 import { bucketKeyStringIsMissing } from 'utils/aggs/bucketKeyIsMissing';
 import FacetCard from 'components/FacetCard/FacetCard';
-import { WorkflowConfigFragment_suggestedLabelsConfig } from 'types/WorkflowConfigFragment';
+import { WorkflowConfigFragment_suggestedLabelsConfig } from '../../services/study/model/WorkflowConfigFragment';
 import { BeatLoader } from 'react-spinners';
 import Error from 'components/Error';
 import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation } from '../../services/study/actions'
@@ -57,21 +57,16 @@ class SuggestedLabels extends React.PureComponent<
     return this.props.nctId;
   }
   componentDidMount() {
-    this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
+    this.props.fetchSuggestedLabels(this.props.nctId)
   }
 
   componentDidUpdate(prevProps) {
     if(!equal(this.props.nctId, prevProps.nctId)) // Check if it's a new nctId, refetch
     {
-      this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
+      this.props.fetchSuggestedLabels(this.props.nctId)
     }
   } 
-    //TODO - Previously refetch was coming from APollo made this faaux function to force refetch is needed 
-  refetch =()=>{
-    console.log("Refetching")
-    //BUT have not traced what triggers it/ or why its not currently 
-    // this.props.fetchSuggestedLabels(this.props.nctId, this.props.allowedSuggestedLabels)
-  }
+
   renderAgg = (
     key: string,
     values: [string, boolean][],
@@ -107,7 +102,7 @@ class SuggestedLabels extends React.PureComponent<
         nctId={this.props.nctId}
         values={items}
         onSelect={this.props.onSelect}
-        refetch={()=>this.refetch}
+        //refetch={()=>this.refetch}
         showAnimation={this.props.showAnimation}
       >
         {items.map(value => {
@@ -192,7 +187,7 @@ class SuggestedLabels extends React.PureComponent<
                 label="Add Label"
                 addLabel
                 nctId={this.props.nctId}
-                refetch={()=>this.refetch}
+                //refetch={()=>this.refetch}
                 aggNames={allCrowdAggs}
                 allValues={aggs}
                 showAnimation={this.props.showAnimation}
@@ -202,7 +197,7 @@ class SuggestedLabels extends React.PureComponent<
         }
 }
 const mapDispatchToProps = (dispatch) => ({
-  fetchSuggestedLabels: (nctId?, allowedSuggestedLabels?) => dispatch(fetchSuggestedLabels(nctId, allowedSuggestedLabels)),
+  fetchSuggestedLabels: (nctId? ) => dispatch(fetchSuggestedLabels(nctId)),
   upsertLabelMutation: (nctId?, key?, value?) => dispatch(upsertLabelMutation(nctId, key, value)),
   deleteLabelMutation: (nctId?, key?, value?) => dispatch(deleteLabelMutation(nctId, key, value))
 })

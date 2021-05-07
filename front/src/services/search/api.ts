@@ -1,8 +1,9 @@
 import * as query from './queries';
 import * as mutate from './mutations'
-import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
-import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
+// import SearchPageParamsQuery from 'queries/SearchPageParamsQuery';
+// import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import { callGraphql, get_gql_url, getGraphQLMigrationURL } from 'utils/graphqlUtil';
+
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
@@ -19,6 +20,12 @@ export const fetchSearchPageAggBuckets = (searchParams : any) => {
 };
 export const fetchSearchPageCrowdAggBuckets = (searchParams : any) => {
     return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY, searchParams);     //TODO CHeck params
+};
+export const fetchSearchPageOpenAggBuckets = (searchParams : any) => {
+    return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_OPEN_AGG_BUCKETS_QUERY, searchParams);     //TODO CHeck params
+};
+export const fetchSearchPageOpenCrowdAggBuckets = (searchParams : any) => {
+    return callGraphql(NODE_ENDPOINT,query.SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_QUERY, searchParams);     //TODO CHeck params
 };
 
 export const fetchSearchParams = (hash : any) => {
@@ -47,4 +54,22 @@ export const createSavedSearch = ( searchHash: string, url: string) => {
 export const deleteSavedSearch = ( id ) => {
     return callGraphql(ENDPOINT, mutate.DELETE_SAVED_SEARCH_MUTATION, 
         {  id: id });                                    
+};
+
+export const fetchIslandConfig= () => {
+    return callGraphql(ENDPOINT, query.ISLAND_CONFIG_QUERY, {} );
+};
+
+export const updateFacetConfig = (input) => {
+    return callGraphql(ENDPOINT, mutate.UPDATE_FACET_CONFIG, 
+        { input : input.input});
+};
+export const searchExport = ( searchExportId: number) => {
+    return callGraphql(ENDPOINT, query.SEARCH_EXPORT_QUERY,
+        { searchExportId: searchExportId });
+}
+
+export const exportToCsv = ( searchHash: string, siteViewId: number) => {
+    return callGraphql(ENDPOINT, mutate.EXPORT_TO_CSV_MUTATION,
+        { searchHash: searchHash, siteViewId: siteViewId });                           
 };

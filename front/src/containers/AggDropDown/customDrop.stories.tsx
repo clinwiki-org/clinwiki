@@ -4,7 +4,6 @@ import React, { ComponentProps } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 
 import CustomDropDown from './CustomDrop';
-import { FieldDisplay } from 'types/globalTypes';
 import withTheme, { ProvideTheme } from 'containers/ThemeProvider/ThemeProvider';
 
 // This default export determines where your story goes in the story list

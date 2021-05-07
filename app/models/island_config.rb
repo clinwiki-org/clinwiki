@@ -1,0 +1,2 @@
+class IslandConfig < ApplicationRecord
+end

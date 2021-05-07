@@ -5,7 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import {
   SearchPageParamsQuery_searchParams,
-} from 'types/SearchPageParamsQuery';
+} from '../../services/search/model/SearchPageParamsQuery'
 import { SearchParams, AggKind, SearchQuery } from './shared';
 import { ThemedButton, ThemedSearchContainer, ThemedMainContainer } from '../../components/StyledComponents';
 import Collapser from '../../components/Collapser'
@@ -102,6 +102,11 @@ const SideBarCollapse = styled.div`
 `
 const ThemedSideBarCollapse = withTheme(SideBarCollapse)
 const SidebarContainer = styled(Col)`
+
+@media (max-width: 768px) {
+  position: absolute;
+  z-index: 500;
+}
   padding-right: 0px !important;
   padding-top: 10px;
   padding-left: 0px !important;
@@ -301,7 +306,7 @@ function SearchPage(props: SearchPageProps) {
       ...preselectedFilters(presentSiteView),
     };
 
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 1025) {
       setCollapseFacetBar(true)
     }
     if (searchTerm.has('q')) {

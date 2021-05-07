@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { SortKind, FieldDisplay, FilterKind } from "../../../types/globalTypes";
+import { SortKind, FieldDisplay, FilterKind } from "./InputTypes";
 
 // ====================================================
 // GraphQL fragment: SiteFragment
@@ -865,6 +865,8 @@ export interface SiteFragment {
   skipLanding: boolean | null;
   hideDonation: boolean | null;
   subdomain: string;
+  defaultHash: string;
+  defaultSearchPage: string;
   themes: string;
   reactionsConfig: string;
   userRank: string;

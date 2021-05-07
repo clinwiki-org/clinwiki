@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {  SiteViewMutationInput } from 'types/globalTypes';
+import {  SiteViewMutationInput } from '../../services/site/model/InputTypes';
 import { CreateSiteInput } from 'services/site/model/InputTypes';
 import { equals, prop, last } from 'ramda';
 import { Nav, NavItem } from 'react-bootstrap';
@@ -22,6 +22,7 @@ import ThemedButton from 'components/StyledComponents/index';
 import PagesForm from './PagesForm';
 import { connect } from 'react-redux';
 import { fetchSiteProvider, updateSiteView } from 'services/site/actions';
+import { fetchSiteProviderHasura } from 'services/hasuraSite/actions';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 interface SiteFormProps {
@@ -30,7 +31,7 @@ interface SiteFormProps {
   history: History;
   location: Location;
   onSaveSite: (CreateSiteInput) => void;
-  //fetchSiteProvider?: any;
+  fetchSiteProviderHasura: any;
   updateSiteView: any;
 }
 
@@ -61,6 +62,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     form: {
       name: '',
       subdomain: '',
+      defaultHash:'',
+      defaultSearchPage: '',
       skipLanding: false,
       editorEmails: [],
     },
@@ -77,6 +80,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const {
       name,
       subdomain,
+      defaultHash,
+      defaultSearchPage,
       skipLanding,
       hideDonation,
       editors,
@@ -88,6 +93,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     const form = {
       name,
       subdomain,
+      defaultHash,
+      defaultSearchPage,
       skipLanding,
       hideDonation,
       editorEmails,
@@ -246,7 +253,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  // fetchSiteProvider: (id?, url?) => dispatch(fetchSiteProvider(id, url)),
+  fetchSiteProviderHasura: (id?, url?) => dispatch(fetchSiteProviderHasura(id, url)),
   updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
 })
 

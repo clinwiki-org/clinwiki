@@ -10,18 +10,20 @@ import { bulkListUpdate, bulkQueryUpdate, fetchAllWorkFlows, fetchLabels, fetchL
 import { connect } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { fetchSearchParams } from 'services/search/actions';
-
-
 // escape label
 const el = (label: string) => label.replace(/ /g, '').replace('|', '_');
 const buildParams = (labels: string[]): string => {
-  return labels.reduce(
+  let newLabels = without(["Key/Values", "Demographics"],labels) //Removes Key/Values to avid parsing error on '/'
+
+  return newLabels.reduce(
     (s, label) => `$${el(label)}Params: SearchInput! ${s}`,
     ''
   );
 };
 const variablesForLabels = (labels: string[], params: any) => {
-  return labels.reduce(
+  let newLabels = without(["Key/Values", "Demographics"],labels) //Removes Key/Values to avid parsing error on '/'
+
+  return newLabels.reduce(
     (variables, label) => ({
       ...variables,
       [`${el(label)}Params`]: {
@@ -33,9 +35,12 @@ const variablesForLabels = (labels: string[], params: any) => {
   );
 };
 const bucketsForLabels = (labels: string[]) => {
+let newLabels = without(["Key/Values", "Demographics"],labels) //Removes Key/Values to avid parsing error on '/'
+console.log("🚀 ~ fils ~ newLabels", newLabels);
+
   const query = `
-  query BucketsForLabelsQuery (${buildParams(labels)}) {
-    ${labels.reduce(
+  query BucketsForLabelsQuery (${buildParams(newLabels)}) {
+    ${newLabels.reduce(
       (s, l) => `
       ${s}
       ${el(l)}Selected: crowdAggBuckets(
@@ -67,7 +72,6 @@ const bucketsForLabels = (labels: string[]) => {
   `;
   return query;
 };
-
 interface GotAggs {
   aggs:
   | {
@@ -83,7 +87,6 @@ interface GotAggs {
 function extractBucketKeys(arg?: GotAggs) {
   return arg?.aggs?.[0]?.buckets?.map((k) => k.key) || [];
 }
-
 const groupBucketsByLabel = ({ wfLabelsBuckets, labels }) =>
   labels.reduce(
     (accum, label) => ({
@@ -95,7 +98,6 @@ const groupBucketsByLabel = ({ wfLabelsBuckets, labels }) =>
     }),
     {}
   );
-
 interface BulkEditProps {
   match: match<{ searchId?: string }>;
   history: History;
@@ -125,7 +127,6 @@ const getParsedSearchParams = (searchParams) => {
   };
   return parsedSearchParams;
 };
-
 class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
   state = {
     undoHistory: [],
@@ -134,7 +135,6 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
     const workflow = this.props.allWorkflows.data.workflowsView.workflows.filter(
       (w) => w.name.toLowerCase() === 'wf_bulk'
     )?.[0];
-
     console.log(workflow)
     const allowedSuggestedLabels = !workflow
       ? []
@@ -143,17 +143,12 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
         workflow.suggestedLabelsFilter.values,
         workflow.allSuggestedLabels.map((name) => ({ name, rank: null }))
       ).map(prop('name'));
-
-
     const searchParams = this.props.searchParams?.data?.searchParams;
     if (!searchParams) return null;
-
     const parsedSearchParams = getParsedSearchParams(searchParams);
     if (!this.props.workflowLabels) return null;
-
     const wfLabels = this.props.workflowLabels?.data;
     console.log(wfLabels)
-
     const recordsTotal = wfLabels.search?.recordsTotal || 0;
     const allKeys = R.uniq([
       ...extractBucketKeys(wfLabels.allCrowdAggs),
@@ -164,7 +159,6 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
       .filter(
         (x) => !workflow || allowedSuggestedLabels.includes(x)
       );
-
     if (!labels.length) return null;
     //Band-aid fix to the -99999999 breaking BucketsForLabelQuery, does not like the name field as -9999999999
     labels.map((label, index) => {
@@ -172,9 +166,7 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
         labels[index] = '_missing';
       }
     });
-
     const wfLabelsBuckets = this.props.workflowLabelsBuckets?.data;
-
     const aggBucketsByLabel = groupBucketsByLabel({
       wfLabelsBuckets,
       labels,
@@ -192,15 +184,12 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
           })),
         },
       });
-
       // await this.setState((state) => ({
       //   undoHistory: state.undoHistory.filter(
       //     (x, i) => idx !== i
       //   )
       // }));
-
     };
-
     const handleCommit = async (toAdd, toRemove, description) => {
       let result = this.props.bulkQueryUpdate({
         input: {
@@ -227,7 +216,6 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
         },
       });
       console.log(result)
-
       // await this.setState((state) => ({
       //         undoHistory: [
       //           ...state.undoHistory,
@@ -238,10 +226,8 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
       //           },
       //         ],
       //       }));
-
     }
     return (
-
       <BulkEditView
         labels={labels}
         aggBucketsByLabel={aggBucketsByLabel}
@@ -252,34 +238,24 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
         commit={handleCommit}
       />
     );
-
-
   }
   componentDidMount() {
     this.props.fetchAllWorkFlows()
-
     const hash = new URLSearchParams(this.props.history.location.search)
       .getAll('hash')
       .toString() as string | null;
-
     this.props.fetchSearchParams(hash)
-
-
-
-
   }
   componentDidUpdate(prevProps) {
     console.log("!", this.props)
     const searchParams = this.props.searchParams?.data?.searchParams;
     const wfLabels = this.props.workflowLabels?.data;
-
     if (!prevProps.searchParams && searchParams) {
       console.log(1)
       const parsedSearchParams = getParsedSearchParams(searchParams);
       const hash = new URLSearchParams(this.props.history.location.search)
         .getAll('hash')
         .toString() as string | null;
-
       this.props.fetchLabels({
         searchHash: hash,
         params: { ...parsedSearchParams, agg: 'front_matter_keys' },
@@ -290,7 +266,6 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
       const workflow = this.props.allWorkflows.data.workflowsView.workflows.filter(
         (w) => w.name.toLowerCase() === 'wf_bulk'
       )?.[0];
-
       const allowedSuggestedLabels = !workflow
         ? []
         : displayFields(
@@ -298,8 +273,6 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
           workflow.suggestedLabelsFilter.values,
           workflow.allSuggestedLabels.map((name) => ({ name, rank: null }))
         ).map(prop('name'));
-
-
       if (!wfLabels) return null;
       const recordsTotal = wfLabels.search?.recordsTotal || 0;
       const allKeys = R.uniq([
@@ -311,7 +284,6 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
         .filter(
           (x) => !workflow || allowedSuggestedLabels.includes(x)
         );
-
       if (!labels.length) return null;
       //Band-aid fix to the -99999999 breaking BucketsForLabelQuery, does not like the name field as -9999999999
       labels.map((label, index) => {
@@ -319,7 +291,6 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
           labels[index] = '_missing';
         }
       });
-
       const parsedSearchParams = getParsedSearchParams(searchParams);
       labels && this.props.fetchLabelsBuckets(variablesForLabels(labels, parsedSearchParams), bucketsForLabels(labels));
     }
@@ -341,18 +312,15 @@ class BulkEditPage extends React.PureComponent<BulkEditProps, BulkEditState> {
     if (!this.props.allWorkflows) {
       return <BeatLoader />
     }
-
     console.log(this.props.allWorkflows)
     return this.renderWorkflow();
   }
 }
-
 const FILTERED_LABELS = [
   'browse_condition_mesh_terms',
   'overall_status',
   'phase',
 ];
-
 const mapStateToProps = (state, ownProps) => ({
   allWorkflows: state.study.allWorkFlows,
   searchParams: state.search.searchResults,
@@ -369,5 +337,4 @@ const mapDispatchToProps = (dispatch) => ({
   bulkListUpdate: (input) => dispatch(bulkListUpdate(input)),
   bulkQueryUpdate: (input) => dispatch(bulkQueryUpdate(input))
 })
-
 export default connect(mapStateToProps, mapDispatchToProps)(BulkEditPage);

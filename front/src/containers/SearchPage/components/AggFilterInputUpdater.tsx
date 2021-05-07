@@ -2,9 +2,7 @@ import moment from 'moment';
 import { AggFilterInput } from 'types/globalTypes';
 import { SearchParams } from '../shared';
 import { find, propEq, isEmpty, isNil, omit, filter, contains } from 'ramda';
-
 type AggFilterSettings = SearchParams | any;
-
 /**
  * This class gives us an encapsulated tool for representing agg
  * configurations both for search filters as well as setting defaults
@@ -15,9 +13,7 @@ abstract class AbstractAggFilterInputUpdater {
   grouping: string;
   updateSettings: any;
   agg: string;
-
   ACCEPTED_FIELDS = ['values', 'gte', 'lte', 'includeMissingFields', 'zipcode','radius', 'lat', 'long'];
-
   constructor(
     agg: string,
     settings: AggFilterSettings,
@@ -33,9 +29,7 @@ abstract class AbstractAggFilterInputUpdater {
     }
     this.configureInput();
   }
-
   abstract onUpdateFilter(allowsMissingChanged?: boolean): void;
-
   configureInput() {
     const result = find(propEq('field', this.agg))(
       this.settings[this.grouping]
@@ -48,7 +42,6 @@ abstract class AbstractAggFilterInputUpdater {
       };
     }
   }
-
   addFilter(value: string) {
     if (this.input) {
       this.input.values = this.input?.values
@@ -57,7 +50,6 @@ abstract class AbstractAggFilterInputUpdater {
       this.onUpdateFilter();
     }
   }
-
   removeFilter(value: string) {
     if (this.input) {
       this.input.values = this.input.values
@@ -66,7 +58,6 @@ abstract class AbstractAggFilterInputUpdater {
       this.onUpdateFilter();
     }
   }
-
   hasNoFilters(): boolean {
     for (let field of this.ACCEPTED_FIELDS) {
       if (isEmpty(this.input?.[field])) {
@@ -79,18 +70,15 @@ abstract class AbstractAggFilterInputUpdater {
     }
     return true;
   }
-   
   isSelected(key: string): boolean {
     if (this.input?.values === undefined) {
       return false;
     }
     return contains(key as string, this.input.values as Array<string>);
   }
-
   toggleFilter(key: string): void {
     this.isSelected(key) ? this.removeFilter(key) : this.addFilter(key);
   }
-
   changeRange([gte, lte]): void {
     if (this.input) {
       this.input.gte = gte;
@@ -112,7 +100,6 @@ abstract class AbstractAggFilterInputUpdater {
       this.input.radius = radius
       this.onUpdateFilter();}
     }
-
   removeRange(): void {
     if (this.input) {
       this.input = omit(['gte', 'lte'], this.input);
@@ -126,14 +113,11 @@ abstract class AbstractAggFilterInputUpdater {
     }
   }
   removeAllowMissing(): void {
-
     if (this.input) {
       this.input.includeMissingFields = false
-
     }
     this.onUpdateFilter();
   }
-
   getRangeSelection(): Array<any> | undefined {
     if (this.input) {
       if (this.input.gte || this.input.lte) {
@@ -141,11 +125,9 @@ abstract class AbstractAggFilterInputUpdater {
       }
     }
   }
-
   isDateAgg(): boolean {
     return this.agg.match(/date/) !== null;
   }
-
   getMinString(thisSiteView): string | undefined {
     // logic handling of input based on agg type here
     if (this.input?.gte) {
@@ -169,7 +151,6 @@ abstract class AbstractAggFilterInputUpdater {
       return this.input.gte;
     }
   }
-
   getMaxString(thisSiteView): string | undefined {
     // logic handling of input based on agg type here
     if (this.input?.lte) {
@@ -193,7 +174,6 @@ abstract class AbstractAggFilterInputUpdater {
   allowsMissing(): boolean {
     return this.input!.includeMissingFields || false;
   }
-
   toggleAllowMissing(): void {
     if (this.input) {
       this.input.includeMissingFields = !this.input.includeMissingFields;
@@ -201,7 +181,6 @@ abstract class AbstractAggFilterInputUpdater {
     }
   }
 }
-
 /**
  * Responsible for updating aggs in the context of a search
  */
@@ -237,7 +216,6 @@ class AggFilterInputUpdater extends AbstractAggFilterInputUpdater {
     }
   }
 }
-
 export type ConfigType = 'presearch' | 'autosuggest' | 'facetbar' | 'workflow';
 export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
   kind: 'preselected' | 'visibleOptions';
@@ -257,11 +235,9 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
     this.configType = configType;
     this.workflowName = workflowName;
   }
-
   configureInput() {
     this.input = { ...this.settings };
   }
-
   getPath() {
     switch (this.configType) {
       case 'presearch':
@@ -275,7 +251,6 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
         return `set:workflows.${this.workflowName}.suggestedLabelsConfig.${this.agg}.${this.kind}.values`;
     }
   }
-
   onUpdateFilter(allowsMissingChanged: boolean = false): void {
     const name = this.getPath();
     if (allowsMissingChanged) {
@@ -295,5 +270,4 @@ export class AggFilterSiteConfigUpdater extends AbstractAggFilterInputUpdater {
     }
   }
 }
-
 export default AggFilterInputUpdater;

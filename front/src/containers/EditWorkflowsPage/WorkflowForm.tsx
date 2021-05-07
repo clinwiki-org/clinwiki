@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Panel, FormControl, Checkbox } from 'react-bootstrap';
-import { WorkflowConfigFragment } from 'types/WorkflowConfigFragment';
+import { WorkflowConfigFragment } from '../../services/study/model/WorkflowConfigFragment';
 import MultiInput from 'components/MultiInput';
 import AggField, { FieldType } from 'components/SiteForm/AggField';
 import { fromPairs, difference, find } from 'ramda';
@@ -179,6 +179,7 @@ class WorkflowForm extends React.PureComponent<WorkflowFormProps> {
         <StyledLabel>Summary</StyledLabel>
         <MailMergeFormControl
           template={this.props.workflow.summaryTemplate}
+          pageType={'Study'}
           onTemplateChanged={t =>
             onAddMutation({
               currentTarget: {

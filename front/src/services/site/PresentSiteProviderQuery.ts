@@ -302,6 +302,8 @@ export const PRESENT_SITE_FRAGMENT = `
         name
         skipLanding
         subdomain
+        defaultHash
+        defaultSearchPage
         themes
         reactionsConfig
         userRank

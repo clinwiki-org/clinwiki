@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldDisplay } from 'types/globalTypes';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
 import styled from 'styled-components';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
@@ -23,8 +23,8 @@ import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInp
 import AllowMissingDropDownItem from './AllowMissingDropDownItem';
 interface CustomDropPanelProps {
   field: SiteViewFragment_search_aggs_fields | any;
-  buckets: AggBucket[],
-  isPresearch: boolean,
+  buckets: AggBucket[];
+  isPresearch: boolean;
   handleLoadMore: () => any;
   hasMore: boolean;
   handleRange: any;
@@ -35,7 +35,9 @@ interface CustomDropPanelProps {
   isOpen: boolean;
   updater: AggFilterInputUpdater;
   loading: boolean;
-  selectedItem: any,
+  selectedItem: any;
+  disabled?:boolean;
+  allowsMissing?:boolean;
 
 
 }
@@ -51,8 +53,9 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
   }
 
   renderPreValue = (item) => {
+    const { disabled } = this.props;
     if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
-      return this.props.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>
+      return this.props.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet" } ${disabled ? "disabled-check" : ""}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"} ${disabled ? "disabled-checkbox" : ""}`}></div>
     }
     return null
   };
@@ -71,7 +74,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
           3: '★★★☆☆',
           4: '★★★★☆',
           5: '★★★★★',
-        }[intValue];
+        }[intValue] || "NaN";
         break;
       case FieldDisplay.DATE:
         text = new Date(parseInt(value.toString(), 10))
@@ -84,6 +87,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     return `${text} (${docCount})`;
   }
   render() {
+    const { disabled } = this.props;
 
  /*   if(this.props.buckets.length > 0) {
      console.log(this.props.isPresearch,"CusDr Panel BUckets ", this.props.buckets)
@@ -143,7 +147,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
           removeFilters={this.props.onCheckBoxToggle}
           buckets={buckets}
           isSelected={this.props.isSelected}
-          hasMore={hasMore}
+          // hasMore={hasMore}
           field={field}
           handleLocation={this.props.handleLocation}
         />
@@ -165,9 +169,10 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       return (
         <>
         {showAllowMissing && (
-          <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()} >
+          // <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()} >
+          <div className="select-item allow-missing" onClick={() => console.log("Need a new function, prev updater")} >
             <div className="item-content">
-              {this.props.updater.allowsMissing() ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>}
+              {this.props.allowsMissing ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>}
 
               <AllowMissingDropDownItem buckets={buckets} />
             </div>
@@ -201,7 +206,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
                     : "select-item"
                 }
               >
-                <div className="item-content">
+                <div className={`item-content ${disabled ? "disabled-text" : ""}`}>
                   {this.renderPreValue(item.key)}
                   <span>{item.key} ({item.docCount})</span>
                 </div>
@@ -219,7 +224,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       }
       return (
         <>
-        {showAllowMissing && !this.props.updater.allowsMissing() && (
+        {showAllowMissing && this.props.allowsMissing && (
           <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()}>
             <AllowMissingDropDownItem buckets={buckets} className="item-content" />
           </div>

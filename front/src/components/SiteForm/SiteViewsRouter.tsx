@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SiteViewMutationInput } from 'types/globalTypes';
+import { SiteViewMutationInput } from '../../services/site/model/InputTypes';
 import { CreateSiteInput } from 'services/site/model/InputTypes';
 import { Switch, Route, match } from 'react-router';
 import { trimPath } from 'utils/helpers';
@@ -37,6 +37,8 @@ class SiteViewRouter extends React.Component<
     form: {
       name: '',
       subdomain: '',
+      defaultHash:'',
+      defaultSearchPage:'',
       skipLanding: false,
       editorEmails: [],
     },

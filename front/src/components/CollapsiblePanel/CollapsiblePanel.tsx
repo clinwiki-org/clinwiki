@@ -107,15 +107,7 @@ class CollapsiblePanel extends React.Component<
             </Panel.Title>
             &nbsp;
           </Panel.Heading>
-          <CSSTransition
-            in={this.state.summaryVisible}
-            timeout={200}
-            appear
-            classNames="transition">
-            <ThemedStyledPanelBody>
-              <Panel.Body>{this.props.children}</Panel.Body>
-            </ThemedStyledPanelBody>
-          </CSSTransition>
+          <Panel.Body style={{display: `${this.state.summaryVisible ? "":"none"}`}} >{this.props.children}</Panel.Body>
         </Panel>
       </ThemedStyleWrapper>
     );

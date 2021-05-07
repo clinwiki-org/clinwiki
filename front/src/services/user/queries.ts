@@ -6,7 +6,14 @@ const CURRENT_USER_FRAGMENT = `fragment UserFragment on User {
     firstName
     lastName
     defaultQueryString
-    roles
+    roles {
+      id
+      name
+      resource_type
+      resource_id
+      created_at
+      updated_at
+    }
     reviewCount
     reviews {
       content

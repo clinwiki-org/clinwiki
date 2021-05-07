@@ -3,18 +3,13 @@ import {useDispatch,useSelector} from 'react-redux';
 import {RootState} from 'reducers';
 import {fetchAdminUserSite} from 'services/site/actions';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { History } from 'history';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import logo from 'images/clinwiki-501.png';
 import UserProfileHeaderButton from './UserProfileHeaderButton';
-import { UserFragment } from 'services/user/model/UserFragment';
-import { gql }  from '@apollo/client';
-import  {Query,QueryComponentOptions, } from '@apollo/client/react/components';
-import Error from "../Error";
-import { AdminViewsProviderQuery, AdminViewsProviderQueryVariables } from 'services/site/model/AdminViewsProviderQuery';
 import { BeatLoader } from 'react-spinners';
+import { fetchPresentSiteProvider } from 'services/site/actions';
+
 
 const Row = styled.div`
   display: flex;
@@ -61,6 +56,7 @@ const ThemedStyledWrapper = withTheme(StyledWrapper);
 
 const AuthHeader = (props) => {
   const dispatch = useDispatch();
+  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
   const user = useSelector( (state : RootState)  => state.user.current);
   const adminSiteView = useSelector( (state: RootState) => state.site.adminSiteView);
   const hideDonation = adminSiteView?.site?.hideDonation;
@@ -69,9 +65,13 @@ const AuthHeader = (props) => {
     dispatch(fetchAdminUserSite());
   },[dispatch,user]);
 
+  useEffect(() => {
+    dispatch(fetchPresentSiteProvider(undefined, ));
+  }, [dispatch, ])
+  
   const pushToDefault = () => {
     // this is a temp fix to handle default hash not getting updated on logo click
-      props.history.push('/search?sv=default')
+      props.history.push(`/search?hash=${site.defaultHash}&pv=${site.defaultSearchPage}`)
       window.location.reload()
   }
 

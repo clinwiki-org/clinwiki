@@ -167,11 +167,13 @@ export const SEARCH_PAGE_AGG_BUCKETS_QUERY = `
     $url: String
     $configType: String
     $returnAll: Boolean
+    $bucketsWanted: [String!]
   ) {
     aggBuckets(
       url: $url
       configType: $configType
       returnAll: $returnAll
+      bucketsWanted: $bucketsWanted
       params: {
         agg: $agg
         q: $q
@@ -210,11 +212,99 @@ export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
     $url: String
     $configType: String
     $returnAll: Boolean
+    $bucketsWanted: [String!]
   ) {
     aggBuckets: crowdAggBuckets(
       url: $url
       configType: $configType
       returnAll: $returnAll
+      bucketsWanted: $bucketsWanted
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: $aggOptionsSort
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+  }
+`;
+export const SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_QUERY = `
+  query SearchPageOpenCrowdAggBucketsQuery(
+    $agg: [String]
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
+    $aggOptionsFilter: String
+    $aggOptionsSort: [SortInput!]
+    $url: String
+    $configType: String
+    $returnAll: Boolean
+    $bucketsWanted: [VisibleOptions!]
+  ) {
+    openCrowdAggBuckets(
+      url: $url
+      configType: $configType
+      returnAll: $returnAll
+      bucketsWanted: $bucketsWanted
+      params: {
+        agg: $agg
+        q: $q
+        sorts: []
+        aggFilters: $aggFilters
+        crowdAggFilters: $crowdAggFilters
+        aggOptionsFilter: $aggOptionsFilter
+        aggOptionsSort: $aggOptionsSort
+        page: $page
+        pageSize: $pageSize
+      }
+    ) {
+      aggs {
+        name
+        buckets {
+          key
+          keyAsString
+          docCount
+        }
+      }
+    }
+  }
+`;
+export const SEARCH_PAGE_OPEN_AGG_BUCKETS_QUERY = `
+  query SearchPageOpenAggBucketsQuery(
+    $agg: [String]
+    $q: SearchQueryInput!
+    $aggFilters: [AggFilterInput!]
+    $crowdAggFilters: [AggFilterInput!]
+    $page: Int!
+    $pageSize: Int!
+    $aggOptionsFilter: String
+    $aggOptionsSort: [SortInput!]
+    $url: String
+    $configType: String
+    $returnAll: Boolean
+    $bucketsWanted: [VisibleOptions!]
+  ) {
+    openAggBuckets(
+      url: $url
+      configType: $configType
+      returnAll: $returnAll
+      bucketsWanted: $bucketsWanted
       params: {
         agg: $agg
         q: $q
@@ -299,4 +389,23 @@ query UserSavedSearchesQuery($userId: Int!){
         }  
     }
 } 
+`;
+
+export const ISLAND_CONFIG_QUERY =`
+query IslandConfig{
+  islandConfig{
+    id
+    config
+    islandType
+  }
+}
+`;
+
+
+export const SEARCH_EXPORT_QUERY = `
+  query SearchExportQuery($searchExportId: Int!) {
+    searchExport(searchExportId: $searchExportId) {
+      downloadUrl
+    }
+  }
 `;

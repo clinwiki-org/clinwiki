@@ -1,16 +1,6 @@
 // import { WORKFLOW_VIEW_PROVIDER_FRAGMENT } from './queries';
 
-export const CREATE_STUDY_VIEW_LOG_MUTATION =`
-mutation CreateStudyViewLogMutation($nctId: String!){
-    createStudyViewLog(input: {
-      nctId: $nctId
-    }) {
-        errors
-        }
-    }
-  `;
-
-  export const PAGE_VIEW_FRAGMENT = `
+export const PAGE_VIEW_FRAGMENT = `
 fragment PageViewFragment on PageView {
     id
     pageType
@@ -20,6 +10,57 @@ fragment PageViewFragment on PageView {
     default
   }
 `;
+
+export const CREATE_PAGE_VIEW_HASURA_MUTATION = `
+  mutation CreatePageViewMutation($url: String!, $siteId: Int!) {
+    createPageView(
+      input: { url: $url, title: $url, template: "", siteId: $siteId }
+    ) {
+      errors
+      pageView {
+        ...PageViewFragment
+      }
+    }
+  }
+  ${PAGE_VIEW_FRAGMENT}
+`;
+
+export const UPDATE_PAGE_VIEW_HASURA_MUTATION = `
+mutation HasuraUpdatePageViewMutation($siteId: bigint!, $url: String!, $title:String, $template: String, $default: Boolean, $pageType: Int ) {
+  update_page_views(where: {_and: [{site_id: {_eq: $siteId}}, {url: {_eq: $url}}]}, _set: {url: $url, template: $template,  title: $title, default: $default, page_type: $pageType }) {
+    returning {
+      id
+      page_type
+      template
+      title
+      url
+      default
+      site_id
+    }
+  }
+}
+`;
+
+export const DELETE_PAGE_VIEW_HASURA_MUTATION = `
+  mutation DeletePageViewMutation($id: Int!) {
+    deletePageView(input: { id: $id }) {
+      error
+      pageView {
+        id
+      }
+    }
+  }
+`;
+
+export const CREATE_STUDY_VIEW_LOG_MUTATION = `
+mutation CreateStudyViewLogMutation($nctId: String!){
+    createStudyViewLog(input: {
+      nctId: $nctId
+    }) {
+        errors
+        }
+    }
+  `;
 
 export const CREATE_PAGE_VIEW_MUTATION = `
   mutation CreatePageViewMutation($url: String!, $siteId: Int!) {
@@ -90,8 +131,6 @@ export const WIKI_PAGE_EDIT_FRAGMENT = `
   }
 `;
 
-
-
 export const UPSERT_LABEL_MUTATION = `
   mutation CrowdPageUpsertWikiLabelMutation(
     $nctId: String!
@@ -111,7 +150,7 @@ export const UPSERT_LABEL_MUTATION = `
   ${FRAGMENT}
   ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
-export const WIKI_PAGE_FRAGMENT =`
+export const WIKI_PAGE_FRAGMENT = `
   fragment WikiPageFragment on WikiPage {
     content
     edits {
@@ -123,7 +162,7 @@ export const WIKI_PAGE_FRAGMENT =`
   ${WIKI_PAGE_EDIT_FRAGMENT}
 `;
 
-export const WIKI_PAGE_UPDATE_CONTENT_MUTATION =`
+export const WIKI_PAGE_UPDATE_CONTENT_MUTATION = `
   mutation WikiPageUpdateContentMutation($nctId: String!, $content: String!) {
     updateWikiContent(input: { nctId: $nctId, content: $content }) {
       wikiPage {
@@ -134,6 +173,19 @@ export const WIKI_PAGE_UPDATE_CONTENT_MUTATION =`
   }
   ${WIKI_PAGE_FRAGMENT}
 `;
+
+export const WIKI_PAGE_UPDATE_HASURA_MUTATION = `
+
+mutation HasuraUpdateWikiPageMutation($nctId: String, $text: String) {
+  update_wiki_pages(where: {nct_id: {_eq: $nctId}}, _set: {text: $text}) {
+    returning {
+      text
+      nct_id
+    }
+  }
+}
+`;
+
 export const DELETE_LABEL_MUTATION = `
   mutation CrowdPageDeleteWikiLabelMutation($nctId: String!, $key: String!) {
     deleteWikiLabel(input: { nctId: $nctId, key: $key }) {
@@ -248,7 +300,7 @@ mutation UpdateWorkflowsViewMutation($input: UpdateWorkflowsViewInput!) {
 }
 
 ${WORKFLOW_VIEW_PROVIDER_FRAGMENT}
-`
+`;
 export const BULK_QUERY_UPDATE_MUTATION = `
   mutation BulkQueryUpdateMutation($input: BulkQueryUpdateInput!) {
     bulkQueryUpdate(input: $input) {
@@ -286,8 +338,7 @@ export const REVIEW_FRAGMENT = `
    }
  `;
 
-
-export const REVIEW_FORM_MUTATION =`
+export const REVIEW_FORM_MUTATION = `
   mutation ReviewFormMutation(
     $id: Int
     $nctId: String!
@@ -306,4 +357,3 @@ export const REVIEW_FORM_MUTATION =`
 
   ${REVIEW_FRAGMENT}
 `;
-

@@ -53,6 +53,7 @@ export interface SiteState {
     isFetchingAdminSiteView: boolean,
     adminSiteView: AdminViewsProviderQuery | undefined,
     isFetchingSitesPage: boolean,
+    isFetchingSitesPageHasura: boolean,
     sitesData: any | SitesPageQuery | undefined,
     isDeletingSite: boolean,
     isCreatingSite: boolean,

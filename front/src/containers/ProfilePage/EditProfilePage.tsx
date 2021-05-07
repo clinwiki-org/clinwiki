@@ -1,6 +1,6 @@
-import React,{useState, useEffect} from 'react';
-import {useDispatch,useSelector} from 'react-redux';
-import {editProfile} from 'services/user/actions';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { editProfile } from 'services/user/actions';
 import SearchPage from 'containers/SearchPage';
 import { match } from 'react-router-dom';
 import { History, Location } from 'history';
@@ -31,105 +31,107 @@ interface EditProfilePageProps {
   match: match;
 }
 
-const ProfileInfo = ({user,onToggle}) => {
+const ProfileInfo = ({ user, onToggle }) => {
   let pictureUrl = user.pictureUrl || null;
   return (
     <div>
-    <ProfilePicture pictureUrl={pictureUrl} />
-    <a
-      style={{ paddingLeft: '15px', cursor: 'pointer' }}
-      onClick={onToggle}>
-      {' '}
+      <ProfilePicture pictureUrl={pictureUrl} />
+      <a
+        style={{ paddingLeft: '15px', cursor: 'pointer' }}
+        onClick={onToggle}>
+        {' '}
       Edit Profile
     </a>
 
-    <ThemedSearchContainer>
-      <StyledProfileLabel>First Name:</StyledProfileLabel>
-      <StyledProfileValue>
-        {' '}
-        {user.firstName}
-      </StyledProfileValue>
-      <StyledProfileLabel>Last Name: </StyledProfileLabel>
-      <StyledProfileValue>{user.lastName}</StyledProfileValue>
-      <StyledProfileLabel>E-mail: </StyledProfileLabel>
-      <StyledProfileValue>{user.email}</StyledProfileValue>
-      <StyledProfileLabel>Default Query String: </StyledProfileLabel>
-      <StyledProfileValue>
-        {user.defaultQueryString || 'N/A'}
-      </StyledProfileValue>
-    </ThemedSearchContainer>
-  </div>
+      <ThemedSearchContainer>
+        <StyledProfileLabel>First Name:</StyledProfileLabel>
+        <StyledProfileValue>
+          {' '}
+          {user.firstName}
+        </StyledProfileValue>
+        <StyledProfileLabel>Last Name: </StyledProfileLabel>
+        <StyledProfileValue>{user.lastName}</StyledProfileValue>
+        <StyledProfileLabel>E-mail: </StyledProfileLabel>
+        <StyledProfileValue>{user.email}</StyledProfileValue>
+        <StyledProfileLabel>Default Query String: </StyledProfileLabel>
+        <StyledProfileValue>
+          {user.defaultQueryString || 'N/A'}
+        </StyledProfileValue>
+      </ThemedSearchContainer>
+    </div>
 
   );
 }
 
-const EditForm = ({user,onToggle}) => {
+const EditForm = ({ user, onToggle }) => {
   const dispatch = useDispatch();
-  const [firstName,setFirstName] = useState('');
-  const [lastName,setLastName] = useState('');
-  const [defaultQueryString,setDefaultQueryString] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [defaultQueryString, setDefaultQueryString] = useState('');
 
   const handleEditProfile = () => {
-    dispatch(editProfile(firstName,lastName,defaultQueryString));
+    dispatch(editProfile(firstName, lastName, defaultQueryString));
     onToggle();
   };
 
   return (
     <div>
-    <ProfilePicture pictureUrl={user.pictureUrl} />
-    <a
-      style={{ paddingLeft: '15px', cursor: 'pointer' }}
-      onClick={onToggle}>
-      X
+      <ProfilePicture pictureUrl={user.pictureUrl} />
+      <a
+        style={{ paddingLeft: '15px', cursor: 'pointer' }}
+        onClick={onToggle}>
+        X
     </a>
-    <ThemedSearchContainer>
-      <StyledProfileLabel>First Name:</StyledProfileLabel>
-      <StyledProfileForm
-        name="firstName"
-        placeholder="First name"
-        value={firstName}
-        onChange={(ev) => setFirstName(ev.target.value)}
-      />
-      <StyledProfileLabel>Last Name:</StyledProfileLabel>
+      <ThemedSearchContainer>
+        <StyledProfileLabel>First Name:</StyledProfileLabel>
+        <StyledProfileForm
+          name="firstName"
+          placeholder="First name"
+          value={firstName}
+          onChange={(ev) => setFirstName(ev.target.value)}
+        />
+        <StyledProfileLabel>Last Name:</StyledProfileLabel>
 
-      <StyledProfileForm
-        name="lastName"
-        placeholder="Last name"
-        value={lastName}
-        onChange={(ev) => setLastName(ev.target.value)}
-      />
-      <StyledProfileLabel>Default Query String:</StyledProfileLabel>
+        <StyledProfileForm
+          name="lastName"
+          placeholder="Last name"
+          value={lastName}
+          onChange={(ev) => setLastName(ev.target.value)}
+        />
+        <StyledProfileLabel>Default Query String:</StyledProfileLabel>
 
-      <StyledProfileForm
-        name="defaultQueryString"
-        placeholder="Default query string"
-        value={defaultQueryString}
-        onChange={(ev) => setDefaultQueryString(ev.target.value)}
-      />
-      <ThemedButton onClick={handleEditProfile}>
-        Save
+        <StyledProfileForm
+          name="defaultQueryString"
+          placeholder="Default query string"
+          value={defaultQueryString}
+          onChange={(ev) => setDefaultQueryString(ev.target.value)}
+        />
+        <ThemedButton onClick={handleEditProfile}>
+          Save
       </ThemedButton>
-    </ThemedSearchContainer>
-  </div>    
-  );  
+      </ThemedSearchContainer>
+    </div>
+  );
 }
 
-const EditProfilePage = (props : EditProfilePageProps) => {
-  const [isEditing,setEditing] = useState(false);
-  const [currentDisplay,setCurrentDisplay] = useState('contributions');
-  const [totalContributions,setTotalContributions] = useState('');
-  const user = useSelector( (state : RootState) => state.user.current);
-  const reactions = useSelector( (state: RootState) => state.study.reactionsById);
+const EditProfilePage = (props: EditProfilePageProps) => {
+  const [isEditing, setEditing] = useState(false);
+  const [currentDisplay, setCurrentDisplay] = useState('contributions');
+  const [totalContributions, setTotalContributions] = useState('');
+  const user = useSelector((state: RootState) => state.user.current);
+  const reactions = useSelector((state: RootState) => state.study.reactionsById);
 
   const dispatch = useDispatch();
 
-  const ids = ["1","2","3","4"]
-  useEffect (() => {
+  const ids = ["1", "2", "3", "4"]
+  useEffect(() => {
     ids.map(id => {
-    dispatch (fetchReactionsById(id))});
-  },[dispatch]);
+      dispatch(fetchReactionsById(id))
+    });
+  }, [dispatch]);
 
-  if (!user || !user.reactions) {
+  if (!user) // || !user.reactions)  //! Taking or out to avoid No user error on profile page load, not sure why this check was in.
+  {
     return <div>No user</div>;
   }
 
@@ -200,21 +202,21 @@ const EditProfilePage = (props : EditProfilePageProps) => {
               };
 
               return (
-                
 
-                    reactions ? (
-                      <span>
-                        <h2>
-                          {displaySub(id)} ({reactions.reactions?.length}){' '}
-                        </h2>
-                        <ReviewsTable
-                          //@ts-ignore
-                          reviewData={reactions.reactions}
-                          history={props.history}
-                          isReview={false}
-                        />
-                      </span>
-                    ) : null
+
+                reactions ? (
+                  <span>
+                    <h2>
+                      {displaySub(id)} ({reactions.reactions?.length}){' '}
+                    </h2>
+                    <ReviewsTable
+                      //@ts-ignore
+                      reviewData={reactions.reactions}
+                      history={props.history}
+                      isReview={false}
+                    />
+                  </span>
+                ) : null
               );
             })}
           </div>
@@ -224,39 +226,39 @@ const EditProfilePage = (props : EditProfilePageProps) => {
 
   return (
     <ThemedMainContainer>
-    <h2>My profile</h2>
-    {isEditing === true
-      ? <EditForm user={user} onToggle={() => setEditing(false)}/>
-      : <ProfileInfo user={user} onToggle={() => setEditing(true)}/>}
+      <h2>My profile</h2>
+      {isEditing === true
+        ? <EditForm user={user} onToggle={() => setEditing(false)} />
+        : <ProfileInfo user={user} onToggle={() => setEditing(true)} />}
 
-    <h2>My Searches</h2>
-    <ThemedSearchContainer>
-    <h4>Saved Searches:</h4>
-      <UserSavedSearches
-        user={user}
-      />
-    </ThemedSearchContainer>
+      <h2>My Searches</h2>
+      <ThemedSearchContainer>
+        <h4>Saved Searches:</h4>
+        <UserSavedSearches
+          user={user}
+        />
+      </ThemedSearchContainer>
 
-    <h2>My Contributions</h2>
-    <ThemedSearchContainer>
-      <ProfileScoreBoard
-        totalPoints={0}
-        totalContributions={userContributions}
-        totalReviews={reviewCount}
-        totalTags={'Coming Soon'}
-        totalFavorites={0}
-        handleDisplayChange={(display) => setCurrentDisplay(display)}
-        rank={rank}
-        reactions={totalcount}
-        reactedStudies={user.reactions}
-      />
-    </ThemedSearchContainer>
-    {user ? (
-      renderResults(user.email)
-    ) : (
-      <div>No User</div>
-    )}
-  </ThemedMainContainer>
+      <h2>My Contributions</h2>
+      <ThemedSearchContainer>
+        <ProfileScoreBoard
+          totalPoints={0}
+          totalContributions={userContributions}
+          totalReviews={reviewCount}
+          totalTags={'Coming Soon'}
+          totalFavorites={0}
+          handleDisplayChange={(display) => setCurrentDisplay(display)}
+          rank={rank}
+          reactions={totalcount}
+          reactedStudies={user.reactions}
+        />
+      </ThemedSearchContainer>
+      {user ? (
+        renderResults(user.email)
+      ) : (
+        <div>No User</div>
+      )}
+    </ThemedMainContainer>
 
   );
 };
