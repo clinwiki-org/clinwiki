@@ -6,8 +6,9 @@ import logger from '../util/logger';
 
 export async function search(args) {
     try {
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         const translated = await translateSearch(args.params,true);
-        
+        // console.log("-------------->  ELASTIC SEARCH QUERY <------------- " + util.inspect(translated, false, null, true))
         let esResults = await elastic.query(translated);
 
         const studies = esResults.body.hits.hits.filter(study => study._source.nct_id?true:false).map( study => esToGraphql(study));
@@ -102,20 +103,23 @@ export async function openCrowdAggBuckets(args) {
         console.log("TRANSLATED OPEN Crowd Buckets", translated) 
         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
         let aggs = [];
+        let i=0;
         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
             const agg = aggToGraphql(key, value);
-            if (args.bucketsWanted?.length !== 0) {
+            if (args.bucketsWanted[i].values.length !== 0) {
                 let finalBuckets = [];
                 agg.buckets.map((bucket) => {
-                    for (const key of args.bucketsWanted) {
+                    for (const key of args.bucketsWanted[i].values) {
                         if (key == bucket.key) {
                             finalBuckets.push(bucket)
                         }
                     }
                 })
                 aggs.push({ ...agg, buckets: finalBuckets });
+                i++
             }else{
                 aggs.push(agg)
+            i++
             }
         }
         return {
@@ -134,20 +138,23 @@ export async function openAggBuckets(args) {
         console.log("TRANSLATED OPEN Buckets", translated) 
         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
         let aggs = [];
+        let i=0;
         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
             const agg = aggToGraphql(key, value);
-            if (args.bucketsWanted?.length !== 0) {
+            if (args.bucketsWanted[i].values.length !== 0) {
                 let finalBuckets = [];
                 agg.buckets.map((bucket) => {
-                    for (const key of args.bucketsWanted) {
+                    for (const key of args.bucketsWanted[i].values) {
                         if (key == bucket.key) {
                             finalBuckets.push(bucket)
                         }
                     }
                 })
                 aggs.push({ ...agg, buckets: finalBuckets });
+                i++
             }else{
                 aggs.push(agg)
+            i++
             }
         }
         return {

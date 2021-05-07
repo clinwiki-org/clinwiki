@@ -255,7 +255,7 @@ export const SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_QUERY = `
     $url: String
     $configType: String
     $returnAll: Boolean
-    $bucketsWanted: [String!]
+    $bucketsWanted: [VisibleOptions!]
   ) {
     openCrowdAggBuckets(
       url: $url
@@ -298,7 +298,7 @@ export const SEARCH_PAGE_OPEN_AGG_BUCKETS_QUERY = `
     $url: String
     $configType: String
     $returnAll: Boolean
-    $bucketsWanted: [String!]
+    $bucketsWanted: [VisibleOptions!]
   ) {
     openAggBuckets(
       url: $url

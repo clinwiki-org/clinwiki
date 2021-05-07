@@ -938,7 +938,10 @@ type FacetState {
   name: String
   value: String
 }
-
+input VisibleOptions {
+  kind: FilterKind!
+  values: [String!]!
+}
 """
 Describe the state of a single facet.
 """
@@ -1223,8 +1226,8 @@ type Query {
   aggBuckets(configType: String, params: SearchInput, returnAll: Boolean, searchHash: String, url: String,  bucketsWanted: [String!]): SearchResultSet!
   autocomplete(aggFields: [String!]!, crowdAggFields: [String!]!, params: SearchInput, searchHash: String, url: String): SearchResultSet!
   crowdAggBuckets(configType: String, params: SearchInput!, returnAll: Boolean, url: String, bucketsWanted: [String!]): SearchResultSet!
-  openAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, bucketsWanted: [String!]): SearchResultSet!
-  openCrowdAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, bucketsWanted: [String!]): SearchResultSet!
+  openAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, bucketsWanted: [VisibleOptions!]): SearchResultSet!
+  openCrowdAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, bucketsWanted: [VisibleOptions!]): SearchResultSet!
   crowdAggFacets(crowdBucketsWanted: [String!]): SearchResultSet!
   feed(id: Int!): Feed
   health: Health!

@@ -10,6 +10,7 @@ import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageO
 import useUrlParams from 'utils/UrlParamsProvider';
 import LoginModal from 'components/LoginModal';
 import { uniq } from 'ramda';
+import { FieldDisplay, FilterKind } from '../../services/site/model/InputTypes';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -129,13 +130,17 @@ export default function MailMergeView(props: Props) {
   useEffect(() => {
     let uniqueIds = uniq(aggIslandsCurrent.current.currentIsalnds)
     let aggArray: any[] = [];
+    let aggBucketsWanted: any[] =[];
     let crowdAggArray: any[] = [];
+    let crowdBucketsWanted: any []=[];
 
     islandConfig && uniqueIds.map((agg) => {
       if (islandConfig[agg.id]?.defaultToOpen == true) {
 
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
+        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
+        islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
       }
     })
 
@@ -151,9 +156,8 @@ export default function MailMergeView(props: Props) {
         agg: crowdAggArray,
         pageSize: 100,
         page: 1,
-
         q: JSON.parse(searchParams.q),
-        bucketsWanted: []
+        bucketsWanted: crowdBucketsWanted,
       };
       variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables))
     }
@@ -169,7 +173,7 @@ export default function MailMergeView(props: Props) {
         page: 1,
 
         q: JSON.parse(searchParams.q),
-        bucketsWanted: []
+        bucketsWanted: aggBucketsWanted
       };
       variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2))
     }
