@@ -3,7 +3,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-import { fetchPageViews, fetchPageView } from 'services/study/actions';
+import { fetchPageViews, fetchPageView, fetchPageViewsHasura, fetchPageViewHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { fetchPresentSiteProvider } from 'services/site/actions';
@@ -23,13 +23,13 @@ export default function GenericPageWrapper(props: Props) {
       return props.url
     }
     if (params.pv && pageViewsData) {
-      const defaultPageView = find(propEq('url', params.pv))(pageViewsData?.data.site?.pageViews)
+      const defaultPageView = find(propEq('url', params.pv))(pageViewsData?.data?.page_views)
       if (defaultPageView) {
         return defaultPageView.url
       }
     }
     if (pageViewsData) {
-      const defaultPageView = find(propEq('default', true))(pageViewsData?.data.site?.pageViews)
+      const defaultPageView = find(propEq('default', true))(pageViewsData?.data?.page_views)
       return defaultPageView.url
     }
   }
@@ -37,13 +37,13 @@ export default function GenericPageWrapper(props: Props) {
   const dispatch = useDispatch();
   const params = useUrlParams();
   const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
-  const pageViewsData = useSelector((state: RootState) => state.study.pageViews);
-  const pageViewData = useSelector((state: RootState) => state.study.pageView);
-  const currentPage = pageViewData ? pageViewData?.data.site?.pageView : null;
-  const data = useSelector((state : RootState ) => state.search.searchResults);
+  const pageViewsData = useSelector((state: RootState) => state.study.pageViewsHasura);
+  const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
+  const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+  const data = useSelector((state: RootState) => state.search.searchResults);
 
-//Currently making assumption anything diplayed in our search route is of pageType study 
-//Ideally should be set from PageView but was having issues , response was not saving 
+  //Currently making assumption anything diplayed in our search route is of pageType study 
+  //Ideally should be set from PageView but was having issues , response was not saving 
   const pageType = match.path == "/search/" ? "Search" : "Study"
 
   useEffect(() => {
@@ -51,21 +51,21 @@ export default function GenericPageWrapper(props: Props) {
   }, [dispatch, params.sv])
 
   useEffect(() => {
-    dispatch(fetchPageViews(site?.id));
+    dispatch(fetchPageViewsHasura(site?.id));
   }, [dispatch, site.id]);
 
   useEffect(() => {
-    dispatch( fetchPageView(site?.id, params.pv || defaultPage()));
+    dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage()));
   }, [dispatch, params.pv]);
-  useEffect(()=>{
+  useEffect(() => {
     pageType == "Search" && dispatch(fetchSearchParams(params.hash));
-   },[dispatch, params.hash]);
+  }, [dispatch, params.hash]);
 
-  if(!currentPage){
-    return <BeatLoader/>
+  if (!currentPage) {
+    return <BeatLoader />
   }
-  if(pageType == 'Search' && !data){
-    return <BeatLoader/>
+  if (pageType == 'Search' && !data) {
+    return <BeatLoader />
   }
   if (!props.arg && pageType == "Study") {
     return <h1>Missing NCTID in URL</h1>;
@@ -81,6 +81,6 @@ export default function GenericPageWrapper(props: Props) {
 
   return (
     <GenericPageChild
-    arg={props.arg}/>
+      arg={props.arg} />
   );
 }
