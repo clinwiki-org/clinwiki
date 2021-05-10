@@ -6,6 +6,7 @@ export const callGraphql = (
     variables: any,
     operationName?: string
 ) => {
+   
     /*console.log("callGraphql called");
     console.log(`endpoint = ${endpoint}`);
     //console.log(query);
@@ -18,7 +19,7 @@ export const callGraphql = (
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            Authorization: getLocalJwt() ? `Bearer ${getLocalJwt()}` : '',
+            Authorization: getLocalJwt() ? `Bearer ${getLocalJwt()}` : "",
         },
         body: JSON.stringify({
             query,
@@ -72,20 +73,30 @@ export const getGraphQLMigrationURL = () => {
     }).then(r => r.json());
 };
  */
+
+  
 export const callHasuraClinwiki = (
     endpoint: string,
     query: any,
     variables: any,
     operationName?: string
 ) => {
-    return fetch(endpoint, {
-        method: 'POST',
-
-        headers: {
+    let hasuraHeaders = {}
+    if (getLocalJwt() == null) {
+       hasuraHeaders = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+       }
+    } else {
+        hasuraHeaders = {
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            Authorization: getLocalJwt() ? `Bearer ${getLocalJwt()}` : '',
-        },
+            Authorization: getLocalJwt() ? `Bearer ${getLocalJwt()}` : "", 
+        }
+    }
+    return fetch(endpoint, {
+        method: 'POST',
+        headers: hasuraHeaders,
         body: JSON.stringify({
             query,
             variables,
@@ -94,23 +105,13 @@ export const callHasuraClinwiki = (
     }).then(r => r.json());
 };
 
-/* export const getHasuraURLAACT = () => {
-export const getHasuraURLAACT = () => {
-    if (
-        typeof window === 'undefined' ||
-        window.location.hostname.includes('localhost')
-    ) {
-        return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
-    }
-    return `https://clinwiki-graphql-1.hasura.app/v1/graphql`;
-}; */
 
 export const getHasuraClinwikiURL = () => {
     if (
         typeof window === 'undefined' ||
         window.location.hostname.includes('localhost')
     ) {
-        return `${process.env.HASURA_CLINWIKI_URL}`;
+        return `${process.env.REACT_APP_HASURA_CLINWIKI_URL}`;
     }
-    return `${process.env.HASURA_CLINWIKI_URL}`
+    return `${process.env.REACT_APP_HASURA_CLINWIKI_URL}`
 };

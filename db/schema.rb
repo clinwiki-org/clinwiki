@@ -71,6 +71,12 @@ ActiveRecord::Schema.define(version: 2021_03_30_155744) do
     t.index ["site_id"], name: "index_page_views_on_site_id"
   end
 
+  create_table "pipeline_queue", id: :serial, force: :cascade do |t|
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.text "job_type"
+    t.text "payload"
+  end
+
   create_table "reaction_kinds", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -172,6 +178,8 @@ ActiveRecord::Schema.define(version: 2021_03_30_155744) do
     t.text "user_rank", default: "[{\"rank\":\"default\",\"gte\":0},{\"rank\":\"bronze\",\"gte\":26},{\"rank\":\"silver\",\"gte\":51},{\"rank\":\"gold\",\"gte\":75},{\"rank\":\"platinum\",\"gte\":101}] "
     t.text "reactions_config", default: "[]"
     t.boolean "hide_donation"
+    t.text "default_hash"
+    t.text "default_search_page"
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
