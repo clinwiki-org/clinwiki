@@ -55,7 +55,7 @@ export const fetchSearchPageOpenCrowdAggBuckets = (searchParams: any) => {
 };
 
 export const fetchSearchParams = (hash: any) => {
-    return callGraphql(ENDPOINT, query.SEARCH_PAGE_PARAMS_QUERY, { hash });
+    return callGraphql(NODE_ENDPOINT, query.SEARCH_PAGE_PARAMS_QUERY, { hash });
 };
 export const fetchSearchStudies = (searchParams: any) => {
     return callGraphql(

@@ -48,7 +48,7 @@ export default function GenericPageWrapper(props: Props) {
     const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
 
     useEffect(() => {
-        let searchParams = pageType == "Search" ? { ...data.data.searchParams, q: JSON.parse(data.data.searchParams.q) } : null;
+        let searchParams = pageType == "Search" ? { ...data.data.searchParams.searchParams } : null;
         const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
         dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchSearchPageMM(searchParams, SEARCH_QUERY));

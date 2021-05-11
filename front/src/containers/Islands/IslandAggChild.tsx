@@ -108,7 +108,7 @@ function IslandAggChild(props: Props) {
   const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
   const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
-  const searchParams = data?.data?.searchParams;
+  const searchParams = data?.data?.searchParams.searchParams;
   const paramsUrl = useUrlParams();
   const match = useRouteMatch();
 
@@ -130,48 +130,50 @@ function IslandAggChild(props: Props) {
   };
 
 
-  const searchParamsFromQuery = (
-    params: SearchPageParamsQuery_searchParams | null | undefined,
-    view: SiteViewFragment
-  ): SearchParams => {
-    const defaultParams = {
-      ...DEFAULT_PARAMS,
-      ...preselectedFilters(view),
-    };
-    if (!params) return defaultParams;
+  // const searchParamsFromQuery = (
+  //   params: SearchPageParamsQuery_searchParams | null | undefined,
+  //   view: SiteViewFragment
+  // ): SearchParams => {
+  //   const defaultParams = {
+  //     ...DEFAULT_PARAMS,
+  //     ...preselectedFilters(view),
+  //   };
+  //   if (!params) return defaultParams;
 
-    const q = params.q
-      ? (JSON.parse(params.q) as SearchQuery)
-      : defaultParams.q;
+  //   const q = params.q
+  //     ? params.q
+  //     : defaultParams.q;
 
-    const aggFilters = map(
-      dissoc('__typename'),
-      params.aggFilters || []
-    ) as AggFilterInput[];
-    const crowdAggFilters = map(
-      dissoc('__typename'),
-      params.crowdAggFilters || []
-    ) as AggFilterInput[];
-    const sorts = map(dissoc('__typename'), params.sorts || []) as SortInput[];
-    return {
-      aggFilters,
-      crowdAggFilters,
-      sorts,
-      q,
-      //page and pageSize no longer exists since it was removed from the shortlink hash
-      //defaulting to page 0 and defaultPageSize(100) to recieve the first 100 results for
-      page: 0,
-      pageSize: defaultPageSize,
-    };
-  };
+  //   const aggFilters = map(
+  //     dissoc('__typename'),
+  //     params.aggFilters || []
+  //   ) as AggFilterInput[];
+  //   const crowdAggFilters = map(
+  //     dissoc('__typename'),
+  //     params.crowdAggFilters || []
+  //   ) as AggFilterInput[];
+  //   const sorts = map(dissoc('__typename'), params.sorts || []) as SortInput[];
+  //   return {
+  //     aggFilters,
+  //     crowdAggFilters,
+  //     sorts,
+  //     q,
+  //     //page and pageSize no longer exists since it was removed from the shortlink hash
+  //     //defaulting to page 0 and defaultPageSize(100) to recieve the first 100 results for
+  //     page: 0,
+  //     pageSize: defaultPageSize,
+  //   };
+  // };
 
-  const dataParams = searchParamsFromQuery(
-    searchParams,
-    presentSiteView
-  );
-  searchParamsCurrent.current = dataParams;
+  // const dataParams = searchParamsFromQuery(
+  //   searchParams,
+  //   presentSiteView
+  // );
+  searchParamsCurrent.current = searchParams;
   let currentAgg = getCurrentAgg();
   let grouping = currentAgg?.aggKind == "aggs" ? 'aggFilters' : 'crowdAggFilters'
+  console.log("YOOO",currentAgg.name);
+  console.log("Yo2",searchParams)
   let aggValues = find(
     (x) => (x.field == currentAgg?.name),
     searchParams[grouping]
@@ -341,7 +343,7 @@ function IslandAggChild(props: Props) {
       page: getFullPagesCount(buckets),
       aggOptionsFilter: aggFilter,
       aggOptionsSort: aggSort,
-      q: JSON.parse(searchParams.q),
+      q: searchParams.q,
       bucketsWanted: currentAgg.visibleOptions.values
     };
 

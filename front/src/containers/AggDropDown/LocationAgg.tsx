@@ -29,7 +29,7 @@ interface LocationAggState {
 function LocationAgg ( props: LocationAggProps) {
 
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const searchParams = data?.data?.searchParams;
+  const searchParams = data?.data?.searchParams.searchParams;
         const dispatch= useDispatch()
         const [zipcode, setZip] = useState("");
         const [lat, setLat] = useState(null);

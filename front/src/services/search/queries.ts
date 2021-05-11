@@ -42,40 +42,47 @@ export const SEARCH_PAGE_AGGS_QUERY = `
   }
 `;
 
+
+// export const SEARCH_PAGE_PARAMS_QUERY = `
+//   query SearchPageParamsQuery($hash: String) {
+//     searchParams(hash: $hash) {
+//       q
+//       sorts {
+//         id
+//         desc
+//       }
+//       aggFilters {
+//         field
+//         values
+//         gte
+//         lte
+//         includeMissingFields
+//         zipcode
+//         radius
+//         lat
+//         long
+//       }
+//       crowdAggFilters {
+//         field
+//         values
+//         gte
+//         lte
+//         includeMissingFields
+//         zipcode
+//         radius
+//         lat
+//         long
+//       }
+//     }
+//   }
+// `;
 export const SEARCH_PAGE_PARAMS_QUERY = `
   query SearchPageParamsQuery($hash: String) {
     searchParams(hash: $hash) {
-      q
-      sorts {
-        id
-        desc
-      }
-      aggFilters {
-        field
-        values
-        gte
-        lte
-        includeMissingFields
-        zipcode
-        radius
-        lat
-        long
-      }
-      crowdAggFilters {
-        field
-        values
-        gte
-        lte
-        includeMissingFields
-        zipcode
-        radius
-        lat
-        long
-      }
+      searchParams
     }
   }
 `;
-
 export const SEARCH_PAGE_SEARCH_QUERY = `
   query SearchPageSearchQuery(
     $q: SearchQueryInput!

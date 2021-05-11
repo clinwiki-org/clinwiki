@@ -54,7 +54,7 @@ class RangeSelector extends React.Component<
     };
   }
   componentDidMount = () => {
-    const searchParams = this.props.searchResultData?.data?.searchParams;
+    const searchParams = this.props.searchResultData?.data?.searchParams.searchParams;
 
     const grouping = this.props.field.aggKind == "crowdAggs" ? 'crowdAggFilters' : 'aggFilters';
 

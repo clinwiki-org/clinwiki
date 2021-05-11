@@ -3,6 +3,7 @@ import { push } from 'connected-react-router';
 import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
+import { camelCase, sentanceCase } from 'utils/helpers';
 
 const getCurrentSavedSearches = state =>
     state.search.savedSearches.data.savedSearch;
@@ -106,6 +107,18 @@ function* getSearchParams(action) {
     try {
         let response = yield call(() => api.fetchSearchParams(action.hash));
         if (response) {
+            let parsedParams = JSON.parse(response.data.searchParams.searchParams)
+            let camelCasedParams={};
+            for (const [key, value] of Object.entries(parsedParams)) {
+                // console.log(`${key}: ${value}`);
+                camelCasedParams[camelCase(key)]= value;
+
+              }
+
+            console.log("PARSED",parsedParams)
+            console.log("Cammeled",camelCasedParams)
+            response.data.searchParams.searchParams = camelCasedParams;
+            console.log("Response", response)
             yield put(actions.fetchSearchParamsSuccess(response));
             yield put(actions.updateSearchParamsSuccess(action.hash));
             //need this to run to populate our recordsTotal for time being was quick and easy way but probs not ideal
@@ -367,7 +380,7 @@ function* toggleAgg(action) {
             agg: action.input.name,
             pageSize: 100,
             page: 25,
-            q: JSON.parse(action.searchParams.q),
+            q: action.searchParams.q,
             bucketsWanted: [],
             // bucketsWanted: action.searchParams.visibleOptions.values
         };

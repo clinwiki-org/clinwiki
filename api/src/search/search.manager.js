@@ -3,6 +3,9 @@ import { translateSearch, translateAggBuckets, translateCrowdAggBuckets, transla
 import * as elastic from './elastic';
 import {keysToCamel} from '../util/case.convert';
 import logger from '../util/logger';
+import { query } from '../util/db';
+
+const QUERY_SHORT_LINK = 'select * from short_links where short=$1';
 
 export async function search(args) {
     try {
@@ -24,6 +27,26 @@ export async function search(args) {
             aggs
         };
     }
+    catch(err) {
+        logger.error('Error running search: '+err);
+    }
+}
+export async function searchParams(args) {
+    try {
+        console.log(args)
+        let params;
+        const results = await query(QUERY_SHORT_LINK, [args.hash]);
+        if(results.rows.length===1){
+            const link = results.rows[0];
+            params = link.long
+            console.log("--------PARAMS-----", params)
+
+        }
+        console.log("___________>>>>SERACH PARAMS<<<<<__________", params)
+        return {
+            searchParams: params
+        }
+    }   
     catch(err) {
         logger.error('Error running search: '+err);
     }

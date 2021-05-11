@@ -149,14 +149,14 @@ export default function MailMergeView(props: Props) {
 
 
       const variables = {
-        ...searchParams,
+        ...searchParams.searchParams,
         url: params.sv,
         configType: 'presearch',
         returnAll: false,
         agg: crowdAggArray,
         pageSize: 100,
         page: 1,
-        q: JSON.parse(searchParams.q),
+        q: searchParams.searchParams.q,
         bucketsWanted: crowdBucketsWanted,
       };
       variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables))
@@ -164,15 +164,14 @@ export default function MailMergeView(props: Props) {
     if (aggArray.length !== 0) {
 
       const variables2 = {
-        ...searchParams,
+        ...searchParams.searchParams,
         url: params.sv,
         configType: 'presearch',
         returnAll: false,
         agg: aggArray,
         pageSize: 100,
         page: 1,
-
-        q: JSON.parse(searchParams.q),
+        q: searchParams.searchParams.q,
         bucketsWanted: aggBucketsWanted
       };
       variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2))

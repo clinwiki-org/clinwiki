@@ -30,6 +30,12 @@ const searchResolver = {
     crowdAggFacets: async (args,context) => {
         console.log('searchResolver.crowdAggFacets')
         return "";
+    },
+    searchParams: async (args,context) => {
+        const results = await SearchManager.searchParams(args);
+        console.log(">>>>>>>RESOLVER<<<<<<<<")
+        console.log("Results", results)
+        return results;
     }
     
 }
