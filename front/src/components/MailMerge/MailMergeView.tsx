@@ -126,13 +126,13 @@ export default function MailMergeView(props: Props) {
 
   useEffect(() => {
     !islandConfig && dispatch(fetchIslandConfig());
-  })
+  }, [dispatch])
   useEffect(() => {
     let uniqueIds = uniq(aggIslandsCurrent.current.currentIsalnds)
     let aggArray: any[] = [];
-    let aggBucketsWanted: any[] =[];
+    let aggBucketsWanted: any[] = [];
     let crowdAggArray: any[] = [];
-    let crowdBucketsWanted: any []=[];
+    let crowdBucketsWanted: any[] = [];
 
     islandConfig && uniqueIds.map((agg) => {
       if (islandConfig[agg.id]?.defaultToOpen == true) {
@@ -142,7 +142,7 @@ export default function MailMergeView(props: Props) {
         islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
         islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
       }
-    })
+    }, [dispatch])
 
 
     if (crowdAggArray.length !== 0) {

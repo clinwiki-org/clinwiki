@@ -42,7 +42,7 @@ export const SEARCH_PAGE_AGGS_QUERY = `
   }
 `;
 
-export const SEARCH_PAGE_PARAMS_QUERY= `
+export const SEARCH_PAGE_PARAMS_QUERY = `
   query SearchPageParamsQuery($hash: String) {
     searchParams(hash: $hash) {
       q
@@ -153,7 +153,6 @@ export const SEARCH_PAGE_SEARCH_QUERY = `
   }
 `;
 
-
 export const SEARCH_PAGE_AGG_BUCKETS_QUERY = `
   query SearchPageAggBucketsQuery(
     $agg: String!
@@ -197,7 +196,6 @@ export const SEARCH_PAGE_AGG_BUCKETS_QUERY = `
     }
   }
 `;
-
 
 export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
   query SearchPageCrowdAggBucketsQuery(
@@ -370,8 +368,7 @@ query CrumbsSearchPageAggBucketsQuery(
     __typename
   }
 }
-`; 
-
+`;
 
 export const SAVED_SEARCHES_QUERY = `
 query UserSavedSearchesQuery($userId: Int!){
@@ -391,16 +388,15 @@ query UserSavedSearchesQuery($userId: Int!){
 } 
 `;
 
-export const ISLAND_CONFIG_QUERY =`
-query IslandConfig{
-  islandConfig{
+export const ISLAND_CONFIG_QUERY = `
+query HasuraIslandConfigsQuery {
+  island_configs {
     id
+    island_type
     config
-    islandType
   }
 }
 `;
-
 
 export const SEARCH_EXPORT_QUERY = `
   query SearchExportQuery($searchExportId: Int!) {

@@ -6,7 +6,7 @@ const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
     isFetchingAggBuckets: false,
-    aggBuckets:  undefined,
+    aggBuckets: undefined,
     isFetchingCrowdAggBuckets: false,
     crowdAggBuckets: undefined,
     isFetchingSearchParams: false,
@@ -29,29 +29,32 @@ const initialState: types.SearchState = {
     isExportingToCsv: false,
 };
 
-const searchReducer = ( state = initialState, action: types.SearchActionTypes) : types.SearchState => {
-    switch(action.type) {
+const searchReducer = (
+    state = initialState,
+    action: types.SearchActionTypes
+): types.SearchState => {
+    switch (action.type) {
         case types.FETCH_SEARCH_PAGE_AGGS_SEND:
             return {
                 ...state,
-                isFetchingAggs: true
+                isFetchingAggs: true,
             };
         case types.FETCH_SEARCH_PAGE_AGGS_SUCCESS:
             return {
                 ...state,
                 isFetchingAggs: false,
-                aggs: action.payload
+                aggs: action.payload,
             };
         case types.FETCH_SEARCH_PAGE_AGGS_ERROR:
             return {
                 ...state,
-                isFetchingAggs: false
+                isFetchingAggs: false,
             };
 
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND:
             return {
                 ...state,
-                isFetchingAggBuckets: true
+                isFetchingAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS:
             return {
@@ -61,24 +64,24 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                     ...state.aggBuckets,
                     aggs: {
                         ...state.aggBuckets?.aggs,
-                        [action.payload.name]: action.payload.buckets
-                    }
-                }      
+                        [action.payload.name]: action.payload.buckets,
+                    },
+                },
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_ERROR:
             return {
                 ...state,
-                isFetchingAggBuckets: false
+                isFetchingAggBuckets: false,
             };
 
         case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND:
             return {
                 ...state,
-                isFetchingCrowdAggBuckets: true
+                isFetchingCrowdAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SUCCESS:
-            let backendName = action.payload.name 
-            let frontName = backendName.substring(3);     
+            let backendName = action.payload.name;
+            let frontName = backendName.substring(3);
             return {
                 ...state,
                 isFetchingCrowdAggBuckets: false,
@@ -86,26 +89,26 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                     ...state.crowdAggBuckets,
                     aggs: {
                         ...state.crowdAggBuckets?.aggs,
-                        [frontName]: action.payload.buckets
-                    }
-                } 
+                        [frontName]: action.payload.buckets,
+                    },
+                },
             };
         case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR:
             return {
                 ...state,
-                isFetchingCrowdAggBuckets: false
+                isFetchingCrowdAggBuckets: false,
             };
         case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND:
             return {
                 ...state,
-                isFetchingCrowdAggBuckets: true
+                isFetchingCrowdAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS:
             // console.log("Payload",action.payload)
             let aggObject = {};
-             action.payload.data.openAggBuckets.aggs.map((agg)=>{
-                 aggObject[agg.name] = agg.buckets 
-             })
+            action.payload.data.openAggBuckets.aggs.map(agg => {
+                aggObject[agg.name] = agg.buckets;
+            });
             return {
                 ...state,
                 isFetchingCrowdAggBuckets: false,
@@ -113,26 +116,26 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                     ...state.aggBuckets,
                     aggs: {
                         ...state.aggBuckets?.aggs,
-                        ...aggObject
-                    }
-                } 
+                        ...aggObject,
+                    },
+                },
             };
         case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_ERROR:
             return {
                 ...state,
-                isFetchingCrowdAggBuckets: false
+                isFetchingCrowdAggBuckets: false,
             };
         case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND:
             return {
                 ...state,
-                isFetchingCrowdAggBuckets: true
+                isFetchingCrowdAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS:
             // console.log("Payload",action.payload)
             let crowdAggObject = {};
-             action.payload.data.openCrowdAggBuckets.aggs.map((agg)=>{
-                crowdAggObject[agg.name.substring(3)] = agg.buckets 
-             })
+            action.payload.data.openCrowdAggBuckets.aggs.map(agg => {
+                crowdAggObject[agg.name.substring(3)] = agg.buckets;
+            });
             return {
                 ...state,
                 isFetchingCrowdAggBuckets: false,
@@ -140,119 +143,119 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                     ...state.crowdAggBuckets,
                     aggs: {
                         ...state.crowdAggBuckets?.aggs,
-                        ...crowdAggObject
-                    }
-                } 
+                        ...crowdAggObject,
+                    },
+                },
             };
         case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR:
             return {
                 ...state,
-                isFetchingCrowdAggBuckets: false
+                isFetchingCrowdAggBuckets: false,
             };
         case types.FETCH_SEARCH_PARAMS_SEND:
             return {
                 ...state,
-                isFetchingSearchParams: true
+                isFetchingSearchParams: true,
             };
         case types.FETCH_SEARCH_PARAMS_SUCCESS:
             return {
                 ...state,
                 isFetchingSearchParams: false,
-                searchResults: action.payload
+                searchResults: action.payload,
             };
         case types.FETCH_SEARCH_PARAMS_ERROR:
             return {
                 ...state,
-                isFetchingSearchParams: false
+                isFetchingSearchParams: false,
             };
         case types.UPDATE_SEARCH_PARAMS_SEND:
             return {
                 ...state,
-                isUpdatingParams: true
+                isUpdatingParams: true,
             };
         case types.UPDATE_SEARCH_PARAMS_SUCCESS:
             return {
                 ...state,
                 isUpdatingParams: false,
-                searchHash: action.payload
+                searchHash: action.payload,
             };
         case types.UPDATE_SEARCH_PARAMS_ERROR:
             return {
                 ...state,
-                isUpdatingParams: false
+                isUpdatingParams: false,
             };
         case types.FETCH_SEARCH_STUDIES_SEND:
             return {
                 ...state,
-                isFetchingStudies: true
+                isFetchingStudies: true,
             };
         case types.FETCH_SEARCH_STUDIES_SUCCESS:
             return {
                 ...state,
                 isFetchingStudies: false,
-                studies: action.payload
+                studies: action.payload,
             };
         case types.FETCH_SEARCH_STUDIES_ERROR:
             return {
                 ...state,
-                isFetchingStudies: false
+                isFetchingStudies: false,
             };
 
         case types.FETCH_SEARCH_AUTOSUGGEST_SEND:
             return {
                 ...state,
-                isFetchingAutoSuggest: true
+                isFetchingAutoSuggest: true,
             };
         case types.FETCH_SEARCH_AUTOSUGGEST_SUCCESS:
             return {
                 ...state,
                 isFetchingAutoSuggest: false,
-                suggestions: action.payload
+                suggestions: action.payload,
             };
         case types.FETCH_SEARCH_AUTOSUGGEST_ERROR:
             return {
                 ...state,
-                isFetchingAutoSuggest: false
+                isFetchingAutoSuggest: false,
             };
 
         case types.FETCH_SAVED_SEARCHES_SEND:
             return {
                 ...state,
-                isFetchingSavedSearches: true
+                isFetchingSavedSearches: true,
             };
         case types.FETCH_SAVED_SEARCHES_SUCCESS:
             return {
                 ...state,
                 isFetchingSavedSearches: false,
-                savedSearches: action.payload
+                savedSearches: action.payload,
             };
         case types.FETCH_SAVED_SEARCHES_ERROR:
             return {
                 ...state,
-                isFetchingSavedSearches: false
+                isFetchingSavedSearches: false,
             };
 
         case types.CREATE_SAVED_SEARCH_SEND:
             return {
                 ...state,
-                isCreatingSavedSearch: true
+                isCreatingSavedSearch: true,
             };
         case types.CREATE_SAVED_SEARCH_SUCCESS:
             return {
                 ...state,
                 isCreatingSavedSearch: false,
-                savedSearches: action.payload
+                savedSearches: action.payload,
             };
         case types.CREATE_SAVED_SEARCH_ERROR:
             return {
                 ...state,
-                isCreatingSavedSearch: false
+                isCreatingSavedSearch: false,
             };
 
         case types.DELETE_SAVED_SEARCH_SEND:
             return {
                 ...state,
-                isDeletingSavedSearch: true
+                isDeletingSavedSearch: true,
             };
         case types.DELETE_SAVED_SEARCH_SUCCESS:
             return {
@@ -262,40 +265,40 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
                     ...state.savedSearches,
                     data: {
                         ...state.savedSearches.data,
-                        savedSearch: action.payload
-                    }
-                }   
+                        savedSearch: action.payload,
+                    },
+                },
             };
         case types.DELETE_SAVED_SEARCH_ERROR:
             return {
                 ...state,
-                isDeletingSavedSearch: false
+                isDeletingSavedSearch: false,
             };
         case types.FETCH_ISLAND_CONFIG_SEND:
             return {
                 ...state,
-                isFetchingFacetConfig: true
+                isFetchingFacetConfig: true,
             };
         case types.FETCH_ISLAND_CONFIG_SUCCESS:
-            let response = action.payload.data.islandConfig
-            let newObject = {} as IslandConfigQuery
-            response.map((island)=>{
-                newObject[island.id] = JSON.parse(island.config)
-            })
+            let response = action.payload.data.island_configs;
+            let newObject = {} as IslandConfigQuery;
+            response.map(island => {
+                newObject[island.id] = JSON.parse(island.config);
+            });
             return {
                 ...state,
                 isFetchingFacetConfig: false,
-                islandConfig: newObject
+                islandConfig: newObject,
             };
         case types.FETCH_ISLAND_CONFIG_ERROR:
             return {
                 ...state,
-                isFetchingFacetConfig: false
+                isFetchingFacetConfig: false,
             };
         case types.UPDATE_FACET_CONFIG_SEND:
             return {
                 ...state,
-                isUpdatingFacetConfig: true
+                isUpdatingFacetConfig: true,
             };
         case types.UPDATE_FACET_CONFIG_SUCCESS:
             return {
@@ -305,95 +308,97 @@ const searchReducer = ( state = initialState, action: types.SearchActionTypes) :
         case types.UPDATE_FACET_CONFIG_ERROR:
             return {
                 ...state,
-                isUpdatingFacetConfig: false
+                isUpdatingFacetConfig: false,
             };
         case types.CREATE_SAVED_SEARCH_SEND:
             return {
                 ...state,
-                isCreatingSavedSearch: true
+                isCreatingSavedSearch: true,
             };
         case types.CREATE_SAVED_SEARCH_SUCCESS:
             return {
                 ...state,
                 isCreatingSavedSearch: false,
-                savedSearches: action.payload
+                savedSearches: action.payload,
             };
         case types.CREATE_SAVED_SEARCH_ERROR:
             return {
                 ...state,
-                isCreatingSavedSearch: false
+                isCreatingSavedSearch: false,
             };
 
         case types.DELETE_SAVED_SEARCH_SEND:
             return {
                 ...state,
-                isDeletingSavedSearch: true
+                isDeletingSavedSearch: true,
             };
         case types.DELETE_SAVED_SEARCH_SUCCESS:
             return {
                 ...state,
                 isDeletingSavedSearch: false,
-                savedSearches: {       
+                savedSearches: {
                     ...state.savedSearches,
                     data: {
                         ...state.savedSearches.data,
-                        savedSearch: action.payload
-                    }         
-                }    
+                        savedSearch: action.payload,
+                    },
+                },
             };
         case types.DELETE_SAVED_SEARCH_ERROR:
             return {
                 ...state,
-                isDeletingSavedSearch: false
+                isDeletingSavedSearch: false,
             };
-        
+
         case types.SEARCH_EXPORT_SEND:
             return {
                 ...state,
-                isFetchingSearchExport:true
+                isFetchingSearchExport: true,
             };
         case types.SEARCH_EXPORT_SUCCESS:
             return {
                 ...state,
                 isFetchingSearchExport: false,
-                searchExport: action.payload.data.searchExport
+                searchExport: action.payload.data.searchExport,
             };
         case types.SEARCH_EXPORT_ERROR:
             return {
                 ...state,
-                isFetchingSearchExport: false
+                isFetchingSearchExport: false,
             };
-        
+
         case types.EXPORT_T0_CSV_SEND:
             return {
                 ...state,
-                isExportingToCsv: true
-            }
+                isExportingToCsv: true,
+            };
         case types.EXPORT_T0_CSV_SUCCESS:
             return {
                 ...state,
                 isExportingToCsv: false,
-                searchExport: action.payload.data.exportToCsv.searchExport  //! TODO CHeck the redux store structure for searchExport/exportToCsv
-            }
+                searchExport: action.payload.data.exportToCsv.searchExport, //! TODO CHeck the redux store structure for searchExport/exportToCsv
+            };
         case types.EXPORT_T0_CSV_ERROR:
             return {
                 ...state,
                 isExportingToCsv: false,
-            }
+            };
         case types.TOGGLE_AGG:
-            let newIslandConfig = state.islandConfig || {}  as IslandConfigQuery;
-            newIslandConfig[action.id] = {...action.input};
-            newIslandConfig[action.id] = {...newIslandConfig[action.id],
-                defaultToOpen: !newIslandConfig[action.id].defaultToOpen
-            }
+            let newIslandConfig =
+                state.islandConfig || ({} as IslandConfigQuery);
+            newIslandConfig[action.id] = { ...action.input };
+            newIslandConfig[action.id] = {
+                ...newIslandConfig[action.id],
+                defaultToOpen: !newIslandConfig[action.id].defaultToOpen,
+            };
             return {
                 ...state,
-                islandConfig: newIslandConfig
-            }
-                
+                islandConfig: newIslandConfig,
+            };
+
         default:
-            return {...state};
+            return { ...state };
     }
-}
+};
 
 export default searchReducer;
