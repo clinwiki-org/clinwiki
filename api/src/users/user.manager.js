@@ -82,7 +82,7 @@ async function generateJWT(user) {
                     'contributor',
                     'indexer',
                 ],
-                'x-hasura-default-role': 'admin', //TODO change to user.role,  once the Hasura permissions for new roles are configured
+                'x-hasura-default-role': user.role, //TODO change to user.role,  once the Hasura permissions for new roles are configured
                 'x-hasura-user-id': userId,
             },
         },
