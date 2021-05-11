@@ -5,7 +5,6 @@ import ExportToCsvButton from './ExportToCsvButton';
 import ExportToCsvDialog from './ExportToCsvDialog';
 
 interface ExportToCsvComponentProps {
-  siteView: any;
   searchHash: string;
 }
 
@@ -25,7 +24,6 @@ const ExportToCsvComponent = (props: ExportToCsvComponentProps ) => {
   if(!searchExport){
     return (
       <ExportToCsvButton
-      siteView={props.siteView}
       searchHash={props.searchHash}
       setExportId={setExportId}
       setShowExportModal={setShowExportModal}
@@ -37,7 +35,6 @@ const ExportToCsvComponent = (props: ExportToCsvComponentProps ) => {
     return (
       <>
         <ExportToCsvButton
-          siteView={props.siteView}
           searchHash={props.searchHash}
           setExportId={setExportId}
           setShowExportModal={setShowExportModal}

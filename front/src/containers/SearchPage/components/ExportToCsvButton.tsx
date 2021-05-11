@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { exportToCsv } from 'services/search/actions';
 
 interface ExportToCsvButtonProps {
-  siteView: any;
   searchHash: string;
   mutate: any;
   setExportId: any;
@@ -32,9 +31,10 @@ class ExportToCsvButton extends React.Component<
     };
 
     handleExportClick = () => {
-      const { setShowExportModal, exportToCsv, siteView, searchHash, setExportId, user } = this.props;
+      const { setShowExportModal, exportToCsv, searchHash, setExportId, user } = this.props;
       if (user) {
-      exportToCsv(searchHash, siteView.id);
+//SITEVIEW ID use to be passed into this, will remove for now until fixed
+      exportToCsv(searchHash, "");
       //setExportId(searchExport.id);
       setShowExportModal(true);
     } else {

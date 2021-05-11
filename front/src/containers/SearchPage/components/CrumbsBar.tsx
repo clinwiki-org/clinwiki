@@ -458,7 +458,6 @@ const CrumbsBar = (props: CrumbsBarProps) => {
           <SaveSearch
             params={props.params}
             user={user}
-            siteView={props.presentSiteView}
             searchHash={props.searchHash}
           />
         );
@@ -532,7 +531,6 @@ const CrumbsBar = (props: CrumbsBarProps) => {
             showSaveSearchButton()
           }
           <ExportToCsvComponent
-            siteView={props.presentSiteView}
             searchHash={props.searchHash}
           />
           {user && user.roles.includes('admin') ? (

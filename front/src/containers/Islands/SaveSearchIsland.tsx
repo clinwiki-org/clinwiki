@@ -54,11 +54,9 @@ function SaveSearchIsland(props: Props) {
 
 
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
   const searchParams = data?.data?.searchParams;
   const match = useRouteMatch();
   const user = useSelector((state: RootState) => state.user.current);
-  const presentSiteView = site?.siteView;
   useEffect(() => {
     match.path == "/search2/" && dispatch(fetchSearchParams(hash));
   }, [dispatch]);
@@ -100,11 +98,7 @@ function SaveSearchIsland(props: Props) {
     };
   };
 
-  const dataParams = searchParamsFromQuery(
-    searchParams,
-    presentSiteView
-  );
-  searchParamsCurrent.current= dataParams;
+  searchParamsCurrent.current= searchParams.searchParams;
   if(!data || !searchParams){
     return <BeatLoader/>
   }
@@ -113,7 +107,6 @@ function SaveSearchIsland(props: Props) {
           <SaveSearch
             params={searchParamsCurrent}
             user={user}
-            siteView={presentSiteView}
             searchHash={hash}
           />
     </>
