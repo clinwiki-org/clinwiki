@@ -26,7 +26,6 @@ export const ADMIN_SITE_VIEW_QUERY = `
     ${ADMIN_SITE_VIEW_FRAGMENT}
 `;
 
-
 export const SITE_ITEM_FRAGMENT = `
 fragment SiteItemFragment on Site {
   id
@@ -71,4 +70,20 @@ export const PRESENT_SITE_PROVIDER_QUERY = `
   }
 
   ${PRESENT_SITE_FRAGMENT}
+`;
+
+export const HASURA_PRESENT_SITE_PROVIDER_QUERY = `
+query HasuraPresentSiteProviderQuery($id: bigint, $url: String) {
+    sites( where: {_or: [{id: {_eq: $id}},{subdomain: {_eq: $url}}]}) {
+        id
+        name
+        skip_landing
+        subdomain
+        default_hash
+        default_search_page
+        themes
+        reactions_config
+        user_rank
+    }
+}
 `;

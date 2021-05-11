@@ -1,7 +1,7 @@
-import React,{useEffect} from 'react';
-import {useDispatch,useSelector} from 'react-redux';
-import {RootState} from 'reducers';
-import {fetchAdminUserSite} from 'services/site/actions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import { fetchAdminUserSite, fetchHasuraPresentSiteProvider } from 'services/site/actions';
 import styled from 'styled-components';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
@@ -49,74 +49,79 @@ const StyledWrapper = styled.div`
   span#small {
     font-size: 14px;
     opacity: 0.75;
-  }
+  }s
 `;
 
 const ThemedStyledWrapper = withTheme(StyledWrapper);
 
 const AuthHeader = (props) => {
   const dispatch = useDispatch();
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
-  const user = useSelector( (state : RootState)  => state.user.current);
-  const adminSiteView = useSelector( (state: RootState) => state.site.adminSiteView);
+  const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0])
+  const user = useSelector((state: RootState) => state.user.current);
+  const adminSiteView = useSelector((state: RootState) => state.site.adminSiteView);
   const hideDonation = adminSiteView?.site?.hideDonation;
 
-  useEffect( () => {
+  useEffect(() => {
     dispatch(fetchAdminUserSite());
-  },[dispatch,user]);
+  }, [dispatch, user]);
+
+
+  var subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : "default";
+
 
   useEffect(() => {
-    dispatch(fetchPresentSiteProvider(undefined, ));
-  }, [dispatch, ])
-  
+    dispatch(fetchHasuraPresentSiteProvider(undefined, subdomain));
+    //dispatch(fetchPresentSiteProvider(undefined, ));
+  }, [dispatch,])
+
   const pushToDefault = () => {
     // this is a temp fix to handle default hash not getting updated on logo click
-      props.history.push(`/search?hash=${site.defaultHash}&pv=${site.defaultSearchPage}`)
-      window.location.reload()
+    props.history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
+    window.location.reload()
   }
 
-  if(!adminSiteView){
+  if (!adminSiteView) {
     return <BeatLoader />
-  } 
+  }
   return (
-        <ThemedStyledWrapper>
-          <Navbar
-            collapseOnSelect
-            fluid
-            className="navbar-fixed-top"
-            style={{ paddingLeft: '15px', paddingRight: '15px' }}>
-            <Navbar.Header>
-              <Navbar.Brand>
-                <div id="logo" onClick={pushToDefault}>
-                  <span></span>
-                </div>
-              </Navbar.Brand>
-              <Navbar.Toggle />
-            </Navbar.Header>
-            <Navbar.Collapse>
-              <Nav pullRight>
-                {hideDonation ?
-                  null : <NavItem
-                    target="_blank"
-                    eventKey={2}
-                    href="https://www.clinwiki.org/make-a-donation/">
-                    Donate to ClinWiki
+    <ThemedStyledWrapper>
+      <Navbar
+        collapseOnSelect
+        fluid
+        className="navbar-fixed-top"
+        style={{ paddingLeft: '15px', paddingRight: '15px' }}>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <div id="logo" onClick={pushToDefault}>
+              <span></span>
+            </div>
+          </Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+          <Nav pullRight>
+            {hideDonation ?
+              null : <NavItem
+                target="_blank"
+                eventKey={2}
+                href="https://www.clinwiki.org/make-a-donation/">
+                Donate to ClinWiki
                     </NavItem>
-                }
-                <NavItem eventKey={1} href="https://www.clinwiki.org/" target="_blank">
-                  About ClinWiki
+            }
+            <NavItem eventKey={1} href="https://www.clinwiki.org/" target="_blank">
+              About ClinWiki
           </NavItem>
-                <Row>
-                  <UserProfileHeaderButton
-                    user={user}
-                    history={props.history}
-                    data={adminSiteView.data}
-                  />
-                </Row>
-              </Nav>
-            </Navbar.Collapse>
-          </Navbar>
-        </ThemedStyledWrapper>
+            <Row>
+              <UserProfileHeaderButton
+                user={user}
+                history={props.history}
+                data={adminSiteView.data}
+              />
+            </Row>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    </ThemedStyledWrapper>
   );
 }
 

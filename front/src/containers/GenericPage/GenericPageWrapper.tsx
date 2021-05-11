@@ -36,7 +36,7 @@ export default function GenericPageWrapper(props: Props) {
   // When we add more page types we need to refactor this a little bit and pull out the query/nctid
   const dispatch = useDispatch();
   const params = useUrlParams();
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
+  const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
   const pageViewsData = useSelector((state: RootState) => state.study.pageViewsHasura);
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
@@ -46,9 +46,12 @@ export default function GenericPageWrapper(props: Props) {
   //Ideally should be set from PageView but was having issues , response was not saving 
   const pageType = match.path == "/search/" ? "Search" : "Study"
 
-  useEffect(() => {
-    dispatch(fetchPresentSiteProvider(undefined, params.sv));
-  }, [dispatch, params.sv])
+  /*   useEffect(() => {
+      dispatch(fetchHasuraPresentSiteProvider(undefined, params.sv));
+    }, [dispatch, params.sv])
+    console.log("SITE ID ON GenericPage Wrappp", site?.id)
+   */
+
 
   useEffect(() => {
     dispatch(fetchPageViewsHasura(site?.id));
@@ -71,7 +74,7 @@ export default function GenericPageWrapper(props: Props) {
     return <h1>Missing NCTID in URL</h1>;
   }
   if (!params.hash && pageType == "Search") {
-    history.push(`/search?hash=${site.defaultHash}&pv=${site.defaultSearchPage}`)
+    history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
     window.location.reload()
 
   }
