@@ -62,12 +62,14 @@ const AuthHeader = (props) => {
   const hideDonation = adminSiteView?.site?.hideDonation;
 
   useEffect(() => {
-    dispatch(fetchAdminUserSite());
+    // dispatch(fetchAdminUserSite());
   }, [dispatch, user]);
 
 
-  var subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : "default";
-
+  let subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : "default";
+  if (subdomain == "experimental" || subdomain == "staging") {
+    subdomain = "default"
+  }
 
   useEffect(() => {
     dispatch(fetchHasuraPresentSiteProvider(undefined, subdomain));
@@ -80,9 +82,9 @@ const AuthHeader = (props) => {
     window.location.reload()
   }
 
-  if (!adminSiteView) {
-    return <BeatLoader />
-  }
+  // if (!adminSiteView) {
+  //   return <BeatLoader />
+  // }
   return (
     <ThemedStyledWrapper>
       <Navbar
@@ -115,7 +117,7 @@ const AuthHeader = (props) => {
               <UserProfileHeaderButton
                 user={user}
                 history={props.history}
-                data={adminSiteView.data}
+                // data={adminSiteView.data}
               />
             </Row>
           </Nav>

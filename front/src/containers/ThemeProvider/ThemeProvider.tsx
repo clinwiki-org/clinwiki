@@ -266,8 +266,10 @@ export const ProvideTheme = ({ children }) => {
   const urlFinal = urlName ? urlName : "default";
 
 
-  var subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : "default";
-
+  let subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : "default";
+  if (subdomain == "experimental" || subdomain == "staging") {
+    subdomain = "default"
+  }
 
   const dispatch = useDispatch();
   useEffect(() => {
