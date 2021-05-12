@@ -107,7 +107,7 @@ function IslandAggChild(props: Props) {
   const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
   const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
+  const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
   const searchParams = data?.data?.searchParams.searchParams;
   const paramsUrl = useUrlParams();
   const match = useRouteMatch();
@@ -124,7 +124,7 @@ function IslandAggChild(props: Props) {
   };
   const updateSearchParams2 = (value) => {
 
-    const currentRams = { ...searchParams, [grouping as string]: value[grouping], q: JSON.parse(searchParams.q) }
+    const currentRams = { ...searchParams, [grouping as string]: value[grouping] }
     !isUpdatingParams && dispatch(updateSearchParamsAction(currentRams));
 
   };

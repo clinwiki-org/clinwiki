@@ -66,11 +66,8 @@ function ResultSort(props: Props) {
 
 
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
   const searchParams = data?.data?.searchParams;
   const match = useRouteMatch();
-  const user = useSelector((state: RootState) => state.user.current);
-  const presentSiteView = site?.siteView;
   useEffect(() => {
     match.path == "/search2/" && dispatch(fetchSearchParams(hash));
   }, [dispatch]);
@@ -112,10 +109,8 @@ function ResultSort(props: Props) {
     };
   };
 
-  const dataParams = searchParamsFromQuery(
-    searchParams,
-    presentSiteView
-  );
+  const dataParams = searchParams.searchParams
+
   searchParamsCurrent.current= dataParams;
   if(!data || !searchParams){
     return <BeatLoader/>
@@ -167,6 +162,9 @@ function ResultSort(props: Props) {
       </div>
     );
   };
+
+  // hardcoding to nct_id for now. Use to live in SV level. Need to pass this in as argument possibly?
+  let sortables : string[]= ["nct_id" ]
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
@@ -180,7 +178,7 @@ function ResultSort(props: Props) {
               width: '200px',
               background: theme && theme.button,
             }}>
-            {presentSiteView.search.sortables.map((field, index) => {
+            {sortables.map((field, index) => {
               let sorts = [{ id: field, desc: false }];
               return (
                 <MenuItem
