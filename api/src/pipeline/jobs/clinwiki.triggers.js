@@ -11,7 +11,7 @@ export const indexWikiPage = async (payload) => {
     await bulkUpdate(list);
 };
 
-export const indexCrowdKeyValueIds = (payload) => {
+export const indexCrowdKeyValueIds = async (payload) => {
     logger.debug('Indexing Wiki Page '+payload)
     const list = [{
         crowd_key: payload.crowd_key,
@@ -25,7 +25,7 @@ export const indexCrowdKeyValueIds = (payload) => {
     await bulkUpdate(list);
 }
 
-export const indexCrowdKeys = (payload) => {
+export const indexCrowdKeys = async (payload) => {
     logger.debug('Indexing Wiki Page '+payload)
     const list = [{
         crowd_key: payload.crowd_key,
@@ -42,7 +42,7 @@ export const indexCrowdKeys = (payload) => {
     await bulkUpdate(list);
 }
 
-export const indexCrowdValues = (payload) => {
+export const indexCrowdValues = async (payload) => {
     logger.debug('Indexing Wiki Page '+payload)
     const list = [{
         crowd_key_id: payload.crowd_key_id,
