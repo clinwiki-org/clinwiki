@@ -87,8 +87,11 @@ export const callHasuraClinwiki = (
     let token = getLocalJwt()
     let hasuraHeaders = {}
     if (token) {
-        const decoded: any = jwt_decode(token, {header: true})
+        const decoded: any = jwt_decode(token)
+
         let currentDate = new Date();
+        console.log('TIME', currentDate.getTime())
+        console.log('DECDOED', decoded)
         if (decoded.exp * 1000 < currentDate.getTime() || token == null) {
             console.log("Token expired.", token);
             ///TOKEN EXPIRED
