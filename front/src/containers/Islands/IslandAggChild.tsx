@@ -46,6 +46,7 @@ import {
 } from '../../services/search/model/SearchPageParamsQuery';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
+import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
 
 const DEFAULT_PARAMS: SearchParams = {
   q: { children: [], key: 'AND' },
@@ -344,11 +345,11 @@ function IslandAggChild(props: Props) {
       aggOptionsFilter: aggFilter,
       aggOptionsSort: aggSort,
       q: searchParams.q,
-      bucketsWanted: currentAgg.visibleOptions.values
+      bucketsWanted: currentAgg.visibleOptions
     };
 
     //Come back and rework how we load more individually
-    // currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageCrowdAggBuckets(variables)) : !isFetchingAggBuckets && dispatch(fetchSearchPageAggBuckets(variables));
+    currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables)) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables));
     handleLoadMoreResponse();
   }
 

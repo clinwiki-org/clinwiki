@@ -142,7 +142,7 @@ export const translateOpenCrowdAggBuckets = async (criteria) => {
     return json;
 }
 
-export const translateOpenAggBuckets = async (criteria) => {
+export const translateOpenAggBuckets = async (criteria, bucketsWanted) => {
 
     let boolQuery = esb.boolQuery();
     boolQuery.must(esb.simpleQueryStringQuery('*'));
@@ -163,7 +163,7 @@ export const translateOpenAggBuckets = async (criteria) => {
     // Create the aggs and crowd aggs
     let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
     const json = requestBody.toJSON();
-    injectOpenAggBuckets(criteria,json,true);
+    injectOpenAggBuckets(criteria,json,true, bucketsWanted);
 
 
     return json;
@@ -383,17 +383,30 @@ function injectCrowdAggBuckets(criteria,json,usePrefix) {
     
     json.aggs = aggs;       
 }
-function injectOpenCrowdAggBuckets(criteria,json,usePrefix) {
+function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     let aggs = {};
     const aggKeys = criteria.agg;
     let innerAggs = {};
-
-    aggKeys.map(aggKey=>{
+    
+    aggKeys.map((aggKey,index)=>{
+        let sort = [];
+        let sortOrder = criteria.aggOptionsSort[index].desc ? "desc" : "asc"
+        let countSort = {_count : {
+            order: sortOrder
+        }}
+        let alphaSort = {_key : {
+            order: sortOrder
+        }}
+        console.log("JIMMY ")
+        console.log(bucketsWanted)
+        let includedValues = bucketsWanted[index].values.join('|');
         innerAggs[`fm_${aggKey}`] = {
             terms: {
                 field: `fm_${aggKey}`,
                 size: 1000000,
-                missing: '-99999999999'
+                missing: '-99999999999',
+                include: includedValues
+
             },
             aggs:  {
                 agg_bucket_sort:{
@@ -401,11 +414,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix) {
                        from:0,
                        size:25,
                        sort:[
-                          {
-                             _key:{
-                                order:"asc"
-                             }
-                          }
+                        criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                        ]
                     }
                  }            
@@ -434,17 +443,30 @@ aggKeys.map(aggKey=>{
     
     json.aggs = aggs;       
 }
-function injectOpenAggBuckets(criteria,json,usePrefix) {
+function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     let aggs = {};
     const aggKeys = criteria.agg;
     let innerAggs = {};
 
-    aggKeys.map(aggKey=>{
+    aggKeys.map((aggKey, index)=>{
+        let sort = [];
+        let sortOrder = criteria.aggOptionsSort[index].desc ? "desc" : "asc"
+        let countSort = {_count : {
+            order: sortOrder
+        }}
+        let alphaSort = {_key : {
+            order: sortOrder
+        }}
+        console.log("JIMMY ")
+        console.log(bucketsWanted)
+        let includedValues = bucketsWanted[index].values.join('|');
+        
         innerAggs[aggKey] = {
             terms: {
                 field: aggKey,
                 size: 1000000,
-                missing: '-99999999999'
+                missing: '-99999999999',
+                include: includedValues
             },
             aggs:  {
                 agg_bucket_sort:{
@@ -452,11 +474,7 @@ function injectOpenAggBuckets(criteria,json,usePrefix) {
                        from:0,
                        size:25,
                        sort:[
-                          {
-                             _key:{
-                                order:"asc"
-                             }
-                          }
+                        criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                        ]
                     }
                  }            
@@ -464,7 +482,6 @@ function injectOpenAggBuckets(criteria,json,usePrefix) {
         }
 
     })
-
 
 aggKeys.map(aggKey=>{
     aggs[aggKey] = {

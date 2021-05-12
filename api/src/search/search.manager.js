@@ -39,10 +39,10 @@ export async function searchParams(args) {
         if(results.rows.length===1){
             const link = results.rows[0];
             params = link.long
-            console.log("--------PARAMS-----", params)
+            // console.log("--------PARAMS-----", params)
 
         }
-        console.log("___________>>>>SERACH PARAMS<<<<<__________", params)
+        // console.log("___________>>>>SERACH PARAMS<<<<<__________", params)
         return {
             searchParams: params
         }
@@ -52,76 +52,77 @@ export async function searchParams(args) {
     }
 }
 
-export async function aggBuckets(args) {
-    try {
-        const translated = await translateAggBuckets(args.params,false);
-        //console.log('##### AGGBUCKETS'+util.inspect(translated, false, null, true));
-        let esResults = await elastic.query(translated);
+// export async function aggBuckets(args) {
+//     try {
+//         const translated = await translateAggBuckets(args.params,false);
+//         console.log('##### AGGBUCKETS'+util.inspect(translated, false, null, true));
+//         let esResults = await elastic.query(translated);
+//         // console.log("TRANSLATED AggBuckets", translated) 
         
-        const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
-        let aggs = [];
-        for (const [key, value] of Object.entries(esResults.body.aggregations)) {
-            const agg = aggToGraphql(key, value);
-            if (args.bucketsWanted?.length !== 0) {
-                let finalBuckets = [];
-                agg.buckets.map((bucket) => {
-                    for (const key of args.bucketsWanted) {
-                        if (key == bucket.key) {
-                            finalBuckets.push(bucket)
-                        }
-                    }
-                })
-                aggs.push({ ...agg, buckets: finalBuckets });
-            }else{
-                aggs.push(agg)
-            }
-        }
-        return {
-            recordsTotal: esResults.body.hits.total,
-            aggs: aggs
-        };
-    }
-    catch(err) {
-        logger.error(err);
-    }
-}
+//         const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
+//         let aggs = [];
+//         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
+//             const agg = aggToGraphql(key, value);
+//             if (args.bucketsWanted?.length !== 0) {
+//                 let finalBuckets = [];
+//                 agg.buckets.map((bucket) => {
+//                     for (const key of args.bucketsWanted) {
+//                         if (key == bucket.key) {
+//                             finalBuckets.push(bucket)
+//                         }
+//                     }
+//                 })
+//                 aggs.push({ ...agg, buckets: finalBuckets });
+//             }else{
+//                 aggs.push(agg)
+//             }
+//         }
+//         return {
+//             recordsTotal: esResults.body.hits.total,
+//             aggs: aggs
+//         };
+//     }
+//     catch(err) {
+//         logger.error(err);
+//     }
+// }
 
-export async function crowdAggBuckets(args) {
-    try {
-        const translated = await translateCrowdAggBuckets(args.params, false);
-        let esResults = await elastic.query(translated);
-        console.log("TRANSLATED CrowdBuckets", translated) 
-        const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
-        let aggs = [];
-        for (const [key, value] of Object.entries(esResults.body.aggregations)) {
-            const agg = aggToGraphql(key, value);
-            if (args.bucketsWanted?.length !== 0) {
-                let finalBuckets = [];
-                agg.buckets.map((bucket) => {
-                    for (const key of args.bucketsWanted) {
-                        if (key == bucket.key) {
-                            finalBuckets.push(bucket)
-                        }
-                    }
-                })
-                aggs.push({ ...agg, buckets: finalBuckets });
-            }else{
-                aggs.push(agg)
-            }
-        }
-        return {
-            recordsTotal: esResults.body.hits.total,
-            aggs: aggs
-        };
-    }
-    catch(err) {
-        logger.error(err);
-    }
-}
+// export async function crowdAggBuckets(args) {
+//     try {
+//         const translated = await translateCrowdAggBuckets(args.params, false);
+//         let esResults = await elastic.query(translated);
+//         console.log("TRANSLATED CrowdBuckets", translated) 
+//         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
+//         let aggs = [];
+//         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
+//             const agg = aggToGraphql(key, value);
+//             if (args.bucketsWanted?.length !== 0) {
+//                 let finalBuckets = [];
+//                 agg.buckets.map((bucket) => {
+//                     for (const key of args.bucketsWanted) {
+//                         if (key == bucket.key) {
+//                             finalBuckets.push(bucket)
+//                         }
+//                     }
+//                 })
+//                 aggs.push({ ...agg, buckets: finalBuckets });
+//             }else{
+//                 aggs.push(agg)
+//             }
+//         }
+//         return {
+//             recordsTotal: esResults.body.hits.total,
+//             aggs: aggs
+//         };
+//     }
+//     catch(err) {
+//         logger.error(err);
+//     }
+// }
 
 export async function openCrowdAggBuckets(args) {
     try {
-        const translated = await translateOpenCrowdAggBuckets(args.params, false);
+        const translated = await translateOpenCrowdAggBuckets(args.params, args.bucketsWanted);
         let esResults = await elastic.query(translated);
         console.log("TRANSLATED OPEN Crowd Buckets", translated) 
         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
@@ -156,9 +157,8 @@ export async function openCrowdAggBuckets(args) {
 }
 export async function openAggBuckets(args) {
     try {
-        const translated = await translateOpenAggBuckets(args.params, false);
+        const translated = await translateOpenAggBuckets(args.params, args.bucketsWanted);
         let esResults = await elastic.query(translated);
-        console.log("TRANSLATED OPEN Buckets", translated) 
         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
         let aggs = [];
         let i=0;
