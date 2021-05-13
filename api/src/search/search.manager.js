@@ -162,6 +162,7 @@ export async function openAggBuckets(args) {
         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
         let aggs = [];
         let i=0;
+        // console.log("TRANSLATED OPEN  Buckets" + util.inspect(translated,false,null,true)) 
         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
             const agg = aggToGraphql(key, value);
             if (args.bucketsWanted[i].values.length !== 0) {

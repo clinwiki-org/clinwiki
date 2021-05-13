@@ -173,8 +173,8 @@ function IslandAggChild(props: Props) {
   searchParamsCurrent.current = searchParams;
   let currentAgg = getCurrentAgg();
   let grouping = currentAgg?.aggKind == "aggs" ? 'aggFilters' : 'crowdAggFilters'
-  console.log("YOOO",currentAgg.name);
-  console.log("Yo2",searchParams)
+  // console.log("YOOO",currentAgg.name);
+  // console.log("Yo2",searchParams)
   let aggValues = find(
     (x) => (x.field == currentAgg?.name),
     searchParams[grouping]
@@ -341,7 +341,7 @@ function IslandAggChild(props: Props) {
       returnAll: false,
       agg: [currentAgg.name],
       pageSize: PAGE_SIZE,
-      page: getFullPagesCount(buckets),
+      page: getFullPagesCount(buckets) +1 ,
       aggOptionsFilter: aggFilter,
       aggOptionsSort: aggSort,
       q: searchParams.q,

@@ -418,8 +418,8 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from: 0,
-                            size: 25,
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -436,8 +436,8 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from: 0,
-                            size: 25,
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -501,8 +501,8 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from: 0,
-                            size: 25,
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -519,8 +519,8 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from: 0,
-                            size: 25,
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
