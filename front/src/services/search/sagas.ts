@@ -372,23 +372,24 @@ function* exportToCsv(action) {
 }
 function* toggleAgg(action) {
     try {
-        const variables = {
-            ...action.searchParams,
-            // url: paramsUrl.sv,
-            configType: 'presearch',
-            returnAll: false,
-            agg: action.input.name,
-            pageSize: 100,
-            page: 25,
-            q: action.searchParams.q,
-            bucketsWanted: [],
-            // bucketsWanted: action.searchParams.visibleOptions.values
-        };
-        console.log('VARS', variables);
+        console.log("Toggle saga goes here")
+        // const variables = {
+        //     ...action.searchParams,
+        //     // url: paramsUrl.sv,
+        //     configType: 'presearch',
+        //     returnAll: false,
+        //     agg: action.input.name,
+        //     pageSize: 100,
+        //     page: 25,
+        //     q: action.searchParams.q,
+        //     bucketsWanted: [],
+        //     // bucketsWanted: action.searchParams.visibleOptions.values
+        // };
+        // console.log('VARS', variables);
 
-        action.input.aggKind == 'crowdAggs'
-            ? yield getSearchPageCrowdAggBuckets({ searchParams: variables })
-            : yield getSearchPageAggBuckets({ searchParams: variables });
+        // action.input.aggKind == 'crowdAggs'
+        //     ? yield getSearchPageCrowdAggBuckets({ searchParams: variables })
+        //     : yield getSearchPageAggBuckets({ searchParams: variables });
     } catch (err) {
         console.log(err);
     }

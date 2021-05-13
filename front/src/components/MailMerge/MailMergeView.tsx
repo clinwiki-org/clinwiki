@@ -131,16 +131,24 @@ export default function MailMergeView(props: Props) {
     let uniqueIds = uniq(aggIslandsCurrent.current.currentIsalnds)
     let aggArray: any[] = [];
     let aggBucketsWanted: any[] = [];
+    let aggSortArray: any[] = [];
     let crowdAggArray: any[] = [];
     let crowdBucketsWanted: any[] = [];
+    let crowdAggSortArray: any[] = [];
 
     islandConfig && uniqueIds.map((agg) => {
       if (islandConfig[agg.id]?.defaultToOpen == true) {
+        let sort ={
+          id: islandConfig[agg.id].order.sortKind,
+          desc: islandConfig[agg.id].order.desc
+        };
 
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg.id].visibleOptions);
+        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
         islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
         islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
+        islandConfig[agg.id].aggKind == 'aggs' && aggSortArray.push(sort);
       }
     }, [dispatch])
 
@@ -154,6 +162,7 @@ export default function MailMergeView(props: Props) {
         configType: 'presearch',
         returnAll: false,
         agg: crowdAggArray,
+        aggOptionsSort: crowdAggSortArray,
         pageSize: 100,
         page: 1,
         q: searchParams.searchParams.q,
@@ -169,6 +178,7 @@ export default function MailMergeView(props: Props) {
         configType: 'presearch',
         returnAll: false,
         agg: aggArray,
+        aggOptionsSort: aggSortArray,
         pageSize: 100,
         page: 1,
         q: searchParams.searchParams.q,

@@ -339,13 +339,13 @@ function IslandAggChild(props: Props) {
       url: paramsUrl.sv,
       configType: 'presearch',
       returnAll: false,
-      agg: currentAgg.name,
+      agg: [currentAgg.name],
       pageSize: PAGE_SIZE,
       page: getFullPagesCount(buckets),
       aggOptionsFilter: aggFilter,
       aggOptionsSort: aggSort,
       q: searchParams.q,
-      bucketsWanted: currentAgg.visibleOptions
+      bucketsWanted: [currentAgg.visibleOptions]
     };
 
     //Come back and rework how we load more individually
