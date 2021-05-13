@@ -56,7 +56,6 @@ export default function WikiPageIsland(props: Props) {
   const params = useUrlParams();
   //const user = userData ? userData.me : null;
   // TODO: This query should be pushed up as a fragment to the Page
-  console.log('IS NO WOKI INTRO', isWikiContent)
   const dispatch = useDispatch();
   useEffect(() => {
     //dispatch(fetchWikiPage(nctId));
@@ -110,9 +109,8 @@ export default function WikiPageIsland(props: Props) {
   }
   const handleEditSubmit = () => {
     //@ts-ignore
-    console.log('IS THER WIKI CONTENT', isWikiContent);
     let content = getEditorText() || wikiPageData.data.wiki_pages[0].text
-    
+
     dispatch(wikiPageUpdateHasuraMutation(nctId, content, isWikiContent));
     setIsEditing(false)
     // history.push(`${match.url}${queryStringAll(params)}`);
@@ -139,28 +137,28 @@ export default function WikiPageIsland(props: Props) {
     let editMessage = `Changes not saved. Are you sure you want to leave while editing?`;
     return (
       <Toolbar>
-        {isEditing ? 
-        <div>
-        <ThemedButton
-          onClick={() => { editMessage = "Save changes?"; handleCancelEdit(); }}
-          style={{ marginLeft: '10px', background: 'white', color: '#6BA5D6', border: "1px solid #6BA5D6" }}>
-          Cancel <FontAwesome name="X" />
-        </ThemedButton>
-        <ThemedButton
-          onClick={() => { editMessage = "Save changes?"; handleEditSubmit(); }}
-          // disabled={editorTextState === editorTextData}
-          style={{ marginLeft: '10px' }}>
-          Save <FontAwesome name="pencil" />
-        </ThemedButton>
-      </div> : 
-           <div>
-           <ThemedButton
-             type="button"
-             onClick={isAuthenticated ? () => handleEdit() : () => setShowLoginModal(true)}
-             style={{ marginLeft: '10px' }}>
-             Edit <FontAwesome name="edit" />
-           </ThemedButton>
-           </div>
+        {isEditing ?
+          <div>
+            <ThemedButton
+              onClick={() => { editMessage = "Save changes?"; handleCancelEdit(); }}
+              style={{ marginLeft: '10px', background: 'white', color: '#6BA5D6', border: "1px solid #6BA5D6" }}>
+              Cancel <FontAwesome name="X" />
+            </ThemedButton>
+            <ThemedButton
+              onClick={() => { editMessage = "Save changes?"; handleEditSubmit(); }}
+              // disabled={editorTextState === editorTextData}
+              style={{ marginLeft: '10px' }}>
+              Save <FontAwesome name="pencil" />
+            </ThemedButton>
+          </div> :
+          <div>
+            <ThemedButton
+              type="button"
+              onClick={isAuthenticated ? () => handleEdit() : () => setShowLoginModal(true)}
+              style={{ marginLeft: '10px' }}>
+              Edit <FontAwesome name="edit" />
+            </ThemedButton>
+          </div>
         }
 
 
@@ -176,22 +174,18 @@ export default function WikiPageIsland(props: Props) {
     setTimeout(resetHelper, 6500);
 
   }
- 
-  const renderEditor = (data: any) => {
-    console.log("EDITOOR - WIKI DATA: ", data?.wiki_pages)
 
+  const renderEditor = (data: any) => {
     if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) {
-    return "No Wiki Content"; //(!data || !data.study || !data.study.wikiPage) return null;
+      return "No Wiki Content"; //(!data || !data.study || !data.study.wikiPage) return null;
     }
-    
-  
     const text = getEditorText() || '';
     //console.log("🚀 ~ renderEditor ~ TEXT", text);
 
     if (text !== data.wiki_pages[0].text || !text) {
       //handlePreview()
 
-      if (data.wiki_pages[0].text ) {
+      if (data.wiki_pages[0].text) {
         setIsWikiContent(true);
       }
 
@@ -205,7 +199,6 @@ export default function WikiPageIsland(props: Props) {
         setplainEditorText(text);
       }
     }
-
     // const readOnly = !location.pathname.includes('/wiki/edit');
 
     if (editorState === 'rich') {
@@ -214,7 +207,7 @@ export default function WikiPageIsland(props: Props) {
         <Panel style={{ border: "none", padding: "0px" }}>
           <Panel.Body >
             <StyledRTE
-              // readOnly={readOnly}
+              readOnly={!isEditing}
               onChange={handleRichEditorChange}
               value={richEditorText || RichTextEditor.createEmptyValue()}
             />
@@ -245,8 +238,6 @@ export default function WikiPageIsland(props: Props) {
     show={showLoginModal}
     cancel={() => setShowLoginModal(false)}
   />
-  console.log("WIKI DATA", isWikiContent)
-
   return (
     <>
       {flashAnimation == true ?
@@ -258,7 +249,7 @@ export default function WikiPageIsland(props: Props) {
       <div>
         <StyledPanel>
           <div>
-            {isEditing ? <WikiPageEditor updateText={handleUpdateText} data={wikiPageData.data} /> : renderEditor(wikiPageData.data)} 
+            {isEditing ? <WikiPageEditor updateText={handleUpdateText} data={wikiPageData.data} /> : renderEditor(wikiPageData.data)}
             {/* {readOnly ? renderEditor(wikiPageData.data)} : null} */}
             {renderToolbar(wikiPageData.data, user, isEditing)}
           </div>
