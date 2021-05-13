@@ -62,11 +62,13 @@ export default function WikiPageEditor(props: Props) {
   };
 
   let { data } = props;
-  const readOnly = !location.pathname.includes('/wiki/edit');
+  // const readOnly = !location.pathname.includes('/wiki/edit');
+    const readOnly = false;
 
-
-  if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) 
+  //// IF NO DATA RENDER THIS EDITOR
   
+  if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) { 
+  console.log('NO DATA RENDER', data);
   return (
     <Panel>
       <Panel.Body>
@@ -77,7 +79,7 @@ export default function WikiPageEditor(props: Props) {
           />
       </Panel.Body>
     </Panel>
-  );  //(!data || !data.study || !data.study.wikiPage) return null;
+  )};  //(!data || !data.study || !data.study.wikiPage) return null;
   const text = getEditorText() || '';
   if (text !== data.wiki_pages[0].text && !text) {
     //handlePreview()
@@ -97,6 +99,7 @@ export default function WikiPageEditor(props: Props) {
   if (!data) return <BeatLoader />;
 
   if (editorState === 'rich') {
+    console.log('WIKI EDITOR DATA RICH');
     return (
       <Panel>
         <Panel.Body>
@@ -109,7 +112,7 @@ export default function WikiPageEditor(props: Props) {
       </Panel>
     );
   }
-
+  console.log('WIKI EDITOR DATA PLAIN');
   return (
 
     <Panel>

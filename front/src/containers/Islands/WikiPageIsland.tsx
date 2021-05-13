@@ -49,12 +49,14 @@ export default function WikiPageIsland(props: Props) {
   const [richEditorText, setRichEditorText] = useState('');
   const [flashAnimation, setFlashAnimation] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isWikiContent, setIsWikiContent] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
 
   const user = useSelector((state: RootState) => state.user.current);
   const params = useUrlParams();
   //const user = userData ? userData.me : null;
   // TODO: This query should be pushed up as a fragment to the Page
-
+  console.log('IS NO WOKI INTRO', isWikiContent)
   const dispatch = useDispatch();
   useEffect(() => {
     //dispatch(fetchWikiPage(nctId));
@@ -63,15 +65,10 @@ export default function WikiPageIsland(props: Props) {
   //const wikiPageData = useSelector((state: RootState) => state.study.wikiPage);
 
   const wikiPageData = useSelector((state: RootState) => state.study.hasuraWikiPage);
+  // if (!wikiPageData || !wikiPageData.wiki_pages[0] || !wikiPageData.wiki_pages[0].text) {
+  //  setIsWikiContent(false)
+  // }
 
-
-  /*   const updateContentMutation = (action) => {
-      if (!action.variables.key) return
-      return dispatch(wikiPageUpdateContentMutation(nctId, action.content))
-    } */
-
-  const readOnly = !location.pathname.includes('/wiki/edit');
-  const editPath = `${trimPath(match.path)}/wiki/edit`;
 
   const getEditorText = () => {
     if (editorState === 'rich') {
@@ -104,7 +101,8 @@ export default function WikiPageIsland(props: Props) {
 
 
   const handleEdit = () => {
-    history.push(`${trimPath(match.url)}/wiki/edit${queryStringAll(params)}`);
+    // history.push(`${trimPath(match.url)}/wiki/edit${queryStringAll(params)}`);
+    setIsEditing(true)
   };
   const handleUpdateText = (text) => {
     setRichEditorText(text)
@@ -112,12 +110,12 @@ export default function WikiPageIsland(props: Props) {
   }
   const handleEditSubmit = () => {
     //@ts-ignore
+    console.log('IS THER WIKI CONTENT', isWikiContent);
     let content = getEditorText() || wikiPageData.data.wiki_pages[0].text
-    console.log('SUBMIT', content)
-    //dispatch(wikiPageUpdateContentMutation(nctId, content));
-    dispatch(wikiPageUpdateHasuraMutation(nctId, content));
-
-    history.push(`${match.url}${queryStringAll(params)}`);
+    
+    dispatch(wikiPageUpdateHasuraMutation(nctId, content, isWikiContent));
+    setIsEditing(false)
+    // history.push(`${match.url}${queryStringAll(params)}`);
     setFlashAnimation(true)
   };
 
@@ -125,21 +123,24 @@ export default function WikiPageIsland(props: Props) {
     history.push(`${match.url}${queryStringAll(params)}`);
   };
 
-  const renderEditStateButtons = (
-    data: any,
-    isAuthenticated: boolean,
-    readOnly: boolean
+  const renderToolbar = (
+
+    data: WikiPageQuery,
+    //@ts-ignore
+    user: CurrentUserQuery_me | null | undefined,
+    isEditing: boolean
   ) => {
+    const isAuthenticated = user !== null;
     if (!isAuthenticated) return false;
-    if (readOnly) return false;
     const editorTextState = getEditorText();
-    const editorTextData =
-      data && data.wiki_pages[0] && data.wiki_pages[0].text // data.study && data.study.wikiPage && data.study.wikiPage.content;
+    // const editorTextData =
+    //   data && data.wiki_pages[0] && data.wiki_pages[0].text // data.study && data.study.wikiPage && data.study.wikiPage.content;
 
     let editMessage = `Changes not saved. Are you sure you want to leave while editing?`;
-
     return (
-      <div>
+      <Toolbar>
+        {isEditing ? 
+        <div>
         <ThemedButton
           onClick={() => { editMessage = "Save changes?"; handleCancelEdit(); }}
           style={{ marginLeft: '10px', background: 'white', color: '#6BA5D6', border: "1px solid #6BA5D6" }}>
@@ -147,48 +148,23 @@ export default function WikiPageIsland(props: Props) {
         </ThemedButton>
         <ThemedButton
           onClick={() => { editMessage = "Save changes?"; handleEditSubmit(); }}
-          disabled={editorTextState === editorTextData}
+          // disabled={editorTextState === editorTextData}
           style={{ marginLeft: '10px' }}>
           Save <FontAwesome name="pencil" />
         </ThemedButton>
-      </div>
-    );
-  };
+      </div> : 
+           <div>
+           <ThemedButton
+             type="button"
+             onClick={isAuthenticated ? () => handleEdit() : () => setShowLoginModal(true)}
+             style={{ marginLeft: '10px' }}>
+             Edit <FontAwesome name="edit" />
+           </ThemedButton>
+           </div>
+        }
 
-  const renderEditButton = (isAuthenticated: boolean) => {
-    return (
-      <ThemedButton
-        type="button"
-        onClick={isAuthenticated ? () => handleEdit() : () => setShowLoginModal(true)}
-        style={{ marginLeft: '10px' }}>
-        Edit <FontAwesome name="edit" />
-      </ThemedButton>
-    );
-  };
 
-  const renderToolbar = (
 
-    data: WikiPageQuery,
-    //@ts-ignore
-    user: CurrentUserQuery_me | null | undefined,
-    readOnly: boolean
-  ) => {
-
-    const isAuthenticated = user !== null;
-
-    return (
-      <Toolbar>
-        <Switch>
-          <Route
-            path={editPath}
-            render={() => (
-              <>
-                {renderEditStateButtons(data, isAuthenticated, readOnly)}
-              </>
-            )}
-          />
-          <Route render={() => <>{renderEditButton(isAuthenticated)}</>} />
-        </Switch>
       </Toolbar>
     );
   };
@@ -200,16 +176,24 @@ export default function WikiPageIsland(props: Props) {
     setTimeout(resetHelper, 6500);
 
   }
-
+ 
   const renderEditor = (data: any) => {
-    // console.log("EDITOOR - WIKI DATA: ", data?.wiki_pages)
+    console.log("EDITOOR - WIKI DATA: ", data?.wiki_pages)
 
-    if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) return "No Wiki Content"; //(!data || !data.study || !data.study.wikiPage) return null;
+    if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) {
+    return "No Wiki Content"; //(!data || !data.study || !data.study.wikiPage) return null;
+    }
+    
+  
     const text = getEditorText() || '';
     //console.log("🚀 ~ renderEditor ~ TEXT", text);
 
     if (text !== data.wiki_pages[0].text || !text) {
       //handlePreview()
+
+      if (data.wiki_pages[0].text ) {
+        setIsWikiContent(true);
+      }
 
       if (editorState === 'rich') {
         const richEditorText = RichTextEditor.createValueFromString(
@@ -222,7 +206,7 @@ export default function WikiPageIsland(props: Props) {
       }
     }
 
-    const readOnly = !location.pathname.includes('/wiki/edit');
+    // const readOnly = !location.pathname.includes('/wiki/edit');
 
     if (editorState === 'rich') {
       //console.log("RICH E TEXZ", richEditorText)
@@ -230,7 +214,7 @@ export default function WikiPageIsland(props: Props) {
         <Panel style={{ border: "none", padding: "0px" }}>
           <Panel.Body >
             <StyledRTE
-              readOnly={readOnly}
+              // readOnly={readOnly}
               onChange={handleRichEditorChange}
               value={richEditorText || RichTextEditor.createEmptyValue()}
             />
@@ -261,7 +245,7 @@ export default function WikiPageIsland(props: Props) {
     show={showLoginModal}
     cancel={() => setShowLoginModal(false)}
   />
-  //console.log("WIKI DATA", wikiPageData.data.study.wikiPage)
+  console.log("WIKI DATA", isWikiContent)
 
   return (
     <>
@@ -274,9 +258,9 @@ export default function WikiPageIsland(props: Props) {
       <div>
         <StyledPanel>
           <div>
-            <Route exact path={editPath} render={props => <WikiPageEditor updateText={handleUpdateText} data={wikiPageData.data} />} />
-            {readOnly ? <Route render={() => renderEditor(wikiPageData.data)} /> : null}
-            {renderToolbar(wikiPageData.data, user, readOnly)}
+            {isEditing ? <WikiPageEditor updateText={handleUpdateText} data={wikiPageData.data} /> : renderEditor(wikiPageData.data)} 
+            {/* {readOnly ? renderEditor(wikiPageData.data)} : null} */}
+            {renderToolbar(wikiPageData.data, user, isEditing)}
           </div>
         </StyledPanel>
       </div>
