@@ -172,7 +172,6 @@ function IslandAggChild(props: Props) {
   searchParamsCurrent.current = searchParams;
   let currentAgg = getCurrentAgg();
   let grouping = currentAgg?.aggKind == "aggs" ? 'aggFilters' : 'crowdAggFilters'
-  console.log("YOOO",currentAgg.name);
   console.log("Yo2",searchParams)
   let aggValues = find(
     (x) => (x.field == currentAgg?.name),

@@ -113,7 +113,7 @@ export default function WikiPageIsland(props: Props) {
   const handleEditSubmit = () => {
     //@ts-ignore
     let content = getEditorText() || wikiPageData.data.wiki_pages[0].text
-
+    console.log('SUBMIT', content)
     //dispatch(wikiPageUpdateContentMutation(nctId, content));
     dispatch(wikiPageUpdateHasuraMutation(nctId, content));
 

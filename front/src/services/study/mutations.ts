@@ -174,10 +174,25 @@ export const WIKI_PAGE_UPDATE_CONTENT_MUTATION = `
   ${WIKI_PAGE_FRAGMENT}
 `;
 
+// export const WIKI_PAGE_UPDATE_HASURA_MUTATION = `
+
+// mutation HasuraUpdateWikiPageMutation($nctId: String, $text: String) {
+//   update_wiki_pages(where: {nct_id: {_eq: $nctId}}, _set: {text: $text}) {
+//     returning {
+//       text
+//       nct_id
+//     }
+//   }
+// }
+// `;
+
 export const WIKI_PAGE_UPDATE_HASURA_MUTATION = `
 
 mutation HasuraUpdateWikiPageMutation($nctId: String, $text: String) {
-  update_wiki_pages(where: {nct_id: {_eq: $nctId}}, _set: {text: $text}) {
+  upsert_wiki_pages(where: {nct_id: {_eq: $nctId}}, _set: {text: $text}) {
+    insert_wiki_pages (
+      
+    )
     returning {
       text
       nct_id
