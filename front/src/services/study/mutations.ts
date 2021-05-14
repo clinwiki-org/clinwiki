@@ -174,8 +174,19 @@ export const WIKI_PAGE_UPDATE_CONTENT_MUTATION = `
   ${WIKI_PAGE_FRAGMENT}
 `;
 
-export const WIKI_PAGE_UPDATE_HASURA_MUTATION = `
+// export const WIKI_PAGE_UPDATE_HASURA_MUTATION = `
 
+// mutation HasuraUpdateWikiPageMutation($nctId: String, $text: String) {
+//   update_wiki_pages(where: {nct_id: {_eq: $nctId}}, _set: {text: $text}) {
+//     returning {
+//       text
+//       nct_id
+//     }
+//   }
+// }
+// `;
+
+export const WIKI_PAGE_UPDATE_HASURA_MUTATION = `
 mutation HasuraUpdateWikiPageMutation($nctId: String, $text: String) {
   update_wiki_pages(where: {nct_id: {_eq: $nctId}}, _set: {text: $text}) {
     returning {
@@ -184,6 +195,14 @@ mutation HasuraUpdateWikiPageMutation($nctId: String, $text: String) {
     }
   }
 }
+`;
+export const WIKI_PAGE_INSERT_HASURA_MUTATION = `
+mutation HasuraInsertWikiPageMutation($nctId: String, $text: String) {
+  insert_wiki_pages_one(object: {nct_id: $nctId, text: $text}) {
+    nct_id
+    text
+    }
+  }
 `;
 
 export const DELETE_LABEL_MUTATION = `

@@ -569,11 +569,13 @@ export const wikiPageUpdateContentMutationError = (
 
 export const wikiPageUpdateHasuraMutation = (
     nctId: any,
-    text: string
+    text: string,
+    isWikiContent: boolean
 ): types.StudyActionTypes => ({
     type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND,
     nctId,
     text,
+    isWikiContent
 });
 export const wikiPageUpdateHasuraMutationSuccess = (
     payload: any

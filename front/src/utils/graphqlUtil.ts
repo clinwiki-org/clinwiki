@@ -110,7 +110,7 @@ export const callHasuraClinwiki = (
             }   
         }
     } else {
-        console.log("No Token.");
+        // console.log("No Token.");
         ///NO TOKEN
         hasuraHeaders = {
             'Content-Type': 'application/json',
