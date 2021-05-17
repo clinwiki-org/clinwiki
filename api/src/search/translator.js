@@ -50,9 +50,18 @@ export const translateSearch = async (criteria,includeSize,lastDate) => {
         requestBody = esb.requestBodySearch().query( boolQuery ).size(0);
     }
     
-    const json = requestBody.toJSON();
+    let json = requestBody.toJSON();
     injectAggs(criteria,json);
 
+
+    console.log(  util.inspect(criteria,true, null, false));
+    
+    let resultSort = {};
+   if(criteria.sorts.length !==0 ){
+
+       resultSort[`${criteria.sorts[0].id}`] = criteria.sorts[0].desc ? "desc" : "asc";
+       json.sort = [resultSort];
+   }
 
     return json;
 }
@@ -401,8 +410,6 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 order: sortOrder
             }
         }
-        console.log("JIMMY ")
-        console.log(bucketsWanted)
         let includedValues = bucketsWanted[index].values.join('|');
 
         bucketsWanted[index].values.length !== 0 ?
@@ -418,8 +425,8 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from: 0,
-                            size: 25,
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -436,8 +443,8 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from: 0,
-                            size: 25,
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -486,8 +493,6 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 order: sortOrder
             }
         }
-        console.log("JIMMY ")
-        console.log(bucketsWanted)
         let includedValues = bucketsWanted[index].values.join('|');
 
         bucketsWanted[index].values.length !== 0 ?
@@ -501,8 +506,8 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from: 0,
-                            size: 25,
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -519,8 +524,8 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from: 0,
-                            size: 25,
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]

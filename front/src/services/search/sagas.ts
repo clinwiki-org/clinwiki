@@ -71,7 +71,7 @@ function* getSearchPageOpenCrowdAggBuckets(action) {
         );
         if (response) {
             yield put(
-                actions.fetchSearchPageOpenCrowdAggBucketsSuccess(response)
+                actions.fetchSearchPageOpenCrowdAggBucketsSuccess({...response, crowdAggIdArray : action.crowdAggIdArray })
             );
         } else {
             yield put(
@@ -91,7 +91,7 @@ function* getSearchPageOpenAggBuckets(action) {
             api.fetchSearchPageOpenAggBuckets(action.searchParams)
         );
         if (response) {
-            yield put(actions.fetchSearchPageOpenAggBucketsSuccess(response));
+            yield put(actions.fetchSearchPageOpenAggBucketsSuccess({...response, aggIdArray : action.aggIdArray}));
         } else {
             yield put(
                 actions.fetchSearchPageOpenAggBucketsError(response.message)
@@ -372,7 +372,6 @@ function* exportToCsv(action) {
 }
 function* toggleAgg(action) {
     try {
-        console.log("Toggle saga goes here")
         // const variables = {
         //     ...action.searchParams,
         //     // url: paramsUrl.sv,

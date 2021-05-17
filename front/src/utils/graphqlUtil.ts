@@ -90,10 +90,10 @@ export const callHasuraClinwiki = (
         const decoded: any = jwt_decode(token)
 
         let currentDate = new Date();
-        console.log('TIME', currentDate.getTime())
-        console.log('DECDOED', decoded)
+        // console.log('TIME', currentDate.getTime())
+        // console.log('DECDOED', decoded)
         if (decoded.exp * 1000 < currentDate.getTime() || token == null) {
-            console.log("Token expired.", token);
+            // console.log("Token expired.", token);
             ///TOKEN EXPIRED
             hasuraHeaders = {
                 'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export const callHasuraClinwiki = (
             } 
         } 
         else {
-            console.log("Valid token", token);
+            // console.log("Valid token", token);
             ///VALID TOKEN  
             hasuraHeaders = {
                 'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export const callHasuraClinwiki = (
             }   
         }
     } else {
-        console.log("No Token.");
+        // console.log("No Token.");
         ///NO TOKEN
         hasuraHeaders = {
             'Content-Type': 'application/json',

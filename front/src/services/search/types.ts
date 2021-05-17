@@ -76,6 +76,7 @@ export const EXPORT_T0_CSV_SUCCESS = 'EXPORT_TO_CSV_SUCCESS';
 export const EXPORT_T0_CSV_ERROR = 'EXPORT_TO_CSV_ERROR';
 
 export const TOGGLE_AGG = 'TOGGLE_AGG';
+export const TOGGLE_EXPANDER= 'TOGGLE_EXPANDER';
 
 export interface SearchState {
     isFetchingAggs: boolean,
@@ -102,6 +103,7 @@ export interface SearchState {
     isFetchingSearchExport: boolean,
     searchExport: any;
     isExportingToCsv: boolean,
+    expanders: any,
 
 }
 export interface SearchDataError {
@@ -155,7 +157,8 @@ export interface FetchSearchPageCrowdAggBucketsErrorAction {
 };
 export interface FetchSearchPageOpenAggBucketsSendAction {
     type: typeof FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND
-    searchParams: any                                         
+    searchParams: any,
+    aggIdArray: any,                                        
 };
 
 export interface FetchSearchPageOpenAggBucketsSuccessAction {
@@ -169,7 +172,8 @@ export interface FetchSearchPageOpenAggBucketsErrorAction {
 };
 export interface FetchSearchPageOpenCrowdAggBucketsSendAction {
     type: typeof FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND
-    searchParams: any                                         
+    searchParams: any, 
+    crowdAggIdArray: any,                                         
 };
 
 export interface FetchSearchPageOpenCrowdAggBucketsSuccessAction {
@@ -357,6 +361,11 @@ export interface toggleAgg {
     input: any;
     searchParams:any;
 }
+export interface toggleExpander {
+    type: typeof TOGGLE_EXPANDER;
+    id:any;
+    collapsed: boolean;
+}
 export type SearchActionTypes = 
     FetchSearchPageAggsSendAction | FetchSearchPageAggsSuccessAction | FetchSearchPageAggsErrorAction |
     FetchSearchPageAggBucketsSendAction | FetchSearchPageAggBucketsSuccessAction | FetchSearchPageAggBucketsErrorAction |
@@ -376,4 +385,4 @@ export type SearchActionTypes =
     FetchIslandConfigSendAction | FetchIslandConfigSuccessAction | FetchIslandConfigErrorAction |
     UpdateFacetConfigSendAction | UpdateFacetConfigSuccessAction | UpdateFacetConfigErrorAction |
     SearchExportSendAction  | SearchExportSuccessAction | SearchExportErrorAction |
-    ExportToCsvSendAction | ExportToCsvSuccessAction |  ExportToCsvErrorAction | toggleAgg;
+    ExportToCsvSendAction | ExportToCsvSuccessAction |  ExportToCsvErrorAction | toggleAgg | toggleExpander;

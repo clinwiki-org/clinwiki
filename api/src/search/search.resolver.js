@@ -33,8 +33,8 @@ const searchResolver = {
     },
     searchParams: async (args,context) => {
         const results = await SearchManager.searchParams(args);
-        console.log(">>>>>>>RESOLVER<<<<<<<<")
-        console.log("Results", results)
+        // console.log(">>>>>>>RESOLVER<<<<<<<<")
+        // console.log("Results", results)
         return results;
     }
     

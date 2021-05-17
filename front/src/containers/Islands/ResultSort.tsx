@@ -39,7 +39,7 @@ const DEFAULT_PARAMS: SearchParams = {
   pageSize: defaultPageSize,
 };
 interface Props {
-  aggId?: string;
+  sortables?: any;
 
 }
 
@@ -164,7 +164,7 @@ function ResultSort(props: Props) {
   };
 
   // hardcoding to nct_id for now. Use to live in SV level. Need to pass this in as argument possibly?
-  let sortables : string[]= ["nct_id" ]
+  let sortables : string[]=  props.sortables ? props.sortables: ["nct_id", "status", "average_rating", "briefTitle","start_date", "completion_date" ]
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>

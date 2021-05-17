@@ -100,16 +100,16 @@ async function findUserRole(roles) {
     // if (roles.includes('admin')) {
     //     role = 'admin';
     // }
-    console.log('ROLES', roles);
+    // console.log('ROLES', roles);
     if (roles.some(role => role.name == 'admin')) {
-        logger.info('FILTERING HIT ADMIN', role.name);
+        // logger.info('FILTERING HIT ADMIN', role.name);
         role = 'admin';
     }
     //console.log("role = ", role)
     return role;
 }
 export async function getUserByEmail(email) {
-    logger.info('GETTING USERS BY EMAIL');
+    // logger.info('GETTING USERS BY EMAIL');
     //console.log("getUserByEmail called");
     const results = await query(QUERY_USER, [email]);
     //console.log("got user by email = ");
@@ -125,20 +125,20 @@ export async function getUserByEmail(email) {
         user.reactionsCount = await getUserReactionsCount(user.id);
         const wikis = await getUserWikis(user.id);
         user.contributions = wikis ? wikis.length : 0;
-        console.log('user = ', user);
+        // console.log('user = ', user);
         //console.log("user.roles = ", user.roles);
-        console.log('user.role = ', user.role);
+        // console.log('user.role = ', user.role);
         if (user.roles.includes(ROLE_SITE_OWNER)) {
-            logger.debug(
-                'User is a site owner. Populate role dependent fields'
-            );
+            // logger.debug(
+            //     'User is a site owner. Populate role dependent fields'
+            // );
         }
         return user;
     }
 }
 export async function getUserRoles(userId) {
     const roleResults = await query(QUERY_USER_ROLES, [userId]);
-    console.log(roleResults);
+    // console.log(roleResults);
     return roleResults.rows;
 }
 

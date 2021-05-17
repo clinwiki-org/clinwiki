@@ -20,7 +20,7 @@ export async function search(args) {
             const agg = aggToGraphql(key,value);
             aggs.push(agg);
         }
-
+        // console.log(studies)
         return {
             recordsTotal: esResults.body.hits.total,
             studies,
@@ -33,7 +33,7 @@ export async function search(args) {
 }
 export async function searchParams(args) {
     try {
-        console.log(args)
+        // console.log(args)
         let params;
         const results = await query(QUERY_SHORT_LINK, [args.hash]);
         if(results.rows.length===1){
@@ -124,7 +124,7 @@ export async function openCrowdAggBuckets(args) {
     try {
         const translated = await translateOpenCrowdAggBuckets(args.params, args.bucketsWanted);
         let esResults = await elastic.query(translated);
-        console.log("TRANSLATED OPEN Crowd Buckets", translated) 
+        // console.log("TRANSLATED OPEN Crowd Buckets", translated) 
         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
         let aggs = [];
         let i=0;
@@ -162,6 +162,7 @@ export async function openAggBuckets(args) {
         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
         let aggs = [];
         let i=0;
+        // console.log("TRANSLATED OPEN  Buckets" + util.inspect(translated,false,null,true)) 
         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
             const agg = aggToGraphql(key, value);
             if (args.bucketsWanted[i].values.length !== 0) {
@@ -192,6 +193,8 @@ export async function openAggBuckets(args) {
 
 function esToGraphql(study) {
     let obj = keysToCamel(study._source);
+    // console.log("--------->>>>>> STUDY <<<<<<-----------")
+    //  console.log(study)
     obj.studyViewCount = obj.studyViewsCount;
     obj.isFdaRegulated = obj.isFdaRegulatedDrug | obj.isFdaRegulatedDevice;
     obj.averageRating = 0;

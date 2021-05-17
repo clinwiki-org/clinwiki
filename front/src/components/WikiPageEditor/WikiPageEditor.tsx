@@ -31,6 +31,7 @@ export default function WikiPageEditor(props: Props) {
       }, [props.data]) */
 
   const handleRichEditorChange = (richEditorText: EditorValue) => {
+    console.log("EDIT CLICK", richEditorText)
     props.updateText(richEditorText)
     setRichEditorText(richEditorText);
   };
@@ -60,28 +61,25 @@ export default function WikiPageEditor(props: Props) {
     history.push(`${match.url}${queryStringAll(params)}`);
   };
 
-  const { data, } = props;
+  let { data } = props;
+  // const readOnly = !location.pathname.includes('/wiki/edit');
+    const readOnly = false;
 
-  console.log("*DATA in wiki Editor", data);
-  /* 
-    if (!data || !data.study || !data.study.wikiPage) return null;
-    const text = getEditorText() || '';
-    if (text !== data.study.wikiPage.content && !text) {
-      handlePreview()
+  //// IF NO DATA RENDER THIS EDITOR
   
-      if (editorState === 'rich') {
-        const richEditorText = RichTextEditor.createValueFromString(
-          data.wiki_pages[0].text || '',
-          'markdown'
-        );
-        setRichEditorText(richEditorText);
-      } else {
-        setplainEditorText(text);
-      }
-    }
-   */
-
-  if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) return null;  //(!data || !data.study || !data.study.wikiPage) return null;
+  if (!data || !data.wiki_pages[0] || !data.wiki_pages[0].text) { 
+  console.log('NO DATA RENDER', data);
+  return (
+    <Panel>
+      <Panel.Body>
+        <RichTextEditor
+            readOnly={readOnly}
+            onChange={handleRichEditorChange}
+            value={richEditorText || RichTextEditor.createEmptyValue()}
+          />
+      </Panel.Body>
+    </Panel>
+  )};  //(!data || !data.study || !data.study.wikiPage) return null;
   const text = getEditorText() || '';
   if (text !== data.wiki_pages[0].text && !text) {
     //handlePreview()
@@ -97,10 +95,11 @@ export default function WikiPageEditor(props: Props) {
     }
   }
 
-  const readOnly = !location.pathname.includes('/wiki/edit');
+ 
   if (!data) return <BeatLoader />;
 
   if (editorState === 'rich') {
+    console.log('WIKI EDITOR DATA RICH');
     return (
       <Panel>
         <Panel.Body>
@@ -113,7 +112,7 @@ export default function WikiPageEditor(props: Props) {
       </Panel>
     );
   }
-
+  console.log('WIKI EDITOR DATA PLAIN');
   return (
 
     <Panel>

@@ -89,7 +89,7 @@ export default function MailMergeView(props: Props) {
     props.context,
   ]);
   const aggIslandsCurrent = useRef({
-    currentIsalnds: [] as any[]
+    currentAggIsalnds: [] as any[]
   })
 
   const style = props.style
@@ -103,7 +103,7 @@ export default function MailMergeView(props: Props) {
       shouldProcessNode: node => islandKeys.has(node.name),
       processNode: (node, children) => {
         if (node.name == "agg") {
-          aggIslandsCurrent.current.currentIsalnds = [...aggIslandsCurrent.current.currentIsalnds, node.attribs]
+          aggIslandsCurrent.current.currentAggIsalnds = [...aggIslandsCurrent.current.currentAggIsalnds, node.attribs]
         }
         const create = props.islands?.[node.name];
         return (
@@ -128,11 +128,13 @@ export default function MailMergeView(props: Props) {
     !islandConfig && dispatch(fetchIslandConfig());
   }, [dispatch])
   useEffect(() => {
-    let uniqueIds = uniq(aggIslandsCurrent.current.currentIsalnds)
+    let uniqueIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
     let aggArray: any[] = [];
+    let aggIdArray: any[] = [];
     let aggBucketsWanted: any[] = [];
     let aggSortArray: any[] = [];
     let crowdAggArray: any[] = [];
+    let crowdAggIdArray: any[] = [];
     let crowdBucketsWanted: any[] = [];
     let crowdAggSortArray: any[] = [];
 
@@ -144,9 +146,11 @@ export default function MailMergeView(props: Props) {
         };
 
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
+        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggIdArray.push({id: agg.id, name: islandConfig[agg.id].name});
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
         islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
+        islandConfig[agg.id].aggKind == 'aggs' && aggIdArray.push({id: agg.id, name: islandConfig[agg.id].name});
         islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'aggs' && aggSortArray.push(sort);
       }
@@ -168,7 +172,7 @@ export default function MailMergeView(props: Props) {
         q: searchParams.searchParams.q,
         bucketsWanted: crowdBucketsWanted,
       };
-      variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables))
+      variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, crowdAggIdArray))
     }
     if (aggArray.length !== 0) {
 
@@ -184,7 +188,7 @@ export default function MailMergeView(props: Props) {
         q: searchParams.searchParams.q,
         bucketsWanted: aggBucketsWanted
       };
-      variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2))
+      variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2, aggIdArray))
     }
 
   }, [dispatch, islandConfig, searchParams])
