@@ -157,7 +157,8 @@ export interface FetchSearchPageCrowdAggBucketsErrorAction {
 };
 export interface FetchSearchPageOpenAggBucketsSendAction {
     type: typeof FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND
-    searchParams: any                                         
+    searchParams: any,
+    aggIdArray: any,                                        
 };
 
 export interface FetchSearchPageOpenAggBucketsSuccessAction {
@@ -171,7 +172,8 @@ export interface FetchSearchPageOpenAggBucketsErrorAction {
 };
 export interface FetchSearchPageOpenCrowdAggBucketsSendAction {
     type: typeof FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND
-    searchParams: any                                         
+    searchParams: any, 
+    crowdAggIdArray: any,                                         
 };
 
 export interface FetchSearchPageOpenCrowdAggBucketsSuccessAction {

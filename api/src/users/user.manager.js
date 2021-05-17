@@ -125,9 +125,9 @@ export async function getUserByEmail(email) {
         user.reactionsCount = await getUserReactionsCount(user.id);
         const wikis = await getUserWikis(user.id);
         user.contributions = wikis ? wikis.length : 0;
-        console.log('user = ', user);
+        // console.log('user = ', user);
         //console.log("user.roles = ", user.roles);
-        console.log('user.role = ', user.role);
+        // console.log('user.role = ', user.role);
         if (user.roles.includes(ROLE_SITE_OWNER)) {
             // logger.debug(
             //     'User is a site owner. Populate role dependent fields'

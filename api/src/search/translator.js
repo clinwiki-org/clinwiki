@@ -50,26 +50,20 @@ export const translateSearch = async (criteria,includeSize,lastDate) => {
         requestBody = esb.requestBodySearch().query( boolQuery ).size(0);
     }
     
-    const json = requestBody.toJSON();
+    let json = requestBody.toJSON();
     injectAggs(criteria,json);
 
-    console.log(" xxxxxxxx________JSON___________xxxxxxxx");
-    console.log(  util.inspect(json,true, null, false));
 
     console.log(  util.inspect(criteria,true, null, false));
-    let json2 = json
     
     let resultSort = {};
    if(criteria.sorts.length !==0 ){
 
        resultSort[`${criteria.sorts[0].id}`] = criteria.sorts[0].desc ? "desc" : "asc";
-       json2.sort = [resultSort];
+       json.sort = [resultSort];
    }
 
-    console.log(" 2222222________JSON___________2222222");
-    console.log(  util.inspect(json2,true, null, false));
-
-    return json2;
+    return json;
 }
 
 
@@ -416,8 +410,6 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 order: sortOrder
             }
         }
-        console.log("JIMMY ")
-        console.log(bucketsWanted)
         let includedValues = bucketsWanted[index].values.join('|');
 
         bucketsWanted[index].values.length !== 0 ?
@@ -501,8 +493,6 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 order: sortOrder
             }
         }
-        console.log("JIMMY ")
-        console.log(bucketsWanted)
         let includedValues = bucketsWanted[index].values.join('|');
 
         bucketsWanted[index].values.length !== 0 ?

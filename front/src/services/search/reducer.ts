@@ -107,8 +107,8 @@ const searchReducer = (
         case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS:
             // console.log("Payload",action.payload)
             let aggObject = {};
-            action.payload.data.openAggBuckets.aggs.map(agg => {
-                aggObject[agg.name] = agg.buckets;
+            action.payload.data.openAggBuckets.aggs.map((agg, index) => {
+                aggObject[action.payload.aggIdArray[index].id] = agg.buckets;
             });
             return {
                 ...state,
@@ -134,8 +134,8 @@ const searchReducer = (
         case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS:
             // console.log("Payload",action.payload)
             let crowdAggObject = {};
-            action.payload.data.openCrowdAggBuckets.aggs.map(agg => {
-                crowdAggObject[agg.name.substring(3)] = agg.buckets;
+            action.payload.data.openCrowdAggBuckets.aggs.map((agg, index) => {
+                crowdAggObject[action.payload.crowdAggIdArray[index].id] = agg.buckets;
             });
             return {
                 ...state,

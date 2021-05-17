@@ -341,21 +341,20 @@ function IslandAggChild(props: Props) {
       returnAll: false,
       agg: [currentAgg.name],
       pageSize: PAGE_SIZE,
-      page: getFullPagesCount(buckets) +1 ,
+      page: getFullPagesCount(buckets) + 1,
       aggOptionsFilter: aggFilter,
       aggOptionsSort: aggSort,
       q: searchParams.q,
       bucketsWanted: [currentAgg.visibleOptions]
     };
 
-    //Come back and rework how we load more individually
-    currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables)) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables));
+    currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
     handleLoadMoreResponse();
   }
 
   const handleLoadMoreResponse = () => {
     let aggName = currentAgg!.name
-    let responseBuckets = currentAgg.aggKind === "crowdAggs" ? crowdAggBuckets?.aggs[aggName] : aggBuckets?.aggs[aggName]
+    let responseBuckets = currentAgg.aggKind === "crowdAggs" ? crowdAggBuckets?.aggs[aggId!] : aggBuckets?.aggs[aggId!];
     let currentBuckets = buckets[0] === undefined ? [] : buckets
     const allBuckets = currentBuckets.concat(responseBuckets);
     let newBuckets = pipe(
@@ -387,7 +386,6 @@ function IslandAggChild(props: Props) {
     const hasMore = length(buckets) !== length(newBuckets);
     // console.log(hasMore)
     setHasMore(hasMore);
-    // console.log(newBuckets)
   };
   const toggleAlphaSort = () => {
     setDesc(!desc);
@@ -407,15 +405,21 @@ function IslandAggChild(props: Props) {
     setBuckets([]);
     setHasMore(true);
   };
+  useEffect(() => {
+    setSortKind(currentAgg?.order?.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
+    setDesc(currentAgg?.order?.desc);
+  }, [currentAgg]);
 
   useEffect(() => {
     handleLoadMoreResponse()
-  }, [aggBuckets, crowdAggBuckets]);
-
+  }, [aggBuckets, crowdAggBuckets, currentAgg]);
   useEffect(() => {
-    setSortKind(currentAgg?.order?.sortKind == "count"? SortKind.Alpha:SortKind.Number);
-    setDesc(currentAgg?.order?.desc);  
-  }, [currentAgg]);
+    if (currentAgg.defaultToOpen) {
+
+      handleLoadMore()
+    }
+  }, [desc, sortKind]);
+
 
   const transformFilters = (
     filters: AggFilterInput[]
@@ -518,9 +522,22 @@ function IslandAggChild(props: Props) {
 
   const handleContainerToggle = () => {
     if (aggId) {
-      // console.log("AGG", aggId)
-      // islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
       dispatch(toggleAgg(aggId, islandConfig[aggId], searchParams))
+      let aggSort = handleSort(desc, sortKind);
+      const variables = {
+        ...searchParams,
+        url: paramsUrl.sv,
+        configType: 'presearch',
+        returnAll: false,
+        agg: [currentAgg.name],
+        pageSize: PAGE_SIZE,
+        page: getFullPagesCount(buckets) + 1,
+        aggOptionsFilter: aggFilter,
+        aggOptionsSort: aggSort,
+        q: searchParams.q,
+        bucketsWanted: [currentAgg.visibleOptions]
+      };
+      currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
 
     }
   }
