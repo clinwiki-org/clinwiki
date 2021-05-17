@@ -275,3 +275,8 @@ export const toggleAgg = (id:string, input: any, searchParams: any): types.Searc
     input,
     searchParams
 });
+export const toggleExpander = (id:string, collapsed: boolean): types.SearchActionTypes => ({
+    type: types.TOGGLE_EXPANDER,
+    id,
+    collapsed
+});

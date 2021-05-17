@@ -27,6 +27,7 @@ const initialState: types.SearchState = {
     isFetchingSearchExport: false,
     searchExport: undefined,
     isExportingToCsv: false,
+    expanders:undefined
 };
 
 const searchReducer = (
@@ -395,7 +396,22 @@ const searchReducer = (
                 ...state,
                 islandConfig: newIslandConfig,
             };
-
+        case types.TOGGLE_EXPANDER:
+            let newExpanderObj = state.expanders || {}
+                    if(!state.expanders){
+                        newExpanderObj[action.id] = {id: action.id, collapsed: action.collapsed}
+                        return{
+                            ...state,
+                            expanders: newExpanderObj
+                        }
+                    }
+                    if(state.expanders[action.id]){
+                        newExpanderObj[action.id] = {id:action.id, collapsed: action.collapsed};
+                        return{
+                            ...state,
+                            expanders: newExpanderObj
+                        }
+                    }
         default:
             return { ...state };
     }
