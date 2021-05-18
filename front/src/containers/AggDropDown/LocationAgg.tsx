@@ -68,7 +68,7 @@ useEffect(()=>{
       }
 
       searchParams['aggFilters'].push(locationFilter)
-      let newParams = {...searchParams, q: JSON.parse(searchParams.q), aggFilters: searchParams["aggFilters"]}
+      let newParams = {...searchParams, aggFilters: searchParams["aggFilters"]}
       dispatch(updateSearchParamsAction(newParams));
     }
     let index = findIndex((x)=>x.field=="location", searchParams["aggFilters"])
@@ -83,7 +83,7 @@ useEffect(()=>{
       lat:positionData[1],
       long:positionData[2],
     }
-    let newParams = {...searchParams, q: JSON.parse(searchParams.q), aggFilters: searchParams["aggFilters"]}
+    let newParams = {...searchParams, aggFilters: searchParams["aggFilters"]}
     dispatch(updateSearchParamsAction(newParams));
 
   }

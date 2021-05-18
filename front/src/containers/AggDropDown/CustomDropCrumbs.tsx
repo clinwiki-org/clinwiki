@@ -31,19 +31,15 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
   rangeText = () => {
     let range = this.props.selectedItems[0]
     if (!this.props.selectedItems) return
-    console.log(1)
     //@ts-ignore
     if (!range.start) return `≤ ${range.end}`
-    console.log(2, range)
     //@ts-ignore
     if (!range.end) return `≥ ${range.start}`
-    console.log(3)
     //@ts-ignore
     return `${range.start} - ${range.end}`
   }
   renderLocationLabel = () => {
     let location = this.props.selectedItems[0]
-    console.log(location)
     //@ts-ignore
     if (!location.zipcode && !location.radius) return
     //@ts-ignore
@@ -61,21 +57,16 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
       (x) => x.field !== aggName,
       searchParams[grouping]
     );
-    console.log(allButThisAgg)
-
 
     let newParams = isCrowd ? {
       ...searchParams,
-      q: JSON.parse(searchParams.q),
       crowdAggFilters: allButThisAgg
 
     } : {
       ...searchParams,
-      q: JSON.parse(searchParams.q),
       aggFilters: allButThisAgg
 
     }
-    console.log(newParams)
     this.props.updateSearchParamsAction(newParams);
 
   }
@@ -125,7 +116,6 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
           )
 
         } else if (field.display == FieldDisplay.LOCATION) {
-          console.log("IN LOCATION", this.props.selectedItems)
           if (!this.props.selectedItems[0].radius) return
 
           return (
