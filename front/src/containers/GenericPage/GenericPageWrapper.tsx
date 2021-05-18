@@ -53,12 +53,19 @@ export default function GenericPageWrapper(props: Props) {
    */
 
 
+  const url =
+    window.location.search;
+  const urlName = new URLSearchParams(url)
+    .getAll('sv')
+    .toString();
+  const urlFinal = urlName ? urlName : "default";
+
   useEffect(() => {
     dispatch(fetchPageViewsHasura(site?.id));
   }, [dispatch, site.id]);
 
   useEffect(() => {
-    dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage()));
+    dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage() || urlFinal));
   }, [dispatch, params.pv]);
   useEffect(() => {
     pageType == "Search" && dispatch(fetchSearchParams(params.hash));
