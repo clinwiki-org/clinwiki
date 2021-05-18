@@ -52,9 +52,10 @@ export const fetchSearchPageCrowdAggBucketsError = (message: string) : types.Sea
     type: types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_ERROR,
     payload: { message }
 });
-export const fetchSearchPageOpenCrowdAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
+export const fetchSearchPageOpenCrowdAggBuckets = ( searchParams: any, crowdAggIdArray: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND,
-    searchParams     
+    searchParams,
+    crowdAggIdArray
 });
 
 export const fetchSearchPageOpenCrowdAggBucketsSuccess = (payload: SearchPageCrowdAggBucketsQuery) : types.SearchActionTypes => ({
@@ -66,9 +67,10 @@ export const fetchSearchPageOpenCrowdAggBucketsError = (message: string) : types
     type: types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR,
     payload: { message }
 });
-export const fetchSearchPageOpenAggBuckets = ( searchParams: any) : types.SearchActionTypes => ({
+export const fetchSearchPageOpenAggBuckets = ( searchParams: any, aggIdArray: any) : types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND,
-    searchParams     
+    searchParams,
+    aggIdArray     
 });
 
 export const fetchSearchPageOpenAggBucketsSuccess = (payload: SearchPageCrowdAggBucketsQuery) : types.SearchActionTypes => ({
@@ -274,4 +276,9 @@ export const toggleAgg = (id:string, input: any, searchParams: any): types.Searc
     id,
     input,
     searchParams
+});
+export const toggleExpander = (id:string, collapsed: boolean): types.SearchActionTypes => ({
+    type: types.TOGGLE_EXPANDER,
+    id,
+    collapsed
 });

@@ -34,7 +34,7 @@ function DistanceDropDownOptions(props:
   DistanceDropDownOptionsProps) {
 
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const searchParams = data?.data?.searchParams;
+  const searchParams = data?.data?.searchParams.searchParams;
   const dispatch = useDispatch()
   const [radius, setRadius] = useState('50');
   useEffect(() => {

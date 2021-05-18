@@ -82,7 +82,7 @@ export const searchIslands: Record<string, IslandConstructor> = {
     <DownloadCSVIsland />
   ),
   resultsort: (attributes: Record<string, string>, context?: any) => (
-    <ResultSort />
+    <ResultSort sortables={attributes['sortBy']}/>
   ),
   resultloader: (attributes: Record<string, string>, context?: any) => (
     <ResultLoader />

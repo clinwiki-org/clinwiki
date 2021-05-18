@@ -168,15 +168,26 @@ export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
     });
 };
 
-export const wikiPageUpdateHasuraMutation = (nctId: any, text: any) => {
-    return callHasuraClinwiki(
-        HASURA_CW,
-        mutate.WIKI_PAGE_UPDATE_HASURA_MUTATION,
-        {
-            nctId: nctId,
-            text: text,
-        }
-    );
+export const wikiPageUpdateHasuraMutation = (nctId: any, text: any, isWikiContent: boolean) => {
+    if (isWikiContent) {
+        return callHasuraClinwiki(
+            HASURA_CW,
+            mutate.WIKI_PAGE_UPDATE_HASURA_MUTATION,
+            {
+                nctId: nctId,
+                text: text,
+            }
+        );
+    } else {
+        return callHasuraClinwiki(
+            HASURA_CW,
+            mutate.WIKI_PAGE_INSERT_HASURA_MUTATION,
+            {
+                nctId: nctId,
+                text: text,
+            }
+        ); 
+    }
 };
 
 export const fetchSuggestedLabels = (nctId: any, crowdBucketsWanted: any) => {

@@ -749,6 +749,7 @@ export interface wikiPageUpdateHasuraMutationSendAction {
     type: typeof WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND;
     nctId: any;
     text: any;
+    isWikiContent: boolean;
 }
 
 export interface wikiPageUpdateHasuraMutationSuccessAction {

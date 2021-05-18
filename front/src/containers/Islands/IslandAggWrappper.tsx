@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchIslandConfig } from 'services/search/actions'
 import { RootState } from 'reducers';
 import { SearchParams } from '../SearchPage/shared';
 

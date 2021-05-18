@@ -44,7 +44,7 @@ export default function HasuraGenericPage(props: Props) {
     const params = useUrlParams();
 
     const dispatch = useDispatch();
-    const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
+    const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
     //const studyData = useSelector((state: RootState) => state.study.studyPage);
     const loading = useSelector((state: RootState) => state.study.isFetchingStudyPage)
     const pageViewsData = useSelector((state: RootState) => state.study.pageViews);
@@ -55,9 +55,10 @@ export default function HasuraGenericPage(props: Props) {
 
     const studyData = useSelector((state: RootState) => state.study.studyPageHasura);
 
-    useEffect(() => {
-        dispatch(fetchPresentSiteProvider(undefined, params.sv));
-    }, [dispatch, params.sv])
+    /* 
+        useEffect(() => {
+            dispatch(fetchPresentSiteProvider(undefined, params.sv));
+        }, [dispatch, params.sv]) */
 
     useEffect(() => {
         dispatch(fetchPageViews(site?.id));

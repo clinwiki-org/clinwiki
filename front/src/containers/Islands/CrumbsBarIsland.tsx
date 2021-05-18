@@ -106,12 +106,13 @@ export default function CrumbsBarIsland(props: Props) {
   const [searchTerm, setSearchTerm] = useState('');
 
 
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
+  const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
   const presentSiteView = site?.siteView;
-  const searchParams = searchParamsFromQuery(
-    data?.data?.searchParams,
-    presentSiteView
-  );
+  const searchParams = 
+  // searchParamsFromQuery(
+    data?.data?.searchParams.searchParams;
+  //   presentSiteView
+  // );
   //TO-DO, currently hardcoding previously reading from siteview config. Not sure which direction we're going 
   // let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
   // let showAutoSuggest = presentSiteView.search.config.fields.showAutoSuggest;

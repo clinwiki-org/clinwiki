@@ -46,6 +46,7 @@ import {
 } from '../../services/search/model/SearchPageParamsQuery';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
+import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
 
 const DEFAULT_PARAMS: SearchParams = {
   q: { children: [], key: 'AND' },
@@ -107,8 +108,8 @@ function IslandAggChild(props: Props) {
   const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
   const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
-  const searchParams = data?.data?.searchParams;
+  const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
+  const searchParams = data?.data?.searchParams.searchParams;
   const paramsUrl = useUrlParams();
   const match = useRouteMatch();
 
@@ -124,54 +125,56 @@ function IslandAggChild(props: Props) {
   };
   const updateSearchParams2 = (value) => {
 
-    const currentRams = { ...searchParams, [grouping as string]: value[grouping], q: JSON.parse(searchParams.q) }
+    const currentRams = { ...searchParams, [grouping as string]: value[grouping] }
     !isUpdatingParams && dispatch(updateSearchParamsAction(currentRams));
 
   };
 
 
-  const searchParamsFromQuery = (
-    params: SearchPageParamsQuery_searchParams | null | undefined,
-    view: SiteViewFragment
-  ): SearchParams => {
-    const defaultParams = {
-      ...DEFAULT_PARAMS,
-      ...preselectedFilters(view),
-    };
-    if (!params) return defaultParams;
+  // const searchParamsFromQuery = (
+  //   params: SearchPageParamsQuery_searchParams | null | undefined,
+  //   view: SiteViewFragment
+  // ): SearchParams => {
+  //   const defaultParams = {
+  //     ...DEFAULT_PARAMS,
+  //     ...preselectedFilters(view),
+  //   };
+  //   if (!params) return defaultParams;
 
-    const q = params.q
-      ? (JSON.parse(params.q) as SearchQuery)
-      : defaultParams.q;
+  //   const q = params.q
+  //     ? params.q
+  //     : defaultParams.q;
 
-    const aggFilters = map(
-      dissoc('__typename'),
-      params.aggFilters || []
-    ) as AggFilterInput[];
-    const crowdAggFilters = map(
-      dissoc('__typename'),
-      params.crowdAggFilters || []
-    ) as AggFilterInput[];
-    const sorts = map(dissoc('__typename'), params.sorts || []) as SortInput[];
-    return {
-      aggFilters,
-      crowdAggFilters,
-      sorts,
-      q,
-      //page and pageSize no longer exists since it was removed from the shortlink hash
-      //defaulting to page 0 and defaultPageSize(100) to recieve the first 100 results for
-      page: 0,
-      pageSize: defaultPageSize,
-    };
-  };
+  //   const aggFilters = map(
+  //     dissoc('__typename'),
+  //     params.aggFilters || []
+  //   ) as AggFilterInput[];
+  //   const crowdAggFilters = map(
+  //     dissoc('__typename'),
+  //     params.crowdAggFilters || []
+  //   ) as AggFilterInput[];
+  //   const sorts = map(dissoc('__typename'), params.sorts || []) as SortInput[];
+  //   return {
+  //     aggFilters,
+  //     crowdAggFilters,
+  //     sorts,
+  //     q,
+  //     //page and pageSize no longer exists since it was removed from the shortlink hash
+  //     //defaulting to page 0 and defaultPageSize(100) to recieve the first 100 results for
+  //     page: 0,
+  //     pageSize: defaultPageSize,
+  //   };
+  // };
 
-  const dataParams = searchParamsFromQuery(
-    searchParams,
-    presentSiteView
-  );
-  searchParamsCurrent.current = dataParams;
+  // const dataParams = searchParamsFromQuery(
+  //   searchParams,
+  //   presentSiteView
+  // );
+  searchParamsCurrent.current = searchParams;
   let currentAgg = getCurrentAgg();
   let grouping = currentAgg?.aggKind == "aggs" ? 'aggFilters' : 'crowdAggFilters'
+  // console.log("YOOO",currentAgg.name);
+  // console.log("Yo2",searchParams)
   let aggValues = find(
     (x) => (x.field == currentAgg?.name),
     searchParams[grouping]
@@ -336,23 +339,22 @@ function IslandAggChild(props: Props) {
       url: paramsUrl.sv,
       configType: 'presearch',
       returnAll: false,
-      agg: currentAgg.name,
+      agg: [currentAgg.name],
       pageSize: PAGE_SIZE,
-      page: getFullPagesCount(buckets),
+      page: getFullPagesCount(buckets) + 1,
       aggOptionsFilter: aggFilter,
       aggOptionsSort: aggSort,
-      q: JSON.parse(searchParams.q),
-      bucketsWanted: currentAgg.visibleOptions.values
+      q: searchParams.q,
+      bucketsWanted: [currentAgg.visibleOptions]
     };
 
-    //Come back and rework how we load more individually
-    // currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageCrowdAggBuckets(variables)) : !isFetchingAggBuckets && dispatch(fetchSearchPageAggBuckets(variables));
+    currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
     handleLoadMoreResponse();
   }
 
   const handleLoadMoreResponse = () => {
     let aggName = currentAgg!.name
-    let responseBuckets = currentAgg.aggKind === "crowdAggs" ? crowdAggBuckets?.aggs[aggName] : aggBuckets?.aggs[aggName]
+    let responseBuckets = currentAgg.aggKind === "crowdAggs" ? crowdAggBuckets?.aggs[aggId!] : aggBuckets?.aggs[aggId!];
     let currentBuckets = buckets[0] === undefined ? [] : buckets
     const allBuckets = currentBuckets.concat(responseBuckets);
     let newBuckets = pipe(
@@ -384,7 +386,6 @@ function IslandAggChild(props: Props) {
     const hasMore = length(buckets) !== length(newBuckets);
     // console.log(hasMore)
     setHasMore(hasMore);
-    // console.log(newBuckets)
   };
   const toggleAlphaSort = () => {
     setDesc(!desc);
@@ -404,15 +405,21 @@ function IslandAggChild(props: Props) {
     setBuckets([]);
     setHasMore(true);
   };
+  useEffect(() => {
+    setSortKind(currentAgg?.order?.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
+    setDesc(currentAgg?.order?.desc);
+  }, [currentAgg]);
 
   useEffect(() => {
     handleLoadMoreResponse()
-  }, [aggBuckets, crowdAggBuckets]);
-
+  }, [aggBuckets, crowdAggBuckets, currentAgg]);
   useEffect(() => {
-    setSortKind(currentAgg?.order?.sortKind == "count"? SortKind.Alpha:SortKind.Number);
-    setDesc(currentAgg?.order?.desc);  
-  }, [currentAgg]);
+    if (currentAgg.defaultToOpen) {
+
+      handleLoadMore()
+    }
+  }, [desc, sortKind]);
+
 
   const transformFilters = (
     filters: AggFilterInput[]
@@ -515,9 +522,22 @@ function IslandAggChild(props: Props) {
 
   const handleContainerToggle = () => {
     if (aggId) {
-      // console.log("AGG", aggId)
-      // islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
       dispatch(toggleAgg(aggId, islandConfig[aggId], searchParams))
+      let aggSort = handleSort(desc, sortKind);
+      const variables = {
+        ...searchParams,
+        url: paramsUrl.sv,
+        configType: 'presearch',
+        returnAll: false,
+        agg: [currentAgg.name],
+        pageSize: PAGE_SIZE,
+        page: getFullPagesCount(buckets) + 1,
+        aggOptionsFilter: aggFilter,
+        aggOptionsSort: aggSort,
+        q: searchParams.q,
+        bucketsWanted: [currentAgg.visibleOptions]
+      };
+      currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
 
     }
   }

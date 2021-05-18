@@ -447,7 +447,7 @@ function* wikiPageUpdateHasuraMutation(action) {
     try {
         console.log('SAGA Hasura Wiki Update', action);
         let response = yield call(() =>
-            api.wikiPageUpdateHasuraMutation(action.nctId, action.text)
+            api.wikiPageUpdateHasuraMutation(action.nctId, action.text, action.isWikiContent),
         );
         if (response) {
             console.log('SAGA RES Hasura Wiki Update', response);

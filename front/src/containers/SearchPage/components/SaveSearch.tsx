@@ -11,7 +11,6 @@ import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
 
 interface SaveSearchProps {
-  siteView: any;
   searchHash: string;
   user?: any;
   params: any;

@@ -543,4 +543,17 @@ div.DraftEditor-editorContainer{
  .left {
    text-align: left
  }
+ .no-filter{
+  display: flex;
+  height: 3em;
+  margin: auto;
+  width: 100%;
+  /* top: auto; */
+  overflow: hidden;
+  bottom: auto;
+  span{
+    display: flex;
+    margin:auto;
+  }
+ }
 `);

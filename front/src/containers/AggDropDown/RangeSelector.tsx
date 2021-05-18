@@ -54,7 +54,7 @@ class RangeSelector extends React.Component<
     };
   }
   componentDidMount = () => {
-    const searchParams = this.props.searchResultData?.data?.searchParams;
+    const searchParams = this.props.searchResultData?.data?.searchParams.searchParams;
 
     const grouping = this.props.field.aggKind == "crowdAggs" ? 'crowdAggFilters' : 'aggFilters';
 
@@ -72,7 +72,7 @@ class RangeSelector extends React.Component<
   onChange = () => {
     const grouping = this.props.field.aggKind == "crowdAggs" ? 'crowdAggFilters' : 'aggFilters';
 
-    const searchParams = this.props.searchResultData?.data?.searchParams;
+    const searchParams = this.props.searchResultData?.data?.searchParams.searchParams;
     const aggSettings = find(
       (x) => x.field == this.props.field.name,
       searchParams[grouping]
@@ -83,8 +83,6 @@ class RangeSelector extends React.Component<
       searchParams[grouping] || aggSettings
     );
     if (searchParams[grouping] && aggSettings) {
-      console.log("Zettings", aggSettings)
-      console.log(this.state)
 
       let newInput = {
         field: this.props.field.name,
@@ -97,7 +95,7 @@ class RangeSelector extends React.Component<
         lat: aggSettings?.lat || null,
         long: aggSettings?.long || null
       }
-      const currentParams = { ...searchParams, [grouping as string]: [...allButThisAgg, newInput], q: JSON.parse(searchParams.q) }
+      const currentParams = { ...searchParams, [grouping as string]: [...allButThisAgg, newInput]}
 
       this.props.updateSearchParamsAction(currentParams);
     } else {
@@ -112,7 +110,7 @@ class RangeSelector extends React.Component<
         lat: aggSettings?.lat || null,
         long: aggSettings?.long || null
       }
-      const currentParams = { ...searchParams, [grouping as string]: [...allButThisAgg, newInput], q: JSON.parse(searchParams.q) }
+      const currentParams = { ...searchParams, [grouping as string]: [...allButThisAgg, newInput] }
       this.props.updateSearchParamsAction(currentParams);
     }
   };
