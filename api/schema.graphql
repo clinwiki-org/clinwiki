@@ -25,7 +25,7 @@ type AggFilter {
   """
   Whether to include missing fields
   """
-  includeMissingFields: Boolean
+  include_missing_fields: Boolean
 
   """
   Location lat
@@ -75,7 +75,7 @@ input AggFilterInput {
   """
   Whether to include missing fields in the query
   """
-  includeMissingFields: Boolean
+  include_missing_fields: Boolean
 
   """
   Location lattituted
@@ -1517,16 +1517,7 @@ type SearchLog {
 }
 
 type SearchParams {
-  aggFilters: [AggFilter!]
-  crowdAggFilters: [AggFilter!]
-  page: Int
-  pageSize: Int
-
-  """
-  A Json version of the SearchQueryInput type
-  """
-  q: String
-  sorts: [Sort!]
+  searchParams: String
 }
 
 """

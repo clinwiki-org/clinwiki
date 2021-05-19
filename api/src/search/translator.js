@@ -50,9 +50,18 @@ export const translateSearch = async (criteria,includeSize,lastDate) => {
         requestBody = esb.requestBodySearch().query( boolQuery ).size(0);
     }
     
-    const json = requestBody.toJSON();
+    let json = requestBody.toJSON();
     injectAggs(criteria,json);
 
+
+    console.log(  util.inspect(criteria,true, null, false));
+    
+    let resultSort = {};
+   if(criteria.sorts.length !==0 ){
+
+       resultSort[`${criteria.sorts[0].id}`] = criteria.sorts[0].desc ? "desc" : "asc";
+       json.sort = [resultSort];
+   }
 
     return json;
 }
@@ -114,7 +123,7 @@ export const translateCrowdAggBuckets = async (criteria) => {
     return json;
 }
 
-export const translateOpenCrowdAggBuckets = async (criteria) => {
+export const translateOpenCrowdAggBuckets = async (criteria, bucketsWanted) => {
 
     let boolQuery = esb.boolQuery();
     boolQuery.must(esb.simpleQueryStringQuery('*'));
@@ -136,13 +145,13 @@ export const translateOpenCrowdAggBuckets = async (criteria) => {
     let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
     
     const json = requestBody.toJSON();
-    injectOpenCrowdAggBuckets(criteria,json,true);
+    injectOpenCrowdAggBuckets(criteria,json,true, bucketsWanted);
 
 
     return json;
 }
 
-export const translateOpenAggBuckets = async (criteria) => {
+export const translateOpenAggBuckets = async (criteria, bucketsWanted) => {
 
     let boolQuery = esb.boolQuery();
     boolQuery.must(esb.simpleQueryStringQuery('*'));
@@ -163,7 +172,7 @@ export const translateOpenAggBuckets = async (criteria) => {
     // Create the aggs and crowd aggs
     let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
     const json = requestBody.toJSON();
-    injectOpenAggBuckets(criteria,json,true);
+    injectOpenAggBuckets(criteria,json,true, bucketsWanted);
 
 
     return json;
@@ -383,34 +392,66 @@ function injectCrowdAggBuckets(criteria,json,usePrefix) {
     
     json.aggs = aggs;       
 }
-function injectOpenCrowdAggBuckets(criteria,json,usePrefix) {
+function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     let aggs = {};
     const aggKeys = criteria.agg;
     let innerAggs = {};
-
-    aggKeys.map(aggKey=>{
-        innerAggs[`fm_${aggKey}`] = {
-            terms: {
-                field: `fm_${aggKey}`,
-                size: 1000000,
-                missing: '-99999999999'
-            },
-            aggs:  {
-                agg_bucket_sort:{
-                    bucket_sort:{
-                       from:0,
-                       size:25,
-                       sort:[
-                          {
-                             _key:{
-                                order:"asc"
-                             }
-                          }
-                       ]
-                    }
-                 }            
+    
+    aggKeys.map((aggKey, index) => {
+        let sort = [];
+        let sortOrder = criteria.aggOptionsSort[index] && criteria.aggOptionsSort[index].desc ? "desc" : "asc"
+        let countSort = {
+            _count: {
+                order: sortOrder
             }
         }
+        let alphaSort = {
+            _key: {
+                order: sortOrder
+            }
+        }
+        let includedValues = bucketsWanted[index].values.join('|');
+
+        bucketsWanted[index].values.length !== 0 ?
+
+            (innerAggs[`fm_${aggKey}`] = {
+                terms: {
+                    field: `fm_${aggKey}`,
+                    size: 1000000,
+                    missing: '-99999999999',
+                    include: includedValues
+
+                },
+                aggs: {
+                    agg_bucket_sort: {
+                        bucket_sort: {
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
+                            sort: [
+                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
+                            ]
+                        }
+                    }
+                }
+            })
+            : (innerAggs[`fm_${aggKey}`] = {
+                terms: {
+                    field: `fm_${aggKey}`,
+                    size: 1000000,
+                    missing: '-99999999999',
+                },
+                aggs: {
+                    agg_bucket_sort: {
+                        bucket_sort: {
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
+                            sort: [
+                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
+                            ]
+                        }
+                    }
+                }
+            })
 
     })
 
@@ -434,37 +475,66 @@ aggKeys.map(aggKey=>{
     
     json.aggs = aggs;       
 }
-function injectOpenAggBuckets(criteria,json,usePrefix) {
+function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     let aggs = {};
     const aggKeys = criteria.agg;
     let innerAggs = {};
 
-    aggKeys.map(aggKey=>{
-        innerAggs[aggKey] = {
-            terms: {
-                field: aggKey,
-                size: 1000000,
-                missing: '-99999999999'
-            },
-            aggs:  {
-                agg_bucket_sort:{
-                    bucket_sort:{
-                       from:0,
-                       size:25,
-                       sort:[
-                          {
-                             _key:{
-                                order:"asc"
-                             }
-                          }
-                       ]
-                    }
-                 }            
+    aggKeys.map((aggKey, index) => {
+        let sort = [];
+        let sortOrder = criteria.aggOptionsSort[index].desc ? "desc" : "asc"
+        let countSort = {
+            _count: {
+                order: sortOrder
             }
         }
+        let alphaSort = {
+            _key: {
+                order: sortOrder
+            }
+        }
+        let includedValues = bucketsWanted[index].values.join('|');
+
+        bucketsWanted[index].values.length !== 0 ?
+            (innerAggs[aggKey] = {
+                terms: {
+                    field: aggKey,
+                    size: 1000000,
+                    missing: '-99999999999',
+                    include: includedValues
+                },
+                aggs: {
+                    agg_bucket_sort: {
+                        bucket_sort: {
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
+                            sort: [
+                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
+                            ]
+                        }
+                    }
+                }
+            })
+            : (innerAggs[aggKey] = {
+                terms: {
+                    field: aggKey,
+                    size: 1000000,
+                    missing: '-99999999999',
+                },
+                aggs: {
+                    agg_bucket_sort: {
+                        bucket_sort: {
+                            from:criteria.page * criteria.pageSize - 25,
+                            size:criteria.pageSize,
+                            sort: [
+                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
+                            ]
+                        }
+                    }
+                }
+            })
 
     })
-
 
 aggKeys.map(aggKey=>{
     aggs[aggKey] = {

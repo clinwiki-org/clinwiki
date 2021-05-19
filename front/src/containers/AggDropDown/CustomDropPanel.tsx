@@ -46,11 +46,19 @@ interface CustomDropPanelState {
 
 }
 
+const NoFiltersMessage = ()=>{
+  return( 
+  <>
+  <div className="no-filter">
+    <span>No Available Filters</span>
+  </div>
+  </>)
+}
 class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPanelState> {
 
-  state ={
-    buckets: this.props.buckets as AggBucket[],
-  }
+  // state ={
+  //   // buckets: this.props.buckets as AggBucket[],
+  // }
 
   renderPreValue = (item) => {
     const { disabled } = this.props;
@@ -158,13 +166,20 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     }
     else if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
 
-     // console.log("RENDERING DROP PANEL   111");
+    //  console.log(`RENDERING DROP PANEL   ${this.props.field.name}`, this.props.buckets);
 
       //console.log("BUCKETS @ InfiniteScroll", this.props.field.name, this.props.buckets); 
     
       if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0){
 
         return   <BeatLoader />
+      }
+      if (this.props.buckets[0] ===undefined){
+        return  <NoFiltersMessage/>
+      }
+      if(!showAllowMissing && this.props.buckets[0].key=="-99999999999" && this.props.buckets.length == 0){
+        return <NoFiltersMessage/>
+
       }
       return (
         <>
@@ -219,8 +234,14 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
   }
     else {
       if (this.props.buckets[0] === undefined  && this.props.buckets.length !== 0){
-        //console.log("BUCKETS 222222222222222222222222", this.props.field.name, this.props.buckets); 
         return  <BeatLoader />
+      }
+      if (this.props.buckets.length == 0 || this.props.buckets[0] ===undefined){
+        return  <NoFiltersMessage/>
+      }
+      if(!showAllowMissing && this.props.buckets[0].key=="-99999999999" && this.props.buckets.length==1){
+        return <NoFiltersMessage/>
+
       }
       return (
         <>

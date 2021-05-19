@@ -1,4 +1,7 @@
 import { getLocalJwt } from 'utils/localStorage';
+import jwt_decode from "jwt-decode";
+
+
 
 export const callGraphql = (
     endpoint: string,
@@ -81,19 +84,40 @@ export const callHasuraClinwiki = (
     variables: any,
     operationName?: string
 ) => {
+    let token = getLocalJwt()
     let hasuraHeaders = {}
-    if (getLocalJwt() == null) {
-       hasuraHeaders = {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-       }
+    if (token) {
+        const decoded: any = jwt_decode(token)
+
+        let currentDate = new Date();
+        // console.log('TIME', currentDate.getTime())
+        // console.log('DECDOED', decoded)
+        if (decoded.exp * 1000 < currentDate.getTime() || token == null) {
+            // console.log("Token expired.", token);
+            ///TOKEN EXPIRED
+            hasuraHeaders = {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            } 
+        } 
+        else {
+            // console.log("Valid token", token);
+            ///VALID TOKEN  
+            hasuraHeaders = {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: token ? `Bearer ${token}` : "", 
+            }   
+        }
     } else {
+        // console.log("No Token.");
+        ///NO TOKEN
         hasuraHeaders = {
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            Authorization: getLocalJwt() ? `Bearer ${getLocalJwt()}` : "", 
-        }
+        } 
     }
+  
     return fetch(endpoint, {
         method: 'POST',
         headers: hasuraHeaders,

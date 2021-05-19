@@ -1,41 +1,44 @@
 import { call, put, takeLatest, select } from 'redux-saga/effects';
-import { push } from 'connected-react-router'
+import { push } from 'connected-react-router';
 import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
+import { camelCase, sentanceCase } from 'utils/helpers';
 
-const getCurrentSavedSearches = (state)=> state.search.savedSearches.data.savedSearch; 
-
+const getCurrentSavedSearches = state =>
+    state.search.savedSearches.data.savedSearch;
 
 function* getSearchPageAggs(action) {
     try {
-        let response = yield call(() => api.fetchSearchPageAggs(action.searchParams));
-        if(response) {
+        let response = yield call(() =>
+            api.fetchSearchPageAggs(action.searchParams)
+        );
+        if (response) {
             yield put(actions.fetchSearchPageAggsSuccess(response));
-        }
-        else {
+        } else {
             yield put(actions.fetchSearchPageAggsError(response.message));
         }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSearchPageAggsError(err.message));
     }
 }
 
 function* getSearchPageAggBuckets(action) {
-//    console.log("SAGA SP Agg Buckets", action);
+    //    console.log("SAGA SP Agg Buckets", action);
     try {
-        let response = yield call(() => api.fetchSearchPageAggBuckets(action.searchParams));
-        if(response) {
-            let nameBuckets = response.data.aggBuckets.aggs.filter( agg => agg.name === action.searchParams.agg)[0];
+        let response = yield call(() =>
+            api.fetchSearchPageAggBuckets(action.searchParams)
+        );
+        if (response) {
+            let nameBuckets = response.data.aggBuckets.aggs.filter(
+                agg => agg.name === action.searchParams.agg
+            )[0];
             yield put(actions.fetchSearchPageAggBucketsSuccess(nameBuckets));
-        }
-        else {
+        } else {
             yield put(actions.fetchSearchPageAggBucketsError(response.message));
         }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSearchPageAggBucketsError(err.message));
     }
@@ -43,46 +46,58 @@ function* getSearchPageAggBuckets(action) {
 
 function* getSearchPageCrowdAggBuckets(action) {
     try {
-        let response = yield call(() => api.fetchSearchPageCrowdAggBuckets(action.searchParams));     
-        if(response) {
+        let response = yield call(() =>
+            api.fetchSearchPageCrowdAggBuckets(action.searchParams)
+        );
+        if (response) {
             let nameBuckets = response.data.aggBuckets.aggs?.[0];
-            yield put(actions.fetchSearchPageCrowdAggBucketsSuccess(nameBuckets));
+            yield put(
+                actions.fetchSearchPageCrowdAggBucketsSuccess(nameBuckets)
+            );
+        } else {
+            yield put(
+                actions.fetchSearchPageCrowdAggBucketsError(response.message)
+            );
         }
-        else {
-            yield put(actions.fetchSearchPageCrowdAggBucketsError(response.message));
-        }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSearchPageCrowdAggBucketsError(err.message));
     }
 }
 function* getSearchPageOpenCrowdAggBuckets(action) {
     try {
-        let response = yield call(() => api.fetchSearchPageOpenCrowdAggBuckets(action.searchParams));     
-        if(response) {
-            yield put(actions.fetchSearchPageOpenCrowdAggBucketsSuccess(response));
+        let response = yield call(() =>
+            api.fetchSearchPageOpenCrowdAggBuckets(action.searchParams)
+        );
+        if (response) {
+            yield put(
+                actions.fetchSearchPageOpenCrowdAggBucketsSuccess({...response, crowdAggIdArray : action.crowdAggIdArray })
+            );
+        } else {
+            yield put(
+                actions.fetchSearchPageOpenCrowdAggBucketsError(
+                    response.message
+                )
+            );
         }
-        else {
-            yield put(actions.fetchSearchPageOpenCrowdAggBucketsError(response.message));
-        }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSearchPageOpenCrowdAggBucketsError(err.message));
     }
 }
 function* getSearchPageOpenAggBuckets(action) {
     try {
-        let response = yield call(() => api.fetchSearchPageOpenAggBuckets(action.searchParams));     
-        if(response) {
-            yield put(actions.fetchSearchPageOpenAggBucketsSuccess(response));
+        let response = yield call(() =>
+            api.fetchSearchPageOpenAggBuckets(action.searchParams)
+        );
+        if (response) {
+            yield put(actions.fetchSearchPageOpenAggBucketsSuccess({...response, aggIdArray : action.aggIdArray}));
+        } else {
+            yield put(
+                actions.fetchSearchPageOpenAggBucketsError(response.message)
+            );
         }
-        else {
-            yield put(actions.fetchSearchPageOpenAggBucketsError(response.message));
-        }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSearchPageOpenAggBucketsError(err.message));
     }
@@ -91,95 +106,124 @@ function* getSearchPageOpenAggBuckets(action) {
 function* getSearchParams(action) {
     try {
         let response = yield call(() => api.fetchSearchParams(action.hash));
-        if(response) {
+        if (response) {
+            let parsedParams = JSON.parse(response.data.searchParams.searchParams)
+            let camelCasedParams={};
+            for (const [key, value] of Object.entries(parsedParams)) {
+                // console.log(`${key}: ${value}`);
+                camelCasedParams[camelCase(key)]= value;
+
+              }
+
+            console.log("PARSED",parsedParams)
+            console.log("Cammeled",camelCasedParams)
+            response.data.searchParams.searchParams = camelCasedParams;
+            console.log("Response", response)
             yield put(actions.fetchSearchParamsSuccess(response));
-            yield put(actions.updateSearchParamsSuccess(action.hash))
-            //need this to run to populate our recordsTotal for time being was quick and easy way but probs not ideal 
+            yield put(actions.updateSearchParamsSuccess(action.hash));
+            //need this to run to populate our recordsTotal for time being was quick and easy way but probs not ideal
             // yield put(actions.fetchSearchPageAggs({...response.data.searchParams,
             //     q : JSON.parse(response.data.searchParams.q)
             // }))
-        }
-        else {
+        } else {
             yield put(actions.fetchSearchParamsError(response.message));
         }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSearchParamsError(err.message));
     }
 }
 function* getSearchStudies(action) {
     try {
-        let response = yield call(() => api.fetchSearchStudies(action.searchParams));
-        if(response) {
+        let response = yield call(() =>
+            api.fetchSearchStudies(action.searchParams)
+        );
+        if (response) {
             yield put(actions.fetchSearchStudiesSuccess(response));
-
-}
-        else {
+        } else {
             yield put(actions.fetchSearchStudiesError(response.message));
         }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSearchStudiesError(err.message));
     }
 }
 
-function* updateSearchParams(action) { 
+function* updateSearchParams(action) {
     try {
-        let updateResponse = yield call(() => api.updateSearchParams(action)); 
-        let location = yield select( (state) => state.router.location);
-        let searchHash = updateResponse.data.provisionSearchHash.searchHash
-        if (updateResponse.data.provisionSearchHash.searchHash !== null){ 
+        let updateResponse = yield call(() => api.updateSearchParams(action));
+        let location = yield select(state => state.router.location);
+        let searchHash = updateResponse.data.provisionSearchHash.searchHash;
+        if (updateResponse.data.provisionSearchHash.searchHash !== null) {
             // yield put(actions.fetchSearchParams(searchHash.short))
             // yield put(actions.fetchSearchPageAggs(action.searchParams))
             yield put(actions.updateSearchParamsSuccess(searchHash));
-            console.log(location)
-            switch(location.pathname){
-                case "/profile":
-                    yield put(push(`/profile?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
-                    return
-                case "/search":
-                    yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
-                    return
-                case "/search2":
-                    yield put(push(`/search2?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
-                    return
-                case "/mmtest":
-                    yield put(push(`/mmtest?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
-
+            console.log(location);
+            switch (location.pathname) {
+                case '/profile':
+                    yield put(
+                        push(
+                            `/profile?hash=${searchHash.short}&sv=${
+                                location.query.sv || ''
+                            }&pv=${location.query.pv || ''}`
+                        )
+                    );
+                    return;
+                case '/search':
+                    yield put(
+                        push(
+                            `/search?hash=${searchHash.short}&sv=${
+                                location.query.sv || ''
+                            }&pv=${location.query.pv || ''}`
+                        )
+                    );
+                    return;
+                case '/search2':
+                    yield put(
+                        push(
+                            `/search2?hash=${searchHash.short}&sv=${
+                                location.query.sv || ''
+                            }&pv=${location.query.pv || ''}`
+                        )
+                    );
+                    return;
+                case '/mmtest':
+                    yield put(
+                        push(
+                            `/mmtest?hash=${searchHash.short}&sv=${
+                                location.query.sv || ''
+                            }&pv=${location.query.pv || ''}`
+                        )
+                    );
             }
             // TODO need to pull default page view possibly defaulting to blank string which should default to configured default pageview
         }
-        // if (updateResponse.data.provisionSearchHash.searchHash !== null && location.pathname =='/search' ){ 
-            //     yield put(actions.fetchSearchParams(searchHash.short))
-            //     yield put(actions.fetchSearchPageAggs(action.searchParams))
-            //     yield put(actions.updateSearchParamsSuccess(searchHash));
-            //             yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
+        // if (updateResponse.data.provisionSearchHash.searchHash !== null && location.pathname =='/search' ){
+        //     yield put(actions.fetchSearchParams(searchHash.short))
+        //     yield put(actions.fetchSearchPageAggs(action.searchParams))
+        //     yield put(actions.updateSearchParamsSuccess(searchHash));
+        //             yield put(push(`/search?hash=${searchHash.short}&sv=${location.query.sv || ""}&pv=${location.query.pv|| ""}`))
         //     //console.log(location)
         // }
-
-
         else {
             yield put(actions.updateSearchParamsError(updateResponse.message));
         }
-    }
-    catch(err) {
+    } catch (err) {
         yield put(actions.updateSearchParamsError(err.message));
     }
 }
 
 function* getSearchAutoSuggest(action) {
     try {
-        let response = yield call(() => api.fetchSearchAutoSuggest(action.searchParams));
-        if(response) {
+        let response = yield call(() =>
+            api.fetchSearchAutoSuggest(action.searchParams)
+        );
+        if (response) {
             yield put(actions.fetchSearchAutoSuggestSuccess(response));
-        }
-        else {
+        } else {
             yield put(actions.fetchSearchAutoSuggestError(response.message));
         }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSearchAutoSuggestError(err.message));
     }
@@ -189,58 +233,55 @@ function* getSavedSearches(action) {
     //console.log("SAGA get Saved Searches", action)
     try {
         let response = yield call(() => api.fetchSavedSearches(action.userId));
-        if(response) {
+        if (response) {
             yield put(actions.fetchSavedSearchesSuccess(response));
             return response;
-        }
-        else {
+        } else {
             yield put(actions.fetchSavedSearchesError(response.message));
         }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchSavedSearchesError(err.message));
     }
 }
 
-
 function* createSavedSearch(action) {
     try {
-        let createResponse = yield call(() => api.createSavedSearch(action.searchHash, action.url)); 
-        if (createResponse.data.createSavedSearch.savedSearch){                     
-            let response = yield getSavedSearches(action);    
+        let createResponse = yield call(() =>
+            api.createSavedSearch(action.searchHash, action.url)
+        );
+        if (createResponse.data.createSavedSearch.savedSearch) {
+            let response = yield getSavedSearches(action);
             yield put(actions.createSavedSearchSuccess(response));
-        }
-        else {
+        } else {
             yield put(actions.createSavedSearchError(createResponse.message));
         }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.createSavedSearchError(err.message));
     }
-catch(err) {
-    console.log(err);
-    yield put(actions.createSavedSearchError(err.message));
-}    
-} 
+}
 
-function* deleteSavedSearch(action) { 
-   // console.log("SAGA Delete Saved Search", action)
-    const currentSavedSearches = yield select(getCurrentSavedSearches)
+function* deleteSavedSearch(action) {
+    // console.log("SAGA Delete Saved Search", action)
+    const currentSavedSearches = yield select(getCurrentSavedSearches);
     try {
         let response = yield call(() => api.deleteSavedSearch(action.id));
-        const { id } = response.data.deleteSavedSearch.savedSearch
-        if(id === action.id) {
-            let newSavedSearches = currentSavedSearches.filter(s => s.id !== id)
+        const { id } = response.data.deleteSavedSearch.savedSearch;
+        if (id === action.id) {
+            let newSavedSearches = currentSavedSearches.filter(
+                s => s.id !== id
+            );
             //console.log("🚀 ~  ~ newSavedSearches", newSavedSearches);
             yield put(actions.deleteSavedSearchSuccess(newSavedSearches));
-        }    
-        else {
+        } else {
             yield put(actions.deleteSavedSearchError(response.message));
-        }   
-    }    
-    catch(err) {
+        }
+    } catch (err) {
         console.log(err);
         yield put(actions.deleteSavedSearchError(err.message));
-    }    
-} 
+    }
+}
 
 // function* getFacetConfig() {
 //     try {
@@ -260,14 +301,14 @@ function* deleteSavedSearch(action) {
 function* getIslandConfig() {
     try {
         let response = yield call(() => api.fetchIslandConfig());
+        console.log('🚀 ~ function*getIslandConfig ~ response', response);
+
         if (response) {
             yield put(actions.fetchIslandConfigSuccess(response));
-        }
-        else {
+        } else {
             yield put(actions.fetchIslandConfigError(response.message));
         }
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.fetchIslandConfigError(err.message));
     }
@@ -276,16 +317,16 @@ function* getIslandConfig() {
 function* updateFacetConfig(action) {
     try {
         // console.log("SAGA Updating PAGE VIEW", action);
-        let updateResponse = yield call(() => api.updateFacetConfig(action.input));
+        let updateResponse = yield call(() =>
+            api.updateFacetConfig(action.input)
+        );
         if (updateResponse.data.updateFacetConfig.errors === null) {
             let response = yield getIslandConfig();
             yield put(actions.updateFacetConfigSuccess(response));
-        }
-        else {
+        } else {
             yield put(actions.updateFacetConfigError(updateResponse.message));
         }
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.updateFacetConfigError(err.message));
     }
@@ -294,20 +335,20 @@ function* updateFacetConfig(action) {
 function* getSearchExport(action) {
     //console.log("Search EXPORT", action)
     try {
-        let response = yield call(() => api.searchExport(action.searchExportId));
-       // console.log("🚀 ~ etSearchExport ~ response", response);
-        if(response.data.searchExport.downloadUrl === null){
+        let response = yield call(() =>
+            api.searchExport(action.searchExportId)
+        );
+        // console.log("🚀 ~ etSearchExport ~ response", response);
+        if (response.data.searchExport.downloadUrl === null) {
             yield getSearchExport(action);
             return;
         }
-        if(response) {
+        if (response) {
             yield put(actions.searchExportSuccess(response));
-        }
-        else {
+        } else {
             yield put(actions.searchExportError(response.message));
         }
-    }
-    catch(err) {
+    } catch (err) {
         console.log(err);
         yield put(actions.searchExportError(err.message));
     }
@@ -315,53 +356,65 @@ function* getSearchExport(action) {
 
 function* exportToCsv(action) {
     try {
-        let exportResponse = yield call(() => api.exportToCsv(action.searchHash, action.siteViewId)); 
+        let exportResponse = yield call(() =>
+            api.exportToCsv(action.searchHash, action.siteViewId)
+        );
         //console.log("EXPORT RES", exportResponse)
-        if (exportResponse.data.exportToCsv){                     
+        if (exportResponse.data.exportToCsv) {
             yield put(actions.exportToCsvSuccess(exportResponse));
-        }
-        else {
+        } else {
             yield put(actions.exportToCsvError(exportResponse.message));
         }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.exportToCsvError(err.message));
     }
-catch(err) {
-    console.log(err);
-    yield put(actions.exportToCsvError(err.message));
-}    
-} 
+}
 function* toggleAgg(action) {
     try {
-        const variables = {
-            ...action.searchParams,
-            // url: paramsUrl.sv,
-            configType: 'presearch',
-            returnAll: false,
-            agg: action.input.name,
-            pageSize: 100,
-            page: 25,
-            q: JSON.parse(action.searchParams.q),
-            bucketsWanted: []
-            // bucketsWanted: action.searchParams.visibleOptions.values
-        };
-        console.log("VARS", variables)
+        // const variables = {
+        //     ...action.searchParams,
+        //     // url: paramsUrl.sv,
+        //     configType: 'presearch',
+        //     returnAll: false,
+        //     agg: action.input.name,
+        //     pageSize: 100,
+        //     page: 25,
+        //     q: action.searchParams.q,
+        //     bucketsWanted: [],
+        //     // bucketsWanted: action.searchParams.visibleOptions.values
+        // };
+        // console.log('VARS', variables);
 
-        action.input.aggKind == 'crowdAggs' ? yield getSearchPageCrowdAggBuckets({ searchParams: variables }) : yield getSearchPageAggBuckets({ searchParams: variables });
-
-    }
-    catch (err) {
+        // action.input.aggKind == 'crowdAggs'
+        //     ? yield getSearchPageCrowdAggBuckets({ searchParams: variables })
+        //     : yield getSearchPageAggBuckets({ searchParams: variables });
+    } catch (err) {
         console.log(err);
     }
 }
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
-    yield takeLatest(types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND, getSearchPageAggBuckets);
-    yield takeLatest(types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND, getSearchPageCrowdAggBuckets);
-    yield takeLatest(types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND, getSearchPageOpenAggBuckets);
-    yield takeLatest(types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND, getSearchPageOpenCrowdAggBuckets);
+    yield takeLatest(
+        types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
+        getSearchPageAggBuckets
+    );
+    yield takeLatest(
+        types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND,
+        getSearchPageCrowdAggBuckets
+    );
+    yield takeLatest(
+        types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND,
+        getSearchPageOpenAggBuckets
+    );
+    yield takeLatest(
+        types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SEND,
+        getSearchPageOpenCrowdAggBuckets
+    );
     yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
-    yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams)
+    yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams);
     yield takeLatest(types.FETCH_SEARCH_AUTOSUGGEST_SEND, getSearchAutoSuggest);
     yield takeLatest(types.FETCH_SAVED_SEARCHES_SEND, getSavedSearches);
     yield takeLatest(types.CREATE_SAVED_SEARCH_SEND, createSavedSearch);

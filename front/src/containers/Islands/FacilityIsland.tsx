@@ -172,7 +172,6 @@ export default function FacilityIsland(props: Props) {
     //dispatch(fetchFacilitiesPage(props.nctId || ""));
   }, [dispatch, nctId]);
 
-
   //const facilityData = useSelector((state: RootState) => state.study.facilitiesPage);
 
   const facilityData = useSelector((state: RootState) => state.study.facilitiesPageHasura);
@@ -182,13 +181,8 @@ export default function FacilityIsland(props: Props) {
     return <BeatLoader />
   }
 
-
-
-  console.log("🚀 ~ FacilityIsland ~ facilityData", facilityData);
-
   const K_HOVER_DISTANCE = 30;
   const facilities = facilityData?.data?.ctgov_studies[0]?.facilities// facilityData?.data?.study?.facilities;
-
 
   if (facilities && facilities?.length > 0) {
     const items = pipe(addIndex(map)(processFacility), flatten)(facilities) as {
@@ -223,17 +217,18 @@ export default function FacilityIsland(props: Props) {
                 options={MAPOPTIONS}
                 key={nctId}>
                 {facilities.map((item, index) => {
-                  if ((item.location?.status ?? 'bad') === 'bad') {
+                  let location = item.location[0]
+                  if ((location?.status ?? 'bad') === 'bad') {
                     return null;
                   } else
                     return (
                       <MapMarker
                         onClick={onMarkerClick}
                         clicked={markerClicked}
-                        key={`${item.name}${item.location?.latitude}`}
-                        lat={item.location?.latitude}
-                        lng={item.location?.longitude}
-                        geoStatus={item.location?.status}
+                        key={`${item.name}${location?.latitude}`}
+                        lat={location?.latitude}
+                        lng={location?.longitude}
+                        geoStatus={location?.status}
                         contacts={item.contacts}
                         text={index + 1}
                         name={item.name}

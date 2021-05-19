@@ -7,7 +7,7 @@ import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { UserFragment } from 'services/user/model/UserFragment';
-import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
+// import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 
 const UserImage = styled.img`
@@ -157,9 +157,9 @@ interface UserProfileHeaderButtonProps {
   user: UserFragment | null;
   history: History;
 
-  data: AdminViewsProviderQuery | undefined;
+  // data: AdminViewsProviderQuery | undefined;
 }
-const UserProfileHeaderButton = ({ user, history, data} : UserProfileHeaderButtonProps ) => {
+const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps ) => {
 
   const dispatch = useDispatch();
   const [showDropdown,setShowDropdown] = useState(false);
@@ -200,17 +200,17 @@ const UserProfileHeaderButton = ({ user, history, data} : UserProfileHeaderButto
   };
 
   const renderAdminMenuItems = (site) => {
-    if(!site) return null;
-    const adminViews = site.siteViews.filter(
-      (siteview) => siteview.search.type === 'admin'
-    );
-    return adminViews.map((view) => {
-      return (
-        <ThemedDropDownItem onClick={() => handleAdminClick(view.url)}>
-          {view.name}
-        </ThemedDropDownItem>
-      );
-    });
+    // if(!site) return null;
+    // const adminViews = site.siteViews.filter(
+    //   (siteview) => siteview.search.type === 'admin'
+    // );
+    // return adminViews.map((view) => {
+    //   return (
+    //     <ThemedDropDownItem onClick={() => handleAdminClick(view.url)}>
+    //       {view.name}
+    //     </ThemedDropDownItem>
+    //   );
+    // });
   };
 
   const renderUserImage = (url) => {
@@ -304,7 +304,7 @@ const UserProfileHeaderButton = ({ user, history, data} : UserProfileHeaderButto
                 </ThemedDropDownItem>
                 </>
               )}
-            {renderAdminMenuItems(data?.site)}
+            {/* {renderAdminMenuItems(data?.site)} */}
             <ThemedDropDownItem onClick={() => {
               closeMenuDropdown();
               dispatch(logout());

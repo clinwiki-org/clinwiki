@@ -29,7 +29,7 @@ interface LocationAggState {
 function LocationAgg ( props: LocationAggProps) {
 
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const searchParams = data?.data?.searchParams;
+  const searchParams = data?.data?.searchParams.searchParams;
         const dispatch= useDispatch()
         const [zipcode, setZip] = useState("");
         const [lat, setLat] = useState(null);
@@ -68,7 +68,7 @@ useEffect(()=>{
       }
 
       searchParams['aggFilters'].push(locationFilter)
-      let newParams = {...searchParams, q: JSON.parse(searchParams.q), aggFilters: searchParams["aggFilters"]}
+      let newParams = {...searchParams, aggFilters: searchParams["aggFilters"]}
       dispatch(updateSearchParamsAction(newParams));
     }
     let index = findIndex((x)=>x.field=="location", searchParams["aggFilters"])
@@ -83,7 +83,7 @@ useEffect(()=>{
       lat:positionData[1],
       long:positionData[2],
     }
-    let newParams = {...searchParams, q: JSON.parse(searchParams.q), aggFilters: searchParams["aggFilters"]}
+    let newParams = {...searchParams, aggFilters: searchParams["aggFilters"]}
     dispatch(updateSearchParamsAction(newParams));
 
   }

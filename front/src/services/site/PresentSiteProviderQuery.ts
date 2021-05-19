@@ -1,4 +1,3 @@
-
 const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = `
     fragment SiteStudyExtendedGenericSectionFragment on SiteStudyExtendedGenericSection {
         template
@@ -9,7 +8,7 @@ const SITE_STUDY_EXTENDED_GENERIC_SECTION_FRAGMENT = `
     }
 `;
 
-const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT =  `
+const SITE_STUDY_BASIC_GENERIC_SECTION_FRAGMENT = `
     fragment SiteStudyBasicGenericSectionFragment on SiteStudyBasicGenericSection {
         hide
         title
@@ -332,4 +331,4 @@ export const PRESENT_SITE_QUERY = `
     ${PRESENT_SITE_FRAGMENT}
 `;
 
-export default PRESENT_SITE_QUERY
+export default PRESENT_SITE_QUERY;

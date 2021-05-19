@@ -56,11 +56,9 @@ function DownloadCSVIsland(props: Props) {
 
 
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
   const searchParams = data?.data?.searchParams;
   const match = useRouteMatch();
   const user = useSelector((state: RootState) => state.user.current);
-  const presentSiteView = site?.siteView;
   useEffect(() => {
     match.path == "/search2/" && dispatch(fetchSearchParams(hash));
   }, [dispatch]);
@@ -102,18 +100,13 @@ function DownloadCSVIsland(props: Props) {
     };
   };
 
-  const dataParams = searchParamsFromQuery(
-    searchParams,
-    presentSiteView
-  );
-  searchParamsCurrent.current= dataParams;
+  searchParamsCurrent.current= searchParams.searchParams;
   if(!data || !searchParams){
     return <BeatLoader/>
   }
   return (
     <>
           <ExportToCsvComponent
-            siteView={presentSiteView}
             searchHash={hash}
           />
     </>

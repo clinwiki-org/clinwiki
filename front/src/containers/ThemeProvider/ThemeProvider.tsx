@@ -2,7 +2,7 @@ import * as React from 'react';
 //import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPresentSiteProvider } from 'services/site/actions';
+import { fetchHasuraPresentSiteProvider, fetchPresentSiteProvider } from 'services/site/actions';
 import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
 
@@ -219,7 +219,7 @@ function themeFromSite(site): Theme {
     presearch: {
       presearchHeaders: colors.primaryColor,
       presearchLabelTextColor: colors.presearchLabelTextColor,
-      presearchLabelColor:  colors.presearchLabelColor,
+      presearchLabelColor: colors.presearchLabelColor,
       presearchCardMargin: colors.presearchCardMargin,
       presearchBorderColor: colors.presearchBorderColor,
     },
@@ -259,37 +259,55 @@ let staticTheme: Theme | null = null;
 export const ProvideTheme = ({ children }) => {
 
   const url =
-  window.location.search;
+    window.location.search;
   const urlName = new URLSearchParams(url)
-  .getAll('sv')
-  .toString();
+    .getAll('sv')
+    .toString();
   const urlFinal = urlName ? urlName : "default";
+
+
+  let subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : "default";
+  if (subdomain == "experimental" || subdomain == "staging") {
+    subdomain = "default"
+  }
 
   const dispatch = useDispatch();
   useEffect(() => {
-  dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
+    dispatch(fetchHasuraPresentSiteProvider(undefined, subdomain));
+    dispatch(fetchPresentSiteProvider(undefined, urlFinal));
   }, [])
 
   //const isLoading = useSelector((state : RootState) => state.site.isFetchingPresentSiteProvider)
-  const site = useSelector((state : RootState ) =>  {    
-    if(!state.site.presentSiteProvider){
+  /*  const site = useSelector((state: RootState) => {
+     if (!state.site.presentSiteProvider) {
+       return
+     }
+     return (
+       state?.site.presentSiteProvider.site
+     )
+   }
+   ) */
+
+  const site = useSelector((state: RootState) => {
+    if (!state.site.hasuraPresentSiteProvider) {
       return
     }
     return (
-      state?.site.presentSiteProvider.site
+      state?.site.hasuraPresentSiteProvider.sites[0]
     )
   }
-    )
+  )
 
-  if (!site){
-    return <BeatLoader/>
+  if (!site) {
+    return <BeatLoader />
   }
-    return (
-      <ThemeContext.Provider
-        value={staticTheme || (staticTheme = themeFromSite(site))}>
-        {children}
-      </ThemeContext.Provider>
-    );
+
+  return (
+    <ThemeContext.Provider
+      value={staticTheme || (staticTheme = themeFromSite(site))}>
+      {children}
+    </ThemeContext.Provider>
+  );
 };
 
 export function withTheme<T>(

@@ -371,7 +371,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
     if(this.props.field.display == "LOCATION"){
       
-      let searchParams= this.props.searchResultData?.data?.searchParams
+      let searchParams= this.props.searchResultData?.data?.searchParams.searchParams
       const aggSettings = find(
         (x) => x.field == "location",
         searchParams["aggFilters"]
@@ -397,7 +397,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       this.setState({ selectedItems: [{start: this.props.updater.input?.gte, end : this.props.updater.input?.lte}] })
     }
     if(this.props.field.display == "LOCATION"  && prevState.selectedItems == this.state.selectedItems){ 
-      let searchParams= this.props.searchResultData?.data?.searchParams
+      let searchParams= this.props.searchResultData?.data?.searchParams.searchParams
       const aggSettings = find(
         (x) => x.field == "location",
         searchParams["aggFilters"]

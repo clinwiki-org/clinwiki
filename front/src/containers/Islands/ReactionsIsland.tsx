@@ -15,7 +15,7 @@ export default function ReactionsIsland(props: Props) {
   const { nctId } = props;
   const theme = useTheme();
   const dispatch = useDispatch();
-  const site = useSelector((state: RootState) => state.site.presentSiteProvider.site)
+  const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0])
   const user = useSelector((state: RootState) => state.user.current);
   const reactionsIslandData = useSelector((state: RootState) => state.study.reactionsIsland);
   const reactionKindsData = useSelector((state: RootState) => state.study.reactionKinds);
@@ -36,7 +36,7 @@ export default function ReactionsIsland(props: Props) {
   if (site && reactionKindsData && reactionsIslandData && theme) {
     return (
       <ReactionsBar
-        reactionsConfig={site.reactionsConfig}
+        reactionsConfig={site.reactions_config}
         nctId={nctId}
         theme={theme}
         studyData={reactionsIslandData.data.study}
