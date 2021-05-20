@@ -25,7 +25,7 @@ type AggFilter {
   """
   Whether to include missing fields
   """
-  include_missing_fields: Boolean
+  includeMissingFields: Boolean
 
   """
   Location lat
@@ -75,7 +75,7 @@ input AggFilterInput {
   """
   Whether to include missing fields in the query
   """
-  include_missing_fields: Boolean
+  includeMissingFields: Boolean
 
   """
   Location lattituted
