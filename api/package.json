@@ -15,6 +15,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/cli": "^7.10.3",
+    "@babel/core": "^7.10.3",
+    "@babel/node": "^7.13.0",
+    "@babel/preset-env": "^7.10.3",
     "@elastic/elasticsearch": "^7.12.0",
     "@googlemaps/google-maps-services-js": "^3.1.16",
     "bcrypt": "^5.0.0",
@@ -49,11 +53,6 @@
     "zip2geo": "^1.0.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.3",
-    "@babel/core": "^7.10.3",
-    "@babel/node": "^7.13.0",
-    "@babel/preset-env": "^7.10.3",
-    "@babel/preset-react": "^7.10.3",
     "babel-eslint": "^10.1.0",
     "eslint": "^5.16.0",
     "nodemon": "^2.0.4"
