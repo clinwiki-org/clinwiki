@@ -76,20 +76,27 @@ export const fetchSearchAutoSuggest = (searchParams: any) => {
 };
 
 export const fetchSavedSearches = (userId: any) => {
-    return callGraphql(ENDPOINT, query.SAVED_SEARCHES_QUERY, {
+    return callHasuraClinwiki(HASURA_CW, query.HASURA_SAVED_SEARCHES_QUERY, {
         userId: userId,
     });
 };
 
-export const createSavedSearch = (searchHash: string, url: string) => {
-    return callGraphql(ENDPOINT, mutate.CREATE_SAVED_SEARCH_MUTATION, {
+export const createSavedSearch = (
+    searchHash: string,
+    url: string,
+    userId: number,
+    nameLabel: string
+) => {
+    return callHasuraClinwiki(HASURA_CW, mutate.HASURA_CREATE_SAVED_SEARCH, {
         searchHash: searchHash,
         url: url,
+        userId: userId,
+        nameLabel: nameLabel,
     });
 };
 
 export const deleteSavedSearch = id => {
-    return callGraphql(ENDPOINT, mutate.DELETE_SAVED_SEARCH_MUTATION, {
+    return callHasuraClinwiki(HASURA_CW, mutate.HASURA_DELETE_SAVED_SEARCH, {
         id: id,
     });
 };

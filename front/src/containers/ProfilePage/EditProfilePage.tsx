@@ -159,14 +159,14 @@ const EditProfilePage = (props: EditProfilePageProps) => {
       case 'contributions':
         return (
           <div>
-            <h2>Contributed Studies:</h2>
-            <SearchPage
+            {/* <h2>Contributed Studies:</h2> */}
+            {/* <SearchPage
               history={props.history}
               location={props.location}
               match={props.match}
               email={email}
               getTotalContributions={handleTotalContributions}
-            />
+            /> */}
           </div>
         );
       case 'reviews':
@@ -239,7 +239,8 @@ const EditProfilePage = (props: EditProfilePageProps) => {
         />
       </ThemedSearchContainer>
 
-      <h2>My Contributions</h2>
+        {/* need to read add all of these */}
+      {/* <h2>My Contributions</h2>
       <ThemedSearchContainer>
         <ProfileScoreBoard
           totalPoints={0}
@@ -252,7 +253,7 @@ const EditProfilePage = (props: EditProfilePageProps) => {
           reactions={totalcount}
           reactedStudies={user.reactions}
         />
-      </ThemedSearchContainer>
+      </ThemedSearchContainer> */}
       {user ? (
         renderResults(user.email)
       ) : (

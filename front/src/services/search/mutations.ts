@@ -1,4 +1,4 @@
-export const SEARCH_PAGE_HASH_MUTATION =`
+export const SEARCH_PAGE_HASH_MUTATION = `
   mutation SearchPageHashMutation(
     $q: SearchQueryInput!
     $sorts: [SortInput!]
@@ -26,6 +26,18 @@ export const SEARCH_PAGE_HASH_MUTATION =`
   }
 `;
 
+export const HASURA_CREATE_SAVED_SEARCH = `
+  mutation HasuraCreateSavedSearch( $searchHash: String,  $url: String!, $userId: bigint!, $nameLabel: String!) {
+  insert_saved_searches_one(object: {user_id: $userId, url: $url, name_label: $nameLabel, search_hash: $searchHash}) {
+    user_id
+    search_hash
+    url
+    name_label
+    is_subscribed
+  }
+}
+`;
+
 export const CREATE_SAVED_SEARCH_MUTATION = `
   mutation CreateSavedSearchMutation($searchHash: String!, $url: String!){
   createSavedSearch(input: {
@@ -44,6 +56,18 @@ export const CREATE_SAVED_SEARCH_MUTATION = `
     }
     }
   }
+`;
+
+export const HASURA_DELETE_SAVED_SEARCH = `
+mutation HasuraDeleteSavedSearch($id: bigint!) {
+  delete_saved_searches_by_pk(id: $id) {
+    id
+    name_label
+    search_hash
+    url
+    user_id
+  }
+}
 `;
 
 export const DELETE_SAVED_SEARCH_MUTATION = `
@@ -65,7 +89,7 @@ export const DELETE_SAVED_SEARCH_MUTATION = `
       }
   }
 `;
-const FACET_CONFIG_FRAGMENT =`
+const FACET_CONFIG_FRAGMENT = `
   fragment FacetConfigFragment on FacetConfig {
     mainConfig
   }
@@ -78,7 +102,6 @@ export const UPDATE_FACET_CONFIG = `
     }
   }
 `;
-
 
 export const EXPORT_TO_CSV_MUTATION = `
   mutation ExportToCsvMutation($searchHash: String!, $siteViewId: Int!) {

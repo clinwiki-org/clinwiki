@@ -42,7 +42,6 @@ export const SEARCH_PAGE_AGGS_QUERY = `
   }
 `;
 
-
 // export const SEARCH_PAGE_PARAMS_QUERY = `
 //   query SearchPageParamsQuery($hash: String) {
 //     searchParams(hash: $hash) {
@@ -393,6 +392,25 @@ query UserSavedSearchesQuery($userId: Int!){
         }  
     }
 } 
+`;
+
+export const HASURA_SAVED_SEARCHES_QUERY = `
+query HasuraSavedSearchesQuery($userId: bigint!) {
+  saved_searches(where: {user_id: {_eq: $userId}}) {
+    id
+    search_hash
+    name_label
+    url
+    is_subscribed
+    short_link_id
+    created_at
+    updated_at
+    short_link {
+      long
+      short
+    }
+  }
+}
 `;
 
 export const ISLAND_CONFIG_QUERY = `

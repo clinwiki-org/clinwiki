@@ -27,7 +27,7 @@ const initialState: types.SearchState = {
     isFetchingSearchExport: false,
     searchExport: undefined,
     isExportingToCsv: false,
-    expanders:undefined
+    expanders: undefined,
 };
 
 const searchReducer = (
@@ -135,7 +135,8 @@ const searchReducer = (
             // console.log("Payload",action.payload)
             let crowdAggObject = {};
             action.payload.data.openCrowdAggBuckets.aggs.map((agg, index) => {
-                crowdAggObject[action.payload.crowdAggIdArray[index].id] = agg.buckets;
+                crowdAggObject[action.payload.crowdAggIdArray[index].id] =
+                    agg.buckets;
             });
             return {
                 ...state,
@@ -266,7 +267,7 @@ const searchReducer = (
                     ...state.savedSearches,
                     data: {
                         ...state.savedSearches.data,
-                        savedSearch: action.payload,
+                        saved_searches: action.payload,
                     },
                 },
             };
@@ -334,6 +335,7 @@ const searchReducer = (
                 isDeletingSavedSearch: true,
             };
         case types.DELETE_SAVED_SEARCH_SUCCESS:
+            console.log('REDUCER after delete search', action.payload);
             return {
                 ...state,
                 isDeletingSavedSearch: false,
@@ -341,7 +343,7 @@ const searchReducer = (
                     ...state.savedSearches,
                     data: {
                         ...state.savedSearches.data,
-                        savedSearch: action.payload,
+                        saved_searches: action.payload,
                     },
                 },
             };
@@ -397,21 +399,27 @@ const searchReducer = (
                 islandConfig: newIslandConfig,
             };
         case types.TOGGLE_EXPANDER:
-            let newExpanderObj = state.expanders || {}
-                    if(!state.expanders){
-                        newExpanderObj[action.id] = {id: action.id, collapsed: action.collapsed}
-                        return{
-                            ...state,
-                            expanders: newExpanderObj
-                        }
-                    }
-                    if(state.expanders[action.id]){
-                        newExpanderObj[action.id] = {id:action.id, collapsed: action.collapsed};
-                        return{
-                            ...state,
-                            expanders: newExpanderObj
-                        }
-                    }
+            let newExpanderObj = state.expanders || {};
+            if (!state.expanders) {
+                newExpanderObj[action.id] = {
+                    id: action.id,
+                    collapsed: action.collapsed,
+                };
+                return {
+                    ...state,
+                    expanders: newExpanderObj,
+                };
+            }
+            if (state.expanders[action.id]) {
+                newExpanderObj[action.id] = {
+                    id: action.id,
+                    collapsed: action.collapsed,
+                };
+                return {
+                    ...state,
+                    expanders: newExpanderObj,
+                };
+            }
         default:
             return { ...state };
     }
