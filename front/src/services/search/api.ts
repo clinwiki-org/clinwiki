@@ -81,10 +81,17 @@ export const fetchSavedSearches = (userId: any) => {
     });
 };
 
-export const createSavedSearch = (searchHash: string, url: string) => {
-    return callGraphql(ENDPOINT, mutate.CREATE_SAVED_SEARCH_MUTATION, {
+export const createSavedSearch = (
+    searchHash: string,
+    url: string,
+    userId: number,
+    nameLabel: string
+) => {
+    return callHasuraClinwiki(HASURA_CW, mutate.HASURA_CREATE_SAVED_SEARCH, {
         searchHash: searchHash,
         url: url,
+        userId: userId,
+        nameLabel: nameLabel,
     });
 };
 

@@ -71,7 +71,10 @@ function* getSearchPageOpenCrowdAggBuckets(action) {
         );
         if (response) {
             yield put(
-                actions.fetchSearchPageOpenCrowdAggBucketsSuccess({...response, crowdAggIdArray : action.crowdAggIdArray })
+                actions.fetchSearchPageOpenCrowdAggBucketsSuccess({
+                    ...response,
+                    crowdAggIdArray: action.crowdAggIdArray,
+                })
             );
         } else {
             yield put(
@@ -91,7 +94,12 @@ function* getSearchPageOpenAggBuckets(action) {
             api.fetchSearchPageOpenAggBuckets(action.searchParams)
         );
         if (response) {
-            yield put(actions.fetchSearchPageOpenAggBucketsSuccess({...response, aggIdArray : action.aggIdArray}));
+            yield put(
+                actions.fetchSearchPageOpenAggBucketsSuccess({
+                    ...response,
+                    aggIdArray: action.aggIdArray,
+                })
+            );
         } else {
             yield put(
                 actions.fetchSearchPageOpenAggBucketsError(response.message)
@@ -107,18 +115,19 @@ function* getSearchParams(action) {
     try {
         let response = yield call(() => api.fetchSearchParams(action.hash));
         if (response) {
-            let parsedParams = JSON.parse(response.data.searchParams.searchParams)
-            let camelCasedParams={};
+            let parsedParams = JSON.parse(
+                response.data.searchParams.searchParams
+            );
+            let camelCasedParams = {};
             for (const [key, value] of Object.entries(parsedParams)) {
                 // console.log(`${key}: ${value}`);
-                camelCasedParams[camelCase(key)]= value;
+                camelCasedParams[camelCase(key)] = value;
+            }
 
-              }
-
-            console.log("PARSED",parsedParams)
-            console.log("Cammeled",camelCasedParams)
+            console.log('PARSED', parsedParams);
+            console.log('Cammeled', camelCasedParams);
             response.data.searchParams.searchParams = camelCasedParams;
-            console.log("Response", response)
+            console.log('Response', response);
             yield put(actions.fetchSearchParamsSuccess(response));
             yield put(actions.updateSearchParamsSuccess(action.hash));
             //need this to run to populate our recordsTotal for time being was quick and easy way but probs not ideal
@@ -248,9 +257,18 @@ function* getSavedSearches(action) {
 function* createSavedSearch(action) {
     try {
         let createResponse = yield call(() =>
-            api.createSavedSearch(action.searchHash, action.url)
+            api.createSavedSearch(
+                action.searchHash,
+                action.url,
+                action.userId,
+                action.nameLabel
+            )
         );
-        if (createResponse.data.createSavedSearch.savedSearch) {
+        /*         console.log(
+            '🚀 ~ function*createSavedSearch ~ createResponse',
+            createResponse.data.insert_saved_searches_one
+        ); */
+        if (createResponse.data.insert_saved_searches_one) {
             let response = yield getSavedSearches(action);
             yield put(actions.createSavedSearchSuccess(response));
         } else {
@@ -385,7 +403,6 @@ function* toggleAgg(action) {
         //     // bucketsWanted: action.searchParams.visibleOptions.values
         // };
         // console.log('VARS', variables);
-
         // action.input.aggKind == 'crowdAggs'
         //     ? yield getSearchPageCrowdAggBuckets({ searchParams: variables })
         //     : yield getSearchPageAggBuckets({ searchParams: variables });
