@@ -6,7 +6,7 @@ import * as api from './api';
 import { camelCase, sentanceCase } from 'utils/helpers';
 
 const getCurrentSavedSearches = state =>
-    state.search.savedSearches.data.savedSearch;
+    state.search.savedSearches.data.saved_searches;
 
 function* getSearchPageAggs(action) {
     try {
@@ -285,12 +285,12 @@ function* deleteSavedSearch(action) {
     const currentSavedSearches = yield select(getCurrentSavedSearches);
     try {
         let response = yield call(() => api.deleteSavedSearch(action.id));
-        const { id } = response.data.deleteSavedSearch.savedSearch;
+        const { id } = response.data.delete_saved_searches_by_pk;
         if (id === action.id) {
             let newSavedSearches = currentSavedSearches.filter(
                 s => s.id !== id
             );
-            //console.log("🚀 ~  ~ newSavedSearches", newSavedSearches);
+            //console.log('🚀 ~  ~ newSavedSearches', newSavedSearches);
             yield put(actions.deleteSavedSearchSuccess(newSavedSearches));
         } else {
             yield put(actions.deleteSavedSearchError(response.message));

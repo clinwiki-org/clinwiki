@@ -58,6 +58,18 @@ export const CREATE_SAVED_SEARCH_MUTATION = `
   }
 `;
 
+export const HASURA_DELETE_SAVED_SEARCH = `
+mutation HasuraDeleteSavedSearch($id: bigint!) {
+  delete_saved_searches_by_pk(id: $id) {
+    id
+    name_label
+    search_hash
+    url
+    user_id
+  }
+}
+`;
+
 export const DELETE_SAVED_SEARCH_MUTATION = `
   mutation DeleteSavedSearchMutation($id: Int!){
   deleteSavedSearch(input: {

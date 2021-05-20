@@ -397,6 +397,7 @@ query UserSavedSearchesQuery($userId: Int!){
 export const HASURA_SAVED_SEARCHES_QUERY = `
 query HasuraSavedSearchesQuery($userId: bigint!) {
   saved_searches(where: {user_id: {_eq: $userId}}) {
+    id
     search_hash
     name_label
     url

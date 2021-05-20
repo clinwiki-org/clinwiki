@@ -76,7 +76,7 @@ export const fetchSearchAutoSuggest = (searchParams: any) => {
 };
 
 export const fetchSavedSearches = (userId: any) => {
-    return callGraphql(ENDPOINT, query.SAVED_SEARCHES_QUERY, {
+    return callHasuraClinwiki(HASURA_CW, query.HASURA_SAVED_SEARCHES_QUERY, {
         userId: userId,
     });
 };
@@ -96,7 +96,7 @@ export const createSavedSearch = (
 };
 
 export const deleteSavedSearch = id => {
-    return callGraphql(ENDPOINT, mutate.DELETE_SAVED_SEARCH_MUTATION, {
+    return callHasuraClinwiki(HASURA_CW, mutate.HASURA_DELETE_SAVED_SEARCH, {
         id: id,
     });
 };
