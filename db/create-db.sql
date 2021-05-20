@@ -1,0 +1,2 @@
+CREATE DATABASE clinwiki;
+GRANT ALL PRIVILEGES ON DATABASE clinwiki TO clinwiki;
