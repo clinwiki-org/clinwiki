@@ -75,7 +75,7 @@ export async function searchParams(args) {
 
         return {
             //reParsing to string as app is expecting that. May want to rework to just return JSON
-            searchParams: JSON.stringify(parsedParams);
+            searchParams: JSON.stringify(parsedParams)
         }
     }   
     catch(err) {
