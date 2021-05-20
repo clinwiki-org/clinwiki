@@ -97,13 +97,11 @@ export const fetchPresentSiteProviderError = (
 });
 
 export const fetchHasuraPresentSiteProvider = (
-    id?: number,
     url?: string
 ): types.SiteActionTypes =>
     //console.log("ACTION Present Site Provider", url),
     ({
         type: types.FETCH_HASURA_PRESENT_SITE_PROVIDER_SEND,
-        id,
         url,
     });
 

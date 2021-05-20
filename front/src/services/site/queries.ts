@@ -73,8 +73,8 @@ export const PRESENT_SITE_PROVIDER_QUERY = `
 `;
 
 export const HASURA_PRESENT_SITE_PROVIDER_QUERY = `
-query HasuraPresentSiteProviderQuery($id: bigint, $url: String) {
-    sites( where: {_or: [{id: {_eq: $id}},{subdomain: {_eq: $url}}]}) {
+query HasuraPresentSiteProviderQuery($url: String) {
+    sites( where: {subdomain: {_eq: $url}}) {
         id
         name
         skip_landing
