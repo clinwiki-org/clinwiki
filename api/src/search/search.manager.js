@@ -39,12 +39,43 @@ export async function searchParams(args) {
         if(results.rows.length===1){
             const link = results.rows[0];
             params = link.long
-            // console.log("--------PARAMS-----", params)
-
         }
-        // console.log("___________>>>>SERACH PARAMS<<<<<__________", params)
+
+        let parsedParams = JSON.parse(params);
+        let aggFilter =[];
+        parsedParams['agg_filters'].map((agg,index)=>{
+            let tempAgg = {};
+            for (const [key, value] of Object.entries(agg)) {
+                if(key=='include_missing_fields'){
+                    tempAgg['includeMissingFields'] = value;
+                }else{
+                    tempAgg[key]=value;
+                }
+            }
+            aggFilter.push(tempAgg)
+        });
+        parsedParams['agg_filters']=aggFilter;
+
+        let crowdAggFilter=[];
+        parsedParams['crowd_agg_filters'].map((agg,index)=>{
+            let tempAgg = {};
+
+            for (const [key, value] of Object.entries(agg)) {
+                if(key=='include_missing_fields'){
+                    tempAgg['includeMissingFields'] = value;
+                }else{
+                    tempAgg[key]=value;
+                }
+            }
+            crowdAggFilter.push(tempAgg);
+        });
+        
+        parsedParams['crowd_agg_filters']=crowdAggFilter;
+
+
         return {
-            searchParams: params
+            //reParsing to string as app is expecting that. May want to rework to just return JSON
+            searchParams: JSON.stringify(parsedParams);
         }
     }   
     catch(err) {
