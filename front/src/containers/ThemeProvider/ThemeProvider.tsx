@@ -273,7 +273,7 @@ export const ProvideTheme = ({ children }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchHasuraPresentSiteProvider(undefined, subdomain));
+    dispatch(fetchHasuraPresentSiteProvider(subdomain));
     dispatch(fetchPresentSiteProvider(undefined, urlFinal));
   }, [])
 

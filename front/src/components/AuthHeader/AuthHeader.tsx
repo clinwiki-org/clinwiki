@@ -72,7 +72,7 @@ const AuthHeader = (props) => {
   }
 
   useEffect(() => {
-    dispatch(fetchHasuraPresentSiteProvider(undefined, subdomain));
+    // dispatch(fetchHasuraPresentSiteProvider(undefined, subdomain));
     //dispatch(fetchPresentSiteProvider(undefined, ));
   }, [dispatch,])
 

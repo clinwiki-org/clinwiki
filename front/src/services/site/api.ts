@@ -40,7 +40,6 @@ export const fetchHasuraPresentSiteProvider = (id?, url?) => {
         HASURA_CW,
         query.HASURA_PRESENT_SITE_PROVIDER_QUERY,
         {
-            id: id,
             url: url,
         }
     );
