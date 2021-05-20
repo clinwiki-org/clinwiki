@@ -8,6 +8,7 @@
     "build": "babel ./src -d dist --ignore spec.js,node_modules",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
+    "server": "babel-node --preset=@babel/preset-env ./dist/server.js ",
     "pipeline-start": "nodemon ./src/pipeline/worker.js --exec babel-node --inspect"
   },
   "keywords": [],
