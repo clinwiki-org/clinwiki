@@ -76,7 +76,7 @@ export const bulkUpsert = async (list) => {
         
     }
     catch(err) {
-        logger.error('Error elastic.query: '+err);
+        logger.info('Error elastic.query: '+err);
         if(err.statusCode === 400) {
             console.log(err.body.error)
         }
@@ -106,11 +106,54 @@ export const bulkUpdate = async (list) => {
         return await superagent.post(elasticUrl)
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
-            .send(body).then(response => response.body);
+            .send(body).then(response =>response.body);
+    }
+    catch(err) {
+        logger.info('Error elastic.query: '+err);
+        if(err.statusCode === 400) {
+            console.log(err.body.error)
+        }
+    }
+};
+
+
+
+export const bulkUpdateCrowdKeys = async (list, id) => {
+    console.log(">>>>>>>>>>>>LISTING ", list)
+    try {
+        let body = '';
+        list.forEach( doc => {
+            console.log("DOCCC", doc)
+            body = body.concat(JSON.stringify(
+                { update: { 
+                    _index: config.elasticIndex, 
+                    _type: '_doc',
+                    _id: id
+                }}
+            ));
+            body = body.concat("\n");
+            body = body.concat(JSON.stringify({ doc, doc_as_upsert: false}))
+            body = body.concat("\n");
+        });
+        
+        logger.info("Body <<<<<<", body)
+
+        const url = Url(config.searchboxUrl);
+        let encode = Buffer.from(url.username+':'+url.password)
+            .toString('base64');
+        const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
+        return await superagent.post(elasticUrl)
+            .set('Authorization','Basic '+ encode)
+            .set('Content-Type', 'application/json')
+            .send(body).then(response =>{
+                console.log("DUN DUN DUN DUN");
+                console.log(">>>>>>", response);
+                
+                return response.body});
         
     }
     catch(err) {
-        logger.error('Error elastic.query: '+err);
+        logger.info('Error elastic.query: '+err);
         if(err.statusCode === 400) {
             console.log(err.body.error)
         }
