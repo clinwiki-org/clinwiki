@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./server.js --exec babel-node",
-    "build": "babel . -d dist --ignore 'node_modules'",
-    "serve": "node dist/server.js",
-    "start_babel": "babel-node --preset @babel/preset-env ./server.js ",
+    "start": "nodemon ./src/server.js --exec babel-node",
+    "build": "babel ./src -d dist --ignore spec.js,node_modules",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "pipeline-start": "nodemon ./src/pipeline/worker.js --exec babel-node --inspect"

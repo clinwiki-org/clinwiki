@@ -3,19 +3,19 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import path from 'path';
 import morgan from 'morgan';
-import logger from './src/util/logger';
+import logger from './util/logger';
 import fileUpload from 'express-fileupload';
 import {graphqlHTTP} from 'express-graphql';
 import {buildSchema} from 'graphql';
-import rootResolver from './src/resolvers';
+import rootResolver from './resolvers';
 import fs from 'fs';
 import dotenv from 'dotenv';
-import {loadConfig} from './config';
-import getAuthenticatedUser from './src/users/user.context';
+import {loadConfig} from '../config';
+import getAuthenticatedUser from './users/user.context';
 
-import config from './config';
+import config from '../config';
 
-const envPath = path.resolve(process.cwd()+'/../', '.env');
+const envPath = path.resolve(process.cwd()+'/../../', '.env');
 logger.info('Loading .env from '+envPath);
 dotenv.config({
   path: envPath
