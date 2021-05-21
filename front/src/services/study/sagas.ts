@@ -97,7 +97,7 @@ function* deletePageViewHasura(action) {
     try {
         //console.log("SAGA DELETE PAGE VIEW", action);
         let response = yield call(() => api.deletePageViewHasura(action.id));
-        const { id } = response.data.deletePageViewHasura.pageViewHasura; //TODO Check response paths
+        const { id } = response.data.deletePageViewHasura.pageViewHasura;
         if (id === action.id) {
             let newPageViews = currentPageViewsHasura.filter(
                 pv => pv.id !== id
@@ -410,7 +410,7 @@ function* getHasuraWikiPage(action) {
     try {
         //console.log('SAGA Get HASURA WIKIpage', action);
         let response = yield call(() => api.fetchHasuraWikiPage(action.nctId));
-        console.log('HASURA WIKI res', response);
+        //console.log('HASURA WIKI res', response);
         if (response) {
             yield put(actions.fetchHasuraWikiPageSuccess(response));
         } else {
