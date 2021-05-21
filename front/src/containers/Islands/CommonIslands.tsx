@@ -37,31 +37,31 @@ export const commonIslands = {
 export const studyIslands: Record<string, IslandConstructor> = {
   ...commonIslands,
   workflow: (attributes: Record<string, string>, context?: any) => (
-    <WorkflowIsland name={attributes['name']} onChange={attributes['onChange']} nctId={context?.nctId} />
+    <WorkflowIsland name={attributes['name']} onChange={attributes['onChange']} nctId={context?.nct_id} />
   ),
   facility: (attributes: Record<string, string>, context?: any) => (
-    <FacilityIsland nctId={context?.nctId} />
+    <FacilityIsland nctId={context?.nct_id} />
   ),
   wikipage: (attributes: Record<string, string>, context?: any) => (
-    <WikiPageIsland nctId={context?.nctId} />
+    <WikiPageIsland nctId={context?.nct_id} />
   ),
   navigation: (attributes: Record<string, string>, context?: any) => (
-    <NavigationIsland nctId={context?.nctId} />
+    <NavigationIsland nctId={context?.nct_id} />
   ),
   editshistory: (attributes: Record<string, string>, context?: any) => (
-    <EditsHistoryIsland nctId={context?.nctId} />
+    <EditsHistoryIsland nctId={context?.nct_id} />
   ),
   back: (attributes: Record<string, string>, context?: any) => (
-    <BackIsland nctId={context?.nctId} />
+    <BackIsland nctId={context?.nct_id} />
   ),
   reactions: (attributes: Record<string, string>, context?: any) => (
-    <ReactionsIsland nctId={context?.nctId} />
+    <ReactionsIsland nctId={context?.nct_id} />
   ),
   reviews: (attributes: Record<string, string>, context?: any) => (
-    <ReviewsIsland nctId={context?.nctId} />
+    <ReviewsIsland nctId={context?.nct_id} />
   ),
   wfagg: (attributes: Record<string, string>, context?: any) => (
-    <IslandAggWrapper2 nctId={context?.nctId} aggId={attributes['id']} />
+    <IslandAggWrapper2 nctId={context?.nct_id} aggId={attributes['id']} />
   ),
 };
 export const searchIslands: Record<string, IslandConstructor> = {
@@ -82,7 +82,7 @@ export const searchIslands: Record<string, IslandConstructor> = {
     <DownloadCSVIsland />
   ),
   resultsort: (attributes: Record<string, string>, context?: any) => (
-    <ResultSort sortables={attributes['sortBy']}/>
+    <ResultSort sortables={attributes['sortBy']} />
   ),
   resultloader: (attributes: Record<string, string>, context?: any) => (
     <ResultLoader />

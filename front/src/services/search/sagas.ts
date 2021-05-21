@@ -319,8 +319,6 @@ function* deleteSavedSearch(action) {
 function* getIslandConfig() {
     try {
         let response = yield call(() => api.fetchIslandConfig());
-        console.log('🚀 ~ function*getIslandConfig ~ response', response);
-
         if (response) {
             yield put(actions.fetchIslandConfigSuccess(response));
         } else {

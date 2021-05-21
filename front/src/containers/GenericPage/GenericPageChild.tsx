@@ -4,15 +4,16 @@ import MailMergeView, {
 } from 'components/MailMerge/MailMergeView';
 import { useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { getStudyQuery, getSearchQuery } from 'components/MailMerge/MailMergeUtils';
+import { getStudyQuery, getSearchQuery, getHasuraStudyQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
-import { fetchStudyPage, fetchSearchPageMM } from 'services/study/actions';
+import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura } from 'services/study/actions';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
+import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
 
 
 interface Props {
@@ -35,7 +36,7 @@ export default function GenericPageWrapper(props: Props) {
     const match = useRouteMatch();
     const dispatch = useDispatch();
     const params = useUrlParams();
-    const studyData = useSelector((state: RootState) => state.study.studyPage);
+    const studyData = useSelector((state: RootState) => state.study.studyPageHasura);
     const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
     const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
     const data = useSelector((state: RootState) => state.search.searchResults);
@@ -45,13 +46,16 @@ export default function GenericPageWrapper(props: Props) {
     //Ideally should be set from PageView but was having issues , response was not saving
     const pageType = match.path == "/search/" ? "Search" : "Study"
     const schemaType = getClassForMode(pageType);
-    const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
+    //const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
+    const [fragmentName, fragment] = useHasuraFragment('ctgov_studies', currentPage?.template || '');
 
     useEffect(() => {
-        let searchParams = pageType == "Search" ? { ...data.data.searchParams.searchParams } : null;
-        const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
+        let searchParams = pageType == "Search" ? { ...data.data.searchParams, q: JSON.parse(data.data.searchParams.q) } : null;
+        //let searchParams = pageType == "Search" ? { ...data.data.searchParams.searchParams } : null;
+        const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(fragmentName, fragment)}`
+        // const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-        dispatch(pageType == "Study" ? fetchStudyPage(props.arg ?? "", STUDY_QUERY) : fetchSearchPageMM(searchParams, SEARCH_QUERY));
+        dispatch(pageType == "Study" ? fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY) : fetchSearchPageMM(searchParams, SEARCH_QUERY));
     }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data]);
 
 
@@ -65,7 +69,8 @@ export default function GenericPageWrapper(props: Props) {
             recordsTotal: studyData?.data?.search?.recordsTotal
         }
     }
-    const title = microMailMerge(currentPage?.title, studyData?.data?.study || searchData()) || "Add a Title";
+    //console.log("STUDY DATA", studyData)
+    const title = microMailMerge(currentPage?.title, studyData?.data?.ctgov_studies[0] || searchData()) || "Add a Title";
 
     const islands = pageType == 'Study' ? studyIslands : searchIslands;
     if (pageType == 'Study' && !studyData) {
@@ -78,7 +83,7 @@ export default function GenericPageWrapper(props: Props) {
             </Helmet>
             { currentPage && <MailMergeView
                 template={currentPage?.template || ''}
-                context={studyData?.data?.study || searchData()}
+                context={studyData?.data.ctgov_studies[0] || searchData()}
                 islands={islands}
                 pageType={pageType}
             />}
