@@ -354,7 +354,7 @@ function IslandAggChild(props: Props) {
 
   const handleLoadMoreResponse = () => {
     let aggName = currentAgg!.name
-    let responseBuckets = currentAgg.aggKind === "crowdAggs" ? crowdAggBuckets?.aggs[aggId!] : aggBuckets?.aggs[aggId!];
+    let responseBuckets = currentAgg.aggKind === "crowdAggs" ? aggId && crowdAggBuckets?.aggs[aggId] : aggBuckets?.aggs[aggId!];
     let currentBuckets = buckets[0] === undefined ? [] : buckets
     const allBuckets = currentBuckets.concat(responseBuckets);
     let newBuckets = pipe(
@@ -412,7 +412,7 @@ function IslandAggChild(props: Props) {
 
   useEffect(() => {
     handleLoadMoreResponse()
-  }, [aggBuckets, crowdAggBuckets, currentAgg]);
+  }, [aggBuckets, crowdAggBuckets, currentAgg, aggId]);
   useEffect(() => {
     if (currentAgg.defaultToOpen) {
 

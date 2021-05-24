@@ -394,6 +394,7 @@ function injectCrowdAggBuckets(criteria,json,usePrefix) {
 }
 function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     let aggs = {};
+    const aggListSize = 25;
     const aggKeys = criteria.agg;
     let innerAggs = {};
     
@@ -425,8 +426,8 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from:criteria.page * criteria.pageSize - 25,
-                            size:criteria.pageSize,
+                            from:criteria.page * aggListSize -  25,
+                            size:aggListSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -443,8 +444,8 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from:criteria.page * criteria.pageSize - 25,
-                            size:criteria.pageSize,
+                            from:criteria.page * aggListSize -  25,
+                            size:aggListSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -473,10 +474,11 @@ aggKeys.map(aggKey=>{
 
 })
     
-    json.aggs = aggs;       
+    json.aggs = innerAggs;       
 }
 function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     let aggs = {};
+    const aggListSize = 25;
     const aggKeys = criteria.agg;
     let innerAggs = {};
 
@@ -506,8 +508,8 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from:criteria.page * criteria.pageSize - 25,
-                            size:criteria.pageSize,
+                            from:criteria.page *  aggListSize - 25,
+                            size: aggListSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -524,8 +526,8 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
-                            from:criteria.page * criteria.pageSize - 25,
-                            size:criteria.pageSize,
+                            from:criteria.page *  aggListSize - 25,
+                            size: aggListSize,
                             sort: [
                                 criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
@@ -554,5 +556,5 @@ aggKeys.map(aggKey=>{
 
 })
     
-    json.aggs = aggs;       
+    json.aggs = innerAggs;       
 }
