@@ -36,7 +36,7 @@ export function* getSitesPage(action) {
 }
 
 function* getSiteProvider(action) {
-    console.log('SAGA get Site Provider', action);
+    //console.log('SAGA get Site Provider', action);
     try {
         let response = yield call(() =>
             api.fetchSiteProvider(action.id, action.url)

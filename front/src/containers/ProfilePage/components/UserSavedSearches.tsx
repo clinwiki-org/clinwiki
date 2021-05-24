@@ -50,8 +50,10 @@ export default function UserSavedSearches(props: UserSavedSearchesProps) {
   }, [dispatch]);
 
   const userSavedSearches = useSelector((state: RootState) => state.search.savedSearches);
+  //console.log("🚀 ~ UserSavedSearches ~ userSavedSearches", userSavedSearches);
 
-  if (!userSavedSearches) {
+
+  if (!userSavedSearches || !userSavedSearches.data) {
     return <BeatLoader />
   }
 
@@ -62,7 +64,7 @@ export default function UserSavedSearches(props: UserSavedSearchesProps) {
     (savedSearches && savedSearches?.length !== 0) ?
       <>{
         savedSearches.map((search) => (
-          <StyledProfileLogValue key={search?.search_hash + search?.created_at}>
+          <StyledProfileLogValue key={search?.id}>
             <a href={search?.url}> {search?.name_label} </a>
             <div style={{ float: 'right', margin: "1px 2px" }} >
               <LabeledButton

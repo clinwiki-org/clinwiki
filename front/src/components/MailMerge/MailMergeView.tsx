@@ -56,6 +56,7 @@ function applyTemplate(
 ) {
   try {
     context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+    //console.log("🚀 ~ context", context);
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;
@@ -140,17 +141,17 @@ export default function MailMergeView(props: Props) {
 
     islandConfig && uniqueIds.map((agg) => {
       if (islandConfig[agg.id]?.defaultToOpen == true) {
-        let sort ={
+        let sort = {
           id: islandConfig[agg.id].order.sortKind,
           desc: islandConfig[agg.id].order.desc
         };
 
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
-        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggIdArray.push({id: agg.id, name: islandConfig[agg.id].name});
+        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg.id, name: islandConfig[agg.id].name });
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
         islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
-        islandConfig[agg.id].aggKind == 'aggs' && aggIdArray.push({id: agg.id, name: islandConfig[agg.id].name});
+        islandConfig[agg.id].aggKind == 'aggs' && aggIdArray.push({ id: agg.id, name: islandConfig[agg.id].name });
         islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'aggs' && aggSortArray.push(sort);
       }
