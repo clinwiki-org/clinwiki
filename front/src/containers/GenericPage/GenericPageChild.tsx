@@ -46,13 +46,13 @@ export default function GenericPageWrapper(props: Props) {
     //Ideally should be set from PageView but was having issues , response was not saving
     const pageType = match.path == "/search/" ? "Search" : "Study"
     const schemaType = getClassForMode(pageType);
-    //const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
-    const [fragmentName, fragment] = useHasuraFragment('ctgov_studies', currentPage?.template || '');
+    const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
+    const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_studies', currentPage?.template || '');
 
     useEffect(() => {
-        let searchParams = pageType == "Search" ? { ...data.data.searchParams, q: JSON.parse(data.data.searchParams.q) } : null;
+        let searchParams = pageType == "Search" ? { ...data.data.searchParams } : null;
         //let searchParams = pageType == "Search" ? { ...data.data.searchParams.searchParams } : null;
-        const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(fragmentName, fragment)}`
+        const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
         // const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
         dispatch(pageType == "Study" ? fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY) : fetchSearchPageMM(searchParams, SEARCH_QUERY));
