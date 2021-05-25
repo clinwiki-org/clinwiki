@@ -6,6 +6,10 @@ import logger from '../util/logger';
 import { query } from '../util/db';
 
 const QUERY_SHORT_LINK = 'select * from short_links where short=$1';
+const QUERY_LONG_LINK = 'select * from short_links where long=$1';
+const QUERY_NEW_HASH = `insert into short_links (short,long, created_at, updated_at) values ($1,$2, to_timestamp(${Date.now()} / 1000.0), to_timestamp(${Date.now()} / 1000.0))`;
+const crypto = require('crypto');
+
 
 export async function search(args) {
     try {
@@ -80,6 +84,37 @@ export async function searchParams(args) {
     }   
     catch(err) {
         logger.error('Error running search: '+err);
+    }
+}
+export async function provisionSearchHash(args) {
+    try {
+        logger.error("SERARCH_PAGE_HASH_MUTATION")
+        let paramString = JSON.stringify(args.input.params);
+        const results = await query(QUERY_LONG_LINK, [paramString]);
+        let hash_short;
+        if (results.rows.length === 1) {
+            const link = results.rows[0];
+            hash_short = link.short
+            console.log("HASH FOUND", hash_short)
+            return { searchHash: { short: hash_short } }
+        }
+        console.log('No HASH!')
+        const hash = crypto.createHash('sha256')
+            .update(paramString)
+            .digest('hex');
+        console.log(hash)
+        let short = hash.slice(0, 8)
+        console.log("SHORT", short);
+        const newHash = await query(QUERY_NEW_HASH, [
+            short,
+            paramString,
+        ])
+        console.log("NewHASH", newHash)
+
+        return { searchHash: { short: short } }
+    }
+    catch (err) {
+        logger.error('Error running search: ' + err);
     }
 }
 
