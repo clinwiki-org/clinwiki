@@ -246,7 +246,7 @@ const studyReducer = (
             return {
                 ...state,
                 isFetchingStudy: false,
-                studyPageHasura: action.payload,
+                studyPage: action.payload,
             };
         case types.FETCH_STUDY_PAGE_HASURA_ERROR:
             return {
