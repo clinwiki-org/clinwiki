@@ -145,6 +145,7 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: nlYl98VbkFw9
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
       HASURA_GRAPHQL_SERVER_PORT: 5532
+      HASURA_GRAPHQL_JWT_SECRET: {"key":"aa3312a3dc6c430194e3cab28b163c6b","type":"HS256"}
 
 volumes:
   es-data:
