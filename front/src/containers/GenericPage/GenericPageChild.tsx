@@ -36,7 +36,7 @@ export default function GenericPageWrapper(props: Props) {
     const match = useRouteMatch();
     const dispatch = useDispatch();
     const params = useUrlParams();
-    const studyData = useSelector((state: RootState) => state.study.studyPageHasura);
+    const studyData = useSelector((state: RootState) => state.study.studyPage);
     const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
     const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
     const data = useSelector((state: RootState) => state.search.searchResults);
@@ -55,7 +55,7 @@ export default function GenericPageWrapper(props: Props) {
         const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
         // const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-        dispatch(pageType == "Study" ? fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY) : fetchSearchPageMM(searchParams, SEARCH_QUERY));
+        dispatch(pageType == "Study" ? fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY) : fetchSearchPageMM(searchParams.searchParams, SEARCH_QUERY));
     }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data]);
 
 
@@ -70,7 +70,7 @@ export default function GenericPageWrapper(props: Props) {
         }
     }
     //console.log("STUDY DATA", studyData)
-    const title = microMailMerge(currentPage?.title, studyData?.data?.ctgov_studies[0] || searchData()) || "Add a Title";
+    const title = microMailMerge(currentPage?.title, pageType == 'Study' ? studyData?.data?.ctgov_studies[0] :  searchData()) || "Add a Title";
 
     const islands = pageType == 'Study' ? studyIslands : searchIslands;
     if (pageType == 'Study' && !studyData) {
@@ -81,9 +81,9 @@ export default function GenericPageWrapper(props: Props) {
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            { currentPage && <MailMergeView
+            { currentPage && studyData && <MailMergeView
                 template={currentPage?.template || ''}
-                context={studyData?.data.ctgov_studies[0] || searchData()}
+                context={ studyData?.data?.ctgov_studies? studyData?.data?.ctgov_studies[0]: searchData()}
                 islands={islands}
                 pageType={pageType}
             />}

@@ -36,6 +36,10 @@ const searchResolver = {
         // console.log(">>>>>>>RESOLVER<<<<<<<<")
         // console.log("Results", results)
         return results;
+    },
+    provisionSearchHash: async (args,context) => {
+        const results = await SearchManager.provisionSearchHash(args);
+        return results;
     }
     
 }

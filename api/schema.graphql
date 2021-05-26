@@ -851,7 +851,7 @@ type ElasticStudy implements Timestamps {
   studyFirstSubmittedDate: String
   studyFirstSubmittedQcDate: String
   studyType: String!
-  studyViewCount: Int!
+  studyViewCount: Int
   updatedAt: DateTime!
   whyStopped: String
 }
@@ -1930,7 +1930,7 @@ type Study implements Timestamps {
   studyFirstSubmittedDate: String
   studyFirstSubmittedQcDate: String
   studyType: String!
-  studyViewCount: Int!
+  studyViewCount: Int
   targetDuration: String
   type: String!
   updatedAt: DateTime!

@@ -6,6 +6,10 @@ import logger from '../util/logger';
 import { query } from '../util/db';
 
 const QUERY_SHORT_LINK = 'select * from short_links where short=$1';
+const QUERY_LONG_LINK = 'select * from short_links where long=$1';
+const QUERY_NEW_HASH = `insert into short_links (short,long, created_at, updated_at) values ($1,$2, to_timestamp(${Date.now()} / 1000.0), to_timestamp(${Date.now()} / 1000.0))`;
+const crypto = require('crypto');
+
 
 export async function search(args) {
     try {
@@ -82,85 +86,48 @@ export async function searchParams(args) {
         logger.error('Error running search: '+err);
     }
 }
+export async function provisionSearchHash(args) {
+    try {
+        logger.error("SERARCH_PAGE_HASH_MUTATION")
+        let paramString = JSON.stringify(args.input.params);
+        const results = await query(QUERY_LONG_LINK, [paramString]);
+        let hash_short;
+        if (results.rows.length === 1) {
+            const link = results.rows[0];
+            hash_short = link.short
+            console.log("HASH FOUND", hash_short)
+            return { searchHash: { short: hash_short } }
+        }
+        console.log('No HASH!')
+        const hash = crypto.createHash('sha256')
+            .update(paramString)
+            .digest('hex');
+        console.log(hash)
+        let short = hash.slice(0, 8)
+        console.log("SHORT", short);
+        const newHash = await query(QUERY_NEW_HASH, [
+            short,
+            paramString,
+        ])
+        console.log("NewHASH", newHash)
 
-// export async function aggBuckets(args) {
-//     try {
-//         const translated = await translateAggBuckets(args.params,false);
-//         console.log('##### AGGBUCKETS'+util.inspect(translated, false, null, true));
-//         let esResults = await elastic.query(translated);
-//         // console.log("TRANSLATED AggBuckets", translated) 
-        
-//         const studies = esResults.body.hits.hits.map( study => esToGraphql(study));
-//         let aggs = [];
-//         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
-//             const agg = aggToGraphql(key, value);
-//             if (args.bucketsWanted?.length !== 0) {
-//                 let finalBuckets = [];
-//                 agg.buckets.map((bucket) => {
-//                     for (const key of args.bucketsWanted) {
-//                         if (key == bucket.key) {
-//                             finalBuckets.push(bucket)
-//                         }
-//                     }
-//                 })
-//                 aggs.push({ ...agg, buckets: finalBuckets });
-//             }else{
-//                 aggs.push(agg)
-//             }
-//         }
-//         return {
-//             recordsTotal: esResults.body.hits.total,
-//             aggs: aggs
-//         };
-//     }
-//     catch(err) {
-//         logger.error(err);
-//     }
-// }
-
-// export async function crowdAggBuckets(args) {
-//     try {
-//         const translated = await translateCrowdAggBuckets(args.params, false);
-//         let esResults = await elastic.query(translated);
-//         console.log("TRANSLATED CrowdBuckets", translated) 
-//         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
-//         let aggs = [];
-//         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
-//             const agg = aggToGraphql(key, value);
-//             if (args.bucketsWanted?.length !== 0) {
-//                 let finalBuckets = [];
-//                 agg.buckets.map((bucket) => {
-//                     for (const key of args.bucketsWanted) {
-//                         if (key == bucket.key) {
-//                             finalBuckets.push(bucket)
-//                         }
-//                     }
-//                 })
-//                 aggs.push({ ...agg, buckets: finalBuckets });
-//             }else{
-//                 aggs.push(agg)
-//             }
-//         }
-//         return {
-//             recordsTotal: esResults.body.hits.total,
-//             aggs: aggs
-//         };
-//     }
-//     catch(err) {
-//         logger.error(err);
-//     }
-// }
+        return { searchHash: { short: short } }
+    }
+    catch (err) {
+        logger.error('Error running search: ' + err);
+    }
+}
 
 export async function openCrowdAggBuckets(args) {
     try {
         const translated = await translateOpenCrowdAggBuckets(args.params, args.bucketsWanted);
         let esResults = await elastic.query(translated);
-        // console.log("TRANSLATED OPEN Crowd Buckets", translated) 
+        // console.log("TRANSLATED OPEN Crowd Buckets" + util.inspect(translated, true, null, false)) 
         const studies = esResults.body.hits.hits.map(study => esToGraphql(study));
         let aggs = [];
         let i=0;
         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
-            const agg = aggToGraphql(key, value);
+            const agg = aggToGraphql2(key, value);
             if (args.bucketsWanted[i].values.length !== 0) {
                 let finalBuckets = [];
                 agg.buckets.map((bucket) => {
@@ -195,7 +162,7 @@ export async function openAggBuckets(args) {
         let i=0;
         // console.log("TRANSLATED OPEN  Buckets" + util.inspect(translated,false,null,true)) 
         for (const [key, value] of Object.entries(esResults.body.aggregations)) {
-            const agg = aggToGraphql(key, value);
+            const agg = aggToGraphql2(key, value);
             if (args.bucketsWanted[i].values.length !== 0) {
                 let finalBuckets = [];
                 agg.buckets.map((bucket) => {
@@ -236,6 +203,23 @@ function aggToGraphql(key,value) {
     let buckets = [];
     if(value[key].buckets) {
         buckets = value[key].buckets.map( bucket => ({
+            key: bucket.key,
+            keyAsString: bucket.key,
+            docCount: bucket.doc_count
+        }))
+    }
+
+    let agg = {
+        name: key,
+        buckets
+    };
+    
+    return agg;
+}
+function aggToGraphql2(key,value) {
+    let buckets = [];
+    if(value.buckets) {
+        buckets = value.buckets.map( bucket => ({
             key: bucket.key,
             keyAsString: bucket.key,
             docCount: bucket.doc_count

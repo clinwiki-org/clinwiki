@@ -66,7 +66,7 @@ export const fetchSearchStudies = (searchParams: any) => {
 };
 export const updateSearchParams = searchParams => {
     return callGraphql(
-        ENDPOINT,
+        NODE_ENDPOINT,
         mutate.SEARCH_PAGE_HASH_MUTATION,
         searchParams.searchParams
     );
