@@ -37,7 +37,6 @@ export async function search(args) {
 }
 export async function searchParams(args) {
     try {
-        // console.log(args)
         let params;
         const results = await query(QUERY_SHORT_LINK, [args.hash]);
         if(results.rows.length===1){
@@ -46,35 +45,39 @@ export async function searchParams(args) {
         }
 
         let parsedParams = JSON.parse(params);
-        let aggFilter =[];
-        parsedParams['agg_filters'].map((agg,index)=>{
-            let tempAgg = {};
-            for (const [key, value] of Object.entries(agg)) {
-                if(key=='include_missing_fields'){
-                    tempAgg['includeMissingFields'] = value;
-                }else{
-                    tempAgg[key]=value;
+        // The following if block is currently needed as there is still old hashes we need to handle.
+        //Ruby syntax is to snake case so all hashes prior to node where using snake_case variables
+        //Now that functionality of our searchPageHash mutation is being handled by node our hashes are being created with camelCased Values
+        if (parsedParams['agg_filters'] || parsedParams['crowd_agg_filters']){
+            let aggFilter =[];
+            parsedParams['agg_filters'].map((agg,index)=>{
+                let tempAgg = {};
+                for (const [key, value] of Object.entries(agg)) {
+                    if(key=='include_missing_fields'){
+                        tempAgg['includeMissingFields'] = value;
+                    }else{
+                        tempAgg[key]=value;
+                    }
                 }
-            }
-            aggFilter.push(tempAgg)
-        });
-        parsedParams['agg_filters']=aggFilter;
-
-        let crowdAggFilter=[];
-        parsedParams['crowd_agg_filters'].map((agg,index)=>{
-            let tempAgg = {};
-
-            for (const [key, value] of Object.entries(agg)) {
-                if(key=='include_missing_fields'){
-                    tempAgg['includeMissingFields'] = value;
-                }else{
-                    tempAgg[key]=value;
+                aggFilter.push(tempAgg)
+            });
+            parsedParams['agg_filters']=aggFilter;
+    
+            let crowdAggFilter=[];
+            parsedParams['crowd_agg_filters'].map((agg,index)=>{
+                let tempAgg = {};
+    
+                for (const [key, value] of Object.entries(agg)) {
+                    if(key=='include_missing_fields'){
+                        tempAgg['includeMissingFields'] = value;
+                    }else{
+                        tempAgg[key]=value;
+                    }
                 }
-            }
-            crowdAggFilter.push(tempAgg);
-        });
-        
-        parsedParams['crowd_agg_filters']=crowdAggFilter;
+                crowdAggFilter.push(tempAgg);
+            });
+            parsedParams['crowd_agg_filters']=crowdAggFilter;
+        }
 
 
         return {
