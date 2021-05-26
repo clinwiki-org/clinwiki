@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/mimemagicrb/mimemagic.git
+  revision: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
+  ref: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
+  specs:
+    mimemagic (0.3.5)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -201,7 +208,6 @@ GEM
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
-    mimemagic (0.3.3)
     mini_magick (4.9.4)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
@@ -452,6 +458,7 @@ DEPENDENCIES
   kramdown
   listen (~> 3.0)
   mailgun-ruby (~> 1.1.6)
+  mimemagic!
   mini_magick
   mini_racer
   net-ssh

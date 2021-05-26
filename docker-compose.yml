@@ -132,7 +132,7 @@ services:
       - db
       - elastic
   graphql-engine:
-    image: hasura/graphql-engine:latest
+    image: hasura/graphql-engine:v2.0.0-alpha.10
     container_name: hasura
     ports:
       - 5532:5532
