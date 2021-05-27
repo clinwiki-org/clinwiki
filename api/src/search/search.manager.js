@@ -39,6 +39,7 @@ export async function searchParams(args) {
     try {
         let params;
         const results = await query(QUERY_SHORT_LINK, [args.hash]);
+        logger.info('PARAMS', results)
         if(results.rows.length===1){
             const link = results.rows[0];
             params = link.long

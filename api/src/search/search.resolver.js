@@ -3,6 +3,7 @@ import * as SearchManager from './search.manager';
 
 const searchResolver = {
     search: async (args,context) => {
+        logger.info('PARGS', args)
         //console.log(util.inspect(args, false, null, true));
         const results = await SearchManager.search(args);
         return results;
@@ -32,9 +33,10 @@ const searchResolver = {
         return "";
     },
     searchParams: async (args,context) => {
+        logger.info('PARGS', args)
         const results = await SearchManager.searchParams(args);
-        // console.log(">>>>>>>RESOLVER<<<<<<<<")
-        // console.log("Results", results)
+        console.log(">>>>>>>RESOLVER<<<<<<<<")
+        console.log("Results", results)
         return results;
     },
     provisionSearchHash: async (args,context) => {

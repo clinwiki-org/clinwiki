@@ -114,3 +114,5 @@ gem "faker", "~> 2.11", group: :test
 gem "database_cleaner-active_record", "~> 1.8", group: :test
 
 gem "aws-sdk-s3", "~> 1.63", require: true
+
+gem 'mimemagic', github: 'mimemagicrb/mimemagic', ref: '01f92d86d15d85cfd0f20dabd025dcbd36a8a60f'
