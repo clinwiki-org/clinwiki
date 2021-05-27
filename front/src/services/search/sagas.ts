@@ -256,18 +256,19 @@ function* getSavedSearches(action) {
 
 function* createSavedSearch(action) {
     try {
+        let findShortLink = yield call(() =>
+            api.findShortLinkId(action.searchHash)
+        );
+        let shortLinkId = findShortLink.data.short_links[0].id;
         let createResponse = yield call(() =>
             api.createSavedSearch(
                 action.searchHash,
                 action.url,
                 action.userId,
-                action.nameLabel
+                action.nameLabel,
+                shortLinkId
             )
         );
-        /*         console.log(
-            '🚀 ~ function*createSavedSearch ~ createResponse',
-            createResponse.data.insert_saved_searches_one
-        ); */
         if (createResponse.data.insert_saved_searches_one) {
             let response = yield getSavedSearches(action);
             yield put(actions.createSavedSearchSuccess(response));
