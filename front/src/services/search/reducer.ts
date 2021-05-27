@@ -108,7 +108,8 @@ const searchReducer = (
             // console.log("Payload",action.payload)
             let aggObject = {};
             action.payload.data.openAggBuckets.aggs.map((agg, index) => {
-                aggObject[action.payload.aggIdArray[index].id] = agg.buckets;
+                let aggFromIdArray = filter(x=>x.name == agg.name, action.payload.aggIdArray);
+                aggObject[aggFromIdArray[0].id] =agg.buckets;
             });
             return {
                 ...state,
