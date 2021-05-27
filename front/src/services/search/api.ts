@@ -81,17 +81,25 @@ export const fetchSavedSearches = (userId: any) => {
     });
 };
 
+export const findShortLinkId = (searchHash: string) => {
+    return callHasuraClinwiki(HASURA_CW, query.FIND_SHORT_LINK, {
+        searchHash: searchHash,
+    });
+};
+
 export const createSavedSearch = (
     searchHash: string,
     url: string,
     userId: number,
-    nameLabel: string
+    nameLabel: string,
+    shortLinkId: number
 ) => {
     return callHasuraClinwiki(HASURA_CW, mutate.HASURA_CREATE_SAVED_SEARCH, {
         searchHash: searchHash,
         url: url,
         userId: userId,
         nameLabel: nameLabel,
+        shortLinkId: shortLinkId,
     });
 };
 
