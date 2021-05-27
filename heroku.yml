@@ -1,0 +1,5 @@
+build:
+  docker:
+    web: heroku/nginx/Dockerfile
+run:
+  web: nginx -g 'daemon off'
