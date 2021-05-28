@@ -220,8 +220,8 @@ ActiveRecord::Schema.define(version: 2021_03_30_155744) do
     t.text "user_rank", default: "[{\"rank\":\"default\",\"gte\":0},{\"rank\":\"bronze\",\"gte\":26},{\"rank\":\"silver\",\"gte\":51},{\"rank\":\"gold\",\"gte\":75},{\"rank\":\"platinum\",\"gte\":101}] "
     t.text "reactions_config", default: "[]"
     t.boolean "hide_donation"
-    t.string "default_hash", limit: 255
-    t.string "default_search_page", limit: 255
+    t.text "default_hash", default: "gELcp_Fb", null: false
+    t.text "default_search_page", default: "search"
     t.index ["subdomain"], name: "index_sites_on_subdomain", unique: true
   end
 
@@ -269,7 +269,7 @@ ActiveRecord::Schema.define(version: 2021_03_30_155744) do
     t.string "picture_url"
     t.string "reset_token_url"
     t.string "search_notification_criteria"
-    t.datetime "search_last_notification", default: "2021-05-26 12:58:28"
+    t.datetime "search_last_notification", default: "2021-05-27 14:03:33"
     t.integer "search_notification_frequency"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
