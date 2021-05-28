@@ -71,6 +71,10 @@ export default function GenericPageWrapper(props: Props) {
     pageType == "Search" && dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
 
+  if (!params.hash && pageType == "Search") {
+    history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
+    //window.location.reload()
+  }
   if (!currentPage) {
     return <BeatLoader />
   }
@@ -79,11 +83,6 @@ export default function GenericPageWrapper(props: Props) {
   }
   if (!props.arg && pageType == "Study") {
     return <h1>Missing NCTID in URL</h1>;
-  }
-  if (!params.hash && pageType == "Search") {
-    history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
-    window.location.reload()
-
   }
   if (!params.pv && pageType == "Search") {
     return <h1>Missing PageView in URL</h1>;

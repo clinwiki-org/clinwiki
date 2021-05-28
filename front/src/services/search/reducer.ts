@@ -1,7 +1,7 @@
 import { exportToCsv, searchExport } from './api';
 import { IslandConfigQuery } from './model/IslandConfigQuery';
 import * as types from './types';
-
+import {filter} from 'ramda';
 const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
@@ -108,7 +108,8 @@ const searchReducer = (
             // console.log("Payload",action.payload)
             let aggObject = {};
             action.payload.data.openAggBuckets.aggs.map((agg, index) => {
-                aggObject[action.payload.aggIdArray[index].id] = agg.buckets;
+                let aggFromIdArray = filter(x=>x.name == agg.name, action.payload.aggIdArray);
+                aggObject[aggFromIdArray[0].id] =agg.buckets;
             });
             return {
                 ...state,
@@ -135,7 +136,8 @@ const searchReducer = (
             // console.log("Payload",action.payload)
             let crowdAggObject = {};
             action.payload.data.openCrowdAggBuckets.aggs.map((agg, index) => {
-                crowdAggObject[action.payload.crowdAggIdArray[index].id] =
+                let aggFromIdArray = filter(x=>`fm_${x.name}` == agg.name, action.payload.crowdAggIdArray);
+                crowdAggObject[aggFromIdArray[0].id] =
                     agg.buckets;
             });
             return {
