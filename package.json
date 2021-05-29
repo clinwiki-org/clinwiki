@@ -1,7 +1,7 @@
 {
     "name": "required_for_heroku_buildpack",
         "scripts": {
-        "build":"herko-build.sh",
+        "build":"./herko-build.sh",
         "start":"cd api && npm run serve"
     },
     "dependencies": {}
