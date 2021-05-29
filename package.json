@@ -2,7 +2,7 @@
     "name": "required_for_heroku_buildpack",
         "scripts": {
         "build":"./heroku-build.sh",
-        "start":"cd api && npm run serve"
+        "start":"cd api && npm start"
     },
     "dependencies": {}
 }
