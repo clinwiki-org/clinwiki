@@ -4,5 +4,15 @@
         "build":"./heroku-build.sh",
         "start":"cd api && npm start"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "devDependencies": {
+        "@babel/cli": "^7.10.3",
+        "@babel/core": "^7.10.3",
+        "@babel/node": "^7.13.0",
+        "@babel/preset-env": "^7.10.3",
+        "babel-eslint": "^10.1.0",
+        "eslint": "^5.16.0",
+        "nodemon": "^2.0.4"
+      }
+    
 }
