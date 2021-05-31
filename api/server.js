@@ -89,9 +89,10 @@ const graphqlMiddleware = graphqlHTTP((req, res) => {
 app.use('/graphql',graphqlMiddleware);
 
 //Index route
-app.get('/', (req, res) => {
-    res.send('Invalid endpoint!');
-});
+// app.get('/', (req, res) => {
+//     res.send('Invalid endpoint!');
+// });
+app.use(express.static(path.join(__dirname,'../front/build')));
 
 app.use(function(error,req,res,next){
   //console.log("ERROR: "+error,error.stack);
