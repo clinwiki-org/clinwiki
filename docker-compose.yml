@@ -8,6 +8,8 @@ services:
       dockerfile: compose/Dockerfile
     volumes:
       - ./compose/nginx:/etc/nginx/conf.d 
+    depends_on:
+      - nodejs
   db:
     image: postgres:11.8
     container_name: clinwiki-db
