@@ -168,7 +168,11 @@ export const wikiPageUpdateContentMutation = (nctId: any, content: any) => {
     });
 };
 
-export const wikiPageUpdateHasuraMutation = (nctId: any, text: any, isWikiContent: boolean) => {
+export const wikiPageUpdateHasuraMutation = (
+    nctId: any,
+    text: any,
+    isWikiContent: boolean
+) => {
     if (isWikiContent) {
         return callHasuraClinwiki(
             HASURA_CW,
@@ -186,14 +190,14 @@ export const wikiPageUpdateHasuraMutation = (nctId: any, text: any, isWikiConten
                 nctId: nctId,
                 text: text,
             }
-        ); 
+        );
     }
 };
 
-export const fetchSuggestedLabels = (nctId: any, crowdBucketsWanted: any) => {
-    return callGraphql(ENDPOINT, query.SUGGESTED_LABELS_QUERY, {
-        nctId: nctId,
-        // crowdBucketsWanted: crowdBucketsWanted,
+export const fetchSuggestedLabels = (nctId: any, crowdKey: any) => {
+    return callHasuraClinwiki(HASURA_CW, query.CROWD_VALUES_QUERY, {
+        crowdKeyValueId: nctId,
+        crowdKey: crowdKey,
     });
 };
 export const fetchAllWorkFlows = () => {

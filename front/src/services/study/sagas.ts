@@ -351,7 +351,7 @@ function* deleteReviewMutation(action) {
 function* getSuggestedLabels(action) {
     try {
         let response = yield call(() =>
-            api.fetchSuggestedLabels(action.nctId, action.crowdBucketsWanted)
+            api.fetchSuggestedLabels(action.nctId, action.crowdKey)
         );
         if (response) {
             yield put(actions.fetchSuggestedLabelsSuccess(response));
