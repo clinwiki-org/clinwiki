@@ -3,29 +3,15 @@ services:
   nginx:
     image: nginx:stable
     container_name: nginx
-    profiles:
-      - dev
     ports:
       - 80:80
     volumes:
       - ./compose/nginx:/etc/nginx/conf.d/
     depends_on:
       - clinwiki
-  nginx-prod:
-    image: nginx:stable
-    container_name: nginx-prod
-    profiles:
-      - prod
-    build:
-      context: .
-      dockerfile: heroku/Dockerfile
-    volumes:
-      - ./heroku/nginx/templates:/etc/nginx/templates
   db:
     image: postgres:11.8
     container_name: clinwiki-db
-    profiles:
-      - dev
     ports:
       - 15432:5432
     volumes:
@@ -36,8 +22,6 @@ services:
   elastic:
     image: elasticsearch:6.8.8
     container_name: elastic
-    profiles:
-      - dev
     ports:
       - 9200:9200
     environment:
@@ -55,17 +39,15 @@ services:
         hard: -1
     volumes:
       - es-data:/usr/share/elasticsearch/data/
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:6.8.0
-  #   container_name: kibana
-  #   profiles:
-  #     - dev
-  #   environment:
-  #     - ELASTICSEARCH_HOSTS=http://elastic:9200/
-  #     - ELASTICSEARCH_USERNAME=elastic
-  #     - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
-  #   ports:
-  #     - 5601:5601
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.8.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic:9200/
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    ports:
+      - 5601:5601
   redis:
     image: redis:5.0.5
     container_name: redis
@@ -79,8 +61,6 @@ services:
       context: .
       dockerfile: compose/Dockerfile
     container_name: clinwiki
-    profiles:
-      - dev
     ports:
       - 3000:3000
     volumes:
@@ -125,8 +105,6 @@ services:
       dockerfile: api/Dockerfile
     command: npm start
     container_name: nodejs
-    profiles:
-      - dev
     volumes:
       - .:/api
     ports:
@@ -137,21 +115,6 @@ services:
     depends_on:
       - db
       - elastic
-  nodejs-prod:
-    image: keymetrics/pm2:14-alpine
-    env_file:
-      - .env
-    build:
-      context: .
-      dockerfile: api/Dockerfile
-    command: npm start
-    container_name: nodejs-prod
-    profiles:
-      - prod
-    volumes:
-      - .:/api
-    ports:
-      - 8088:8088
   data-pipeline:
     image: keymetrics/pm2:14-alpine
     env_file:
@@ -161,8 +124,6 @@ services:
       dockerfile: api/Dockerfile
     command: npm run pipeline-start
     container_name: data-pipeline
-    profiles:
-      - dev
     volumes:
       - .:/api
     environment:
@@ -174,8 +135,6 @@ services:
   graphql-engine:
     image: hasura/graphql-engine:latest
     container_name: hasura
-    profiles:
-      - dev
     ports:
       - 5532:5532
     depends_on:
