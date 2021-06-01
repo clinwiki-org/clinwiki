@@ -103,10 +103,14 @@ export const bulkUpdate = async (list) => {
         let encode = Buffer.from(url.username+':'+url.password)
             .toString('base64');
         const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
+        console.log('>>>>>BODY '+ util.inspect(body, false, null, true));
         return await superagent.post(elasticUrl)
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
-            .send(body).then(response =>response.body);
+            .send(body).then(response =>{ 
+                console.log(response)
+                return response.body
+            });
     }
     catch(err) {
         logger.info('Error elastic.query: '+err);
