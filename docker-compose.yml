@@ -10,6 +10,8 @@ services:
       - ./compose/nginx:/etc/nginx/conf.d 
     depends_on:
       - nodejs
+    ports:
+      - 80:80
   db:
     image: postgres:11.8
     container_name: clinwiki-db
