@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage';
 import NotConfiguredPage from 'containers/NotConfiguredPage';
 import SearchPage from 'containers/SearchPage';
@@ -53,13 +53,10 @@ class App extends React.PureComponent<AppProps> {
                 <Route
                   exact
                   path="/"
-                  component={
-                    this.props.history.location.search ? SearchPage : LandingPage
-                  }
-                />
+                ><Redirect to="/search" /></Route>
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/version" component={ReleaseNotes} />
-                <Route path="/search/" render={(props) => <GenericPageWrapper/>} />
+                <Route path="/search/" render={(props) => <GenericPageWrapper />} />
                 <Route path="/search2/" component={SearchPage} />
                 <Route path="/search2/:siteviewUrl" component={SearchPage} />
                 <Route path="/study/:nctId"

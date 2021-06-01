@@ -27,13 +27,14 @@ export const SEARCH_PAGE_HASH_MUTATION = `
 `;
 
 export const HASURA_CREATE_SAVED_SEARCH = `
-  mutation HasuraCreateSavedSearch( $searchHash: String,  $url: String!, $userId: bigint!, $nameLabel: String!) {
-  insert_saved_searches_one(object: {user_id: $userId, url: $url, name_label: $nameLabel, search_hash: $searchHash}) {
+  mutation HasuraCreateSavedSearch( $searchHash: String,  $url: String!, $userId: bigint!, $nameLabel: String!, $shortLinkId: bigint) {
+  insert_saved_searches_one(object: {user_id: $userId, url: $url, name_label: $nameLabel, search_hash: $searchHash, short_link_id: $shortLinkId}) {
     user_id
     search_hash
     url
     name_label
     is_subscribed
+    short_link_id
   }
 }
 `;

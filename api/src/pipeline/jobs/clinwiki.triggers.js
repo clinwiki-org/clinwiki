@@ -1,5 +1,6 @@
 import logger from '../../util/logger';
 import {bulkUpdate, bulkUpdateCrowdKeys} from '../../search/elastic';
+import * as elastic from '../../search/elastic';
 const util = require('util')
 
 export const indexWikiPage = async (payload) => {
@@ -12,16 +13,35 @@ export const indexWikiPage = async (payload) => {
 };
 
 export const indexCrowdKeyValueIds = async (payload) => {
-    logger.debug('Indexing Wiki Page '+payload)
+    logger.debug('Indexing Crowd Key Values');
+
+    // console.log("about to query for elastic doc")
+    let esResults = await elastic.query({
+        "query": {
+            "bool": {
+                "must": {
+                    "simple_query_string": {
+                        "fields": ["nct_id"],
+                        "query": payload.crowd_key_value_id_association
+                    }
+                }
+            }
+        }
+    });
+    console.log("ESRESULTS" + util.inspect(esResults, false, null, true)); 
+    let indexData = esResults.body.hits.hits[0]._source; 
+    let frontMatterKeys = indexData.front_matter_keys ? indexData.front_matter_keys : []
     const list = [{
-        [`fm_${payload.crowd_key}`]: [payload.crowd_value],
+        nct_id: payload.crowd_key_value_id_association, 
+        [`fm_${payload.crowd_key}`]: indexData[`fm_${payload.crowd_key}`] ? [...indexData[`fm_${payload.crowd_key}`], payload.crowd_value] : [payload.crowd_value],
+        front_matter_keys: frontMatterKeys.includes(payload.crowd_key) ? [payload.crowd_key] : [...indexData.front_matter_keys, payload.crowd_key]
         //Below values not added as no current use/development
         // user_id: payload.user_id,
         // verified: payload.verified,
         // approved: payload.approved,
         // evidenced: payload.evidence
     }];
-    await bulkUpdateCrowdKeys(list, payload.crowd_key_value_id_association);
+    await bulkUpdate(list);
 }
 
 // export const indexCrowdKeys = async (payload) => {

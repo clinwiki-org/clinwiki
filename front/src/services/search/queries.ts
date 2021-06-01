@@ -413,6 +413,16 @@ query HasuraSavedSearchesQuery($userId: bigint!) {
 }
 `;
 
+export const FIND_SHORT_LINK = `
+  query findShortLink($searchHash: String){
+    short_links(where: {short: {_eq: $searchHash}}) {
+      id
+      long
+      short
+    }
+  }
+`;
+
 export const ISLAND_CONFIG_QUERY = `
 query HasuraIslandConfigsQuery {
   island_configs {
