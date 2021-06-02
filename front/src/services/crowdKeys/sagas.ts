@@ -1,3 +1,4 @@
+import { fetchSuggestedLabels } from './../study/actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import * as api from './api';
 import * as actions from './actions';
@@ -16,8 +17,11 @@ function* insertCrowdKeyValueId(action) {
                 action.approved
             )
         );
-        //console.log('response = ', updateResponse);
-        if (updateResponse?.data?.updateSitehasura.errors === null) {
+        //console.log('response = ', updateResponse);f
+        if (updateResponse?.data?.insert_crowd_key_value_ids) {
+            yield put(
+                fetchSuggestedLabels(action.crowdKeyValueId, action.crowdKey)
+            );
             yield put(
                 actions.insertCrowdKeyValueIdSuccess(updateResponse.data)
             );
@@ -42,7 +46,10 @@ function* deleteCrowdKeyValueId(action) {
             )
         );
         //console.log('response = ', updateResponse);
-        if (updateResponse?.data?.updateSitehasura.errors === null) {
+        if (updateResponse?.data?.delete_crowd_key_value_ids) {
+            yield put(
+                fetchSuggestedLabels(action.crowdKeyValueId, action.crowdKey)
+            );
             yield put(
                 actions.deleteCrowdKeyValueIdSuccess(updateResponse.data)
             );

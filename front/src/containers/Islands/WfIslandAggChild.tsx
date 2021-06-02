@@ -33,7 +33,7 @@ function WfIslandAggChild(props: Props) {
 
   useEffect(() => {
     dispatch(fetchSuggestedLabels(nctId, currentAgg.name));
-  }, [dispatch, nctId, suggestedLabels])
+  }, [dispatch, nctId])
 
   if (isLoading || !currentAgg) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
