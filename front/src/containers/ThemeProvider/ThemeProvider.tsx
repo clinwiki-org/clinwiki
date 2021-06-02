@@ -267,7 +267,7 @@ export const ProvideTheme = ({ children }) => {
 
 
   let subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : "default";
-  if (subdomain == "experimental" || subdomain == "staging") {
+  if (subdomain == "experimental" || subdomain == "staging" || subdomain == "clinwiki-node") {
     subdomain = "default"
   }
 
